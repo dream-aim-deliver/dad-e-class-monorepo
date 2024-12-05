@@ -19,6 +19,7 @@
     "@nx/js": "20.1.4",
     "@nx/next": "20.1.4",
     "@nx/playwright": "20.1.4",
+    "@nx/react": "20.1.4",
     "@nx/workspace": "20.1.4",
     "@playwright/test": "^1.36.0",
     "@swc-node/register": "~1.9.1",
