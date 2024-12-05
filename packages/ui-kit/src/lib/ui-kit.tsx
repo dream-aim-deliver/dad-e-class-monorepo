@@ -1,6 +1,6 @@
 import './ui-kit.css';
 
-export function UiKit() {
+const UiKit = () => {
   return (
     <div>
       <h1>Welcome to UiKit!</h1>

@@ -1,14 +1,21 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "target": "ESNext",
     "jsx": "react-jsx",
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
     "allowJs": false,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "types": ["vite/client", "vitest"]
   },
+
   "files": [],
-  "include": [],
+  "include": ["lib", "tests"],
+  "exclude": ["node_modules", "dist"],
   "references": [
     {
       "path": "./tsconfig.lib.json"
@@ -17,5 +24,4 @@
       "path": "./tsconfig.spec.json"
     }
   ],
-  "extends": "../../tsconfig.base.json"
 }
