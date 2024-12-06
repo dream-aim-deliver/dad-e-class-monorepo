@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@maany_shr/e-class-ui-kit": ["packages/ui-kit/src/index.ts"]
+      "@maany_shr/e-class-ui-kit": ["packages/ui-kit/lib/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

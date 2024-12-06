@@ -1,7 +1,18 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.base.json", // <- Try to change the base config to match most of the projects
   "compilerOptions": {
+    "rootDir": ".",
+    "baseUrl": ".",
     "target": "ESNext",
+    "useDefineForClassFields": true,
+    "paths": {
+      "@/components/*": ["./lib/components/*"],
+      "@/assets/*": ["./lib/assets/*"],
+      "@/hooks/*": ["./lib/hooks/*"],
+      "@/contexts/*": ["./lib/contexts/*"]
+    },
+    "skipLibCheck": true,
+    "noEmit": true,
     "jsx": "react-jsx",
     "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
@@ -10,18 +21,9 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "types": ["vite/client", "vitest"]
+    "types": ["vite/client", "vitest", "@testing-library/jest-dom"]
   },
 
-  "files": [],
-  "include": ["lib", "tests"],
-  "exclude": ["node_modules", "dist"],
-  "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
-  ],
+  "include": ["lib/**/*.ts", "lib/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"],
+  "exclude": ["node_modules", "dist", "tools"],
 }

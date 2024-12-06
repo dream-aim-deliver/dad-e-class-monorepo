@@ -5,6 +5,9 @@ import * as path from 'path';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 import tailwindcss from '@tailwindcss/vite';
+import { glob } from "glob";
+import { fileURLToPath } from "url";
+import preserveDirectives from 'rollup-preserve-directives';
 
 /**
  * STATIC_ASSETS_DIR is the directory where static assets are stored. They are copied to the dist directory during the build process.
@@ -53,8 +56,9 @@ export default defineConfig({
     nxViteTsPaths(),
     nxCopyAssetsPlugin(['*.md']),
     tailwindcss(),
+    preserveDirectives(),
     dts({
-      entryRoot: 'src',
+      entryRoot: 'lib',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
     }),
   ],
@@ -68,21 +72,35 @@ export default defineConfig({
     outDir: '../../dist/packages/ui-kit',
     emptyOutDir: true,
     reportCompressedSize: true,
-    commonjsOptions: {
-      transformMixedEsModules: true,
-    },
+    sourcemap: true,
     lib: {
       // Could also be a dictionary or array of multiple entry points.
-      entry: 'src/index.ts',
+      entry: 'lib/index.ts',
       name: 'ui-kit',
       fileName: 'index',
       // Change this to the formats you want to support.
       // Don't forget to update your package.json as well.
-      formats: ['es', 'cjs'],
+      formats: ['es'],
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.
       external: ['react', 'react-dom', 'react/jsx-runtime'],
+      input: Object.fromEntries(
+        // https://rollupjs.org/configuration-options/#input
+        glob.sync("lib/**/*.{ts,tsx}").map((file) => [
+          // 1. The name of the entry point
+          // lib/nested/foo.js becomes nested/foo
+          path.relative("lib", file.slice(0, file.length - path.extname(file).length)),
+          // 2. The absolute path to the entry file
+          // lib/nested/foo.ts becomes /project/lib/nested/foo.ts
+          fileURLToPath(new URL(file, import.meta.url)),
+        ]),
+      ),
+      output: {
+        assetFileNames: "assets/[name][extname]",
+        entryFileNames: "[name].js",
+        preserveModules: true,
+      }
     },
   },
   test: {
@@ -91,12 +109,16 @@ export default defineConfig({
     watch: false,
     globals: true,
     environment: 'jsdom',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    setupFiles: ["tests/vitest.setup.ts"],
+    include: ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: ["tests/**/*.setup.{ts,tsx}", "tests/**/*.d.ts", "tests/**/*.config.ts"],
     reporters: ['json', 'dot', 'github-actions'],
     coverage: {
       reportsDirectory: '../../coverage/packages/ui-kit',
       provider: 'v8',
       thresholds: COVERAGE_THRESHOLDS,
+      exclude: COVERAGE_EXCLUDE_PATTERNS,
+      reportOnFailure: true,
     },
   },
 });

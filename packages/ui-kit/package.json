@@ -6,6 +6,9 @@
   "type": "module",
   "exports": {
     ".": {
-    }
+      "import": "./index.js",
+      "require": "./index.js"
+    },
+    "./package.json": "./package.json"
   }
 }
