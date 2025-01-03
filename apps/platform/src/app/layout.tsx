@@ -1,4 +1,6 @@
+import '@maany_shr/e-class-ui-kit/tailwind.css';
 import './global.css';
+import { ThemeProvider } from '@maany_shr/e-class-ui-kit/contexts';
 
 export const metadata = {
   title: 'Welcome to platform',
@@ -12,7 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ThemeProvider>
+          <div className="">{children}</div>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

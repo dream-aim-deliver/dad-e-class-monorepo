@@ -7,7 +7,7 @@ const buttonStyles = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-button text-black hover:bg-button-hover active:bg-button-pressed disabled:bg-button-disabled',
+        primary: 'bg-primary text-black hover:bg-button-hover active:bg-button-pressed disabled:bg-button-disabled',
         tirtary: 'bg-secondary text-black hover:bg-secondary-hover active:bg-secondary-pressed disabled:bg-secondary-disabled',
         secondary: 'border-2 text-primary border-primary bg-transparent hover:border-button-hover active:border-button-pressed disabled:border-button-disabled',
         text:'border-0 text-primary  bg-transparent hover:text-button-hover active:text-button-pressed disabled:text-button-diabled',
@@ -26,17 +26,17 @@ const buttonStyles = cva(
   }
 );
 
-interface ButtonProps extends VariantProps<typeof buttonStyles> {
+export interface ButtonProps extends VariantProps<typeof buttonStyles> {
   children: React.ReactNode;
   onClick?: () => void;
   className?: string;
   disabled?: boolean;
 }
 
-const Button = (props: ButtonProps) => {
+export const Button = (props: ButtonProps) => {
   return (
     <button
-      className={cn(buttonStyles({variant: props.variant, size: props.size}), props.className)}
+      className={cn(buttonStyles({variant: props.variant, size: props.size}), "cursor-pointer", props.className)}
       onClick={props.onClick}
       disabled={props.disabled}
     >
@@ -44,5 +44,3 @@ const Button = (props: ButtonProps) => {
     </button>
   );
 };
-
-export default Button;
