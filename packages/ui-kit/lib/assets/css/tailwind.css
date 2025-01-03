@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+
+@layer components {
+  :root {
+    --default-color: #f59e0b;
+    --hover-color: #fbbf24;
+    --pressed-color: #d97706;
+    --disabled-color: #f59e0b;
+    --surface-color: #000000;
+    --background-color: rgb(41, 37, 36);
+    --primary-color: #f59e0b;
+    --secondary-color: #a8a29e;
+    --color-text: #d6d3d1;
+    --button-radius-huge: 16px;
+    --button-radius-big: 12px;
+    --badge-radius-big: 8px;
+    --button-radius: 6px;
+    --success-primary: #bef264;
+    --warning-primary: #fde047;
+    --error-primary: #f87171;
+    --secondary-badge: #a8a29e;
+  
+    & * {
+      font-family: var(--font-roboto, "Nunito", sans-serif);
+    }
+  }
+}
+
+
+.theme-blue {
+  --default-color: #0ea5e9;
+  --hover-color: #38bdf8;
+  --pressed-color: #0284c7;
+  --disabled-color: #0ea5e9;
+  --color-text: #d6d3d1;
+  --surface-color: #000000;
+  --background-color: #0c0a09;
+  --primary-color: #0ea5e9;
+  --secondary-color: #a8a29e;
+  --button-radius-huge: 99999px;
+  --button-radius-big: 9999px;
+  --badge-radius-big: 9999px;
+  --button-radius: 0.5rem;
+  --success-primary: #a1a1aa;
+  --warning-primary: #ffffff;
+  --error-primary: #ffffff;
+  --secondary-badge: #ffffff;
+
+  & * {
+    font-family: var(--font-geist-mono, "Roboto", sans-serif);
+  }
+}
+
+.theme-dark-orange-shade {
+  --default-color: #fb923c;
+  --hover-color: #fdba74;
+  --pressed-color: #f97316;
+  --disabled-color: #fb923c;
+  --color-text: #d6d3d1;
+  --surface-colour: #000000;
+  --background-color: #0c0a09;
+  --primary-color: #fb923c;
+  --secondary-color: #a8a29e;
+  --button-radius-huge: 0px;
+  --button-radius-big: 0px;
+  --badge-radius-big: 0px;
+  --button-radius: 0px;
+  --success-primary: #94a3b8;
+  --warning-primary: #ffffff;
+  --error-primary: #ffffff;
+  --secondary-badge: #ffffff;
+
+  & * {
+    font-family: var(--font-raleway, "Raleway", sans-serif);
+  }
+}
+
+
+@theme {
+  --color-primary: #f59e0b;
+  --color-secondary: var(--secondary-color);
+  --color-tbase: var(--color-text);
+  --color-bgprimary: var(--background-color);
+  --color-surfacecolor: var(--surface-color);
+  --color-button-default: var(--default-color);
+  --color-button-hover: var(--hover-color);
+  --color-button-pressed: var(--pressed-color);
+  --color-button-disabled: var(--disabled-color);
+}
