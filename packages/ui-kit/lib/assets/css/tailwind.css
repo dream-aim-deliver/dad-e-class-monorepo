@@ -1,34 +1,5 @@
-
-@layer components {
-  :root {
-    --default-color: #f59e0b;
-    --hover-color: #fbbf24;
-    --pressed-color: #d97706;
-    --disabled-color: #f59e0b;
-    --surface-color: #000000;
-    --background-color: rgb(41, 37, 36);
-    --primary-color: #f59e0b;
-    --secondary-color: #a8a29e;
-    --color-text: #d6d3d1;
-    --button-radius-huge: 16px;
-    --button-radius-big: 12px;
-    --badge-radius-big: 8px;
-    --button-radius: 6px;
-    --success-primary: #bef264;
-    --warning-primary: #fde047;
-    --error-primary: #f87171;
-    --secondary-badge: #a8a29e;
-  
-    & * {
-      font-family: var(--font-roboto, 'Nunito', sans-serif);
-    }
-  }
-}
-
-
-
 @theme {
-  --color-primary: #f59e0b;
+  --color-primary: var(--primary-color);
   --color-secondary: var(--secondary-color);
   --color-tbase: var(--color-text);
   --color-bgprimary: var(--background-color);
@@ -37,6 +8,42 @@
   --color-button-hover: var(--hover-color);
   --color-button-pressed: var(--pressed-color);
   --color-button-disabled: var(--disabled-color);
+}
+
+.theme {
+  --color-primary: var(--primary-color);
+  --color-secondary: var(--secondary-color);
+  --color-tbase: var(--color-text);
+  --color-bgprimary: var(--background-color);
+  --color-surfacecolor: var(--surface-color);
+  --color-button-default: var(--default-color);
+  --color-button-hover: var(--hover-color);
+  --color-button-pressed: var(--pressed-color);
+  --color-button-disabled: var(--disabled-color);
+}
+
+.theme-orange {
+  --default-color: #f59e0b;
+  --hover-color: #fbbf24;
+  --pressed-color: #d97706;
+  --disabled-color: #f59e0b;
+  --surface-colour: #000000;
+  --background-color: rgb(41, 37, 36);
+  --primary-color: #f59e0b;
+  --secondary-color: #a8a29e;
+  --color-text: #d6d3d1;
+  --button-radius-huge: 16px;
+  --button-radius-big: 12px;
+  --badge-radius-big: 8px;
+  --button-radius: 6px;
+  --success-primary: #bef264;
+  --warning-primary: #fde047;
+  --error-primary: #f87171;
+  --secondary-badge: #a8a29e;
+
+  & * {
+    font-family: var(--font-roboto, "Nunito", sans-serif);
+  }
 }
 
 .theme-blue {
