@@ -8,6 +8,28 @@
   --color-button-hover: var(--hover-color);
   --color-button-pressed: var(--pressed-color);
   --color-button-disabled: var(--disabled-color);
+  --radius-smallrad: var(--button-radius);
+  --radius-buttonBig: var(--button-radius-big);
+  --radius-buttonHuge: var(--button-radius-huge);
+  --radius-badgeBig: var(--badge-radius-big);
+  --text-h1: 36px;
+  --text-h1--line-height: 40px;
+  --font-weight-h1: 700;
+  --text-h2: 30px;
+  --text-h2--line-height: 36px;
+  --font-weight-h2: 600;
+  --text-h3: 24px;
+  --text-h3--line-height: 30px;
+  --font-weight-h3: 500;
+  --text-h4: 20px;
+  --text-h4--line-height: 24px;
+  --font-weight-h4: 500;
+  --text-h5: 16px;
+  --text-h5--line-height: 20px;
+  --font-weight-h5: 500;
+  --text-h6: 14px;
+  --text-h6--line-height: 20px;
+  --font-weight-h6: 500;
 }
 
 .theme {
@@ -20,6 +42,28 @@
   --color-button-hover: var(--hover-color);
   --color-button-pressed: var(--pressed-color);
   --color-button-disabled: var(--disabled-color);
+  --radius-smallrad: var(--button-radius);
+  --radius-buttonBig: var(--button-radius-big);
+  --radius-buttonHuge: var(--button-radius-huge);
+  --radius-badgeBig: var(--badge-radius-big);
+  --text-h1: 36px;
+  --text-h1--line-height: 40px;
+  --font-weight-h1: 700;
+  --text-h2: 30px;
+  --text-h2--line-height: 36px;
+  --font-weight-h2: 600;
+  --text-h3: 24px;
+  --text-h3--line-height: 30px;
+  --font-weight-h3: 500;
+  --text-h4: 20px;
+  --text-h4--line-height: 24px;
+  --font-weight-h4: 500;
+  --text-h5: 16px;
+  --text-h5--line-height: 20px;
+  --font-weight-h5: 500;
+  --text-h6: 14px;
+  --text-h6--line-height: 20px;
+  --font-weight-h6: 500;
 }
 
 .theme-orange {
@@ -42,7 +86,7 @@
   --secondary-badge: #a8a29e;
 
   & * {
-    font-family: var(--font-roboto, "Nunito", sans-serif);
+    font-family: var(--font-roboto, 'Nunito', sans-serif);
   }
 }
 
