@@ -1,5 +1,3 @@
-@import "tailwindcss";
-
 
 @layer components {
   :root {
@@ -22,11 +20,24 @@
     --secondary-badge: #a8a29e;
   
     & * {
-      font-family: var(--font-roboto, "Nunito", sans-serif);
+      font-family: var(--font-roboto, 'Nunito', sans-serif);
     }
   }
 }
 
+
+
+@theme {
+  --color-primary: #f59e0b;
+  --color-secondary: var(--secondary-color);
+  --color-tbase: var(--color-text);
+  --color-bgprimary: var(--background-color);
+  --color-surfacecolor: var(--surface-color);
+  --color-button-default: var(--default-color);
+  --color-button-hover: var(--hover-color);
+  --color-button-pressed: var(--pressed-color);
+  --color-button-disabled: var(--disabled-color);
+}
 
 .theme-blue {
   --default-color: #0ea5e9;
@@ -48,7 +59,7 @@
   --secondary-badge: #ffffff;
 
   & * {
-    font-family: var(--font-geist-mono, "Roboto", sans-serif);
+    font-family: var(--font-geist-mono, 'Roboto', sans-serif);
   }
 }
 
@@ -72,19 +83,6 @@
   --secondary-badge: #ffffff;
 
   & * {
-    font-family: var(--font-raleway, "Raleway", sans-serif);
+    font-family: var(--font-raleway, 'Raleway', sans-serif);
   }
-}
-
-
-@theme {
-  --color-primary: #f59e0b;
-  --color-secondary: var(--secondary-color);
-  --color-tbase: var(--color-text);
-  --color-bgprimary: var(--background-color);
-  --color-surfacecolor: var(--surface-color);
-  --color-button-default: var(--default-color);
-  --color-button-hover: var(--hover-color);
-  --color-button-pressed: var(--pressed-color);
-  --color-button-disabled: var(--disabled-color);
 }

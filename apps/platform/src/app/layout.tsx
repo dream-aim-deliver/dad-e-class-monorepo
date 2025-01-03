@@ -1,4 +1,3 @@
-import '@maany_shr/e-class-ui-kit/tailwind.css';
 import './global.css';
 import { ThemeProvider } from '@maany_shr/e-class-ui-kit/contexts';
 
