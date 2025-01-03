@@ -9,11 +9,11 @@ type ThemeContextProps = {
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<string>("orange");
+  const [theme, setTheme] = useState<string>("orange"); // TODO: set via environment variable
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
-      <div className={`theme theme-${theme} bg-primary`}>{children}</div>
+      <div className={`theme theme-${theme}`}>{children}</div>
     </ThemeContext.Provider>
 
   );
