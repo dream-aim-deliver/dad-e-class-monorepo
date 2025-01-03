@@ -13,7 +13,7 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
-      <div className={`theme-${theme}`}>{children}</div>
+      <div className={`theme theme-${theme} bg-primary`}>{children}</div>
     </ThemeContext.Provider>
 
   );
