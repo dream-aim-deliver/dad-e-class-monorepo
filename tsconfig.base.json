@@ -15,9 +15,15 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@maany_shr/e-class-ui-kit/tailwind.css": ["packages/ui-kit/lib/assets/css/tailwind.css"],
-      "@maany_shr/e-class-ui-kit/contexts": ["packages/ui-kit/lib/contexts/index.ts"],
-      "@maany_shr/e-class-ui-kit": ["packages/ui-kit/lib/index.ts"]
+      "@dad-e-class/dad-nx-vite": ["tools/dad-nx-vite/src/index.ts"],
+      "@dad-e-class/nx-dad": ["tools/nx-dad/src/index.ts"],
+      "@maany_shr/e-class-ui-kit": ["packages/ui-kit/lib/index.ts"],
+      "@maany_shr/e-class-ui-kit/contexts": [
+        "packages/ui-kit/lib/contexts/index.ts"
+      ],
+      "@maany_shr/e-class-ui-kit/tailwind.css": [
+        "packages/ui-kit/lib/assets/css/tailwind.css"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
