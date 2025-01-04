@@ -72,5 +72,18 @@
         "unitTestRunner": "vitest"
       }
     }
+  },
+  "release": {
+    "conventionalCommits": {
+      "types": {
+        "docs": {
+          "semverBump": "patch"
+        }
+      }
+    },
+    "version": {
+      "preVersionCommand": "pnpm dlx nx run-many --target=build --all"
+    },
+    "versionPlans": true
   }
 }
