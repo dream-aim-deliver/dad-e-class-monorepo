@@ -79,6 +79,12 @@
     }
   },
   "release": {
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": "github",
+        "file": false
+      }
+    },
     "conventionalCommits": {
       "types": {
         "docs": {

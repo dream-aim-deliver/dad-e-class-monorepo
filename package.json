@@ -2,7 +2,10 @@
   "name": "@dad-e-class/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "release": "nx release -d --skip-publish",
+    "release:github": "nx release --skip-publish"
+  },
   "private": true,
   "dependencies": {
     "@tailwindcss/postcss": "4.0.0-beta.8",
