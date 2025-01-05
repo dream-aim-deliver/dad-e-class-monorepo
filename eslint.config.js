@@ -2,7 +2,7 @@ const nx = require('@nx/eslint-plugin');
 
 module.exports = [
   {
-    files: ['**/*.json'],
+    files: ['**/package.json'],
     // Override or add rules here
     rules: {},
     languageOptions: {
