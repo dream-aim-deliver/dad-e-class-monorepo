@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/platform",
   "projectType": "application",
-  "implicitDependencies": ["ui-kit"],
+  "implicitDependencies": ["ui-kit", "models"],
   "tags": [],
   "// targets": "to see all targets run: nx show project platform --web",
   "targets": {}
