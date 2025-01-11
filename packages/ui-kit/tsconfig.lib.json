@@ -29,7 +29,11 @@
     "lib/**/*.test.js",
     "lib/**/*.spec.js",
     "lib/**/*.test.jsx",
-    "lib/**/*.spec.jsx"
+    "lib/**/*.spec.jsx",
+    "**/*.stories.ts",
+    "**/*.stories.js",
+    "**/*.stories.jsx",
+    "**/*.stories.tsx"
   ],
   "include": ["lib/**/*.js", "lib/**/*.jsx", "lib/**/*.ts", "lib/**/*.tsx"]
 }
