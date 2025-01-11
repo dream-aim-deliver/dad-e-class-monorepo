@@ -1,0 +1,1 @@
+import "../lib/assets/css/index.css";

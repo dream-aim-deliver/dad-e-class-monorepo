@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json", // <- Try to change the base config to match most of the projects
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
     "baseUrl": ".",
@@ -23,7 +23,6 @@
     "strict": true,
     "types": ["vite/client", "vitest", "@testing-library/jest-dom"]
   },
-
-  "include": ["lib/**/*.ts", "lib/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"],
+  "include": ["lib/**/*.ts", "lib/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx", "stories/**/*.ts", "stories/**/*.tsx"],
   "exclude": ["node_modules", "dist", "tools"],
 }
