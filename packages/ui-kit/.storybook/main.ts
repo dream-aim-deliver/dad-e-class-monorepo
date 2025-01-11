@@ -3,7 +3,11 @@ import { mergeConfig } from "vite";
 
 const config: StorybookConfig = {
   stories: ['../stories/**/*.@(mdx|stories.@(js|jsx|ts|tsx))'],
-  addons: ['@storybook/addon-essentials', '@storybook/addon-interactions'],
+  addons: [
+    '@storybook/addon-essentials',
+    '@storybook/addon-interactions',
+    '@chromatic-com/storybook'
+  ],
   framework: {
     name: '@storybook/react-vite',
     options: {
@@ -12,9 +16,7 @@ const config: StorybookConfig = {
       },
     },
   },
-  docs: {
-    autodocs: "tag",
-  },
+  docs: {},
   async viteFinal(config) {
     // Merge custom configuration into the default config
     return mergeConfig(config, {
