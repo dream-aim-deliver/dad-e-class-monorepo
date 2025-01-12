@@ -31,6 +31,10 @@ jobs:
         run: pnpm install
         shell: bash
 
+      - name: Prepare packages
+        run: pnpm exec nx run-many -t build
+        shell: bash
+      
       - name: Print Environment Info
         run: pnpm exec nx report
         shell: bash
