@@ -1,8 +1,8 @@
 name: Publish
 
 on:
-  release:
-    types: [published]
+  # release:
+  #   types: [published]
   workflow_dispatch:
 
 jobs:
@@ -48,14 +48,9 @@ jobs:
           
       - name: Publish packages
         run: |
-          cd dist/packages
-          for dir in */ ; do
-            cd $dir
-            echo "Publishing $dir"
-            npm publish --access public
-            cd ..
-          done
+          pnpm config set //registry.npmjs.org/:_authToken ${NODE_AUTH_TOKEN}
+          pnpm exec nx release publish
         shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+        #   NPM_CONFIG_PROVENANCE: true
