@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "release": "nx release -d --skip-publish",
-    "release:github": "nx release --skip-publish"
+    "release:github": "GH_TOKEN=$(gh auth token) nx release --skip-publish"
   },
   "private": true,
   "dependencies": {
