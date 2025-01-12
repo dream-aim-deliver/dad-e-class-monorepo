@@ -1,6 +1,6 @@
 {
   "name": "@maany_shr/e-class-models",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "main": "./index.js",
   "types": "./index.d.ts",
   "type": "module",
