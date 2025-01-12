@@ -75,6 +75,12 @@
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "nx-release-publish": {
+      "dependsOn": ["^build"],
+      "options": {
+        "packageRoot": "dist/packages/{projectName}"
+      }
     }
   },
   "generators": {
