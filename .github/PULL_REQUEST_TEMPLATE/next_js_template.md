@@ -1,6 +1,6 @@
 ## Description
 
-<!-- Provide a clear and concise description of the changes made in this pull request for Next.js pages. -->
+<!-- Provide a clear and concise description of the changes made in this pull request for Next.js pages -->
 
 - Route to the page: `/path/to/page`
 - Figma link or screenshot: [Figma Design](https://www.figma.com/)
