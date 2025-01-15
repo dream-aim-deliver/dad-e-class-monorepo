@@ -6,6 +6,34 @@
 
 [Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/next?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
 
+
+## Contributing
+
+To install dependencies:
+
+```sh
+# At the root of the workspace
+pnpm install
+```
+
+Before submitting a Pull Request, please run the following commands to ensure your code follows our standards, and make sure to fix any issues that come up:
+
+Lint:
+```sh
+pnpm nx run-many -t lint
+```
+
+Build:
+```sh
+pnpm nx run-many -t build
+```
+
+Tests:
+```sh
+pnpm nx run-many -t test
+```
+
+
 ## Finish your CI setup
 
 [Click here to finish setting up your workspace!](https://cloud.nx.app/connect/BXkMuj9bMK)
