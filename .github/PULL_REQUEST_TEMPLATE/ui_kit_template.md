@@ -9,6 +9,7 @@
 
 ## Checklist
 
+- [ ] I have run the lint, build, and test commands locally, as explained in the README, before creating this PR to ensure the code is clean and functional.
 - [ ] My changes align with the **core models** that have been discussed and agreed upon.
 - [ ] The component design has been compared to the **Figma design** to ensure consistency.
 - [ ] The **component is fully responsive** and behaves as expected across different screen sizes.

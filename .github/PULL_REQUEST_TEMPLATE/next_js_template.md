@@ -9,6 +9,7 @@
 
 ## Checklist
 
+- [ ] I have run the lint, build, and test commands locally, as explained in the README, before creating this PR to ensure the code is clean and functional.
 - [ ] My changes align with the **core models** that have been discussed and agreed upon.
 - [ ] I have confirmed the **route** for the page is properly defined, and the page is accessible.
 - [ ] The page uses the agreed **API** endpoint(s): [List the API endpoints involved in the page]
