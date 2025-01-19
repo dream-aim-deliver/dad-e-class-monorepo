@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const CourseMetedataSchema = z.object({
+export const CourseMetadataSchema = z.object({
     title: z.string(),
     description: z.string(),
     duration: z.number(),
@@ -18,4 +18,4 @@ export const CourseMetedataSchema = z.object({
  * - `duration`: A number indicating the duration of the course.
  */
 
-export type TCourseMetedata = z.infer<typeof CourseMetedataSchema>
+export type TCourseMetedata = z.infer<typeof CourseMetadataSchema>

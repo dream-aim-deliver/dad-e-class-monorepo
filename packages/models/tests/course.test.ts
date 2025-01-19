@@ -1,4 +1,4 @@
-import { CourseMetedataSchema, TCourseMetedata } from '../src/course';
+import { CourseMetadataSchema, TCourseMetedata } from '../src/course';
 import { describe, it, expect } from 'vitest';
 
 describe('course', () => {
@@ -8,6 +8,6 @@ describe('course', () => {
             description: 'A beginner-friendly introduction to TypeScript.',
             duration: 60,
         };
-        expect(CourseMetedataSchema.safeParse(validCourse).success).toBe(true);
+        expect(CourseMetadataSchema.safeParse(validCourse).success).toBe(true);
     });
 });
