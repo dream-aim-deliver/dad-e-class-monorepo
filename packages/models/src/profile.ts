@@ -2,9 +2,18 @@ import { z } from "zod";
 import { LanguageSchema } from "./language";
 
 
+export const UserAvatarSchema = z.object({
+    initials: z.string(),
+    imageUrl: z.string(),
+    size: z.enum(['xSmall', 'small', 'medium', 'large', 'xLarge']).optional(),
+});
+export type TUserAvatar = z.infer<typeof UserAvatarSchema>;
+
+
 export const BasePersonalProfileSchema = z.object({
     name: z.string().min(1, "Name is required"),
     surname: z.string().min(1, "Surname is required"),
+    avatar: UserAvatarSchema,
     email: z.string().email("Invalid email address"),
     phoneNumber: z.string().optional(),
     dateOfBirth: z.string().date().optional(),  // YYYY-MM-DD

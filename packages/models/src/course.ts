@@ -1,9 +1,21 @@
 import { z } from 'zod'
+import { LanguageSchema } from './language'
+
+export const CourseDurationSchema = z.object({
+    video: z.number(),  // in minutes, duration of video content
+    coaching: z.number(),  // in minutes, duration of coaching sessions
+    selfStudy: z.number(),  // in minutes, duration of self-study content
+})
 
 export const CourseMetadataSchema = z.object({
     title: z.string(),
     description: z.string(),
-    duration: z.number(),
+    duration: CourseDurationSchema,
+    image: z.string(),
+    rating: z.number(),
+    author: z.string(),
+    authorImage: z.string(),
+    language: LanguageSchema,
 })
 
 /**
