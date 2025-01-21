@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "../..",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -16,7 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@dad-e-class/dad-nx-vite": ["tools/dad-nx-vite/src/index.ts"],
-      "@dad-e-class/models": ["packages/models/src/index.ts"],
+      "@maany_shr/e-class-models": ["packages/models/src/index.ts"],
       "@dad-e-class/nx-dad": ["tools/nx-dad/src/index.ts"],
       "@maany_shr/e-class-ui-kit": ["packages/ui-kit/lib/index.ts"],
       "@maany_shr/e-class-ui-kit/contexts": [
