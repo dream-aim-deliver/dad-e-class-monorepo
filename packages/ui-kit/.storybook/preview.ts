@@ -1,13 +1,15 @@
 import '../lib/assets/css/index.css';
 import { withThemeByClassName } from '@storybook/addon-themes';
+import '@/assets/css/index.css';
 
 export const decorators = [
   withThemeByClassName({
     themes: {
-      orange: 'theme-orange',
-      blue: 'theme-blue',
-      darkorange: 'theme-dark-orange-shade',
+      justDoAdd: 'theme-just-do-add',
+      jobRadandMe: 'theme-Job-rand-me',
+      Bewerbeagentur: 'theme-Bewerbeagentur',
+      CMS: 'theme-Cms',
     },
-    defaultTheme: 'orange',
+    defaultTheme: 'justDoAdd',
   }),
 ];

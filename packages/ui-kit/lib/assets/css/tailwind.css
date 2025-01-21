@@ -1,139 +1,658 @@
+@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&display=swap');
+
+:root {
+  --font-nunito: 'Nunito', sans-serif;
+  --font-roboto: 'Roboto', sans-serif;
+  --font-raleway: 'Raleway', sans-serif;
+  --font-figtree: 'Figtree', sans-serif;
+
+  --text-2xs: 10px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 26px;
+  --text-3xl: 32px;
+  --text-4xl: 48px;
+  --text-5xl: 64px;
+
+  @media (min-width: 768px) {
+    --text-2xs: 12px;
+    --text-xs: 14px;
+    --text-sm: 16px;
+    --text-md: 20px;
+    --text-lg: 24px;
+    --text-xl: 32px;
+    --text-2xl: 40px;
+    --text-3xl: 48px;
+    --text-4xl: 64px;
+    --text-5xl: 96px;
+  }
+}
+
 @theme {
-  --color-primary: var(--primary-color);
-  --color-secondary: var(--secondary-color);
-  --color-tbase: var(--color-text);
-  --color-bgprimary: var(--background-color);
-  --color-surfacecolor: var(--surface-color);
-  --color-button-default: var(--default-color);
-  --color-button-hover: var(--hover-color);
-  --color-button-pressed: var(--pressed-color);
-  --color-button-disabled: var(--disabled-color);
-  --radius-smallrad: var(--button-radius);
-  --radius-buttonBig: var(--button-radius-big);
-  --radius-buttonHuge: var(--button-radius-huge);
-  --radius-badgeBig: var(--badge-radius-big);
-  --text-h1: 36px;
-  --text-h1--line-height: 40px;
-  --font-weight-h1: 700;
-  --text-h2: 30px;
-  --text-h2--line-height: 36px;
-  --font-weight-h2: 600;
-  --text-h3: 24px;
-  --text-h3--line-height: 30px;
-  --font-weight-h3: 500;
-  --text-h4: 20px;
-  --text-h4--line-height: 24px;
-  --font-weight-h4: 500;
-  --text-h5: 16px;
-  --text-h5--line-height: 20px;
-  --font-weight-h5: 500;
-  --text-h6: 14px;
-  --text-h6--line-height: 20px;
-  --font-weight-h6: 500;
+  --radius-small: var(--radius-small);
+  --radius-medium: var(--radius-medium);
+  --radius-big: var(--radius-big);
+  --radius-huge: var(--radius-huge);
+
+  --font-weight-important: var(--font-weight-important);
+  --font-weight-normal: var(--font-weight-normal);
+  --font-weight-h1: var(--font-weight-h1);
+  --font-weight-h3: var(--font-weight-h3);
+  --font-weight-h5: var(--font-weight-h5);
+
+
+  --color-card-fill: var(--color-card-fill);
+  --card-fill-transparent: var(--color-card-transparent);
+  --color-card-stroke: var(--color-card-stroke);
+  --color-divider: var(--color-divider);
+  --color-base-white: var(--color-base-white);
+  --color-base-black: var(--color-base-black);
+  --color-base-transparent: var(--color-base-transparent);
+  --color-base-neutral-50: var(--color-base-neutral-50);
+  --color-base-neutral-100: var(--color-base-neutral-100);
+  --color-base-neutral-200: var(--color-base-neutral-200);
+  --color-base-neutral-300: var(--color-base-neutral-300);
+  --color-base-neutral-400: var(--color-base-neutral-400);
+  --color-base-neutral-500: var(--color-base-neutral-500);
+  --color-base-neutral-600: var(--color-base-neutral-600);
+  --color-base-neutral-700: var(--color-base-neutral-700);
+  --color-base-neutral-800: var(--color-base-neutral-800);
+  --color-base-neutral-900: var(--color-base-neutral-900);
+  --color-base-neutral-950: var(--color-base-neutral-950);
+  --color-action-brand-50: var(--color-base-brand-50);
+  --color-action-brand-100: var(--color-base-brand-100);
+  --color-action-brand-200: var(--color-base-brand-200);
+  --color-action-brand-300: var(--color-base-brand-300);
+  --color-action-brand-400: var(--color-base-brand-400);
+  --color-action-brand-500: var(--color-base-brand-500);
+  --color-action-brand-600: var(--color-base-brand-600);
+  --color-action-brand-700: var(--color-base-brand-700);
+  --color-action-brand-800: var(--color-base-brand-800);
+  --color-action-brand-900: var(--color-base-brand-900);
+  --color-action-brand-950: var(--color-base-brand-950);
+  --color-action-default: var(--color-action-default);
+  --color-action-semi-transparent-lighter: var(--color-action-semi-transparent-lighter);
+  --color-action-semi-transparent-weak: var(--color-action-semi-transparent-weak);
+  --color-action-semi-transparent-medium: var(--color-action-semi-transparent-medium);
+  --color-action-semi-transparent-strong: var(--color-action-semi-transparent-strong);
+  --color-action-semi-transparent-dark: var(--color-action-semi-transparent-dark);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-primary-inverted: var(--color-text-primary-inverted);
+  --color-text-secondary-inverted: var(--color-text-secondary-inverted);
+  --color-feedback-warning-primary: var(--color-feedback-warning-primary);
+  --color-feedback-success-primary: var(--color-feedback-success-primary);
+  --color-feedback-info-primary: var(--color-feedback-info-primary);
+  --color-feedback-error-primary: var(--color-feedback-error-primary);
+  --color-button-primary-fill: var(--color-button-primary-fill);
+  --color-button-primary-text: var(--color-button-primary-text);
+  --color-button-primary-stroke: var(--color-button-primary-stroke);
+  --color-button-primary-hover-fill: var(--color-button-primary-hover-fill);
+  --color-button-primary-hover-stroke: var(--color-button-primary-hover-stroke);
+  --color-button-primary-pressed-fill: var(--color-button-primary-pressed-fill);
+  --color-button-primary-pressed-stroke: var(--color-button-primary-pressed-stroke);
+  --color-button-secondary-fill: var(--color-button-secondary-fill);
+  --color-button-secondary-text: var(--color-button-secondary-text);
+  --color-button-secondary-stroke: var(--color-button-secondary-stroke);
+  --color-button-secondary-hover-fill: var(--color-button-secondary-hover-fill);
+  --color-button-secondary-hover-text: var(--color-button-secondary-hover-text);
+  --color-button-secondary-hover-stroke: var(--color-button-secondary-hover-stroke);
+  --color-button-secondary-pressed-fill: var(--color-button-secondary-pressed-fill);
+  --color-button-secondary-pressed-text: var(--color-button-secondary-pressed-text);
+  --color-button-secondary-pressed-stroke: var(--color-button-secondary-pressed-stroke);
+  --color-button-text-text: var(--color-button-text-text);
+  --color-button-text-hover-text: var(--color-button-text-hover-text);
+  --color-button-text-pressed-text: var(--color-button-text-pressed-text);
+  --color-checkbox-fill: var(--color-checkbox-fill);
+  --color-checkbox-stroke: var(--color-checkbox-stroke);
+  --color-checkbox-hover-fill: var(--color-checkbox-hover-fill);
+  --color-checkbox-hover-stroke: var(--color-checkbox-hover-stroke);
+  --color-checkbox-checked-fill: var(--color-checkbox-checked-fill);
+  --color-checkbox-checked-stroke: var(--color-checkbox-checked-stroke);
+  --color-checkbox-checked-check-mark: var(--color-checkbox-checked-check-mark);
+  --color-checkbox-checked-hover-fill: var(--color-checkbox-checked-hover-fill);
+  --color-checkbox-checked-hover-stroke: var(--color-checkbox-checked-hover-stroke);
+  --color-checkbox-checked-hover-check-mark: var(--color-checkbox-checked-hover-check-mark);
+  --color-radio-background-fill: var(--color-radio-background-fill);
+  --color-radio-background-stroke: var(--color-radio-background-stroke);
+  --color-radio-bullet-fill: var(--color-radio-bullet-fill);
+  --color-radio-bullet-stroke: var(--color-radio-bullet-stroke);
+  --color-radio-hover-background-fill: var(--color-radio-hover-background-fill);
+  --color-radio-hover-background-stroke: var(--color-radio-hover-background-stroke);
+  --color-radio-hover-bullet-fill: var(--color-radio-hover-bullet-fill);
+  --color-radio-hover-bullet-stroke: var(--color-radio-hover-bullet-stroke);
+  --color-input-fill: var(--color-input-fill);
+  --color-input-stroke: var(--color-input-stroke);
+  --color-ignore-design-notes-primary: var(--color-ignore-design-notes-primary);
+  --color-ignore-design-notes-secondary: var(--color-ignore-design-notes-secondary);
+  --color-slider-background-fill: var(--color-slider-background-fill);
+  --color-slider-background-stroke: var(--color-slider-background-stroke);
+  --color-slider-knob-fill: var(--color-slider-knob-fill);
+  --color-slider-knob-stroke: var(--color-slider-knob-stroke);
+  --color-slider-progress-fill: var(--color-slider-progress-fill);
+  --color-slider-progress-stroke: var(--color-slider-progress-stroke);
 }
 
-.theme {
-  --color-primary: var(--primary-color);
-  --color-secondary: var(--secondary-color);
-  --color-tbase: var(--color-text);
-  --color-bgprimary: var(--background-color);
-  --color-surfacecolor: var(--surface-color);
-  --color-button-default: var(--default-color);
-  --color-button-hover: var(--hover-color);
-  --color-button-pressed: var(--pressed-color);
-  --color-button-disabled: var(--disabled-color);
-  --radius-smallrad: var(--button-radius);
-  --radius-buttonBig: var(--button-radius-big);
-  --radius-buttonHuge: var(--button-radius-huge);
-  --radius-badgeBig: var(--badge-radius-big);
-  --text-h1: 36px;
-  --text-h1--line-height: 40px;
-  --font-weight-h1: 700;
-  --text-h2: 30px;
-  --text-h2--line-height: 36px;
-  --font-weight-h2: 600;
-  --text-h3: 24px;
-  --text-h3--line-height: 30px;
-  --font-weight-h3: 500;
-  --text-h4: 20px;
-  --text-h4--line-height: 24px;
-  --font-weight-h4: 500;
-  --text-h5: 16px;
-  --text-h5--line-height: 20px;
-  --font-weight-h5: 500;
-  --text-h6: 14px;
-  --text-h6--line-height: 20px;
-  --font-weight-h6: 500;
-}
+@layer base {
+  h1 {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-weight-h1);
+    line-height: 100%;
+    letter-spacing: -0.96px;
 
-.theme-orange {
-  --default-color: #f59e0b;
-  --hover-color: #fbbf24;
-  --pressed-color: #d97706;
-  --disabled-color: #f59e0b;
-  --surface-colour: #000000;
-  --background-color: rgb(41, 37, 36);
-  --primary-color: #f59e0b;
-  --secondary-color: #a8a29e;
-  --color-text: #d6d3d1;
-  --button-radius-huge: 16px;
-  --button-radius-big: 12px;
-  --badge-radius-big: 8px;
-  --button-radius: 6px;
-  --success-primary: #bef264;
-  --warning-primary: #fde047;
-  --error-primary: #f87171;
-  --secondary-badge: #a8a29e;
+    @media (min-width: 768px) {
+      letter-spacing: -1.28px;
+    }
+  }
 
-  & * {
-    font-family: var(--font-roboto, 'Nunito', sans-serif);
+  h2 {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-important);
+    line-height: 100%;
+    letter-spacing: -0.64px;
+
+    @media (min-width: 768px) {
+      letter-spacing: -0.96px;
+    }
+  }
+
+  h3 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-h3);
+    line-height: 110%;
+
+  }
+
+  h4 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-important);
+    line-height: 120%;
+  }
+
+  h5 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-h5);
+    line-height: 120%;
+  }
+
+  h6 {
+    font-size: var(--text-md);
+    font-weight: var(--font-weight-important);
+    line-height: 120%;
   }
 }
 
-.theme-blue {
-  --default-color: #0ea5e9;
-  --hover-color: #38bdf8;
-  --pressed-color: #0284c7;
-  --disabled-color: #0ea5e9;
-  --color-text: #d6d3d1;
-  --surface-color: #000000;
-  --background-color: #0c0a09;
-  --primary-color: #0ea5e9;
-  --secondary-color: #a8a29e;
-  --button-radius-huge: 99999px;
-  --button-radius-big: 9999px;
-  --badge-radius-big: 9999px;
-  --button-radius: 0.5rem;
-  --success-primary: #a1a1aa;
-  --warning-primary: #ffffff;
-  --error-primary: #ffffff;
-  --secondary-badge: #ffffff;
+.theme-just-do-add {
+  --radius-small: 6px;
+  --radius-medium: 8px;
+  --radius-big: 12px;
+  --radius-huge: 16px;
 
-  & * {
-    font-family: var(--font-geist-mono, 'Roboto', sans-serif);
-  }
+  --color-card-fill: #1C1917;
+  --color-card-transparent: rgba(28, 25, 23, 0);
+  --color-card-stroke: #292524;
+  --color-divider: #44403C;
+  --color-base-white: #FFFFFF;
+  --color-base-black: #000000;
+  --color-base-transparent: rgba(255, 255, 255, 0);
+  --color-base-neutral-50: #FAFAF9;
+  --color-base-neutral-100: #F5F5F4;
+  --color-base-neutral-200: #E7E5E4;
+  --color-base-neutral-300: #D6D3D1;
+  --color-base-neutral-400: #A8A29E;
+  --color-base-neutral-500: #78716C;
+  --color-base-neutral-600: #57534E;
+  --color-base-neutral-700: #44403C;
+  --color-base-neutral-800: #292524;
+  --color-base-neutral-900: #1C1917;
+  --color-base-neutral-950: #0C0A09;
+  --tooltip-background: #44403C;
+  --tooltip-border: #44403C;
+  --color-base-brand-50: #FFFBEB;
+  --color-base-brand-100: #FEF3C7;
+  --color-base-brand-200: #FDE68A;
+  --color-base-brand-300: #FCD34D;
+  --color-base-brand-400: #FBBF24;
+  --color-base-brand-500: #F59E0B;
+  --color-base-brand-600: #D97706;
+  --color-base-brand-700: #B45309;
+  --color-base-brand-800: #92400E;
+  --color-base-brand-900: #78350F;
+  --color-base-brand-950: #451A03;
+  --color-action-default: #F59E0B;
+  --color-action-semi-transparent-weak: rgba(245, 158, 11, 0.1);
+  --color-action-semi-transparent-medium: rgba(245, 158, 11, 0.2);
+  --color-action-semi-transparent-strong: rgba(245, 158, 11, 0.4);
+  --color-action-semi-transparent-dark: var(--color-base-brand-600);
+  --color-action-semi-transparent-lighter: var(--color-base-brand-400);
+  --color-text-primary: #FAFAF9;
+  --color-text-secondary: #D6D3D1;
+  --color-text-primary-inverted: #0C0A09;
+  --color-text-secondary-inverted: #44403C;
+  --color-feedback-warning-primary: #FDE047;
+  --color-feedback-success-primary: #BEF264;
+  --color-feedback-info-primary: #67E8F9;
+  --color-feedback-error-primary: #F87171;
+  --color-button-primary-fill: var(--color-base-brand-500);
+  --color-button-primary-text: var(--color-base-neutral-950);
+  --color-button-primary-stroke: var(--color-base-brand-600);
+  --color-button-primary-hover-fill: var(--color-base-brand-400);
+  --color-button-primary-hover-stroke: var(--color-base-brand-600);
+  --color-button-primary-pressed-fill: var(--color-base-brand-600);
+  --color-button-primary-pressed-stroke: var(--color-base-brand-600);
+  --color-button-secondary-fill: var(--color-action-semi-transparent-weak);
+  --color-button-secondary-text: var(--color-base-brand-500);
+  --color-button-secondary-stroke: var(--color-base-brand-500);
+  --color-button-secondary-hover-fill: var(--color-action-semi-transparent-weak);
+  --color-button-secondary-hover-text: var(--color-base-brand-400);
+  --color-button-secondary-hover-stroke: var(--color-base-brand-400);
+  --color-button-secondary-pressed-fill: var(--color-action-semi-transparent-medium);
+  --color-button-secondary-pressed-text: var(--color-base-brand-600);
+  --color-button-secondary-pressed-stroke: var(--color-base-brand-600);
+  --color-button-text-text: var(--color-base-brand-500);
+  --color-button-text-hover-text: var(--color-base-brand-400);
+  --color-button-text-pressed-text: var(--color-base-brand-600);
+  --color-checkbox-fill: var(--color-base-neutral-700);
+  --color-checkbox-stroke: var(--color-base-neutral-600);
+  --color-checkbox-hover-fill: var(--color-base-neutral-600);
+  --color-checkbox-hover-stroke: var(--color-base-neutral-400);
+  --color-checkbox-checked-fill: var(--color-base-brand-500);
+  --color-checkbox-checked-stroke: var(--color-base-brand-400);
+  --color-checkbox-checked-check-mark: var(--color-base-neutral-950);
+  --color-checkbox-checked-hover-fill: var(--color-base-brand-400);
+  --color-checkbox-checked-hover-stroke: var(--color-base-brand-200);
+  --color-checkbox-checked-hover-check-mark: var(--color-base-neutral-950);
+  --color-radio-background-fill: var(--color-base-neutral-700);
+  --color-radio-background-stroke: var(--color-base-neutral-600);
+  --color-radio-bullet-fill: var(--color-base-brand-500);
+  --color-radio-bullet-stroke: var(--color-base-brand-400);
+  --color-radio-hover-background-fill: var(--color-base-neutral-600);
+  --color-radio-hover-background-stroke: var(--color-base-neutral-400);
+  --color-radio-hover-bullet-fill: var(--color-base-brand-400);
+  --color-radio-hover-bullet-stroke: var(--color-base-brand-200);
+  --color-input-fill: var(--color-base-neutral-950);
+  --color-input-stroke: var(--color-base-neutral-800);
+  --color-ignore-design-notes-primary: #CA96FF;
+  --color-ignore-design-notes-secondary: #952CFE;
+  --color-slider-background-fill: var(--color-base-neutral-700);
+  --color-slider-background-stroke: var(--color-base-neutral-600);
+  --color-slider-knob-fill: var(--color-base-brand-400);
+  --color-slider-knob-stroke: var(--color-base-brand-300);
+  --color-slider-progress-fill: var(--color-base-brand-500);
+  --color-slider-progress-stroke: var(--color-base-brand-400);
+
+  --font-weight-important: 700;
+  --font-weight-normal: 400;
+  --font-weight-h1: var(--font-weight-important);
+  --font-weight-h3: var(--font-weight-important);
+  --font-weight-h5: var(--font-weight-important);
+  font-family: var(--font-nunito);
 }
 
-.theme-dark-orange-shade {
-  --default-color: #fb923c;
-  --hover-color: #fdba74;
-  --pressed-color: #f97316;
-  --disabled-color: #fb923c;
-  --color-text: #d6d3d1;
-  --surface-colour: #000000;
-  --background-color: #0c0a09;
-  --primary-color: #fb923c;
-  --secondary-color: #a8a29e;
-  --button-radius-huge: 0px;
-  --button-radius-big: 0px;
-  --badge-radius-big: 0px;
-  --button-radius: 0px;
-  --success-primary: #94a3b8;
-  --warning-primary: #ffffff;
-  --error-primary: #ffffff;
-  --secondary-badge: #ffffff;
+.theme-Job-rand-me {
+  --radius-small: 6px;
+  --radius-medium: 8px;
+  --radius-big: 12px;
+  --radius-huge: 16px;
 
-  & * {
-    font-family: var(--font-raleway, 'Raleway', sans-serif);
-  }
+  --color-card-fill: #0F172A;
+  --color-card-transparent: #0F172A · 0%;
+  --color-card-stroke: #1E293B;
+  --color-divider: #334155;
+  --color-base-white: #FFFFFF;
+  --color-base-black: #000000;
+  --color-base-transparent: #FFFFFF · 0%;
+
+  --color-base-neutral-50: #F8FAFC;
+  --color-base-neutral-100: #F1F5F9;
+  --color-base-neutral-200: #E2E8F0;
+  --color-base-neutral-300: #CBD5E1;
+  --color-base-neutral-400: #94A3B8;
+  --color-base-neutral-500: #64748B;
+  --color-base-neutral-600: #475569;
+  --color-base-neutral-700: #334155;
+  --color-base-neutral-800: #1E293B;
+  --color-base-neutral-900: #0F172A;
+  --color-base-neutral-950: #020617;
+
+  --tooltip-background: #334155;
+  --tooltip-border: #334155;
+
+
+  --color-base-brand-50: #F0F9FF;
+  --color-base-brand-100: #E0F2FE;
+  --color-base-brand-200: #BAE6FD;
+  --color-base-brand-300: #7DD3FC;
+  --color-base-brand-400: #38BDF8;
+  --color-base-brand-500: #0EA5E9;
+  --color-base-brand-600: #0284C7;
+  --color-base-brand-700: #0369A1;
+  --color-base-brand-800: #075985;
+  --color-base-brand-900: #0C4A6E;
+  --color-base-brand-950: #082F49;
+
+  --color-action-default: var(--color-base-brand-500);
+  --color-action-semi-transparent-weak: #0EA5E9 10%;
+  --color-action-semi-transparent-medium: #0EA5E9 20%;
+  --color-action-semi-transparent-strong: #0EA5E9 40%;
+  --color-action-semi-transparent-dark: var(--color-base-brand-600);
+  --color-action-semi-transparent-lighter: var(--color-base-brand-400);
+
+  --color-text-primary: var(--color-base-neutral-50);
+  --color-text-secondary: var(--color-base-neutral-300);
+  --color-text-primary-inverted: var(--color-base-neutral-950);
+  --color-text-secondary-inverted: var(--color-base-neutral-700);
+
+  --color-feedback-warning-primary: #FDE047;
+  --color-feedback-success-primary: #FACC15;
+  --color-feedback-info-primary: #A78BFA;
+  --color-feedback-error-primary: #F87171;
+
+  --color-button-primary-fill: var(--color-base-brand-500);
+  --color-button-primary-text: var(--color-base-neutral-950);
+  --color-button-primary-stroke: var(--color-base-brand-600);
+  --color-button-primary-hover-fill: var(--color-base-brand-400);
+  --color-button-primary-hover-stroke: var(--color-base-brand-600);
+  --color-button-primary-pressed-fill: var(--color-base-brand-600);
+  --color-button-primary-pressed-stroke: var(--color-base-brand-600);
+
+  --color-button-secondary-fill: var(--color-action-semi-transparent-weak);
+  --color-button-secondary-text: var(--color-base-brand-500);
+  --color-button-secondary-stroke: var(--color-base-brand-500);
+  --color-button-secondary-hover-fill: var(--color-action-semi-transparent-weak);
+  --color-button-secondary-hover-text: var(--color-base-brand-400);
+  --color-button-secondary-hover-stroke: var(--color-base-brand-400);
+  --color-button-secondary-pressed-fill: var(--color-action-semi-transparent-medium);
+  --color-button-secondary-pressed-text: var(--color-base-brand-600);
+  --color-button-secondary-pressed-stroke: var(--color-base-brand-600);
+
+  --color-button-text-text: var(--color-base-brand-500);
+  --color-button-text-hover-text: var(--color-base-brand-400);
+  --color-button-text-pressed-text: var(--color-base-brand-600);
+
+  --color-checkbox-fill: var(--color-base-neutral-700);
+  --color-checkbox-stroke: var(--color-base-neutral-600);
+  --color-checkbox-hover-fill: var(--color-base-neutral-600);
+  --color-checkbox-hover-stroke: var(--color-base-neutral-400);
+  --color-checkbox-checked-fill: var(--color-base-brand-500);
+  --color-checkbox-checked-stroke: var(--color-base-brand-400);
+  --color-checkbox-checked-check-mark: var(--color-base-neutral-950);
+  --color-checkbox-checked-hover-fill: var(--color-base-brand-400);
+  --color-checkbox-checked-hover-stroke: var(--color-base-brand-200);
+  --color-checkbox-checked-hover-check-mark: var(--color-base-neutral-950);
+
+  --color-radio-background-fill: var(--color-base-neutral-700);
+  --color-radio-background-stroke: var(--color-base-neutral-600);
+  --color-radio-bullet-fill: var(--color-base-brand-500);
+  --color-radio-bullet-stroke: var(--color-base-brand-400);
+  --color-radio-hover-background-fill: var(--color-base-neutral-600);
+  --color-radio-hover-background-stroke: var(--color-base-neutral-400);
+  --color-radio-hover-bullet-fill: var(--color-base-brand-400);
+  --color-radio-hover-bullet-stroke: var(--color-base-brand-200);
+
+  --color-input-fill: var(--color-base-neutral-950);
+  --color-input-stroke: var(--color-base-neutral-800);
+
+  --color-ignore-design-notes-primary: #CA96FF;
+  --color-ignore-design-notes-secondary: #952CFE;
+
+  --color-slider-background-fill: var(--color-base-neutral-700);
+  --color-slider-background-stroke: var(--color-base-neutral-600);
+  --color-slider-knob-fill: var(--color-base-brand-400);
+  --color-slider-knob-stroke: var(--color-base-brand-300);
+  --color-slider-progress-fill: var(--color-base-brand-500);
+  --color-slider-progress-stroke: var(--color-base-brand-400);
+
+  --font-weight-important: 700;
+  --font-weight-normal: 400;
+  --font-weight-h1: var(--font-weight-important);
+  --font-weight-h3: var(--font-weight-important);
+  --font-weight-h5: var(--font-weight-important);
+  font-family: var(--font-roboto);
+}
+
+.theme-Bewerbeagentur {
+  --radius-small: 6px;
+  --radius-medium: 8px;
+  --radius-big: 12px;
+  --radius-huge: 16px;
+
+  --color-card-fill: #1C1917;
+  --color-card-transparent: #0F172A 0%;
+  --color-card-stroke: #292524;
+
+  --color-divider: #44403C;
+
+  --color-base-white: #FFFFFF;
+  --color-base-black: #000000;
+  --color-base-transparent: #FFFFFF 0%;
+  --color-base-neutral-50: #FAFAF9;
+  --color-base-neutral-100: #F5F5F4;
+  --color-base-neutral-200: #E7E5E4;
+  --color-base-neutral-300: #D6D3D1;
+  --color-base-neutral-400: #A8A29E;
+  --color-base-neutral-500: #78716C;
+  --color-base-neutral-600: #57534E;
+  --color-base-neutral-700: #44403C;
+  --color-base-neutral-800: #292524;
+  --color-base-neutral-900: #1C1917;
+  --color-base-neutral-950: #0C0A09;
+
+  --tooltip-background: #3F3F46;
+  --tooltip-border: #3F3F46;
+
+  --color-base-brand-50: #FFF7ED;
+  --color-base-brand-100: #FFEDD5;
+  --color-base-brand-200: #FED7AA;
+  --color-base-brand-300: #FDBA74;
+  --color-base-brand-400: #FB923C;
+  --color-base-brand-500: #F97316;
+  --color-base-brand-600: #EA580C;
+  --color-base-brand-700: #C2410C;
+  --color-base-brand-800: #9A3412;
+  --color-base-brand-900: #7C2D12;
+  --color-base-brand-950: #431407;
+
+  --color-action-default: var(--color-base-brand-400);
+  --color-action-semi-transparent-weak: #FB923C 10%;
+  --color-action-semi-transparent-medium: #FB923C 20%;
+  --color-action-semi-transparent-strong: #FB923C 40%;
+  --color-action-semi-transparent-dark: var(--color-base-brand-500);
+  --color-action-semi-transparent-lighter: var(--color-base-brand-300);
+
+  --color-text-primary: var(--color-base-neutral-50);
+  --color-text-secondary: var(--color-base-neutral-300);
+  --color-text-primary-inverted: var(--color-base-neutral-950);
+  --color-text-secondary-inverted: var(--color-base-neutral-700);
+
+  --color-feedback-warning-primary: #FACC15;
+  --color-feedback-success-primary: #A3E635;
+  --color-feedback-info-primary: #22D3EE;
+  --color-feedback-error-primary: #F87171;
+
+  --color-button-primary-fill: var(--color-base-brand-400);
+  --color-button-primary-text: var(--color-base-neutral-950);
+  --color-button-primary-stroke: var(--color-base-brand-500);
+  --color-button-primary-hover-fill: var(--color-base-brand-300);
+  --color-button-primary-hover-stroke: var(--color-base-brand-500);
+  --color-button-primary-pressed-fill: var(--color-base-brand-500);
+  --color-button-primary-pressed-stroke: var(--color-base-brand-500);
+
+  --color-button-secondary-fill: var(--color-action-semi-transparent-weak);
+  --color-button-secondary-text: var(--color-base-brand-400);
+  --color-button-secondary-stroke: var(--color-base-brand-400);
+  --color-button-secondary-hover-fill: var(--color-action-semi-transparent-weak);
+  --color-button-secondary-hover-text: var(--color-base-brand-400);
+  --color-button-secondary-hover-stroke: var(--color-base-brand-400);
+  --color-button-secondary-pressed-fill: var(--color-action-semi-transparent-medium);
+  --color-button-secondary-pressed-text: var(--color-base-brand-600);
+  --color-button-secondary-pressed-stroke: var(--color-base-brand-600);
+
+  --color-button-text-text: var(--color-base-brand-500);
+  --color-button-text-hover-text: var(--color-base-brand-400);
+  --color-button-text-pressed-text: var(--color-base-brand-600);
+
+  --color-checkbox-fill: var(--color-base-neutral-700);
+  --color-checkbox-stroke: var(--color-base-neutral-600);
+  --color-checkbox-hover-fill: var(--color-base-neutral-600);
+  --color-checkbox-hover-stroke: var(--color-base-neutral-400);
+  --color-checkbox-checked-fill: var(--color-base-brand-500);
+  --color-checkbox-checked-stroke: var(--color-base-brand-400);
+  --color-checkbox-checked-check-mark: var(--color-base-neutral-950);
+  --color-checkbox-checked-hover-fill: var(--color-base-brand-400);
+  --color-checkbox-checked-hover-stroke: var(--color-base-brand-200);
+  --color-checkbox-checked-hover-check-mark: var(--color-base-neutral-950);
+
+  --color-radio-background-fill: var(--color-base-neutral-700);
+  --color-radio-background-stroke: var(--color-base-neutral-600);
+  --color-radio-bullet-fill: var(--color-base-brand-500);
+  --color-radio-bullet-stroke: var(--color-base-brand-400);
+  --color-radio-hover-background-fill: var(--color-base-neutral-600);
+  --color-radio-hover-background-stroke: var(--color-base-neutral-400);
+  --color-radio-hover-bullet-fill: var(--color-base-brand-400);
+  --color-radio-hover-bullet-stroke: var(--color-base-brand-200);
+
+  --color-input-fill: var(--color-base-neutral-950);
+  --color-input-stroke: var(--color-base-neutral-800);
+
+  --color-ignore-design-notes-primary: #CA96FF;
+  --color-ignore-design-notes-secondary: #952CFE;
+
+  --color-slider-background-fill: var(--color-base-neutral-700);
+  --color-slider-background-stroke: var(--color-base-neutral-600);
+  --color-slider-knob-fill: var(--color-base-brand-400);
+  --color-slider-knob-stroke: var(--color-base-brand-300);
+  --color-slider-progress-fill: var(--color-base-brand-500);
+  --color-slider-progress-stroke: var(--color-base-brand-400);
+  --font-weight-important: 700;
+  --font-weight-normal: 400;
+
+  --font-weight-h1: 300;
+  --font-weight-h3: 400;
+  --font-weight-h5: 400;
+  font-family: var(--font-raleway);
+}
+
+.theme-Cms {
+  --radius-small: 6px;
+  --radius-medium: 8px;
+  --radius-big: 12px;
+  --radius-huge: 16px;
+
+  --color-card-fill: #18181B;
+  --color-card-transparent: rgba(24, 24, 27, 0);
+  --color-card-stroke: #27272A;
+  --color-divider: #3F3F46;
+  --color-base-white: #FFFFFF;
+  --color-base-black: #000000;
+  --color-base-transparent: rgba(255, 255, 255, 0);
+  --color-base-neutral-50: #FAFAFA;
+  --color-base-neutral-100: #F4F4F5;
+  --color-base-neutral-200: #E4E4E7;
+  --color-base-neutral-300: #D4D4D8;
+  --color-base-neutral-400: #A1A1AA;
+  --color-base-neutral-500: #71717A;
+  --color-base-neutral-600: #52525B;
+  --color-base-neutral-700: #3F3F46;
+  --color-base-neutral-800: #27272A;
+  --color-base-neutral-900: #18181B;
+  --color-base-neutral-950: #09090B;
+  --tooltip-background: #3F3F46;
+  --tooltip-border: #3F3F46;
+  --color-base-brand-50: #EEF2FF;
+  --color-base-brand-100: #E0E7FF;
+  --color-base-brand-200: #C7D2FE;
+  --color-base-brand-300: #A5B4FC;
+  --color-base-brand-400: #818CF8;
+  --color-base-brand-500: #6366F1;
+  --color-base-brand-600: #4F46E5;
+  --color-base-brand-700: #4338CA;
+  --color-base-brand-800: #3730A3;
+  --color-base-brand-900: #312E81;
+  --color-base-brand-950: #1E1B4B;
+
+  --color-action-default: var(--color-base-brand-300);
+  --color-action-semi-transparent-weak: rgba(129, 140, 248, 0.1);
+  --color-action-semi-transparent-medium: rgba(129, 140, 248, 0.2);
+  --color-action-semi-transparent-strong: rgba(129, 140, 248, 0.4);
+  --color-action-semi-transparent-dark: var(--color-base-brand-400);
+  --color-action-semi-transparent-lighter: var(--color-base-brand-200);
+
+  --color-text-primary: var(--color-base-neutral-50);
+  --color-text-secondary: var(--color-base-neutral-300);
+  --color-text-primary-inverted: var(--color-base-neutral-950);
+  --color-text-secondary-inverted: var(--color-base-neutral-700);
+
+  --color-feedback-warning-primary: #FACC15;
+  --color-feedback-success-primary: #A3E635;
+  --color-feedback-info-primary: #A78BFA;
+  --color-feedback-error-primary: #F87171;
+
+  --color-button-primary-fill: var(--color-base-brand-300);
+  --color-button-primary-text: var(--color-base-neutral-950);
+  --color-button-primary-stroke: var(--color-base-brand-400);
+  --color-button-primary-hover-fill: var(--color-base-brand-200);
+  --color-button-primary-hover-stroke: var(--color-base-brand-400);
+  --color-button-primary-pressed-fill: var(--color-base-brand-400);
+  --color-button-primary-pressed-stroke: var(--color-base-brand-400);
+
+  --color-button-secondary-fill: var(--color-action-semi-transparent-weak);
+  --color-button-secondary-text: var(--color-base-brand-300);
+  --color-button-secondary-stroke: var(--color-base-brand-300);
+  --color-button-secondary-hover-fill: var(--color-action-semi-transparent-weak);
+  --color-button-secondary-hover-text: var(--color-base-brand-400);
+  --color-button-secondary-hover-stroke: var(--color-base-brand-400);
+  --color-button-secondary-pressed-fill: var(--color-action-semi-transparent-medium);
+  --color-button-secondary-pressed-text: var(--color-base-brand-600);
+  --color-button-secondary-pressed-stroke: var(--color-base-brand-600);
+
+  --color-button-text-text: var(--color-base-brand-500);
+  --color-button-text-hover-text: var(--color-base-brand-400);
+  --color-button-text-pressed-text: var(--color-base-brand-600);
+
+  --color-checkbox-fill: var(--color-base-neutral-700);
+  --color-checkbox-stroke: var(--color-base-neutral-600);
+  --color-checkbox-hover-fill: var(--color-base-neutral-600);
+  --color-checkbox-hover-stroke: var(--color-base-neutral-400);
+  --color-checkbox-checked-fill: var(--color-base-brand-500);
+  --color-checkbox-checked-stroke: var(--color-base-brand-400);
+  --color-checkbox-checked-check-mark: var(--color-base-neutral-950);
+  --color-checkbox-checked-hover-fill: var(--color-base-brand-400);
+  --color-checkbox-checked-hover-stroke: var(--color-base-brand-200);
+  --color-checkbox-checked-hover-check-mark: var(--color-base-neutral-950);
+
+  --color-radio-background-fill: var(--color-base-neutral-700);
+  --color-radio-background-stroke: var(--color-base-neutral-600);
+  --color-radio-bullet-fill: var(--color-base-brand-500);
+  --color-radio-bullet-stroke: var(--color-base-brand-400);
+  --color-radio-hover-background-fill: var(--color-base-neutral-600);
+  --color-radio-hover-background-stroke: var(--color-base-neutral-400);
+  --color-radio-hover-bullet-fill: var(--color-base-brand-400);
+  --color-radio-hover-bullet-stroke: var(--color-base-brand-200);
+
+  --color-input-fill: var(--color-base-neutral-950);
+  --color-input-stroke: var(--color-base-neutral-800);
+
+  --color-ignore-design-notes-primary: #CA96FF;
+  --color-ignore-design-notes-secondary: #952CFE;
+
+  --color-slider-background-fill: var(--color-base-neutral-700);
+  --color-slider-background-stroke: var(--color-base-neutral-600);
+  --color-slider-knob-fill: var(--color-base-brand-400);
+  --color-slider-knob-stroke: var(--color-base-brand-300);
+  --color-slider-progress-fill: var(--color-base-brand-500);
+  --color-slider-progress-stroke: var(--color-base-brand-400);
+  --font-weight-important: 700;
+  --font-weight-normal: 400;
+  --font-weight-h1: var(--font-weight-important);
+  --font-weight-h3: var(--font-weight-important);
+  --font-weight-h5: var(--font-weight-important);
+  font-family: var(--font-figtree);
 }
