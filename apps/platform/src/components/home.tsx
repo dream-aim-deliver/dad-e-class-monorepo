@@ -9,7 +9,7 @@ export interface HomeProps {
 export default function Home(props: HomeProps) {
   const {theme, setTheme} = useTheme();
   return (
-    <div className="flex flex-col text-[var(--color-base-neutral-50)] gap-4 mt-3 items-center justify-center text-center">
+    <div className="flex flex-col  text-base-neutral-50 gap-4 mt-3 items-center justify-center text-center">
       <p className="text-center">Cool things happen here</p>
       <Button
         variant="primary"

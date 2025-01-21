@@ -31,9 +31,9 @@
   --radius-big: var(--radius-big);
   --radius-huge: var(--radius-huge);
 
-  --card-color-fill: var(--card-color-fill);
-  --card-fill-transparent: var(--card-color-transparent);
-  --card-stroke: var(--card-color-stroke);
+  --color-card-fill: var(--color-card-fill);
+  --card-fill-transparent: var(--color-card-transparent);
+  --card-stroke: var(--color-card-stroke);
   --color-divider: var(--color-divider);
   --color-base-white: var(--color-base-white);
   --color-base-black: var(--color-base-black);
@@ -129,9 +129,9 @@
   --radius-big: 12px;
   --radius-huge: 16px;
   
-  --card-color-fill: #1C1917;
-  --card-color-transparent: rgba(28, 25, 23, 0);
-  --card-color-stroke: #292524;
+  --color-card-fill: #1C1917;
+  --color-card-transparent: rgba(28, 25, 23, 0);
+  --color-card-stroke: #292524;
   --color-divider: #44403C;
   --color-base-white: #FFFFFF;
   --color-base-black: #000000;
@@ -231,9 +231,9 @@
   --radius-big: 12px;
   --radius-huge: 16px;
 
-  --card-color-fill: #0F172A;
-  --card-color-transparent: #0F172A · 0%;
-  --card-color-stroke: #1E293B;
+  --color-card-fill: #0F172A;
+  --color-card-transparent: #0F172A · 0%;
+  --color-card-stroke: #1E293B;
   --color-divider: #334155;
   --color-base-white: #FFFFFF;
   --color-base-black: #000000;
@@ -348,9 +348,9 @@
   --radius-big: 12px;
   --radius-huge: 16px;
 
-  --card-color-fill: #1C1917;
-  --card-color-transparent: #0F172A 0%;
-  --card-color-stroke: #292524;
+  --color-card-fill: #1C1917;
+  --color-card-transparent: #0F172A 0%;
+  --color-card-stroke: #292524;
 
   --color-divider: #44403C;
 
@@ -465,9 +465,9 @@
   --radius-big: 12px;
   --radius-huge: 16px;
 
-  --card-color-fill: #1C1917;
-  --card-color-transparent: rgba(24, 24, 27, 0);
-  --card-color-stroke: #27272A;
+  --color-card-fill: #18181B;
+  --color-card-transparent: rgba(24, 24, 27, 0);
+  --color-card-stroke: #27272A;
   --color-divider: #3F3F46;
   --color-base-white: #FFFFFF;
   --color-base-black: #000000;

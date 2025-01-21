@@ -10,7 +10,7 @@ export default function Index() {
   //changes
   return (
     <div className="bg-card-color-fill">
-      <h1 className="text-4xl text-[var(--color-base-neutral-50)] font-bold text-center">Welcome to platform!</h1>
+      <h1 className="text-4xl text-base-neutral-50 font-bold text-center">Welcome to platform!</h1>
       
       <Home serverSideParam={serverSideParam}/>
     </div>
