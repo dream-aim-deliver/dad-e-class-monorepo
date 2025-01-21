@@ -1,4 +1,4 @@
-import Home from "../components/home";
+import Home from "../../components/home";
 
 export default function Index() {
   /*
@@ -10,7 +10,7 @@ export default function Index() {
   //changes
   return (
     <div>
-      <h1 className="text-4xl font-bold text-center">Welcome to platform!</h1>
+      <h1 className="text-4xl   font-bold text-center">Welcome to platform!</h1>
       
       <Home serverSideParam={serverSideParam}/>
     </div>

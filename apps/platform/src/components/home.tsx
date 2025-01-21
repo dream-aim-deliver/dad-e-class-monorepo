@@ -16,8 +16,7 @@ export default function Home(props: HomeProps) {
         size="medium"
         onClick={() => {
           console.log('Clicked: ' + theme);
-          setTheme(theme === 'orange' ? 'blue' : 'orange')
-
+          setTheme(theme === 'just-do-add' ? 'Job-rand-me' : 'Bewerbeagenture')
         }}
       >
         Click me

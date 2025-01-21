@@ -7,16 +7,17 @@ const buttonStyles = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-primary text-black hover:bg-button-hover active:bg-button-pressed disabled:bg-button-disabled',
-        tirtary: 'bg-secondary text-black hover:bg-secondary-hover active:bg-secondary-pressed disabled:bg-secondary-disabled',
-        secondary: 'border-2 text-primary border-primary bg-transparent hover:border-button-hover active:border-button-pressed disabled:border-button-disabled',
-        text:'border-0 text-primary  bg-transparent hover:text-button-hover active:text-button-pressed disabled:text-button-diabled',
-        danger: 'bg-red-500 text-white hover:bg-red-600 active:bg-red-700 disabled:bg-red-300',
+        primary:
+          'bg-button-primary-fill text-button-primary-text hover:bg-button-primary-hover-fill active:bg-button-primary-pressed-fill disabled:bg-button-primary-fill disabled:opacity-50',
+        secondary:
+          'border-2 text-button-secondary-text border-button-secondary-stroke bg-transparent hover:border-button-secondary-hover-stroke active:border-button-secondary-pressed-stroke disabled:border-button-secondary-stroke disabled:opacity-50',
+        text: 'border-0 text-button-text-text  bg-transparent hover:text-button-text-hover-text active:text-button-text-pressed-text disabled:text-button-text-text disabled:opacity-50',
       },
       size: {
-        small: 'px-2 py-1 text-sm rounded-smallrad',
-        medium: 'px-4 py-2 text-base rounded-buttonBig',
-        large: 'px-6 py-3 text-lg rounded-badgeBig',
+        small: 'px-3 py-1 text-sm rounded-small',
+        medium: 'px-3 py-2 text-md rounded-medium',
+        big: 'p-4 text-xl rounded-big',
+        huge: 'px-8 text-2xl rounded-huge',
       },
     },
     defaultVariants: {

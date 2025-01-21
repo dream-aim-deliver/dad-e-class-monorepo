@@ -1,0 +1,39 @@
+{
+  "home": {
+    "title": "Título de la plataforma, breve y potente",
+    "description": "Introducción a la plataforma. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et masa mi. Aliquam en hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Mecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu.",
+    "benefits":{
+        "title":"Entrenamiento a Demanda",
+        "description":"¿Estás buscando a alguien con quien intercambiar ideas en igualdad de condiciones, o quieres aprender nuevas habilidades? ¿Necesitas apoyo para elegir las herramientas adecuadas o consejos para tu proyecto? Nuestros expertos de la industria están listos para ayudarte a tener éxito."
+    },
+    "accordian":{
+       "title":"como funciona"
+    }
+  },
+    "cardLangDemo":{
+        "courseCatalog": "Catálogo de Cursos",
+        "coachingTitle1": "Entrenamiento a Demanda-1",
+        "coachingDescription1": "Nuestros profesionales brindan apoyo donde se necesita. Con talleres, consejos y “aprender haciendo” podemos alcanzar nuestras metas juntos más rápidamente.",
+        "buttonText1": "Encuentra un coach (desde CHF 90)",
+        "coachingTitle2": "Entrenamiento a Demanda-2",
+        "coachingDescription2": "Nuestros profesionales brindan apoyo donde se necesita. Con talleres, consejos y “aprender haciendo” podemos alcanzar nuestras metas juntos más rápidamente.",
+        "buttonText2": "Encuentra un coach (desde CHF 90)"
+    },
+    "common":{
+        
+          "Just Do AD Project": "Simplemente Haz AD Proyecto",
+          "start_code_along": "Comienza Código Junto",
+          "Explore Components": "Explora Componentes",
+          "Discover our amazing components and features": "Descubre nuestros increíbles componentes y características"
+
+          
+    },
+    "courseCard":{
+        
+  "title": "Título del Tema",
+  "imageUrl": "/courses/22.png",
+  "courseCount": "cursos",
+  "description": "Este curso te enseña a crear identidades de marca poderosas y coherentes que resuenen con las audiencias y se destaquen en el mercado.",
+  "viewCourse": "Ver Curso"
+    }
+}

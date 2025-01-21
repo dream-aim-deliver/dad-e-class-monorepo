@@ -1,0 +1,36 @@
+{
+   "home": {
+    "title": "Platform's Title, short and powerful",
+    "description": "Platform introduction.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu."
+    ,"benefits":{
+        "title":"Coaching on Demand",
+        "description":"Are you looking for someone to exchange ideas with on equal footing, or do you want to learn new skills? Do you need support in choosing the right tools or advice for your project? Our industry experts are ready to help you succeed."
+    },
+    "accordian":{
+        "title":"How it works"
+    }
+}
+,
+    "cardLangDemo": {
+        "courseCatalog": "Course Catalog",
+        "coachingTitle1": "Coaching on Demand-1",
+        "coachingDescription1": "Our professionals provide support where they are needed. With workshops, tips and “learning by doing” we can reach our goals together more quickly.",
+        "buttonText1": "Find a coach (ab CHF 90)",
+        "coachingTitle2": "Coaching on Demand-2",
+        "coachingDescription2": "Our professionals provide support where they are needed. With workshops, tips and “learning by doing” we can reach our goals together more quickly.",
+        "buttonText2": "Find a coach (ab CHF 90)"
+    },
+    "common": {
+        "Just Do AD Project": "Just Do AD Project",
+        "start_code_along": "Start Code Along",
+        "Explore Components": "Explore Components",
+        "Discover our amazing components and features": "Discover our amazing components and features"
+    },
+    "courseCard": {
+        "title": "Topic Title",
+        "imageUrl": "/courses/22.png",
+        "courseCount": "courses",
+        "description": "This course teaches you how to create powerful, cohesive brand identities that resonate with audiences and stand out in the marketplace.",
+        "viewCourse": "View Course"
+    }
+}
