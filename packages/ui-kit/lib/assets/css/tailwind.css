@@ -221,6 +221,8 @@
   --color-slider-knob-stroke: var(--color-base-brand-300);
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
+
+  font-family: var(--font-nunito);
 }
 
 .theme-Job-rand-me {
@@ -336,6 +338,8 @@
   --color-slider-knob-stroke: var(--color-base-brand-300);
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
+
+  font-family: var(--font-geist-mono);
 }
 
 .theme-Bewerbeagenture {
@@ -451,6 +455,8 @@
   --color-slider-knob-stroke: var(--color-base-brand-300);
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
+
+  font-family: var(--font-raleway);
 }
 
 .theme-Cms {
@@ -562,4 +568,6 @@
   --color-slider-knob-stroke: var(--color-base-brand-300);
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
+
+  font-family: var(--font-figtree);
 }

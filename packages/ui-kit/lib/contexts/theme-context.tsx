@@ -23,7 +23,7 @@ const themeConfigurations = {
   },
 };
 
-const defaultTheme = "Job-rand-me";
+const defaultTheme = "Bewerbeagenture";
 
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
   
