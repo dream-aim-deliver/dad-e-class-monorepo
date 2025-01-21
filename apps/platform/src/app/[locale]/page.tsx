@@ -9,8 +9,8 @@ export default function Index() {
   const serverSideParam = "Hello from server";
   //changes
   return (
-    <div>
-      <h1 className="text-4xl   font-bold text-center">Welcome to platform!</h1>
+    <div className="bg-card-color-fill">
+      <h1 className="text-4xl text-[var(--color-base-neutral-50)] font-bold text-center">Welcome to platform!</h1>
       
       <Home serverSideParam={serverSideParam}/>
     </div>

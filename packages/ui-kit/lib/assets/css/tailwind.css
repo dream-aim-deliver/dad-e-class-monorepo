@@ -31,7 +31,7 @@
   --radius-big: var(--radius-big);
   --radius-huge: var(--radius-huge);
 
-  --card-fill: var(--card-color-fill);
+  --card-color-fill: var(--card-color-fill);
   --card-fill-transparent: var(--card-color-transparent);
   --card-stroke: var(--card-color-stroke);
   --color-divider: var(--color-divider);
@@ -229,7 +229,7 @@
   --radius-big: 12px;
   --radius-huge: 16px;
 
-  --card-color-fill: #1C1917;
+  --card-color-fill: #0F172A;
   --card-color-transparent: #0F172A · 0%;
   --card-color-stroke: #1E293B;
   --color-divider: #334155;
