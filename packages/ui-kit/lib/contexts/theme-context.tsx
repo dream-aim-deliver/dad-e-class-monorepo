@@ -23,7 +23,7 @@ const themeConfigurations = {
   },
 };
 
-const defaultTheme = "Job-rand-me";
+const defaultTheme = "just-do-add";
 
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
   

@@ -33,7 +33,7 @@
 
   --color-card-fill: var(--color-card-fill);
   --card-fill-transparent: var(--color-card-transparent);
-  --card-stroke: var(--color-card-stroke);
+  --color-card-stroke: var(--color-card-stroke);
   --color-divider: var(--color-divider);
   --color-base-white: var(--color-base-white);
   --color-base-black: var(--color-base-black);

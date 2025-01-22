@@ -50,7 +50,7 @@ export default async function RootLayout({
       <body className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>
-            <div className="w-full min-h-screen bg-card-fill flex flex-col items-center">
+            <div className="w-full min-h-screen bg-black flex flex-col items-center">
               <main className="flex-grow w-full max-w-screen-2xl  pt-24">
                 {children}
               </main>
