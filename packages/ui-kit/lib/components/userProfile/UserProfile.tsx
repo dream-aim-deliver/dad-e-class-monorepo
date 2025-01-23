@@ -4,7 +4,7 @@ import { ProfilePicture } from './ProfilePicture';
 import { LanguageSelector } from './LanguageSelector';
 import { Button } from '../button';
 import { CheckBox } from '../checkBox';
-import { profile } from '@/models';
+import { profile } from '@dad-e-class/models';
 import { TextInput } from '../textInput';
 
 interface UserProfileProps {

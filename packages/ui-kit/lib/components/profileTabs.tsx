@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Tabs, TabList, TabTrigger, TabContent } from './Tabs/Tab';
 import { UserProfile } from './userProfile/UserProfile';
 import { ProfessionalInfo } from './professionalCard/ProfessionalInfo';
-import { profile } from '@/models';
+import { profile } from '@dad-e-class/models';
 
 interface ProfileTabsProps {
   initialProfiles: profile.TProfiles;

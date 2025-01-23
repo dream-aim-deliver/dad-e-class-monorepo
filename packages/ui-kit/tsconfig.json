@@ -1,12 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "../..",
+    "rootDir": "../",
     "baseUrl": ".",
     "target": "ESNext",
     "useDefineForClassFields": true,
     "paths": {
-      "@/models": ["../models/src/index"],
+      "@dad-e-class/models": ["../models/src/index.ts"],
       "@/components/*": ["./lib/components/*"],
       "@/assets/*": ["./lib/assets/*"],
       "@/hooks/*": ["./lib/hooks/*"],

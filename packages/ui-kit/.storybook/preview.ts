@@ -4,10 +4,11 @@ import { withThemeByClassName } from '@storybook/addon-themes';
 export const decorators = [
   withThemeByClassName({
     themes: {
-      orange: 'theme-orange',
-      blue: 'theme-blue',
-      darkorange: 'theme-dark-orange-shade',
+      justDoAdd: 'theme-just-do-add',
+      jobRadandMe: 'theme-Job-rand-me',
+      Bewerbeagenture: 'theme-Bewerbeagenture',
+      CMS: 'theme-Cms',
     },
-    defaultTheme: 'orange',
+    defaultTheme: 'justDoAdd',
   }),
 ];

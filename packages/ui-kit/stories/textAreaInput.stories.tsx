@@ -49,7 +49,6 @@ export const Default: Story = {
     label: 'Text Area Label',
     value: '',
     placeholder: 'Enter text here',
-    setValue: vi.fn(),
     className: '',
   },
 };
@@ -59,7 +58,6 @@ export const WithValue: Story = {
     label: 'Text Area Label',
     value: 'Pre-filled text',
     placeholder: 'Enter text here',
-    setValue: vi.fn(),
     className: '',
   },
 };
@@ -68,7 +66,6 @@ export const WithoutLabel: Story = {
   args: {
     value: '',
     placeholder: 'Enter text here',
-    setValue: vi.fn(),
     className: '',
   },
 };
