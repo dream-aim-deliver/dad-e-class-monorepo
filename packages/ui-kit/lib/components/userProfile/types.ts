@@ -10,12 +10,6 @@ export interface PasswordFieldProps {
   onChangeClick: () => void;
 }
 
-export interface DateFieldProps {
-  value: string;
-  icon: React.ReactNode;
-  onChange: (value: string) => void;
-}
-
 export interface ProfilePictureProps {
   imageSrc: string;
   fileName: string;

@@ -1,55 +1,65 @@
 import * as React from 'react';
 import { SkillItem } from './SkillItem';
 import { FileSelector } from './FileDisplay';
-import Input from '../textInput';
 import { Button } from '../button';
-import { Plus, Trash, X } from 'lucide-react';
-import Checkbox from '../checkBox';
-import type { TProfessionalProfile } from '../../../../models/src/profile';
-import IconButton from '../iconButton';
+import { Plus, X } from 'lucide-react';
+import { CheckBox } from '../checkBox';
+import { profile } from '@/models';
+import { IconButton } from '../iconButton';
+import { TextInput } from '../textInput';
+import { InputField } from '../inputField';
+import { TextAreaInput } from '../textAreaInput';
 
 const PREDEFINED_SKILLS = [
-  { name: "Skill 1" },
-  { name: "Skill 2" },
-  { name: "Skill 3" },
-  { name: "Skill 4" },
-  { name: "Skill 5" },
-  { name: "Skill 6" },
-  { name: "Skill 7" },
-  { name: "Skill 8" }
+  { name: 'Skill 1' },
+  { name: 'Skill 2' },
+  { name: 'Skill 3' },
+  { name: 'Skill 4' },
+  { name: 'Skill 5' },
+  { name: 'Skill 6' },
+  { name: 'Skill 7' },
+  { name: 'Skill 8' },
 ];
 
 interface ProfessionalInfoProps {
-  initialData?: TProfessionalProfile;
-  onSave?: (profile: TProfessionalProfile) => void;
+  initialData?: profile.TProfessionalProfile;
+  onSave?: (profile: profile.TProfessionalProfile) => void;
 }
 
-export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({ initialData, onSave }) => {
+export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
+  initialData,
+  onSave,
+}) => {
   const [showModal, setShowModal] = React.useState(false);
-  const [formData, setFormData] = React.useState<TProfessionalProfile>(() => ({
-    bio: initialData?.bio || '',
-    linkedinUrl: initialData?.linkedinUrl || '',
-    curriculumVitae: initialData?.curriculumVitae || '',
-    portfolioWebsite: initialData?.portfolioWebsite || '',
-    associatedCompanyName: initialData?.associatedCompanyName || '',
-    associatedCompanyRole: initialData?.associatedCompanyRole || '',
-    associatedCompanyIndustry: initialData?.associatedCompanyIndustry || '',
-    skills: initialData?.skills || [],
-    isPrivateProfile: initialData?.isPrivateProfile || false
-  }));
+  const [formData, setFormData] = React.useState<profile.TProfessionalProfile>(
+    () => ({
+      bio: initialData?.bio || '',
+      linkedinUrl: initialData?.linkedinUrl || '',
+      curriculumVitae: initialData?.curriculumVitae || '',
+      portfolioWebsite: initialData?.portfolioWebsite || '',
+      associatedCompanyName: initialData?.associatedCompanyName || '',
+      associatedCompanyRole: initialData?.associatedCompanyRole || '',
+      associatedCompanyIndustry: initialData?.associatedCompanyIndustry || '',
+      skills: initialData?.skills || [],
+      isPrivateProfile: initialData?.isPrivateProfile || false,
+    }),
+  );
 
   const [skillSearchQuery, setSkillSearchQuery] = React.useState('');
 
-  const handleChange = (field: keyof TProfessionalProfile, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleChange = (
+    field: keyof profile.TProfessionalProfile,
+    value: any,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const toggleSkill = (skillName: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       skills: prev.skills?.includes(skillName)
-        ? prev.skills.filter(skill => skill !== skillName)
-        : [...(prev.skills || []), skillName]
+        ? prev.skills.filter((skill) => skill !== skillName)
+        : [...(prev.skills || []), skillName],
     }));
   };
 
@@ -59,21 +69,23 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({ initialData,
   };
 
   const handleDiscard = () => {
-    setFormData(initialData || {
-      bio: '',
-      linkedinUrl: '',
-      curriculumVitae: '',
-      portfolioWebsite: '',
-      associatedCompanyName: '',
-      associatedCompanyRole: '',
-      associatedCompanyIndustry: '',
-      skills: [],
-      isPrivateProfile: false
-    });
+    setFormData(
+      initialData || {
+        bio: '',
+        linkedinUrl: '',
+        curriculumVitae: '',
+        portfolioWebsite: '',
+        associatedCompanyName: '',
+        associatedCompanyRole: '',
+        associatedCompanyIndustry: '',
+        skills: [],
+        isPrivateProfile: false,
+      },
+    );
   };
 
-  const filteredSkills = PREDEFINED_SKILLS.filter(skill =>
-    skill.name.toLowerCase().includes(skillSearchQuery.toLowerCase())
+  const filteredSkills = PREDEFINED_SKILLS.filter((skill) =>
+    skill.name.toLowerCase().includes(skillSearchQuery.toLowerCase()),
   );
 
   return (
@@ -86,25 +98,26 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({ initialData,
           Professional Information
         </h1>
 
-        <div className="flex flex-col mt-4 w-full max-md:max-w-full" data-testid="bio">
-          <Input
+        <div
+          className="flex flex-col mt-4 w-full max-md:max-w-full"
+          data-testid="bio"
+        >
+          <TextAreaInput
+            className="h-[104px]"
             label="Bio (280 char max)"
-            inputType="textarea"
-            id="bio"
             value={formData.bio}
-            onChange={(e) => handleChange('bio', e.target.value)}
+            setValue={(value: string) => handleChange('bio', value)}
             placeholder="A compelling bio helps you stand out among other coaches. This will be visible to all students."
-            maxLength={280}
           />
         </div>
 
         <div className="mt-4 w-full mb-2" data-testid="linkedin-url">
-          <Input
-            className="w-full"
+          <TextInput
             label="LinkedIn URL"
-            value={formData.linkedinUrl}
-            onChange={(e) => handleChange('linkedinUrl', e.target.value)}
-            placeholder="https://www.linkedin.com/company/bewerbeagentur/"
+            inputField={{
+              value: formData.linkedinUrl ? formData.linkedinUrl : '',
+              setValue: (value) => handleChange('linkedinUrl', value),
+            }}
           />
         </div>
 
@@ -118,42 +131,53 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({ initialData,
         />
 
         <div className="mt-4 w-full mb-1" data-testid="portfolio-website-url">
-          <Input
-            className="w-full"
+          <TextInput
             label="Portfolio website URL"
-            value={formData.portfolioWebsite}
-            onChange={(e) => handleChange('portfolioWebsite', e.target.value)}
-            placeholder="https://wimlanz.ch/"
+            inputField={{
+              value: formData.portfolioWebsite ? formData.portfolioWebsite : '',
+              setValue: (value) => handleChange('portfolioWebsite', value),
+              inputText: 'https://wimlanz.ch/',
+            }}
           />
         </div>
 
         <div className="mt-4 w-full mb-1" data-testid="company-name">
-          <Input
-            className="w-full"
+          <TextInput
             label="Company Name"
-            value={formData.associatedCompanyName}
-            onChange={(e) => handleChange('associatedCompanyName', e.target.value)}
-            placeholder="Bewerbeagentur"
+            inputField={{
+              value: formData.associatedCompanyName
+                ? formData.associatedCompanyName
+                : '',
+              setValue: (value) => handleChange('associatedCompanyName', value),
+              inputText: 'Bewerbeagentur',
+            }}
           />
         </div>
 
         <div className="mt-4 w-full mb-1" data-testid="role">
-          <Input
-            className="w-full"
+          <TextInput
             label="Role"
-            value={formData.associatedCompanyRole}
-            onChange={(e) => handleChange('associatedCompanyRole', e.target.value)}
-            placeholder="Senior DevOps Engineer"
+            inputField={{
+              value: formData.associatedCompanyRole
+                ? formData.associatedCompanyRole
+                : '',
+              setValue: (value) => handleChange('associatedCompanyRole', value),
+              inputText: 'Senior DevOps Engineer',
+            }}
           />
         </div>
 
         <div className="mt-4 w-full mb-1" data-testid="industry">
-          <Input
-            className="w-full"
+          <TextInput
             label="Industry"
-            value={formData.associatedCompanyIndustry}
-            onChange={(e) => handleChange('associatedCompanyIndustry', e.target.value)}
-            placeholder="e.g. Information Technology"
+            inputField={{
+              value: formData.associatedCompanyIndustry
+                ? formData.associatedCompanyIndustry
+                : '',
+              setValue: (value) =>
+                handleChange('associatedCompanyIndustry', value),
+              inputText: 'e.g. Information Technology',
+            }}
           />
         </div>
 
@@ -176,7 +200,10 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({ initialData,
                 key={index}
                 name={skill}
                 onRemove={(skillName) => {
-                  handleChange('skills', formData.skills?.filter(s => s !== skillName));
+                  handleChange(
+                    'skills',
+                    formData.skills?.filter((s) => s !== skillName),
+                  );
                 }}
               />
             ))}
@@ -185,34 +212,47 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({ initialData,
 
         {/* Skills Selection Modal */}
         {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-card-fill bg-opacity-50">
-            <div className="w-[340px] h-fit bg-card-fill border border-card-stroke rounded-medium p-4 relative">
-              <div className='absolute right-0 top-0'>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div className="w-[340px] h-fit bg-card-fill border border-card-stroke rounded-medium p-4 relative shadow-lg">
+              <div className="absolute right-0 top-0">
                 <IconButton
                   styles="text"
                   icon={X}
                   size="medium"
                   onClick={() => setShowModal(false)}
-                  className='text-button-text-text'
+                  className="text-button-text-text"
                 />
               </div>
 
-              <h3 className="text-lg font-bold text-text-primary mb-2">Select Skills</h3>
-              <Input
-                inputType="search"
+              <h3 className="text-lg font-bold text-text-primary mb-2">
+                Select Skills
+              </h3>
+              <InputField
                 value={skillSearchQuery}
-                onChange={(e) => setSkillSearchQuery(e.target.value)}
-                placeholder="Search Skills"
+                setValue={(value: string) => setSkillSearchQuery(value)}
+                hasLeftContent={true}
+                inputText="Search Skills"
+                leftContent={
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="25"
+                    height="24"
+                    viewBox="0 0 25 24"
+                    className="fill-text-primary"
+                  >
+                    <path d="M10.5 18.002C12.275 18.0016 13.9988 17.4074 15.397 16.314L19.793 20.71L21.207 19.296L16.811 14.9C17.905 13.5016 18.4996 11.7774 18.5 10.002C18.5 5.59095 14.911 2.00195 10.5 2.00195C6.089 2.00195 2.5 5.59095 2.5 10.002C2.5 14.413 6.089 18.002 10.5 18.002ZM10.5 4.00195C13.809 4.00195 16.5 6.69295 16.5 10.002C16.5 13.311 13.809 16.002 10.5 16.002C7.191 16.002 4.5 13.311 4.5 10.002C4.5 6.69295 7.191 4.00195 10.5 4.00195Z" />
+                  </svg>
+                }
               />
-              <div className="mt-4 space-y-2 max-h-60 overflow-y-auto">
+              <div className="mt-4 space-y-2 max-h-60 overflow-y-auto gap-2">
                 {filteredSkills.map((skill, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <Checkbox
+                  <div key={index} className="flex items-center ">
+                    <CheckBox
                       label={skill.name}
                       name={`skill-${index}`}
                       value={skill.name}
                       checked={formData.skills?.includes(skill.name)}
-                      size="small"
+                      withText={true}
                       onChange={() => toggleSkill(skill.name)}
                     />
                   </div>
@@ -222,20 +262,24 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({ initialData,
           </div>
         )}
 
-        <div className="flex items-center mt-4 w-full" data-testid="private-profile">
-          <Checkbox
+        <div
+          className="flex items-center mt-4 w-full"
+          data-testid="private-profile"
+        >
+          <CheckBox
             label="Private profile (only registered users can see your name, surname and bio)"
             name="profile-visibility"
             value="private-profile"
-            size="small"
+            withText={true}
             checked={formData.isPrivateProfile}
-            onChange={() => handleChange('isPrivateProfile', !formData.isPrivateProfile)}
+            onChange={() =>
+              handleChange('isPrivateProfile', !formData.isPrivateProfile)
+            }
           />
         </div>
 
         <div className="flex gap-4 mt-4 w-full">
           <Button
-
             variant="secondary"
             size="medium"
             className="flex-1 min-h-[40px]"
@@ -244,7 +288,6 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({ initialData,
             Discard
           </Button>
           <Button
-
             variant="primary"
             size="medium"
             className="flex-1 min-h-[40px]"

@@ -1,8 +1,11 @@
 import * as React from 'react';
-import {Button} from '../button'; // Assuming Button is exported from this file
+import { Button } from '../button'; // Assuming Button is exported from this file
 import { PasswordFieldProps } from './types';
 
-export const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChangeClick }) => {
+export const PasswordField: React.FC<PasswordFieldProps> = ({
+  value,
+  onChangeClick,
+}) => {
   const [password, setPassword] = React.useState(value);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

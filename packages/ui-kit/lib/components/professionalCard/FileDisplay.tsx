@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Upload, CloudDownload, Trash2 } from 'lucide-react';
-import {Button} from "../button";
+import { Button } from '../button';
 
 interface FileSelectorProps {
   defaultFile?: string;
@@ -17,12 +17,18 @@ export const FileSelector: React.FC<FileSelectorProps> = ({
   onUpload,
   onDownload,
   onRemove,
-  acceptedFileTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+  acceptedFileTypes = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ],
 }) => {
   const [fileName, setFileName] = useState<string>('No file selected');
   const [fileSize, setFileSize] = useState<string>('');
   const [error, setError] = useState<string>('');
-  const [file, setFile] = useState<string | null>(defaultFile);
+  const [file, setFile] = useState<string | null>(
+    defaultFile == '' ? null : defaultFile,
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formatFileSize = (bytes: number): string => {

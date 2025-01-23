@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { X } from 'lucide-react';
 import { LanguageSelectorProps } from './types';
-import {Button} from '../button';
+import { Button } from '../button';
 
 const AVAILABLE_LANGUAGES = [
   { name: 'English', code: 'en' },
@@ -15,13 +15,19 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   onChange,
 }) => {
   const [selectedValue, setSelectedValue] = React.useState('');
-  const [interfaceLanguage, setInterfaceLanguage] = React.useState<string | null>(null);
+  const [interfaceLanguage, setInterfaceLanguage] = React.useState<
+    string | null
+  >(null);
 
   const handleLanguageSelect = (value: string) => {
-    const languageExists = selectedLanguages.some((lang) => lang.name === value);
+    const languageExists = selectedLanguages.some(
+      (lang) => lang.name === value,
+    );
 
     if (!languageExists && value) {
-      const selectedLanguage = AVAILABLE_LANGUAGES.find((lang) => lang.name === value);
+      const selectedLanguage = AVAILABLE_LANGUAGES.find(
+        (lang) => lang.name === value,
+      );
 
       if (selectedLanguage) {
         onChange?.([
@@ -40,25 +46,26 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   const handleLanguageRemove = (languageToRemove: string) => {
     onChange?.(
-      selectedLanguages.filter((lang) => lang.name !== languageToRemove)
+      selectedLanguages.filter((lang) => lang.name !== languageToRemove),
     );
   };
 
   const availableLanguages = AVAILABLE_LANGUAGES.filter(
-    (lang) => !selectedLanguages.some((selected) => selected.name === lang.name)
+    (lang) =>
+      !selectedLanguages.some((selected) => selected.name === lang.name),
   );
 
   return (
     <div className="flex flex-col w-full">
       {/* Languages Spoken Fluently */}
-      <label className="text-sm text-stone-300 mb-2">
+      <label className="text-sm text-text-secondary mb-2">
         Languages Spoken Fluently
       </label>
       <div className="flex items-center">
         <select
           value={selectedValue}
           onChange={(e) => handleLanguageSelect(e.target.value)}
-          className="mt-2 flex p-2 pl-4 flex-col items-start rounded-lg bg-stone-800 w-[30%]"
+          className="flex p-2 pl-4 flex-col items-start rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700 w-[30%] text-base-white outline-none"
         >
           <option value="" disabled>
             Choose Language
@@ -90,14 +97,14 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
       {/* Interface Language */}
       <div className="mt-6">
-        <label className="text-sm text-stone-300 mb-2">
+        <label className="text-sm text-text-secondary mb-2">
           Interface Language
         </label>
         <div className="flex items-center">
           <select
             value={interfaceLanguage || 'English'}
             onChange={(e) => setInterfaceLanguage(e.target.value)}
-            className="mt-2 flex p-2 pl-4 flex-col items-start rounded-lg bg-stone-800 text-white w-[25%]"
+            className="mt-2 flex p-2 pl-4 flex-col items-start rounded-lg bg-base-neutral-800 border-[1px] border-base-neutral-700 text-base-white outline-none w-[25%]"
           >
             {AVAILABLE_LANGUAGES.map((lang) => (
               <option key={lang.code} value={lang.name}>
@@ -107,7 +114,6 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           </select>
         </div>
       </div>
-
     </div>
   );
 };

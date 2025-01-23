@@ -2,7 +2,8 @@ import React from 'react';
 import { useTabContext } from './TabContext';
 import { cn } from '../../utils/style-utils';
 
-interface TabTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface TabTriggerProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   value: string;
   children: React.ReactNode;
   variant?: 'default';
@@ -20,14 +21,15 @@ export function TabTrigger({
   const { activeTab, setActiveTab } = useTabContext();
   const isActive = activeTab === value;
 
-  const baseStyles = 'w-full px-4 py-2 font-bold transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 relative overflow-hidden';
+  const baseStyles =
+    'w-full px-4 py-2 font-bold transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 relative overflow-hidden';
   const variantStyles = {
     default: cn(
       'transform transition-transform hover:scale-105',
       isActive
-        ? 'flex items-center justify-center bg-button-primary-fill  rounded-smallrad   text-button-primary-text'
-        : 'border-transparent text-text-primary'
-    )
+        ? 'flex items-center justify-center bg-button-primary-fill  rounded-medium   text-button-primary-text'
+        : 'border-transparent text-text-primary',
+    ),
   };
 
   return (
@@ -37,16 +39,18 @@ export function TabTrigger({
       aria-controls={`panel-${value}`}
       tabIndex={isActive ? 0 : -1}
       onClick={() => setActiveTab(value)}
-      className={cn(
-        baseStyles,
-        variantStyles[variant],
-        className
-      )}
+      className={cn(baseStyles, variantStyles[variant], className)}
       {...props}
     >
       <div className="flex items-center justify-center gap-2 w-full">
         {icon && (
-          <span className={cn(isActive ? 'text-button-primary-text' : 'text-button-primary-fill')}>
+          <span
+            className={cn(
+              isActive
+                ? 'text-button-primary-text'
+                : 'text-button-primary-fill',
+            )}
+          >
             {icon}
           </span>
         )}

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Upload, CloudDownload, Trash2 } from 'lucide-react';
-import {Button} from "../button";
+import { Button } from '../button';
 
 interface ProfilePictureProps {
   defaultImage?: string;
@@ -15,20 +15,17 @@ interface ProfilePictureProps {
 export const ProfilePicture: React.FC<ProfilePictureProps> = ({
   defaultImage = '/api/placeholder/64/64',
   maxSizeInMB = 5,
-  fileNameIs='No file selected',
+  fileNameIs = 'No file selected',
   onUpload,
   onDownload,
   onRemove,
-  acceptedFileTypes = ['image/jpeg', 'image/png', 'image/webp']
+  acceptedFileTypes = ['image/jpeg', 'image/png', 'image/webp'],
 }) => {
   const [image, setImage] = useState<string>(defaultImage);
   const [fileName, setFileName] = useState<string>(fileNameIs);
   const [fileSize, setFileSize] = useState<string>('');
   const [error, setError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  console.log("fileimage", image)
-  console.log("filename", defaultImage)
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
@@ -122,33 +119,18 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({
         </div>
 
         <div className="flex gap-4">
-          {image == defaultImage && (
+          {image == defaultImage ? (
             <>
-            <Button
-              variant="text"
-          
-              onClick={handleUploadClick}
-              className=""
-            >
-              <Upload />
-            </Button></>  
-          )}
-          {image !== defaultImage && (
+              <Button variant="text" onClick={handleUploadClick} className="">
+                <Upload />
+              </Button>
+            </>
+          ) : (
             <>
-              <Button
-                variant="text"
-                
-                onClick={handleDownload}
-                className=""
-              >
+              <Button variant="text" onClick={handleDownload} className="">
                 <CloudDownload />
               </Button>
-              <Button
-                variant="text"
-              
-                onClick={handleRemove}
-                className=""
-              >
+              <Button variant="text" onClick={handleRemove} className="">
                 <Trash2 />
               </Button>
             </>

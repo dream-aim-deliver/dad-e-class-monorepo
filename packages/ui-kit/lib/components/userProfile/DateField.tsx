@@ -1,33 +1,38 @@
 import React, { useRef } from 'react';
-import { DateFieldProps } from './types';
+import { IconButton } from '../iconButton';
+import { Calendar } from 'lucide-react';
 
-export const DateField: React.FC<DateFieldProps> = ({ value, icon, onChange }) => {
+export interface DateFieldProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export const DateField: React.FC<DateFieldProps> = ({ value, onChange }) => {
   const dateInputRef = useRef<HTMLInputElement>(null);
 
   const handleIconClick = () => {
-    dateInputRef.current?.showPicker(); 
+    dateInputRef.current?.showPicker();
   };
 
   return (
-    <div className="flex flex-col w-full max-md:max-w-full">
-      <label className="flex-1 shrink gap-2 self-stretch w-full text-sm leading-none min-h-[22px] text-stone-300 max-md:max-w-full">
+    <div className="flex flex-col w-full max-md:max-w-full ">
+      <label className="flex-1 shrink gap-2 self-stretch w-full text-sm leading-none min-h-[22px] text-text-secondary max-md:max-w-full">
         Date of birth (optional)
       </label>
-      <div className="flex justify-between items-center px-3 py-2 w-full rounded-lg border border-solid bg-stone-950 border-stone-800 min-h-[40px] max-md:max-w-full">
+      <div className="flex justify-between items-center px-3 py-2 w-full rounded-medium border border-solid bg-input-fill border-input-stroke min-h-[40px] max-md:max-w-full hover:border-base-neutral-400 cursor-pointer">
         <input
           ref={dateInputRef}
           type="date"
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
-          className="flex-1 bg-transparent border-none text-base text-stone-50"
+          className="flex-1 bg-transparent border-none text-md text-text-primary outline-none"
         />
-        <button
-          type="button"
+        <IconButton
+          size="small"
+          styles="text"
+          icon={Calendar}
           onClick={handleIconClick}
-          className="flex items-center justify-center bg-transparent border-none focus:outline-none"
-        >
-          {icon}
-        </button>
+        />
       </div>
     </div>
   );

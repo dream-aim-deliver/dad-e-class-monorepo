@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import clsx from 'clsx';
 
-interface CheckboxProps {
+export interface CheckBoxProps {
   name: string;
   value: string;
   label?: string;
@@ -25,16 +25,16 @@ const sizeConfig = {
   },
 };
 
-const Checkbox: FC<CheckboxProps> = ({
+export const CheckBox: FC<CheckBoxProps> = ({
   name,
   value,
-  label = "Checkbox",
+  label = 'Checkbox',
   checked = false,
   disabled = false,
   withText = false,
   size = 'medium',
   onChange,
-  labelClass
+  labelClass,
 }) => {
   const { container } = sizeConfig[size];
 
@@ -42,19 +42,21 @@ const Checkbox: FC<CheckboxProps> = ({
     container,
     'rounded-small border-[1px] relative transition-all duration-200 flex items-center justify-center',
     {
-      'border-base-neutral-600 hover:border-badge-secondary hover:bg-base-neutral-600': !checked && !disabled,
-      'bg-button-primary-fill border-none': checked && !disabled,
-      'hover:bg-base-brand-400': checked && !disabled,
-      'opacity-50 bg-button-primary-fill border-none': checked && disabled,
+      'bg-checkbox-fill border-checkbox-stroke hover:border-checkbox-hover-stroke hover:bg-checkbox-hover-fill':
+        !checked && !disabled,
+      'bg-checkbox-checked-fill border-none': checked && !disabled,
+      'hover:bg-checkbox-checked-hover-fill': checked && !disabled,
+      'opacity-50 bg-checkbox-checked-fill border-none': checked && disabled,
       'opacity-50 cursor-not-allowed': disabled,
-      'border-base-neutral-600 ': !checked && disabled,
-      'cursor-pointer': !disabled
-    }
+      'opacity-50 border-checkbox-stroke bg-checkbox-fill':
+        !checked && disabled,
+      'cursor-pointer': !disabled,
+    },
   );
 
   const textClasses = clsx(
     'text-xs text-base-neutral-50 select-none ml-[12px]',
-    labelClass
+    labelClass,
   );
 
   return (
@@ -79,7 +81,11 @@ const Checkbox: FC<CheckboxProps> = ({
             >
               <path
                 d="M8 16L13 21L24 8"
-                stroke={disabled ? "var(--color-base-neutral-600)" : "var(--color-checkbox-checked-check-mark)"}
+                stroke={
+                  disabled
+                    ? 'var(--color-base-neutral-600)'
+                    : 'var(--color-checkbox-checked-check-mark)'
+                }
                 strokeWidth="6"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -92,5 +98,3 @@ const Checkbox: FC<CheckboxProps> = ({
     </label>
   );
 };
-
-export default Checkbox;
