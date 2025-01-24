@@ -15,6 +15,7 @@ export interface InputFieldProps {
     | 'error';
   value: string;
   setValue: (value: string) => void;
+  type?: 'text' | 'date' | 'password';
 }
 
 export const InputField: FC<InputFieldProps> = ({
@@ -26,6 +27,7 @@ export const InputField: FC<InputFieldProps> = ({
   state = 'placeholder',
   value,
   setValue,
+  type = 'text',
 }) => {
   const stateClasses = {
     placeholder:
@@ -46,7 +48,7 @@ export const InputField: FC<InputFieldProps> = ({
       <div className="flex items-center gap-2 w-full">
         {hasLeftContent && leftContent}
         <input
-          type="text"
+          type={type}
           placeholder={inputText}
           disabled={state === 'disabled'}
           value={value}

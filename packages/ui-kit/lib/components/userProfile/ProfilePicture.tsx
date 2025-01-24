@@ -100,7 +100,10 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({
             alt="Profile"
             className="w-16 h-16 rounded-full object-cover bg-stone-800"
           />
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+          <div
+            id="upload-button-container"
+            className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+          >
             <Button
               variant="text"
               size="medium"
@@ -130,15 +133,18 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({
               <Button variant="text" onClick={handleDownload} className="">
                 <CloudDownload />
               </Button>
-              <Button variant="text" onClick={handleRemove} className="">
-                <Trash2 />
-              </Button>
+              <div id="remove-button-container">
+                <Button variant="text" onClick={handleRemove} className="">
+                  <Trash2 />
+                </Button>
+              </div>
             </>
           )}
         </div>
       </div>
 
       <input
+        role="textbox"
         ref={fileInputRef}
         type="file"
         accept={acceptedFileTypes.join(',')}

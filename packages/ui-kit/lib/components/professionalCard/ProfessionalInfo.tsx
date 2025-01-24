@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { SkillItem } from './SkillItem';
-import { FileSelector } from './FileDisplay';
+import { SkillItem } from './skillItem';
+import { FileSelector } from './fileDisplay';
 import { Button } from '../button';
 import { Plus, X } from 'lucide-react';
 import { CheckBox } from '../checkBox';
