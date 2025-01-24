@@ -84,6 +84,7 @@
     "storybook": "^8.4.7",
     "tailwind-merge": "^2.5.5",
     "ts-jest": "^29.2.5",
+    "lucide-react": "^0.473.0",
     "ts-node": "10.9.1",
     "tslib": "^2.8.1",
     "typescript": "~5.7.2",
