@@ -115,6 +115,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
         </div>
         <div className="mt-4">
           <DateInput
+            label="Date of birth (optional)"
             value={formData.dateOfBirth || ''}
             onChange={(value) => handleChange('dateOfBirth', value)}
           />

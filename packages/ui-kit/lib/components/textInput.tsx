@@ -15,11 +15,16 @@ export const TextInput: FC<TextInputProps> = ({
   inputField,
   feedbackMessage,
 }) => {
+  const inputId =
+    inputField.id || `input-${Math.random().toString(36).slice(2, 11)}`;
+
   return (
     <div className="flex flex-col items-start gap-1">
       <div className="flex flex-col items-start gap-[2px] w-full">
-        <p className="text-text-secondary text-sm ">{label}</p>
-        <InputField {...inputField} />
+        <label className="text-text-secondary text-sm " htmlFor={inputId}>
+          {label}
+        </label>
+        <InputField {...inputField} id={inputId} />
       </div>
       {hasFeedback && <FeedBackMessage {...feedbackMessage} />}
     </div>

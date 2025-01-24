@@ -35,7 +35,6 @@ export const Default: Story = {
       hasRightContent: false,
       inputText: 'Enter text...',
       state: 'placeholder',
-      value: '',
       setValue: (value: string) => console.log('Input value:', value),
     },
     feedbackMessage: {
@@ -54,7 +53,6 @@ export const WithErrorFeedback: Story = {
       leftContent: <span>🔍</span>,
       inputText: 'Search...',
       state: 'error',
-      value: '',
       setValue: (value: string) => console.log('Input value:', value),
     },
     feedbackMessage: {
@@ -73,7 +71,6 @@ export const WithoutFeedback: Story = {
       hasRightContent: false,
       inputText: 'Enter text...',
       state: 'placeholder',
-      value: '',
       setValue: (value: string) => console.log('Input value:', value),
     },
     feedbackMessage: {
@@ -92,7 +89,6 @@ export const WarningFeedback: Story = {
       rightContnet: <button>Go</button>,
       inputText: 'Type here...',
       state: 'warning',
-      value: '',
       setValue: (value: string) => console.log('Input value:', value),
     },
     feedbackMessage: {

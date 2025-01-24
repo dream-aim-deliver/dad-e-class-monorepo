@@ -66,9 +66,9 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           data-testid="language-selector"
           value={selectedValue}
           onChange={(e) => handleLanguageSelect(e.target.value)}
-          className="flex p-2 pl-4 flex-col items-start rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700 w-[30%] text-base-white outline-none"
+          className="whitespace-nowrap flex p-2 pl-4 flex-col items-start rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700 w-[30%] text-base-white outline-none"
         >
-          <option value="" disabled>
+          <option value="" disabled className="whitespace-nowrap">
             Choose Language
           </option>
           {availableLanguages.map((lang) => (

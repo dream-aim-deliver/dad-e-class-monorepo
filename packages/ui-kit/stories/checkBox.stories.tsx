@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { CheckBox, CheckBoxProps } from '@/components/checkBox';
 
@@ -27,7 +28,19 @@ export default meta;
 
 type Story = StoryObj<CheckBoxProps>;
 
+const StatefulCheckBox = (args: CheckBoxProps) => {
+  const [isChecked, setIsChecked] = useState(args.checked || false);
+
+  const handleChange = (value: string) => {
+    setIsChecked(!isChecked);
+    args.onChange?.(value); // Trigger the action for logging in Storybook
+  };
+
+  return <CheckBox {...args} checked={isChecked} onChange={handleChange} />;
+};
+
 export const Default: Story = {
+  render: (args) => <StatefulCheckBox {...args} />,
   args: {
     name: 'defaultCheckbox',
     value: 'defaultValue',
@@ -40,6 +53,7 @@ export const Default: Story = {
 };
 
 export const Checked: Story = {
+  render: (args) => <StatefulCheckBox {...args} />,
   args: {
     name: 'checkedCheckbox',
     value: 'checkedValue',
@@ -52,6 +66,7 @@ export const Checked: Story = {
 };
 
 export const Disabled: Story = {
+  render: (args) => <StatefulCheckBox {...args} />,
   args: {
     name: 'disabledCheckbox',
     value: 'disabledValue',
@@ -64,6 +79,7 @@ export const Disabled: Story = {
 };
 
 export const Small: Story = {
+  render: (args) => <StatefulCheckBox {...args} />,
   args: {
     name: 'smallCheckbox',
     value: 'smallValue',
@@ -76,6 +92,7 @@ export const Small: Story = {
 };
 
 export const Large: Story = {
+  render: (args) => <StatefulCheckBox {...args} />,
   args: {
     name: 'largeCheckbox',
     value: 'largeValue',
