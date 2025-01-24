@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { SkillItem } from '@/components/professionalCard/skillItem';
+import { SkillItem } from '@/components/profile/skillItem';
 
 describe('<SkillItem />', () => {
   it('renders skill name correctly', () => {

@@ -48,7 +48,6 @@ type Story = StoryObj<TextAreaInputProps>;
 export const Default: Story = {
   args: {
     label: 'Text Area Label',
-    value: '',
     placeholder: 'Enter text here',
     className: '',
   },
@@ -57,7 +56,6 @@ export const Default: Story = {
 export const WithValue: Story = {
   args: {
     label: 'Text Area Label',
-    value: 'Pre-filled text',
     placeholder: 'Enter text here',
     className: '',
   },
@@ -65,7 +63,6 @@ export const WithValue: Story = {
 
 export const WithoutLabel: Story = {
   args: {
-    value: '',
     placeholder: 'Enter text here',
     className: '',
   },

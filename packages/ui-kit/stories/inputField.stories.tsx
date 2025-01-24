@@ -50,7 +50,6 @@ export const Placeholder: Story = {
     rightContnet: null,
     inputText: 'Placeholder',
     state: 'placeholder',
-    value: '',
     type: 'text',
   },
 };
@@ -63,7 +62,6 @@ export const WithLeftContent: Story = {
     rightContnet: null,
     inputText: 'Search...',
     state: 'placeholder',
-    value: '',
     type: 'text',
   },
 };
@@ -76,7 +74,6 @@ export const WithRightContent: Story = {
     rightContnet: <button>Go</button>,
     inputText: 'Type here...',
     state: 'placeholder',
-    value: '',
     type: 'password',
   },
 };
@@ -89,8 +86,6 @@ export const Disabled: Story = {
     rightContnet: null,
     inputText: 'Disabled input',
     state: 'disabled',
-    value: '',
-   
   },
 };
 
@@ -102,8 +97,6 @@ export const Warning: Story = {
     rightContnet: null,
     inputText: 'Warning state',
     state: 'warning',
-    value: '',
-   
   },
 };
 
@@ -115,7 +108,5 @@ export const Error: Story = {
     rightContnet: null,
     inputText: 'Error state',
     state: 'error',
-    value: '',
-    
   },
 };

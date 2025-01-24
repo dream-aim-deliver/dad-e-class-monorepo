@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Upload, CloudDownload, Trash2 } from 'lucide-react';
 import { Button } from '../button';
 
-interface ProfilePictureProps {
+export interface ProfilePictureProps {
   defaultImage?: string;
   fileNameIs?: string;
   maxSizeInMB?: number;

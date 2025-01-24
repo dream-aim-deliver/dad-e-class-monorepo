@@ -5,11 +5,11 @@ import { DateInput } from '@/components/dateInput';
 const mockOnChange = vi.fn();
 
 describe('<DateInput />', () => {
-  it('renders the DateInput component', () => {
-    render(<DateInput value="" onChange={mockOnChange} />);
+  it('renders the DateInput component with a label', () => {
+    render(<DateInput label="Custom Label" value="" onChange={mockOnChange} />);
 
-    const label = screen.getByText(/Date of birth \(optional\)/i);
-    const input = screen.getByLabelText(/Date of birth \(optional\)/i);
+    const label = screen.getByText(/Custom Label/i);
+    const input = screen.getByLabelText(/Custom Label/i);
     const iconButton = screen.getByRole('button');
 
     expect(label).toBeInTheDocument();
@@ -18,16 +18,22 @@ describe('<DateInput />', () => {
   });
 
   it('displays the correct value in the input', () => {
-    render(<DateInput value="2023-01-01" onChange={mockOnChange} />);
+    render(
+      <DateInput
+        label="Custom Label"
+        value="2023-01-01"
+        onChange={mockOnChange}
+      />,
+    );
 
-    const input = screen.getByLabelText(/Date of birth \(optional\)/i);
+    const input = screen.getByLabelText(/Custom Label/i);
     expect(input).toHaveValue('2023-01-01');
   });
 
   it('calls onChange when the input value changes', () => {
-    render(<DateInput value="" onChange={mockOnChange} />);
+    render(<DateInput label="Custom Label" value="" onChange={mockOnChange} />);
 
-    const input = screen.getByLabelText(/Date of birth \(optional\)/i);
+    const input = screen.getByLabelText(/Custom Label/i);
     fireEvent.change(input, { target: { value: '2025-01-01' } });
 
     expect(mockOnChange).toHaveBeenCalledTimes(1);
@@ -35,14 +41,12 @@ describe('<DateInput />', () => {
   });
 
   it('triggers the date picker when the icon button is clicked', () => {
-    render(<DateInput value="" onChange={mockOnChange} />);
+    render(<DateInput label="Custom Label" value="" onChange={mockOnChange} />);
 
-    const input = screen.getByLabelText(
-      /Date of birth \(optional\)/i,
-    ) as HTMLInputElement;
+    const input = screen.getByLabelText(/Custom Label/i) as HTMLInputElement;
     const iconButton = screen.getByRole('button');
 
-    input.showPicker = vi.fn(); // Mock showPicker function
+    input.showPicker = vi.fn(); // Mock the showPicker function
 
     fireEvent.click(iconButton);
     expect(input.showPicker).toHaveBeenCalled();
