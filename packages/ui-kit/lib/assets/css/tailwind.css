@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+
+
 :root {
   --text-2xs: 10px;
   --text-xs: 12px;
@@ -30,6 +32,13 @@
   --radius-medium: var(--radius-medium);
   --radius-big: var(--radius-big);
   --radius-huge: var(--radius-huge);
+
+  --font-weight-important: var(--font-weight-important);
+  --font-weight-normal: var(--font-weight-normal);
+  --font-weight-h1: var(--font-weight-h1);
+  --font-weight-h3: var(--font-weight-h3);
+  --font-weight-h5: var(--font-weight-h5);
+
 
   --color-card-fill: var(--color-card-fill);
   --card-fill-transparent: var(--color-card-transparent);
@@ -123,6 +132,47 @@
   --color-slider-progress-stroke: var(--color-slider-progress-stroke);
 }
 
+@layer base {
+  h1 { 
+    font-size: var(--text-4xl);
+    font-weight: var(--font-weight-h1);
+    line-height: 100%;
+    letter-spacing: -0.96px;
+    @media (min-width: 768px) {
+      letter-spacing: -1.28px;
+    }
+  }
+  h2 { 
+    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-important);
+    line-height: 100%;
+    letter-spacing: -0.64px;
+    @media (min-width: 768px) {
+      letter-spacing: -0.96px;
+    }
+  }
+  h3 { 
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-h3);
+    line-height: 110%;
+ 
+  }
+  h4 { 
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-important);
+    line-height: 120%;
+  }
+  h5 { 
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-h5);
+   line-height: 120%;
+  }
+  h6 { 
+    font-size: var(--text-md);
+    font-weight: var(--font-weight-important);
+   line-height: 120%;
+  }
+}
 .theme-just-do-add {
   --radius-small: 6px;
   --radius-medium: 8px;
@@ -222,6 +272,11 @@
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
 
+  --font-weight-important: 700;
+  --font-weight-normal:400;
+  --font-weight-h1:var(--font-weight-important);
+  --font-weight-h3:var(--font-weight-important);
+  --font-weight-h5:var(--font-weight-important);
   font-family: var(--font-nunito);
 }
 
@@ -339,6 +394,11 @@
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
 
+  --font-weight-important:700;
+  --font-weight-normal:400;
+  --font-weight-h1:var(--font-weight-important);
+  --font-weight-h3:var(--font-weight-important);
+  --font-weight-h5:var(--font-weight-important);
   font-family: var(--font-geist-mono);
 }
 
@@ -455,7 +515,12 @@
   --color-slider-knob-stroke: var(--color-base-brand-300);
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
+ --font-weight-important:700;
+  --font-weight-normal:400;
 
+  --font-weight-h1:300;
+  --font-weight-h3:400;
+  --font-weight-h5:400;
   font-family: var(--font-raleway);
 }
 
@@ -568,6 +633,10 @@
   --color-slider-knob-stroke: var(--color-base-brand-300);
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
-
+ --font-weight-important:700;
+  --font-weight-normal:400;
+  --font-weight-h1:var(--font-weight-important);
+  --font-weight-h3:var(--font-weight-important);
+  --font-weight-h5:var(--font-weight-important);
   font-family: var(--font-figtree);
 }

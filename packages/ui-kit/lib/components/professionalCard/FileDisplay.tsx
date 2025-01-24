@@ -105,6 +105,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({
         <div className="flex items-center gap-2">
           {!file && (
             <Button
+              data-testid="upload-button"
               variant="text"
               size="small"
               onClick={handleUploadClick}
@@ -113,9 +114,11 @@ export const FileSelector: React.FC<FileSelectorProps> = ({
               <Upload />
             </Button>
           )}
+
           {file && (
             <>
               <Button
+                data-testid="download-button"
                 variant="text"
                 size="small"
                 onClick={handleDownload}
@@ -124,6 +127,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({
                 <CloudDownload />
               </Button>
               <Button
+                data-testid="remove-button"
                 variant="text"
                 size="small"
                 onClick={handleRemove}

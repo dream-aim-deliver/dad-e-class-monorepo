@@ -23,7 +23,7 @@ const themeConfigurations = {
   },
 };
 
-const defaultTheme = "just-do-add";
+const defaultTheme = "Bewerbeagenture";
 
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
   

@@ -14,11 +14,7 @@ const PREDEFINED_SKILLS = [
   { name: 'Skill 1' },
   { name: 'Skill 2' },
   { name: 'Skill 3' },
-  { name: 'Skill 4' },
-  { name: 'Skill 5' },
-  { name: 'Skill 6' },
-  { name: 'Skill 7' },
-  { name: 'Skill 8' },
+  { name: 'Skill 4' }
 ];
 
 interface ProfessionalInfoProps {
@@ -100,7 +96,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
 
         <div
           className="flex flex-col mt-4 w-full max-md:max-w-full"
-          data-testid="bio"
+
         >
           <TextAreaInput
             className="h-[104px]"
@@ -111,7 +107,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           />
         </div>
 
-        <div className="mt-4 w-full mb-2" data-testid="linkedin-url">
+        <div className="mt-4 w-full mb-2" >
           <TextInput
             label="LinkedIn URL"
             inputField={{
@@ -130,7 +126,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           onRemove={() => handleChange('curriculumVitae', '')}
         />
 
-        <div className="mt-4 w-full mb-1" data-testid="portfolio-website-url">
+        <div className="mt-4 w-full mb-1" >
           <TextInput
             label="Portfolio website URL"
             inputField={{
@@ -141,7 +137,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           />
         </div>
 
-        <div className="mt-4 w-full mb-1" data-testid="company-name">
+        <div className="mt-4 w-full mb-1" >
           <TextInput
             label="Company Name"
             inputField={{
@@ -154,7 +150,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           />
         </div>
 
-        <div className="mt-4 w-full mb-1" data-testid="role">
+        <div className="mt-4 w-full mb-1" >
           <TextInput
             label="Role"
             inputField={{
@@ -167,7 +163,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           />
         </div>
 
-        <div className="mt-4 w-full mb-1" data-testid="industry">
+        <div className="mt-4 w-full mb-1" >
           <TextInput
             label="Industry"
             inputField={{
@@ -216,6 +212,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             <div className="w-[340px] h-fit bg-card-fill border border-card-stroke rounded-medium p-4 relative shadow-lg">
               <div className="absolute right-0 top-0">
                 <IconButton
+                  data-testid="close-modal-button"
                   styles="text"
                   icon={X}
                   size="medium"
@@ -264,7 +261,6 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
 
         <div
           className="flex items-center mt-4 w-full"
-          data-testid="private-profile"
         >
           <CheckBox
             label="Private profile (only registered users can see your name, surname and bio)"
