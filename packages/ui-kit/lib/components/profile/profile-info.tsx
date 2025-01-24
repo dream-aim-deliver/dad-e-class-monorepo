@@ -182,8 +182,8 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
         <div className="mt-4">
           <ProfilePicture
-            defaultImage={formData.profilePicture || ''}
-            fileNameIs="ProfilePic.jpg"
+            defaultImage={formData.profilePicture}
+            fileNameIs=""
             maxSizeInMB={5}
             onUpload={(value) => handleChange('profilePicture', value)}
           />

@@ -3,6 +3,8 @@ import { ThemeProvider } from '@maany_shr/e-class-ui-kit/contexts';
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
+import { routing } from '../../i18n/routing';
+import { notFound } from 'next/navigation';
 
 export const metadata = {
   title: 'Welcome to platform',
@@ -37,14 +39,17 @@ const figtree = Figtree({
 
 export default async function RootLayout({
   children,
-  params
+  params,
 }: {
   children: React.ReactNode;
-  params: { locale: string }
+  params: { locale: string };
 }) {
-  const locale = params.locale;
-  const messages = await getMessages();
+  const { locale } = await params;
 
+  if (!routing.locales.includes(locale as any)) {
+    notFound();
+  }
+  const messages = await getMessages();
   return (
     <html lang={locale}>
       <body className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}>

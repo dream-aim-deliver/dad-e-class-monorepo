@@ -13,7 +13,7 @@ export interface ProfilePictureProps {
 }
 
 export const ProfilePicture: React.FC<ProfilePictureProps> = ({
-  defaultImage = '/api/placeholder/64/64',
+  defaultImage,
   maxSizeInMB = 5,
   fileNameIs = 'No file selected',
   onUpload,
@@ -21,7 +21,7 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({
   onRemove,
   acceptedFileTypes = ['image/jpeg', 'image/png', 'image/webp'],
 }) => {
-  const [image, setImage] = useState<string>(defaultImage);
+  const [image, setImage] = useState<string>();
   const [fileName, setFileName] = useState<string>(fileNameIs);
   const [fileSize, setFileSize] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -96,7 +96,7 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({
       <div className="flex items-center gap-4">
         <div className="relative group">
           <img
-            src={image}
+            src={image ? image : "https://res.cloudinary.com/dgk9gxgk4/image/upload/v1727665998/anxious-people-under-stress_01_8_ts6dma.png"}
             alt="Profile"
             className="w-16 h-16 rounded-full object-cover bg-stone-800"
           />

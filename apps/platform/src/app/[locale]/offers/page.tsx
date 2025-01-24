@@ -9,7 +9,7 @@ const mockPersonalProfile: profile.TPersonalProfile = {
   email: 'john.doe@example.com',
   phoneNumber: '+1234567890',
   dateOfBirth: '2025-02-01',
-  profilePicture: 'abc.com',
+  profilePicture: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1727665998/anxious-people-under-stress_01_8_ts6dma.png',
   languages: [
     { code: 'ENG', name: 'English' },
     { code: 'DEU', name: 'German' },
