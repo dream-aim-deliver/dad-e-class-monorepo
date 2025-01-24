@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { DateField } from './DateField';
-import { ProfilePicture } from './ProfilePicture';
-import { LanguageSelector } from './LanguageSelector';
+import { DateInput } from './dateInput';
+import { LanguageSelector } from './languageSelector';
 import { Button } from '../button';
 import { CheckBox } from '../checkBox';
 import { profile } from '@dad-e-class/models';
 import { TextInput } from '../textInput';
+import { ProfilePicture } from './profilePicture';
 
 interface UserProfileProps {
   initialData?: profile.TPersonalProfile;
@@ -97,9 +97,24 @@ export const UserProfile: React.FC<UserProfileProps> = ({
             }}
           />
         </div>
-
         <div className="mt-4">
-          <DateField
+          <TextInput
+            label="Password"
+            inputField={{
+              value: formData.phoneNumber || '',
+              setValue: (value) => handleChange('phoneNumber', value),
+              type: 'password',
+              hasRightContent: true,
+              rightContnet: (
+                <Button variant="text" size="small" className="ml-2 p-0">
+                  Change Password
+                </Button>
+              ),
+            }}
+          />
+        </div>
+        <div className="mt-4">
+          <DateInput
             value={formData.dateOfBirth || ''}
             onChange={(value) => handleChange('dateOfBirth', value)}
           />

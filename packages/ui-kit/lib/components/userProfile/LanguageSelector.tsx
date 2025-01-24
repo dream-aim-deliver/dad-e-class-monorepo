@@ -63,6 +63,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       </label>
       <div className="flex items-center">
         <select
+          data-testid="language-selector"
           value={selectedValue}
           onChange={(e) => handleLanguageSelect(e.target.value)}
           className="flex p-2 pl-4 flex-col items-start rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700 w-[30%] text-base-white outline-none"
@@ -76,9 +77,10 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             </option>
           ))}
         </select>
-        <div className="flex items-center">
+        <div data-testid="selected-languages" className="flex items-center">
           {selectedLanguages.map((lang) => (
             <div
+              id={`remove-language-container-${lang.name}`}
               key={lang.name}
               className="flex items-center rounded-full px-2 py-1"
             >
@@ -102,6 +104,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         </label>
         <div className="flex items-center">
           <select
+            data-testid="interface-language-selector"
             value={interfaceLanguage || 'English'}
             onChange={(e) => setInterfaceLanguage(e.target.value)}
             className="mt-2 flex p-2 pl-4 flex-col items-start rounded-lg bg-base-neutral-800 border-[1px] border-base-neutral-700 text-base-white outline-none w-[25%]"

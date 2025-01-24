@@ -27,7 +27,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({
   const [fileSize, setFileSize] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [file, setFile] = useState<string | null>(
-    defaultFile == '' ? null : defaultFile,
+    defaultFile === '' ? null : defaultFile,
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -88,63 +88,84 @@ export const FileSelector: React.FC<FileSelectorProps> = ({
 
   return (
     <div className="flex flex-col w-full max-w-md space-y-2">
-      <label className="text-sm text-stone-300">Upload Document</label>
+      <label className="text-sm text-stone-300" id="file-selector-label">
+        Upload Document
+      </label>
 
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="flex items-center w-12 h-12 rounded-lg border border-solid bg-stone-800 border-stone-700 justify-center">
+          <div
+            className="flex items-center w-12 h-12 rounded-lg border border-solid bg-stone-800 border-stone-700 justify-center"
+            id="upload-icon-container"
+          >
             <Upload size={20} className="text-stone-400" />
           </div>
           <div>
-            <div className="text-base text-stone-50 truncate">{fileName}</div>
-            <div className="text-sm text-stone-400">{fileSize}</div>
-            {error && <div className="text-sm text-red-500 mt-1">{error}</div>}
+            <div
+              className="text-base text-stone-50 truncate"
+              id="file-name-display"
+            >
+              {fileName}
+            </div>
+            <div className="text-sm text-stone-400" id="file-size-display">
+              {fileSize}
+            </div>
+            {error && (
+              <div className="text-sm text-red-500 mt-1" id="error-message">
+                {error}
+              </div>
+            )}
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           {!file && (
-            <Button
-              data-testid="upload-button"
-              variant="text"
-              size="small"
-              onClick={handleUploadClick}
-              className=""
-            >
-              <Upload />
-            </Button>
+            <div id="upload-button-container">
+              <Button
+                variant="text"
+                size="small"
+                onClick={handleUploadClick}
+                className=""
+              >
+                <Upload />
+              </Button>
+            </div>
           )}
 
           {file && (
             <>
-              <Button
-                data-testid="download-button"
-                variant="text"
-                size="small"
-                onClick={handleDownload}
-                className=""
-              >
-                <CloudDownload />
-              </Button>
-              <Button
-                data-testid="remove-button"
-                variant="text"
-                size="small"
-                onClick={handleRemove}
-                className=""
-              >
-                <Trash2 />
-              </Button>
+              <div id="download-button-container">
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={handleDownload}
+                  className=""
+                >
+                  <CloudDownload />
+                </Button>
+              </div>
+              <div id="remove-button-container">
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={handleRemove}
+                  className=""
+                >
+                  <Trash2 />
+                </Button>
+              </div>
             </>
           )}
         </div>
       </div>
 
       <input
+        role="textbox"
         ref={fileInputRef}
         type="file"
         accept={acceptedFileTypes.join(',')}
         onChange={handleFileChange}
+        id="file-input"
         className="hidden"
       />
     </div>
