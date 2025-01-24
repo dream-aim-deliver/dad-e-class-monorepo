@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { TextInput } from '@/components/textInput';
+import { TextInput } from '@/components/text-input';
 
 describe('<TextInput />', () => {
   const inputFieldProps = {

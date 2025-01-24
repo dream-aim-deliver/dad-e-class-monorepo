@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { FeedBackMessage } from '@/components/feedbackMessage';
+import { FeedBackMessage } from '@/components/feedback-message';
 
 describe('<FeedBackMessage />', () => {
   it('renders the feedback message with default props', () => {

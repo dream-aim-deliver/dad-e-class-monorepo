@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { TextAreaInput } from '@/components/textAreaInput';
+import { TextAreaInput } from '@/components/text-areaInput';
 
 describe('<TextAreaInput />', () => {
   const mockSetValue = vi.fn();

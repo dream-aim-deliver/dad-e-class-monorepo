@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { LanguageSelector } from '@/components/languageSelector';
+import { LanguageSelector } from '@/components/language-selector';
 import { LanguageSelectorProps } from '@/components/profile/types';
 
 const StatefulLanguageSelector = (args: LanguageSelectorProps) => {

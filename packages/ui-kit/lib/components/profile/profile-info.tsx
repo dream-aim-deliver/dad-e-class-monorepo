@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { DateInput } from '../dateInput';
-import { LanguageSelector } from '../languageSelector';
+import { DateInput } from '../date-input';
+import { LanguageSelector } from '../language-selector';
 import { Button } from '../button';
-import { CheckBox } from '../checkBox';
+import { CheckBox } from '../checkbox';
 import { profile } from '@dad-e-class/models';
-import { TextInput } from '../textInput';
-import { ProfilePicture } from './profilePicture';
+import { TextInput } from '../text-input';
+import { ProfilePicture } from './profile-picture';
 
 interface ProfileInfoProps {
   initialData?: profile.TPersonalProfile;

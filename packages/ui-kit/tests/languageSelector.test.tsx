@@ -1,6 +1,6 @@
 import { expect, describe, it, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import { LanguageSelector } from '@/components/languageSelector';
+import { LanguageSelector } from '@/components/language-selector';
 
 describe('<LanguageSelector />', () => {
   it('renders the language selector component', () => {

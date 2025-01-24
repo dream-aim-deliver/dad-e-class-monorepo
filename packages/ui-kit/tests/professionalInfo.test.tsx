@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 
-import { ProfessionalInfo } from '@/components/profile/professionalInfo';
+import { ProfessionalInfo } from '@/components/profile/professional-info';
 
 // Mock dependencies to isolate the component
 vi.mock('../components/button', () => ({

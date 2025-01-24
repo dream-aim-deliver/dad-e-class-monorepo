@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { FileSelector, FileSelectorProps } from '@/components/fileDisplay';
+import { FileSelector, FileSelectorProps } from '@/components/file-Display';
 
 const StatefulFileSelector = (args: FileSelectorProps) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);

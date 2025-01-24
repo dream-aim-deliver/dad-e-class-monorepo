@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 
 import { profile } from '@dad-e-class/models';
-import { ProfileInfo } from '@/components/profile/profileInfo';
+import { ProfileInfo } from '@/components/profile/profile-info';
 
 describe('ProfileInfo', () => {
   const initialData: profile.TPersonalProfile = {

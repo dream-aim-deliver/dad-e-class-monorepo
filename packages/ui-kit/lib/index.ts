@@ -1,17 +1,17 @@
-import { ProfileTabs } from './components/profileTabs';
+import { ProfileTabs } from './components/profile-tabs';
 
-export { IconButton, type IconButtonProps } from './components/iconButton';
-export { CheckBox, type CheckBoxProps } from './components/checkBox';
-export { InputField, type InputFieldProps } from './components/inputField';
-export { TextInput, type TextInputProps } from './components/textInput';
+export { IconButton, type IconButtonProps } from './components/icon-Button';
+export { CheckBox, type CheckBoxProps } from './components/checkbox';
+export { InputField, type InputFieldProps } from './components/input-Field';
+export { TextInput, type TextInputProps } from './components/text-input';
 export {
   FeedBackMessage,
   type FeedBackMessageProps,
-} from './components/feedbackMessage';
+} from './components/feedback-message';
 export {
   TextAreaInput,
   type TextAreaInputProps,
-} from './components/textAreaInput';
+} from './components/text-areaInput';
 
 export { Button, type ButtonProps } from './components/button';
 export { ThemeProvider, useTheme } from './contexts';

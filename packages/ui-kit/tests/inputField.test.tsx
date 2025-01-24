@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { InputField, InputFieldProps } from '@/components/inputField';
+import { InputField, InputFieldProps } from '@/components/input-Field';
 
 describe('<InputField />', () => {
   const mockSetValue = vi.fn();

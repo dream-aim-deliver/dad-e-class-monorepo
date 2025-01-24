@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { SkillItem } from './skillItem';
-import { FileSelector } from '../fileDisplay';
+import { SkillItem } from './skill-item';
+import { FileSelector } from '../file-Display';
 import { Button } from '../button';
 import { Plus, X } from 'lucide-react';
-import { CheckBox } from '../checkBox';
+import { CheckBox } from '../checkbox';
 import { profile } from '@dad-e-class/models';
-import { IconButton } from '../iconButton';
-import { TextInput } from '../textInput';
-import { InputField } from '../inputField';
-import { TextAreaInput } from '../textAreaInput';
+import { IconButton } from '../icon-Button';
+import { TextInput } from '../text-input';
+import { InputField } from '../input-Field';
+import { TextAreaInput } from '../text-areaInput';
 
 const Skills = [
   { name: 'Skill 1' },

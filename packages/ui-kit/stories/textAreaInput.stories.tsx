@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { TextAreaInput, TextAreaInputProps } from '@/components/textAreaInput';
+import { TextAreaInput, TextAreaInputProps } from '@/components/text-areaInput';
 import { vi } from 'vitest'; // Import `vi` for mocking functions
 
 const meta = {

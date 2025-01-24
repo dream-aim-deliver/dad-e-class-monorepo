@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { DateInput, DateInputProps } from '@/components/dateInput';
+import { DateInput, DateInputProps } from '@/components/date-input';
 import { useState } from 'react';
 
 // Stateful wrapper for DateInput

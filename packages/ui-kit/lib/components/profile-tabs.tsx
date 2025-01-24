@@ -1,8 +1,8 @@
 'use client';
 import React, { useState } from 'react';
 import { Tabs, TabList, TabTrigger, TabContent } from './tabs/tab';
-import { ProfileInfo } from './profile/profileInfo';
-import { ProfessionalInfo } from './profile/professionalInfo';
+import { ProfileInfo } from './profile/profile-info';
+import { ProfessionalInfo } from './profile/professional-info';
 import { profile } from '@dad-e-class/models';
 
 interface ProfileTabsProps {

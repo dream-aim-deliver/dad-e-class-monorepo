@@ -58,17 +58,17 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   return (
     <div className="flex flex-col w-full">
       {/* Languages Spoken Fluently */}
-      <label className="text-sm text-text-secondary">
+      <label className="text-sm text-text-secondary mb-2">
         Languages Spoken Fluently
       </label>
-      <div className="flex items-center">
+      <div className="flex items-center w-full">
         <select
           data-testid="language-selector"
           value={selectedValue}
           onChange={(e) => handleLanguageSelect(e.target.value)}
-          className="whitespace-nowrap flex p-2 pl-4 flex-col items-start rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700 w-[30%] text-base-white outline-none"
+          className="whitespace-nowrap flex p-2 w-[30%] flex-col items-start rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700 text-base-white outline-none"
         >
-          <option value="" disabled className="whitespace-nowrap">
+          <option value="" disabled className="whitespace-nowrap p-2">
             Choose Language
           </option>
           {availableLanguages.map((lang) => (

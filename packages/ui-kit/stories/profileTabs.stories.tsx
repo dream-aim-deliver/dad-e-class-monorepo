@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ProfileTabs } from '@/components/profileTabs';
+import { ProfileTabs } from '@/components/profile-tabs';
 import { profile } from '@dad-e-class/models';
 
 const meta: Meta<typeof ProfileTabs> = {

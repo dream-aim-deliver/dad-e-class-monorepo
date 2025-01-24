@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   FeedBackMessage,
   FeedBackMessageProps,
-} from '@/components/feedbackMessage';
+} from '@/components/feedback-message';
 
 const meta = {
   title: 'Components/FeedBackMessage',

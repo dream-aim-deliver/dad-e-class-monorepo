@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   ProfilePicture,
   ProfilePictureProps,
-} from '@/components/profile/profilePicture';
+} from '@/components/profile/profile-picture';
 
 const StatefulProfilePicture = (args: ProfilePictureProps) => {
   const [image, setImage] = useState<string>(

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ProfileInfo } from '@/components/profile/profileInfo';
+import { ProfileInfo } from '@/components/profile/profile-info';
 import { expect, fn } from '@storybook/test';
 
 const meta: Meta<typeof ProfileInfo> = {

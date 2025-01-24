@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ProfessionalInfo } from '@/components/profile/professionalInfo';
+import { ProfessionalInfo } from '@/components/profile/professional-info';
 import { fn } from '@storybook/test';
 
 const meta: Meta<typeof ProfessionalInfo> = {
