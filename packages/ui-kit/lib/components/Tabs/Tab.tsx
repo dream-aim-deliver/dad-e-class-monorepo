@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { TabList } from './TabList';
-import { TabTrigger } from './TabTrigger';
-import { TabContent } from './TabContent';
+import { TabList } from './tabList';
+import { TabTrigger } from './tabTrigger';
+import { TabContent } from './tabContent';
 import { cn } from '../../utils/style-utils';
-import { TabProvider } from './TabContext';
+import { TabProvider } from './tabContext';
 
 
 interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {

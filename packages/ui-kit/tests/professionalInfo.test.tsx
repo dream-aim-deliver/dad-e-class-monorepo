@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ProfessionalInfo } from '@/components/professionalCard/ProfessionalInfo';
+import { ProfessionalInfo } from '@/components/profile/professionalInfo';
 
 // Mock dependencies to isolate the component
 vi.mock('../components/button', () => ({
@@ -78,6 +78,6 @@ describe('ProfessionalInfo Component', () => {
         await act(async () => {
           fireEvent.click(removeButton);
         });
-      });
+    });
 
 });

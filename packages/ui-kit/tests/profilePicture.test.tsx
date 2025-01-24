@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import { ProfilePicture } from '@/components/userProfile/profilePicture';
+import { ProfilePicture } from '@/components/profile/profilePicture';
 
 describe('<ProfilePicture />', () => {
   it('renders default image and label by default', () => {

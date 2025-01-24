@@ -1,5 +1,5 @@
 
-import { Tabs } from '@/components/Tabs/Tab';
+import { Tabs } from '@/components/tabs/tab';
 import type { Meta, StoryObj } from '@storybook/react';
 import { User, Bell, Settings } from "lucide-react"
 
@@ -18,10 +18,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Story = {
   render: () => (
-    <div className="theme-orange overflow-auto">
+    <div className="overflow-auto">
       <Tabs.Root className=' ' defaultTab="account">
         <Tabs.List variant='small'
-          className='flex overflow-auto bg-[#292524]  rounded-smallrad  gap-2'>
+          className='flex overflow-auto bg-base-neutral-800  rounded-medium  gap-2'>
           <Tabs.Trigger icon={<User className="w-4 h-4 mr-2" />} className='' value="account">
 
             Account

@@ -1,18 +1,18 @@
 import * as React from 'react';
-import { DateInput } from './dateInput';
-import { LanguageSelector } from './languageSelector';
+import { DateInput } from '../dateInput';
+import { LanguageSelector } from '../languageSelector';
 import { Button } from '../button';
 import { CheckBox } from '../checkBox';
 import { profile } from '@dad-e-class/models';
 import { TextInput } from '../textInput';
 import { ProfilePicture } from './profilePicture';
 
-interface UserProfileProps {
+interface ProfileInfoProps {
   initialData?: profile.TPersonalProfile;
   onSave?: (profile: profile.TPersonalProfile) => void;
 }
 
-export const UserProfile: React.FC<UserProfileProps> = ({
+export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   initialData,
   onSave,
 }) => {

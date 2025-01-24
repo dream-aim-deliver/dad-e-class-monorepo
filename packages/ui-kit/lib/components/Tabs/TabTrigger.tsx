@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTabContext } from './TabContext';
+import { useTabContext } from './tabContext';
 import { cn } from '../../utils/style-utils';
 
 interface TabTriggerProps

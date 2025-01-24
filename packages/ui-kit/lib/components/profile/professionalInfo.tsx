@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SkillItem } from './skillItem';
-import { FileSelector } from './fileDisplay';
+import { FileSelector } from '../fileDisplay';
 import { Button } from '../button';
 import { Plus, X } from 'lucide-react';
 import { CheckBox } from '../checkBox';
@@ -10,7 +10,7 @@ import { TextInput } from '../textInput';
 import { InputField } from '../inputField';
 import { TextAreaInput } from '../textAreaInput';
 
-const PREDEFINED_SKILLS = [
+const Skills = [
   { name: 'Skill 1' },
   { name: 'Skill 2' },
   { name: 'Skill 3' },
@@ -80,7 +80,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     );
   };
 
-  const filteredSkills = PREDEFINED_SKILLS.filter((skill) =>
+  const filteredSkills = Skills.filter((skill) =>
     skill.name.toLowerCase().includes(skillSearchQuery.toLowerCase()),
   );
 

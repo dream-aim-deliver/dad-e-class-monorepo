@@ -3,6 +3,7 @@ import { TextInput, TextInputProps } from '@/components/textInput';
 
 const meta = {
   title: 'Components/TextInput',
+  tags: ['autodocs'],
   component: TextInput,
   parameters: {
     layout: 'centered',

@@ -1,6 +1,6 @@
 import { expect, describe, it, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { DateInput } from '@/components/userProfile/dateInput';
+import { DateInput } from '@/components/dateInput';
 
 const mockOnChange = vi.fn();
 

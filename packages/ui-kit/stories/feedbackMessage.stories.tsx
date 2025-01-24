@@ -6,6 +6,7 @@ import {
 
 const meta = {
   title: 'Components/FeedBackMessage',
+  tags: ['autodocs'],
   component: FeedBackMessage,
   parameters: {
     layout: 'centered',

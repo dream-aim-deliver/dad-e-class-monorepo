@@ -4,6 +4,7 @@ import { vi } from 'vitest'; // Import `vi` for mocking functions
 
 const meta = {
   title: 'Components/TextAreaInput',
+  tags: ['autodocs'],
   component: TextAreaInput,
   parameters: {
     layout: 'centered',

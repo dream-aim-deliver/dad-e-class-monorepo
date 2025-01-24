@@ -4,6 +4,7 @@ import { RefreshCcw, Trash2, Plus } from 'lucide-react';
 
 const meta: Meta<typeof IconButton> = {
   title: 'Components/IconButton',
+  tags: ['autodocs'],
   component: IconButton,
   parameters: {
     layout: 'centered',

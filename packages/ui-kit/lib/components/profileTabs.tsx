@@ -1,8 +1,8 @@
 'use client';
 import React, { useState } from 'react';
-import { Tabs, TabList, TabTrigger, TabContent } from './Tabs/Tab';
-import { UserProfile } from './userProfile/UserProfile';
-import { ProfessionalInfo } from './professionalCard/ProfessionalInfo';
+import { Tabs, TabList, TabTrigger, TabContent } from './tabs/tab';
+import { ProfileInfo } from './profile/profileInfo';
+import { ProfessionalInfo } from './profile/professionalInfo';
 import { profile } from '@dad-e-class/models';
 
 interface ProfileTabsProps {
@@ -15,21 +15,17 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   onSave,
 }) => {
   const [activeTab, setActiveTab] = useState('personal');
-
-  // Check if we have a professional profile
   const hasProfessionalProfile = initialProfiles.length > 1;
-
-  // Extract profiles
   const personalProfile = initialProfiles[0] as profile.TPersonalProfile;
   const professionalProfile = hasProfessionalProfile
     ? (initialProfiles[1] as profile.TProfessionalProfile)
     : undefined;
 
   if (!hasProfessionalProfile) {
-    // If there's only a personal profile, render UserProfile without tabs
+    // If there's only a personal profile, render ProfileInfo without tabs
     return (
       <div className="w-full max-w-3xl mx-auto">
-        <UserProfile
+        <ProfileInfo
           initialData={personalProfile}
           onSave={(profile) => onSave?.([profile])}
         />
@@ -52,7 +48,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
         </TabList>
 
         <TabContent value="personal">
-          <UserProfile
+          <ProfileInfo
             initialData={personalProfile}
             onSave={(profile) => {
               if (professionalProfile) {

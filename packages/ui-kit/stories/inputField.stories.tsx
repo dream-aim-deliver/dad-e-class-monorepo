@@ -4,6 +4,7 @@ import { InputField, InputFieldProps } from '@/components/inputField';
 const meta = {
   title: 'Components/InputField',
   component: InputField,
+  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
   },
@@ -26,6 +27,12 @@ const meta = {
         ],
       },
     },
+    type: {
+      control: {
+        type: 'select',
+        options: ['text', 'date', 'password'],
+      },
+    },
     value: { control: 'text' },
     setValue: { action: 'setValue' },
   },
@@ -44,7 +51,7 @@ export const Placeholder: Story = {
     inputText: 'Placeholder',
     state: 'placeholder',
     value: '',
-    setValue: (value: string) => console.log('Value set to:', value),
+    type: 'text',
   },
 };
 
@@ -57,7 +64,7 @@ export const WithLeftContent: Story = {
     inputText: 'Search...',
     state: 'placeholder',
     value: '',
-    setValue: (value: string) => console.log('Value set to:', value),
+    type: 'text',
   },
 };
 
@@ -70,7 +77,7 @@ export const WithRightContent: Story = {
     inputText: 'Type here...',
     state: 'placeholder',
     value: '',
-    setValue: (value: string) => console.log('Value set to:', value),
+    type: 'password',
   },
 };
 
@@ -83,7 +90,7 @@ export const Disabled: Story = {
     inputText: 'Disabled input',
     state: 'disabled',
     value: '',
-    setValue: (value: string) => console.log('Value set to:', value),
+   
   },
 };
 
@@ -96,7 +103,7 @@ export const Warning: Story = {
     inputText: 'Warning state',
     state: 'warning',
     value: '',
-    setValue: (value: string) => console.log('Value set to:', value),
+   
   },
 };
 
@@ -109,6 +116,6 @@ export const Error: Story = {
     inputText: 'Error state',
     state: 'error',
     value: '',
-    setValue: (value: string) => console.log('Value set to:', value),
+    
   },
 };
