@@ -7,6 +7,7 @@ export interface TextInputProps {
   hasFeedback?: boolean;
   inputField: InputFieldProps;
   feedbackMessage?: FeedBackMessageProps;
+  id?:string;
 }
 
 export const TextInput: FC<TextInputProps> = ({
@@ -14,9 +15,10 @@ export const TextInput: FC<TextInputProps> = ({
   hasFeedback = false,
   inputField,
   feedbackMessage,
+  id
 }) => {
   const inputId =
-    inputField.id || `input-${Math.random().toString(36).slice(2, 11)}`;
+    id || inputField.id || `input-${Math.random().toString(36).slice(2, 11)}`;
 
   return (
     <div className="flex flex-col items-start gap-1">

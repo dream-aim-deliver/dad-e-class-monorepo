@@ -1,9 +1,10 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+
 import { ProfessionalInfo } from '@/components/profile/professionalInfo';
 
+// Mock dependencies to isolate the component
 vi.mock('../components/button', () => ({
     Button: vi.fn(({ children, onClick, ...props }) => (
         <button onClick={onClick} {...props}>{children}</button>
@@ -37,10 +38,10 @@ describe('ProfessionalInfo Component', () => {
     it('opens and closes skills modal', async () => {
         render(<ProfessionalInfo onSave={mockOnSave} />);
         const addSkillsButton = screen.getByText(/Add Skills/i);
-        await userEvent.click(addSkillsButton);
+        fireEvent.click(addSkillsButton);
         expect(screen.getByText(/Select Skills/i)).toBeInTheDocument();
         const closeModalButton = screen.getByTestId('close-modal-button');
-        await userEvent.click(closeModalButton);
+         fireEvent.click(closeModalButton);
         expect(screen.queryByText(/Select Skills/i)).not.toBeInTheDocument();
     });
 
@@ -48,16 +49,16 @@ describe('ProfessionalInfo Component', () => {
     it('toggles private profile', async () => {
         render(<ProfessionalInfo onSave={mockOnSave} />);
         const privateProfileCheckbox = screen.getByLabelText(/Private profile/i);
-        await userEvent.click(privateProfileCheckbox); 
+       fireEvent.click(privateProfileCheckbox); 
         expect(privateProfileCheckbox).toBeChecked();
     });
 
 
     it('handles form discard', async () => {
         render(<ProfessionalInfo initialData={mockInitialData} onSave={mockOnSave} />);
-        await userEvent.type(screen.getByLabelText(/bio/i), 'Modified bio'); 
+        fireEvent.change(screen.getByLabelText(/bio/i), 'Modified bio'); 
         const discardButton = screen.getByText(/Discard/i);
-        await userEvent.click(discardButton);
+        fireEvent.click(discardButton);
         expect(screen.getByDisplayValue('Test bio')).toBeInTheDocument();
     });
 

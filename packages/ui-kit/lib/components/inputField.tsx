@@ -50,7 +50,7 @@ export const InputField: FC<InputFieldProps> = ({
       <div className="flex items-center gap-2 w-full">
         {hasLeftContent && leftContent}
         <input
-          id={id}
+          data-testid={id}
           type={type}
           placeholder={inputText}
           disabled={state === 'disabled'}

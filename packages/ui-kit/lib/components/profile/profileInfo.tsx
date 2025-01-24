@@ -63,6 +63,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
         <TextInput
           label="Name"
           inputField={{
+            id: 'name',
             value: formData.name,
             setValue: (value) => handleChange('name', value),
           }}
@@ -70,8 +71,10 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
         <div className="mt-4">
           <TextInput
+            
             label="Surname"
             inputField={{
+              id:"surname",
               value: formData.surname,
               setValue: (value) => handleChange('surname', value),
             }}
@@ -80,8 +83,10 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
         <div className="mt-4">
           <TextInput
+            
             label="Email"
             inputField={{
+              id: 'email',
               value: formData.email,
               setValue: (value) => handleChange('email', value),
             }}
@@ -92,6 +97,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           <TextInput
             label="Phone Number"
             inputField={{
+              id: 'phone',
               value: formData.phoneNumber || '',
               setValue: (value) => handleChange('phoneNumber', value),
             }}
@@ -101,6 +107,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           <TextInput
             label="Password"
             inputField={{
+              id:'password',
               value: formData.phoneNumber || '',
               setValue: (value) => handleChange('phoneNumber', value),
               type: 'password',
@@ -142,6 +149,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             <TextInput
               label="Company Name"
               inputField={{
+                id:'companyName',
                 value: formData.representingCompanyName || '',
                 setValue: (value) =>
                   handleChange('representingCompanyName', value),
@@ -151,6 +159,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
               <TextInput
                 label="Company UID (VAT)"
                 inputField={{
+                  id:'companyUID',
                   value: formData.representedCompanyUID || '',
                   setValue: (value) =>
                     handleChange('representedCompanyUID', value),
@@ -161,6 +170,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
               <TextInput
                 label="Company Address"
                 inputField={{
+                  id:'companyAddress',
                   value: formData.representedCompanyAddress || '',
                   setValue: (value) =>
                     handleChange('representedCompanyAddress', value),

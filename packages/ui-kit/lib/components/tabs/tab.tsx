@@ -10,7 +10,7 @@ import { TabProvider } from './tabContext';
 interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
   defaultTab: string;
   children: React.ReactNode;
-  onValueChange: (value: string) => void;
+  onValueChange?: (value: string) => void;
 }
 
 function TabsRoot({ defaultTab, children, className, ...props }: TabsProps) {
