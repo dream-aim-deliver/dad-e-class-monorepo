@@ -1,5 +1,5 @@
 
-import { Tabs } from '@/components/tabs/tab';
+import { Tabs } from '@/components/profile/tabs/tab';
 import type { Meta, StoryObj } from '@storybook/react';
 import { User, Bell, Settings } from "lucide-react"
 
