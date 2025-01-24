@@ -3,7 +3,7 @@ import React from 'react';
 import { TabList } from './tabList';
 import { TabTrigger } from './tabTrigger';
 import { TabContent } from './tabContent';
-import { cn } from '../../../utils/style-utils';
+import { cn } from '../../utils/style-utils';
 import { TabProvider } from './tabContext';
 
 

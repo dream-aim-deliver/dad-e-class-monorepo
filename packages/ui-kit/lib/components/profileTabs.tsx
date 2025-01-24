@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Tabs, TabList, TabTrigger, TabContent } from './profile/tabs/tab';
+import { Tabs, TabList, TabTrigger, TabContent } from './tabs/tab';
 import { ProfileInfo } from './profile/profileInfo';
 import { ProfessionalInfo } from './profile/professionalInfo';
 import { profile } from '@dad-e-class/models';

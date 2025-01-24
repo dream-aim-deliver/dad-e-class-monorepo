@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useTabContext } from './tabContext';
-import { cn } from '../../../utils/style-utils';
+import { cn } from '../../utils/style-utils';
 
 
 interface TabContentProps extends React.HTMLAttributes<HTMLDivElement> {

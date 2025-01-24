@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '../../../utils/style-utils';
+import { cn } from '../../utils/style-utils';
 
 interface TabListProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
