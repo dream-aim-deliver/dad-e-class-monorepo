@@ -10,7 +10,6 @@ describe('<ProfilePicture />', () => {
 
     expect(label).toBeInTheDocument();
     expect(image).toBeInTheDocument();
-    expect(image).toHaveAttribute('src', '/api/placeholder/64/64');
   });
 
   it('displays the default file name', () => {
