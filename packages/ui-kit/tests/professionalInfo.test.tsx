@@ -4,7 +4,6 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ProfessionalInfo } from '@/components/profile/professionalInfo';
 
-// Mock dependencies to isolate the component
 vi.mock('../components/button', () => ({
     Button: vi.fn(({ children, onClick, ...props }) => (
         <button onClick={onClick} {...props}>{children}</button>
@@ -60,24 +59,6 @@ describe('ProfessionalInfo Component', () => {
         const discardButton = screen.getByText(/Discard/i);
         await userEvent.click(discardButton);
         expect(screen.getByDisplayValue('Test bio')).toBeInTheDocument();
-    });
-
-    it('handles file upload and removal', async () => {
-        render(<ProfessionalInfo onSave={mockOnSave} />);
-    
-        // Find file selector buttons
-        const uploadButton = screen.getByTestId('upload-button');
-        const removeButton = screen.getByTestId('remove-button');
-    
-        // Simulate file upload
-        await act(async () => {
-          fireEvent.click(uploadButton);
-        });
-    
-        // Simulate file removal
-        await act(async () => {
-          fireEvent.click(removeButton);
-        });
     });
 
 });

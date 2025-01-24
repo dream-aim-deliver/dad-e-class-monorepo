@@ -1,12 +1,12 @@
 @import 'tailwindcss';
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&display=swap');
 
 :root {
   --font-nunito: 'Nunito', sans-serif;
-  --font-geist-mono: 'Geist Mono', monospace;
+  --font-roboto: 'Roboto', sans-serif;
   --font-raleway: 'Raleway', sans-serif;
   --font-figtree: 'Figtree', sans-serif;
 
@@ -415,7 +415,7 @@
   --font-weight-h1: var(--font-weight-important);
   --font-weight-h3: var(--font-weight-important);
   --font-weight-h5: var(--font-weight-important);
-  font-family: var(--font-geist-mono);
+  font-family: var(--font-roboto);
 }
 
 .theme-Bewerbeagenture {

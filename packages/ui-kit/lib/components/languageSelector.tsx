@@ -58,7 +58,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   return (
     <div className="flex flex-col w-full">
       {/* Languages Spoken Fluently */}
-      <label className="text-sm text-text-secondary mb-2">
+      <label className="text-sm text-text-secondary">
         Languages Spoken Fluently
       </label>
       <div className="flex items-center">
@@ -66,7 +66,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           data-testid="language-selector"
           value={selectedValue}
           onChange={(e) => handleLanguageSelect(e.target.value)}
-          className="flex p-2 pl-4 flex-col items-start rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700 w-[30%] text-base-white outline-none"
+          className="flex mt-2 p-2 flex-col items-start rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700 w-auto text-base-white outline-none"
         >
           <option value="" disabled>
             Choose Language
@@ -98,7 +98,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       </div>
 
       {/* Interface Language */}
-      <div className="mt-6">
+      <div className="mt-4">
         <label className="text-sm text-text-secondary mb-2">
           Interface Language
         </label>
@@ -107,7 +107,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             data-testid="interface-language-selector"
             value={interfaceLanguage || 'English'}
             onChange={(e) => setInterfaceLanguage(e.target.value)}
-            className="mt-2 flex p-2 pl-4 flex-col items-start rounded-lg bg-base-neutral-800 border-[1px] border-base-neutral-700 text-base-white outline-none w-[25%]"
+            className="mt-2 flex p-2 flex-col w-auto items-start rounded-lg bg-base-neutral-800 border-[1px] border-base-neutral-700 text-base-white outline-none"
           >
             {AVAILABLE_LANGUAGES.map((lang) => (
               <option key={lang.code} value={lang.name}>

@@ -54,12 +54,12 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   };
 
   return (
-    <div className="flex flex-col justify-center p-6 rounded-lg border border-solid bg-stone-900 border-stone-800 max-md:px-5">
-      <div className="flex flex-col w-full max-md:max-w-full">
-        <div className="text-xl leading-[120%] text-[#FAFAF9] mb-4">
-          Personal Profile
-        </div>
+    <div className="flex w-full gap-4 items-start p-4 rounded-medium border border-solid bg-card-fill border-card-stroke">
 
+      <div className="flex flex-col w-full max-md:max-w-full">
+        <h1 className="text-xl font-bold leading-tight text-text-primary">
+          Personal Profile
+        </h1>
         <TextInput
           label="Name"
           inputField={{

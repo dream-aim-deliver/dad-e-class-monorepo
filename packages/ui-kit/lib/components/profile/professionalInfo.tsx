@@ -182,7 +182,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             <h2 className="text-lg font-bold text-text-primary">Your skills</h2>
             <Button
               onClick={() => setShowModal(true)}
-              className="ml-auto gap-2"
+              className="md:ml-auto gap-2"
               variant="secondary"
               size="medium"
             >
@@ -274,11 +274,11 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           />
         </div>
 
-        <div className="flex gap-4 mt-4 w-full">
+        <div className="flex flex-wrap gap-4 items-center mt-4 w-full text-base font-bold leading-none max-md:max-w-full">
           <Button
             variant="secondary"
             size="medium"
-            className="flex-1 min-h-[40px]"
+             className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
             onClick={handleDiscard}
           >
             Discard
@@ -286,7 +286,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <Button
             variant="primary"
             size="medium"
-            className="flex-1 min-h-[40px]"
+             className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
           >
             Save Changes
           </Button>
