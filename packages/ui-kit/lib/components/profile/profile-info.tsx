@@ -3,7 +3,7 @@ import { DateInput } from '../date-input';
 import { LanguageSelector } from '../language-selector';
 import { Button } from '../button';
 import { CheckBox } from '../checkbox';
-import { profile } from '@dad-e-class/models';
+import { profile } from '@maany_shr/e-class-models';
 import { TextInput } from '../text-input';
 import { ProfilePicture } from './profile-picture';
 

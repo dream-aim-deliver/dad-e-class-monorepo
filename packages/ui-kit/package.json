@@ -15,6 +15,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@maany_shr/e-class-models": "^1.4.2",
     "@nx/vite": "^20.1.4",
     "@tailwindcss/vite": "4.0.0-beta.5",
     "@testing-library/jest-dom": "^6.6.3",

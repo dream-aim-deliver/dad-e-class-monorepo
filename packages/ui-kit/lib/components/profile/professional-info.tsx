@@ -4,7 +4,7 @@ import { FileSelector } from '../file-Display';
 import { Button } from '../button';
 import { Plus, X } from 'lucide-react';
 import { CheckBox } from '../checkbox';
-import { profile } from '@dad-e-class/models';
+import { profile } from '@maany_shr/e-class-models';
 import { IconButton } from '../icon-Button';
 import { TextInput } from '../text-input';
 import { InputField } from '../input-Field';

@@ -1,6 +1,6 @@
 'use client';
 import { ProfileTabs } from '@maany_shr/e-class-ui-kit';
-import { profile } from '@dad-e-class/models';
+import { profile } from '@maany_shr/e-class-models';
 
 // Mock data for a coach/course creator
 const mockPersonalProfile: profile.TPersonalProfile = {

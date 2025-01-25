@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 
-import { profile } from '@dad-e-class/models';
+import { profile } from '@maany_shr/e-class-models';
 import { ProfileInfo } from '@/components/profile/profile-info';
 
 describe('ProfileInfo', () => {
