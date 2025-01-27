@@ -1,9 +1,34 @@
 import { z } from 'zod'
+import { LanguageSchema } from './language'
 
-export const CourseMetedataSchema = z.object({
+
+export const CourseDurationSchema = z.object({
+    video: z.number(),  // in minutes, duration of video content
+    coaching: z.number(),  // in minutes, duration of coaching sessions
+    selfStudy: z.number(),  // in minutes, duration of self-study content
+})
+export type TCourseDuration = z.infer<typeof CourseDurationSchema>
+
+export const CoursePricingSchema = z.object({
+    fullPrice: z.number(),
+    partialPrice: z.number(),
+    currency: z.string(),
+})
+export type TCoursePricing = z.infer<typeof CoursePricingSchema>
+
+
+export const CourseMetadataSchema = z.object({
     title: z.string(),
     description: z.string(),
-    duration: z.number(),
+    duration: CourseDurationSchema,
+    pricing: CoursePricingSchema,
+    imageUrl: z.string(),
+    rating: z.number(),
+    author: z.object({
+        name: z.string(),
+        image: z.string(),
+    }),
+    language: LanguageSchema,
 })
 
 /**
@@ -18,4 +43,4 @@ export const CourseMetedataSchema = z.object({
  * - `duration`: A number indicating the duration of the course.
  */
 
-export type TCourseMetedata = z.infer<typeof CourseMetedataSchema>
+export type TCourseMetadata = z.infer<typeof CourseMetadataSchema>
