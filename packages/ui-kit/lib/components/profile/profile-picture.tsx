@@ -95,11 +95,20 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({
 
       <div className="flex items-center gap-4">
         <div className="relative group">
-          <img
-            src={image ? image : "https://res.cloudinary.com/dgk9gxgk4/image/upload/v1727665998/anxious-people-under-stress_01_8_ts6dma.png"}
-            alt="Profile"
-            className="w-16 h-16 rounded-full object-cover bg-stone-800"
-          />
+          {defaultImage || image ? (
+            <img
+              src={image ? image : defaultImage}
+              alt="Profile"
+              className="w-16 h-16 rounded-full object-cover bg-stone-800"
+            />
+          ) : (
+            <div
+              className="flex items-center w-12 h-12 rounded-full border border-solid bg-stone-800 border-stone-700 justify-center"
+              id="upload-icon-container"
+            >
+              <Upload size={20} className="text-stone-400" />
+            </div>
+          )}
           <div
             id="upload-button-container"
             className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
