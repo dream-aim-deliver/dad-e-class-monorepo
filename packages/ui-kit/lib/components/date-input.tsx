@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { IconButton } from './profile/icon-button';
+import { IconButton } from './icon-button';
 import { Calendar } from 'lucide-react';
 
 export interface DateInputProps {

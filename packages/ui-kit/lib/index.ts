@@ -1,8 +1,8 @@
 import { ProfileTabs } from './components/profile-tabs';
 
-export { IconButton, type IconButtonProps } from './components/profile/icon-button';
-export { CheckBox, type CheckBoxProps } from './components/profile/checkbox';
-export { InputField, type InputFieldProps } from './components/profile/input-field';
+export { IconButton, type IconButtonProps } from './components/icon-button';
+export { CheckBox, type CheckBoxProps } from './components/checkbox';
+export { InputField, type InputFieldProps } from './components/input-field';
 export { TextInput, type TextInputProps } from './components/text-input';
 export {
   FeedBackMessage,

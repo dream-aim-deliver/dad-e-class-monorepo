@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { CheckBox, CheckBoxProps } from '@/components/profile/checkbox';
+import { CheckBox, CheckBoxProps } from '@/components/checkbox';
 
 describe('<CheckBox />', () => {
   const mockOnChange = vi.fn();
