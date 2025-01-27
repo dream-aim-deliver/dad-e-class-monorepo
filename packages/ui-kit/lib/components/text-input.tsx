@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { FeedBackMessage, FeedBackMessageProps } from './feedback-message';
-import { InputField, InputFieldProps } from './input-Field';
+import { InputField, InputFieldProps } from '@/components/input-Field';
 
 export interface TextInputProps {
   label?: string;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { X } from 'lucide-react';
 import { SkillItemProps } from './types';
-import { Button } from '../button';
+import { Button } from '@/components/button';
 
 export interface SkillItemExtendedProps extends SkillItemProps {
   onRemove: (name: string) => void;

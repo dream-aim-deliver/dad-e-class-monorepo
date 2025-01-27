@@ -1,7 +1,7 @@
 import { ProfileTabs } from './components/profile-tabs';
 
 export { IconButton, type IconButtonProps } from './components/icon-Button';
-export { CheckBox, type CheckBoxProps } from './components/checkbox';
+export { CheckBox, type CheckBoxProps } from './components/checkBox';
 export { InputField, type InputFieldProps } from './components/input-Field';
 export { TextInput, type TextInputProps } from './components/text-input';
 export {
@@ -12,7 +12,6 @@ export {
   TextAreaInput,
   type TextAreaInputProps,
 } from './components/text-areaInput';
-
 export { Button, type ButtonProps } from './components/button';
 export { ThemeProvider, useTheme } from './contexts';
 export { ProfileTabs };
