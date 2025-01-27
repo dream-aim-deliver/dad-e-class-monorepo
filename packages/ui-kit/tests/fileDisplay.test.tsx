@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { FileSelector } from '@/components/profile/file-display';
+import { FileSelector } from '@/components/file-display';
 
 describe('<FileSelector />', () => {
   it('renders default label and file name by default', () => {
