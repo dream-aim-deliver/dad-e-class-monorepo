@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { IconButton } from '@/components/icon-Button';
+import { IconButton } from '@/components/profile/icon-button';
 
 describe('<IconButton />', () => {
   const mockOnClick = vi.fn();

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Upload, CloudDownload, Trash2 } from 'lucide-react';
-import { Button } from '@/components/button';
+import { Button } from '../button';
 
 export interface FileSelectorProps {
   defaultFile?: string;

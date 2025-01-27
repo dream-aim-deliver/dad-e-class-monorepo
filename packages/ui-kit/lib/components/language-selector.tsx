@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { X } from 'lucide-react';
 import { LanguageSelectorProps } from './profile/types';
-import { Button } from '@/components/button';
+import { Button } from './button';
 
 const AVAILABLE_LANGUAGES = [
   { name: 'English', code: 'en' },
