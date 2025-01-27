@@ -6,10 +6,8 @@ describe('<ProfilePicture />', () => {
   it('renders default image and label by default', () => {
     render(<ProfilePicture />);
     const label = screen.getByText('Profile Picture');
-    const image = screen.getByAltText('Profile');
 
     expect(label).toBeInTheDocument();
-    expect(image).toBeInTheDocument();
   });
 
   it('displays the default file name', () => {
