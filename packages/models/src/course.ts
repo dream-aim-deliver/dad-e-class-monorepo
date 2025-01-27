@@ -30,4 +30,4 @@ export const CourseMetadataSchema = z.object({
  * - `duration`: A number indicating the duration of the course.
  */
 
-export type TCourseMetedata = z.infer<typeof CourseMetadataSchema>
+export type TCourseMetadata = z.infer<typeof CourseMetadataSchema>

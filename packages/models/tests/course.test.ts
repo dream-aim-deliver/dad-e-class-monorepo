@@ -1,9 +1,9 @@
-import { CourseMetadataSchema, TCourseMetedata } from '../src/course';
+import { CourseMetadataSchema, TCourseMetadata } from '../src/course';
 import { describe, it, expect } from 'vitest';
 
 describe('course', () => {
     it('should validate course metadata', () => {
-        const validCourse: TCourseMetedata = {
+        const validCourse: TCourseMetadata = {
             title: 'Introduction to TypeScript',
             description: 'A beginner-friendly introduction to TypeScript.',
             duration: 60,
