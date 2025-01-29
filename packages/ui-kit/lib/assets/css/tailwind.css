@@ -1,5 +1,15 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&display=swap');
+
 :root {
+  --font-nunito: 'Nunito', sans-serif;
+  --font-roboto: 'Roboto', sans-serif;
+  --font-raleway: 'Raleway', sans-serif;
+  --font-figtree: 'Figtree', sans-serif;
+
   --text-2xs: 10px;
   --text-xs: 12px;
   --text-sm: 14px;
@@ -31,9 +41,16 @@
   --radius-big: var(--radius-big);
   --radius-huge: var(--radius-huge);
 
-  --card-fill: var(--card-color-fill);
-  --card-fill-transparent: var(--card-color-transparent);
-  --card-stroke: var(--card-color-stroke);
+  --font-weight-important: var(--font-weight-important);
+  --font-weight-normal: var(--font-weight-normal);
+  --font-weight-h1: var(--font-weight-h1);
+  --font-weight-h3: var(--font-weight-h3);
+  --font-weight-h5: var(--font-weight-h5);
+
+
+  --color-card-fill: var(--color-card-fill);
+  --card-fill-transparent: var(--color-card-transparent);
+  --color-card-stroke: var(--color-card-stroke);
   --color-divider: var(--color-divider);
   --color-base-white: var(--color-base-white);
   --color-base-black: var(--color-base-black);
@@ -123,15 +140,64 @@
   --color-slider-progress-stroke: var(--color-slider-progress-stroke);
 }
 
+@layer base {
+  h1 {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-weight-h1);
+    line-height: 100%;
+    letter-spacing: -0.96px;
+
+    @media (min-width: 768px) {
+      letter-spacing: -1.28px;
+    }
+  }
+
+  h2 {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-important);
+    line-height: 100%;
+    letter-spacing: -0.64px;
+
+    @media (min-width: 768px) {
+      letter-spacing: -0.96px;
+    }
+  }
+
+  h3 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-h3);
+    line-height: 110%;
+
+  }
+
+  h4 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-important);
+    line-height: 120%;
+  }
+
+  h5 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-h5);
+    line-height: 120%;
+  }
+
+  h6 {
+    font-size: var(--text-md);
+    font-weight: var(--font-weight-important);
+    line-height: 120%;
+  }
+}
+
 .theme-just-do-add {
   --radius-small: 6px;
   --radius-medium: 8px;
   --radius-big: 12px;
   --radius-huge: 16px;
-  
-  --card-color-fill: #1C1917;
-  --card-color-transparent: rgba(28, 25, 23, 0);
-  --card-color-stroke: #292524;
+
+  --color-card-fill: #1C1917;
+  --color-card-transparent: rgba(28, 25, 23, 0);
+  --color-card-stroke: #292524;
   --color-divider: #44403C;
   --color-base-white: #FFFFFF;
   --color-base-black: #000000;
@@ -221,6 +287,13 @@
   --color-slider-knob-stroke: var(--color-base-brand-300);
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
+
+  --font-weight-important: 700;
+  --font-weight-normal: 400;
+  --font-weight-h1: var(--font-weight-important);
+  --font-weight-h3: var(--font-weight-important);
+  --font-weight-h5: var(--font-weight-important);
+  font-family: var(--font-nunito);
 }
 
 .theme-Job-rand-me {
@@ -229,9 +302,9 @@
   --radius-big: 12px;
   --radius-huge: 16px;
 
-  --card-color-fill: #1C1917;
-  --card-color-transparent: #0F172A · 0%;
-  --card-color-stroke: #1E293B;
+  --color-card-fill: #0F172A;
+  --color-card-transparent: #0F172A · 0%;
+  --color-card-stroke: #1E293B;
   --color-divider: #334155;
   --color-base-white: #FFFFFF;
   --color-base-black: #000000;
@@ -336,17 +409,24 @@
   --color-slider-knob-stroke: var(--color-base-brand-300);
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
+
+  --font-weight-important: 700;
+  --font-weight-normal: 400;
+  --font-weight-h1: var(--font-weight-important);
+  --font-weight-h3: var(--font-weight-important);
+  --font-weight-h5: var(--font-weight-important);
+  font-family: var(--font-roboto);
 }
 
-.theme-Bewerbeagenture {
+.theme-Bewerbeagentur {
   --radius-small: 6px;
   --radius-medium: 8px;
   --radius-big: 12px;
   --radius-huge: 16px;
 
-  --card-color-fill: #1C1917;
-  --card-color-transparent: #0F172A 0%;
-  --card-color-stroke: #292524;
+  --color-card-fill: #1C1917;
+  --color-card-transparent: #0F172A 0%;
+  --color-card-stroke: #292524;
 
   --color-divider: #44403C;
 
@@ -451,6 +531,13 @@
   --color-slider-knob-stroke: var(--color-base-brand-300);
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
+  --font-weight-important: 700;
+  --font-weight-normal: 400;
+
+  --font-weight-h1: 300;
+  --font-weight-h3: 400;
+  --font-weight-h5: 400;
+  font-family: var(--font-raleway);
 }
 
 .theme-Cms {
@@ -459,9 +546,9 @@
   --radius-big: 12px;
   --radius-huge: 16px;
 
-  --card-color-fill: #1C1917;
-  --card-color-transparent: rgba(24, 24, 27, 0);
-  --card-color-stroke: #27272A;
+  --color-card-fill: #18181B;
+  --color-card-transparent: rgba(24, 24, 27, 0);
+  --color-card-stroke: #27272A;
   --color-divider: #3F3F46;
   --color-base-white: #FFFFFF;
   --color-base-black: #000000;
@@ -562,4 +649,10 @@
   --color-slider-knob-stroke: var(--color-base-brand-300);
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
+  --font-weight-important: 700;
+  --font-weight-normal: 400;
+  --font-weight-h1: var(--font-weight-important);
+  --font-weight-h3: var(--font-weight-important);
+  --font-weight-h5: var(--font-weight-important);
+  font-family: var(--font-figtree);
 }

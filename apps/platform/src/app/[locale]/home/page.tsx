@@ -4,10 +4,10 @@ import React from 'react'
 export default function page() {
     return (
         <>
-            <div className="flex flex-col items-center text-button-primary-fill text-4xl justify-center">
+            <div className="flex flex-col items-center font-extrablack text-button-primary-fill text-lg justify-center">
                 <h1> Home page </h1>
             </div>
-            <div className='flex flex-col justify-center items-center mt-10'>
+            <div className='flex flex-col  justify-center items-center mt-10'>
               <Button variant="secondary" size="huge"> Click me</Button>
             </div>
         </>

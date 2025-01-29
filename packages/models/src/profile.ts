@@ -7,7 +7,7 @@ export const BasePersonalProfileSchema = z.object({
     surname: z.string().min(1, "Surname is required"),
     email: z.string().email("Invalid email address"),
     phoneNumber: z.string().optional(),
-    dateOfBirth: z.string().date().optional(),  // YYYY-MM-DD
+    dateOfBirth: z.string().date().optional(),
     profilePicture: z.string().optional(),
     languages: z.array(LanguageSchema).optional(),
     interfaceLanguage: LanguageSchema,
