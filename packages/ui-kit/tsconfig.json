@@ -1,0 +1,36 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "../..",
+    "baseUrl": ".",
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "paths": {
+      "@maany_shr/e-class-models": ["../models/src/index.ts"],
+      "@/components/*": ["./lib/components/*"],
+      "@/assets/*": ["./lib/assets/*"],
+      "@/hooks/*": ["./lib/hooks/*"],
+      "@/contexts/*": ["./lib/contexts/*"]
+    },
+    "skipLibCheck": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
+    "allowJs": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "types": ["vite/client", "vitest", "@testing-library/jest-dom"]
+  },
+  "include": [
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "stories/**/*.ts",
+    "stories/**/*.tsx"
+  ],
+  "exclude": ["node_modules", "dist", "tools"]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@maany_shr/e-class-models",
+  "version": "1.4.2",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.js"
+    }
+  },
+  "dependencies": {
+    "@nx/vite": "^20.1.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11",
+    "vite-plugin-dts": "~4.3.0",
+    "zod": "^3.24.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
