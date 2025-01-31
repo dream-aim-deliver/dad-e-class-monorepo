@@ -19,11 +19,11 @@ describe('<LanguageSelector />', () => {
     const languageSelector = screen.getByTestId('language-selector');
 
     // Simulate selecting a language
-    fireEvent.change(languageSelector, { target: { value: 'Spanish' } });
+    fireEvent.change(languageSelector, { target: { value: 'German' } });
 
     // Assert that the onChange handler is called with the new language
     expect(handleChange).toHaveBeenCalledWith([
-      { name: 'Spanish', code: 'es' },
+      { name: 'German', code: 'de' },
     ]);
   });
 
@@ -66,10 +66,10 @@ describe('<LanguageSelector />', () => {
 
     // Simulate changing the interface language to French
     fireEvent.change(interfaceLanguageSelector, {
-      target: { value: 'French' },
+      target: { value: 'German' },
     });
 
     // Assert that the dropdown reflects the new selection
-    expect(interfaceLanguageSelector).toHaveValue('French');
+    expect(interfaceLanguageSelector).toHaveValue('German');
   });
 });

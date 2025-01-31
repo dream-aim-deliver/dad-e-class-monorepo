@@ -1,5 +1,13 @@
 import React, { FC } from 'react';
 
+/**
+ * A component to display feedback messages with different types (error, success, warning).
+ * 
+ * @param type The type of feedback message (error, success, warning). Defaults to 'error'.
+ * @param message The message to display. Defaults to 'Feedback Message'.
+ * @returns A styled feedback message component with an appropriate icon.
+ */
+
 export interface FeedBackMessageProps {
   type?: 'error' | 'success' | 'warning';
   message?: string;

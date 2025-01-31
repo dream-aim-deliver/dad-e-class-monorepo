@@ -86,7 +86,7 @@ export const WarningFeedback: Story = {
     hasFeedback: true,
     inputField: {
       hasRightContent: true,
-      rightContnet: <button>Go</button>,
+      rightContent: <button>Go</button>,
       inputText: 'Type here...',
       state: 'warning',
       setValue: (value: string) => console.log('Input value:', value),

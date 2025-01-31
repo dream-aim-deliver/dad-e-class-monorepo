@@ -6,6 +6,22 @@ import { TabContent } from './tab-content';
 import { cn } from '../../utils/style-utils';
 import { TabProvider } from './tab-context';
 
+/**
+ * A flexible and reusable Tabs component that allows users to switch between different content sections.
+ *
+ * @param defaultTab The default selected tab when the component is first rendered.
+ * @param children The content inside the tabs, typically including `TabList`, `TabTrigger`, and `TabContent`.
+ * @param onValueChange Callback function triggered when a tab selection changes.
+ * @param className Additional custom class names for styling.
+ * @returns A tab system with customizable structure and behavior, using context for state management.
+ *
+ * The `Tabs` component provides the following subcomponents:
+ * - `Tabs.List` - A container for tab triggers.
+ * - `Tabs.Trigger` - A clickable element that switches to a corresponding tab.
+ * - `Tabs.Content` - The content section corresponding to a selected tab.
+ * - `Tabs.Root` - The root wrapper that manages tab state.
+ */
+
 
 interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
   defaultTab: string;

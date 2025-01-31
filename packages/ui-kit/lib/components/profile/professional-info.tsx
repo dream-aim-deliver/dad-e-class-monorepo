@@ -9,7 +9,27 @@ import { TextInput } from '../text-input';
 import { InputField } from '../input-field';
 import { TextAreaInput } from '../text-areaInput';
 import { CheckBox } from '../checkbox';
+/**
+ * A form component for managing professional information.
+ *
+ * @param initialData Optional initial data to pre-fill the form fields. Schema:
+ *  - `bio`: A string (max 280 characters).
+ *  - `linkedinUrl`: Optional LinkedIn URL (validated).
+ *  - `curriculumVitae`: Optional string for uploaded CV file.
+ *  - `portfolioWebsite`: Optional valid URL for portfolio.
+ *  - `associatedCompanyName`, `associatedCompanyRole`, `associatedCompanyIndustry`: Optional strings for company details.
+ *  - `skills`: Optional array of skill strings.
+ *  - `isPrivateProfile`: Boolean for profile visibility.
+ *
+ * @param onSave Callback triggered on form submission with updated data.
+ */
 
+/**
+ * State Management:
+ * - Initializes state with default values or provided `initialData`.
+ * - Updates individual fields via `handleChange`.
+ * - Resets form to initial state with `handleDiscard`.
+ */
 const Skills = [
   { name: 'Skill 1' },
   { name: 'Skill 2' },

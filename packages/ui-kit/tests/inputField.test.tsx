@@ -46,7 +46,7 @@ describe('<InputField />', () => {
       <InputField
         {...defaultProps}
         hasRightContent
-        rightContnet={<span>Right</span>}
+        rightContent={<span>Right</span>}
       />,
     );
     const rightContent = screen.getByText('Right');

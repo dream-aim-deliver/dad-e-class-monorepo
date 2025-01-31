@@ -1,7 +1,16 @@
 import React, { FC } from 'react';
 import { FeedBackMessage, FeedBackMessageProps } from './feedback-message';
 import { InputField, InputFieldProps } from './input-field';
-
+/**
+ * A reusable TextInput component that includes a label, an input field, and an optional feedback message.
+ * 
+ * @param label The label displayed above the input field. Defaults to 'label'.
+ * @param hasFeedback If true, displays a feedback message below the input field.
+ * @param inputField Props to configure the InputField component.
+ * @param feedbackMessage Props to configure the FeedBackMessage component (if hasFeedback is true).
+ * @param id Optional unique identifier for the input field. If not provided, it generates a random ID.
+ * @returns A styled text input field with an optional label and feedback message.
+ */
 export interface TextInputProps {
   label?: string;
   hasFeedback?: boolean;

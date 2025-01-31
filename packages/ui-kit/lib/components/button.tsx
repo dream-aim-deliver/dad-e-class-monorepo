@@ -1,6 +1,17 @@
 "use client";
 import { cva, VariantProps } from 'class-variance-authority';
 import { cn } from '../utils/style-utils';
+/**
+ * A reusable Button component with multiple variants and sizes.
+ *
+ * @param children The content inside the button, typically text or an icon.
+ * @param onClick Callback function triggered when the button is clicked.
+ * @param className Additional custom class names for styling.
+ * @param disabled If true, the button is disabled and not interactive. Defaults to false.
+ * @param variant Defines the button style variant. Options: 'primary', 'secondary', 'text'. Defaults to 'primary'.
+ * @param size Defines the button size. Options: 'small', 'medium', 'big', 'huge'. Defaults to 'medium'.
+ * @returns A customizable button component that supports different styles, sizes, and states.
+ */
 
 const buttonStyles = cva(
   'inline-flex items-center justify-center  font-bold transition-colors focus:outline-none',

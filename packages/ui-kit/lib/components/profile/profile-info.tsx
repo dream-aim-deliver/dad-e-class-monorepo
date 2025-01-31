@@ -6,7 +6,29 @@ import { CheckBox } from '../checkbox';
 import { profile } from '@maany_shr/e-class-models';
 import { TextInput } from '../text-input';
 import { ProfilePicture } from '../profile/profile-picture';
+/**
+ * A form component for managing personal profile information.
+ *
+ * @param initialData Optional initial data to pre-fill the form fields. Schema:
+ *  - name: A required string representing the user's first name.
+ *  - surname: A required string representing the user's last name.
+ *  - email: A required string validated as a valid email address.
+ *  - phoneNumber: An optional string for the user's phone number.
+ *  - dateOfBirth: An optional string validated as a date.
+ *  - profilePicture: An optional string for the user's profile picture URL.
+ *  - languages: An optional array of objects (defined by LanguageSchema) representing selected languages.
+ *  - interfaceLanguage: An object (defined by LanguageSchema) specifying the interface language.
+ *  - receiveNewsletter: A boolean indicating whether the user opts to receive newsletters.
+ *
+ * @param onSave Callback triggered on form submission with updated profile data.
+ */
 
+/**
+ * State Management:
+ * - Initializes state with default values or provided initialData.
+ * - Updates individual fields via handleChange.
+ * - Resets form to initial state with a "Discard" button.
+ */
 interface ProfileInfoProps {
   initialData?: profile.TPersonalProfile;
   onSave?: (profile: profile.TPersonalProfile) => void;

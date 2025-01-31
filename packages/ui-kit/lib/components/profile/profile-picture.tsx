@@ -2,6 +2,18 @@ import React, { useRef, useState } from 'react';
 import { Upload, CloudDownload, Trash2 } from 'lucide-react';
 import { Button } from '../button';
 
+/**
+ * ProfilePicture component allows users to upload, download, and remove a profile picture.
+ * 
+ * @param defaultImage Default image URL to display if no image is selected.
+ * @param fileNameIs Default file name displayed when no file is selected.
+ * @param maxSizeInMB Maximum allowed file size for uploads in megabytes.
+ * @param onUpload Callback function triggered when a file is uploaded.
+ * @param onDownload Callback function triggered when the profile picture is downloaded.
+ * @param onRemove Callback function triggered when the profile picture is removed.
+ * @param acceptedFileTypes List of accepted file types for the profile picture.
+ */
+
 export interface ProfilePictureProps {
   defaultImage?: string;
   fileNameIs?: string;

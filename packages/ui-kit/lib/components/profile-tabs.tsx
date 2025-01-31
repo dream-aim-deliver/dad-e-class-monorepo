@@ -4,7 +4,13 @@ import { Tabs, TabList, TabTrigger, TabContent } from './tabs/tab';
 import { ProfileInfo } from './profile/profile-info';
 import { ProfessionalInfo } from './profile/professional-info';
 import {profile} from '@maany_shr/e-class-models';
-
+/**
+ * A component that manages profile information using tabs for personal and professional profiles.
+ *
+ * @param initialProfiles The initial profile data, containing personal and optionally professional profiles.
+ * @param onSave Callback function triggered when profile information is saved.
+ * @returns A profile management interface with tabs for switching between personal and professional profiles.
+ */
 interface ProfileTabsProps {
   initialProfiles: profile.TProfiles;
   onSave?: (profiles: profile.TProfiles) => void;

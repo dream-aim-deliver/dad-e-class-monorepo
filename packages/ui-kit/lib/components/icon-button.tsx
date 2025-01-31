@@ -1,6 +1,17 @@
 import { FC, ButtonHTMLAttributes } from 'react';
 import clsx from 'clsx';
 import { RefreshCcw } from 'lucide-react';
+/**
+ * A reusable IconButton component that renders an icon within a styled button.
+ *
+ * @param size Defines the button size. Options: 'small', 'medium', 'big', 'huge'. Defaults to 'big'.
+ * @param styles Defines the button style variant. Options: 'primary', 'secondary', 'text'. Defaults to 'primary'.
+ * @param disabled If true, the button is disabled and has reduced opacity. Defaults to false.
+ * @param icon The icon component to display inside the button. Defaults to `RefreshCcw` from lucide-react.
+ * @param className Additional custom class names for styling.
+ * @param onClick Callback function triggered when the button is clicked.
+ * @returns A customizable button component that displays an icon and supports various sizes and styles.
+ */
 
 export interface IconButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {

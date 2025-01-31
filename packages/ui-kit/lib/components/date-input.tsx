@@ -1,6 +1,14 @@
 import React, { useRef } from 'react';
 import { IconButton } from './icon-button';
 import { Calendar } from 'lucide-react';
+/**
+ * A reusable DateInput component that allows users to select a date using a date picker.
+ *
+ * @param label The label displayed above the input field. Defaults to an empty string.
+ * @param value The selected date value in string format.
+ * @param onChange Callback function triggered when the date value changes.
+ * @returns A styled date input field with a calendar icon button to open the date picker.
+ */
 
 export interface DateInputProps {
   label?: string;

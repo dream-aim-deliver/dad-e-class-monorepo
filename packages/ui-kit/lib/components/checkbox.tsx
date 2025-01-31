@@ -1,5 +1,19 @@
 import { FC } from 'react';
 import clsx from 'clsx';
+/**
+ * A reusable CheckBox component that allows users to select or deselect an option.
+ *
+ * @param name The name attribute for the checkbox input.
+ * @param value The value of the checkbox.
+ * @param label The text label displayed next to the checkbox. Defaults to 'Checkbox'.
+ * @param checked If true, the checkbox is checked. Defaults to false.
+ * @param disabled If true, the checkbox is disabled and not clickable. Defaults to false.
+ * @param withText If true, displays a label next to the checkbox. Defaults to false.
+ * @param size Defines the checkbox size. Options: 'small', 'medium', 'large'. Defaults to 'medium'.
+ * @param onChange Callback function triggered when the checkbox state changes.
+ * @param labelClass Additional custom class names for styling the label.
+ * @returns A customizable checkbox component with support for different sizes, labels, and states.
+ */
 
 export interface CheckBoxProps {
   name: string;

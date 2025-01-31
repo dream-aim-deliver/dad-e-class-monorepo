@@ -1,5 +1,14 @@
 import React, { FC } from 'react';
-
+/**
+ * A reusable TextAreaInput component for multiline text input.
+ *
+ * @param label The label displayed above the textarea (optional).
+ * @param value The current value of the textarea.
+ * @param setValue Function to update the value of the textarea.
+ * @param placeholder The placeholder text inside the textarea. Defaults to 'Enter text here'.
+ * @param className Additional CSS classes to customize the appearance.
+ * @returns A styled textarea input with an optional label.
+ */
 export interface TextAreaInputProps {
   label?: string;
   value: string;

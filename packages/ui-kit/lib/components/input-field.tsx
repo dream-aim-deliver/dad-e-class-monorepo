@@ -1,5 +1,21 @@
 import React, { FC, ReactNode } from 'react';
 
+/**
+ * A reusable InputField component with optional left and right content.
+ * 
+ * @param hasLeftContent If true, displays content on the left side of the input field.
+ * @param hasRightContent If true, displays content on the right side of the input field.
+ * @param leftContent React node to be displayed on the left side of the input field.
+ * @param rightContent React node to be displayed on the right side of the input field.
+ * @param inputText The placeholder text for the input field.
+ * @param state Determines the visual appearance of the input field.
+ * @param value The current value of the input field.
+ * @param setValue Function to update the input field's value.
+ * @param type Specifies the type of input field (e.g., text, date, password).
+ * @param id Unique identifier for the input field, useful for testing or accessibility.
+ * @returns A styled input field component.
+ */
+
 export interface InputFieldProps {
   hasLeftContent?: boolean;
   hasRightContent?: boolean;

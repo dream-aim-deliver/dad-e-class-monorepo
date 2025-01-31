@@ -1,6 +1,17 @@
 import React, { useRef, useState } from 'react';
 import { Upload, CloudDownload, Trash2 } from 'lucide-react';
 import { Button } from './button';
+/**
+ * A reusable FileSelector component that allows users to upload, download, and remove files.
+ *
+ * @param defaultFile The default file URL or name (if any). Defaults to an empty string.
+ * @param maxSizeInMB The maximum allowed file size in megabytes. Defaults to 10MB.
+ * @param onUpload Callback function triggered when a file is uploaded.
+ * @param onDownload Callback function triggered when a file is downloaded.
+ * @param onRemove Callback function triggered when a file is removed.
+ * @param acceptedFileTypes An array of allowed MIME types for file uploads. Defaults to common document types (PDF, DOC, DOCX).
+ * @returns A file upload interface with an upload button, file display, and optional download/remove actions.
+ */
 
 export interface FileSelectorProps {
   defaultFile?: string;

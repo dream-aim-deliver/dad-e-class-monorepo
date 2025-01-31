@@ -2,7 +2,14 @@ import * as React from 'react';
 import { X } from 'lucide-react';
 import { LanguageSelectorProps } from './profile/types';
 import { Button } from './button';
-
+/**
+ * A language selection component that allows users to choose languages they speak fluently
+ * and set an interface language.
+ *
+ * @param selectedLanguages The list of currently selected languages.
+ * @param onChange Callback function triggered when languages are added or removed.
+ * @returns A styled language selector with options for spoken and interface languages.
+ */
 const availableLanguagesList = [
   { name: 'English', code: 'en' },
   { name: 'German', code: 'de' },
