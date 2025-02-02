@@ -17,4 +17,31 @@ describe('course', () => {
         expect(CourseMetadataSchema.safeParse(validCourse).success).toBe(true);
     });
 
+    it('should invalidate a course with missing required fields', () => {
+        const invalidCourse = {
+            title: 'Advanced TypeScript',
+            duration: { video: 120, coaching: 60, selfStudy: 180 },
+            pricing: { fullPrice: 150, partialPrice: 75, currency: 'USD' },
+            rating: 4.8,
+            author: { name: 'Jane Doe', image: 'https://example.com/janedoe.jpg' },
+            // Missing 'description' and 'imageUrl'
+            language: { code: 'ENG', name: 'English' },
+        };
+        expect(CourseMetadataSchema.safeParse(invalidCourse).success).toBe(false);
+    });
+
+    it('should invalidate a course with incorrect data types', () => {
+        const invalidCourse = {
+            title: 'JavaScript Essentials',
+            description: 'A complete guide to JavaScript.',
+            duration: { video: 'sixty', coaching: 30, selfStudy: 90 }, // 'video' should be a number
+            pricing: { fullPrice: 200, partialPrice: '100', currency: 'EUR' }, // 'partialPrice' should be a number
+            imageUrl: 'https://example.com/javascript.jpg',
+            rating: 'five', // Should be a number
+            author: { name: 'Alice Doe', image: 'https://example.com/alicedoe.jpg' },
+            language: { code: 'ENG', name: 'English' },
+        };
+        expect(CourseMetadataSchema.safeParse(invalidCourse).success).toBe(false);
+    });
+
 });
