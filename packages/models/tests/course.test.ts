@@ -10,7 +10,6 @@ describe('course', () => {
             duration: { video: 60, coaching: 30, selfStudy: 90 },
             pricing: { fullPrice: 100, partialPrice: 50, currency: 'CHF' },
             imageUrl: '',
-            rating: 0,
             author: { name: 'John Doe', image: '' },
             language: { code: "ENG", name: "English" },
         };
@@ -22,7 +21,6 @@ describe('course', () => {
             title: 'Advanced TypeScript',
             duration: { video: 120, coaching: 60, selfStudy: 180 },
             pricing: { fullPrice: 150, partialPrice: 75, currency: 'USD' },
-            rating: 4.8,
             author: { name: 'Jane Doe', image: 'https://example.com/janedoe.jpg' },
             // Missing 'description' and 'imageUrl'
             language: { code: 'ENG', name: 'English' },
@@ -37,7 +35,6 @@ describe('course', () => {
             duration: { video: 'sixty', coaching: 30, selfStudy: 90 }, // 'video' should be a number
             pricing: { fullPrice: 200, partialPrice: '100', currency: 'EUR' }, // 'partialPrice' should be a number
             imageUrl: 'https://example.com/javascript.jpg',
-            rating: 'five', // Should be a number
             author: { name: 'Alice Doe', image: 'https://example.com/alicedoe.jpg' },
             language: { code: 'ENG', name: 'English' },
         };
