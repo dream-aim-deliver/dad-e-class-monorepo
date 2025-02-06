@@ -1,15 +1,24 @@
-import { Button } from '@maany_shr/e-class-ui-kit'
-import React from 'react'
+import { Button } from '@maany_shr/e-class-ui-kit';
+import React from 'react';
+import { useTranslations } from 'next-intl';
 
-export default function page() {
+export default function HomePage() {
+    const t = useTranslations('home');
     return (
         <>
+            {/* Header Section */}
             <div className="flex flex-col items-center font-extrablack text-button-primary-fill text-lg justify-center">
-                <h1> Home page </h1>
+                <h1>{t('title')}</h1>
             </div>
-            <div className='flex flex-col  justify-center items-center mt-10'>
-              <Button variant="secondary" size="huge"> Click me</Button>
+
+            {/* Button Section */}
+            <div className="flex flex-col justify-center items-center mt-10">
+                <Button
+                    variant="secondary"
+                    size="huge"
+                    textKey="home.buttonLabel"
+                />
             </div>
         </>
-    )
+    );
 }

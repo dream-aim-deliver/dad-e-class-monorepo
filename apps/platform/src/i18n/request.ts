@@ -1,17 +1,16 @@
 import { getRequestConfig } from 'next-intl/server';
-import { routing } from './routing';
+import { headers } from 'next/headers'; 
 
-export default getRequestConfig(async ({ requestLocale }) => {
-  
-  let locale = await requestLocale;
+export default getRequestConfig(async () => {
+  const headerList = headers(); 
+  const locale = (await headerList).get('X-NEXT-INTL-LOCALE') || 'en'; 
 
-  // Ensure that a valid locale is used
-  if (!locale || !routing.locales.includes(locale as any)) {
-    locale = routing.defaultLocale;
-  }
+  const messages = await import(
+    `../../../../packages/translations/src/lib/dictionaries/${locale}.json`
+  );
 
   return {
     locale,
-    messages: (await import(`../../messages/${locale}.json`)).default,
+    messages: messages.default,
   };
 });
