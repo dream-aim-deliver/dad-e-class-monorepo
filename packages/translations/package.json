@@ -1,6 +1,19 @@
 {
-  "name": "@dad-e-class/translations",
+  "name": "@maany_shr/e-class-translations",
   "version": "0.0.1",
-  "dependencies": {},
-  "private": true
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.js"
+    }
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

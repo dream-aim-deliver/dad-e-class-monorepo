@@ -1,5 +1,5 @@
 import createMiddleware from 'next-intl/middleware';
-import { i18nConfig } from '@dad-e-class/translations';
+import { i18nConfig } from '@maany_shr/e-class-translations';
 
 export default createMiddleware({
   locales: i18nConfig.locales,
