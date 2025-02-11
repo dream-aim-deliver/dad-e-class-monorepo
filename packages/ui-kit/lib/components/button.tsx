@@ -1,14 +1,15 @@
-"use client";
+  
 import { FC, ReactNode, isValidElement } from 'react';
 import { cva, VariantProps } from 'class-variance-authority';
 import { cn } from '../utils/style-utils';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from '@dad-e-class/translations';
 
 const baseDisabledStyles = 'disabled:opacity-50';
 const baseButtonStyles =
   'inline-flex items-center justify-center font-bold transition-colors focus:outline-none';
 const boxShadowStyles =
-  'box-shadow: 0px 10px 10px -3px rgba(0, 0, 0, 0.06) inset, 0px 1px 2px 0px rgba(0, 0, 0, 0.08) inset';
+  'box-shadow: 0rem 0.625rem 0.625rem -0.1875rem rgba(0, 0, 0, 0.06) inset, 0rem 0.0625rem 0.125rem 0rem rgba(0, 0, 0, 0.08) inset';
+
 const buttonStyles = cva(baseButtonStyles, {
   variants: {
     variant: {
@@ -51,7 +52,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
   disabled?: boolean;
   hasIconLeft?: boolean;
   hasIconRight?: boolean;
-  iconLeft?: ReactNode; 
+  iconLeft?: ReactNode;
   iconRight?: ReactNode;
   textKey?: string;
 }

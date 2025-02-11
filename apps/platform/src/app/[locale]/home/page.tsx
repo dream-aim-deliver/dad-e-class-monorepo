@@ -1,6 +1,6 @@
 import { Button } from '@maany_shr/e-class-ui-kit';
 import React from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from '@dad-e-class/translations';
 
 export default function HomePage() {
     const t = useTranslations('home');

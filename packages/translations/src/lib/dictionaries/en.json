@@ -1,6 +1,15 @@
 {
+  "common":{
+    "buttons":{
+
+    }
+  },
   "home": {
     "title": "Home Page",
-    "buttonLabel": "Click Me!"
+    "buttonLabel": "Click Me -- here"
+  },
+  "offers":{
+    "buttonLable": "Button - part",
+    "title" : "Page offers"
   }
 }

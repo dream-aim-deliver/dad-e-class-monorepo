@@ -2,7 +2,7 @@
 import { Button } from '@maany_shr/e-class-ui-kit';
 import '@maany_shr/e-class-ui-kit/tailwind.css';
 import { useTheme } from '@maany_shr/e-class-ui-kit/contexts';
-import { useTranslations } from 'next-intl';
+import { useTranslations  } from '@dad-e-class/translations';
 
 export interface HomeProps {
   serverSideParam: string;

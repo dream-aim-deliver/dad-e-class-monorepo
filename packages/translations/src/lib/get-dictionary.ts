@@ -1,4 +1,3 @@
-import 'server-only';
 import type { Locale } from './i18n.config';
 
 // Define the structure of your translation files
@@ -28,10 +27,8 @@ export const getDictionary = async <T extends keyof Dictionary>(
   namespace: T
 ): Promise<Dictionary[T]> => {
   try {
-    // Load the dictionary for the given locale
-    const dictionary = await dictionaries[locale]();
-
-    // Return the specific namespace if it exists
+    const response = await fetch(`/locales/${locale}.json`);
+    const dictionary = await response.json();
     if (namespace in dictionary) {
       return dictionary[namespace];
     } else {

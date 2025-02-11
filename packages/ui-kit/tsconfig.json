@@ -6,6 +6,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "paths": {
+      "@dad-e-class/translations": ["../translations/src/index.ts"],
       "@maany_shr/e-class-models": ["../models/src/index.ts"],
       "@/components/*": ["./lib/components/*"],
       "@/assets/*": ["./lib/assets/*"],

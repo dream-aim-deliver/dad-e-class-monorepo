@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Button } from "@/components/button";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@dad-e-class/translations";
 
 vi.mock("next-intl", () => ({
   useTranslations: vi.fn(),
