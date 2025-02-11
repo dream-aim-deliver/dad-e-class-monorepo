@@ -1,9 +1,9 @@
+import { i18nConfig, TLocale } from '@maany_shr/e-class-translations';
 import './global.css';
 import { ThemeProvider } from '@maany_shr/e-class-ui-kit/contexts';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
-import { i18nConfig } from '@dad-e-class/translations';
 import { notFound } from 'next/navigation';
 
 export const metadata = {
@@ -48,13 +48,11 @@ export default async function RootLayout({
   const locale = params?.locale;
   
   
-  if (!i18nConfig.locales.includes(locale as "en" | "de")) {
+  if (!i18nConfig.locales.includes(locale as TLocale)) {
     notFound();
   }
 
-  
   const messages = await getMessages({ locale });
-
   return (
     <html lang={locale}>
       <body

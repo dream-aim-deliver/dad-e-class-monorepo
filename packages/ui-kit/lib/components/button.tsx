@@ -1,8 +1,6 @@
-"use client";
 import { FC, ReactNode, isValidElement } from 'react';
 import { cva, VariantProps } from 'class-variance-authority';
 import { cn } from '../utils/style-utils';
-import { useTranslations } from 'next-intl';
 
 const baseDisabledStyles = 'disabled:opacity-50';
 const baseButtonStyles =
@@ -46,6 +44,7 @@ const buttonStyles = cva(baseButtonStyles, {
 });
 
 export interface ButtonProps extends VariantProps<typeof buttonStyles> {
+  text: string;
   onClick?: () => void;
   className?: string;
   disabled?: boolean;
@@ -53,7 +52,6 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
   hasIconRight?: boolean;
   iconLeft?: ReactNode; 
   iconRight?: ReactNode;
-  textKey?: string;
 }
 
 /**
@@ -75,19 +73,18 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
  * @param hasIconRight Optional boolean indicating whether an icon should be displayed on the right side of the button.
  * @param iconLeft Optional ReactNode representing the icon to display on the left side of the button. Only rendered if `hasIconLeft` is true.
  * @param iconRight Optional ReactNode representing the icon to display on the right side of the button. Only rendered if `hasIconRight` is true.
- * @param textKey Optional string representing the translation key for the button's text content. If provided, the text is fetched using the `useTranslations` hook from `next-intl`.
  *
  * @example
  * <Button
  *   variant="primary"
  *   size="medium"
- *   textKey="submit"
  *   onClick={() => console.log("Button clicked!")}
  *   hasIconLeft
  *   iconLeft={<ArrowLeftIcon />}
  * />
  */
 export const Button: FC<ButtonProps> = ({
+  text,
   onClick,
   className,
   disabled,
@@ -97,9 +94,7 @@ export const Button: FC<ButtonProps> = ({
   hasIconRight = false,
   iconLeft,
   iconRight,
-  textKey,
 }) => {
-  const t = useTranslations(); // Use translations (no namespace restriction)
   const buttonSizeClasses = cn(buttonStyles({ variant, size }), className);
 
   return (
@@ -122,8 +117,7 @@ export const Button: FC<ButtonProps> = ({
           {iconLeft}
         </span>
       )}
-      {/* Render translated text if `textKey` is provided */}
-      {textKey ? t(textKey) : null}
+      {text}
       {hasIconRight && iconRight && (
         <span
           className={cn(

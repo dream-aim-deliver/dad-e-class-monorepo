@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "jsx": "react-jsx",
     "allowJs": false,
+    "composite": true,
+    "declaration": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,

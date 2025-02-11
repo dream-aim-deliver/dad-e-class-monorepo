@@ -3,10 +3,13 @@
   "compilerOptions": {
     "rootDir": "../..",
     "baseUrl": ".",
+    "composite": true,
+    "declaration": true,
     "target": "ESNext",
     "useDefineForClassFields": true,
     "paths": {
       "@maany_shr/e-class-models": ["../models/src/index.ts"],
+      "@maany_shr/e-class-translations": ["../translations/src/index.ts"],
       "@/components/*": ["./lib/components/*"],
       "@/assets/*": ["./lib/assets/*"],
       "@/hooks/*": ["./lib/hooks/*"],
@@ -32,5 +35,19 @@
     "stories/**/*.ts",
     "stories/**/*.tsx"
   ],
-  "exclude": ["node_modules", "dist", "tools"]
+  "exclude": ["node_modules", "dist", "tools"],
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "../translations/tsconfig.json"
+    },
+    {
+      "path": "../models/tsconfig.json"
+    }
+  ]
 }
