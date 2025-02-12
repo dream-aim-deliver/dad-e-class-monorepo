@@ -1,6 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "rootDir": ".",
+    "baseUrl": ".",
     "outDir": "../../dist/out-tsc",
     "composite": true,
     "declaration": true,
@@ -12,6 +14,8 @@
       "vite/client"
     ]
   },
+  "skipLibCheck": true,
+  "include": ["lib/**/*.js", "lib/**/*.jsx", "lib/**/*.ts", "lib/**/*.tsx"],
   "exclude": [
     "**/*.spec.ts",
     "**/*.test.ts",
@@ -36,7 +40,14 @@
     "**/*.stories.ts",
     "**/*.stories.js",
     "**/*.stories.jsx",
-    "**/*.stories.tsx"
+    "**/*.stories.tsx",
   ],
-  "include": ["lib/**/*.js", "lib/**/*.jsx", "lib/**/*.ts", "lib/**/*.tsx"]
+  "references": [
+    {
+      "path": "../translations/tsconfig.json"
+    },
+    {
+      "path": "../models/tsconfig.json"
+    }
+  ]
 }

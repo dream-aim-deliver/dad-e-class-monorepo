@@ -11,5 +11,4 @@ export const DictionarySchema = z.object({
         }),
     }),
 });
-
 export type TDictionary = z.infer<typeof DictionarySchema>;

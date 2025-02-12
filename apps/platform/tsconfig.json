@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "baseUrl": "../../",
     "jsx": "preserve",
     "allowJs": true,
     "esModuleInterop": true,
@@ -28,5 +29,16 @@
     "next-env.d.ts",
     ".next/types/**/*.ts"
 , "postcss.config.mjs"  ],
-  "exclude": ["node_modules", "jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
+  "exclude": ["node_modules", "jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
+  "references": [
+    {
+      "path": "../../packages/ui-kit/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/translations/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/models/tsconfig.json"
+    }
+  ]
 }
