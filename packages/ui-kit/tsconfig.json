@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "../..",
+    "rootDir": ".",
     "baseUrl": ".",
     "composite": true,
     "declaration": true,
@@ -33,7 +33,7 @@
     "tests/**/*.ts",
     "tests/**/*.tsx",
     "stories/**/*.ts",
-    "stories/**/*.tsx"
+    "stories/**/*.tsx",
   ],
   "exclude": ["node_modules", "dist", "tools"],
   "references": [

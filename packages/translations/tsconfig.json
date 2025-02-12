@@ -1,5 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
+  "rootDir": ".",
   "compilerOptions": {
     "composite": true,
     "declaration": true,
@@ -7,10 +8,10 @@
     "noPropertyAccessFromIndexSignature": true
   },
   "files": [],
-  "include": [],
+  "include": ["eslint.config.js"],
   "references": [
     {
       "path": "./tsconfig.lib.json"
-    }
+    },
   ]
 }

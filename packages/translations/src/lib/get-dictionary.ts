@@ -12,9 +12,5 @@ export const getDictionary =  (
   locale: TLocale,
 ): TDictionary => {
 
-  if(!dictionaries[locale]) {
-    throw new Error(`Locale ${locale} not found in dictionaries. Please use one of the following locales: ${Object.keys(dictionaries).join(', ')}`);  
-  }
   return dictionaries[locale];
-    
 };
