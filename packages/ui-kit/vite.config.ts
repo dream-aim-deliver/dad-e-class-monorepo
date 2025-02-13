@@ -4,7 +4,6 @@ import dts from 'vite-plugin-dts';
 import * as path from 'path';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
-import tailwindcss from '@tailwindcss/vite';
 import { glob } from "glob";
 import { fileURLToPath } from "url";
 import preserveDirectives from 'rollup-preserve-directives';
@@ -55,7 +54,7 @@ export default defineConfig({
     react(),
     nxViteTsPaths(),
     nxCopyAssetsPlugin(['*.md']),
-    tailwindcss(),
+    // tailwindcss(),
     preserveDirectives(),
     dts({
       entryRoot: 'lib',
@@ -84,7 +83,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      external: ['react', 'react-dom', 'react/jsx-runtime', '@maany_shr/e-class-translations'],
       input: Object.fromEntries(
         // https://rollupjs.org/configuration-options/#input
         glob.sync("lib/**/*.{ts,tsx}").map((file) => [

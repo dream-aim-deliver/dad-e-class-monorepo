@@ -1,21 +1,22 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
     "sourceMap": true,
-    "declaration": false,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
+    "emitDeclarationOnly": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@dad-e-class/dad-nx-vite": ["tools/dad-nx-vite/src/index.ts"],
-      "@dad-e-class/nx-dad": ["tools/nx-dad/src/index.ts"],
       "@maany_shr/e-class-translations": ["packages/translations/src/index.ts"],
       "@maany_shr/e-class-models": ["packages/models/src/index.ts"],
       "@maany_shr/e-class-ui-kit": ["packages/ui-kit/lib/index.ts"],
@@ -27,5 +28,4 @@
       ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
 }

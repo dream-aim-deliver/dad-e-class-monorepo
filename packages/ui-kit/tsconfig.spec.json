@@ -1,16 +1,14 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
-    "composite": true,
-    "declaration": true,
-    "noEmit": false,
+    "outDir": "./out-tsc/vitest",
     "types": [
       "vitest/globals",
       "vitest/importMeta",
       "vite/client",
       "node",
-      "vitest"
+      "vitest",
+      "@testing-library/jest-dom",
     ]
   },
   "include": [
@@ -18,14 +16,20 @@
     "vite.config.mts",
     "vitest.config.ts",
     "vitest.config.mts",
-    "lib/**/*.test.ts",
-    "lib/**/*.spec.ts",
-    "lib/**/*.test.tsx",
-    "lib/**/*.spec.tsx",
-    "lib/**/*.test.js",
-    "lib/**/*.spec.js",
-    "lib/**/*.test.jsx",
-    "lib/**/*.spec.jsx",
-    "lib/**/*.d.ts"
+    "tests/**/*.test.ts",
+    "tests/**/*.spec.ts",
+    "tests/**/*.test.tsx",
+    "tests/**/*.spec.tsx",
+    "tests/**/*.test.js",
+    "tests/**/*.spec.js",
+    "tests/**/*.test.jsx",
+    "tests/**/*.spec.jsx",
+    "tests/**/*.d.ts"
+  ],
+  "references": [
+    {
+      // tsconfig.lib.json for this project 
+      "path": "./tsconfig.lib.json"
+    }
   ]
 }

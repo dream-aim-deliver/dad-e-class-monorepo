@@ -11,7 +11,7 @@ export default defineConfig({
   cacheDir: '../../node_modules/.vite/packages/translations',
   plugins: [
     react(),
-    nxViteTsPaths(),
+    // nxViteTsPaths(),
     nxCopyAssetsPlugin(['*.md']),
     dts({
       entryRoot: 'src',
@@ -25,7 +25,7 @@ export default defineConfig({
   // Configuration for building your library.
   // See: https://vitejs.dev/guide/build.html#library-mode
   build: {
-    outDir: '../../dist/packages/translations',
+    outDir: './dist',
     emptyOutDir: true,
     reportCompressedSize: true,
     commonjsOptions: {
@@ -34,7 +34,7 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points.
       entry: 'src/index.ts',
-      name: 'translations',
+      name: '@maany_shr/e-class-translations',
       fileName: 'index',
       // Change this to the formats you want to support.
       // Don't forget to update your package.json as well.
