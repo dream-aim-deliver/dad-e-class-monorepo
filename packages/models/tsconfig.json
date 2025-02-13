@@ -1,18 +1,10 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "jsx": "react-jsx",
-    "allowJs": false,
-    "composite": true,
-    "declaration": true,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "types": ["vite/client", "vitest"]
-  },
+  "extends": "../../tsconfig.base.json",
   "files": [],
   "include": [],
   "references": [
+    // References to projects used by this package
+    // This project's other tsconfig.*.json files
     {
       "path": "./tsconfig.lib.json"
     },
@@ -20,5 +12,4 @@
       "path": "./tsconfig.spec.json"
     }
   ],
-  "extends": "../../tsconfig.base.json"
 }

@@ -1,17 +1,15 @@
 {
   "extends": "../../tsconfig.base.json",
-  "rootDir": ".",
-  "compilerOptions": {
-    "composite": true,
-    "declaration": true,
-    "strict": true,
-    "noPropertyAccessFromIndexSignature": true
-  },
   "files": [],
-  "include": ["eslint.config.js"],
+  "include": [],
   "references": [
+    // References to projects used by this package
+    // This project's other tsconfig.*.json files
     {
       "path": "./tsconfig.lib.json"
     },
+    {
+      "path": "./tsconfig.spec.json"
+    }
   ]
 }
