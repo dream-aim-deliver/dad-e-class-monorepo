@@ -2,7 +2,7 @@ const { FlatCompat } = require('@eslint/eslintrc');
 const js = require('@eslint/js');
 const { fixupConfigRules } = require('@eslint/compat');
 const nx = require('@nx/eslint-plugin');
-const baseConfig = require('../../eslint.config.js');
+// const baseConfig = require('../../eslint.config.mjs/index.js');
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
@@ -10,12 +10,12 @@ const compat = new FlatCompat({
 });
 
 module.exports = [
-  ...fixupConfigRules(compat.extends('next')),
+  // ...fixupConfigRules(compat.extends('next')),
 
-  ...fixupConfigRules(compat.extends('next/core-web-vitals')),
+  // ...fixupConfigRules(compat.extends('next/core-web-vitals')),
 
-  ...baseConfig,
-  ...nx.configs['flat/react-typescript'],
+  // ...baseConfig,
+  // ...nx.configs['flat/react-typescript'],
   {
     ignores: ['.next/**/*'],
   },

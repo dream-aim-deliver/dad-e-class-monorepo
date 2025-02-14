@@ -3,6 +3,7 @@
   "compilerOptions": {
     "rootDir": "lib",
     "outDir": "./out-tsc/lib",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "jsx": "react-jsx",

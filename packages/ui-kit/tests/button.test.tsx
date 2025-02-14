@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { Button } from "@/components/button";
+import { Button } from "../lib/components/button";
 import { useTranslations } from "next-intl";
 
 vi.mock("next-intl", () => ({
@@ -15,13 +15,13 @@ describe("<Button />", () => {
   });
 
   it("renders a button element", () => {
-    render(<Button variant="primary" textKey="hello" />);
+    render(<Button variant="primary" text="hello" />);
     const button = screen.getByRole("button");
     expect(button).toBeInTheDocument();
   });
 
-  it("displays the translated text based on the textKey prop", () => {
-    render(<Button variant="primary" textKey="hello" />);
+  it("displays the translated text based on the text prop", () => {
+    render(<Button variant="primary" text="hello" />);
     const button = screen.getByRole("button");
     expect(button).toHaveTextContent("hello");
   });

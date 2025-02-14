@@ -1,6 +1,5 @@
 import { TDictionary } from './dictionaries/base';
 import { dictionaries, TLocale } from './i18n.config';
-
 /**
  * Fetches a specific namespace from the translation files.
  *
