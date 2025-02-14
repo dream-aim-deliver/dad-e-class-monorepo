@@ -2,7 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "files": [],
   "references": [
-    // This project's other tsconfig.*.json files
+    {
+      "path": "../translations"
+    },
     {
       "path": "./tsconfig.lib.json"
     },

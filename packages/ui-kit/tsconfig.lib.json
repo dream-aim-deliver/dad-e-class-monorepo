@@ -43,14 +43,11 @@
     "**/*.stories.ts",
     "**/*.stories.js",
     "**/*.stories.jsx",
-    "**/*.stories.tsx",
+    "**/*.stories.tsx"
   ],
   "references": [
     {
       "path": "../translations/tsconfig.lib.json"
-    },
-    {
-      "path": "../models/tsconfig.lib.json"
     }
   ]
 }

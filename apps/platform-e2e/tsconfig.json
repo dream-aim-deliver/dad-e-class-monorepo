@@ -2,9 +2,8 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "allowJs": true,
-    "outDir": "../../dist/out-tsc",
+    "outDir": "./dist/out-tsc",
     "sourceMap": false,
-    "module": "commonjs"
   },
   "include": [
     "**/*.ts",
@@ -16,7 +15,5 @@
     "src/**/*.test.js",
     "src/**/*.d.ts"
   ],
-  "exclude": [
-    "../../eslint.config.mjs",
-  ]
+  "exclude": ["node_modules", "dist", "eslint.config.js"],
 }

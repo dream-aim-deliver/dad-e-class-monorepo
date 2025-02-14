@@ -17,8 +17,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@maany_shr/e-class-translations": ["packages/translations/src/index.ts"],
       "@maany_shr/e-class-models": ["packages/models/src/index.ts"],
+      "@maany_shr/e-class-translations": ["packages/translations/src/index.ts"],
       "@maany_shr/e-class-ui-kit": ["packages/ui-kit/lib/index.ts"],
       "@maany_shr/e-class-ui-kit/contexts": [
         "packages/ui-kit/lib/contexts/index.ts"
@@ -27,5 +27,5 @@
         "packages/ui-kit/lib/assets/css/tailwind.css"
       ]
     }
-  },
+  }
 }
