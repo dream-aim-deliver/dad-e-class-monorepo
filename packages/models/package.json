@@ -11,12 +11,7 @@
     }
   },
   "dependencies": {
-    "@nx/vite": "^20.1.4",
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^5.4.11",
-    "vite-plugin-dts": "~4.5.0",
-    "zod": "^3.24.1",
-    "vite-plugin-checker": "^0.8.0"
+    "zod": "^3.24.1"
   },
   "publishConfig": {
     "access": "public"

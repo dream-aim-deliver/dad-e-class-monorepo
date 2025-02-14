@@ -1,12 +1,11 @@
-const nx = require('@nx/eslint-plugin');
-const eslint = require('@eslint/js');
+import nx from '@nx/eslint-plugin';
 
-module.exports = [
+export default [
   ...nx.configs['flat/base'],
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
   {
-    ignores: ['**/dist', "**/.next/**/*"],
+    ignores: ['**/dist', '**/node_modules', '**/coverage', '**/.next'],
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
@@ -24,6 +23,21 @@ module.exports = [
           ],
         },
       ],
+    },
+  },
+  {
+    files: [
+      '**/*.ts',
+      '**/*.tsx',
+      '**/*.cts',
+      '**/*.mts',
+      '**/*.js',
+      '**/*.jsx',
+      '**/*.cjs',
+      '**/*.mjs',
+    ],
+    // Override or add rules here
+    rules: {
     },
   },
 ];

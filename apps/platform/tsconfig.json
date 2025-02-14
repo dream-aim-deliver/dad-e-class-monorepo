@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": "../../",
     "jsx": "preserve",
     "allowJs": true,
     "esModuleInterop": true,
@@ -27,18 +26,17 @@
     "../../apps/platform/.next/types/**/*.ts",
     "../../dist/apps/platform/.next/types/**/*.ts",
     "next-env.d.ts",
-    ".next/types/**/*.ts"
-, "postcss.config.mjs"  ],
+    ".next/types/**/*.ts",
+    "postcss.config.mjs",
+    "eslint.config.mjs"
+  ],
   "exclude": ["node_modules", "jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
   "references": [
     {
-      "path": "../../packages/ui-kit/tsconfig.lib.json"
+      "path": "../../packages/ui-kit"
     },
     {
-      "path": "../../packages/translations/tsconfig.lib.json"
-    },
-    {
-      "path": "../../packages/models/tsconfig.json"
+      "path": "../../packages/translations"
     }
   ]
 }
