@@ -27,9 +27,16 @@
     "../../apps/platform/.next/types/**/*.ts",
     "../../dist/apps/platform/.next/types/**/*.ts",
     "next-env.d.ts",
-    ".next/types/**/*.ts"
-, "postcss.config.mjs"  ],
-  "exclude": ["node_modules", "jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
+    ".next/types/**/*.ts",
+    "postcss.config.mjs", "eslint.config.mjs",
+  ],
+  "exclude": [
+    "node_modules",
+    "jest.config.ts",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "eslint.config.mjs"
+  ],
   "references": [
     {
       "path": "../../packages/ui-kit/tsconfig.lib.json"
