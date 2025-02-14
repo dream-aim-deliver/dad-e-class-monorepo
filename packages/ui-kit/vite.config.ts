@@ -2,7 +2,7 @@ import { defineConfig } from "vitest/config";
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 import * as path from 'path';
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import tailwindcss from '@tailwindcss/vite'
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 import { glob } from "glob";
 import { fileURLToPath } from "url";
@@ -52,9 +52,9 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    nxViteTsPaths(),
+    // nxViteTsPaths(),
     nxCopyAssetsPlugin(['*.md']),
-    // tailwindcss(),
+    tailwindcss(),
     preserveDirectives(),
     dts({
       entryRoot: 'lib',
@@ -68,14 +68,14 @@ export default defineConfig({
   // Configuration for building your library.
   // See: https://vitejs.dev/guide/build.html#library-mode
   build: {
-    outDir: '../../dist/packages/ui-kit',
+    outDir: './dist',
     emptyOutDir: true,
     reportCompressedSize: true,
     sourcemap: true,
     lib: {
       // Could also be a dictionary or array of multiple entry points.
       entry: 'lib/index.ts',
-      name: 'ui-kit',
+      name: '@maany_shr/e-class-ui-kit',
       fileName: 'index',
       // Change this to the formats you want to support.
       // Don't forget to update your package.json as well.

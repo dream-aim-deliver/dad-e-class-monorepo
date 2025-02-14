@@ -3,35 +3,15 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
+    "emitDeclarationOnly": true,
     "types": [
       "node",
-      "@nx/react/typings/cssmodule.d.ts",
-      "@nx/react/typings/image.d.ts",
       "vite/client"
     
     ]
   },
   "include": ["src/**/*.ts"],
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "**/*.spec.tsx",
-    "**/*.test.tsx",
-    "**/*.spec.js",
-    "**/*.test.js",
-    "**/*.spec.jsx",
-    "**/*.test.jsx",
-    "vite.config.ts",
-    "vite.config.mts",
-    "vitest.config.ts",
-    "vitest.config.mts",
-    "tests/**/*.test.ts",
-    "tests/**/*.spec.ts",
-    "tests/**/*.test.tsx",
-    "tests/**/*.spec.tsx",
-    "tests/**/*.test.js",
-    "tests/**/*.spec.js",
-    "tests/**/*.test.jsx",
-    "tests/**/*.spec.jsx"
-  ],
+  "exclude": ["node_modules", "dist", "vite.config.ts"],
+  "references": []
 }

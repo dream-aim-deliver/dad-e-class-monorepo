@@ -1,28 +1,30 @@
-// @ts-check
-import nx from '@nx/eslint-plugin';
-import baseConfig from '../../eslint.config.js';
-import { parseForESLint } from 'jsonc-eslint-parser';
+import baseConfig from '../../eslint.config.mjs';
 
 export default [
   ...baseConfig,
-  // @ts-expect-error - This is a valid configuration
-  ...nx.configs['flat/react'],
-  {
-    files: ['packages/ui-kit/**/*.ts', 'packages/ui-kit/**/*.tsx', 'packages/ui-kit/**/*.js', 'packages/ui-kit/**/*.jsx'],
-    // Override or add rules here
-    rules: {
-      "no-unused-vars": "error",
-    },
-  },
   {
     files: ['**/*.json'],
-    languageOptions: {
-      parser: {
-        parseForESLint: parseForESLint,
-      },
-    },
     rules: {
-      '@nx/dependency-checks': 'error',
+      '@nx/dependency-checks': [
+        'error',
+        {
+          ignoredFiles: [
+            '{projectRoot}/eslint.config.{js,cjs,mjs}',
+            '{projectRoot}/vite.config.{js,ts,mjs,mts}',
+            '{projectRoot}/vite.config.ts.timestamp-**.{js,ts,mjs,mts}'
+          ],
+        },
+      ],
     },
-  }
+    languageOptions: {
+      parser: await import('jsonc-eslint-parser'),
+    },
+  },
+  // {
+  //   files: ["*.ts"],
+  //   parserOptions: {
+  //     project: ["packages/ui-kit/tsconfig.json"]
+  //   }
+
+  // }
 ];
