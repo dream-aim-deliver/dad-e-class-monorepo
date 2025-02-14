@@ -1,7 +1,8 @@
-import baseConfig from '../../eslint.config.mjs';
-
+import baseConfig from '../../eslint.config.js';
+import nx from '@nx/eslint-plugin';
 export default [
   ...baseConfig,
+  ...nx.configs['flat/react-typescript'],
   {
     files: ['**/*.json'],
     rules: {
@@ -20,11 +21,4 @@ export default [
       parser: await import('jsonc-eslint-parser'),
     },
   },
-  // {
-  //   files: ["*.ts"],
-  //   parserOptions: {
-  //     project: ["packages/ui-kit/tsconfig.json"]
-  //   }
-
-  // }
 ];

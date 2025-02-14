@@ -11,5 +11,11 @@
     {
       "path": "./packages/models"
     },
+    {
+      "path": "./apps/platform-e2e"
+    },
+    {
+      "path": "./apps/platform"
+    }
   ]
 }
