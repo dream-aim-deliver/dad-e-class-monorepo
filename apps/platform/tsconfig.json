@@ -25,6 +25,7 @@
     "**/*.jsx",
     "../../apps/platform/.next/types/**/*.ts",
     "../../dist/apps/platform/.next/types/**/*.ts",
+    "../../eslint.config.js",
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "postcss.config.mjs",

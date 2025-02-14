@@ -8,6 +8,14 @@ export default [
     ignores: ['**/dist', '**/node_modules', '**/coverage', '**/.next'],
   },
   {
+    files: ['**/package.json'],
+    // Override or add rules here
+    rules: {},
+    languageOptions: {
+      parser: await import('jsonc-eslint-parser'),
+    },
+  },
+  {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {
       '@nx/enforce-module-boundaries': [
