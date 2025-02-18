@@ -17,14 +17,16 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@maany_shr/e-class-translations": "workspace:*",
+    "@maany_shr/e-class-models": "workspace:*",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "16.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "react": "19.0.0",
+    "react-dropzone": "^14.3.5",
     "tailwind-merge": "^2.5.5",
-    "vitest": "^2.1.8",
-    "@maany_shr/e-class-translations": "workspace:*"
+    "vitest": "^2.1.8"
   },
   "publishConfig": {
     "access": "public"
