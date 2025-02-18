@@ -1,14 +1,89 @@
+import { title } from 'process';
 import { z } from 'zod';
-
+const linkedInUrlRegex =
+  /^https:\/\/([a-zA-Z0-9-]+\.)?linkedin\.com\/[a-zA-Z0-9-]+/;
 export const DictionarySchema = z.object({
-    home: z.object({
-        title: z.string(),
-        buttonText: z.string(),
+  home: z.object({
+    title: z.string(),
+    buttonText: z.string(),
+    badgeText: z.string(),
+  }),
+  components: z.object({
+    skills: z.object({
+      title: z.string(),
     }),
-    components: z.object({
-        skills: z.object({
-            title: z.string(),
-        }),
+    profileTab: z.object({
+      personal: z.string(),
+      professional: z.string()
     }),
+    dragDrop: z.object({
+      title: z.string(),
+      buttontext: z.string(),
+      dragtext: z.string(),
+      filesize: z.string(),
+      uploading: z.string(),
+    }),
+    languageSelector: z.object({
+      title: z.string(),
+      choosetext: z.string(),
+      interface: z.string(),
+      chooseLanguage: z.string(),
+      chooseColor: z.string(),
+      chooseOptions: z.string(),
+      english: z.string(),
+      german: z.string()
+    }),
+    profileInfo: z.object({
+      title: z.string(),
+      name: z.string(),
+      namePlaceholder: z.string(),
+      surname: z.string(),
+      surnamePlaceholder: z.string(),
+      email: z.string(),
+      emailPlaceholder: z.string(),
+      phoneNumber: z.string(),
+      phoneNumberPlaceholder: z.string(),
+      password: z.string(),
+      date: z.string(),
+      checkboxtext1: z.string(),
+      companyName: z.string(),
+      companyNamePh:  z.string(),
+      companyUID: z.string(),
+      companyUIDPh: z.string(),
+      address: z.string(),
+      addressPlaceholder: z.string(),
+      profilePicture: z.string(),
+      platformPreferences: z.string(),
+      platformPP: z.string(),
+      interfaceLang: z.string(),
+      checkboxtext2: z.string(),
+      buttontext1: z.string(),
+      buttontext2: z.string(),
+    }),
+
+    professionalInfo: z.object({
+      title: z.string(),
+      bio: z.string(),
+      bioPlaceholder: z.string(),
+
+      linkedinUrl: z.string(),
+      linkedinPlaceholder: z.string(),
+
+      curriculumVitae: z.string().optional(),
+      portfolioWebsite: z.string(),
+      portfolioWebsitePlaceholder: z.string(),
+      associatedCompanyName: z.string(),
+      associatedCompanyNAMEPlaceholder: z.string(),
+      associatedCompanyRole: z.string(),
+      associatedCompanyPlaceholder: z.string(),
+      associatedCompanyIndustry: z.string(),
+      associatedCompanyIndustryPlaceholder: z.string(),
+      skills: z.string(),
+      addSkills: z.string(),
+      privateProfile: z.string(),
+      buttontext1: z.string(),
+      buttontext2: z.string(),
+    }),
+  }),
 });
-export type TDictionary = z.infer<typeof DictionarySchema>;
+export type TDictionary = z.infer<typeof DictionarySchema>; 
