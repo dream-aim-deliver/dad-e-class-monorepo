@@ -1,6 +1,5 @@
 import { Tabs } from '../lib/components/tabs/tab';
 import type { Meta, StoryObj } from '@storybook/react';
-import { User, Bell, Settings } from 'lucide-react';
 import React from 'react';
 import { IconAccountInformation } from '../lib/components/icons/icon-account-information';
 import { IconAssignmnet } from '../lib/components/icons/icon-assignment';

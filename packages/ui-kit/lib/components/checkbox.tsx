@@ -70,7 +70,7 @@ export const CheckBox: FC<CheckBoxProps> = ({
   );
 
   return (
-    <label className="inline-flex items-start gap-3">
+    <label className="inline-flex items-center gap-3">
       <div className="relative">
         <input
           type="checkbox"

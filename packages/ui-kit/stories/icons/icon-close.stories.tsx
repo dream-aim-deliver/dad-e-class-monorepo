@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
-import  {IconClose}  from '../../lib/components/icons/icon-close';
+import { IconClose } from '../../lib/components/icons/icon-close';
 
 // Meta configuration for Storybook
 const meta: Meta<typeof IconClose> = {

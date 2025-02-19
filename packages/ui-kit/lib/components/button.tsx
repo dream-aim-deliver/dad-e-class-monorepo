@@ -44,13 +44,13 @@ const buttonStyles = cva(baseButtonStyles, {
 });
 
 export interface ButtonProps extends VariantProps<typeof buttonStyles> {
-  text: string;
+  text?: string;
   onClick?: () => void;
   className?: string;
   disabled?: boolean;
   hasIconLeft?: boolean;
   hasIconRight?: boolean;
-  iconLeft?: ReactNode; 
+  iconLeft?: ReactNode;
   iconRight?: ReactNode;
 }
 

@@ -20,13 +20,13 @@ const badgeStyles = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-action-default text-text-primary-inverted', 
-        info: 'bg-base-neutral-400 text-text-primary-inverted', 
+        primary: 'bg-action-default text-text-primary-inverted',
+        info: 'bg-base-neutral-400 text-text-primary-inverted',
         successprimary:
           'bg-feedback-success-primary text-text-primary-inverted',
         warningprimary:
-          'bg-feedback-warning-primary text-text-primary-inverted', 
-        errorprimary: 'bg-feedback-error-primary text-text-primary-inverted', 
+          'bg-feedback-warning-primary text-text-primary-inverted',
+        errorprimary: 'bg-feedback-error-primary text-text-primary-inverted',
       },
       size: {
         small: 'py-[2px] px-[4px] text-2xs rounded-small',
@@ -34,8 +34,8 @@ const badgeStyles = cva(
       },
     },
     defaultVariants: {
-      variant: 'info', 
-      size: 'small', 
+      variant: 'info',
+      size: 'small',
     },
   },
 );
@@ -44,7 +44,7 @@ const badgeStyles = cva(
  * Props for the Badge component, extending the variant properties.
  */
 export interface BadgeProps extends VariantProps<typeof badgeStyles> {
-  text: String;
+  text?: string;
   onClick?: () => void;
   className?: string;
 }

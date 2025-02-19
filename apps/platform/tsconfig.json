@@ -34,6 +34,9 @@
   "exclude": ["node_modules", "jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
   "references": [
     {
+      "path": "../../packages/models"
+    },
+    {
       "path": "../../packages/ui-kit"
     },
     {

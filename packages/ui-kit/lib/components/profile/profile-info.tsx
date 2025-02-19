@@ -6,7 +6,7 @@ import { profile } from '@maany_shr/e-class-models';
 import { TextInput } from '../text-input';
 import { UploadedImage } from '../drag&drop/uploaded-image';
 import { LanguageSelector } from '../language-selector';
-import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations"
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { language } from '@maany_shr/e-class-models';
 
 interface ProfileInfoProps extends isLocalAware {
@@ -45,7 +45,7 @@ type fileProps = {
 export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   initialData,
   onSave,
-  locale
+  locale,
 }) => {
   const [formData, setFormData] = React.useState<profile.TPersonalProfile>(
     () =>
@@ -66,16 +66,15 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
         isRepresentingCompany: initialData?.isRepresentingCompany ?? false,
         ...(initialData?.isRepresentingCompany
           ? {
-            representingCompanyName: initialData.representingCompanyName,
-            representedCompanyUID: initialData.representedCompanyUID,
-            representedCompanyAddress: initialData.representedCompanyAddress,
-          }
+              representingCompanyName: initialData.representingCompanyName,
+              representedCompanyUID: initialData.representedCompanyUID,
+              representedCompanyAddress: initialData.representedCompanyAddress,
+            }
           : {}),
       }) as profile.TPersonalProfile,
   );
   const [files, setFiles] = React.useState<fileProps>([]);
   const dictionary = getDictionary(locale);
-
 
   const handleChange = (
     field: keyof profile.TPersonalProfileRepresentingCompany,
@@ -85,7 +84,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   };
 
   const handleUploadedFiles = (uploadedFiles: File[]) => {
-    console.log("Files uploaded:", uploadedFiles);
+    console.log('Files uploaded:', uploadedFiles);
     const filesWithStatus = uploadedFiles.map((file: any) => ({
       file,
       isUploading: true,
@@ -93,31 +92,37 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
     setFiles((prevFiles: any) => [...prevFiles, ...filesWithStatus]);
 
-
     setTimeout(() => {
       setFiles((prevFiles: any[]) =>
         prevFiles.map((f) =>
-          filesWithStatus.some((newFile: { file: any; }) => newFile.file === f.file)
+          filesWithStatus.some(
+            (newFile: { file: any }) => newFile.file === f.file,
+          )
             ? { ...f, isUploading: false }
-            : f
-        )
+            : f,
+        ),
       );
     }, 2000);
   };
   const handleDelete = (index: number) => {
     setFiles((prevFiles: any[]) => prevFiles.filter((f, i) => i !== index));
-  }
+  };
   const handleSubmit = () => {
     onSave?.(formData);
   };
   const languages: language.TLanguage[] = [
-    { name: dictionary.components.languageSelector.english as "English", code: "ENG" },
-    { name: dictionary.components.languageSelector.german as "German", code: "DEU" }
+    {
+      name: dictionary.components.languageSelector.english as 'English',
+      code: 'ENG',
+    },
+    {
+      name: dictionary.components.languageSelector.german as 'German',
+      code: 'DEU',
+    },
   ];
-  
+
   return (
     <div className="flex gap-4 items-start p-4  rounded-medium border border-solid bg-card-fill border-card-stroke">
-
       <div className="flex flex-col gap-4 w-full max-md:max-w-full````">
         <h1 className="text-xl flex items-start font-bold leading-[120%] text-text-primary">
           {dictionary.components.profileInfo.title}
@@ -128,16 +133,16 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             id: 'name',
             value: formData.name,
             setValue: (value) => handleChange('name', value),
-            inputText: dictionary.components.profileInfo.namePlaceholder
+            inputText: dictionary.components.profileInfo.namePlaceholder,
           }}
         />
         <TextInput
           label={dictionary.components.profileInfo.surname}
           inputField={{
-            id: "surname",
+            id: 'surname',
             value: formData.surname,
             setValue: (value) => handleChange('surname', value),
-            inputText: dictionary.components.profileInfo.surnamePlaceholder
+            inputText: dictionary.components.profileInfo.surnamePlaceholder,
           }}
         />
         <TextInput
@@ -146,7 +151,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             id: 'email',
             value: formData.email,
             setValue: (value) => handleChange('email', value),
-            inputText: dictionary.components.profileInfo.emailPlaceholder
+            inputText: dictionary.components.profileInfo.emailPlaceholder,
           }}
         />
         <TextInput
@@ -155,7 +160,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             id: 'phone',
             value: formData.phoneNumber || '',
             setValue: (value) => handleChange('phoneNumber', value),
-            inputText: dictionary.components.profileInfo.phoneNumberPlaceholder
+            inputText: dictionary.components.profileInfo.phoneNumberPlaceholder,
           }}
         />
         <TextInput
@@ -168,7 +173,12 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             type: 'password',
             hasRightContent: true,
             rightContent: (
-              <Button variant="text" size="small" className="ml-2 p-0" text='Change Password' />
+              <Button
+                variant="text"
+                size="small"
+                className="ml-2 p-0"
+                text={dictionary.components.profileInfo.changePassword}
+              />
             ),
           }}
         />
@@ -181,7 +191,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           name="isRepresentingCompany"
           value="isRepresentingCompany"
           label={dictionary.components.profileInfo.checkboxtext1}
-          labelClass='text-text-primary text-sm leading-[100%]'
+          labelClass="text-text-primary text-sm leading-[100%]"
           checked={formData.isRepresentingCompany}
           withText
           onChange={() =>
@@ -223,33 +233,39 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
                   handleChange('representedCompanyAddress', value),
               }}
             />
-
           </div>
         )}
 
         <div className="flex flex-col gap-2 ">
-          <p className='text-sm text-text-secondary flex justify-start'> {dictionary.components.profileInfo.profilePicture} </p>
+          <p className="text-sm text-text-secondary flex justify-start">
+            {' '}
+            {dictionary.components.profileInfo.profilePicture}{' '}
+          </p>
           <UploadedImage
             files={files}
             className="w-full"
             onUpload={handleUploadedFiles}
             handleDelete={handleDelete}
-            text={dictionary.components.dragDrop} />
+            text={dictionary.components.dragDrop}
+          />
         </div>
 
         <LanguageSelector
           text={dictionary.components.languageSelector}
           selectedLanguages={languages}
-          onChange={(languages) => console.log('Selected languages:', languages)}
-          onInterfaceLanguageChange={(language) => console.log('Interface language:', language)}
+          onChange={(languages) =>
+            console.log('Selected languages:', languages)
+          }
+          onInterfaceLanguageChange={(language) =>
+            console.log('Interface language:', language)
+          }
         />
-        
 
         <CheckBox
           name="newsletter"
           value="newsletter"
           label={dictionary.components.profileInfo.checkboxtext2}
-          labelClass='text-text-primary text-sm leading-[100%]'
+          labelClass="text-text-primary text-sm leading-[100%]"
           checked={formData.receiveNewsletter}
           withText={true}
           onChange={() =>
@@ -283,4 +299,3 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
 function useTranslations(arg0: string) {
   throw new Error('Function not implemented.');
 }
-

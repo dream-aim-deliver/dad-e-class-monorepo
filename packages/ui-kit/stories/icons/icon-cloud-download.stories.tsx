@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 import { IconCloudDownload } from '../../lib/components/icons/icon-cloud-download';
-
 
 // Meta configuration for Storybook
 const meta: Meta<typeof IconCloudDownload> = {

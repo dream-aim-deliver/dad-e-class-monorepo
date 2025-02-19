@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { IconButton } from '../../lib/components/icon-button';
-import { RefreshCcw, Trash2, Plus } from 'lucide-react';
-import { IconClose } from '../../lib/components/icons/icon-close';
+import { IconButton } from '../lib/components/icon-button';
+import { IconClose } from '../lib/components/icons/icon-close';
 import React from 'react';
+import { IconPlus } from '../lib/components/icons/icon-plus';
+import { IconTrashAlt } from '../lib/components/icons/icon-trash-alt';
 
 const meta: Meta<typeof IconButton> = {
   title: 'Components/IconButton',
@@ -30,15 +31,13 @@ const meta: Meta<typeof IconButton> = {
       control: {
         type: 'select',
         options: {
-          Refresh: RefreshCcw,
-          Trash: Trash2,
-          Plus: Plus,
+          Trash: <IconTrashAlt />,
+          Plus: <IconPlus />,
         },
       },
       mapping: {
-        Refresh: RefreshCcw,
-        Trash: Trash2,
-        Plus: Plus,
+        Trash: <IconTrashAlt />,
+        Plus: <IconPlus />,
       },
     },
     className: { control: 'text' },
@@ -63,7 +62,7 @@ export const Secondary: Story = {
     size: 'big',
     styles: 'secondary',
     disabled: false,
-    icon: <IconClose size='8' />,
+    icon: <IconClose size="8" />,
   },
 };
 
@@ -72,7 +71,7 @@ export const Text: Story = {
     size: 'small',
     styles: 'text',
     disabled: false,
-    icon: <IconClose size='8' />,
+    icon: <IconClose size="8" />,
   },
 };
 

@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 import { IconLoaderSpinner } from '../../lib/components/icons/icon-loader-spinner';
-import { IconProps } from '../../lib/components/icons/icon';
 
 // Meta configuration for Storybook
 const meta: Meta<typeof IconLoaderSpinner> = {

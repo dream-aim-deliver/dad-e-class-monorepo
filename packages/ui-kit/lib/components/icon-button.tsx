@@ -1,6 +1,6 @@
 import { FC, ButtonHTMLAttributes, ReactNode, isValidElement } from 'react';
 import clsx from 'clsx';
-import { RefreshCcw } from 'lucide-react';
+import { IconRefresh } from './icons/icon-refresh';
 
 export interface IconButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -48,7 +48,7 @@ const colorMap = {
  * @param size Defines the button size. Options: 'small', 'medium', 'big', 'huge'. Defaults to 'big'.
  * @param styles Defines the button style variant. Options: 'primary', 'secondary', 'text'. Defaults to 'primary'.
  * @param disabled If true, the button is disabled and has reduced opacity. Defaults to false.
- * @param icon The icon component to display inside the button. Defaults to `RefreshCcw` from lucide-react.
+ * @param icon The icon component to display inside the button. Defaults to `IconRefresh` from './icons/icon-refresh'.
  * @param className Additional custom class names for styling.
  * @param onClick Callback function triggered when the button is clicked.
  * @returns A customizable button component that displays an icon and supports various sizes and styles.
@@ -58,7 +58,7 @@ export const IconButton: FC<IconButtonProps> = ({
   styles = 'primary',
   disabled = false,
   className,
-  icon = <RefreshCcw />, // Default icon
+  icon = <IconRefresh />, // Default icon
   onClick,
   ...props
 }) => {
@@ -83,8 +83,10 @@ export const IconButton: FC<IconButtonProps> = ({
       <span
         className={clsx(
           'flex items-center',
-          isValidElement(icon) ? '' : 'hover:text-hover-color active:text-pressed-color',
-          disabled ? 'opacity-50' : ''
+          isValidElement(icon)
+            ? ''
+            : 'hover:text-hover-color active:text-pressed-color',
+          disabled ? 'opacity-50' : '',
         )}
         data-testid="icon"
       >

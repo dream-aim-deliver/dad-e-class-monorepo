@@ -12,6 +12,7 @@ export const DE: TDictionary = {
       dragtext: 'oder Datei ziehen & ablegen',
       filesize: 'Maximale Dateigröße',
       uploading: 'Hochladen..',
+      cancelUpload: 'Upload abbrechen',
     },
     profileTab: {
       personal: 'Persönlich',
@@ -39,6 +40,7 @@ export const DE: TDictionary = {
       phoneNumber: 'Telefonnummer',
       phoneNumberPlaceholder: '+44 1234567890',
       password: 'Passwort',
+      changePassword: 'Passwort ändern',
       date: 'Datum',
       checkboxtext1: 'Ich handle im Namen eines Unternehmens',
       companyName: 'Firmenname',
