@@ -1,7 +1,5 @@
-import { title } from 'process';
 import { z } from 'zod';
-const linkedInUrlRegex =
-  /^https:\/\/([a-zA-Z0-9-]+\.)?linkedin\.com\/[a-zA-Z0-9-]+/;
+
 export const DictionarySchema = z.object({
   home: z.object({
     title: z.string(),
@@ -14,7 +12,7 @@ export const DictionarySchema = z.object({
     }),
     profileTab: z.object({
       personal: z.string(),
-      professional: z.string()
+      professional: z.string(),
     }),
     dragDrop: z.object({
       title: z.string(),
@@ -22,6 +20,7 @@ export const DictionarySchema = z.object({
       dragtext: z.string(),
       filesize: z.string(),
       uploading: z.string(),
+      cancelUpload: z.string(),
     }),
     languageSelector: z.object({
       title: z.string(),
@@ -31,7 +30,7 @@ export const DictionarySchema = z.object({
       chooseColor: z.string(),
       chooseOptions: z.string(),
       english: z.string(),
-      german: z.string()
+      german: z.string(),
     }),
     profileInfo: z.object({
       title: z.string(),
@@ -44,10 +43,11 @@ export const DictionarySchema = z.object({
       phoneNumber: z.string(),
       phoneNumberPlaceholder: z.string(),
       password: z.string(),
+      changePassword: z.string(),
       date: z.string(),
       checkboxtext1: z.string(),
       companyName: z.string(),
-      companyNamePh:  z.string(),
+      companyNamePh: z.string(),
       companyUID: z.string(),
       companyUIDPh: z.string(),
       address: z.string(),
@@ -86,4 +86,4 @@ export const DictionarySchema = z.object({
     }),
   }),
 });
-export type TDictionary = z.infer<typeof DictionarySchema>; 
+export type TDictionary = z.infer<typeof DictionarySchema>;
