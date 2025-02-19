@@ -15,7 +15,7 @@ export default function Home(props: HomeProps) {
   const t = useTranslations('home');
   return (
     <div className="flex flex-col  text-base-neutral-50 gap-4 mt-3 items-center justify-center text-center">
-      <p className="text-center text-2xl">{t('title')}</p>
+      <p className="text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">{t('title')}</p>
       <Button
         text={t('buttonText')}
         variant="primary"
@@ -29,6 +29,7 @@ export default function Home(props: HomeProps) {
         locale={props.locale as TLocale} 
         skills={['React', 'TypeScript', 'TailwindCSS']}
       />
+      
     </div>
   );
 }
