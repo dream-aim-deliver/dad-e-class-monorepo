@@ -50,7 +50,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
   disabled?: boolean;
   hasIconLeft?: boolean;
   hasIconRight?: boolean;
-  iconLeft?: ReactNode; 
+  iconLeft?: ReactNode;
   iconRight?: ReactNode;
 }
 
