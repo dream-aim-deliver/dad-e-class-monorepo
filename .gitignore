@@ -19,6 +19,9 @@ node_modules
 .settings/
 *.sublime-workspace
 
+#test-output
+apps/platform-e2e/test-output/
+
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json

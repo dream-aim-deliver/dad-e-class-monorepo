@@ -20,19 +20,36 @@ export interface InputFieldProps {
 }
 
 /**
- * A reusable InputField component with optional left and right content.
+ * A reusable InputField component with support for multiple states, dynamic content, and customizable behavior.
  *
- * @param hasLeftContent If true, displays content on the left side of the input field.
- * @param hasRightContent If true, displays content on the right side of the input field.
- * @param leftContent React node to be displayed on the left side of the input field.
- * @param rightContent React node to be displayed on the right side of the input field.
- * @param inputText The placeholder text for the input field.
- * @param state Determines the visual appearance of the input field.
- * @param value The current value of the input field.
- * @param setValue Function to update the input field's value.
- * @param type Specifies the type of input field (e.g., text, password).
- * @param id Unique identifier for the input field, useful for testing or accessibility.
- * @returns A styled input field component.
+ * @param hasLeftContent Optional flag to indicate if there is content on the left side of the input field.
+ * @param hasRightContent Optional flag to indicate if there is content on the right side of the input field.
+ * @param leftContent Optional ReactNode to render on the left side of the input field (e.g., an icon).
+ * @param rightContent Optional ReactNode to render on the right side of the input field (e.g., a clear button or icon).
+ * @param inputText Placeholder text for the input field. Defaults to "Placeholder".
+ * @param state The current state of the input field. Options:
+ *   - `placeholder`: Default state with placeholder text (default).
+ *   - `disabled`: Disabled state where interaction is not allowed.
+ *   - `filled`: State indicating that the field is filled with valid data.
+ *   - `filling`: State indicating that data is being entered into the field.
+ *   - `warning`: State indicating a warning related to the data entered.
+ *   - `error`: State indicating an error related to the data entered.
+ * @param value The current value of the input field. This makes it a controlled component.
+ * @param setValue Callback function triggered when the value changes. Receives the new value as a string.
+ * @param type The type of input. Options: `text` (default) or `password`.
+ * @param id Optional unique ID for identifying this specific input field (useful for testing or accessibility).
+ *
+ * @example
+ * <InputField
+ *   hasLeftContent={true}
+ *   leftContent={<IconSearch />}
+ *   hasRightContent={true}
+ *   rightContent={<ClearButton />}
+ *   inputText="Search here..."
+ *   state="filling"
+ *   value={searchValue}
+ *   setValue={(newValue) => setSearchValue(newValue)}
+ * />
  */
 
 export const InputField: FC<InputFieldProps> = ({
@@ -48,7 +65,6 @@ export const InputField: FC<InputFieldProps> = ({
   id,
 }) => {
   const [borderColor, setBorderColor] = useState(false);
-  
 
   const stateClasses = {
     placeholder: `text-text-primary ${borderColor ? 'border-base-neutral-400' : 'border-input-stroke'}`,
@@ -65,7 +81,7 @@ export const InputField: FC<InputFieldProps> = ({
       ${stateClasses[state]} 
       `}
     >
-      <div className="flex items-center gap-2 w-full">
+      <div className="flex items-center md:gap-2 w-full">
         {hasLeftContent && leftContent}
         <input
           data-testid={id}

@@ -2,7 +2,7 @@ import { Tabs } from '../lib/components/tabs/tab';
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { IconAccountInformation } from '../lib/components/icons/icon-account-information';
-import { IconAssignmnet } from '../lib/components/icons/icon-assignment';
+import { IconAssignment } from '../lib/components/icons/icon-assignment';
 import { IconCertification } from '../lib/components/icons/icon-certification';
 
 const meta = {
@@ -32,7 +32,7 @@ export const Story = {
           >
             Account
           </Tabs.Trigger>
-          <Tabs.Trigger icon={<IconAssignmnet size="5" />} value="assignments">
+          <Tabs.Trigger icon={<IconAssignment size="5" />} value="assignments">
             Assignments
           </Tabs.Trigger>
           <Tabs.Trigger icon={<IconCertification size="5" />} value="settings">

@@ -16,6 +16,33 @@ export type DragAndDropProps = {
   };
 };
 
+/**
+ * A reusable Drag and Drop file upload component with customizable styles, file validation, and error handling.
+ *
+ * @param onUpload Callback function triggered when files are successfully uploaded. Receives an array of `File` objects.
+ * @param maxSize Optional maximum file size allowed for uploads, in bytes. Defaults to 15 MB.
+ * @param className Optional additional CSS class names to customize the component's appearance.
+ * @param acceptedFileTypes Optional array of accepted file types (e.g., `['image/*', 'application/pdf']`). Defaults to images and PDFs.
+ * @param text Object containing customizable text for various parts of the component:
+ *  - `title`: Text displayed when a file is being dragged over the drop area.
+ *  - `buttontext`: Text for the button displayed in the drop area.
+ *  - `dragtext`: Instructional text displayed in the drop area when no file is being dragged.
+ *  - `filesize`: Text label for displaying the maximum file size allowed.
+ *
+ * @example
+ * <DragAndDrop
+ *   onUpload={(files) => console.log(files)}
+ *   maxSize={10 * 1024 * 1024}
+ *   acceptedFileTypes={['image/png', 'application/pdf']}
+ *   text={{
+ *     title: "Drop your files here",
+ *     buttontext: "Choose Files",
+ *     dragtext: "or drag and drop files here",
+ *     filesize: "Max file size",
+ *   }}
+ * />
+ */
+
 export const DragAndDrop: React.FC<DragAndDropProps> = ({
   onUpload,
   maxSize = 15 * 1024 * 1024,
@@ -53,7 +80,7 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
     >
       <div
         {...getRootProps()}
-        className={`flex flex-col items-center bg-base-neutral-900  gap-[2px] justify-center  p-6 pt-4 border-2 ${
+        className={`flex flex-col items-center bg-base-neutral-900  gap-[2px] justify-center  md:p-6 p-2 md:pt-4 border-2 ${
           isDragActive
             ? 'border-button-primary-stroke'
             : 'border-base-neutral-700'

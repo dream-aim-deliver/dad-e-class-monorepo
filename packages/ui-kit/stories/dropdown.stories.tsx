@@ -159,5 +159,8 @@ export const MultiSelectAndSearchDropdown: Story = {
     options: multiSelectOptions,
     defaultValue: [multiSelectOptions[0].value, multiSelectOptions[2].value],
     className: '',
+    text: {
+      multiText: 'Choose Options',
+    },
   },
 };

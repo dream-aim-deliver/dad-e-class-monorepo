@@ -29,18 +29,30 @@ const sizeConfig = {
 };
 
 /**
- * A reusable RadioButton component that allows users to select a single option from a set.
+ * A reusable RadioButton component with support for multiple sizes, states (checked/disabled), and optional labels.
  *
- * @param name The name attribute for the radio input.
- * @param value The value of the radio button.
- * @param label The text label displayed next to the radio button. Defaults to 'Radio Button'.
- * @param checked If true, the radio button is selected. Defaults to false.
- * @param disabled If true, the radio button is disabled and not clickable. Defaults to false.
- * @param withText If true, displays a label next to the radio button. Defaults to false.
- * @param size Defines the radio button size. Options: 'small', 'medium', 'large'. Defaults to 'medium'.
- * @param onChange Callback function triggered when the radio button state changes.
- * @param labelClass Additional custom class names for styling the label.
- * @returns A customizable radio button component with support for different sizes, labels, and states.
+ * @param name The name of the radio button group.
+ * @param value The value associated with the radio button.
+ * @param label Optional label to display next to the radio button. Defaults to "Radio Button".
+ * @param checked Optional flag indicating whether the radio button is selected. Defaults to `false`.
+ * @param disabled Optional flag indicating whether the radio button is disabled. Defaults to `false`.
+ * @param withText Optional flag indicating whether to display a label next to the radio button. Defaults to `false`.
+ * @param size The size of the radio button. Options:
+ *   - `small`: Small-sized radio button.
+ *   - `medium`: Medium-sized radio button (default).
+ *   - `large`: Large-sized radio button.
+ * @param onChange Optional callback function triggered when the state changes. Receives the `value` as an argument.
+ * @param labelClass Optional additional CSS classes for customizing the label's appearance.
+ *
+ * @example
+ * <RadioButton
+ *   name="example-group"
+ *   value="option1"
+ *   label="Option 1"
+ *   checked={true}
+ *   onChange={(value) => console.log("Selected:", value)}
+ *   size="medium"
+ * />
  */
 
 export const RadioButton: FC<RadioButtonProps> = ({

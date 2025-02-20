@@ -7,24 +7,40 @@ export interface TextInputProps {
   hasFeedback?: boolean;
   inputField: InputFieldProps;
   feedbackMessage?: FeedBackMessageProps;
-  id?:string;
+  id?: string;
 }
+
 /**
- * A reusable TextInput component that includes a label, an input field, and an optional feedback message.
- * 
- * @param label The label displayed above the input field. Defaults to 'label'.
- * @param hasFeedback If true, displays a feedback message below the input field.
- * @param inputField Props to configure the InputField component.
- * @param feedbackMessage Props to configure the FeedBackMessage component (if hasFeedback is true).
- * @param id Optional unique identifier for the input field. If not provided, it generates a random ID.
- * @returns A styled text input field with an optional label and feedback message.
+ * A reusable TextInput component that combines an input field with optional labels and feedback messages.
+ *
+ * @param label Optional label to display above the input field. Defaults to "label".
+ * @param hasFeedback Optional flag to indicate if feedback messages should be displayed. Defaults to `false`.
+ * @param inputField Props for the underlying `InputField` component (e.g., value, setValue, placeholder).
+ * @param feedbackMessage Props for the optional `FeedBackMessage` component (e.g., type, message).
+ * @param id Optional unique ID for the input field. If not provided, a random ID is generated.
+ *
+ * @example
+ * <TextInput
+ *   label="Username"
+ *   hasFeedback={true}
+ *   inputField={{
+ *     value: username,
+ *     setValue: (newValue) => setUsername(newValue),
+ *     placeholder: "Enter your username",
+ *   }}
+ *   feedbackMessage={{
+ *     type: "error",
+ *     message: "Username is required",
+ *   }}
+ * />
  */
+
 export const TextInput: FC<TextInputProps> = ({
   label = 'label',
   hasFeedback = false,
   inputField,
   feedbackMessage,
-  id
+  id,
 }) => {
   const inputId =
     id || inputField.id || `input-${Math.random().toString(36).slice(2, 11)}`;

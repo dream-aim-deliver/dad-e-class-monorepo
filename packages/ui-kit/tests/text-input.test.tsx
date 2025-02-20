@@ -41,12 +41,12 @@ describe('<TextInput />', () => {
     );
 
     const label = screen.getByText('Generated ID Label');
-    const input = screen.getByRole('textbox'); // Input without an explicit ID will still render
+    const input = screen.getByRole('textbox');
     const generatedId = label.getAttribute('for');
 
     expect(label).toBeInTheDocument();
     expect(input).toBeInTheDocument();
-    expect(generatedId).toMatch(/^input-/); // Matches the generated ID pattern
+    expect(generatedId).toMatch(/^input-/);
   });
 
   it('renders feedback message when hasFeedback is true', () => {

@@ -55,24 +55,25 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
 }
 
 /**
- * A reusable Button component with support for multiple variants, sizes, optional icons, and i18n.
+ * A reusable Button component with support for multiple variants, sizes, optional icons, and accessibility features.
  *
+ * @param text Optional text to display inside the button.
+ * @param variant The visual style of the button. Options:
+ *   - `primary`: A primary button with a solid background and text color (default).
+ *   - `secondary`: A secondary button with a border and fill styles.
+ *   - `text`: A text-only button with no background or border.
+ * @param size The size of the button. Options:
+ *   - `small`: A small button with compact padding and font size.
+ *   - `medium`: A medium-sized button (default).
+ *   - `big`: A large button with increased padding and font size.
+ *   - `huge`: An extra-large button for high visibility.
  * @param onClick Optional callback function triggered when the button is clicked.
  * @param className Optional additional CSS class names to customize the button's appearance.
- * @param disabled Optional boolean indicating whether the button is disabled. When true, the button is non-interactive and visually dimmed.
- * @param variant The visual style of the button. Options:
- *  - `primary`: A primary button with a solid background and text color.
- *  - `secondary`: A secondary button with a border, stroke, and fill styles.
- *  - `text`: A text-only button with no background or border.
- * @param size The size of the button. Options:
- *  - `small`: A small button with compact padding and font size.
- *  - `medium`: A medium-sized button (default).
- *  - `big`: A large button with increased padding and font size.
- *  - `huge`: A very large button for high-visibility use cases.
- * @param hasIconLeft Optional boolean indicating whether an icon should be displayed on the left side of the button.
- * @param hasIconRight Optional boolean indicating whether an icon should be displayed on the right side of the button.
- * @param iconLeft Optional ReactNode representing the icon to display on the left side of the button. Only rendered if `hasIconLeft` is true.
- * @param iconRight Optional ReactNode representing the icon to display on the right side of the button. Only rendered if `hasIconRight` is true.
+ * @param disabled Optional flag indicating whether the button is disabled. When true, the button is non-interactive and visually dimmed.
+ * @param hasIconLeft Optional flag indicating whether an icon should be displayed on the left side of the button.
+ * @param hasIconRight Optional flag indicating whether an icon should be displayed on the right side of the button.
+ * @param iconLeft Optional ReactNode representing an icon to display on the left side of the button. Only rendered if `hasIconLeft` is true.
+ * @param iconRight Optional ReactNode representing an icon to display on the right side of the button. Only rendered if `hasIconRight` is true.
  *
  * @example
  * <Button
@@ -83,6 +84,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
  *   iconLeft={<ArrowLeftIcon />}
  * />
  */
+
 export const Button: FC<ButtonProps> = ({
   text,
   onClick,
@@ -99,7 +101,10 @@ export const Button: FC<ButtonProps> = ({
 
   return (
     <button
-      className={cn(buttonSizeClasses, 'cursor-pointer flex items-center')}
+      className={cn(
+        buttonSizeClasses,
+        'cursor-pointer flex items-center gap-1',
+      )}
       onClick={onClick}
       disabled={disabled}
     >

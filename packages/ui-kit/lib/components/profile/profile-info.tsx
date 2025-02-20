@@ -19,27 +19,28 @@ type fileProps = {
 }[];
 
 /**
- * A form component for managing personal profile information.
+ * A reusable form component for managing and editing user profile information.
  *
- * @param initialData Optional initial data to pre-fill the form fields. Schema:
- *  - name: A required string representing the user's first name.
- *  - surname: A required string representing the user's last name.
- *  - email: A required string validated as a valid email address.
- *  - phoneNumber: An optional string for the user's phone number.
- *  - dateOfBirth: An optional string validated as a date.
- *  - profilePicture: An optional string for the user's profile picture URL.
- *  - languages: An optional array of objects (defined by LanguageSchema) representing selected languages.
- *  - interfaceLanguage: An object (defined by LanguageSchema) specifying the interface language.
- *  - receiveNewsletter: A boolean indicating whether the user opts to receive newsletters.
+ * @param initialData Optional initial data to prefill the form fields with user profile information.
+ * @param onSave Callback function triggered when the form is submitted. Receives the updated `TPersonalProfile` object.
+ * @param locale The locale used for translations and localization.
  *
- * @param onSave Callback triggered on form submission with updated profile data.
- */
-
-/**
- * State Management:
- * - Initializes state with default values or provided initialData.
- * - Updates individual fields via handleChange.
- * - Resets form to initial state with a "Discard" button.
+ * @example
+ * <ProfileInfo
+ *   initialData={{
+ *     name: "John",
+ *     surname: "Doe",
+ *     email: "john.doe@example.com",
+ *     phoneNumber: "+123456789",
+ *     dateOfBirth: "1990-01-01",
+ *     profilePicture: "",
+ *     languages: [],
+ *     interfaceLanguage: { code: "ENG", name: "English" },
+ *     receiveNewsletter: true,
+ *   }}
+ *   onSave={(profile) => console.log("Saved profile:", profile)}
+ *   locale="en"
+ * />
  */
 
 export const ProfileInfo: React.FC<ProfileInfoProps> = ({
@@ -84,7 +85,6 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   };
 
   const handleUploadedFiles = (uploadedFiles: File[]) => {
-    console.log('Files uploaded:', uploadedFiles);
     const filesWithStatus = uploadedFiles.map((file: any) => ({
       file,
       isUploading: true,
@@ -122,8 +122,8 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   ];
 
   return (
-    <div className="flex gap-4 items-start p-4  rounded-medium border border-solid bg-card-fill border-card-stroke">
-      <div className="flex flex-col gap-4 w-full max-md:max-w-full````">
+    <div className="flex gap-4 items-start p-4 rounded-medium border border-solid bg-card-fill border-card-stroke w-full min-w-[240px]">
+      <div className="flex flex-col flex-1 gap-4 shrink w-full basis-0">
         <h1 className="text-xl flex items-start font-bold leading-[120%] text-text-primary">
           {dictionary.components.profileInfo.title}
         </h1>
@@ -176,7 +176,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
               <Button
                 variant="text"
                 size="small"
-                className="ml-2 p-0"
+                className="p-0"
                 text={dictionary.components.profileInfo.changePassword}
               />
             ),
@@ -296,6 +296,3 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
     </div>
   );
 };
-function useTranslations(arg0: string) {
-  throw new Error('Function not implemented.');
-}

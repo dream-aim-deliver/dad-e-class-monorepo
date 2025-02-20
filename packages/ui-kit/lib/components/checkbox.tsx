@@ -26,18 +26,30 @@ const sizeConfig = {
 };
 
 /**
- * A reusable CheckBox component that allows users to select or deselect an option.
+ * A reusable CheckBox component with support for different sizes, states (checked/disabled), and optional labels.
  *
- * @param name The name attribute for the checkbox input.
- * @param value The value of the checkbox.
- * @param label The text label displayed next to the checkbox. Defaults to 'Checkbox'.
- * @param checked If true, the checkbox is checked. Defaults to false.
- * @param disabled If true, the checkbox is disabled and not clickable. Defaults to false.
- * @param withText If true, displays a label next to the checkbox. Defaults to false.
- * @param size Defines the checkbox size. Options: 'small', 'medium', 'large'. Defaults to 'medium'.
- * @param onChange Callback function triggered when the checkbox state changes.
- * @param labelClass Additional custom class names for styling the label.
- * @returns A customizable checkbox component with support for different sizes, labels, and states.
+ * @param name The name of the checkbox input.
+ * @param value The value associated with the checkbox.
+ * @param label Optional label to display next to the checkbox.
+ * @param checked Optional flag indicating whether the checkbox is checked.
+ * @param disabled Optional flag indicating whether the checkbox is disabled.
+ * @param withText Optional flag indicating whether to display a label next to the checkbox.
+ * @param size The size of the checkbox. Options:
+ *   - `small`: Small-sized checkbox.
+ *   - `medium`: Medium-sized checkbox (default).
+ *   - `large`: Large-sized checkbox.
+ * @param onChange Optional callback function triggered when the checkbox state changes. Receives the `value` as an argument.
+ * @param labelClass Optional additional CSS classes for customizing the label's appearance.
+ *
+ * @example
+ * <CheckBox
+ *   name="example-checkbox"
+ *   value="example"
+ *   label="Example Checkbox"
+ *   checked={true}
+ *   onChange={(value) => console.log("Checkbox changed:", value)}
+ *   size="medium"
+ * />
  */
 
 export const CheckBox: FC<CheckBoxProps> = ({

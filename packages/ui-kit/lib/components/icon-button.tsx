@@ -43,16 +43,31 @@ const colorMap = {
 };
 
 /**
- * A reusable IconButton component that renders an icon within a styled button.
+ * A reusable IconButton component for rendering buttons with icons and various styles and sizes.
  *
- * @param size Defines the button size. Options: 'small', 'medium', 'big', 'huge'. Defaults to 'big'.
- * @param styles Defines the button style variant. Options: 'primary', 'secondary', 'text'. Defaults to 'primary'.
- * @param disabled If true, the button is disabled and has reduced opacity. Defaults to false.
- * @param icon The icon component to display inside the button. Defaults to `IconRefresh` from './icons/icon-refresh'.
- * @param className Additional custom class names for styling.
- * @param onClick Callback function triggered when the button is clicked.
- * @returns A customizable button component that displays an icon and supports various sizes and styles.
+ * @param size The size of the button. Options:
+ *   - `small`: Small-sized button.
+ *   - `medium`: Medium-sized button.
+ *   - `big`: Large-sized button (default).
+ *   - `huge`: Extra-large-sized button.
+ * @param styles The style variant of the button. Options:
+ *   - `primary`: Solid background with primary colors (default).
+ *   - `secondary`: Bordered style with secondary colors.
+ *   - `text`: Text-only style with no background or border.
+ * @param disabled Optional flag indicating whether the button is disabled. When true, the button is non-interactive and visually dimmed.
+ * @param icon The icon or ReactNode to display inside the button. Defaults to `<IconRefresh />`.
+ * @param onClick Optional callback function triggered when the button is clicked.
+ * @param className Optional additional CSS class names to customize the button's appearance.
+ *
+ * @example
+ * <IconButton
+ *   size="medium"
+ *   styles="primary"
+ *   icon={<CustomIcon />}
+ *   onClick={() => console.log("IconButton clicked!")}
+ * />
  */
+
 export const IconButton: FC<IconButtonProps> = ({
   size = 'big',
   styles = 'primary',

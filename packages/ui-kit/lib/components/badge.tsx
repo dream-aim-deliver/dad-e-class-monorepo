@@ -1,20 +1,7 @@
-/**
- * A Badge component that displays a stylized label with different variants and sizes.
- * @param variant Determines the visual style of the badge (e.g., primary, info, success, warning, error).
- * @param size Controls the size of the badge (small or big).
- * @param children The content inside the badge.
- * @param onClick Optional click event handler for the badge.
- * @param className Additional custom class names for styling.
- * @returns A styled badge component.
- */
-import React from 'react';
 import { cva, VariantProps } from 'class-variance-authority';
 import { FC } from 'react';
 import { cn } from '../utils/style-utils';
 
-/**
- * Defines the base styles and variant-specific styles for the badge component.
- */
 const badgeStyles = cva(
   'inline-flex items-center font-bold transition-colors',
   {
@@ -40,9 +27,6 @@ const badgeStyles = cva(
   },
 );
 
-/**
- * Props for the Badge component, extending the variant properties.
- */
 export interface BadgeProps extends VariantProps<typeof badgeStyles> {
   text?: string;
   onClick?: () => void;
@@ -50,8 +34,30 @@ export interface BadgeProps extends VariantProps<typeof badgeStyles> {
 }
 
 /**
- * Badge component renders a stylized label with customizable variant and size.
+ * A reusable Badge component with support for multiple variants, sizes, and optional click functionality.
+ *
+ * @param text Optional text to display inside the badge.
+ * @param variant The visual style of the badge. Options:
+ *  - `primary`: A primary badge with a default action background.
+ *  - `info`: An informational badge with a neutral background (default).
+ *  - `successprimary`: A success badge with a green background.
+ *  - `warningprimary`: A warning badge with a yellow background.
+ *  - `errorprimary`: An error badge with a red background.
+ * @param size The size of the badge. Options:
+ *  - `small`: A small badge with compact padding and font size (default).
+ *  - `big`: A larger badge with more padding and font size.
+ * @param onClick Optional callback function triggered when the badge is clicked. Useful for interactive badges.
+ * @param className Optional additional CSS class names to customize the badge's appearance.
+ *
+ * @example
+ * <Badge
+ *   text="Success"
+ *   variant="successprimary"
+ *   size="big"
+ *   onClick={() => console.log("Badge clicked!")}
+ * />
  */
+
 export const Badge: FC<BadgeProps> = ({
   text,
   variant,

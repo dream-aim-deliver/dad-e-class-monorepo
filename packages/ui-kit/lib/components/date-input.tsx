@@ -9,13 +9,20 @@ export interface DateInputProps {
 }
 
 /**
- * A reusable DateInput component with an integrated calendar picker.
+ * A reusable DateInput component with a custom calendar icon and optional label.
  *
- * @param label Optional label for the date input field.
- * @param value The selected date in string format.
- * @param onChange Callback function triggered when the date is changed.
- * @returns A customizable date input field with a calendar icon for selecting a date.
+ * @param label Optional label to display above the date input field.
+ * @param value The current value of the date input field (in ISO format).
+ * @param onChange Callback function triggered when the date value changes. Receives the new date as a string.
+ *
+ * @example
+ * <DateInput
+ *   label="Select a Date"
+ *   value="2023-10-01"
+ *   onChange={(date) => console.log("Selected date:", date)}
+ * />
  */
+
 export const DateInput: React.FC<DateInputProps> = ({
   value,
   onChange,
