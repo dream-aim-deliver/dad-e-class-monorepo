@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { InputField, InputFieldProps } from '../lib/components/input-field';
 import { IconSearch } from '../lib/components/icons/icon-search';
 import { Button } from '../lib/components/button';
-import React from 'react';
 
 const meta = {
   title: 'Components/InputField',

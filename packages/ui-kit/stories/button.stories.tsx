@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Button } from '../lib/components/button';
+import { Button, ButtonProps } from '../lib/components/button';
 import { NextIntlClientProvider } from 'next-intl';
-import React from 'react';
 import { IconPlus } from '../lib/components/icons/icon-plus';
 import { IconTrashAlt } from '../lib/components/icons/icon-trash-alt';
 import { IconSearch } from '../lib/components/icons/icon-search';
@@ -80,7 +79,7 @@ const Template: StoryObj<typeof Button> = {
 /**
  * Default story showcasing the primary button.
  */
-export const Primary = {
+export const Primary: StoryObj<typeof Button> = {
   ...Template,
   args: {
     variant: 'primary',
@@ -100,10 +99,11 @@ export const Primary = {
   },
 };
 
+type Story = StoryObj<ButtonProps>;
 /**
  * Secondary button story.
  */
-export const Secondary = {
+export const Secondary: Story = {
   ...Template,
   args: {
     variant: 'secondary',
@@ -115,7 +115,7 @@ export const Secondary = {
 /**
  * Text button story.
  */
-export const TextButton = {
+export const TextButton: Story = {
   ...Template,
   args: {
     variant: 'text',
@@ -127,7 +127,7 @@ export const TextButton = {
 /**
  * Disabled button story.
  */
-export const Disabled = {
+export const Disabled: Story = {
   ...Template,
   args: {
     variant: 'primary',
@@ -138,9 +138,26 @@ export const Disabled = {
 };
 
 /**
+ * Button with both left and right icons.
+ */
+export const WithIcons: Story = {
+  ...Template,
+  args: {
+    variant: 'secondary',
+    size: 'medium',
+    text: 'With Icons',
+    className: 'gap-2',
+    hasIconLeft: true,
+    iconLeft: <IconAccountInformation />,
+    hasIconRight: true,
+    iconRight: <IconTrashAlt />,
+  },
+};
+
+/**
  * Button with a left icon only.
  */
-export const WithLeftIcon = {
+export const WithLeftIcon: Story = {
   ...Template,
   args: {
     variant: 'primary',
@@ -154,7 +171,7 @@ export const WithLeftIcon = {
 /**
  * Button with a right icon only.
  */
-export const WithRightIcon = {
+export const WithRightIcon: Story = {
   ...Template,
   args: {
     variant: 'secondary',
@@ -162,22 +179,5 @@ export const WithRightIcon = {
     text: 'With Right Icon',
     hasIconRight: true,
     iconRight: <IconSearch />,
-  },
-};
-
-/**
- * Button with both left and right icons.
- */
-export const WithIcons = {
-  ...Template,
-  args: {
-    variant: 'secondary',
-    size: 'medium',
-    text: 'With Icons',
-    className: 'gap-2',
-    hasIconLeft: true,
-    iconLeft: <IconAccountInformation />,
-    hasIconRight: true,
-    iconRight: <IconTrashAlt />,
   },
 };

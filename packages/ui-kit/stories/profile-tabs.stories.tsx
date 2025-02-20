@@ -1,6 +1,6 @@
-import React from 'react';
 import { ProfileTabs } from '../lib/components/profile-tabs'; // Adjust the import path
 import { profile } from '@maany_shr/e-class-models';
+import type { Meta } from '@storybook/react';
 
 // Mock Personal Profile Data
 const mockPersonalProfile: profile.TPersonalProfile = {
@@ -39,7 +39,7 @@ const mockProfiles: profile.TProfiles = [
 ];
 
 // Default Export for Storybook
-export default {
+const meta = {
   title: 'Components/ProfileTabs',
   component: ProfileTabs,
   tags: ['autodocs'],
@@ -52,7 +52,9 @@ export default {
       options: ['en', 'de'],
     },
   },
-};
+} as Meta;
+
+export default meta;
 
 // Template for the Story
 const Template = (args) => <ProfileTabs {...args} />;
