@@ -7,16 +7,26 @@ export interface TextAreaInputProps {
   placeholder?: string;
   className?: string;
 }
+
 /**
- * A reusable TextAreaInput component for multiline text input.
+ * A reusable TextAreaInput component for capturing multi-line text input with optional labels and placeholders.
  *
- * @param label The label displayed above the textarea (optional).
- * @param value The current value of the textarea.
- * @param setValue Function to update the value of the textarea.
- * @param placeholder The placeholder text inside the textarea. Defaults to 'Enter text here'.
- * @param className Additional CSS classes to customize the appearance.
- * @returns A styled textarea input with an optional label.
+ * @param label Optional label to display above the textarea.
+ * @param value The current value of the textarea. This makes it a controlled component.
+ * @param setValue Callback function triggered when the textarea value changes. Receives the new value as a string.
+ * @param placeholder Placeholder text for the textarea. Defaults to "Enter text here".
+ * @param className Optional additional CSS classes for customizing the appearance of the textarea.
+ *
+ * @example
+ * <TextAreaInput
+ *   label="Description"
+ *   value={description}
+ *   setValue={(newValue) => setDescription(newValue)}
+ *   placeholder="Enter your description here"
+ *   className="custom-class"
+ * />
  */
+
 export const TextAreaInput: FC<TextAreaInputProps> = ({
   label,
   value,

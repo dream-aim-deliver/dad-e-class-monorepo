@@ -147,9 +147,9 @@ describe('<Dropdown />', () => {
     let listItems = screen.queryAllByRole('listitem');
     expect(listItems).toHaveLength(options.length);
 
-    fireEvent.mouseDown(document.body); // Simulate clicking outside
+    fireEvent.mouseDown(document.body);
     listItems = screen.queryAllByRole('listitem');
 
-    expect(listItems).toHaveLength(0); // Dropdown should be closed
+    expect(listItems).toHaveLength(0);
   });
 });

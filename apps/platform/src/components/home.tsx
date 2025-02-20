@@ -1,47 +1,11 @@
 'use client';
-import { Button, DummySkills, Badge, ProfileTabs } from '@maany_shr/e-class-ui-kit';
+import { Button, DummySkills } from '@maany_shr/e-class-ui-kit';
 import '@maany_shr/e-class-ui-kit/tailwind.css';
 import { useTheme } from '@maany_shr/e-class-ui-kit/contexts';
 import { useTranslations } from 'next-intl';
-import {
-  isLocalAware,
-  TLocale,
-} from '@maany_shr/e-class-translations';
-import ProfessionalInfo from 'packages/ui-kit/lib/components/profile/professional-info';
-import { ProfileInfo } from 'packages/ui-kit/lib/components/profile/profile-info';
-import { profile } from '@maany_shr/e-class-models';
-
+import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 
 export type HomeProps = isLocalAware;
-// Mock Personal Profile Data
-const mockPersonalProfile: profile.TPersonalProfile = {
-  name: "John",
-  surname: "Doe",
-  email: "john.doe@example.com",
-  phoneNumber: "+1234567890",
-  dateOfBirth: "1990-01-01",
-  profilePicture: "https://example.com/profile.jpg",
-  languages: [{ code: "ENG", name: "English" }, { code: "DEU", name: "German" }],
-  interfaceLanguage: { code: "ENG", name: "English" },
-  receiveNewsletter: true,
-  isRepresentingCompany: false,
-};
-
-// Mock Professional Profile Data
-const mockProfessionalProfile: profile.TProfessionalProfile = {
-  bio: "Experienced software engineer with a passion for building scalable applications.",
-  linkedinUrl: "https://www.linkedin.com/in/johndoe",
-  curriculumVitae: "https://example.com/cv.pdf",
-  portfolioWebsite: "https://johndoe.dev",
-  associatedCompanyName: "Tech Corp",
-  associatedCompanyRole: "Senior Software Engineer",
-  associatedCompanyIndustry: "Technology",
-  skills: ["React", "Node.js", "TypeScript", "AWS"],
-  isPrivateProfile: false,
-};
-
-// Combine both profiles into a single array
-const mockProfiles: profile.TProfiles = [mockPersonalProfile, mockProfessionalProfile];
 
 export default function Home(props: HomeProps) {
   const { theme, setTheme } = useTheme();
@@ -59,7 +23,7 @@ export default function Home(props: HomeProps) {
         }}
       />
       <DummySkills
-        locale={props.locale as TLocale} 
+        locale={props.locale as TLocale}
         skills={['React', 'TypeScript', 'TailwindCSS']}
       />
       
