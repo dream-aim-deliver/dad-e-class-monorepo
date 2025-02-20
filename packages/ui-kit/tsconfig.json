@@ -7,13 +7,16 @@
       "path": "../translations"
     },
     {
+      "path": "../models"
+    },
+    {
       "path": "./tsconfig.lib.json"
     },
     {
       "path": "./tsconfig.spec.json"
     },
     {
-      "path": "../models"
+      "path": "./tsconfig.storybook.json"
     }
   ]
 }
