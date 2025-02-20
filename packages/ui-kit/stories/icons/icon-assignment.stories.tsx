@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { IconAssignmnet } from '../../lib/components/icons/icon-assignment';
+import { IconAssignment } from '../../lib/components/icons/icon-assignment';
 
 // Meta configuration for Storybook
-const meta: Meta<typeof IconAssignmnet> = {
-  title: 'Icons/IconAssignmnet',
-  component: IconAssignmnet,
+const meta: Meta<typeof IconAssignment> = {
+  title: 'Icons/IconAssignment',
+  component: IconAssignment,
   tags: ['autodocs'],
   argTypes: {
     size: {
@@ -29,7 +29,7 @@ const meta: Meta<typeof IconAssignmnet> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof IconAssignmnet>;
+type Story = StoryObj<typeof IconAssignment>;
 
 // Default story
 export const Default: Story = {

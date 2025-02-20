@@ -1,10 +1,10 @@
 import { type IconProps, generateClassesForIcon } from './icon';
 
 /**
- * IconAssignmnet
- * @usage <IconAssignmnet />
+ * IconAssignment
+ * @usage <IconAssignment />
  */
-export const IconAssignmnet = (props: IconProps) => {
+export const IconAssignment = (props: IconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

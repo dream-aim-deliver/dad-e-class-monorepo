@@ -2,13 +2,14 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Button } from '../lib/components/button';
 import { NextIntlClientProvider } from 'next-intl';
 import React from 'react';
-import { IconCloudDownload } from '../lib/components/icons/icon-cloud-download';
+import { IconPlus } from '../lib/components/icons/icon-plus';
 import { IconTrashAlt } from '../lib/components/icons/icon-trash-alt';
+import { IconSearch } from '../lib/components/icons/icon-search';
+import { IconAccountInformation } from '../lib/components/icons/icon-account-information';
 
 /**
  * Mock messages for translations.
  */
-
 const mockMessages = {
   hello: 'Hello',
   world: 'World',
@@ -26,7 +27,9 @@ const meta: Meta<typeof Button> = {
   decorators: [
     (Story) => (
       <NextIntlClientProvider locale="en" messages={mockMessages}>
-        <Story />
+        <div className="flex justify-center items-center">
+          <Story />
+        </div>
       </NextIntlClientProvider>
     ),
   ],
@@ -51,7 +54,8 @@ const meta: Meta<typeof Button> = {
     },
     hasIconRight: {
       control: 'boolean',
-      description: 'Whether to display an icon on the right side of the button.',
+      description:
+        'Whether to display an icon on the right side of the button.',
     },
     text: {
       control: 'text',
@@ -109,15 +113,14 @@ export const Secondary = {
 };
 
 /**
- * text button story.
+ * Text button story.
  */
-export const text = {
+export const TextButton = {
   ...Template,
   args: {
     variant: 'text',
     size: 'medium',
     text: 'Text Button',
-    
   },
 };
 
@@ -135,6 +138,34 @@ export const Disabled = {
 };
 
 /**
+ * Button with a left icon only.
+ */
+export const WithLeftIcon = {
+  ...Template,
+  args: {
+    variant: 'primary',
+    size: 'medium',
+    text: 'With Left Icon',
+    hasIconLeft: true,
+    iconLeft: <IconPlus />,
+  },
+};
+
+/**
+ * Button with a right icon only.
+ */
+export const WithRightIcon = {
+  ...Template,
+  args: {
+    variant: 'secondary',
+    size: 'medium',
+    text: 'With Right Icon',
+    hasIconRight: true,
+    iconRight: <IconSearch />,
+  },
+};
+
+/**
  * Button with both left and right icons.
  */
 export const WithIcons = {
@@ -142,10 +173,10 @@ export const WithIcons = {
   args: {
     variant: 'secondary',
     size: 'medium',
-    text: 'Button with Icons',
+    text: 'With Icons',
     className: 'gap-2',
     hasIconLeft: true,
-    iconLeft: <IconCloudDownload/>,
+    iconLeft: <IconAccountInformation />,
     hasIconRight: true,
     iconRight: <IconTrashAlt />,
   },

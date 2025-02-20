@@ -7,7 +7,6 @@ import { IconCloudDownload } from '../icons/icon-cloud-download';
 import { IconTrashAlt } from '../icons/icon-trash-alt';
 import { IconFile } from '../icons/icon-file';
 import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
-import { dictionaries } from '@maany_shr/e-class-translations';
 
 export type UploadFileProps = {
   files: file[];
@@ -27,6 +26,43 @@ export type file = {
   file: File;
   isUploading: boolean;
 };
+
+/**
+ * A reusable component for managing file uploads with support for drag-and-drop, progress indicators, and file deletion.
+ *
+ * @param files An array of files being uploaded. Each file includes:
+ *  - `file`: The actual `File` object being uploaded.
+ *  - `isUploading`: A boolean indicating whether the file is currently being uploaded.
+ * @param onUpload Callback function triggered when new files are uploaded. Receives an array of `File` objects.
+ * @param handleDelete Callback function triggered when a file is deleted. Receives the index of the file to delete.
+ * @param className Optional additional CSS class names to customize the component's appearance.
+ * @param text Object containing customizable text for various parts of the component:
+ *  - `title`: Text displayed when dragging files over the drop area.
+ *  - `buttontext`: Text for the button in the drag-and-drop area.
+ *  - `dragtext`: Instructional text displayed in the drag-and-drop area when no files are uploaded.
+ *  - `filesize`: Label for displaying the maximum file size allowed.
+ *  - `uploading`: Text displayed while a file is being uploaded.
+ *  - `cancelUpload`: Text for the button to cancel an ongoing upload.
+ *
+ * @example
+ * <UploadedFile
+ *   files={[
+ *     { file: new File(["content"], "example.pdf"), isUploading: false },
+ *   ]}
+ *   onUpload={(files) => console.log(files)}
+ *   handleDelete={(index) => console.log("Delete file at index", index)}
+ *   className="custom-class"
+ *   text={{
+ *     title: "Drop your files here",
+ *     buttontext: "Choose Files",
+ *     dragtext: "or drag and drop files here",
+ *     filesize: "Max size",
+ *     uploading: "Uploading...",
+ *     cancelUpload: "Cancel",
+ *   }}
+ * />
+ */
+
 export function UploadedFile({
   files,
   onUpload,
@@ -34,6 +70,17 @@ export function UploadedFile({
   className,
   text,
 }: UploadFileProps) {
+  const handleDownload = (file: File) => {
+    const url = URL.createObjectURL(file);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div>
       {files.length > 0 ? (
@@ -82,6 +129,7 @@ export function UploadedFile({
                       icon={<IconCloudDownload />}
                       size="small"
                       styles="text"
+                      onClick={() => handleDownload(file)}
                     />
                     <IconButton
                       icon={<IconTrashAlt />}

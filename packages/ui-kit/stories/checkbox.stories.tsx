@@ -5,6 +5,13 @@ import { CheckBox, CheckBoxProps } from '../lib/components/checkbox';
 const meta: Meta<typeof CheckBox> = {
   title: 'Components/CheckBox',
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <div className="flex justify-center items-center">
+        <Story />
+      </div>
+    ),
+  ],
   component: CheckBox,
   parameters: {
     layout: 'centered',
@@ -54,7 +61,7 @@ export const Checked: Story = {
     name: 'checkedCheckbox',
     value: 'checkedValue',
     label: 'Checked Checkbox',
-    labelClass: 'text-text-primary text-sm leading-[100%]',
+    labelClass: 'text-button-secondary-text text-sm leading-[100%]',
     checked: true,
     disabled: false,
     withText: true,
@@ -68,7 +75,7 @@ export const Disabled: Story = {
     name: 'disabledCheckbox',
     value: 'disabledValue',
     label: 'Disabled Checkbox',
-    labelClass: 'text-text-primary text-sm leading-[100%]',
+    labelClass: 'text-button-secondary-text text-sm leading-[100%]',
     checked: false,
     disabled: true,
     withText: true,
@@ -82,7 +89,7 @@ export const Small: Story = {
     name: 'smallCheckbox',
     value: 'smallValue',
     label: 'Small Checkbox',
-    labelClass: 'text-text-primary text-sm leading-[100%]',
+    labelClass: 'text-button-secondary-text text-sm leading-[100%]',
     checked: false,
     disabled: false,
     withText: true,
@@ -96,7 +103,7 @@ export const Large: Story = {
     name: 'largeCheckbox',
     value: 'largeValue',
     label: 'Large Checkbox',
-    labelClass: 'text-text-primary text-sm leading-[100%]',
+    labelClass: 'text-button-secondary-text text-sm leading-[100%]',
     checked: false,
     disabled: false,
     withText: true,

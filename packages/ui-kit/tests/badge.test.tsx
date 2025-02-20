@@ -13,22 +13,22 @@ describe('<Badge />', () => {
     render(<Badge text="Default Badge" />);
     const badge = screen.getByText('Default Badge');
     expect(badge).toBeInTheDocument();
-    expect(badge).toHaveClass('bg-base-neutral-400 text-text-primary-inverted'); // Default variant: "info"
-    expect(badge).toHaveClass('py-[2px] px-[4px] text-2xs rounded-small'); // Default size: "small"
+    expect(badge).toHaveClass('bg-base-neutral-400 text-text-primary-inverted');
+    expect(badge).toHaveClass('py-[2px] px-[4px] text-2xs rounded-small');
   });
 
   it('renders the badge with a custom variant', () => {
     render(<Badge text="Primary Badge" variant="primary" />);
     const badge = screen.getByText('Primary Badge');
     expect(badge).toBeInTheDocument();
-    expect(badge).toHaveClass('bg-action-default text-text-primary-inverted'); // Variant: "primary"
+    expect(badge).toHaveClass('bg-action-default text-text-primary-inverted');
   });
 
   it('renders the badge with a custom size', () => {
     render(<Badge text="Big Badge" size="big" />);
     const badge = screen.getByText('Big Badge');
     expect(badge).toBeInTheDocument();
-    expect(badge).toHaveClass('py-2 px-[8px] text-sm rounded-medium'); // Size: "big"
+    expect(badge).toHaveClass('py-2 px-[8px] text-sm rounded-medium');
   });
 
   it('renders the badge with both custom variant and size', () => {
@@ -36,9 +36,9 @@ describe('<Badge />', () => {
     const badge = screen.getByText('Warning Badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveClass(
-      'bg-feedback-warning-primary text-text-primary-inverted'
+      'bg-feedback-warning-primary text-text-primary-inverted',
     ); // Variant: "warningprimary"
-    expect(badge).toHaveClass('py-2 px-[8px] text-sm rounded-medium'); // Size: "big"
+    expect(badge).toHaveClass('py-2 px-[8px] text-sm rounded-medium');
   });
 
   it('applies additional custom class names', () => {
@@ -46,7 +46,7 @@ describe('<Badge />', () => {
       <Badge
         text="Custom Class Badge"
         className="custom-class another-class"
-      />
+      />,
     );
     const badge = screen.getByText('Custom Class Badge');
     expect(badge).toBeInTheDocument();
@@ -56,9 +56,9 @@ describe('<Badge />', () => {
   it('handles click events when onClick is provided', () => {
     render(<Badge text="Clickable Badge" onClick={mockOnClick} />);
     const badge = screen.getByText('Clickable Badge');
-    
+
     fireEvent.click(badge);
-    
+
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
 
@@ -66,8 +66,8 @@ describe('<Badge />', () => {
     render(<Badge text="Non-Clickable Badge" />);
     const badge = screen.getByText('Non-Clickable Badge');
 
-    fireEvent.click(badge); // Simulate click
+    fireEvent.click(badge);
 
-    expect(mockOnClick).not.toHaveBeenCalled(); // Ensure no click handler was called
+    expect(mockOnClick).not.toHaveBeenCalled();
   });
 });

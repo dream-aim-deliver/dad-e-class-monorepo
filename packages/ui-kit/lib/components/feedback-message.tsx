@@ -3,18 +3,22 @@ import { IconError } from './icons/icon-error';
 import { IconSuccess } from './icons/icon-success';
 import { IconWarning } from './icons/icon-warning';
 
-
 export interface FeedBackMessageProps {
   type?: 'error' | 'success' | 'warning';
   message?: string;
 }
 
 /**
- * A component to display feedback messages with different types (error, success, warning).
- * 
- * @param type The type of feedback message (error, success, warning). Defaults to 'error'.
- * @param message The message to display. Defaults to 'Feedback Message'.
- * @returns A styled feedback message component with an appropriate icon.
+ * A reusable FeedBackMessage component for displaying feedback messages with corresponding icons and styles.
+ *
+ * @param type The type of feedback message. Options:
+ *   - `error`: Displays an error icon and styles (default).
+ *   - `success`: Displays a success icon and styles.
+ *   - `warning`: Displays a warning icon and styles.
+ * @param message The feedback message text to display. Defaults to "Feedback Message".
+ *
+ * @example
+ * <FeedBackMessage type="success" message="Operation completed successfully!" />
  */
 
 export const FeedBackMessage: FC<FeedBackMessageProps> = ({
@@ -30,11 +34,11 @@ export const FeedBackMessage: FC<FeedBackMessageProps> = ({
   return (
     <div className="flex gap-[2px] items-center">
       {type === 'error' ? (
-        <IconError classNames='fill-feedback-error-primary' />
+        <IconError classNames="fill-feedback-error-primary" />
       ) : type === 'success' ? (
-        <IconSuccess classNames='fill-feedback-success-primary' />
+        <IconSuccess classNames="fill-feedback-success-primary" />
       ) : (
-        <IconWarning classNames='fill-feedback-warning-primary' />
+        <IconWarning classNames="fill-feedback-warning-primary" />
       )}
       <p className={`text-2xs ${textColorClass}`}>{message}</p>
     </div>

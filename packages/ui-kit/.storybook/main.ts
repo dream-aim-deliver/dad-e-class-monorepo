@@ -1,8 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-vite';
 import { mergeConfig } from 'vite';
-import path from 'path';
 
-console.log('dir name :- ', __dirname);
 const config: StorybookConfig = {
   stories: ['../stories/**/*.@(mdx|stories.@(js|jsx|ts|tsx))'],
   addons: [
@@ -28,12 +26,7 @@ const config: StorybookConfig = {
         include: ['storybook-dark-mode'],
       },
       resolve: {
-        alias: [
-          {
-            find: /^@\/components\/(.*)/,
-            replacement: path.resolve(__dirname, '../lib/components/$1'),
-          },
-        ],
+        alias: [],
       },
     });
   },
