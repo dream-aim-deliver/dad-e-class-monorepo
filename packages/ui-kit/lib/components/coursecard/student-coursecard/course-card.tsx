@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { z } from 'zod';
-import { CourseStats } from './course-stats';
+import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
-import { ProgressBar } from './progress-bar';
+import { ProgressBar } from '../../progress-bar';
 import { CourseActions } from './course-actions';
 import { StarRating } from '../../star-rating';
 import { course } from '@maany_shr/e-class-models';

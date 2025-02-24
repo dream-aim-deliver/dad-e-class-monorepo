@@ -6,6 +6,7 @@
  * @param onChange Callback function triggered when the slider value changes.
  * @returns A styled progress bar or slider component.
  */
+import React from 'react';
 import { useState } from 'react';
 
 export interface ProgressBarProps {
@@ -36,7 +37,10 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   const progressPercentage = (value / totalProgress) * 100;
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-20">
+    <div
+      role="progressbar"
+      className="flex flex-col items-center justify-center w-full h-20"
+    >
       <div className="relative w-full">
         {/* Slider track */}
         <div className="absolute top-1/2 h-3 w-full rounded-small bg-slider-background-fill border-[1px] border-slider-background-stroke transform -translate-y-1/2"></div>

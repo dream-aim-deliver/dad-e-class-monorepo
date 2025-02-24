@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button } from '../../button';
-import { CourseStats } from './course-stats';
+import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
 import { StarRating } from '../../star-rating';
 import { IconGroup } from '../../icons/icon-group';
@@ -59,7 +59,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
             </span>
           </div>
 
-          <CourseCreator creatorName={creatorName} />
+          <CourseCreator creatorName={creatorName} you={false} />
 
           <CourseStats
             language={language}

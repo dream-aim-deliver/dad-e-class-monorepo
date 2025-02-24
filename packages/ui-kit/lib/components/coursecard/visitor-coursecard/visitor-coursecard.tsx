@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button } from '../../button';
-import { CourseStats } from './course-stats';
+import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
 import { StarRating } from '../../star-rating';
 

@@ -1,6 +1,7 @@
 import { FC, ReactNode, isValidElement } from 'react';
 import { cva, VariantProps } from 'class-variance-authority';
 import { cn } from '../utils/style-utils';
+import React from 'react';
 const baseDisabledStyles = 'disabled:opacity-50';
 const baseButtonStyles =
   'inline-flex items-center justify-center font-bold transition-colors focus:outline-none';
@@ -49,7 +50,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
   disabled?: boolean;
   hasIconLeft?: boolean;
   hasIconRight?: boolean;
-  iconLeft?: ReactNode; 
+  iconLeft?: ReactNode;
   iconRight?: ReactNode;
 }
 

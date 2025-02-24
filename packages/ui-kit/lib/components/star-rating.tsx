@@ -1,6 +1,7 @@
 import { IconStarFilled } from './icons/icon-star-filled';
 import { IconStar } from './icons/icon-star';
 import { IconStarHalf } from './icons/icon-star-half';
+import React from 'react';
 
 export interface StarRatingProps {
   rating: number; // Numeric rating value (e.g., 4.6)
