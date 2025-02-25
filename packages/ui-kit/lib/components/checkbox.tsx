@@ -98,6 +98,8 @@ export const CheckBox: FC<CheckBoxProps> = ({
             <svg
               data-testid="checked-icon"
               viewBox="0 0 32 28"
+              width="32"
+              height="28"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
