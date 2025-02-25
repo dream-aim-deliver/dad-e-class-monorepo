@@ -207,7 +207,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
               label={dictionary.components.profileInfo.companyName}
               inputField={{
                 id: 'companyName',
-                inputText: dictionary.components.profileInfo.companyNamePh,
+                inputText: dictionary.components.profileInfo.companyNamePlaceholder,
                 value: formData.representingCompanyName || '',
                 setValue: (value) =>
                   handleChange('representingCompanyName', value),
@@ -218,7 +218,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
               inputField={{
                 id: 'companyUID',
                 value: formData.representedCompanyUID || '',
-                inputText: dictionary.components.profileInfo.companyUIDPh,
+                inputText: dictionary.components.profileInfo.companyUIDPlaceholder,
                 setValue: (value) =>
                   handleChange('representedCompanyUID', value),
               }}

@@ -43,7 +43,7 @@ describe('<TextAreaInput />', () => {
   it('uses the default placeholder text if none is provided', () => {
     render(<TextAreaInput value="" setValue={mockSetValue} />);
 
-    const textarea = screen.getByPlaceholderText('Enter text here');
+    const textarea = screen.getByPlaceholderText('');
     expect(textarea).toBeInTheDocument();
   });
 

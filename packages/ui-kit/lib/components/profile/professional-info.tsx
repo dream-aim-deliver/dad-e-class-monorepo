@@ -74,12 +74,6 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     () => formData.skills ?? [],
   );
 
-  // const [allSkills, setAllSkills] = React.useState<string[]>([]);
-
-  // React.useEffect(() => {
-  //   setAllSkills(formData.skills ?? []);
-  // }, [formData.skills]);
-
   const handleChange = (
     field: keyof profile.TProfessionalProfile,
     value: any,

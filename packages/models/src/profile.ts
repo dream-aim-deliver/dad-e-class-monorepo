@@ -58,7 +58,6 @@ export const PersonalProfileSchema = z.discriminatedUnion("isRepresentingCompany
  * - `representedCompanyAddress`: A string representing the address of the company being represented by the user.
  * 
  */
-
 export type TPersonalProfile = z.infer<typeof PersonalProfileSchema> ;
 
 

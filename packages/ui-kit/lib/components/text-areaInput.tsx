@@ -26,12 +26,11 @@ export interface TextAreaInputProps {
  *   className="custom-class"
  * />
  */
-
 export const TextAreaInput: FC<TextAreaInputProps> = ({
   label,
   value,
   setValue,
-  placeholder = 'Enter text here',
+  placeholder = '',
   className = '',
 }) => {
   return (
