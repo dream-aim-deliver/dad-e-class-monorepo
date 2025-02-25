@@ -40,7 +40,7 @@ const UploadedFileWrapper: React.FC = () => {
       files={files}
       onUpload={handleUpload}
       handleDelete={handleDelete}
-      className=""
+      className="min-w-[500px]"
       text={{
         title: 'Drop your files here',
         buttontext: 'Choose Files',
