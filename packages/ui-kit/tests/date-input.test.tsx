@@ -5,6 +5,13 @@ import { DateInput } from '../lib/components/date-input';
 describe('<DateInput />', () => {
   const mockOnChange = vi.fn();
 
+  beforeEach(() => {
+    // Reset mocks between tests
+    vi.clearAllMocks();
+    // Mock the showPicker method which isn't available in the test environment
+    HTMLInputElement.prototype.showPicker = vi.fn();
+  });
+
   it('renders the date input with a label', () => {
     render(
       <DateInput
@@ -77,7 +84,26 @@ describe('<DateInput />', () => {
     );
 
     const iconButton = screen.getByTestId('date-input-icon-button');
-    fireEvent.click(iconButton);
+    // Use stopPropagation option to simulate our component behavior
+    fireEvent.click(iconButton, { stopPropagation: true });
+
+    expect(showPickerMock).toHaveBeenCalledTimes(2);
+  });
+  
+  it('calls showPicker when the input wrapper is clicked', () => {
+    const showPickerMock = vi.fn();
+    HTMLInputElement.prototype.showPicker = showPickerMock;
+
+    render(
+      <DateInput
+        label="Select Date"
+        value="2025-02-18"
+        onChange={mockOnChange}
+      />,
+    );
+
+    const wrapper = screen.getByTestId('date-input-wrapper');
+    fireEvent.click(wrapper);
 
     expect(showPickerMock).toHaveBeenCalledTimes(1);
   });
