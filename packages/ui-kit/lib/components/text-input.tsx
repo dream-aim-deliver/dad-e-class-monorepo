@@ -34,7 +34,6 @@ export interface TextInputProps {
  *   }}
  * />
  */
-
 export const TextInput: FC<TextInputProps> = ({
   label = 'label',
   hasFeedback = false,
