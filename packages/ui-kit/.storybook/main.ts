@@ -1,5 +1,5 @@
 import type { StorybookConfig } from '@storybook/react-vite';
-import { mergeConfig } from "vite";
+import { mergeConfig } from 'vite';
 
 const config: StorybookConfig = {
   stories: ['../stories/**/*.@(mdx|stories.@(js|jsx|ts|tsx))'],
@@ -7,7 +7,7 @@ const config: StorybookConfig = {
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
     '@chromatic-com/storybook',
-    '@storybook/addon-themes'
+    '@storybook/addon-themes',
   ],
   framework: {
     name: '@storybook/react-vite',
@@ -26,7 +26,7 @@ const config: StorybookConfig = {
         include: ['storybook-dark-mode'],
       },
       resolve: {
-        alias: []
+        alias: [],
       },
     });
   },

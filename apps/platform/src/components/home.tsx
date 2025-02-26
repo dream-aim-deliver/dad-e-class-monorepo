@@ -3,10 +3,7 @@ import { Button, DummySkills } from '@maany_shr/e-class-ui-kit';
 import '@maany_shr/e-class-ui-kit/tailwind.css';
 import { useTheme } from '@maany_shr/e-class-ui-kit/contexts';
 import { useTranslations } from 'next-intl';
-import {
-  isLocalAware,
-  TLocale,
-} from '@maany_shr/e-class-translations';
+import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 
 export type HomeProps = isLocalAware;
 
@@ -26,7 +23,7 @@ export default function Home(props: HomeProps) {
         }}
       />
       <DummySkills
-        locale={props.locale as TLocale} 
+        locale={props.locale as TLocale}
         skills={['React', 'TypeScript', 'TailwindCSS']}
       />
       

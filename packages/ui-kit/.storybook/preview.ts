@@ -1,6 +1,6 @@
 import '../lib/assets/css/index.css';
 import { withThemeByClassName } from '@storybook/addon-themes';
-import '@/assets/css/index.css';
+import '../../ui-kit/lib/assets/css/index.css';
 
 export const decorators = [
   withThemeByClassName({

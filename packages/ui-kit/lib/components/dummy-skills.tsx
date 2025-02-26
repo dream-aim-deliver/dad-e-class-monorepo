@@ -6,7 +6,8 @@ export interface DummySkillsProps extends isLocalAware {
 
 export const DummySkills = ({ skills, locale }: DummySkillsProps) => {
     const dictionary = getDictionary(locale);
-    const title = dictionary.components.skills.title
+    const title = dictionary.components.skills.title;
+
     return (
         <div>
             <h2>{title}</h2>
