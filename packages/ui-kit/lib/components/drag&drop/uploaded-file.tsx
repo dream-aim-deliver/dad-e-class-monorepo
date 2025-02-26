@@ -101,14 +101,16 @@ export function UploadedFile({
                       <IconFile classNames="fill-text-primary" />
                     </div>
                   ))}
-
-                <div className="flex flex-col gap-1 justify-center ">
-                  <p className="text-sm text-base-neutral-50 line-clamp-2">
+                <div className="flex flex-col gap-1 justify-center">
+                  <p
+                    className="text-sm text-base-neutral-50 line-clamp-2 truncate max-w-[200px] tooltip cursor-pointer"
+                    title={file.name}
+                  >
                     {file.name}
                   </p>
                   <p className="text-text-secondary text-xs flex items-start">
                     {isUploading ? (
-                      <Badge variant={'info'} text={text?.uploading} />
+                      <Badge variant={'info'} text={text.uploading} />
                     ) : (
                       <span>{(file.size / (1024 * 1024)).toFixed(2)} MB</span>
                     )}

@@ -103,8 +103,11 @@ export function UploadedImage({
                     />
                   ))}
 
-                <div className="flex flex-col gap-1 justify-center ">
-                  <p className="text-sm text-base-neutral-50 line-clamp-2">
+                <div className="flex flex-col gap-1 justify-center">
+                  <p
+                    className="text-sm text-base-neutral-50 line-clamp-2 truncate max-w-[200px] tooltip cursor-pointer"
+                    title={file.name}
+                  >
                     {file.name}
                   </p>
                   <p className="text-text-secondary text-xs flex items-start">
