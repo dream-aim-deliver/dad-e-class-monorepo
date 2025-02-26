@@ -76,34 +76,22 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
   return (
     <div
       data-testid="file-input"
-      className="flex flex-col items-center space-y-2 "
+      className="flex flex-col items-center space-y-2"
     >
       <div
         {...getRootProps()}
-        className={`flex flex-col items-center bg-base-neutral-900  gap-[2px] justify-center  md:p-6 p-2 md:pt-4 border-2 ${
+        className={`flex flex-col items-center bg-base-neutral-900 gap-[2px] justify-center md:p-6 p-2 md:pt-4 border-2 ${
           isDragActive
             ? 'border-button-primary-stroke'
             : 'border-base-neutral-700'
-        } border-dashed border-base-neutral-700 custom-dashed-border rounded-medium cursor-pointer  transition-colors ${className}`}
+        } border-dashed border-base-neutral-700 custom-dashed-border rounded-medium cursor-pointer transition-colors ${className}`}
       >
         <input {...getInputProps()} />
         <IconCloudUpload classNames="w-6 h-6 text-base-neutral-50 font-bold" />
         <div className="flex flex-col gap-1 items-center justify-center">
           <div className="flex gap-2 items-center justify-center">
-            {isDragActive ? (
-              <p className="text-sm text-button-secondary-text">
-                {text?.title}
-              </p>
-            ) : (
-              <>
-                <Button
-                  variant="text"
-                  text={text?.buttontext}
-                  className="px-0"
-                />
-                <p className="text-sm text-text-primary">{text?.dragtext}</p>
-              </>
-            )}
+            <Button variant="text" text={text?.buttontext} className="px-0" />
+            <p className="text-sm text-text-primary">{text?.dragtext}</p>
           </div>
           <p className="text-xs text-text-secondary flex items-start">
             {text?.filesize}: {maxSize / (1024 * 1024)} MB
