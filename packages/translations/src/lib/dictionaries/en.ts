@@ -7,5 +7,22 @@ export const EN: TDictionary = {
         skills: {
             title: 'Skills',
         },
+        courseCard: {
+            createdBy: 'Created by',
+            you: 'You',
+            group: 'Group',
+            manageButton: 'Manage',
+            editCourseButton: 'Edit course',
+            beginCourseButton: 'Begin course',
+            resumeCourseButton: 'Resume',
+            reviewCourseButton: 'Review',
+            detailsCourseButton: 'Details',
+            publishedBadge: 'Published',
+            underReviewBadge: 'Under Review',
+            draftBadge: 'Draft',
+            completedBadge: 'Course Completed',
+            cochingSession: 'Coaching Session',
+            self: 'Self',
+        },
     },
 }

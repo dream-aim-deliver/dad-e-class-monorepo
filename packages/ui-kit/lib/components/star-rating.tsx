@@ -4,7 +4,7 @@ import { IconStarHalf } from './icons/icon-star-half';
 import React from 'react';
 
 export interface StarRatingProps {
-  rating: number; // Numeric rating value (e.g., 4.6)
+  rating?: number; // Numeric rating value (e.g., 4.6)
   totalStars?: number; // Total number of stars in the rating system
   size?: string; // Size of each star icon in pixels
 }

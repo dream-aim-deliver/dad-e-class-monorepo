@@ -4,19 +4,28 @@ import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
 import { StarRating } from '../../star-rating';
 import { IconGroup } from '../../icons/icon-group';
+import { course } from '@maany_shr/e-class-models'; 
+import {
+  TLocale,
+  getDictionary,
+  isLocalAware,
+} from '@maany_shr/e-class-translations';
 
-export interface CoachCourseCardProps {
-  title: string;
-  rating: number;
+
+// Extend the existing type with the properties we need that aren't in TCourseMetadata
+export interface CoachCourseCardProps extends Omit<
+  course.TCourseMetadata,
+  'description' | 'duration' | 'pricing' | 'author'
+> {
+  // Additional properties not covered in TCourseMetadata
   reviewCount: number;
   creatorName: string;
-  language: string;
   sessions: number;
   duration: string;
   sales: number;
-  thumbnailUrl: string;
-  groupName: string;
+  groupName?: string;
   onManage?: () => void;
+  locale: TLocale;
 }
 
 export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
@@ -28,16 +37,20 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
   sessions,
   duration,
   sales,
-  groupName = 'Group Name',
-  thumbnailUrl,
+  groupName = '',
+  imageUrl,
   onManage,
-}) => (
+  locale
+}) => {
+  const dictionary = getDictionary(locale);
+
+  return(
   <div className="max-w-7xl mx-auto">
     <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
       <div className="relative">
         <img
           loading="lazy"
-          src={thumbnailUrl}
+          src={imageUrl}
           alt={title}
           className="w-full aspect-[2.15] object-cover"
         />
@@ -50,7 +63,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
           </h6>
 
           <div className="flex gap-1 items-end">
-            <StarRating rating={3} />
+            <StarRating rating={rating} />
             <span className="text-xs text-text-primary leading-[100%]">
               {rating}
             </span>
@@ -59,10 +72,11 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
             </span>
           </div>
 
-          <CourseCreator creatorName={creatorName} you={false} />
+          <CourseCreator creatorName={creatorName} you={false} locale={locale as TLocale} />
 
           <CourseStats
-            language={language}
+            locale={locale as TLocale}
+            language={language.name}
             sessions={sessions}
             duration={duration}
             sales={sales}
@@ -71,7 +85,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
         <div className="flex gap-1 flex-wrap items-center">
           <div className="flex items-center gap-1">
             <IconGroup classNames="text-text-primary" size="5" />
-            <p className="text-text-secondary text-sm">Group</p>
+            <p className="text-text-secondary text-sm">{dictionary.components.courseCard.group}</p>
           </div>
           <Button variant="text" text={groupName} className="p-0" />
         </div>
@@ -80,9 +94,10 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
           className="w-full"
           variant="secondary"
           size="medium"
-          text="Manage"
+          text={dictionary.components.courseCard.manageButton}
         />
       </div>
     </div>
   </div>
-);
+)
+};

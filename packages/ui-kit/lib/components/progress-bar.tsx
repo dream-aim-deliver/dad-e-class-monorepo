@@ -6,7 +6,7 @@
  * @param onChange Callback function triggered when the slider value changes.
  * @returns A styled progress bar or slider component.
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 
 export interface ProgressBarProps {
@@ -23,7 +23,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   onChange,
 }) => {
   const [value, setValue] = useState(progress);
-
+  useEffect( () => setValue(progress), [progress] )
   /**
    * Handles changes to the slider input.
    * @param event The input change event.
@@ -39,7 +39,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   return (
     <div
       role="progressbar"
-      className="flex flex-col items-center justify-center w-full h-20"
+      className="flex flex-col items-center justify-center w-full"
     >
       <div className="relative w-full">
         {/* Slider track */}

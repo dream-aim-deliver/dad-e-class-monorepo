@@ -1,5 +1,9 @@
-import * as React from "react";
-import { Languages , MessagesSquare , Clock3, Receipt } from "lucide-react";
+import * as React from 'react';
+import { IconLanguage } from '../../components/icons/icon-language';
+import { IconCoachingSession } from '../../components/icons/icon-coaching-session';
+import { IconClock } from '../../components/icons/icon-clock';
+import { IconSales } from '../../components/icons/icon-sales';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 interface StatItemProps {
   icon: React.ReactNode;
@@ -9,11 +13,11 @@ interface StatItemProps {
 const StatItem: React.FC<StatItemProps> = ({ icon, text }) => (
   <div className="flex gap-1 items-center whitespace-nowrap">
     {icon}
-    <span className="text-stone-300">{text}</span>
+    <label className="text-sm text-text-secondary">{text}</label>
   </div>
 );
 
-interface CourseStatsProps {
+export interface CourseStatsProps extends isLocalAware{
   language: string;
   sessions: number;
   duration: string;
@@ -25,28 +29,30 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
   sessions,
   duration,
   sales,
+  locale
 }) => {
+  const dictionary = getDictionary(locale);
   const stats = [
     {
-      icon: <Languages className="w-4 h-4 text-stone-300" />,
+      icon: <IconLanguage classNames="fill-text-secondary" size="5" />,
       text: language,
     },
     {
-      icon: <MessagesSquare className="w-4 h-4 text-stone-300" />,
-      text: `${sessions} coaching sessions`,
+      icon: <IconCoachingSession classNames="text-text-secondary" size="5" />,
+      text: `${sessions} ${dictionary.components.courseCard.cochingSession}`,
     },
     {
-      icon:  <Clock3 className="w-4 h-4 text-stone-300" />,
+      icon: <IconClock classNames="text-text-secondary" size="5" />,
       text: duration,
     },
     {
-      icon:  <Receipt className="w-4 h-4 text-stone-300" />,
-      text: `${sales} sales`,
+      icon: <IconSales classNames="text-text-secondary" size="5" />,
+      text: `${sales} ${dictionary.components.courseCard.self}`,
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-2 mt-2 text-sm sm:flex sm:flex-wrap sm:gap-3.5">
+    <div className="flex flex-wrap gap-x-[15px] gap-y-[13px]">
       {stats.map((stat, index) => (
         <StatItem key={index} {...stat} />
       ))}

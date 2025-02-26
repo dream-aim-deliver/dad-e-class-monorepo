@@ -1,9 +1,11 @@
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Badge } from '../../badge';
 import { Button } from '../../button';
 import { Check } from 'lucide-react';
 import * as React from 'react';
+import { IconCheck } from '../../icons/icon-check';
 
-interface CourseActionsProps {
+interface CourseActionsProps extends isLocalAware{
   onBegin?: () => void;
   onResume?: () => void;
   onReview?: () => void;
@@ -19,7 +21,10 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
   onDetails,
   progress,
   studyProgress,
+  locale
 }) => {
+  const dictionary = getDictionary(locale);
+
   if (studyProgress === 'completed') {
     return (
       <div className="flex flex-col gap-4">
@@ -28,7 +33,7 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
           variant={'successprimary'}
           size={'big'}
         >
-          <Check /> Course completed{' '}
+          <IconCheck /> {dictionary.components.courseCard.completedBadge}{' '}
         </Badge>
         <div className="flex flex-col gap-2">
           <Button
@@ -36,14 +41,14 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
             variant={'primary'}
             size={'medium'}
             onClick={onReview}
-            text="Review"
+            text={dictionary.components.courseCard.reviewCourseButton}
           />
           <Button
             className=""
             variant={'secondary'}
             size={'medium'}
             onClick={onDetails}
-            text="Details"
+            text={dictionary.components.courseCard.detailsCourseButton}
           />
         </div>
       </div>
@@ -55,7 +60,7 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
         className="w-full p-3"
         variant={'primary'}
         size={'medium'}
-        text="Resume"
+        text={dictionary.components.courseCard.resumeCourseButton}
       />
     );
   }
@@ -66,7 +71,7 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
       className="w-full p-3"
       variant={'primary'}
       size={'medium'}
-      text="Begin course"
+      text={dictionary.components.courseCard.beginCourseButton}
     />
   );
 };
