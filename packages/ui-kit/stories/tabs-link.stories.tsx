@@ -1,12 +1,8 @@
 import { Tabs } from '../lib/components/tabs/tab';
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
-import { IconAccountInformation } from '../lib/components/icons/icon-account-information';
-import { IconAssignment } from '../lib/components/icons/icon-assignment';
-import { IconCertification } from '../lib/components/icons/icon-certification';
 
 const meta: Meta<typeof Tabs.Root> = {
-  title: 'Components/Tabs/Usage',
+  title: 'Components/Tabs/Link',
   component: Tabs.Root,
   parameters: {
     layout: 'centered',
@@ -25,39 +21,38 @@ const Template = (args: any) => (
         className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2"
       >
         <Tabs.Trigger
-          icon={<IconAccountInformation size="5" />}
-          value="account"
+          value="upcoming"
         >
-          Account
+          Upcoming
         </Tabs.Trigger>
-        <Tabs.Trigger icon={<IconAssignment size="5" />} value="assignments">
-          Assignments
+        <Tabs.Trigger value="ended">
+          Ended
         </Tabs.Trigger>
-        <Tabs.Trigger icon={<IconCertification size="5" />} value="settings">
-          Settings
+        <Tabs.Trigger  value="available">
+          Available
         </Tabs.Trigger>
       </Tabs.List>
-      <Tabs.Content value="account">
+      <Tabs.Content value="upcoming">
         <div className="prose">
-          <h4 className="text-lg font-medium mb-2">Account Settings</h4>
+          <h4 className="text-lg font-medium mb-2">Upcoming Coching Sessions</h4>
           <p className="text-gray-600">
-            Manage your account preferences and personal information.
+            View and manage your upcoming coaching sessions.
           </p>
         </div>
       </Tabs.Content>
-      <Tabs.Content value="assignments">
+      <Tabs.Content value="ended">
         <div className="prose">
-          <h4 className="text-lg font-medium mb-2">Assignments Preferences</h4>
+          <h4 className="text-lg font-medium mb-2">Ended Coaching Sessions</h4>
           <p className="text-gray-600">
-            Control how and when you receive assignments.
+            View and manage your ended coaching sessions.
           </p>
         </div>
       </Tabs.Content>
-      <Tabs.Content value="settings">
+      <Tabs.Content value="available">
         <div className="prose">
-          <h4 className="text-lg font-medium mb-2">General Settings</h4>
+          <h4 className="text-lg font-medium mb-2">Available Coaching Sessions</h4>
           <p className="text-gray-600">
-            Configure your application settings and preferences.
+            View and manage your available coaching sessions.
           </p>
         </div>
       </Tabs.Content>
