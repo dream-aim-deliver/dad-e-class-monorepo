@@ -1,7 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Button, ButtonProps } from '../lib/components/button';
 import { NextIntlClientProvider } from 'next-intl';
-import React from 'react';
+import { IconPlus } from '../lib/components/icons/icon-plus';
+import { IconTrashAlt } from '../lib/components/icons/icon-trash-alt';
+import { IconSearch } from '../lib/components/icons/icon-search';
+import { IconAccountInformation } from '../lib/components/icons/icon-account-information';
 
 /**
  * Mock messages for translations.
@@ -145,9 +148,9 @@ export const WithIcons: Story = {
     text: 'With Icons',
     className: 'gap-2',
     hasIconLeft: true,
-    iconLeft: '*',
+    iconLeft: <IconAccountInformation />,
     hasIconRight: true,
-    iconRight: '→',
+    iconRight: <IconTrashAlt />,
   },
 };
 
@@ -161,7 +164,7 @@ export const WithLeftIcon: Story = {
     size: 'medium',
     text: 'With Left Icon',
     hasIconLeft: true,
-    iconLeft: '←',
+    iconLeft: <IconPlus />,
   },
 };
 
@@ -175,6 +178,6 @@ export const WithRightIcon: Story = {
     size: 'medium',
     text: 'With Right Icon',
     hasIconRight: true,
-    iconRight: '→',
+    iconRight: <IconSearch />,
   },
 };

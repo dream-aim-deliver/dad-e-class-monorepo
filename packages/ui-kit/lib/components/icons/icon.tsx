@@ -19,7 +19,7 @@ const sizeMap: Record<string, string> = {
 export const generateClassesForIcon = ({
   classNames,
   fill,
-  size = '6',
+  size='6',
 }: IconProps) => {
   const sizeClass = sizeMap[size];
 

@@ -5,7 +5,7 @@ export default [
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
   {
-    ignores: ['**/dist', '**/node_modules', '**/.next'],
+    ignores: ['**/dist', '**/node_modules', '**/.next', '**/vite.config.ts.timestamp-**.{js,ts,mjs,mts}'],
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],

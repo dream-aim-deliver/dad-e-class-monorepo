@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "files": [],
+
   "references": [
     {
       "path": "../translations"
@@ -13,6 +14,9 @@
     },
     {
       "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./tsconfig.storybook.json"
     }
   ]
 }

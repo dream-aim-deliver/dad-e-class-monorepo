@@ -1,0 +1,51 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "stories",
+    "outDir": "./out-tsc/stories",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "tsBuildInfoFile": "dist/tsconfig.storybook.tsbuildinfo",
+    "jsx": "react-jsx",
+    "types": [
+      "node",
+      "@nx/react/typings/cssmodule.d.ts",
+      "@nx/react/typings/image.d.ts",
+      "vite/client"
+    ]
+  },
+  "skipLibCheck": true,
+  "include": [
+    "stories/**/*.ts", "stories/**/*.tsx"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tools",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.spec.tsx",
+    "**/*.test.tsx",
+    "**/*.spec.js",
+    "**/*.test.js",
+    "**/*.spec.jsx",
+    "**/*.test.jsx",
+    "vite.config.ts",
+    "vite.config.mts",
+    "vitest.config.ts",
+    "vitest.config.mts",
+    "lib/**/*.test.ts",
+    "lib/**/*.spec.ts",
+    "lib/**/*.test.tsx",
+    "lib/**/*.spec.tsx",
+    "lib/**/*.test.js",
+    "lib/**/*.spec.js",
+    "lib/**/*.test.jsx",
+    "lib/**/*.spec.jsx",
+  ],
+  "references": [
+    {
+      // tsconfig.lib.json for this project 
+      "path": "./tsconfig.lib.json"
+    }
+  ]
+}
