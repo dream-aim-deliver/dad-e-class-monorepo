@@ -49,9 +49,9 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
           className="flex items-center gap-1 px-3 py-1 rounded-lg w-fit"
           variant={'successprimary'}
           size={'big'}
-        >
-          <IconCheck /> {dictionary.components.courseCard.completedBadge}{' '}
-        </Badge>
+          text={dictionary.components.courseCard.completedBadge}
+          iconLeft={<IconCheck />}
+        />
         <div className="flex flex-col gap-2">
           <Button
             className=""

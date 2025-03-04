@@ -75,9 +75,10 @@ const StatusBadge: React.FC<{ status: CourseStatus, locale: TLocale }> = ({ stat
       className="px-3 py-1 mb-2 gap-2 self-start mt-2"
       variant={variants[status]}
       size="big"
-    >
-      {icons[status]} {labels[status].toString()}
-    </Badge>
+      text={labels[status]}
+      hasIconLeft
+      iconLeft={icons[status]}
+    />
   );
 };
 
