@@ -6,7 +6,7 @@ import { IconAssignment } from '../lib/components/icons/icon-assignment';
 import { IconCertification } from '../lib/components/icons/icon-certification';
 
 const meta: Meta<typeof Tabs.Root> = {
-  title: 'Components/Tabs',
+  title: 'Components/Tabs/Usage',
   component: Tabs.Root,
   parameters: {
     layout: 'centered',
