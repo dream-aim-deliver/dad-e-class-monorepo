@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { IconClock } from '../lib/components/icons/icon-clock';
+import { IconCoachingSession } from '../../lib/components/icons/icon-coaching-session';
 
 // Meta configuration for Storybook
-const meta: Meta<typeof IconClock> = {
-  title: 'Icons/IconClock',
-  component: IconClock,
+const meta: Meta<typeof IconCoachingSession> = {
+  title: 'Icons/IconCoachingSession',
+  component: IconCoachingSession,
   tags: ['autodocs'],
   argTypes: {
     size: {
@@ -29,7 +29,7 @@ const meta: Meta<typeof IconClock> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof IconClock>;
+type Story = StoryObj<typeof IconCoachingSession>;
 
 // Default story
 export const Default: Story = {

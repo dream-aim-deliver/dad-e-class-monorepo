@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { IconCoachingSession } from '../lib/components/icons/icon-coaching-session';
+import { IconLanguage } from '../../lib/components/icons/icon-language';
 
 // Meta configuration for Storybook
-const meta: Meta<typeof IconCoachingSession> = {
-  title: 'Icons/IconCoachingSession',
-  component: IconCoachingSession,
+const meta: Meta<typeof IconLanguage> = {
+  title: 'Icons/IconLanguage',
+  component: IconLanguage,
   tags: ['autodocs'],
   argTypes: {
     size: {
@@ -29,7 +29,7 @@ const meta: Meta<typeof IconCoachingSession> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof IconCoachingSession>;
+type Story = StoryObj<typeof IconLanguage>;
 
 // Default story
 export const Default: Story = {

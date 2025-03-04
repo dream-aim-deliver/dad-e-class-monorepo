@@ -13,7 +13,24 @@ interface CourseActionsProps extends isLocalAware{
   progress?: number;
   studyProgress?: 'yet-to-start' | 'in-progress' | 'completed';
 }
+/**
+ * Props for the CourseActions component.
+ *
+ * @typedef {Object} CourseActionsProps
+ * @property {() => void} [onBegin] - Handler for beginning the course.
+ * @property {() => void} [onResume] - Handler for resuming the course.
+ * @property {() => void} [onReview] - Handler for reviewing the course.
+ * @property {() => void} [onDetails] - Handler for viewing course details.
+ * @property {number} [progress] - Progress percentage of the course.
+ * @property {'yet-to-start' | 'in-progress' | 'completed'} [studyProgress] - Current study progress status.
+ * @property {string} locale - The locale for translations.
+ */
 
+/**
+ * Displays action buttons for course interactions based on the study progress.
+ *
+ * @type {React.FC<CourseActionsProps>}
+ */
 export const CourseActions: React.FC<CourseActionsProps> = ({
   onBegin,
   onResume,

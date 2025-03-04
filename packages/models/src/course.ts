@@ -29,10 +29,6 @@ export const CourseMetadataSchema = z.object({
         image: z.string(),
     }),
     language: LanguageSchema,
-    // coching sessions 
-    // sales 
-    // totalrating
-    // progess - yet-to-start -- 0% and in-progress--[1%-99%] and completed -- [100%]
 })
 
 /**

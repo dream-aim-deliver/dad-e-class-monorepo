@@ -19,10 +19,11 @@ export const EN: TDictionary = {
             detailsCourseButton: 'Details',
             publishedBadge: 'Published',
             underReviewBadge: 'Under Review',
+            buyCourseButton: 'Buy (from CHF 240)',
             draftBadge: 'Draft',
             completedBadge: 'Course Completed',
             cochingSession: 'Coaching Session',
-            self: 'Self',
+            sales: 'sales',
         },
     },
 }

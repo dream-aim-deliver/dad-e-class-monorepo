@@ -24,6 +24,22 @@ export interface CourseStatsProps extends isLocalAware{
   sales: number;
 }
 
+/**
+ * Props for the CourseStats component.
+ *
+ * @typedef {Object} CourseStatsProps
+ * @property {string} language - The language in which the course is offered.
+ * @property {number} sessions - The number of coaching sessions included in the course.
+ * @property {string} duration - The total duration of the course (e.g., '5 hours').
+ * @property {number} sales - The number of times the course has been sold.
+ * @property {string} locale - The locale for translations.
+ */
+
+/**
+ * Displays statistical information about a course, including language, number of sessions, duration, and sales.
+ *
+ * @type {React.FC<CourseStatsProps>}
+ */
 export const CourseStats: React.FC<CourseStatsProps> = ({
   language,
   sessions,
@@ -47,7 +63,7 @@ export const CourseStats: React.FC<CourseStatsProps> = ({
     },
     {
       icon: <IconSales classNames="text-text-secondary" size="5" />,
-      text: `${sales} ${dictionary.components.courseCard.self}`,
+      text: `${sales} ${dictionary.components.courseCard.sales}`,
     },
   ];
 

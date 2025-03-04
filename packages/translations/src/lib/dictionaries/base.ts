@@ -19,12 +19,13 @@ export const DictionarySchema = z.object({
             resumeCourseButton: z.string(),
             reviewCourseButton: z.string(),
             detailsCourseButton: z.string(),
+            buyCourseButton: z.string(),
             publishedBadge: z.string(),
             underReviewBadge: z.string(),
             draftBadge: z.string(),
             completedBadge: z.string(),
             cochingSession: z.string(),
-            self: z.string(),
+            sales: z.string(),
         })
     }),
 });

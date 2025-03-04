@@ -14,6 +14,7 @@ export type CourseStatus = "published" | "under-review" | "draft";
 
 interface CourseCreatorCardProps extends isLocalAware {
   course: course.TCourseMetadata;
+  rating: number;
   reviewCount: number;
   sessions: number;
   sales: number;
@@ -22,7 +23,34 @@ interface CourseCreatorCardProps extends isLocalAware {
   onManage?: () => void;
 }
 
-const StatusBadge: React.FC<{ status: CourseStatus , locale: TLocale }> = ({ status, locale }) => {
+/**
+ * Defines the possible statuses for a course.
+ * @typedef {"published" | "under-review" | "draft"} CourseStatus
+ */
+
+/**
+ * Props for the CourseCreatorCard component.
+ * @typedef {Object} CourseCreatorCardProps
+ * @property {course.TCourseMetadata} course - Metadata of the course.
+ * @property {number} rating - Average rating of the course.
+ * @property {number} reviewCount - Number of reviews for the course.
+ * @property {number} sessions - Number of sessions in the course.
+ * @property {number} sales - Number of sales for the course.
+ * @property {CourseStatus} status - Current status of the course.
+ * @property {TLocale} locale - Locale for translations.
+ * @property {Function} [onEdit] - Callback function triggered when the edit button is clicked.
+ * @property {Function} [onManage] - Callback function triggered when the manage button is clicked.
+ */
+
+/**
+ * Badge component to display the status of the course.
+ *
+ * @param {Object} props - Component props.
+ * @param {CourseStatus} props.status - Status of the course.
+ * @param {TLocale} props.locale - Locale for translations.
+ * @returns {JSX.Element} The rendered StatusBadge component.
+ */
+const StatusBadge: React.FC<{ status: CourseStatus, locale: TLocale }> = ({ status, locale }) => {
   const dictionary = getDictionary(locale);
   const variants = {
     published: "successprimary",
@@ -37,7 +65,7 @@ const StatusBadge: React.FC<{ status: CourseStatus , locale: TLocale }> = ({ sta
   }
 
   const icons = {
-    published: <IconClock size='5'/>,
+    published: <IconClock size='5' />,
     "under-review": <IconCoachingSession size='5' />,
     draft: <IconGroup size='5' />,
   };
@@ -53,6 +81,12 @@ const StatusBadge: React.FC<{ status: CourseStatus , locale: TLocale }> = ({ sta
   );
 };
 
+/**
+ * Card component for displaying course information created by the user.
+ *
+ * @param {CourseCreatorCardProps} props - Component props.
+ * @returns {JSX.Element} The rendered CourseCreatorCard component.
+ */
 export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
   course,
   reviewCount,
@@ -99,13 +133,13 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                 <span className="text-xs text-text-primary leading-[100%]">
                   {rating}
                 </span>
-                <span className="text-xs text-text-secondary">
+                <span className="text-xs text-text-secondary leading-[100%]">
                   ({reviewCount})
                 </span>
               </div>
             )}
 
-            <CourseCreator creatorName={author.name} locale={locale as TLocale} you={true} />
+            <CourseCreator creatorName={author.name} imageUrl={author.image} locale={locale as TLocale} you={true} />
 
             <CourseStats
               locale={locale as TLocale}
@@ -125,15 +159,15 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                 <Button
                   onClick={onManage}
                   className="w-full"
-                  variant="primary"
+                  variant="secondary"
                   size="medium"
                   text={dictionary.components.courseCard.manageButton}
                 />
-                
+
                 <Button
                   onClick={onEdit}
                   className="w-full"
-                  variant="secondary"
+                  variant="text"
                   size="medium"
                   text={dictionary.components.courseCard.editCourseButton}
                 />

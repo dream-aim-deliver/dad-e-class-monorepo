@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { IconStarFilled } from '../lib/components/icons/icon-star-filled';
+import { IconStarHalf } from '../../lib/components/icons/icon-star-half';
 
 // Meta configuration for Storybook
-const meta: Meta<typeof IconStarFilled> = {
-  title: 'Icons/IconStarFilled',
-  component: IconStarFilled,
+const meta: Meta<typeof IconStarHalf> = {
+  title: 'Icons/IconStarHalf',
+  component: IconStarHalf,
   tags: ['autodocs'],
   argTypes: {
     size: {
@@ -29,7 +29,7 @@ const meta: Meta<typeof IconStarFilled> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof IconStarFilled>;
+type Story = StoryObj<typeof IconStarHalf>;
 
 // Default story
 export const Default: Story = {

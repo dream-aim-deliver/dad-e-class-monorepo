@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { IconStar } from '../lib/components/icons/icon-star';
+import { IconStar } from '../../lib/components/icons/icon-star';
 
 // Meta configuration for Storybook
 const meta: Meta<typeof IconStar> = {

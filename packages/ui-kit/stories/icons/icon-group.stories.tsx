@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { IconStarHalf } from '../lib/components/icons/icon-star-half';
+import { IconGroup } from '../../lib/components/icons/icon-group';
 
 // Meta configuration for Storybook
-const meta: Meta<typeof IconStarHalf> = {
-  title: 'Icons/IconStarHalf',
-  component: IconStarHalf,
+const meta: Meta<typeof IconGroup> = {
+  title: 'Icons/IconGroup',
+  component: IconGroup,
   tags: ['autodocs'],
   argTypes: {
     size: {
@@ -29,7 +29,7 @@ const meta: Meta<typeof IconStarHalf> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof IconStarHalf>;
+type Story = StoryObj<typeof IconGroup>;
 
 // Default story
 export const Default: Story = {

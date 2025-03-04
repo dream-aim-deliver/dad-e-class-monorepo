@@ -1,20 +1,8 @@
-/**
- * A Badge component that displays a stylized label with different variants and sizes.
- * @param variant Determines the visual style of the badge (e.g., primary, info, success, warning, error).
- * @param size Controls the size of the badge (small or big).
- * @param children The content inside the badge.
- * @param onClick Optional click event handler for the badge.
- * @param className Additional custom class names for styling.
- * @returns A styled badge component.
- */
 import React from 'react';
 import { cva, VariantProps } from 'class-variance-authority';
 import { FC } from 'react';
 import { cn } from '../utils/style-utils';
 
-/**
- * Defines the base styles and variant-specific styles for the badge component.
- */
 const badgeStyles = cva(
   'inline-flex items-center font-bold transition-colors',
   {
@@ -40,17 +28,34 @@ const badgeStyles = cva(
   },
 );
 
-/**
- * Props for the Badge component, extending the variant properties.
- */
 export interface BadgeProps extends VariantProps<typeof badgeStyles> {
   children: React.ReactNode; // Content inside the badge
   onClick?: () => void; // Optional click handler
   className?: string; // Additional custom class names
 }
+/**
+ * Props for the Badge component.
+ *
+ * @typedef {Object} BadgeProps
+ * @property {React.ReactNode} children - Content inside the badge.
+ * @property {() => void} [onClick] - Optional click handler.
+ * @property {string} [className] - Additional custom class names.
+ * @property {'primary' | 'info' | 'successprimary' | 'warningprimary' | 'errorprimary'} [variant='info'] - Visual style of the badge.
+ * @property {'small' | 'big'} [size='small'] - Size of the badge.
+ */
 
 /**
- * Badge component renders a stylized label with customizable variant and size.
+ * A versatile Badge component to display labels or counts.
+ *
+ * @type {React.FC<BadgeProps>}
+ *
+ * @example
+ * // Basic usage
+ * <Badge variant="primary" size="small">New</Badge>
+ *
+ * @example
+ * // With an onClick handler
+ * <Badge variant="successprimary" size="big" onClick={() => alert('Badge clicked!')}>Success</Badge>
  */
 export const Badge: FC<BadgeProps> = ({
   variant,

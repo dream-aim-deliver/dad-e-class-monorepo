@@ -1,11 +1,4 @@
-/**
- * A ProgressBar component that can function as either a slider or a progress indicator.
- * @param type Determines the behavior of the component ('slider' allows user interaction, 'progress' is read-only).
- * @param progress The current progress value.
- * @param totalProgress The maximum progress value.
- * @param onChange Callback function triggered when the slider value changes.
- * @returns A styled progress bar or slider component.
- */
+"use client";
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 
@@ -16,6 +9,25 @@ export interface ProgressBarProps {
   onChange?: (value: number) => void; // Callback for slider
 }
 
+/**
+ * A ProgressBar component that functions as either a slider or a progress indicator.
+ *
+ * @param {ProgressBarProps} props - The props for the component.
+ * @returns {JSX.Element} A styled progress bar or slider component.
+ *
+ * @example
+ * // Basic usage as a progress indicator
+ * <ProgressBar progress={30} totalProgress={100} />
+ *
+ * @example
+ * // Usage as a slider with a change handler
+ * <ProgressBar
+ *   type="slider"
+ *   progress={50}
+ *   totalProgress={200}
+ *   onChange={(value) => console.log(`New progress value: ${value}`)}
+ * />
+ */
 export const ProgressBar: React.FC<ProgressBarProps> = ({
   type = 'progress',
   progress = 10,

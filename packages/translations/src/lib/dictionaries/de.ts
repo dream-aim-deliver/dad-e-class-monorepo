@@ -18,10 +18,11 @@ export const DE: TDictionary = {
       detailsCourseButton: 'Einzelheiten',
       publishedBadge: 'Veroeffentlichung',
       underReviewBadge: 'In Bearbeitung',
+      buyCourseButton: 'Kaufen (von CHF 240)',
       draftBadge: 'Entwurf',
       completedBadge: 'Kurs abgeschlossen',
       cochingSession: 'Coaching-Sitzung',
-      self: 'Selbst',
+      sales: 'Verkauf',
     },
   },
 };
