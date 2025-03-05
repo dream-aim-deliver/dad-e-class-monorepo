@@ -84,6 +84,11 @@ export const DictionarySchema = z.object({
       buttontext1: z.string(),
       buttontext2: z.string(),
     }),
+    recentActivity: z.object({
+      recentActivity: z.string(),
+      markAllAsRead: z.string(),
+      viewAll: z.string(),
+    }),
   }),
 });
 export type TDictionary = z.infer<typeof DictionarySchema>;
