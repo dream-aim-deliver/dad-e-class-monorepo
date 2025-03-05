@@ -8,17 +8,11 @@ import { IconLanguage } from '../icons/icon-language';
 import { IconCoachingSession } from '../icons/icon-coaching-session';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 
-/**
- * Represents a course associated with a coach.
- */
 interface Course {
   image: string;
   title: string;
 }
 
-/**
- * Represents the details of a coach displayed in the CoachCard component.
- */
 interface CoachCardDetails {
   coachName: string;
   coachImage: string;
@@ -31,23 +25,15 @@ interface CoachCardDetails {
   totalRatings: number;
 }
 
-/**
- * Props for the CoachCard component.
- */
 interface CoachCardProps {
-  cardDetails?: CoachCardDetails; // Details of the coach
-  byCourseCreator?: boolean; // Indicates if the card is created by a course creator
-  onClickViewProfile?: () => void; // Callback when the "View Profile" button is clicked
-  onClickBookSession?: () => void; // Callback when the "Book Session" button is clicked
-  className?: string; // Additional class names for styling
-  locale: TLocale; // Localization settings
+  cardDetails?: CoachCardDetails;
+  byCourseCreator?: boolean;
+  onClickViewProfile?: () => void;
+  onClickBookSession?: () => void;
+  className?: string;
+  locale: TLocale;
 }
 
-/**
- * CoachCard component displays information about a coach, including their name, profile image,
- * rating, languages, session count, skills, courses, and action buttons for viewing the profile
- * and booking a session.
- */
 const CoachCard: FC<CoachCardProps> = ({
   cardDetails,
   onClickViewProfile,
@@ -55,6 +41,8 @@ const CoachCard: FC<CoachCardProps> = ({
   className,
   locale
 }) => {
+  if (!cardDetails) return null; // Prevents errors if cardDetails is undefined
+
   const dictionary = getDictionary(locale);
 
   return (
@@ -65,7 +53,6 @@ const CoachCard: FC<CoachCardProps> = ({
         className
       )}
     >
-      {/* Card Header */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <UserAvatar hasProfilePicture className="w-10 h-10 rounded-full" imageUrl={cardDetails.coachImage} />
@@ -74,7 +61,7 @@ const CoachCard: FC<CoachCardProps> = ({
             <div className="flex w-full gap-1 items-center">
               <StarRating rating={cardDetails.rating} />
               <p className="text-[#FAFAF9] text-sm leading-3.5">{cardDetails.rating}</p>
-              <p className=" text-xs">({cardDetails.totalRatings})</p>
+              <p className="text-xs">({cardDetails.totalRatings})</p>
             </div>
           </div>
         </div>
@@ -86,7 +73,7 @@ const CoachCard: FC<CoachCardProps> = ({
             <span className="capitalize truncate">{cardDetails.languages.join(', ')}</span>
           </p>
           <p className="flex items-center gap-1 truncate">
-            <IconCoachingSession size='4' />
+            <IconCoachingSession size="4" />
             <span className="capitalize truncate">
               {cardDetails.sessionCount} {dictionary.components.coachCard.coachingSession}
               {cardDetails.sessionCount > 1 ? 's' : ''}
@@ -96,44 +83,49 @@ const CoachCard: FC<CoachCardProps> = ({
 
         {/* Skills */}
         <div className="flex flex-wrap gap-2">
-          {cardDetails.skills.map((skill) => (
+          {cardDetails.skills.slice(0, 5).map((skill) => (
             <Badge text={skill} key={skill} className="h-6 w-auto py-1 text-base" />
           ))}
+          {cardDetails.skills.length > 5 && (
+            <Badge key="more-badge" className="h-6 w-auto py-1 text-base" text={`and ${cardDetails.skills.length - 5} more...`} />
+          )}
         </div>
-      </div>
 
-      {/* Card Body */}
-      <div className="flex flex-col gap-4">
-        <p className="leading-[150%]">{cardDetails.description}</p>
+        {/* Card Body */}
+        <div className="flex flex-col gap-4">
+          <p className="leading-[150%]">{cardDetails.description}</p>
 
-        {/* Teaches Section */}
-        <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-[14px]">{dictionary.components.coachCard.teaches}:</span>
-          {cardDetails.courses.slice(0, 3).map((course) => (
-            <Button
-              key={course.title}
-              className='p-0 gap-1 text-sm'
-              variant='text'
-              hasIconLeft
-              iconLeft={<UserAvatar imageUrl={course.image} className='rounded-small' size="small" />}
-              text={course.title}
-            />
-          ))}
+          {/* Teaches Section */}
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="text-[14px]">{dictionary.components.coachCard.teaches}:</span>
+            {cardDetails.courses.slice(0, 3).map((course) => (
+              <Button
+                key={course.title}
+                className="p-0 gap-1 text-sm"
+                variant="text"
+                hasIconLeft
+                iconLeft={<UserAvatar imageUrl={course.image} className="rounded-small" size="small" />}
+                text={course.title}
+              />
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Card Footer */}
-      <div className="flex flex-col gap-1">
-        <Button
-          variant="secondary"
-          size="medium"
-          onClick={onClickViewProfile}
-          text={dictionary.components.coachCard.viewProfile} />
-        <Button
-          variant="primary"
-          size="medium"
-          onClick={onClickBookSession}
-          text={dictionary.components.coachCard.bookSession} />
+        {/* Card Footer */}
+        <div className="flex flex-col gap-2">
+          <Button
+            variant="secondary"
+            size="medium"
+            onClick={onClickViewProfile}
+            text={dictionary.components.coachCard.viewProfile}
+          />
+          <Button
+            variant="primary"
+            size="medium"
+            onClick={onClickBookSession}
+            text={dictionary.components.coachCard.bookSession}
+          />
+        </div>
       </div>
     </div>
   );

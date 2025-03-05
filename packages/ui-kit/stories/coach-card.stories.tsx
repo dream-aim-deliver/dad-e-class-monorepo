@@ -33,7 +33,7 @@ export const HighlyRatedCoach: Story = {
   args: {
     cardDetails: {
       coachName: 'Dr. Sarah Johnson',
-      coachImage: '',
+      coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
       languages: ['English', 'French'],
       sessionCount: 100,
       skills: ['Leadership', 'Communication', 'Public Speaking'],
@@ -58,7 +58,7 @@ export const NewCoach: Story = {
   args: {
     cardDetails: {
       coachName: 'Alex Roberts',
-      coachImage: '',
+      coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
       languages: ['English'],
       sessionCount: 3,
       skills: ['Career Coaching', 'Resume Building'],
@@ -102,7 +102,7 @@ export const CoachWithManySkills: Story = {
   args: {
     cardDetails: {
       coachName: 'Michael Carter',
-      coachImage: '',
+      coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
       languages: ['English', 'Japanese', 'Chinese'],
       sessionCount: 200,
       skills: ['Business Strategy', 'Marketing', 'Sales', 'Negotiation', 'Branding', 'SEO'],
@@ -125,7 +125,7 @@ export const LowRatedCoach: Story = {
   args: {
     cardDetails: {
       coachName: 'Tom Spencer',
-      coachImage: '',
+      coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
       languages: ['English'],
       sessionCount: 15,
       skills: ['Public Speaking', 'Debating'],
