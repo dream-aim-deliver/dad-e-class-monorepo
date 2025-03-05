@@ -20,7 +20,6 @@ interface EmptyStateProps extends isLocalAware {
  * @example
  * <EmptyState message="You haven't enrolled in any courses yet" buttonText="Browse Courses" onButtonClick={() => console.log("Retry clicked")} />
  */
-
 export const EmptyState: React.FC<EmptyStateProps> = ({ message, buttonText, onButtonClick }) => {
     return (
         <div className="flex justify-center items-center w-full p-10 rounded-2xl border border-solid bg-card-fill border-card-stroke max-md:px-5 ">

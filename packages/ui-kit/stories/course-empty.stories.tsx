@@ -26,9 +26,6 @@ const mockMessagesDe = {
   },
 };
 
-/**
- * Storybook configuration for the CourseEmptyState components.
- */
 const meta: Meta = {
   title: 'Components/CourseCardComponents/CourseEmptyState',
   component: EmptyState,

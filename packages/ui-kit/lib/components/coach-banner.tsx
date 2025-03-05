@@ -9,8 +9,7 @@ import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
  *
  * @returns A styled banner component containing a heading, description, image, and a button.
  *
- * @example
- * <CoachBanner locale={props.locale as TLocale} />
+ * @example <CoachBanner locale={props.locale as TLocale} />
  */
 export const CoachBanner: React.FC<isLocalAware> = ({locale}) => {
   const dictionary = getDictionary(locale);
