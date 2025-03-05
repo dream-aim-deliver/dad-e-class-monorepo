@@ -84,5 +84,10 @@ export const DE: TDictionary = {
       buttontext1: 'Verwerfen',
       buttontext2: 'Änderungen speichern',
     },
+    recentActivity: {
+      recentActivity: 'Letzte Aktivität',
+      markAllAsRead: 'Alle als gelesen markieren',
+      viewAll: 'Alle ansehen...',
+    },
   },
 };

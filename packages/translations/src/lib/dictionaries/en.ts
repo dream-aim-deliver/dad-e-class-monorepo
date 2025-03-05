@@ -84,5 +84,10 @@ export const EN: TDictionary = {
       buttontext1: 'Discard',
       buttontext2: 'Save changes',
     },
+    recentActivity: {
+      recentActivity: 'Recent Activity',
+      markAllAsRead: 'Mark all as read',
+      viewAll: 'View all...',
+    },
   },
 };
