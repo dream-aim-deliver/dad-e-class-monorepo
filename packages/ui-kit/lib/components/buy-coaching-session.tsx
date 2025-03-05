@@ -15,6 +15,7 @@ type Course = {
     price: number;
     duration: number;
     totalSessions: number;
+
 }
 
 /**
@@ -23,6 +24,7 @@ type Course = {
 export interface BuyCoachingSessionProps extends isLocalAware {
     /** List of courses available for purchase. */
     courses: Course[];
+    onClick: () => void;
 }
 
 /**
@@ -33,7 +35,7 @@ export interface BuyCoachingSessionProps extends isLocalAware {
  * @param {BuyCoachingSessionProps} props - The component properties.
  * @returns {JSX.Element} The rendered component.
  */
-function BuyCoachingSession({ courses, locale }: BuyCoachingSessionProps) {
+function BuyCoachingSession({ courses,onClick, locale }: BuyCoachingSessionProps) {
     const dictionary = getDictionary(locale);
     const [totalCost, setTotalCost] = useState(0);
     const [courseList, setCourseList] = useState<Course[]>(courses);
@@ -136,7 +138,7 @@ function BuyCoachingSession({ courses, locale }: BuyCoachingSessionProps) {
             </h6>
 
             {/* Footer */}
-            <Button variant='primary' text={dictionary.components.buyCoachingSession.buttonText} />
+            <Button onClick={onClick} variant='primary' text={dictionary.components.buyCoachingSession.buttonText} />
         </div>
     );
 }

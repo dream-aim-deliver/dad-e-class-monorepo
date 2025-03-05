@@ -44,6 +44,7 @@ const mockCourses = [
 
 export const Default: Story = {
     args: {
+        onClick:()=>alert('Clicked'),
         courses: mockCourses,
         locale: 'en'
     }
@@ -51,6 +52,7 @@ export const Default: Story = {
 
 export const WithPreselectedSessions: Story = {
     args: {
+        onClick:()=>alert('Clicked'),
         courses: mockCourses.map(course => ({
             ...course,
             totalSessions: course.id === '2' ? 3 : 1
@@ -61,6 +63,7 @@ export const WithPreselectedSessions: Story = {
 
 export const GermanLocale: Story = {
     args: {
+        onClick:()=>alert('Clicked'),
         courses: mockCourses,
         locale: 'de'
     }
@@ -68,6 +71,7 @@ export const GermanLocale: Story = {
 
 export const GermanLocaleWithSessions: Story = {
     args: {
+        onClick:()=>alert('Clicked'),
         courses: mockCourses.map(course => ({
             ...course,
             totalSessions: course.id === '1' ? 2 : course.id === '3' ? 1 : 0
