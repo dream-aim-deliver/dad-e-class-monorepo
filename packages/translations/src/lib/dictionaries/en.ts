@@ -4,6 +4,12 @@ import { Home_EN } from '../pages/home/home-en';
 export const EN: TDictionary = {
   home: Home_EN,
   components: {
+    coachBanner: {
+      title: 'Share Your Skills and Earn',
+      subtitle: 'Start Coaching Now',
+      description: 'Are you passionate about sharing your expertise and helping others advance their careers while earning income? Join our community of coaches and make a real impact—whether you want to create your own course or offer one-on-one coaching, you have the freedom to choose how you contribute and grow. Take the leap and turn your skills into a rewarding opportunity today!',
+      buttontext: 'Become a Coach',
+    },
     skills: {
       title: 'Skills',
     },
@@ -83,6 +89,12 @@ export const EN: TDictionary = {
         'Private profile (only registered users can see your name, surname and bio)',
       buttontext1: 'Discard',
       buttontext2: 'Save changes',
+    },
+    courseCard: {
+      courseEmptyState: {
+        message: "You haven't purchased any course yet",
+        buttonText: 'Browse courses',
+      },
     },
   },
 };

@@ -18,4 +18,5 @@ export {
 export { Button, type ButtonProps } from './components/button';
 export { ThemeProvider, useTheme } from './contexts';
 export { ProfileTabs, DragAndDrop, Badge };
+export {CoachBanner} from './components/coach-banner';
 export * as contexts from './contexts';
