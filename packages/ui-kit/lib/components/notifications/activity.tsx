@@ -21,6 +21,34 @@ export interface ActivityProps {
   className?: string;
 }
 
+/**
+ * A reusable Activity component with support for multiple layouts, empty states, and customizable content.
+ *
+ * @param message Optional main text to display in the activity.
+ * @param actionButton Optional text for the action button.
+ * @param dateTime Optional date and time string for the activity.
+ * @param isRead Optional flag indicating whether the activity has been read.
+ * @param isEmpty Optional flag to display an empty state (skeleton loader).
+ * @param hasChildren Optional flag indicating whether child elements are present.
+ * @param children Optional child elements to render within the component.
+ * @param showPlatform Optional flag to display the platform name.
+ * @param platformName Optional name of the platform to display.
+ * @param showRecipients Optional flag to display the number of recipients.
+ * @param recipients Optional text for the number of recipients.
+ * @param layout Optional layout orientation ('horizontal' or 'vertical').
+ * @param onClick Optional callback function for the action button click.
+ * @param className Optional additional CSS class names to customize the component's appearance.
+ *
+ * @example
+ * <Activity
+ *   message="New message received"
+ *   actionButton="View Details"
+ *   dateTime="2024-08-07 at 21:17"
+ *   layout="vertical"
+ *   onClick={() => console.log("Action clicked!")}
+ * />
+ */
+
 export const Activity: FC<ActivityProps> = ({
   message = 'Coach {coach-name} {coach-surname} accepted your request to reschedule the coaching session.',
   actionButton = 'Session details',
@@ -33,7 +61,7 @@ export const Activity: FC<ActivityProps> = ({
   platformName = 'Platform Name',
   showRecipients = true,
   recipients = '88 Recipients',
-  layout = 'horizontal', // Default layout
+  layout = 'horizontal',
   onClick,
   className,
 }) => {
@@ -44,7 +72,7 @@ export const Activity: FC<ActivityProps> = ({
           <div
             data-testid="activity"
             className={clsx(
-              'flex p-2 my-[2px] gap-4 flex-col items-center w-full bg-base-neutral-800 rounded-small ',
+              'flex p-2 my-[0.125rem] gap-4 flex-col items-center w-full bg-base-neutral-800 rounded-small ',
               className,
             )}
           >
@@ -52,21 +80,21 @@ export const Activity: FC<ActivityProps> = ({
               <div className="flex flex-col gap-2 w-full">
                 <div
                   data-testid="skeleton-title"
-                  className="h-[16px] bg-base-neutral-700 rounded-medium w-[98%]"
+                  className="h-[1rem] bg-base-neutral-700 rounded-medium w-[98%]"
                 />
                 <div
                   data-testid="skeleton-subtitle"
-                  className="h-[8px] bg-base-neutral-700 rounded-medium w-[20%]"
+                  className="h-[0.5rem] bg-base-neutral-700 rounded-medium w-[20%]"
                 />
               </div>
               <div className="flex gap-2">
                 <div
                   data-testid="skeleton-button"
-                  className="h-[22px] bg-base-neutral-700 rounded-medium w-[60px]"
+                  className="h-[1.375rem] bg-base-neutral-700 rounded-medium w-[3.75rem]"
                 />
                 <div
                   data-testid="skeleton-icon"
-                  className="h-[22px] bg-base-neutral-700 rounded-medium w-[22px]"
+                  className="h-[1.375rem] bg-base-neutral-700 rounded-medium w-[1.375rem]"
                 />
               </div>
             </div>
@@ -74,18 +102,18 @@ export const Activity: FC<ActivityProps> = ({
         ) : (
           <div
             className={clsx(
-              'flex p-4 gap-4 my-[2px] items-center w-full bg-base-neutral-800 rounded-medium',
+              'flex p-4 gap-4 my-[0.125rem] items-center w-full bg-base-neutral-800 rounded-medium',
               className,
             )}
           >
-            <div className="flex flex-col items-start gap-[11px] w-full">
-              <div className="h-[24px] bg-base-neutral-700 rounded-medium w-full" />
+            <div className="flex flex-col items-start gap-[0.6875rem] w-full">
+              <div className="h-[1.5rem] bg-base-neutral-700 rounded-medium w-full" />
               <div className="flex flex-col gap-2 items-start w-full">
-                <div className="h-[8px] bg-base-neutral-700 rounded-medium w-full" />
-                <div className="h-[8px] bg-base-neutral-700 rounded-medium w-[36%]" />
+                <div className="h-[0.5rem] bg-base-neutral-700 rounded-medium w-full" />
+                <div className="h-[0.5rem] bg-base-neutral-700 rounded-medium w-[36%]" />
               </div>
             </div>
-            <div className="h-[24px] w-[24px] bg-base-neutral-700 rounded-medium" />
+            <div className="h-[1.5rem] w-[1.5rem] bg-base-neutral-700 rounded-medium" />
           </div>
         )}
       </>
@@ -97,7 +125,7 @@ export const Activity: FC<ActivityProps> = ({
       {layout === 'vertical' && hasChildren && <>{children}</>}
       <div
         className={clsx(
-          `flex p-2 my-[2px] flex-col items-center w-full border-b border-divider ${
+          `flex p-2 my-[0.125rem] flex-col items-center w-full border-b border-divider ${
             isRead ? 'bg-transparent' : 'bg-base-neutral-800 rounded-small'
           }`,
           layout === 'horizontal'
@@ -140,7 +168,9 @@ export const Activity: FC<ActivityProps> = ({
                   {dateTime}
                 </p>
               </div>
-              <IconButton icon={<IconCheck />} styles="text" size="medium" />
+              {!isRead && (
+                <IconButton icon={<IconCheck />} styles="text" size="medium" />
+              )}
             </div>
           </div>
         )}
@@ -153,7 +183,9 @@ export const Activity: FC<ActivityProps> = ({
               >
                 {message}
               </p>
-              <IconButton icon={<IconCheck />} styles="text" size="medium" />
+              {!isRead && (
+                <IconButton icon={<IconCheck />} styles="text" size="medium" />
+              )}
             </div>
 
             <div className="flex justify-between items-center w-full">

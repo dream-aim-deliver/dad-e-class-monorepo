@@ -1,11 +1,11 @@
-import { RecentActivity } from '../../lib/components/notifications/recent-activity'; // Adjust the import path
+import { RecentActivity } from '../../lib/components/notifications/recent-activity';
 import type { Meta } from '@storybook/react';
-import { ActivityProps } from '../../lib/components/notifications/activity'; // Adjust the import path
+import { ActivityProps } from '../../lib/components/notifications/activity';
 
-// Mock Data for RecentActivity Component
 const mockActivities: ActivityProps[] = [
   {
-    message: 'Coach Jane Smith accepted your request to reschedule the coaching session.',
+    message:
+      'Coach Jane Smith accepted your request to reschedule the coaching session.',
     actionButton: 'Session details',
     dateTime: '2024-08-07 at 21:17',
     isRead: false,
@@ -67,13 +67,12 @@ const mockActivities: ActivityProps[] = [
   },
 ];
 
-// Default Export for Storybook
 const meta = {
-  title: 'Components/RecentActivity',
+  title: 'Components/Notifications/RecentActivity',
   component: RecentActivity,
   tags: ['autodocs'],
   parameters: {
-    layout: 'centered', // Center the component in the Storybook canvas
+    layout: 'centered',
   },
   argTypes: {
     locale: {
@@ -86,8 +85,8 @@ const meta = {
     maxActivities: {
       control: 'number',
     },
-    onMarkAllAsRead: { action: 'markAllAsRead' }, // Logs action in Storybook's actions panel
-    onViewAll: { action: 'viewAll' }, // Logs action in Storybook's actions panel
+    onMarkAllAsRead: { action: 'markAllAsRead' },
+    onViewAll: { action: 'viewAll' },
     className: {
       control: 'text',
     },
@@ -96,15 +95,13 @@ const meta = {
 
 export default meta;
 
-// Template for the Story
 const Template = (args) => <RecentActivity {...args} />;
 
-// Stories
 export const DefaultWithFiveActivities = Template.bind({});
 DefaultWithFiveActivities.args = {
   locale: 'en',
   activities: mockActivities,
-  maxActivities: 5,
+  maxActivities: 3,
   onMarkAllAsRead: () => console.log('Mark all as read clicked'),
   onViewAll: () => console.log('View all clicked'),
 };
@@ -112,7 +109,7 @@ DefaultWithFiveActivities.args = {
 export const WithLimitedActivities = Template.bind({});
 WithLimitedActivities.args = {
   locale: 'en',
-  activities: mockActivities.slice(0, 3), // Only 3 activities
+  activities: mockActivities.slice(0, 3),
   maxActivities: 5,
   onMarkAllAsRead: () => console.log('Mark all as read clicked'),
   onViewAll: () => console.log('View all clicked'),
@@ -121,27 +118,8 @@ WithLimitedActivities.args = {
 export const WithExcessActivities = Template.bind({});
 WithExcessActivities.args = {
   locale: 'en',
-  activities: mockActivities, // 6 activities
-  maxActivities: 3, // Show only 3, with "View All" button
-  onMarkAllAsRead: () => console.log('Mark all as read clicked'),
-  onViewAll: () => console.log('View all clicked'),
-};
-
-export const EmptyActivityList = Template.bind({});
-EmptyActivityList.args = {
-  locale: 'en',
-  activities: [],
-  maxActivities: 5,
-  onMarkAllAsRead: () => console.log('Mark all as read clicked'),
-  onViewAll: () => console.log('View all clicked'),
-};
-
-export const CustomClassName = Template.bind({});
-CustomClassName.args = {
-  locale: 'en',
   activities: mockActivities,
-  maxActivities: 5,
+  maxActivities: 3,
   onMarkAllAsRead: () => console.log('Mark all as read clicked'),
   onViewAll: () => console.log('View all clicked'),
-  className: 'bg-gray-900 p-4 rounded-lg',
 };

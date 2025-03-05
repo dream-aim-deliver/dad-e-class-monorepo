@@ -5,9 +5,7 @@ import {
 } from '../../lib/components/notifications/activity';
 import { NextIntlClientProvider } from 'next-intl';
 
-const mockMessages = {
-  // Add any necessary mock messages for translations
-};
+const mockMessages = {};
 
 const meta: Meta<typeof Activity> = {
   title: 'Components/Notifications/Activity',

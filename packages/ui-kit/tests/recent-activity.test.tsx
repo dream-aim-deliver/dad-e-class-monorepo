@@ -4,7 +4,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { RecentActivity } from '../lib/components/notifications/recent-activity';
 import { ActivityProps } from '../lib/components/notifications/activity';
 
-// Mock the dependencies
 vi.mock('../button', () => ({
   Button: ({ text, onClick }) => <button onClick={onClick}>{text}</button>,
 }));
@@ -61,28 +60,6 @@ describe('RecentActivity', () => {
     expect(screen.getByText('Recent Activity')).toBeInTheDocument();
   });
 
-  //   it('renders the correct number of activities', () => {
-  //     render(
-  //       <RecentActivity
-  //         locale="en"
-  //         activities={mockActivities}
-  //         maxActivities={3}
-  //       />,
-  //     );
-  //     expect(screen.getAllByTestId('activity')).toHaveLength(3);
-  //   });
-
-  //   it('renders "View all" button when there are more activities than maxActivities', () => {
-  //     render(
-  //       <RecentActivity
-  //         locale="en"
-  //         activities={mockActivities}
-  //         maxActivities={3}
-  //       />,
-  //     );
-  //     expect(screen.getByText('View all...')).toBeInTheDocument();
-  //   });
-
   it('does not render "View all" button when there are fewer activities than maxActivities', () => {
     render(
       <RecentActivity
@@ -106,20 +83,6 @@ describe('RecentActivity', () => {
     fireEvent.click(screen.getByText('Mark all as read'));
     expect(onMarkAllAsRead).toHaveBeenCalledTimes(1);
   });
-
-  //   it('calls onViewAll when "View all" button is clicked', () => {
-  //     const onViewAll = vi.fn();
-  //     render(
-  //       <RecentActivity
-  //         locale="en"
-  //         activities={mockActivities}
-  //         maxActivities={3}
-  //         onViewAll={onViewAll}
-  //       />,
-  //     );
-  //     fireEvent.click(screen.getByText('View all...'));
-  //     expect(onViewAll).toHaveBeenCalledTimes(1);
-  //   });
 
   it('applies custom className', () => {
     const { container } = render(
