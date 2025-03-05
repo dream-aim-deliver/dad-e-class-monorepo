@@ -84,5 +84,12 @@ export const EN: TDictionary = {
       buttontext1: 'Discard',
       buttontext2: 'Save changes',
     },
+    buyCoachingSession:{
+      title: 'Buy Coaching Session',
+      description: 'Schedule your sessions anytime, each with your favourite coach.',
+      buttonText: 'Buy coaching sessions',
+      total: 'Total',
+      minutes: 'minutes'
+    }
   },
 };

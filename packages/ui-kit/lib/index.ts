@@ -18,4 +18,5 @@ export {
 export { Button, type ButtonProps } from './components/button';
 export { ThemeProvider, useTheme } from './contexts';
 export { ProfileTabs, DragAndDrop, Badge };
+export { default  as  BuyCoachingSession, type BuyCoachingSessionProps } from './components/buy-coaching-session'
 export * as contexts from './contexts';
