@@ -1,99 +1,147 @@
-import { Meta, StoryObj } from '@storybook/react';
-import {
-  RecentActivity,
-  RecentActivityProps,
-} from '../../lib/components/notifications/recent-activity';
-import { NextIntlClientProvider } from 'next-intl';
+import { RecentActivity } from '../../lib/components/notifications/recent-activity'; // Adjust the import path
+import type { Meta } from '@storybook/react';
+import { ActivityProps } from '../../lib/components/notifications/activity'; // Adjust the import path
 
-const mockMessages = {
-  components: {
-    recentActivity: {
-      recentActivity: 'Recent Activity',
-      markAllAsRead: 'Mark all as read',
-      viewAll: 'View all',
-    },
-  },
-};
-
-const meta: Meta<typeof RecentActivity> = {
-  title: 'Components/Notifications/RecentActivity',
-  component: RecentActivity,
-  tags: ['autodocs'],
-  decorators: [
-    (Story) => (
-      <NextIntlClientProvider locale="en" messages={mockMessages}>
-        <div className="w-full max-w-3xl">
-          <Story />
-        </div>
-      </NextIntlClientProvider>
-    ),
-  ],
-  argTypes: {
-    locale: { control: 'text' },
-    activities: { control: 'object' },
-    maxActivities: { control: 'number' },
-    onMarkAllAsRead: { action: 'marked all as read' },
-    onViewAll: { action: 'viewed all' },
-  },
-};
-
-export default meta;
-
-type Story = StoryObj<typeof RecentActivity>;
-
-const Template: Story = {
-  render: (args) => <RecentActivity {...args} />,
-};
-
-const mockActivities = [
+// Mock Data for RecentActivity Component
+const mockActivities: ActivityProps[] = [
   {
-    message:
-      'Coach John Doe accepted your request to reschedule the coaching session.',
+    message: 'Coach Jane Smith accepted your request to reschedule the coaching session.',
     actionButton: 'Session details',
     dateTime: '2024-08-07 at 21:17',
+    isRead: false,
+    showPlatform: true,
+    platformName: 'Zoom',
+    showRecipients: true,
+    recipients: '88 Recipients',
+    onClick: () => console.log('Session details clicked for activity 1'),
   },
   {
-    message: 'New message from Jane Smith',
+    message: 'You have a new message from Coach John Doe.',
     actionButton: 'View message',
-    dateTime: '2024-08-06 at 15:30',
+    dateTime: '2024-08-07 at 20:45',
+    isRead: true,
+    showPlatform: false,
+    showRecipients: false,
+    onClick: () => console.log('View message clicked for activity 2'),
   },
   {
-    message: 'Your report has been approved',
-    actionButton: 'View report',
-    dateTime: '2024-08-05 at 09:45',
+    message: 'Your session with Coach Alice Brown has been confirmed.',
+    actionButton: 'View details',
+    dateTime: '2024-08-07 at 19:30',
+    isRead: false,
+    showPlatform: true,
+    platformName: 'Teams',
+    showRecipients: true,
+    recipients: '12 Recipients',
+    onClick: () => console.log('View details clicked for activity 3'),
+  },
+  {
+    message: 'Coach Bob Wilson declined your session request.',
+    actionButton: 'See why',
+    dateTime: '2024-08-07 at 18:15',
+    isRead: false,
+    showPlatform: true,
+    platformName: 'Google Meet',
+    showRecipients: false,
+    onClick: () => console.log('See why clicked for activity 4'),
+  },
+  {
+    message: 'New course materials uploaded by Coach Emma Taylor.',
+    actionButton: 'Download',
+    dateTime: '2024-08-07 at 17:00',
+    isRead: true,
+    showPlatform: false,
+    showRecipients: true,
+    recipients: '50 Recipients',
+    onClick: () => console.log('Download clicked for activity 5'),
+  },
+  {
+    message: 'Session reminder: Meeting with Coach Sarah Lee tomorrow.',
+    actionButton: 'Add to calendar',
+    dateTime: '2024-08-07 at 16:30',
+    isRead: false,
+    showPlatform: true,
+    platformName: 'Zoom',
+    showRecipients: false,
+    onClick: () => console.log('Add to calendar clicked for activity 6'),
   },
 ];
 
-export const Default: Story = {
-  ...Template,
-  args: {
-    locale: 'en',
-    activities: mockActivities,
-    maxActivities: 5,
+// Default Export for Storybook
+const meta = {
+  title: 'Components/RecentActivity',
+  component: RecentActivity,
+  tags: ['autodocs'],
+  parameters: {
+    layout: 'centered', // Center the component in the Storybook canvas
   },
+  argTypes: {
+    locale: {
+      control: 'select',
+      options: ['en', 'de'],
+    },
+    activities: {
+      control: 'object',
+    },
+    maxActivities: {
+      control: 'number',
+    },
+    onMarkAllAsRead: { action: 'markAllAsRead' }, // Logs action in Storybook's actions panel
+    onViewAll: { action: 'viewAll' }, // Logs action in Storybook's actions panel
+    className: {
+      control: 'text',
+    },
+  },
+} as Meta;
+
+export default meta;
+
+// Template for the Story
+const Template = (args) => <RecentActivity {...args} />;
+
+// Stories
+export const DefaultWithFiveActivities = Template.bind({});
+DefaultWithFiveActivities.args = {
+  locale: 'en',
+  activities: mockActivities,
+  maxActivities: 5,
+  onMarkAllAsRead: () => console.log('Mark all as read clicked'),
+  onViewAll: () => console.log('View all clicked'),
 };
 
-export const WithLimitedActivities: Story = {
-  ...Template,
-  args: {
-    ...Default.args,
-    maxActivities: 2,
-  },
+export const WithLimitedActivities = Template.bind({});
+WithLimitedActivities.args = {
+  locale: 'en',
+  activities: mockActivities.slice(0, 3), // Only 3 activities
+  maxActivities: 5,
+  onMarkAllAsRead: () => console.log('Mark all as read clicked'),
+  onViewAll: () => console.log('View all clicked'),
 };
 
-export const Empty: Story = {
-  ...Template,
-  args: {
-    ...Default.args,
-    activities: [],
-  },
+export const WithExcessActivities = Template.bind({});
+WithExcessActivities.args = {
+  locale: 'en',
+  activities: mockActivities, // 6 activities
+  maxActivities: 3, // Show only 3, with "View All" button
+  onMarkAllAsRead: () => console.log('Mark all as read clicked'),
+  onViewAll: () => console.log('View all clicked'),
 };
 
-export const WithManyActivities: Story = {
-  ...Template,
-  args: {
-    ...Default.args,
-    activities: [...mockActivities, ...mockActivities, ...mockActivities],
-    maxActivities: 3,
-  },
+export const EmptyActivityList = Template.bind({});
+EmptyActivityList.args = {
+  locale: 'en',
+  activities: [],
+  maxActivities: 5,
+  onMarkAllAsRead: () => console.log('Mark all as read clicked'),
+  onViewAll: () => console.log('View all clicked'),
+};
+
+export const CustomClassName = Template.bind({});
+CustomClassName.args = {
+  locale: 'en',
+  activities: mockActivities,
+  maxActivities: 5,
+  onMarkAllAsRead: () => console.log('Mark all as read clicked'),
+  onViewAll: () => console.log('View all clicked'),
+  className: 'bg-gray-900 p-4 rounded-lg',
 };

@@ -3,7 +3,6 @@ import { Button } from '../button';
 import { IconCheckDouble } from '../icons/icon-check-double';
 import { Activity, ActivityProps } from './activity';
 import {
-  dictionaries,
   getDictionary,
   isLocalAware,
 } from '@maany_shr/e-class-translations';
