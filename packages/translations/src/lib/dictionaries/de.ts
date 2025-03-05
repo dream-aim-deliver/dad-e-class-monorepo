@@ -3,6 +3,12 @@ import { TDictionary } from './base';
 export const DE: TDictionary = {
   home: Home_DE,
   components: {
+    coachBanner: {
+      title: 'Teilen Sie Ihre Fähigkeiten und verdienen',
+      subtitle: 'Starte Coaching jetzt',
+      description: 'Möchten Sie Ihr Fachwissen mit Leidenschaft weitergeben und anderen dabei helfen, ihre Karriere voranzutreiben und gleichzeitig Geld zu verdienen? Treten Sie unserer Coach-Community bei und leisten Sie einen echten Beitrag – ob Sie nun Ihren eigenen Kurs erstellen oder Einzelcoaching anbieten möchten, Sie haben die Freiheit zu entscheiden, wie Sie beitragen und sich weiterentwickeln. Wagen Sie den Sprung und verwandeln Sie Ihre Fähigkeiten noch heute in eine lohnende Chance!',
+      buttontext: 'Coach werden',
+    },
     skills: {
       title: 'Fähigkeiten',
     },
@@ -83,6 +89,12 @@ export const DE: TDictionary = {
         'Privates Profil (nur registrierte Benutzer können Ihren Namen, Nachnamen und Ihre Biografie sehen)',
       buttontext1: 'Verwerfen',
       buttontext2: 'Änderungen speichern',
+    },
+    courseCard: {
+      courseEmptyState: {
+        message: 'Sie haben noch keine Kurse gekauft',
+        buttonText: 'Kurse kaufen',
+      },
     },
   },
 };
