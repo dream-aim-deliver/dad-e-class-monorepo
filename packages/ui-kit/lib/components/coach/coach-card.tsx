@@ -8,6 +8,43 @@ import { IconLanguage } from '../icons/icon-language';
 import { IconCoachingSession } from '../icons/icon-coaching-session';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 
+/**
+ * Represents a course associated with a coach.
+ * @typedef {Object} Course
+ * @property {string} image - The course image URL.
+ * @property {string} title - The course title.
+ */
+
+/**
+ * Represents the details of a coach.
+ * @typedef {Object} CoachCardDetails
+ * @property {string} coachName - The name of the coach.
+ * @property {string} coachImage - The image URL of the coach.
+ * @property {string[]} languages - The languages spoken by the coach.
+ * @property {number} sessionCount - The number of coaching sessions conducted.
+ * @property {string[]} skills - The skills the coach specializes in.
+ * @property {string} description - A brief description of the coach.
+ * @property {Course[]} courses - A list of courses taught by the coach.
+ * @property {number} rating - The coach's rating.
+ * @property {number} totalRatings - The total number of ratings received.
+ */
+
+/**
+ * Props for the CoachCard component.
+ * @typedef {Object} CoachCardProps
+ * @property {CoachCardDetails} [cardDetails] - Details of the coach.
+ * @property {boolean} [byCourseCreator] - Whether the card is displayed by the course creator.
+ * @property {Function} [onClickViewProfile] - Callback function when the view profile button is clicked.
+ * @property {Function} [onClickBookSession] - Callback function when the book session button is clicked.
+ * @property {string} [className] - Additional class names for styling.
+ * @property {TLocale} locale - The locale for translations.
+ */
+
+/**
+ * A component that displays information about a coach, including their profile, skills, courses, and actions.
+ * @param {CoachCardProps} props - The props for the component.
+ * @returns {JSX.Element | null} The rendered CoachCard component.
+ */
 interface Course {
   image: string;
   title: string;
@@ -33,7 +70,6 @@ interface CoachCardProps {
   className?: string;
   locale: TLocale;
 }
-
 const CoachCard: FC<CoachCardProps> = ({
   cardDetails,
   onClickViewProfile,
@@ -102,6 +138,7 @@ const CoachCard: FC<CoachCardProps> = ({
               <Button
                 key={course.title}
                 className="p-0 gap-1 text-sm"
+                size='small'
                 variant="text"
                 hasIconLeft
                 iconLeft={<UserAvatar imageUrl={course.image} className="rounded-small" size="small" />}
