@@ -307,9 +307,6 @@ importers:
       react:
         specifier: 19.0.0
         version: 19.0.0
-      react-dom:
-        specifier: 19.0.0
-        version: 19.0.0(react@19.0.0)
       react-dropzone:
         specifier: ^14.3.5
         version: 14.3.5(react@19.0.0)
