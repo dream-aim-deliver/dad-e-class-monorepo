@@ -8,23 +8,42 @@ import {
   getDictionary,
   isLocalAware,
 } from '@maany_shr/e-class-translations';
-interface ReviewCardProps extends isLocalAware {
+
+/**
+ * Props for the ReviewCard component.
+ */
+export interface ReviewCardProps extends isLocalAware {
+  /** Additional class names for styling */
   className?: string;
+  /** Rating value out of 5 */
   rating: number;
+  /** Name of the reviewer */
   reviewerName: string;
+  /** Avatar URL of the reviewer (optional) */
   reviewerAvatar?: string;
+  /** Review text content */
   reviewText: string;
+  /** Title of the workshop being reviewed */
   workshopTitle: string;
+  /** Date of the workshop */
   date: string;
+  /** Time of the workshop */
   time: string;
+  /** Title of the related course */
   courseTitle: string;
+  /** Image URL of the related course */
   courseImage: string;
-};
+}
 
-
-
-
-
+/**
+ * ReviewCard Component
+ * 
+ * Displays a review including rating, reviewer details, review text,
+ * and information about the related workshop and course.
+ *
+ * @param {ReviewCardProps} props - The component properties.
+ * @returns {JSX.Element} The rendered component.
+ */
 const ReviewCard: React.FC<ReviewCardProps> = ({
   className,
   rating,
@@ -39,16 +58,19 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   locale
 }) => {
   const dictionary = getDictionary(locale);
+
   return (
-    <div className={`max-w-[390px] min-w-[348px] p-4 bg-card-fill rounded-small border-1 border-card-stroke ${className}`}>
+    <div className={`max-w-[390px] min-w-[348px] p-3 bg-base-neutral-900 rounded-small border-1 border-base-neutral-700 ${className}`}>
       <div className='flex flex-col gap-3'>
         <div className='flex flex-col gap-2'>
+          {/* Reviewer Details */}
           <div className="w-full flex items-center gap-4 truncate">
             <StarRating rating={rating} />
             <div className="text-white flex items-center gap-1 flex-1">
-              <span className='text-text-secondary'>by</span>
+              <span className='text-text-secondary'>{dictionary.components.courseReview.by}</span>
               <Button
                 className="p-0 gap-1 text-sm"
+                size="small"
                 variant="text"
                 hasIconLeft
                 iconLeft={<UserAvatar className="rounded-full" size="small" imageUrl={reviewerAvatar} />}
@@ -56,12 +78,15 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
               />
             </div>
           </div>
+          {/* Review Content */}
           <p className="w-full text-text-primary leading-6 md:text-xl">
             {reviewText}
           </p>
         </div>
       </div>
+      {/* Divider */}
       <hr className="border-divider my-4" />
+      {/* Workshop and Course Info */}
       <div className="flex flex-col gap-2" data-testid="footer-section">
         <p className="text-sm text-white leading-4 font-important truncate">{workshopTitle}</p>
         <div className="w-full flex items-center gap-3 text-text-secondary text-sm lg:text-md">
@@ -74,10 +99,12 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             <p className="text-sm lg:text-md">{time}</p>
           </div>
         </div>
+        {/* Course Information */}
         <div className="flex items-center gap-1">
           <Button
             className='p-0 gap-1 text-sm'
             variant='text'
+            size="small"
             hasIconLeft
             iconLeft={<UserAvatar imageUrl={courseImage} className='rounded-small' size="small" />}
             text={courseTitle}

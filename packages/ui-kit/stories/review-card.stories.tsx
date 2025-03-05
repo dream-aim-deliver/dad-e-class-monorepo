@@ -1,11 +1,18 @@
 import { Meta, StoryObj } from '@storybook/react';
-import ReviewCard from "../lib/components/review-card"
+import ReviewCard,{ReviewCardProps} from "../lib/components/review-card"
 
 export default {
   title: 'Components/ReviewCard',
   component: ReviewCard,
   tags: ['autodocs'],
+  parameters: {
+    layout: 'centered',
+  },
   argTypes: {
+    locale:{
+      control:"select",
+      options:["en","de"]
+    },
     rating: {
       control: { type: 'number', min: 1, max: 5 },
       description: 'The rating given by the user (1-5 stars).',
@@ -53,12 +60,13 @@ export const Default: Story = {
     rating: 5,
     reviewerName: 'John Doe',
     reviewerAvatar: 'https://via.placeholder.com/40',
-    reviewText: 'This was an amazing workshop! I learned a lot and had a great experience.',
+    reviewText: "The coaching session on advertising was incredibly insightful, providing clear strategies that are immediately actionable. The personalized approach made complex concepts easy to understand, leaving me confident in applying these techniques to my business.",
     workshopTitle: 'Advanced React Workshop',
     date: 'March 15, 2025',
     time: '10:00 AM - 12:00 PM',
     courseTitle: 'React Mastery',
     courseImage: 'https://via.placeholder.com/40',
+    locale:"en"
   },
 };
 
@@ -68,7 +76,9 @@ export const LowRating: Story = {
     ...Default.args,
     rating: 2,
     reviewText: 'The workshop was okay, but it could have been better with more examples.',
+    
   },
+
 };
 
 // ReviewCard without an Avatar

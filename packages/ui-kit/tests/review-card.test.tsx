@@ -15,6 +15,7 @@ describe('ReviewCard Component', () => {
         time="10:00 AM"
         courseTitle="Advanced React"
         courseImage="/course.jpg"
+        locale='en'
       />
     );
 
