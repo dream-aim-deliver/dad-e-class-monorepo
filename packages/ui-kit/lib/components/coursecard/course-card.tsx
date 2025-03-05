@@ -44,39 +44,49 @@ export interface CourseCardProps {
 }
 
 /**
- * User types for the CourseCard component.
- * @typedef {'creator' | 'coach' | 'student' | 'visitor'} UserType
- */
-
-/**
- * Props for the CourseCard component.
- * @typedef {Object} CourseCardProps
- * @property {UserType} userType - The type of user viewing the course.
- * @property {number} reviewCount - The number of reviews for the course.
- * @property {TLocale} locale - The locale setting for the component.
- * @property {TLanguage} language - The language of the course.
- * @property {CourseStatus} [creatorStatus] - The status of the course for creators.
- * @property {course.TCourseMetadata} [course] - Metadata of the course.
- * @property {number} [progress] - The progress percentage for students.
- * @property {number} [sessions=0] - The number of sessions in the course.
- * @property {number} [sales=0] - The number of sales for the course.
- * @property {Function} [onEdit] - Callback for editing the course.
- * @property {Function} [onManage] - Callback for managing the course.
- * @property {Function} [onBegin] - Callback for beginning the course.
- * @property {Function} [onResume] - Callback for resuming the course.
- * @property {Function} [onReview] - Callback for reviewing the course.
- * @property {Function} [onDetails] - Callback for viewing course details.
- * @property {Function} [onBuy] - Callback for purchasing the course.
- * @property {string} [creatorName] - Name of the course creator.
- * @property {string} [groupName] - Name of the group associated with the course.
- * @property {string} [className] - Additional CSS class names for styling.
- */
-
-/**
- * CourseCard component renders different course cards based on user type.
+ * A versatile card component that renders different course card variations based on the user type.
  *
- * @param {CourseCardProps} props - The properties for the component.
- * @returns {React.ReactElement|null} The rendered course card component.
+ * @param userType The type of user viewing the card. Options:
+ *   - `creator`: Displays the CourseCreatorCard for course creators.
+ *   - `coach`: Displays the CoachCourseCard for coaches.
+ *   - `student`: Displays the StudentCourseCard for students.
+ *   - `visitor`: Displays the VisitorCourseCard for visitors.
+ * @param reviewCount The number of reviews for the course.
+ * @param locale The locale for translation and localization purposes.
+ * @param language The language object containing the name of the course language.
+ * @param creatorStatus Optional status of the course for creators. Options: 'published', 'under-review', 'draft'. Required for 'creator' userType.
+ * @param course Optional course metadata object containing title, rating, author, duration, imageUrl, etc. Required for certain user types.
+ * @param progress Optional numeric value representing the course completion progress (used for 'student' userType).
+ * @param sessions Optional number of sessions in the course (defaults to 0).
+ * @param sales Optional number of sales for the course (defaults to 0).
+ * @param onEdit Optional callback function triggered when the "Edit" button is clicked (for 'creator' userType).
+ * @param onManage Optional callback function triggered when the "Manage" button is clicked (for 'creator' or 'coach' userType).
+ * @param onBegin Optional callback function triggered when the "Begin Course" button is clicked (for 'student' userType).
+ * @param onResume Optional callback function triggered when the "Resume Course" button is clicked (for 'student' userType).
+ * @param onReview Optional callback function triggered when the "Review Course" button is clicked (for 'student' userType).
+ * @param onDetails Optional callback function triggered when the "Details" button is clicked (for 'student' or 'visitor' userType).
+ * @param onBuy Optional callback function triggered when the "Buy Course" button is clicked (for 'visitor' userType).
+ * @param creatorName Optional name of the course creator (not directly used in this component but included in props).
+ * @param groupName Optional name of the group associated with the course (for 'coach' userType).
+ * @param className Optional additional CSS class names to customize the card's appearance.
+ *
+ * @example
+ * <CourseCard
+ *   userType="student"
+ *   reviewCount={10}
+ *   locale="en"
+ *   language={{ name: "English" }}
+ *   course={{
+ *     title: "Learn JavaScript",
+ *     rating: 4.7,
+ *     author: { name: "John Doe", image: "author.jpg" },
+ *     duration: { video: 120, coaching: 60, selfStudy: 30 },
+ *     imageUrl: "course.jpg"
+ *   }}
+ *   progress={25}
+ *   onResume={() => console.log("Resume clicked!")}
+ *   className="custom-card"
+ * />
  */
 export const CourseCard: React.FC<CourseCardProps> = (props) => {
   const {

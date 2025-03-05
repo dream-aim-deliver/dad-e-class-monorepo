@@ -10,55 +10,46 @@ import {
   getDictionary,
 } from '@maany_shr/e-class-translations';
 
-
-/**
- * Props for the CoachCourseCard component.
- *
- * Extends the existing course metadata type, omitting 'description' and 'pricing',
- * and adds additional properties specific to the coach's course card.
- */
 export interface CoachCourseCardProps extends Omit<course.TCourseMetadata, 'description' | 'pricing'> {
-  /** Number of reviews the course has received. */
   reviewCount: number;
-  /** Total number of sessions included in the course. */
   sessions: number;
-  /** Total number of sales made for the course. */
   sales: number;
-  /** Optional name of the group associated with the course. */
   groupName?: string;
-  /** Optional callback function triggered when the 'Manage' button is clicked. */
   onManage?: () => void;
-  /** Locale setting for internationalization. */
   locale: TLocale;
 }
 
 /**
- * CoachCourseCard Component
+ * Card component for displaying course information relevant to a coach.
  *
- * A card component that displays detailed information about a coach's course,
- * including title, rating, author, duration, and more. It also provides a 'Manage' button
- * for course management actions.
- *
- * @param {CoachCourseCardProps} props - The properties passed to the component.
- * @returns {JSX.Element} The rendered CoachCourseCard component.
+ * @param title The title of the course.
+ * @param rating The average rating of the course.
+ * @param reviewCount The number of reviews for the course.
+ * @param language The language object containing the name of the course language.
+ * @param sessions The number of sessions in the course.
+ * @param author The author object containing the name and image of the course creator.
+ * @param duration The duration object containing video, coaching, and self-study times in minutes.
+ * @param sales The number of sales for the course.
+ * @param groupName Optional name of the group associated with the course.
+ * @param imageUrl The URL of the course image.
+ * @param onManage Optional callback function triggered when the manage button is clicked.
+ * @param locale The locale for translation and localization purposes.
  *
  * @example
- * ```tsx
  * <CoachCourseCard
- *   title="React for Beginners"
- *   rating={4.5}
- *   reviewCount={120}
- *   language={{ name: 'English' }}
- *   sessions={10}
- *   author={{ name: 'John Doe', image: 'path/to/image.jpg' }}
- *   duration={{ video: 600, coaching: 120, selfStudy: 180 }}
+ *   title="Advanced Coaching Techniques"
+ *   rating={4.8}
+ *   reviewCount={30}
+ *   language={{ name: "English" }}
+ *   sessions={12}
+ *   author={{ name: "Jane Smith", image: "author-image.jpg" }}
+ *   duration={{ video: 180, coaching: 90, selfStudy: 60 }}
  *   sales={200}
- *   groupName="Frontend Developers"
- *   imageUrl="path/to/course/image.jpg"
- *   onManage={() => handleManageCourse()}
- *   locale="en-US"
+ *   groupName="Coaching Pros"
+ *   imageUrl="course-image.jpg"
+ *   onManage={() => console.log("Manage clicked!")}
+ *   locale="en"
  * />
- * ```
  */
 export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
   title,

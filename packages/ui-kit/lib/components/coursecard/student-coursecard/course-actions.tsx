@@ -13,23 +13,30 @@ interface CourseActionsProps extends isLocalAware{
   progress?: number;
   studyProgress?: 'yet-to-start' | 'in-progress' | 'completed';
 }
-/**
- * Props for the CourseActions component.
- *
- * @typedef {Object} CourseActionsProps
- * @property {() => void} [onBegin] - Handler for beginning the course.
- * @property {() => void} [onResume] - Handler for resuming the course.
- * @property {() => void} [onReview] - Handler for reviewing the course.
- * @property {() => void} [onDetails] - Handler for viewing course details.
- * @property {number} [progress] - Progress percentage of the course.
- * @property {'yet-to-start' | 'in-progress' | 'completed'} [studyProgress] - Current study progress status.
- * @property {string} locale - The locale for translations.
- */
 
 /**
- * Displays action buttons for course interactions based on the study progress.
+ * A component for rendering course action buttons based on the study progress of a course.
  *
- * @type {React.FC<CourseActionsProps>}
+ * @param onBegin Optional callback function triggered when the "Begin Course" button is clicked. Used when studyProgress is 'yet-to-start'.
+ * @param onResume Optional callback function triggered when the "Resume Course" button is clicked. Used when studyProgress is 'in-progress'.
+ * @param onReview Optional callback function triggered when the "Review Course" button is clicked. Used when studyProgress is 'completed'.
+ * @param onDetails Optional callback function triggered when the "Details" button is clicked. Used when studyProgress is 'completed'.
+ * @param progress Optional numeric value representing the course completion progress (not directly used in this component but included in props).
+ * @param studyProgress The current study progress of the course. Options:
+ *   - `yet-to-start`: The course has not been started yet (default behavior).
+ *   - `in-progress`: The course is currently in progress.
+ *   - `completed`: The course has been fully completed.
+ * @param locale The locale for translation and localization purposes.
+ *
+ * @example
+ * <CourseActions
+ *   onBegin={() => console.log("Begin clicked!")}
+ *   onResume={() => console.log("Resume clicked!")}
+ *   onReview={() => console.log("Review clicked!")}
+ *   onDetails={() => console.log("Details clicked!")}
+ *   studyProgress="in-progress"
+ *   locale="en"
+ * />
  */
 export const CourseActions: React.FC<CourseActionsProps> = ({
   onBegin,

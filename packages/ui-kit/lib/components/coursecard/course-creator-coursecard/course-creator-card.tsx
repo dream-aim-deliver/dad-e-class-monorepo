@@ -23,33 +23,6 @@ interface CourseCreatorCardProps extends isLocalAware {
   onManage?: () => void;
 }
 
-/**
- * Defines the possible statuses for a course.
- * @typedef {"published" | "under-review" | "draft"} CourseStatus
- */
-
-/**
- * Props for the CourseCreatorCard component.
- * @typedef {Object} CourseCreatorCardProps
- * @property {course.TCourseMetadata} course - Metadata of the course.
- * @property {number} rating - Average rating of the course.
- * @property {number} reviewCount - Number of reviews for the course.
- * @property {number} sessions - Number of sessions in the course.
- * @property {number} sales - Number of sales for the course.
- * @property {CourseStatus} status - Current status of the course.
- * @property {TLocale} locale - Locale for translations.
- * @property {Function} [onEdit] - Callback function triggered when the edit button is clicked.
- * @property {Function} [onManage] - Callback function triggered when the manage button is clicked.
- */
-
-/**
- * Badge component to display the status of the course.
- *
- * @param {Object} props - Component props.
- * @param {CourseStatus} props.status - Status of the course.
- * @param {TLocale} props.locale - Locale for translations.
- * @returns {JSX.Element} The rendered StatusBadge component.
- */
 const StatusBadge: React.FC<{ status: CourseStatus, locale: TLocale }> = ({ status, locale }) => {
   const dictionary = getDictionary(locale);
   const variants = {
@@ -85,8 +58,36 @@ const StatusBadge: React.FC<{ status: CourseStatus, locale: TLocale }> = ({ stat
 /**
  * Card component for displaying course information created by the user.
  *
- * @param {CourseCreatorCardProps} props - Component props.
- * @returns {JSX.Element} The rendered CourseCreatorCard component.
+ * @param course The course metadata object containing title, duration, imageUrl, rating, author, and language.
+ * @param reviewCount The number of reviews for the course.
+ * @param sessions The number of sessions in the course.
+ * @param sales The number of sales for the course.
+ * @param status The status of the course. Options:
+ *   - `published`: The course is live and available.
+ *   - `under-review`: The course is being reviewed.
+ *   - `draft`: The course is still in draft mode.
+ * @param locale The locale for translation and localization purposes.
+ * @param onEdit Optional callback function triggered when the edit button is clicked.
+ * @param onManage Optional callback function triggered when the manage button is clicked.
+ *
+ * @example
+ * <CourseCreatorCard
+ *   course={{
+ *     title: "Learn React",
+ *     duration: { video: 120, coaching: 60, selfStudy: 60 },
+ *     imageUrl: "course-image.jpg",
+ *     rating: 4.5,
+ *     author: { name: "John Doe", image: "author-image.jpg" },
+ *     language: { name: "English" },
+ *   }}
+ *   reviewCount={25}
+ *   sessions={10}
+ *   sales={150}
+ *   status="published"
+ *   locale="en"
+ *   onEdit={() => console.log("Edit clicked!")}
+ *   onManage={() => console.log("Manage clicked!")}
+ * />
  */
 export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
   course,

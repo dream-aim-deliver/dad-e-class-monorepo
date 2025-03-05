@@ -21,49 +21,35 @@ export interface VisitorCourseCardProps extends Omit<
 }
 
 /**
- * Properties for the VisitorCourseCard component.
+ * Card component for displaying course information tailored for visitors, including options to view details or buy.
  *
- * @typedef {Object} VisitorCourseCardProps
- * @property {string} title - The title of the course.
- * @property {number} rating - The average rating of the course.
- * @property {number} reviewCount - The number of reviews for the course.
- * @property {Object} author - The author of the course.
- * @property {string} author.name - The name of the author.
- * @property {string} author.image - The URL of the author's image.
- * @property {Object} language - The language in which the course is offered.
- * @property {string} language.name - The name of the language.
- * @property {number} sessions - The number of sessions in the course.
- * @property {Object} duration - The duration of the course.
- * @property {number} duration.video - The duration of video content in minutes.
- * @property {number} duration.coaching - The duration of coaching sessions in minutes.
- * @property {number} duration.selfStudy - The duration of self-study content in minutes.
- * @property {number} sales - The number of sales for the course.
- * @property {string} imageUrl - The URL of the course image.
- * @property {TLocale} locale - The locale for translations.
- * @property {Function} [onDetails] - Callback function when the "Details" button is clicked.
- * @property {Function} [onBuy] - Callback function when the "Buy" button is clicked.
- */
-
-/**
- * VisitorCourseCard component displays course information for visitors.
- *
- * @param {VisitorCourseCardProps} props - The properties for the component.
- * @returns {JSX.Element} The rendered VisitorCourseCard component.
+ * @param title The title of the course.
+ * @param rating The average rating of the course.
+ * @param reviewCount The number of reviews for the course.
+ * @param author The author object containing the name and image of the course creator.
+ * @param language The language object containing the name of the course language.
+ * @param sessions The number of sessions in the course.
+ * @param duration The duration object containing video, coaching, and self-study times in minutes.
+ * @param sales The number of sales for the course.
+ * @param imageUrl The URL of the course image.
+ * @param locale The locale for translation and localization purposes.
+ * @param onDetails Optional callback function triggered when the "Details" button is clicked.
+ * @param onBuy Optional callback function triggered when the "Buy Course" button is clicked.
  *
  * @example
  * <VisitorCourseCard
- *   title="Introduction to Programming"
+ *   title="Web Development Basics"
  *   rating={4.5}
- *   reviewCount={120}
- *   author={{ name: "John Doe", image: "author.jpg" }}
+ *   reviewCount={20}
+ *   author={{ name: "Bob Smith", image: "author-image.jpg" }}
  *   language={{ name: "English" }}
- *   sessions={10}
- *   duration={{ video: 600, coaching: 120, selfStudy: 180 }}
- *   sales={200}
- *   imageUrl="course.jpg"
- *   locale="en-US"
- *   onDetails={() => console.log('Details clicked')}
- *   onBuy={() => console.log('Buy clicked')}
+ *   sessions={8}
+ *   duration={{ video: 150, coaching: 60, selfStudy: 90 }}
+ *   sales={120}
+ *   imageUrl="course-image.jpg"
+ *   locale="en"
+ *   onDetails={() => console.log("Details clicked!")}
+ *   onBuy={() => console.log("Buy clicked!")}
  * />
  */
 export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({

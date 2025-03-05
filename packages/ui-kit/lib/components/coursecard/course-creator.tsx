@@ -9,20 +9,22 @@ interface CourseCreatorProps extends isLocalAware {
   imageUrl?: string;
   you?: boolean;
 }
-/**
- * Props for the CourseCreator component.
- *
- * @typedef {Object} CourseCreatorProps
- * @property {string} creatorName - The name of the course creator.
- * @property {string} [imageUrl] - URL of the creator's avatar image.
- * @property {boolean} [you=false] - Flag indicating if the creator is the current user.
- * @property {string} locale - The locale for translations.
- */
 
 /**
- * Displays information about the course creator, including their name and avatar.
+ * A component for displaying the creator of a course with an avatar and name, optionally indicating if it’s the current user.
  *
- * @type {React.FC<CourseCreatorProps>}
+ * @param creatorName The name of the course creator.
+ * @param imageUrl Optional URL of the creator’s profile image.
+ * @param you Optional boolean indicating if the creator is the current user (defaults to false).
+ * @param locale The locale for translation and localization purposes.
+ *
+ * @example
+ * <CourseCreator
+ *   creatorName="Jane Doe"
+ *   imageUrl="https://example.com/jane-doe.jpg"
+ *   you={false}
+ *   locale="en"
+ * />
  */
 export const CourseCreator: React.FC<CourseCreatorProps> = ({
   creatorName,

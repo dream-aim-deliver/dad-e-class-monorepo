@@ -21,38 +21,42 @@ interface CourseCardProps extends TCourseMetadata {
 }
 
 /**
- * Props for the StudentCourseCard component.
+ * Card component for displaying course information tailored for students, including progress and actions.
  *
- * @typedef {object} CourseCardProps
- * @property {string} title - The title of the course.
- * @property {string} description - A brief description of the course.
- * @property {object} duration - An object containing durations for different components of the course.
- * @property {number} duration.video - Duration of video content in minutes.
- * @property {number} duration.coaching - Duration of coaching sessions in minutes.
- * @property {number} duration.selfStudy - Duration of self-study materials in minutes.
- * @property {number} reviewCount - Number of reviews for the course.
- * @property {object} pricing - Pricing details of the course.
- * @property {number} pricing.fullPrice - Full price of the course.
- * @property {string} imageUrl - URL of the course's cover image.
- * @property {number} rating - Average rating of the course.
- * @property {object} author - Information about the course author.
- * @property {string} author.name - Name of the author.
- * @property {string} author.image - URL to the author's image.
- * @property {object} language - Language details of the course.
- * @property {string} language.name - Name of the language.
- * @property {number} [progress=0] - Progress percentage of the student in the course.
- * @property {TLocale} locale - Locale setting for translations.
- * @property {function} [onBegin] - Callback function when the course is started.
- * @property {function} [onResume] - Callback function when the course is resumed.
- * @property {function} [onReview] - Callback function when the course is reviewed.
- * @property {function} [onDetails] - Callback function when course details are requested.
- */
-
-/**
- * StudentCourseCard component displays detailed information about a course for students.
+ * @param title The title of the course.
+ * @param description The description of the course, displayed when study progress is 'yet-to-start'.
+ * @param duration The duration object containing video, coaching, and self-study times in minutes.
+ * @param reviewCount The number of reviews for the course.
+ * @param pricing The pricing object containing the full price of the course.
+ * @param imageUrl The URL of the course image.
+ * @param rating The average rating of the course.
+ * @param author The author object containing the name and image of the course creator.
+ * @param language The language object containing the name of the course language.
+ * @param progress Optional numeric value representing the course completion progress (defaults to 0).
+ * @param locale The locale for translation and localization purposes.
+ * @param onBegin Optional callback function triggered when the "Begin Course" button is clicked.
+ * @param onResume Optional callback function triggered when the "Resume Course" button is clicked.
+ * @param onReview Optional callback function triggered when the "Review Course" button is clicked.
+ * @param onDetails Optional callback function triggered when the "Details" button is clicked.
  *
- * @param {CourseCardProps} props - Properties passed to the component.
- * @returns {React.ReactElement} The rendered StudentCourseCard component.
+ * @example
+ * <StudentCourseCard
+ *   title="Introduction to Programming"
+ *   description="Learn the basics of coding."
+ *   duration={{ video: 120, coaching: 60, selfStudy: 30 }}
+ *   reviewCount={15}
+ *   pricing={{ fullPrice: 99 }}
+ *   imageUrl="course-image.jpg"
+ *   rating={4.2}
+ *   author={{ name: "Alice Johnson", image: "author-image.jpg" }}
+ *   language={{ name: "English" }}
+ *   progress={50}
+ *   locale="en"
+ *   onBegin={() => console.log("Begin clicked!")}
+ *   onResume={() => console.log("Resume clicked!")}
+ *   onReview={() => console.log("Review clicked!")}
+ *   onDetails={() => console.log("Details clicked!")}
+ * />
  */
 export const StudentCourseCard: React.FC<CourseCardProps> = ({
   title,
