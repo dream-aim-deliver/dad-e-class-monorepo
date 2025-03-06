@@ -22,8 +22,8 @@ export interface UserAvatarProps {
 export const UserAvatar: FC<UserAvatarProps> = ({
   size = 'medium',
   hasProfilePicture = false,
-  initials = 'JF',
-  imageUrl = 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+  initials = '',
+  imageUrl = '',
   className,
 }) => {
   /**

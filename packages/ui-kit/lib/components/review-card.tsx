@@ -73,7 +73,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
                 size="small"
                 variant="text"
                 hasIconLeft
-                iconLeft={<UserAvatar className="rounded-full" size="small" imageUrl={reviewerAvatar} />}
+                iconLeft={<UserAvatar className="rounded-full" hasProfilePicture size="small" imageUrl={reviewerAvatar} />}
                 text={reviewerName}
               />
             </div>
@@ -103,10 +103,11 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
         <div className="flex items-center gap-1">
           <Button
             className='p-0 gap-1 text-sm'
+           truncateText
             variant='text'
             size="small"
             hasIconLeft
-            iconLeft={<UserAvatar imageUrl={courseImage} className='rounded-small' size="small" />}
+            iconLeft={<UserAvatar hasProfilePicture imageUrl={courseImage} className='rounded-small' size="small" />}
             text={courseTitle}
           />
         </div>

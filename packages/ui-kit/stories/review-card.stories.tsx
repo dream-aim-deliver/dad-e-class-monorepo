@@ -65,7 +65,7 @@ export const Default: Story = {
     date: 'March 15, 2025',
     time: '10:00 AM - 12:00 PM',
     courseTitle: 'React Mastery',
-    courseImage: 'https://via.placeholder.com/40',
+    courseImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     locale:"en"
   },
 };
