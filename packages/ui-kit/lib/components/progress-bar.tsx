@@ -9,7 +9,31 @@ export interface ProgressBarProps {
   onChange?: (value: number) => void; // Callback for slider
 }
 
-
+/**
+ * A customizable ProgressBar component that can function as either a static progress indicator or an interactive slider.
+ *
+ * @param type The type of progress bar. Options:
+ *   - `progress`: Displays a static progress indicator (default).
+ *   - `slider`: Renders an interactive slider with a draggable handle.
+ * @param progress The current progress value, between 0 and totalProgress. Defaults to `10`.
+ * @param totalProgress The maximum progress value. Defaults to `100`.
+ * @param onChange Optional callback function triggered when the slider value changes (only applicable when type is 'slider'). Receives the new `value` as an argument.
+ *
+ * @example
+ * <ProgressBar
+ *   type="slider"
+ *   progress={50}
+ *   totalProgress={100}
+ *   onChange={(value) => console.log("Progress changed to:", value)}
+ * />
+ *
+ * @example
+ * <ProgressBar
+ *   type="progress"
+ *   progress={75}
+ *   totalProgress={100}
+ * />
+ */
 export const ProgressBar: React.FC<ProgressBarProps> = ({
   type = 'progress',
   progress = 10,
