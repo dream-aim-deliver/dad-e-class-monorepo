@@ -91,11 +91,11 @@ const CoachCard: FC<CoachCardProps> = ({
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
-          <UserAvatar hasProfilePicture className="w-10 h-10 rounded-full" imageUrl={cardDetails.coachImage} />
-          <div className="flex flex-col gap-1">
-            <p className="text-color-text-primary text-white text-sm md:text-md leading-4 font-bold">{cardDetails.coachName}</p>
+          <UserAvatar hasProfilePicture className="w-10 h-10 rounded-full flex-shrink-0" imageUrl={cardDetails.coachImage} />
+          <div className="flex flex-col min-w-0 gap-1">
+            <p className="text-color-text-primary text-white text-sm md:text-md leading-4 font-bold truncate">{cardDetails.coachName}</p>
             <div className="flex w-full gap-1 items-center">
-              <StarRating rating={cardDetails.rating} />
+              <StarRating totalStars={5} size={"4"} rating={cardDetails.rating} />
               <p className="text-[#FAFAF9] text-sm leading-3.5">{cardDetails.rating}</p>
               <p className="text-xs">({cardDetails.totalRatings})</p>
             </div>
@@ -141,7 +141,8 @@ const CoachCard: FC<CoachCardProps> = ({
                 size='small'
                 variant="text"
                 hasIconLeft
-                iconLeft={<UserAvatar imageUrl={course.image} className="rounded-small" size="small" />}
+                truncateText
+                iconLeft={<UserAvatar hasProfilePicture imageUrl={course.image} className="rounded-small" size="small" />}
                 text={course.title}
               />
             ))}

@@ -39,8 +39,8 @@ export const HighlyRatedCoach: Story = {
       skills: ['Leadership', 'Communication', 'Public Speaking'],
       description: 'Expert leadership coach with years of experience helping professionals achieve their goals.',
       courses: [
-        { image: '', title: 'Leadership Mastery' },
-        { image: '', title: 'Effective Communication' },
+        { image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', title: 'Leadership Mastery' },
+        { image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', title: 'Effective Communication' },
       ],
       rating: 5.0,
       totalRatings: 500,
@@ -64,7 +64,7 @@ export const NewCoach: Story = {
       skills: ['Career Coaching', 'Resume Building'],
       description: 'Passionate career coach helping job seekers land their dream jobs.',
       courses: [
-        { image: '', title: 'Career Advancement' },
+        { image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', title: 'Career Advancement' },
       ],
       rating: 4.2,
       totalRatings: 15,
@@ -86,7 +86,7 @@ export const NoProfilePicture: Story = {
       skills: ['Personal Development', 'Time Management'],
       description: 'Helping individuals grow personally and professionally with time-tested strategies.',
       courses: [
-        { image: '', title: 'Personal Growth' },
+        { image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', title: 'Personal Growth' },
       ],
       rating: 4.7,
       totalRatings: 75,
@@ -108,8 +108,8 @@ export const CoachWithManySkills: Story = {
       skills: ['Business Strategy', 'Marketing', 'Sales', 'Negotiation', 'Branding', 'SEO'],
       description: 'Entrepreneur and business coach with extensive experience in multiple industries.',
       courses: [
-        { image: '', title: 'Business Growth' },
-        { image: '', title: 'Marketing 101' },
+        { image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', title: 'Business Growth' },
+        { image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', title: 'Marketing 101' },
       ],
       rating: 4.8,
       totalRatings: 320,
@@ -131,10 +131,11 @@ export const LowRatedCoach: Story = {
       skills: ['Public Speaking', 'Debating'],
       description: 'Helping individuals master the art of public speaking.',
       courses: [
-        { image: '', title: 'Speaking with Confidence' },
+        { image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', title: 'Speaking with Confidence' },
       ],
       rating: 2.5,
       totalRatings: 5,
+      
     },
     locale: 'en',
     onClickViewProfile:()=>alert('View Profile Clicked'),
