@@ -8,10 +8,7 @@ import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 
 // Extend the existing type with the properties we need that aren't in TCourseMetadata
-export interface VisitorCourseCardProps extends Omit<
-  course.TCourseMetadata,
-  'description' | 'pricing'
-> {
+export interface VisitorCourseCardProps extends course.TCourseMetadata {
   reviewCount: number;
   sessions: number;
   sales: number;
@@ -54,8 +51,10 @@ export interface VisitorCourseCardProps extends Omit<
  */
 export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   title,
+  description,
   rating,
   reviewCount,
+  pricing,
   author,
   language,
   sessions,
@@ -110,7 +109,13 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               sales={sales}
             />
           </div>
-          
+
+          {description && (
+            <p className="text-sm leading-[150%] text-text-secondary text-start">
+              {description}
+            </p>
+          )}
+
           <div className="flex flex-col gap-2">
             <Button
               className=""
@@ -124,7 +129,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               variant={'primary'}
               size={'medium'}
               onClick={onBuy}
-              text={dictionary.components.courseCard.buyCourseButton}
+              text={`${dictionary.components.courseCard.buyButton} (${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.fullPrice})`}
             />
           </div>
         </div>

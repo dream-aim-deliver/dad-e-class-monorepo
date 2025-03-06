@@ -155,7 +155,7 @@ export const CoachView: Story = {
 };
 
 // Student view stories
-export const StudentNotStartedView: Story = {
+export const StudentYetToStartedView: Story = {
   args: {
     userType: 'student',
     reviewCount: 328,
@@ -164,6 +164,7 @@ export const StudentNotStartedView: Story = {
     course: { ...sampleCourseData,
       rating: 4.7,
     },
+    sales: 1850,
     progress: 0,
     onBegin: () => console.log('Begin course clicked'),
     onDetails: () => console.log('Course details clicked'),
@@ -173,7 +174,8 @@ export const StudentNotStartedView: Story = {
 
 export const StudentInProgressView: Story = {
   args: {
-    ...StudentNotStartedView.args,
+    ...StudentYetToStartedView.args,
+    sales: 1850,
     progress: 42,
     onResume: () => console.log('Resume course clicked'),
     onDetails: () => console.log('Course details clicked'),
@@ -182,7 +184,8 @@ export const StudentInProgressView: Story = {
 
 export const StudentCompletedView: Story = {
   args: {
-    ...StudentNotStartedView.args,
+    ...StudentYetToStartedView.args,
+    sales: 1850,
     progress: 100,
     onReview: () => console.log('Review course clicked'),
     onDetails: () => console.log('Course details clicked'),
@@ -199,6 +202,7 @@ export const VisitorView: Story = {
     course: { ...sampleCourseData,
       rating: 4.7,
     },
+    sales: 1850,
     sessions: 24,
     groupName: 'Design Professionals',
     className: 'max-w-[352px]',

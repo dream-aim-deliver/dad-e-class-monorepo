@@ -12,6 +12,7 @@ export type TCourseMetadata = z.infer<typeof course.CourseMetadataSchema>;
 
 interface CourseCardProps extends TCourseMetadata {
   locale: TLocale;
+  sales: number;
   reviewCount: number;
   progress?: number;
   onBegin?: () => void;
@@ -64,6 +65,7 @@ export const StudentCourseCard: React.FC<CourseCardProps> = ({
   duration,
   reviewCount,
   pricing,
+  sales,
   imageUrl,
   rating,
   author,
@@ -114,7 +116,7 @@ export const StudentCourseCard: React.FC<CourseCardProps> = ({
                 ({reviewCount})
               </span>
             </div>
-            
+
             <CourseCreator
               creatorName={author?.name}
               imageUrl={author?.image}
@@ -126,7 +128,7 @@ export const StudentCourseCard: React.FC<CourseCardProps> = ({
               language={language.name}
               sessions={10}
               duration={`${totalDurationInHours} hours`}
-              sales={pricing.fullPrice}
+              sales={sales}
             />
           </div>
 
@@ -137,7 +139,10 @@ export const StudentCourseCard: React.FC<CourseCardProps> = ({
           )}
 
           {studyProgress === 'in-progress' && (
-            <ProgressBar progress={progress} />
+            <div className='flex gap-4'>
+              <ProgressBar progress={progress} />
+              <p className='text-sm leading-[100%] text-text-secondary'>{progress}%</p>
+            </div>
           )}
 
           <div className="flex flex-col gap-2">

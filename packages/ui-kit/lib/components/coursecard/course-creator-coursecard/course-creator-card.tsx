@@ -9,6 +9,8 @@ import { IconClock } from "../../icons/icon-clock";
 import { IconGroup } from "../../icons/icon-group";
 import { IconCoachingSession } from "../../icons/icon-coaching-session";
 import { getDictionary, isLocalAware, TLocale } from "@maany_shr/e-class-translations";
+import { IconCheck } from "../../icons/icon-check";
+import { IconHourglass } from "../../icons/icon-hourglass";
 
 export type CourseStatus = "published" | "under-review" | "draft";
 
@@ -38,8 +40,8 @@ const StatusBadge: React.FC<{ status: CourseStatus, locale: TLocale }> = ({ stat
   }
 
   const icons = {
-    published: <IconClock size='5' />,
-    "under-review": <IconCoachingSession size='5' />,
+    published: <IconCheck size='5' />,
+    "under-review": <IconHourglass size='5' />,
     draft: <IconGroup size='5' />,
   };
 

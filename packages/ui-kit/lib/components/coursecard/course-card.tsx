@@ -163,6 +163,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
           <StudentCourseCard
             {...course}
             locale={locale}
+            sales={sales}
             reviewCount={reviewCount}
             progress={progress}
             onBegin={onBegin}
@@ -178,9 +179,11 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
         <div className={className}>
           <VisitorCourseCard
             title={course.title}
+            description={course.description}
             rating={course.rating}
             reviewCount={reviewCount}
             author={course.author}
+            pricing={course.pricing}
             language={language}
             sessions={sessions}
             duration={course.duration}

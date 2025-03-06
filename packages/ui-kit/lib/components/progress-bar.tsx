@@ -9,25 +9,7 @@ export interface ProgressBarProps {
   onChange?: (value: number) => void; // Callback for slider
 }
 
-/**
- * A ProgressBar component that functions as either a slider or a progress indicator.
- *
- * @param {ProgressBarProps} props - The props for the component.
- * @returns {JSX.Element} A styled progress bar or slider component.
- *
- * @example
- * // Basic usage as a progress indicator
- * <ProgressBar progress={30} totalProgress={100} />
- *
- * @example
- * // Usage as a slider with a change handler
- * <ProgressBar
- *   type="slider"
- *   progress={50}
- *   totalProgress={200}
- *   onChange={(value) => console.log(`New progress value: ${value}`)}
- * />
- */
+
 export const ProgressBar: React.FC<ProgressBarProps> = ({
   type = 'progress',
   progress = 10,
@@ -36,10 +18,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
 }) => {
   const [value, setValue] = useState(progress);
   useEffect( () => setValue(progress), [progress] )
-  /**
-   * Handles changes to the slider input.
-   * @param event The input change event.
-   */
+ 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = Number(event.target.value);
     setValue(newValue);
@@ -55,11 +34,11 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     >
       <div className="relative w-full">
         {/* Slider track */}
-        <div className="absolute top-1/2 h-3 w-full rounded-small bg-slider-background-fill border-[1px] border-slider-background-stroke transform -translate-y-1/2"></div>
+        <div className="absolute top-1/2 h-2 w-full rounded-small bg-base-neutral-950 transform -translate-y-1/2"></div>
 
         {/* Filled progress */}
         <div
-          className="absolute top-1/2 h-3 bg-slider-progress-fill border-[1px] border-slider-progress-stroke rounded-small transform -translate-y-1/2"
+          className="absolute top-1/2 h-2 bg-slider-progress-fill  rounded-small transform -translate-y-1/2"
           style={{ width: `${progressPercentage}%` }}
         ></div>
 
