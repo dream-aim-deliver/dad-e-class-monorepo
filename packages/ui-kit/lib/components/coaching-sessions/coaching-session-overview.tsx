@@ -45,6 +45,49 @@ export interface CoachingSessionOverviewProps extends isLocalAware {
   description?: string;
 }
 
+/**
+ * CoachingSessionOverview component displays details of a coaching session,
+ * including title, duration, date, time, creator information, session status,
+ * and relevant action buttons.
+ *
+ * @param status The current status of the session (e.g., ongoing, upcoming, canceled, etc.).
+ * @param userRole The role of the user (either 'student' or 'coach').
+ * @param hasReview Boolean indicating if the session has a review.
+ * @param hasCallQualityRating Boolean indicating if call quality rating is available.
+ * @param withinCourse Boolean flag indicating if the session is part of a course.
+ * @param groupSession Boolean flag indicating if the session is a group session.
+ * @param title The title of the coaching session.
+ * @param duration The duration of the session.
+ * @param date The scheduled date of the session.
+ * @param time The scheduled time of the session.
+ * @param creatorName The name of the session creator.
+ * @param courseName The name of the associated course (if any).
+ * @param groupName The name of the associated group (if any).
+ * @param meetingLink The link to join the session (if applicable).
+ * @param description Additional session description or notes.
+ * @param onJoin Function triggered when the user joins the session.
+ * @param onCancel Function triggered when the user cancels the session.
+ * @param onReschedule Function triggered when the session is rescheduled.
+ * @param locale The locale for translations.
+ *
+ * @example
+ * <CoachingSessionOverview
+ *   status="ongoing"
+ *   userRole="coach"
+ *   title="1-on-1 Coaching"
+ *   duration="45 mins"
+ *   date="2024-06-12"
+ *   time="10:00 AM"
+ *   creatorName="Jane Doe"
+ *   courseName="Leadership Training"
+ *   groupName="Team Growth"
+ *   meetingLink="https://zoom.com/session123"
+ *   onJoin={() => console.log("Joining session")}
+ *   onCancel={() => console.log("Canceling session")}
+ *   onReschedule={() => console.log("Rescheduling session")}
+ * />
+ */
+
 export function CoachingSessionOverview({
   status = 'ongoing',
   userRole = 'coach',
@@ -69,7 +112,7 @@ export function CoachingSessionOverview({
   const dictionary = getDictionary(locale);
   return (
     <div
-      className={`flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-full`}
+      className={`flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-[18rem] md:w-[22rem]`}
     >
       <div className="flex gap-4 items-center justify-between">
         <p className="text-md text-text-primary font-bold leading-[120%]">
@@ -84,7 +127,7 @@ export function CoachingSessionOverview({
         <TimeInfo date={date} time={time} />
       ) : (
         <>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 text-text-primary">
             <div className="flex items-center gap-2">
               <IconCalendarAlt size="4" />
               <p className="text-sm text-text-primary leading-[100%]">{date}</p>
@@ -98,7 +141,6 @@ export function CoachingSessionOverview({
             hasCallQualityRating={hasCallQualityRating}
             readMore={dictionary.components.coachingSession.readMore}
             rating={5}
-            onClick={() => {}}
             text="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-full"
           />
         </>
@@ -108,9 +150,9 @@ export function CoachingSessionOverview({
         withinCourse={withinCourse || hasReview}
         userRole={userRole}
         groupSession={groupSession}
-        creatorName={creatorName}
-        courseName={courseName}
-        groupName={groupName}
+        creatorName={creatorName || ''}
+        courseName={courseName || ''}
+        groupName={groupName || ''}
         createdBy={dictionary.components.coachingSession.createdBy}
         student={dictionary.components.coachingSession.student}
         course={dictionary.components.coachingSession.course}
@@ -158,7 +200,7 @@ export function CoachingSessionOverview({
           )}
           {status === 'rescheduled' && (
             <div className="flex flex-col gap-2 items-center w-full">
-              <div className="flex justify-between ga-3 w-full">
+              <div className="flex justify-between gap-3 w-full">
                 <Button
                   text={dictionary.components.coachingSession.decline}
                   variant="secondary"

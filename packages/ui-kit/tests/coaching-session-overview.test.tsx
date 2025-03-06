@@ -41,7 +41,11 @@ vi.mock('./review-card', () => ({
   ReviewCard: () => <div data-testid="review-card">Review Card</div>,
 }));
 vi.mock('../button', () => ({
-  Button: ({ text, ...props }) => <button data-testid="button" {...props}>{text}</button>,
+  Button: ({ text, ...props }) => (
+    <button data-testid="button" {...props}>
+      {text}
+    </button>
+  ),
 }));
 vi.mock('../badge', () => ({
   Badge: ({ text }) => <span data-testid="badge">{text}</span>,
@@ -64,13 +68,13 @@ describe('CoachingSessionOverview', () => {
         status="ongoing"
         meetingLink="https://zoom.us/j/123"
         onJoin={onJoin}
-      />
+      />,
     );
 
     const joinButton = screen.getByText('Join Meeting');
     expect(joinButton).toBeInTheDocument();
     expect(screen.getByText('https://zoom.us/j/123')).toBeInTheDocument();
-    
+
     joinButton.click();
     expect(onJoin).toHaveBeenCalled();
   });
@@ -78,14 +82,14 @@ describe('CoachingSessionOverview', () => {
   it('renders upcoming-editable session with reschedule and cancel buttons', () => {
     const onReschedule = vi.fn();
     const onCancel = vi.fn();
-    
+
     render(
       <CoachingSessionOverview
         {...defaultProps}
         status="upcoming-editable"
         onReschedule={onReschedule}
         onCancel={onCancel}
-      />
+      />,
     );
 
     expect(screen.getByText('24 hours left to edit')).toBeInTheDocument();
@@ -94,23 +98,13 @@ describe('CoachingSessionOverview', () => {
   });
 
   it('renders canceled session with appropriate badge', () => {
-    render(
-      <CoachingSessionOverview
-        {...defaultProps}
-        status="canceled"
-      />
-    );
+    render(<CoachingSessionOverview {...defaultProps} status="canceled" />);
 
     expect(screen.getByText('Session Canceled')).toBeInTheDocument();
   });
 
   it('renders rescheduled session with accept/decline buttons', () => {
-    render(
-      <CoachingSessionOverview
-        {...defaultProps}
-        status="rescheduled"
-      />
-    );
+    render(<CoachingSessionOverview {...defaultProps} status="rescheduled" />);
 
     expect(screen.getByText('Decline')).toBeInTheDocument();
     expect(screen.getByText('Accept')).toBeInTheDocument();
@@ -123,7 +117,7 @@ describe('CoachingSessionOverview', () => {
         {...defaultProps}
         status="upcoming-locked"
         meetingLink="https://zoom.us/j/123"
-      />
+      />,
     );
 
     const joinButton = screen.getByText('Join Meeting');
