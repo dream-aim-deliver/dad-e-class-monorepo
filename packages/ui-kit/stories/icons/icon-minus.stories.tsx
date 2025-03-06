@@ -3,7 +3,7 @@ import { IconMinus } from '../../lib/components/icons/icon-minus';
 
 // Meta configuration for Storybook
 const meta: Meta<typeof IconMinus > = {
-  title: 'Icons/IconPlus',
+  title: 'Icons/IconMinus',
   component: IconMinus ,
   tags: ['autodocs'],
   argTypes: {

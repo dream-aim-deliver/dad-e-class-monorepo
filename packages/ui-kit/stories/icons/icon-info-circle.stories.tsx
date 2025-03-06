@@ -3,7 +3,7 @@ import { IconInfoCircle } from '../../lib/components/icons/icon-infocircle';
 
 // Meta configuration for Storybook
 const meta: Meta<typeof IconInfoCircle > = {
-  title: 'Icons/IconPlus',
+  title: 'Icons/IconInfoCircle',
   component: IconInfoCircle ,
   tags: ['autodocs'],
   argTypes: {
