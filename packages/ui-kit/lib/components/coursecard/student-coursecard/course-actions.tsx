@@ -1,7 +1,6 @@
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Badge } from '../../badge';
 import { Button } from '../../button';
-import { Check } from 'lucide-react';
 import * as React from 'react';
 import { IconCheck } from '../../icons/icon-check';
 
@@ -57,7 +56,8 @@ export const CourseActions: React.FC<CourseActionsProps> = ({
           variant={'successprimary'}
           size={'big'}
           text={dictionary.components.courseCard.completedBadge}
-          iconLeft={<IconCheck />}
+          iconLeft={<IconCheck size="5" />}
+          hasIconLeft
         />
         <div className="flex flex-col gap-2">
           <Button

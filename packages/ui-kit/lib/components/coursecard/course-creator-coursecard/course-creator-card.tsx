@@ -5,12 +5,10 @@ import { CourseStats } from "../course-stats";
 import { CourseCreator } from "../course-creator";
 import { StarRating } from "../../star-rating";
 import { course } from "@maany_shr/e-class-models";
-import { IconClock } from "../../icons/icon-clock";
-import { IconGroup } from "../../icons/icon-group";
-import { IconCoachingSession } from "../../icons/icon-coaching-session";
 import { getDictionary, isLocalAware, TLocale } from "@maany_shr/e-class-translations";
 import { IconCheck } from "../../icons/icon-check";
 import { IconHourglass } from "../../icons/icon-hourglass";
+import { IconEdit } from "../../icons/icon-edit";
 
 export type CourseStatus = "published" | "under-review" | "draft";
 
@@ -42,7 +40,7 @@ const StatusBadge: React.FC<{ status: CourseStatus, locale: TLocale }> = ({ stat
   const icons = {
     published: <IconCheck size='5' />,
     "under-review": <IconHourglass size='5' />,
-    draft: <IconGroup size='5' />,
+    draft: <IconEdit size='5' />,
   };
 
   return (

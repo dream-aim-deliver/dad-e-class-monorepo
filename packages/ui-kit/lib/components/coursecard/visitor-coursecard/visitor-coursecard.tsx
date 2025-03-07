@@ -3,7 +3,6 @@ import { Button } from '../../button';
 import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
 import { StarRating } from '../../star-rating';
-import { IconGroup } from '../../icons/icon-group';
 import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 
