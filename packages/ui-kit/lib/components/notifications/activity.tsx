@@ -50,17 +50,17 @@ export interface ActivityProps {
  */
 
 export const Activity: FC<ActivityProps> = ({
-  message = 'Coach {coach-name} {coach-surname} accepted your request to reschedule the coaching session.',
-  actionButton = 'Session details',
-  dateTime = '2024-08-07 at 21:17',
+  message = '',
+  actionButton = '',
+  dateTime = '',
   isRead = false,
   isEmpty = false,
   hasChildren = false,
   children,
   showPlatform = true,
-  platformName = 'Platform Name',
+  platformName = '',
   showRecipients = true,
-  recipients = '88 Recipients',
+  recipients = '',
   layout = 'horizontal',
   onClick,
   className,
@@ -145,12 +145,12 @@ export const Activity: FC<ActivityProps> = ({
               {hasChildren && <>{children}</>}
               <div className="flex gap-2">
                 {showPlatform && (
-                  <p className="text-2xs text-text-secondary leading-[100%]">
+                  <p className="text-xs text-text-secondary leading-[100%] ">
                     {platformName}
                   </p>
                 )}
                 {showRecipients && (
-                  <p className="text-2xs text-text-secondary leading-[100%]">
+                  <p className="text-xs text-text-secondary leading-[100%]">
                     {recipients}
                   </p>
                 )}
@@ -163,8 +163,9 @@ export const Activity: FC<ActivityProps> = ({
                   size="medium"
                   onClick={onClick}
                   text={actionButton}
+                  className="whitespace-nowrap p-0"
                 />
-                <p className="text-2xs text-text-secondary leading-[100%]">
+                <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap">
                   {dateTime}
                 </p>
               </div>
@@ -192,23 +193,23 @@ export const Activity: FC<ActivityProps> = ({
               <Button
                 variant="text"
                 size="small"
-                className="p-0"
+                className="p-0 whitespace-nowrap"
                 onClick={onClick}
                 text={actionButton}
               />
 
               <div className="flex gap-2 items-center">
                 {showRecipients && (
-                  <p className="text-2xs text-text-secondary leading-[100%]">
+                  <p className="text-xs text-text-secondary leading-[100%]">
                     {recipients}
                   </p>
                 )}
                 {showPlatform && (
-                  <p className="text-2xs text-text-secondary leading-[100%]">
+                  <p className="text-xs text-text-secondary leading-[100%]">
                     {platformName}
                   </p>
                 )}
-                <p className="text-2xs text-text-secondary leading-[100%]">
+                <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap">
                   {dateTime}
                 </p>
               </div>
