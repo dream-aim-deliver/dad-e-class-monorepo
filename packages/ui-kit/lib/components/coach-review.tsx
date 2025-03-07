@@ -65,7 +65,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
         <div className='flex flex-col gap-2'>
           {/* Reviewer Details */}
           <div className="w-full flex items-center gap-4 truncate">
-            <StarRating rating={rating} />
+            <StarRating totalStars={5} rating={rating} />
             <div className="text-white flex items-center gap-1 flex-1">
               <span className='text-text-secondary'>{dictionary.components.courseReview.by}</span>
               <Button
@@ -80,7 +80,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             </div>
           </div>
           {/* Review Content */}
-          <p className="w-full text-text-primary leading-6 md:text-lg lg:text-xl">
+          <p className="w-full text-text-primary leading-6 text-md">
             {reviewText}
           </p>
         </div>

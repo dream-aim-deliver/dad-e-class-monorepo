@@ -1,17 +1,17 @@
 import { Meta, StoryObj } from '@storybook/react';
-import ReviewCard,{ReviewCardProps} from "../lib/components/review-card"
+import ReviewCard, { ReviewCardProps } from "../lib/components/coach-review";
 
 export default {
-  title: 'Components/ReviewCard',
+  title: 'Components/CoachReviewCard',
   component: ReviewCard,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
   },
   argTypes: {
-    locale:{
-      control:"select",
-      options:["en","de"]
+    locale: {
+      control: "select",
+      options: ["en", "de"]
     },
     rating: {
       control: { type: 'number', min: 1, max: 5 },
@@ -66,7 +66,7 @@ export const Default: Story = {
     time: '10:00 AM - 12:00 PM',
     courseTitle: 'React Mastery',
     courseImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-    locale:"en"
+    locale: "en"
   },
 };
 
@@ -76,7 +76,7 @@ export const LowRating: Story = {
     ...Default.args,
     rating: 2,
     reviewText: 'The workshop was okay, but it could have been better with more examples.',
-    
+
   },
 
 };

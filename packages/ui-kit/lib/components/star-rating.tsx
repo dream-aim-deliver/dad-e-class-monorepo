@@ -4,14 +4,14 @@ import { IconStarHalf } from './icons/icon-star-half';
 import React from 'react';
 
 export interface StarRatingProps {
-  rating?: number; // Numeric rating value (e.g., 4.6)
-  totalStars?: number; // Total number of stars in the rating system
+  rating: number; // Numeric rating value (e.g., 4.6)
+  totalStars: number; // Total number of stars in the rating system
   size?: string; // Size of each star icon in pixels
 }
 
 export const StarRating = ({
-  rating = 4.6,
-  totalStars = 5,
+  rating,
+  totalStars ,
   size = '4',
 }: StarRatingProps) => {
   const wholeStars = Math.floor(rating);
