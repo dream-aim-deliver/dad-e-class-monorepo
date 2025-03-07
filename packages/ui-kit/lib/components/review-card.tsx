@@ -69,17 +69,18 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             <div className="text-white flex items-center gap-1 flex-1">
               <span className='text-text-secondary'>{dictionary.components.courseReview.by}</span>
               <Button
-                className="p-0 gap-1 text-sm"
+                className="p-0 gap-1 text-sm max-w-1/2"
                 size="small"
                 variant="text"
                 hasIconLeft
                 iconLeft={<UserAvatar className="rounded-full" hasProfilePicture size="small" imageUrl={reviewerAvatar} />}
                 text={reviewerName}
+                truncateText
               />
             </div>
           </div>
           {/* Review Content */}
-          <p className="w-full text-text-primary leading-6 md:text-xl">
+          <p className="w-full text-text-primary leading-6 md:text-lg lg:text-xl">
             {reviewText}
           </p>
         </div>

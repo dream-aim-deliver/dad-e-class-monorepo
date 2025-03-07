@@ -59,7 +59,7 @@ export const Default: Story = {
   args: {
     rating: 5,
     reviewerName: 'John Doe',
-    reviewerAvatar: 'https://via.placeholder.com/40',
+    reviewerAvatar: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     reviewText: "The coaching session on advertising was incredibly insightful, providing clear strategies that are immediately actionable. The personalized approach made complex concepts easy to understand, leaving me confident in applying these techniques to my business.",
     workshopTitle: 'Advanced React Workshop',
     date: 'March 15, 2025',
@@ -81,13 +81,6 @@ export const LowRating: Story = {
 
 };
 
-// ReviewCard without an Avatar
-export const NoAvatar: Story = {
-  args: {
-    ...Default.args,
-    reviewerAvatar: undefined,
-  },
-};
 
 // ReviewCard with a Short Review
 export const ShortReview: Story = {

@@ -108,7 +108,7 @@ export const Button: FC<ButtonProps> = ({
       className={cn(
         buttonSizeClasses,
         'cursor-pointer flex items-center gap-1',
-        truncateText && 'min-w-0', // Add min-w-0 to enable truncation when needed
+        truncateText && 'min-w-0', 
       )}
       onClick={onClick}
       disabled={disabled}
@@ -130,7 +130,9 @@ export const Button: FC<ButtonProps> = ({
       
       {/* Wrap text in a span with truncation if enabled */}
       {text && (
-        <span className={truncateText ? 'truncate min-w-0' : ''}>
+        <span
+         title={text}
+         className={truncateText ? 'truncate min-w-0 ' : ''}>
           {text}
         </span>
       )}
