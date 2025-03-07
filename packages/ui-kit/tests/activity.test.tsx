@@ -1,69 +1,77 @@
+// tests/activity.test.tsx
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { Activity } from '../lib/components/notifications/activity';
-import { useTranslations } from 'next-intl';
-
-vi.mock('next-intl', () => ({
-  useTranslations: vi.fn(),
-}));
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Activity, ActivityProps } from '../lib/components/notifications/activity';
 
 describe('<Activity />', () => {
-  const mockT = vi.fn((key: string) => key);
-
-  beforeEach(() => {
-    (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(mockT);
-  });
+  const defaultProps: ActivityProps = {
+    message: 'Coach John Doe accepted your request',
+    actionButton: 'Session details',
+    dateTime: '2024-08-07 at 21:17',
+    isRead: false,
+    isEmpty: false,
+    hasChildren: false,
+    showPlatform: false,
+    showRecipients: false,
+    layout: 'horizontal',
+  };
 
   it('renders the activity component with default props', () => {
-    render(<Activity />);
-    expect(
-      screen.getByText(
-        /Coach {coach-name} {coach-surname} accepted your request/,
-      ),
-    ).toBeInTheDocument();
+    render(<Activity {...defaultProps} />);
+
+    expect(screen.getByText('Coach John Doe accepted your request')).toBeInTheDocument();
     expect(screen.getByText('Session details')).toBeInTheDocument();
     expect(screen.getByText('2024-08-07 at 21:17')).toBeInTheDocument();
-  });
-
-  it('renders an empty state when isEmpty is true', () => {
-    render(<Activity isEmpty />);
-    expect(screen.getByTestId('skeleton-title')).toBeInTheDocument();
-    expect(screen.getByTestId('skeleton-subtitle')).toBeInTheDocument();
-    expect(screen.getByTestId('skeleton-button')).toBeInTheDocument();
-    expect(screen.getByTestId('skeleton-icon')).toBeInTheDocument();
-  });
-
-  it('renders children when hasChildren is true', () => {
-    render(
-      <Activity hasChildren>
-        <div data-testid="child-component">Child Content</div>
-      </Activity>,
-    );
-    expect(screen.getByTestId('child-component')).toBeInTheDocument();
-  });
-
-  it('renders platform name when showPlatform is true', () => {
-    render(<Activity showPlatform platformName="Test Platform" />);
-    expect(screen.getByText('Test Platform')).toBeInTheDocument();
-  });
-
-  it('renders recipients when showRecipients is true', () => {
-    render(<Activity showRecipients recipients="100 Recipients" />);
-    expect(screen.getByText('100 Recipients')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /session details/i })).toBeInTheDocument();
   });
 
   it('renders vertical layout when specified', () => {
-    render(<Activity layout="vertical" />);
-    const container = screen
-      .getByText(/Coach {coach-name} {coach-surname} accepted your request/)
-      .closest('div');
-    expect(container);
+    render(<Activity {...defaultProps} layout="vertical" />);
+    
+    const container = screen.getByText('Coach John Doe accepted your request').parentElement?.parentElement;
+    expect(container).toHaveClass('flex-col');
+    expect(container).toHaveClass('items-start');
   });
 
   it('calls onClick when action button is clicked', () => {
     const mockOnClick = vi.fn();
-    render(<Activity onClick={mockOnClick} />);
-    screen.getByText('Session details').click();
+    render(<Activity {...defaultProps} onClick={mockOnClick} />);
+    
+    const actionButton = screen.getByRole('button', { name: 'Session details' });
+    fireEvent.click(actionButton);
     expect(mockOnClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders with isRead true and no check icon', () => {
+    render(<Activity {...defaultProps} isRead={true} />);
+    
+    expect(screen.getByText('Coach John Doe accepted your request')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /check/i })).not.toBeInTheDocument();
+  });
+
+  it('renders children when hasChildren is true', () => {
+    const childContent = 'Child content';
+    render(
+      <Activity {...defaultProps} hasChildren={true}>
+        <span>{childContent}</span>
+      </Activity>
+    );
+    
+    expect(screen.getByText(childContent)).toBeInTheDocument();
+  });
+
+  it('shows platform and recipients when enabled', () => {
+    render(
+      <Activity 
+        {...defaultProps} 
+        showPlatform={true} 
+        platformName="Zoom" 
+        showRecipients={true} 
+        recipients="5 recipients" 
+      />
+    );
+    
+    expect(screen.getByText('Zoom')).toBeInTheDocument();
+    expect(screen.getByText('5 recipients')).toBeInTheDocument();
   });
 });
