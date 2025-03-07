@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations'
 import { Button } from './button'
 import { InputField } from './input-field'
@@ -15,6 +15,7 @@ type Course = {
     price: number;
     duration: number;
     totalSessions: number;
+    currencyType: string;
 
 }
 
@@ -35,16 +36,22 @@ export interface BuyCoachingSessionProps extends isLocalAware {
  * @param {BuyCoachingSessionProps} props - The component properties.
  * @returns {JSX.Element} The rendered component.
  */
-function BuyCoachingSession({ courses,onClick, locale }: BuyCoachingSessionProps) {
+function BuyCoachingSession({ courses, onClick, locale }: BuyCoachingSessionProps) {
     const dictionary = getDictionary(locale);
-    const [totalCost, setTotalCost] = useState(0);
-    const [courseList, setCourseList] = useState<Course[]>(courses);
-
+   
+    const [courseList, setCourseList] = useState<Course[]>();
     useEffect(() => {
-        const total = courseList.reduce((acc, course) => acc + course.price * course.totalSessions, 0);
-        setTotalCost(total);
+        setCourseList(courses.map(course => ({ ...course }))); 
+    }, [courses]);
+    
+       // Use `useMemo` to optimize total cost calculation
+    const totalCost = useMemo(() => {
+        return courseList.reduce((acc, course) => acc + course.price * course.totalSessions, 0);
     }, [courseList]);
 
+
+  
+    const currencyType = courses.length > 0 ? courses[0].currencyType : '';
     /**
      * Increases the total sessions count for a specific course.
      * 
@@ -111,30 +118,30 @@ function BuyCoachingSession({ courses,onClick, locale }: BuyCoachingSessionProps
                                 {course.title} <IconInfoCircle size="4" />
                             </h6>
                             <div className='flex gap-2 items-center text-text-secondary'>
-                                <p className="text-xs md:text-sm">${course.price}</p>
+                                <p className="text-xs md:text-sm">{course.price} {course.currencyType}</p>
                                 <p className="text-sm md:text-md">{course.duration} {dictionary.components.buyCoachingSession.minutes}</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div onClick={() => handleDecrement(course.id)} aria-label="decrease">
+                            <button onClick={() => handleDecrement(course.id)} aria-label="decrease" className="p-2">
                                 <IconMinus classNames='text-button-text-text' size="6" />
-                            </div>
+                            </button>
                             <InputField
                                 type='number'
-                                className='w-[3rem] h-[2.5rem] text-lg text-center'
+                                className='w-[3rem] h-[3rem] text-lg text-center'
                                 value={course.totalSessions.toString()}
                                 setValue={(value) => handleInputChange(course.id, value)}
                             />
-                            <div onClick={() => handleIncrement(course.id)} aria-label="increase">
+                            <button onClick={() => handleIncrement(course.id)} aria-label="increase">
                                 <IconPlus classNames='text-button-text-text' size="6" />
-                            </div>
+                            </button>
                         </div>
                     </div>
                 ))}
             </div>
 
             <h6 className='text-right text-text-primary font-normal'>
-                {dictionary.components.buyCoachingSession.total}: {totalCost}
+                {dictionary.components.buyCoachingSession.total}: {totalCost} {currencyType}
             </h6>
 
             {/* Footer */}

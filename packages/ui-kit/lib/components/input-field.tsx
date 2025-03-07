@@ -96,7 +96,7 @@ export const InputField: FC<InputFieldProps> = ({
           onChange={(e) => setValue(e.target.value)}
           onFocus={() => setBorderColor(true)}
           onBlur={() => setBorderColor(false)}
-          className="bg-transparent outline-none flex-1 placeholder-text-secondary h-full w-full appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none text-center"
+          className="bg-transparent outline-none [-moz-appearance:textfield] flex-1 placeholder-text-secondary h-full w-full appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none text-center"
         />
         {hasRightContent && rightContent}
       </div>

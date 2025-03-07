@@ -10,6 +10,7 @@ const meta: Meta<typeof BuyCoachingSession> = {
             control: 'select',
             options: ['en', 'de'],
             defaultValue: 'en'
+
         }
     }
 };
@@ -24,21 +25,24 @@ const mockCourses = [
         title: 'Web Development Fundamentals',
         price: 50,
         duration: 60,
-        totalSessions: 0
+        totalSessions: 0,
+        currencyType: 'CHF'
     },
     {
         id: '2',
         title: 'Advanced React Techniques',
         price: 75,
         duration: 90,
-        totalSessions: 0
+        totalSessions: 0,
+        currencyType: 'CHF'
     },
     {
         id: '3',
         title: 'UI/UX Design Masterclass',
         price: 60,
         duration: 45,
-        totalSessions: 0
+        totalSessions: 0,
+        currencyType: 'CHF'
     }
 ];
 
