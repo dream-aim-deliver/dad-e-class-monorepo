@@ -3,10 +3,10 @@ import { Button } from '../button';
 import { StarRating } from '../star-rating';
 
 export interface ReviewCardProps {
-  text: string;
+  text?: string;
   onClick?: () => void;
-  rating: number;
-  hasCallQualityRating: boolean;
+  rating?: number;
+  hasCallQualityRating?: boolean;
   readMore: string;
   readLess: string;
 }
@@ -32,7 +32,7 @@ export interface ReviewCardProps {
  * />
  */
 export function ReviewCard({
-  text,
+  text='',
   onClick,
   rating,
   hasCallQualityRating,

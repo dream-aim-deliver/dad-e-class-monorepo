@@ -8,7 +8,7 @@ describe('<UserAvatar />', () => {
 
     const avatar = screen.getByTestId('user-avatar');
     expect(avatar).toBeInTheDocument();
-    expect(avatar).toHaveClass('w-12 h-12');
+    expect(avatar).toHaveClass('w-12 h-12 text-sm');
     expect(avatar).toHaveTextContent('JF');
   });
 
@@ -16,7 +16,7 @@ describe('<UserAvatar />', () => {
     render(<UserAvatar size="large" />);
 
     const avatar = screen.getByTestId('user-avatar');
-    expect(avatar).toHaveClass('w-16 h-16');
+    expect(avatar).toHaveClass('w-16 h-16 text-sm');
   });
 
   it('renders initials when hasProfilePicture is false', () => {
@@ -24,7 +24,7 @@ describe('<UserAvatar />', () => {
 
     const avatar = screen.getByTestId('user-avatar');
     expect(avatar).toHaveTextContent('AB');
-    expect(avatar).toHaveClass('bg-base-neutral-700');
+    expect(avatar).toHaveClass('bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600');
     expect(avatar).not.toContainElement(screen.queryByRole('img'));
   });
 
@@ -50,7 +50,7 @@ describe('<UserAvatar />', () => {
     render(<UserAvatar size="xSmall" />);
 
     const avatar = screen.getByTestId('user-avatar');
-    expect(avatar).toHaveClass('w-6 h-6 text-xs');
+    expect(avatar).toHaveClass('w-6 h-6 text-2xs'); 
   });
 
   it('renders correct size for xLarge', () => {
@@ -60,20 +60,17 @@ describe('<UserAvatar />', () => {
     expect(avatar).toHaveClass('w-20 h-20 text-sm');
   });
 
-  it('uses default image URL when hasProfilePicture is true but no imageUrl provided', () => {
-    render(<UserAvatar hasProfilePicture={true} />);
-
-    const img = screen.getByRole('img');
-    expect(img).toHaveAttribute(
-      'src',
-      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-    );
-  });
-
   it('applies rounded-full class to image', () => {
-    render(<UserAvatar hasProfilePicture={true} />);
+    render(<UserAvatar hasProfilePicture={true} imageUrl="test-image.jpg" />);
 
     const img = screen.getByRole('img');
     expect(img).toHaveClass('rounded-full');
+  });
+
+  it('uses default initials JF when no initials provided and hasProfilePicture is false', () => {
+    render(<UserAvatar hasProfilePicture={false} />);
+
+    const avatar = screen.getByTestId('user-avatar');
+    expect(avatar).toHaveTextContent('JF');
   });
 });

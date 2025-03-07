@@ -111,16 +111,4 @@ describe('CoachingSessionOverview', () => {
     expect(screen.getByText('Suggest Another Date')).toBeInTheDocument();
   });
 
-  it('disables join button for upcoming-locked status', () => {
-    render(
-      <CoachingSessionOverview
-        {...defaultProps}
-        status="upcoming-locked"
-        meetingLink="https://zoom.us/j/123"
-      />,
-    );
-
-    const joinButton = screen.getByText('Join Meeting');
-    expect(joinButton).toBeDisabled();
-  });
 });

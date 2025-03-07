@@ -7,12 +7,12 @@ import { IconCourse } from '../icons/icon-course';
 import { IconGroup } from '../icons/icon-group';
 
 export interface CreatorInfoProps {
-  creatorName: string;
-  courseName: string;
-  groupName: string;
-  userRole: string;
-  withinCourse: boolean;
-  groupSession: boolean;
+  creatorName?: string;
+  courseName?: string;
+  groupName?: string;
+  userRole?: string;
+  withinCourse?: boolean;
+  groupSession?: boolean;
   createdBy: string;
   student: string;
   course: string;
