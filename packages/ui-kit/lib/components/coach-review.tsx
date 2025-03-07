@@ -11,33 +11,34 @@ import {
 
 /**
  * Props for the ReviewCard component.
+ *
+ * @param className - Additional class names for styling.
+ * @param rating - Rating value out of 5.
+ * @param reviewerName - Name of the reviewer.
+ * @param reviewerAvatar - Avatar URL of the reviewer (optional).
+ * @param reviewText - Review text content.
+ * @param workshopTitle - Title of the workshop being reviewed.
+ * @param date - Date of the workshop.
+ * @param time - Time of the workshop.
+ * @param courseTitle - Title of the related course.
+ * @param courseImage - Image URL of the related course.
  */
 export interface ReviewCardProps extends isLocalAware {
-  /** Additional class names for styling */
   className?: string;
-  /** Rating value out of 5 */
   rating: number;
-  /** Name of the reviewer */
   reviewerName: string;
-  /** Avatar URL of the reviewer (optional) */
   reviewerAvatar?: string;
-  /** Review text content */
   reviewText: string;
-  /** Title of the workshop being reviewed */
   workshopTitle: string;
-  /** Date of the workshop */
   date: string;
-  /** Time of the workshop */
   time: string;
-  /** Title of the related course */
   courseTitle: string;
-  /** Image URL of the related course */
   courseImage: string;
 }
 
 /**
  * ReviewCard Component
- * 
+ *
  * Displays a review including rating, reviewer details, review text,
  * and information about the related workshop and course.
  *
@@ -63,7 +64,6 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
     <div className={`max-w-[390px] min-w-[348px] p-3 bg-base-neutral-900 rounded-small border-1 border-base-neutral-700 ${className}`}>
       <div className='flex flex-col gap-3'>
         <div className='flex flex-col gap-2'>
-          {/* Reviewer Details */}
           <div className="w-full flex items-center gap-4 truncate">
             <StarRating totalStars={5} rating={rating} />
             <div className="text-white flex items-center gap-1 flex-1">
@@ -79,15 +79,12 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
               />
             </div>
           </div>
-          {/* Review Content */}
           <p className="w-full text-text-primary leading-6 text-md">
             {reviewText}
           </p>
         </div>
       </div>
-      {/* Divider */}
       <hr className="border-divider my-4" />
-      {/* Workshop and Course Info */}
       <div className="flex flex-col gap-2" data-testid="footer-section">
         <p className="text-sm text-white leading-4 font-important truncate">{workshopTitle}</p>
         <div className="w-full flex items-center gap-3 text-text-secondary text-sm lg:text-md">
@@ -100,7 +97,6 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             <p className="text-sm lg:text-md">{time}</p>
           </div>
         </div>
-        {/* Course Information */}
         <div className="flex items-center gap-1">
           <Button
             className='p-0 gap-1 text-sm'
