@@ -102,6 +102,7 @@ export const EN: TDictionary = {
       course: 'Course',
       group: 'Group',
       readMore: 'Read more',
+      readLess: 'Read less',
     },
   },
 };

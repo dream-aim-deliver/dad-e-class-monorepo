@@ -78,8 +78,9 @@ export function CreatorInfo({
         </div>
         <Button
           size="small"
+          truncateText
           variant="text"
-          className="flex gap-1 p-0 h-8"
+          className="flex gap-1 p-0 h-8 max-w-[15rem]"
           text={creatorName}
           hasIconLeft
           iconLeft={
@@ -99,8 +100,9 @@ export function CreatorInfo({
           </div>
           <Button
             size="small"
+            truncateText
             variant="text"
-            className="flex gap-1 p-0 h-8"
+            className="flex gap-1 p-0 h-8 max-w-[15rem]"
             text={courseName}
             hasIconLeft
             iconLeft={
@@ -122,8 +124,9 @@ export function CreatorInfo({
           </div>
           <Button
             size="small"
+            truncateText
             variant="text"
-            className="flex gap-1 p-0 h-8"
+            // className="flex gap-1 p-0 h-8"
             text={groupName}
           />
         </div>

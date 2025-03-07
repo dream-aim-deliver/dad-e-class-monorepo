@@ -103,6 +103,7 @@ export const DictionarySchema = z.object({
       course: z.string(),
       group: z.string(),
       readMore: z.string(),
+      readLess: z.string(),
     }),
   }),
 });

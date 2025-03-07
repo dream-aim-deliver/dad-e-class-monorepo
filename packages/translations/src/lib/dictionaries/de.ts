@@ -103,6 +103,7 @@ export const DE: TDictionary = {
       course: 'Kurs',
       group: 'Gruppe',
       readMore: 'Mehr lesen',
+      readLess: 'Weniger lesen',
     },
   },
 };

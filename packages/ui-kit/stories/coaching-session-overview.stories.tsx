@@ -1,4 +1,4 @@
-import { CoachingSessionOverview } from '../lib/components/coaching-sessions/coaching-session-overview'; 
+import { CoachingSessionOverview } from '../lib/components/coaching-sessions/coaching-session-overview';
 import type { Meta } from '@storybook/react';
 
 // Mock Data for Coaching Session Overview
@@ -93,6 +93,9 @@ UpcomingEditableSession.args = {
 export const WithReviewAndRating = Template.bind({});
 WithReviewAndRating.args = {
   ...mockCoachingSessionBase,
+  reviewText:
+    'Coach was very helpful and answered all my questions. The only issue was that the session was slightly delayed due to technical difficulties. Overall, I would recommend this service!',
+  rating: 4,
   status: 'ended',
   userRole: 'student',
   hasReview: true,

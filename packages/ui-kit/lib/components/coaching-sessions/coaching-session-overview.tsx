@@ -31,6 +31,8 @@ export interface CoachingSessionOverviewProps extends isLocalAware {
   hasCallQualityRating?: boolean;
   withinCourse?: boolean;
   groupSession?: boolean;
+  reviewText?: string;
+  rating?: number;
   title: string;
   duration: string;
   date: string;
@@ -57,6 +59,8 @@ export interface CoachingSessionOverviewProps extends isLocalAware {
  * @param withinCourse Boolean flag indicating if the session is part of a course.
  * @param groupSession Boolean flag indicating if the session is a group session.
  * @param title The title of the coaching session.
+ * @param reviewText The review of coaching session.
+ * @param rating The rating of coaching session.
  * @param duration The duration of the session.
  * @param date The scheduled date of the session.
  * @param time The scheduled time of the session.
@@ -79,6 +83,7 @@ export interface CoachingSessionOverviewProps extends isLocalAware {
  *   date="2024-06-12"
  *   time="10:00 AM"
  *   creatorName="Jane Doe"
+ *   reviewText="Review Text"
  *   courseName="Leadership Training"
  *   groupName="Team Growth"
  *   meetingLink="https://zoom.com/session123"
@@ -89,13 +94,15 @@ export interface CoachingSessionOverviewProps extends isLocalAware {
  */
 
 export function CoachingSessionOverview({
-  status = 'ongoing',
-  userRole = 'coach',
-  hasReview = false,
-  hasCallQualityRating = false,
-  withinCourse = false,
-  groupSession = false,
+  status,
+  userRole,
+  hasReview,
+  hasCallQualityRating,
+  withinCourse,
+  groupSession,
   title,
+  reviewText,
+  rating,
   duration,
   date,
   time,
@@ -112,13 +119,13 @@ export function CoachingSessionOverview({
   const dictionary = getDictionary(locale);
   return (
     <div
-      className={`flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-[18rem] md:w-[22rem]`}
+      className={`flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-[18rem] md:w-[20rem]`}
     >
       <div className="flex gap-4 items-center justify-between">
         <p className="text-md text-text-primary font-bold leading-[120%]">
           {title}
         </p>
-        <p className="text-xs text-text-primary font-bold leading-[120%]">
+        <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
           {duration}
         </p>
       </div>
@@ -140,8 +147,9 @@ export function CoachingSessionOverview({
           <ReviewCard
             hasCallQualityRating={hasCallQualityRating}
             readMore={dictionary.components.coachingSession.readMore}
-            rating={5}
-            text="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-full"
+            readLess={dictionary.components.coachingSession.readLess}
+            rating={rating}
+            text={reviewText}
           />
         </>
       )}
@@ -163,6 +171,7 @@ export function CoachingSessionOverview({
         hasCallQualityRating ? (
           <Button
             variant="secondary"
+            truncateText
             size="medium"
             hasIconLeft
             iconLeft={<IconCloudDownload size="6" />}
@@ -172,11 +181,13 @@ export function CoachingSessionOverview({
           <div className="flex flex-col gap-2">
             <Button
               variant="primary"
+              truncateText
               size="medium"
               text={dictionary.components.coachingSession.rateCallQuality}
             />
             <Button
               variant="secondary"
+              truncateText
               size="medium"
               hasIconLeft
               iconLeft={<IconCloudDownload size="6" />}
@@ -204,18 +215,23 @@ export function CoachingSessionOverview({
                 <Button
                   text={dictionary.components.coachingSession.decline}
                   variant="secondary"
+                  truncateText
                   hasIconLeft
+                  className="w-full"
                   iconLeft={<IconClose size="6" />}
                 />
                 <Button
                   variant="primary"
+                  truncateText
                   text={dictionary.components.coachingSession.accept}
                   hasIconLeft
+                  className="w-full"
                   iconLeft={<IconCheck size="6" />}
                 />
               </div>
               <Button
                 variant="text"
+                truncateText
                 text={dictionary.components.coachingSession.suggestAnotherDate}
                 hasIconLeft
                 iconLeft={<IconCalendarAlt size="6" />}
@@ -227,6 +243,7 @@ export function CoachingSessionOverview({
             <div className="flex flex-col gap-1 items-start">
               <Button
                 onClick={onJoin}
+                truncateText
                 variant="primary"
                 size="medium"
                 className="w-full"
@@ -242,6 +259,7 @@ export function CoachingSessionOverview({
             <div className="flex flex-col gap-1 items-start">
               <Button
                 onClick={onJoin}
+                truncateText
                 variant="primary"
                 size="medium"
                 className="w-full"
@@ -265,6 +283,7 @@ export function CoachingSessionOverview({
                 iconLeft={<IconHourglass size="5" />}
               />
               <Button
+                truncateText
                 onClick={onCancel}
                 variant="secondary"
                 size="medium"
@@ -286,9 +305,11 @@ export function CoachingSessionOverview({
               <div className="flex gap-[9px] justify-between">
                 <Button
                   onClick={onReschedule}
+                  truncateText
                   variant="primary"
                   size="small"
                   hasIconLeft
+                  className="w-full"
                   iconLeft={<IconCalendarAlt size="5" />}
                   text={dictionary.components.coachingSession.reschedule}
                 />
