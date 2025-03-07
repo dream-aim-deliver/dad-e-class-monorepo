@@ -56,75 +56,88 @@ const messages = {
 interface ExtendedTabsProps {
   language?: 'en' | 'de';
   variant?: 'default' | 'small';
+  fullWidth?: boolean;
 }
 
 /**
  * Tabs Render Function
  */
-const TabsRender = ({ 
-  language = 'en', 
-  variant = 'default' 
+const TabsRender = ({
+  language = 'en',
+  variant = 'default',
+  fullWidth = false
 }: ExtendedTabsProps) => {
   const t = messages[language].tabs.coaching;
 
   return (
-    <Tabs.Root defaultTab="upcoming">
-      <Tabs.List variant={variant}>
-        <Tabs.Trigger value="upcoming">
-          {t.upcoming.label}
-        </Tabs.Trigger>
-        <Tabs.Trigger value="ended">
-          {t.ended.label}
-        </Tabs.Trigger>
-        <Tabs.Trigger value="available">
-          {t.available.label}
-        </Tabs.Trigger>
-      </Tabs.List>
+    <div className={fullWidth ? "w-full p-4" : "w-full max-w-md p-4"}>
+      <Tabs.Root defaultTab="upcoming">
+        <Tabs.List 
+          variant={variant}
+          className="border-b border-card-stroke"
+        >
+          <Tabs.Trigger 
+            value="upcoming"
+            className="px-4 py-2 text-sm md:text-base"
+          >
+            {t.upcoming.label}
+          </Tabs.Trigger>
+          <Tabs.Trigger 
+            value="ended"
+            className="px-4 py-2 text-sm md:text-base"
+          >
+            {t.ended.label}
+          </Tabs.Trigger>
+          <Tabs.Trigger 
+            value="available"
+            className="px-4 py-2 text-sm md:text-base"
+          >
+            {t.available.label}
+          </Tabs.Trigger>
+        </Tabs.List>
 
-      <Tabs.Content value="upcoming">
-        <div className="prose">
-          <h4 className="text-lg font-medium mb-2">
-            {t.upcoming.title}
-          </h4>
-          <p className="text-gray-600">
-            {t.upcoming.description}
-          </p>
-        </div>
-      </Tabs.Content>
+        <Tabs.Content value="upcoming" className="py-4">
+          <div className="prose max-w-none">
+            <h4 className="text-xl text-base-white md:text-2xl font-medium mb-3">
+              {t.upcoming.title}
+            </h4>
+            <p className="text-base-white text-base md:text-lg">
+              {t.upcoming.description}
+            </p>
+          </div>
+        </Tabs.Content>
 
-      <Tabs.Content value="ended">
-        <div className="prose">
-          <h4 className="text-lg font-medium mb-2">
-            {t.ended.title}
-          </h4>
-          <p className="text-gray-600">
-            {t.ended.description}
-          </p>
-        </div>
-      </Tabs.Content>
+        <Tabs.Content value="ended" className="py-4">
+          <div className="prose max-w-none">
+            <h4 className="text-xl text-base-white md:text-2xl font-medium mb-3">
+              {t.ended.title}
+            </h4>
+            <p className="text-base-white text-base md:text-lg">
+              {t.ended.description}
+            </p>
+          </div>
+        </Tabs.Content>
 
-      <Tabs.Content value="available">
-        <div className="prose">
-          <h4 className="text-lg font-medium mb-2">
-            {t.available.title}
-          </h4>
-          <p className="text-gray-600">
-            {t.available.description}
-          </p>
-        </div>
-      </Tabs.Content>
-    </Tabs.Root>
+        <Tabs.Content value="available" className="py-4">
+          <div className="prose max-w-none">
+            <h4 className="text-xl text-base-white md:text-2xl font-medium mb-3">
+              {t.available.title}
+            </h4>
+            <p className="text-base-white text-base md:text-lg">
+              {t.available.description}
+            </p>
+          </div>
+        </Tabs.Content>
+      </Tabs.Root>
+    </div>
   );
 };
 
-/**
- * Storybook Metadata
- */
 const meta: Meta<typeof Tabs.Root> = {
   title: 'Components/Tabs',
   component: Tabs.Root,
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
   },
   tags: ['autodocs'],
   argTypes: {
@@ -136,7 +149,11 @@ const meta: Meta<typeof Tabs.Root> = {
     variant: {
       control: 'select',
       options: ['default', 'small'],
-      description: 'The visual style of the tabs.',
+      description: 'The visual style of the tabs',
+    },
+    fullWidth: {
+      control: 'boolean',
+      description: 'Whether the tabs should take full width',
     },
   },
 };
@@ -146,45 +163,49 @@ export default meta;
 type Story = StoryObj<typeof Tabs.Root>;
 
 /**
- * Default Tabs Story with English Language
+ * Full Width Default Tabs Story (English)
  */
-export const Default: Story = {
+export const FullWidthDefault: Story = {
   render: (args) => <TabsRender {...args} />,
   args: {
     language: 'en',
     variant: 'default',
+    fullWidth: true,
   },
 };
 
 /**
- * Tabs Story with German Language
+ * Smaller Contained Tabs Story (English)
  */
-export const German: Story = {
+export const ContainedDefault: Story = {
   render: (args) => <TabsRender {...args} />,
   args: {
-    language: 'de',
+    language: 'en',
     variant: 'default',
+    fullWidth: false,
   },
 };
 
 /**
- * Small Variant Tabs Story with English Language
+ * Full Width Small Tabs Story (English)
  */
-export const SmallEnglish: Story = {
+export const FullWidthSmall: Story = {
   render: (args) => <TabsRender {...args} />,
   args: {
     language: 'en',
     variant: 'small',
+    fullWidth: true,
   },
 };
 
 /**
- * Small Variant Tabs Story with German Language
+ * Smaller Contained Small Tabs Story (English)
  */
-export const SmallGerman: Story = {
+export const ContainedSmall: Story = {
   render: (args) => <TabsRender {...args} />,
   args: {
-    language: 'de',
+    language: 'en',
     variant: 'small',
+    fullWidth: false,
   },
 };
