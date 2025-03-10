@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import ReviewCard from "../lib/components/coach-review";
+import ReviewCard from "../lib/components/coach-review-card";
 import { vi } from 'vitest';
 
 describe('ReviewCard Component', () => {

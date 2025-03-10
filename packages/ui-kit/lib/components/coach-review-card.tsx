@@ -9,20 +9,7 @@ import {
   isLocalAware,
 } from '@maany_shr/e-class-translations';
 
-/**
- * Props for the ReviewCard component.
- *
- * @param className - Additional class names for styling.
- * @param rating - Rating value out of 5.
- * @param reviewerName - Name of the reviewer.
- * @param reviewerAvatar - Avatar URL of the reviewer (optional).
- * @param reviewText - Review text content.
- * @param workshopTitle - Title of the workshop being reviewed.
- * @param date - Date of the workshop.
- * @param time - Time of the workshop.
- * @param courseTitle - Title of the related course.
- * @param courseImage - Image URL of the related course.
- */
+
 export interface ReviewCardProps extends isLocalAware {
   className?: string;
   rating: number;
@@ -35,15 +22,34 @@ export interface ReviewCardProps extends isLocalAware {
   courseTitle: string;
   courseImage: string;
 }
-
-/**
- * ReviewCard Component
+ /**
+ * A reusable ReviewCard component that displays user reviews, ratings, and course details.
  *
- * Displays a review including rating, reviewer details, review text,
- * and information about the related workshop and course.
+ * @param className Optional additional CSS class names to customize the appearance.
+ * @param rating The rating given by the reviewer (out of 5).
+ * @param reviewerName The name of the reviewer.
+ * @param reviewerAvatar Optional URL of the reviewer's avatar image.
+ * @param reviewText The text content of the review.
+ * @param workshopTitle The title of the workshop associated with the review.
+ * @param date The date of the review or event.
+ * @param time The time of the review or event.
+ * @param courseTitle The title of the course related to the review.
+ * @param courseImage URL of the course's image.
+ * @param locale The locale used for translations.
  *
- * @param {ReviewCardProps} props - The component properties.
- * @returns {JSX.Element} The rendered component.
+ * @example
+ * <ReviewCard
+ *   rating={4.5}
+ *   reviewerName="John Doe"
+ *   reviewerAvatar="https://example.com/avatar.jpg"
+ *   reviewText="This workshop was amazing! Learned a lot."
+ *   workshopTitle="React Mastery"
+ *   date="2024-09-10"
+ *   time="10:00 AM"
+ *   courseTitle="Advanced React"
+ *   courseImage="https://example.com/course.jpg"
+ *   locale="en"
+ * />
  */
 const ReviewCard: React.FC<ReviewCardProps> = ({
   className,
@@ -69,13 +75,13 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             <div className="text-white flex items-center gap-1 flex-1">
               <span className='text-text-secondary'>{dictionary.components.courseReview.by}</span>
               <Button
-                className="p-0 gap-1 text-sm max-w-1/2"
+                className="p-0 gap-1 text-sm max-w-3/4"
                 size="small"
                 variant="text"
                 hasIconLeft
                 iconLeft={<UserAvatar className="rounded-full" hasProfilePicture size="small" imageUrl={reviewerAvatar} />}
                 text={reviewerName}
-                truncateText
+               truncateText
               />
             </div>
           </div>
