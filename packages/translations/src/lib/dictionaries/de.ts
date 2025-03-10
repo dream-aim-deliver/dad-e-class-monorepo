@@ -84,5 +84,8 @@ export const DE: TDictionary = {
       buttontext1: 'Verwerfen',
       buttontext2: 'Änderungen speichern',
     },
+    courseReview:{
+      by:'von'
+    }
   },
 };
