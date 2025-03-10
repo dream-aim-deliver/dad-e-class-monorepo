@@ -25,7 +25,7 @@ export function TabTrigger({
     'w-full px-4 py-2 font-bold transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 relative overflow-hidden';
   const variantStyles = {
     default: cn(
-      'transform transition-transform hover:scale-105',
+      'transform transition-transform hover:scale-95',
       isActive
         ? 'flex items-center justify-center bg-button-primary-fill  rounded-medium   text-button-primary-text'
         : 'border-transparent text-text-primary',
