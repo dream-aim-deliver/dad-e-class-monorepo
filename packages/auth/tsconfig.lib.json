@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "types": [
+      "node",
+      "vite/client"
+    ]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "vite.config.ts"],
+  "references": [
+    {
+      "path": "../models/tsconfig.lib.json"
+    }
+  ]
+}

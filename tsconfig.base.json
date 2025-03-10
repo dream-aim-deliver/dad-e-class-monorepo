@@ -17,6 +17,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@maany_shr/e-class-auth": ["packages/auth/src/index.ts"],
       "@maany_shr/e-class-models": ["packages/models/src/index.ts"],
       "@maany_shr/e-class-translations": ["packages/translations/src/index.ts"],
       "@maany_shr/e-class-ui-kit": ["packages/ui-kit/lib/index.ts"],
