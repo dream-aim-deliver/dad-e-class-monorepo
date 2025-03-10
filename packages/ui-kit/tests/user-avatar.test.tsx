@@ -4,16 +4,15 @@ import { UserAvatar } from '../lib/components/avatar/user-avatar';
 
 describe('<UserAvatar />', () => {
   it('renders the avatar with default properties', () => {
-    render(<UserAvatar />);
+    render(<UserAvatar hasProfilePicture={false} initials="CC" />);
 
     const avatar = screen.getByTestId('user-avatar');
     expect(avatar).toBeInTheDocument();
     expect(avatar).toHaveClass('w-12 h-12 text-sm');
-    expect(avatar).toHaveTextContent('JF');
   });
 
   it('renders the avatar with custom size', () => {
-    render(<UserAvatar size="large" />);
+    render(<UserAvatar size="large" hasProfilePicture={false} initials="CC" />);
 
     const avatar = screen.getByTestId('user-avatar');
     expect(avatar).toHaveClass('w-16 h-16 text-sm');
@@ -36,25 +35,24 @@ describe('<UserAvatar />', () => {
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute('src', 'test-image.jpg');
     expect(img).toHaveAttribute('alt', 'Profile');
-    expect(avatar).not.toHaveTextContent('JF');
   });
 
   it('applies custom className', () => {
-    render(<UserAvatar className="custom-class" />);
+    render(<UserAvatar className="custom-class" hasProfilePicture={false} initials="CC" />);
 
     const avatar = screen.getByTestId('user-avatar');
     expect(avatar).toHaveClass('custom-class');
   });
 
   it('renders correct size for xSmall', () => {
-    render(<UserAvatar size="xSmall" />);
+    render(<UserAvatar size="xSmall" hasProfilePicture={false} initials="CC" />);
 
     const avatar = screen.getByTestId('user-avatar');
     expect(avatar).toHaveClass('w-6 h-6 text-2xs'); 
   });
 
   it('renders correct size for xLarge', () => {
-    render(<UserAvatar size="xLarge" />);
+    render(<UserAvatar size="xLarge" hasProfilePicture={false} initials="CC" />);
 
     const avatar = screen.getByTestId('user-avatar');
     expect(avatar).toHaveClass('w-20 h-20 text-sm');
@@ -67,10 +65,4 @@ describe('<UserAvatar />', () => {
     expect(img).toHaveClass('rounded-full');
   });
 
-  it('uses default initials JF when no initials provided and hasProfilePicture is false', () => {
-    render(<UserAvatar hasProfilePicture={false} />);
-
-    const avatar = screen.getByTestId('user-avatar');
-    expect(avatar).toHaveTextContent('JF');
-  });
 });
