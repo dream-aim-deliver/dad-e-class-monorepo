@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import {BuyCoachingSession} from '../lib/components/buy-coaching-session';
+import BuyCoachingSession from '../lib/components/buy-coaching-session';
 import { vi } from 'vitest';
 
 vi.mock('@maany_shr/e-class-translations', () => ({

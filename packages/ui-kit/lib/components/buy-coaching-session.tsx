@@ -44,7 +44,7 @@ export interface BuyCoachingSessionProps extends isLocalAware {
  *   currencyType="USD"
  * />
  */
-export function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachingSessionProps) {
+function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachingSessionProps) {
     const dictionary = getDictionary(locale);
     const [courseList, setCourseList] = useState<Course[]>(courses);
     const totalCost = useMemo(() => {
@@ -130,3 +130,5 @@ export function BuyCoachingSession({ courses, onClick, locale,currencyType }: Bu
         </div>
     );
 }
+
+export default BuyCoachingSession
