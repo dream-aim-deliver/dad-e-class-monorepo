@@ -15,7 +15,7 @@ type Course = {
     price: number;
     duration: number;
     totalSessions: number;
-    currencyType: string;
+    
 
 }
 
@@ -26,6 +26,7 @@ export interface BuyCoachingSessionProps extends isLocalAware {
     /** List of courses available for purchase. */
     courses: Course[];
     onClick: () => void;
+    currencyType: string;
 }
 
 /**
@@ -36,13 +37,11 @@ export interface BuyCoachingSessionProps extends isLocalAware {
  * @param {BuyCoachingSessionProps} props - The component properties.
  * @returns {JSX.Element} The rendered component.
  */
-function BuyCoachingSession({ courses, onClick, locale }: BuyCoachingSessionProps) {
+function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachingSessionProps) {
     const dictionary = getDictionary(locale);
    
-    const [courseList, setCourseList] = useState<Course[]>();
-    useEffect(() => {
-        setCourseList(courses.map(course => ({ ...course }))); 
-    }, [courses]);
+    const [courseList, setCourseList] = useState<Course[]>(courses);
+   
     
        // Use `useMemo` to optimize total cost calculation
     const totalCost = useMemo(() => {
@@ -51,7 +50,7 @@ function BuyCoachingSession({ courses, onClick, locale }: BuyCoachingSessionProp
 
 
   
-    const currencyType = courses.length > 0 ? courses[0].currencyType : '';
+
     /**
      * Increases the total sessions count for a specific course.
      * 
@@ -118,7 +117,7 @@ function BuyCoachingSession({ courses, onClick, locale }: BuyCoachingSessionProp
                                 {course.title} <IconInfoCircle size="4" />
                             </h6>
                             <div className='flex gap-2 items-center text-text-secondary'>
-                                <p className="text-xs md:text-sm">{course.price} {course.currencyType}</p>
+                                <p className="text-xs md:text-sm">{course.price} {currencyType}</p>
                                 <p className="text-sm md:text-md">{course.duration} {dictionary.components.buyCoachingSession.minutes}</p>
                             </div>
                         </div>
