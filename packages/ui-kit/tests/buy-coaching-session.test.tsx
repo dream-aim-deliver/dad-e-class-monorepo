@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import BuyCoachingSession, { BuyCoachingSessionProps } from '../lib/components/buy-coaching-session';
+import {BuyCoachingSession} from '../lib/components/buy-coaching-session';
 import { vi } from 'vitest';
 
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -9,7 +9,7 @@ vi.mock('@maany_shr/e-class-translations', () => ({
         title: 'Buy Coaching Sessions',
         description: 'Choose your coaching sessions.',
         minutes: 'min',
-        total: 'Total Cost',
+        total: 'Total',
         buttonText: 'Buy Now'
       }
     }
@@ -24,19 +24,19 @@ const mockCourses = [
 
 describe('BuyCoachingSession Component', () => {
   test('renders component with courses', () => {
-    render(<BuyCoachingSession courses={mockCourses} locale="en" />);
+    render(<BuyCoachingSession onClick={vi.fn()} currencyType='CHF' courses={mockCourses} locale="en" />);
 
     expect(screen.getByText('Buy Coaching Sessions')).toBeInTheDocument();
     expect(screen.getByText('Choose your coaching sessions.')).toBeInTheDocument();
     expect(screen.getByText('React Basics')).toBeInTheDocument();
     expect(screen.getByText('Advanced Next.js')).toBeInTheDocument();
-    expect(screen.getByText('$50')).toBeInTheDocument();
-    expect(screen.getByText('$100')).toBeInTheDocument();
-    expect(screen.getByText('Total Cost: 250')).toBeInTheDocument();
+    expect(screen.getByText('50 CHF')).toBeInTheDocument();
+    expect(screen.getByText('100 CHF')).toBeInTheDocument();
+    expect(screen.getByText('Total: 250 CHF')).toBeInTheDocument();
   });
 
   test('increments and decrements session count', () => {
-    render(<BuyCoachingSession courses={mockCourses} locale="en" />);
+    render(<BuyCoachingSession onClick={vi.fn()} currencyType='CHF' courses={mockCourses} locale="en" />);
 
     const increaseButton = screen.getAllByLabelText('increase')[0];
     const decreaseButton = screen.getAllByLabelText('decrease')[0];
@@ -55,7 +55,7 @@ describe('BuyCoachingSession Component', () => {
   });
 
   test('updates session count from input', () => {
-    render(<BuyCoachingSession courses={mockCourses} locale="en" />);
+    render(<BuyCoachingSession onClick={vi.fn()} currencyType='CHF' courses={mockCourses} locale="en" />);
 
     const inputField = screen.getAllByRole('spinbutton')[0];
 
@@ -64,12 +64,12 @@ describe('BuyCoachingSession Component', () => {
   });
 
   test('updates total cost correctly', () => {
-    render(<BuyCoachingSession courses={mockCourses} locale="en" />);
+    render(<BuyCoachingSession onClick={vi.fn()} currencyType='CHF' courses={mockCourses} locale="en" />);
 
     const increaseButton = screen.getAllByLabelText('increase')[0];
 
     fireEvent.click(increaseButton);
     
-    expect(screen.getByText('Total Cost: 300')).toBeInTheDocument();
+    expect(screen.getByText('Total: 300 CHF')).toBeInTheDocument();
   });
 });

@@ -6,56 +6,51 @@ import { IconPlus } from './icons/icon-plus'
 import { IconMinus } from './icons/icon-minus'
 import { IconInfoCircle } from './icons/icon-infocircle'
 
-/**
- * Represents a course available for coaching sessions.
- */
 type Course = {
     id: string;
     title: string;
     price: number;
     duration: number;
     totalSessions: number;
-    
-
 }
 
-/**
- * Props for the BuyCoachingSession component.
- */
 export interface BuyCoachingSessionProps extends isLocalAware {
-    /** List of courses available for purchase. */
     courses: Course[];
     onClick: () => void;
     currencyType: string;
 }
 
 /**
- * BuyCoachingSession Component
+ * A reusable component for purchasing coaching sessions, allowing users to select courses and adjust session quantities.
  *
- * This component allows users to purchase coaching sessions for different courses.
+ * @param courses An array of available courses, each containing:
+ *   - `id`: A unique identifier for the course.
+ *   - `title`: The name of the course.
+ *   - `price`: The price per session of the course.
+ *   - `duration`: The duration of a single session in minutes.
+ *   - `totalSessions`: The number of sessions the user wants to purchase.
+ * @param onClick A callback function triggered when the purchase button is clicked.
+ * @param locale A string representing the current locale for translations.
+ * @param currencyType The type of currency to display for course prices.
  *
- * @param {BuyCoachingSessionProps} props - The component properties.
- * @returns {JSX.Element} The rendered component.
+ * @example
+ * <BuyCoachingSession
+ *   courses={[
+ *     { id: "1", title: "Python Basics", price: 50, duration: 60, totalSessions: 1 },
+ *     { id: "2", title: "React Advanced", price: 75, duration: 90, totalSessions: 2 }
+ *   ]}
+ *   onClick={() => console.log("Purchase initiated")}
+ *   locale="en"
+ *   currencyType="USD"
+ * />
  */
-function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachingSessionProps) {
+export function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachingSessionProps) {
     const dictionary = getDictionary(locale);
-   
     const [courseList, setCourseList] = useState<Course[]>(courses);
-   
-    
-       // Use `useMemo` to optimize total cost calculation
     const totalCost = useMemo(() => {
         return courseList.reduce((acc, course) => acc + course.price * course.totalSessions, 0);
     }, [courseList]);
 
-
-  
-
-    /**
-     * Increases the total sessions count for a specific course.
-     * 
-     * @param {string} id - The ID of the course to increment.
-     */
     function handleIncrement(id: string): void {
         setCourseList(prevCourses =>
             prevCourses.map(course =>
@@ -63,12 +58,6 @@ function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachi
             )
         );
     }
-
-    /**
-     * Decreases the total sessions count for a specific course, ensuring it doesn't go below 0.
-     * 
-     * @param {string} id - The ID of the course to decrement.
-     */
     function handleDecrement(id: string): void {
         setCourseList(prevCourses =>
             prevCourses.map(course =>
@@ -78,13 +67,6 @@ function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachi
             )
         );
     }
-
-    /**
-     * Updates the total session count for a specific course based on user input.
-     * 
-     * @param {string} id - The ID of the course to update.
-     * @param {string} value - The new session count as a string.
-     */
     function handleInputChange(id: string, value: string): void {
         const newValue = Number(value);
         if (!isNaN(newValue) && newValue >= 0) {
@@ -148,5 +130,3 @@ function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachi
         </div>
     );
 }
-
-export default BuyCoachingSession;
