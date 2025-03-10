@@ -4,18 +4,26 @@ import { cn } from '../../utils/style-utils';
 export interface UserAvatarWithPicture {
   size?: 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge';
   hasProfilePicture: true;
-  imageUrl?: string;
+  imageUrl: string;
   className?: string;
 }
-
 export interface UserAvatarWithoutPicture {
   size?: 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge';
-  hasProfilePicture?: false;
-  initials?: string;
+  hasProfilePicture: false;
+  initials: string;
   className?: string;
 }
-
 export type UserAvatarProps = UserAvatarWithPicture | UserAvatarWithoutPicture;
+
+/**
+ * A UserAvatar component that displays a user's profile picture or initials.
+ * @param size The size of the avatar ('xSmall', 'small', 'medium', 'large', 'xLarge'). Default is 'medium'.
+ * @param hasProfilePicture Boolean flag to determine if the user has a profile picture.
+ * @param imageUrl The URL of the user's profile picture (if available).
+ * @param initials The user's initials (used when there is no profile picture). Default is 'JF'.
+ * @param className Additional custom class names for styling.
+ * @returns A circular avatar component displaying either an image or initials.
+ */
 
 export const UserAvatar: FC<UserAvatarProps> = (props) => {
   const { size = 'medium', className } = props;
@@ -27,33 +35,25 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
     xLarge: 'w-20 h-20 text-sm',
   };
 
-  // Default values
-  const hasProfilePicture = props.hasProfilePicture ?? false;
-  const initials = 'initials' in props ? props.initials?.slice(0, 2) ?? 'JF' : 'JF';
-  const imageUrl =
-    props.hasProfilePicture && 'imageUrl' in props
-      ? props.imageUrl ?? 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg'
-      : undefined;
-
   return (
     <div
       data-testid="user-avatar"
       className={cn(
         'flex items-center justify-center rounded-full',
-        !hasProfilePicture &&
+        !props.hasProfilePicture &&
           'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600',
         sizeClasses[size],
         className,
       )}
     >
-      {hasProfilePicture ? (
+      {props.hasProfilePicture ? (
         <img
-          src={imageUrl}
+          src={props.imageUrl}
           alt="Profile"
           className={cn('w-full h-full object-cover rounded-full', className)}
         />
       ) : (
-        <span>{initials}</span>
+        'initials' in props && <span>{props.initials.slice(0, 2)}</span>
       )}
     </div>
   );

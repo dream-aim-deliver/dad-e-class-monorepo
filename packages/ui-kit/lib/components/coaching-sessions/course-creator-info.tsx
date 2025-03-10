@@ -126,7 +126,7 @@ export function CreatorInfo({
             size="small"
             truncateText
             variant="text"
-            // className="flex gap-1 p-0 h-8"
+            className="p-0 max-w-[15rem]"
             text={groupName}
           />
         </div>

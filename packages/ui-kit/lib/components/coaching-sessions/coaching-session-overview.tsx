@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TimeInfo } from './time-info';
-import { CreatorInfo } from './course-creator';
+import { CreatorInfo } from './course-creator-info';
 import { Button } from '../button';
 import { IconHourglass } from '../icons/icon-hourglass';
 import { Badge } from '../badge';
