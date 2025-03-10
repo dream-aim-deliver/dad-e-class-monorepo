@@ -1,46 +1,42 @@
 import { Button } from '../button';
 import React, { FC } from 'react';
-import { DragDropSession } from './drag-drop-session';
-import { text } from 'stream/consumers';
+import { DragDropSession, DragDropSessionProps } from './drag-drop-session';
 import {
-  dictionaries,
   getDictionary,
   isLocalAware,
 } from '@maany_shr/e-class-translations';
 
-export interface availableCoachingSessionData {
-  title?: string;
-  duration?: string;
-  isMoreThan1Available?: boolean;
-}
-
 export interface AvailableCoachingSessionsProps extends isLocalAware {
-  property1?: 'default' | 'empty';
+  isEmpty?: 'default' | 'empty';
   text?: string;
-  availableCoachingSessionsData?: availableCoachingSessionData[];
+  availableCoachingSessionsData?: DragDropSessionProps[];
 }
 
+/**
+ * A reusable component that displays available coaching sessions with a title, description, 
+ * session list, and a button to purchase more sessions.
+ *
+ * @param isEmpty Determines whether the session list is empty. Options: `'default' | 'empty'`. Defaults to `'default'`.
+ * @param locale The locale for translations, used to retrieve localized text.
+ * @param text Optional custom text displayed below the title.
+ * @param availableCoachingSessionsData An array of `DragDropSessionProps` representing available coaching sessions.
+ *
+ * @example
+ * <AvailableCoachingSessions
+ *   isEmpty="default"
+ *   locale="en"
+ *   text="Here are your available coaching sessions."
+ *   availableCoachingSessionsData={[
+ *     { title: "Session 1", duration: 60, numberofSessions: 2 },
+ *     { title: "Session 2", duration: 45, numberofSessions: 1 },
+ *   ]}
+ * />
+ */
 export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
-  property1 = 'default',
+  isEmpty = 'default',
   locale,
   text,
-  availableCoachingSessionsData = [
-    {
-      title: 'Quick sprint',
-      duration: '20 minutes',
-      isMoreThan1Available: false,
-    },
-    {
-      title: 'Normal Sprint',
-      duration: '30 minutes',
-      isMoreThan1Available: true,
-    },
-    {
-      title: 'Quick sprint',
-      duration: '60 minutes',
-      isMoreThan1Available: false,
-    },
-  ],
+  availableCoachingSessionsData,
 }) => {
   const dictionary = getDictionary(locale);
   return (
@@ -55,7 +51,7 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
         {availableCoachingSessionsData?.map((availableCoachingSession) => (
           <DragDropSession
             {...availableCoachingSession}
-            property1={property1}
+            isEmpty={isEmpty}
           />
         ))}
       </div>

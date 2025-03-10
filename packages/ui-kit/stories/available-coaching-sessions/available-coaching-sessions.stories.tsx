@@ -9,17 +9,17 @@ const mockAvailableCoachingSessionsData: AvailableCoachingSessionsProps['availab
     {
       title: 'Quick sprint',
       duration: '20 minutes',
-      isMoreThan1Available: false,
+      numberofSessions: 1,
     },
     {
       title: 'Normal Sprint',
       duration: '30 minutes',
-      isMoreThan1Available: true,
+      numberofSessions: 2,
     },
     {
-      title: 'Quick sprint',
+      title: 'Full Immersion',
       duration: '60 minutes',
-      isMoreThan1Available: false,
+      numberofSessions: 3,
     },
   ];
 
@@ -28,7 +28,7 @@ const meta: Meta<typeof AvailableCoachingSessions> = {
   component: AvailableCoachingSessions,
   tags: ['autodocs'],
   argTypes: {
-    property1: {
+    isEmpty: {
       control: 'select',
       options: ['default', 'empty'],
       description:
@@ -61,7 +61,7 @@ const Template: StoryObj<typeof AvailableCoachingSessions> = {
 export const Default: StoryObj<typeof AvailableCoachingSessions> = {
   ...Template,
   args: {
-    property1: 'default',
+    isEmpty: 'default',
     text: 'Drag and drop a session on the calendar',
     availableCoachingSessionsData: mockAvailableCoachingSessionsData,
     locale: 'en',
@@ -79,7 +79,7 @@ export const Default: StoryObj<typeof AvailableCoachingSessions> = {
 export const Empty: StoryObj<typeof AvailableCoachingSessions> = {
   ...Template,
   args: {
-    property1: 'empty',
+    isEmpty: 'empty',
     text: 'No sessions available',
     availableCoachingSessionsData: mockAvailableCoachingSessionsData,
     locale: 'en',
@@ -97,18 +97,18 @@ export const Empty: StoryObj<typeof AvailableCoachingSessions> = {
 export const CustomData: StoryObj<typeof AvailableCoachingSessions> = {
   ...Template,
   args: {
-    property1: 'default',
+    isEmpty: 'default',
     text: 'Custom sessions',
     availableCoachingSessionsData: [
       {
         title: 'Custom Sprint',
         duration: '45 minutes ',
-        isMoreThan1Available: true,
+        numberofSessions: 1,
       },
       {
         title: 'Special Session',
         duration: '90 minutes',
-        isMoreThan1Available: false,
+        numberofSessions: 2,
       },
     ],
     locale: 'en',
