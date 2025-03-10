@@ -3,6 +3,10 @@ import { ProfileTabs } from './components/profile-tabs';
 import { DragAndDrop } from './components/drag&drop/drag&drop';
 import { Badge } from './components/badge';
 
+export {
+  CoachingSessionOverview,
+  type CoachingSessionOverviewProps,
+} from './components/coaching-sessions/coaching-session-overview';
 export { IconButton, type IconButtonProps } from './components/icon-button';
 export { CheckBox, type CheckBoxProps } from './components/checkbox';
 export { InputField, type InputFieldProps } from './components/input-field';

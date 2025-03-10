@@ -52,6 +52,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
   hasIconRight?: boolean;
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
+  truncateText?: boolean; // New prop to control text truncation
 }
 
 /**
@@ -74,6 +75,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
  * @param hasIconRight Optional flag indicating whether an icon should be displayed on the right side of the button.
  * @param iconLeft Optional ReactNode representing an icon to display on the left side of the button. Only rendered if `hasIconLeft` is true.
  * @param iconRight Optional ReactNode representing an icon to display on the right side of the button. Only rendered if `hasIconRight` is true.
+ * @param truncateText Optional flag to enable text truncation with ellipsis for long text. Default is false.
  *
  * @example
  * <Button
@@ -82,6 +84,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
  *   onClick={() => console.log("Button clicked!")}
  *   hasIconLeft
  *   iconLeft={<ArrowLeftIcon />}
+ *   truncateText
  * />
  */
 
@@ -96,6 +99,7 @@ export const Button: FC<ButtonProps> = ({
   hasIconRight = false,
   iconLeft,
   iconRight,
+  truncateText = false,
 }) => {
   const buttonSizeClasses = cn(buttonStyles({ variant, size }), className);
 
@@ -104,6 +108,7 @@ export const Button: FC<ButtonProps> = ({
       className={cn(
         buttonSizeClasses,
         'cursor-pointer flex items-center gap-1',
+        truncateText && 'min-w-0',
       )}
       onClick={onClick}
       disabled={disabled}
@@ -111,7 +116,7 @@ export const Button: FC<ButtonProps> = ({
       {hasIconLeft && iconLeft && (
         <span
           className={cn(
-            'flex items-center',
+            'flex items-center flex-shrink-0', // Add flex-shrink-0 to prevent icon from shrinking
             isValidElement(iconLeft)
               ? ''
               : 'hover:text-hover-color active:text-pressed-color',
@@ -122,11 +127,18 @@ export const Button: FC<ButtonProps> = ({
           {iconLeft}
         </span>
       )}
-      {text}
+
+      {/* Wrap text in a span with truncation if enabled */}
+      {text && (
+        <span title={text} className={truncateText ? 'truncate min-w-0' : ''}>
+          {text}
+        </span>
+      )}
+
       {hasIconRight && iconRight && (
         <span
           className={cn(
-            'flex items-center',
+            'flex items-center flex-shrink-0', // Add flex-shrink-0 to prevent icon from shrinking
             isValidElement(iconRight)
               ? ''
               : 'hover:text-hover-color active:text-pressed-color',
