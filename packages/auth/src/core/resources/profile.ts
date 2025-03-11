@@ -40,6 +40,9 @@ const RULES: TRoleWithResourcePermissions<"profile", profile.TProfiles, TResourc
             read: true,
             update: (user: TAuthUser, profile) => {
                 const personalProfile = profile[0] as profile.TPersonalProfile;
+                if(user.profile == null) return false;
+                const email = user.profile.email;
+                if(email == null) return false;
                 return user.profile.email === personalProfile.email;
             },
             delete: false,

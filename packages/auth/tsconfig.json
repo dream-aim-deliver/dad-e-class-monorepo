@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "files": [],
-  "include": [],
   "references": [
     // References to projects used by this package
     {

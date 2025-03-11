@@ -44,6 +44,7 @@ export function hasPermission<TResource extends keyof TPermission>(
     action: TPermission[TResource]["action"],
     data?: TPermission[TResource]["dataType"]
 ) {
+    if (user.roles == null || user.roles.length === 0) return false
     return user.roles.some(role => {
         const permission = (AUTH_RULES as TAllRolesWithPermissions)[role][resource]?.[action]
         if (permission == null) return false
