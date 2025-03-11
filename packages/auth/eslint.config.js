@@ -20,4 +20,10 @@ export default [
       parser: await import('jsonc-eslint-parser'),
     },
   },
+  {
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    rules: {
+      'no-unused-vars': 'warn',
+    }
+  }
 ];

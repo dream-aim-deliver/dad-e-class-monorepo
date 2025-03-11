@@ -30,7 +30,7 @@ export type TResourcePermission = {
 const RULES: TRoleWithResourcePermissions<"course", course.TCourseMetadata, TResourcePermission> = {
     visitor: {
         course: {
-            read: (user: TAuthUser, course) => {
+            read: (_user: TAuthUser, course) => {
                 if (course.title === 'Public Course') {
                     return true;
                 }
@@ -49,12 +49,8 @@ const RULES: TRoleWithResourcePermissions<"course", course.TCourseMetadata, TRes
     coach: {
         course: {
             read: true,
-            update: (user: TAuthUser, course) => {
-                return true;
-            },
-            delete: (user: TAuthUser, course) => {
-                return false;
-            }
+            update: true,
+            delete: false
         }
     },
     admin: {
