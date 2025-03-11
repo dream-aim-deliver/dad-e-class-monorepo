@@ -16,11 +16,28 @@ type TAllRolesWithPermissions = {
     }>
 }
 
+/**
+ * A constant object that combines authentication rules from all Resources.
+ * This object represents all roles with their respective permissions.
+ *
+ * @constant
+ * @type {TAllRolesWithPermissions}
+ */
 export const AUTH_RULES: TAllRolesWithPermissions = {
     ...CourseRules,
     ...ProfileRules
 };
 
+/**
+ * Checks if a user has permission to perform a specific action on a resource.
+ *
+ * @template TResource - The type of the resource.
+ * @param {TAuthUser} user - The user whose permissions are being checked.
+ * @param {TResource} resource - The resource on which the action is to be performed.
+ * @param {TPermission[TResource]["action"]} action - The action to be performed on the resource.
+ * @param {TPermission[TResource]["dataType"]} [data] - Optional data required for the permission check.
+ * @returns {boolean} - Returns `true` if the user has the required permission, otherwise `false`.
+ */
 export function hasPermission<TResource extends keyof TPermission>(
     user: TAuthUser,
     resource: TResource,
