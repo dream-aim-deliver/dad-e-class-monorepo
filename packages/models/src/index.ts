@@ -4,3 +4,4 @@ export * as profile from './profile';
 export * as eClassPackage from './eclass-package';
 export * as category from './category';
 export * as topic from './topic';
+export * as notification from './notification';
