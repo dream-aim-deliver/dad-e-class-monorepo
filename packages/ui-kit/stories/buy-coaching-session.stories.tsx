@@ -26,6 +26,7 @@ const mockCourses = [
         price: 50,
         duration: 60,
         totalSessions: 0,
+        content:"This is a simple tooltip with some information"
     },
     {
         id: '2',
@@ -33,7 +34,8 @@ const mockCourses = [
         price: 75,
         duration: 90,
         totalSessions: 0,
-        currencyType: 'CHF'
+     
+        content:"This is a simple tooltip with some information"
     },
     {
         id: '3',
@@ -41,6 +43,7 @@ const mockCourses = [
         price: 60,
         duration: 45,
         totalSessions: 0,
+        content:"This is a simple tooltip with some information"
     }
 ];
 

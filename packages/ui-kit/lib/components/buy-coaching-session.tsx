@@ -4,7 +4,7 @@ import { Button } from './button'
 import { InputField } from './input-field'
 import { IconPlus } from './icons/icon-plus'
 import { IconMinus } from './icons/icon-minus'
-import { IconInfoCircle } from './icons/icon-infocircle'
+import Tooltip from './tooltip'
 
 type Course = {
     id: string;
@@ -12,6 +12,7 @@ type Course = {
     price: number;
     duration: number;
     totalSessions: number;
+    content: string
 }
 
 export interface BuyCoachingSessionProps extends isLocalAware {
@@ -96,10 +97,10 @@ function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachi
                     <div key={course.id} className="flex justify-between items-center py-3 border-b border-divider">
                         <div className="flex flex-col gap-2">
                             <h6 className="flex items-center gap-2 text-text-primary text-md md:text-lg">
-                                {course.title} <IconInfoCircle size="4" />
+                                 <Tooltip text={course.title} content={course.content}/>
                             </h6>
                             <div className='flex gap-2 items-center text-text-secondary'>
-                                <p className="text-xs md:text-sm">{course.price} {currencyType}</p>
+                                <p className="text-xs md:text-sm font-important">{course.price} {currencyType}</p>
                                 <p className="text-sm md:text-md">{course.duration} {dictionary.components.buyCoachingSession.minutes}</p>
                             </div>
                         </div>
