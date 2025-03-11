@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "zod": "^3.24.1",
-    "@maany_shr/e-class-models": "1.4.2"
+    "@maany_shr/e-class-models": "workspace:*"
   },
   "publishConfig": {
     "access": "public"
