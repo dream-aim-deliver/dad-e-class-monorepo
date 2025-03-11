@@ -9,6 +9,9 @@
       "path": "./packages/ui-kit"
     },
     {
+      "path": "./packages/auth"
+    },
+    {
       "path": "./packages/models"
     },
     {
@@ -17,8 +20,5 @@
     {
       "path": "./apps/platform"
     },
-    {
-      "path": "./packages/auth"
-    }
   ]
 }

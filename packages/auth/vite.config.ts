@@ -4,14 +4,14 @@ import dts from 'vite-plugin-dts';
 import react from '@vitejs/plugin-react';
 import * as path from 'path';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
-
+import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default defineConfig({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/packages/auth',
   plugins: [
-    react(),
     nxCopyAssetsPlugin(['*.md']),
+    nxViteTsPaths(),
     dts({
       entryRoot: 'src',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
