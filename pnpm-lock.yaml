@@ -277,6 +277,9 @@ importers:
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
 
   packages/models:
     dependencies:

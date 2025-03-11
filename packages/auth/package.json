@@ -15,6 +15,7 @@
   },
   "types": "./index.d.ts",
   "dependencies": {
+    "zod": "^3.24.1",
     "@maany_shr/e-class-models": "workspace:*"
   }
 }
