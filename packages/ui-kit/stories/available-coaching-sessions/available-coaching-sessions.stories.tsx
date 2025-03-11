@@ -41,9 +41,7 @@ const meta: Meta<typeof AvailableCoachingSessions> = {
     availableCoachingSessionsData: {
       control: 'object',
       description: 'Array of objects containing session data.',
-      table: {
-        disable: true,
-      },
+      // Remove the table: { disable: true } to make it editable
     },
     locale: {
       control: 'select',
@@ -102,7 +100,7 @@ export const CustomData: StoryObj<typeof AvailableCoachingSessions> = {
     availableCoachingSessionsData: [
       {
         title: 'Custom Sprint',
-        duration: '45 minutes ',
+        duration: '45 minutes',
         numberofSessions: 1,
       },
       {
