@@ -1,4 +1,4 @@
-import { auth } from './auth';
+import { auth } from '../lib/auth';
 
 describe('auth', () => {
   it('should work', () => {
