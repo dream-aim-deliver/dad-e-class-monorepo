@@ -1,0 +1,21 @@
+{
+  "name": "@dad-e-class/auth",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./index.js",
+  "typings": "./index.d.ts",
+  "private": true,
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.js"
+    }
+  },
+  "types": "./index.d.ts",
+  "dependencies": {
+    "zod": "^3.24.1",
+    "@maany_shr/e-class-models": "workspace:*"
+  }
+}
