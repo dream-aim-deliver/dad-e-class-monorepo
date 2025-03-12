@@ -16,6 +16,9 @@
     },
     {
       "path": "./apps/platform"
+    },
+    {
+      "path": "./packages/auth"
     }
   ]
 }

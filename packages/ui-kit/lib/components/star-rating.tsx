@@ -12,7 +12,7 @@ export interface StarRatingProps {
 export const StarRating = ({
   rating,
   totalStars ,
-  size = '4',
+  size = '',
 }: StarRatingProps) => {
   const wholeStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
