@@ -50,7 +50,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
             <UserAvatar
               hasProfilePicture={true}
               size="xSmall"
-              imageUrl={imageUrl}
+              imageUrl={imageUrl || ''}
             />
           }
         />
