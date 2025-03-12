@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-import React from 'react';
->>>>>>> main
 import { type IconProps, generateClassesForIcon } from './icon';
 
 /**
