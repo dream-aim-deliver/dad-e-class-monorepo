@@ -1,12 +1,6 @@
 import { type IconProps, generateClassesForIcon } from './icon';
 
 /**
- * IconCheck
- * @usage <IconCheck />
-import React from 'react';
-import { type IconProps, generateClassesForIcon } from './icon';
-
-/**
  * IconClock
  * @usage <IconClock />
  */
