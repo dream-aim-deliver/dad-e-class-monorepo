@@ -1,6 +1,6 @@
 {
   "name": "@maany_shr/e-class-translations",
-  "version": "0.0.1",
+  "version": "1.4.1",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
