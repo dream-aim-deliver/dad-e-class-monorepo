@@ -13,6 +13,10 @@ export const DE: TDictionary = {
       title: 'Fähigkeiten',
     },
     courseCard: {
+      courseEmptyState: {
+        message: 'Sie haben noch keine Kurse gekauft',
+        buttonText: 'Kurse kaufen',
+      },
       createdBy: 'Erstellt von',
       you: 'Sie',
       group: 'Gruppe',
@@ -108,12 +112,6 @@ export const DE: TDictionary = {
         'Privates Profil (nur registrierte Benutzer können Ihren Namen, Nachnamen und Ihre Biografie sehen)',
       buttontext1: 'Verwerfen',
       buttontext2: 'Änderungen speichern',
-    },
-    courseCard: {
-      courseEmptyState: {
-        message: 'Sie haben noch keine Kurse gekauft',
-        buttonText: 'Kurse kaufen',
-      },
     },
   },
 };

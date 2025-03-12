@@ -14,6 +14,10 @@ export const EN: TDictionary = {
       title: 'Skills',
     },
     courseCard: {
+      courseEmptyState: {
+        message: "You haven't purchased any course yet",
+        buttonText: 'Browse courses',
+      },
       createdBy: 'Created by',
       you: 'You',
       group: 'Group',
@@ -109,11 +113,6 @@ export const EN: TDictionary = {
       buttontext1: 'Discard',
       buttontext2: 'Save changes',
     },
-    courseCard: {
-      courseEmptyState: {
-        message: "You haven't purchased any course yet",
-        buttonText: 'Browse courses',
-      },
-    },
+    
   },
 };
