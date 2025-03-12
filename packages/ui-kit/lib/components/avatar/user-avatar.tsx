@@ -1,14 +1,19 @@
 import { FC } from 'react';
 import { cn } from '../../utils/style-utils';
 
-export interface UserAvatarProps {
-  size?: 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge'; // Defines avatar sizes
-  hasProfilePicture?: boolean; // Indicates if the user has a profile picture
-  imageUrl?: string; // URL of the profile picture
-  initials?: string; // Initials to display if no profile picture is present
-  className?: string; // Additional styling classes
+export interface UserAvatarWithPicture {
+  size?: 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge';
+  hasProfilePicture: true;
+  imageUrl: string;
+  className?: string;
 }
-
+export interface UserAvatarWithoutPicture {
+  size?: 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge';
+  hasProfilePicture: false;
+  initials: string;
+  className?: string;
+}
+export type UserAvatarProps = UserAvatarWithPicture | UserAvatarWithoutPicture;
 /**
  * A UserAvatar component that displays a user's profile picture or initials.
  * @param size The size of the avatar ('xSmall', 'small', 'medium', 'large', 'xLarge'). Default is 'medium'.
