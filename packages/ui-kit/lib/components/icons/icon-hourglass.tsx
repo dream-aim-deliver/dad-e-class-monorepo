@@ -1,5 +1,4 @@
 import { type IconProps, generateClassesForIcon } from './icon';
-
 /**
  * IconHourglass
  * @usage <IconHourglass />
