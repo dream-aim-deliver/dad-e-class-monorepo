@@ -18,19 +18,11 @@ export interface UserAvatarProps {
  * @param className Additional custom class names for styling.
  * @returns A circular avatar component displaying either an image or initials.
  */
-export const UserAvatar: FC<UserAvatarProps> = ({
-  size = 'medium',
-  hasProfilePicture = false,
-  initials = 'JF',
-  imageUrl = 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-  className,
-}) => {
-  /**
-   * Defines the size classes for different avatar sizes.
-   */
+export const UserAvatar: FC<UserAvatarProps> = (props) => {
+  const { size = 'medium', className } = props;
   const sizeClasses = {
-    xSmall: 'w-6 h-6 text-xs',
-    small: 'w-6 h-6 text-sm',
+    xSmall: 'w-6 h-6 text-2xs',
+    small: 'w-8 h-8 text-sm',
     medium: 'w-12 h-12 text-sm',
     large: 'w-16 h-16 text-sm',
     xLarge: 'w-20 h-20 text-sm',
@@ -41,22 +33,20 @@ export const UserAvatar: FC<UserAvatarProps> = ({
       data-testid="user-avatar"
       className={cn(
         'flex items-center justify-center rounded-full',
-        !hasProfilePicture &&
-          'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600', // Styling when no profile picture
-        sizeClasses[size], // Apply size styles
+        !props.hasProfilePicture &&
+          'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600',
+        sizeClasses[size],
         className,
       )}
     >
-      {hasProfilePicture ? (
-        // Render profile picture if available
+      {props.hasProfilePicture ? (
         <img
-          src={imageUrl}
+          src={props.imageUrl}
           alt="Profile"
           className={cn('w-full h-full object-cover rounded-full', className)}
         />
       ) : (
-        // Render initials if no profile picture
-        <span>{initials}</span>
+        'initials' in props && <span>{props.initials.slice(0, 2)}</span>
       )}
     </div>
   );
