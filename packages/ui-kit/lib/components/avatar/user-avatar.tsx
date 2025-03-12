@@ -1,13 +1,3 @@
-/**
- * A UserAvatar component that displays a user's profile picture or initials.
- * @param size The size of the avatar ('xSmall', 'small', 'medium', 'large', 'xLarge'). Default is 'medium'.
- * @param hasProfilePicture Boolean flag to determine if the user has a profile picture.
- * @param imageUrl The URL of the user's profile picture (if available).
- * @param initials The user's initials (used when there is no profile picture). Default is 'JF'.
- * @param className Additional custom class names for styling.
- * @returns A circular avatar component displaying either an image or initials.
- */
-
 import { FC } from 'react';
 import { cn } from '../../utils/style-utils';
 
@@ -49,6 +39,7 @@ export const UserAvatar: FC<UserAvatarProps> = ({
       )}
     >
       {hasProfilePicture && imageUrl  ? (
+
         // Render profile picture if available
         <img
           src={imageUrl}
