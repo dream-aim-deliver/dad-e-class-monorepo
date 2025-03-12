@@ -1,12 +1,12 @@
+"use client";
 import { IconStarFilled } from './icons/icon-star-filled';
 import { IconStar } from './icons/icon-star';
 import { IconStarHalf } from './icons/icon-star-half';
-import React from 'react';
 
 export interface StarRatingProps {
-  rating: number; // Numeric rating value (e.g., 4.6)
-  totalStars: number; // Total number of stars in the rating system
-  size: string; // Size of each star icon in pixels
+  rating?: number; // Numeric rating value (e.g., 4.6)
+  totalStars?: number; // Total number of stars in the rating system
+  size?: string; // Size of each star icon in pixels
 }
 /**
  * A component that displays a star-based rating.
@@ -22,9 +22,9 @@ export interface StarRatingProps {
  * <StarRating rating={3.5} totalStars={5} size="6" />
  */
 export const StarRating = ({
-  rating,
-  totalStars,
-  size,
+  rating = 4.6,
+  totalStars = 5,
+  size = '4',
 }: StarRatingProps) => {
   const wholeStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
