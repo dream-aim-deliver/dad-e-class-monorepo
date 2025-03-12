@@ -6,3 +6,4 @@ export * as category from './category';
 export * as topic from './topic';
 export * as notification from './notification';
 export * as coachingSession from './coaching-session';
+export * as coachingOffer from './coaching-offer';
