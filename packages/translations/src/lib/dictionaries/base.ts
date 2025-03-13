@@ -8,9 +8,6 @@ export const DictionarySchema = z.object({
   }),
   components: z.object({
     coachBanner: z.object({
-      title: z.string(),
-      subtitle: z.string(),
-      description: z.string(),
       buttontext: z.string(),
     }),
     skills: z.object({
