@@ -71,7 +71,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
       <div className='flex flex-col gap-3'>
         <div className='flex flex-col gap-2'>
           <div className="w-full flex items-center gap-4 truncate">
-            <StarRating totalStars={5} rating={rating} />
+            <StarRating totalStars={5} rating={rating} size="4" />
+           
             <div className="text-white flex items-center gap-1 flex-1 truncate">
               <span className='text-text-secondary'>{dictionary.components.courseReview.by}</span>
               <Button
