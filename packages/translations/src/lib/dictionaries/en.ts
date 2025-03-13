@@ -4,10 +4,17 @@ import { Home_EN } from '../pages/home/home-en';
 export const EN: TDictionary = {
   home: Home_EN,
   components: {
+    coachBanner: {
+      buttontext: 'Become a Coach',
+    },
     skills: {
       title: 'Skills',
     },
     courseCard: {
+      courseEmptyState: {
+        message: "You haven't purchased any course yet",
+        buttonText: 'Browse courses',
+      },
       createdBy: 'Created by',
       you: 'You',
       group: 'Group',
