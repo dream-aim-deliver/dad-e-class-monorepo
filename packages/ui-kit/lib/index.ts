@@ -7,6 +7,10 @@ export { ProfileTabs, DragAndDrop, Badge };
 export * as contexts from './contexts';
 export { Button, type ButtonProps } from './components/button';
 export { DummySkills, type DummySkillsProps } from './components/dummy-skills';
+export {
+  RecentActivity,
+  type RecentActivityProps,
+} from './components/notifications/recent-activity';
 export { IconButton, type IconButtonProps } from './components/icon-button';
 export { CheckBox, type CheckBoxProps } from './components/checkbox';
 export { InputField, type InputFieldProps } from './components/input-field';
