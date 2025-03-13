@@ -132,6 +132,9 @@
   --color-slider-knob-stroke: var(--color-slider-knob-stroke);
   --color-slider-progress-fill: var(--color-slider-progress-fill);
   --color-slider-progress-stroke: var(--color-slider-progress-stroke);
+
+  --color-tooltip-background: var(--tooltip-background);
+  --color-tooltip-border: var(--tooltip-border);
 }
 
 @layer base {

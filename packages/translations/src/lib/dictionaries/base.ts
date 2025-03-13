@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export const DictionarySchema = z.object({
@@ -103,6 +104,13 @@ export const DictionarySchema = z.object({
       cochingSession: z.string(),
       sales: z.string(),
     }),
+    buyCoachingSession: z.object({
+      title:z.string(),
+      description:z.string(),
+      buttonText:z.string(),
+      total:z.string(),
+      minutes:z.string(),
+    })
   }),
 });
 export type TDictionary = z.infer<typeof DictionarySchema>;

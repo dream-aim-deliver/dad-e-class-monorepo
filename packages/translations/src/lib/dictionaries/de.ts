@@ -103,5 +103,12 @@ export const DE: TDictionary = {
       buttontext1: 'Verwerfen',
       buttontext2: 'Änderungen speichern',
     },
+    buyCoachingSession: {
+      title: "Coaching-Sitzung kaufen",
+      description: "Plane deine Sitzungen jederzeit mit deinem Lieblingscoach.",
+      buttonText: "Coaching-Sitzungen kaufen",
+      total: "Gesamt",
+      minutes: "Minuten"
+    }
   },
 };
