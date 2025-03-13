@@ -103,5 +103,11 @@ export const DE: TDictionary = {
       buttontext1: 'Verwerfen',
       buttontext2: 'Änderungen speichern',
     },
+    coachCard:{
+      coachingSession: "Coaching-Sitzung",
+      teaches: "Lehrt",
+      viewProfile: "Profil ansehen",
+      bookSession: "Sitzung buchen",
+    }
   },
 };

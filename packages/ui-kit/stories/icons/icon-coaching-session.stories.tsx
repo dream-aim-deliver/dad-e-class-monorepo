@@ -1,8 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
+import { Meta, StoryObj } from '@storybook/react';
 import { IconCoachingSession } from '../../lib/components/icons/icon-coaching-session';
-
 // Meta configuration for Storybook
 const meta: Meta<typeof IconCoachingSession> = {
+
   title: 'Icons/IconCoachingSession',
   component: IconCoachingSession,
   tags: ['autodocs'],
@@ -26,9 +27,11 @@ const meta: Meta<typeof IconCoachingSession> = {
   parameters: {
     layout: 'centered',
   },
-};
+
+} as Meta;
 
 export default meta;
+
 type Story = StoryObj<typeof IconCoachingSession>;
 
 // Default story
