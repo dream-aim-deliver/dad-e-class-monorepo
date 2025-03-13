@@ -1,14 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { CoachBanner } from '../lib/components/coach-banner';
+
 // Mock the dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
     getDictionary: (locale: string) => ({
         components: {
             coachBanner: {
-                title: 'Become a Master',
-                subtitle: 'Learning Coach',
-                description: 'Join our community of expert coaches and help students achieve their goals.',
                 buttontext: 'Join Now',
             },
         },
@@ -33,8 +31,16 @@ vi.mock('./button', () => ({
 }));
 
 describe('CoachBanner', () => {
+    const defaultProps = {
+        locale: 'en' as 'en' | 'de',
+        title: 'Become a Master',
+        subtitle: 'Learning Coach',
+        description: 'Join our community of expert coaches and help students achieve their goals.',
+        imageUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    };
+
     it('renders with correct title and subtitle', () => {
-        render(<CoachBanner locale="en" />);
+        render(<CoachBanner {...defaultProps} />);
         const title = screen.getByText(/Become a Master/i);
         const subtitle = screen.getByText(/Learning Coach/i);
         expect(title).toBeInTheDocument();
@@ -42,7 +48,7 @@ describe('CoachBanner', () => {
     });
 
     it('displays description text', () => {
-        render(<CoachBanner locale="en" />);
+        render(<CoachBanner {...defaultProps} />);
         const description = screen.getByText(
             'Join our community of expert coaches and help students achieve their goals.'
         );
@@ -50,7 +56,7 @@ describe('CoachBanner', () => {
     });
 
     it('renders button with correct text', () => {
-        render(<CoachBanner locale="en" />);
+        render(<CoachBanner {...defaultProps} />);
         const button = screen.getByRole('button', { name: 'Join Now' });
         expect(button).toBeInTheDocument();
         // Check for key classes that should be present
@@ -61,8 +67,8 @@ describe('CoachBanner', () => {
     });
 
     it('displays image with correct alt text', () => {
-        render(<CoachBanner locale="en" />);
-        const image = screen.getByAltText('People working together');
+        render(<CoachBanner {...defaultProps} />);
+        const image = screen.getByAltText('Banner image');
         expect(image).toBeInTheDocument();
         expect(image).toHaveAttribute(
             'src',
@@ -71,7 +77,7 @@ describe('CoachBanner', () => {
     });
 
     it('applies correct container classes', () => {
-        const { container } = render(<CoachBanner locale="en" />);
+        const { container } = render(<CoachBanner {...defaultProps} />);
         const banner = container.firstChild;
         expect(banner).toHaveClass(
             'flex',
