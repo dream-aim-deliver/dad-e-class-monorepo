@@ -64,22 +64,35 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   onDetails,
   onBuy
 }) => {
+  const [isImageError, setIsImageError] = React.useState(false);
   const dictionary = getDictionary(locale);
-  // Calculate total course duration in minutes
+  // Calculate total course duration in minutes and convert to hours
   const totalDurationInMinutes =
     duration.video + duration.coaching + duration.selfStudy;
   const totalDurationInHours = (totalDurationInMinutes / 60).toFixed(2);
-
+  const handleImageError = () => { 
+    setIsImageError(true);
+  };
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
-        <div className="relative">
-          <img
-            loading="lazy"
-            src={imageUrl}
-            alt={title}
-            className="w-full aspect-[2.15] object-cover"
-          />
+      <div className="relative">
+          {isImageError ? (
+            // Placeholder for broken image (matching CoachBanner styling)
+            <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
+              <span className="text-text-secondary text-md">
+                {dictionary.components.coachBanner.placeHolderText}
+              </span>
+            </div>
+          ) : (
+            <img
+              loading="lazy"
+              src={imageUrl}
+              alt={title}
+              className="w-full aspect-[2.15] object-cover"
+              onError={handleImageError}
+            />
+          )}
         </div>
 
         <div className="flex flex-col p-4 gap-4">
@@ -104,7 +117,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               locale={locale as TLocale}
               language={language.name}
               sessions={sessions}
-              duration={`${totalDurationInHours} hours`}
+              duration={`${totalDurationInHours}  ${dictionary.components.courseCard.hours}`}
               sales={sales}
             />
           </div>

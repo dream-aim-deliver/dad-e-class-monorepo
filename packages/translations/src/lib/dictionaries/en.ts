@@ -5,7 +5,8 @@ export const EN: TDictionary = {
   home: Home_EN,
   components: {
     coachBanner: {
-      buttontext: 'Become a Coach',
+      buttonText: 'Become a Coach',
+      placeHolderText: 'Image not available',
     },
     skills: {
       title: 'Skills',
@@ -14,6 +15,7 @@ export const EN: TDictionary = {
       courseEmptyState: {
         message: "You haven't purchased any course yet",
         buttonText: 'Browse courses',
+        message2: 'No available courses',
       },
       createdBy: 'Created by',
       you: 'You',
@@ -32,6 +34,7 @@ export const EN: TDictionary = {
       completedBadge: 'Course Completed',
       cochingSession: 'Coaching Session',
       sales: 'sales',
+      hours: 'hours',
     },
     dragDrop: {
       title: ' Drop the files here...',

@@ -84,6 +84,18 @@ const meta: Meta<typeof CourseCard> = {
       control: 'text',
       description: 'Additional CSS classes',
     },
+    courses: {
+      control: 'object',
+      description: 'Array of courses to check if there are any courses',
+    },
+    showEmptyState: {
+      control: 'boolean',
+      description: 'Flag to explicitly show the empty state',
+    },
+    onBrowseCourses: {
+      action: 'browseCourses',
+      description: 'Callback when the browse courses button is clicked in empty state',
+    }
   }
 };
 
@@ -106,6 +118,7 @@ export const CreatorPublishedView: Story = {
     onEdit: () => console.log('Edit course clicked'),
     onManage: () => console.log('Manage course clicked'),
     className: 'max-w-[352px]',
+    courses: [sampleCourseData],
   },
 };
 
@@ -151,6 +164,7 @@ export const CoachView: Story = {
     groupName: 'Advanced Design Cohort',
     onManage: () => console.log('Manage course clicked'),
     className: 'max-w-[352px]',
+    courses: [sampleCourseData],
   },
 };
 
@@ -169,6 +183,7 @@ export const StudentYetToStartedView: Story = {
     onBegin: () => console.log('Begin course clicked'),
     onDetails: () => console.log('Course details clicked'),
     className: 'max-w-[352px]',
+    courses: [sampleCourseData],
   },
 };
 
@@ -206,6 +221,7 @@ export const VisitorView: Story = {
     sessions: 24,
     groupName: 'Design Professionals',
     className: 'max-w-[352px]',
+    courses: [sampleCourseData],
   },
 };
 
@@ -234,6 +250,62 @@ export const GermanCoachView: Story = {
 export const GermanVisitorView: Story = {
   args: {
     ...VisitorView.args,
+    locale: 'de',
+  },
+};
+
+// Empty state stories
+export const EmptyStateCreator: Story = {
+  args: {
+    userType: 'creator',
+    reviewCount: 0,
+    locale: 'en',
+    language: sampleCourseData.language,
+    courses: [],
+    onBrowseCourses: () => console.log('Browse courses clicked'),
+    className: 'max-w-[352px]',
+  },
+};
+
+export const EmptyStateStudent: Story = {
+  args: {
+    userType: 'student',
+    reviewCount: 0,
+    locale: 'en',
+    language: sampleCourseData.language,
+    courses: [],
+    onBrowseCourses: () => console.log('Browse courses clicked'),
+    className: 'max-w-[352px]',
+  },
+};
+
+export const EmptyStateCoach: Story = {
+  args: {
+    userType: 'coach',
+    reviewCount: 0,
+    locale: 'en',
+    language: sampleCourseData.language,
+    courses: [],
+    onBrowseCourses: () => console.log('Browse courses clicked'),
+    className: 'max-w-[352px]',
+  },
+};
+
+export const EmptyStateVisitor: Story = {
+  args: {
+    userType: 'visitor',
+    reviewCount: 0,
+    locale: 'en',
+    language: sampleCourseData.language,
+    courses: [],
+    onBrowseCourses: () => console.log('Browse courses clicked'),
+    className: 'max-w-[352px]',
+  },
+};
+
+export const GermanEmptyState: Story = {
+  args: {
+    ...EmptyStateStudent.args,
     locale: 'de',
   },
 };

@@ -8,7 +8,8 @@ export const DictionarySchema = z.object({
   }),
   components: z.object({
     coachBanner: z.object({
-      buttontext: z.string(),
+      buttonText: z.string(),
+      placeHolderText: z.string(),
     }),
     skills: z.object({
       title: z.string(),
@@ -91,6 +92,7 @@ export const DictionarySchema = z.object({
       courseEmptyState: z.object({
         message: z.string(),
         buttonText: z.string(),
+        message2: z.string(),
       }),
       createdBy: z.string(),
       you: z.string(),
@@ -109,6 +111,7 @@ export const DictionarySchema = z.object({
       completedBadge: z.string(),
       cochingSession: z.string(),
       sales: z.string(),
+      hours: z.string(),
     }),
   }),
 });

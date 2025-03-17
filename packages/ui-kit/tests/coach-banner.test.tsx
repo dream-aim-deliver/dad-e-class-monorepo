@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { CoachBanner } from '../lib/components/coach-banner';
 
@@ -15,16 +15,20 @@ vi.mock('@maany_shr/e-class-translations', () => ({
 }));
 
 vi.mock('./button', () => ({
-    Button: ({ text, variant, size, className }: {
+    Button: ({ text, variant, size, className, onClick }: {
         text: string;
         variant: string;
         size: string;
         className: string;
+        onClick?: () => void;
     }) => (
-        <button className={`justify-center font-bold transition-colors focus:outline-none 
-        ${variant === 'primary' ? 'bg-button-primary-fill text-button-primary-text hover:bg-button-primary-hover-fill active:bg-button-primary-pressed-fill' : ''} 
-        ${size === 'big' ? 'px-4 h-[3.5rem] text-xl' : ''} 
-        rounded-big ${className} cursor-pointer flex items-center gap-1`}>
+        <button 
+            className={`justify-center font-bold transition-colors focus:outline-none 
+            ${variant === 'primary' ? 'bg-button-primary-fill text-button-primary-text hover:bg-button-primary-hover-fill active:bg-button-primary-pressed-fill' : ''} 
+            ${size === 'big' ? 'px-4 h-[3.5rem] text-xl' : ''} 
+            rounded-big ${className} cursor-pointer flex items-center gap-1`}
+            onClick={onClick}
+        >
             {text}
         </button>
     ),
@@ -37,6 +41,7 @@ describe('CoachBanner', () => {
         subtitle: 'Learning Coach',
         description: 'Join our community of expert coaches and help students achieve their goals.',
         imageUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+        onClick: vi.fn(() => alert('Button clicked!')),
     };
 
     it('renders with correct title and subtitle', () => {
@@ -59,11 +64,18 @@ describe('CoachBanner', () => {
         render(<CoachBanner {...defaultProps} />);
         const button = screen.getByRole('button', { name: 'Join Now' });
         expect(button).toBeInTheDocument();
-        // Check for key classes that should be present
         expect(button).toHaveClass('bg-button-primary-fill');
         expect(button).toHaveClass('text-button-primary-text');
         expect(button).toHaveClass('h-[3.5rem]');
         expect(button).toHaveClass('self-start');
+    });
+
+    it('calls onClick handler when button is clicked', () => {
+        const mockOnClick = vi.fn();
+        render(<CoachBanner {...defaultProps} onClick={mockOnClick} />);
+        const button = screen.getByRole('button', { name: 'Join Now' });
+        fireEvent.click(button);
+        expect(mockOnClick).toHaveBeenCalledTimes(1);
     });
 
     it('displays image with correct alt text', () => {

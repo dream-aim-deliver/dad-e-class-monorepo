@@ -4,7 +4,8 @@ import { CoachCourseCard } from './coach-coursecard/coach-coursecard';
 import { StudentCourseCard } from './student-coursecard/student-course-card';
 import { VisitorCourseCard } from './visitor-coursecard/visitor-coursecard';
 import { course, language } from '@maany_shr/e-class-models';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import { CourseEmptyState, EmptyState } from './course-empty-state';
 
 export type UserType = 'creator' | 'coach' | 'student' | 'visitor';
 
@@ -34,15 +35,21 @@ export interface CourseCardProps {
   onReview?: () => void;
   onDetails?: () => void;
   onBuy?: () => void;
+  onBrowseCourses?: () => void;
   // Coach/Visitor-specific props
   creatorName?: string;
   groupName?: string;
 
   className?: string;
+  
+  // Add an optional courses array to check if there are any courses
+  courses?: course.TCourseMetadata[];
+  showEmptyState?: boolean;
 }
 
 /**
  * A flexible CourseCard component that dynamically renders different course card layouts based on the user type.
+ * Shows an empty state when no courses are available.
  *
  * @param userType The type of user viewing the course card. Can be 'creator', 'coach', 'student', or 'visitor'.
  * @param reviewCount The number of reviews for the course.
@@ -60,9 +67,12 @@ export interface CourseCardProps {
  * @param onReview (Student only) Callback when reviewing the course.
  * @param onDetails (Visitor & Student) Callback when viewing course details.
  * @param onBuy (Visitor only) Callback when purchasing the course.
+ * @param onBrowseCourses Callback when the browse courses button is clicked in empty state.
  * @param creatorName (Coach & Visitor) The name of the course creator.
  * @param groupName (Coach only) The name of the coaching group.
  * @param className Optional CSS class for styling.
+ * @param courses Optional array of courses to check if there are any courses available.
+ * @param showEmptyState Flag to explicitly control whether to show the empty state.
  *
  * @example
  * <CourseCard
@@ -76,6 +86,8 @@ export interface CourseCardProps {
  *   sales={200}
  *   onEdit={() => console.log("Edit clicked")}
  *   onManage={() => console.log("Manage clicked")}
+ *   courses={[]}
+ *   onBrowseCourses={() => console.log("Browse courses")}
  * />
  */
 export const CourseCard: React.FC<CourseCardProps> = (props) => {
@@ -97,8 +109,30 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     onResume,
     onReview,
     onDetails,
+    onBrowseCourses,
     groupName,
+    courses,
+    showEmptyState,
   } = props;
+
+  const dictionary = getDictionary(locale);
+  // Check if there are no courses or if empty state should be explicitly shown
+  const shouldShowEmptyState = showEmptyState || (Array.isArray(courses) && courses.length === 0);
+  
+  // Custom empty state for creator and coach
+  if (shouldShowEmptyState && (userType === 'creator' || userType === 'coach')) {
+    return (
+      <EmptyState
+        message={dictionary.components.courseCard.courseEmptyState.message2}
+        locale={locale}
+      />
+    );
+  }
+
+  // If courses is empty and onBrowseCourses is provided, show the empty state
+  if (shouldShowEmptyState) {
+    return <CourseEmptyState locale={locale} />;
+  }
 
   const cardComponents = {
     creator: {

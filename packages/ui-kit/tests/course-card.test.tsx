@@ -15,6 +15,7 @@ describe('CourseCard', () => {
   const mockOnReview = vi.fn();
   const mockOnDetails = vi.fn();
   const mockOnBuy = vi.fn();
+  const mockOnBrowseCourses = vi.fn();
 
   const baseProps: Omit<CourseCardProps, 'userType'> = {
     course: {
@@ -44,6 +45,7 @@ describe('CourseCard', () => {
     onReview: mockOnReview,
     onDetails: mockOnDetails,
     onBuy: mockOnBuy,
+    onBrowseCourses: mockOnBrowseCourses,
   };
 
   beforeEach(() => {
@@ -55,9 +57,7 @@ describe('CourseCard', () => {
       <CourseCard
         {...baseProps}
         userType="coach"
-        creatorName="John Doe"
         groupName="React Group"
-        sessions={8}
       />
     );
 
@@ -78,7 +78,6 @@ describe('CourseCard', () => {
       <CourseCard
         {...baseProps}
         userType="visitor"
-        sessions={5}
       />
     );
 
@@ -95,7 +94,7 @@ describe('CourseCard', () => {
 
   it('logs an error if required props are missing for creator user type', () => {
     const consoleErrorSpy = vi.spyOn(console, 'error');
-    render(<CourseCard {...baseProps} userType="creator" />);
+    render(<CourseCard userType="creator" locale={mockLocale} language={mockLanguage} reviewCount={120} />);
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Course and creatorStatus are required for creator view'
     );
@@ -113,5 +112,42 @@ describe('CourseCard', () => {
       'Course is required for student view'
     );
     consoleErrorSpy.mockRestore();
+  });
+
+  it('renders CourseEmptyState when courses array is empty', async () => {
+    render(
+      <CourseCard
+        {...baseProps}
+        userType="student"
+        courses={[]}
+        onBrowseCourses={mockOnBrowseCourses}
+      />
+    );
+
+    // Check for empty state message
+    // Note: You'll need to adjust this check based on what text your CourseEmptyState actually displays
+    await waitFor(() => {
+      expect(screen.getByText(/You haven't purchased any course yet/i)).toBeInTheDocument();
+    });
+  });
+
+  it('renders CourseEmptyState when showEmptyState is true', async () => {
+    render(
+      <CourseCard
+        {...baseProps}
+        userType="student"
+        showEmptyState={true}
+        onBrowseCourses={mockOnBrowseCourses}
+      />
+    );
+
+    // Check for empty state message and browse courses button
+    await waitFor(() => {
+      expect(screen.getByText(/You haven't purchased any course yet/i)).toBeInTheDocument();
+    });
+
+    // Test that the browse courses button works if it exists in your EmptyState
+    const browseButton = screen.getByText(/browse courses/i);
+    expect(browseButton).toBeInTheDocument();
   });
 });

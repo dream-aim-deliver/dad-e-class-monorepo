@@ -4,7 +4,8 @@ export const DE: TDictionary = {
   home: Home_DE,
   components: {
     coachBanner: {
-      buttontext: 'Coach werden',
+      buttonText: 'Coach werden',
+      placeHolderText: 'Bild nicht verfügbar',
     },
     skills: {
       title: 'Fähigkeiten',
@@ -13,6 +14,7 @@ export const DE: TDictionary = {
       courseEmptyState: {
         message: 'Sie haben noch keine Kurse gekauft',
         buttonText: 'Kurse kaufen',
+        message2: 'Keine verfügbaren Kurse',
       },
       createdBy: 'Erstellt von',
       you: 'Sie',
@@ -31,6 +33,7 @@ export const DE: TDictionary = {
       completedBadge: 'Kurs abgeschlossen',
       cochingSession: 'Coaching-Sitzung',
       sales: 'Verkauf',
+      hours: 'stunden',
     },
     dragDrop: {
       title: 'Legen Sie die Dateien hier ab... ',
