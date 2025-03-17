@@ -1,5 +1,28 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {CourseCard} from '../lib/components/coursecard/course-card';
+import React from 'react';
+import { CourseCard, CourseCardProps } from '../lib/components/coursecard/course-card';
+
+// Wrapper component with browser alert functionality
+const CourseCardWithAlert: React.FC<CourseCardProps> = (props) => {
+  const createCallback = (message: string) => () => {
+    window.alert(message);
+  };
+
+  // Always provide alert callbacks, overriding any existing ones
+  const enhancedProps = {
+    ...props,
+    onEdit: createCallback('Edit clicked'),
+    onManage: createCallback('Manage clicked'),
+    onBegin: createCallback('Begin clicked'),
+    onResume: createCallback('Resume clicked'),
+    onReview: createCallback('Review clicked'),
+    onDetails: createCallback('Details clicked'),
+    onBuy: createCallback('Buy clicked'),
+    onBrowseCourses: createCallback('Browse Courses clicked'),
+  };
+
+  return <CourseCard {...enhancedProps} />;
+};
 
 const sampleCourseData = {
   id: 'course-123',
@@ -27,11 +50,12 @@ const sampleCourseData = {
   groupName: 'Design Professionals',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
+  rating: 4.7,
 };
 
-const meta: Meta<typeof CourseCard> = {
+const meta: Meta<typeof CourseCardWithAlert> = {
   title: 'Components/CourseCardComponents/CourseCard',
-  component: CourseCard,
+  component: CourseCardWithAlert,
   parameters: {
     layout: 'centered',
   },
@@ -59,7 +83,7 @@ const meta: Meta<typeof CourseCard> = {
       control: 'select',
       options: ['draft', 'under-review', 'published'],
       if: { arg: 'userType', eq: 'creator' },
-      description: 'Status of the course for creator view',
+      description: 'status of the course for creator view',
     },
     progress: { 
       control: 'number',
@@ -92,31 +116,23 @@ const meta: Meta<typeof CourseCard> = {
       control: 'boolean',
       description: 'Flag to explicitly show the empty state',
     },
-    onBrowseCourses: {
-      action: 'browseCourses',
-      description: 'Callback when the browse courses button is clicked in empty state',
-    }
-  }
+  },
 };
 
 export default meta;
-type Story = StoryObj<typeof CourseCard>;
+type Story = StoryObj<typeof CourseCardWithAlert>;
 
 // Creator view stories
 export const CreatorPublishedView: Story = {
   args: {
     userType: 'creator',
-    reviewCount: 328, 
+    reviewCount: 328,
     locale: 'en',
     language: sampleCourseData.language,
     creatorStatus: 'published',
-    course: { ...sampleCourseData,
-      rating: 4.7,
-    },
+    course: sampleCourseData,
     sessions: 24,
     sales: 1850,
-    onEdit: () => console.log('Edit course clicked'),
-    onManage: () => console.log('Manage course clicked'),
     className: 'max-w-[352px]',
     courses: [sampleCourseData],
   },
@@ -156,13 +172,10 @@ export const CoachView: Story = {
     reviewCount: 328,
     locale: 'en',
     language: sampleCourseData.language,
-    course: { ...sampleCourseData,
-      rating: 4.7,
-    },
+    course: sampleCourseData,
     sessions: 24,
     sales: 1850,
     groupName: 'Advanced Design Cohort',
-    onManage: () => console.log('Manage course clicked'),
     className: 'max-w-[352px]',
     courses: [sampleCourseData],
   },
@@ -175,13 +188,9 @@ export const StudentYetToStartedView: Story = {
     reviewCount: 328,
     locale: 'en',
     language: sampleCourseData.language,
-    course: { ...sampleCourseData,
-      rating: 4.7,
-    },
+    course: sampleCourseData,
     sales: 1850,
     progress: 0,
-    onBegin: () => console.log('Begin course clicked'),
-    onDetails: () => console.log('Course details clicked'),
     className: 'max-w-[352px]',
     courses: [sampleCourseData],
   },
@@ -190,20 +199,14 @@ export const StudentYetToStartedView: Story = {
 export const StudentInProgressView: Story = {
   args: {
     ...StudentYetToStartedView.args,
-    sales: 1850,
     progress: 42,
-    onResume: () => console.log('Resume course clicked'),
-    onDetails: () => console.log('Course details clicked'),
   },
 };
 
 export const StudentCompletedView: Story = {
   args: {
     ...StudentYetToStartedView.args,
-    sales: 1850,
     progress: 100,
-    onReview: () => console.log('Review course clicked'),
-    onDetails: () => console.log('Course details clicked'),
   },
 };
 
@@ -214,9 +217,7 @@ export const VisitorView: Story = {
     reviewCount: 328,
     locale: 'en',
     language: sampleCourseData.language,
-    course: { ...sampleCourseData,
-      rating: 4.7,
-    },
+    course: sampleCourseData,
     sales: 1850,
     sessions: 24,
     groupName: 'Design Professionals',
@@ -262,7 +263,6 @@ export const EmptyStateCreator: Story = {
     locale: 'en',
     language: sampleCourseData.language,
     courses: [],
-    onBrowseCourses: () => console.log('Browse courses clicked'),
     className: 'max-w-[352px]',
   },
 };
@@ -274,7 +274,6 @@ export const EmptyStateStudent: Story = {
     locale: 'en',
     language: sampleCourseData.language,
     courses: [],
-    onBrowseCourses: () => console.log('Browse courses clicked'),
     className: 'max-w-[352px]',
   },
 };
@@ -286,7 +285,6 @@ export const EmptyStateCoach: Story = {
     locale: 'en',
     language: sampleCourseData.language,
     courses: [],
-    onBrowseCourses: () => console.log('Browse courses clicked'),
     className: 'max-w-[352px]',
   },
 };
@@ -298,7 +296,6 @@ export const EmptyStateVisitor: Story = {
     locale: 'en',
     language: sampleCourseData.language,
     courses: [],
-    onBrowseCourses: () => console.log('Browse courses clicked'),
     className: 'max-w-[352px]',
   },
 };
