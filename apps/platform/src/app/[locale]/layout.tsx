@@ -5,6 +5,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { notFound } from 'next/navigation';
+import { SessionProvider } from "next-auth/react"
+import nextAuth from "../../utils/auth"
 
 export const metadata = {
   title: 'Welcome to Platform',
@@ -32,6 +34,7 @@ const figtree = Figtree({
   subsets: ['latin'],
 });
 
+const auth = nextAuth.auth
 export async function generateStaticParams() {
   return i18nConfig.locales.map((locale) => ({ locale }));
 }
@@ -44,6 +47,7 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }) {
  
+  const session = await auth();
   const params = await paramsPromise;
   const locale = params?.locale;
   
@@ -53,11 +57,13 @@ export default async function RootLayout({
   }
 
   const messages = await getMessages({ locale });
+
   return (
     <html lang={locale}>
       <body
         className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
       >
+        <SessionProvider session={session}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider>
             <div className="w-full min-h-screen bg-black flex flex-col items-center">
@@ -67,6 +73,7 @@ export default async function RootLayout({
             </div>
           </ThemeProvider>
         </NextIntlClientProvider>
+        </SessionProvider>
       </body>
     </html>
   );
