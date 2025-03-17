@@ -9,17 +9,17 @@ const mockAvailableCoachingSessionsData: AvailableCoachingSessionsProps['availab
     {
       title: 'Quick sprint',
       time: 20,
-      numberofSessions: 1,
+      numberOfSessions: 1,
     },
     {
       title: 'Normal Sprint',
       time: 45,
-      numberofSessions: 2,
+      numberOfSessions: 2,
     },
     {
       title: 'Full Immersion',
       time: 60,
-      numberofSessions: 3,
+      numberOfSessions: 3,
     },
   ];
 
@@ -115,12 +115,12 @@ export const CustomData: StoryObj<typeof AvailableCoachingSessions> = {
       {
         title: 'Custom Sprint',
         time: 45,
-        numberofSessions: 1,
+        numberOfSessions: 1,
       },
       {
         title: 'Special Session',
         time: 90,
-        numberofSessions: 2,
+        numberOfSessions: 2,
       },
     ],
     locale: 'en',

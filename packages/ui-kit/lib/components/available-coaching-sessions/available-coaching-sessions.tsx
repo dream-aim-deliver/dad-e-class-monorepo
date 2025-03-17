@@ -1,8 +1,7 @@
 import { Button } from '../button';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { DragDropSession, DragDropSessionProps } from './drag-drop-session';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { on } from 'events';
 
 export interface AvailableCoachingSessionsProps extends isLocalAware {
   text?: string;

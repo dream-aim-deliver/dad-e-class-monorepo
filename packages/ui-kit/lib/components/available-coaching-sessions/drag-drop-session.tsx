@@ -1,11 +1,11 @@
 import { Badge } from '../badge';
-import React, { FC } from 'react';
+import { FC } from 'react';
 
 export interface DragDropSessionProps {
   title?: string;
   time?: number;
   durationMinutes?: string;
-  numberofSessions?: number;
+  numberOfSessions?: number;
   isLoading?: boolean;
 }
 
@@ -16,20 +16,20 @@ export interface DragDropSessionProps {
  * @param title The title of the coaching session.
  * @params durationMinutes The duration of the session (e.g., minutes).
  * @param time The time of the session (e.g., 60).
- * @param numberofSessions The number of available sessions. Displays a badge if greater than 1.
+ * @param numberOfSessions The number of available sessions. Displays a badge if greater than 1.
  * @param isLoading A boolean value to check if the data is loading or not.
  * @example
  * <DragDropSession
  *   title="React Coaching"
  *   time={60}
- *   numberofSessions={2}
+ *   numberOfSessions={2}
  *   durationMinutes="minutes"
  * />
  */
 export const DragDropSession: FC<DragDropSessionProps> = ({
   title,
   time,
-  numberofSessions,
+  numberOfSessions,
   durationMinutes,
   isLoading = false,
 }) => {
@@ -53,10 +53,10 @@ export const DragDropSession: FC<DragDropSessionProps> = ({
               {time} {durationMinutes}
             </p>
           </div>
-          {numberofSessions > 1 && (
+          {numberOfSessions > 1 && (
             <Badge
               className="h-[1.5rem] min-w-[2.0625rem] px-0 py-1 items-center justify-center text-sm leading-[100%]"
-              text={'x' + numberofSessions.toString()}
+              text={'x' + numberOfSessions.toString()}
             />
           )}
         </div>
