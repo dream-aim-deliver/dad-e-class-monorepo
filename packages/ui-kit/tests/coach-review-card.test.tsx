@@ -11,7 +11,7 @@ describe('ReviewCard Component', () => {
         reviewerAvatar="/avatar.jpg"
         reviewText="This workshop was amazing!"
         workshopTitle="React Workshop"
-        date="March 5, 2025"
+        date={new Date('2025-03-05')}
         time="10:00 AM"
         courseTitle="Advanced React"
         courseImage="/course.jpg"
@@ -22,7 +22,7 @@ describe('ReviewCard Component', () => {
     expect(screen.getByText('John Doe')).toBeInTheDocument();
     expect(screen.getByText('This workshop was amazing!')).toBeInTheDocument();
     expect(screen.getByText('React Workshop')).toBeInTheDocument();
-    expect(screen.getByText('March 5, 2025')).toBeInTheDocument();
+    expect(screen.getByText('2025-03-05')).toBeInTheDocument();
     expect(screen.getByText('10:00 AM')).toBeInTheDocument();
     expect(screen.getByText('Advanced React')).toBeInTheDocument();
   });

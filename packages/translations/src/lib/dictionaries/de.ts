@@ -103,7 +103,7 @@ export const DE: TDictionary = {
       buttontext1: 'Verwerfen',
       buttontext2: 'Änderungen speichern',
     },
-    courseReview:{
+    coachReview:{
       by:'von'
     }
   },

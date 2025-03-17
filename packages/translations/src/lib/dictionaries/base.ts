@@ -84,7 +84,7 @@ export const DictionarySchema = z.object({
       buttontext1: z.string(),
       buttontext2: z.string(),
     }),
-    courseReview: z.object({
+    coachReview: z.object({
       by:z.string()
     }),
     courseCard: z.object({

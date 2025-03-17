@@ -34,7 +34,7 @@ export default {
       description: 'The title of the workshop.',
     },
     date: {
-      control: 'text',
+      control: 'date',
       description: 'Date of the workshop.',
     },
     time: {
@@ -62,7 +62,7 @@ export const Default: Story = {
     reviewerAvatar: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     reviewText: "The coaching session on advertising was incredibly insightful, providing clear strategies that are immediately actionable. The personalized approach made complex concepts easy to understand, leaving me confident in applying these techniques to my business.",
     workshopTitle: 'Advanced React Workshop',
-    date: 'March 15, 2025',
+    date: new Date(),
     time: '10:00 AM - 12:00 PM',
     courseTitle: 'React Mastery',
     courseImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
