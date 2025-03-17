@@ -23,6 +23,9 @@ const meta: Meta<typeof Button> = {
   title: 'Components/Button',
   component: Button,
   tags: ['autodocs'],
+  parameters:{
+    layout: 'centered',
+  },
   decorators: [
     (Story) => (
       <NextIntlClientProvider locale="en" messages={mockMessages}>
