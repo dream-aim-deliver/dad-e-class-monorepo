@@ -5,24 +5,24 @@ import { UserAvatar } from '../lib/components/avatar/user-avatar';
 
 describe('UserAvatar Component', () => {
   test('renders initials when imageUrl is missing', () => {
-    render(<UserAvatar initials="AB" hasProfilePicture={false} />);
+    render(<UserAvatar fullName="John Doe" />);
 
     const avatar = screen.getByTestId('user-avatar');
-    expect(avatar).toHaveTextContent('AB'); 
+    expect(avatar).toHaveTextContent("JD"); 
   });
 
   test('renders image when valid imageUrl is provided', () => {
-    render(<UserAvatar imageUrl="https://example.com/avatar.jpg" hasProfilePicture={true} />);
+    render(<UserAvatar imageUrl="https://example.com/avatar.jpg"  />);
 
-    const img = screen.getByRole('img', { name: 'Profile' });
+    const img = screen.getByRole('img');
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute('src', 'https://example.com/avatar.jpg');
   });
 
   test('shows initials when image fails to load (without userEvent)',async () => {
-    render(<UserAvatar imageUrl="invalid-url.jpg" initials="CD" hasProfilePicture={true} />);
+    render(<UserAvatar imageUrl="invalid-url.jpg" fullName="CD"  />);
     
-    const img = screen.getByRole('img', { name: 'Profile' });
+    const img = screen.getByRole('img');
 
     
     img.dispatchEvent(new Event('error'));
@@ -33,7 +33,7 @@ describe('UserAvatar Component', () => {
   });
 
   test('applies correct size classes', () => {
-    render(<UserAvatar initials="XY" size="large" />);
+    render(<UserAvatar fullName="XY" size="large" />);
     const avatar = screen.getByTestId('user-avatar');
 
     // Checking if 'large' size class is applied
