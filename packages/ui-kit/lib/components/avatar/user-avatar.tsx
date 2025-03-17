@@ -10,7 +10,7 @@ export interface UserAvatarProps {
 
 /**
  * A component that displays a user's avatar, either as an image or initials.
- * 
+ *
  * @param size The size of the avatar. Options:
  *   - `xSmall`: Extra small avatar (24px)
  *   - `small`: Small avatar (32px)
@@ -20,10 +20,10 @@ export interface UserAvatarProps {
  * @param imageUrl The URL of the profile picture to display.
  * @param fullName The user's full name to display initials when no image is available.
  * @param className Additional CSS class names for custom styling.
- * 
+ *
  * @example
  * <UserAvatar fullName="John Doe" size="large" imageUrl="https://example.com/avatar.jpg" />
- * 
+ *
  * @example
  * <UserAvatar fullName="John Doe" size="medium" />
  */
@@ -40,7 +40,6 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
     xLarge: 'w-20 h-20 text-sm',
   };
 
-
   const initials = useMemo(() => {
     if (!fullName || typeof fullName !== 'string') return '';
 
@@ -50,12 +49,13 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
     const nameParts = trimmedName.split(/\s+/);
 
     if (nameParts.length >= 2) {
-
       const firstInitial = nameParts[0][0] || '';
       const lastInitial = nameParts[nameParts.length - 1][0] || '';
       return `${firstInitial}${lastInitial}`;
     } else {
-      return trimmedName.length >= 2 ? trimmedName.substring(0, 2) : trimmedName;
+      return trimmedName.length >= 2
+        ? trimmedName.substring(0, 2)
+        : trimmedName;
     }
   }, [fullName]);
 
@@ -70,7 +70,8 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
       data-testid="user-avatar"
       className={cn(
         'flex items-center justify-center rounded-full overflow-hidden',
-        shouldShowInitials && 'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600',
+        shouldShowInitials &&
+          'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600',
         sizeClasses[size],
         className,
       )}

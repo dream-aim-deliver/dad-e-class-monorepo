@@ -103,5 +103,12 @@ export const EN: TDictionary = {
       buttontext1: 'Discard',
       buttontext2: 'Save changes',
     },
+    availableCoachingSessions: {
+      title: 'Available Coaching Sessions',
+      buyMoreSessions: 'Buy more sessions',
+      durationMinutes: 'minutes',
+      noAvailableSessionText: 'No available sessions',
+      loadingText: 'Loading Sessions...',
+    },
   },
 };
