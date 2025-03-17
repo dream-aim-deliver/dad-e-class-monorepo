@@ -1,39 +1,37 @@
-import { FC, useState } from 'react';
+import { FC, useState, useMemo } from 'react';
 import { cn } from '../../utils/style-utils';
 
-export interface UserAvatarWithPicture {
+export interface UserAvatarProps {
   size?: 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge';
-  hasProfilePicture?: true | false;
   imageUrl?: string;
-  initials?: string; 
+  fullName?: string;
   className?: string;
 }
 
-export type UserAvatarProps = UserAvatarWithPicture;
 /**
- * Props for the UserAvatar component.
- *
+ * A component that displays a user's avatar, either as an image or initials.
+ * 
  * @param size The size of the avatar. Options:
- *   - `xSmall`: Extra small avatar.
- *   - `small`: Small avatar.
- *   - `medium`: Medium avatar (default).
- *   - `large`: Large avatar.
- *   - `xLarge`: Extra large avatar.
- * @param hasProfilePicture Indicates if the user has a profile picture.
+ *   - `xSmall`: Extra small avatar (24px)
+ *   - `small`: Small avatar (32px)
+ *   - `medium`: Medium avatar (48px, default)
+ *   - `large`: Large avatar (64px)
+ *   - `xLarge`: Extra large avatar (80px)
  * @param imageUrl The URL of the profile picture to display.
- * @param initials The user's initials to display when no image is available.
+ * @param fullName The user's full name to display initials when no image is available.
  * @param className Additional CSS class names for custom styling.
- *
+ * 
  * @example
- * <UserAvatar size="large" imageUrl="https://example.com/avatar.jpg" />
- *
+ * <UserAvatar fullName="John Doe" size="large" imageUrl="https://example.com/avatar.jpg" />
+ * 
  * @example
- * <UserAvatar size="medium" initials="JD" />
+ * <UserAvatar fullName="John Doe" size="medium" />
  */
 export const UserAvatar: FC<UserAvatarProps> = (props) => {
-  const { size = 'medium', className } = props;
-  const [isImageValid, setIsImageValid] = useState(true);
+  const { size = 'medium', className, imageUrl, fullName = '' } = props;
+  const [isImageValid, setIsImageValid] = useState(Boolean(imageUrl));
 
+  // Size mapping with consistent class structure
   const sizeClasses = {
     xSmall: 'w-6 h-6 text-2xs',
     small: 'w-8 h-8 text-sm',
@@ -42,28 +40,51 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
     xLarge: 'w-20 h-20 text-sm',
   };
 
-  const shouldShowInitials = !props.imageUrl || !isImageValid;
-  const initials = 'initials' in props ? props.initials?.slice(0, 2) || 'NA' : 'NA';
+
+  const initials = useMemo(() => {
+    if (!fullName || typeof fullName !== 'string') return '';
+
+    const trimmedName = fullName.trim();
+    if (!trimmedName) return '';
+
+    const nameParts = trimmedName.split(/\s+/);
+
+    if (nameParts.length >= 2) {
+
+      const firstInitial = nameParts[0][0] || '';
+      const lastInitial = nameParts[nameParts.length - 1][0] || '';
+      return `${firstInitial}${lastInitial}`;
+    } else {
+      return trimmedName.length >= 2 ? trimmedName.substring(0, 2) : trimmedName;
+    }
+  }, [fullName]);
+
+  const shouldShowInitials = !imageUrl || !isImageValid;
+
+  const handleImageError = () => {
+    setIsImageValid(false);
+  };
 
   return (
     <div
       data-testid="user-avatar"
       className={cn(
-        'flex items-center justify-center rounded-full',
+        'flex items-center justify-center rounded-full overflow-hidden',
         shouldShowInitials && 'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600',
         sizeClasses[size],
         className,
       )}
+      aria-label={fullName || 'User avatar'}
     >
-      {!shouldShowInitials  ? (
+      {!shouldShowInitials ? (
         <img
-          src={props.imageUrl}
-          alt="Profile"
-          className="w-full h-full object-cover rounded-full"
-          onError={() => setIsImageValid(false)}
+          src={imageUrl}
+          alt={fullName || 'User profile'}
+          className="w-full h-full object-cover object-center"
+          onError={handleImageError}
         />
       ) : (
-        <span className='uppercase'>{initials}</span>
+        <span className="uppercase">{initials}</span>
       )}
     </div>
   );
