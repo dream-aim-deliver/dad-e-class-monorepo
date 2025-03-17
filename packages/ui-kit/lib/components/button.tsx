@@ -127,7 +127,7 @@ export const Button: FC<ButtonProps> = ({
           {iconLeft}
         </span>
       )}
-      <span className='truncate'>{text}</span>
+      <span className="truncate">{text}</span>
       {hasIconRight && iconRight && (
         <span
           className={cn(
