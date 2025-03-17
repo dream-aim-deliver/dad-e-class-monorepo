@@ -66,10 +66,14 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
 }) => {
   const [isImageError, setIsImageError] = React.useState(false);
   const dictionary = getDictionary(locale);
-  // Calculate total course duration in minutes and convert to hours
-  const totalDurationInMinutes =
-    duration.video + duration.coaching + duration.selfStudy;
-  const totalDurationInHours = (totalDurationInMinutes / 60).toFixed(2);
+   // Calculate total course duration in minutes and convert to hours
+   const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+   const totalDurationInHours = totalDurationInMinutes / 60;
+   // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
+   const formattedDuration = Number.isInteger(totalDurationInHours)
+     ? totalDurationInHours.toString()
+     : totalDurationInHours.toFixed(2);
+
   const handleImageError = () => { 
     setIsImageError(true);
   };
@@ -117,7 +121,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               locale={locale as TLocale}
               language={language.name}
               sessions={sessions}
-              duration={`${totalDurationInHours}  ${dictionary.components.courseCard.hours}`}
+              duration={`${formattedDuration}  ${dictionary.components.courseCard.hours}`}
               sales={sales}
             />
           </div>
