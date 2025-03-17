@@ -48,18 +48,18 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
           hasIconLeft
           iconLeft={
             <UserAvatar
-              
               size="xSmall"
-              imageUrl={imageUrl || ''}
+              imageUrl={imageUrl}
+              fullName={creatorName}
             />
           }
         />
       ) : (
         <div className="flex gap-1">
           <UserAvatar
-           
             size="xSmall"
-            imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg"
+            imageUrl={imageUrl}
+            fullName={creatorName}
           />
           <p className="text-base-white text-sm font-bold">
             {dictionary.components.courseCard.you}
