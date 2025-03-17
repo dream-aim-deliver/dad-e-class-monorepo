@@ -110,5 +110,8 @@ export const EN: TDictionary = {
       noAvailableSessionText: 'No available sessions',
       loadingText: 'Loading Sessions...',
     },
+    coachReview:{
+      by:'by'
+    }
   },
 };

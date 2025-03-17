@@ -52,6 +52,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
   hasIconRight?: boolean;
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
+  truncateText?: boolean; // New prop to control text truncation
 }
 
 /**
@@ -83,6 +84,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
  *   onClick={() => console.log("Button clicked!")}
  *   hasIconLeft
  *   iconLeft={<ArrowLeftIcon />}
+ *   truncateText
  * />
  */
 
@@ -97,6 +99,7 @@ export const Button: FC<ButtonProps> = ({
   hasIconRight = false,
   iconLeft,
   iconRight,
+  truncateText = false,
 }) => {
   const buttonSizeClasses = cn(buttonStyles({ variant, size }), className);
 
@@ -105,6 +108,7 @@ export const Button: FC<ButtonProps> = ({
       className={cn(
         buttonSizeClasses,
         'cursor-pointer flex items-center gap-1',
+        truncateText && 'min-w-0', 
       )}
       onClick={onClick}
       disabled={disabled}

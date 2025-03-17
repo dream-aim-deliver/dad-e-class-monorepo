@@ -110,5 +110,8 @@ export const DE: TDictionary = {
       loadingText: 'Sitzungen werden geladen...',
       noAvailableSessionText: 'Keine verfügbaren Sitzungen',
     },
+    coachReview:{
+      by:'von'
+    }
   },
 };
