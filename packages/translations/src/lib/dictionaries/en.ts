@@ -106,6 +106,9 @@ export const EN: TDictionary = {
     availableCoachingSessions: {
       title: 'Available Coaching Sessions',
       buyMoreSessions: 'Buy more sessions',
+      durationMinutes: 'minutes',
+      noAvailableSessionText: 'No available sessions',
+      loadingText: 'Loading Sessions...',
     },
   },
 };

@@ -1,42 +1,44 @@
 import { Button } from '../button';
 import React, { FC } from 'react';
 import { DragDropSession, DragDropSessionProps } from './drag-drop-session';
-import {
-  getDictionary,
-  isLocalAware,
-} from '@maany_shr/e-class-translations';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { on } from 'events';
 
 export interface AvailableCoachingSessionsProps extends isLocalAware {
-  isEmpty?: 'default' | 'empty';
   text?: string;
   availableCoachingSessionsData?: DragDropSessionProps[];
+  onClickBuyMoreSessions?: () => void;
+  isLoading?: boolean;
 }
 
 /**
- * A reusable component that displays available coaching sessions with a title, description, 
+ * A reusable component that displays available coaching sessions with a title, description,
  * session list, and a button to purchase more sessions.
  *
- * @param isEmpty Determines whether the session list is empty. Options: `'default' | 'empty'`. Defaults to `'default'`.
  * @param locale The locale for translations, used to retrieve localized text.
  * @param text Optional custom text displayed below the title.
  * @param availableCoachingSessionsData An array of `DragDropSessionProps` representing available coaching sessions.
+ * @param onClickBuyMoreSessions A callback function to handle the buy more sessions button click event.
+ * @param isLoading A boolean value to check if the data is loading or not.
  *
  * @example
  * <AvailableCoachingSessions
- *   isEmpty="default"
  *   locale="en"
  *   text="Here are your available coaching sessions."
  *   availableCoachingSessionsData={[
- *     { title: "Session 1", duration: 60, numberofSessions: 2 },
- *     { title: "Session 2", duration: 45, numberofSessions: 1 },
+ *     { title: "Session 1", time: 60, numberofSessions: 2 },
+ *     { title: "Session 2", time: 45, numberofSessions: 1 },
  *   ]}
+ *   onClickBuyMoreSessions={() => console.log("Buy more sessions")}
  * />
- */
+ **/
+
 export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
-  isEmpty = 'default',
   locale,
   text,
   availableCoachingSessionsData,
+  onClickBuyMoreSessions,
+  isLoading = false,
 }) => {
   const dictionary = getDictionary(locale);
   return (
@@ -44,19 +46,55 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
       <p className="text-lg text-text-primary font-bold leading-[120%]">
         {dictionary?.components?.availableCoachingSessions?.title}
       </p>
-      <p className="text-[0.875rem] text-text-secondary leading-[150%]">
-        {text}
-      </p>
-      <div className="flex flex-col gap-2 items-end w-full">
-        {availableCoachingSessionsData?.map((availableCoachingSession) => (
-          <DragDropSession
-            {...availableCoachingSession}
-            isEmpty={isEmpty}
-          />
-        ))}
-      </div>
+      {!availableCoachingSessionsData ||
+      availableCoachingSessionsData?.length === 0 ? (
+        <div className="flex items-center justify-center w-full">
+          <p className="text-[1rem] text-text-secondary leading-[150%]">
+            {
+              dictionary?.components?.availableCoachingSessions
+                ?.noAvailableSessionText
+            }
+          </p>
+        </div>
+      ) : (
+        <>
+          {isLoading ? (
+            <p className="text-[0.875rem] text-text-secondary leading-[150%]">
+              {dictionary?.components?.availableCoachingSessions?.loadingText}
+            </p>
+          ) : (
+            <p className="text-[0.875rem] text-text-secondary leading-[150%]">
+              {text}
+            </p>
+          )}
+          <div className="flex flex-col gap-2 items-end w-full">
+            {isLoading ? (
+              <>
+                <DragDropSession isLoading={isLoading} />
+                <DragDropSession isLoading={isLoading} />
+                <DragDropSession isLoading={isLoading} />
+              </>
+            ) : (
+              <>
+                {availableCoachingSessionsData?.map(
+                  (availableCoachingSession) => (
+                    <DragDropSession
+                      {...availableCoachingSession}
+                      durationMinutes={
+                        dictionary?.components?.availableCoachingSessions
+                          ?.durationMinutes
+                      }
+                    />
+                  ),
+                )}
+              </>
+            )}
+          </div>
+        </>
+      )}
       <Button
         className="w-full"
+        onClick={onClickBuyMoreSessions}
         text={
           dictionary?.components?.availableCoachingSessions?.buyMoreSessions
         }

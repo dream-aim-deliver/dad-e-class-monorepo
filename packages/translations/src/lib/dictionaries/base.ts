@@ -103,10 +103,12 @@ export const DictionarySchema = z.object({
       cochingSession: z.string(),
       sales: z.string(),
     }),
-
     availableCoachingSessions: z.object({
       title: z.string(),
       buyMoreSessions: z.string(),
+      durationMinutes: z.string(),
+      loadingText: z.string(),
+      noAvailableSessionText: z.string(),
     }),
   }),
 });

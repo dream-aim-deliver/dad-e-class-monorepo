@@ -8,17 +8,17 @@ const mockAvailableCoachingSessionsData: AvailableCoachingSessionsProps['availab
   [
     {
       title: 'Quick sprint',
-      duration: '20 minutes',
+      time: 20,
       numberofSessions: 1,
     },
     {
       title: 'Normal Sprint',
-      duration: '30 minutes',
+      time: 45,
       numberofSessions: 2,
     },
     {
       title: 'Full Immersion',
-      duration: '60 minutes',
+      time: 60,
       numberofSessions: 3,
     },
   ];
@@ -28,12 +28,6 @@ const meta: Meta<typeof AvailableCoachingSessions> = {
   component: AvailableCoachingSessions,
   tags: ['autodocs'],
   argTypes: {
-    isEmpty: {
-      control: 'select',
-      options: ['default', 'empty'],
-      description:
-        'Property to determine the layout and content of the component.',
-    },
     text: {
       control: 'text',
       description: 'Optional text to display below the title.',
@@ -47,6 +41,10 @@ const meta: Meta<typeof AvailableCoachingSessions> = {
       control: 'select',
       options: ['en', 'de'],
     },
+    isLoading: {
+      control: 'boolean',
+      description: 'A boolean value to check if the data is loading or not.',
+    },
   },
 };
 
@@ -59,10 +57,10 @@ const Template: StoryObj<typeof AvailableCoachingSessions> = {
 export const Default: StoryObj<typeof AvailableCoachingSessions> = {
   ...Template,
   args: {
-    isEmpty: 'default',
     text: 'Drag and drop a session on the calendar',
     availableCoachingSessionsData: mockAvailableCoachingSessionsData,
     locale: 'en',
+    onClickBuyMoreSessions: () => alert('Buy more sessions'),
   },
   parameters: {
     docs: {
@@ -74,13 +72,30 @@ export const Default: StoryObj<typeof AvailableCoachingSessions> = {
   },
 };
 
+export const Loading: StoryObj<typeof AvailableCoachingSessions> = {
+  ...Template,
+  args: {
+    locale: 'en',
+    isLoading: true,
+    availableCoachingSessionsData: mockAvailableCoachingSessionsData,
+    onClickBuyMoreSessions: () => alert('Buy more sessions'),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'An loading view of the AvailableCoachingSessions component with a loading message.',
+      },
+    },
+  },
+};
+
 export const Empty: StoryObj<typeof AvailableCoachingSessions> = {
   ...Template,
   args: {
-    isEmpty: 'empty',
-    text: 'No sessions available',
-    availableCoachingSessionsData: mockAvailableCoachingSessionsData,
     locale: 'en',
+    availableCoachingSessionsData: [],
+    onClickBuyMoreSessions: () => alert('Buy more sessions'),
   },
   parameters: {
     docs: {
@@ -95,21 +110,21 @@ export const Empty: StoryObj<typeof AvailableCoachingSessions> = {
 export const CustomData: StoryObj<typeof AvailableCoachingSessions> = {
   ...Template,
   args: {
-    isEmpty: 'default',
     text: 'Custom sessions',
     availableCoachingSessionsData: [
       {
         title: 'Custom Sprint',
-        duration: '45 minutes',
+        time: 45,
         numberofSessions: 1,
       },
       {
         title: 'Special Session',
-        duration: '90 minutes',
+        time: 90,
         numberofSessions: 2,
       },
     ],
     locale: 'en',
+    onClickBuyMoreSessions: () => alert('Buy more sessions'),
   },
   parameters: {
     docs: {
