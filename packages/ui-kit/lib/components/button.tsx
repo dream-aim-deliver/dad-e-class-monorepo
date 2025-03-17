@@ -74,7 +74,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
  * @param hasIconRight Optional flag indicating whether an icon should be displayed on the right side of the button.
  * @param iconLeft Optional ReactNode representing an icon to display on the left side of the button. Only rendered if `hasIconLeft` is true.
  * @param iconRight Optional ReactNode representing an icon to display on the right side of the button. Only rendered if `hasIconRight` is true.
- * @Note if we find the maximum width of my button it will truncate my large text
+ * @Note if we pass the maximum width of the button in the className @prop, the text will be truncated automatically without affecting the size of icon.
  *
  * @example
  * <Button
