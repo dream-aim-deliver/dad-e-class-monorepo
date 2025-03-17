@@ -111,7 +111,7 @@ export const Button: FC<ButtonProps> = ({
       {hasIconLeft && iconLeft && (
         <span
           className={cn(
-            'flex items-center',
+            'flex items-center flex-shrink-0',
             isValidElement(iconLeft)
               ? ''
               : 'hover:text-hover-color active:text-pressed-color',
@@ -122,11 +122,11 @@ export const Button: FC<ButtonProps> = ({
           {iconLeft}
         </span>
       )}
-      {text}
+      <span className='truncate'>{text}</span>
       {hasIconRight && iconRight && (
         <span
           className={cn(
-            'flex items-center',
+            'flex items-center flex-shrink-0',
             isValidElement(iconRight)
               ? ''
               : 'hover:text-hover-color active:text-pressed-color',
