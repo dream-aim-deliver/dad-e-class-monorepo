@@ -16,7 +16,7 @@ export const DE: TDictionary = {
       resumeCourseButton: 'Fortsetzen',
       reviewCourseButton: 'Überprüfen',
       detailsCourseButton: 'Einzelheiten',
-      publishedBadge: 'Veroeffentlichung',
+      publishedBadge: 'Veröffentlichung',
       underReviewBadge: 'In Bearbeitung',
       buyButton: 'Kaufen',
       fromButton: 'von',
