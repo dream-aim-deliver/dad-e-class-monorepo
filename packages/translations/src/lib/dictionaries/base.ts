@@ -113,6 +113,13 @@ export const DictionarySchema = z.object({
       sales: z.string(),
       hours: z.string(),
     }),
+    availableCoachingSessions: z.object({
+      title: z.string(),
+      buyMoreSessions: z.string(),
+      durationMinutes: z.string(),
+      loadingText: z.string(),
+      noAvailableSessionText: z.string(),
+    }),
   }),
 });
 export type TDictionary = z.infer<typeof DictionarySchema>;
