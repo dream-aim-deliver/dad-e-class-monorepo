@@ -16,7 +16,7 @@ export const DE: TDictionary = {
       resumeCourseButton: 'Fortsetzen',
       reviewCourseButton: 'Überprüfen',
       detailsCourseButton: 'Einzelheiten',
-      publishedBadge: 'Veroeffentlichung',
+      publishedBadge: 'Veröffentlichung',
       underReviewBadge: 'In Bearbeitung',
       buyButton: 'Kaufen',
       fromButton: 'von',
@@ -103,6 +103,16 @@ export const DE: TDictionary = {
       buttontext1: 'Verwerfen',
       buttontext2: 'Änderungen speichern',
     },
+    availableCoachingSessions: {
+      title: 'Verfügbare Coaching-Sitzungen',
+      buyMoreSessions: 'Kaufen Sie mehr Sitzungen',
+      durationMinutes: 'Minuten',
+      loadingText: 'Sitzungen werden geladen...',
+      noAvailableSessionText: 'Keine verfügbaren Sitzungen',
+    },
+    coachReview:{
+      by:'von'
+    }
     coachCard:{
       coachingSession: "Coaching-Sitzung",
       teaches: "Lehrt",

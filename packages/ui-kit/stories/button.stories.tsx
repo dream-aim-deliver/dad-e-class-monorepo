@@ -23,6 +23,9 @@ const meta: Meta<typeof Button> = {
   title: 'Components/Button',
   component: Button,
   tags: ['autodocs'],
+  parameters:{
+    layout: 'centered',
+  },
   decorators: [
     (Story) => (
       <NextIntlClientProvider locale="en" messages={mockMessages}>
@@ -121,6 +124,7 @@ export const TextButton: Story = {
     variant: 'text',
     size: 'medium',
     text: 'Text Button',
+   
   },
 };
 
@@ -165,6 +169,7 @@ export const WithLeftIcon: Story = {
     text: 'With Left Icon',
     hasIconLeft: true,
     iconLeft: <IconPlus />,
+    className:"max-w-[200px]",
   },
 };
 
@@ -174,10 +179,11 @@ export const WithLeftIcon: Story = {
 export const WithRightIcon: Story = {
   ...Template,
   args: {
-    variant: 'secondary',
+    variant: 'text',
     size: 'medium',
     text: 'With Right Icon',
     hasIconRight: true,
+   
     iconRight: <IconSearch />,
   },
 };

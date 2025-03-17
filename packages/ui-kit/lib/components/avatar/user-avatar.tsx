@@ -1,30 +1,37 @@
-import { FC } from 'react';
+import { FC, useState, useMemo } from 'react';
 import { cn } from '../../utils/style-utils';
 
-export interface UserAvatarWithPicture {
+export interface UserAvatarProps {
   size?: 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge';
-  hasProfilePicture: true;
-  imageUrl: string;
+  imageUrl?: string;
+  fullName?: string;
   className?: string;
 }
-export interface UserAvatarWithoutPicture {
-  size?: 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge';
-  hasProfilePicture: false;
-  initials: string;
-  className?: string;
-}
-export type UserAvatarProps = UserAvatarWithPicture | UserAvatarWithoutPicture;
+
 /**
- * A UserAvatar component that displays a user's profile picture or initials.
- * @param size The size of the avatar ('xSmall', 'small', 'medium', 'large', 'xLarge'). Default is 'medium'.
- * @param hasProfilePicture Boolean flag to determine if the user has a profile picture.
- * @param imageUrl The URL of the user's profile picture (if available).
- * @param initials The user's initials (used when there is no profile picture). Default is 'JF'.
- * @param className Additional custom class names for styling.
- * @returns A circular avatar component displaying either an image or initials.
+ * A component that displays a user's avatar, either as an image or initials.
+ *
+ * @param size The size of the avatar. Options:
+ *   - `xSmall`: Extra small avatar (24px)
+ *   - `small`: Small avatar (32px)
+ *   - `medium`: Medium avatar (48px, default)
+ *   - `large`: Large avatar (64px)
+ *   - `xLarge`: Extra large avatar (80px)
+ * @param imageUrl The URL of the profile picture to display.
+ * @param fullName The user's full name to display initials when no image is available.
+ * @param className Additional CSS class names for custom styling.
+ *
+ * @example
+ * <UserAvatar fullName="John Doe" size="large" imageUrl="https://example.com/avatar.jpg" />
+ *
+ * @example
+ * <UserAvatar fullName="John Doe" size="medium" />
  */
 export const UserAvatar: FC<UserAvatarProps> = (props) => {
-  const { size = 'medium', className } = props;
+  const { size = 'medium', className, imageUrl, fullName = '' } = props;
+  const [isImageValid, setIsImageValid] = useState(Boolean(imageUrl));
+
+  // Size mapping with consistent class structure
   const sizeClasses = {
     xSmall: 'w-6 h-6 text-2xs',
     small: 'w-8 h-8 text-sm',
@@ -33,25 +40,52 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
     xLarge: 'w-20 h-20 text-sm',
   };
 
+  const initials = useMemo(() => {
+    if (!fullName || typeof fullName !== 'string') return '';
+
+    const trimmedName = fullName.trim();
+    if (!trimmedName) return '';
+
+    const nameParts = trimmedName.split(/\s+/);
+
+    if (nameParts.length >= 2) {
+      const firstInitial = nameParts[0][0] || '';
+      const lastInitial = nameParts[nameParts.length - 1][0] || '';
+      return `${firstInitial}${lastInitial}`;
+    } else {
+      return trimmedName.length >= 2
+        ? trimmedName.substring(0, 2)
+        : trimmedName;
+    }
+  }, [fullName]);
+
+  const shouldShowInitials = !imageUrl || !isImageValid;
+
+  const handleImageError = () => {
+    setIsImageValid(false);
+  };
+
   return (
     <div
       data-testid="user-avatar"
       className={cn(
-        'flex items-center justify-center rounded-full',
-        !props.hasProfilePicture &&
+        'flex items-center justify-center rounded-full overflow-hidden',
+        shouldShowInitials &&
           'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600',
         sizeClasses[size],
         className,
       )}
+      aria-label={fullName || 'User avatar'}
     >
-      {props.hasProfilePicture ? (
+      {!shouldShowInitials ? (
         <img
-          src={props.imageUrl}
-          alt="Profile"
-          className={cn('w-full h-full object-cover rounded-full', className)}
+          src={imageUrl}
+          alt={fullName || 'User profile'}
+          className="w-full h-full object-cover object-center"
+          onError={handleImageError}
         />
       ) : (
-        'initials' in props && <span>{props.initials.slice(0, 2)}</span>
+        <span className="uppercase">{initials}</span>
       )}
     </div>
   );
