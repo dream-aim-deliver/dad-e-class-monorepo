@@ -1,7 +1,7 @@
 import { TAuthUser, TPermissionCheck } from './core/entity/models';
 import CourseRules, { TResourcePermission as TCourseResourcePermission } from './core/resources/course';
 import ProfileRules, {TResourcePermission as TProfileResourcePermission} from './core/resources/profile';
-import { TRole } from './core/roles';
+import { TRole } from './core/entity/roles';
 
 interface TPermission {
     course: TCourseResourcePermission
