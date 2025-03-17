@@ -112,7 +112,7 @@ export const EN: TDictionary = {
     },
     coachReview:{
       by:'by'
-    }
+    },
     coachCard:{
       coachingSession: "Coaching Session",
       teaches: "Teaches",
