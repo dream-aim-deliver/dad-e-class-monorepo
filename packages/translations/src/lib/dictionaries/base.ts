@@ -6,6 +6,10 @@ export const DictionarySchema = z.object({
     title: z.string(),
     buttonText: z.string(),
     badgeText: z.string(),
+    signInButtonText: z.string(),
+    notSignedInText: z.string(),
+    welcomeText: z.string(),
+    signOut: z.string(),
   }),
   components: z.object({
     skills: z.object({
