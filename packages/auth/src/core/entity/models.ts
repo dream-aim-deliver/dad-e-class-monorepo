@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { profile } from '@maany_shr/e-class-models';
-import { TRole } from '../roles';
+import { RoleSchema, TRole } from './roles';
 
 export const AuthUserSchema = z.object({
     roles: z.array(z.string()),
@@ -24,3 +24,18 @@ export type TRoleWithResourcePermissions<TResource extends string, TZodSchema, T
         }
     }
 }
+
+/**
+ * Represents a session object.
+ */
+export const SessionSchema = z.object({
+    user: z.object({
+        id: z.string(),
+        name: z.string(),
+        email: z.string(),
+        image: z.string(),
+        role: RoleSchema,
+    }),
+});
+
+export type TSession = z.infer<typeof SessionSchema>;
