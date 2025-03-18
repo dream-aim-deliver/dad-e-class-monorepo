@@ -4,14 +4,15 @@ import '@maany_shr/e-class-ui-kit/tailwind.css';
 import { useTheme } from '@maany_shr/e-class-ui-kit/contexts';
 import { useTranslations } from 'next-intl';
 import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { signIn, signOut } from 'next-auth/react';
+import { isSessionAware } from '@maany_shr/e-class-auth';
 
-export type HomeProps = isLocalAware;
+export type HomeProps = isLocalAware & isSessionAware;
 
 export default function Home(props: HomeProps) {
   const { theme, setTheme } = useTheme();
   const t = useTranslations('home');
-  const { data: session } = useSession();
+  const session = props.session;
   console.log('Session: ', session);
 
   if (!session) {
