@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { hasPermission, AUTH_RULES } from '../src';
-import { TAuthUser } from '../src/core/entity/models';
+import { TAuthUserInfo } from '../src/core/entity/models';
 
 
 describe('Auth Permission Tests: Profile', () => {
@@ -9,7 +9,7 @@ describe('Auth Permission Tests: Profile', () => {
   });
 
   it('should not allow visitor to update profile', () => {
-    const visitor: TAuthUser = {
+    const visitor: TAuthUserInfo = {
       roles: ['visitor'],
       profile: {
         name: 'Visitor',
