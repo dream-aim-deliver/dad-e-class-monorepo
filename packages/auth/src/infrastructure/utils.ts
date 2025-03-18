@@ -1,4 +1,4 @@
-import { role } from "@maany_shr/e-class-models";
+import { role, auth } from "@maany_shr/e-class-models";
 
 
 /**
@@ -33,3 +33,7 @@ export const extractPlatformSpecificRoles = (roles: string[], platform: string):
         return platformSpecificRole
     });
 };
+
+export interface isSessionAware {
+    session?: auth.TSession
+}

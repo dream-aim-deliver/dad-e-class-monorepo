@@ -4,8 +4,10 @@ import ProfileRules, { TResourcePermission as TProfileResourcePermission } from 
 import { role, auth } from '@maany_shr/e-class-models';
 
 export {AuthProviderProfileDTOSchema, type TAuthProviderProfileDTO } from './core/dto/auth-provider-dto';
+export {GetSessionDTOSchema, type TGetSessionDTO, ExtractJWTDTOSchema, type TExtractJWTDTO} from './core/dto/auth-gateway-dto';
+export { type AuthGatewayOutputPort} from './core/ports/secondary/auth-gateway-output-port';
 
-export { extractPlatformSpecificRoles } from './infrastructure/utils';
+export { type isSessionAware, extractPlatformSpecificRoles } from './infrastructure/utils';
 interface TPermission {
     course: TCourseResourcePermission
     profile: TProfileResourcePermission
