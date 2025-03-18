@@ -1,5 +1,5 @@
-import { course } from '@maany_shr/e-class-models';
-import { TAuthUserInfo, TRoleWithResourcePermissions } from '../entity/models';
+import { course, auth } from '@maany_shr/e-class-models';
+import { TRoleWithResourcePermissions } from '../entity';
 
 export type TResourceName = "course";
 
@@ -30,7 +30,7 @@ export type TResourcePermission = {
 const RULES: TRoleWithResourcePermissions<"course", course.TCourseMetadata, TResourcePermission> = {
     visitor: {
         course: {
-            read: (_user: TAuthUserInfo, course) => {
+            read: (_user: auth.TSessionUser, course) => {
                 if (course.title === 'Public Course') {
                     return true;
                 }

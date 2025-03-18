@@ -1,5 +1,5 @@
-import { profile } from '@maany_shr/e-class-models';
-import { TAuthUserInfo, TRoleWithResourcePermissions } from '../entity/models';
+import { profile, auth } from '@maany_shr/e-class-models';
+import { TRoleWithResourcePermissions } from '../entity';
 export type TResourceName = "profile";
 
 /**
@@ -38,12 +38,12 @@ const RULES: TRoleWithResourcePermissions<"profile", profile.TProfiles, TResourc
     coach: {
         profile: {
             read: true,
-            update: (user: TAuthUserInfo, profile) => {
+            update: (user: auth.TSessionUser, profile) => {
                 const personalProfile = profile[0] as profile.TPersonalProfile;
-                if(user.profile == null) return false;
-                const email = user.profile.email;
+                if(user.id == null) return false;
+                const email = user.email;
                 if(email == null) return false;
-                return user.profile.email === personalProfile.email;
+                return user.email === personalProfile.email;
             },
             delete: false,
         }
