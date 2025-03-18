@@ -1,8 +1,9 @@
 import NextAuth, { NextAuthResult } from "next-auth"
 import Auth0, { Auth0Profile } from "next-auth/providers/auth0"
 import { DefaultJWT } from "next-auth/jwt"
-import { TAuthProviderProfile, TRole, PlatformSchema, extractPlatformSpecificRoles, TPlatform, SessionUserSchema, RoleSchema } from "@maany_shr/e-class-auth";
+import { role, platform } from "@maany_shr/e-class-models"
 import { Account } from "next-auth"
+import { extractPlatformSpecificRoles, TAuthProviderProfileDTO } from "@maany_shr/e-class-auth"
 
 const nextAuth: NextAuthResult = NextAuth({
     trustHost: true,
@@ -22,7 +23,7 @@ const nextAuth: NextAuthResult = NextAuth({
             },
             profile: (profile: Auth0Profile) => {
                 const ROLES_CLAIM = process.env.AUTH_AUTH0_ROLES_CLAIM_KEY
-                let roles: TRole[] = ['visitor'];
+                let roles: role.TRole[] = ['visitor'];
                 if (ROLES_CLAIM && profile[ROLES_CLAIM]) {
                     roles = profile[ROLES_CLAIM];
                 }
@@ -40,7 +41,7 @@ const nextAuth: NextAuthResult = NextAuth({
                     issuer: profile.iss,
                     expires: profile.exp,
                     roles: roles,
-                } as TAuthProviderProfile;
+                } as TAuthProviderProfileDTO;
             }
         })
     ],
@@ -51,19 +52,19 @@ const nextAuth: NextAuthResult = NextAuth({
             return token;
         },
         session: async ({ session, token }) => {
-            const platform = process.env.E_CLASS_PLATFORM_SHORT_NAME
-            if (!platform) {
+            const platformName = process.env.E_CLASS_PLATFORM_SHORT_NAME
+            if (!platformName) {
                 throw new Error("CRITICAL! Configuration Error: Platform name not found in the environment variables");
             }
-            const isValidPlatform = PlatformSchema.safeParse(platform);
+            const isValidPlatform = platform.PlatformSchema.safeParse(platformName);
             if (!isValidPlatform.success) {
                 // TODO log error
-                throw new Error(`Invalid platform name ${platform}. Check the app configuration.`);
+                throw new Error(`Invalid platform name ${platformName}. Check the app configuration.`);
             }
-            session.platform = platform as TPlatform;
+            session.platform = platformName as platform.TPlatform;
 
             const nextAuthToken = token as DefaultJWT & {
-                user: TAuthProviderProfile,
+                user: TAuthProviderProfileDTO,
                 account: Account
             }
 
@@ -78,11 +79,12 @@ const nextAuth: NextAuthResult = NextAuth({
             session.user.id = nextAuthToken.user.externalID;
 
             const roles = nextAuthToken.user.roles;
-            const platformSpecificRoles = extractPlatformSpecificRoles(roles, platform);
+            const platformSpecificRoles = extractPlatformSpecificRoles(roles, platformName);
 
             if (session.user.roles === undefined || session.user.roles.length === 0) {
                 session.user.roles = ['visitor'];
             }
+            const RoleSchema = role.RoleSchema;
 
             platformSpecificRoles.forEach(role => {
                 const isValidRole = RoleSchema.safeParse(role);
@@ -93,6 +95,7 @@ const nextAuth: NextAuthResult = NextAuth({
                         session.user.roles?.push(role);
                 }
             });
+            
             // TODO: Enable this to align the session expiry with the token expiry, currently session_expiry < token_expiry
             // if (nextAuthToken.account.expires_at) {
             //     session.expires = new Date((nextAuthToken.account.expires_at) * 1000).toISOString() as unknown as (Date & string);

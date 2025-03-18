@@ -1,4 +1,5 @@
-import { TRole, RoleSchema} from "../core/entity/roles";
+import { role } from "@maany_shr/e-class-models";
+
 
 /**
  * Extracts platform-specific roles from a list of roles in the format `platform-{platform_name}:{role}.
@@ -20,13 +21,13 @@ import { TRole, RoleSchema} from "../core/entity/roles";
  * // result: ['user', 'admin']
  * ```
  */
-export const extractPlatformSpecificRoles = (roles: string[], platform: string): TRole[] => {
+export const extractPlatformSpecificRoles = (roles: string[], platform: string): role.TRole[] => {
     const paltformRoles = roles.filter((role) => role.startsWith(`platform-${platform}`))
-    return paltformRoles.map((role): TRole => {
-        const platformSpecificRole: TRole = role.replace(`platform-${platform}:`, '').trim().toLowerCase() as TRole;
-        const validationResponse = RoleSchema.safeParse(platformSpecificRole);
+    return paltformRoles.map((platformRole): role.TRole => {
+        const platformSpecificRole: role.TRole = platformRole.replace(`platform-${platform}:`, '').trim().toLowerCase() as role.TRole;
+        const validationResponse = role.RoleSchema.safeParse(platformSpecificRole);
         if (!validationResponse.success) {
-            console.error(`auth#extractPlatformSpecificRoles: Invalid role ${role}. Check the role configuration. Accepted values are ${RoleSchema.options.values}`);
+            console.error(`auth#extractPlatformSpecificRoles: Invalid role ${role}. Check the role configuration. Accepted values are ${role.RoleSchema.options.values}`);
             return 'visitor'
         }
         return platformSpecificRole
