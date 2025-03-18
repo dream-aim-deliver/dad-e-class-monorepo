@@ -7,7 +7,8 @@ import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { SessionProvider } from "next-auth/react"
 import { auth } from "@maany_shr/e-class-models"
-import NextAuthGateway from '../../auth/next-auth-gateway';
+import { NextAuthGateway } from "@maany_shr/e-class-auth"
+import nextAuth from '../../auth/config';
 
 export const metadata = {
   title: 'Welcome to Platform',
@@ -47,7 +48,8 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }) {
  
-  const authGateway = new NextAuthGateway();
+
+  const authGateway = new NextAuthGateway(nextAuth);
   const sessionDTO = await authGateway.getSession();
   let session: auth.TSession | null = null;
   if (!sessionDTO.success) {

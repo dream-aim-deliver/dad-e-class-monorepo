@@ -6,6 +6,7 @@ import { role, auth } from '@maany_shr/e-class-models';
 export {AuthProviderProfileDTOSchema, type TAuthProviderProfileDTO } from './core/dto/auth-provider-dto';
 export {GetSessionDTOSchema, type TGetSessionDTO, ExtractJWTDTOSchema, type TExtractJWTDTO} from './core/dto/auth-gateway-dto';
 export { type AuthGatewayOutputPort} from './core/ports/secondary/auth-gateway-output-port';
+export { NextAuthGateway } from './infrastructure/gateway/next-auth-gateway';
 
 export { type isSessionAware, extractPlatformSpecificRoles } from './infrastructure/utils';
 interface TPermission {
