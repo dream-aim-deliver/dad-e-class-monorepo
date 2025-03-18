@@ -1,9 +1,11 @@
 import { AuthGatewayOutputPort, TExtractJWTDTO, TGetSessionDTO } from "@maany_shr/e-class-auth";
 import { auth as authModels } from "@maany_shr/e-class-models";
-import nextAuth from "./config";
+import { NextAuthResult } from "next-auth";
 
 
-export default class NextAuthGateway implements AuthGatewayOutputPort {
+export class NextAuthGateway implements AuthGatewayOutputPort {
+    constructor(private nextAuth: NextAuthResult) {}
+
     async extractJWT(): Promise<TExtractJWTDTO> {
         const sessionDTO = await this.getSession();
         if (!sessionDTO.success) {
@@ -33,10 +35,9 @@ export default class NextAuthGateway implements AuthGatewayOutputPort {
             }
         }
     }
-    
 
     async getSession(): Promise<TGetSessionDTO> {
-        const auth = nextAuth.auth
+        const auth = this.nextAuth.auth
         const session = await auth();
         if (session) {
             const isValidSession = authModels.SessionSchema.safeParse(session);
