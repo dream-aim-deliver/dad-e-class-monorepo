@@ -87,6 +87,12 @@ export const DictionarySchema = z.object({
     coachReview: z.object({
       by:z.string()
     }),
+    coachCard: z.object({
+      coachingSession: z.string(),
+      teaches: z.string(),
+      viewProfile: z.string(),
+      bookSession: z.string(),
+    }),
     courseCard: z.object({
       createdBy: z.string(),
       you: z.string(),

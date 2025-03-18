@@ -112,6 +112,12 @@ export const EN: TDictionary = {
     },
     coachReview:{
       by:'by'
+    },
+    coachCard:{
+      coachingSession: "Coaching Session",
+      teaches: "Teaches",
+      viewProfile: "View Profile",
+      bookSession: "Book a Session",
     }
   },
 };

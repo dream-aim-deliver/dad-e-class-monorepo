@@ -112,6 +112,12 @@ export const DE: TDictionary = {
     },
     coachReview:{
       by:'von'
+    },
+    coachCard:{
+      coachingSession: "Coaching-Sitzung",
+      teaches: "Lehrt",
+      viewProfile: "Profil ansehen",
+      bookSession: "Sitzung buchen",
     }
   },
 };
