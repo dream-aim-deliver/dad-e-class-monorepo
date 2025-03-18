@@ -24,7 +24,6 @@ export default function Home(props: HomeProps) {
         >
           {t('signInButtonText')}
         </button>
-        <div className="mt-4 text-sm text-gray-400">{session && session}</div>
       </div>
     );
   }
@@ -36,7 +35,7 @@ export default function Home(props: HomeProps) {
         {t('title')}
       </p>
       <div className="text-center text-white text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
-        {t('welcomeText')} {session.user?.id} <br />
+        {t('welcomeText')} {session.user.name} <br />
         <button
           className="mt-4 px-6 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75"
           onClick={() => signOut()}
@@ -57,9 +56,6 @@ export default function Home(props: HomeProps) {
         locale={props.locale as TLocale}
         skills={['React', 'TypeScript', 'TailwindCSS']}
       />
-      <div className="flex flex-col text-wrap overflow-auto m-4 gap-2 p-4  text-sm text-gray-400">
-        {JSON.stringify(session, null, 4)}
-      </div>
     </div>
   );
 }

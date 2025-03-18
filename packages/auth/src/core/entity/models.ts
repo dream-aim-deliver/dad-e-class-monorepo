@@ -38,18 +38,16 @@ export type TAuthUserInfo = z.infer<typeof AuthUserInfoSchema>;
 /**
  * Represents a user in the session object.
  */
-export const SessionUserSchema = z.object({
-    info: AuthUserInfoSchema,
+export const SessionUserSchema = AuthUserInfoSchema.merge(z.object({
     accessToken: z.string(),
     idToken: z.string(),
     roles: z.array(RoleSchema),
-}).partial();
+})).partial();
 
 export type TSessionUser = z.infer<typeof SessionUserSchema>;
 
 
 export const SessionSchema = z.object({
-    isLoggedIn: z.boolean(),
     user: SessionUserSchema,
     platform: PlatformSchema,
     expires: z.date().and(z.string()),

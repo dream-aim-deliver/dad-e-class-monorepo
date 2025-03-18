@@ -66,7 +66,7 @@ const nextAuth: NextAuthResult = NextAuth({
                 user: TAuthProviderProfile,
                 account: Account
             }
-            
+
             session.user.accessToken = nextAuthToken.account.access_token;
             session.user.idToken = nextAuthToken.account.id_token;
 
@@ -75,11 +75,12 @@ const nextAuth: NextAuthResult = NextAuth({
             session.user.email = nextAuthToken.user.email;
             session.user.name = nextAuthToken.user.name;
             session.user.image = nextAuthToken.user.image;
+            session.user.id = nextAuthToken.user.externalID;
 
             const roles = nextAuthToken.user.roles;
             const platformSpecificRoles = extractPlatformSpecificRoles(roles, platform);
-            
-            if(session.user.roles === undefined || session.user.roles.length === 0) {
+
+            if (session.user.roles === undefined || session.user.roles.length === 0) {
                 session.user.roles = ['visitor'];
             }
 
@@ -92,9 +93,10 @@ const nextAuth: NextAuthResult = NextAuth({
                         session.user.roles?.push(role);
                 }
             });
-            if(nextAuthToken.account.expires_at) {
-                session.expires = new Date((nextAuthToken.account.expires_at) * 1000).toISOString() as unknown as (Date & string);
-            }
+            // TODO: Enable this to align the session expiry with the token expiry, currently session_expiry < token_expiry
+            // if (nextAuthToken.account.expires_at) {
+            //     session.expires = new Date((nextAuthToken.account.expires_at) * 1000).toISOString() as unknown as (Date & string);
+            // }
             return session;
         }
     }
