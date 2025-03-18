@@ -5,7 +5,7 @@ declare global {
 }
 
 import NextAuth from "next-auth"
-import type { TSession, TSessionUser } from "@maany_shr/e-class-auth"
+import { auth } from "@maany_shr/e-class-models"
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -14,8 +14,8 @@ import type { TSession, TSessionUser } from "@maany_shr/e-class-auth"
  */
 declare module "next-auth" {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface Session extends TSession {
-        user: TSessionUser;
+    interface Session extends auth.TSession {
+        user: auth.TSessionUser;
     }
 
     // Optionally, override the User type

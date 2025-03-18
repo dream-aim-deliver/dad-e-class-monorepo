@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { hasPermission, AUTH_RULES } from '../src';
-import { TAuthUserInfo } from '../src/core/entity/models';
-
+import { auth, profile } from '@maany_shr/e-class-models';
 
 describe('Auth Permission Tests: Profile', () => {
   it('should allow visitor to read profile', () => {
@@ -9,15 +8,31 @@ describe('Auth Permission Tests: Profile', () => {
   });
 
   it('should not allow visitor to update profile', () => {
-    const visitor: TAuthUserInfo = {
+    const visitor: auth.TSessionUser = {
       roles: ['visitor'],
-      profile: {
-        name: 'Visitor',
-        email: 'abcd@gmail.com',
-      }
+      name: 'Visitor',
+      email: 'abcd@gmail.com',
     };
 
-    const canUpdateProfile = hasPermission(visitor, 'profile', 'update', visitor.profile[0]);
+    const profile: profile.TPersonalProfile = {
+      isRepresentingCompany: false,
+      email: 'abcd@gmail.com',
+      name: 'Visitor',
+      surname: 'Visitor',
+      phoneNumber: '123456789',
+      dateOfBirth: new Date().toISOString(),
+      profilePicture: 'https://example.com',
+      languages: [{
+        name: 'English',
+        code: 'ENG',
+      }],
+      interfaceLanguage: {
+        name: 'English',
+        code: 'ENG',
+      },
+      receiveNewsletter: true,
+    }
+    const canUpdateProfile = hasPermission(visitor, 'profile', 'update', [profile]);
     expect(canUpdateProfile).toBe(false);
 
   });

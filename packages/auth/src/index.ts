@@ -1,19 +1,18 @@
-import { TAuthUserInfo, TPermissionCheck } from './core/entity/models';
+import { TPermissionCheck } from './core/entity';
 import CourseRules, { TResourcePermission as TCourseResourcePermission } from './core/resources/course';
 import ProfileRules, { TResourcePermission as TProfileResourcePermission } from './core/resources/profile';
-import { TRole } from './core/entity/roles';
+import { role, auth } from '@maany_shr/e-class-models';
 
-export * from './core/entity/models';
+export {AuthProviderProfileDTOSchema, type TAuthProviderProfileDTO } from './core/dto/auth-provider-dto';
+
 export { extractPlatformSpecificRoles } from './infrastructure/utils';
-export * from './core/entity/platforms';
-export *  from './core/entity/roles';
 interface TPermission {
     course: TCourseResourcePermission
     profile: TProfileResourcePermission
 }
 
 type TAllRolesWithPermissions = {
-    [R in TRole]: Partial<{
+    [R in role.TRole]: Partial<{
         [Key in keyof TPermission]: Partial<{
             [Action in TPermission[Key]["action"]]: TPermissionCheck<TPermission[Key]["dataType"]>
         }>
@@ -43,14 +42,14 @@ export const AUTH_RULES: TAllRolesWithPermissions = {
  * @returns {boolean} - Returns `true` if the user has the required permission, otherwise `false`.
  */
 export function hasPermission<TResource extends keyof TPermission>(
-    user: TAuthUserInfo,
+    user: auth.TSessionUser,
     resource: TResource,
     action: TPermission[TResource]["action"],
     data?: TPermission[TResource]["dataType"]
 ) {
     if (user.roles == null || user.roles.length === 0) return false
-    return user.roles.some((role) => {
-        const typedRole = role as TRole;
+    return user.roles.some((role: role.TRole) => {
+        const typedRole = role as role.TRole;
         const permission = (AUTH_RULES as TAllRolesWithPermissions)[typedRole][resource]?.[action]
         if (permission == null) return false
         if (typeof permission === "boolean") return permission
