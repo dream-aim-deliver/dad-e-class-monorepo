@@ -6,7 +6,8 @@ import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { SessionProvider } from "next-auth/react"
-import nextAuth from "../../utils/auth"
+import { auth } from "@maany_shr/e-class-models"
+import NextAuthGateway from '../../auth/next-auth-gateway';
 
 export const metadata = {
   title: 'Welcome to Platform',
@@ -34,7 +35,6 @@ const figtree = Figtree({
   subsets: ['latin'],
 });
 
-const auth = nextAuth.auth
 export async function generateStaticParams() {
   return i18nConfig.locales.map((locale) => ({ locale }));
 }
@@ -47,7 +47,15 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }) {
  
-  const session = await auth();
+  const authGateway = new NextAuthGateway();
+  const sessionDTO = await authGateway.getSession();
+  let session: auth.TSession | null = null;
+  if (!sessionDTO.success) {
+    session = null;
+  } else {
+    session = sessionDTO.data;
+  }
+  
   const params = await paramsPromise;
   const locale = params?.locale;
   
