@@ -7,6 +7,7 @@ import { StarRating } from '../star-rating';
 import { IconLanguage } from '../icons/icon-language';
 import { IconCoachingSession } from '../icons/icon-coaching-session';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
+import SkillBadges from '../skill-badges';
 
 /**
  * Represents a course associated with a coach.
@@ -118,15 +119,9 @@ const CoachCard: FC<CoachCardProps> = ({
         </div>
 
         {/* Skills */}
-        <div className="flex flex-wrap gap-2">
-          {cardDetails.skills.slice(0, 5).map((skill) => (
-            <Badge text={skill} key={skill} className="h-6 w-auto py-1 text-base" />
-          ))}
-          {cardDetails.skills.length > 5 && (
-            <Badge key="more-badge" className="h-6 w-auto py-1 text-base" text={`and ${cardDetails.skills.length - 5} more...`} />
-          )}
+        <div className="mb-3">
+        <SkillBadges skills={cardDetails.skills} />
         </div>
-
         {/* Card Body */}
         <div className="flex flex-col gap-4">
           <p className="leading-[150%]">{cardDetails.description}</p>
