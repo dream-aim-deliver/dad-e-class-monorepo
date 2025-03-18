@@ -1,5 +1,5 @@
 import { profile } from '@maany_shr/e-class-models';
-import { TAuthUser, TRoleWithResourcePermissions } from '../entity/models';
+import { TAuthUserInfo, TRoleWithResourcePermissions } from '../entity/models';
 export type TResourceName = "profile";
 
 /**
@@ -38,7 +38,7 @@ const RULES: TRoleWithResourcePermissions<"profile", profile.TProfiles, TResourc
     coach: {
         profile: {
             read: true,
-            update: (user: TAuthUser, profile) => {
+            update: (user: TAuthUserInfo, profile) => {
                 const personalProfile = profile[0] as profile.TPersonalProfile;
                 if(user.profile == null) return false;
                 const email = user.profile.email;
