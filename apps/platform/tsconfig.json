@@ -41,6 +41,9 @@
     },
     {
       "path": "../../packages/translations"
+    },
+    {
+      "path": "../../packages/auth"
     }
   ]
 }
