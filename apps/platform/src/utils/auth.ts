@@ -2,12 +2,21 @@ import NextAuth, { NextAuthResult } from "next-auth"
 import Auth0 from "next-auth/providers/auth0"
 
 const nextAuth: NextAuthResult = NextAuth({
+    trustHost: true,
+    session: {
+        strategy: "jwt",
+    },
     providers: [
         Auth0({
             clientId: process.env.AUTH_AUTH0_CLIENT_ID,
             clientSecret: process.env.AUTH_AUTH0_CLIENT_SECRET,
             issuer: process.env.AUTH_AUTH0_ISSUER,
-            authorization: process.env.AUTH_AUTH0_AUTHORIZATION_URL,
+            authorization: {
+                params: {
+                    scope: "openid profile email",
+                },
+                url: process.env.AUTH_AUTH0_AUTHORIZATION_URL,
+            },
             profile: (profile) => {
                 return {
                     id: profile.sub,
@@ -15,13 +24,12 @@ const nextAuth: NextAuthResult = NextAuth({
                     email: profile.email,
                     image: profile.picture,
                     sid: profile.sid,
-                    role: profile.roles,
                 }
             }
         })
     ],
     callbacks: {
-        jwt: async ({ token, user }) => {
+        jwt: async ({ token, user, account, profile }) => {
             user && (token.user = user)
             return token;
         },
@@ -39,4 +47,4 @@ const nextAuth: NextAuthResult = NextAuth({
     }
 })
 
-export default nextAuth
+ export default nextAuth
