@@ -118,7 +118,7 @@ export const EN: TDictionary = {
       teaches: "Teaches",
       viewProfile: "View Profile",
       bookSession: "Book a Session",
-    }
+    },
     buyCoachingSession:{
       title: 'Buy Coaching Session',
       description: 'Schedule your sessions anytime, each with your favourite coach.',

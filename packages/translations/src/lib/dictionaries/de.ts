@@ -118,7 +118,7 @@ export const DE: TDictionary = {
       teaches: "Lehrt",
       viewProfile: "Profil ansehen",
       bookSession: "Sitzung buchen",
-    }
+    },
     buyCoachingSession: {
       title: "Coaching-Sitzung kaufen",
       description: "Plane deine Sitzungen jederzeit mit deinem Lieblingscoach.",

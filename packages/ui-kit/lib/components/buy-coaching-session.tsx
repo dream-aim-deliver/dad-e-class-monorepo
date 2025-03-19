@@ -97,7 +97,7 @@ function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachi
                     <div key={course.id} className="flex justify-between items-center py-3 border-b border-divider">
                         <div className="flex flex-col gap-2">
                             <h6 className="flex items-center gap-2 text-text-primary text-md md:text-lg">
-                                 <Tooltip text={course.title} content={course.content}/>
+                            <Tooltip text={course.title} description={course.content}/>
                             </h6>
                             <div className='flex gap-2 items-center text-text-secondary'>
                                 <p className="text-xs md:text-sm font-important">{course.price} {currencyType}</p>
