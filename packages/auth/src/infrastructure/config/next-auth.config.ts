@@ -24,7 +24,8 @@ export const generateNextAuthConfig = (config: {
         issuer: string;
         authorizationUrl: string;
         rolesClaimKey: string;
-    }}
+    },
+}
 ): NextAuthResult => {
     const nextAuthConfig: NextAuthConfig = {
         trustHost: true,
@@ -32,11 +33,8 @@ export const generateNextAuthConfig = (config: {
             strategy: "jwt",
         },
         pages: {
-            signIn: '/auth/signin',
-            signOut: '/auth/signout',
-            error: '/auth/error',
-            verifyRequest: '/auth/verify-request',
-            newUser: '/auth/new-user',
+            signIn: '/auth/login',
+            error: '/en/auth/error',
         },
         providers: [
             CredentialsProvider({
