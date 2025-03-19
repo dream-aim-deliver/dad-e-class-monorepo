@@ -30,6 +30,12 @@ export default defineConfig({
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     cwd: workspaceRoot,
+    env: {
+      'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK',
+      'AUTH_ENABLE_TEST_ACCOUNTS': 'true',
+      'E_CLASS_PLATFORM_SHORT_NAME': "dev",
+      'E_CLASS_PLATFORM_NAME':"E-Class Dev Platform"
+    }
   },
   projects: [
     {
