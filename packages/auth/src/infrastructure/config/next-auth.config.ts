@@ -6,9 +6,9 @@ import { role, platform } from "@maany_shr/e-class-models"
 import { Account } from "next-auth"
 import { extractPlatformSpecificRoles } from "../utils";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { TSessionUser } from "packages/models/src/auth";
+import { auth } from "@maany_shr/e-class-models";
 
-const VALID_USERS: (TSessionUser & {password: string})[] = [
+const TEST_ACCOUNTS: (auth.TSessionUser & {password: string})[] = [
     {
         id: '1',
         name: 'Conny',
@@ -25,34 +25,41 @@ export const generateNextAuthConfig = (config: {
         authorizationUrl: string;
         rolesClaimKey: string;
     },
+    useTestAccounts: boolean,
+    pages: {
+        signIn: string,
+        error: string,
+    }
 }
 ): NextAuthResult => {
+    const credentialsProvider = CredentialsProvider({
+        name: 'Credentials',
+        credentials: {
+            username: { label: "Username", type: "text" },
+            password: { label: "Password", type: "password" }
+        },
+        async authorize(credentials, req) {
+
+            const { username, password } = credentials as { username: string, password: string };
+            const validUser = TEST_ACCOUNTS.find(user => user.name === username && user.password === password);
+            if(validUser) {
+                return Promise.resolve(validUser);
+            }
+            return null;
+        }
+    })
+
     const nextAuthConfig: NextAuthConfig = {
         trustHost: true,
         session: {
             strategy: "jwt",
         },
         pages: {
-            signIn: '/auth/login',
-            error: '/en/auth/error',
+            signIn: `${config.pages.signIn}`,
+            error: `${config.pages.error}`,
         },
         providers: [
-            CredentialsProvider({
-                name: 'Credentials',
-                credentials: {
-                    username: { label: "Username", type: "text" },
-                    password: { label: "Password", type: "password" }
-                },
-                async authorize(credentials, req) {
-
-                    const { username, password } = credentials as { username: string, password: string };
-                    const validUser = VALID_USERS.find(user => user.name === username && user.password === password);
-                    if(validUser) {
-                        return Promise.resolve(validUser);
-                    }
-                    return null;
-                }
-            }),
+            
             Auth0({
                 clientId: config.auth0.clientId,
                 clientSecret: config.auth0.clientSecret,
@@ -149,6 +156,10 @@ export const generateNextAuthConfig = (config: {
                 return session;
             }
         }
+    }
+
+    if(config.useTestAccounts) {
+        nextAuthConfig.providers.push(credentialsProvider);
     }
     return NextAuth(nextAuthConfig)
 }

@@ -7,6 +7,9 @@
       "path": "../models"
     },
     {
+      "path": "../translations"
+    },
+    {
       "path": "./tsconfig.lib.json"
     },
     {
