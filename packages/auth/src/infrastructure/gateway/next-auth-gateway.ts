@@ -1,6 +1,7 @@
-import { AuthGatewayOutputPort, TExtractJWTDTO, TGetSessionDTO } from "@maany_shr/e-class-auth";
 import { auth as authModels } from "@maany_shr/e-class-models";
 import { NextAuthResult } from "next-auth";
+import { AuthGatewayOutputPort } from "../../core/ports/secondary/auth-gateway-output-port";
+import { TExtractJWTDTO, TGetSessionDTO } from "../../core/dto/auth-gateway-dto";
 
 
 export class NextAuthGateway implements AuthGatewayOutputPort {
