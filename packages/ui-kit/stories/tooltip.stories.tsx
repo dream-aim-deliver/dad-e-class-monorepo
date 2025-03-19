@@ -1,6 +1,6 @@
 // Tooltip.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import Tooltip from "../lib/components/tooltip"
+import Tooltip from '../lib/components/tooltip';
 
 const meta: Meta<typeof Tooltip> = {
   title: 'Components/Tooltip',
@@ -22,17 +22,13 @@ const meta: Meta<typeof Tooltip> = {
       control: 'text',
       description: 'The content displayed in the tooltip',
     },
-    textClassName: {
-      control: 'text',
-      description: 'Custom class names for styling the tooltip trigger',
-    },
     contentClassName: {
       control: 'text',
       description: 'Custom class names for styling the tooltip content',
     },
-    position: {
+    tipPosition: {
       control: { type: 'select' },
-      options: ['top', 'bottom', 'auto'],
+      options: ['up', 'down', 'auto'],
       description: 'Position of the tooltip relative to the trigger',
       defaultValue: 'auto',
     },
@@ -61,7 +57,12 @@ export const LongContent: Story = {
   args: {
     text: 'Help',
     title: 'Need Assistance?',
-    description: 'This tooltip contains a longer description that demonstrates how the component handles multiple lines of text. The max-width property ensures the tooltip has a reasonable width on screen.',
+
+    description:
+      'This tooltip contains a longer description that demonstrates how the component handles multiple lines of text. The max-width property ensures the tooltip has a reasonable width on screen.',
+
+    tipPosition: 'auto',
+    contentClassName: 'w-[200px]\n',
   },
 };
 
@@ -69,8 +70,8 @@ export const CustomStyles: Story = {
   args: {
     text: 'Custom Styled',
     title: 'Custom Tooltip',
-    description: 'This tooltip uses custom classes for styling both the trigger and content.',
-    textClassName: 'text-blue-500 font-bold',
+    description:
+      'This tooltip uses custom classes for styling both the trigger and content.',
     contentClassName: 'bg-slate-800 text-white border-blue-500',
   },
   parameters: {
@@ -86,7 +87,7 @@ export const PositionTop: Story = {
   args: {
     text: 'Always on Top',
     description: 'This tooltip is forced to appear above the trigger element',
-    position: 'top',
+    tipPosition: 'up',
   },
 };
 
@@ -94,7 +95,9 @@ export const PositionBottom: Story = {
   args: {
     text: 'Always on Bottom',
     description: 'This tooltip is forced to appear below the trigger element',
-    position: 'bottom',
+    tipPosition: 'auto',
+    contentClassName: 'max-w-[500px]',
+    title: 'hellop',
   },
 };
 
@@ -103,12 +106,14 @@ export const Keyboard: Story = {
   args: {
     text: 'Tab to me',
     title: 'Keyboard Accessible',
-    description: 'This tooltip should appear when you tab to it, demonstrating keyboard accessibility',
+    description:
+      'This tooltip should appear when you tab to it, demonstrating keyboard accessibility',
   },
   parameters: {
     docs: {
       description: {
-        story: 'This story helps test keyboard focus behavior. Try tabbing to the element.',
+        story:
+          'This story helps test keyboard focus behavior. Try tabbing to the element.',
       },
     },
   },
