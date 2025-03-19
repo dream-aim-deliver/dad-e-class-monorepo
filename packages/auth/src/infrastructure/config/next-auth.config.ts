@@ -98,8 +98,12 @@ export const generateNextAuthConfig = (config: {
             jwt: async ({ token, user, account, profile }) => {
                 console.log('JWT Debug: ', token);
                 console.log('User Debug: ', user);
-                user && (token.user = user)
-                account && (token.account = account)
+                if (user) {
+                    token.user = user;
+                }
+                if (account) {
+                    token.account = account;
+                }
                 return token;
             },
             session: async ({ session, token }) => {

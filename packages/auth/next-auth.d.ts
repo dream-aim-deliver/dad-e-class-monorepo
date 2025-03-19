@@ -7,7 +7,7 @@ import { auth } from "@maany_shr/e-class-models"
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 declare module "next-auth" {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+     
     interface Session extends auth.TSession {
         user: auth.TSessionUser;
     }
