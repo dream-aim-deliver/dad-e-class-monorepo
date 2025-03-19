@@ -5,8 +5,18 @@ import { DefaultJWT } from "next-auth/jwt"
 import { role, platform } from "@maany_shr/e-class-models"
 import { Account } from "next-auth"
 import { extractPlatformSpecificRoles } from "../utils";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { TSessionUser } from "packages/models/src/auth";
 
-
+const VALID_USERS: (TSessionUser & {password: string})[] = [
+    {
+        id: '1',
+        name: 'Conny',
+        email: 'conny@e-class-dev.com',
+        roles: ['admin'],
+        password: 'test'
+    },
+]
 export const generateNextAuthConfig = (config: {
     auth0: {
         clientId: string;
@@ -21,7 +31,30 @@ export const generateNextAuthConfig = (config: {
         session: {
             strategy: "jwt",
         },
+        pages: {
+            signIn: '/auth/signin',
+            signOut: '/auth/signout',
+            error: '/auth/error',
+            verifyRequest: '/auth/verify-request',
+            newUser: '/auth/new-user',
+        },
         providers: [
+            CredentialsProvider({
+                name: 'Credentials',
+                credentials: {
+                    username: { label: "Username", type: "text" },
+                    password: { label: "Password", type: "password" }
+                },
+                async authorize(credentials, req) {
+
+                    const { username, password } = credentials as { username: string, password: string };
+                    const validUser = VALID_USERS.find(user => user.name === username && user.password === password);
+                    if(validUser) {
+                        return Promise.resolve(validUser);
+                    }
+                    return null;
+                }
+            }),
             Auth0({
                 clientId: config.auth0.clientId,
                 clientSecret: config.auth0.clientSecret,
@@ -58,11 +91,15 @@ export const generateNextAuthConfig = (config: {
         ],
         callbacks: {
             jwt: async ({ token, user, account, profile }) => {
+                console.log('JWT Debug: ', token);
+                console.log('User Debug: ', user);
                 user && (token.user = user)
                 account && (token.account = account)
                 return token;
             },
             session: async ({ session, token }) => {
+                console.log('Session Debug: ', session);
+                console.log('Token Debug: ', token);
                 const platformName = process.env.E_CLASS_PLATFORM_SHORT_NAME
                 if (!platformName) {
                     throw new Error("CRITICAL! Configuration Error: Platform name not found in the environment variables");

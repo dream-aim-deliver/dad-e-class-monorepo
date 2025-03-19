@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { signIn, signOut } from 'next-auth/react';
 import { isSessionAware } from '@maany_shr/e-class-auth';
+import { redirect } from 'next/navigation';
 
 export type HomeProps = isLocalAware & isSessionAware;
 
@@ -17,11 +18,13 @@ export default function Home(props: HomeProps) {
 
   if (!session) {
     return (
-      <div className="cursor-pointer text-center text-white">
+      <div className="flex flex-col items-center justify-between cursor-pointer text-center text-white">
         {t('notSignedInText')} <br />
         <button
           className="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-          onClick={() => signIn('auth0', undefined, { prompt: 'none' })}
+          onClick={() => {
+            redirect('/auth/login');
+          } }
         >
           {t('signInButtonText')}
         </button>
