@@ -4,3 +4,7 @@ export * as profile from './profile';
 export * as eClassPackage from './eclass-package';
 export * as category from './category';
 export * as topic from './topic';
+export * as notification from './notification';
+export * as coachingSession from './coaching-session';
+export * as coachingOffer from './coaching-offer';
+export * as coachReview from './coach-review';

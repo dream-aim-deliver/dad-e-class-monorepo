@@ -139,7 +139,10 @@
       }
     },
     "version": {
-      "preVersionCommand": "pnpm dlx nx run-many --target=build --all"
+      "preVersionCommand": "pnpm dlx nx run-many --target=build --all",
+      "generatorOptions": {
+        "skipLockFileUpdate": true
+      }
     },
     "versionPlans": true
   }

@@ -1,8 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/react';
+
+import React from 'react';
+import { Meta, StoryObj } from '@storybook/react';
 import { IconLanguage } from '../../lib/components/icons/icon-language';
+
 
 // Meta configuration for Storybook
 const meta: Meta<typeof IconLanguage> = {
+
   title: 'Icons/IconLanguage',
   component: IconLanguage,
   tags: ['autodocs'],
@@ -26,9 +30,12 @@ const meta: Meta<typeof IconLanguage> = {
   parameters: {
     layout: 'centered',
   },
-};
+} as Meta;
+
+
 
 export default meta;
+
 type Story = StoryObj<typeof IconLanguage>;
 
 // Default story
