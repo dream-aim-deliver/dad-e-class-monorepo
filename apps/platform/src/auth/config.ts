@@ -16,6 +16,11 @@ const nextAuth: NextAuthResult = generateNextAuthConfig({
         issuer: auth0Issuer,
         authorizationUrl: auth0AuthorizationUrl,
         rolesClaimKey: auth0RolesClaimKey
-    }
+    },
+    pages: {
+        signIn: "/en/auth/login", // TODO: Localization should be handled in middleware. See middleware.ts
+        error: "/en/auth/error" // TODO: Localization should be handled in middleware. See middleware.ts
+    },
+    useTestAccounts: process.env.AUTH_ENABLE_TEST_ACCOUNTS?.trim().toLocaleLowerCase() === "true"
 })
 export default nextAuth

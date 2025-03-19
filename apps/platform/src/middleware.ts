@@ -13,6 +13,18 @@ const i18n = createMiddleware({
 
 export default async function middleware(req: NextRequest, res: NextApiResponse) {
   const apiReq = req as unknown as NextApiRequest;
+  // const { pathname } = req.nextUrl;
+  // const isPathAllowed = ['/img', 'img', '/api'].some((allowedPath) =>
+  //   pathname.startsWith(`${allowedPath}`),
+  // );
+  // const pathnameHasLocale = locales.some(
+  //   (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
+  // );
+  // if (!isPathAllowed && !pathnameHasLocale) {
+  //   const locale = HOW TO GET LOCALE HERE? Is there a cookie?
+  //   req.nextUrl.pathname = `/${locale}${pathname}`;
+  //   return res.redirect(req.nextUrl);
+  // }
   await auth(apiReq, res);
   return i18n(req);
 } 

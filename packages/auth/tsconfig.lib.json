@@ -29,6 +29,9 @@
   "references": [
     {
       "path": "../models/tsconfig.lib.json"
+    },
+    {
+      "path": "../translations/tsconfig.lib.json"
     }
   ],
 }
