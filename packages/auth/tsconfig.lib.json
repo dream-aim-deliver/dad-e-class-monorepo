@@ -9,7 +9,7 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client", "./next-auth.d.ts"]
   },
   "include": ["src/**/*.ts"],
   "exclude": [
