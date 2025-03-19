@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export const DictionarySchema = z.object({
@@ -119,6 +120,13 @@ export const DictionarySchema = z.object({
       loadingText: z.string(),
       noAvailableSessionText: z.string(),
     }),
+    buyCoachingSession: z.object({
+      title:z.string(),
+      description:z.string(),
+      buttonText:z.string(),
+      total:z.string(),
+      minutes:z.string(),
+    })
   }),
 
 });
