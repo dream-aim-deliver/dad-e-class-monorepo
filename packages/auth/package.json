@@ -1,6 +1,6 @@
 {
   "name": "@maany_shr/e-class-auth",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "type": "module",
   "main": "./index.js",
   "typings": "./index.d.ts",
@@ -15,7 +15,7 @@
   "types": "./index.d.ts",
   "dependencies": {
     "zod": "^3.24.1",
-    "@maany_shr/e-class-models": "workspace:*"
+    "@maany_shr/e-class-models": "1.6.0"
   },
   "publishConfig": {
     "access": "public"
