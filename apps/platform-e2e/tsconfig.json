@@ -3,7 +3,7 @@
   "compilerOptions": {
     "allowJs": true,
     "outDir": "./dist/out-tsc",
-    "sourceMap": false,
+    "sourceMap": false
   },
   "include": [
     "**/*.ts",
@@ -13,15 +13,8 @@
     "src/**/*.spec.js",
     "src/**/*.test.ts",
     "src/**/*.test.js",
-    "src/**/*.d.ts",
+    "src/**/*.d.ts"
   ],
   "exclude": ["node_modules", "dist", "eslint.config.js"],
-  "references": [
-    {
-      "path": "../../packages/models"
-    },
-    {
-      "path": "../../packages/auth"
-    }
-  ]
+  "references": []
 }
