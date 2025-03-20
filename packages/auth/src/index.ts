@@ -8,7 +8,8 @@ export {GetSessionDTOSchema, type TGetSessionDTO, ExtractJWTDTOSchema, type TExt
 export { type AuthGatewayOutputPort} from './core/ports/secondary/auth-gateway-output-port';
 export { NextAuthGateway } from './infrastructure/gateway/next-auth-gateway';
 export { generateNextAuthConfig } from './infrastructure/config/next-auth.config';
-export { type isSessionAware, extractPlatformSpecificRoles } from './infrastructure/utils';
+export { type isSessionAware, extractPlatformSpecificRoles, getTestAccount } from './infrastructure/utils';
+
 interface TPermission {
     course: TCourseResourcePermission
     profile: TProfileResourcePermission
