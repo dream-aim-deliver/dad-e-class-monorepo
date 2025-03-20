@@ -14,7 +14,7 @@ export async function login(page: Page, role: role.TRole) {
 }
 
 export async function logout(page: Page) {
-  page.getByRole('button', { name: 'Sign out', exact: true }).click();
-  page.context().clearCookies();
+  await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await page.context().clearCookies();
   expect(page.getByText('Sign In')).toBeTruthy();
 }
