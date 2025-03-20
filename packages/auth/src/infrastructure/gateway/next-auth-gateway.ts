@@ -80,7 +80,6 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
     }
 
     async getRoles(): Promise<TGetRolesDTO> {
-        const data: role.TRole[] = ["visitor"];
         const sessionDTO = await this.getSession();
         if (!sessionDTO.success) {
             return {

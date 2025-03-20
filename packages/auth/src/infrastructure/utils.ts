@@ -71,7 +71,7 @@ export const TEST_ACCOUNTS: (auth.TSessionUser & { password: string })[] = [
         id: '1',
         name: 'Conny',
         email: 'conny@e-class-dev.com',
-        roles: ['visitor', 'admin'],
+        roles: ['visitor', 'student', 'coach', 'admin'],
         password: 'test',
         accessToken: 'test-123',
         idToken: 'test-123',
@@ -81,7 +81,7 @@ export const TEST_ACCOUNTS: (auth.TSessionUser & { password: string })[] = [
         id: '2',
         name: 'Wim',
         email: '',
-        roles: ['coach'],
+        roles: ['visitor', 'student', 'coach'],
         password: 'test',
         accessToken: 'test-123',
         idToken: 'test-123',
@@ -90,7 +90,7 @@ export const TEST_ACCOUNTS: (auth.TSessionUser & { password: string })[] = [
         id: '3',
         name: 'Divyanshu',
         email: '',
-        roles: ['student'],
+        roles: ['visitor', 'student'],
         password: 'test',
         accessToken: 'test-123',
         idToken: 'test-123',
@@ -102,16 +102,21 @@ export const TEST_ACCOUNTS: (auth.TSessionUser & { password: string })[] = [
         roles: ['visitor'],
         password: 'test',
     },
-    {
-        id: '5',
-        name: 'Bob',
-        email: '',
-        roles: ['visitor', 'student', 'coach'],
-        password: 'test',
-    }
 ]
 
 export const getTestAccount = (role: role.TRole): TSessionUser & { password: string } => {
+    const conny = TEST_ACCOUNTS[0];
+    const wim = TEST_ACCOUNTS[1];
+    const divyanshu = TEST_ACCOUNTS[2];
     const alice = TEST_ACCOUNTS[3];
-    return TEST_ACCOUNTS.find(account => account.roles?.includes(role)) || alice;
+    switch (role) {
+        case 'admin':
+            return conny;
+        case 'coach':
+            return wim;
+        case 'student':
+            return divyanshu;
+        default:
+            return alice;
+    }
 }
