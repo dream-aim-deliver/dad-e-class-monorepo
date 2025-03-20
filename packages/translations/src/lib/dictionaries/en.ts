@@ -122,6 +122,19 @@ export const EN: TDictionary = {
     },
     coachReview:{
       by:'by'
+    },
+    coachCard:{
+      coachingSession: "Coaching Session",
+      teaches: "Teaches",
+      viewProfile: "View Profile",
+      bookSession: "Book a Session",
+    },
+    buyCoachingSession:{
+      title: 'Buy Coaching Session',
+      description: 'Schedule your sessions anytime, each with your favourite coach.',
+      buttonText: 'Buy coaching sessions',
+      total: 'Total',
+      minutes: 'minutes'
     }
   },
 };

@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export const DictionarySchema = z.object({
@@ -91,6 +92,12 @@ export const DictionarySchema = z.object({
     coachReview: z.object({
       by:z.string()
     }),
+    coachCard: z.object({
+      coachingSession: z.string(),
+      teaches: z.string(),
+      viewProfile: z.string(),
+      bookSession: z.string(),
+    }),
     courseCard: z.object({
       courseEmptyState: z.object({
         message: z.string(),
@@ -123,6 +130,13 @@ export const DictionarySchema = z.object({
       loadingText: z.string(),
       noAvailableSessionText: z.string(),
     }),
+    buyCoachingSession: z.object({
+      title:z.string(),
+      description:z.string(),
+      buttonText:z.string(),
+      total:z.string(),
+      minutes:z.string(),
+    })
   }),
 
 });

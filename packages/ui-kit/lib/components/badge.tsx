@@ -78,12 +78,13 @@ export const Badge: FC<BadgeProps> = ({
   hasIconLeft = false,
   hasIconRight = false,
   iconLeft,
-  iconRight,
+  iconRight
 }) => {
   const badgeSizeClasses = cn(badgeStyles({ variant, size }), className);
 
   return (
     <span
+    role="badge"
       className={cn(
         badgeSizeClasses,
         onClick ? 'cursor-pointer' : '',
@@ -94,7 +95,7 @@ export const Badge: FC<BadgeProps> = ({
       {hasIconLeft && iconLeft && (
         <span
           className={cn(
-            'flex items-center',
+            'flex items-center flex-shrink-0',
             isValidElement(iconLeft) ? '' : '',
           )}
           data-testid="icon-left"
@@ -102,11 +103,11 @@ export const Badge: FC<BadgeProps> = ({
           {iconLeft}
         </span>
       )}
-      {text}
+       <span className="truncate">{text}</span>
       {hasIconRight && iconRight && (
         <span
           className={cn(
-            'flex items-center',
+            'flex items-center  flex-shrink-0',
             isValidElement(iconRight) ? '' : '',
           )}
           data-testid="icon-right"

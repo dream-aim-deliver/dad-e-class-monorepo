@@ -27,3 +27,4 @@ export { ProfileTabs, DragAndDrop, Badge };
 export {CoachBanner} from './components/coach-banner';
 export * as contexts from './contexts';
 export {CourseCard} from './components/coursecard/course-card';
+export { default  as  BuyCoachingSession, type BuyCoachingSessionProps } from './components/buy-coaching-session'

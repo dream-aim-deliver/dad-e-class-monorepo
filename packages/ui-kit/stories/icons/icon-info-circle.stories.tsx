@@ -1,11 +1,10 @@
-import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
-import { IconCoachingSession } from '../../lib/components/icons/icon-coaching-session';
-// Meta configuration for Storybook
-const meta: Meta<typeof IconCoachingSession> = {
+import type { Meta, StoryObj } from '@storybook/react';
+import { IconInfoCircle } from '../../lib/components/icons/icon-infocircle';
 
-  title: 'Icons/IconCoachingSession',
-  component: IconCoachingSession,
+// Meta configuration for Storybook
+const meta: Meta<typeof IconInfoCircle > = {
+  title: 'Icons/IconInfoCircle',
+  component: IconInfoCircle ,
   tags: ['autodocs'],
   argTypes: {
     size: {
@@ -27,12 +26,10 @@ const meta: Meta<typeof IconCoachingSession> = {
   parameters: {
     layout: 'centered',
   },
-
-} as Meta;
+};
 
 export default meta;
-
-type Story = StoryObj<typeof IconCoachingSession>;
+type Story = StoryObj<typeof IconInfoCircle>;
 
 // Default story
 export const Default: Story = {
@@ -45,6 +42,6 @@ export const Default: Story = {
 export const CustomIcon: Story = {
   args: {
     size: '10',
-    classNames: 'text-button-secondary-text',
+    classNames: 'rotate-45 text-button-secondary-text',
   },
 };

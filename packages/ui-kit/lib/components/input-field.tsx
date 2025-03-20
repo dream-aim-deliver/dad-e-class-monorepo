@@ -1,4 +1,5 @@
 import React, { FC, ReactNode, useState } from 'react';
+import { cn } from '../utils/style-utils';
 
 export interface InputFieldProps {
   hasLeftContent?: boolean;
@@ -15,8 +16,9 @@ export interface InputFieldProps {
     | 'error';
   value?: string;
   setValue: (value: string) => void;
-  type?: 'text' | 'password';
+  type?: 'text' | 'password'|'number';
   id?: string;
+  className?: string;
 }
 
 /**
@@ -63,6 +65,7 @@ export const InputField: FC<InputFieldProps> = ({
   setValue,
   type = 'text',
   id,
+  className
 }) => {
   const [borderColor, setBorderColor] = useState(false);
 
@@ -77,11 +80,12 @@ export const InputField: FC<InputFieldProps> = ({
 
   return (
     <div
-      className={`flex gap-2 items-start justify-center flex-col px-3 py-[10px] bg-input-fill border rounded-medium w-full 
-      ${stateClasses[state]} 
-      `}
+      className={cn(`flex gap-2 items-start justify-center flex-col px-3 py-[10px] bg-input-fill border rounded-medium 
+      ${stateClasses[state]}
+      ${className} 
+      `)}
     >
-      <div className="flex items-center md:gap-2 w-full">
+      <div className="flex items-center md:gap-2 w-full h-full">
         {hasLeftContent && leftContent}
         <input
           data-testid={id}
@@ -92,7 +96,7 @@ export const InputField: FC<InputFieldProps> = ({
           onChange={(e) => setValue(e.target.value)}
           onFocus={() => setBorderColor(true)}
           onBlur={() => setBorderColor(false)}
-          className="bg-transparent outline-none flex-1 placeholder-text-secondary min-w-0"
+          className="bg-transparent outline-none [-moz-appearance:textfield] flex-1 placeholder-text-secondary h-full w-full appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none text-center"
         />
         {hasRightContent && rightContent}
       </div>
