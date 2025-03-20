@@ -13,6 +13,7 @@ permissions:
 jobs:
   main:
     runs-on: ubuntu-latest
+    environment: CI
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,12 +39,18 @@ jobs:
       - run: pnpm exec playwright install --with-deps
       - uses: nrwl/nx-set-shas@v4
       
-      - name: Copy .env file
-        run: |
-         cp apps/platform/.env.local.template apps/platform/.env
-
       # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
       # - run: pnpm exec nx-cloud record -- echo Hello World
       # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
       # When you enable task distribution, run the e2e-ci task instead of e2e
       - run: pnpm exec nx affected --no-cloud -t lint test build e2e
+        env:
+          'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
+          'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
+          'AUTH_AUTH0_CLIENT_ID': ${{ secrets.AUTH_AUTH0_CLIENT_ID }}
+          'AUTH_AUTH0_CLIENT_SECRET': ${{ secrets.AUTH_AUTH0_CLIENT_SECRET }}
+          'AUTH_AUTH0_ISSUER': ${{ secrets.AUTH_AUTH0_ISSUER }}
+          'AUTH_AUTH0_AUTHORIZATION_URL': ${{ secrets.AUTH_AUTH0_AUTHORIZATION_URL }}
+          'AUTH_AUTH0_ROLES_CLAIM_KEY': ${{ secrets.AUTH_AUTH0_ROLES_CLAIM_KEY }}
+          'E_CLASS_PLATFORM_SHORT_NAME': ${{ vars.E_CLASS_PLATFORM_NAME}}
+          'E_CLASS_PLATFORM_NAME': ${{ vars.E_CLASS_PLATFORM_NAME }}
