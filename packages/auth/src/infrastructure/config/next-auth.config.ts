@@ -4,19 +4,25 @@ import { TAuthProviderProfileDTO } from "../../core/dto/auth-provider-dto";
 import { DefaultJWT } from "next-auth/jwt"
 import { role, platform } from "@maany_shr/e-class-models"
 import { Account } from "next-auth"
-import { extractPlatformSpecificRoles } from "../utils";
+import { extractPlatformSpecificRoles, TEST_ACCOUNTS } from "../utils";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { auth } from "@maany_shr/e-class-models";
 
-const TEST_ACCOUNTS: (auth.TSessionUser & {password: string})[] = [
-    {
-        id: '1',
-        name: 'Conny',
-        email: 'conny@e-class-dev.com',
-        roles: ['admin'],
-        password: 'test'
-    },
-]
+/**
+ * Generates the NextAuth configuration object.
+ *
+ * @param config - Configuration object containing Auth0 and test account settings.
+ * @param config.auth0 - Auth0 configuration settings.
+ * @param config.auth0.clientId - The Auth0 client ID.
+ * @param config.auth0.clientSecret - The Auth0 client secret.
+ * @param config.auth0.issuer - The Auth0 issuer.
+ * @param config.auth0.authorizationUrl - The Auth0 authorization URL.
+ * @param config.auth0.rolesClaimKey - The key for roles claim in Auth0 profile.
+ * @param config.useTestAccounts - Flag to indicate if test accounts should be used. If true, the credentials provider is added to the providers list. Test Accounts are defined in the {@link TEST_ACCOUNTS} constant of `@maany_shr/e-class-auth` package.
+ * @param config.pages - Configuration for custom pages.
+ * @param config.pages.signIn - URL of the sign-in page.
+ * @param config.pages.error - URL of the error page.
+ * @returns The NextAuth result object.
+ */
 export const generateNextAuthConfig = (config: {
     auth0: {
         clientId: string;
@@ -39,7 +45,6 @@ export const generateNextAuthConfig = (config: {
             password: { label: "Password", type: "password" }
         },
         async authorize(credentials, req) {
-
             const { username, password } = credentials as { username: string, password: string };
             const validUser = TEST_ACCOUNTS.find(user => user.name === username && user.password === password);
             if(validUser) {
@@ -59,7 +64,6 @@ export const generateNextAuthConfig = (config: {
             error: `${config.pages.error}`,
         },
         providers: [
-            
             Auth0({
                 clientId: config.auth0.clientId,
                 clientSecret: config.auth0.clientSecret,
@@ -72,7 +76,7 @@ export const generateNextAuthConfig = (config: {
                 },
                 profile: (profile: Auth0Profile) => {
                     const ROLES_CLAIM = process.env.AUTH_AUTH0_ROLES_CLAIM_KEY
-                    let roles: role.TRole[] = ['visitor'];
+                    let roles: role.TRole[] = ['visitor']; // default role
                     if (ROLES_CLAIM && profile[ROLES_CLAIM]) {
                         roles = profile[ROLES_CLAIM];
                     }
@@ -163,7 +167,12 @@ export const generateNextAuthConfig = (config: {
     }
 
     if(config.useTestAccounts) {
-        nextAuthConfig.providers.push(credentialsProvider);
+        if(process.env.NODE_ENV === 'production') {
+            console.error('❗❗❗ Test accounts are not allowed in production environment. This is a security risk!!. Please disable test accounts in production.');
+        } else {
+            console.warn('⚠️⚠️⚠️ Test accounts are enabled. This is a security risk. Please make sure this is only used in development or testing environments.');
+            nextAuthConfig.providers.push(credentialsProvider);
+        }
     }
     return NextAuth(nextAuthConfig)
 }
