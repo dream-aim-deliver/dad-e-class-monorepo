@@ -105,8 +105,11 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
                 data: ["visitor", "student"]
             }
         }
-        
-        const platformSpecificRoles = extractPlatformSpecificRoles(roles, session.platform);
+        const platform = session.platform;
+        if(!platform) {
+            throw new Error("CRITICAL! Platform not found in the session object")
+        }
+        const platformSpecificRoles = extractPlatformSpecificRoles(roles, platform);
         if (!platformSpecificRoles) {
             console.error("[NextAuthGateway]: getRoles: Platform specific roles not found")
             return {
