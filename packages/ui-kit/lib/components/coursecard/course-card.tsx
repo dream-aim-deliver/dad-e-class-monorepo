@@ -18,6 +18,7 @@ export interface CourseCardProps {
   progress?: number;
   sessions?: number;
   sales?: number;
+  groupName?: string;
   onEdit?: () => void;
   onManage?: () => void;
   onBegin?: () => void;
@@ -25,12 +26,8 @@ export interface CourseCardProps {
   onReview?: () => void;
   onDetails?: () => void;
   onBuy?: () => void;
-  onBrowseCourses?: () => void;
-  creatorName?: string;
-  groupName?: string;
   className?: string;
 }
-
 export const CourseCard: React.FC<CourseCardProps> = (props) => {
   const {
     className,
@@ -43,14 +40,14 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     progress,
     sessions = 0,
     sales = 0,
+    groupName,
     onEdit,
-    onBuy,
     onManage,
     onBegin,
     onResume,
     onReview,
     onDetails,
-    groupName,
+    onBuy,
   } = props;
 
   const cardComponents = {
@@ -97,7 +94,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             sessions={sessions}
             duration={course.duration}
             sales={sales}
-            groupName={groupName}
+            groupName={groupName} // Pass groupName explicitly if provided
             imageUrl={course.imageUrl}
             onManage={onManage}
             locale={locale}

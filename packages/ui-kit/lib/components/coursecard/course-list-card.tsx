@@ -9,8 +9,8 @@ export interface CourseCardListProps {
   locale: TLocale;
   callbacks?: Partial<Pick<CourseCardProps, 
     'onEdit' | 'onManage' | 'onBegin' | 'onResume' | 
-    'onReview' | 'onDetails' | 'onBuy' | 'onBrowseCourses'
- >>;
+    'onReview' | 'onDetails' | 'onBuy'
+  >> & { onBrowseCourses?: () => void };
 }
 
 const getEmptyStateConfig = (
