@@ -106,7 +106,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
             </h6>
 
             <div className="flex gap-1 items-end">
-              <StarRating rating={rating} />
+              <StarRating totalStars={5} rating={rating} />
               <span className="text-xs text-text-primary leading-[100%]">
                 {rating}
               </span>
