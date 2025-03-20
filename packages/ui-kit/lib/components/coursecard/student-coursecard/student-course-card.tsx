@@ -11,7 +11,7 @@ import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 
 export type TCourseMetadata = z.infer<typeof course.CourseMetadataSchema>;
 
-interface CourseCardProps extends TCourseMetadata {
+interface StudentCourseCardProps extends TCourseMetadata {
   locale: TLocale;
   sales: number;
   reviewCount: number;
@@ -60,7 +60,7 @@ interface CourseCardProps extends TCourseMetadata {
  *   onDetails={() => console.log("Details clicked!")}
  * />
  */
-export const StudentCourseCard: React.FC<CourseCardProps> = ({
+export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   title,
   description,
   duration,

@@ -1,28 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { CourseCard, CourseCardProps } from '../lib/components/coursecard/course-card';
-
-// Wrapper component with browser alert functionality
-const CourseCardWithAlert: React.FC<CourseCardProps> = (props) => {
-  const createCallback = (message: string) => () => {
-    window.alert(message);
-  };
-
-  // Always provide alert callbacks, overriding any existing ones
-  const enhancedProps = {
-    ...props,
-    onEdit: createCallback('Edit clicked'),
-    onManage: createCallback('Manage clicked'),
-    onBegin: createCallback('Begin clicked'),
-    onResume: createCallback('Resume clicked'),
-    onReview: createCallback('Review clicked'),
-    onDetails: createCallback('Details clicked'),
-    onBuy: createCallback('Buy clicked'),
-    onBrowseCourses: createCallback('Browse Courses clicked'),
-  };
-
-  return <CourseCard {...enhancedProps} />;
-};
+import { CourseCard, CourseCardProps } from '../../lib/components/coursecard/course-card';
 
 const sampleCourseData = {
   id: 'course-123',
@@ -44,8 +22,8 @@ const sampleCourseData = {
     image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
   },
   language: {
-    code: "ENG" as const,
-    name: "English" as const,
+    code: 'ENG' as const,
+    name: 'English' as const,
   },
   groupName: 'Design Professionals',
   createdAt: new Date().toISOString(),
@@ -53,9 +31,9 @@ const sampleCourseData = {
   rating: 4.7,
 };
 
-const meta: Meta<typeof CourseCardWithAlert> = {
+const meta: Meta<typeof CourseCard> = {
   title: 'Components/CourseCardComponents/CourseCard',
-  component: CourseCardWithAlert,
+  component: CourseCard,
   parameters: {
     layout: 'centered',
   },
@@ -66,12 +44,16 @@ const meta: Meta<typeof CourseCardWithAlert> = {
       options: ['creator', 'coach', 'student', 'visitor'],
       description: 'Type of user viewing the course card',
     },
-    reviewCount: { 
+    course: {
+      control: 'object',
+      description: 'Course metadata object',
+    },
+    reviewCount: {
       control: 'number',
       description: 'Number of reviews for the course',
     },
-    locale: { 
-      control: 'select', 
+    locale: {
+      control: 'select',
       options: ['en', 'de'],
       description: 'Locale for translations',
     },
@@ -79,51 +61,96 @@ const meta: Meta<typeof CourseCardWithAlert> = {
       control: 'object',
       description: 'Language of the course content',
     },
-    creatorStatus: { 
+    creatorStatus: {
       control: 'select',
       options: ['draft', 'under-review', 'published'],
       if: { arg: 'userType', eq: 'creator' },
-      description: 'status of the course for creator view',
+      description: 'Status of the course for creator view',
     },
-    progress: { 
+    progress: {
       control: 'number',
       min: 0,
       max: 100,
       if: { arg: 'userType', eq: 'student' },
       description: 'Progress percentage for student view',
     },
-    sessions: { 
+    sessions: {
       control: 'number',
       description: 'Number of sessions in the course',
     },
-    sales: { 
+    sales: {
       control: 'number',
       description: 'Number of course sales',
     },
-    groupName: { 
+    groupName: {
       control: 'text',
       description: 'Name of the group/cohort',
     },
-    className: { 
+    className: {
       control: 'text',
       description: 'Additional CSS classes',
     },
-    courses: {
-      control: 'object',
-      description: 'Array of courses to check if there are any courses',
+    onEdit: {
+      action: 'edit-clicked',
+      description: 'Callback for edit action',
     },
-    showEmptyState: {
-      control: 'boolean',
-      description: 'Flag to explicitly show the empty state',
+    onManage: {
+      action: 'manage-clicked',
+      description: 'Callback for manage action',
+    },
+    onBegin: {
+      action: 'begin-clicked',
+      description: 'Callback for begin action',
+    },
+    onResume: {
+      action: 'resume-clicked',
+      description: 'Callback for resume action',
+    },
+    onReview: {
+      action: 'review-clicked',
+      description: 'Callback for review action',
+    },
+    onDetails: {
+      action: 'details-clicked',
+      description: 'Callback for details action',
+    },
+    onBuy: {
+      action: 'buy-clicked',
+      description: 'Callback for buy action',
+    },
+    onBrowseCourses: {
+      action: 'browse-courses-clicked',
+      description: 'Callback for browse courses action',
     },
   },
 };
 
 export default meta;
-type Story = StoryObj<typeof CourseCardWithAlert>;
+
+const Template: StoryObj<typeof CourseCard> = {
+  render: (args) => {
+    const createCallback = (message: string) => () => window.alert(message);
+    return (
+      <CourseCard
+        {...args}
+        onEdit={createCallback('Edit clicked')}
+        onManage={createCallback('Manage clicked')}
+        onBegin={createCallback('Begin clicked')}
+        onResume={createCallback('Resume clicked')}
+        onReview={createCallback('Review clicked')}
+        onDetails={createCallback('Details clicked')}
+        onBuy={createCallback('Buy clicked')}
+        onBrowseCourses={createCallback('Browse Courses clicked')}
+      />
+    );
+  },
+};
+
+type Story = StoryObj<typeof CourseCard>;
 
 // Creator view stories
 export const CreatorPublishedView: Story = {
+  ...Template,
   args: {
     userType: 'creator',
     reviewCount: 328,
@@ -134,39 +161,54 @@ export const CreatorPublishedView: Story = {
     sessions: 24,
     sales: 1850,
     className: 'max-w-[352px]',
-    courses: [sampleCourseData],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A published course card for a creator with sample course data.',
+      },
+    },
   },
 };
 
 export const CreatorDraftView: Story = {
+  ...Template,
   args: {
-    ...CreatorPublishedView.args,
+    userType: 'creator',
+    reviewCount: 250,
+    locale: 'en',
+    language: sampleCourseData.language,
     creatorStatus: 'draft',
     course: {
       ...sampleCourseData,
       title: 'New Course (Draft)',
     },
-    reviewCount: 250,
-    sales: 10,
     sessions: 10,
+    sales: 10,
+    className: 'max-w-[352px]',
   },
 };
 
 export const CreatorUnderReviewView: Story = {
+  ...Template,
   args: {
-    ...CreatorPublishedView.args,
+    userType: 'creator',
+    reviewCount: 10,
+    locale: 'en',
+    language: sampleCourseData.language,
     creatorStatus: 'under-review',
     course: {
       ...sampleCourseData,
       title: 'Course Under Review',
     },
-    reviewCount: 10,
     sales: 10,
+    className: 'max-w-[352px]',
   },
 };
 
 // Coach view stories
 export const CoachView: Story = {
+  ...Template,
   args: {
     userType: 'coach',
     reviewCount: 328,
@@ -177,12 +219,12 @@ export const CoachView: Story = {
     sales: 1850,
     groupName: 'Advanced Design Cohort',
     className: 'max-w-[352px]',
-    courses: [sampleCourseData],
   },
 };
 
 // Student view stories
 export const StudentYetToStartedView: Story = {
+  ...Template,
   args: {
     userType: 'student',
     reviewCount: 328,
@@ -192,26 +234,40 @@ export const StudentYetToStartedView: Story = {
     sales: 1850,
     progress: 0,
     className: 'max-w-[352px]',
-    courses: [sampleCourseData],
   },
 };
 
 export const StudentInProgressView: Story = {
+  ...Template,
   args: {
-    ...StudentYetToStartedView.args,
+    userType: 'student',
+    reviewCount: 328,
+    locale: 'en',
+    language: sampleCourseData.language,
+    course: sampleCourseData,
+    sales: 1850,
     progress: 42,
+    className: 'max-w-[352px]',
   },
 };
 
 export const StudentCompletedView: Story = {
+  ...Template,
   args: {
-    ...StudentYetToStartedView.args,
+    userType: 'student',
+    reviewCount: 328,
+    locale: 'en',
+    language: sampleCourseData.language,
+    course: sampleCourseData,
+    sales: 1850,
     progress: 100,
+    className: 'max-w-[352px]',
   },
 };
 
 // Visitor view stories
 export const VisitorView: Story = {
+  ...Template,
   args: {
     userType: 'visitor',
     reviewCount: 328,
@@ -222,12 +278,12 @@ export const VisitorView: Story = {
     sessions: 24,
     groupName: 'Design Professionals',
     className: 'max-w-[352px]',
-    courses: [sampleCourseData],
   },
 };
 
 // German locale examples
 export const GermanCreatorView: Story = {
+  ...Template,
   args: {
     ...CreatorPublishedView.args,
     locale: 'de',
@@ -235,6 +291,7 @@ export const GermanCreatorView: Story = {
 };
 
 export const GermanStudentView: Story = {
+  ...Template,
   args: {
     ...StudentInProgressView.args,
     locale: 'de',
@@ -242,6 +299,7 @@ export const GermanStudentView: Story = {
 };
 
 export const GermanCoachView: Story = {
+  ...Template,
   args: {
     ...CoachView.args,
     locale: 'de',
@@ -249,60 +307,9 @@ export const GermanCoachView: Story = {
 };
 
 export const GermanVisitorView: Story = {
+  ...Template,
   args: {
     ...VisitorView.args,
-    locale: 'de',
-  },
-};
-
-// Empty state stories
-export const EmptyStateCreator: Story = {
-  args: {
-    userType: 'creator',
-    reviewCount: 0,
-    locale: 'en',
-    language: sampleCourseData.language,
-    courses: [],
-    className: 'max-w-[352px]',
-  },
-};
-
-export const EmptyStateStudent: Story = {
-  args: {
-    userType: 'student',
-    reviewCount: 0,
-    locale: 'en',
-    language: sampleCourseData.language,
-    courses: [],
-    className: 'max-w-[352px]',
-  },
-};
-
-export const EmptyStateCoach: Story = {
-  args: {
-    userType: 'coach',
-    reviewCount: 0,
-    locale: 'en',
-    language: sampleCourseData.language,
-    courses: [],
-    className: 'max-w-[352px]',
-  },
-};
-
-export const EmptyStateVisitor: Story = {
-  args: {
-    userType: 'visitor',
-    reviewCount: 0,
-    locale: 'en',
-    language: sampleCourseData.language,
-    courses: [],
-    className: 'max-w-[352px]',
-  },
-};
-
-export const GermanEmptyState: Story = {
-  args: {
-    ...EmptyStateStudent.args,
     locale: 'de',
   },
 };

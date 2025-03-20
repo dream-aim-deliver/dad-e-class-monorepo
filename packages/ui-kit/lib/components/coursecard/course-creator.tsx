@@ -34,7 +34,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
 }) => {
   const dictionary = getDictionary(locale);
   return (
-    <div className="flex flex-wrap items-center gap-1 min-h-[32px]">
+    <div className="flex flex-wrap items-center gap-1 min-h-[32px] w-full">
       <div className="flex items-center gap-1 text-sm text-text-secondary">
         <IconCoachingOffer size='5' data-testid="briefcase-icon" />
         <span>{dictionary.components.courseCard.createdBy}</span>
@@ -43,7 +43,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
         <Button
           size="small"
           variant="text"
-          className="flex gap-1 p-0 h-8"
+          className="flex gap-1 p-0 h-8 max-w-full"
           text={creatorName}
           hasIconLeft
           iconLeft={

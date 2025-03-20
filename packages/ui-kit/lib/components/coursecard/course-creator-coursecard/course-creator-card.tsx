@@ -12,8 +12,7 @@ import { IconEdit } from "../../icons/icon-edit";
 
 export type CourseStatus = "published" | "under-review" | "draft";
 
-interface CourseCreatorCardProps extends isLocalAware {
-  course: course.TCourseMetadata;
+export interface CourseCreatorCardProps extends isLocalAware , course.TCourseMetadata {
   rating: number;
   reviewCount: number;
   sessions: number;
@@ -90,7 +89,12 @@ const StatusBadge: React.FC<{ status: CourseStatus, locale: TLocale }> = ({ stat
  * />
  */
 export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
-  course,
+  title,
+  duration,
+  imageUrl,
+  rating,
+  author,
+  language,
   reviewCount,
   sessions,
   sales,
@@ -99,15 +103,6 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
   onEdit,
   onManage,
 }) => {
-  const {
-    title,
-    duration,
-    imageUrl,
-    rating,
-    author,
-    language,
-  } = course;
-
   const [isImageError, setIsImageError] = React.useState(false);
    // Calculate total course duration in minutes and convert to hours
    const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;

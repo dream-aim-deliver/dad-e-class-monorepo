@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { EmptyState, CourseEmptyState } from '../lib/components/coursecard/course-empty-state';
+import { EmptyState, CourseEmptyState } from '../../lib/components/coursecard/course-empty-state';
 
 /**
  * Mock messages for translations.

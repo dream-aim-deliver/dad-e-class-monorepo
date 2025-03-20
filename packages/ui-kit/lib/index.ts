@@ -26,3 +26,4 @@ export { CourseCreatorCard } from './components/coursecard/course-creator-course
 export { ProfileTabs, DragAndDrop, Badge };
 export {CoachBanner} from './components/coach-banner';
 export * as contexts from './contexts';
+export {CourseCard} from './components/coursecard/course-card';
