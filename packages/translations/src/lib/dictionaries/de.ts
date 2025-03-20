@@ -146,5 +146,18 @@ export const DE: TDictionary = {
       rateCallQualityText: 'Bewerten Sie die Anrufqualität',
       loadMoreText: 'Mehr laden...',
     },
+    coachCard: {
+      coachingSession: 'Coaching-Sitzung',
+      teaches: 'Lehrt',
+      viewProfile: 'Profil ansehen',
+      bookSession: 'Sitzung buchen',
+    },
+    buyCoachingSession: {
+      title: 'Coaching-Sitzung kaufen',
+      description: 'Plane deine Sitzungen jederzeit mit deinem Lieblingscoach.',
+      buttonText: 'Coaching-Sitzungen kaufen',
+      total: 'Gesamt',
+      minutes: 'Minuten',
+    },
   },
 };

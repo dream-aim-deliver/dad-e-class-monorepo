@@ -144,6 +144,13 @@ export const DictionarySchema = z.object({
       rateCallQualityText: z.string(),
       loadMoreText: z.string(),
     }),
+    buyCoachingSession: z.object({
+      title: z.string(),
+      description: z.string(),
+      buttonText: z.string(),
+      total: z.string(),
+      minutes: z.string(),
+    }),
   }),
 });
 export type TDictionary = z.infer<typeof DictionarySchema>;
