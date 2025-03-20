@@ -10,11 +10,11 @@ export async function login(page: Page, role: role.TRole) {
   await page.getByText('Password').click();
   await page.getByLabel('Password').fill(user.password);
   await page.getByRole('button', { name: 'Sign In', exact: true }).click();
-  await expect(page.getByText('Welcome Conny')).toBeTruthy();
+  expect(page.getByText('Welcome Conny')).toBeTruthy();
 }
 
 export async function logout(page: Page) {
-  await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-  await page.context().clearCookies();
+  page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  page.context().clearCookies();
   expect(page.getByText('Sign In')).toBeTruthy();
 }
