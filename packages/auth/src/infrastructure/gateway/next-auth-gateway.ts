@@ -1,7 +1,8 @@
-import { auth as authModels } from "@maany_shr/e-class-models";
+import { auth as authModels, role } from "@maany_shr/e-class-models";
 import { NextAuthResult } from "next-auth";
 import { AuthGatewayOutputPort } from "../../core/ports/secondary/auth-gateway-output-port";
-import { TExtractJWTDTO, TGetSessionDTO } from "../../core/dto/auth-gateway-dto";
+import { TExtractJWTDTO, TGetRolesDTO, TGetSessionDTO } from "../../core/dto/auth-gateway-dto";
+import { extractPlatformSpecificRoles } from "../utils";
 
 
 export class NextAuthGateway implements AuthGatewayOutputPort {
@@ -75,6 +76,70 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
                 message: "Session not found",
                 context: {}
             }
+        }
+    }
+
+    async getRoles(): Promise<TGetRolesDTO> {
+        const data: role.TRole[] = ["visitor"];
+        const sessionDTO = await this.getSession();
+        if (!sessionDTO.success) {
+            return {
+                success: true,
+                data: ["visitor"]
+            }
+        }
+        const session = sessionDTO.data
+        const user = session.user;
+        if (!user) {
+            console.error("[NextAuthGateway]: getRoles: User not found in the session")
+            return {
+                success: true,
+                data: ["visitor"]
+            }
+        }
+
+
+        const roles = user.roles;
+        if(!roles) {
+            return {
+                success: true,
+                data: ["visitor", "student"]
+            }
+        }
+        
+        const platformSpecificRoles = extractPlatformSpecificRoles(roles, session.platform);
+        if (!platformSpecificRoles) {
+            console.error("[NextAuthGateway]: getRoles: Platform specific roles not found")
+            return {
+                success: true,
+                data: ["visitor", "student"]
+            }
+        }
+        if(platformSpecificRoles.length === 0) {
+            return {
+                success: true,
+                data: ["visitor", "student"]
+            }
+        }
+
+
+        if (platformSpecificRoles.includes("admin")) {
+            return {
+                success: true,
+                data: ["visitor", "student", "coach", "admin"]
+            }
+        }
+
+        if(platformSpecificRoles.includes("admin")) {
+            return {
+                success: true,
+                data: ["visitor", "student", "admin"]
+            }
+        }
+
+        return {
+            success: true,
+            data: ["visitor", "student"]
         }
     }
 }

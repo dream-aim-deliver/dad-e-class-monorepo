@@ -1,5 +1,5 @@
 import { role, auth } from "@maany_shr/e-class-models";
-
+import { TSessionUser } from "packages/models/src/auth";
 
 /**
  * Extracts platform-specific roles from a list of roles in the format `platform-{platform_name}:{role}.
@@ -15,7 +15,7 @@ import { role, auth } from "@maany_shr/e-class-models";
  *
  * @example
  * ```typescript
- * const roles = ['admin-web', 'user-mobile', 'admin-mobile'];
+ * const roles = ['platform-web:admin', 'platform-mobile:user', 'platform-mobile:admin'];
  * const platform = 'mobile';
  * const result = extractPlatformSpecificRoles(roles, platform);
  * // result: ['user', 'admin']
@@ -34,6 +34,84 @@ export const extractPlatformSpecificRoles = (roles: string[], platform: string):
     });
 };
 
+
+/**
+ * Interface representing an object that may have an optional session property.
+ * This function is for the props of react components that need to be aware of the session.
+ * @interface isSessionAware
+ * @property {auth.TSession} [session] - Optional session object that contains authentication details.
+ * 
+ * @example
+ * ```typescript
+ * const MyComponent: React.FC<isSessionAware> = ({ session }) => {
+ *    return (
+ *       <div>
+ *         {session ? <p>Welcome {session.user.name}</p> : <p>Not logged in</p>}
+ *      </div>
+ *   )
+ * }
+ * 
+ */
 export interface isSessionAware {
     session?: auth.TSession
+}
+
+/**
+ * An array of test accounts used for authentication testing.
+ * Each test account includes user details and a password.
+ *
+ * @constant
+ * @type {Array<auth.TSessionUser & { password: string }>}
+ *
+ * It contains 4 test accounts with user details and password.
+ * Conny is an admin, Wim is a coach, Divyanshu is a student, and Alice is a visitor.
+ */
+export const TEST_ACCOUNTS: (auth.TSessionUser & { password: string })[] = [
+    {
+        id: '1',
+        name: 'Conny',
+        email: 'conny@e-class-dev.com',
+        roles: ['visitor', 'admin'],
+        password: 'test',
+        accessToken: 'test-123',
+        idToken: 'test-123',
+        
+    },
+    {
+        id: '2',
+        name: 'Wim',
+        email: '',
+        roles: ['coach'],
+        password: 'test',
+        accessToken: 'test-123',
+        idToken: 'test-123',
+    },
+    {
+        id: '3',
+        name: 'Divyanshu',
+        email: '',
+        roles: ['student'],
+        password: 'test',
+        accessToken: 'test-123',
+        idToken: 'test-123',
+    },
+    {
+        id: '4',
+        name: 'Alice',
+        email: '',
+        roles: ['visitor'],
+        password: 'test',
+    },
+    {
+        id: '5',
+        name: 'Bob',
+        email: '',
+        roles: ['visitor', 'student', 'coach'],
+        password: 'test',
+    }
+]
+
+export const getTestAccount = (role: role.TRole): TSessionUser & { password: string } => {
+    const alice = TEST_ACCOUNTS[3];
+    return TEST_ACCOUNTS.find(account => account.roles?.includes(role)) || alice;
 }

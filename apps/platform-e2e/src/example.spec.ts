@@ -1,12 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+import { login, logout } from './mocks/actions/auth';
 
 test('has Welcome Message', async ({ page }) => {
-  await page.goto('http://localhost:3000/en/auth/login');
-  await page.getByLabel('Username').click();
-  await page.getByLabel('Username').fill('Conny');
-  await page.getByText('Password').click();
-  await page.getByLabel('Password').fill('test');
-  await page.getByRole('button', { name: 'Sign In', exact: true }).click();
-  await expect(page.getByText('Welcome Conny')).toBeTruthy();
+  await login(page, "admin");
   await expect(page.getByText('Welcome Conny')).toContainText('Welcome Conny');
+  await logout(page);
 });
