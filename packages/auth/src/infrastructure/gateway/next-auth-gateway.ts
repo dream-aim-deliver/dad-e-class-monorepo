@@ -11,7 +11,15 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
         const sessionDTO = await this.getSession();
         if (!sessionDTO.success) {
             console.error("[NextAuthGateway]: extractJWT: Session not found")
-            return sessionDTO
+            return {
+                success: false,
+                data: {
+                    name: "SessionNotFoundError",
+                    code: 404,
+                    message: "Session not found",
+                    context: sessionDTO.data
+                }
+            }
         }
         const session = sessionDTO.data
         const idToken = session.user?.idToken;
