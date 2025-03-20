@@ -16,5 +16,9 @@
     "src/**/*.d.ts"
   ],
   "exclude": ["node_modules", "dist", "eslint.config.js"],
-  "references": []
+  "references": [
+    {
+      "path": "../../packages/models"
+    }
+  ]
 }

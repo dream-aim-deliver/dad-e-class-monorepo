@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { auth } from "@maany_shr/e-class-models";
+import { auth, role } from "@maany_shr/e-class-models";
 
 export const GetSessionSuccessDTO = z.object({
     success: z.literal(true),
@@ -50,3 +50,26 @@ export const ExtractJWTDTOSchema = z.discriminatedUnion("success", [
 ])
 
 export type TExtractJWTDTO = z.infer<typeof ExtractJWTDTOSchema>
+
+
+export const GetRolesSuccessDTO = z.object({
+    success: z.literal(true),
+    data: z.array(role.RoleSchema),
+})
+
+export const GetRolesErrorDTO = z.object({
+    success: z.literal(false),
+    data: z.object({
+        name: z.string(),
+        code: z.number(),
+        message: z.string(),
+        context: z.any(),
+    })
+})
+
+export const GetRolesDTOSchema = z.discriminatedUnion("success", [
+    GetRolesSuccessDTO,
+    GetRolesErrorDTO,
+])
+
+export type TGetRolesDTO = z.infer<typeof GetRolesDTOSchema>
