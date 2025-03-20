@@ -14,8 +14,8 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
             return sessionDTO
         }
         const session = sessionDTO.data
-        const idToken = session.user.idToken;
-        const accessToken = session.user.accessToken;
+        const idToken = session.user?.idToken;
+        const accessToken = session.user?.accessToken;
         if (!idToken || !accessToken) {
             console.error("[NextAuthGateway]: extractJWT: JWT not found in the session")
             return {
