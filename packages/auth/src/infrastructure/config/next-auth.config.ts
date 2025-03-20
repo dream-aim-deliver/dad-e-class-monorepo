@@ -167,7 +167,7 @@ export const generateNextAuthConfig = (config: {
     }
 
     if(config.useTestAccounts) {
-        if(process.env.NODE_ENV === 'production') {
+        if(process.env.NODE_ENV === 'production' && process.env.E_CLASS_DEV_MODE?.trim().toLocaleLowerCase() !== 'true') {
             console.error('❗❗❗ Test accounts are not allowed in production environment. This is a security risk!!. Please disable test accounts in production.');
         } else {
             console.warn('⚠️⚠️⚠️ Test accounts are enabled. This is a security risk. Please make sure this is only used in development or testing environments.');
