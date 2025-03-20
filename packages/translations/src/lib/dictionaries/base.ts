@@ -85,7 +85,7 @@ export const DictionarySchema = z.object({
       buttontext2: z.string(),
     }),
     coachReview: z.object({
-      by:z.string()
+      by: z.string(),
     }),
     coachCard: z.object({
       coachingSession: z.string(),
@@ -119,7 +119,31 @@ export const DictionarySchema = z.object({
       loadingText: z.string(),
       noAvailableSessionText: z.string(),
     }),
+    coachingSessionOverview: z.object({
+      durationText: z.string(),
+      createdByText: z.string(),
+      courseText: z.string(),
+      groupText: z.string(),
+      joinMeetingText: z.string(),
+      studentText: z.string(),
+      hoursLeftToEditText: z.string(),
+      rescheduleText: z.string(),
+      cancelText: z.string(),
+      meetingLinkVisibilityInfo: z.string(),
+      reviewCoachingSessionText: z.string(),
+      downloadRecordingText: z.string(),
+      recordingAvailabilityInfo: z.string(),
+      readMoreText: z.string(),
+      readLessText: z.string(),
+      requestSentText: z.string(),
+      cancelRequestText: z.string(),
+      declineText: z.string(),
+      acceptText: z.string(),
+      suggestAnotherDateText: z.string(),
+      sessionCanceledText: z.string(),
+      rateCallQualityText: z.string(),
+      loadMoreText: z.string(),
+    }),
   }),
-
 });
 export type TDictionary = z.infer<typeof DictionarySchema>;

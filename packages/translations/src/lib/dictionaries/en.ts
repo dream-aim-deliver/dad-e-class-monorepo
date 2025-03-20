@@ -110,14 +110,41 @@ export const EN: TDictionary = {
       noAvailableSessionText: 'No available sessions',
       loadingText: 'Loading Sessions...',
     },
-    coachReview:{
-      by:'by'
+    coachReview: {
+      by: 'by',
     },
-    coachCard:{
-      coachingSession: "Coaching Session",
-      teaches: "Teaches",
-      viewProfile: "View Profile",
-      bookSession: "Book a Session",
-    }
+    coachCard: {
+      coachingSession: 'Coaching Session',
+      teaches: 'Teaches',
+      viewProfile: 'View Profile',
+      bookSession: 'Book a Session',
+    },
+    coachingSessionOverview: {
+      durationText: 'min',
+      createdByText: 'Created by',
+      courseText: 'Course',
+      groupText: 'Group',
+      joinMeetingText: 'Join Meeting',
+      studentText: 'Student',
+      hoursLeftToEditText: 'hours left to edit event',
+      rescheduleText: 'Reschedule',
+      cancelText: 'Cancel',
+      meetingLinkVisibilityInfo:
+        'Meeting link will be visible 10 minutes before the session',
+      reviewCoachingSessionText: 'Review coaching session',
+      downloadRecordingText: 'Download Recording',
+      recordingAvailabilityInfo:
+        'Recordings take some time to process, please be patient',
+      readMoreText: 'Read more',
+      readLessText: 'Read less',
+      requestSentText: 'Request sent',
+      cancelRequestText: 'Cancle request',
+      declineText: 'Decline',
+      acceptText: 'Accept',
+      suggestAnotherDateText: 'Suggest another date',
+      sessionCanceledText: 'Session Canceled',
+      rateCallQualityText: 'Rate Call Quality',
+      loadMoreText: 'Load more...',
+    },
   },
 };

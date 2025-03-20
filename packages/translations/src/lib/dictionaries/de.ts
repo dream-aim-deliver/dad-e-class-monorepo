@@ -110,14 +110,41 @@ export const DE: TDictionary = {
       loadingText: 'Sitzungen werden geladen...',
       noAvailableSessionText: 'Keine verfügbaren Sitzungen',
     },
-    coachReview:{
-      by:'von'
+    coachReview: {
+      by: 'von',
     },
-    coachCard:{
-      coachingSession: "Coaching-Sitzung",
-      teaches: "Lehrt",
-      viewProfile: "Profil ansehen",
-      bookSession: "Sitzung buchen",
-    }
+    coachCard: {
+      coachingSession: 'Coaching-Sitzung',
+      teaches: 'Lehrt',
+      viewProfile: 'Profil ansehen',
+      bookSession: 'Sitzung buchen',
+    },
+    coachingSessionOverview: {
+      durationText: ' Min.',
+      createdByText: 'Erstellt von',
+      courseText: 'Kurs',
+      groupText: 'Gruppe',
+      joinMeetingText: 'Sitzung beitreten',
+      studentText: 'Studentin',
+      hoursLeftToEditText: 'Stunden übrig, um das Ereignis zu bearbeiten',
+      rescheduleText: 'Umbuchen',
+      cancelText: 'Stornieren',
+      meetingLinkVisibilityInfo:
+        'Der Meeting-Link wird 10 Minuten vor der Sitzung sichtbar sein',
+      reviewCoachingSessionText: 'Rückblick auf die Coaching-Sitzung',
+      downloadRecordingText: 'Aufnahme herunterladen',
+      recordingAvailabilityInfo:
+        'Die Verarbeitung der Aufnahmen dauert einige Zeit. Bitte haben Sie Geduld.',
+      readMoreText: 'Mehr lesen',
+      readLessText: 'Weniger lesen',
+      requestSentText: 'Anfrage gesendet',
+      cancelRequestText: 'Anfrage abbrechen',
+      declineText: 'Abfall',
+      acceptText: 'Akzeptieren',
+      suggestAnotherDateText: 'Schlagen Sie einen anderen Termin vor',
+      sessionCanceledText: 'Sitzung abgebrochen',
+      rateCallQualityText: 'Bewerten Sie die Anrufqualität',
+      loadMoreText: 'Mehr laden...',
+    },
   },
 };
