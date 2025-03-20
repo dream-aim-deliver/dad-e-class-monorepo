@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { login, logout } from './mocks/actions/auth';
 
 test('has Welcome Message', async ({ page }) => {
