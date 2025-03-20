@@ -30,17 +30,6 @@ export default defineConfig({
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     cwd: workspaceRoot,
-    env: {
-      'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK',
-      'AUTH_ENABLE_TEST_ACCOUNTS': 'true',
-      'AUTH_AUTH0_CLIENT_ID': 'NOT_NEEDED_FOR_PLAYWRIGHT',
-      'AUTH_AUTH0_CLIENT_SECRET': 'NOT_NEEDED_FOR_PLAYWRIGHT',
-      'AUTH_AUTH0_ISSUER': 'NOT_NEEDED_FOR_PLAYWRIGHT',
-      'AUTH_AUTH0_AUTHORIZATION_URL': 'NOT_NEEDED_FOR_PLAYWRIGHT',
-      'AUTH_AUTH0_ROLES_CLAIM_KEY': 'NOT_NEEDED_FOR_PLAYWRIGHT',
-      'E_CLASS_PLATFORM_SHORT_NAME': "dev",
-      'E_CLASS_PLATFORM_NAME':"E-Class Dev Platform"
-    }
   },
   projects: [
     {
