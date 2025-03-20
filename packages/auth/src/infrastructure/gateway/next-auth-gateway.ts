@@ -130,10 +130,10 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
             }
         }
 
-        if(platformSpecificRoles.includes("admin")) {
+        if(platformSpecificRoles.includes("coach")) {
             return {
                 success: true,
-                data: ["visitor", "student", "admin"]
+                data: ["visitor", "student", "coach"]
             }
         }
 
