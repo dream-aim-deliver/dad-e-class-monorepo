@@ -38,10 +38,10 @@ export const PersonalProfileSchema = z.discriminatedUnion("isRepresentingCompany
 
 /**
  * Schema for personal profile.
- * 
+ *
  * This schema validates the structure of personal profile objects, ensuring they contain
  * the required properties with the correct types.
- * 
+ *
  * Properties:
  * - `name`: A string representing the name of the user.
  * - `surname`: A string representing the surname of the user.
