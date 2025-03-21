@@ -24,4 +24,5 @@ export { StudentCourseCard } from './components/coursecard/student-coursecard/st
 export { CourseCreatorCard } from './components/coursecard/course-creator-coursecard/course-creator-card';
 export { ProfileTabs, DragAndDrop, Badge };
 export { default  as  BuyCoachingSession, type BuyCoachingSessionProps } from './components/buy-coaching-session'
+
 export * as contexts from './contexts';
