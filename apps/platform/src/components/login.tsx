@@ -27,12 +27,16 @@ const LoginPage = (props: LoginPageProps) => {
   };
 
   const handleAuth0 = async () => {
-    await signIn('auth0', { callbackUrl: '/' }, { ui_locales: props.locale });
+    await signIn('auth0', { callbackUrl: '/' }, { ui_locales: props.locale, platform: props.platform });
   };
 
-  if(props.isProduction) {
+  if (props.isProduction) {
     handleAuth0();
-    return <div className="flex text-white w-full items-center justify-center ">Loading...</div>
+    return (
+      <div className="flex text-white w-full items-center justify-center ">
+        Loading...
+      </div>
+    );
   }
 
   return (
