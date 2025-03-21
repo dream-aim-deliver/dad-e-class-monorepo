@@ -4,7 +4,7 @@ import '@maany_shr/e-class-ui-kit/tailwind.css';
 import { useTheme } from '@maany_shr/e-class-ui-kit/contexts';
 import { useTranslations } from 'next-intl';
 import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
-import { signIn, signOut } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import { isSessionAware } from '@maany_shr/e-class-auth';
 import { redirect } from 'next/navigation';
 
