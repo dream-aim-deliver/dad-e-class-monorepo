@@ -11,6 +11,13 @@ export const DictionarySchema = z.object({
     welcomeText: z.string(),
     signOut: z.string(),
   }),
+  login: z.object({
+    title: z.string(),
+    postLogout: z.string(),
+    username: z.string(),
+    password: z.string(),
+    signIn: z.string(),
+  }),
   components: z.object({
     skills: z.object({
       title: z.string(),
