@@ -4,7 +4,7 @@ import dts from 'vite-plugin-dts';
 import react from '@vitejs/plugin-react';
 import * as path from 'path';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
-
+import { checker } from 'vite-plugin-checker';
 
 export default defineConfig({
   root: __dirname,
@@ -16,6 +16,11 @@ export default defineConfig({
       entryRoot: 'src',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
     }),
+    !process.env.VITEST ? checker({
+      typescript: {
+        buildMode: true
+      }
+    }) : undefined,
   ],
   // Uncomment this if you are using workers.
   // worker: {

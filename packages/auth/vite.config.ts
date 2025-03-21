@@ -4,6 +4,7 @@ import dts from 'vite-plugin-dts';
 import * as path from 'path';
 import { glob } from "glob";
 import { fileURLToPath } from "url";
+import { checker } from 'vite-plugin-checker';
 
 export default defineConfig({
   root: __dirname,
@@ -21,6 +22,11 @@ export default defineConfig({
       entryRoot: 'src',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
     }),
+    !process.env.VITEST ? checker({
+      typescript: {
+        buildMode: true
+      }
+    }) : undefined,
   ],
   // Uncomment this if you are using workers.
   // worker: {
@@ -68,6 +74,11 @@ export default defineConfig({
   test: {
     watch: false,
     globals: true,
+    server: {
+      deps: {
+        inline: ['next']
+      }
+    },
     environment: 'node',
     include: ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],

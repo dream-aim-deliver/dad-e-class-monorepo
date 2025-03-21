@@ -5,6 +5,10 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { notFound } from 'next/navigation';
+import { SessionProvider } from "next-auth/react"
+import { auth } from "@maany_shr/e-class-models"
+import { NextAuthGateway } from "@maany_shr/e-class-auth"
+import nextAuth from '../../auth/config';
 
 export const metadata = {
   title: 'Welcome to Platform',
@@ -44,6 +48,16 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }) {
  
+
+  const authGateway = new NextAuthGateway(nextAuth);
+  const sessionDTO = await authGateway.getSession();
+  let session: auth.TSession | null = null;
+  if (!sessionDTO.success) {
+    session = null;
+  } else {
+    session = sessionDTO.data;
+  }
+  
   const params = await paramsPromise;
   const locale = params?.locale;
   
@@ -53,11 +67,13 @@ export default async function RootLayout({
   }
 
   const messages = await getMessages({ locale });
+
   return (
     <html lang={locale}>
       <body
         className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
       >
+        <SessionProvider session={session}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider>
             <div className="w-full min-h-screen bg-black flex flex-col items-center">
@@ -67,6 +83,7 @@ export default async function RootLayout({
             </div>
           </ThemeProvider>
         </NextIntlClientProvider>
+        </SessionProvider>
       </body>
     </html>
   );
