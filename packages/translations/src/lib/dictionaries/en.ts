@@ -1,8 +1,10 @@
 import { TDictionary } from './base';
 import { Home_EN } from '../pages/home/home-en';
+import { Login_EN } from '../pages/login/login-en';
 
 export const EN: TDictionary = {
   home: Home_EN,
+  login: Login_EN,
   components: {
     skills: {
       title: 'Skills',
