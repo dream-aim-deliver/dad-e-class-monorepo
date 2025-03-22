@@ -15,6 +15,7 @@ const LoginPage = (props: LoginPageProps) => {
   const searchParams = useSearchParams();
   const loggedOut = searchParams?.get('loggedout');
   const t = useTranslations('login');
+  const sso = useTranslations('sso');
   const handleSubmit = async (inputValues: {
     userName: string;
     userPassword: string;
@@ -25,9 +26,24 @@ const LoginPage = (props: LoginPageProps) => {
       callbackUrl: '/',
     });
   };
-
+  
   const handleAuth0 = async () => {
-    await signIn('auth0', { callbackUrl: '/' }, { ui_locales: props.locale, platform: props.platform });
+    await signIn(
+      'auth0',
+      { callbackUrl: '/' },
+      { 
+        ui_locales: props.locale,
+        platform: props.platform,
+        platform_logo_public_url: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL}`,
+        terms_and_conditions_title: sso('termsAndConditions.title'),
+        terms_and_conditions_content: sso('termsAndConditions.content'),
+        terms_and_conditions_confirmation_text: sso('termsAndConditions.confirmationText'),
+        privacy_policy_url: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL}/${props.locale}/privacy-policy`,
+        terms_of_use_url: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL}/${props.locale}/terms-of-use`,
+        rules_url: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL}/${props.locale}/rules`,
+        courses_information_url: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL}/${props.locale}/courses-information`,
+      }
+    );
   };
 
   if (props.isProduction) {
