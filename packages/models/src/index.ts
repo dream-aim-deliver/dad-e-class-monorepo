@@ -8,3 +8,4 @@ export * as notification from './notification';
 export * as coachingSession from './coaching-session';
 export * as coachingOffer from './coaching-offer';
 export * as coachReview from './coach-review';
+export * as homePage from './home-page';
