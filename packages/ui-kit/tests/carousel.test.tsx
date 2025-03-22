@@ -1,6 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { GeneralCardCarousel } from '../lib/components/carousel/general-card-carousel';
+import { Carousel } from '../lib/components/carousel/carousel'; 
+import { GeneralCard } from '../lib/components/carousel/generalcard';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -23,9 +25,8 @@ vi.mock('../lib/components/button', () => ({
   ),
 }));
 
-// Updated GeneralCard mock to respect visibility
 vi.mock('../lib/components/carousel/generalcard', () => ({
-  default: ({ title, description, buttonText, buttonUrl }: any) => (
+  GeneralCard: ({ title, description, buttonText, buttonUrl }: any) => (
     <div data-testid="general-card">
       <h3>{title}</h3>
       <p>{description}</p>
@@ -46,50 +47,59 @@ vi.mock('../lib/components/icons/icon-chevron-right', () => ({
   ),
 }));
 
-describe('GeneralCardCarousel', () => {
+describe('Carousel', () => {
   const defaultCards = [
-    {
-      imageUrl: 'image1.jpg',
-      title: 'Card 1',
-      description: 'Description 1',
-      buttonText: 'Click 1',
-      buttonUrl: '/card1',
-    },
-    {
-      imageUrl: 'image2.jpg',
-      title: 'Card 2',
-      description: 'Description 2',
-      buttonText: 'Click 2',
-      buttonUrl: '/card2',
-    },
-    {
-      imageUrl: 'image3.jpg',
-      title: 'Card 3',
-      description: 'Description 3',
-      buttonText: 'Click 3',
-      buttonUrl: '/card3',
-    },
-    {
-      imageUrl: 'image4.jpg',
-      title: 'Card 4',
-      description: 'Description 4',
-      buttonText: 'Click 4',
-      buttonUrl: '/card4',
-    },
+    <GeneralCard
+      key="card1"
+      imageUrl="image1.jpg"
+      title="Card 1"
+      description="Description 1"
+      buttonText="Click 1"
+      buttonUrl="/card1"
+      locale="en"
+    />,
+    <GeneralCard
+      key="card2"
+      imageUrl="image2.jpg"
+      title="Card 2"
+      description="Description 2"
+      buttonText="Click 2"
+      buttonUrl="/card2"
+      locale="en"
+    />,
+    <GeneralCard
+      key="card3"
+      imageUrl="image3.jpg"
+      title="Card 3"
+      description="Description 3"
+      buttonText="Click 3"
+      buttonUrl="/card3"
+      locale="en"
+    />,
+    <GeneralCard
+      key="card4"
+      imageUrl="image4.jpg"
+      title="Card 4"
+      description="Description 4"
+      buttonText="Click 4"
+      buttonUrl="/card4"
+      locale="en"
+    />,
   ];
 
   const defaultProps = {
-    cards: defaultCards,
+    children: defaultCards,
+    itemsPerView: 3,
     locale: 'en' as const,
   };
 
-  it('renders nothing when cards array is empty', () => {
-    const { container } = render(<GeneralCardCarousel cards={[]} locale="en" />);
+  it('renders nothing when children array is empty', () => {
+    const { container } = render(<Carousel children={[]} locale="en" />);
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders cards in the first group', async () => {
-    render(<GeneralCardCarousel {...defaultProps} />);
+  it('renders initial group of children based on itemsPerView', async () => {
+    render(<Carousel {...defaultProps} />);
     await vi.waitFor(() => {
       expect(screen.getByText('Card 1')).toBeInTheDocument();
       expect(screen.getByText('Card 2')).toBeInTheDocument();
@@ -99,7 +109,7 @@ describe('GeneralCardCarousel', () => {
   });
 
   it('navigates to next page when right arrow is clicked', async () => {
-    render(<GeneralCardCarousel {...defaultProps} />);
+    render(<Carousel {...defaultProps} />);
     
     const rightButton = screen.getByLabelText('Next slide');
     fireEvent.click(rightButton);
@@ -113,7 +123,7 @@ describe('GeneralCardCarousel', () => {
   });
 
   it('navigates to previous page when left arrow is clicked', async () => {
-    render(<GeneralCardCarousel {...defaultProps} />);
+    render(<Carousel {...defaultProps} />);
     
     const rightButton = screen.getByLabelText('Next slide');
     fireEvent.click(rightButton);
@@ -129,19 +139,40 @@ describe('GeneralCardCarousel', () => {
     }, { timeout: 500 });
   });
 
-  it('renders default CTA button when no custom CTA is provided', () => {
-    render(<GeneralCardCarousel {...defaultProps} />);
+  it('renders default CTA button when no custom onClick is provided', () => {
+    render(<Carousel {...defaultProps} />);
     expect(screen.getByText('Default CTA')).toBeInTheDocument();
   });
 
+  it('calls custom onClick when CTA button is clicked', () => {
+    const onClick = vi.fn();
+    render(<Carousel {...defaultProps} onClick={onClick} />);
+    const ctaButton = screen.getByText('Default CTA');
+    fireEvent.click(ctaButton);
+    expect(onClick).toHaveBeenCalled();
+  });
+
   it('renders pagination dots when there are multiple pages', () => {
-    render(<GeneralCardCarousel {...defaultProps} />);
+    render(<Carousel {...defaultProps} />);
     const dots = screen.getAllByLabelText(/Go to page/);
-    expect(dots).toHaveLength(2); // 4 cards, 3 per view = 2 pages
+    expect(dots).toHaveLength(2); // 4 items, 3 per view = 2 pages
+  });
+
+  it('navigates to specific page when pagination dot is clicked', async () => {
+    render(<Carousel {...defaultProps} />);
+    const dots = screen.getAllByLabelText(/Go to page/);
+    fireEvent.click(dots[1]); // Go to page 2
+    
+    await vi.waitFor(() => {
+      expect(screen.getByText('Card 4')).toBeInTheDocument();
+      expect(screen.queryByText('Card 1')).not.toBeInTheDocument();
+      expect(screen.queryByText('Card 2')).not.toBeInTheDocument();
+      expect(screen.queryByText('Card 3')).not.toBeInTheDocument();
+    }, { timeout: 500 });
   });
 
   it('handles touch swipe to next page', async () => {
-    const { container } = render(<GeneralCardCarousel {...defaultProps} />);
+    const { container } = render(<Carousel {...defaultProps} />);
     
     const carousel = container.querySelector('.overflow-hidden');
     if (carousel) {
@@ -158,13 +189,15 @@ describe('GeneralCardCarousel', () => {
   });
 
   it('handles touch swipe to previous page', async () => {
-    const { container } = render(<GeneralCardCarousel {...defaultProps} />);
+    const { container } = render(<Carousel {...defaultProps} />);
     
     const carousel = container.querySelector('.overflow-hidden');
     if (carousel) {
+      // Swipe to next page first
       fireEvent.touchStart(carousel, { touches: [{ clientX: 200 }] });
       fireEvent.touchMove(carousel, { touches: [{ clientX: 100 }] });
       
+      // Swipe back to previous page
       fireEvent.touchStart(carousel, { touches: [{ clientX: 100 }] });
       fireEvent.touchMove(carousel, { touches: [{ clientX: 200 }] });
       
@@ -177,29 +210,29 @@ describe('GeneralCardCarousel', () => {
     }
   });
 
-  it('adjusts cards per view on window resize', async () => {
-    const { rerender } = render(<GeneralCardCarousel {...defaultProps} />);
+  it('adjusts items per view on window resize', async () => {
+    const { rerender } = render(<Carousel {...defaultProps} />);
     
-    // Initial state (3 cards per view)
+    // Initial state (3 items per view)
     await vi.waitFor(() => {
       const cards = screen.getAllByTestId('general-card');
       expect(cards).toHaveLength(3);
     });
     
-    // Simulate tablet view (2 cards per view)
+    // Simulate tablet view (2 items per view)
     vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(800);
     fireEvent.resize(window);
-    rerender(<GeneralCardCarousel {...defaultProps} />);
+    rerender(<Carousel {...defaultProps} />);
     
     await vi.waitFor(() => {
       const cards = screen.getAllByTestId('general-card');
       expect(cards).toHaveLength(2);
     }, { timeout: 200 });
     
-    // Simulate mobile view (1 card per view)
+    // Simulate mobile view (1 item per view)
     vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(500);
     fireEvent.resize(window);
-    rerender(<GeneralCardCarousel {...defaultProps} />);
+    rerender(<Carousel {...defaultProps} />);
     
     await vi.waitFor(() => {
       const cards = screen.getAllByTestId('general-card');

@@ -1,4 +1,3 @@
-// components/GeneralCard.tsx
 import React, { useRef, useState, useEffect } from "react";
 import { Button } from "../button";
 import { Badge } from "../badge";
@@ -7,7 +6,30 @@ import { homePage } from "@maany_shr/e-class-models";
 
 interface GeneralCardProps extends homePage.TGeneralCard, isLocalAware {}
 
-const GeneralCard: React.FC<GeneralCardProps> = ({
+/**
+ * A card component for displaying general information, such as course or content details.
+ * Includes an image, title, description, optional badge, and a button with a link.
+ *
+ * @param imageUrl The URL of the card's image. Displays a placeholder if omitted or invalid.
+ * @param title The title of the card content.
+ * @param description A brief description of the card content.
+ * @param badge Optional text for a badge displayed over the image (e.g., "New", "Featured").
+ * @param buttonText The text displayed on the button.
+ * @param buttonUrl The URL to navigate to when the button is clicked.
+ * @param locale The locale for translation and localization purposes (e.g., "en" for English, "de" for German).
+ *
+ * @example
+ * <GeneralCard
+ *   imageUrl="https://example.com/image.jpg"
+ *   title="Digital Marketing Basics"
+ *   description="Learn the essentials of digital marketing in this introductory course."
+ *   badge="New"
+ *   buttonText="Enroll Now"
+ *   buttonUrl="/digital-marketing"
+ *   locale="en"
+ * />
+ */
+export const GeneralCard: React.FC<GeneralCardProps> = ({
   imageUrl,
   title,
   description,
@@ -102,5 +124,3 @@ const GeneralCard: React.FC<GeneralCardProps> = ({
     </article>
   );
 };
-
-export default GeneralCard;
