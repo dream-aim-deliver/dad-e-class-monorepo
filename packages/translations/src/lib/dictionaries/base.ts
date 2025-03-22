@@ -170,8 +170,10 @@ export const DictionarySchema = z.object({
       bulletedList: z.string(),
       undo: z.string(),
       redo: z.string(),
-    })
-
+    }),
+    coachingOnDemandBanner: z.object({
+      noImageText: z.string(),
+    }),
   }),
 
 });

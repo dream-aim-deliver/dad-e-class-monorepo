@@ -156,6 +156,9 @@ export const EN: TDictionary = {
       numberedList: "Numbered List",
       bulletedList: "Bulleted List",
       unlink: "Remove Link"
-    }
+    },
+    coachingOnDemandBanner: {
+      noImageText: 'No image available',
+    },
   },
 };
