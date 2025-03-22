@@ -48,6 +48,10 @@ export const EN: TDictionary = {
       personal: 'Personal',
       professional: 'Professional',
     },
+    generalCard: {
+      buttonText: 'Find the right offer',
+      placeHolderText: 'No image available',
+    },
     profileInfo: {
       title: 'E-class Platform',
       name: 'Name',
