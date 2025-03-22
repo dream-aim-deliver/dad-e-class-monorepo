@@ -2,6 +2,13 @@
 import { z } from 'zod';
 
 export const DictionarySchema = z.object({
+  sso: z.object({
+    termsAndConditions: z.object({
+      title: z.string(),
+      content: z.string(),
+      confirmationText: z.string(),
+    })
+  }),
   home: z.object({
     title: z.string(),
     buttonText: z.string(),

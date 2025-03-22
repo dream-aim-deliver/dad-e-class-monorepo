@@ -1,10 +1,13 @@
 import { TDictionary } from './base';
 import { Home_EN } from '../pages/home/home-en';
 import { Login_EN } from '../pages/login/login-en';
+import { SSO_EN } from '../pages/sso/sso-en';
+
 
 export const EN: TDictionary = {
   home: Home_EN,
   login: Login_EN,
+  sso: SSO_EN,
   components: {
     skills: {
       title: 'Skills',
