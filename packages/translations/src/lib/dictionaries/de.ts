@@ -125,6 +125,9 @@ export const DE: TDictionary = {
       buttonText: "Coaching-Sitzungen kaufen",
       total: "Gesamt",
       minutes: "Minuten"
-    }
+    },
+    coachingOnDemandBanner: {
+      noImageText: 'Kein Bild verfügbar',
+    },
   },
 };
