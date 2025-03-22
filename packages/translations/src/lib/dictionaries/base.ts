@@ -126,7 +126,10 @@ export const DictionarySchema = z.object({
       buttonText:z.string(),
       total:z.string(),
       minutes:z.string(),
-    })
+    }),
+    coachingOnDemandBanner: z.object({
+      noImageText: z.string(),
+    }),
   }),
 
 });
