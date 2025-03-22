@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const CoachReviewSchema = z.object({
+export const CoachingSessionReviewSchema = z.object({
     rating: z.number().int().min(0).max(5),
     review: z.string(),
     neededMoreTime: z.boolean(),
@@ -8,15 +8,15 @@ export const CoachReviewSchema = z.object({
 });
 
 /**
- * Schema for coach review.
+ * Schema for coaching session review.
  * 
- * This schema validates the structure of coach review objects, ensuring they contain
+ * This schema validates the structure of coaching session review objects, ensuring they contain
  * the required properties with the correct types.
  * 
  * Properties:
- * - `rating`: A number representing the rating of the coach review. It should be an integer between 0 and 5.
+ * - `rating`: A number representing the rating of the coaching session review. It should be an integer between 0 and 5.
  * - `review`: A string representing the review content.
  * - `neededMoreTime`: A boolean indicating whether the reviewer needed more time.
  * - `timestamp`: A string representing the timestamp of the review. It should contain a valid date and time, with a timezone offset.
  */
-export type TCoachReview = z.infer<typeof CoachReviewSchema>
+export type TCoachingSessionReview = z.infer<typeof CoachingSessionReviewSchema>
