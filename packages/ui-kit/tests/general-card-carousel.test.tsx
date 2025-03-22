@@ -1,8 +1,6 @@
-// tests/general-card-carousel.test.tsx
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { GeneralCardCarousel } from '../lib/components/carousel/general-card-carousel';
-import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -82,7 +80,7 @@ describe('GeneralCardCarousel', () => {
 
   const defaultProps = {
     cards: defaultCards,
-    locale: 'en' as 'en',
+    locale: 'en' as const,
   };
 
   it('renders nothing when cards array is empty', () => {
