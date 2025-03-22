@@ -37,6 +37,10 @@ export const DE: TDictionary = {
       personal: 'Persönlich',
       professional: 'Beruflich',
     },
+    generalCard: {
+      buttonText: 'Das richtige Angebot finden',
+      placeHolderText: 'Kein Bild verfügbar',
+    },
     languageSelector: {
       title: 'Fließend gesprochene Sprachen (C1 und höher)',
       choosetext: '',
