@@ -35,6 +35,7 @@ const LoginPage = (props: LoginPageProps) => {
         ui_locales: props.locale,
         platform: props.platform,
         platform_logo_public_url: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL}`,
+        platform_short_name: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_SHORT_NAME}`,
         terms_and_conditions_title: sso('termsAndConditions.title'),
         terms_and_conditions_content: sso('termsAndConditions.content'),
         terms_and_conditions_confirmation_text: sso('termsAndConditions.confirmationText'),
