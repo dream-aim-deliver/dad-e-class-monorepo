@@ -3,10 +3,19 @@ import { TDictionary } from './base';
 export const DE: TDictionary = {
   home: Home_DE,
   components: {
+    coachBanner: {
+      buttonText: 'Coach werden',
+      placeHolderText: 'Bild nicht verfügbar',
+    },
     skills: {
       title: 'Fähigkeiten',
     },
     courseCard: {
+      courseEmptyState: {
+        message: 'Sie haben noch keine Kurse gekauft',
+        buttonText: 'Kurse kaufen',
+        message2: 'Keine verfügbaren Kurse',
+      },
       createdBy: 'Erstellt von',
       you: 'Sie',
       group: 'Gruppe',
@@ -24,6 +33,7 @@ export const DE: TDictionary = {
       completedBadge: 'Kurs abgeschlossen',
       cochingSession: 'Coaching-Sitzung',
       sales: 'Verkauf',
+      hours: 'stunden',
     },
     dragDrop: {
       title: 'Legen Sie die Dateien hier ab... ',
