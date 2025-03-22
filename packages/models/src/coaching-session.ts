@@ -3,7 +3,6 @@ import { z } from 'zod'
 export const CoachingSessionSchema = z.object({
     startTime: z.string().datetime({ offset: true }),
     endTime: z.string().datetime({ offset: true }),
-    rating: z.number().int().min(0).max(5),
 });
 
 /**
