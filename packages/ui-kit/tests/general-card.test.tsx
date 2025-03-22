@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import GeneralCard from '../lib/components/carousel/generalcard'; 
+import {GeneralCard} from '../lib/components/carousel/generalcard'; 
 
 // Mock the dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
