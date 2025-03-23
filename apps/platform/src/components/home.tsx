@@ -7,7 +7,6 @@ import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { signOut } from 'next-auth/react';
 import { isSessionAware } from '@maany_shr/e-class-auth';
 import { redirect } from 'next/navigation';
-import { Navbar } from '../../../../packages/ui-kit/lib';
 
 export type HomeProps = isLocalAware & isSessionAware;
 
@@ -35,10 +34,6 @@ export default function Home(props: HomeProps) {
   console.log('Session: ', session);
 
   return (
-    <>
-    <div>
-      <Navbar isLoggedIn={false} locale={props.locale as TLocale}/>
-    </div>
     <div className="flex flex-col  text-base-neutral-50 gap-4 mt-3 items-center justify-center text-center">
       <p className="text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">
         {t('title')}
@@ -65,7 +60,7 @@ export default function Home(props: HomeProps) {
         locale={props.locale as TLocale}
         skills={['React', 'TypeScript', 'TailwindCSS']}
       />
+      
     </div>
-    </>
   );
 }
