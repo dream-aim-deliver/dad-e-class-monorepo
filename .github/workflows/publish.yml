@@ -54,14 +54,14 @@ jobs:
         run: |
           echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" >> ~/.npmrc
           
-      - name: Publish packages
-        run: |
-          pnpm config set //registry.npmjs.org/:_authToken ${NODE_AUTH_TOKEN}
-          pnpm exec nx release publish
-        shell: bash
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        #   NPM_CONFIG_PROVENANCE: true
+      #- name: Publish packages
+        #run: |
+          #pnpm config set //registry.npmjs.org/:_authToken ${NODE_AUTH_TOKEN}
+          #pnpm exec nx release publish
+        #shell: bash
+        #env:
+          #NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        ##   NPM_CONFIG_PROVENANCE: true
 
       - name: Revert back dependency versions to 'workspace:*' for local development
         run: python3 tools/update-dependency-versions.py -w . -s workspace
