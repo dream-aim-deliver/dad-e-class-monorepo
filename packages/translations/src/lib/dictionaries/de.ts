@@ -161,5 +161,15 @@ export const DE: TDictionary = {
     coachingOnDemandBanner: {
       noImageText: 'Kein Bild verfügbar',
     },
+    navbar: {
+      offers: 'Angebote',
+      coaching: 'Coaching',
+      howItWorks: 'Wie es funktioniert',
+      about: 'Über',
+      workspace: 'Arbeitsbereich',
+      login: 'Anmelden',
+      english: 'ENG',
+      german: 'DEU',
+    },
   },
 };
