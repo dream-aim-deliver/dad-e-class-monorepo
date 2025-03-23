@@ -91,6 +91,6 @@ jobs:
           git checkout -b ${BRANCH_NAME}
           git add .
           git commit -m "chore: change dependencies to 'workspace:*' for local development" || echo "No changes to commit"
-          git push origin chore_change_${{ github.event.release.tag_name }}_to_workspace
+          git push origin ${BRANCH_NAME}
           gh pr create --title "chore: change dependencies to 'workspace:*' for local development" --body "This PR changes dependencies to 'workspace:*' for local development, from ${{ github.event.release.tag_name }}" --base main --head ${BRANCH_NAME}
         shell: bash
