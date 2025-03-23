@@ -79,13 +79,15 @@ jobs:
         run: python3 tools/update-dependency-versions.py -w . -s workspace
         shell: bash
 
-      - name: Commit changes for local development
+      - name: Commit changes for local development and create pull request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b chore_change_${{ github.event.release.tag_name }}_to_workspace
           git add .
           git commit -m "chore: change dependencies to 'workspace:*' for local development" || echo "No changes to commit"
-          git push origin main
+          git push origin chore_change_${{ github.event.release.tag_name }}_to_workspace
+          gh pr create --title "chore: change dependencies to 'workspace:*' for local development" --body "This PR changes dependencies to 'workspace:*' for local development, from ${{ github.event.release.tag_name }}" --base main --head chore_change_${{ github.event.release.tag_name }}_to_workspace
         shell: bash
