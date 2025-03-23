@@ -1,7 +1,13 @@
 import { Home_DE } from '../pages/home/home-de';
+import { Login_DE } from '../pages/login/login-de';
+import { SSO_DE } from '../pages/sso/sso-de';
+
+
 import { TDictionary } from './base';
 export const DE: TDictionary = {
   home: Home_DE,
+  login:Login_DE,
+  sso: SSO_DE,
   components: {
     skills: {
       title: 'Fähigkeiten',

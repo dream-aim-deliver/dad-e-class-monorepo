@@ -2,10 +2,28 @@
 import { z } from 'zod';
 
 export const DictionarySchema = z.object({
+  sso: z.object({
+    termsAndConditions: z.object({
+      title: z.string(),
+      content: z.string(),
+      confirmationText: z.string(),
+    })
+  }),
   home: z.object({
     title: z.string(),
     buttonText: z.string(),
     badgeText: z.string(),
+    signInButtonText: z.string(),
+    notSignedInText: z.string(),
+    welcomeText: z.string(),
+    signOut: z.string(),
+  }),
+  login: z.object({
+    title: z.string(),
+    postLogout: z.string(),
+    username: z.string(),
+    password: z.string(),
+    signIn: z.string(),
   }),
   components: z.object({
     skills: z.object({
