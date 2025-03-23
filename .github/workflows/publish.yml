@@ -13,6 +13,7 @@ jobs:
     permissions:
       contents: write
       id-token: write # needed for provenance data generation
+      pull-requests: write
     timeout-minutes: 10
     steps:
       - name: Checkout repository
@@ -85,9 +86,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b chore_change_${{ github.event.release.tag_name }}_to_workspace
+          BRANCH_NAME="chore_change_${{ github.event.release.tag_name }}_to_workspace"
+          git checkout -b ${BRANCH_NAME}
           git add .
           git commit -m "chore: change dependencies to 'workspace:*' for local development" || echo "No changes to commit"
           git push origin chore_change_${{ github.event.release.tag_name }}_to_workspace
-          gh pr create --title "chore: change dependencies to 'workspace:*' for local development" --body "This PR changes dependencies to 'workspace:*' for local development, from ${{ github.event.release.tag_name }}" --base main --head chore_change_${{ github.event.release.tag_name }}_to_workspace
+          gh pr create --title "chore: change dependencies to 'workspace:*' for local development" --body "This PR changes dependencies to 'workspace:*' for local development, from ${{ github.event.release.tag_name }}" --base main --head ${BRANCH_NAME}
         shell: bash
