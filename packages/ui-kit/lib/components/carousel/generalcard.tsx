@@ -94,7 +94,7 @@ export const GeneralCard: React.FC<GeneralCardProps> = ({
         )}
 
         <div className="flex flex-col p-4 w-full flex-grow gap-4">
-          <header className="text-left">
+          <header className="text-left flex flex-col gap-2">
             <div className="group relative">
               <h2
                 ref={titleRef}
