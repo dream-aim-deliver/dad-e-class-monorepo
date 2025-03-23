@@ -28,7 +28,7 @@ class Strategy(NamedTuple):
     name: Literal[StrategyName.WORKSPACE, StrategyName.EXPLICIT]
     version: str | None
 
-VALID_STRATEGY_NAMES = [strategy.value for strategy in StrategyName]
+VALID_STRATEGIES = [strategy for strategy in StrategyName]
 
 
 def getPackages(workspace_root: str) -> List[Package]:
@@ -112,11 +112,6 @@ def updateDependencies(packages: List[Package], strategy: Strategy) -> List[Pack
         List[Package]: A list of Package objects with the dependencies updated.
     """
 
-    if strategy.name == StrategyName.EXPLICIT and not strategy.version:
-        raise ValueError(f"Strategy '{strategy.name}' requires a version to be set.")
-
-    elif strategy.name.value not in VALID_STRATEGY_NAMES:
-        raise ValueError(f"Unknown strategy '{strategy.name}'. Expected one of {', '.join(VALID_STRATEGY_NAMES)}")
 
 
     for package in packages:
@@ -167,6 +162,31 @@ def writePackages(packages: List[Package], workspace_root: str, dry_run: bool) -
             logger.info(f"Dry run. Dump of package: '{package.name}', at '{package_path}'\n{json.dumps(package.content, indent=2)}")
             
 
+def validate_inputs(workspace_root: str, strategy_name: StrategyName, version: str | None) -> None:
+
+    if not workspace_root or not os.path.isdir(workspace_root):
+        raise ValueError(f"A valid workspace root directory is needed. Found: '{workspace_root}'")
+
+    if strategy_name not in VALID_STRATEGIES:
+        raise ValueError(f"A valid strategy is needed. Found: '{strategy_name}'. Expected one of {", ".join([strategy.value for strategy in VALID_STRATEGIES])}")
+
+    elif strategy_name == StrategyName.EXPLICIT and not version:
+        raise ValueError(f"Strategy '{strategy_name}' requires a version to be set.")
+
+
+def process_version(version_raw: str | None) -> str | None:
+    """
+    Processes the version string and returns a cleaned version string.
+    """
+    if version_raw:
+        if version_raw.startswith('v'):
+            version = version_raw[1:].strip()
+        else:
+            version = version_raw.strip()
+        return version
+
+    return None
+
 
 def main(
     workspace_root: str,
@@ -182,8 +202,8 @@ def main(
         else:
             logger.setLevel(logging.INFO)
         
-        if not workspace_root:
-            workspace_root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        version_processed = process_version(version)
+        validate_inputs(workspace_root, strategy_name, version_processed)
 
         logger.info(f"Updating dependencies in the workspace at: {workspace_root}")
         packages = getPackages(workspace_root)
@@ -198,7 +218,7 @@ def main(
         logger.info(f"Updating dependencies using strategy: {strategy_name}")
         if dry_run:
             logger.info("Dry run enabled. No files will be modified.")
-        strategy = Strategy(strategy_name, version)
+        strategy = Strategy(strategy_name, version_processed)
         updated_packages = updateDependencies(packages_with_deps, strategy)
 
         logger.info(f"Writing updated package.json files to disk.")
