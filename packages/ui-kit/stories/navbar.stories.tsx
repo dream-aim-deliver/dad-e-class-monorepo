@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Navbar } from '../lib/components/navbar';
+import { Navbar } from '../lib/components/navbar'; // Adjust alias/path as needed
 import { NextIntlClientProvider } from 'next-intl';
 
 // Mock dictionary structure
@@ -18,11 +18,30 @@ const mockMessages = {
   },
 };
 
-// Mock Next.js Link component for Storybook
-const MockLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <a href={href} onClick={(e) => e.preventDefault()}>
-    {children}
-  </a>
+// Navigation links to pass as children
+const NavLinks = () => (
+  <>
+    <a href="/offers">
+      <span className="hover:text-button-primary-fill cursor-pointer">
+        Offers
+      </span>
+    </a>
+    <a href="/coaching">
+      <span className="hover:text-button-primary-fill cursor-pointer">
+        Coaching
+      </span>
+    </a>
+    <a href="/how-it-works">
+      <span className="hover:text-button-primary-fill cursor-pointer">
+        How It Works
+      </span>
+    </a>
+    <a href="/about">
+      <span className="hover:text-button-primary-fill cursor-pointer">
+        About
+      </span>
+    </a>
+  </>
 );
 
 const meta: Meta<typeof Navbar> = {
@@ -55,13 +74,22 @@ const meta: Meta<typeof Navbar> = {
       control: 'number',
       description: 'Number of notifications to display.',
     },
+    userProfileImageSrc: {
+      control: 'text',
+      description: 'URL for the user profile image.',
+    },
   },
 };
 
 export default meta;
 
+// Updated template to include children
 const Template: StoryObj<typeof Navbar> = {
-  render: (args) => <Navbar {...args} />,
+  render: (args) => (
+    <Navbar {...args}>
+      <NavLinks />
+    </Navbar>
+  ),
 };
 
 export const LoggedOut: StoryObj<typeof Navbar> = {
@@ -117,6 +145,63 @@ export const LoggedInNoNotifications: StoryObj<typeof Navbar> = {
   args: {
     isLoggedIn: true,
     locale: 'en',
+    notificationCount: 0,
+  },
+};
+
+// Example with custom user profile image
+export const CustomUserProfile: StoryObj<typeof Navbar> = {
+  ...Template,
+  args: {
+    isLoggedIn: true,
+    locale: 'en',
+    notificationCount: 1,
+    userProfileImageSrc: 'https://randomuser.me/api/portraits/women/44.jpg',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Navbar with a custom user profile image.',
+      },
+    },
+  },
+};
+
+// Example with localized navigation links (using dictionary)
+export const LocalizedNavLinks: StoryObj<typeof Navbar> = {
+  render: (args) => (
+    <Navbar {...args}>
+      {args.locale === 'en' ? (
+        <NavLinks />
+      ) : (
+        <>
+          <a href="/offers">
+            <span className="hover:text-button-primary-fill cursor-pointer">
+              Angebote
+            </span>
+          </a>
+          <a href="/coaching">
+            <span className="hover:text-button-primary-fill cursor-pointer">
+              Coaching
+            </span>
+          </a>
+          <a href="/how-it-works">
+            <span className="hover:text-button-primary-fill cursor-pointer">
+              Wie es funktioniert
+            </span>
+          </a>
+          <a href="/about">
+            <span className="hover:text-button-primary-fill cursor-pointer">
+              Über uns
+            </span>
+          </a>
+        </>
+      )}
+    </Navbar>
+  ),
+  args: {
+    isLoggedIn: true,
+    locale: 'de',
     notificationCount: 0,
   },
 };
