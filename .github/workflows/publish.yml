@@ -86,16 +86,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          BRANCH_NAME="chore_change_${{ github.event.release.tag_name }}_to_workspace"
+          timestamp=$(date +%y%m%d-%H%M%S)
+          BRANCH_NAME="chore_change_${{ github.event.release.tag_name }}_to_workspace_${timestamp}"
           git checkout -b ${BRANCH_NAME}
           git add .
           git commit -m "chore: change dependencies to 'workspace:*' for local development" || echo "No changes to commit"
           git push origin chore_change_${{ github.event.release.tag_name }}_to_workspace
-        shell: bash
-
-      - name: Create PR to fix local development
-        env:
-          GITHUB_TOKEN: ${{ secrets.PR_PAT }}
-        run: |
           gh pr create --title "chore: change dependencies to 'workspace:*' for local development" --body "This PR changes dependencies to 'workspace:*' for local development, from ${{ github.event.release.tag_name }}" --base main --head ${BRANCH_NAME}
         shell: bash
