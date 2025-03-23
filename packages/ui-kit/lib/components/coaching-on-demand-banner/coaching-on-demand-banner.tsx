@@ -1,22 +1,12 @@
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { homePage } from '@maany_shr/e-class-models';
 
-export interface CoachingOnDemandBannerProps extends isLocalAware {
-  title: string;
-  description: string;
-  ImageUrls: string[];
+export interface CoachingOnDemandBannerProps extends isLocalAware , homePage.TCoachingOnDemand{
 }
 
 /**
- * Props for the CoachingOnDemandBanner component.
- * @typedef {Object} CoachingOnDemandBannerProps
- * @property {string} title - The title of the banner.
- * @property {string} description - The description text for the banner.
- * @property {string[]} ImageUrls - An array of image URLs to be displayed in the banner.
- */
-
-/**
- * A component that displays a banner for coaching on demand, including a title, description, and images.
+ * A component that displays a banner for coaching on demand, including a title, description, and responsive images.
  * @param {CoachingOnDemandBannerProps} props - The props for the component.
  * @returns {JSX.Element} The rendered CoachingOnDemandBanner component.
  */
@@ -24,21 +14,44 @@ export interface CoachingOnDemandBannerProps extends isLocalAware {
 export const CoachingOnDemandBanner: React.FC<CoachingOnDemandBannerProps> = ({
   title,
   description,
-  ImageUrls,
+  desktopImageUrl,
+  tabletImageUrl,
+  mobileImageUrl,
   locale,
 }) => {
-  const [imageErrors, setImageErrors] = useState<boolean[]>(
-    new Array(ImageUrls?.length).fill(false),
-  );
+  const [isImageError, setIsImageError] = React.useState(false);
+  const [currentImageUrl, setCurrentImageUrl] = React.useState('');
   const dictionary = getDictionary(locale);
 
-  const handleImageError = (index: number) => {
-    setImageErrors((prev) => {
-      const newErrors = [...prev];
-      newErrors[index] = true;
-      return newErrors;
-    });
+  useEffect(() => {
+    const handleResize = () => {
+      let newImageUrl = '';
+      if (window.innerWidth >= 1024) {
+        newImageUrl = desktopImageUrl;
+      } else if (window.innerWidth >= 768) {
+        newImageUrl = tabletImageUrl;
+      } else {
+        newImageUrl = mobileImageUrl;
+      }
+  
+      setCurrentImageUrl(newImageUrl);
+      setIsImageError(false); // Reset error state when switching image
+    };
+  
+    handleResize(); // Set initial image URL
+    window.addEventListener('resize', handleResize);
+  
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [desktopImageUrl, tabletImageUrl, mobileImageUrl]);
+  
+
+  const handleImageError = () => {
+    setIsImageError(true);
   };
+
+  const shouldShowPlaceholder = !currentImageUrl || isImageError;
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -50,29 +63,22 @@ export const CoachingOnDemandBanner: React.FC<CoachingOnDemandBannerProps> = ({
           {description}
         </p>
       </div>
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-2">
-        {ImageUrls?.map((imageUrl, index) => (
-          <div
-            key={index}
-            className="flex relative w-full overflow-hidden items-center"
-          >
-            {imageErrors[index] ? (
-              <div className="rounded-medium w-full min-w-[18rem] min-h-[18rem] h-full bg-base-neutral-700 flex items-center justify-center">
-                <span className="text-text-secondary text-md">
-                  {dictionary.components.coachingOnDemandBanner.noImageText}
-                </span>
-              </div>
-            ) : (
-              <img
-                src={imageUrl}
-                alt={`Image ${index + 1}`}
-                onError={() => handleImageError(index)}
-                className="object-cover w-full h-auto rounded-medium"
-                loading="lazy"
-              />
-            )}
-          </div>
-        ))}
+      <div className="flex gap-2 w-full">
+      {shouldShowPlaceholder ? (
+        <div className="rounded-medium w-full min-h-[18rem] h-full bg-base-neutral-700 flex items-center justify-center">
+          <span className="text-text-secondary text-md">
+            {dictionary.components.coachingOnDemandBanner.noImageText}
+          </span>
+        </div>
+        ) : (
+          <img
+            src={currentImageUrl}
+            alt='Image'
+            onError={handleImageError}
+            className="object-cover w-full h-auto rounded-medium"
+            loading="lazy"
+          />
+        )}
       </div>
     </div>
   );
