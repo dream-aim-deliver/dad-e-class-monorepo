@@ -20,11 +20,9 @@ describe('CoachingOnDemandBanner Component', () => {
     title: 'Coaching on Demand',
     description:
       'Are you looking for someone to exchange ideas with on equal footing, or do you want to learn new skills? Our industry experts are ready to help you succeed.',
-    ImageUrls: [
-      'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
-      'https://invalid-url.com/image.png',
-      'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
-    ],
+    desktopImageUrl: 'https://example.com/desktop.jpg',
+    tabletImageUrl: 'https://example.com/tablet.jpg',
+    mobileImageUrl: 'https://example.com/mobile.jpg',
     locale: 'en' as TLocale,
   };
 
@@ -35,23 +33,22 @@ describe('CoachingOnDemandBanner Component', () => {
     expect(screen.getByText(mockProps.description)).toBeInTheDocument();
   });
 
-  it('renders images correctly', () => {
+  it('renders image correctly', () => {
     render(<CoachingOnDemandBanner {...mockProps} />);
 
-    const images = screen.getAllByRole('img');
-    expect(images.length).toBe(3);
-    expect(images[0]).toHaveAttribute('src', mockProps.ImageUrls[0]);
-    expect(images[2]).toHaveAttribute('src', mockProps.ImageUrls[2]);
+    const image = screen.getByRole('img');
+    expect(image).toBeInTheDocument();
+    expect(image).toHaveAttribute('src', mockProps.desktopImageUrl);
   });
 
   it('handles image errors gracefully', () => {
     render(<CoachingOnDemandBanner {...mockProps} />);
 
-    const brokenImage = screen.getAllByRole('img')[1];
-    fireEvent.error(brokenImage);
+    const image = screen.getByRole('img');
+    fireEvent.error(image);
 
     const errorPlaceholder = screen.getByText(
-      mockDictionary.components.coachingOnDemandBanner.noImageText,
+      mockDictionary.components.coachingOnDemandBanner.noImageText
     );
     expect(errorPlaceholder).toBeInTheDocument();
   });
@@ -59,14 +56,49 @@ describe('CoachingOnDemandBanner Component', () => {
   it('renders placeholder for missing images', () => {
     const propsWithMissingImages = {
       ...mockProps,
-      ImageUrls: [],
+      desktopImageUrl: '',
+      tabletImageUrl: '',
+      mobileImageUrl: '',
     };
 
     render(<CoachingOnDemandBanner {...propsWithMissingImages} />);
 
-    const placeholders = screen.queryByText(
-      mockDictionary.components.coachingOnDemandBanner.noImageText,
+    const placeholder = screen.getByText(
+      mockDictionary.components.coachingOnDemandBanner.noImageText
     );
-    expect(placeholders).not.toBeInTheDocument();
+    expect(placeholder).toBeInTheDocument();
+  });
+
+  it('uses correct image based on screen size', () => {
+    const { rerender } = render(<CoachingOnDemandBanner {...mockProps} />);
+
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 1024,
+    });
+
+    fireEvent(window, new Event('resize'));
+
+    let image = screen.getByRole('img');
+    expect(image).toHaveAttribute('src', mockProps.desktopImageUrl);
+
+    Object.defineProperty(window, 'innerWidth', {
+      value: 800,
+    });
+    fireEvent(window, new Event('resize'));
+    rerender(<CoachingOnDemandBanner {...mockProps} />);
+
+    image = screen.getByRole('img');
+    expect(image).toHaveAttribute('src', mockProps.tabletImageUrl);
+
+    Object.defineProperty(window, 'innerWidth', {
+      value: 500,
+    });
+    fireEvent(window, new Event('resize'));
+    rerender(<CoachingOnDemandBanner {...mockProps} />);
+
+    image = screen.getByRole('img');
+    expect(image).toHaveAttribute('src', mockProps.mobileImageUrl);
   });
 });
