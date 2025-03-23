@@ -9,6 +9,7 @@ jobs:
   test:
     name: Publish
     runs-on: ubuntu-latest
+    environment: CI
     permissions:
       contents: write
       id-token: write # needed for provenance data generation
@@ -41,7 +42,18 @@ jobs:
         shell: bash
 
       - name: Prepare packages
-        run: pnpm exec nx run-many -t build
+        run: pnpm exec nx --no-cloud run-many -t build
+        env:
+          'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
+          'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
+          'AUTH_AUTH0_CLIENT_ID': ${{ secrets.AUTH_AUTH0_CLIENT_ID }}
+          'AUTH_AUTH0_CLIENT_SECRET': ${{ secrets.AUTH_AUTH0_CLIENT_SECRET }}
+          'AUTH_AUTH0_ISSUER': ${{ secrets.AUTH_AUTH0_ISSUER }}
+          'AUTH_AUTH0_AUTHORIZATION_URL': ${{ secrets.AUTH_AUTH0_AUTHORIZATION_URL }}
+          'AUTH_AUTH0_ROLES_CLAIM_KEY': ${{ secrets.AUTH_AUTH0_ROLES_CLAIM_KEY }}
+          'E_CLASS_PLATFORM_SHORT_NAME': ${{ vars.E_CLASS_PLATFORM_SHORT_NAME}}
+          'E_CLASS_PLATFORM_NAME': ${{ vars.E_CLASS_PLATFORM_NAME }}
+          'E_CLASS_DEV_MODE': 'true'
         shell: bash
       
       - name: Print Environment Info
