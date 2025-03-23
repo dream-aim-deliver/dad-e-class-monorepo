@@ -219,7 +219,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
               variant="primary"
               size="big"
               text={dictionary.components.generalCard.buttonText}
-              onClick={onClick || (() => alert("CTA Button Clicked"))}
+              onClick={onClick}
             />
           </div>
         </div>
