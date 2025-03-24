@@ -64,10 +64,10 @@ vi.mock('../lib/components/icons/icon-hamburger-menu', () => ({
   ),
 }));
 
-vi.mock('../lib/components/icons/icon-coaching-session', () => ({
-  IconCoachingSession: ({ size, classNames }) => (
-    <div data-testid="icon-coaching-session" data-size={size} className={classNames}>
-      Coaching Session Icon
+vi.mock('../lib/components/icons/icon-chat', () => ({
+  IconChat: ({ size, classNames }) => (
+    <div data-testid="icon-chat" data-size={size} className={classNames}>
+      Chat Icon
     </div>
   ),
 }));
@@ -110,11 +110,10 @@ describe('Navbar Component', () => {
       </Navbar>
     );
     const notifications = screen.getAllByText('2');
-    expect(notifications.length).toBe(2); // Only in desktop
-    expect(notifications[0]).toHaveClass('h-5'); // Desktop version
-    expect(screen.getAllByTestId('icon-coaching-session').length).toBe(2); // Only in desktop
+    expect(notifications.length).toBe(2); // Desktop and mobile
+    expect(notifications[0]).toHaveClass('h-6'); // Desktop version - updated from h-5
+    expect(screen.getAllByTestId('icon-chat').length).toBe(2); // Desktop and mobile - updated to match IconChat
   });
-
   test('calls onChangeLanguage when language dropdown changes', () => {
     const onChangeLanguageMock = vi.fn();
     render(
