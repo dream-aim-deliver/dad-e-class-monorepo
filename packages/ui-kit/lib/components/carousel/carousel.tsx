@@ -6,7 +6,6 @@ import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 
 interface CarouselProps extends isLocalAware {
   children: React.ReactNode;
-  itemsPerView?: number;
   className?: string;
   onClick?: () => void;
 }
@@ -17,7 +16,7 @@ export const CarouselContent: React.FC<{
   itemsPerView: number;
 }> = React.memo(({ items, itemsPerView }) => {
   return (
-    <div className="flex w-full flex-shrink-0 transition-opacity duration-300 opacity-100 z-10">
+    <div className="flex w-full justify-center flex-shrink-0 transition-opacity duration-300 opacity-100 z-10">
       {items.map((item, index) => (
         <div
           key={index}
@@ -25,8 +24,8 @@ export const CarouselContent: React.FC<{
             itemsPerView === 1
               ? "w-full max-w-[90%] mx-auto"
               : itemsPerView === 2
-              ? "w-1/2"
-              : "w-1/3"
+              ? "w-1/2 max-w-[45%]"
+              : "w-1/3 max-w-[30%]"
           }`}
         >
           {item}
@@ -41,14 +40,12 @@ export const CarouselContent: React.FC<{
  * Includes navigation buttons, touch gesture support, pagination, and a CTA button.
  *
  * @param children The content to display inside the carousel (e.g., cards or custom elements).
- * @param itemsPerView Optional number of items to display per view. Defaults to 3. Adjusted responsively based on screen size (1 for mobile, 2 for tablet, full value for desktop).
  * @param className Optional CSS class for additional styling of the carousel container.
  * @param locale The locale for translation and localization purposes (e.g., "en" for English, "de" for German).
  * @param onClick Optional callback function triggered when the CTA button is clicked.
  *
  * @example
  * <Carousel
- *   itemsPerView={3}
  *   className="custom-carousel"
  *   locale="en"
  *   onClick={() => console.log("CTA clicked!")}
@@ -60,10 +57,10 @@ export const CarouselContent: React.FC<{
  * </Carousel>
  */
 export const CarouselController: React.FC<CarouselProps> = React.memo(
-  ({ children, itemsPerView: initialItemsPerView = 3, className = "", locale, onClick }) => {
+  ({ children, className = "", locale, onClick }) => {
     const carouselRef = useRef<HTMLDivElement>(null);
     const [currentPage, setCurrentPage] = useState(0);
-    const [itemsPerView, setItemsPerView] = useState(initialItemsPerView);
+    const [itemsPerView, setItemsPerView] = useState(3); // Default to 3, will be adjusted by screen size
     const [touchStart, setTouchStart] = useState(0);
     const dictionary = getDictionary(locale);
     const childrenArray = React.Children.toArray(children);
@@ -82,7 +79,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
       const updateItemsPerView = () => {
         if (window.innerWidth < 640) setItemsPerView(1);
         else if (window.innerWidth < 1024) setItemsPerView(2);
-        else setItemsPerView(initialItemsPerView);
+        else setItemsPerView(3);
       };
 
       updateItemsPerView();
@@ -97,7 +94,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
         window.removeEventListener("resize", debouncedResize);
         clearTimeout(resizeTimer);
       };
-    }, [initialItemsPerView]);
+    }, []);
 
     // Keep currentPage valid
     useEffect(() => {
@@ -171,7 +168,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
               role="region"
               aria-label="Carousel"
             >
-              <div className="relative flex transition-transform duration-300 ease-in-out w-full">
+              <div className="relative flex transition-transform duration-300 ease-in-out w-full justify-center">
                 {itemGroups[currentPage] && (
                   <CarouselContent items={itemGroups[currentPage]} itemsPerView={itemsPerView} />
                 )}
@@ -213,7 +210,6 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
             </div>
           )}
 
-         
           <div className="flex justify-center mt-8 px-4">
             <Button
               variant="primary"
