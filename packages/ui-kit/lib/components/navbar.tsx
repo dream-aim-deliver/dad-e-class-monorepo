@@ -2,10 +2,8 @@ import React, { useState, ReactNode } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Button } from './button';
 import { Dropdown } from './dropdown';
-import logo from '../images/logo.png';
 import { IconClose } from './icons/icon-close';
 import { IconHamburgerMenu } from './icons/icon-hamburger-menu';
-import { on } from 'events';
 import { IconCoachingSession } from './icons/icon-coaching-session';
 
 interface NavbarProps extends isLocalAware {
@@ -62,7 +60,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="flex items-center">
         <a href="/">
           <img
-            src={logo}
+            src="./images/logo.png"
             width={40}
             height={40}
             alt="Logo"
@@ -178,7 +176,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="absolute top-4 left-0 right-0 flex justify-between items-center px-6 w-full">
             <a href="/">
               <img
-                src={logo}
+                src="./images/logo.png"
                 alt="Logo"
                 width={38}
                 height={38}
