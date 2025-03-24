@@ -78,6 +78,10 @@ const meta: Meta<typeof Navbar> = {
       control: 'text',
       description: 'URL for the user profile image.',
     },
+    userName: {
+      control: 'text',
+      description: 'The name of the user.',
+    },
   },
 };
 
@@ -86,7 +90,7 @@ export default meta;
 // Updated template to include children
 const Template: StoryObj<typeof Navbar> = {
   render: (args) => (
-    <Navbar {...args}>
+    <Navbar {...args} >
       <NavLinks />
     </Navbar>
   ),
@@ -98,6 +102,8 @@ export const LoggedOut: StoryObj<typeof Navbar> = {
     isLoggedIn: false,
     locale: 'en',
     notificationCount: 0,
+    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userName: 'John Doe',
   },
   parameters: {
     docs: {
@@ -114,6 +120,8 @@ export const LoggedInWithNotifications: StoryObj<typeof Navbar> = {
     isLoggedIn: true,
     locale: 'en',
     notificationCount: 3,
+    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userName: 'John Doe',
   },
 };
 
@@ -123,6 +131,8 @@ export const LoggedOutGerman: StoryObj<typeof Navbar> = {
     isLoggedIn: false,
     locale: 'de',
     notificationCount: 0,
+    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userName: 'John Doe',
   },
 };
 
@@ -132,6 +142,8 @@ export const MobileViewLoggedIn: StoryObj<typeof Navbar> = {
     isLoggedIn: true,
     locale: 'en',
     notificationCount: 2,
+    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userName: 'John Doe',
   },
   parameters: {
     viewport: {
@@ -146,6 +158,8 @@ export const LoggedInNoNotifications: StoryObj<typeof Navbar> = {
     isLoggedIn: true,
     locale: 'en',
     notificationCount: 0,
+    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userName: 'John Doe',
   },
 };
 
@@ -156,7 +170,8 @@ export const CustomUserProfile: StoryObj<typeof Navbar> = {
     isLoggedIn: true,
     locale: 'en',
     notificationCount: 1,
-    userProfileImageSrc: 'https://randomuser.me/api/portraits/women/44.jpg',
+    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userName: 'John Doe',
   },
   parameters: {
     docs: {
@@ -203,5 +218,7 @@ export const LocalizedNavLinks: StoryObj<typeof Navbar> = {
     isLoggedIn: true,
     locale: 'de',
     notificationCount: 0,
+    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userName: 'John Doe',
   },
 };
