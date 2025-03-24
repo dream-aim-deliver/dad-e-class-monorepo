@@ -5,6 +5,7 @@ import { Dropdown } from './dropdown';
 import { IconClose } from './icons/icon-close';
 import { IconHamburgerMenu } from './icons/icon-hamburger-menu';
 import { IconCoachingSession } from './icons/icon-coaching-session';
+import { UserAvatar } from './avatar/user-avatar';
 
 interface NavbarProps extends isLocalAware {
   isLoggedIn: boolean;
@@ -13,6 +14,7 @@ interface NavbarProps extends isLocalAware {
   children: React.ReactNode;
   userProfile?: React.ReactNode;
   userProfileImageSrc?: string;
+  userName?: string
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -22,7 +24,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onChangeLanguage,
   children,
   userProfile,
-  userProfileImageSrc = ""
+  userProfileImageSrc,
+  userName,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentLocale, setCurrentLocale] = useState(initialLocale);
@@ -44,12 +47,18 @@ export const Navbar: React.FC<NavbarProps> = ({
   // Default user profile rendering
   const defaultUserProfile = (
     <div className="relative">
-      <img
+      {/* <img
         src={userProfileImageSrc}
         alt="User Profile"
-        width={40}
-        height={40}
+        width={32}
+        height={32}
         className="rounded-full ml-3"
+      /> */}
+      <UserAvatar
+        imageUrl={userProfileImageSrc}
+        size="medium"
+        fullName={userName}
+        className='ml-3'
       />
     </div>
   );
@@ -132,12 +141,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {userProfile}
                   </div>
                 ) : (
-                  <img
-                    src={userProfileImageSrc}
-                    alt="User Profile"
-                    width={32}
-                    height={32}
-                    className="rounded-full"
+                  <UserAvatar
+                    imageUrl={userProfileImageSrc}
+                    size="medium"
+                    fullName={userName}
+                    className='ml-1'
                   />
                 )}
               </div>
@@ -148,9 +156,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </a>
               {notificationCount > 0 && (
                 <div className="relative flex items-center">
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
+                   <IconCoachingSession size='6' classNames='cursor-pointer' />
                   <span className="absolute -top-1 left-3 bg-button-primary-fill text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                     {notificationCount}
                   </span>
