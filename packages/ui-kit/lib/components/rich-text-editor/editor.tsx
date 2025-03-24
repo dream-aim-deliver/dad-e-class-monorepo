@@ -1,9 +1,6 @@
-
-"use client"
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { createEditor, Descendant } from "slate";
 import { withHistory } from "slate-history";
-
 import {
   Editable,
   RenderElementProps,
@@ -13,17 +10,13 @@ import {
 } from "slate-react";
 
 import Toolbar from "./toolbar";
-import { CustomElement, CustomText, EditorType } from "./types";
-import { toggleMark } from "./slate"
+import { CustomElement, CustomText, EditorType, RichTextEditorProps } from "./types";
+import { toggleMark } from "./slate";
+import { stringToSlate } from "./serializer";
 
-interface RichTextEditorProps {
-  name: string;
-  placeholder: string;
-  initialValue: Descendant[] | undefined;
-  onChange: (value: Descendant[]) => void;
-
-}
-
+/**
+ * Extending Slate's CustomTypes to define custom editor, element, and text types.
+ */
 declare module "slate" {
   interface CustomTypes {
     Editor: EditorType;
@@ -32,6 +25,10 @@ declare module "slate" {
   }
 }
 
+/**
+ * Renders text leaves with specific formatting styles.
+ * Supports bold, italic, underline, strikethrough, code, highlight, superscript, and subscript.
+ */
 const RenderLeaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   if (leaf.superscript) {
     children = <sup>{children}</sup>;
@@ -48,10 +45,8 @@ const RenderLeaf = ({ attributes, children, leaf }: RenderLeafProps) => {
         leaf.italic && "italic",
         leaf.underline && "underline",
         leaf.strikethrough && "line-through",
-        leaf.code &&
-        "text-black text-sm font-mono bg-gray-200 px-1 py-0.5 rounded",
-        leaf.highlight &&
-        "bg-yellow-200 text-black border border-yellow-600 px-1",
+        leaf.code && "text-black text-sm font-mono bg-gray-200 px-1 py-0.5 rounded",
+        leaf.highlight && "bg-yellow-200 text-black border border-yellow-600 px-1",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -61,131 +56,109 @@ const RenderLeaf = ({ attributes, children, leaf }: RenderLeafProps) => {
   );
 };
 
-export const RenderElement = ({
-  attributes,
-  children,
-  element,
-}: RenderElementProps) => {
+/**
+ * Renders different elements such as paragraphs, headings, lists, block quotes, and links.
+ */
+export const RenderElement = ({ attributes, children, element }: RenderElementProps) => {
   const style = { textAlign: element.align };
 
   switch (element.type) {
+    case "link":
+      return (
+        <a
+          {...attributes}
+          href={element.url}
+          className="text-blue-500 underline"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(event) => {
+            if (!element.url) return;
+            event.preventDefault();
+            window.open(element.url, "_blank");
+          }}
+        >
+          {children}
+        </a>
+      );
     case "block-quote":
       return (
-        <blockquote
-          {...attributes}
-          style={style}
-          className="border-l-2 border-gray-300 pl-2 text-gray-500 italic"
-        >
+        <blockquote {...attributes} style={style} className="border-l-2 border-gray-300 pl-2 text-gray-500 italic">
           {children}
         </blockquote>
       );
     case "numbered-list":
-      return (
-        <ol {...attributes} style={style} className="list-decimal pl-5">
-          {children}
-        </ol>
-      );
+      return <ol {...attributes} style={style} className="list-decimal pl-5">{children}</ol>;
     case "bulleted-list":
-      return (
-        <ul {...attributes} style={style} className="list-disc pl-5">
-          {children}
-        </ul>
-      );
+      return <ul {...attributes} style={style} className="list-disc pl-5">{children}</ul>;
     case "list-item":
-      return (
-        <li {...attributes} style={style}>
-          {children}
-        </li>
-      );
+      return <li {...attributes} style={style}>{children}</li>;
     case "h1":
-      return (
-        <h1 {...attributes} style={style} className="text-2xl font-bold">
-          {children}
-        </h1>
-      );
+      return <h1 {...attributes} style={style} className="text-2xl font-bold">{children}</h1>;
     case "h2":
-      return (
-        <h2 {...attributes} style={style} className="text-xl font-bold">
-          {children}
-        </h2>
-      );
-    case "h3":
-      return (
-        <h3 {...attributes} style={style} className="text-lg font-semibold">
-          {children}
-        </h3>
-      );
-    case "h4":
-      return (
-        <h4 {...attributes} style={style} className="text-md font-semibold">
-          {children}
-        </h4>
-      );
-    case "h5":
-      return (
-        <h5 {...attributes} style={style} className="text-sm font-semibold">
-          {children}
-        </h5>
-      );
-    case "h6":
-      return (
-        <h6 {...attributes} style={style} className="text-xs font-semibold">
-          {children}
-        </h6>
-      );
+      return <h2 {...attributes} style={style} className="text-xl font-bold">{children}</h2>;
     default:
-      return (
-        <p {...attributes} style={style} className="text-base">
-          {children}
-        </p>
-      );
+      return <p {...attributes} style={style} className="text-base">{children}</p>;
   }
 };
 
+/**
+ * RichTextEditor Component
+ * Provides a fully featured rich-text editor using Slate.js with history and React integrations.
+ * Supports initial value parsing, custom key bindings, and a toolbar for formatting options.
+ */
 export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
-  function RichTextEditor({ name,onChange, placeholder, initialValue }) {
-    const [editor] = useState(withHistory(withReact(createEditor())));
+  function RichTextEditor({ name, onChange, placeholder, initialValue }) {
+    // Convert initial string value to Slate format if necessary
+    if (typeof initialValue === "string") {
+      initialValue = stringToSlate(initialValue);
+    }
+
+    // Initialize the editor with history and React plugin
+    const [editor] = useState(() => {
+      const editor = withHistory(withReact(createEditor()));
+      const { isInline } = editor;
+      editor.isInline = (element) => (element.type === "link" ? true : isInline(element));
+      return editor;
+    });
 
     if (!initialValue) return null;
- 
+
+    /**
+     * Handles keyboard shortcuts for text formatting.
+     */
     const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
       const key = event.key.toLowerCase();
-      if (key === "b" && event.ctrlKey) {
-        toggleMark(editor, "bold");
-      }
-      if (key === "i" && event.ctrlKey) {
-        toggleMark(editor, "italic");
-      }
-      if (key === "u" && event.ctrlKey) {
-        toggleMark(editor, "underline");
-      }
-      if (key === "z" && event.ctrlKey) {
-        editor.undo();
-      }
-      if (key === "y" && event.ctrlKey) {
-        editor.redo();
+      if (event.ctrlKey) {
+        switch (key) {
+          case "b":
+            toggleMark(editor, "bold");
+            break;
+          case "i":
+            toggleMark(editor, "italic");
+            break;
+          case "u":
+            toggleMark(editor, "underline");
+            break;
+          case "z":
+            editor.undo();
+            break;
+          case "y":
+            editor.redo();
+            break;
+        }
       }
     };
 
     return (
-      <div className="text-white">
-        <Slate
-          editor={editor}
-          initialValue={initialValue}
-          onChange={(value)=>onChange(value)}
-        >
+      <div className="w-full text-text-primary">
+        <Slate editor={editor} initialValue={initialValue} onChange={(value) => onChange(value)}>
           <Toolbar />
-          <div className="border border-text-primary bg-black text-text-primary rounded-md max-h-96 overflow-y-auto">
+          <div className="bg-black text-text-primary max-w-screen focus:outline-none max-h-96 overflow-y-auto">
             <Editable
               name={name}
               placeholder={placeholder}
-              autoFocus
               spellCheck
-              style={{
-                padding: "16px",
-                minHeight: "1em",
-                display: "block",
-              }}
+              className="w-full p-4"
               renderLeaf={RenderLeaf}
               renderElement={RenderElement}
               onKeyDown={onKeyDown}

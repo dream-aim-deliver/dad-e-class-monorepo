@@ -14,6 +14,9 @@ import {
     List,
     ListOrdered,
     Quote,
+    Undo,
+    Redo,
+    Link,
   } from "lucide-react";
   
   export enum RichTextAction {
@@ -22,6 +25,7 @@ import {
     Underline = "underline",
     Strikethrough = "strikethrough",
     Superscript = "superscript",
+    link="link",
     Subscript = "subscript",
     Highlight = "highlight",
     Code = "code",
@@ -35,12 +39,15 @@ import {
     BulletedList = "bulleted-list",
     Undo = "undo",
     Redo = "redo",
+    unlink="unlink"
+
   }
   
   export const TEXT_FORMAT_OPTIONS = [
-    { id: RichTextAction.Bold, icon: <Bold  size={24}/>, label: "Bold" },
-    { id: RichTextAction.Italics, icon: <Italic  size={24}/>, label: "Italics" },
-    { id: RichTextAction.Underline, icon: <Underline size={24} />, label: "Underline" },
+    { id: RichTextAction.Bold, icon: <Bold  size={24}/>, label: "Bold(Ctrl+B)"},
+    { id: RichTextAction.Italics, icon: <Italic  size={24}/>, label: "Italics(Ctrl+I)"},
+    { id: RichTextAction.Underline, icon: <Underline size={24} />, label: "Underline(Ctrl+U)" },
+    {id: RichTextAction.link, icon: <Link size={24} />, label: "Link"},
     {
       id: RichTextAction.Highlight,
       icon: <Highlighter size={24}/>,
@@ -74,6 +81,7 @@ import {
       id: RichTextAction.LeftAlign,
       icon: <AlignLeft  size={24}/>,
       label: "Align Left",
+      
     },
     {
       id: RichTextAction.CenterAlign,
@@ -111,4 +119,17 @@ import {
   
   export const LIST_TYPES = ["numbered-list", "bulleted-list"];
   export const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
-  
+  export const TEXT_ACTION_OPTIONS = [
+    {
+      id: "undo", // You may need to define these actions in your Slate commands
+      icon: <Undo size={24} />,
+      label: "Undo(Ctrl+Z)"
+     
+    },
+    {
+      id: "redo",
+      icon: <Redo size={24} />,
+      label: "Redo(Ctrl+Y)",
+      
+    },
+  ];

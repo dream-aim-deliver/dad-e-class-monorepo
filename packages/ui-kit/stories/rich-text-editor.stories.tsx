@@ -1,16 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { RichTextEditor} from "../lib/components/rich-text-editor/editor"
-import { CustomElement } from '../lib/components/rich-text-editor/types';
-// Default initial value for the editor
-const defaultInitialValue = [
-  {
-    type: 'paragraph',
-    children: [{ text: 'This is a rich text editor. Try formatting this text!' }],
-  },
-];
+import RichTextEditor from '../lib/components/rich-text-editor/editor';
 
-// Meta information for the component
-const meta = {
+const meta: Meta<typeof RichTextEditor> = {
   title: 'Components/RichTextEditor',
   component: RichTextEditor,
   parameters: {
@@ -18,52 +9,68 @@ const meta = {
   },
   tags: ['autodocs'],
   argTypes: {
-    name: {
-      control: 'text',
-      description: 'Name attribute for the editor',
-    },
-    placeholder: {
-      control: 'text',
-      description: 'Placeholder text when editor is empty',
-    },
-    initialValue: {
-      control: 'object',
-      description: 'Initial content for the editor',
-    },
-    onChange: {
-      action: 'changed',
-      description: 'Callback when editor content changes',
-    },
+    onChange: { action: 'changed' },
+    placeholder: { control: 'text' },
+    name: { control: 'text' },
+    initialValue: { control: 'object' },
   },
-} satisfies Meta<typeof RichTextEditor>;
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof RichTextEditor>;
 
-// Base story with default props
-export const Default: Story = {
+// Default initial value for the editor
+const defaultInitialValue = [
+  {
+    type: 'paragraph',
+    children: [
+      { text: 'This is a ' },
+      { text: 'rich', bold: true },
+      { text: ' text ' },
+      { text: 'editor', italic: true },
+      { text: '.' },
+    ],
+  },
+];
+
+// Basic usage with minimal props
+export const Basic: Story = {
   args: {
-    name: 'editor',
+    name: 'content',
     placeholder: 'Start typing...',
     initialValue: defaultInitialValue,
     onChange: (value) => console.log('Content changed:', value),
   },
 };
 
-// Story with pre-formatted content
+// Example with string input that gets converted
+export const WithStringInput: Story = {
+  args: {
+    name: 'content',
+    placeholder: 'Start typing...',
+    initialValue:'[{"type":"paragraph","children":[{"text":"This text is highlighted.","highlight":true}]}]',
+    onChange: (value) => console.log('Content changed:', value),
+  },
+};
+
+// Example with different formatting elements
 export const WithFormattedContent: Story = {
   args: {
-    name: 'editor',
+    name: 'content',
     placeholder: 'Start typing...',
     initialValue: [
       {
         type: 'h1',
-        children: [{ text: 'Rich Text Editor Example' }],
+        children: [{ text: 'Rich Text Editor Demo' }],
+      },
+      {
+        type: 'paragraph',
+        children: [{ text: 'This is a paragraph with plain text.' }],
       },
       {
         type: 'paragraph',
         children: [
-          { text: 'This editor supports ' },
+          { text: 'You can have ' },
           { text: 'bold', bold: true },
           { text: ', ' },
           { text: 'italic', italic: true },
@@ -71,22 +78,34 @@ export const WithFormattedContent: Story = {
           { text: 'underlined', underline: true },
           { text: ' text.' },
         ],
-      } ,
-      {
-        type: 'block-quote',
-        children: [{ text: 'You can also add blockquotes like this one.' }],
       },
       {
         type: 'bulleted-list',
         children: [
           {
             type: 'list-item',
-            children: [{ text: 'And create lists' }],
+            children: [{ text: 'Bullet point 1' }],
           },
           {
             type: 'list-item',
-            children: [{ text: 'With multiple items' }],
-          } ,
+            children: [{ text: 'Bullet point 2' }],
+          },
+        ],
+      },
+      {
+        type: 'block-quote',
+        children: [{ text: 'This is a blockquote' }],
+      },
+      {
+        type: 'paragraph',
+        children: [
+          { text: 'This is a ' },
+          { 
+            text: 'link', 
+            type: 'link',
+            url: 'https://example.com',
+          },
+          { text: ' example.' },
         ],
       },
     ],
@@ -94,31 +113,16 @@ export const WithFormattedContent: Story = {
   },
 };
 
-// Story with empty editor
-export const EmptyEditor: Story = {
+// Example demonstrating the toolbar usage
+export const WithToolbarUsage: Story = {
   args: {
-    name: 'editor',
-    placeholder: 'Type something to begin...',
-    initialValue: [
-      {
-        type: 'paragraph',
-        children: [{ text: '' }],
+    ...Basic.args,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'This example demonstrates how to use the toolbar. Try selecting text and using the formatting buttons.',
       },
-    ],
-    onChange: (value) => console.log('Content changed:', value),
+    },
   },
-};
-
-// Story with custom height
-export const CustomHeight: Story = {
-  args: {
-    ...Default.args,
-  },
-  decorators: [
-    (Story) => (
-      <div style={{ maxWidth: '800px' }}>
-        <Story />
-      </div>
-    ),
-  ],
 };
