@@ -47,7 +47,7 @@ function SlateRenderer({ content }: { content: string | Descendant[] }) {
         <a
           {...attributes}
           href={element.url}
-          className="text-blue-500 underline"
+          className="text-button-text-text underline"
           target="_blank"
           rel="noopener noreferrer"
           onClick={(event) => {
