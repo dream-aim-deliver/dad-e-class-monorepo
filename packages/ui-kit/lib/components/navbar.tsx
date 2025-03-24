@@ -4,7 +4,7 @@ import { Button } from './button';
 import { Dropdown } from './dropdown';
 import { IconClose } from './icons/icon-close';
 import { IconHamburgerMenu } from './icons/icon-hamburger-menu';
-import { IconCoachingSession } from './icons/icon-coaching-session';
+import { IconChat } from './icons/icon-chat';
 import { UserAvatar } from './avatar/user-avatar';
 
 interface NavbarProps extends isLocalAware {
@@ -14,7 +14,8 @@ interface NavbarProps extends isLocalAware {
   children: React.ReactNode;
   userProfile?: React.ReactNode;
   userProfileImageSrc?: string;
-  userName?: string
+  userName?: string;
+  logoSrc?: string;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -26,6 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   userProfile,
   userProfileImageSrc,
   userName,
+  logoSrc,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentLocale, setCurrentLocale] = useState(initialLocale);
@@ -47,29 +49,28 @@ export const Navbar: React.FC<NavbarProps> = ({
   // Default user profile rendering
   const defaultUserProfile = (
     <div className="relative">
-      {/* <img
-        src={userProfileImageSrc}
-        alt="User Profile"
-        width={32}
-        height={32}
-        className="rounded-full ml-3"
-      /> */}
       <UserAvatar
         imageUrl={userProfileImageSrc}
-        size="medium"
+        size="small"
         fullName={userName}
-        className='ml-3'
+        className='ml-3 p-0'
       />
     </div>
   );
 
+  // Format notification count
+  const formatNotificationCount = (count: number) => {
+    if (count > 99) return "99+";
+    return count.toString();
+  };
+
   return (
-    <nav className="bg-transparent text-white py-2 px-4 flex items-center justify-between">
+    <nav className=" bg-transparent text-white py-4 px-4 flex items-center justify-between ">
       {/* Logo */}
       <div className="flex items-center">
         <a href="/">
           <img
-            src="./images/logo.png"
+            src={logoSrc}
             width={40}
             height={40}
             alt="Logo"
@@ -79,15 +80,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Desktop Menu (Large Screens) */}
       <div className="hidden lg:flex items-center space-x-8 ml-auto">
-        {/* Children provide navigation links */}
         {children}
       </div>
 
       {/* Right Section (Profile, Workspace, Language Dropdown) */}
-      <div className="hidden lg:flex items-center space-x-4">
+      <div className="hidden lg:flex items-center space-x-2">
         {isLoggedIn ? (
           <>
-            {/* Use custom user profile if provided, otherwise use default */}
             {userProfile || defaultUserProfile}
             <div className="relative">
               <a href="/workspace">
@@ -96,14 +95,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
               </a>
             </div>
-            {notificationCount > 0 && (
-              <div className="relative flex items-center">
-                <IconCoachingSession size='6' classNames='cursor-pointer' />
-                <span className="absolute -top-2 left-4 bg-button-primary-fill text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {notificationCount}
+            <div className="relative flex items-center mr-6">
+              <IconChat size='6' classNames='cursor-pointer'/>
+              {notificationCount > 0 &&
+                <span className="absolute  p-2 -top-4 left-4 bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
+                  {formatNotificationCount(notificationCount)}
                 </span>
-              </div>
-            )}
+              }
+            </div>
           </>
         ) : (
           <a href="/login">
@@ -133,17 +132,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="relative flex items-center space-x-4">
           {isLoggedIn && (
             <div className="flex items-center space-x-2">
-              {/* Mobile version of user profile */}
               <div className="relative">
                 {userProfile ? (
-                  // Adapt the custom profile to mobile size if provided
                   <div className="scale-75 origin-left">
                     {userProfile}
                   </div>
                 ) : (
                   <UserAvatar
                     imageUrl={userProfileImageSrc}
-                    size="medium"
+                    size="small"
                     fullName={userName}
                     className='ml-1'
                   />
@@ -154,14 +151,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                   {dictionary.components.navbar.workspace}
                 </span>
               </a>
-              {notificationCount > 0 && (
-                <div className="relative flex items-center">
-                   <IconCoachingSession size='6' classNames='cursor-pointer' />
-                  <span className="absolute -top-1 left-3 bg-button-primary-fill text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                    {notificationCount}
+              <div className="relative flex items-center">
+                <IconChat size='6' classNames='cursor-pointer' />
+                {notificationCount > 0 &&
+                  <span className="absolute  p-2 -top-3 left-4 bg-button-primary-fill text-black text-xs rounded-full h-5.5 w-5.5 flex items-center justify-center overflow-hidden">
+                    {formatNotificationCount(notificationCount)}
                   </span>
-                </div>
-              )}
+                }
+              </div>
             </div>
           )}
 
@@ -182,7 +179,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="absolute top-4 left-0 right-0 flex justify-between items-center px-6 w-full">
             <a href="/">
               <img
-                src="./images/logo.png"
+                src={logoSrc}
                 alt="Logo"
                 width={38}
                 height={38}
@@ -201,9 +198,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           <div className="flex flex-col items-center space-y-6 py-4">
-            {/* Mobile menu version of the children */}
             {children}
-
             <Dropdown
               type="simple"
               options={[
@@ -218,14 +213,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               text={{ simpleText: "" }}
               defaultValue={currentLocale}
             />
-
             {!isLoggedIn && (
               <a href="/login">
                 <Button
                   text={dictionary.components.navbar.login}
                   variant="primary"
                   size="medium"
-
                 />
               </a>
             )}

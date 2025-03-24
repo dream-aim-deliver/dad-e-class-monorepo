@@ -90,7 +90,7 @@ export default meta;
 // Updated template to include children
 const Template: StoryObj<typeof Navbar> = {
   render: (args) => (
-    <Navbar {...args} >
+    <Navbar {...args}>
       <NavLinks />
     </Navbar>
   ),
@@ -102,8 +102,10 @@ export const LoggedOut: StoryObj<typeof Navbar> = {
     isLoggedIn: false,
     locale: 'en',
     notificationCount: 0,
-    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userProfileImageSrc:
+      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
+    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
   },
   parameters: {
     docs: {
@@ -119,9 +121,11 @@ export const LoggedInWithNotifications: StoryObj<typeof Navbar> = {
   args: {
     isLoggedIn: true,
     locale: 'en',
-    notificationCount: 3,
-    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    notificationCount: 200,
+    userProfileImageSrc:
+      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
+    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
   },
 };
 
@@ -131,8 +135,10 @@ export const LoggedOutGerman: StoryObj<typeof Navbar> = {
     isLoggedIn: false,
     locale: 'de',
     notificationCount: 0,
-    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userProfileImageSrc:
+      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
+    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
   },
 };
 
@@ -142,8 +148,10 @@ export const MobileViewLoggedIn: StoryObj<typeof Navbar> = {
     isLoggedIn: true,
     locale: 'en',
     notificationCount: 2,
-    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userProfileImageSrc:
+      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
+    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
   },
   parameters: {
     viewport: {
@@ -158,8 +166,10 @@ export const LoggedInNoNotifications: StoryObj<typeof Navbar> = {
     isLoggedIn: true,
     locale: 'en',
     notificationCount: 0,
-    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userProfileImageSrc:
+      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
+    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
   },
 };
 
@@ -170,8 +180,10 @@ export const CustomUserProfile: StoryObj<typeof Navbar> = {
     isLoggedIn: true,
     locale: 'en',
     notificationCount: 1,
-    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userProfileImageSrc:
+      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
+    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
   },
   parameters: {
     docs: {
@@ -218,7 +230,9 @@ export const LocalizedNavLinks: StoryObj<typeof Navbar> = {
     isLoggedIn: true,
     locale: 'de',
     notificationCount: 0,
-    userProfileImageSrc: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    userProfileImageSrc:
+      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
+    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
   },
 };
