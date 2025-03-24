@@ -22,7 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onChangeLanguage,
   children,
   userProfile,
-  userProfileImageSrc = "https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png"
+  userProfileImageSrc = ""
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentLocale, setCurrentLocale] = useState(initialLocale);
