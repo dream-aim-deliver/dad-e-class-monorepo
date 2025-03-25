@@ -154,8 +154,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
         <Slate editor={editor} initialValue={initialValue} onChange={(value) => onChange(value)}>
           
           <div
-          className="bg-black text-text-primary border-0 max-w-screen focus:outline-none max-h-96 overflow-y-auto  flex flex-col"
-          style={{ resize: "both", overflow: "auto" }}
+          className="bg-black text-text-primary border-0 max-w-screen focus:outline-none overflow-y-auto  flex flex-col"
+          style={{ resize: "both" }}
          >
             <Toolbar />
             <div className="p-4">
