@@ -1,25 +1,25 @@
-// components/SlateRenderer.stories.tsx
+// components/RichTextRenderer.stories.tsx
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
-import SlateRenderer from '../lib/components/rich-text-editor/view-mode';
+import RichTextRenderer from '../lib/components/rich-text-element/renderer';
 import { Descendant } from 'slate';
 
 export default {
-  title: 'Components/SlateRenderer',
-  component: SlateRenderer,
+  title: 'Components/RichTextRenderer',
+  component: RichTextRenderer,
 } as Meta;
 
 const Template: StoryFn<{ content: string | Descendant[] }> = (args) => (
   <div className="bg-black text-white p-4 min-h-screen">
-    <SlateRenderer {...args} />
+    <RichTextRenderer {...args} />
   </div>
 );
 
 export const BasicText = Template.bind({});
 BasicText.args = {
-  content:`[{"type":"paragraph","children":[{"text":"This is a basic paragraph."}]}]`
+  content: `[{"type":"paragraph","children":[{"text":"This is a basic paragraph."}]}]`
 
-,
+  ,
 };
 
 export const BoldItalicUnderline = Template.bind({});

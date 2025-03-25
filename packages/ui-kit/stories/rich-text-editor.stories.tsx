@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import RichTextEditor from '../lib/components/rich-text-editor/editor';
+import RichTextEditor from '../lib/components/rich-text-element/editor';
 
 const meta: Meta<typeof RichTextEditor> = {
   title: 'Components/RichTextEditor',
@@ -48,7 +48,7 @@ export const WithStringInput: Story = {
   args: {
     name: 'content',
     placeholder: 'Start typing...',
-    initialValue:'[{"type":"paragraph","children":[{"text":"This text is highlighted.","highlight":true}]}]',
+    initialValue: '[{"type":"paragraph","children":[{"text":"This text is highlighted.","highlight":true}]}]',
     onChange: (value) => console.log('Content changed:', value),
   },
 };
@@ -100,8 +100,8 @@ export const WithFormattedContent: Story = {
         type: 'paragraph',
         children: [
           { text: 'This is a ' },
-          { 
-            text: 'link', 
+          {
+            text: 'link',
             type: 'link',
             url: 'https://example.com',
           },

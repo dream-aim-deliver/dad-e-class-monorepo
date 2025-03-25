@@ -7,7 +7,7 @@ import { Descendant } from 'slate';
  * @param {Descendant[]} slateData - The Slate editor content.
  * @returns {string} - JSON string representation of the Slate content.
  */
-const slateToString = (slateData: Descendant[]): string => {
+const serialize = (slateData: Descendant[]): string => {
     if (!slateData || (Array.isArray(slateData) && slateData.length === 0)) {
       return JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }]);
     }
@@ -21,7 +21,7 @@ const slateToString = (slateData: Descendant[]): string => {
  * @param {string} stringData - The JSON string representing Slate content.
  * @returns {Descendant[]} - Parsed Slate content or a default paragraph if invalid.
  */
-const stringToSlate = (stringData: string): Descendant[] => {
+const deserialize = (stringData: string): Descendant[] => {
     if (!stringData || stringData === "" || stringData === "null" || stringData === "undefined") {
       return [{ type: "paragraph", children: [{ text: "" }] }];
     }
@@ -37,4 +37,4 @@ const stringToSlate = (stringData: string): Descendant[] => {
     }
 };
 
-export { slateToString, stringToSlate };
+export { serialize, deserialize };

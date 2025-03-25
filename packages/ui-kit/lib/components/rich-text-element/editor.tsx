@@ -12,7 +12,7 @@ import {
 import Toolbar from "./toolbar";
 import { CustomElement, CustomText, EditorType, RichTextEditorProps } from "./types";
 import { toggleMark } from "./slate";
-import { stringToSlate } from "./serializer";
+import { deserialize } from "./serializer";
 
 /**
  * Extending Slate's CustomTypes to define custom editor, element, and text types.
@@ -110,7 +110,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
   function RichTextEditor({ name, onChange, placeholder, initialValue }) {
     // Convert initial string value to Slate format if necessary
     if (typeof initialValue === "string") {
-      initialValue = stringToSlate(initialValue);
+      initialValue = deserialize(initialValue);
     }
 
     // Initialize the editor with history and React plugin
