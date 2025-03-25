@@ -44,7 +44,7 @@ export default function Toolbar() {
     }
   };
   return (
-    <div className="max-w-screen rounded-tl-md flex flex-nowrap rounded-tr-md text-text-primary  overflow-x-auto gap-4 bg-base-neutral-700 p-3">
+    <div className="rounded-tl-md min-h-14  flex flex-nowrap rounded-tr-md text-text-primary  overflow-x-auto gap-4 bg-base-neutral-700 p-3">
       <div className="flex items-center space-x-2">
         <select
           className="px-4 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-1"
