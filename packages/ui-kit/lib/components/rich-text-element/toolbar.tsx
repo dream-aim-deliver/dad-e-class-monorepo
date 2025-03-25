@@ -6,7 +6,7 @@ import {
   TEXT_ACTION_OPTIONS,
   TEXT_BLOCK_OPTIONS,
   TEXT_FORMAT_OPTIONS,
-} from "../../../lib/utils/constants"
+} from "../../utils/constants"
 
 import { insertLink, isBlockActive, isLinkActive, isMarkActive, removeLink, toggleBlock, toggleMark } from "./slate"
 import { EditorType, ElementKey, MarkKey } from "./types"
@@ -59,30 +59,30 @@ export default function Toolbar() {
           ))}
         </select>
         <div className="flex items-center space-x-4 text-text-secondary">
-        {TEXT_ACTION_OPTIONS.map((option) => (
-        <button
-         key={option.id}
-         title={`${option.label}`} 
-          onClick={() => handleAction(option.id)}>
-          {option.icon}
-        </button>
-      ))}
-       <button
-       title="Insert Link"
-       className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("link" as RichTextAction)}`}
-       onClick={handleInsertLink}>
-        <Link size={24} />
-      </button>
-      <button
-      title="Remove Link"
-      className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("unlink" as RichTextAction) } `}
-       onClick={() => removeLink(editor)} disabled={!isLinkActive(editor)}>
-        <Unlink size={24} />
-      </button>
-      </div>
+          {TEXT_ACTION_OPTIONS.map((option) => (
+            <button
+              key={option.id}
+              title={`${option.label}`}
+              onClick={() => handleAction(option.id)}>
+              {option.icon}
+            </button>
+          ))}
+          <button
+            title="Insert Link"
+            className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("link" as RichTextAction)}`}
+            onClick={handleInsertLink}>
+            <Link size={24} />
+          </button>
+          <button
+            title="Remove Link"
+            className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("unlink" as RichTextAction)} `}
+            onClick={() => removeLink(editor)} disabled={!isLinkActive(editor)}>
+            <Unlink size={24} />
+          </button>
+        </div>
         {TEXT_FORMAT_OPTIONS.map(({ id, label, icon }) => (
           <button
-          title={label}
+            title={label}
             key={id}
             aria-label={label}
             className={`p-2 rounded   text-text-primary ${getMarkSelectionClass(id)}`}
@@ -90,9 +90,9 @@ export default function Toolbar() {
               e.preventDefault();
               onMarkClick(id);
             }}
-         >
-          {icon}
-         </button>
+          >
+            {icon}
+          </button>
         ))}
       </div>
       <div className="border-l border-gray-300 h-6 self-center" />

@@ -47,7 +47,6 @@ import {
     { id: RichTextAction.Bold, icon: <Bold  size={24}/>, label: "Bold(Ctrl+B)"},
     { id: RichTextAction.Italics, icon: <Italic  size={24}/>, label: "Italics(Ctrl+I)"},
     { id: RichTextAction.Underline, icon: <Underline size={24} />, label: "Underline(Ctrl+U)" },
-    {id: RichTextAction.link, icon: <Link size={24} />, label: "Link"},
     {
       id: RichTextAction.Highlight,
       icon: <Highlighter size={24}/>,
