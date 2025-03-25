@@ -46,7 +46,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   };
 
-  // Default user profile rendering
   const defaultUserProfile = (
     <div className="relative">
       <UserAvatar
@@ -58,14 +57,13 @@ export const Navbar: React.FC<NavbarProps> = ({
     </div>
   );
 
-  // Format notification count
   const formatNotificationCount = (count: number) => {
     if (count > 99) return "99+";
     return count.toString();
   };
 
   return (
-    <nav className=" bg-transparent text-white py-4 px-4 flex items-center justify-between ">
+    <nav className="bg-transparent text-white py-4 px-4 flex items-center justify-between">
       {/* Logo */}
       <div className="flex items-center">
         <a href="/">
@@ -79,12 +77,12 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Desktop Menu (Large Screens) */}
-      <div className="hidden lg:flex items-center space-x-8 ml-auto">
+      <div className="hidden lg:flex items-center space-x-6 ml-auto">
         {children}
       </div>
 
       {/* Right Section (Profile, Workspace, Language Dropdown) */}
-      <div className="hidden lg:flex items-center space-x-2">
+      <div className="hidden lg:flex items-center space-x-6 ml-2.5">
         {isLoggedIn ? (
           <>
             {userProfile || defaultUserProfile}
@@ -95,10 +93,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
               </a>
             </div>
-            <div className="relative flex items-center mr-6">
-              <IconChat size='6' classNames='cursor-pointer'/>
+            <div className="relative flex items-center">
+              <IconChat size='6' classNames='cursor-pointer' />
               {notificationCount > 0 &&
-                <span className="absolute  p-2 -top-4 left-4 bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
+                <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden ">
                   {formatNotificationCount(notificationCount)}
                 </span>
               }
@@ -131,7 +129,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="lg:hidden">
         <div className="relative flex items-center space-x-4">
           {isLoggedIn && (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-4"> {/* Changed space-x-2 to space-x-4 */}
               <div className="relative">
                 {userProfile ? (
                   <div className="scale-75 origin-left">
@@ -154,7 +152,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="relative flex items-center">
                 <IconChat size='6' classNames='cursor-pointer' />
                 {notificationCount > 0 &&
-                  <span className="absolute  p-2 -top-3 left-4 bg-button-primary-fill text-black text-xs rounded-full h-5.5 w-5.5 flex items-center justify-center overflow-hidden">
+                  <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden ">
                     {formatNotificationCount(notificationCount)}
                   </span>
                 }
