@@ -152,17 +152,23 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
     return (
       <div className="w-full text-text-primary">
         <Slate editor={editor} initialValue={initialValue} onChange={(value) => onChange(value)}>
-          <Toolbar />
-          <div className="bg-black text-text-primary max-w-screen focus:outline-none max-h-96 overflow-y-auto">
+          
+          <div
+          className="bg-black text-text-primary border-0 max-w-screen focus:outline-none max-h-96 overflow-y-auto  flex flex-col"
+          style={{ resize: "both", overflow: "auto" }}
+         >
+            <Toolbar />
+            <div className="p-4">
             <Editable
               name={name}
               placeholder={placeholder}
               spellCheck
-              className="w-full p-4"
               renderLeaf={RenderLeaf}
               renderElement={RenderElement}
               onKeyDown={onKeyDown}
+               className="focus:outline-none"
             />
+            </div>
           </div>
         </Slate>
       </div>

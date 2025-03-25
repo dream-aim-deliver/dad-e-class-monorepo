@@ -45,7 +45,7 @@ export default function Toolbar() {
   };
   return (
     <div className="max-w-screen rounded-tl-md flex flex-nowrap rounded-tr-md text-text-primary  overflow-x-auto gap-4 bg-base-neutral-700 p-3">
-      <div className="flex items-center space-x-2 min-w-max ">
+      <div className="flex items-center space-x-2">
         <select
           className="px-4 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-1"
           defaultValue="paragraph"
@@ -67,7 +67,7 @@ export default function Toolbar() {
               {option.icon}
             </button>
           ))}
-          <button
+            <button
             title="Insert Link"
             className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("link" as RichTextAction)}`}
             onClick={handleInsertLink}>
