@@ -19,9 +19,6 @@
   "references": [
     {
       "path": "../../packages/models"
-    },
-    {
-      "path": "../../packages/auth"
     }
   ]
 }
