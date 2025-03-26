@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Navbar } from '../lib/components/navbar';
 import { NextIntlClientProvider } from 'next-intl';
 import { locales, TLocale } from '@maany_shr/e-class-translations';
-
+import { useState, useEffect } from 'react';
 
 // Mock dictionary structure (aligned with TDictionary)
 const mockMessages = {
@@ -31,58 +31,65 @@ const mockMessagesDe = {
   },
 };
 
-// Navigation links to pass as children
-const NavLinks = ({ locale }: { locale: TLocale }) => (
-  <>
-    {locale === 'en' ? (
-      <>
-        <a href="/offers">
-          <span className="hover:text-button-primary-fill cursor-pointer">
-            Offers
-          </span>
-        </a>
-        <a href="/coaching">
-          <span className="hover:text-button-primary-fill cursor-pointer">
-            Coaching
-          </span>
-        </a>
-        <a href="/how-it-works">
-          <span className="hover:text-button-primary-fill cursor-pointer">
-            How It Works
-          </span>
-        </a>
-        <a href="/about">
-          <span className="hover:text-button-primary-fill cursor-pointer">
-            About
-          </span>
-        </a>
-      </>
-    ) : (
-      <>
-        <a href="/offers">
-          <span className="hover:text-button-primary-fill cursor-pointer">
-            Angebote
-          </span>
-        </a>
-        <a href="/coaching">
-          <span className="hover:text-button-primary-fill cursor-pointer">
-            Coaching
-          </span>
-        </a>
-        <a href="/how-it-works">
-          <span className="hover:text-button-primary-fill cursor-pointer">
-            Wie es funktioniert
-          </span>
-        </a>
-        <a href="/about">
-          <span className="hover:text-button-primary-fill cursor-pointer">
-            Über uns
-          </span>
-        </a>
-      </>
-    )}
-  </>
-);
+// Navigation links using the dictionary
+const NavLinks = ({ locale }: { locale: TLocale }) => {
+  const messages = locale === 'en' ? mockMessages : mockMessagesDe;
+  const t = messages.components.navbar;
+
+  return (
+    <>
+      <a href="/offers">
+        <span className="hover:text-button-primary-fill cursor-pointer">
+          {t.offers}
+        </span>
+      </a>
+      <a href="/coaching">
+        <span className="hover:text-button-primary-fill cursor-pointer">
+          {t.coaching}
+        </span>
+      </a>
+      <a href="/how-it-works">
+        <span className="hover:text-button-primary-fill cursor-pointer">
+          {t.howItWorks}
+        </span>
+      </a>
+      <a href="/about">
+        <span className="hover:text-button-primary-fill cursor-pointer">
+          {t.about}
+        </span>
+      </a>
+    </>
+  );
+};
+
+// Wrapper component to manage state and sync with args.locale
+const NavbarWrapper = (args: any) => {
+  const [locale, setLocale] = useState<TLocale>(args.locale);
+
+  // Sync internal state with args.locale when it changes via Storybook controls
+  useEffect(() => {
+    setLocale(args.locale);
+  }, [args.locale]);
+
+  const handleLocaleChange = (newLocale: string) => {
+    setLocale(newLocale as TLocale);
+  };
+
+  return (
+    <NextIntlClientProvider
+      locale={locale}
+      messages={locale === 'en' ? mockMessages : mockMessagesDe}
+    >
+      <Navbar
+        {...args}
+        locale={locale}
+        onChangeLanguage={handleLocaleChange}
+      >
+        <NavLinks locale={locale} />
+      </Navbar>
+    </NextIntlClientProvider>
+  );
+};
 
 const meta: Meta<typeof Navbar> = {
   title: 'Components/Navbar',
@@ -92,15 +99,10 @@ const meta: Meta<typeof Navbar> = {
     layout: 'fullscreen',
   },
   decorators: [
-    (Story, { args }) => (
-      <NextIntlClientProvider
-        locale={args.locale}
-        messages={args.locale === 'en' ? mockMessages : mockMessagesDe}
-      >
-        <div className="min-h-screen">
-          <Story />
-        </div>
-      </NextIntlClientProvider>
+    (Story) => (
+      <div className="min-h-screen">
+        <Story />
+      </div>
     ),
   ],
   argTypes: {
@@ -110,7 +112,7 @@ const meta: Meta<typeof Navbar> = {
     },
     locale: {
       control: 'select',
-      options: locales, // Use locales from i18n config
+      options: locales,
       description: 'The locale for language selection.',
     },
     notificationCount: {
@@ -131,7 +133,7 @@ const meta: Meta<typeof Navbar> = {
     },
     availableLocales: {
       control: 'multi-select',
-      options: locales, // Use locales from i18n config
+      options: locales,
       description: 'Array of available locales for the language dropdown.',
     },
   },
@@ -139,13 +141,9 @@ const meta: Meta<typeof Navbar> = {
 
 export default meta;
 
-// Updated template to include children and locale-aware NavLinks
+// Template uses the wrapper component
 const Template: StoryObj<typeof Navbar> = {
-  render: (args) => (
-    <Navbar {...args}>
-      <NavLinks locale={args.locale} />
-    </Navbar>
-  ),
+  render: (args) => <NavbarWrapper {...args} />,
 };
 
 export const LoggedOut: StoryObj<typeof Navbar> = {
@@ -158,7 +156,7 @@ export const LoggedOut: StoryObj<typeof Navbar> = {
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
     logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
-    availableLocales: locales, // Add availableLocales
+    availableLocales: locales,
   },
   parameters: {
     docs: {
@@ -251,7 +249,6 @@ export const CustomUserProfile: StoryObj<typeof Navbar> = {
   },
 };
 
-// Example with localized navigation links
 export const LocalizedNavLinks: StoryObj<typeof Navbar> = {
   ...Template,
   args: {
