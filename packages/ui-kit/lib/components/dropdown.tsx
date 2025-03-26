@@ -6,18 +6,20 @@ import { IconChevronUp } from './icons/icon-chevron-up';
 import { IconChevronDown } from './icons/icon-chevron-down';
 import { InputField } from './input-field';
 import { IconSearch } from './icons/icon-search';
+import { cn } from '../utils/style-utils';
 
 export interface DropdownProps {
   type: 'simple' | 'choose-color' | 'multiple-choice-and-search';
   options: { label: React.ReactNode; value: string }[];
   onSelectionChange: (selected: string | string[] | null) => void;
   className?: string;
-  defaultValue?: string | string[]; // New optional prop
+  defaultValue?: string | string[];
   text: {
     simpleText?: string;
     colorText?: string;
     multiText?: string;
   };
+  position?: 'top' | 'bottom';
 }
 
 /**
@@ -62,6 +64,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   className,
   defaultValue,
   text,
+  position = 'bottom',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -156,7 +159,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
       {/* Dropdown Content */}
       {isOpen && (
-        <div className="mt-2 z-50 absolute w-auto">
+        <div className={cn(" z-50 absolute w-auto", position === 'bottom' ? 'mt-2' : 'bottom-12')}>
           {' '}
           {/* Ensure absolute positioning and higher z-index */}
           {/* Simple Dropdown */}
