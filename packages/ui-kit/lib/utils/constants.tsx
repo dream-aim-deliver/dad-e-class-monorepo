@@ -1,3 +1,4 @@
+import { getDictionary } from "@maany_shr/e-class-translations";
 import {
     Bold,
     Italic,
@@ -18,7 +19,6 @@ import {
     Redo,
     Link,
   } from "lucide-react";
-  
   export enum RichTextAction {
     Bold = "bold",
     Italics = "italic",
@@ -43,92 +43,41 @@ import {
 
   }
   
-  export const TEXT_FORMAT_OPTIONS = [
-    { id: RichTextAction.Bold, icon: <Bold  size={24}/>, label: "Bold (Ctrl+B)"},
-    { id: RichTextAction.Italics, icon: <Italic  size={24}/>, label: "Italics (Ctrl+I)"},
-    { id: RichTextAction.Underline, icon: <Underline size={24} />, label: "Underline (Ctrl+U)" },
-    {
-      id: RichTextAction.Highlight,
-      icon: <Highlighter size={24}/>,
-      label: "Highlight",
-      fontSize: 10,
-    },
-    {
-      id: RichTextAction.Strikethrough,
-      icon: <Strikethrough />,
-      label: "Strikethrough",
-    },
-    {
-      id: RichTextAction.Superscript,
-      icon: <Superscript />,
-      label: "Superscript",
-    },
-    {
-      id: RichTextAction.Subscript,
-      icon: <Subscript />,
-      label: "Subscript",
-    },
-    {
-      id: RichTextAction.Code,
-      icon: <Code />,
-      label: "Code",
-    },
+  export const TEXT_FORMAT_OPTIONS = (dictionary: any) => [
+    { id: RichTextAction.Bold, icon: <Bold size={24} />, label: dictionary.components.richTextToolbar.bold },
+    { id: RichTextAction.Italics, icon: <Italic size={24} />, label: dictionary.components.richTextToolbar.italic },
+    { id: RichTextAction.Underline, icon: <Underline size={24} />, label: dictionary.components.richTextToolbar.underline },
+    { id: RichTextAction.Highlight, icon: <Highlighter size={24} />, label: dictionary.components.richTextToolbar.highlight },
+    { id: RichTextAction.Strikethrough, icon: <Strikethrough />, label: dictionary.components.richTextToolbar.strikethrough },
+    { id: RichTextAction.Superscript, icon: <Superscript />, label: dictionary.components.richTextToolbar.superscript },
+    { id: RichTextAction.Subscript, icon: <Subscript />, label: dictionary.components.richTextToolbar.subscript },
+    { id: RichTextAction.Code, icon: <Code />, label: dictionary.components.richTextToolbar.code },
   ];
-  
-  export const TEXT_BLOCK_OPTIONS = [
-    {
-      id: RichTextAction.LeftAlign,
-      icon: <AlignLeft  size={24}/>,
-      label: "Align Left",
-      
-    },
-    {
-      id: RichTextAction.CenterAlign,
-      icon: <AlignCenter size={24}  />,
-      label: "Align Center",
-    },
-    {
-      id: RichTextAction.RightAlign,
-      icon: <AlignRight size={24} />,
-      label: "Align Right",
-    },
-    {
-      id: RichTextAction.JustifyAlign,
-      icon: <AlignJustify size={24} />,
-      label: "Align Justify",
-    },
-    {
-      id: RichTextAction.BlockQuote,
-      icon: <Quote  size={24}/>,
-      label: "Block Quote",
-    },
-    {
-      id: RichTextAction.BulletedList,
-      icon: <List size={24}/>,
-      label: "Bulleted List",
-    },
-    {
-      id: RichTextAction.NumberedList,
-      icon: <ListOrdered size={24} />,
-      label: "Numbered List",
-    },
+  export const TEXT_BLOCK_OPTIONS = (dictionary: any) => [
+    { id: RichTextAction.LeftAlign, icon: <AlignLeft size={24} />, label: dictionary.components.richTextToolbar.leftAlign },
+    { id: RichTextAction.CenterAlign, icon: <AlignCenter size={24} />, label: dictionary.components.richTextToolbar.centerAlign },
+    { id: RichTextAction.RightAlign, icon: <AlignRight size={24} />, label: dictionary.components.richTextToolbar.rightAlign },
+    { id: RichTextAction.JustifyAlign, icon: <AlignJustify size={24} />, label: dictionary.components.richTextToolbar.justifyAlign },
+    { id: RichTextAction.BlockQuote, icon: <Quote size={24} />, label: dictionary.components.richTextToolbar.blockQuote },
+    { id: RichTextAction.BulletedList, icon: <List size={24} />, label: dictionary.components.richTextToolbar.bulletedList },
+    { id: RichTextAction.NumberedList, icon: <ListOrdered size={24} />, label: dictionary.components.richTextToolbar.numberedList },
   ];
   
   export const HEADINGS = ["h1","h2","h3","h4","h5","h6"];
   
   export const LIST_TYPES = ["numbered-list", "bulleted-list"];
   export const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
-  export const TEXT_ACTION_OPTIONS = [
+  export const TEXT_ACTION_OPTIONS =(dictionary:any)=> [
     {
       id: "undo", // You may need to define these actions in your Slate commands
       icon: <Undo size={24} />,
-      label: "Undo (Ctrl+Z)"
+      label: dictionary.components.richTextToolbar.undo
      
     },
     {
       id: "redo",
       icon: <Redo size={24} />,
-      label: "Redo (Ctrl+Y)",
+      label:dictionary.components.richTextToolbar.redo
       
     },
   ];

@@ -14,6 +14,10 @@ const meta: Meta<typeof RichTextEditor> = {
     name: { control: 'text' },
     initialValue: { control: 'object' },
     onLoseFocus: { action: 'changed' },
+    locale: {
+      control: 'select',
+      options: ['en', 'de'],
+    },
   },
 };
 
@@ -42,6 +46,7 @@ export const Basic: Story = {
     initialValue: defaultInitialValue,
     onChange: (value) => null,
     onLoseFocus: (value) => console.log('Content changed:', value),
+    locale: 'de',
   },
 };
 
@@ -50,9 +55,13 @@ export const WithStringInput: Story = {
   args: {
     name: 'content',
     placeholder: 'Start typing...',
-    initialValue: '[{"type":"paragraph","children":[{"text":"This text is highlighted.","highlight":true}]}]',
+
+    initialValue:
+      '[{"type":"paragraph","children":[{"text":"This text is highlighted.","highlight":true}]}]',
+
     onChange: (value) => null,
     onLoseFocus: (value) => console.log('Content changed:', value),
+    locale: 'de',
   },
 };
 
@@ -61,6 +70,7 @@ export const WithFormattedContent: Story = {
   args: {
     name: 'content',
     placeholder: 'Start typing...',
+
     initialValue: [
       {
         type: 'h1',
@@ -112,8 +122,10 @@ export const WithFormattedContent: Story = {
         ],
       },
     ],
+
     onChange: (value) => null,
     onLoseFocus: (value) => console.log('Content changed:', value),
+    locale: 'en',
   },
 };
 
@@ -121,11 +133,13 @@ export const WithFormattedContent: Story = {
 export const WithToolbarUsage: Story = {
   args: {
     ...Basic.args,
+    locale: 'de',
   },
   parameters: {
     docs: {
       description: {
-        story: 'This example demonstrates how to use the toolbar. Try selecting text and using the formatting buttons.',
+        story:
+          'This example demonstrates how to use the toolbar. Try selecting text and using the formatting buttons.',
       },
     },
   },
