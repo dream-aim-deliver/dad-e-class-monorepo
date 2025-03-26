@@ -12,6 +12,7 @@ vi.mock('@maany_shr/e-class-translations', () => ({
     },
   }),
   isLocalAware: vi.fn(),
+  locales: ['en', 'de'], // Added locales to match component usage
 }));
 
 vi.mock('../lib/components/button', () => ({
@@ -72,11 +73,30 @@ vi.mock('../lib/components/icons/icon-chat', () => ({
   ),
 }));
 
+vi.mock('../lib/components/avatar/user-avatar', () => ({
+  UserAvatar: ({ imageUrl, size, fullName, className }) => (
+    <div
+      data-testid="user-avatar"
+      data-image-url={imageUrl}
+      data-size={size}
+      data-full-name={fullName}
+      className={className}
+    >
+      Avatar
+    </div>
+  ),
+}));
+
 describe('Navbar Component', () => {
   test('renders correctly when not logged in with English locale', () => {
     const onChangeLanguageMock = vi.fn();
     render(
-      <Navbar isLoggedIn={false} locale="en" onChangeLanguage={onChangeLanguageMock}>
+      <Navbar
+        isLoggedIn={false}
+        locale="en"
+        onChangeLanguage={onChangeLanguageMock}
+        availableLocales={['en', 'de']}
+      >
         <a href="/home">Home</a>
         <a href="/about">About</a>
       </Navbar>
@@ -91,13 +111,13 @@ describe('Navbar Component', () => {
 
   it('renders user profile and workspace when logged in', () => {
     render(
-      <Navbar isLoggedIn={true} locale="en">
+      <Navbar isLoggedIn={true} locale="en" availableLocales={['en', 'de']}>
         <a href="/home">Home</a>
       </Navbar>
     );
     const userAvatars = screen.getAllByTestId('user-avatar');
     expect(userAvatars.length).toBe(2); // Desktop and mobile
-    expect(userAvatars[0]).toHaveClass('ml-3'); // Desktop version
+    expect(userAvatars[0]).toHaveClass('p-0', 'ml-3'); // Desktop version
     const workspaceLinks = screen.getAllByText('Workspace');
     expect(workspaceLinks.length).toBe(2); // Desktop and mobile
     expect(workspaceLinks[0]).toBeInTheDocument();
@@ -105,19 +125,30 @@ describe('Navbar Component', () => {
 
   it('displays notification count and icon when provided', () => {
     render(
-      <Navbar isLoggedIn={true} locale="en" notificationCount={2}>
+      <Navbar
+        isLoggedIn={true}
+        locale="en"
+        notificationCount={2}
+        availableLocales={['en', 'de']}
+      >
         <a href="/home">Home</a>
       </Navbar>
     );
     const notifications = screen.getAllByText('2');
     expect(notifications.length).toBe(2); // Desktop and mobile
-    expect(notifications[0]).toHaveClass('h-6'); // Desktop version - updated from h-5
-    expect(screen.getAllByTestId('icon-chat').length).toBe(2); // Desktop and mobile - updated to match IconChat
+    expect(notifications[0]).toHaveClass('h-6'); // Desktop version
+    expect(screen.getAllByTestId('icon-chat').length).toBe(2); // Desktop and mobile
   });
+
   test('calls onChangeLanguage when language dropdown changes', () => {
     const onChangeLanguageMock = vi.fn();
     render(
-      <Navbar isLoggedIn={false} locale="en" onChangeLanguage={onChangeLanguageMock}>
+      <Navbar
+        isLoggedIn={false}
+        locale="en"
+        onChangeLanguage={onChangeLanguageMock}
+        availableLocales={['en', 'de']}
+      >
         <a href="/home">Home</a>
       </Navbar>
     );
@@ -131,39 +162,57 @@ describe('Navbar Component', () => {
   test('renders custom user profile when provided', () => {
     const customProfile = <div data-testid="custom-profile">Custom Profile</div>;
     render(
-      <Navbar isLoggedIn={true} locale="en" onChangeLanguage={vi.fn()} userProfile={customProfile}>
+      <Navbar
+        isLoggedIn={true}
+        locale="en"
+        onChangeLanguage={vi.fn()}
+        userProfile={customProfile}
+        availableLocales={['en', 'de']}
+      >
         <a href="/home">Home</a>
       </Navbar>
     );
 
     const customProfiles = screen.getAllByTestId('custom-profile');
     expect(customProfiles.length).toBe(2); // Desktop and mobile
-    expect(customProfiles[0].parentElement).not.toHaveClass('scale-75'); // Desktop version
-    expect(screen.queryByAltText('User Profile')).not.toBeInTheDocument();
+    expect(customProfiles[1].parentElement).toHaveClass('scale-75'); // Mobile version
+    expect(screen.queryByTestId('user-avatar')).not.toBeInTheDocument();
   });
 
   test('renders correctly in German when locale is "de"', () => {
     render(
-      <Navbar isLoggedIn={true} locale="de" onChangeLanguage={vi.fn()}>
+      <Navbar
+        isLoggedIn={true}
+        locale="de"
+        onChangeLanguage={vi.fn()}
+        availableLocales={['en', 'de']}
+      >
         <a href="/home">Home</a>
       </Navbar>
     );
 
     const workspaces = screen.getAllByText('Arbeitsbereich');
     expect(workspaces.length).toBe(2); // Desktop and mobile
-    expect(workspaces[0]).not.toHaveClass('text-sm'); // Desktop version
+    expect(workspaces[1]).toHaveClass('text-sm'); // Mobile version
     expect(screen.getByTestId('language-dropdown')).toHaveValue('de');
   });
 
   test('shows hamburger menu and includes desktop menu structure', () => {
     render(
-      <Navbar isLoggedIn={true} locale="en" onChangeLanguage={vi.fn()}>
+      <Navbar
+        isLoggedIn={true}
+        locale="en"
+        onChangeLanguage={vi.fn()}
+        availableLocales={['en', 'de']}
+      >
         <a href="/home">Home</a>
       </Navbar>
     );
 
     const desktopMenu = screen.getByText('Home').closest('div');
     expect(desktopMenu).toHaveClass('hidden', 'lg:flex');
-    expect(screen.getByTestId('mock-button').querySelector('[data-testid="icon-right"]')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('mock-button').querySelector('[data-testid="icon-right"]')
+    ).toBeInTheDocument();
   });
 });

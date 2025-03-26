@@ -1,5 +1,5 @@
 import React, { useState, ReactNode } from 'react';
-import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { getDictionary, isLocalAware, locales, TLocale } from '@maany_shr/e-class-translations';
 import { Button } from './button';
 import { Dropdown } from './dropdown';
 import { IconClose } from './icons/icon-close';
@@ -16,8 +16,37 @@ interface NavbarProps extends isLocalAware {
   userProfileImageSrc?: string;
   userName?: string;
   logoSrc?: string;
+  availableLocales: TLocale[];
 }
 
+/**
+ * A responsive Navbar component for the e-class platform.
+ *
+ * @param isLoggedIn Indicates whether the user is logged in.
+ * @param notificationCount The number of unread notifications.
+ * @param onChangeLanguage Callback function triggered when the language is changed. Receives the new locale as an argument.
+ * @param children The children elements to be rendered in the Navbar.
+ * @param userProfile The user profile component to be rendered in the Navbar.
+ * @param userProfileImageSrc The URL of the user's profile image.
+ * @param userName The user's full name.
+ * @param logoSrc The URL of the platform's logo.
+ * @param availableLocales An array of available locales for the language dropdown.
+ *
+ * @example
+ * <Navbar
+ *   isLoggedIn={true}
+ *   notificationCount={3}
+ *   onChangeLanguage={(locale) => console.log("Language changed to:", locale)}
+ *   userProfile={<UserAvatar imageUrl="https://example.com/avatar.jpg" size="small" fullName="John Doe" />}
+ *   userProfileImageSrc="https://example.com/avatar.jpg"
+ *   userName="John Doe"
+ *   logoSrc="https://example.com/logo.png"
+ *   availableLocales={['en', 'de']}
+ * >
+ *   <a href="/courses">Courses</a>
+ *   <a href="/profile">Profile</a>
+ * </Navbar>
+ */
 export const Navbar: React.FC<NavbarProps> = ({
   isLoggedIn,
   locale: initialLocale,
@@ -28,32 +57,43 @@ export const Navbar: React.FC<NavbarProps> = ({
   userProfileImageSrc,
   userName,
   logoSrc,
+  availableLocales,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentLocale, setCurrentLocale] = useState(initialLocale);
+  const [currentLocale, setCurrentLocale] = useState<TLocale>(initialLocale);
   const dictionary = getDictionary(currentLocale);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleLocaleChange = (newLocale: string) => {
-    if (newLocale === "en" || newLocale === "de") {
+  const handleLocaleChange = (newLocale: TLocale) => {
+    if (availableLocales.includes(newLocale)) {
       setCurrentLocale(newLocale);
-    }
-    if (onChangeLanguage) {
-      onChangeLanguage(newLocale);
+      if (onChangeLanguage) {
+        onChangeLanguage(newLocale);
+      }
     }
   };
 
+  const languageOptions = availableLocales.map(locale => ({
+    label: locale.toUpperCase(),
+    value: locale
+  }));
+
   const defaultUserProfile = (
-    <div className="relative">
+    <div className="flex items-center space-x-2"> {/* Smaller gap between avatar and workspace */}
       <UserAvatar
         imageUrl={userProfileImageSrc}
         size="small"
         fullName={userName}
-        className='ml-3 p-0'
+        className="p-0 ml-3"
       />
+      <a href="/workspace">
+        <span className="hover:text-button-primary-fill cursor-pointer">
+          {dictionary.components.navbar.workspace}
+        </span>
+      </a>
     </div>
   );
 
@@ -81,25 +121,18 @@ export const Navbar: React.FC<NavbarProps> = ({
         {children}
       </div>
 
-      {/* Right Section (Profile, Workspace, Language Dropdown) */}
+      {/* Right Section (Profile+Workspace, Chat, Language Dropdown) */}
       <div className="hidden lg:flex items-center space-x-6 ml-2.5">
         {isLoggedIn ? (
           <>
             {userProfile || defaultUserProfile}
-            <div className="relative">
-              <a href="/workspace">
-                <span className="hover:text-button-primary-fill cursor-pointer">
-                  {dictionary.components.navbar.workspace}
-                </span>
-              </a>
-            </div>
             <div className="relative flex items-center">
-              <IconChat size='6' classNames='cursor-pointer' />
-              {notificationCount > 0 &&
-                <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden ">
+              <IconChat size="6" classNames="cursor-pointer" />
+              {notificationCount > 0 && (
+                <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
                   {formatNotificationCount(notificationCount)}
                 </span>
-              }
+              )}
             </div>
           </>
         ) : (
@@ -110,13 +143,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="relative">
           <Dropdown
             type="simple"
-            options={[
-              { label: "ENG", value: "en" },
-              { label: "DE", value: "de" },
-            ]}
+            options={languageOptions}
             onSelectionChange={(selected) => {
-              if (typeof selected === 'string') {
-                handleLocaleChange(selected);
+              if (typeof selected === 'string' && locales.includes(selected as TLocale)) {
+                handleLocaleChange(selected as TLocale);
               }
             }}
             text={{ simpleText: "" }}
@@ -129,8 +159,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="lg:hidden">
         <div className="relative flex items-center space-x-4">
           {isLoggedIn && (
-            <div className="flex items-center space-x-4"> {/* Changed space-x-2 to space-x-4 */}
-              <div className="relative">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2"> {/* Smaller gap for mobile */}
                 {userProfile ? (
                   <div className="scale-75 origin-left">
                     {userProfile}
@@ -140,33 +170,33 @@ export const Navbar: React.FC<NavbarProps> = ({
                     imageUrl={userProfileImageSrc}
                     size="small"
                     fullName={userName}
-                    className='ml-1'
+                    className="ml-1"
                   />
                 )}
+                <a href="/workspace">
+                  <span className="hover:text-button-primary-fill cursor-pointer text-sm">
+                    {dictionary.components.navbar.workspace}
+                  </span>
+                </a>
               </div>
-              <a href="/workspace">
-                <span className="hover:text-button-primary-fill cursor-pointer text-sm">
-                  {dictionary.components.navbar.workspace}
-                </span>
-              </a>
               <div className="relative flex items-center">
-                <IconChat size='6' classNames='cursor-pointer' />
-                {notificationCount > 0 &&
-                  <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden ">
+                <IconChat size="6" classNames="cursor-pointer" />
+                {notificationCount > 0 && (
+                  <span className="absolute p-2 -top-4 left-4 leading-[150%] font-bold bg-button-primary-fill text-black text-xs rounded-full h-6 w-6 flex items-center justify-center overflow-hidden">
                     {formatNotificationCount(notificationCount)}
                   </span>
-                }
+                )}
               </div>
             </div>
           )}
 
           <Button
             onClick={toggleMenu}
-            iconRight={<IconHamburgerMenu size='8' />}
+            iconRight={<IconHamburgerMenu size="8" />}
             hasIconRight
-            variant='text'
-            size='medium'
-            className='focus:outline-none p-0'
+            variant="text"
+            size="medium"
+            className="focus:outline-none p-0"
           />
         </div>
       </div>
@@ -187,11 +217,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <Button
               onClick={toggleMenu}
-              iconRight={<IconClose classNames='w-8 h-8' />}
+              iconRight={<IconClose classNames="w-8 h-8" />}
               hasIconRight
-              variant='text'
-              size='big'
-              className='focus:outline-none p-0'
+              variant="text"
+              size="big"
+              className="focus:outline-none p-0"
             />
           </div>
 
@@ -199,13 +229,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             {children}
             <Dropdown
               type="simple"
-              options={[
-                { label: "ENG", value: "en" },
-                { label: "DE", value: "de" },
-              ]}
+              options={languageOptions}
               onSelectionChange={(selected) => {
-                if (typeof selected === 'string') {
-                  handleLocaleChange(selected);
+                if (typeof selected === 'string' && locales.includes(selected as TLocale)) {
+                  handleLocaleChange(selected as TLocale);
                 }
               }}
               text={{ simpleText: "" }}
