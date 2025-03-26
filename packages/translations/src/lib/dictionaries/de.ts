@@ -131,6 +131,9 @@ export const DE: TDictionary = {
       buttonText: "Coaching-Sitzungen kaufen",
       total: "Gesamt",
       minutes: "Minuten"
+    },
+    videoPlayer: {
+      videoErrorText: 'Video existiert nicht'
     }
   },
 };

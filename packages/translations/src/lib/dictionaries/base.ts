@@ -144,6 +144,9 @@ export const DictionarySchema = z.object({
       buttonText:z.string(),
       total:z.string(),
       minutes:z.string(),
+    }),
+    videoPlayer: z.object({
+      videoErrorText: z.string()
     })
   }),
 
