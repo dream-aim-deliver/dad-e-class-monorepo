@@ -17,8 +17,8 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@maany_shr/e-class-models": "1.7.0",
-    "@maany_shr/e-class-translations": "1.7.0",
+    "@maany_shr/e-class-models": "workspace:*",
+    "@maany_shr/e-class-translations": "workspace:*",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "16.1.0",
     "class-variance-authority": "^0.7.1",
