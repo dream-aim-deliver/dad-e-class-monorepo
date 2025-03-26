@@ -144,7 +144,11 @@ export const DictionarySchema = z.object({
       buttonText:z.string(),
       total:z.string(),
       minutes:z.string(),
-    })
+    }),
+    generalCard: z.object({
+      buttonText: z.string(),
+      placeHolderText: z.string(),
+    }),
   }),
 
 });
