@@ -161,14 +161,8 @@ export const EN: TDictionary = {
       noImageText: 'No image available',
     },
     navbar: {
-      offers: 'Offers',
-      coaching: 'Coaching',
-      howItWorks: 'How it works',
-      about: 'About',
       workspace: 'Workspace',
       login: 'Login',
-      english: 'ENG',
-      german: 'DEU',
     },
   },
 };

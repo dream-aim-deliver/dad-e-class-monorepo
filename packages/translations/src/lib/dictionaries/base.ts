@@ -175,14 +175,8 @@ export const DictionarySchema = z.object({
       noImageText: z.string(),
     }),
     navbar: z.object({
-      offers: z.string(),
-      coaching: z.string(),
-      howItWorks: z.string(),
-      about: z.string(),
       workspace: z.string(),
       login: z.string(),
-      english: z.string(),
-      german: z.string(),
     }),
   }),
 

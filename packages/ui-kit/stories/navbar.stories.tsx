@@ -1,8 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Navbar } from '../lib/components/navbar'; // Adjust alias/path as needed
+import { Navbar } from '../lib/components/navbar';
 import { NextIntlClientProvider } from 'next-intl';
+import { locales, TLocale } from '@maany_shr/e-class-translations';
 
-// Mock dictionary structure
+
+// Mock dictionary structure (aligned with TDictionary)
 const mockMessages = {
   components: {
     navbar: {
@@ -11,36 +13,74 @@ const mockMessages = {
       howItWorks: 'How It Works',
       about: 'About',
       workspace: 'Workspace',
-      english: 'English',
-      german: 'German',
       login: 'Login',
     },
   },
 };
 
+const mockMessagesDe = {
+  components: {
+    navbar: {
+      offers: 'Angebote',
+      coaching: 'Coaching',
+      howItWorks: 'Wie es funktioniert',
+      about: 'Über uns',
+      workspace: 'Arbeitsbereich',
+      login: 'Anmelden',
+    },
+  },
+};
+
 // Navigation links to pass as children
-const NavLinks = () => (
+const NavLinks = ({ locale }: { locale: TLocale }) => (
   <>
-    <a href="/offers">
-      <span className="hover:text-button-primary-fill cursor-pointer">
-        Offers
-      </span>
-    </a>
-    <a href="/coaching">
-      <span className="hover:text-button-primary-fill cursor-pointer">
-        Coaching
-      </span>
-    </a>
-    <a href="/how-it-works">
-      <span className="hover:text-button-primary-fill cursor-pointer">
-        How It Works
-      </span>
-    </a>
-    <a href="/about">
-      <span className="hover:text-button-primary-fill cursor-pointer">
-        About
-      </span>
-    </a>
+    {locale === 'en' ? (
+      <>
+        <a href="/offers">
+          <span className="hover:text-button-primary-fill cursor-pointer">
+            Offers
+          </span>
+        </a>
+        <a href="/coaching">
+          <span className="hover:text-button-primary-fill cursor-pointer">
+            Coaching
+          </span>
+        </a>
+        <a href="/how-it-works">
+          <span className="hover:text-button-primary-fill cursor-pointer">
+            How It Works
+          </span>
+        </a>
+        <a href="/about">
+          <span className="hover:text-button-primary-fill cursor-pointer">
+            About
+          </span>
+        </a>
+      </>
+    ) : (
+      <>
+        <a href="/offers">
+          <span className="hover:text-button-primary-fill cursor-pointer">
+            Angebote
+          </span>
+        </a>
+        <a href="/coaching">
+          <span className="hover:text-button-primary-fill cursor-pointer">
+            Coaching
+          </span>
+        </a>
+        <a href="/how-it-works">
+          <span className="hover:text-button-primary-fill cursor-pointer">
+            Wie es funktioniert
+          </span>
+        </a>
+        <a href="/about">
+          <span className="hover:text-button-primary-fill cursor-pointer">
+            Über uns
+          </span>
+        </a>
+      </>
+    )}
   </>
 );
 
@@ -52,8 +92,11 @@ const meta: Meta<typeof Navbar> = {
     layout: 'fullscreen',
   },
   decorators: [
-    (Story) => (
-      <NextIntlClientProvider locale="en" messages={mockMessages}>
+    (Story, { args }) => (
+      <NextIntlClientProvider
+        locale={args.locale}
+        messages={args.locale === 'en' ? mockMessages : mockMessagesDe}
+      >
         <div className="min-h-screen">
           <Story />
         </div>
@@ -67,7 +110,7 @@ const meta: Meta<typeof Navbar> = {
     },
     locale: {
       control: 'select',
-      options: ['en', 'de'],
+      options: locales, // Use locales from i18n config
       description: 'The locale for language selection.',
     },
     notificationCount: {
@@ -82,16 +125,25 @@ const meta: Meta<typeof Navbar> = {
       control: 'text',
       description: 'The name of the user.',
     },
+    logoSrc: {
+      control: 'text',
+      description: 'URL for the logo image.',
+    },
+    availableLocales: {
+      control: 'multi-select',
+      options: locales, // Use locales from i18n config
+      description: 'Array of available locales for the language dropdown.',
+    },
   },
 };
 
 export default meta;
 
-// Updated template to include children
+// Updated template to include children and locale-aware NavLinks
 const Template: StoryObj<typeof Navbar> = {
   render: (args) => (
     <Navbar {...args}>
-      <NavLinks />
+      <NavLinks locale={args.locale} />
     </Navbar>
   ),
 };
@@ -105,7 +157,8 @@ export const LoggedOut: StoryObj<typeof Navbar> = {
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
-    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    availableLocales: locales, // Add availableLocales
   },
   parameters: {
     docs: {
@@ -125,7 +178,8 @@ export const LoggedInWithNotifications: StoryObj<typeof Navbar> = {
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
-    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    availableLocales: locales,
   },
 };
 
@@ -138,7 +192,8 @@ export const LoggedOutGerman: StoryObj<typeof Navbar> = {
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
-    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    availableLocales: locales,
   },
 };
 
@@ -151,7 +206,8 @@ export const MobileViewLoggedIn: StoryObj<typeof Navbar> = {
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
-    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    availableLocales: locales,
   },
   parameters: {
     viewport: {
@@ -169,11 +225,11 @@ export const LoggedInNoNotifications: StoryObj<typeof Navbar> = {
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
-    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    availableLocales: locales,
   },
 };
 
-// Example with custom user profile image
 export const CustomUserProfile: StoryObj<typeof Navbar> = {
   ...Template,
   args: {
@@ -183,7 +239,8 @@ export const CustomUserProfile: StoryObj<typeof Navbar> = {
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
-    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    availableLocales: locales,
   },
   parameters: {
     docs: {
@@ -194,38 +251,9 @@ export const CustomUserProfile: StoryObj<typeof Navbar> = {
   },
 };
 
-// Example with localized navigation links (using dictionary)
+// Example with localized navigation links
 export const LocalizedNavLinks: StoryObj<typeof Navbar> = {
-  render: (args) => (
-    <Navbar {...args}>
-      {args.locale === 'en' ? (
-        <NavLinks />
-      ) : (
-        <>
-          <a href="/offers">
-            <span className="hover:text-button-primary-fill cursor-pointer">
-              Angebote
-            </span>
-          </a>
-          <a href="/coaching">
-            <span className="hover:text-button-primary-fill cursor-pointer">
-              Coaching
-            </span>
-          </a>
-          <a href="/how-it-works">
-            <span className="hover:text-button-primary-fill cursor-pointer">
-              Wie es funktioniert
-            </span>
-          </a>
-          <a href="/about">
-            <span className="hover:text-button-primary-fill cursor-pointer">
-              Über uns
-            </span>
-          </a>
-        </>
-      )}
-    </Navbar>
-  ),
+  ...Template,
   args: {
     isLoggedIn: true,
     locale: 'de',
@@ -233,6 +261,7 @@ export const LocalizedNavLinks: StoryObj<typeof Navbar> = {
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
-    logoSrc:'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    availableLocales: locales,
   },
 };
