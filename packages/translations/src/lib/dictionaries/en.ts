@@ -1,8 +1,13 @@
 import { TDictionary } from './base';
 import { Home_EN } from '../pages/home/home-en';
+import { Login_EN } from '../pages/login/login-en';
+import { SSO_EN } from '../pages/sso/sso-en';
+
 
 export const EN: TDictionary = {
   home: Home_EN,
+  login: Login_EN,
+  sso: SSO_EN,
   components: {
     skills: {
       title: 'Skills',
@@ -47,6 +52,10 @@ export const EN: TDictionary = {
     profileTab: {
       personal: 'Personal',
       professional: 'Professional',
+    },
+    generalCard: {
+      buttonText: 'Find the right offer',
+      placeHolderText: 'No image available',
     },
     profileInfo: {
       title: 'E-class Platform',
@@ -125,6 +134,28 @@ export const EN: TDictionary = {
       buttonText: 'Buy coaching sessions',
       total: 'Total',
       minutes: 'minutes'
+    },
+    richTextToolbar:{
+      paragraph: "Paragraph",
+      bold: "Bold (Ctrl+B)",
+      italic: "Italic (Ctrl+I)",
+      underline: "Underline (Ctrl+U)",
+      undo: "Undo (Ctrl+Z)",
+      redo: "Redo (Ctrl+Y)",
+      link: "Insert Link",
+      strikethrough: "Strikethrough",
+      superscript: "Superscript",
+      subscript: "Subscript",
+      highlight: "Highlight",
+      code: "Code",
+      leftAlign: "Align Left",
+      centerAlign: "Align Center",
+      rightAlign: "Align Right",
+      justifyAlign: "Justify",
+      blockQuote: "Block Quote",
+      numberedList: "Numbered List",
+      bulletedList: "Bulleted List",
+      unlink: "Remove Link"
     }
   },
 };

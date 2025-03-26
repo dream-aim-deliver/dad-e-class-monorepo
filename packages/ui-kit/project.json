@@ -13,6 +13,12 @@
         "port": 4400,
         "configDir": "packages/ui-kit/.storybook"
       }
+    },
+    "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
+      "options": {
+        "packageRoot": "packages/ui-kit"
+      }
     }
   }
 }
