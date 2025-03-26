@@ -134,6 +134,9 @@ export const EN: TDictionary = {
       buttonText: 'Buy coaching sessions',
       total: 'Total',
       minutes: 'minutes'
+    },
+    videoPlayer: {
+      videoErrorText: 'Video does not exist'
     }
   },
 };
