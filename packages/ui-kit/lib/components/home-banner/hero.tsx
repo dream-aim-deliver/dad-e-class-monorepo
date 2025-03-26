@@ -1,5 +1,9 @@
 import { VideoPlayer } from '../video-player';
 import { homePage } from '@maany_shr/e-class-models';
+import {isLocalAware } from '@maany_shr/e-class-translations';
+
+export interface HeroProps extends homePage.THomeBanner, isLocalAware {
+}
 
 /**
  * A Hero component that displays a prominent section with a title, description, and an embedded video player.
@@ -19,11 +23,12 @@ import { homePage } from '@maany_shr/e-class-models';
  * />
  */
 
-export const Hero: React.FC<homePage.THomeBanner> = ({
+export const Hero: React.FC<HeroProps> = ({
   title,
   description,
   videoId,
   thumbnailUrl,
+  locale
 }) => {
   return (
     <div className="flex md:flex-row flex-col  gap-[4.1875rem] items-center w-full">
@@ -34,7 +39,7 @@ export const Hero: React.FC<homePage.THomeBanner> = ({
             <p className="text-lg text-text-secondary leading-[150%]">{description}</p>
         </div>
         {/* VideoPlayer */}
-        <VideoPlayer videoId={videoId} thumbnailUrl={thumbnailUrl} />
+        <VideoPlayer videoId={videoId} thumbnailUrl={thumbnailUrl} locale={locale}/>
     </div>
   );
 };

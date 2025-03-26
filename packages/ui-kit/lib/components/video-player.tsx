@@ -1,6 +1,7 @@
 import MuxPlayer from '@mux/mux-player-react';
 import { useState } from 'react';
-export interface VideoPlayerProps {
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+export interface VideoPlayerProps extends isLocalAware{
     videoId?: string;
     thumbnailUrl?: string;
 };
@@ -24,10 +25,13 @@ export interface VideoPlayerProps {
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     videoId,
-    thumbnailUrl
+    thumbnailUrl,
+    locale
 }) => {
+    const dictionary = getDictionary(locale);
     const [showPlayer, setShowPlayer] = useState(!thumbnailUrl); 
     const [autoPlay, setAutoPlay] = useState(false);
+    const [videoError , setVideoError] = useState(!videoId);
 
     const handleThumbnailClick = () => {
         setShowPlayer(true);
@@ -38,6 +42,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         setShowPlayer(true); 
         setAutoPlay(false); 
     };
+
+    const handleVideoError = () => {
+        setVideoError(true);
+    }
 
     return (
         <div className="w-full overflow-hidden">
@@ -50,12 +58,21 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     onError={handleThumbnailError}
                 />
             ) : (
+                videoError ? 
+                (
+                    <div className="rounded-medium w-full min-w-[18rem] h-[16rem]  bg-base-neutral-700 flex items-center justify-center p-4">
+                        <span className="text-text-secondary text-md">
+                            {dictionary.components.videoPlayer.videoErrorText}
+                        </span>
+                    </div>
+                ) :
                 <MuxPlayer
                     streamType="on-demand"
                     playbackId={videoId}
                     accentColor="var(--color-base-brand-500)"
                     className="w-full h-full"
                     autoPlay={autoPlay}
+                    onError={handleVideoError}
                 />
             )}
         </div>

@@ -145,6 +145,9 @@ export const DictionarySchema = z.object({
       total:z.string(),
       minutes:z.string(),
     }),
+    videoPlayer: z.object({
+      videoErrorText: z.string()
+    }),
     generalCard: z.object({
       buttonText: z.string(),
       placeHolderText: z.string(),
