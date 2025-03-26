@@ -12,7 +12,8 @@ import {
 import Toolbar from "./toolbar";
 import { CustomElement, CustomText, EditorType, RichTextEditorProps } from "./types";
 import { toggleMark } from "./slate";
-import { deserialize } from "./serializer";
+import { serialize,deserialize } from "./serializer";
+
 
 /**
  * Extending Slate's CustomTypes to define custom editor, element, and text types.
@@ -107,7 +108,7 @@ export const RenderElement = ({ attributes, children, element }: RenderElementPr
  * Supports initial value parsing, custom key bindings, and a toolbar for formatting options.
  */
 export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
-  function RichTextEditor({ name, onChange, placeholder, initialValue }) {
+  function RichTextEditor({ name, onChange,onLoseFocus, placeholder, initialValue }) {
     // Convert initial string value to Slate format if necessary
     if (typeof initialValue === "string") {
       initialValue = deserialize(initialValue);
@@ -128,37 +129,46 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
      */
     const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
       const key = event.key.toLowerCase();
-      if (event.ctrlKey) {
+      if (event.ctrlKey || event.metaKey) {
         switch (key) {
           case "b":
             toggleMark(editor, "bold");
+            event.preventDefault();
             break;
           case "i":
             toggleMark(editor, "italic");
+            event.preventDefault();
             break;
           case "u":
             toggleMark(editor, "underline");
+            event.preventDefault();
             break;
           case "z":
             editor.undo();
+            event.preventDefault();
             break;
           case "y":
             editor.redo();
+            event.preventDefault();
             break;
         }
       }
     };
-
+   const handleBlur = () => {
+    const serialized = serialize(editor.children);
+    onLoseFocus(serialized);
+    console.log('serialized',serialized);
+   }
     return (
-      <div className="w-full text-text-primary">
+      <div className="text-text-primary">
         <Slate editor={editor} initialValue={initialValue} onChange={(value) => onChange(value)}>
           
           <div
-          className="bg-black text-text-primary border-0 max-w-screen focus:outline-none overflow-y-auto  flex flex-col"
-          style={{ resize: "both" }}
+          className="bg-black text-text-primary border-0 w-full max-w-[calc(100vw-40px)]  min-w-0 min-h-40  focus:outline-none overflow-y-auto"
+          style={{ resize: "vertical" }}
          >
             <Toolbar />
-            <div className="p-4">
+            <div className="p-4 w-full">
             <Editable
               name={name}
               placeholder={placeholder}
@@ -166,7 +176,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
               renderLeaf={RenderLeaf}
               renderElement={RenderElement}
               onKeyDown={onKeyDown}
-               className="focus:outline-none"
+              className="focus:outline-none w-full"
+              onBlur={handleBlur}
             />
             </div>
           </div>
