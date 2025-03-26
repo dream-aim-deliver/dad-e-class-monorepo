@@ -11,7 +11,7 @@ export interface RichTextEditorProps extends isLocalAware{
   placeholder: string;
   initialValue: Descendant[] | undefined | string;
   onChange?: (value: Descendant[]) => void;
-  onLoseFocus?: (value:string) => void;
+  onLoseFocus: (value:string) => void;
 }
 
 /**
