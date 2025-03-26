@@ -9,9 +9,11 @@ jobs:
   test:
     name: Publish
     runs-on: ubuntu-latest
+    environment: CI
     permissions:
-      contents: read
+      contents: write
       id-token: write # needed for provenance data generation
+      pull-requests: write
     timeout-minutes: 10
     steps:
       - name: Checkout repository
@@ -28,12 +30,31 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org/
 
+      - name: Change dependency versions to 'workspace:*'
+        run: python3 tools/update-dependency-versions.py -w . -s workspace
+        shell: bash
+
       - name: Install dependencies
         run: pnpm install
         shell: bash
 
+      - name: Change back dependencies from 'workspace:*' to versions
+        run: python3 tools/update-dependency-versions.py -w . -s explicit -v ${{ github.event.release.tag_name }}
+        shell: bash
+
       - name: Prepare packages
-        run: pnpm exec nx run-many -t build
+        run: pnpm exec nx --no-cloud run-many -t build
+        env:
+          'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
+          'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
+          'AUTH_AUTH0_CLIENT_ID': ${{ secrets.AUTH_AUTH0_CLIENT_ID }}
+          'AUTH_AUTH0_CLIENT_SECRET': ${{ secrets.AUTH_AUTH0_CLIENT_SECRET }}
+          'AUTH_AUTH0_ISSUER': ${{ secrets.AUTH_AUTH0_ISSUER }}
+          'AUTH_AUTH0_AUTHORIZATION_URL': ${{ secrets.AUTH_AUTH0_AUTHORIZATION_URL }}
+          'AUTH_AUTH0_ROLES_CLAIM_KEY': ${{ secrets.AUTH_AUTH0_ROLES_CLAIM_KEY }}
+          'E_CLASS_PLATFORM_SHORT_NAME': ${{ vars.E_CLASS_PLATFORM_SHORT_NAME}}
+          'E_CLASS_PLATFORM_NAME': ${{ vars.E_CLASS_PLATFORM_NAME }}
+          'E_CLASS_DEV_MODE': 'true'
         shell: bash
       
       - name: Print Environment Info
@@ -54,3 +75,22 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         #   NPM_CONFIG_PROVENANCE: true
+
+      - name: Revert back dependency versions to 'workspace:*' for local development
+        run: python3 tools/update-dependency-versions.py -w . -s workspace
+        shell: bash
+
+      - name: Commit changes for local development
+        env:
+          GITHUB_TOKEN: ${{ secrets.PR_PAT }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          timestamp=$(date +%y%m%d-%H%M%S)
+          BRANCH_NAME="chore_change_${{ github.event.release.tag_name }}_to_workspace_${timestamp}"
+          git checkout -b ${BRANCH_NAME}
+          git add .
+          git commit -m "chore: change dependencies to 'workspace:*' for local development" || echo "No changes to commit"
+          git push origin ${BRANCH_NAME}
+          gh pr create --title "chore: change dependencies to 'workspace:*' for local development" --body "This PR changes dependencies to 'workspace:*' for local development, from ${{ github.event.release.tag_name }}" --base main --head ${BRANCH_NAME}
+        shell: bash

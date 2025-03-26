@@ -147,7 +147,11 @@ export const DictionarySchema = z.object({
     }),
     videoPlayer: z.object({
       videoErrorText: z.string()
-    })
+    }),
+    generalCard: z.object({
+      buttonText: z.string(),
+      placeHolderText: z.string(),
+    }),
   }),
 
 });
