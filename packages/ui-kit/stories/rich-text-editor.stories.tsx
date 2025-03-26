@@ -13,6 +13,7 @@ const meta: Meta<typeof RichTextEditor> = {
     placeholder: { control: 'text' },
     name: { control: 'text' },
     initialValue: { control: 'object' },
+    onLoseFocus: { action: 'changed' },
   },
 };
 
@@ -39,7 +40,8 @@ export const Basic: Story = {
     name: 'content',
     placeholder: 'Start typing...',
     initialValue: defaultInitialValue,
-    onChange: (value) => console.log('Content changed:', value),
+    onChange: (value) => console.log('Content changed:'),
+    onLoseFocus: (value) => console.log('Content changed:', value),
   },
 };
 
@@ -49,7 +51,8 @@ export const WithStringInput: Story = {
     name: 'content',
     placeholder: 'Start typing...',
     initialValue: '[{"type":"paragraph","children":[{"text":"This text is highlighted.","highlight":true}]}]',
-    onChange: (value) => console.log('Content changed:', value),
+    onChange: (value) => console.log('Content changed:'),
+    onLoseFocus: (value) => console.log('Content changed:', value),
   },
 };
 
@@ -109,7 +112,8 @@ export const WithFormattedContent: Story = {
         ],
       },
     ],
-    onChange: (value) => console.log('Content changed:', value),
+    onChange: (value) => console.log('Content changed:'),
+    onLoseFocus: (value) => console.log('Content changed:', value),
   },
 };
 
