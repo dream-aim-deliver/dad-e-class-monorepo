@@ -149,6 +149,29 @@ export const DictionarySchema = z.object({
       buttonText: z.string(),
       placeHolderText: z.string(),
     }),
+    richTextToolbar: z.object({
+      bold: z.string(),
+      paragraph: z.string(),
+      italic: z.string(),
+      underline: z.string(),
+      strikethrough: z.string(),
+      superscript: z.string(),
+      subscript: z.string(),
+      link: z.string(),
+      unlink: z.string(),
+      highlight: z.string(),
+      code: z.string(),
+      leftAlign: z.string(),
+      centerAlign: z.string(),
+      rightAlign: z.string(),
+      justifyAlign: z.string(),
+      blockQuote: z.string(),
+      numberedList: z.string(),
+      bulletedList: z.string(),
+      undo: z.string(),
+      redo: z.string(),
+    })
+
   }),
 
 });

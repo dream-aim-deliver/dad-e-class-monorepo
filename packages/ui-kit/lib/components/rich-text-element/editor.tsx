@@ -108,7 +108,7 @@ export const RenderElement = ({ attributes, children, element }: RenderElementPr
  * Supports initial value parsing, custom key bindings, and a toolbar for formatting options.
  */
 export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
-  function RichTextEditor({ name, onChange,onLoseFocus, placeholder, initialValue }) {
+  function RichTextEditor({ name,locale, onChange,onLoseFocus, placeholder, initialValue }) {
     // Convert initial string value to Slate format if necessary
     if (typeof initialValue === "string") {
       initialValue = deserialize(initialValue);
@@ -166,7 +166,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
           className="bg-black text-text-primary border-0 w-full max-w-[calc(100vw-40px)]  min-w-0 min-h-40  focus:outline-none overflow-y-auto"
           style={{ resize: "vertical" }}
          >
-            <Toolbar />
+            <Toolbar locale={locale} />
             <div className="p-4 w-full">
             <Editable
               name={name}
