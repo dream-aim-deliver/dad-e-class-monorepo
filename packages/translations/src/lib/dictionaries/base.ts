@@ -26,6 +26,10 @@ export const DictionarySchema = z.object({
     signIn: z.string(),
   }),
   components: z.object({
+    coachBanner: z.object({
+      buttonText: z.string(),
+      placeHolderText: z.string(),
+    }),
     skills: z.object({
       title: z.string(),
     }),
@@ -113,6 +117,11 @@ export const DictionarySchema = z.object({
       bookSession: z.string(),
     }),
     courseCard: z.object({
+      courseEmptyState: z.object({
+        message: z.string(),
+        buttonText: z.string(),
+        message2: z.string(),
+      }),
       createdBy: z.string(),
       you: z.string(),
       group: z.string(),
@@ -130,6 +139,7 @@ export const DictionarySchema = z.object({
       completedBadge: z.string(),
       cochingSession: z.string(),
       sales: z.string(),
+      hours: z.string(),
     }),
     availableCoachingSessions: z.object({
       title: z.string(),
