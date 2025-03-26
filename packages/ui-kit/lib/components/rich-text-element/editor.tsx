@@ -157,7 +157,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
    const handleBlur = () => {
     const serialized = serialize(editor.children);
     onLoseFocus(serialized);
-    console.log('serialized',serialized);
    }
     return (
       <div className="text-text-primary">
