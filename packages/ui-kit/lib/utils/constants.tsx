@@ -44,9 +44,9 @@ import {
   }
   
   export const TEXT_FORMAT_OPTIONS = [
-    { id: RichTextAction.Bold, icon: <Bold  size={24}/>, label: "Bold(Ctrl+B)"},
-    { id: RichTextAction.Italics, icon: <Italic  size={24}/>, label: "Italics(Ctrl+I)"},
-    { id: RichTextAction.Underline, icon: <Underline size={24} />, label: "Underline(Ctrl+U)" },
+    { id: RichTextAction.Bold, icon: <Bold  size={24}/>, label: "Bold (Ctrl+B)"},
+    { id: RichTextAction.Italics, icon: <Italic  size={24}/>, label: "Italics (Ctrl+I)"},
+    { id: RichTextAction.Underline, icon: <Underline size={24} />, label: "Underline (Ctrl+U)" },
     {
       id: RichTextAction.Highlight,
       icon: <Highlighter size={24}/>,
@@ -122,13 +122,13 @@ import {
     {
       id: "undo", // You may need to define these actions in your Slate commands
       icon: <Undo size={24} />,
-      label: "Undo(Ctrl+Z)"
+      label: "Undo (Ctrl+Z)"
      
     },
     {
       id: "redo",
       icon: <Redo size={24} />,
-      label: "Redo(Ctrl+Y)",
+      label: "Redo (Ctrl+Y)",
       
     },
   ];

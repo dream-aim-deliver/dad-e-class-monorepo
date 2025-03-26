@@ -40,7 +40,7 @@ export const Basic: Story = {
     name: 'content',
     placeholder: 'Start typing...',
     initialValue: defaultInitialValue,
-    onChange: (value) => console.log('Content changed:'),
+    onChange: (value) => null,
     onLoseFocus: (value) => console.log('Content changed:', value),
   },
 };
@@ -51,7 +51,7 @@ export const WithStringInput: Story = {
     name: 'content',
     placeholder: 'Start typing...',
     initialValue: '[{"type":"paragraph","children":[{"text":"This text is highlighted.","highlight":true}]}]',
-    onChange: (value) => console.log('Content changed:'),
+    onChange: (value) => null,
     onLoseFocus: (value) => console.log('Content changed:', value),
   },
 };
@@ -112,7 +112,7 @@ export const WithFormattedContent: Story = {
         ],
       },
     ],
-    onChange: (value) => console.log('Content changed:'),
+    onChange: (value) => null,
     onLoseFocus: (value) => console.log('Content changed:', value),
   },
 };
