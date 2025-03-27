@@ -1,9 +1,10 @@
-// Footer.stories.tsx
 import { Meta, StoryObj } from '@storybook/react';
 import { Footer } from '../lib/components/footer';
 import { NextIntlClientProvider } from 'next-intl';
+import { locales, TLocale } from '@maany_shr/e-class-translations';
+import { useState, useEffect } from 'react';
 
-// Mock dictionary structure for the footer
+// Mock dictionary structure (aligned with TDictionary)
 const mockMessages = {
   components: {
     footer: {
@@ -12,38 +13,88 @@ const mockMessages = {
       termsOfUse: 'Terms of Use',
       rules: 'Rules',
       coursesInformation: 'Courses Information',
+      companyInfo: '© 2024 JUST DO AD GmbH  •  Hermetschloostrasse 70, 8048 Zürich  •  hi@justdoad.ai',
     },
   },
 };
 
-// Footer links to pass as children
-const FooterLinks = ({ locale }: { locale: string }) => (
-  <>
-    <a href="/impressum" className="hover:text-orange-400">
-      {locale === 'en'
-        ? mockMessages.components.footer.impressum
-        : 'Impressum (DE)'}
-    </a>
-    <a href="/privacy-policy" className="hover:text-orange-400">
-      {locale === 'en'
-        ? mockMessages.components.footer.privacyPolicy
-        : 'Datenschutzrichtlinie'}
-    </a>
-    <a href="/terms-of-use" className="hover:text-orange-400">
-      {locale === 'en'
-        ? mockMessages.components.footer.termsOfUse
-        : 'Nutzungsbedingungen'}
-    </a>
-    <a href="/rules" className="hover:text-orange-400">
-      {locale === 'en' ? mockMessages.components.footer.rules : 'Regeln'}
-    </a>
-    <a href="/courses-information" className="hover:text-orange-400">
-      {locale === 'en'
-        ? mockMessages.components.footer.coursesInformation
-        : 'Kursinformationen'}
-    </a>
-  </>
-);
+const mockMessagesDe = {
+  components: {
+    footer: {
+      impressum: 'Impressum (DE)',
+      privacyPolicy: 'Datenschutzrichtlinie',
+      termsOfUse: 'Nutzungsbedingungen',
+      rules: 'Regeln',
+      coursesInformation: 'Kursinformationen',
+      companyInfo: '© 2024 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • hallo@justdoad.ai',
+    },
+  },
+};
+
+// Footer links using the dictionary
+const FooterLinks = ({ locale }: { locale: TLocale }) => {
+  const messages = locale === 'en' ? mockMessages : mockMessagesDe;
+  const t = messages.components.footer;
+
+  const linkClass = "hover:text-button-primary-hover-fill cursor-pointer text-button-primary-fill text-sm";
+
+  return (
+    <>
+      <a href="/impressum">
+        <span className={linkClass}>{t.impressum}</span>
+      </a>
+      <a href="/privacy-policy">
+        <span className={linkClass}>{t.privacyPolicy}</span>
+      </a>
+      <a href="/terms-of-use">
+        <span className={linkClass}>{t.termsOfUse}</span>
+      </a>
+      <a href="/rules">
+        <span className={linkClass}>{t.rules}</span>
+      </a>
+      <a href="/courses-information">
+        <span className={linkClass}>{t.coursesInformation}</span>
+      </a>
+    </>
+  );
+};
+
+// Footer company info using the dictionary
+const FooterCompanyInfo = ({ locale }: { locale: TLocale }) => {
+  const messages = locale === 'en' ? mockMessages : mockMessagesDe;
+  const t = messages.components.footer;
+
+  return <span> {t.companyInfo}</span>;
+};
+
+// Wrapper component to manage state and sync with args.locale
+const FooterWrapper = (args: any) => {
+  const [locale, setLocale] = useState<TLocale>(args.locale);
+
+  // Sync internal state with args.locale when it changes via Storybook controls
+  useEffect(() => {
+    setLocale(args.locale);
+  }, [args.locale]);
+
+  const handleLocaleChange = (newLocale: string) => {
+    setLocale(newLocale as TLocale);
+  };
+
+  return (
+    <NextIntlClientProvider
+      locale={locale}
+      messages={locale === 'en' ? mockMessages : mockMessagesDe}
+    >
+      <Footer
+        {...args}
+        locale={locale}
+        onChangeLanguage={handleLocaleChange}
+      >
+        <FooterLinks locale={locale} />
+      </Footer>
+    </NextIntlClientProvider>
+  );
+};
 
 const meta: Meta<typeof Footer> = {
   title: 'Components/Footer',
@@ -54,36 +105,38 @@ const meta: Meta<typeof Footer> = {
   },
   decorators: [
     (Story) => (
-      <NextIntlClientProvider locale="en" messages={mockMessages}>
-        <div className="min-h-screen flex flex-col">
-          <div className="flex-grow" />
-          <Story />
-        </div>
-      </NextIntlClientProvider>
+      <div className="min-h-screen flex flex-col">
+        <div className="flex-grow" />
+        <Story />
+      </div>
     ),
   ],
   argTypes: {
     locale: {
       control: 'select',
-      options: ['en', 'de'],
+      options: locales,
       description: 'The locale for language selection.',
     },
     logoSrc: {
       control: 'text',
       description: 'URL for the footer logo image.',
     },
+    footerChildren: {
+      control: 'text',
+      description: 'Content to be rendered as company information.',
+    },
+    children: {
+      description:
+        'Navigation links to be rendered in the footer. Automatically styled with `hover:text-button-primary-hover-fill cursor-pointer text-sm`.',
+    },
   },
 };
 
 export default meta;
 
-// Template to include children
+// Template uses the wrapper component
 const Template: StoryObj<typeof Footer> = {
-  render: (args) => (
-    <Footer {...args}>
-      <FooterLinks locale={args.locale} />
-    </Footer>
-  ),
+  render: (args) => <FooterWrapper {...args} />,
 };
 
 export const DefaultEnglish: StoryObj<typeof Footer> = {
@@ -91,26 +144,12 @@ export const DefaultEnglish: StoryObj<typeof Footer> = {
   args: {
     locale: 'en',
     logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    footerChildren: <FooterCompanyInfo locale="en" />,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Footer with English locale and default logo.',
-      },
-    },
-  },
-};
-
-export const GermanLocale: StoryObj<typeof Footer> = {
-  ...Template,
-  args: {
-    locale: 'de',
-    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Footer with German locale.',
+        story: 'Footer with English locale, default logo, and company info.',
       },
     },
   },
@@ -121,6 +160,7 @@ export const MobileView: StoryObj<typeof Footer> = {
   args: {
     locale: 'en',
     logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    footerChildren: <FooterCompanyInfo locale="en" />,
   },
   parameters: {
     viewport: {
@@ -128,7 +168,7 @@ export const MobileView: StoryObj<typeof Footer> = {
     },
     docs: {
       description: {
-        story: 'Footer in mobile view with English locale.',
+        story: 'Footer in mobile view with English locale and company info.',
       },
     },
   },
@@ -138,58 +178,30 @@ export const NoLogo: StoryObj<typeof Footer> = {
   ...Template,
   args: {
     locale: 'en',
-    logoSrc: undefined, // No logoSrc, will use default text logo
+    logoSrc: '',
+    footerChildren: <FooterCompanyInfo locale="en" />,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Footer without a custom logo, using the default text logo.',
+        story: 'Footer without a custom logo and with company info.',
       },
     },
   },
 };
 
-// Example with additional custom links
-export const WithCustomLinks: StoryObj<typeof Footer> = {
-  render: (args) => (
-    <Footer {...args}>
-      <FooterLinks locale={args.locale} />
-      <a href="/contact" className="hover:text-orange-400">
-        {args.locale === 'en' ? 'Contact' : 'Kontakt'}
-      </a>
-      <a href="/faq" className="hover:text-orange-400">
-        {args.locale === 'en' ? 'FAQ' : 'Häufige Fragen'}
-      </a>
-    </Footer>
-  ),
-  args: {
-    locale: 'en',
-    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Footer with additional custom links passed as children.',
-      },
-    },
-  },
-};
 
-// Example with localized footer links
-export const LocalizedFooterLinks: StoryObj<typeof Footer> = {
-  render: (args) => (
-    <Footer {...args}>
-      <FooterLinks locale={args.locale} />
-    </Footer>
-  ),
+export const LocalizedFooter: StoryObj<typeof Footer> = {
+  ...Template,
   args: {
     locale: 'de',
     logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
+    footerChildren: <FooterCompanyInfo locale="de" />,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Footer with localized navigation links in German.',
+        story: 'Footer with localized navigation links and company info in German.',
       },
     },
   },
