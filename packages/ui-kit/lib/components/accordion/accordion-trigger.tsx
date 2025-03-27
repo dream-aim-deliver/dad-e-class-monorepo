@@ -57,9 +57,9 @@ const AccordionTrigger = forwardRef<HTMLDivElement, AccordionTriggerProps>(
         </div>
         <div className="flex items-center gap-4">
           {!context.value.includes(value) ? (
-            <IconPlus size="8" classNames="text-button-text-text ml-4" />
+            <IconPlus size="6" classNames="text-button-text-text ml-4" />
           ) : (
-            <IconMinus size="8" classNames="text-button-text-text ml-4" />
+            <IconMinus size="6" classNames="text-button-text-text ml-4" />
           )}
         </div>
       </div>

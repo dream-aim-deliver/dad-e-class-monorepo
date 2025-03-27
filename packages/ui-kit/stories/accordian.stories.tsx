@@ -10,7 +10,7 @@ import { TAccordionList } from 'packages/models/src/home-page';
 import RichTextRenderer from '../lib/components/rich-text-element/renderer';
 import { cn } from '../lib/utils/style-utils';
 import { UserAvatar } from '../lib/components/avatar/user-avatar';
-import { Layout } from 'lucide-react';
+
 
 /**
  * HomeAccordion Component - A custom accordion component for displaying FAQs or structured content.
@@ -103,8 +103,8 @@ const HomeAccordion: React.FC<TAccordionList> = ({
   items,
 }) => {
   return (
-    <Accordion type="single" defaultValue={['item-1']}>
-      <div className="text-[#FAFAF9] text-[42px] mb-4">{title}</div>
+    <Accordion className='flex flex-col gap-7' type="single" defaultValue={[items[0].title]}>
+      <h2  className="text-text-primary">{title}</h2>
       <div className="md:w-3/4 w-full bg-card-fill rounded-medium border border-card-stroke py-4 px-6">
         {items &&
           items.map((item, index) => (
@@ -127,8 +127,8 @@ const HomeAccordion: React.FC<TAccordionList> = ({
                 )}
                 <h5 className="text-text-primary font-medium">{item.title}</h5>
               </AccordionTrigger>
-              <AccordionContent value={item.title} className="pl-12 pt-2">
-                <RichTextRenderer content={item.content} />
+              <AccordionContent value={item.title} className="pl-12 pt-2 ">
+                <RichTextRenderer content={item.content} className="lg:text-xl text-normal leading-[150%]  text-text-secondary" />
               </AccordionContent>
             </AccordionItem>
           ))}
