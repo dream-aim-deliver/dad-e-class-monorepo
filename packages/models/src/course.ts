@@ -23,7 +23,6 @@ export const CourseMetadataSchema = z.object({
     duration: CourseDurationSchema,
     pricing: CoursePricingSchema,
     imageUrl: z.string(),
-    rating: z.number(),
     author: z.object({
         name: z.string(),
         image: z.string(),
