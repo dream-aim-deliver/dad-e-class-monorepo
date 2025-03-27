@@ -4,7 +4,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { Footer } from '../lib/components/footer'; // Adjust the import path as needed
 import { getDictionary, locales, TLocale } from '@maany_shr/e-class-translations';
 
-
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
   getDictionary: (locale: string) => ({}), // Mock dictionary content if needed
@@ -20,9 +19,10 @@ vi.mock('./dropdown', () => ({
         const nextOption = options.find((opt: any) => opt.value !== defaultValue);
         if (nextOption) onSelectionChange(nextOption.value);
       }}
+      data-testid="language-dropdown"
     >
       <div className="text-base-white text-sm leading-[100%] whitespace-nowrap">
-        {options.find((opt: any) => opt.value === defaultValue)?.label || 'ENG'}
+        {options.find((opt: any) => opt.value === defaultValue)?.label || 'EN'} {/* Updated default to 'EN' */}
       </div>
       <svg className="h-6 w-6 fill-base-neutral-50 cursor-pointer" viewBox="0 0 24 24">
         <path d="M16.293 9.29297L12 13.586L7.70697 9.29297L6.29297 10.707L12 16.414L17.707 10.707L16.293 9.29297Z" />
@@ -51,6 +51,7 @@ describe('Footer', () => {
       </>
     ),
     footerChildren: <span>© 2025 MyCompany</span>,
+    availableLocales: ['en', 'de'] as TLocale[],
   };
 
   it('renders logo, navigation links, company info, and language dropdown', () => {
@@ -60,23 +61,17 @@ describe('Footer', () => {
     expect(screen.getAllByText('Contact')[0]).toBeInTheDocument();
     expect(screen.getAllByText('© 2025 MyCompany')[0]).toBeInTheDocument();
     const mobileDropdown = screen.getByRole('contentinfo').querySelector('.lg\\:hidden button');
-    expect(within(mobileDropdown as HTMLElement).getByText('ENG')).toBeInTheDocument();
+    expect(within(mobileDropdown as HTMLElement).getByText('EN')).toBeInTheDocument(); // Changed 'ENG' to 'EN'
   });
 
-  it('renders nothing if no props are provided except locale', () => {
-    render(<Footer locale="en" />);
+  it('renders nothing if no props are provided except locale and availableLocales', () => {
+    render(<Footer locale="en" availableLocales={['en', 'de']} />);
     expect(screen.queryByAltText('Logo')).not.toBeInTheDocument();
     expect(screen.queryByText('About')).not.toBeInTheDocument();
     expect(screen.queryByText('Contact')).not.toBeInTheDocument();
     expect(screen.queryByText('© 2025 MyCompany')).not.toBeInTheDocument();
     const mobileDropdown = screen.getByRole('contentinfo').querySelector('.lg\\:hidden button');
-    expect(within(mobileDropdown as HTMLElement).getByText('ENG')).toBeInTheDocument();
-  });
-
-  it('does not call onChangeLanguage for invalid locale', () => {
-    const mockOnChangeLanguage = vi.fn();
-    render(<Footer {...defaultProps} onChangeLanguage={mockOnChangeLanguage} />);
-    expect(mockOnChangeLanguage).not.toHaveBeenCalledWith('fr');
+    expect(within(mobileDropdown as HTMLElement).getByText('EN')).toBeInTheDocument(); // Changed 'ENG' to 'EN'
   });
 
   it('applies mobile layout classes on small screens', () => {

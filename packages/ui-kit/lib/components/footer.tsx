@@ -8,28 +8,26 @@ interface FooterProps extends isLocalAware {
     onChangeLanguage?: (locale: string) => void;
     children?: React.ReactNode;
     footerChildren?: React.ReactNode;
+    availableLocales: TLocale[]; 
 }
 
 /**
  * A reusable Footer component that displays a logo, navigation links, company information, and a language dropdown.
  * Supports responsive layouts for mobile and desktop screens, with localization capabilities.
  *
- * @param locale The initial locale for the footer, determining the language of displayed text. Must be one of:
- *   - `en`: English (default).
- *   - `de`: German.
- *   Inherited from `isLocalAware` interface via `@maany_shr/e-class-translations`.
- * @param logoSrc Optional URL for the logo image displayed in the footer. If not provided, no logo is shown.
- * @param onChangeLanguage Optional callback function triggered when the language is changed via the dropdown.
- *   Receives the new locale as a string (e.g., `"en"` or `"de"`).
+ * @param locale The initial locale for the footer, determining the language of displayed text.
+ * @param logoSrc Optional URL for the logo image displayed in the footer.
+ * @param onChangeLanguage Optional callback function triggered when the language is changed.
  * @param children Optional React nodes to render as navigation links in the footer.
- *   Typically `<a>` elements, which are styled automatically with `text-button-primary-fill hover:text-button-primary-hover-fill cursor-pointer text-sm`.
- * @param footerChildren Optional React nodes to render as company information (e.g., copyright text) in the footer.
+ * @param footerChildren Optional React nodes to render as company information.
+ * @param availableLocales An array of available locales for the language dropdown.
  *
  * @example
  * <Footer
  *   locale="en"
  *   logoSrc="https://example.com/logo.png"
  *   onChangeLanguage={(newLocale) => console.log(`Language changed to: ${newLocale}`)}
+ *   availableLocales={['en', 'de']}
  *   children={
  *     <>
  *       <a href="/about">About</a>
@@ -45,18 +43,25 @@ export const Footer: React.FC<FooterProps> = ({
     onChangeLanguage,
     children,
     footerChildren,
+    availableLocales,  // Added to props
 }) => {
     const [currentLocale, setCurrentLocale] = useState<TLocale>(initialLocale);
     const dictionary = getDictionary(currentLocale);
 
     const handleLocaleChange = (newLocale: TLocale) => {
-        if (locales.includes(newLocale)) { // Use locales from e-class-translations for validation
+        if (availableLocales.includes(newLocale)) {  // Updated to use availableLocales instead of locales
             setCurrentLocale(newLocale);
             if (onChangeLanguage) {
                 onChangeLanguage(newLocale);
             }
         }
     };
+
+    // Create language options from availableLocales
+    const languageOptions = availableLocales.map(locale => ({
+        label: locale.toUpperCase(),
+        value: locale
+    }));
 
     return (
         <footer className="bg-button-primary-text text-white">
@@ -86,25 +91,22 @@ export const Footer: React.FC<FooterProps> = ({
                         </div>
                     </div>
                     <hr className="border-divider my-6" />
-                    {/* Bottom Section: Navigation Links (Two Rows, Left) and Language Dropdown (Centered, Right) */}
+                    {/* Bottom Section: Navigation Links and Language Dropdown */}
                     <div className="flex items-center justify-between">
-                        {/* Navigation Links (Two Rows, Left-Aligned) */}
+                        {/* Navigation Links */}
                         {children && (
                             <div className="flex flex-wrap gap-x-4 gap-y-2 text-button-primary-fill text-sm">
                                 {children}
                             </div>
                         )}
 
-                        {/* Language Dropdown (Centered Vertically, Right) */}
+                        {/* Language Dropdown */}
                         <div className="relative flex items-center">
                             <Dropdown
                                 type="simple"
-                                options={[
-                                    { label: "ENG", value: "en" },
-                                    { label: "DE", value: "de" },
-                                ]}
+                                options={languageOptions}  // Updated to use languageOptions
                                 onSelectionChange={(selected) => {
-                                    if (typeof selected === 'string' && locales.includes(selected as TLocale)) {
+                                    if (typeof selected === 'string' && availableLocales.includes(selected as TLocale)) {
                                         handleLocaleChange(selected as TLocale);
                                     }
                                 }}
@@ -143,7 +145,7 @@ export const Footer: React.FC<FooterProps> = ({
                                 </div>
                             )}
 
-                            {/* Company Info in One Line */}
+                            {/* Company Info */}
                             <div className="text-text-secondary text-sm leading-[150%] items-end flex justify-end">
                                 <span>{footerChildren}</span>
                             </div>
@@ -153,12 +155,9 @@ export const Footer: React.FC<FooterProps> = ({
                         <div className="relative">
                             <Dropdown
                                 type="simple"
-                                options={[
-                                    { label: "ENG", value: "en" },
-                                    { label: "DE", value: "de" },
-                                ]}
+                                options={languageOptions}  // Updated to use languageOptions
                                 onSelectionChange={(selected) => {
-                                    if (typeof selected === 'string' && locales.includes(selected as TLocale)) {
+                                    if (typeof selected === 'string' && availableLocales.includes(selected as TLocale)) {
                                         handleLocaleChange(selected as TLocale);
                                     }
                                 }}

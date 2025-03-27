@@ -89,6 +89,7 @@ const FooterWrapper = (args: any) => {
         {...args}
         locale={locale}
         onChangeLanguage={handleLocaleChange}
+        availableLocales={args.availableLocales} // Added availableLocales
       >
         <FooterLinks locale={locale} />
       </Footer>
@@ -115,7 +116,7 @@ const meta: Meta<typeof Footer> = {
     locale: {
       control: 'select',
       options: locales,
-      description: 'The locale for language selection.',
+      description: 'The initial locale for language selection.',
     },
     logoSrc: {
       control: 'text',
@@ -128,6 +129,11 @@ const meta: Meta<typeof Footer> = {
     children: {
       description:
         'Navigation links to be rendered in the footer. Automatically styled with `hover:text-button-primary-hover-fill cursor-pointer text-sm`.',
+    },
+    availableLocales: {  // Added availableLocales to argTypes
+      control: 'object',
+      description: 'Array of available locales for the language dropdown.',
+      defaultValue: ['en', 'de'],
     },
   },
 };
@@ -145,6 +151,7 @@ export const DefaultEnglish: StoryObj<typeof Footer> = {
     locale: 'en',
     logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
     footerChildren: <FooterCompanyInfo locale="en" />,
+    availableLocales: ['en', 'de'], // Added availableLocales
   },
   parameters: {
     docs: {
@@ -161,6 +168,7 @@ export const MobileView: StoryObj<typeof Footer> = {
     locale: 'en',
     logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
     footerChildren: <FooterCompanyInfo locale="en" />,
+    availableLocales: ['en', 'de'], // Added availableLocales
   },
   parameters: {
     viewport: {
@@ -180,6 +188,7 @@ export const NoLogo: StoryObj<typeof Footer> = {
     locale: 'en',
     logoSrc: '',
     footerChildren: <FooterCompanyInfo locale="en" />,
+    availableLocales: ['en', 'de'], // Added availableLocales
   },
   parameters: {
     docs: {
@@ -190,13 +199,13 @@ export const NoLogo: StoryObj<typeof Footer> = {
   },
 };
 
-
 export const LocalizedFooter: StoryObj<typeof Footer> = {
   ...Template,
   args: {
     locale: 'de',
     logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
     footerChildren: <FooterCompanyInfo locale="de" />,
+    availableLocales: ['en', 'de'], // Added availableLocales
   },
   parameters: {
     docs: {
