@@ -174,7 +174,24 @@ export const MultiSelectAndSearchDropdown: Story = {
   render: (args) => <StatefulDropdown {...args} />,
   args: {
     type: 'multiple-choice-and-search',
-    options: multiSelectOptions,
+    options: [
+      {
+        label: 'Checkbox Alpha',
+        value: 'Checkbox Alpha',
+      },
+      {
+        label: 'Checkbox Beta BetaBetaBetaBetaBetaBeta',
+        value: 'Checkbox Beta',
+      },
+      {
+        label: 'Checkbox Gamma',
+        value: 'Checkbox Gamma',
+      },
+      {
+        label: 'Checkbox Delta',
+        value: 'Checkbox Delta',
+      },
+    ],
     defaultValue: [multiSelectOptions[0].value, multiSelectOptions[2].value],
     className: 'w-64',
     text: {

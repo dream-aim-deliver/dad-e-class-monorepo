@@ -22,6 +22,55 @@ export interface DropdownProps {
   position?: 'top' | 'bottom';
 }
 
+/**
+ * A reusable Dropdown component supporting single-select and multi-select variants with truncation and hover tooltips.
+ * Variants include a simple dropdown, a radio-button-based color selector, and a searchable multi-select with checkboxes.
+ * The dropdown opens below or above the trigger button based on the `position` prop and closes when clicking outside.
+ *
+ * @param type The type of dropdown: 'simple' for single-select, 'choose-color' for radio-button single-select, or 'multiple-choice-and-search' for searchable multi-select. Required.
+ * @param options Array of options, each with a `label` (display text or node) and `value` (unique string identifier). Required.
+ * @param onSelectionChange Callback function triggered when the selection changes. Receives a string (for single-select) or string array (for multi-select) or null.
+ * @param className Optional CSS class to apply to the dropdown container for custom styling.
+ * @param defaultValue Initial selected value(s): a string for single-select types or a string array for multi-select. Optional.
+ * @param text Object containing placeholder text for each type: `simpleText` for 'simple', `colorText` for 'choose-color', `multiText` for 'multiple-choice-and-search'. Required.
+ * @param position Position of the dropdown content relative to the button: 'top' (above) or 'bottom' (below). Optional, defaults to 'bottom'.
+ *
+ * @example
+ * // Simple single-select dropdown
+ * <Dropdown
+ *   type="simple"
+ *   options={[
+ *     { label: "Option 1", value: "1" },
+ *     { label: "Very long option that truncates", value: "2" },
+ *   ]}
+ *   onSelectionChange={(selected) => console.log("Selected:", selected)}
+ *   text={{ simpleText: "Select an option" }}
+ *   defaultValue="1"
+ * />
+ *
+ * // Color selector with radio buttons
+ * <Dropdown
+ *   type="choose-color"
+ *   options={[
+ *     { label: "Red", value: "red" },
+ *     { label: "Very long color name", value: "blue" },
+ *   ]}
+ *   onSelectionChange={(selected) => console.log("Selected color:", selected)}
+ *   text={{ colorText: "Choose a color" }}
+ * />
+ *
+ * // Searchable multi-select dropdown
+ * <Dropdown
+ *   type="multiple-choice-and-search"
+ *   options={[
+ *     { label: "Item 1", value: "1" },
+ *     { label: "Very long item name that truncates", value: "2" },
+ *   ]}
+ *   onSelectionChange={(selected) => console.log("Selected items:", selected)}
+ *   text={{ multiText: "Select items" }}
+ *   defaultValue={["1"]}
+ * />
+ */
 export const Dropdown: React.FC<DropdownProps> = ({
   type,
   options,
@@ -35,8 +84,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonTextRef = useRef<HTMLDivElement>(null);
   const [isButtonTextTruncated, setIsButtonTextTruncated] = useState(false);
-  
-  // Centralized refs and truncation state for options
+
+  // Centralized refs and truncation state for all options
   const optionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const [truncatedOptions, setTruncatedOptions] = useState<Set<string>>(new Set());
 
@@ -98,7 +147,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   }, [buttonText]);
 
   useEffect(() => {
-    // Check truncation for all options
+    // Check truncation for all options across all types
     const newTruncated = new Set<string>();
     optionRefs.current.forEach((element, value) => {
       if (element && element.scrollWidth > element.offsetWidth) {
@@ -106,7 +155,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       }
     });
     setTruncatedOptions(newTruncated);
-  }, [options, isOpen]); // Re-check when options or dropdown visibility changes
+  }, [options, isOpen, searchQuery]); // Re-check when options, visibility, or search changes
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -211,16 +260,42 @@ export const Dropdown: React.FC<DropdownProps> = ({
             <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full">
               <ul className="flex flex-col gap-2">
                 {options.map((option) => (
-                  <li key={option.value} className="flex items-center">
+                  <li
+                    key={option.value}
+                    className="flex items-center group relative"
+                  >
                     <RadioButton
                       name="color"
                       value={option.value}
                       withText
-                      label={option.label}
+                      label={
+                        <div
+                          ref={(el) => {
+                            if (el) {
+                              optionRefs.current.set(option.value, el);
+                            } else {
+                              optionRefs.current.delete(option.value);
+                            }
+                          }}
+                          className="truncate max-w-[200px]" // Adjust max-width as needed
+                        >
+                          {option.label}
+                        </div>
+                      }
                       checked={selectedOption === option.value}
                       onChange={() => handleSelect(option.value, option.label)}
                       labelClass="text-sm text-text-primary leading-[150%] whitespace-nowrap"
                     />
+                    {truncatedOptions.has(option.value) && (
+                      <span
+                        className={cn(
+                          'absolute left-0 top-full mt-1 bg-base-neutral-700 text-text-primary text-sm px-2 py-1 rounded-medium whitespace-nowrap z-10',
+                          'hidden group-hover:block',
+                        )}
+                      >
+                        {option.label}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -238,16 +313,42 @@ export const Dropdown: React.FC<DropdownProps> = ({
               />
               <ul className="flex flex-col gap-2">
                 {(searchQuery ? filteredOptions : options).map((option) => (
-                  <li key={option.value} className="flex items-center">
+                  <li
+                    key={option.value}
+                    className="flex items-center group relative"
+                  >
                     <CheckBox
                       name="multi"
                       withText
                       value={option.value}
-                      label={option.label}
+                      label={
+                        <div
+                          ref={(el) => {
+                            if (el) {
+                              optionRefs.current.set(option.value, el);
+                            } else {
+                              optionRefs.current.delete(option.value);
+                            }
+                          }}
+                          className="truncate max-w-[180px]"
+                        >
+                          {option.label}
+                        </div>
+                      }
                       checked={selectedOptions.includes(option.value)}
                       onChange={() => handleMultiSelect(option.value)}
                       labelClass="text-sm text-text-primary leading-[150%] whitespace-nowrap"
                     />
+                    {truncatedOptions.has(option.value) && (
+                      <span
+                        className={cn(
+                          'absolute left-0 top-full mt-1 bg-base-neutral-700 text-text-primary text-sm px-2 py-1 rounded-medium whitespace-nowrap z-10',
+                          'hidden group-hover:block',
+                        )}
+                      >
+                        {option.label}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
