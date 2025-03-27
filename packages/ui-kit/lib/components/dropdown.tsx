@@ -22,41 +22,6 @@ export interface DropdownProps {
   position?: 'top' | 'bottom';
 }
 
-/**
- * A flexible Dropdown component supporting multiple types:
- * - `simple`: A basic dropdown with single selection.
- * - `choose-color`: A dropdown with radio button selection.
- * - `multiple-choice-and-search`: A searchable multi-select dropdown.
- *
- * @param type The type of dropdown. Options:
- *   - `simple`: Basic single-selection dropdown.
- *   - `choose-color`: Dropdown with radio button selection.
- *   - `multiple-choice-and-search`: Searchable multi-select dropdown.
- * @param options The list of options to display in the dropdown. Each option has:
- *   - `label`: The display label (ReactNode).
- *   - `value`: The unique value associated with the option.
- * @param onSelectionChange Callback function triggered when the selection changes. Receives:
- *   - For `simple` and `choose-color`: A single selected value (`string`).
- *   - For `multiple-choice-and-search`: An array of selected values (`string[]`).
- * @param className Optional additional CSS classes to customize the dropdown's appearance.
- * @param defaultValue Optional default value(s) to pre-select. Can be a single value (`string`) or an array (`string[]`) based on the dropdown type.
- * @param text Object containing placeholder texts for different dropdown types:
- *   - `simpleText`: Placeholder text for `simple` dropdown.
- *   - `colorText`: Placeholder text for `choose-color` dropdown.
- *   - `multiText`: Placeholder text for `multiple-choice-and-search`.
- *
- * @example
- * <Dropdown
- *   type="simple"
- *   options={[
- *     { label: "Option 1", value: "1" },
- *     { label: "Option 2", value: "2" },
- *   ]}
- *   onSelectionChange={(selected) => console.log("Selected:", selected)}
- *   text={{ simpleText: "Select an option" }}
- * />
- */
-
 export const Dropdown: React.FC<DropdownProps> = ({
   type,
   options,
@@ -68,21 +33,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  const buttonTextRef = useRef<HTMLDivElement>(null);
+  const [isButtonTextTruncated, setIsButtonTextTruncated] = useState(false);
+  
+  // Centralized refs and truncation state for options
+  const optionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const [truncatedOptions, setTruncatedOptions] = useState<Set<string>>(new Set());
 
   const [selectedOption, setSelectedOption] = useState<string | null>(
     type !== 'multiple-choice-and-search' &&
@@ -108,22 +64,63 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
   const [searchQuery, setSearchQuery] = useState('');
 
+  const buttonText =
+    type === 'simple'
+      ? selectedLabel || text?.simpleText
+      : type === 'choose-color'
+        ? selectedLabel || text?.colorText
+        : text?.multiText;
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const checkButtonTruncation = () => {
+      if (buttonTextRef.current) {
+        setIsButtonTextTruncated(
+          buttonTextRef.current.scrollWidth > buttonTextRef.current.offsetWidth
+        );
+      }
+    };
+    checkButtonTruncation();
+    window.addEventListener('resize', checkButtonTruncation);
+    return () => window.removeEventListener('resize', checkButtonTruncation);
+  }, [buttonText]);
+
+  useEffect(() => {
+    // Check truncation for all options
+    const newTruncated = new Set<string>();
+    optionRefs.current.forEach((element, value) => {
+      if (element && element.scrollWidth > element.offsetWidth) {
+        newTruncated.add(value);
+      }
+    });
+    setTruncatedOptions(newTruncated);
+  }, [options, isOpen]); // Re-check when options or dropdown visibility changes
+
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleSelect = (value: string, label: React.ReactNode) => {
     setSelectedOption(value);
     setSelectedLabel(label);
     onSelectionChange(value);
-    if (type !== 'choose-color') {
-      setIsOpen(false);
-    }
+    if (type !== 'choose-color') setIsOpen(false);
   };
 
   const handleMultiSelect = (value: string) => {
     const updatedSelections = selectedOptions.includes(value)
       ? selectedOptions.filter((item) => item !== value)
       : [...selectedOptions, value];
-
     setSelectedOptions(updatedSelections);
     onSelectionChange(updatedSelections);
   };
@@ -138,30 +135,35 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <div ref={dropdownRef} className={clsx('relative', className)}>
       {/* Dropdown Button */}
       <button
-        className="flex items-center justify-between p-2 pl-4 w-full bg-base-neutral-800 text-base-white rounded-medium border-[1px] border-base-neutral-700"
+        className="flex items-center justify-between p-2 pl-4 w-full bg-base-neutral-800 text-base-white rounded-medium border-[1px] border-base-neutral-700 group relative"
         onClick={toggleDropdown}
       >
-        <div className="text-base-white text-sm leading-[100%] whitespace-nowrap">
-          {type === 'simple'
-            ? selectedLabel || text?.simpleText
-            : type === 'choose-color'
-              ? selectedLabel || text?.colorText
-              : // : selectedOptions.length > 0
-                //     ? `${selectedOptions.length} selected`
-                text?.multiText}
+        <div
+          ref={buttonTextRef}
+          className="text-base-white truncate text-sm leading-[100%] whitespace-nowrap"
+        >
+          {buttonText}
         </div>
+        {isButtonTextTruncated && (
+          <span
+            className={cn(
+              'absolute left-0 top-full mt-1 bg-base-neutral-700 text-text-primary text-sm px-2 py-1 rounded-medium whitespace-nowrap z-10',
+              'hidden group-hover:block',
+            )}
+          >
+            {buttonText}
+          </span>
+        )}
         {isOpen ? (
-          <IconChevronUp classNames="fill-base-neutral-50 cursor-pointer" />
+          <IconChevronUp classNames="fill-base-neutral-50 cursor-pointer flex-shrink-0" />
         ) : (
-          <IconChevronDown classNames="fill-base-neutral-50 cursor-pointer" />
+          <IconChevronDown classNames="fill-base-neutral-50 cursor-pointer flex-shrink-0" />
         )}
       </button>
 
       {/* Dropdown Content */}
       {isOpen && (
-        <div className={cn(" z-50 absolute w-auto", position === 'bottom' ? 'mt-2' : 'bottom-12')}>
-          {' '}
-          {/* Ensure absolute positioning and higher z-index */}
+        <div className={cn('z-50 absolute w-full', position === 'bottom' ? 'mt-2' : 'bottom-12')}>
           {/* Simple Dropdown */}
           {type === 'simple' && (
             <div className="py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full">
@@ -170,14 +172,35 @@ export const Dropdown: React.FC<DropdownProps> = ({
                   <li
                     key={option.value}
                     className={clsx(
-                      'py-3 px-4 cursor-pointer hover:bg-base-neutral-700 text-sm leading-[100%] whitespace-nowrap',
+                      'py-3 px-4 cursor-pointer hover:bg-base-neutral-700 text-sm leading-[100%] whitespace-nowrap group relative',
                       selectedOption === option.value
                         ? 'text-button-text-text'
                         : 'text-text-primary',
                     )}
                     onClick={() => handleSelect(option.value, option.label)}
                   >
-                    {option.label}
+                    <div
+                      ref={(el) => {
+                        if (el) {
+                          optionRefs.current.set(option.value, el);
+                        } else {
+                          optionRefs.current.delete(option.value);
+                        }
+                      }}
+                      className="truncate"
+                    >
+                      {option.label}
+                    </div>
+                    {truncatedOptions.has(option.value) && (
+                      <span
+                        className={cn(
+                          'absolute left-0 top-full mt-1 bg-base-neutral-700 text-text-primary text-sm px-2 py-1 rounded-medium whitespace-nowrap z-10',
+                          'hidden group-hover:block',
+                        )}
+                      >
+                        {option.label}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -206,7 +229,6 @@ export const Dropdown: React.FC<DropdownProps> = ({
           {/* MultiSelect Dropdown */}
           {type === 'multiple-choice-and-search' && (
             <div className="flex flex-col p-4 gap-3 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full">
-              {/* Search Input */}
               <InputField
                 value={searchQuery}
                 setValue={(value: string) => setSearchQuery(value)}
@@ -214,8 +236,6 @@ export const Dropdown: React.FC<DropdownProps> = ({
                 inputText="Search..."
                 leftContent={<IconSearch />}
               />
-
-              {/* Options List */}
               <ul className="flex flex-col gap-2">
                 {(searchQuery ? filteredOptions : options).map((option) => (
                   <li key={option.value} className="flex items-center">
