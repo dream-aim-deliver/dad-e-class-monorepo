@@ -19,7 +19,6 @@ import { cn } from "../../utils/style-utils";
  * @param {ReactNode} props.children - Content inside the accordion trigger
  * @param {string} props.value - The unique value associated with the accordion section
  * @param {string} [props.className] - Additional CSS classes for styling
- * 
  * @returns {JSX.Element | null} The rendered AccordionTrigger component
  */
 interface AccordionTriggerProps {
