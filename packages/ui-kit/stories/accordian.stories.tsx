@@ -106,8 +106,7 @@ const HomeAccordion: React.FC<TAccordionList> = ({
     <Accordion className='flex flex-col gap-7' type="single" defaultValue={[items[0].title]}>
       <h2  className="text-text-primary">{title}</h2>
       <div className="md:w-3/4 w-full bg-card-fill rounded-medium border border-card-stroke py-4 px-6">
-        {items &&
-          items.map((item, index) => (
+        {items?.map((item, index) => (
             <AccordionItem
               className={cn(
                 'py-6',
@@ -118,17 +117,21 @@ const HomeAccordion: React.FC<TAccordionList> = ({
             >
               <AccordionTrigger
                 value={item.title}
-                hasNumber={showNumbers}
-                number={item.position}
-                className="flex gap-8 "
+
+                
               >
-                {!!item.iconImageUrl && (
+                <div className="flex items-center gap-4">
+                 {showNumbers && item.position && <h4 className="text-action-default">{item.position}.</h4>}
+                 <div className="flex items-center gap-2">
+                {item.iconImageUrl && (
                   <UserAvatar imageUrl={item.iconImageUrl} size="small" />
                 )}
                 <h5 className="text-text-primary font-medium">{item.title}</h5>
+                </div>
+                </div>
               </AccordionTrigger>
-              <AccordionContent value={item.title} className="pl-12 pt-2 ">
-                <RichTextRenderer content={item.content} className="lg:text-xl text-normal leading-[150%]  text-text-secondary" />
+              <AccordionContent value={item.title} className="pl-8 pt-2 ">
+                <RichTextRenderer content={item.content} className="lg:text-md text-normal leading-[150%]  text-text-secondary" />
               </AccordionContent>
             </AccordionItem>
           ))}

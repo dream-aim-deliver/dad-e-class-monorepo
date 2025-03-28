@@ -19,8 +19,6 @@ import { cn } from "../../utils/style-utils";
  * @param {ReactNode} props.children - Content inside the accordion trigger
  * @param {string} props.value - The unique value associated with the accordion section
  * @param {string} [props.className] - Additional CSS classes for styling
- * @param {boolean} [props.hasNumber=false] - Whether to display a number before the title
- * @param {number} [props.number] - The number to display if hasNumber is true
  * 
  * @returns {JSX.Element | null} The rendered AccordionTrigger component
  */
@@ -28,12 +26,10 @@ interface AccordionTriggerProps {
   children: ReactNode;
   value: string;
   className?: string;
-  hasNumber?: boolean;
-  number?: number;
 }
 
 const AccordionTrigger = forwardRef<HTMLDivElement, AccordionTriggerProps>(
-  ({ children, value, className, hasNumber = false, number }, ref) => {
+  ({ children, value, className }, ref) => {
     const context = useContext(AccordionContext);
     
     if (!context) {
@@ -51,10 +47,10 @@ const AccordionTrigger = forwardRef<HTMLDivElement, AccordionTriggerProps>(
         )}
         onClick={() => context.toggle(value)}
       >
-        <div className="flex-1 flex gap-8 items-center">
-          {hasNumber && number !== undefined && <h4 className="text-action-default">{number}.</h4>}
+        <div className="flex-1 flex">
           {children}
-        </div>
+          </div>
+       
         <div className="flex items-center gap-4">
           {!context.value.includes(value) ? (
             <IconPlus size="6" classNames="text-button-text-text ml-4" />
