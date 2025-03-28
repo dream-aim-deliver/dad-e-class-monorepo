@@ -164,5 +164,14 @@ export const EN: TDictionary = {
       workspace: 'Workspace',
       login: 'Login',
     },
+    activity: {
+      atText: 'at',
+      recipientsText: 'Recipients'
+    },
+    recentActivity: {
+      recentActivity: 'Recent Activity',
+      markAllAsRead: 'Mark all as read',
+      viewAll: 'View all...',
+    },
   },
 };
