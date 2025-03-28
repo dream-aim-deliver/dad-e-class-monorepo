@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Descendant } from 'slate';
 import { deserialize } from './serializer';
 import { RenderElementProps } from 'slate-react';
+import { cn } from '../../utils/style-utils';
 
 
 /**
@@ -13,14 +14,14 @@ import { RenderElementProps } from 'slate-react';
  * @param {Object} props - Component properties
  * @param {string | Descendant[]} props.content - The Slate content, either as a string (which is parsed) or as a Descendant array.
  */
-function RichTextRenderer({ content }: { content: string | Descendant[] }) {
+function RichTextRenderer({ content,className }: { content: string | Descendant[],className?:string }) {
   // Convert string content to Slate's internal structure if necessary
   if (typeof content === 'string') {
     content = deserialize(content);
   }
 
   return (
-    <div className="slate-content text-white">
+    <div className={cn(className)}>
       {content.map((element, index) => (
         <ElementNode key={index} element={element} />
       ))}
