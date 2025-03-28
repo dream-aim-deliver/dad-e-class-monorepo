@@ -26,3 +26,4 @@ export { ProfileTabs, DragAndDrop, Badge };
 export { default  as  BuyCoachingSession, type BuyCoachingSessionProps } from './components/buy-coaching-session'
 
 export * as contexts from './contexts';
+export {Navbar} from './components/navbar';

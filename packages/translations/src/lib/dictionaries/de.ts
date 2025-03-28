@@ -157,7 +157,13 @@ export const DE: TDictionary = {
       numberedList:"Nummerierte Liste",
       bulletedList:"Aufzählungsliste",
       unlink:"Link entfernen"
-
-    }
+    },
+    coachingOnDemandBanner: {
+      noImageText: 'Kein Bild verfügbar',
+    },
+    navbar: {
+      workspace: 'Arbeitsbereich',
+      login: 'Anmelden',
+    },
   },
 };

@@ -60,6 +60,7 @@ export default function Home(props: HomeProps) {
         locale={props.locale as TLocale}
         skills={['React', 'TypeScript', 'TailwindCSS']}
       />
+      
     </div>
   );
 }

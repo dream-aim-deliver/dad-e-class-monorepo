@@ -20,6 +20,16 @@ const meta: Meta<typeof Dropdown> = {
     defaultValue: { control: 'text' },
     className: { control: 'text' },
     onSelectionChange: { action: 'selectionChanged' },
+    text: {
+      control: 'object',
+      description: 'Placeholder texts for different dropdown types',
+    },
+    position: {
+      control: {
+        type: 'select',
+        options: ['top', 'bottom'],
+      },
+    },
   },
 };
 
@@ -112,22 +122,22 @@ const multiSelectOptions = [
 ];
 
 const StatefulDropdown = (args: DropdownProps) => {
-  const [selectedValue, setSelectedValue] = useState<
-    string | string[] | undefined
-  >(
-    args.defaultValue || undefined, // Initialize with undefined instead of null
+  const [selectedValue, setSelectedValue] = useState<string | string[] | null>(
+    args.defaultValue || null,
   );
 
   const handleSelectionChange = (value: string | string[] | null) => {
-    setSelectedValue(value ?? undefined); // Convert null to undefined
-    args.onSelectionChange(value); // Trigger the action for logging in Storybook
+    setSelectedValue(value);
+    args.onSelectionChange(value);
   };
 
   return (
     <Dropdown
       {...args}
-      defaultValue={selectedValue}
+      defaultValue={args.defaultValue}
       onSelectionChange={handleSelectionChange}
+      text={args.text}
+      position={args.position}
     />
   );
 };
@@ -138,7 +148,11 @@ export const SimpleDropdown: Story = {
     type: 'simple',
     options: simpleOptions,
     defaultValue: simpleOptions[0].value,
-    className: '',
+    className: 'w-64',
+    text: {
+      simpleText: 'Select an option',
+    },
+    position: 'bottom',
   },
 };
 
@@ -148,7 +162,11 @@ export const ChooseColorDropdown: Story = {
     type: 'choose-color',
     options: colorOptions,
     defaultValue: colorOptions[0].value,
-    className: '',
+    className: 'w-64',
+    text: {
+      colorText: 'Choose a color',
+    },
+    position: 'bottom',
   },
 };
 
@@ -156,11 +174,29 @@ export const MultiSelectAndSearchDropdown: Story = {
   render: (args) => <StatefulDropdown {...args} />,
   args: {
     type: 'multiple-choice-and-search',
-    options: multiSelectOptions,
+    options: [
+      {
+        label: 'Checkbox Alpha',
+        value: 'Checkbox Alpha',
+      },
+      {
+        label: 'Checkbox Beta BetaBetaBetaBetaBetaBeta',
+        value: 'Checkbox Beta',
+      },
+      {
+        label: 'Checkbox Gamma',
+        value: 'Checkbox Gamma',
+      },
+      {
+        label: 'Checkbox Delta',
+        value: 'Checkbox Delta',
+      },
+    ],
     defaultValue: [multiSelectOptions[0].value, multiSelectOptions[2].value],
-    className: '',
+    className: 'w-64',
     text: {
       multiText: 'Choose Options',
     },
+    position: 'bottom',
   },
 };
