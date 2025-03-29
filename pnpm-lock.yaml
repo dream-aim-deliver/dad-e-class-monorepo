@@ -12,6 +12,9 @@ importers:
 
   .:
     dependencies:
+      '@maany_shr/e-class-core':
+        specifier: ^1.7.5
+        version: 1.7.5
       '@tailwindcss/postcss':
         specifier: 4.0.0-beta.8
         version: 4.0.0-beta.8
@@ -301,6 +304,9 @@ importers:
 
   packages/ui-kit:
     dependencies:
+      '@maany_shr/e-class-core':
+        specifier: ^1.7.5
+        version: 1.7.5
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -1520,6 +1526,9 @@ packages:
 
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
+
+  '@maany_shr/e-class-core@1.7.5':
+    resolution: {integrity: sha512-rsfzDZe29pVrr2o/jeqp/S5KI1bguJnNzTlVCcxyC0BsSKKeEwAU+BuVB2vo2ZOYLJpDF8ll8DX77IHTFaUZfw==}
 
   '@mdx-js/react@3.1.0':
     resolution: {integrity: sha512-QjHtSaoameoalGnKDT3FoIl4+9RwyTmo9ZJGBdLOks/YOiWHoRDI3PUwEzOE7kEmGcV3AFcp9K6dYu9rEuKLAQ==}
@@ -10052,6 +10061,10 @@ snapshots:
   '@juggle/resize-observer@3.4.0': {}
 
   '@leichtgewicht/ip-codec@2.0.5': {}
+
+  '@maany_shr/e-class-core@1.7.5':
+    dependencies:
+      zod: 3.24.1
 
   '@mdx-js/react@3.1.0(@types/react@19.0.2)(react@18.3.1)':
     dependencies:
