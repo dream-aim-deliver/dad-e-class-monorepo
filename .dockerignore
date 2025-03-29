@@ -1,0 +1,41 @@
+# Dependencies
+node_modules
+.pnpm-store
+.npm
+
+# IDE related
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+
+# Nx related
+.nx
+.nx/cache
+tmp
+dist
+
+# CI/CD
+.github
+
+
+# Logs
+*.log
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Documentation
+*.md
+LICENSE
+docs
+
+# NextJS specific
+**/.next
+
+# Version Control
+.gitignore
+.git
