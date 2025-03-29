@@ -13,7 +13,6 @@ For example, to run the container with the provided certificates, use the follow
 ```bash
 docker run -d --name e-class-platform \
     --hostname <public_hostname> \
-    --name e-class-platform \
     -e HTTPD_ENABLE_SSL=True \
     -e HTTPD_ENABLE_LOGS=True \
     -e HOSTNAME=localhost \
@@ -36,36 +35,11 @@ docker run -d --name e-class-platform \
     maany/e-class-platform
 ```
 
-```bash
-docker run -d --name e-class-platform \
-    --hostname localhost \
-    --name e-class-platform \
-    -e HTTPD_ENABLE_SSL=True \
-    -e HOSTNAME=localhost \
-    -e NEXTAUTH_SECRET=<your_nextauth_secret> \
-    -e AUTH_AUTH0_CLIENT_ID=<your_auth0_client_id> \
-    -e AUTH_AUTH0_CLIENT_SECRET=<your_auth0_client_secret> \
-    -e AUTH_AUTH0_ISSUER=<https://your-tenant.auth0.com> \
-    -e AUTH_AUTH0_AUTHORIZATION_URL=<https://your-tenant.auth0.com/authorize> \
-    -e AUTH_AUTH0_ROLES_CLAIM_KEY=<https://your-app.com/roles> \
-    -e E_CLASS_PLATFORM_SHORT_NAME=<dev> \
-    -e E_CLASS_PLATFORM_NAME=<E-Class Dev Platform> \
-    -e E_CLASS_DEV_MODE=<true> \
-    -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
-    -e NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL=<https://your-logo-url.com/logo.png> \
-    -e NEXT_PUBLIC_E_CLASS_PLATFORM_SHORT_NAME=<dev> \
-    -p 80:80 -p 443:443 \
-    --mount type=bind,source=$(pwd)/dist/localhost.crt,target=/etc/dad/hostcert.pem \
-    --mount type=bind,source=$(pwd)/dist/localhost.key,target=/etc/dad/hostkey.pem \
-    --mount type=bind,source=$(pwd)/dist/ca.pem,target=/etc/dad/ca.pem \
-    maany/e-class-platform
-```
 For running in http mode, use the following command. In this case TLS termination is done by an external loadbalancer:
 
 ```bash
 docker run -d --name e-class-platform \
     --hostname localhost \
-    --name e-class-platform \
     -e HOSTNAME=localhost \
     -e NEXTAUTH_SECRET=<your_nextauth_secret> \
     -e AUTH_AUTH0_CLIENT_ID=<your_auth0_client_id> \
