@@ -137,6 +137,35 @@ export const EN: TDictionary = {
     },
     videoPlayer: {
       videoErrorText: 'Video does not exist'
-    }
+    },
+    richTextToolbar:{
+      paragraph: "Paragraph",
+      bold: "Bold (Ctrl+B)",
+      italic: "Italic (Ctrl+I)",
+      underline: "Underline (Ctrl+U)",
+      undo: "Undo (Ctrl+Z)",
+      redo: "Redo (Ctrl+Y)",
+      link: "Insert Link",
+      strikethrough: "Strikethrough",
+      superscript: "Superscript",
+      subscript: "Subscript",
+      highlight: "Highlight",
+      code: "Code",
+      leftAlign: "Align Left",
+      centerAlign: "Align Center",
+      rightAlign: "Align Right",
+      justifyAlign: "Justify",
+      blockQuote: "Block Quote",
+      numberedList: "Numbered List",
+      bulletedList: "Bulleted List",
+      unlink: "Remove Link"
+    },
+    coachingOnDemandBanner: {
+      noImageText: 'No image available',
+    },
+    navbar: {
+      workspace: 'Workspace',
+      login: 'Login',
+    },
   },
 };

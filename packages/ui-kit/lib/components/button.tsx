@@ -86,7 +86,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
  * />
  */
 
-export const Button: FC<ButtonProps> = ({
+export const Button: FC<ButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
   text,
   onClick,
   className,
@@ -97,17 +97,20 @@ export const Button: FC<ButtonProps> = ({
   hasIconRight = false,
   iconLeft,
   iconRight,
+  ...props
 }) => {
   const buttonSizeClasses = cn(buttonStyles({ variant, size }), className);
 
   return (
     <button
+    
       className={cn(
         buttonSizeClasses,
         'cursor-pointer flex items-center gap-1',
       )}
       onClick={onClick}
       disabled={disabled}
+      {...props}
     >
       {hasIconLeft && iconLeft && (
         <span
