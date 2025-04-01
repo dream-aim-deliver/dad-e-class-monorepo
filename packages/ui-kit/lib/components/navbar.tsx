@@ -1,5 +1,5 @@
 import React, { useState, ReactNode } from 'react';
-import { getDictionary, isLocalAware, locales, TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { Button } from './button';
 import { Dropdown } from './dropdown';
 import { IconClose } from './icons/icon-close';
@@ -23,6 +23,7 @@ interface NavbarProps extends isLocalAware {
  * A responsive Navbar component for the e-class platform.
  *
  * @param isLoggedIn Indicates whether the user is logged in.
+ * @param locale The current locale for the navbar, determining the language of displayed text.
  * @param notificationCount The number of unread notifications.
  * @param onChangeLanguage Callback function triggered when the language is changed. Receives the new locale as an argument.
  * @param children The children elements to be rendered in the Navbar.
@@ -35,6 +36,7 @@ interface NavbarProps extends isLocalAware {
  * @example
  * <Navbar
  *   isLoggedIn={true}
+ *   locale="en"
  *   notificationCount={3}
  *   onChangeLanguage={(locale) => console.log("Language changed to:", locale)}
  *   userProfile={<UserAvatar imageUrl="https://example.com/avatar.jpg" size="small" fullName="John Doe" />}
@@ -49,7 +51,7 @@ interface NavbarProps extends isLocalAware {
  */
 export const Navbar: React.FC<NavbarProps> = ({
   isLoggedIn,
-  locale: initialLocale,
+  locale,
   notificationCount = 0,
   onChangeLanguage,
   children,
@@ -60,29 +62,25 @@ export const Navbar: React.FC<NavbarProps> = ({
   availableLocales,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentLocale, setCurrentLocale] = useState<TLocale>(initialLocale);
-  const dictionary = getDictionary(currentLocale);
+  const dictionary = getDictionary(locale);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const handleLocaleChange = (newLocale: TLocale) => {
-    if (availableLocales.includes(newLocale)) {
-      setCurrentLocale(newLocale);
-      if (onChangeLanguage) {
-        onChangeLanguage(newLocale);
-      }
+    if (availableLocales.includes(newLocale) && onChangeLanguage) {
+      onChangeLanguage(newLocale);
     }
   };
 
-  const languageOptions = availableLocales.map(locale => ({
+  const languageOptions = availableLocales.map((locale) => ({
     label: locale.toUpperCase(),
-    value: locale
+    value: locale,
   }));
 
   const defaultUserProfile = (
-    <div className="flex items-center space-x-2"> {/* Smaller gap between avatar and workspace */}
+    <div className="flex items-center space-x-2">
       <UserAvatar
         imageUrl={userProfileImageSrc}
         size="small"
@@ -98,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   );
 
   const formatNotificationCount = (count: number) => {
-    if (count > 99) return "99+";
+    if (count > 99) return '99+';
     return count.toString();
   };
 
@@ -107,19 +105,12 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Logo */}
       <div className="flex items-center">
         <a href="/">
-          <img
-            src={logoSrc}
-            width={40}
-            height={40}
-            alt="Logo"
-          />
+          <img src={logoSrc} width={40} height={40} alt="Logo" />
         </a>
       </div>
 
       {/* Desktop Menu (Large Screens) */}
-      <div className="hidden lg:flex items-center space-x-6 ml-auto">
-        {children}
-      </div>
+      <div className="hidden lg:flex items-center space-x-6 ml-auto">{children}</div>
 
       {/* Right Section (Profile+Workspace, Chat, Language Dropdown) */}
       <div className="hidden lg:flex items-center space-x-6 ml-2.5">
@@ -137,7 +128,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           </>
         ) : (
           <a href="/login">
-            <Button text={dictionary.components.navbar.login} variant="primary" size="medium" className="ml-3" />
+            <Button
+              text={dictionary.components.navbar.login}
+              variant="primary"
+              size="medium"
+              className="ml-3"
+            />
           </a>
         )}
         <div className="relative">
@@ -145,12 +141,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="simple"
             options={languageOptions}
             onSelectionChange={(selected) => {
-              if (typeof selected === 'string' && locales.includes(selected as TLocale)) {
+              if (
+                typeof selected === 'string' &&
+                availableLocales.includes(selected as TLocale)
+              ) {
                 handleLocaleChange(selected as TLocale);
               }
             }}
-            text={{ simpleText: "" }}
-            defaultValue={currentLocale}
+            text={{ simpleText: '' }}
+            defaultValue={locale}
           />
         </div>
       </div>
@@ -160,11 +159,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="relative flex items-center space-x-4">
           {isLoggedIn && (
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2"> {/* Smaller gap for mobile */}
+              <div className="flex items-center space-x-2">
                 {userProfile ? (
-                  <div className="scale-75 origin-left">
-                    {userProfile}
-                  </div>
+                  <div className="scale-75 origin-left">{userProfile}</div>
                 ) : (
                   <UserAvatar
                     imageUrl={userProfileImageSrc}
@@ -231,12 +228,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               type="simple"
               options={languageOptions}
               onSelectionChange={(selected) => {
-                if (typeof selected === 'string' && locales.includes(selected as TLocale)) {
+                if (
+                  typeof selected === 'string' &&
+                  availableLocales.includes(selected as TLocale)
+                ) {
                   handleLocaleChange(selected as TLocale);
                 }
               }}
-              text={{ simpleText: "" }}
-              defaultValue={currentLocale}
+              text={{ simpleText: '' }}
+              defaultValue={locale}
             />
             {!isLoggedIn && (
               <a href="/login">

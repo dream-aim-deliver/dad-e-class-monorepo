@@ -36,27 +36,21 @@ const NavLinks = ({ locale }: { locale: TLocale }) => {
   const messages = locale === 'en' ? mockMessages : mockMessagesDe;
   const t = messages.components.navbar;
 
+  const linkClass = 'hover:text-button-primary-hover-fill cursor-pointer text-md';
+
   return (
     <>
       <a href="/offers">
-        <span className="hover:text-button-primary-fill cursor-pointer">
-          {t.offers}
-        </span>
+        <span className={linkClass}>{t.offers}</span>
       </a>
       <a href="/coaching">
-        <span className="hover:text-button-primary-fill cursor-pointer">
-          {t.coaching}
-        </span>
+        <span className={linkClass}>{t.coaching}</span>
       </a>
       <a href="/how-it-works">
-        <span className="hover:text-button-primary-fill cursor-pointer">
-          {t.howItWorks}
-        </span>
+        <span className={linkClass}>{t.howItWorks}</span>
       </a>
       <a href="/about">
-        <span className="hover:text-button-primary-fill cursor-pointer">
-          {t.about}
-        </span>
+        <span className={linkClass}>{t.about}</span>
       </a>
     </>
   );
@@ -84,9 +78,8 @@ const NavbarWrapper = (args: any) => {
         {...args}
         locale={locale}
         onChangeLanguage={handleLocaleChange}
-      >
-        <NavLinks locale={locale} />
-      </Navbar>
+        children={<NavLinks locale={locale} />}
+      />
     </NextIntlClientProvider>
   );
 };
@@ -100,8 +93,9 @@ const meta: Meta<typeof Navbar> = {
   },
   decorators: [
     (Story) => (
-      <div className="min-h-screen">
+      <div className="min-h-screen flex flex-col">
         <Story />
+        <div className="flex-grow" />
       </div>
     ),
   ],
@@ -113,7 +107,7 @@ const meta: Meta<typeof Navbar> = {
     locale: {
       control: 'select',
       options: locales,
-      description: 'The locale for language selection.',
+      description: 'The current locale for language selection.',
     },
     notificationCount: {
       control: 'number',
@@ -129,12 +123,25 @@ const meta: Meta<typeof Navbar> = {
     },
     logoSrc: {
       control: 'text',
-      description: 'URL for the logo image.',
+      description: 'URL for the navbar logo image.',
     },
     availableLocales: {
-      control: 'multi-select',
-      options: locales,
+      control: 'object',
       description: 'Array of available locales for the language dropdown.',
+      defaultValue: ['en', 'de'],
+    },
+    children: {
+      control: false, // Disable control since it's rendered via NavLinks
+      description:
+        'Navigation links to be rendered in the navbar. Automatically styled with `hover:text-button-primary-hover-fill cursor-pointer text-sm`.',
+    },
+    userProfile: {
+      control: false, // Disable control since it's optional and custom
+      description: 'Custom user profile component to override the default.',
+    },
+    onChangeLanguage: {
+      action: 'changed', // Log action in Storybook's Actions panel
+      description: 'Callback function triggered when the language is changed.',
     },
   },
 };
@@ -146,7 +153,7 @@ const Template: StoryObj<typeof Navbar> = {
   render: (args) => <NavbarWrapper {...args} />,
 };
 
-export const LoggedOut: StoryObj<typeof Navbar> = {
+export const DefaultEnglish: StoryObj<typeof Navbar> = {
   ...Template,
   args: {
     isLoggedIn: false,
@@ -156,12 +163,12 @@ export const LoggedOut: StoryObj<typeof Navbar> = {
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
     logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
-    availableLocales: locales,
+    availableLocales: ['en', 'de'],
   },
   parameters: {
     docs: {
       description: {
-        story: 'Navbar when the user is not logged in.',
+        story: 'Navbar with English locale, logged-out state, and default logo.',
       },
     },
   },
@@ -177,25 +184,18 @@ export const LoggedInWithNotifications: StoryObj<typeof Navbar> = {
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
     logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
-    availableLocales: locales,
+    availableLocales: ['en', 'de'],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Navbar with English locale, logged-in state, and notifications.',
+      },
+    },
   },
 };
 
-export const LoggedOutGerman: StoryObj<typeof Navbar> = {
-  ...Template,
-  args: {
-    isLoggedIn: false,
-    locale: 'de',
-    notificationCount: 0,
-    userProfileImageSrc:
-      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-    userName: 'John Doe',
-    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
-    availableLocales: locales,
-  },
-};
-
-export const MobileViewLoggedIn: StoryObj<typeof Navbar> = {
+export const MobileView: StoryObj<typeof Navbar> = {
   ...Template,
   args: {
     isLoggedIn: true,
@@ -205,16 +205,21 @@ export const MobileViewLoggedIn: StoryObj<typeof Navbar> = {
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
     logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
-    availableLocales: locales,
+    availableLocales: ['en', 'de'],
   },
   parameters: {
     viewport: {
       defaultViewport: 'mobile1',
     },
+    docs: {
+      description: {
+        story: 'Navbar in mobile view with English locale and logged-in state.',
+      },
+    },
   },
 };
 
-export const LoggedInNoNotifications: StoryObj<typeof Navbar> = {
+export const NoLogo: StoryObj<typeof Navbar> = {
   ...Template,
   args: {
     isLoggedIn: true,
@@ -223,33 +228,19 @@ export const LoggedInNoNotifications: StoryObj<typeof Navbar> = {
     userProfileImageSrc:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
-    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
-    availableLocales: locales,
-  },
-};
-
-export const CustomUserProfile: StoryObj<typeof Navbar> = {
-  ...Template,
-  args: {
-    isLoggedIn: true,
-    locale: 'en',
-    notificationCount: 1,
-    userProfileImageSrc:
-      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-    userName: 'John Doe',
-    logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
-    availableLocales: locales,
+    logoSrc: '',
+    availableLocales: ['en', 'de'],
   },
   parameters: {
     docs: {
       description: {
-        story: 'Navbar with a custom user profile image.',
+        story: 'Navbar without a custom logo, logged-in state.',
       },
     },
   },
 };
 
-export const LocalizedNavLinks: StoryObj<typeof Navbar> = {
+export const LocalizedNavbar: StoryObj<typeof Navbar> = {
   ...Template,
   args: {
     isLoggedIn: true,
@@ -259,6 +250,13 @@ export const LocalizedNavLinks: StoryObj<typeof Navbar> = {
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     userName: 'John Doe',
     logoSrc: 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png',
-    availableLocales: locales,
+    availableLocales: ['en', 'de'],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Navbar with localized navigation links in German.',
+      },
+    },
   },
 };
