@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Button } from '../button';
 import { IconCheckDouble } from '../icons/icon-check-double';
 import { Activity, ActivityProps } from './activity';
@@ -49,7 +49,11 @@ export const RecentActivity: FC<RecentActivityProps> = ({
   variation='Pop-up'
 }) => {
   const dictionary = getDictionary(locale);
-  const [visibleCount, setVisibleCount] = useState(maxActivities);
+  const [visibleCount, setVisibleCount] = useState<number>(null);
+
+  useEffect(() => {
+    setVisibleCount(maxActivities);
+  },[maxActivities]);
 
   // Filter activities based on variation
   const filteredActivities =
