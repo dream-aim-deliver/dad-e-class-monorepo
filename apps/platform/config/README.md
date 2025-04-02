@@ -5,8 +5,17 @@ Apache is configured to proxy traffic on port 443 to the NextJS app. Traffic on 
 
 ## Build and Run
 
+Please run the image build from the context of the project's root folder.
+
 ```bash
-docker build --rm -t maany/e-class-platform .
+docker build --rm -f apps/platform/Dockerfile -t maany/e-class-platform .
+```
+
+or
+
+```bash
+cd apps/platform
+docker build --rm -f Dockerfile -t maany/e-class-platform ../..
 ```
 
 For example, to run the container with the provided certificates, use the following command:

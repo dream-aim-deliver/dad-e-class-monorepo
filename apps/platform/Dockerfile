@@ -43,4 +43,4 @@ EXPOSE 443
 EXPOSE 80
 EXPOSE 3000
 
-ENTRYPOINT ["config/docker-entrypoint.sh"]
+ENTRYPOINT ["apps/platform/config/docker-entrypoint.sh"]
