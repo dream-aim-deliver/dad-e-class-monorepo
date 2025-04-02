@@ -88,31 +88,26 @@ export const Dropdown: React.FC<DropdownProps> = ({
   // Centralized refs and truncation state for all options
   const optionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const [truncatedOptions, setTruncatedOptions] = useState<Set<string>>(new Set());
-
-  const [selectedOption, setSelectedOption] = useState<string | null>(
-    type !== 'multiple-choice-and-search' &&
-      defaultValue &&
-      typeof defaultValue === 'string'
-      ? defaultValue
-      : null,
-  );
-
-  const [selectedLabel, setSelectedLabel] = useState<React.ReactNode | null>(
-    type !== 'multiple-choice-and-search' &&
-      defaultValue &&
-      typeof defaultValue === 'string'
-      ? options.find((option) => option.value === defaultValue)?.label || null
-      : null,
-  );
-
-  const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    type === 'multiple-choice-and-search' && Array.isArray(defaultValue)
-      ? defaultValue
-      : [],
-  );
-
   const [searchQuery, setSearchQuery] = useState('');
 
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedLabel, setSelectedLabel] = useState<React.ReactNode | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Set initial label
+    if(type !== 'multiple-choice-and-search' && defaultValue && typeof defaultValue === 'string') 
+      setSelectedLabel(options.find((option) => option.value === defaultValue)?.label || null);
+
+    // Set initial selected option
+    if (type !== 'multiple-choice-and-search' && typeof defaultValue === 'string') 
+      setSelectedOption(defaultValue);
+
+    // Set initial selected options
+    if (type === 'multiple-choice-and-search' && Array.isArray(defaultValue)) 
+      setSelectedOptions(defaultValue);
+  } ,[defaultValue , type, options] );
+  
   const buttonText =
     type === 'simple'
       ? selectedLabel || text?.simpleText

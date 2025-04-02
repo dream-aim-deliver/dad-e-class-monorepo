@@ -4,19 +4,22 @@ import { Badge } from "../badge";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { homePage } from "@maany_shr/e-class-models";
 
-interface GeneralCardProps extends homePage.TGeneralCard, isLocalAware {}
+interface GeneralCardProps extends homePage.TGeneralCard, isLocalAware {
+  onButtonClick: () => void;
+}
 
 /**
  * A card component for displaying general information, such as course or content details.
- * Includes an image, title, description, optional badge, and a button with a link.
+ * Includes an image, title, description, optional badge, and a button with a custom callback.
  *
  * @param imageUrl The URL of the card's image. Displays a placeholder if omitted or invalid.
  * @param title The title of the card content.
  * @param description A brief description of the card content.
  * @param badge Optional text for a badge displayed over the image (e.g., "New", "Featured").
  * @param buttonText The text displayed on the button.
- * @param buttonUrl The URL to navigate to when the button is clicked.
+ * @param buttonUrl The URL associated with the button (can be used in the callback).
  * @param locale The locale for translation and localization purposes (e.g., "en" for English, "de" for German).
+ * @param onButtonClick Callback function to execute when the button is clicked.
  *
  * @example
  * <GeneralCard
@@ -27,6 +30,7 @@ interface GeneralCardProps extends homePage.TGeneralCard, isLocalAware {}
  *   buttonText="Enroll Now"
  *   buttonUrl="/digital-marketing"
  *   locale="en"
+ *   onButtonClick={() => router.push('/digital-marketing')}
  * />
  */
 export const GeneralCard: React.FC<GeneralCardProps> = ({
@@ -37,6 +41,7 @@ export const GeneralCard: React.FC<GeneralCardProps> = ({
   buttonText,
   buttonUrl,
   locale,
+  onButtonClick,
 }) => {
   const [isImageError, setIsImageError] = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
@@ -61,10 +66,6 @@ export const GeneralCard: React.FC<GeneralCardProps> = ({
   }, [title]);
 
   const shouldShowPlaceholder = !imageUrl || isImageError;
-
-  const buttonCallback = () => {
-    window.location.href = buttonUrl;
-  };
 
   return (
     <article className="flex flex-col h-auto w-full max-w-[382px]">
@@ -115,7 +116,7 @@ export const GeneralCard: React.FC<GeneralCardProps> = ({
           <Button
             className="w-full py-2 sm:py-3"
             size="medium"
-            onClick={buttonCallback}
+            onClick={onButtonClick}
             text={buttonText}
             variant="primary"
           />
