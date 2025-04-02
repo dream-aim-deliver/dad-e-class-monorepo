@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import  {GeneralCard}  from '../../lib/components/carousel/generalcard';
+import { GeneralCard } from '../../lib/components/carousel/generalcard';
 
 const meta: Meta<typeof GeneralCard> = {
   title: 'Components/GeneralCard',
@@ -35,6 +35,14 @@ const meta: Meta<typeof GeneralCard> = {
       control: 'text',
       description: 'Text for the button'
     },
+    buttonUrl: {
+      control: 'text',
+      description: 'URL associated with the button'
+    },
+    onButtonClick: {
+      action: 'clicked', // Storybook action to log button clicks
+      description: 'Callback function executed when the button is clicked'
+    },
   }
 };
 
@@ -47,7 +55,8 @@ const mockData = {
   title: 'Digital Marketing Strategy',
   description: 'Learn the fundamentals of digital marketing and develop effective strategies for your business.Learn the fundamentals of digital marketing and develop effective strategies for your business.Learn the fundamentals of digital marketing and develop effective strategies for your business.',
   buttonText: 'Explore Course',
-  buttonCallback: () => alert('Button clicked'),
+  buttonUrl: '/course/digital-marketing',
+  onButtonClick: () => alert('Button clicked'), // Updated to onButtonClick
 };
 
 export const Default: Story = {
