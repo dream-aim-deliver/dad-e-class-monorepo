@@ -16,34 +16,43 @@ const meta: Meta<typeof VideoPlayer> = {
       control: 'select',
       options: ['en', 'de'],
     },
+    onErrorCallback: { action: 'onErrorCallback' },
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof VideoPlayer>;
 
+// Error callback function to log errors
+const handleError = (message: string, error: any) => {
+  console.error('VideoPlayer Error:', message, error);
+};
+
 export const Default: Story = {
   args: {
-    videoId: 'YEK2woOv35g5CTTcbxtiNjG3kRH9ddCChjxATEpVTxc',
+    videoId: 'WDeDCy7iJiG5LL6MTfOlQ3CKhXqnWHUXWqfl00mx8qX00',
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'en',
+    onErrorCallback: handleError,
   },
 };
 
 export const WithoutThumbnail: Story = {
   args: {
-    videoId: 'YEK2woOv35g5CTTcbxtiNjG3kRH9ddCChjxATEpVTxc',
+    videoId: 'WDeDCy7iJiG5LL6MTfOlQ3CKhXqnWHUXWqfl00mx8qX00',
     locale: 'en',
+    onErrorCallback: handleError,
   },
 };
 
 export const WithBrokenThumbnail: Story = {
   args: {
-    videoId: 'YEK2woOv35g5CTTcbxtiNjG3kRH9ddCChjxATEpVTxc',
+    videoId: 'WDeDCy7iJiG5LL6MTfOlQ3CKhXqnWHUXWqfl00mx8qX00',
     thumbnailUrl:
-      'https://res.cloudinary.com/dryynqhao/image/upload/v/lrpuzzgdayhoirs4gqgj.png',
+      'https://res.cloudinary.com/dryynqhao/image/upload/v/lrpuzzgdayhoirs4gqgj.png', // Invalid URL
     locale: 'en',
+    onErrorCallback: handleError,
   },
 };
 
@@ -52,14 +61,16 @@ export const WithoutVideoId: Story = {
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'en',
+    onErrorCallback: handleError,
   },
 };
 
 export const WrongVideoId: Story = {
   args: {
-    videoId: 'k2q01S3txU00oPknMICTB9Rvx1s00ZxWEX1SqA',
+    videoId: 'YEK2woOv35g5CTTcbxtiNjG3kRH9ddCChjxATEpVTxc', // Invalid video ID
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'de',
+    onErrorCallback: handleError,
   },
 };
