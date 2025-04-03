@@ -16,7 +16,9 @@ const meta: Meta<typeof VideoPlayer> = {
       control: 'select',
       options: ['en', 'de'],
     },
+    loadTimer:{control: 'number'},
     onErrorCallback: { action: 'onErrorCallback' },
+
   },
 };
 
