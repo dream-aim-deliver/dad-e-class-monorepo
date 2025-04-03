@@ -5,6 +5,7 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 export interface VideoPlayerProps extends isLocalAware {
     videoId?: string;
     thumbnailUrl?: string;
+    loadTimer?: number;
     onErrorCallback?: (message: string, error: any) => void;
 }
 
@@ -19,12 +20,14 @@ export interface VideoPlayerProps extends isLocalAware {
  * @param {string} [props.videoId] - The unique identifier for the video (Mux playback ID).
  * @param {string} [props.thumbnailUrl] - The URL of the thumbnail image displayed before playback.
  * @param {string} props.locale - The current language/locale for text translations.
+ * @param {number} [props.loadTimer=3000] - The timeout in milliseconds before showing an error if video doesn't load.
  * @param {(message: string, error: any) => void} props.onErrorCallback - A callback function triggered when an error occurs.
  */
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     videoId,
     thumbnailUrl,
     locale,
+    loadTimer = 3000, // Default value of 3000ms (3 seconds)
     onErrorCallback,
 }) => {
     const dictionary = getDictionary(locale);
@@ -55,7 +58,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             clearTimeout(timeoutRef.current);
         }
         
-        // Set timeout to show error if video doesn't load within a reasonable time
+        // Set timeout to show error if video doesn't load within the specified time
         // This helps prevent prolonged flickering
         if (videoId) {
             timeoutRef.current = setTimeout(() => {
@@ -64,7 +67,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     setIsLoading(false);
                     onErrorCallback(dictionary.components.videoPlayer.videoErrorText, new Error('Video load timeout'));
                 }
-            }, 3000);
+            }, loadTimer);
         }
         
         return () => {
@@ -72,7 +75,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 clearTimeout(timeoutRef.current);
             }
         };
-    }, [videoId, thumbnailUrl, dictionary, onErrorCallback]);
+    }, [videoId, thumbnailUrl, dictionary, onErrorCallback, loadTimer]);
 
     const handleThumbnailClick = () => {
         setShowPlayer(true);
