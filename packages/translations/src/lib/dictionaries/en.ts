@@ -135,6 +135,9 @@ export const EN: TDictionary = {
       total: 'Total',
       minutes: 'minutes'
     },
+    videoPlayer: {
+      videoErrorText: 'Video does not exist'
+    },
     richTextToolbar:{
       paragraph: "Paragraph",
       bold: "Bold (Ctrl+B)",
