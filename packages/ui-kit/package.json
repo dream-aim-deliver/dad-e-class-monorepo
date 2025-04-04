@@ -19,6 +19,7 @@
   "dependencies": {
     "@maany_shr/e-class-models": "workspace:*",
     "@maany_shr/e-class-translations": "workspace:*",
+    "@maany_shr/e-class-core": "^1.7.5",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "16.1.0",
     "class-variance-authority": "^0.7.1",
