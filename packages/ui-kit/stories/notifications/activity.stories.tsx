@@ -1,0 +1,88 @@
+import { Meta, StoryObj } from '@storybook/react';
+import {
+  Activity,
+  ActivityProps,
+} from '../../lib/components/notifications/activity';
+import { NextIntlClientProvider } from 'next-intl';
+
+const mockMessages = {};
+
+const meta: Meta<typeof Activity> = {
+  title: 'Components/Notifications/Activity',
+  component: Activity,
+  tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <NextIntlClientProvider locale="en" messages={mockMessages}>
+        <div className="w-full max-w-3xl">
+          <Story />
+        </div>
+      </NextIntlClientProvider>
+    ),
+  ],
+  argTypes: {
+    message: { control: 'text' },
+    action: { control: 'object' },
+    timestamp: { control: 'text' },
+    isRead: { control: 'boolean' },
+    children: { control: 'text' },
+    platformName: { control: 'text' },
+    recipients: { control: 'number' },
+    layout: {
+      control: 'radio',
+      options: ['horizontal', 'vertical'],
+    },
+    className: { control: 'text' },
+    locale: {
+      control: 'select',
+      options: ['en', 'de'],
+    },
+  },
+};
+
+export default meta;
+
+type Story = StoryObj<typeof Activity>;
+
+const Template: Story = {
+  render: (args) => <Activity {...args} />,
+};
+
+export const Default: Story = {
+  ...Template,
+  args: {
+    message:
+      'Coach John Doe accepted your request to reschedule the coaching session.',
+    action: { title: 'Session details' , url: 'https://google.com' },
+    timestamp: '2028-08-07T21:17:00.000Z',
+    isRead: false,
+    platformName: 'E-Class',
+    recipients: 5,
+    layout: 'horizontal',
+    locale: 'en',
+  },
+};
+
+export const ReadNotification: Story = {
+  ...Template,
+  args: {
+    ...Default.args,
+    isRead: true,
+  },
+};
+
+export const VerticalLayout: Story = {
+  ...Template,
+  args: {
+    ...Default.args,
+    layout: 'vertical',
+  },
+};
+
+export const MultipleRecipients: Story = {
+  ...Template,
+  args: {
+    ...Default.args,
+    recipients: 20,
+  },
+};
