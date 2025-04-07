@@ -19,6 +19,7 @@ export interface InputFieldProps {
   type?: 'text' | 'password'|'number';
   id?: string;
   className?: string;
+  inputClassName?: string;
 }
 
 /**
@@ -40,7 +41,9 @@ export interface InputFieldProps {
  * @param setValue Callback function triggered when the value changes. Receives the new value as a string.
  * @param type The type of input. Options: `text` (default) or `password`.
  * @param id Optional unique ID for identifying this specific input field (useful for testing or accessibility).
- *
+ * @param className Optional additional CSS classes to apply to the outer container.
+ * @param inputClassName Optional additional CSS classes to apply to the input element.
+ * 
  * @example
  * <InputField
  *   hasLeftContent={true}
@@ -65,7 +68,8 @@ export const InputField: FC<InputFieldProps> = ({
   setValue,
   type = 'text',
   id,
-  className
+  className,
+  inputClassName
 }) => {
   const [borderColor, setBorderColor] = useState(false);
 
@@ -96,7 +100,7 @@ export const InputField: FC<InputFieldProps> = ({
           onChange={(e) => setValue(e.target.value)}
           onFocus={() => setBorderColor(true)}
           onBlur={() => setBorderColor(false)}
-          className="bg-transparent outline-none [-moz-appearance:textfield] flex-1 placeholder-text-secondary h-full w-full appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none text-center"
+          className={cn("bg-transparent outline-none [-moz-appearance:textfield] flex-1 placeholder-text-secondary h-full w-full appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",inputClassName)}
         />
         {hasRightContent && rightContent}
       </div>

@@ -128,9 +128,11 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           {dictionary.components.profileInfo.title}
         </h1>
         <TextInput
+        
           label={dictionary.components.profileInfo.name}
           inputField={{
             id: 'name',
+            className:"w-full",
             value: formData.name,
             setValue: (value) => handleChange('name', value),
             inputText: dictionary.components.profileInfo.namePlaceholder,
@@ -140,6 +142,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.surname}
           inputField={{
             id: 'surname',
+            className:"w-full",
             value: formData.surname,
             setValue: (value) => handleChange('surname', value),
             inputText: dictionary.components.profileInfo.surnamePlaceholder,
@@ -149,6 +152,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.email}
           inputField={{
             id: 'email',
+            className:"w-full",
             value: formData.email,
             setValue: (value) => handleChange('email', value),
             inputText: dictionary.components.profileInfo.emailPlaceholder,
@@ -158,6 +162,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.phoneNumber}
           inputField={{
             id: 'phone',
+            className:"w-full",
             value: formData.phoneNumber || '',
             setValue: (value) => handleChange('phoneNumber', value),
             inputText: dictionary.components.profileInfo.phoneNumberPlaceholder,
@@ -167,6 +172,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.password}
           inputField={{
             id: 'password',
+            className:"w-full",
             value: formData.phoneNumber || '',
             setValue: (value) => handleChange('phoneNumber', value),
             inputText: dictionary.components.profileInfo.password,
