@@ -157,6 +157,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <TextInput
             label={dictionary.components.professionalInfo.linkedinUrl}
             inputField={{
+              className:"w-full",
               value: formData.linkedinUrl ? formData.linkedinUrl : '',
               setValue: (value) => handleChange('linkedinUrl', value),
               inputText:
@@ -184,6 +185,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             inputField={{
               value: formData.portfolioWebsite ? formData.portfolioWebsite : '',
               setValue: (value) => handleChange('portfolioWebsite', value),
+              className:"w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .portfolioWebsitePlaceholder,
@@ -199,6 +201,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 ? formData.associatedCompanyName
                 : '',
               setValue: (value) => handleChange('associatedCompanyName', value),
+              className:"w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .associatedCompanyPlaceholder,
@@ -214,6 +217,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 ? formData.associatedCompanyRole
                 : '',
               setValue: (value) => handleChange('associatedCompanyRole', value),
+              className:"w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .associatedCompanyIndustryPlaceholder,
@@ -232,6 +236,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 : '',
               setValue: (value) =>
                 handleChange('associatedCompanyIndustry', value),
+              className:"w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .associatedCompanyPlaceholder,
