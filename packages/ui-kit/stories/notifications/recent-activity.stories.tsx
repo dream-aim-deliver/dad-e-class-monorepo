@@ -2,6 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { RecentActivity } from '../../lib/components/notifications/recent-activity';
 import { Activity } from '../../lib/components/notifications/activity';
 import { NextIntlClientProvider } from 'next-intl';
+import { useState } from 'react';
 
 const mockMessages = {};
 
@@ -14,7 +15,7 @@ const mockActivities = [
     isRead: false,
     platformName: 'Zoom',
     recipients: 88,
-    layout: 'horizontal' as 'horizontal',
+    layout: 'horizontal',
     locale: 'en',
   },
   {
@@ -95,10 +96,7 @@ const meta: Meta<typeof RecentActivity> = {
     },
     variation: {
       control: 'radio',
-      options: ['Pop-up', 'Feed'],
-    },
-    totalActivitiesCount: {
-      control: 'number',
+      options: ['Pop-up', 'Feed' , 'Search'],
     },
   },
 };
@@ -110,11 +108,15 @@ type Story = StoryObj<typeof RecentActivity>;
 const Template: Story = {
   render: (args) => (
     <RecentActivity {...args}>
-      {mockActivities.slice(0, args.totalActivitiesCount || mockActivities.length).map((activity, index) => (
+      {mockActivities.slice(0, mockActivities.length).map((activity, index) => (
         <Activity
           key={index}
           {...activity}
-          onClickActivity={(url) => () => alert(`Notification clicked for URL: ${url}`)}
+          layout={activity.layout as 'horizontal' | 'vertical'}
+          locale={activity.locale as 'en' | 'de'}
+          onClickActivity={(url) => () =>
+            alert(`Notification clicked for URL: ${url}`)
+          }
         />
       ))}
     </RecentActivity>
@@ -126,22 +128,53 @@ export const DefaultWithFiveActivities: Story = {
   args: {
     locale: 'en',
     maxActivities: 3,
-    totalActivitiesCount: 5,
     onClickMarkAllAsRead: () => alert('Mark all as read clicked'),
     onViewAll: () => alert('View all clicked'),
     variation: 'Pop-up',
+    onSearchQuery: (query) => alert('Search query: ' + query),
   },
 };
 
 export const WithLimitedActivities: Story = {
-  ...Template,
   args: {
     locale: 'en',
-    maxActivities: 5,
-    totalActivitiesCount: 3,
+    maxActivities: 3,
     onClickMarkAllAsRead: () => alert('Mark all as read clicked'),
     onViewAll: () => alert('View all clicked'),
     variation: 'Feed',
+    onSearchQuery: (query) => alert('Search query: ' + query),
+  },
+
+  ...Template,
+
+  render: (args) => {
+    const [activities, setActivities] = useState(mockActivities);
+
+    const handleMarkAllAsRead = () => {
+      alert('Mark all as read clicked');
+      const updatedActivities = activities.map((activity) => ({
+        ...activity,
+        isRead: true,
+      }));
+      setActivities(updatedActivities);
+    };
+
+    return (
+      <RecentActivity {...args} onClickMarkAllAsRead={handleMarkAllAsRead}>
+        {activities.slice(0, args.maxActivities).map((activity, index) => (
+          <Activity
+            key={index}
+            {...activity}
+            layout={'vertical' as 'horizontal' | 'vertical'}
+            recipients={0}
+            locale={activity.locale as 'en' | 'de'}
+            onClickActivity={(url) => () =>
+              alert(`Notification clicked for URL: ${url}`)
+            }
+          />
+        ))}
+      </RecentActivity>
+    );
   },
 };
 
@@ -150,9 +183,9 @@ export const WithExcessActivities: Story = {
   args: {
     locale: 'en',
     maxActivities: 3,
-    totalActivitiesCount: 6,
     onClickMarkAllAsRead: () => alert('Mark all as read clicked'),
     onViewAll: () => alert('View all clicked'),
     variation: 'Feed',
+    onSearchQuery: (query) => alert('Search query: ' + query),
   },
 };

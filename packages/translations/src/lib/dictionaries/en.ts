@@ -175,6 +175,8 @@ export const EN: TDictionary = {
       recentActivity: 'Recent Activity',
       markAllAsRead: 'Mark all as read',
       viewAll: 'View all...',
+      searchText: 'Search activity',
+      activityHistory: 'Activity history'
     },
   },
 };

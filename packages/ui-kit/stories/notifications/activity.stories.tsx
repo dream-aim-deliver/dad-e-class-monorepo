@@ -58,7 +58,8 @@ export const Default: Story = {
     recipients: 5,
     layout: 'horizontal',
     locale: 'en',
-    onClickActivity: (url) => () => alert(`Notification clicked for URL: ${url}`),
+    onClickActivity: (url) => () =>
+      alert(`Notification clicked for URL: ${url}`),
   },
 };
 
@@ -75,6 +76,7 @@ export const VerticalLayout: Story = {
   args: {
     ...Default.args,
     layout: 'vertical',
+    platformName: '',
   },
 };
 
