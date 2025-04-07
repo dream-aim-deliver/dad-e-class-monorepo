@@ -173,6 +173,8 @@ export const DE: TDictionary = {
       recentActivity: 'Letzte Aktivität',
       markAllAsRead: 'Alle als gelesen markieren',
       viewAll: 'Alle ansehen...',
+      searchText: 'Suchaktivität',
+      activityHistory: 'Aktivitätsverlauf'
     },
   },
 };

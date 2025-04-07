@@ -186,6 +186,8 @@ export const DictionarySchema = z.object({
       recentActivity: z.string(),
       markAllAsRead: z.string(),
       viewAll: z.string(),
+      searchText: z.string(),
+      activityHistory: z.string()
     }),
   }),
 

@@ -13,6 +13,36 @@ export interface ActivityProps extends notification.TNotification, isLocalAware 
   className?: string;
 }
 
+/**
+ * Activity component for displaying notifications or activities in a customizable layout.
+ * It supports horizontal and vertical layouts and provides options for interaction.
+ *
+ * @param message The main message or content of the activity.
+ * @param action An object containing action details such as title and URL.
+ * @param timestamp The timestamp of when the activity occurred, formatted as a string.
+ * @param isRead A boolean indicating whether the activity has been read.
+ * @param children Optional ReactNode elements to be displayed within the component.
+ * @param platformName Optional name of the platform associated with the activity.
+ * @param recipients Optional number of recipients involved in the activity.
+ * @param layout Specifies the layout of the component. Can be either 'horizontal' or 'vertical'.
+ * @param className Optional custom class name for styling the component.
+ * @param onClickActivity Callback function triggered when the activity is clicked. Accepts a URL as an argument.
+ * @param locale The locale used for translation and localization purposes.
+ *
+ * @example
+ * <Activity
+ *   message="New course available!"
+ *   action={{ title: "View Course", url: "/course/123" }}
+ *   timestamp="2025-04-07T12:30:00Z"
+ *   isRead={false}
+ *   platformName="E-Class"
+ *   recipients={100}
+ *   layout="horizontal"
+ *   onClickActivity={(url) => () => console.log(`Redirecting to ${url}`)}
+ *   locale="en"
+ * />
+ */
+
 export const Activity: FC<ActivityProps> = ({
   message = '',
   action,
@@ -94,7 +124,7 @@ export const Activity: FC<ActivityProps> = ({
   return (
     <div
       data-testid="activity"
-      onClick={() => onClickActivity?.(action?.url ?? '')}
+      onClick={onClickActivity?.(action?.url ?? '')}
       className={clsx(
         `flex p-2 my-[0.125rem] flex-col items-center w-full border-b border-divider cursor-pointer ${
           isRead ? 'bg-transparent' : 'bg-base-neutral-800 rounded-small'
@@ -113,7 +143,7 @@ export const Activity: FC<ActivityProps> = ({
               {platformName && (
                 <p className="text-xs text-text-secondary leading-[100%]">{platformName}</p>
               )}
-              {recipients && (
+              {recipients > 0 && (
                 <p className="text-xs text-text-secondary leading-[100%]">
                   {recipientsText} {recipients}
                 </p>
@@ -125,7 +155,7 @@ export const Activity: FC<ActivityProps> = ({
               {action?.title && (
                 <Button
                   variant="text"
-                  size="medium"
+                  size="small"
                   text={action.title}
                   className="whitespace-nowrap p-0 max-w-[15rem]"
                 />
@@ -154,13 +184,13 @@ export const Activity: FC<ActivityProps> = ({
             {action?.title && (
               <Button
                 variant="text"
-                size="medium"
+                size="small"
                 text={action.title}
                 className="whitespace-nowrap p-0 max-w-[20rem]"
               />
             )}
             <div className="flex gap-2 items-center">
-              {recipients && (
+              {recipients > 0 && (
                 <p className="text-xs text-text-secondary leading-[100%]">
                   {recipientsText} {recipients}
                 </p>
