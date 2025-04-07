@@ -16,9 +16,10 @@ const meta: Meta<typeof VideoPlayer> = {
       control: 'select',
       options: ['en', 'de'],
     },
-    loadTimer:{control: 'number'},
-    onErrorCallback: { action: 'onErrorCallback' },
 
+    onErrorCallback: {
+      description: 'Callback function to handle errors',
+    },
   },
 };
 
@@ -32,29 +33,29 @@ const handleError = (message: string, error: any) => {
 
 export const Default: Story = {
   args: {
-    videoId: 'WDeDCy7iJiG5LL6MTfOlQ3CKhXqnWHUXWqfl00mx8qX00',
+    videoId: 'cQ800mkpB7VwoUjUUgtxXs4j5P6iEuafZkkjnAahuRek',
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'en',
-    onErrorCallback: handleError,
+   onErrorCallback:(message:string,event:any)=>console.log(message)
   },
 };
 
 export const WithoutThumbnail: Story = {
   args: {
-    videoId: 'WDeDCy7iJiG5LL6MTfOlQ3CKhXqnWHUXWqfl00mx8qX00',
+    videoId: 'cQ800mkpB7VwoUjUUgtxXs4j5P6iEuafZkkjnAahuRek',
     locale: 'en',
-    onErrorCallback: handleError,
+    onErrorCallback:(message:string,event:any)=>console.log(message)
   },
 };
 
 export const WithBrokenThumbnail: Story = {
   args: {
-    videoId: 'WDeDCy7iJiG5LL6MTfOlQ3CKhXqnWHUXWqfl00mx8qX00',
+    videoId: 'cQ800mkpB7VwoUjUUgtxXs4j5P6iEuafZkkjnAahuRek',
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v/lrpuzzgdayhoirs4gqgj.png', // Invalid URL
     locale: 'en',
-    onErrorCallback: handleError,
+    onErrorCallback:(message:string,event:any)=>console.log(message)
   },
 };
 
@@ -63,7 +64,7 @@ export const WithoutVideoId: Story = {
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'en',
-    onErrorCallback: handleError,
+    onErrorCallback:(message:string,event:any)=>console.log(message)
   },
 };
 
@@ -73,6 +74,6 @@ export const WrongVideoId: Story = {
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'de',
-    onErrorCallback: handleError,
+    onErrorCallback:(message:string,event:any)=>console.log(message)
   },
 };
