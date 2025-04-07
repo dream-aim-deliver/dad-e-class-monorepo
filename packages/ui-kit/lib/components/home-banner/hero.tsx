@@ -39,7 +39,7 @@ export const Hero: React.FC<HeroProps> = ({
             <p className="text-lg text-text-secondary leading-[150%]">{description}</p>
         </div>
         {/* VideoPlayer */}
-        <VideoPlayer videoId={videoId} thumbnailUrl={thumbnailUrl} locale={locale}/>
+        <VideoPlayer onErrorCallback={()=>console.log('error')} videoId={videoId} thumbnailUrl={thumbnailUrl} locale={locale}/>
     </div>
   );
 };
