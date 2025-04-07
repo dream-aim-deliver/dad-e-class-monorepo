@@ -1,8 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import {
-  Activity,
-  ActivityProps,
-} from '../../lib/components/notifications/activity';
+import { Activity } from '../../lib/components/notifications/activity';
 import { NextIntlClientProvider } from 'next-intl';
 
 const mockMessages = {};
@@ -37,6 +34,7 @@ const meta: Meta<typeof Activity> = {
       control: 'select',
       options: ['en', 'de'],
     },
+    onClickActivity: { action: 'clicked' },
   },
 };
 
@@ -53,13 +51,14 @@ export const Default: Story = {
   args: {
     message:
       'Coach John Doe accepted your request to reschedule the coaching session.',
-    action: { title: 'Session details' , url: 'https://google.com' },
+    action: { title: 'Session details', url: 'https://google.com' },
     timestamp: '2028-08-07T21:17:00.000Z',
     isRead: false,
     platformName: 'E-Class',
     recipients: 5,
     layout: 'horizontal',
     locale: 'en',
+    onClickActivity: (url) => () => alert(`Notification clicked for URL: ${url}`),
   },
 };
 
@@ -84,5 +83,13 @@ export const MultipleRecipients: Story = {
   args: {
     ...Default.args,
     recipients: 20,
+  },
+};
+
+export const WithChildren: Story = {
+  ...Template,
+  args: {
+    ...Default.args,
+    children: <span className="text-red-500">Additional Info</span>,
   },
 };
