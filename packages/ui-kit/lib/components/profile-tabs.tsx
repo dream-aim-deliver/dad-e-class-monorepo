@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Tabs, TabList, TabTrigger, TabContent } from './tabs/tab';
 import { ProfileInfo } from './profile/profile-info';
 import { ProfessionalInfo } from './profile/professional-info';
-import { profile } from '@maany_shr/e-class-models';
+import { profile } from '@maany_shr/e-class-core/models';
 
 import {
   TLocale,
