@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, ReactNode } from 'react';
+import React, { FC, useState, ReactNode } from 'react';
 import { Button } from '../button';
 import { IconCheckDouble } from '../icons/icon-check-double';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
@@ -17,7 +17,8 @@ export interface RecentActivityProps extends isLocalAware {
 
 /**
  * RecentActivity component for displaying a list of recent activities or notifications.
- * It supports two variations: "Pop-up" and "Feed", and provides options to mark all activities as read or view all activities.
+ * It supports three variations: "Pop-up", "Feed", and "Search", and provides options to mark all activities as read or view all activities.
+ * Children should be passed as a flat list of elements, not wrapped in fragments.
  *
  * @param locale The locale used for translation and localization purposes.
  * @param children ReactNode elements representing individual activities to be displayed within the component.
@@ -25,22 +26,24 @@ export interface RecentActivityProps extends isLocalAware {
  * @param onClickMarkAllAsRead Optional callback function triggered when the "Mark All As Read" button is clicked.
  * @param onViewAll Optional callback function triggered when the "View All" button is clicked.
  * @param className Optional custom class name for styling the component.
- * @param variation Specifies the variation of the component. Can be either 'Pop-up' , 'Feed' or 'Search'. Defaults to 'Pop-up'.
+ * @param variation Specifies the variation of the component. Can be either 'Pop-up', 'Feed', or 'Search'. Defaults to 'Pop-up'.
  * @param onSearchQuery Optional callback function triggered when a search query is entered.
  * @example
+ * const activities = [
+ *   <Activity key="1" message="New course added!" timestamp="2025-04-07T12:30:00Z" />,
+ *   <Activity key="2" message="Your assignment has been graded." timestamp="2025-04-06T18:00:00Z" />,
+ *   <Activity key="3" message="Course updated." timestamp="2025-04-05T09:00:00Z" />,
+ * ];
  * <RecentActivity
  *   locale="en"
- *   maxActivities={5}
- *   totalActivitiesCount={10}
+ *   maxActivities={2}
  *   onClickMarkAllAsRead={() => console.log("Marked all as read!")}
  *   onViewAll={() => console.log("Viewing all activities!")}
  *   variation="Feed"
  * >
- *   <Activity message="New course added!" timestamp="2025-04-07T12:30:00Z" />
- *   <Activity message="Your assignment has been graded." timestamp="2025-04-06T18:00:00Z" />
+ *   {activities}
  * </RecentActivity>
  */
-
 export const RecentActivity: FC<RecentActivityProps> = ({
   locale,
   children,
@@ -49,18 +52,15 @@ export const RecentActivity: FC<RecentActivityProps> = ({
   onViewAll,
   className,
   variation = 'Pop-up',
-  onSearchQuery
+  onSearchQuery,
 }) => {
   const dictionary = getDictionary(locale);
   const [visibleCount, setVisibleCount] = useState<number>(maxActivities);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  useEffect(() => {
-    setVisibleCount(maxActivities);
-  }, [maxActivities]);
-
-  const displayedChildren = React.Children.toArray(children).slice(0, visibleCount);
-  const totalActivitiesCount = React.Children.count(children);
+  const allChildren = React.Children.toArray(children).filter(React.isValidElement);
+  const totalActivitiesCount = allChildren.length;
+  const displayedChildren = allChildren.slice(0, visibleCount);
 
   const handleViewAll = () => {
     setVisibleCount(totalActivitiesCount);
@@ -69,8 +69,8 @@ export const RecentActivity: FC<RecentActivityProps> = ({
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
-    onSearchQuery(value);
-  }
+    onSearchQuery?.(value);
+  };
 
   return (
     <div className={`flex flex-col gap-2 items-center ${className}`}>
@@ -93,12 +93,12 @@ export const RecentActivity: FC<RecentActivityProps> = ({
         </div>
       )}
       {variation === 'Search' && (
-        <div className='flex flex-col gap-4 w-full pb-2'>
-          <div className='flex justify-between'>
+        <div className="flex flex-col gap-4 w-full pb-2">
+          <div className="flex justify-between">
             <p className="text-2xl text-base-white font-bold text-left leading-[110%]">
               {dictionary?.components?.recentActivity?.activityHistory}
             </p>
-            <div className='md:hidden flex'>
+            <div className="md:hidden flex">
               <Button
                 text={dictionary?.components?.recentActivity?.markAllAsRead}
                 hasIconLeft
@@ -107,17 +107,17 @@ export const RecentActivity: FC<RecentActivityProps> = ({
               />
             </div>
           </div>
-          <div className='flex gap-[13px] items-center'>
-            <InputField 
+          <div className="flex gap-[13px] items-center">
+            <InputField
               inputText={dictionary?.components?.recentActivity?.searchText}
               setValue={(value) => handleSearch(value)}
               value={searchQuery}
               leftContent={<IconSearch />}
               hasLeftContent
-              className='w-full border-input-stroke border-1'
+              className="w-full border-input-stroke border-1"
             />
-            <div className='hidden md:flex'>
-              <Button 
+            <div className="hidden md:flex">
+              <Button
                 text={dictionary?.components?.recentActivity?.markAllAsRead}
                 hasIconLeft
                 iconLeft={<IconCheckDouble size="6" />}
@@ -129,7 +129,7 @@ export const RecentActivity: FC<RecentActivityProps> = ({
       )}
       <div className="flex p-2 flex-col w-full bg-card-fill border border-card-stroke rounded-medium">
         {displayedChildren}
-        {totalActivitiesCount > visibleCount && (
+        {totalActivitiesCount > maxActivities && visibleCount < totalActivitiesCount && (
           <Button
             text={dictionary?.components?.recentActivity?.viewAll}
             variant="text"
