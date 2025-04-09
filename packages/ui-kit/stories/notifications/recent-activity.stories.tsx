@@ -90,13 +90,13 @@ const meta: Meta<typeof RecentActivity> = {
       control: 'number',
     },
     onClickMarkAllAsRead: { action: 'markAllAsRead' },
-    onViewAll: { action: 'viewAll' },
+    onClickViewAll: { action: 'viewAll' },
     className: {
       control: 'text',
     },
     variation: {
       control: 'radio',
-      options: ['Pop-up', 'Feed' , 'Search'],
+      options: ['Pop-up', 'Feed'],
     },
   },
 };
@@ -108,12 +108,12 @@ type Story = StoryObj<typeof RecentActivity>;
 const Template: Story = {
   render: (args) => (
     <RecentActivity {...args}>
-      {mockActivities.slice(0, mockActivities.length).map((activity, index) => (
+      {mockActivities.map((activity, index) => (
         <Activity
           key={index}
           {...activity}
           layout={activity.layout as 'horizontal' | 'vertical'}
-          locale={activity.locale as 'en' | 'de'}
+          locale={args.locale as 'en' | 'de'} // 👈 Use parent's locale here
           onClickActivity={(url) => () =>
             alert(`Notification clicked for URL: ${url}`)
           }
@@ -126,27 +126,23 @@ const Template: Story = {
 export const DefaultWithFiveActivities: Story = {
   ...Template,
   args: {
-    locale: 'en',
-    maxActivities: 3,
+    locale: 'de',
+    maxActivities: 5,
     onClickMarkAllAsRead: () => alert('Mark all as read clicked'),
-    onViewAll: () => alert('View all clicked'),
+    onClickViewAll: () => alert('View all clicked'),
     variation: 'Pop-up',
-    onSearchQuery: (query) => alert('Search query: ' + query),
   },
 };
 
 export const WithLimitedActivities: Story = {
+  ...Template,
   args: {
     locale: 'en',
     maxActivities: 3,
     onClickMarkAllAsRead: () => alert('Mark all as read clicked'),
-    onViewAll: () => alert('View all clicked'),
+    onClickViewAll: () => alert('View all clicked'),
     variation: 'Feed',
-    onSearchQuery: (query) => alert('Search query: ' + query),
   },
-
-  ...Template,
-
   render: (args) => {
     const [activities, setActivities] = useState(mockActivities);
 
@@ -165,9 +161,9 @@ export const WithLimitedActivities: Story = {
           <Activity
             key={index}
             {...activity}
-            layout={'vertical' as 'horizontal' | 'vertical'}
-            recipients={0}
-            locale={activity.locale as 'en' | 'de'}
+            layout={'vertical'}
+            recipients={activity.recipients ?? 0}
+            locale={args.locale as 'en' | 'de'} // 👈 Use parent's locale here
             onClickActivity={(url) => () =>
               alert(`Notification clicked for URL: ${url}`)
             }
@@ -184,8 +180,7 @@ export const WithExcessActivities: Story = {
     locale: 'en',
     maxActivities: 3,
     onClickMarkAllAsRead: () => alert('Mark all as read clicked'),
-    onViewAll: () => alert('View all clicked'),
+    onClickViewAll: () => alert('View all clicked'),
     variation: 'Feed',
-    onSearchQuery: (query) => alert('Search query: ' + query),
   },
 };
