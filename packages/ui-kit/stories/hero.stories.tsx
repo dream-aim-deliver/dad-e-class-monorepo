@@ -29,7 +29,7 @@ export const Default: Story = {
     title: "Platform's Title, short and powerful",
     description:
       'Platform introduction. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. ',
-    videoId: 'cQ800mkpB7VwoUjUUgtxXs4j5P6iEuafZkkjnAahuRek',
+    videoId: 'Eg3DPdKFxUjak00azanz8VpGV4uATNjwELeTpVIxM2tM',
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'de',
@@ -56,7 +56,7 @@ export const ShortDescription: Story = {
     videoId: 'cQ800mkpB7VwoUjUUgtxXs4j5P6iEuafZkkjnAahuRek',
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
-      locale: 'en',
+    locale: 'en',
   },
 };
 
@@ -75,6 +75,6 @@ export const NoVideo: Story = {
     description: "This hero section doesn't include a video player.",
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
-      locale: 'en',
+    locale: 'en',
   },
 };

@@ -20,6 +20,10 @@ const meta: Meta<typeof VideoPlayer> = {
     onErrorCallback: {
       description: 'Callback function to handle errors',
     },
+    className:{
+      control: 'text',
+      description: 'Custom class name for styling',
+    }
   },
 };
 
@@ -37,7 +41,8 @@ export const Default: Story = {
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'en',
-   onErrorCallback:(message:string,event:any)=>console.log(message)
+   onErrorCallback:(message:string,event:any)=>console.log(message),
+   className: 'aspect-video w-[300px] h-[300px]',
   },
 };
 
@@ -45,7 +50,8 @@ export const WithoutThumbnail: Story = {
   args: {
     videoId: 'cQ800mkpB7VwoUjUUgtxXs4j5P6iEuafZkkjnAahuRek',
     locale: 'en',
-    onErrorCallback:(message:string,event:any)=>console.log(message)
+    onErrorCallback:(message:string,event:any)=>console.log(message),
+    className: 'aspect-video w-[300px] h-[300px]',
   },
 };
 
@@ -55,7 +61,8 @@ export const WithBrokenThumbnail: Story = {
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v/lrpuzzgdayhoirs4gqgj.png', // Invalid URL
     locale: 'en',
-    onErrorCallback:(message:string,event:any)=>console.log(message)
+    onErrorCallback:(message:string,event:any)=>console.log(message),
+    className: 'aspect-video w-[300px] h-[300px]',
   },
 };
 
@@ -64,7 +71,8 @@ export const WithoutVideoId: Story = {
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'en',
-    onErrorCallback:(message:string,event:any)=>console.log(message)
+    onErrorCallback:(message:string,event:any)=>console.log(message),
+    className: 'aspect-video w-[300px] h-[300px]',
   },
 };
 
@@ -74,6 +82,7 @@ export const WrongVideoId: Story = {
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'de',
-    onErrorCallback:(message:string,event:any)=>console.log(message)
+    onErrorCallback:(message:string,event:any)=>console.log(message),
+    className: 'aspect-video w-[300px] h-[300px]',
   },
 };
