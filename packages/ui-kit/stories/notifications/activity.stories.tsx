@@ -58,6 +58,7 @@ export const Default: Story = {
     recipients: 5,
     layout: 'horizontal',
     locale: 'en',
+
     onClickActivity: (url) => () =>
       alert(`Notification clicked for URL: ${url}`),
   },
@@ -76,7 +77,9 @@ export const VerticalLayout: Story = {
   args: {
     ...Default.args,
     layout: 'vertical',
-    platformName: '',
+    platformName: '2028-08-07T21:17:00.000Z',
+    timestamp: '',
+    recipients: 0,
   },
 };
 
@@ -93,5 +96,6 @@ export const WithChildren: Story = {
   args: {
     ...Default.args,
     children: <span className="text-red-500">Additional Info</span>,
+    timestamp: '2028-08-07T21:17:00.000Z',
   },
 };

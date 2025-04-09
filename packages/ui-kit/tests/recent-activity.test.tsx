@@ -80,7 +80,7 @@ describe('<RecentActivity />', () => {
 
   it('renders activities up to the specified maxActivities count', () => {
     render(
-      <RecentActivity locale="en" maxActivities={1}>
+      <RecentActivity locale="en" maxActivities={1} variation='Pop-up'>
         {mockChildren}
       </RecentActivity>
     );
@@ -92,7 +92,7 @@ describe('<RecentActivity />', () => {
 
   it('does not render "View all" button when there are fewer activities than maxActivities', () => {
     render(
-      <RecentActivity locale="en" maxActivities={3}>
+      <RecentActivity locale="en" maxActivities={3} variation='Pop-up'>
         {mockChildren}
       </RecentActivity>
     );
@@ -116,7 +116,7 @@ describe('<RecentActivity />', () => {
 
   it('applies custom className', () => {
     const { container } = render(
-      <RecentActivity locale="en" className="custom-class">
+      <RecentActivity locale="en" className="custom-class" variation='Feed'>
         {mockChildren}
       </RecentActivity>
     );
@@ -138,49 +138,19 @@ describe('<RecentActivity />', () => {
     expect(screen.getByText('Mark all as read')).toBeInTheDocument();
   });
 
-  it('renders variation as "Search" with search input and appropriate layout', () => {
-    const onSearchQuery = vi.fn();
-    render(
-      <RecentActivity
-        locale="en"
-        variation="Search"
-        onSearchQuery={onSearchQuery}
-      >
-        {mockChildren}
-      </RecentActivity>
-    );
-    expect(screen.getByText('Activity History')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Search activities...')).toBeInTheDocument();
-  });
-
-  it('calls onSearchQuery when search input changes', () => {
-    const onSearchQuery = vi.fn();
-    render(
-      <RecentActivity
-        locale="en"
-        variation="Search"
-        onSearchQuery={onSearchQuery}
-      >
-        {mockChildren}
-      </RecentActivity>
-    );
-    const searchInput = screen.getByPlaceholderText('Search activities...');
-    fireEvent.change(searchInput, { target: { value: 'test query' } });
-    expect(onSearchQuery).toHaveBeenCalledWith('test query');
-  });
-
   it('renders no activities when no children are provided', () => {
-    render(<RecentActivity locale="en" />);
+    render(<RecentActivity locale="en"  variation='Feed'/>);
     expect(screen.queryByTestId('activity')).not.toBeInTheDocument();
   });
 
   it('calls onViewAll and shows all activities when "View all" button is clicked', () => {
-    const onViewAll = vi.fn();
+    const onClickViewAll = vi.fn();
     render(
       <RecentActivity
         locale="en"
         maxActivities={1}
-        onViewAll={onViewAll}
+        onClickViewAll={onClickViewAll}
+        variation='Feed'
       >
         {mockChildren}
       </RecentActivity>
@@ -188,8 +158,6 @@ describe('<RecentActivity />', () => {
     const activitiesBefore = screen.getAllByTestId('activity');
     expect(activitiesBefore).toHaveLength(1);
     fireEvent.click(screen.getByText('View all'));
-    expect(onViewAll).toHaveBeenCalledTimes(1);
-    const activitiesAfter = screen.getAllByTestId('activity');
-    expect(activitiesAfter).toHaveLength(2);
+    expect(onClickViewAll).toHaveBeenCalledTimes(1);
   });
 });

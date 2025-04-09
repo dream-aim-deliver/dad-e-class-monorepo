@@ -59,13 +59,14 @@ export const Activity: FC<ActivityProps> = ({
   const dictionary = getDictionary(locale);
 
   // Function to format date and time
-  const formatDateTime = (timestamp: string) => {
+  const formatDateTime = (timestamp?: string) => {
+    if (!timestamp) return null; // Handle case where timestamp is empty or undefined
     const date = new Date(timestamp);
     const formattedDate = date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
     const formattedTime = date.toTimeString().split(' ')[0].slice(0, 5); // 'HH:MM'
     return { formattedDate, formattedTime };
   };
-  const { formattedDate, formattedTime } = formatDateTime(timestamp);
+  const formattedDateTime = formatDateTime(timestamp);
   const atText = dictionary?.components?.activity?.atText;
   const recipientsText = dictionary?.components?.activity?.recipientsText;
 
@@ -160,9 +161,11 @@ export const Activity: FC<ActivityProps> = ({
                   className="whitespace-nowrap p-0 max-w-[15rem]"
                 />
               )}
-              <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap">
-                {formattedDate} {atText} {formattedTime}
-              </p>
+              {formattedDateTime && (
+                <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap">
+                  {formattedDateTime.formattedDate} {atText} {formattedDateTime.formattedTime}
+                </p>
+              )}
             </div>
             {!isRead && (
               <span className="w-3 h-3 ml-2 rounded-full bg-button-primary-fill flex-shrink-0" />
@@ -198,9 +201,11 @@ export const Activity: FC<ActivityProps> = ({
               {platformName && (
                 <p className="text-xs text-text-secondary leading-[100%]">{platformName}</p>
               )}
-              <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap">
-                {formattedDate} {atText} {formattedTime}
-              </p>
+              {formattedDateTime && (
+                <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap">
+                  {formattedDateTime.formattedDate} {atText} {formattedDateTime.formattedTime}
+                </p>
+              )}
             </div>
           </div>
         </>
