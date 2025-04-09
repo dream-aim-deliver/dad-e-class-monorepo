@@ -10,7 +10,7 @@ export interface VideoPlayerProps extends isLocalAware {
 }
 /**
  * A responsive, localized video player component built on top of Mux.
- * 
+ *
  * Supports optional lazy-loading via a thumbnail and handles various playback scenarios including:
  * error fallback, loading indicator, and autoplay after interaction.
  *
@@ -100,23 +100,23 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           />
         </div>
       )}
-      
+
       {/* Error state */}
       {videoError && (
-        <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4 rounded-medium">
+        <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
           <span className="text-text-secondary text-md">
             {dictionary.components.videoPlayer.videoErrorText}
           </span>
         </div>
       )}
-      
+
       {/* Loading state - only shown when player is loading and no error */}
       {showPlayer && !isPlayerReady && !videoError && (
         <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
           <div className="animate-spin rounded-full h-8 w-8 border-0 border-b-2 border-text-primary" />
         </div>
       )}
-      
+
       {/* Video player - always rendered but hidden when not ready */}
       {showPlayer && !videoError && (
         <div className={`absolute inset-0 w-full h-full ${!isPlayerReady ? 'opacity-0' : 'opacity-100'}`}>
