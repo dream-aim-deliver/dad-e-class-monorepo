@@ -2,50 +2,56 @@ import MuxPlayer from '@mux/mux-player-react';
 import { useEffect, useState } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
-
 export interface VideoPlayerProps extends isLocalAware {
   videoId?: string;
   thumbnailUrl?: string;
   onErrorCallback: (message: string, error: any) => void;
+  className?: string;
 }
 /**
- * A responsive, localized video player built on top of Mux, with optional lazy-loading via a thumbnail.
- * It handles error fallback, loading state, and autoplay toggling.
+ * A responsive, localized video player component built on top of Mux.
+ * 
+ * Supports optional lazy-loading via a thumbnail and handles various playback scenarios including:
+ * error fallback, loading indicator, and autoplay after interaction.
  *
- * @param videoId Mux playback ID used to load the video stream.
- * @param thumbnailUrl Optional image displayed before the video is played.
- * @param onErrorCallback A callback invoked when the video player fails to load or play.
- * @param locale Current user locale used for translations.
+ * @component
+ * @param {string} [videoId] - Mux playback ID used to load the video stream.
+ * @param {string} [thumbnailUrl] - Optional preview image displayed before the video is played.
+ * @param {(message: string, error: any) => void} onErrorCallback - Callback invoked when the video fails to load or play.
+ * @param {string} locale - Current user locale used for fetching localized text.
+ * @param {string} [className="w-full"] - Optional CSS class for customizing the outer container.
  *
- * @state showPlayer Whether to show the MuxPlayer or the thumbnail.
- * @state autoPlay Whether the video should autoplay after interaction.
- * @state videoError Whether to show the error fallback UI.
- * @state isPlayerReady Whether the Mux player has finished loading and is ready to play.
+ * @state {boolean} showPlayer - Determines whether the MuxPlayer is visible or the thumbnail is shown.
+ * @state {boolean} autoPlay - Indicates if the video should autoplay once the player is shown.
+ * @state {boolean} videoError - Indicates if the player encountered an error or no video ID was provided.
+ * @state {boolean} isPlayerReady - Tracks whether the Mux player has finished loading.
  *
  * @behavior
- * - Shows a thumbnail first (if provided), which when clicked, reveals the video player with autoplay enabled.
- * - If no thumbnail is provided, video player loads immediately.
- * - Shows a loading spinner until the Mux player is ready.
- * - Displays an error fallback UI when `videoId` is missing or the player fails to load.
- * - Uses localized text from `@maany_shr/e-class-translations`.
+ * - Displays a thumbnail initially if provided. On click, reveals the video player with autoplay enabled.
+ * - If no thumbnail is provided, loads the player immediately.
+ * - Shows a loading spinner while the player is initializing.
+ * - Displays a localized error fallback UI if the `videoId` is missing or player encounters a failure.
+ * - Uses translations from `@maany_shr/e-class-translations` for localized messages.
  *
  * @note
- * - We intentionally avoid `useCallback` here since the handler functions are not passed down or causing re-renders.
- * - If you memoize this component or lift handlers, consider wrapping callbacks with `useCallback`.
+ * - This component avoids `useCallback` as its internal handlers do not cause re-renders or prop drilling.
+ *   If memoizing the component or extracting handlers upward, consider using `useCallback`.
  *
  * @example
  * <VideoPlayer
- *   videoId="123abc"
- *   thumbnailUrl="/preview.jpg"
+ *   videoId="mux123abc"
+ *   thumbnailUrl="/assets/preview.jpg"
  *   onErrorCallback={(message, err) => console.error(message, err)}
  *   locale="en"
+ *   className="aspect-video"
  * />
  */
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   videoId,
   thumbnailUrl,
   onErrorCallback,
-  locale
+  locale,
+  className = "w-full"
 }) => {
   const dictionary = getDictionary(locale);
   const [showPlayer, setShowPlayer] = useState(!thumbnailUrl);
@@ -70,7 +76,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setAutoPlay(false);
   };
 
-  const handleVideoError = (event:any) => {
+  const handleVideoError = (event: any) => {
     setVideoError(true);
     onErrorCallback(dictionary.components.videoPlayer.videoErrorText, event);
   };
@@ -79,40 +85,52 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setIsPlayerReady(true);
   };
 
+  // Fixed aspect ratio container with absolute positioning for all content
   return (
-    <div className="w-full overflow-hidden">
-      {!showPlayer && thumbnailUrl ? (
-        <img
-          src={thumbnailUrl}
-          alt="Thumbnail"
-          className="w-auto max-w-full h-auto object-contain cursor-pointer"
-          onClick={handleThumbnailClick}
-          onError={handleThumbnailError}
-        />
-      ) : videoError ? (
-        <div className="rounded-medium w-full min-w-[18rem] h-[16rem] bg-base-neutral-700 flex items-center justify-center p-4">
+    <div className={`relative ${className}`}  >
+      {/* Thumbnail state */}
+      {!showPlayer && thumbnailUrl && (
+        <div className="absolute inset-0 w-full h-full">
+          <img
+            src={thumbnailUrl}
+            alt="Thumbnail"
+            className="w-full h-full object-contain cursor-pointer"
+            onClick={handleThumbnailClick}
+            onError={handleThumbnailError}
+          />
+        </div>
+      )}
+      
+      {/* Error state */}
+      {videoError && (
+        <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4 rounded-medium">
           <span className="text-text-secondary text-md">
             {dictionary.components.videoPlayer.videoErrorText}
           </span>
         </div>
-      ) : (
-        <>
-          {!isPlayerReady && (
-            <div className="rounded-medium w-full min-w-[18rem] h-[16rem] bg-base-neutral-700 flex items-center justify-center p-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-0   border-b-2 border-text-primary" />
-            </div>
-          )}
+      )}
+      
+      {/* Loading state - only shown when player is loading and no error */}
+      {showPlayer && !isPlayerReady && !videoError && (
+        <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-0 border-b-2 border-text-primary" />
+        </div>
+      )}
+      
+      {/* Video player - always rendered but hidden when not ready */}
+      {showPlayer && !videoError && (
+        <div className={`absolute inset-0 w-full h-full ${!isPlayerReady ? 'opacity-0' : 'opacity-100'}`}>
           <MuxPlayer
             key={videoId}
             streamType="on-demand"
             playbackId={videoId}
             accentColor="var(--color-base-brand-500)"
-            className={`w-full h-full ${!isPlayerReady ? 'hidden' : ''}`}
+            className="w-full h-full"
             autoPlay={autoPlay}
             onCanPlay={handlePlayerReady}
             onError={handleVideoError}
           />
-        </>
+        </div>
       )}
     </div>
   );

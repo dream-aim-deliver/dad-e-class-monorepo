@@ -32,14 +32,24 @@ export const Hero: React.FC<HeroProps> = ({
 }) => {
   return (
     <div className="flex md:flex-row flex-col  gap-[4.1875rem] items-center w-full">
-        <div className="flex flex-col gap-[2.5625rem] items-start w-full md:col-span-3">
+        <div className="flex flex-col gap-[2.5625rem] items-start w-full  md:w-1/2">
             <p className="text-4xl text-text-primary font-bold leading-[100%] tracking-[-0.08rem]">
                 {title}
             </p>
             <p className="text-lg text-text-secondary leading-[150%]">{description}</p>
         </div>
         {/* VideoPlayer */}
-        <VideoPlayer onErrorCallback={()=>console.log('error')} videoId={videoId} thumbnailUrl={thumbnailUrl} locale={locale}/>
+        <div className="flex-1">
+        <div className="w-full aspect-video min-h-[300px]"> 
+          <VideoPlayer 
+            videoId={videoId} 
+            thumbnailUrl={thumbnailUrl} 
+            locale={locale}
+            onErrorCallback={(message, error) => console.log('error', message, error)}
+            className="w-full h-full" 
+          />
+        </div>
+      </div>
     </div>
   );
 };
