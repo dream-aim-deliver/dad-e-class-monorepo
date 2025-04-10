@@ -12,7 +12,7 @@ import nextAuth from '../../auth/config';
 import {
   createLanguages, createPlatformLanguages,
   createPlatforms,
-  initializeCMSFastAPIClient, initializeHomePages, registerFiles, uploadFilesToMinio
+  initializeCMSFastAPIClient, initializeHomePages, initializeTopics, registerFiles, uploadFilesToMinio
 } from '../../lib/infrastructure/cms-fastapi/initialize-data';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
@@ -24,6 +24,7 @@ await initializeCMSFastAPIClient();
 // await registerFiles();
 // -await uploadFilesToMinio();
 // await initializeHomePages();
+// await initializeTopics();
 
 export const metadata = {
   title: 'Welcome to Platform',

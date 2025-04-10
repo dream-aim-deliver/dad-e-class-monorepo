@@ -21,7 +21,8 @@ import { UserAvatar } from '../../../../packages/ui-kit/lib/components/avatar/us
 import RichTextRenderer from '../../../../packages/ui-kit/lib/components/rich-text-element/renderer';
 
 export type HomeProps = isLocalAware & isSessionAware & {
-  homePage: homePage.THomePage
+  homePage: homePage.THomePage,
+  topics: topic.TTopic[],
 };
 
 // TODO: move into a separate component in UI Kit
@@ -73,9 +74,7 @@ export default function Home(props: HomeProps) {
   const t = useTranslations('home');
 
   const homePage = props.homePage;
-  const topics = listTopics(props.locale);
-
-  const linkTopics = topics.map((topic) => ({
+  const linkTopics = props.topics.map((topic) => ({
     ...topic,
     url: `/topics/${topic.name}`
   }));

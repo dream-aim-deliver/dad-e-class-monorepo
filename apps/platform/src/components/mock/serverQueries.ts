@@ -1,4 +1,8 @@
-import { getApiV1RepositoryFileIdGet, listApiV1RepositoryHomePageGet } from '@maany_shr/e-class-cms-fastapi-sdk';
+import {
+  getApiV1RepositoryFileIdGet,
+  listApiV1RepositoryHomePageGet,
+  listApiV1RepositoryTopicGet
+} from '@maany_shr/e-class-cms-fastapi-sdk';
 import { models } from '@maany_shr/e-class-core';
 import { minioRepository } from '../../lib/infrastructure/minio/demo-minio';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -43,12 +47,12 @@ const getExternalId = async (fileId: number): Promise<string> => {
   return data.data.external_id;
 }
 
-export const getRealHomePage = async (locale: TLocale): Promise<homePage.THomePage> => {
+export const getHomePage = async (locale: TLocale): Promise<homePage.THomePage> => {
   const result = await listApiV1RepositoryHomePageGet({
     headers: {
       "x-auth-token": "test123",
     },
-    query: { platform_language_id: 1 },
+    query: { platform_language_id: locale === 'en' ? 1 : 2 },
   });
   const data = result.data;
   if (!data || !data.success || data.data.length === 0) {
@@ -91,4 +95,20 @@ export const getRealHomePage = async (locale: TLocale): Promise<homePage.THomePa
   };
   console.log(transformedHomePage)
   return transformedHomePage;
+}
+
+export const listTopics = async (locale: TLocale): Promise<topic.TTopic[]> => {
+  const result = await listApiV1RepositoryTopicGet({
+    headers: {
+      "x-auth-token": "test123",
+    },
+    query: { platform_language_id: locale === 'en' ? 1 : 2 },
+  });
+  const data = result.data;
+  if (!data || !data.success || data.data.length === 0) {
+    throw Error('Cannot load topics');
+  }
+  return data.data.map(topic => ({
+    name: topic.name
+  }));
 }

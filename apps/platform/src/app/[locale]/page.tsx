@@ -4,7 +4,7 @@ import { TLocale } from "@maany_shr/e-class-translations";
 import { auth } from "@maany_shr/e-class-models";
 import { NextAuthGateway } from "@maany_shr/e-class-auth";
 import nextAuth from "../../auth/config";
-import { getRealHomePage } from '../../components/mock/serverQueries';
+import { getHomePage, listTopics } from '../../components/mock/serverQueries';
 
 
 export default async function Index() {
@@ -21,7 +21,8 @@ export default async function Index() {
     session = sessionDTO.data;
   }
 
-  const homePage = await getRealHomePage(locale as TLocale);
+  const homePage = await getHomePage(locale as TLocale);
+  const topics = await listTopics(locale as TLocale);
 
 //  const pingResult = await pingCMSFastAPI();
   //if (!pingResult) {
@@ -41,7 +42,7 @@ export default async function Index() {
 
   return (
     <div className="bg-card-color-fill">
-      <Home locale={locale as TLocale} session={session} homePage={homePage}/>
+      <Home locale={locale as TLocale} session={session} homePage={homePage} topics={topics}/>
     </div>
   );
 }
