@@ -117,9 +117,9 @@ export const Footer: React.FC<FooterProps> = ({
                 </div>
 
                 {/* Desktop Layout (Larger Screens) */}
-                <div className="hidden py-6 px-10.5 lg:flex flex-row justify-between items-start lg:items-center">
+                <div className="hidden py-6 px-10.5 lg:!flex flex-row justify-between items-start lg:items-center">
                     {/* Left Section: Logo Only */}
-                    <div className="mb-6 lg:mb-0">
+                    <div className="mb-6 lg:!mb-0">
                         <a href="/">
                             {logoSrc && (
                                 <img
@@ -134,11 +134,11 @@ export const Footer: React.FC<FooterProps> = ({
                     </div>
 
                     {/* Right Section: Navigation Links, Company Info, and Language Dropdown */}
-                    <div className="flex flex-col lg:flex-row items-end lg:items-center space-y-4 lg:space-y-0 lg:space-x-8">
+                    <div className="flex flex-col lg:!flex-row items-end lg:!items-center space-y-4 lg:!space-y-0 lg:!space-x-8">
                         <div className="flex flex-col gap-4">
                             {/* Navigation Links */}
                             {children && (
-                                <div className="flex flex-col items-end justify-end lg:flex-row flex-wrap gap-4">
+                                <div className="flex flex-col items-end justify-end lg:!flex-row flex-wrap gap-4">
                                     {children}
                                 </div>
                             )}
