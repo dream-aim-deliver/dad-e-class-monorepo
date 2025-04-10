@@ -30,3 +30,7 @@ export { Navbar } from './components/navbar';
 export { Hero } from './components/home-banner/hero';
 export { TopicList } from './components/topic-list';
 export { Divider } from './components/divider';
+export { Carousel } from './components/carousel/carousel';
+export { GeneralCard } from './components/carousel/generalcard';
+export { CoachingOnDemandBanner } from './components/coaching-on-demand-banner/coaching-on-demand-banner';
+export { Footer } from './components/footer';

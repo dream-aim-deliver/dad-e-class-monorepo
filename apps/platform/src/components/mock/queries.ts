@@ -18,7 +18,7 @@ export const getHomePage = (locale: TLocale): homePage.THomePage => {
         {
           title: 'Digital Marketing Fundamentals',
           description: 'Master the essential concepts and tools for successful digital marketing campaigns.',
-          imageUrl: 'https://res.cloudinary.com/marketmasters/image/upload/v1742541100/digital-fundamentals.jpg',
+          imageUrl: 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHx8MA%3D%3D',
           buttonText: 'Explore Course',
           buttonUrl: '/courses/digital-fundamentals'
         },
@@ -76,6 +76,36 @@ export const getHomePage = (locale: TLocale): homePage.THomePage => {
         title: 'Explore Our Course Topics',
         showNumbers: true,
         items: [
+          {
+            title: 'Web Development Fundamentals',
+            content: '[{"type":"paragraph","children":[{"text":"Learn the core technologies that power the modern web including HTML5, CSS3, and JavaScript.","highlight":true}]},{"type":"paragraph","children":[{"text":"This course covers responsive design principles, semantic markup, and cross-browser compatibility."}]}]',
+            position: 1,
+            iconImageUrl: '',
+          },
+          {
+            title: 'Data Science & Analytics',
+            content: '[{"type":"paragraph","children":[{"text":"Discover how to extract meaningful insights from complex datasets.","highlight":true}]},{"type":"paragraph","children":[{"text":"Use statistical methods, machine learning, and visualization techniques. Perfect for aspiring data scientists and analysts."}]}]',
+            position: 2,
+            iconImageUrl: '',
+          },
+          {
+            title: 'Mobile App Development',
+            content: '[{"type":"paragraph","children":[{"text":"Build native and cross-platform mobile applications for iOS and Android.","highlight":true}]},{"type":"paragraph","children":[{"text":"This comprehensive course covers UI/UX principles, API integration, and publishing to app stores."}]}]',
+            position: 3,
+            iconImageUrl: '',
+          },
+          {
+            title: 'Cloud Computing & DevOps',
+            content: '[{"type":"paragraph","children":[{"text":"Master cloud infrastructure and deployment pipelines.","highlight":true}]},{"type":"paragraph","children":[{"text":"Learn AWS, Azure, Google Cloud, containerization, CI/CD workflows, and infrastructure as code principles."}]}]',
+            position: 4,
+            iconImageUrl: '',
+          },
+          {
+            title: 'Cybersecurity Essentials',
+            content: '[{"type":"paragraph","children":[{"text":"Develop the skills to protect systems and networks from digital threats.","highlight":true}]},{"type":"paragraph","children":[{"text":"Topics include vulnerability assessment, encryption protocols, ethical hacking, and security compliance frameworks."}]}]',
+            position: 5,
+            iconImageUrl: '',
+          }
         ]
       }
     };
@@ -91,7 +121,7 @@ export const getHomePage = (locale: TLocale): homePage.THomePage => {
         {
           title: 'Grundlagen des Digitalmarketings',
           description: 'Beherrschen Sie die wesentlichen Konzepte und Werkzeuge für erfolgreiche digitale Marketingkampagnen.',
-          imageUrl: 'https://res.cloudinary.com/marketmasters/image/upload/v1742541100/digital-fundamentals.jpg',
+          imageUrl: 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHx8MA%3D%3D',
           buttonText: 'Kurs erkunden',
           buttonUrl: '/kurse/digitalmarketing-grundlagen'
         },
@@ -149,6 +179,36 @@ export const getHomePage = (locale: TLocale): homePage.THomePage => {
         title: 'Entdecken Sie unsere Kursthemen',
         showNumbers: true,
         items: [
+          {
+            title: 'Grundlagen der Webentwicklung',
+            content: '[{"type":"paragraph","children":[{"text":"Lernen Sie die Kerntechnologien kennen, die das moderne Web antreiben, einschließlich HTML5, CSS3 und JavaScript.","highlight":true}]},{"type":"paragraph","children":[{"text":"Dieser Kurs behandelt responsive Design-Prinzipien, semantische Auszeichnungen und browserübergreifende Kompatibilität."}]}]',
+            position: 1,
+            iconImageUrl: '',
+          },
+          {
+            title: 'Data Science & Analytik',
+            content: '[{"type":"paragraph","children":[{"text":"Entdecken Sie, wie man aus komplexen Datensätzen aussagekräftige Erkenntnisse gewinnt.","highlight":true}]},{"type":"paragraph","children":[{"text":"Nutzen Sie statistische Methoden, maschinelles Lernen und Visualisierungstechniken. Perfekt für angehende Datenwissenschaftler und Analysten."}]}]',
+            position: 2,
+            iconImageUrl: '',
+          },
+          {
+            title: 'Mobile App-Entwicklung',
+            content: '[{"type":"paragraph","children":[{"text":"Entwickeln Sie native und plattformübergreifende mobile Anwendungen für iOS und Android.","highlight":true}]},{"type":"paragraph","children":[{"text":"Dieser umfassende Kurs behandelt UI/UX-Prinzipien, API-Integration und die Veröffentlichung in App-Stores."}]}]',
+            position: 3,
+            iconImageUrl: '',
+          },
+          {
+            title: 'Cloud Computing & DevOps',
+            content: '[{"type":"paragraph","children":[{"text":"Beherrschen Sie Cloud-Infrastruktur und Deployment-Pipelines.","highlight":true}]},{"type":"paragraph","children":[{"text":"Lernen Sie AWS, Azure, Google Cloud, Containerisierung, CI/CD-Workflows und Infrastructure-as-Code-Prinzipien kennen."}]}]',
+            position: 4,
+            iconImageUrl: '',
+          },
+          {
+            title: 'Grundlagen der Cybersicherheit',
+            content: '[{"type":"paragraph","children":[{"text":"Entwickeln Sie die Fähigkeiten, um Systeme und Netzwerke vor digitalen Bedrohungen zu schützen.","highlight":true}]},{"type":"paragraph","children":[{"text":"Zu den Themen gehören Schwachstellenbewertung, Verschlüsselungsprotokolle, ethisches Hacking und Frameworks für Sicherheitskonformität."}]}]',
+            position: 5,
+            iconImageUrl: '',
+          }
         ]
       }
     };
