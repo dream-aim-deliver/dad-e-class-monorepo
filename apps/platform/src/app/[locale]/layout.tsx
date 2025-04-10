@@ -10,6 +10,7 @@ import { auth } from "@maany_shr/e-class-models"
 import { NextAuthGateway } from "@maany_shr/e-class-auth"
 import nextAuth from '../../auth/config';
 import Header from '../../components/header';
+import Footer from '../../components/footer';
 
 export const metadata = {
   title: 'Welcome to Platform',
@@ -78,9 +79,10 @@ export default async function RootLayout({
           <ThemeProvider>
             <div className="w-full min-h-screen bg-black flex flex-col justify-center items-center">
               <Header locale={locale} availableLocales={i18nConfig.locales} session={session}/>
-              <main className="flex-grow w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+              <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-8">
                 {children}
               </main>
+              <Footer availableLocales={i18nConfig.locales} locale={locale} />
             </div>
           </ThemeProvider>
         </NextIntlClientProvider>
