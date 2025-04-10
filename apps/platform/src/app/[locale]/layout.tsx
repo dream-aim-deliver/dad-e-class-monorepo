@@ -11,6 +11,9 @@ import { NextAuthGateway } from '@maany_shr/e-class-auth';
 import nextAuth from '../../auth/config';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
+import { initializeCMSFastAPIClient } from '../../lib/infrastructure/cms-fastapi/initialize-client';
+
+initializeCMSFastAPIClient();
 
 export const metadata = {
   title: 'Welcome to Platform',

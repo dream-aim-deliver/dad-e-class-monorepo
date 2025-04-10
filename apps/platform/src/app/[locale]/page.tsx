@@ -8,6 +8,7 @@ import { listApiV1RepositoryHomePageGet } from "@maany_shr/e-class-cms-fastapi-s
 import {
   pingCMSFastAPI,
 } from "../../lib/infrastructure/cms-fastapi/initialize-client";
+import { getRealHomePage } from '../../components/mock/queries';
 
 
 export default async function Index() {
@@ -24,6 +25,8 @@ export default async function Index() {
     session = sessionDTO.data;
   }
 
+  const homePage = await getRealHomePage(locale as TLocale);
+
 //  const pingResult = await pingCMSFastAPI();
   //if (!pingResult) {
     //return <div>CMS FastAPI is not running</div>;
@@ -31,7 +34,7 @@ export default async function Index() {
 
   //const homePageDTO = await listApiV1RepositoryHomePageGet({
     //headers: {
-      //"x-auth-token": "test123", 
+      //"x-auth-token": "test123",
     //},
     //query: {
       //platform_language_id: 1,
@@ -42,7 +45,7 @@ export default async function Index() {
 
   return (
     <div className="bg-card-color-fill">
-      <Home locale={locale as TLocale} session={session} />
+      <Home locale={locale as TLocale} session={session} homePage={homePage}/>
     </div>
   );
 }

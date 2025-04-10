@@ -14,12 +14,15 @@ import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { isSessionAware } from '@maany_shr/e-class-auth';
 import { getHomePage, listTopics } from './mock/queries';
 import React from 'react';
+import { homePage, topic } from '@maany_shr/e-class-models';
 import { TAccordionList } from '../../../../packages/models/src/home-page';
 import { cn } from '../../../../packages/ui-kit/lib/utils/style-utils';
 import { UserAvatar } from '../../../../packages/ui-kit/lib/components/avatar/user-avatar';
 import RichTextRenderer from '../../../../packages/ui-kit/lib/components/rich-text-element/renderer';
 
-export type HomeProps = isLocalAware & isSessionAware;
+export type HomeProps = isLocalAware & isSessionAware & {
+  homePage: homePage.THomePage
+};
 
 // TODO: move into a separate component in UI Kit
 const HomeAccordion: React.FC<TAccordionList> = ({
@@ -69,7 +72,7 @@ const HomeAccordion: React.FC<TAccordionList> = ({
 export default function Home(props: HomeProps) {
   const t = useTranslations('home');
 
-  const homePage = getHomePage(props.locale);
+  const homePage = props.homePage;
   const topics = listTopics(props.locale);
 
   const linkTopics = topics.map((topic) => ({

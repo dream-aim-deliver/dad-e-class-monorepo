@@ -1,8 +1,61 @@
 import { homePage, topic } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
+import {
+  listApiV1RepositoryHomePageGet,
+} from '@maany_shr/e-class-cms-fastapi-sdk';
 
 export const getLogo = (): string => {
   return 'https://res.cloudinary.com/dowkwaxnn/image/upload/v1742810063/a_atmfwj.png';
+}
+
+export const getRealHomePage = async (locale: TLocale): Promise<homePage.THomePage> => {
+  const result = await listApiV1RepositoryHomePageGet({
+    headers: {
+      "x-auth-token": "test123",
+    },
+    query: { platform_language_id: 1 },
+  });
+  const data = result.data;
+  if (!data || !data.success || data.data.length === 0) {
+    throw Error('Cannot load a home page');
+  }
+  const homePage = data.data[0];
+  // TODO: load file IDs from MinIO
+  const transformedHomePage: homePage.THomePage = {
+    banner: {
+      title: homePage.hero.title,
+      description: homePage.hero.description,
+      videoId: String(homePage.hero.video_file_id), // Assuming videoId might come from somewhere
+      thumbnailUrl: String(homePage.hero.thumbnail_file_id), // Assuming thumbnailUrl might come from somewhere
+    },
+    carousel: homePage.carousel.map(item => ({
+      title: item.title,
+      description: item.description,
+      imageUrl: String(item.image_file_id), // Keeping file_id as requested
+      buttonText: item.button_text,
+      buttonUrl: item.button_link,
+      badge: item.badge,
+    })),
+    coachingOnDemand: {
+      title: homePage.coaching_on_demand.title,
+      description: homePage.coaching_on_demand.description,
+      desktopImageUrl: String(homePage.coaching_on_demand.desktop_img_file_id),
+      tabletImageUrl: String(homePage.coaching_on_demand.tablet_img_file_id),
+      mobileImageUrl: String(homePage.coaching_on_demand.mobile_img_file_id),
+    },
+    accordion: {
+      title: homePage.accordion.title,
+      showNumbers: homePage.accordion.show_numbers,
+      items: homePage.accordion.list.map(item => ({
+        title: item.title,
+        content: item.description,
+        position: item.position,
+        iconImageUrl: String(item.icon_img_file_id),
+      })),
+    },
+  };
+
+  return transformedHomePage;
 }
 
 export const getHomePage = (locale: TLocale): homePage.THomePage => {
