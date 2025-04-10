@@ -29,3 +29,4 @@ export * as contexts from './contexts';
 export { Navbar } from './components/navbar';
 export { Hero } from './components/home-banner/hero';
 export { TopicList } from './components/topic-list';
+export { Divider } from './components/divider';
