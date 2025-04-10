@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import TopicList from '../lib/components/topic-list';
+import { TopicList } from '../lib/components/topic-list';
 
 // Sample topics from your list
 const sampleTopics = [

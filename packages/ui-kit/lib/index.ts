@@ -26,4 +26,6 @@ export { ProfileTabs, DragAndDrop, Badge };
 export { default  as  BuyCoachingSession, type BuyCoachingSessionProps } from './components/buy-coaching-session';
 export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/accordion';
 export * as contexts from './contexts';
-export {Navbar} from './components/navbar';
+export { Navbar } from './components/navbar';
+export { Hero } from './components/home-banner/hero';
+export { TopicList } from './components/topic-list';
