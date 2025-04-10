@@ -31,7 +31,7 @@ export const Hero: React.FC<HeroProps> = ({
   locale
 }) => {
   return (
-    <div className="flex flex-col md:!flex-row gap-[4.1875rem] items-center w-full">
+    <div className="flex flex-col lg:!flex-row gap-[4.1875rem] items-center w-full">
         <div className="flex flex-col gap-[2.5625rem] items-start w-full  md:w-1/2">
             <p className="text-4xl text-text-primary font-bold leading-[100%] tracking-[-0.08rem]">
                 {title}
