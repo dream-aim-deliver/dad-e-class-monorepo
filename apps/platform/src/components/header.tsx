@@ -5,10 +5,33 @@ import { isSessionAware } from '@maany_shr/e-class-auth';
 import { Navbar } from '@maany_shr/e-class-ui-kit';
 import { usePathname, useRouter } from 'next/navigation';
 import { getLogo } from './mock/queries';
+import { useTranslations } from 'next-intl';
 
 // TODO: Accept notification count
 export type HeaderProps = isLocalAware & isSessionAware & {
   availableLocales: TLocale[];
+};
+
+const NavLinks = () => {
+  const t = useTranslations('components.navbar');
+  const linkClass = 'hover:text-button-primary-hover-fill cursor-pointer text-md';
+
+  return (
+    <>
+      <a href="/offers">
+        <span className={linkClass}>{t('offers')}</span>
+      </a>
+      <a href="/coaching">
+        <span className={linkClass}>{t('coaching')}</span>
+      </a>
+      <a href="/how-it-works">
+        <span className={linkClass}>{t('howItWorks')}</span>
+      </a>
+      <a href="/about">
+        <span className={linkClass}>{t('about')}</span>
+      </a>
+    </>
+  );
 };
 
 export default function Header(props: HeaderProps) {
@@ -35,6 +58,6 @@ export default function Header(props: HeaderProps) {
     userName={props.session?.user?.name}
     logoSrc={logo}
   >
-    <span>Route</span>
+    <NavLinks />
   </Navbar>;
 }
