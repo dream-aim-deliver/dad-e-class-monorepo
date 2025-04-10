@@ -77,7 +77,7 @@ export const VerticalLayout: Story = {
   args: {
     ...Default.args,
     layout: 'vertical',
-    platformName: '2028-08-07T21:17:00.000Z',
+    platformName: 'Zoom',
     timestamp: '',
     recipients: 0,
   },
