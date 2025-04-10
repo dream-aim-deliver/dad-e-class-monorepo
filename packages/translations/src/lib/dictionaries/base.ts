@@ -186,6 +186,14 @@ export const DictionarySchema = z.object({
       howItWorks: z.string(),
       about: z.string(),
     }),
+    footer: z.object({
+      impressum: z.string(),
+      privacyPolicy: z.string(),
+      termsOfUse: z.string(),
+      rules: z.string(),
+      coursesInformation: z.string(),
+      companyInfo: z.string(),
+    })
   }),
 
 });
