@@ -21,6 +21,7 @@ export default class MinioObjectStore {
     const useSSL = false;
     const signedUrlExpiry = 4600;
 
+
     this.logger = this.loggerFactory("MinioObjectStore");
 
     this.client = new Minio.Client({

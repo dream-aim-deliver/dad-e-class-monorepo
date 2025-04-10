@@ -9957,7 +9957,6 @@ snapshots:
   '@hey-api/client-axios@0.6.3(axios@1.8.4)':
     dependencies:
       axios: 1.8.4
-
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':
@@ -10314,6 +10313,7 @@ snapshots:
   '@maany_shr/e-class-cms-fastapi-sdk@1.9.4(axios@1.8.4)':
     dependencies:
       '@hey-api/client-axios': 0.6.3(axios@1.8.4)
+
     transitivePeerDependencies:
       - axios
 
