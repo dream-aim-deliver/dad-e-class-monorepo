@@ -17,6 +17,7 @@ export const DictionarySchema = z.object({
     notSignedInText: z.string(),
     welcomeText: z.string(),
     signOut: z.string(),
+    topicsTitle: z.string(),
   }),
   login: z.object({
     title: z.string(),
