@@ -10,6 +10,7 @@ import {
 } from "../../lib/infrastructure/cms-fastapi/initialize-client";
 
 
+
 export default async function Index() {
   /*
    * Replace the elements below with your own.
@@ -23,21 +24,6 @@ export default async function Index() {
   if (sessionDTO.success) {
     session = sessionDTO.data;
   }
-
-//  const pingResult = await pingCMSFastAPI();
-  //if (!pingResult) {
-    //return <div>CMS FastAPI is not running</div>;
-  //}
-
-  //const homePageDTO = await listApiV1RepositoryHomePageGet({
-    //headers: {
-      //"x-auth-token": "test123", 
-    //},
-    //query: {
-      //platform_language_id: 1,
-      //},
-    //})
-
 
 
   return (

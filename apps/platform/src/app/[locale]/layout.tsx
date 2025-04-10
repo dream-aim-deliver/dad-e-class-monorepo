@@ -10,14 +10,13 @@ import { auth } from "@maany_shr/e-class-models"
 import { NextAuthGateway } from "@maany_shr/e-class-auth"
 import nextAuth from '../../auth/config';
 
-import { createLanguages, createPlatformLanguages, createPlatforms, initializeCMSFastAPIClient } from '../../lib/infrastructure/cms-fastapi/initialize-client';
-
-
-initializeCMSFastAPIClient();
-createPlatforms();
-createLanguages();
-createPlatformLanguages();
-
+await initializeCMSFastAPIClient();
+await createPlatforms();
+await createLanguages();
+await createPlatformLanguages();
+await registerFiles();
+await uploadFilesToMinio();
+await initializeHomePages();
 
 
 
