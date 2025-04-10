@@ -21,7 +21,7 @@ export const CarouselContent: React.FC<{
         <div
           key={index}
           className={`flex-shrink-0 px-2 ${
-            itemsPerView === 1
+            itemsPerView === 1 || items.length === 1
               ? "w-full max-w-[90%] mx-auto"
               : itemsPerView === 2
               ? "w-1/2 max-w-[45%]"

@@ -8,4 +8,5 @@ export const Home_EN: TDictionary["home"] = {
     notSignedInText: 'Not signed in',
     welcomeText: 'Welcome',
     signOut: 'Sign out',
+    topicsTitle: 'Offers by topic'
 };

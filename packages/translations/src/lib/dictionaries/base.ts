@@ -17,6 +17,7 @@ export const DictionarySchema = z.object({
     notSignedInText: z.string(),
     welcomeText: z.string(),
     signOut: z.string(),
+    topicsTitle: z.string(),
   }),
   login: z.object({
     title: z.string(),
@@ -180,7 +181,19 @@ export const DictionarySchema = z.object({
     navbar: z.object({
       workspace: z.string(),
       login: z.string(),
+      offers: z.string(),
+      coaching: z.string(),
+      howItWorks: z.string(),
+      about: z.string(),
     }),
+    footer: z.object({
+      impressum: z.string(),
+      privacyPolicy: z.string(),
+      termsOfUse: z.string(),
+      rules: z.string(),
+      coursesInformation: z.string(),
+      companyInfo: z.string(),
+    })
   }),
 
 });

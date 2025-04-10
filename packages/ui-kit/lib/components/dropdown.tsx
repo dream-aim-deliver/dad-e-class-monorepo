@@ -90,24 +90,33 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const [truncatedOptions, setTruncatedOptions] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [selectedLabel, setSelectedLabel] = useState<React.ReactNode | null>(null);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const isMultiSelect = type === 'multiple-choice-and-search';
+
+  const [selectedOption, setSelectedOption] = useState<string | null>(
+    !isMultiSelect && typeof defaultValue === 'string' ? defaultValue : null
+  );
+
+  const [selectedLabel, setSelectedLabel] = useState<React.ReactNode | null>(
+    !isMultiSelect && typeof defaultValue === 'string'
+      ? options.find(option => option.value === defaultValue)?.label || null
+      : null
+  );
+
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(
+    isMultiSelect && Array.isArray(defaultValue) ? defaultValue : []
+  );
 
   useEffect(() => {
-    // Set initial label
-    if(type !== 'multiple-choice-and-search' && defaultValue && typeof defaultValue === 'string') 
-      setSelectedLabel(options.find((option) => option.value === defaultValue)?.label || null);
-
-    // Set initial selected option
-    if (type !== 'multiple-choice-and-search' && typeof defaultValue === 'string') 
+    if (isMultiSelect) {
+      if (Array.isArray(defaultValue)) {
+        setSelectedOptions(defaultValue);
+      }
+    } else if (typeof defaultValue === 'string') {
       setSelectedOption(defaultValue);
+      setSelectedLabel(options.find(option => option.value === defaultValue)?.label || null);
+    }
+  }, [defaultValue, options, isMultiSelect]);
 
-    // Set initial selected options
-    if (type === 'multiple-choice-and-search' && Array.isArray(defaultValue)) 
-      setSelectedOptions(defaultValue);
-  } ,[defaultValue , type, options] );
-  
   const buttonText =
     type === 'simple'
       ? selectedLabel || text?.simpleText
