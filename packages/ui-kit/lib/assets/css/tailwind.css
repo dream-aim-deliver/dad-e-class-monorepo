@@ -132,6 +132,7 @@
   --color-slider-knob-stroke: var(--color-slider-knob-stroke);
   --color-slider-progress-fill: var(--color-slider-progress-fill);
   --color-slider-progress-stroke: var(--color-slider-progress-stroke);
+  --color-brand-divider: var(--color-brand-divider);
 
   --color-tooltip-background: var(--tooltip-background);
   --color-tooltip-border: var(--tooltip-border);
@@ -275,6 +276,7 @@
   --color-slider-knob-stroke: var(--color-base-brand-300);
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
+  --color-brand-divider: var(--color-base-brand-300);
 
   --font-weight-important: 700;
   --font-weight-normal: 400;
@@ -398,6 +400,8 @@
   --color-slider-progress-fill: var(--color-base-brand-500);
   --color-slider-progress-stroke: var(--color-base-brand-400);
 
+  --color-brand-divider: var(--color-base-brand-300);
+
   --font-weight-important: 700;
   --font-weight-normal: 400;
   --font-weight-h1: var(--font-weight-important);
@@ -509,6 +513,8 @@
 
   --color-input-fill: var(--color-base-neutral-950);
   --color-input-stroke: var(--color-base-neutral-800);
+
+  --color-brand-divider: var(--color-base-brand-300);
 
   --color-ignore-design-notes-primary: #CA96FF;
   --color-ignore-design-notes-secondary: #952CFE;
@@ -627,6 +633,8 @@
 
   --color-input-fill: var(--color-base-neutral-950);
   --color-input-stroke: var(--color-base-neutral-800);
+
+  --color-brand-divider: var(--color-base-brand-300);
 
   --color-ignore-design-notes-primary: #CA96FF;
   --color-ignore-design-notes-secondary: #952CFE;
