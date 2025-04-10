@@ -7,7 +7,7 @@ import nextAuth from "../../auth/config";
 import { listApiV1RepositoryHomePageGet } from "@maany_shr/e-class-cms-fastapi-sdk";
 import {
   pingCMSFastAPI,
-} from "../../lib/infrastructure/cms-fastapi/initialize-client";
+} from "../../lib/infrastructure/cms-fastapi/initialize-data";
 
 
 export default async function Index() {
