@@ -9,6 +9,7 @@ import { SessionProvider } from "next-auth/react"
 import { auth } from "@maany_shr/e-class-models"
 import { NextAuthGateway } from "@maany_shr/e-class-auth"
 import nextAuth from '../../auth/config';
+import Header from '../../components/header';
 
 export const metadata = {
   title: 'Welcome to Platform',
@@ -47,26 +48,25 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
- 
+
 
   const authGateway = new NextAuthGateway(nextAuth);
   const sessionDTO = await authGateway.getSession();
-  let session: auth.TSession | null = null;
-  if (!sessionDTO.success) {
-    session = null;
-  } else {
-    session = sessionDTO.data;
+  let session: auth.TSession | undefined;
+  if (sessionDTO.success) {
+    session = sessionDTO.data
   }
-  
+
   const params = await paramsPromise;
-  const locale = params?.locale;
-  
-  
-  if (!i18nConfig.locales.includes(locale as TLocale)) {
+  const locale = params?.locale as TLocale;
+
+  if (!i18nConfig.locales.includes(locale)) {
     notFound();
   }
 
   const messages = await getMessages({ locale });
+
+  // TODO: prefetch platform logo & name to inject into header and footer
 
   return (
     <html lang={locale}>
@@ -76,8 +76,9 @@ export default async function RootLayout({
         <SessionProvider session={session}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider>
-            <div className="w-full min-h-screen bg-black flex flex-col items-center">
-              <main className="flex-grow w-full max-w-screen-2xl pt-24">
+            <div className="w-full min-h-screen bg-black flex flex-col justify-center items-center">
+              <Header locale={locale} availableLocales={i18nConfig.locales} session={session}/>
+              <main className="flex-grow w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
                 {children}
               </main>
             </div>
