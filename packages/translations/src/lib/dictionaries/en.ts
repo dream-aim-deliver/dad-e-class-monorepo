@@ -166,6 +166,10 @@ export const EN: TDictionary = {
     navbar: {
       workspace: 'Workspace',
       login: 'Login',
+      offers: 'Offers',
+      coaching: 'Coaching',
+      howItWorks: 'How It Works',
+      about: 'About',
     },
   },
 };

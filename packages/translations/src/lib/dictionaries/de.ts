@@ -167,6 +167,10 @@ export const DE: TDictionary = {
     navbar: {
       workspace: 'Arbeitsbereich',
       login: 'Anmelden',
+      offers: 'Angebote',
+      coaching: 'Coaching',
+      howItWorks: 'Wie es funktioniert',
+      about: 'Über uns',
     },
   },
 };

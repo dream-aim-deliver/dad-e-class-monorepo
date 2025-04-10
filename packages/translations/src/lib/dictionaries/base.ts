@@ -181,6 +181,10 @@ export const DictionarySchema = z.object({
     navbar: z.object({
       workspace: z.string(),
       login: z.string(),
+      offers: z.string(),
+      coaching: z.string(),
+      howItWorks: z.string(),
+      about: z.string(),
     }),
   }),
 
