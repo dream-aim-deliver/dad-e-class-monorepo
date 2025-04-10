@@ -70,23 +70,25 @@ export const GeneralCard: React.FC<GeneralCardProps> = ({
   return (
     <article className="flex flex-col h-auto w-full max-w-[382px]">
       <div className="relative flex flex-col justify-start w-full h-auto rounded-lg border border-solid bg-card-fill border-card-stroke">
-        {shouldShowPlaceholder ? (
-          <div className="rounded-t-lg w-full h-[262px] lg:max-h-[262px] bg-base-neutral-700 flex items-center justify-center">
-            <span className="text-text-secondary text-md">
-              {dictionary.components.generalCard.placeHolderText}
-            </span>
-          </div>
-        ) : (
-          <div className="relative w-full rounded-t-medium overflow-hidden">
-            <img
-              loading="lazy"
-              src={imageUrl}
-              alt={title}
-              onError={handleImageError}
-              className="object-cover w-full max-h-[262px] rounded-t-medium border-buttom-0"
-            />
-          </div>
-        )}
+        <div className="w-full h-[262px] rounded-t-lg overflow-hidden">
+          {shouldShowPlaceholder ? (
+            <div className="w-full h-full bg-base-neutral-700 flex items-center justify-center">
+              <span className="text-text-secondary text-md">
+                {dictionary.components.generalCard.placeHolderText}
+              </span>
+            </div>
+          ) : (
+            <div className="relative w-full h-full">
+              <img
+                loading="lazy"
+                src={imageUrl}
+                alt={title}
+                onError={handleImageError}
+                className="object-cover w-full h-full rounded-t-medium"
+              />
+            </div>
+          )}
+        </div>
 
         {badge && (
           <div className="absolute top-4 right-4">
