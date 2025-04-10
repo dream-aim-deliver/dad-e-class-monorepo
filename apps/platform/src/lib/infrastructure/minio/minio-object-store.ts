@@ -14,12 +14,13 @@ export default class MinioObjectStore {
     @inject(UTILS.LOGGER_FACTORY) private loggerFactory: (module: string) => Logger,
   ) {
 
-    const host = process.env.MINIO_HOST || 'localhost';
-    const port = parseInt(process.env.MINIO_PORT || '9000', 10);
-    const accessKey = process.env.MINIO_ACCESS_KEY || '';
-    const secretKey = process.env.MINIO_SECRET_KEY || '';
-    const useSSL = process.env.MINIO_USE_SSL === 'true';
-    const signedUrlExpiry = parseInt(process.env.MINIO_SIGNED_URL_EXPIRY || '3600', 10);
+    const host = 'localhost';
+    const port = 9001;
+    const accessKey = "minio";
+    const secretKey = "minio123";
+    const useSSL = false;
+    const signedUrlExpiry = 4600;
+
 
     this.logger = this.loggerFactory("MinioObjectStore");
 
