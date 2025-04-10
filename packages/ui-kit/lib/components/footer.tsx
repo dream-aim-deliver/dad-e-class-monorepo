@@ -59,10 +59,10 @@ export const Footer: React.FC<FooterProps> = ({
     }));
 
     return (
-        <footer className="bg-button-primary-text text-white">
+        <footer className="w-full bg-button-primary-text text-white">
             <div className="max-w-7xl mx-auto">
                 {/* Mobile Layout (Smaller Screens) */}
-                <div className="flex flex-col py-10 px-4 lg:hidden">
+                <div className="flex flex-col py-10 px-4 lg:!hidden">
                     {/* Top Section: Logo (Left) and Company Info (Right) */}
                     <div className="flex justify-between items-start">
                         {/* Logo (Left) */}
