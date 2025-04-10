@@ -181,6 +181,17 @@ export const DictionarySchema = z.object({
       workspace: z.string(),
       login: z.string(),
     }),
+    activity: z.object({
+      atText: z.string(),
+      recipientsText: z.string(),
+    }),
+    recentActivity: z.object({
+      recentActivity: z.string(),
+      markAllAsRead: z.string(),
+      viewAll: z.string(),
+      searchText: z.string(),
+      activityHistory: z.string()
+    }),
   }),
 
 });

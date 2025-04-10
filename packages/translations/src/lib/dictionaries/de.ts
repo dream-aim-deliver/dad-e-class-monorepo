@@ -168,5 +168,16 @@ export const DE: TDictionary = {
       workspace: 'Arbeitsbereich',
       login: 'Anmelden',
     },
+    activity: {
+      atText: 'bei',
+      recipientsText: 'Empfänger'
+    },
+    recentActivity: {
+      recentActivity: 'Letzte Aktivität',
+      markAllAsRead: 'Alle als gelesen markieren',
+      viewAll: 'Alle ansehen...',
+      searchText: 'Suchaktivität',
+      activityHistory: 'Aktivitätsverlauf'
+    },
   },
 };
