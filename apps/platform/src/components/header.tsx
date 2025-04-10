@@ -2,10 +2,11 @@
 
 import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { isSessionAware } from '@maany_shr/e-class-auth';
-import { Navbar } from '@maany_shr/e-class-ui-kit';
+import { Navbar, useTheme } from '@maany_shr/e-class-ui-kit';
 import { usePathname, useRouter } from 'next/navigation';
 import { getLogo } from './mock/queries';
 import { useTranslations } from 'next-intl';
+import { Cat } from 'lucide-react';
 
 // TODO: Accept notification count
 export type HeaderProps = isLocalAware & isSessionAware & {
@@ -43,6 +44,8 @@ export default function Header(props: HeaderProps) {
     router.push(newUrl);
   };
 
+  const { theme, setTheme } = useTheme();
+
   const isLoggedIn = !!props.session;
 
   // TODO: utilize useQuery
@@ -58,6 +61,15 @@ export default function Header(props: HeaderProps) {
     userName={props.session?.user?.name}
     logoSrc={logo}
   >
+    <Cat className="cursor-pointer" onClick={() => {
+      if (theme === 'just-do-add') {
+        setTheme('Job-rand-me');
+      } else if (theme === 'Job-rand-me') {
+        setTheme('Bewerbeagentur');
+      } else {
+        setTheme('just-do-add');
+      }
+    }}/>
     <NavLinks />
   </Navbar>;
 }
