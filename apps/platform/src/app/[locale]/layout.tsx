@@ -18,13 +18,13 @@ import Header from '../../components/header';
 import Footer from '../../components/footer';
 
 await initializeCMSFastAPIClient();
-// await createPlatforms();
-// await createLanguages();
-// await createPlatformLanguages();
-// await registerFiles();
-// -await uploadFilesToMinio();
-// await initializeHomePages();
-// await initializeTopics();
+await createPlatforms();
+await createLanguages();
+await createPlatformLanguages();
+await registerFiles();
+await uploadFilesToMinio();
+await initializeHomePages();
+await initializeTopics();
 
 export const metadata = {
   title: 'Welcome to Platform',

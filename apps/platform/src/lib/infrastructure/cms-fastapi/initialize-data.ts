@@ -172,7 +172,7 @@ export const registerFiles = async () => {
         { provider: "minio", lfn: "demo/demo/logo-jda.png", external_id: "" },
 
         // Mux file (1 file)
-        { provider: "mux", lfn: "mux/homeBannerVideo.mp4", external_id: "ZnIB01PmIYRSeyOYvHHVJBwxg5eVV2MmY02wc01sYnFTLk" },
+        { provider: "mux", lfn: "mux/homeBannerVideo.mp4", external_id: "XmwtJaO3Xu9qnKz02VnfYn02Vw5iTo2V8G5Q1rn7Bt1bM" },
     ];
 
     // Create files if they don't already exist
@@ -348,8 +348,7 @@ export const initializeHomePages = async () => {
                         text:
                             lang === "en"
                                 ? "Learn about the core technologies that power the modern web including HTML5, CSS3, and JavaScript."
-                                : "Lernen Sie die Kerntechnologien kennen, die das moderne Web antreiben, einschließlich HTML5, CSS3 und JavaScript.",
-                        highlight: true,
+                                : "Lernen Sie die Kerntechnologien kennen, die das moderne Web antreiben, einschließlich HTML5, CSS3 und JavaScript."
                     },
                 ],
             },
@@ -424,6 +423,34 @@ export const initializeHomePages = async () => {
             button_text: "Find a coach (ab CHF 90)",
             button_link: "/",
         },
+        {
+            title: "Coaching on Demand",
+            description:
+                "Our professionals provide support where they are needed. With workshops, tips and 'learning by doing' we can reach our goals together more quickly.",
+            image_file_id: card2?.id ?? 0,
+            badge: "",
+            button_text: "Find a coach (ab CHF 89)",
+            button_link: "/",
+        },
+        {
+            title: "Visualisierung",
+            description:
+                "Du hast ein Konzept und konkrete Vorstellungen davon, was du umsetzen möchtest. Entwickle mit uns dein Branding, dein CI/CD, deine Website oder dein Werbefilm für Social Media. Wähle nur die Massnahmen, die du wirklich brauchst.",
+            image_file_id: card1?.id ?? 0,
+            badge: "Package",
+            button_text: "from CHF 3140",
+            button_link: "/",
+        },
+        {
+            title: "Enterprise",
+            description:
+                "Ideal für Firmen oder Stellen, die einen freien und individuellen Zugang zu unserer Plattform brauchen und diese für einen längere Zeit nutzten wollen.",
+            image_file_id: card2?.id ?? 0,
+            badge: "",
+            button_text: "Inquiries",
+            button_link: "/",
+        },
+
     ];
 
     // Coaching on demand section common to all, with translated title and description.
