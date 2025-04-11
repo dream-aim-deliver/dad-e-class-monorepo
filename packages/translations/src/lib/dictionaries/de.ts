@@ -1,7 +1,13 @@
 import { Home_DE } from '../pages/home/home-de';
+import { Login_DE } from '../pages/login/login-de';
+import { SSO_DE } from '../pages/sso/sso-de';
+
+
 import { TDictionary } from './base';
 export const DE: TDictionary = {
   home: Home_DE,
+  login:Login_DE,
+  sso: SSO_DE,
   components: {
     coachBanner: {
       buttonText: 'Coach werden',
@@ -46,6 +52,10 @@ export const DE: TDictionary = {
     profileTab: {
       personal: 'Persönlich',
       professional: 'Beruflich',
+    },
+    generalCard: {
+      buttonText: 'Das richtige Angebot finden',
+      placeHolderText: 'Kein Bild verfügbar',
     },
     languageSelector: {
       title: 'Fließend gesprochene Sprachen (C1 und höher)',
@@ -135,6 +145,38 @@ export const DE: TDictionary = {
       buttonText: "Coaching-Sitzungen kaufen",
       total: "Gesamt",
       minutes: "Minuten"
-    }
+    },
+    videoPlayer: {
+      videoErrorText: 'Video existiert nicht'
+    },
+    richTextToolbar:{
+      paragraph: "Absatz",
+      bold: "Fett (Strg+B)",
+      italic: "Kursiv (Strg+I)",
+      underline: "Unterstrichen (Strg+U)",
+      undo: "Rückgängig (Strg+Z)",
+      redo: "Wiederholen (Strg+Y)",
+      link: "Link einfügen",
+      strikethrough: "Durchgestrichen",
+      superscript: "Hochgestellt",
+      subscript: "Tiefgestellt",
+      highlight: "Hervorheben",
+      code: "Code",
+      leftAlign:"Links ausrichten",
+      centerAlign:"Zentriert ausrichten",
+      rightAlign:"Rechts ausrichten",
+      justifyAlign:"Blocksatz",
+      blockQuote:"Zitat",
+      numberedList:"Nummerierte Liste",
+      bulletedList:"Aufzählungsliste",
+      unlink:"Link entfernen"
+    },
+    coachingOnDemandBanner: {
+      noImageText: 'Kein Bild verfügbar',
+    },
+    navbar: {
+      workspace: 'Arbeitsbereich',
+      login: 'Anmelden',
+    },
   },
 };

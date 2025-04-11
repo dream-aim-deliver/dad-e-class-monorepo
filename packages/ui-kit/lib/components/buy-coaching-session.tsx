@@ -110,7 +110,8 @@ function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachi
                             </button>
                             <InputField
                                 type='number'
-                                className='w-[3rem] h-[3rem] text-lg text-center'
+                                className='w-[3rem] h-[3rem] text-lg'
+                                inputClassName='text-center'
                                 value={course.totalSessions.toString()}
                                 setValue={(value) => handleInputChange(course.id, value)}
                             />

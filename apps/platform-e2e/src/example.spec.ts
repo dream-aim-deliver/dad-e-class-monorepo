@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { login, logout } from './mocks/actions/auth';
 
-test('has title', async ({ page }) => {
-  await page.goto('/');
-
-  // Expect h1 to contain a substring.
-  expect(await page.locator('h1').innerText()).toContain('Welcome');
+test('has Welcome Message', async ({ page }) => {
+  await login(page, "admin");
+  await expect(page.getByText('Welcome Conny')).toContainText('Welcome Conny');
+  await logout(page);
 });
