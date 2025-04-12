@@ -1,6 +1,6 @@
 {
   "name": "@maany_shr/e-class-ui-kit",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,8 +17,8 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@maany_shr/e-class-models": "workspace:*",
-    "@maany_shr/e-class-translations": "workspace:*",
+    "@maany_shr/e-class-models": "1.9.0",
+    "@maany_shr/e-class-translations": "1.9.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "16.1.0",
     "class-variance-authority": "^0.7.1",
