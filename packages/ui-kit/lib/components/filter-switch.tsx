@@ -9,7 +9,7 @@ interface TopicListProps {
 }
 
 /**
- * A reusable FilterList component that displays a list of topics as filter buttons.
+ * A reusable FilterSwitch component that displays a list of topics as filter buttons.
  * Supports selecting multiple filters at once.
  *
  * @param title The title displayed above the topic list.
@@ -27,9 +27,9 @@ interface TopicListProps {
  *   // Filter your data based on topicNames array
  * };
  *
- * <FilterList title="Filter By Topic" list={topics} onFilterChange={handleFilterChange} />
+ * <FilterSwitch title="Filter By Topic" list={topics} onFilterChange={handleFilterChange} />
  */
-const FilterList: React.FC<TopicListProps> = ({ title, list, onFilterChange }) => {
+const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange }) => {
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 
   const handleTopicClick = (topicName: string) => {
@@ -70,4 +70,4 @@ const FilterList: React.FC<TopicListProps> = ({ title, list, onFilterChange }) =
   );
 };
 
-export default FilterList;
+export default FilterSwitch;
