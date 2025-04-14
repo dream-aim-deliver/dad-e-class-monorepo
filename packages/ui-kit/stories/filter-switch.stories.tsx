@@ -1,10 +1,10 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import FilterList from '../lib/components/filter-list';
+import FilterSwitch from '../lib/components/filter-switch';
 
-const meta: Meta<typeof FilterList> = {
-  title: 'Components/FilterList',
-  component: FilterList,
+const meta: Meta<typeof FilterSwitch> = {
+  title: 'Components/FilterSwitch',
+  component: FilterSwitch,
   parameters: {
     layout: 'centered',
   },
@@ -22,7 +22,7 @@ const meta: Meta<typeof FilterList> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof FilterList>;
+type Story = StoryObj<typeof FilterSwitch>;
 
 // Sample topic data
 const sampleTopics = [
