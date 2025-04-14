@@ -24,7 +24,6 @@ interface TopicListProps {
  * 
  * const handleFilterChange = (topicNames) => {
  *   console.log('Selected topics:', topicNames);
- *   // Filter your data based on topicNames array
  * };
  *
  * <FilterSwitch title="Filter By Topic" list={topics} onFilterChange={handleFilterChange} />
