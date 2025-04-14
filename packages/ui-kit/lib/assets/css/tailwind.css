@@ -60,6 +60,17 @@
   --color-base-neutral-800: var(--color-base-neutral-800);
   --color-base-neutral-900: var(--color-base-neutral-900);
   --color-base-neutral-950: var(--color-base-neutral-950);
+  --color-base-brand-50: var(--color-base-brand-50);
+  --color-base-brand-100: var(--color-base-brand-100);
+  --color-base-brand-200: var(--color-base-brand-200);
+  --color-base-brand-300: var(--color-base-brand-300);
+  --color-base-brand-400: var(--color-base-brand-400);
+  --color-base-brand-500: var(--color-base-brand-500);
+  --color-base-brand-600: var(--color-base-brand-600);
+  --color-base-brand-700: var(--color-base-brand-700);
+  --color-base-brand-800: var(--color-base-brand-800);
+  --color-base-brand-900: var(--color-base-brand-900);
+  --color-base-brand-950: var(--color-base-brand-950);
   --color-action-brand-50: var(--color-base-brand-50);
   --color-action-brand-100: var(--color-base-brand-100);
   --color-action-brand-200: var(--color-base-brand-200);
