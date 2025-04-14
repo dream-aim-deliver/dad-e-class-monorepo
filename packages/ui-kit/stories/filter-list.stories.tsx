@@ -15,7 +15,7 @@ const meta: Meta<typeof FilterList> = {
       description: 'The title displayed above the topic list.'
     },
     list: {
-      control: 'array',
+      control: 'object',
       description: 'An array of topics, each containing a `name`.',
     },
   },
