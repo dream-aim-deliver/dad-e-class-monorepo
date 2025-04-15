@@ -192,6 +192,14 @@ export const DictionarySchema = z.object({
       searchText: z.string(),
       activityHistory: z.string()
     }),
+    packages: z.object({
+      purchasePackageText: z.string(),
+      detailsText: z.string(),
+      placeHolderText: z.string(),
+      coursesText: z.string(),
+      saveText: z.string(),
+      ourPackagesText: z.string(),
+    })
   }),
 
 });
