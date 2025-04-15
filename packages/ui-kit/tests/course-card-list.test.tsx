@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { CourseCardList, CourseCardListProps } from '../lib/components/coursecard/course-list-card';
+import { CourseCardList, CourseCardListProps } from '../lib/components/coursecard/course-card-list';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 // Mock the CourseEmptyState component

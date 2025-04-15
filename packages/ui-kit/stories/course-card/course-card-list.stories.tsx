@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { CourseCardList } from '../../lib/components/coursecard/course-list-card';
+import { CourseCardList } from '../../lib/components/coursecard/course-card-list';
 import { CourseCard, CourseCardProps } from '../../lib/components/coursecard/course-card';
 import {CourseEmptyState} from '../../lib/components/coursecard/course-empty-state';
 

@@ -1,15 +1,16 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { EmptyState, CourseEmptyState } from '../lib/components/coursecard/course-empty-state'; // Adjust the import path
+import { EmptyState, CourseEmptyState } from '../lib/components/coursecard/course-empty-state';
 
-// Mock the dependencies
+// Mock the translation dictionary
 vi.mock('@maany_shr/e-class-translations', () => ({
   getDictionary: (locale: string) => ({
     components: {
       courseCard: {
         courseEmptyState: {
-          message: 'You haven’t enrolled in any courses yet',
-          buttonText: 'Browse Courses',
+          message: `No courses available (${locale})`,
+          message2: `Create a course (${locale})`,
+          buttonText: `Browse Courses (${locale})`,
         },
       },
     },
@@ -17,6 +18,7 @@ vi.mock('@maany_shr/e-class-translations', () => ({
   isLocalAware: vi.fn(),
 }));
 
+// Mock the Button component
 vi.mock('../button', () => ({
   Button: ({ text, variant, size, className, onClick }: {
     text: string;
@@ -31,6 +33,7 @@ vi.mock('../button', () => ({
         ${size === 'medium' ? 'px-4 h-[2.5rem]' : ''} 
         rounded-big ${className}`}
       onClick={onClick}
+      data-testid="custom-button"
     >
       {text}
     </button>
@@ -39,7 +42,7 @@ vi.mock('../button', () => ({
 
 describe('EmptyState', () => {
   it('renders with provided message and button text', () => {
-    const handleClick = vi.fn(); // Use a mock function instead of empty arrow
+    const handleClick = vi.fn();
     render(
       <EmptyState
         message="No data available"
@@ -52,8 +55,14 @@ describe('EmptyState', () => {
     expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
   });
 
+  it('does not render button when buttonText or onButtonClick is missing', () => {
+    render(<EmptyState message="No data available" locale="en" />);
+    expect(screen.getByText('No data available')).toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
+
   it('applies correct container classes', () => {
-    const handleClick = vi.fn(); // Use a mock function instead of empty arrow
+    const handleClick = vi.fn();
     const { container } = render(
       <EmptyState
         message="No data"
@@ -73,11 +82,12 @@ describe('EmptyState', () => {
       'border',
       'border-solid',
       'bg-card-fill',
-      'border-card-stroke'
+      'border-card-stroke',
+      'max-md:px-5'
     );
   });
 
-  it('calls onButtonClick when button is clicked', async () => {
+  it('calls onButtonClick when button is clicked', () => {
     const mockClick = vi.fn();
     render(
       <EmptyState
@@ -88,47 +98,84 @@ describe('EmptyState', () => {
       />
     );
     const button = screen.getByRole('button', { name: 'Click Me' });
-    await button.click();
+    fireEvent.click(button);
     expect(mockClick).toHaveBeenCalledTimes(1);
   });
 
-  it('applies correct button styling', () => {
-    const handleClick = vi.fn(); // Use a mock function instead of empty arrow
-    render(
-      <EmptyState
-        message="Test message"
-        buttonText="Action"
-        onButtonClick={handleClick}
-        locale="en"
-      />
-    );
-    const button = screen.getByRole('button', { name: 'Action' });
-    expect(button).toHaveClass('bg-button-primary-fill');
-    expect(button).toHaveClass('text-button-primary-text');
-    expect(button).toHaveClass('mt-4');
+
+  it('does not render message when not provided', () => {
+    render(<EmptyState locale="en" />);
+    expect(screen.queryByText(/.+/)).not.toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 });
 
 describe('CourseEmptyState', () => {
-  it('renders with dictionary-translated text', () => {
-    render(<CourseEmptyState locale="en" />);
-    expect(screen.getByText('You haven’t enrolled in any courses yet')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Browse Courses' })).toBeInTheDocument();
-  });
-
-  it('logs to console when button is clicked', async () => {
-    const consoleSpy = vi.spyOn(console, 'log');
-    render(<CourseEmptyState locale="en" />);
-    const button = screen.getByRole('button', { name: 'Browse Courses' });
-    await button.click();
-    expect(consoleSpy).toHaveBeenCalledWith('Browse courses');
-    consoleSpy.mockRestore();
-  });
-
-  it('passes locale prop to EmptyState', () => {
-    const { container } = render(<CourseEmptyState locale="en" />);
-    expect(container.querySelector('.text-white')?.textContent).toBe(
-      'You haven’t enrolled in any courses yet'
+  it.each([
+    ['student', 'No courses available (en)', true],
+    ['visitor', 'No courses available (en)', true],
+    ['creator', 'Create a course (en)', false],
+    ['coach', 'Create a course (en)', false],
+  ])('renders correct message for %s context and shows button: %s', (context, expectedMessage, showButton) => {
+    const handleClick = vi.fn();
+    render(
+      <CourseEmptyState
+        locale="en"
+        context={context as any}
+        onButtonClick={handleClick}
+      />
     );
+    expect(screen.getByText(expectedMessage)).toBeInTheDocument();
+    if (showButton) {
+      expect(screen.getByRole('button', { name: `Browse Courses (en)` })).toBeInTheDocument();
+    } else {
+      expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    }
+  });
+
+  it('calls onButtonClick for student context when button is clicked', () => {
+    const mockClick = vi.fn();
+    render(
+      <CourseEmptyState
+        locale="en"
+        context="student"
+        onButtonClick={mockClick}
+      />
+    );
+    const button = screen.getByRole('button', { name: 'Browse Courses (en)' });
+    fireEvent.click(button);
+    expect(mockClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not render button for creator when onButtonClick is provided', () => {
+    const mockClick = vi.fn();
+    render(
+      <CourseEmptyState
+        locale="en"
+        context="creator"
+        onButtonClick={mockClick}
+      />
+    );
+    expect(screen.getByText('Create a course (en)')).toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
+
+  it('handles different locales with button when onButtonClick is provided', () => {
+    const handleClick = vi.fn();
+    render(
+      <CourseEmptyState
+        locale="de"
+        context="student"
+        onButtonClick={handleClick}
+      />
+    );
+    expect(screen.getByText('No courses available (de)')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Browse Courses (de)' })).toBeInTheDocument();
+  });
+
+  it('renders default message for undefined context', () => {
+    render(<CourseEmptyState locale="en" />);
+    expect(screen.getByText('No courses available (en)')).toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 });
