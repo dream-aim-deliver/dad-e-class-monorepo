@@ -179,5 +179,13 @@ export const DE: TDictionary = {
       searchText: 'Suchaktivität',
       activityHistory: 'Aktivitätsverlauf'
     },
+    packages: {
+      purchasePackageText: 'Kaufpaket',
+      detailsText: 'Details',
+      placeHolderText: 'Kein Bild verfugbar',
+      coursesText: 'Kurse' ,
+      saveText: 'speichern' ,
+      ourPackagesText: 'Unsere Pakete',
+    }
   },
 };
