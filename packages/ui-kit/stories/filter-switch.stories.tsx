@@ -72,7 +72,7 @@ export const ManyTopics: Story = {
     onFilterChange: (selectedTopicName) => {
       console.log('Selected topic:', selectedTopicName);
     },
-  }, // Missing closing brace
+  }
 };
 
 /**

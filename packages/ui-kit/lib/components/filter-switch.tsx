@@ -58,7 +58,7 @@ const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange })
           <Button
             key={index}
             size="medium"
-            className='border-0'
+            className='border-1 border-button-secondary-stroke'
             variant={selectedTopics.includes(topic.name) ? "primary" : "secondary"}
             text={topic.name}
             onClick={() => handleTopicClick(topic.name)}
