@@ -110,7 +110,7 @@ export const PackageCard = ({
                         src={imageUrl}
                         alt={title}
                         onError={handleImageError}
-                        className="object-cover w-full max-h-[262px] rounded-t-medium border-buttom-0"
+                        className="object-cover w-full max-h-[262px] rounded-t-medium border-bottom-0"
                     />
                 </div>
             )}
