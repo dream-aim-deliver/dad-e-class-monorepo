@@ -149,3 +149,28 @@ export const SingleItemStory: Story = {
   },
 };
 
+// With Long Titles and Descriptions
+export const TwoItemsStory: Story = {
+  render: (args) => (
+    <PackageCardList {...args}>
+      {mockPackageCards.slice(0, 2).map((card) => (
+        <PackageCard
+          key={card.title}
+          imageUrl={card.imageUrl}
+          title={`${card.title} - Extended Version with a Longer Title to Test Overflow Handling`}
+          description={`${card.description} This is an extended description to test how the component handles longer text. It should properly truncate or wrap text based on the space available.`}
+          duration={card.duration}
+          courseCount={card.courseCount}
+          pricing={card.pricing}
+          locale={args.locale as TLocale} 
+          onClickPurchase={card.onClickPurchase}
+          onClickDetails={card.onClickDetails}
+        />
+      ))}
+    </PackageCardList>
+  ),
+  args: {
+    locale: 'en',
+  },
+};
+
