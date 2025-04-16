@@ -51,7 +51,7 @@ interface Course {
   title: string;
 }
 
-interface CoachCardDetails {
+export interface CoachCardDetails {
   coachName: string;
   coachImage: string;
   languages: string[];
@@ -63,7 +63,7 @@ interface CoachCardDetails {
   totalRatings: number;
 }
 
-interface CoachCardProps {
+export interface CoachCardProps {
   cardDetails?: CoachCardDetails;
   byCourseCreator?: boolean;
   onClickViewProfile?: () => void;
