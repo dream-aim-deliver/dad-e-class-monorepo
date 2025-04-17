@@ -151,7 +151,7 @@ export const Activity: FC<ActivityProps> = ({
               )}
             </div>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-4">
             <div className="flex gap-4 items-baseline">
               {action?.title && (
                 <Button
@@ -168,7 +168,7 @@ export const Activity: FC<ActivityProps> = ({
               )}
             </div>
             {!isRead && (
-              <span className="w-3 h-3 ml-2 rounded-full bg-button-primary-fill flex-shrink-0" />
+              <span className="w-2 h-2 rounded-full bg-button-primary-fill flex-shrink-0" />
             )}
           </div>
         </div>
@@ -176,10 +176,10 @@ export const Activity: FC<ActivityProps> = ({
       {/* Vertical layout */}
       {layout === 'vertical' && (
         <>
-          <div className="flex justify-between items-center w-full">
+          <div className="flex justify-between items-start w-full gap-4">
             <p className="text-sm text-text-primary leading-[150%] text-left">{message}</p>
             {!isRead && (
-              <span className="w-3 h-3 rounded-full bg-button-primary-fill flex-shrink-0" />
+              <span className="w-2 h-2 rounded-full bg-button-primary-fill flex-shrink-0" />
             )}
           </div>
           {children}

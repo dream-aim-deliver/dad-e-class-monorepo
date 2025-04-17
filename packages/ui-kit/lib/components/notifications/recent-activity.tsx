@@ -1,4 +1,4 @@
-import React, { FC, useState, ReactNode } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { Button } from '../button';
 import { IconCheckDouble } from '../icons/icon-check-double';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
