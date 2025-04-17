@@ -186,6 +186,11 @@ export const DE: TDictionary = {
       coursesText: 'Kurse' ,
       saveText: 'speichern' ,
       ourPackagesText: 'Unsere Pakete',
-    }
+    },
+    sideMenu: {
+      studentText: 'Studierende',
+      coachText: 'Trainer',
+      courseCreatorText: 'Kursersteller',
+    },
   },
 };
