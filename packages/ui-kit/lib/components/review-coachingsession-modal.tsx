@@ -7,7 +7,6 @@ import { CheckBox } from './checkbox';
 import { IconSuccess } from './icons/icon-success';
 import { IconButton } from './icon-button';
 import { IconClose } from './icons/icon-close';
-import { get } from 'http';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TextAreaInput } from './text-areaInput';
 import Tooltip from './tooltip';
