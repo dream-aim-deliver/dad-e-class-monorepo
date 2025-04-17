@@ -104,7 +104,7 @@ vi.mock('../lib/components/tooltip', () => ({
 
 describe('ReviewDialog', () => {
   const defaultProps = {
-    locale: 'en' as 'en',
+    locale: 'en' as const,
     onClose: vi.fn(),
     onSubmit: vi.fn(),
     onSkip: vi.fn(),
