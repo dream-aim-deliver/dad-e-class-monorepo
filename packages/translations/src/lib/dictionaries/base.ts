@@ -121,7 +121,6 @@ export const DictionarySchema = z.object({
       title: z.string(),
       sendReviewButton: z.string(),
       reviewPlaceholder: z.string(),
-      rating: z.string(),
       closeButton: z.string(),
       skipButton: z.string(),
       checkboxText: z.string(),
