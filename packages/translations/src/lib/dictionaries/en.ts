@@ -41,6 +41,16 @@ export const EN: TDictionary = {
       sales: 'sales',
       hours: 'hours',
     },
+    reviewCoachingSessionModal: {
+      title: 'How would you rate this course?',
+      sendReviewButton: 'Send review',
+      skipButton: 'Skip',
+      closeButton: 'Close',
+      reviewPlaceholder: 'What did you think about the course? Any suggestion on how we can improve it?',
+      checkboxText: 'Did you need more time?',
+      yourReview: 'Your review',
+      thankYouText: 'Thank you for your feedback!',
+    },
     dragDrop: {
       title: ' Drop the files here...',
       buttontext: 'Click to upload',
