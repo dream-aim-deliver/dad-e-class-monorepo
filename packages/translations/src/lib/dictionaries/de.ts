@@ -41,6 +41,17 @@ export const DE: TDictionary = {
       sales: 'Verkauf',
       hours: 'stunden',
     },
+    reviewCoachingSessionModal: {
+      title: 'Wie würden Sie diesen Kurs bewerten?',
+      sendReviewButton: 'Bewertung senden',
+      skipButton: 'Überspringen',
+      closeButton: 'Schließen',
+      reviewPlaceholder:
+        'Was halten Sie von dem Kurs? Vorschläge, wie wir ihn verbessern können?',
+      checkboxText: 'Brauchten Sie mehr Zeit?',
+      yourReview: 'Ihre Bewertung',
+      thankYouText: 'Vielen Dank für Ihr Feedback!',
+    },
     dragDrop: {
       title: 'Legen Sie die Dateien hier ab... ',
       buttontext: 'Klicken zum Hochladen',

@@ -40,7 +40,7 @@ const Template: StoryObj<typeof StarRating> = {
 /**
  * Default story showcasing a standard 5-star rating.
  */
-export const DefaultStarRating = {
+export const DefaultStarRating: StoryObj<typeof StarRating> = {
   ...Template,
   args: {
     rating: 4.6,
@@ -60,7 +60,7 @@ export const DefaultStarRating = {
 /**
  * Custom total stars story.
  */
-export const CustomTotalStars = {
+export const CustomTotalStars: StoryObj<typeof StarRating> = {
   ...Template,
   args: {
     rating: 3.2,
@@ -80,7 +80,7 @@ export const CustomTotalStars = {
 /**
  * Large star icons story.
  */
-export const LargeStars = {
+export const LargeStars: StoryObj<typeof StarRating> = {
   ...Template,
   args: {
     rating: 4.8,
@@ -100,7 +100,7 @@ export const LargeStars = {
 /**
  * Zero rating story.
  */
-export const ZeroRating = {
+export const ZeroRating: StoryObj<typeof StarRating> = {
   ...Template,
   args: {
     rating: 0,
