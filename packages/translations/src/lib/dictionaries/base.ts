@@ -199,6 +199,11 @@ export const DictionarySchema = z.object({
       coursesText: z.string(),
       saveText: z.string(),
       ourPackagesText: z.string(),
+    }),
+    sideMenu: z.object({
+      studentText: z.string(),
+      coachText: z.string(),
+      courseCreatorText: z.string(),
     })
   }),
 
