@@ -1,40 +1,40 @@
 {
-  "name": "@maany_shr/e-class-ui-kit",
-  "version": "1.9.0",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+    "name": "@maany_shr/e-class-ui-kit",
+    "version": "1.10.0",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.js"
+        },
+        "./css/tailwind.css": {
+            "import": "./css/tailwind.js"
+        },
+        "./package.json": "./package.json"
     },
-    "./css/tailwind.css": {
-      "import": "./css/tailwind.js"
+    "dependencies": {
+        "@maany_shr/e-class-models": "1.10.0",
+        "@maany_shr/e-class-translations": "1.10.0",
+        "@testing-library/jest-dom": "^6.6.3",
+        "@testing-library/react": "16.1.0",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "lucide-react": "^0.473.0",
+        "react": "19.0.0",
+        "react-dropzone": "^14.3.5",
+        "slate": "^0.112.0",
+        "slate-history": "^0.110.3",
+        "slate-react": "^0.112.1",
+        "tailwind-merge": "^2.5.5",
+        "vitest": "^2.1.8",
+        "zod": "^3.24.1",
+        "@mux/mux-player-react": "^3.3.0"
     },
-    "./package.json": "./package.json"
-  },
-  "dependencies": {
-    "@maany_shr/e-class-models": "workspace:*",
-    "@maany_shr/e-class-translations": "workspace:*",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "16.1.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.473.0",
-    "react": "19.0.0",
-    "react-dropzone": "^14.3.5",
-    "slate": "^0.112.0",
-    "slate-history": "^0.110.3",
-    "slate-react": "^0.112.1",
-    "tailwind-merge": "^2.5.5",
-    "vitest": "^2.1.8",
-    "zod": "^3.24.1",
-    "@mux/mux-player-react": "^3.3.0"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+    "publishConfig": {
+        "access": "public"
+    }
 }

@@ -1,19 +1,19 @@
 {
-  "name": "@maany_shr/e-class-models",
-  "version": "1.9.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+    "name": "@maany_shr/e-class-models",
+    "version": "1.10.0",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "require": "./dist/index.js"
+        }
+    },
+    "dependencies": {
+        "zod": "^3.24.1"
+    },
+    "publishConfig": {
+        "access": "public"
     }
-  },
-  "dependencies": {
-    "zod": "^3.24.1"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
 }
