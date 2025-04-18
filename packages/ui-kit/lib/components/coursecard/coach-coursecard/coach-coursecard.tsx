@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '../../button';
 import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
@@ -16,6 +17,7 @@ export interface CoachCourseCardProps extends Omit<course.TCourseMetadata, 'desc
   sales: number;
   groupName?: string;
   onManage?: () => void;
+  onClickUser?: () => void;
   locale: TLocale;
 }
 
@@ -33,6 +35,7 @@ export interface CoachCourseCardProps extends Omit<course.TCourseMetadata, 'desc
  * @param groupName Optional name of the group associated with the course.
  * @param imageUrl The URL of the course image.
  * @param onManage Optional callback function triggered when the manage button is clicked.
+ * @param onClickUser Optional callback function triggered when the user name is clicked.
  * @param locale The locale for translation and localization purposes.
  *
  * @example
@@ -48,6 +51,7 @@ export interface CoachCourseCardProps extends Omit<course.TCourseMetadata, 'desc
  *   groupName="Coaching Pros"
  *   imageUrl="course-image.jpg"
  *   onManage={() => console.log("Manage clicked!")}
+ *   onClickUser={() => console.log("Author clicked!")}
  *   locale="en"
  * />
  */
@@ -63,34 +67,79 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
   groupName = '',
   imageUrl,
   onManage,
+  onClickUser,
   locale
 }) => {
   const dictionary = getDictionary(locale);
-  // Calculate total course duration in minutes
-  const totalDurationInMinutes =
-    duration.video + duration.coaching + duration.selfStudy;
-  const totalDurationInHours = (totalDurationInMinutes / 60).toFixed(2);
+  const [isImageError, setIsImageError] = useState(false);
+  const [isTruncated, setIsTruncated] = useState(false);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
+  const handleImageError = () => {
+    setIsImageError(true);
+  };
+
+  // Check if the title is truncated
+  useEffect(() => {
+    const checkTruncation = () => {
+      if (titleRef.current) {
+        const { scrollHeight, clientHeight } = titleRef.current;
+        setIsTruncated(scrollHeight > clientHeight);
+      }
+    };
+
+    checkTruncation();
+    window.addEventListener('resize', checkTruncation);
+    return () => window.removeEventListener('resize', checkTruncation);
+  }, [title]);
+
+  // Calculate total course duration in minutes and convert to hours
+  const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+  const totalDurationInHours = totalDurationInMinutes / 60;
+  const formattedDuration = Number.isInteger(totalDurationInHours)
+    ? totalDurationInHours.toString()
+    : totalDurationInHours.toFixed(2);
 
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
         <div className="relative">
-          <img
-            loading="lazy"
-            src={imageUrl}
-            alt={title}
-            className="w-full aspect-[2.15] object-cover"
-          />
+          {isImageError ? (
+            <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
+              <span className="text-text-secondary text-md">
+                {dictionary.components.coachBanner.placeHolderText}
+              </span>
+            </div>
+          ) : (
+            <img
+              loading="lazy"
+              src={imageUrl}
+              alt={title}
+              className="w-full aspect-[2.15] object-cover"
+              onError={handleImageError}
+            />
+          )}
         </div>
 
         <div className="flex flex-col p-4 gap-4">
           <div className="flex flex-col gap-2">
-            <h6 className="text-md font-bold text-text-primary line-clamp-2 text-start">
-              {title}
-            </h6>
+            <div className="group relative">
+              <h6
+                ref={titleRef}
+                className="text-md font-bold text-text-primary line-clamp-2 text-start"
+              >
+                {title}
+              </h6>
+              {isTruncated && (
+                <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-card-stroke text-text-primary text-sm rounded py-2 px-3 -top-35 -left-2 max-w-auto z-10">
+                  {title}
+                  <div className="absolute top-full left-4 w-0 h-0 border-x-8 border-x-transparent border-t-4 border-card-stroke" />
+                </div>
+              )}
+            </div>
 
             <div className="flex gap-1 items-end">
-              <StarRating totalStars={5}  rating={rating} />
+              <StarRating totalStars={5} rating={rating} />
               <span className="text-xs text-text-primary leading-[100%]">
                 {rating}
               </span>
@@ -99,22 +148,22 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
               </span>
             </div>
 
-            <CourseCreator creatorName={author.name} imageUrl={author.image} you={false} locale={locale as TLocale} />
+            <CourseCreator creatorName={author.name} imageUrl={author.image} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
 
             <CourseStats
               locale={locale as TLocale}
               language={language.name}
               sessions={sessions}
-              duration={`${totalDurationInHours} hours`}
+              duration={`${formattedDuration} ${dictionary.components.courseCard.hours}`}
               sales={sales}
             />
           </div>
-          <div className="flex gap-1 flex-wrap items-center">
+          <div className="flex gap-1 flex-wrap items-center w-full">
             <div className="flex items-center gap-1">
               <IconGroup classNames="text-text-primary" size="5" />
               <p className="text-text-secondary text-sm">{dictionary.components.courseCard.group}</p>
             </div>
-            <Button variant="text" text={groupName} className="p-0" />
+            <Button variant="text" text={groupName} className="p-0 max-w-full" />
           </div>
           <Button
             onClick={onManage}
@@ -126,5 +175,5 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
         </div>
       </div>
     </div>
-  )
+  );
 };
