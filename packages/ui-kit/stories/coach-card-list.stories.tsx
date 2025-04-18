@@ -24,7 +24,7 @@ type Story = StoryObj<typeof CoachList>;
 const sampleCoaches: CoachCardDetails[] = [
   {
     coachName: 'Jessica Thompson',
-    coachImage: 'https://i.pravatar.cc/150?img=1',
+    coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     languages: ['English', 'Spanish'],
     sessionCount: 156,
     skills: ['React', 'JavaScript', 'UI/UX Design'],
@@ -32,11 +32,11 @@ const sampleCoaches: CoachCardDetails[] = [
       'Experienced frontend developer specializing in React and modern JavaScript frameworks. Strong focus on creating intuitive user interfaces.',
     courses: [
       {
-        image: 'https://i.pravatar.cc/50?img=10',
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'Advanced React Patterns',
       },
       {
-        image: 'https://i.pravatar.cc/50?img=11',
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'JavaScript Fundamentals',
       },
     ],
@@ -45,7 +45,7 @@ const sampleCoaches: CoachCardDetails[] = [
   },
   {
     coachName: 'Michael Chen',
-    coachImage: 'https://i.pravatar.cc/150?img=3',
+    coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     languages: ['English', 'Mandarin'],
     sessionCount: 98,
     skills: ['Python', 'Data Science', 'Machine Learning'],
@@ -53,11 +53,11 @@ const sampleCoaches: CoachCardDetails[] = [
       'Data scientist with expertise in Python and machine learning algorithms. Passionate about helping others understand complex concepts.',
     courses: [
       {
-        image: 'https://i.pravatar.cc/50?img=12',
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'Python for Data Analysis',
       },
       {
-        image: 'https://i.pravatar.cc/50?img=13',
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'Intro to Machine Learning',
       },
     ],
@@ -66,7 +66,7 @@ const sampleCoaches: CoachCardDetails[] = [
   },
   {
     coachName: 'Sophia Rodriguez',
-    coachImage: 'https://i.pravatar.cc/150?img=5',
+    coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     languages: ['English', 'French'],
     sessionCount: 213,
     skills: ['Product Management', 'Agile', 'Leadership','Product Management', 'Agile', 'Leadership','Product Management', 'Agile', 'Leadership'],
@@ -74,17 +74,17 @@ const sampleCoaches: CoachCardDetails[] = [
       'Product manager with over 10 years of experience in tech companies. Expert in agile methodologies and team leadership.',
     courses: [
       {
-        image: 'https://i.pravatar.cc/50?img=14',
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'Agile Product Management',
       },
-      { image: 'https://i.pravatar.cc/50?img=15', title: 'Leadership Skills' },
+      { image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', title: 'Leadership Skills' },
     ],
     rating: 4.9,
     totalRatings: 78,
   },
   {
     coachName: 'David Williams',
-    coachImage: 'https://i.pravatar.cc/150?img=7',
+    coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     languages: ['English', 'French'],
     sessionCount: 67,
     skills: ['UX Research', 'Design Thinking', 'Prototyping'],
@@ -92,11 +92,11 @@ const sampleCoaches: CoachCardDetails[] = [
       'UX designer focused on user-centered approaches and accessible design principles. Specializes in research methods and rapid prototyping.',
     courses: [
       {
-        image: 'https://i.pravatar.cc/50?img=16',
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'UX Research Methods',
       },
       {
-        image: 'https://i.pravatar.cc/50?img=17',
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'Design Thinking Workshop',
       },
     ],
@@ -105,7 +105,7 @@ const sampleCoaches: CoachCardDetails[] = [
   },
   {
     coachName: 'Aisha Patel',
-    coachImage: 'https://i.pravatar.cc/150?img=9',
+    coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     languages: ['English', 'Hindi'],
     sessionCount: 124,
     skills: ['Backend Development', 'Node.js', 'Database Design'],
@@ -113,11 +113,11 @@ const sampleCoaches: CoachCardDetails[] = [
       'Backend developer with a strong focus on scalable architecture and database optimization. Expert in Node.js and SQL.',
     courses: [
       {
-        image: 'https://i.pravatar.cc/50?img=18',
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'Node.js API Development',
       },
       {
-        image: 'https://i.pravatar.cc/50?img=19',
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'Database Design Principles',
       },
     ],
@@ -126,7 +126,7 @@ const sampleCoaches: CoachCardDetails[] = [
   },
   {
     coachName: 'Thomas Johnson',
-    coachImage: 'https://i.pravatar.cc/150?img=11',
+    coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     languages: ['English', 'German'],
     sessionCount: 82,
     skills: ['DevOps', 'Cloud Infrastructure', 'CI/CD'],
@@ -134,10 +134,10 @@ const sampleCoaches: CoachCardDetails[] = [
       'DevOps engineer specializing in cloud infrastructure and automated deployment pipelines. AWS certified and experienced with Kubernetes.',
     courses: [
       {
-        image: 'https://i.pravatar.cc/50?img=20',
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'Introduction to DevOps',
       },
-      { image: 'https://i.pravatar.cc/50?img=21', title: 'AWS for Developers' },
+      { image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', title: 'AWS for Developers' },
     ],
     rating: 4.8,
     totalRatings: 28,
