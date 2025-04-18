@@ -40,7 +40,7 @@ export default function CoachList({ coaches,title,onClickBookSession,onClickView
   
   return (
     <div className="flex flex-col gap-10">
-        <h3 className="text-text-primary lg:text-[40px] text-2xl">{title}</h3>
+    <h3 className="text-text-primary lg:text-[40px] text-2xl">{title}</h3>
     <CardListLayout>
       {displayedCoaches.map(coach => (
         <CoachCard

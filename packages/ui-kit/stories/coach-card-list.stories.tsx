@@ -67,9 +67,9 @@ const sampleCoaches: CoachCardDetails[] = [
   {
     coachName: 'Sophia Rodriguez',
     coachImage: 'https://i.pravatar.cc/150?img=5',
-    languages: ['English', 'Portuguese'],
+    languages: ['English', 'French'],
     sessionCount: 213,
-    skills: ['Product Management', 'Agile', 'Leadership'],
+    skills: ['Product Management', 'Agile', 'Leadership','Product Management', 'Agile', 'Leadership','Product Management', 'Agile', 'Leadership'],
     description:
       'Product manager with over 10 years of experience in tech companies. Expert in agile methodologies and team leadership.',
     courses: [
@@ -106,7 +106,7 @@ const sampleCoaches: CoachCardDetails[] = [
   {
     coachName: 'Aisha Patel',
     coachImage: 'https://i.pravatar.cc/150?img=9',
-    languages: ['English', 'Hindi', 'Gujarati'],
+    languages: ['English', 'Hindi'],
     sessionCount: 124,
     skills: ['Backend Development', 'Node.js', 'Database Design'],
     description:
@@ -190,19 +190,4 @@ export const TabletView: Story = {
   },
 };
 
-export const SimpleTest: Story = {
-  render: (args) => (
-    <div style={{ border: '1px solid red', padding: '10px' }}>
-      <div>Testing CoachList</div>
-      <div>Number of coaches: {args.coaches?.length || 0}</div>
-      {args.coaches?.map((coach, index) => (
-        <div
-          key={index}
-          style={{ margin: '10px', padding: '10px', border: '1px solid blue' }}
-        >
-          {coach.coachName}
-        </div>
-      ))}
-    </div>
-  ),
-};
+
