@@ -5,6 +5,7 @@ import { CourseCreator } from '../course-creator';
 import { StarRating } from '../../star-rating';
 import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import { useEffect } from 'react';
 
 // Extend the existing type with the properties we need that aren't in TCourseMetadata
 export interface VisitorCourseCardProps extends course.TCourseMetadata {
@@ -13,6 +14,7 @@ export interface VisitorCourseCardProps extends course.TCourseMetadata {
   sales: number;
   onDetails?: () => void;
   onBuy?: () => void;
+  onClickUser?: () => void;
   locale: TLocale
 }
 
@@ -31,6 +33,7 @@ export interface VisitorCourseCardProps extends course.TCourseMetadata {
  * @param locale The locale for translation and localization purposes.
  * @param onDetails Optional callback function triggered when the "Details" button is clicked.
  * @param onBuy Optional callback function triggered when the "Buy Course" button is clicked.
+ * @param onClickUser Optional callback function triggered when the user name is clicked.
  *
  * @example
  * <VisitorCourseCard
@@ -46,6 +49,7 @@ export interface VisitorCourseCardProps extends course.TCourseMetadata {
  *   locale="en"
  *   onDetails={() => console.log("Details clicked!")}
  *   onBuy={() => console.log("Buy clicked!")}
+ *  onClickUser={() => console.log("Author clicked!")}
  * />
  */
 export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
@@ -62,25 +66,42 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   imageUrl,
   locale,
   onDetails,
+  onClickUser,
   onBuy
 }) => {
   const [isImageError, setIsImageError] = React.useState(false);
+  const [isTruncated, setIsTruncated] = React.useState(false);
+  const titleRef = React.useRef<HTMLHeadingElement>(null);
   const dictionary = getDictionary(locale);
-   // Calculate total course duration in minutes and convert to hours
-   const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
-   const totalDurationInHours = totalDurationInMinutes / 60;
-   // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
-   const formattedDuration = Number.isInteger(totalDurationInHours)
-     ? totalDurationInHours.toString()
-     : totalDurationInHours.toFixed(2);
+  // Calculate total course duration in minutes and convert to hours
+  const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+  const totalDurationInHours = totalDurationInMinutes / 60;
+  // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
+  const formattedDuration = Number.isInteger(totalDurationInHours)
+    ? totalDurationInHours.toString()
+    : totalDurationInHours.toFixed(2);
 
-  const handleImageError = () => { 
+  const handleImageError = () => {
     setIsImageError(true);
   };
+  // Check if the title is truncated
+  useEffect(() => {
+    const checkTruncation = () => {
+      if (titleRef.current) {
+        const { scrollHeight, clientHeight } = titleRef.current;
+        setIsTruncated(scrollHeight > clientHeight);
+      }
+    };
+
+    checkTruncation();
+    window.addEventListener('resize', checkTruncation);
+    return () => window.removeEventListener('resize', checkTruncation);
+  }, [title]);
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
-      <div className="relative">
+        <div className="relative">
           {isImageError ? (
             // Placeholder for broken image (matching CoachBanner styling)
             <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
@@ -101,9 +122,20 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
 
         <div className="flex flex-col p-4 gap-4">
           <div className="flex flex-col gap-2">
-            <h6 className="text-md font-bold text-text-primary line-clamp-2 text-start">
-              {title}
-            </h6>
+            <div className="group relative">
+              <h6
+                ref={titleRef}
+                className="text-md font-bold text-text-primary line-clamp-2 text-start"
+              >
+                {title}
+              </h6>
+              {isTruncated && (
+                <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-card-stroke text-text-primary text-sm rounded py-2 px-3 -top-35 -left-2 max-w-auto z-10">
+                  {title}
+                  <div className="absolute top-full left-4 w-0 h-0 border-x-8 border-x-transparent border-t-4 border-card-stroke" />
+                </div>
+              )}
+            </div>
 
             <div className="flex gap-1 items-end">
               <StarRating totalStars={5} rating={rating} />
@@ -115,7 +147,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               </span>
             </div>
 
-            <CourseCreator creatorName={author?.name} imageUrl={author?.image} you={false} locale={locale as TLocale} />
+            <CourseCreator creatorName={author?.name} imageUrl={author?.image} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
 
             <CourseStats
               locale={locale as TLocale}

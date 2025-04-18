@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 import { CourseCard, CourseCardProps } from '../../lib/components/coursecard/course-card';
 
 const sampleCourseData = {
@@ -118,10 +117,6 @@ const meta: Meta<typeof CourseCard> = {
       action: 'buy-clicked',
       description: 'Callback for buy action',
     },
-    onBrowseCourses: {
-      action: 'browse-courses-clicked',
-      description: 'Callback for browse courses action',
-    },
   },
 };
 
@@ -140,7 +135,8 @@ const Template: StoryObj<typeof CourseCard> = {
         onReview={createCallback('Review clicked')}
         onDetails={createCallback('Details clicked')}
         onBuy={createCallback('Buy clicked')}
-        onBrowseCourses={createCallback('Browse Courses clicked')}
+        onClickUser={createCallback('Author clicked')}
+
       />
     );
   },
@@ -219,6 +215,7 @@ export const CoachView: Story = {
     sales: 1850,
     groupName: 'Advanced Design Cohort',
     className: 'max-w-[352px]',
+    onClickUser: () => alert('Author clicked'),
   },
 };
 

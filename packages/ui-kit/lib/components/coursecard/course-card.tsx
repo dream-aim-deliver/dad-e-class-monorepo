@@ -26,6 +26,7 @@ export interface CourseCardProps {
   onReview?: () => void;
   onDetails?: () => void;
   onBuy?: () => void;
+  onClickUser?: () => void;
   className?: string;
 }
 
@@ -48,6 +49,7 @@ export interface CourseCardProps {
  * @param onResume Callback for resuming the course (for student user type, progress 1-99).
  * @param onReview Callback for reviewing the course (for student user type, progress 100).
  * @param onDetails Callback for viewing course details (for student or visitor user type).
+ * @param onClickUser Callback for clicking the author's name (for all user types).
  * @param onBuy Callback for purchasing the course (for visitor user type).
  * @param className Optional CSS class for custom styling.
  *
@@ -74,6 +76,7 @@ export interface CourseCardProps {
  *   sales={1850}
  *   onEdit={() => console.log('Edit course')}
  *   onManage={() => console.log('Manage course')}
+ *  onClickUser={() => console.log('Author clicked')}
  * />
  *
  * // Student card
@@ -95,6 +98,7 @@ export interface CourseCardProps {
  *   sales={980}
  *   onResume={() => console.log('Resume course')}
  *   onDetails={() => console.log('View details')}
+ *  onClickUser={() => console.log('Author clicked')}
  * />
  */
 export const CourseCard: React.FC<CourseCardProps> = (props) => {
@@ -116,6 +120,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
     onResume,
     onReview,
     onDetails,
+    onClickUser,
     onBuy,
   } = props;
 
@@ -143,6 +148,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             locale={locale}
             onEdit={onEdit}
             onManage={onManage}
+            onClickUser={onClickUser}
           />
         );
       },
@@ -167,6 +173,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             imageUrl={course.imageUrl}
             onManage={onManage}
             locale={locale}
+            onClickUser={onClickUser}
           />
         );
       },
@@ -195,6 +202,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             onResume={onResume}
             onReview={onReview}
             onDetails={onDetails}
+            onClickUser={onClickUser}
           />
         );
       },
@@ -221,6 +229,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             onDetails={onDetails}
             onBuy={onBuy}
             locale={locale}
+            onClickUser={onClickUser}
           />
         );
       },

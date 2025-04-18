@@ -200,7 +200,7 @@ const mockDictionary = {
 const getDictionary = (locale: 'en' | 'de') => mockDictionary[locale];
 
 const meta: Meta<typeof CourseCardList> = {
-    title: 'Components/CourseCardComponents/CourseList',
+    title: 'Components/CourseCardComponents/CourseCardList',
     component: CourseCardList,
     tags: ['autodocs'],
     parameters: {

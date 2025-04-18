@@ -9,10 +9,11 @@ import { getDictionary, isLocalAware, TLocale } from "@maany_shr/e-class-transla
 import { IconCheck } from "../../icons/icon-check";
 import { IconHourglass } from "../../icons/icon-hourglass";
 import { IconEdit } from "../../icons/icon-edit";
+import { useEffect } from "react";
 
 export type CourseStatus = "published" | "under-review" | "draft";
 
-export interface CourseCreatorCardProps extends isLocalAware , course.TCourseMetadata {
+export interface CourseCreatorCardProps extends isLocalAware, course.TCourseMetadata {
   rating: number;
   reviewCount: number;
   sessions: number;
@@ -20,6 +21,7 @@ export interface CourseCreatorCardProps extends isLocalAware , course.TCourseMet
   status: CourseStatus;
   onEdit?: () => void;
   onManage?: () => void;
+  onClickUser?: () => void;
 }
 
 const StatusBadge: React.FC<{ status: CourseStatus, locale: TLocale }> = ({ status, locale }) => {
@@ -102,24 +104,41 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
   locale,
   onEdit,
   onManage,
+  onClickUser,
 }) => {
   const [isImageError, setIsImageError] = React.useState(false);
-   // Calculate total course duration in minutes and convert to hours
-   const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
-   const totalDurationInHours = totalDurationInMinutes / 60;
-   // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
-   const formattedDuration = Number.isInteger(totalDurationInHours)
-     ? totalDurationInHours.toString()
-     : totalDurationInHours.toFixed(2);
+  const [isTruncated, setIsTruncated] = React.useState(false);
+  const titleRef = React.useRef<HTMLHeadingElement>(null);
+  // Calculate total course duration in minutes and convert to hours
+  const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+  const totalDurationInHours = totalDurationInMinutes / 60;
+  // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
+  const formattedDuration = Number.isInteger(totalDurationInHours)
+    ? totalDurationInHours.toString()
+    : totalDurationInHours.toFixed(2);
 
   const dictionary = getDictionary(locale);
-  const handleImageError = () => { 
+  const handleImageError = () => {
     setIsImageError(true);
   };
+
+  // Check if the title is truncated
+  useEffect(() => {
+    const checkTruncation = () => {
+      if (titleRef.current) {
+        const { scrollHeight, clientHeight } = titleRef.current;
+        setIsTruncated(scrollHeight > clientHeight);
+      }
+    };
+
+    checkTruncation();
+    window.addEventListener('resize', checkTruncation);
+    return () => window.removeEventListener('resize', checkTruncation);
+  }, [title]);
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
-      <div className="relative">
+        <div className="relative">
           {isImageError ? (
             // Placeholder for broken image (matching CoachBanner styling)
             <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
@@ -139,9 +158,20 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
         </div>
         <div className="flex flex-col p-4 gap-4">
           <div className="flex flex-col gap-2">
-            <h6 className="text-md font-bold text-text-primary line-clamp-2 text-start">
-              {title}
-            </h6>
+            <div className="group relative">
+              <h6
+                ref={titleRef}
+                className="text-md font-bold text-text-primary line-clamp-2 text-start"
+              >
+                {title}
+              </h6>
+              {isTruncated && (
+                <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-card-stroke text-text-primary text-sm rounded py-2 px-3 -top-35 -left-2 max-w-auto z-10">
+                  {title}
+                  <div className="absolute top-full left-4 w-0 h-0 border-x-8 border-x-transparent border-t-4 border-card-stroke" />
+                </div>
+              )}
+            </div>
 
             {status === "published" && (
               <div className="flex gap-1 items-end">
@@ -155,7 +185,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
               </div>
             )}
 
-            <CourseCreator creatorName={author.name} imageUrl={author.image} locale={locale as TLocale} you={true} />
+            <CourseCreator creatorName={author.name} imageUrl={author.image} locale={locale as TLocale} you={true} onClickUser={onClickUser} />
 
             <CourseStats
               locale={locale as TLocale}

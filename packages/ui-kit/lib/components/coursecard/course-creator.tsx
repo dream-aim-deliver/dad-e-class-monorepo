@@ -8,6 +8,7 @@ interface CourseCreatorProps extends isLocalAware {
   creatorName: string;
   imageUrl?: string;
   you?: boolean;
+  onClickUser?: () => void;
 }
 
 /**
@@ -17,19 +18,21 @@ interface CourseCreatorProps extends isLocalAware {
  * @param imageUrl Optional URL of the creator’s profile image.
  * @param you Optional boolean indicating if the creator is the current user (defaults to false).
  * @param locale The locale for translation and localization purposes.
- *
+ * @param onClickUser Optional callback function triggered when the user name is clicked. 
  * @example
  * <CourseCreator
  *   creatorName="Jane Doe"
  *   imageUrl="https://example.com/jane-doe.jpg"
  *   you={false}
  *   locale="en"
+ *   onClickUser={() => console.log("Creator clicked!")}
  * />
  */
 export const CourseCreator: React.FC<CourseCreatorProps> = ({
   creatorName,
   you = false,
   imageUrl,
+  onClickUser,
   locale
 }) => {
   const dictionary = getDictionary(locale);
@@ -53,6 +56,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
               fullName={creatorName}
             />
           }
+          onClick={onClickUser}
         />
       ) : (
         <div className="flex gap-1">

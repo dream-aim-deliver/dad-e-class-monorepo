@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
@@ -20,6 +20,7 @@ interface StudentCourseCardProps extends TCourseMetadata {
   onResume?: () => void;
   onReview?: () => void;
   onDetails?: () => void;
+  onClickUser?: () => void;
 }
 
 /**
@@ -40,6 +41,7 @@ interface StudentCourseCardProps extends TCourseMetadata {
  * @param onResume Optional callback function triggered when the "Resume Course" button is clicked.
  * @param onReview Optional callback function triggered when the "Review Course" button is clicked.
  * @param onDetails Optional callback function triggered when the "Details" button is clicked.
+ * @param onClickUser Optional callback function triggered when the user name is clicked.
  *
  * @example
  * <StudentCourseCard
@@ -58,6 +60,7 @@ interface StudentCourseCardProps extends TCourseMetadata {
  *   onResume={() => console.log("Resume clicked!")}
  *   onReview={() => console.log("Review clicked!")}
  *   onDetails={() => console.log("Details clicked!")}
+ *   onClickUser={() => console.log("User clicked!")}
  * />
  */
 export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
@@ -76,14 +79,17 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   onResume,
   onReview,
   onDetails,
+  onClickUser,
 }) => {
-   // Calculate total course duration in minutes and convert to hours
-   const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
-   const totalDurationInHours = totalDurationInMinutes / 60;
-   // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
-   const formattedDuration = Number.isInteger(totalDurationInHours)
-     ? totalDurationInHours.toString()
-     : totalDurationInHours.toFixed(2);
+  const [isTruncated, setIsTruncated] = useState(false);
+  const titleRef = React.useRef<HTMLHeadingElement>(null);
+  // Calculate total course duration in minutes and convert to hours
+  const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+  const totalDurationInHours = totalDurationInMinutes / 60;
+  // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
+  const formattedDuration = Number.isInteger(totalDurationInHours)
+    ? totalDurationInHours.toString()
+    : totalDurationInHours.toFixed(2);
 
   const dictionary = getDictionary(locale);
   const [isImageError, setIsImageError] = useState(false);
@@ -91,6 +97,21 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   const handleImageError = () => {
     setIsImageError(true);
   };
+
+  // Check if the title is truncated
+  useEffect(() => {
+    const checkTruncation = () => {
+      if (titleRef.current) {
+        const { scrollHeight, clientHeight } = titleRef.current;
+        setIsTruncated(scrollHeight > clientHeight);
+      }
+    };
+
+    checkTruncation();
+    window.addEventListener('resize', checkTruncation);
+    return () => window.removeEventListener('resize', checkTruncation);
+  }, [title]);
+
   // Determine study progress based on progress value
   const studyProgress =
     progress === 100
@@ -102,7 +123,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
-      <div className="relative">
+        <div className="relative">
           {isImageError ? (
             // Placeholder for broken image (matching CoachBanner styling)
             <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
@@ -123,9 +144,20 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
 
         <div className="flex flex-col p-4 gap-4">
           <div className="flex flex-col gap-2">
-            <h6 className="text-md font-bold text-text-primary line-clamp-2 text-start">
-              {title}
-            </h6>
+            <div className="group relative">
+              <h6
+                ref={titleRef}
+                className="text-md font-bold text-text-primary line-clamp-2 text-start"
+              >
+                {title}
+              </h6>
+              {isTruncated && (
+                <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-card-stroke text-text-primary text-sm rounded py-2 px-3 -top-35 -left-2 max-w-auto z-10">
+                  {title}
+                  <div className="absolute top-full left-4 w-0 h-0 border-x-8 border-x-transparent border-t-4 border-card-stroke" />
+                </div>
+              )}
+            </div>
             <div className="flex gap-1 items-end">
               <StarRating totalStars={5} rating={rating} />
               <span className="text-xs text-text-primary leading-[100%]">
@@ -140,6 +172,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               creatorName={author?.name}
               imageUrl={author?.image}
               locale={locale as TLocale}
+              onClickUser={onClickUser}
             />
 
             <CourseStats
