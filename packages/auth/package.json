@@ -1,22 +1,22 @@
 {
-    "name": "@maany_shr/e-class-auth",
-    "version": "1.10.0",
-    "type": "module",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.mjs",
-            "default": "./dist/index.js"
-        }
-    },
-    "dependencies": {
-        "zod": "^3.24.1",
-        "next-auth": "5.0.0-beta.25",
-        "@maany_shr/e-class-models": "1.10.0"
-    },
-    "publishConfig": {
-        "access": "public"
+  "name": "@maany_shr/e-class-auth",
+  "version": "1.10.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.js"
     }
+  },
+  "dependencies": {
+    "zod": "^3.24.1",
+    "next-auth": "5.0.0-beta.25",
+    "@maany_shr/e-class-models": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
