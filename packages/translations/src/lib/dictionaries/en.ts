@@ -185,6 +185,11 @@ export const EN: TDictionary = {
       coursesText: 'courses',
       saveText: 'save',
       ourPackagesText: 'Our packages',
-    }
+    },
+    sideMenu: {
+      studentText: 'Student',
+      coachText: 'Coach',
+      courseCreatorText: 'Course Creator',
+    },
   },
 };
