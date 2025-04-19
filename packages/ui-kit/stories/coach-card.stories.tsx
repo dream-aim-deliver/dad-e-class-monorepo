@@ -37,7 +37,7 @@ export const HighlyRatedCoach: Story = {
       sessionCount: 100,
       skills: ['Leadership', 'Communication', 'Public Speaking'],
       description:
-        'Expert leadership coach with years of experience helping professionals achieve their goals.',
+        'Stand out with my coaching that combines deep branding expertise and a tailored, hands-on approach to craft a brand identity that’s as unique as your business.',
       courses: [
         {
           image:
@@ -70,8 +70,18 @@ export const NewCoach: Story = {
       sessionCount: 3,
       skills: ['Career Coaching', 'Resume Building'],
       description:
-        'Passionate career coach helping job seekers land their dream jobs.',
+        'Stand out with my coaching that combines deep branding expertise and a tailored, hands-on approach to craft a brand identity that’s as unique as your business.',
       courses: [
+        {
+          image:
+            'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+          title: 'Career Advancement',
+        },
+        {
+          image:
+            'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+          title: 'Career Advancement',
+        },
         {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
@@ -97,7 +107,7 @@ export const NoProfilePicture: Story = {
       sessionCount: 50,
       skills: ['Personal Development', 'Time Management'],
       description:
-        'Helping individuals grow personally and professionally with time-tested strategies.',
+        'Stand out with my coaching that combines deep branding expertise and a tailored, hands-on approach to craft a brand identity that’s as unique as your business.',
       courses: [
         {
           image:
@@ -139,7 +149,7 @@ export const CoachWithManySkills: Story = {
       ],
 
       description:
-        'Entrepreneur and business coach with extensive experience in multiple industries.',
+        'Stand out with my coaching that combines deep branding expertise and a tailored, hands-on approach to craft a brand identity that’s as unique as your business.',
 
       courses: [
         {
