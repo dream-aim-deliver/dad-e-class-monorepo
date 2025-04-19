@@ -9,49 +9,12 @@ import { IconCoachingSession } from '../icons/icon-coaching-session';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import SkillBadges from '../skill-badges';
 
-/**
- * Represents a course associated with a coach.
- * @typedef {Object} Course
- * @property {string} image - The course image URL.
- * @property {string} title - The course title.
- */
-
-/**
- * Represents the details of a coach.
- * @typedef {Object} CoachCardDetails
- * @property {string} coachName - The name of the coach.
- * @property {string} coachImage - The image URL of the coach.
- * @property {string[]} languages - The languages spoken by the coach.
- * @property {number} sessionCount - The number of coaching sessions conducted.
- * @property {string[]} skills - The skills the coach specializes in.
- * @property {string} description - A brief description of the coach.
- * @property {Course[]} courses - A list of courses taught by the coach.
- * @property {number} rating - The coach's rating.
- * @property {number} totalRatings - The total number of ratings received.
- */
-
-/**
- * Props for the CoachCard component.
- * @typedef {Object} CoachCardProps
- * @property {CoachCardDetails} [cardDetails] - Details of the coach.
- * @property {boolean} [byCourseCreator] - Whether the card is displayed by the course creator.
- * @property {Function} [onClickViewProfile] - Callback function when the view profile button is clicked.
- * @property {Function} [onClickBookSession] - Callback function when the book session button is clicked.
- * @property {string} [className] - Additional class names for styling.
- * @property {TLocale} locale - The locale for translations.
- */
-
-/**
- * A component that displays information about a coach, including their profile, skills, courses, and actions.
- * @param {CoachCardProps} props - The props for the component.
- * @returns {JSX.Element | null} The rendered CoachCard component.
- */
 interface Course {
   image: string;
   title: string;
 }
 
-interface CoachCardDetails {
+export interface CoachCardDetails {
   coachName: string;
   coachImage: string;
   languages: string[];
@@ -63,7 +26,7 @@ interface CoachCardDetails {
   totalRatings: number;
 }
 
-interface CoachCardProps {
+export interface CoachCardProps {
   cardDetails?: CoachCardDetails;
   byCourseCreator?: boolean;
   onClickViewProfile?: () => void;
@@ -71,6 +34,20 @@ interface CoachCardProps {
   className?: string;
   locale: TLocale;
 }
+
+/**
+ * 
+ * @props {CoachCardProps} props - The component props.
+ * @props {CoachCardDetails} props.cardDetails - The details of the coach to be displayed.
+ * @props {boolean} [props.byCourseCreator] - Indicates if the card is for a course creator.
+ * @props {() => void} [props.onClickViewProfile] - Callback function for viewing the coach's profile.
+ * @props {() => void} [props.onClickBookSession] - Callback function for booking a session with the coach.
+ * @props {string} [props.className] - Additional class names for styling.
+ * @props {TLocale} props.locale - The locale for translations.
+ *
+ * @returns {JSX.Element} A card displaying the coach's details, including their name, image, languages, session count, skills, description, and courses.
+ * */
+
 const CoachCard: FC<CoachCardProps> = ({
   cardDetails,
   onClickViewProfile,
@@ -86,10 +63,11 @@ const CoachCard: FC<CoachCardProps> = ({
     <div
       role="article"
       className={cn(
-        'flex flex-col gap-4 bg-card-fill text-[14px] md:text-[16px] border border-card-stroke p-4 max-w-[382px] min-w-[348px] rounded-lg text-text-secondary',
+        'flex flex-col bg-card-fill gap-4 text-[14px] md:text-[16px] border border-card-stroke p-4 max-w-[382px] min-w-[348px] rounded-lg text-text-secondary',
         className
       )}
     >
+      {/* Header section with profile and stats - fixed height */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <UserAvatar fullName={cardDetails.coachName} className="w-10 h-10 rounded-full flex-shrink-0" imageUrl={cardDetails.coachImage} />
@@ -117,47 +95,50 @@ const CoachCard: FC<CoachCardProps> = ({
             </span>
           </p>
         </div>
+      </div>
 
-        {/* Skills */}
-        <div className="mb-3">
+      {/* Skills section*/}
+      <div className="h-24">
         <SkillBadges skills={cardDetails.skills} />
-        </div>
-        {/* Card Body */}
-        <div className="flex flex-col gap-4">
-          <p className="leading-[150%]">{cardDetails.description}</p>
+      </div>
 
-          {/* Teaches Section */}
-          <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-[14px]">{dictionary.components.coachCard.teaches}:</span>
-            {cardDetails.courses.slice(0, 3).map((course) => (
-              <Button
-                key={course.title}
-                className="p-0 gap-1 text-sm"
-                size='small'
-                variant="text"
-                hasIconLeft
-                iconLeft={<UserAvatar fullName={course.title} imageUrl={course.image} className="rounded-small" size="small" />}
-                text={course.title}
-              />
-            ))}
-          </div>
+      
+      <div className="flex flex-col flex-grow gap-4">
+        <div className="min-h-22">
+          <p className="leading-[150%] line-clamp-4">{cardDetails.description}</p>
         </div>
 
-        {/* Card Footer */}
-        <div className="flex flex-col gap-2">
-          <Button
-            variant="secondary"
-            size="medium"
-            onClick={onClickViewProfile}
-            text={dictionary.components.coachCard.viewProfile}
-          />
-          <Button
-            variant="primary"
-            size="medium"
-            onClick={onClickBookSession}
-            text={dictionary.components.coachCard.bookSession}
-          />
+        {/* Teaches Section */}
+        <div className="flex flex-wrap gap-2 items-center min-h-16">
+          <span className="text-[14px]">{dictionary.components.coachCard.teaches}:</span>
+          {cardDetails.courses.slice(0, 3).map((course) => (
+            <Button
+              key={course.title}
+              className="p-0 gap-1 text-sm"
+              size='small'
+              variant="text"
+              hasIconLeft
+              iconLeft={<UserAvatar fullName={course.title} imageUrl={course.image} className="rounded-small" size="small" />}
+              text={course.title}
+            />
+          ))}
         </div>
+      </div>
+
+      {/* Card Footer */}
+      <div className="flex flex-col gap-2 mt-auto">
+        <Button
+          variant="secondary"
+          size="medium"
+          onClick={onClickViewProfile}
+          text={dictionary.components.coachCard.viewProfile}
+        />
+        <Button
+          variant="primary"
+          size="medium"
+          onClick={onClickBookSession}
+          text={dictionary.components.coachCard.bookSession}
+        />
       </div>
     </div>
   );
