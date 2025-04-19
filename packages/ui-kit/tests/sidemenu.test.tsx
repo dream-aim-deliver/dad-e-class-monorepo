@@ -51,7 +51,7 @@ describe('SideMenu', () => {
     render(<SideMenu {...defaultProps} />);
     
     expect(screen.getByText('John Doe')).toBeInTheDocument();
-    expect(screen.getByText('Student'));
+    expect(screen.getByText('Student')).toBeInTheDocument();
   });
 
   // Test that when the userRole is 'coach', the coach badge and star rating are displayed correctly
@@ -95,7 +95,7 @@ describe('SideMenu', () => {
     render(<SideMenu {...defaultProps} isCollapsed={false} />);
     
     const container = screen.getByTestId('menu-container');
-    expect(container).toHaveClass('w-[17.5rem]');
+    expect(container).toHaveClass('w-auto');
     expect(screen.getByText('Dashboard')).toBeVisible();
   });
   
