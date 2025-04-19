@@ -35,6 +35,19 @@ export interface CoachCardProps {
   locale: TLocale;
 }
 
+/**
+ * 
+ * @props {CoachCardProps} props - The component props.
+ * @props {CoachCardDetails} props.cardDetails - The details of the coach to be displayed.
+ * @props {boolean} [props.byCourseCreator] - Indicates if the card is for a course creator.
+ * @props {() => void} [props.onClickViewProfile] - Callback function for viewing the coach's profile.
+ * @props {() => void} [props.onClickBookSession] - Callback function for booking a session with the coach.
+ * @props {string} [props.className] - Additional class names for styling.
+ * @props {TLocale} props.locale - The locale for translations.
+ *
+ * @returns {JSX.Element} A card displaying the coach's details, including their name, image, languages, session count, skills, description, and courses.
+ * */
+
 const CoachCard: FC<CoachCardProps> = ({
   cardDetails,
   onClickViewProfile,
@@ -84,15 +97,14 @@ const CoachCard: FC<CoachCardProps> = ({
         </div>
       </div>
 
-      {/* Skills section - variable height */}
-      <div className="min-h-24">
+      {/* Skills section*/}
+      <div className="h-24">
         <SkillBadges skills={cardDetails.skills} />
       </div>
 
       
       <div className="flex flex-col flex-grow gap-4">
-        {/* Description with line clamp */}
-        <div className="min-h-22"> {/* Fixed height for description */}
+        <div className="min-h-22">
           <p className="leading-[150%] line-clamp-4">{cardDetails.description}</p>
         </div>
 
@@ -113,7 +125,7 @@ const CoachCard: FC<CoachCardProps> = ({
         </div>
       </div>
 
-      {/* Card Footer - always at bottom */}
+      {/* Card Footer */}
       <div className="flex flex-col gap-2 mt-auto">
         <Button
           variant="secondary"
