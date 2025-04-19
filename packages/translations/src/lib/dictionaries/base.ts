@@ -126,6 +126,7 @@ export const DictionarySchema = z.object({
       checkboxText: z.string(),
       yourReview: z.string(),
       thankYouText: z.string(),
+      errorState: z.string(),
     }),
     courseCard: z.object({
       courseEmptyState: z.object({
