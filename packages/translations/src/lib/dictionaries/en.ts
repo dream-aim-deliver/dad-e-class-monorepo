@@ -50,6 +50,7 @@ export const EN: TDictionary = {
       checkboxText: 'Did you need more time?',
       yourReview: 'Your review',
       thankYouText: 'Thank you for your feedback!',
+      errorState: 'Failed to submit review. Please try again later.',
     },
     dragDrop: {
       title: ' Drop the files here...',

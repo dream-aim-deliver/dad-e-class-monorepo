@@ -51,6 +51,8 @@ export const DE: TDictionary = {
       checkboxText: 'Brauchten Sie mehr Zeit?',
       yourReview: 'Ihre Bewertung',
       thankYouText: 'Vielen Dank für Ihr Feedback!',
+      errorState:
+        'Fehler beim Einreichen der Bewertung. Bitte versuchen Sie es später erneut.',
     },
     dragDrop: {
       title: 'Legen Sie die Dateien hier ab... ',
