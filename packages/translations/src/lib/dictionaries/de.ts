@@ -31,6 +31,19 @@ export const DE: TDictionary = {
       cochingSession: 'Coaching-Sitzung',
       sales: 'Verkauf',
     },
+    reviewCoachingSessionModal: {
+      title: 'Wie würden Sie diesen Kurs bewerten?',
+      sendReviewButton: 'Bewertung senden',
+      skipButton: 'Überspringen',
+      closeButton: 'Schließen',
+      reviewPlaceholder:
+        'Was halten Sie von dem Kurs? Vorschläge, wie wir ihn verbessern können?',
+      checkboxText: 'Brauchten Sie mehr Zeit?',
+      yourReview: 'Ihre Bewertung',
+      thankYouText: 'Vielen Dank für Ihr Feedback!',
+      errorState:
+        'Fehler beim Einreichen der Bewertung. Bitte versuchen Sie es später erneut.',
+    },
     dragDrop: {
       title: 'Legen Sie die Dateien hier ab... ',
       buttontext: 'Klicken zum Hochladen',
