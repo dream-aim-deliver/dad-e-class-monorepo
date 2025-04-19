@@ -15,7 +15,7 @@ className?: string;
 
 
 export default function CardListLayout({children,className}: CardListLayoutProps) {
-    return <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4",className)}>
+    return <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr",className)}>
     {children}
   </div>
 }
