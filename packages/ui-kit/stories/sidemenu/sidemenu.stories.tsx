@@ -123,6 +123,57 @@ const mockMenuItems: MenuItem[][] = [
   ],
 ];
 
+const studentMockMenuItems: MenuItem[][] = [
+  [
+    {
+      icon: <IconDashboard classNames="fill-text-primary" />,
+      label: 'Dashboard',
+      route: '/dashboard',
+      isActive: false,
+    },
+    {
+      icon: <IconCourse classNames="fill-text-primary" />,
+      label: 'Courses',
+      route: '/courses',
+      isActive: false,
+    },
+    {
+      icon: <IconCoachingSession classNames="fill-text-primary" />,
+      label: 'Coaching sessions',
+      route: '/sessions',
+      isActive: false,
+    },
+    {
+      icon: <IconCalendarAlt classNames="fill-text-primary" />,
+      label: 'Calendar',
+      route: '/calendar',
+      isActive: false,
+    },
+  ],
+  [
+    {
+      icon: <IconAccountInformation classNames="fill-text-primary" />,
+      label: 'Your Profile',
+      route: '/profile',
+      isActive: false,
+    },
+    {
+      icon: <IconSales classNames="fill-text-primary" />,
+      label: 'Orders & Payments',
+      route: '/payments',
+      isActive: false,
+    },
+  ],
+  [
+    {
+      icon: <IconLogOut classNames="fill-text-primary" />,
+      label: 'Logout',
+      route: '/logout',
+      isActive: false,
+    },
+  ],
+];
+
 const meta: Meta<typeof SideMenuInteractive> = {
   title: 'Components/SideMenu',
   component: SideMenuInteractive,
@@ -155,7 +206,7 @@ export const Default: Story = {
     userRole: 'student',
     profileImageUrl:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-    menuItems: mockMenuItems,
+    menuItems: studentMockMenuItems,
     rating: { score: 4.7, count: 120 },
     isCollapsed: false,
     locale: 'en',
@@ -169,7 +220,7 @@ export const Default: Story = {
 export const Coach: Story = {
   args: {
     userName: 'Jane Doe',
-    userRole: 'courseCreator',
+    userRole: 'coach',
     profileImageUrl:
       'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     menuItems: mockMenuItems,
@@ -205,7 +256,7 @@ export const StudentNoImage: Story = {
     userName: 'Emily Clark',
     userRole: 'student',
     profileImageUrl: '',
-    menuItems: mockMenuItems,
+    menuItems: studentMockMenuItems,
     rating: undefined,
     isCollapsed: false,
     locale: 'en',

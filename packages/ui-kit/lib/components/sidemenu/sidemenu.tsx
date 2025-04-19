@@ -1,4 +1,3 @@
-'use client';
 import React, { FC, JSX } from 'react';
 import clsx from 'clsx';
 import { Badge } from '../badge';
@@ -81,8 +80,8 @@ export const SideMenu: FC<SideMenuProps> = ({
       className={clsx(
         'bg-card-fill rounded-medium border-[1px] border-card-stroke flex flex-col gap-4 py-6 items-center relative overflow-hidden transition-all duration-500 ease-in-out',
         isCollapsed
-          ? 'w-[4rem] px-4 gap-[1.6875rem] cursor-pointer'
-          : `w-[17.5rem] h-fit px-6 ${className || ''}`,
+          ? 'w-[4rem] px-4 gap-[1.6875rem] cursor-pointer h-full'
+          : `w-auto h-fit px-6 ${className || ''}`,
       )}
       onClick={isCollapsed ? () => onClickToggle(isCollapsed) : undefined}
       data-testid="menu-container"
@@ -125,7 +124,7 @@ export const SideMenu: FC<SideMenuProps> = ({
       </div>
 
       {/* Menu Groups */}
-      <div className="flex flex-col items-end gap-2 self-stretch">
+      <div className="flex flex-col items-end gap-2 self-stretch mb-[1rem]">
         {menuItems?.map((group, groupIndex) => (
           <div
             key={groupIndex}
