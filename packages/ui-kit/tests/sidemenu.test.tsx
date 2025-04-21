@@ -1,8 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SideMenu } from '../lib/components/sidemenu/sidemenu';
-import type { MenuItem } from '../lib/components/sidemenu/sidemenu';
-import { isLocalAware } from '@maany_shr/e-class-translations';
+import { SideMenuItem } from '../lib/components/sidemenu/sidemenu-item';
+import type { MenuItem } from '../lib/components/sidemenu/sidemenu-item';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -23,13 +23,14 @@ const mockMenuItems: MenuItem[][] = [
     {
       label: 'Dashboard',
       icon: <div>📊</div>,
-      route: '/dashboard',
+      onClick: vi.fn(),
       isActive: false,
+      notificationCount: 3
     },
     {
       label: 'Courses',
       icon: <div>📚</div>,
-      route: '/courses',
+      onClick: vi.fn(),
       isActive: true,
     },
   ],
@@ -38,15 +39,25 @@ const mockMenuItems: MenuItem[][] = [
 describe('SideMenu', () => {
   const defaultProps = {
     userName: 'John Doe',
-    userRole: 'student' as 'student' | 'coach' | 'courseCreator',
-    menuItems: mockMenuItems,
-    locale: 'en' as isLocalAware['locale'],
-    onClickItem: vi.fn(),
+    userRole: 'student' as const,
+    locale: 'en' as const,
     onClickToggle: vi.fn(),
+    children: mockMenuItems.map((group, i) => (
+      <div key={i} className="flex flex-col w-full">
+        <div className="h-[1px] bg-divider my-2" />
+        {group.map(item => (
+          <SideMenuItem
+            key={item.label}
+            item={item}
+            onClickItem={item.onClick}
+            isCollapsed={false}
+          />
+        ))}
+      </div>
+    ))
   };
 
-
-  // Test that the SideMenu renders the user's name and the correct role label for a student
+  // Render user information
   it('renders user information correctly', () => {
     render(<SideMenu {...defaultProps} />);
     
@@ -54,58 +65,83 @@ describe('SideMenu', () => {
     expect(screen.getByText('Student')).toBeInTheDocument();
   });
 
-  // Test that when the userRole is 'coach', the coach badge and star rating are displayed correctly
+  // Render coach badge and rating for coach role
   it('displays coach badge and rating for coach role', () => {
-    render(<SideMenu {...defaultProps} userRole="coach" rating={{ score: 4.5, count: 120 }} />);
+    render(
+      <SideMenu 
+        {...defaultProps} 
+        userRole="coach" 
+        rating={{ score: 4.5, count: 120 }} 
+      />
+    );
     
-    expect(screen.getByText('Coach'));
+    expect(screen.getByText('Coach')).toBeInTheDocument();
     expect(screen.getByText('4.5')).toBeInTheDocument();
     expect(screen.getByText('(120)')).toBeInTheDocument();
   });
 
-  // Test that clicking the toggle button triggers the onClickToggle callback to collapse/expand the menu
+  // Toggle collapsed state when button is clicked
   it('toggles collapsed state when button is clicked', () => {
     render(<SideMenu {...defaultProps} isCollapsed={false} />);
-    
     const toggleButton = screen.getByRole('button');
     fireEvent.click(toggleButton);
+    expect(defaultProps.onClickToggle).toHaveBeenCalledWith(false);
   });
 
-  // Test that clicking a menu item calls the onClickItem callback with the correct menu item
+  // Handle menu item clicks and trigger click handlers
   it('handles menu item clicks', () => {
     render(<SideMenu {...defaultProps} />);
-    
     const menuItem = screen.getByText('Dashboard');
     fireEvent.click(menuItem);
-    
-    expect(defaultProps.onClickItem).toHaveBeenCalledWith(mockMenuItems[0][0]);
+    expect(mockMenuItems[0][0].onClick).toHaveBeenCalled();
   });
 
-  // Test that when the menu is collapsed, it applies the correct CSS class and hides the user name
+  // Display collapsed state correctly
   it('displays collapsed state correctly', () => {
     render(<SideMenu {...defaultProps} isCollapsed={true} />);
-    
     const container = screen.getByTestId('menu-container');
     expect(container).toHaveClass('w-[4rem]');
     expect(screen.queryByText('John Doe')).not.toBeInTheDocument();
   });
 
-  // Test that when expanded, the menu container has the correct width class and menu items are visible
+  // Display expanded state correctly
   it('applies correct classes in expanded state', () => {
     render(<SideMenu {...defaultProps} isCollapsed={false} />);
-    
     const container = screen.getByTestId('menu-container');
-    expect(container).toHaveClass('w-auto');
+    expect(container).toHaveClass('w-[18rem]');
     expect(screen.getByText('Dashboard')).toBeVisible();
   });
   
-  // Test that clicking the container when the menu is collapsed triggers the onClickToggle callback
-  it('handles container click when collapsed', () => {
-    render(<SideMenu {...defaultProps} isCollapsed={true} />);
+  // Toggle collapsed state via icon buttons
+  it('triggers toggle via icon buttons', () => {
+    const { rerender } = render(<SideMenu {...defaultProps} isCollapsed={true} />);
     
-    const container = screen.getByTestId('menu-container');
-    fireEvent.click(container);
-    
-    expect(defaultProps.onClickToggle).toHaveBeenCalled();
+    const container = screen.getByTestId('toggle-container');
+    const expandButton = within(container).getByRole('button');
+    fireEvent.click(expandButton);
+    expect(defaultProps.onClickToggle).toHaveBeenCalledWith(true);
+
+    rerender(<SideMenu {...defaultProps} isCollapsed={false} />);
+    const collapseButton = within(container).getByRole('button');
+    fireEvent.click(collapseButton);
+    expect(defaultProps.onClickToggle).toHaveBeenCalledWith(false);
+  });
+
+  // Show course creator badge when applicable
+  it('shows course creator badge when applicable', () => {
+    render(<SideMenu {...defaultProps} userRole="courseCreator" />);
+    expect(screen.getByText('Course Creator')).toBeInTheDocument();
+  });
+
+  // Hide rating for student users
+  it('hides rating for student users', () => {
+    render(<SideMenu {...defaultProps} userRole="student" rating={{ score: 4.5, count: 120 }} />);
+    expect(screen.queryByText('4.5')).not.toBeInTheDocument();
+  });
+
+  // Display notification badges correctly
+  it('displays notification badges correctly', () => {
+    render(<SideMenu {...defaultProps} />);
+    expect(screen.getByText('3')).toBeInTheDocument();
   });
 });
