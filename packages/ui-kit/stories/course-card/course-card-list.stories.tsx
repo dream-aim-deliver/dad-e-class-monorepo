@@ -2,9 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { CourseCardList } from '../../lib/components/coursecard/course-card-list';
 import { CourseCard, CourseCardProps } from '../../lib/components/coursecard/course-card';
-import {CourseEmptyState} from '../../lib/components/coursecard/course-empty-state';
 
-// Sample course data without id
+// Sample course data with unique IDs
 const sampleCourses: Record<string, CourseCardProps[]> = {
     creator: [
         {
@@ -170,15 +169,17 @@ const sampleCourses: Record<string, CourseCardProps[]> = {
     ],
 };
 
-// Mock dictionary for en and de
+// Updated mock dictionary for en and de
 const mockDictionary = {
     en: {
         components: {
             courseCard: {
                 courseEmptyState: {
-                    message: 'No courses available',
-                    message2: 'You haven’t created any courses yet',
-                    buttonText: 'Browse Courses',
+                    messageCreatorCoach: 'No courses available',
+                    messageStudentVisitor: 'You haven’t created any courses yet',
+                    buttonTextCreator: 'Create a Course',
+                    buttonTextCoach: 'Join a Group',
+                    buttonTextStudentVisitor: 'Browse Courses',
                 },
             },
         },
@@ -187,9 +188,11 @@ const mockDictionary = {
         components: {
             courseCard: {
                 courseEmptyState: {
-                    message: 'Keine Kurse verfügbar',
-                    message2: 'Sie haben noch keine Kurse erstellt',
-                    buttonText: 'Kurse durchsuchen',
+                    messageCreatorCoach: 'Keine Kurse verfügbar',
+                    messageStudentVisitor: 'Sie haben noch keine Kurse erstellt',
+                    buttonTextCreator: 'Kurs erstellen',
+                    buttonTextCoach: 'Gruppe beitreten',
+                    buttonTextStudentVisitor: 'Kurse durchsuchen',
                 },
             },
         },
@@ -213,9 +216,17 @@ const meta: Meta<typeof CourseCardList> = {
             options: ['en', 'de'],
             description: 'Locale for translations and formatting (English or German)',
         },
+        emptyStateMessage: {
+            control: 'text',
+            description: 'Message to display in the empty state',
+        },
+        emptyStateButtonText: {
+            control: 'text',
+            description: 'Text for the empty state button',
+        },
         onEmptyStateButtonClick: {
             action: 'clicked',
-            description: 'Callback for the empty state button (used for student/visitor)',
+            description: 'Callback for the empty state button',
         },
         children: {
             control: { disable: true },
@@ -236,11 +247,16 @@ export const Interactive: Story = {
             sampleCourses.student[1],
             sampleCourses.visitor[0],
         ];
+        const dictionary = getDictionary(args.locale);
         return (
-            <CourseCardList {...args}>
+            <CourseCardList
+                {...args}
+                emptyStateMessage={dictionary.components.courseCard.courseEmptyState.messageStudentVisitor}
+                emptyStateButtonText={dictionary.components.courseCard.courseEmptyState.buttonTextStudentVisitor}
+            >
                 {courses.map((course) => (
                     <CourseCard
-                        key={course.course!.title}
+                        key={course.course.title}
                         {...course}
                         locale={args.locale}
                     />
@@ -264,19 +280,27 @@ export const Interactive: Story = {
 
 // Creator list
 export const CreatorList: Story = {
-    render: (args) => (
-        <CourseCardList {...args}>
-            {sampleCourses.creator.map((course) => (
-                <CourseCard
-                    key={course.course!.title}
-                    {...course}
-                    locale={args.locale}
-                />
-            ))}
-        </CourseCardList>
-    ),
+    render: (args) => {
+        const dictionary = getDictionary(args.locale);
+        return (
+            <CourseCardList
+                {...args}
+                emptyStateMessage={dictionary.components.courseCard.courseEmptyState.messageCreatorCoach}
+                
+            >
+                {sampleCourses.creator.map((course) => (
+                    <CourseCard
+                        key={course.course.title}
+                        {...course}
+                        locale={args.locale}
+                    />
+                ))}
+            </CourseCardList>
+        );
+    },
     args: {
         locale: 'en',
+        onEmptyStateButtonClick: () => window.alert('Create a Course clicked'),
     },
     name: 'Creator List',
     parameters: {
@@ -290,19 +314,25 @@ export const CreatorList: Story = {
 
 // Creator empty state
 export const CreatorEmpty: Story = {
-    render: (args) => (
-        <CourseCardList {...args}>
-            <CourseEmptyState locale={args.locale} context="creator" />
-        </CourseCardList>
-    ),
+    render: (args) => {
+        const dictionary = getDictionary(args.locale);
+        return (
+            <CourseCardList
+                {...args}
+                emptyStateMessage={dictionary.components.courseCard.courseEmptyState.messageCreatorCoach}
+               
+            />
+        );
+    },
     args: {
         locale: 'en',
+        onEmptyStateButtonClick: () => window.alert('Create a Course clicked'),
     },
     name: 'Creator Empty State',
     parameters: {
         docs: {
             description: {
-                story: 'Displays the empty state for creators with no button.',
+                story: 'Displays the empty state for creators with a "Create a Course" button.',
             },
         },
     },
@@ -310,19 +340,27 @@ export const CreatorEmpty: Story = {
 
 // Coach list
 export const CoachList: Story = {
-    render: (args) => (
-        <CourseCardList {...args}>
-            {sampleCourses.coach.map((course) => (
-                <CourseCard
-                    key={course.course!.title}
-                    {...course}
-                    locale={args.locale}
-                />
-            ))}
-        </CourseCardList>
-    ),
+    render: (args) => {
+        const dictionary = getDictionary(args.locale);
+        return (
+            <CourseCardList
+                {...args}
+                emptyStateMessage={dictionary.components.courseCard.courseEmptyState.messageCreatorCoach}
+                
+            >
+                {sampleCourses.coach.map((course) => (
+                    <CourseCard
+                        key={course.course.title}
+                        {...course}
+                        locale={args.locale}
+                    />
+                ))}
+            </CourseCardList>
+        );
+    },
     args: {
         locale: 'en',
+        onEmptyStateButtonClick: () => window.alert('Join a Group clicked'),
     },
     name: 'Coach List',
     parameters: {
@@ -336,19 +374,25 @@ export const CoachList: Story = {
 
 // Coach empty state
 export const CoachEmpty: Story = {
-    render: (args) => (
-        <CourseCardList {...args}>
-            <CourseEmptyState locale={args.locale} context="coach" />
-        </CourseCardList>
-    ),
+    render: (args) => {
+        const dictionary = getDictionary(args.locale);
+        return (
+            <CourseCardList
+                {...args}
+                emptyStateMessage={dictionary.components.courseCard.courseEmptyState.messageCreatorCoach}
+                
+            />
+        );
+    },
     args: {
         locale: 'en',
+        onEmptyStateButtonClick: () => window.alert('Join a Group clicked'),
     },
     name: 'Coach Empty State',
     parameters: {
         docs: {
             description: {
-                story: 'Displays the empty state for coaches with no button.',
+                story: 'Displays the empty state for coaches with a "Join a Group" button.',
             },
         },
     },
@@ -356,17 +400,24 @@ export const CoachEmpty: Story = {
 
 // Student list
 export const StudentList: Story = {
-    render: (args) => (
-        <CourseCardList {...args}>
-            {sampleCourses.student.map((course) => (
-                <CourseCard
-                    key={course.course!.title}
-                    {...course}
-                    locale={args.locale}
-                />
-            ))}
-        </CourseCardList>
-    ),
+    render: (args) => {
+        const dictionary = getDictionary(args.locale);
+        return (
+            <CourseCardList
+                {...args}
+                emptyStateMessage={dictionary.components.courseCard.courseEmptyState.messageStudentVisitor}
+                emptyStateButtonText={dictionary.components.courseCard.courseEmptyState.buttonTextStudentVisitor}
+            >
+                {sampleCourses.student.map((course) => (
+                    <CourseCard
+                        key={course.course.title}
+                        {...course}
+                        locale={args.locale}
+                    />
+                ))}
+            </CourseCardList>
+        );
+    },
     args: {
         locale: 'en',
         onEmptyStateButtonClick: () => window.alert('Browse Courses clicked'),
@@ -383,15 +434,16 @@ export const StudentList: Story = {
 
 // Student empty state
 export const StudentEmpty: Story = {
-    render: (args) => (
-        <CourseCardList {...args}>
-            <CourseEmptyState
-                locale={args.locale}
-                context="student"
-                onButtonClick={args.onEmptyStateButtonClick}
+    render: (args) => {
+        const dictionary = getDictionary(args.locale);
+        return (
+            <CourseCardList
+                {...args}
+                emptyStateMessage={dictionary.components.courseCard.courseEmptyState.messageStudentVisitor}
+                emptyStateButtonText={dictionary.components.courseCard.courseEmptyState.buttonTextStudentVisitor}
             />
-        </CourseCardList>
-    ),
+        );
+    },
     args: {
         locale: 'en',
         onEmptyStateButtonClick: () => window.alert('Browse Courses clicked'),
@@ -400,7 +452,7 @@ export const StudentEmpty: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Displays the empty state for students with a browse courses button.',
+                story: 'Displays the empty state for students with a "Browse Courses" button.',
             },
         },
     },
@@ -408,17 +460,24 @@ export const StudentEmpty: Story = {
 
 // Visitor list
 export const VisitorList: Story = {
-    render: (args) => (
-        <CourseCardList {...args}>
-            {sampleCourses.visitor.map((course) => (
-                <CourseCard
-                    key={course.course!.title}
-                    {...course}
-                    locale={args.locale}
-                />
-            ))}
-        </CourseCardList>
-    ),
+    render: (args) => {
+        const dictionary = getDictionary(args.locale);
+        return (
+            <CourseCardList
+                {...args}
+                emptyStateMessage={dictionary.components.courseCard.courseEmptyState.messageStudentVisitor}
+                emptyStateButtonText={dictionary.components.courseCard.courseEmptyState.buttonTextStudentVisitor}
+            >
+                {sampleCourses.visitor.map((course) => (
+                    <CourseCard
+                        key={course.course.title}
+                        {...course}
+                        locale={args.locale}
+                    />
+                ))}
+            </CourseCardList>
+        );
+    },
     args: {
         locale: 'en',
         onEmptyStateButtonClick: () => window.alert('Browse Courses clicked'),
@@ -435,15 +494,16 @@ export const VisitorList: Story = {
 
 // Visitor empty state
 export const VisitorEmpty: Story = {
-    render: (args) => (
-        <CourseCardList {...args}>
-            <CourseEmptyState
-                locale={args.locale}
-                context="visitor"
-                onButtonClick={args.onEmptyStateButtonClick}
+    render: (args) => {
+        const dictionary = getDictionary(args.locale);
+        return (
+            <CourseCardList
+                {...args}
+                emptyStateMessage={dictionary.components.courseCard.courseEmptyState.messageStudentVisitor}
+                emptyStateButtonText={dictionary.components.courseCard.courseEmptyState.buttonTextStudentVisitor}
             />
-        </CourseCardList>
-    ),
+        );
+    },
     args: {
         locale: 'en',
         onEmptyStateButtonClick: () => window.alert('Browse Courses clicked'),
@@ -452,7 +512,7 @@ export const VisitorEmpty: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Displays the empty state for visitors with a browse courses button.',
+                story: 'Displays the empty state for visitors with a "Browse Courses" button.',
             },
         },
     },
@@ -469,11 +529,16 @@ export const CoachMixedList: Story = {
             sampleCourses.coach[0],
             sampleCourses.student[1],
         ];
+        const dictionary = getDictionary(args.locale);
         return (
-            <CourseCardList {...args}>
+            <CourseCardList
+                {...args}
+                emptyStateMessage={dictionary.components.courseCard.courseEmptyState.messageCreatorCoach}
+                emptyStateButtonText={dictionary.components.courseCard.courseEmptyState.buttonTextCoach}
+            >
                 {courses.map((course, index) => (
                     <CourseCard
-                        key={`${course.course!.title}-${index}`}
+                        key={`${course.course.title}-${index}`}
                         {...course}
                         locale={args.locale}
                     />
@@ -483,7 +548,7 @@ export const CoachMixedList: Story = {
     },
     args: {
         locale: 'en',
-        onEmptyStateButtonClick: () => window.alert('Browse Courses clicked'),
+        onEmptyStateButtonClick: () => window.alert('Join a Group clicked'),
     },
     name: 'Coach Mixed List',
     parameters: {

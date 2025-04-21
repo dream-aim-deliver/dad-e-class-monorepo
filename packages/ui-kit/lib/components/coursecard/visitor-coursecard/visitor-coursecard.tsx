@@ -70,9 +70,8 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   onBuy
 }) => {
   const [isImageError, setIsImageError] = React.useState(false);
-  const [isTruncated, setIsTruncated] = React.useState(false);
-  const titleRef = React.useRef<HTMLHeadingElement>(null);
   const dictionary = getDictionary(locale);
+
   // Calculate total course duration in minutes and convert to hours
   const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
   const totalDurationInHours = totalDurationInMinutes / 60;
@@ -84,19 +83,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   const handleImageError = () => {
     setIsImageError(true);
   };
-  // Check if the title is truncated
-  useEffect(() => {
-    const checkTruncation = () => {
-      if (titleRef.current) {
-        const { scrollHeight, clientHeight } = titleRef.current;
-        setIsTruncated(scrollHeight > clientHeight);
-      }
-    };
-
-    checkTruncation();
-    window.addEventListener('resize', checkTruncation);
-    return () => window.removeEventListener('resize', checkTruncation);
-  }, [title]);
+  
   const shouldShowPlaceholder = !imageUrl || isImageError;
   return (
     <div className="max-w-7xl mx-auto">
@@ -124,17 +111,12 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
           <div className="flex flex-col gap-2">
             <div className="group relative">
               <h6
-                ref={titleRef}
-                className="text-md font-bold text-text-primary line-clamp-2 text-start"
+                title={title}
+                className="text-md font-bold text-text-primary line-clamp-1 text-start"
               >
                 {title}
               </h6>
-              {isTruncated && (
-                <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-card-stroke text-text-primary text-sm rounded py-2 px-3 -top-35 -left-2 max-w-auto z-10">
-                  {title}
-                  <div className="absolute top-full left-4 w-0 h-0 border-x-8 border-x-transparent border-t-4 border-card-stroke" />
-                </div>
-              )}
+              
             </div>
 
             <div className="flex gap-1 items-end">

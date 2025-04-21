@@ -107,8 +107,6 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
   onClickUser,
 }) => {
   const [isImageError, setIsImageError] = React.useState(false);
-  const [isTruncated, setIsTruncated] = React.useState(false);
-  const titleRef = React.useRef<HTMLHeadingElement>(null);
   // Calculate total course duration in minutes and convert to hours
   const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
   const totalDurationInHours = totalDurationInMinutes / 60;
@@ -122,19 +120,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
     setIsImageError(true);
   };
   const shouldShowPlaceholder = !imageUrl || isImageError;
-  // Check if the title is truncated
-  useEffect(() => {
-    const checkTruncation = () => {
-      if (titleRef.current) {
-        const { scrollHeight, clientHeight } = titleRef.current;
-        setIsTruncated(scrollHeight > clientHeight);
-      }
-    };
-
-    checkTruncation();
-    window.addEventListener('resize', checkTruncation);
-    return () => window.removeEventListener('resize', checkTruncation);
-  }, [title]);
+  
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
@@ -160,17 +146,12 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
           <div className="flex flex-col gap-2">
             <div className="group relative">
               <h6
-                ref={titleRef}
+                title={title}
                 className="text-md font-bold text-text-primary line-clamp-2 text-start"
               >
                 {title}
               </h6>
-              {isTruncated && (
-                <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-card-stroke text-text-primary text-sm rounded py-2 px-3 -top-35 -left-2 max-w-auto z-10">
-                  {title}
-                  <div className="absolute top-full left-4 w-0 h-0 border-x-8 border-x-transparent border-t-4 border-card-stroke" />
-                </div>
-              )}
+              
             </div>
 
             {status === "published" && (

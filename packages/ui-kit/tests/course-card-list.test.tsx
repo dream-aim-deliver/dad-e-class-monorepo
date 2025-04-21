@@ -3,16 +3,14 @@ import { describe, it, expect, vi } from 'vitest';
 import { CourseCardList, CourseCardListProps } from '../lib/components/coursecard/course-card-list';
 import { TLocale } from '@maany_shr/e-class-translations';
 
-// Mock the CourseEmptyState component
-vi.mock('../lib/components/coursecard/course-empty-state', () => ({
-  CourseEmptyState: ({ locale, onButtonClick }: any) => (
+// Mock the EmptyState component
+vi.mock('../lib/components/coursecard/empty-state', () => ({
+  EmptyState: ({ message, buttonText, onButtonClick, locale }: any) => (
     <div data-testid="empty-state">
-      <p>{`No courses available (${locale})`}</p>
-      {onButtonClick && (
-        <button data-testid="empty-state-button" onClick={onButtonClick}>
-          {`Browse Courses (${locale})`}
-        </button>
-      )}
+      <p data-testid="empty-state-message">{`${message} (${locale})`}</p>
+      <button data-testid="empty-state-button" onClick={onButtonClick}>
+        {`${buttonText} (${locale})`}
+      </button>
     </div>
   ),
 }));
@@ -23,8 +21,12 @@ vi.mock('@maany_shr/e-class-translations', () => ({
     components: {
       courseCard: {
         courseEmptyState: {
-          message: `No courses available (${locale})`,
-          buttonText: `Browse Courses (${locale})`,
+          message: `No courses available`,
+          buttonText: `Browse Courses`,
+          messageCreator: `You haven’t created any courses yet`,
+          buttonTextCreator: `Create a Course`,
+          messageCoach: `You haven’t enrolled in any coaching groups yet`,
+          buttonTextCoach: `Join a Group`,
         },
       },
     },
@@ -34,10 +36,11 @@ vi.mock('@maany_shr/e-class-translations', () => ({
 
 describe('CourseCardList', () => {
   const baseProps: CourseCardListProps = {
-    locale: 'en',
+    locale: 'en' as TLocale,
+    emptyStateMessage: 'No courses available',
+    emptyStateButtonText: 'Browse Courses',
+    onEmptyStateButtonClick: vi.fn(),
   };
-
-  const mockOnEmptyStateButtonClick = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -68,26 +71,50 @@ describe('CourseCardList', () => {
     expect(screen.getByRole('listitem')).toBeInTheDocument();
   });
 
-  it('renders EmptyState when no children are provided', () => {
+  it('renders EmptyState with message and button when no children are provided', () => {
     render(<CourseCardList {...baseProps} />);
 
     expect(screen.getByTestId('empty-state')).toBeInTheDocument();
-    expect(screen.getByText('No courses available (en)')).toBeInTheDocument();
-    expect(screen.queryByTestId('empty-state-button')).not.toBeInTheDocument();
-  });
-
-  it('renders EmptyState with button when onEmptyStateButtonClick is provided', () => {
-    render(
-      <CourseCardList {...baseProps} onEmptyStateButtonClick={mockOnEmptyStateButtonClick} />
-    );
-
-    expect(screen.getByTestId('empty-state')).toBeInTheDocument();
-    expect(screen.getByText('No courses available (en)')).toBeInTheDocument();
+    expect(screen.getByTestId('empty-state-message')).toHaveTextContent('No courses available (en)');
     expect(screen.getByTestId('empty-state-button')).toBeInTheDocument();
-    expect(screen.getByText('Browse Courses (en)')).toBeInTheDocument();
+    expect(screen.getByTestId('empty-state-button')).toHaveTextContent('Browse Courses (en)');
 
     fireEvent.click(screen.getByTestId('empty-state-button'));
-    expect(mockOnEmptyStateButtonClick).toHaveBeenCalledTimes(1);
+    expect(baseProps.onEmptyStateButtonClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders EmptyState with creator-specific message and button', () => {
+    const creatorProps = {
+      ...baseProps,
+      emptyStateMessage: 'You haven’t created any courses yet',
+      emptyStateButtonText: 'Create a Course',
+    };
+    render(<CourseCardList {...creatorProps} />);
+
+    expect(screen.getByTestId('empty-state')).toBeInTheDocument();
+    expect(screen.getByTestId('empty-state-message')).toHaveTextContent('You haven’t created any courses yet (en)');
+    expect(screen.getByTestId('empty-state-button')).toBeInTheDocument();
+    expect(screen.getByTestId('empty-state-button')).toHaveTextContent('Create a Course (en)');
+
+    fireEvent.click(screen.getByTestId('empty-state-button'));
+    expect(creatorProps.onEmptyStateButtonClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders EmptyState with coach-specific message and button', () => {
+    const coachProps = {
+      ...baseProps,
+      emptyStateMessage: 'You haven’t enrolled in any coaching groups yet',
+      emptyStateButtonText: 'Join a Group',
+    };
+    render(<CourseCardList {...coachProps} />);
+
+    expect(screen.getByTestId('empty-state')).toBeInTheDocument();
+    expect(screen.getByTestId('empty-state-message')).toHaveTextContent('You haven’t enrolled in any coaching groups yet (en)');
+    expect(screen.getByTestId('empty-state-button')).toBeInTheDocument();
+    expect(screen.getByTestId('empty-state-button')).toHaveTextContent('Join a Group (en)');
+
+    fireEvent.click(screen.getByTestId('empty-state-button'));
+    expect(coachProps.onEmptyStateButtonClick).toHaveBeenCalledTimes(1);
   });
 
   it('handles single child correctly', () => {
@@ -134,10 +161,18 @@ describe('CourseCardList', () => {
     expect(firstRender).toBe(secondRender); // Same DOM node, proving memoization
   });
 
-  it('handles different locales', () => {
-    render(<CourseCardList {...baseProps} locale="de" />);
+  it('handles different locales for empty state', () => {
+    const deProps = {
+      ...baseProps,
+      locale: 'de' as TLocale,
+      emptyStateMessage: 'Keine Kurse verfügbar',
+      emptyStateButtonText: 'Kurse durchsuchen',
+    };
+    render(<CourseCardList {...deProps} />);
 
     expect(screen.getByTestId('empty-state')).toBeInTheDocument();
-    expect(screen.getByText('No courses available (de)')).toBeInTheDocument();
+    expect(screen.getByTestId('empty-state-message')).toHaveTextContent('Keine Kurse verfügbar (de)');
+    expect(screen.getByTestId('empty-state-button')).toBeInTheDocument();
+    expect(screen.getByTestId('empty-state-button')).toHaveTextContent('Kurse durchsuchen (de)');
   });
 });

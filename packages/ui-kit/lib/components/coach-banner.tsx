@@ -45,7 +45,7 @@ export const CoachBanner: React.FC<isLocalAware & CoachBannerProps> = ({
   const handleImageError = () => {
     setIsImageError(true);
   };
-
+  const shouldShowPlaceholder = !imageUrl || isImageError;
   return (
     <div className="flex flex-col items-start self-stretch max-w-7xl mx-auto py-8 md:py-12 px-[40px] rounded-[16px] border border-solid border-card-stroke bg-card-fill">
       <div className="grid grid-cols-1 md:grid-cols-2 items-start w-full h-full sm:gap-3">
@@ -66,7 +66,7 @@ export const CoachBanner: React.FC<isLocalAware & CoachBannerProps> = ({
         </div>
 
         <div className="order-1 md:order-2 h-full p-0 md:ml-10">
-          {isImageError ? (
+          {shouldShowPlaceholder ? (
             // Placeholder for broken image
             <div className="rounded-xl w-full h-[500px] lg:max-h-[320px]  bg-base-neutral-700 flex items-center justify-center mb-4 md:mb-0">
               <span className="text-text-secondary text-md"> {dictionary.components.coachBanner.placeHolderText} </span>
