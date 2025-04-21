@@ -52,9 +52,9 @@ export interface SideMenuItemProps {
  * />
  */
 
-export const SideMenuItem: FC<SideMenuItemProps> = ({ 
-    item , 
-    onClickItem ,
+export const SideMenuItem: FC<SideMenuItemProps> = ({
+    item,
+    onClickItem,
     isCollapsed = false
 }) => {
     return (
@@ -64,13 +64,13 @@ export const SideMenuItem: FC<SideMenuItemProps> = ({
             className={cn(
                 'flex items-center cursor-pointer w-full hover:bg-base-neutral-800 rounded-medium',
                 isCollapsed
-                ? 'justify-center h-[2.875rem]'
-                : 'justify-between px-4 py-2 gap-2',
+                    ? 'justify-center h-[2.875rem]'
+                    : 'justify-between px-4 py-2 gap-2',
             )}
         >
-            <div className={cn ('flex items-center w-full' , isCollapsed ? 'gap-0' : 'gap-2')}>
-                <span 
-                    className={cn(`flex items-center justify-center` , isCollapsed && 'w-full')}
+            <div className={cn('flex items-center w-full', isCollapsed ? 'gap-0' : 'gap-2')}>
+                <span
+                    className={cn(`flex items-center justify-center`, isCollapsed && 'w-full')}
                     title={item.label}
                 >
                     {/* {item.icon} */}
@@ -89,7 +89,7 @@ export const SideMenuItem: FC<SideMenuItemProps> = ({
                         </span>
                         {item.notificationCount > 0 && (
                             <div className="flex-shrink-0">
-                                <Badge text={`${item.notificationCount}`} size="medium"/>
+                                <Badge text={`${item.notificationCount}`} size="medium" />
                             </div>
                         )}
                     </div>

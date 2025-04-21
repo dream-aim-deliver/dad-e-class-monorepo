@@ -52,12 +52,12 @@ export interface SideMenuProps extends isLocalAware {
 
 export const SideMenu: FC<SideMenuProps> = ({
   userName,
-  userRole ,
+  userRole,
   profileImageUrl,
   rating,
   className,
   isCollapsed = false,
-  children ,
+  children,
   onClickToggle,
   locale
 }) => {
@@ -89,17 +89,17 @@ export const SideMenu: FC<SideMenuProps> = ({
             <div className="flex gap-2">
               {
                 userRole === 'student' &&
-                  <Badge data-testid="badge" text={dictionary.components.sideMenu.studentText}/> 
+                <Badge data-testid="badge" text={dictionary.components.sideMenu.studentText} />
               }
               {
-                (userRole === 'coach' || userRole === 'courseCreator') && 
-                  <Badge text={dictionary.components.sideMenu.coachText}/>
+                (userRole === 'coach' || userRole === 'courseCreator') &&
+                <Badge text={dictionary.components.sideMenu.coachText} />
               }
               {userRole === 'courseCreator' && <Badge text={dictionary.components.sideMenu.courseCreatorText} />}
             </div>
             {userRole !== 'student' && rating && (
               <div className="flex gap-[0.25rem] items-end">
-                <StarRating rating={rating.score} totalStars={5}/>
+                <StarRating rating={rating.score} totalStars={5} />
                 <p className="text-text-primary text-xs font-bold leading-[100%]">
                   {rating.score}
                 </p>
@@ -122,7 +122,7 @@ export const SideMenu: FC<SideMenuProps> = ({
         className={cn(
           'flex w-[2rem] h-[2rem] absolute p-[4] right-[0.5rem] bottom-[0.5rem] items-center',
         )}
-        data-testid="toggle-container" 
+        data-testid="toggle-container"
       >
         <IconButton
           icon={isCollapsed ? <IconChevronRight /> : <IconChevronLeft />}
