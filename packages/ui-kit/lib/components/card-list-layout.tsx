@@ -1,8 +1,8 @@
 import React from "react";
 import { cn } from "../utils/style-utils";
 interface CardListLayoutProps {
-children: React.ReactNode;
-className?: string;
+  children: React.ReactNode;
+  className?: string;
 }
 /**
  * A layout component that arranges its children in a responsive grid format.
@@ -14,8 +14,8 @@ className?: string;
  */
 
 
-export default function CardListLayout({children,className}: CardListLayoutProps) {
-    return <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4",className)}>
+export default function CardListLayout({ children, className }: CardListLayoutProps) {
+  return <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", className)}>
     {children}
   </div>
 }
