@@ -97,12 +97,12 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
     window.addEventListener('resize', checkTruncation);
     return () => window.removeEventListener('resize', checkTruncation);
   }, [title]);
-
+  const shouldShowPlaceholder = !imageUrl || isImageError;
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
         <div className="relative">
-          {isImageError ? (
+          {shouldShowPlaceholder ? (
             // Placeholder for broken image (matching CoachBanner styling)
             <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
               <span className="text-text-secondary text-md">
