@@ -135,6 +135,7 @@ export const EN: TDictionary = {
     coachCard:{
       coachingSession: "Coaching Session",
       teaches: "Teaches",
+      more: "more",
       viewProfile: "View Profile",
       bookSession: "Book a Session",
     },

@@ -1,10 +1,38 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import CoachList from '../lib/components/coach/coach-card-list';
-import { CoachCardDetails } from '../lib/components/coach/coach-card';
 
+import CoachCard, { CoachCardDetails } from '../lib/components/coach/coach-card';
+import { isLocalAware } from '@maany_shr/e-class-translations';
+import CardListLayout from '../lib/components/card-list-layout';
+interface CoachListProps extends isLocalAware {
+  title?: string;
+  coaches: CoachCardDetails[];
+  onClickBookSession?: () => void;
+  onClickViewProfile?: () => void;
+}
+
+ function CoachList({ coaches,title,onClickBookSession,onClickViewProfile,locale }: CoachListProps) {
+
+
+
+return (
+  <div className="flex flex-col gap-10">
+  <h3 className="text-text-primary lg:text-[40px] text-2xl">{title}</h3>
+  <CardListLayout>
+    {coaches.map(coach => (
+      <CoachCard
+        cardDetails={coach}
+         onClickBookSession={onClickBookSession}
+         onClickViewProfile={onClickViewProfile}
+          locale={locale}
+         />
+    ))}
+  </CardListLayout>
+  </div>
+);
+}
 const meta: Meta<typeof CoachList> = {
-  title: 'Components/CoachList',
+  title: 'Components/CoachCardList',
   component: CoachList,
   parameters: {
     layout: 'centered',
@@ -12,13 +40,18 @@ const meta: Meta<typeof CoachList> = {
   tags: ['autodocs'],
   argTypes: {
     title: { control: 'text' },
-    onClickBookSession: { action: 'booked session' },
-    onClickViewProfile: { action: 'viewed profile' },
+    onClickBookSession:()=>alert('Book Session Clicked'),
+    onClickViewProfile:()=>alert('View Profile Clicked'),
+    locale:{
+      control: 'select',
+      options: ['en', 'de'],
+    },
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof CoachList>;
+
 
 // Sample coach data
 const sampleCoaches: CoachCardDetails[] = [
@@ -27,7 +60,7 @@ const sampleCoaches: CoachCardDetails[] = [
     coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     languages: ['English', 'Spanish'],
     sessionCount: 156,
-    skills: ['React', 'JavaScript', 'UI/UX Design'],
+    skills: ['React', 'JavaScript', 'UI/UX Design','Python', 'Data Science', 'Machine Learning'],
     description:
       'Experienced frontend developer specializing in React and modern JavaScript frameworks. Strong focus on creating intuitive user interfaces.',
     courses: [
@@ -48,7 +81,7 @@ const sampleCoaches: CoachCardDetails[] = [
     coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     languages: ['English', 'Mandarin'],
     sessionCount: 98,
-    skills: ['Python', 'Data Science', 'Machine Learning'],
+    skills: ['Python', 'Data Science', 'Machine Learning','React', 'JavaScript', 'UI/UX Design'],
     description:
       'Data scientist with expertise in Python and machine learning algorithms. Passionate about helping others understand complex concepts.',
     courses: [
@@ -75,7 +108,7 @@ const sampleCoaches: CoachCardDetails[] = [
     courses: [
       {
         image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-        title: 'Agile Product Management',
+        title: 'Agile Product Management Agile Product Management',
       },
       { image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', title: 'Leadership Skills' },
     ],

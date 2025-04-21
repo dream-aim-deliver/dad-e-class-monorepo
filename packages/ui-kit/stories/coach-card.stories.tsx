@@ -1,13 +1,7 @@
-import React from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react';
 import CoachCard from '../lib/components/coach/coach-card';
-import { NextIntlClientProvider } from 'next-intl';
-const mockMessages = {
-  coachingSession: 'Coaching Session',
-  teaches: 'Teaches',
-  viewProfile: 'View Profile',
-  bookSession: 'Book a Session',
-};
+
 const meta: Meta<typeof CoachCard> = {
   title: 'Components/CoachCard',
   component: CoachCard,
@@ -183,9 +177,14 @@ export const LowRatedCoach: Story = {
       languages: ['English'],
       sessionCount: 15,
       skills: ['Public Speaking', 'Debating'],
-      description: 'Helping individuals master the art of public speaking.',
+      description: 'Stand out with my coaching that combines deep branding expertise and a tailored, hands-on approach to craft a brand identity that’s as unique as your business.',
       courses: [
         {
+          image:
+            'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+          title: 'Speaking with Confidence',
+        },
+         {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
           title: 'Speaking with Confidence',

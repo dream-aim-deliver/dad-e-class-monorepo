@@ -63,11 +63,11 @@ const CoachCard: FC<CoachCardProps> = ({
     <div
       role="article"
       className={cn(
-        'flex flex-col bg-card-fill gap-4 text-[14px] md:text-[16px] border border-card-stroke p-4 max-w-[382px] min-w-[348px] rounded-lg text-text-secondary',
+        'flex flex-col bg-card-fill gap-4 text-sm md:text-normal border border-card-stroke p-4 max-w-[382px]  rounded-lg text-text-secondary',
         className
       )}
     >
-      {/* Header section with profile and stats - fixed height */}
+      {/* Header section with profile and stats */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <UserAvatar fullName={cardDetails.coachName} className="w-10 h-10 rounded-full flex-shrink-0" imageUrl={cardDetails.coachImage} />
@@ -75,7 +75,7 @@ const CoachCard: FC<CoachCardProps> = ({
             <p className="text-color-text-primary text-white text-sm md:text-md leading-4 font-bold truncate">{cardDetails.coachName}</p>
             <div className="flex w-full gap-1 items-center">
               <StarRating totalStars={5} size={"4"} rating={cardDetails.rating} />
-              <p className="text-[#FAFAF9] text-sm leading-3.5">{cardDetails.rating}</p>
+              <p className="text-text-primary text-sm leading-3.5">{cardDetails.rating}</p>
               <p className="text-xs">({cardDetails.totalRatings})</p>
             </div>
           </div>
@@ -98,24 +98,25 @@ const CoachCard: FC<CoachCardProps> = ({
       </div>
 
       {/* Skills section*/}
-      <div className="h-24">
-        <SkillBadges skills={cardDetails.skills} />
+      <div className="md:h-24 flex-shrink-0">
+        <SkillBadges locale={locale} skills={cardDetails.skills} />
       </div>
 
       
-      <div className="flex flex-col flex-grow gap-4">
-        <div className="min-h-22">
-          <p className="leading-[150%] line-clamp-4">{cardDetails.description}</p>
+      <div className="flex flex-col  gap-4">
+        <div className="h-21 lg:h-24">
+          <p className="leading-[150%] line-clamp-4 text-normal">{cardDetails.description}</p>
         </div>
 
         {/* Teaches Section */}
-        <div className="flex flex-wrap gap-2 items-center min-h-16">
-          <span className="text-[14px]">{dictionary.components.coachCard.teaches}:</span>
+        <div className="flex flex-wrap gap-2 items-center min-h-18">
+          <span className="text-sm">{dictionary.components.coachCard.teaches}:</span>
           {cardDetails.courses.slice(0, 3).map((course) => (
             <Button
               key={course.title}
-              className="p-0 gap-1 text-sm"
+              className="p-0 gap-1 text-sm truncate"
               size='small'
+             title={course.title}
               variant="text"
               hasIconLeft
               iconLeft={<UserAvatar fullName={course.title} imageUrl={course.image} className="rounded-small" size="small" />}
@@ -126,7 +127,7 @@ const CoachCard: FC<CoachCardProps> = ({
       </div>
 
       {/* Card Footer */}
-      <div className="flex flex-col gap-2 mt-auto">
+      <div className="flex flex-col gap-2">
         <Button
           variant="secondary"
           size="medium"
