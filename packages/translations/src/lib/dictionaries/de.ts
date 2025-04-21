@@ -135,6 +135,7 @@ export const DE: TDictionary = {
     },
     coachCard:{
       coachingSession: "Coaching-Sitzung",
+      more: "mehr",
       teaches: "Lehrt",
       viewProfile: "Profil ansehen",
       bookSession: "Sitzung buchen",
