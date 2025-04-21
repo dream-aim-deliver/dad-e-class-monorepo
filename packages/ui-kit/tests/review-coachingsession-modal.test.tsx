@@ -16,6 +16,7 @@ vi.mock('@maany_shr/e-class-translations', () => ({
         skipButton: 'Skip',
         thankYouText: 'Thank you for your feedback!',
         closeButton: 'Close',
+        errorState: 'An error occurred. Please try again.',
       },
     },
   }),
@@ -23,8 +24,13 @@ vi.mock('@maany_shr/e-class-translations', () => ({
 }));
 
 vi.mock('../lib/components/button', () => ({
-  Button: ({ text, onClick, className, disabled }: { text: string; onClick?: () => void; className?: string; disabled?: boolean }) => (
-    <button data-testid={`button-${text}`} onClick={onClick} className={className} disabled={disabled}>
+  Button: ({ text, onClick, className, disabled, variant, size }: any) => (
+    <button
+      data-testid={`button-${text}`}
+      onClick={onClick}
+      className={className}
+      disabled={disabled}
+    >
       {text}
     </button>
   ),
@@ -68,7 +74,8 @@ vi.mock('../lib/components/text-area-input', () => ({
   TextAreaInput: ({ className, placeholder, value, setValue, ariaLabel }: any) => (
     <div className="flex flex-col gap-2 items-start">
       <textarea
-        className={`${className} w-full px-3 py-[10px] bg-input-fill text-text-primary border border-input-stroke rounded-medium focus:outline-none placeholder:text-text-secondary px-3 pt-2.5 pb-4 w-full rounded-lg border border-stone-800 bg-stone-950 min-h-[104px] text-stone-300 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        data-testid="review-textarea"
+        className={className}
         placeholder={placeholder}
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -86,7 +93,11 @@ vi.mock('../lib/components/icons/icon-success', () => ({
 
 vi.mock('../lib/components/icon-button', () => ({
   IconButton: ({ icon, onClick, className, dataTestid }: any) => (
-    <button data-testid={dataTestid || 'icon-button'} onClick={onClick} className={className}>
+    <button
+      data-testid={dataTestid || 'icon-button'}
+      onClick={onClick}
+      className={className}
+    >
       {icon}
     </button>
   ),
@@ -94,6 +105,12 @@ vi.mock('../lib/components/icon-button', () => ({
 
 vi.mock('../lib/components/icons/icon-close', () => ({
   IconClose: () => <span data-testid="icon-close">Close</span>,
+}));
+
+vi.mock('../lib/components/icons/icon-loader-spinner', () => ({
+  IconLoaderSpinner: ({ classNames }: { classNames: string }) => (
+    <span data-testid="icon-loader-spinner" className={classNames}>Spinner</span>
+  ),
 }));
 
 vi.mock('../lib/components/tooltip', () => ({
@@ -108,6 +125,8 @@ describe('ReviewDialog', () => {
     onClose: vi.fn(),
     onSubmit: vi.fn(),
     onSkip: vi.fn(),
+    isLoading: false,
+    isError: false,
   };
 
   it('disables submit button when form is invalid', () => {
@@ -124,17 +143,7 @@ describe('ReviewDialog', () => {
       fireEvent.click(screen.getByTestId('button-Skip'));
     });
 
-    expect(defaultProps.onSkip).toHaveBeenCalled();
-    expect(defaultProps.onClose).toHaveBeenCalled();
-  });
-
-  it('calls onClose when close button is clicked in form state', async () => {
-    render(<ReviewDialog {...defaultProps} />);
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('button-Skip'));
-    });
-
+    expect(defaultProps.onSkip).toHaveBeenCalledWith(true);
     expect(defaultProps.onClose).toHaveBeenCalled();
   });
 
@@ -162,7 +171,7 @@ describe('ReviewDialog', () => {
     expect(tooltip).toHaveTextContent('Your review');
   });
 
-  it('does not submit form if review is empty', async () => {
+  it('does not submit form if review is empty and rating is not set', async () => {
     render(<ReviewDialog {...defaultProps} />);
 
     await act(async () => {
@@ -177,5 +186,19 @@ describe('ReviewDialog', () => {
   it('does not call onSubmit on mount', () => {
     render(<ReviewDialog {...defaultProps} />);
     expect(defaultProps.onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('displays loading spinner when isLoading is true', () => {
+    render(<ReviewDialog {...defaultProps} isLoading={true} />);
+
+    expect(screen.getByTestId('icon-loader-spinner')).toBeInTheDocument();
+    expect(screen.getByTestId('button-Send review')).toBeDisabled();
+    expect(screen.getByTestId('button-Skip')).toBeDisabled();
+  });
+
+  it('displays error message when isError is true', () => {
+    render(<ReviewDialog {...defaultProps} isError={true} />);
+
+    expect(screen.getByText('An error occurred. Please try again.')).toBeInTheDocument();
   });
 });

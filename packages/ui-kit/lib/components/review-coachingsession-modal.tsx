@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useState } from "react";
 import { Button } from './button';
 import StarRatingInput from './star-rating-input';
 import { StarRating } from './star-rating';
@@ -7,14 +6,17 @@ import { CheckBox } from './checkbox';
 import { IconSuccess } from './icons/icon-success';
 import { IconButton } from './icon-button';
 import { IconClose } from './icons/icon-close';
+import { IconLoaderSpinner } from './icons/icon-loader-spinner';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TextAreaInput } from './text-areaInput';
 import Tooltip from './tooltip';
 
 export interface ReviewFlowProps extends isLocalAware {
     onClose?: () => void;
-    onSubmit?: (rating: number, review: string, neededMoreTime: boolean, skipped: boolean) => Promise<void>;
+    onSubmit?: (rating: number, review: string, neededMoreTime: boolean, skipped: boolean) => void;
     onSkip?: (skipped: boolean) => void;
+    isLoading?: boolean;
+    isError?: boolean;
 }
 
 /**
@@ -25,52 +27,48 @@ export interface ReviewFlowProps extends isLocalAware {
  * - Form view: Allows users to submit a star rating, text review, and indicate if more time was needed.
  * - Success view: Displays a thank-you message and review summary after successful submission.
  *
+ * The submit button is enabled when a rating is provided. The skip button is always enabled unless the form is loading.
+ *
  * @param onClose Optional callback triggered when the dialog is closed (via close button or skip).
- * @param onSubmit Optional callback triggered on form submission. Receives the `rating`, `review`, `neededMoreTime`, and `skipped` (false) values.
+ * @param onSubmit Optional callback triggered on form submission. Receives the `rating`, `review`, `neededMoreTime`, and `skipped` values.
  * @param onSkip Optional callback triggered when the user skips the review. Receives `skipped` (true).
- * @param locale The locale for internationalization, used to fetch localized strings.
+ * @param locale The locale for internationalization, used to fetch localized strings (e.g., 'en', 'de').
+ * @param isLoading Optional boolean indicating if the form is in a loading state, showing a spinner. Defaults to `false`.
+ * @param isError Optional boolean indicating if an error occurred, showing the error message. Defaults to `false`.
  *
  * @example
  * <ReviewDialog
  *   locale="en"
+ *   isLoading={false}
+ *   isError={false}
  *   onSubmit={(rating, review, neededMoreTime, skipped) => {
- *     console.log({ rating, review, neededMoreTime, skipped });
+ *     console.log(`Submitted: ${rating}, ${review}, ${neededMoreTime}, ${skipped}`);
  *   }}
- *   onSkip={(skipped) => console.log("Skipped:", skipped)}
- *   onClose={() => console.log("Dialog closed")}
- * />
- *
- * @example
- * <ReviewDialog
- *   locale="es"
- *   onSubmit={async (rating, review, neededMoreTime, skipped) => {
- *     await submitReview({ rating, review, neededMoreTime });
- *   }}
+ *   onSkip={(skipped) => console.log(`Skipped: ${skipped}`)}
+ *   onClose={() => console.log('Dialog closed')}
  * />
  */
-export const ReviewDialog: React.FC<ReviewFlowProps> = ({ onClose, onSubmit, onSkip, locale }) => {
-    const [review, setReview] = useState('');
-    const [rating, setRating] = useState(0);
-    const [submitted, setSubmitted] = useState(false);
-    const [neededMoreTime, setNeededMoreTime] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+export const ReviewDialog: React.FC<ReviewFlowProps> = ({
+    onClose,
+    onSubmit,
+    onSkip,
+    locale,
+    isLoading = false,
+    isError = false,
+}) => {
+    const [review, setReview] = React.useState('');
+    const [rating, setRating] = React.useState(0);
+    const [submitted, setSubmitted] = React.useState(false);
+    const [neededMoreTime, setNeededMoreTime] = React.useState(false);
 
-    const handleReviewSubmit = async (e: React.FormEvent) => {
+    const dictionary = getDictionary(locale);
+    const isFormValid = rating > 0;
+    const handleReviewSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!onSubmit) return;
+        if (!onSubmit || !isFormValid) return;
 
-        setIsLoading(true);
-        setError(null);
-
-        try {
-            await onSubmit(rating, review, neededMoreTime, false);
-            setSubmitted(true);
-        } catch (err) {
-            setError(`${dictionary.components.reviewCoachingSessionModal.errorState}`);
-        } finally {
-            setIsLoading(false);
-        }
+        onSubmit(rating, review, neededMoreTime, false);
+        setSubmitted(true);
     };
 
     const handleClose = () => {
@@ -86,9 +84,6 @@ export const ReviewDialog: React.FC<ReviewFlowProps> = ({ onClose, onSubmit, onS
         handleClose();
     };
 
-    const isFormValid = rating > 0 && review.trim().length > 0;
-    const dictionary = getDictionary(locale);
-
     if (!submitted) {
         return (
             <div className="flex flex-col items-end gap-4 p-6 rounded-lg border border-card-stroke bg-card-fill max-w-[340px] shadow-[0_4px_12px_rgba(12,10,9,1)]">
@@ -98,7 +93,7 @@ export const ReviewDialog: React.FC<ReviewFlowProps> = ({ onClose, onSubmit, onS
                 >
                     <label
                         htmlFor="courseRating"
-                        className="text-lg font-bold leading-tight text-white text-justify w-full"
+                        className="text-lg font-bold leading-tight text-white text-left w-full"
                     >
                         {dictionary.components.reviewCoachingSessionModal.title}
                     </label>
@@ -119,7 +114,7 @@ export const ReviewDialog: React.FC<ReviewFlowProps> = ({ onClose, onSubmit, onS
                         >
                             <Tooltip
                                 description="This tooltip includes a title and description"
-                                text={dictionary.components.reviewCoachingSessionModal.yourReview}                        
+                                text={dictionary.components.reviewCoachingSessionModal.yourReview}
                             />
                         </label>
 
@@ -146,9 +141,9 @@ export const ReviewDialog: React.FC<ReviewFlowProps> = ({ onClose, onSubmit, onS
                         />
                     </div>
 
-                    {error && (
+                    {isError && (
                         <div className="w-full text-sm text-red-500 text-justify">
-                            {error}
+                            {dictionary.components.reviewCoachingSessionModal.errorState}
                         </div>
                     )}
 
@@ -162,26 +157,7 @@ export const ReviewDialog: React.FC<ReviewFlowProps> = ({ onClose, onSubmit, onS
                         />
                         {isLoading && (
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <svg
-                                    className="animate-spin h-5 w-5 text-white"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <circle
-                                        className="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                        className="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                    ></path>
-                                </svg>
+                                <IconLoaderSpinner classNames="animate-spin h-5 w-5 text-white" />
                             </div>
                         )}
                     </div>
@@ -197,46 +173,44 @@ export const ReviewDialog: React.FC<ReviewFlowProps> = ({ onClose, onSubmit, onS
                 </form>
             </div>
         );
-    } else {
-        return (
-            <div
-                className="flex flex-col items-end gap-6 p-6 rounded-lg border border-card-stroke bg-card-fill max-w-[292px] shadow-[0_4px_12px_rgba(12,10,9,1)] relative"
-            >
-                <div className="absolute right-0 top-0">
-                    <IconButton
-                        data-testid="close-modal-button"
-                        styles="text"
-                        icon={<IconClose />}
-                        size="small"
-                        onClick={() => handleClose()}
-                        className="text-button-text-text"
-                    />
-                </div>
+    }
 
-                <div className="flex items-start gap-4 w-full">
-                    <div className="flex flex-col gap-4 w-full">
-                        <IconSuccess classNames="text-feedback-success-primary" />
-                        <div className="text-lg text-base-white text-justify leading-none">
-                            {dictionary.components.reviewCoachingSessionModal.thankYouText}
-                        </div>
+    return (
+        <div className="flex flex-col items-end gap-6 p-6 rounded-lg border border-card-stroke bg-card-fill max-w-[292px] shadow-[0_4px_12px_rgba(12,10,9,1)] relative">
+            <div className="absolute right-0 top-0">
+                <IconButton
+                    data-testid="close-modal-button"
+                    styles="text"
+                    icon={<IconClose />}
+                    size="small"
+                    onClick={handleClose}
+                    className="text-button-text-text"
+                />
+            </div>
 
-                        <div className="bg-base-neutral-800 p-3 rounded-lg border border-card-stroke w-full">
-                            <p className="text-sm text-stone-300 text-justify line-clamp-3">{review}</p>
-                            <div className="flex justify-end items-center gap-1">
-                                <StarRating rating={rating} totalStars={5} />
-                            </div>
+            <div className="flex items-start gap-4 w-full">
+                <div className="flex flex-col gap-4 w-full">
+                    <IconSuccess classNames="text-feedback-success-primary" />
+                    <div className="text-lg text-base-white text-justify leading-none">
+                        {dictionary.components.reviewCoachingSessionModal.thankYouText}
+                    </div>
+
+                    <div className="bg-base-neutral-800 p-3 rounded-lg border border-card-stroke w-full">
+                        <p className="text-sm text-stone-300 text-justify line-clamp-3">{review}</p>
+                        <div className="flex justify-end items-center gap-1">
+                            <StarRating rating={rating} totalStars={5} />
                         </div>
                     </div>
                 </div>
-
-                <Button
-                    className="w-full mt-4"
-                    variant="primary"
-                    size="medium"
-                    text={dictionary.components.reviewCoachingSessionModal.closeButton}
-                    onClick={handleClose}
-                />
             </div>
-        );
-    }
+
+            <Button
+                className="w-full mt-4"
+                variant="primary"
+                size="medium"
+                text={dictionary.components.reviewCoachingSessionModal.closeButton}
+                onClick={handleClose}
+            />
+        </div>
+    );
 };

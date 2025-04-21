@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ReviewDialog } from '../lib/components/review-coachingsession-modal'; 
+import { ReviewDialog } from '../lib/components/review-coachingsession-modal';
+import { getDictionary } from '@maany_shr/e-class-translations';
 
 const meta: Meta<typeof ReviewDialog> = {
   title: 'Components/ReviewCoachingSessionModal',
@@ -14,6 +15,14 @@ const meta: Meta<typeof ReviewDialog> = {
       control: 'select',
       options: ['en', 'de'],
       description: 'The locale for the dialog (e.g., for translations).',
+    },
+    isLoading: {
+      control: 'boolean',
+      description: 'Indicates if the form is in a loading state, showing a spinner.',
+    },
+    isError: {
+      control: 'boolean',
+      description: 'Indicates if an error occurred, showing the error message.',
     },
     onClose: {
       action: 'dialog-closed',
@@ -37,17 +46,18 @@ type Story = StoryObj<typeof ReviewDialog>;
 export const DefaultForm: Story = {
   args: {
     locale: 'en',
-    onClose: () => alert('Dialog Closed'),
-    onSubmit: async (rating, review, neededMoreTime, skipped) => {
-      alert(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
-      return Promise.resolve();
+    isLoading: false,
+    isError: false,
+    onClose: () => console.log('Dialog Closed'),
+    onSubmit: (rating, review, neededMoreTime, skipped) => {
+      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
     },
-    onSkip: (skipped) => alert(`Review Skipped: Skipped=${skipped}`),
+    onSkip: (skipped) => console.log(`Review Skipped: Skipped=${skipped}`),
   },
   parameters: {
     docs: {
       description: {
-        story: 'The default ReviewDialog in its form state (English), allowing users to rate, write a review, check "Did you need more time?", submit, skip, or close. Shows alerts for actions.',
+        story: 'The default ReviewDialog in its form state (English), allowing users to rate, write a review, check "Did you need more time?", submit, skip, or close. The skip button is always enabled, and the submit button is enabled when a rating is provided.',
       },
     },
   },
@@ -55,18 +65,13 @@ export const DefaultForm: Story = {
 
 export const DefaultFormGerman: Story = {
   args: {
+    ...DefaultForm.args,
     locale: 'de',
-    onClose: () => alert('Dialog Closed'),
-    onSubmit: async (rating, review, neededMoreTime, skipped) => {
-      alert(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
-      return Promise.resolve();
-    },
-    onSkip: (skipped) => alert(`Review Skipped: Skipped=${skipped}`),
   },
   parameters: {
     docs: {
       description: {
-        story: 'The ReviewDialog in its form state with German locale, showing translated text for all elements. Shows alerts for actions.',
+        story: 'The ReviewDialog in its form state with German locale, showing translated text for all elements.',
       },
     },
   },
@@ -75,37 +80,41 @@ export const DefaultFormGerman: Story = {
 export const SuccessView: Story = {
   args: {
     locale: 'en',
-    onClose: () => alert('Dialog Closed'),
-    onSubmit: async (rating, review, neededMoreTime, skipped) => {
-      alert(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
-      return Promise.resolve();
+    isLoading: false,
+    isError: false,
+    onClose: () => console.log('Dialog Closed'),
+    onSubmit: (rating, review, neededMoreTime, skipped) => {
+      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
     },
-    onSkip: (skipped) => alert(`Review Skipped: Skipped=${skipped}`),
+    onSkip: (skipped) => console.log(`Review Skipped: Skipped=${skipped}`),
   },
   parameters: {
     docs: {
       description: {
-        story: 'The ReviewDialog in its success view, shown after a successful submission. To see this state, submit a valid form (rating > 0 and non-empty review) in the Storybook canvas. Shows alerts for actions.',
+        story: 'The ReviewDialog in its success view, shown after a successful submission. To see this state, submit a valid form (rating > 0) in the Storybook canvas.',
       },
     },
+  },
+  play: async ({ canvasElement }) => {
+    console.log('Note: Success view requires manual form submission in Storybook canvas.');
   },
 };
 
 export const LoadingState: Story = {
   args: {
     locale: 'en',
-    onClose: () => alert('Dialog Closed'),
-    onSubmit: async (rating, review, neededMoreTime, skipped) => {
-      alert(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
-      // Simulate a slow backend response
-      return new Promise((resolve) => setTimeout(resolve, 2000));
+    isLoading: true,
+    isError: false,
+    onClose: () => console.log('Dialog Closed'),
+    onSubmit: (rating, review, neededMoreTime, skipped) => {
+      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
     },
-    onSkip: (skipped) => alert(`Review Skipped: Skipped=${skipped}`),
+    onSkip: (skipped) => console.log(`Review Skipped: Skipped=${skipped}`),
   },
   parameters: {
     docs: {
       description: {
-        story: 'The ReviewDialog in its loading state, shown when the form is being submitted. Submit a valid form to see the loading spinner for 2 seconds. Shows alerts for actions.',
+        story: 'The ReviewDialog in its loading state, shown when isLoading is true. The submit and skip buttons are disabled, and the IconLoaderSpinner is displayed.',
       },
     },
   },
@@ -114,18 +123,32 @@ export const LoadingState: Story = {
 export const ErrorState: Story = {
   args: {
     locale: 'en',
-    onClose: () => alert('Dialog Closed'),
-    onSubmit: async (rating, review, neededMoreTime, skipped) => {
-      alert(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
-      // Simulate a backend error
-      return Promise.reject(new Error('Backend failure'));
+    isLoading: false,
+    isError: true,
+    onClose: () => console.log('Dialog Closed'),
+    onSubmit: (rating, review, neededMoreTime, skipped) => {
+      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
     },
-    onSkip: (skipped) => alert(`Review Skipped: Skipped=${skipped}`),
+    onSkip: (skipped) => console.log(`Review Skipped: Skipped=${skipped}`),
   },
   parameters: {
     docs: {
       description: {
-        story: 'The ReviewDialog in its error state, shown when the backend submission fails. Submit a valid form to see the error message. Shows alerts for actions.',
+        story: 'The ReviewDialog in its error state, shown when isError is true. Displays the error message from dictionary.components.reviewCoachingSessionModal.errorState.',
+      },
+    },
+  },
+};
+
+export const ErrorStateGerman: Story = {
+  args: {
+    ...ErrorState.args,
+    locale: 'de',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'The ReviewDialog in its error state with German locale, showing the translated error message from dictionary.components.reviewCoachingSessionModal.errorState.',
       },
     },
   },
@@ -134,17 +157,18 @@ export const ErrorState: Story = {
 export const SkippedAction: Story = {
   args: {
     locale: 'en',
-    onClose: () => alert('Dialog Closed'),
-    onSubmit: async (rating, review, neededMoreTime, skipped) => {
-      alert(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
-      return Promise.resolve();
+    isLoading: false,
+    isError: false,
+    onClose: () => console.log('Dialog Closed'),
+    onSubmit: (rating, review, neededMoreTime, skipped) => {
+      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
     },
-    onSkip: (skipped) => alert(`Review Skipped: Skipped=${skipped}`),
+    onSkip: (skipped) => console.log(`Review Skipped: Skipped=${skipped}`),
   },
   parameters: {
     docs: {
       description: {
-        story: 'The ReviewDialog demonstrating the skip action. Click the "Skip" button to trigger the onSkip callback with skipped=true. Shows alerts for actions.',
+        story: 'The ReviewDialog demonstrating the skip action. The skip button is always enabled, and clicking it triggers the onSkip callback with skipped=true.',
       },
     },
   },
