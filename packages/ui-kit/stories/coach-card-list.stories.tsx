@@ -1,4 +1,3 @@
-import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 
 import CoachCard, { CoachCardDetails } from '../lib/components/coach/coach-card';
@@ -11,25 +10,23 @@ interface CoachListProps extends isLocalAware {
   onClickViewProfile?: () => void;
 }
 
- function CoachList({ coaches,title,onClickBookSession,onClickViewProfile,locale }: CoachListProps) {
+function CoachList({ coaches, title, onClickBookSession, onClickViewProfile, locale }: CoachListProps) {
 
-
-
-return (
-  <div className="flex flex-col gap-10">
-  <h3 className="text-text-primary lg:text-[40px] text-2xl">{title}</h3>
-  <CardListLayout>
-    {coaches.map(coach => (
-      <CoachCard
-        cardDetails={coach}
-         onClickBookSession={onClickBookSession}
-         onClickViewProfile={onClickViewProfile}
-          locale={locale}
-         />
-    ))}
-  </CardListLayout>
-  </div>
-);
+  return (
+    <div className="flex flex-col gap-10">
+      <h3 className="text-text-primary lg:text-[40px] text-2xl">{title}</h3>
+      <CardListLayout>
+        {coaches.map(coach => (
+          <CoachCard
+            cardDetails={coach}
+            onClickBookSession={onClickBookSession}
+            onClickViewProfile={onClickViewProfile}
+            locale={locale}
+          />
+        ))}
+      </CardListLayout>
+    </div>
+  );
 }
 const meta: Meta<typeof CoachList> = {
   title: 'Components/CoachCardList',
@@ -40,9 +37,7 @@ const meta: Meta<typeof CoachList> = {
   tags: ['autodocs'],
   argTypes: {
     title: { control: 'text' },
-    onClickBookSession:()=>alert('Book Session Clicked'),
-    onClickViewProfile:()=>alert('View Profile Clicked'),
-    locale:{
+    locale: {
       control: 'select',
       options: ['en', 'de'],
     },
@@ -60,7 +55,7 @@ const sampleCoaches: CoachCardDetails[] = [
     coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     languages: ['English', 'Spanish'],
     sessionCount: 156,
-    skills: ['React', 'JavaScript', 'UI/UX Design','Python', 'Data Science', 'Machine Learning'],
+    skills: ['React', 'JavaScript', 'UI/UX Design', 'Python', 'Data Science', 'Machine Learning'],
     description:
       'Experienced frontend developer specializing in React and modern JavaScript frameworks. Strong focus on creating intuitive user interfaces.',
     courses: [
@@ -81,7 +76,7 @@ const sampleCoaches: CoachCardDetails[] = [
     coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     languages: ['English', 'Mandarin'],
     sessionCount: 98,
-    skills: ['Python', 'Data Science', 'Machine Learning','React', 'JavaScript', 'UI/UX Design'],
+    skills: ['Python', 'Data Science', 'Machine Learning', 'React', 'JavaScript', 'UI/UX Design'],
     description:
       'Data scientist with expertise in Python and machine learning algorithms. Passionate about helping others understand complex concepts.',
     courses: [
@@ -102,7 +97,7 @@ const sampleCoaches: CoachCardDetails[] = [
     coachImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1741153300/pjgn9kimlqbz1f5zlvwk.png',
     languages: ['English', 'French'],
     sessionCount: 213,
-    skills: ['Product Management', 'Agile', 'Leadership','Product Management', 'Agile', 'Leadership','Product Management', 'Agile', 'Leadership'],
+    skills: ['Product Management', 'Agile', 'Leadership', 'Product Management', 'Agile', 'Leadership', 'Product Management', 'Agile', 'Leadership'],
     description:
       'Product manager with over 10 years of experience in tech companies. Expert in agile methodologies and team leadership.',
     courses: [
@@ -182,6 +177,8 @@ export const Default: Story = {
     coaches: sampleCoaches,
     locale: 'en',
     title: 'Coaching On Demand',
+    onClickBookSession: () => alert('Book Session Clicked'),
+    onClickViewProfile: () => alert('View Profile Clicked'),
   },
 };
 
@@ -189,6 +186,8 @@ export const FewCoaches: Story = {
   args: {
     coaches: sampleCoaches.slice(0, 3),
     locale: 'en',
+    onClickBookSession: () => alert('Book Session Clicked'),
+    onClickViewProfile: () => alert('View Profile Clicked'),
   },
 };
 
@@ -196,6 +195,8 @@ export const GermanLocale: Story = {
   args: {
     coaches: sampleCoaches,
     locale: 'de',
+    onClickBookSession: () => alert('Book Session Clicked'),
+    onClickViewProfile: () => alert('View Profile Clicked'),
   },
 };
 
@@ -203,6 +204,8 @@ export const MobileView: Story = {
   args: {
     coaches: sampleCoaches,
     locale: 'de',
+    onClickBookSession: () => alert('Book Session Clicked'),
+    onClickViewProfile: () => alert('View Profile Clicked'),
   },
   parameters: {
     viewport: {
@@ -215,6 +218,8 @@ export const TabletView: Story = {
   args: {
     coaches: sampleCoaches,
     locale: 'en',
+    onClickBookSession: () => alert('Book Session Clicked'),
+    onClickViewProfile: () => alert('View Profile Clicked'),
   },
   parameters: {
     viewport: {

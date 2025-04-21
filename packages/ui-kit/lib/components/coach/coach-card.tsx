@@ -1,6 +1,5 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Button } from '../button';
-import { Badge } from '../badge';
 import { UserAvatar } from '../avatar/user-avatar';
 import { cn } from '../../utils/style-utils';
 import { StarRating } from '../star-rating';
@@ -102,7 +101,7 @@ const CoachCard: FC<CoachCardProps> = ({
         <SkillBadges locale={locale} skills={cardDetails.skills} />
       </div>
 
-      
+
       <div className="flex flex-col  gap-4">
         <div className="h-21 lg:h-24">
           <p className="leading-[150%] line-clamp-4 ">{cardDetails.description}</p>
@@ -116,7 +115,7 @@ const CoachCard: FC<CoachCardProps> = ({
               key={course.title}
               className="p-0 gap-1 text-sm truncate"
               size='small'
-             title={course.title}
+              title={course.title}
               variant="text"
               hasIconLeft
               iconLeft={<UserAvatar fullName={course.title} imageUrl={course.image} className="rounded-small" size="small" />}
