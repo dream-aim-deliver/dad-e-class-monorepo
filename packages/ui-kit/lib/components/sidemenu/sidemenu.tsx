@@ -67,8 +67,9 @@ export const SideMenu: FC<SideMenuProps> = ({
       className={cn(
         'bg-card-fill rounded-medium border-[1px] border-card-stroke flex flex-col gap-4 py-6 items-center relative overflow-hidden transition-all duration-500 ease-in-out',
         isCollapsed
-          ? 'w-[4rem] px-4 gap-3 h-full'
-          : `w-[18rem] px-6 ${className}`,
+          ? 'w-[4rem] px-4 gap-3 h-fit'
+          : `w-[18rem] px-6 h-fit`,
+        className
       )}
       data-testid="menu-container"
     >
