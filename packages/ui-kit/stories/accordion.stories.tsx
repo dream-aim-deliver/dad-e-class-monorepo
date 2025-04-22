@@ -33,7 +33,7 @@ const meta: Meta = {
   component: Accordion,
   tags: ['docs'],
   parameters: {
-    Layout: 'centered',
+    layout: 'centered',
   },
   argTypes: {
     title: {
@@ -103,9 +103,9 @@ const HomeAccordion: React.FC<TAccordionList> = ({
   items,
 }) => {
   return (
-    <Accordion className='flex flex-col gap-7' type="single" defaultValue={[items[0].title]}>
+    <Accordion className='flex flex-col gap-7 w-full' type="single" defaultValue={[items[0].title]}>
       <h2  className="text-text-primary">{title}</h2>
-      <div className="md:w-3/4 w-full bg-card-fill rounded-medium border border-card-stroke py-4 px-6">
+      <div className=" w-full  rounded-medium py-4 px-6">
         {items?.map((item, index) => (
             <AccordionItem
               className={cn(
@@ -122,15 +122,17 @@ const HomeAccordion: React.FC<TAccordionList> = ({
               >
                 <div className="flex items-center gap-4">
                  {showNumbers && item.position && <h4 className="text-action-default">{item.position}.</h4>}
-                 <div className="flex items-center gap-2">
+                 <div className="flex items-center gap-3 ">
                 {item.iconImageUrl && (
+                  <div className="flex items-center justify-center">
                   <UserAvatar imageUrl={item.iconImageUrl} size="small" />
+                </div>
                 )}
                 <h5 className="text-text-primary font-medium">{item.title}</h5>
                 </div>
                 </div>
               </AccordionTrigger>
-              <AccordionContent value={item.title} className="pl-8 pt-2 ">
+              <AccordionContent value={item.title} className="px-8 pt-2 ">
                 <RichTextRenderer content={item.content} className="lg:text-md text-normal leading-[150%]  text-text-secondary" />
               </AccordionContent>
             </AccordionItem>
