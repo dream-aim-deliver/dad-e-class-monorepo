@@ -17,7 +17,7 @@ type Course = {
 
 export interface BuyCoachingSessionProps extends isLocalAware {
     courses: Course[];
-    onClick: () => void;
+    onClick: (totalCoast: number) => void;
     currencyType: string;
 }
 
@@ -105,7 +105,7 @@ function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachi
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <button onClick={() => handleDecrement(course.id)} aria-label="decrease" className="p-2">
+                            <button onClick={() => handleDecrement(course.id)} aria-label="decrease" className="p-2 cursor-pointer">
                                 <IconMinus classNames='text-button-text-text' size="6" />
                             </button>
                             <InputField
@@ -115,7 +115,7 @@ function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachi
                                 value={course.totalSessions.toString()}
                                 setValue={(value) => handleInputChange(course.id, value)}
                             />
-                            <button onClick={() => handleIncrement(course.id)} aria-label="increase">
+                            <button onClick={() => handleIncrement(course.id)} className='cursor-pointer' aria-label="increase">
                                 <IconPlus classNames='text-button-text-text' size="6" />
                             </button>
                         </div>
@@ -128,7 +128,7 @@ function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachi
             </h6>
 
             {/* Footer */}
-            <Button onClick={onClick} variant='primary' text={dictionary.components.buyCoachingSession.buttonText} />
+            <Button onClick={()=>onClick(totalCost)} variant='primary' text={dictionary.components.buyCoachingSession.buttonText} />
         </div>
     );
 }

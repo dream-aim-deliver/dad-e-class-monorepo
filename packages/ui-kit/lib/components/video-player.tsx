@@ -1,6 +1,7 @@
 import MuxPlayer from '@mux/mux-player-react';
 import { useEffect, useState } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { IconLoaderSpinner } from './icons/icon-loader-spinner';
 
 export interface VideoPlayerProps extends isLocalAware {
   videoId?: string;
@@ -112,8 +113,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
       {/* Loading state - only shown when player is loading and no error */}
       {showPlayer && !isPlayerReady && !videoError && (
-        <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-0 border-b-2 border-text-primary" />
+       <div className='h-full w-full flex items-center justify-center'>
+       <IconLoaderSpinner 
+          classNames="animate-spin "
+          size="6"
+        />
         </div>
       )}
 

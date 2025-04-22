@@ -66,7 +66,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   const dictionary = getDictionary(locale);
 
   return (
-    <div className={`max-w-[390px] min-w-[348px] p-3 bg-base-neutral-900 rounded-small border-1 border-base-neutral-700 ${className}`}>
+    <div className={`max-w-[390px]  p-3 bg-base-neutral-900 rounded-small border-1 border-base-neutral-700 ${className}`}>
       <div className='flex flex-col gap-3'>
         <div className='flex flex-col gap-2'>
           <div className="w-full flex items-center gap-4 truncate">
@@ -93,7 +93,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
       <hr className="border-divider my-4" />
       <div className="flex flex-col gap-2" data-testid="footer-section">
         <p className="text-sm text-white leading-4 font-important truncate">{workshopTitle}</p>
-        <div className="w-full flex items-center gap-3 text-text-secondary text-sm lg:text-md">
+        <div className="w-full flex items-center gap-3 flex-wrap text-text-secondary text-sm lg:text-md">
           <div className="flex gap-1 items-center">
             <IconCalendar size='4' />
             <p className="text-sm lg:text-md">{new Date(date).toISOString().split('T')[0]}</p>
