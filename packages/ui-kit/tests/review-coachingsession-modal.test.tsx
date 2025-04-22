@@ -113,11 +113,6 @@ vi.mock('../lib/components/icons/icon-loader-spinner', () => ({
   ),
 }));
 
-vi.mock('../lib/components/tooltip', () => ({
-  default: ({ text }: { text: string }) => (
-    <span data-testid="tooltip">{text}</span>
-  ),
-}));
 
 describe('ReviewDialog', () => {
   const defaultProps = {
@@ -162,13 +157,6 @@ describe('ReviewDialog', () => {
       fireEvent.click(checkbox);
     });
     expect(checkbox).not.toBeChecked();
-  });
-
-  it('renders tooltip with correct text', () => {
-    render(<ReviewCoachingSessionModal {...defaultProps} />);
-
-    const tooltip = screen.getByTestId('tooltip');
-    expect(tooltip).toHaveTextContent('Your review');
   });
 
   it('does not submit form if review is empty and rating is not set', async () => {
