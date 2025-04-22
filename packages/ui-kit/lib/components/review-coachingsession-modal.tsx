@@ -9,7 +9,6 @@ import { IconClose } from './icons/icon-close';
 import { IconLoaderSpinner } from './icons/icon-loader-spinner';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TextAreaInput } from './text-areaInput';
-import Tooltip from './tooltip';
 
 export interface ReviewFlowProps extends isLocalAware {
   onClose?: () => void;
@@ -17,10 +16,9 @@ export interface ReviewFlowProps extends isLocalAware {
   onSkip?: (skipped: boolean) => void;
   isLoading?: boolean;
   isError?: boolean;
-  submitted?: boolean; 
-  setSubmitted?: (value: boolean) => void; 
+  submitted?: boolean;
+  setSubmitted?: (value: boolean) => void;
 }
-
 /**
  * A modal component for submitting or skipping a review of a coaching session.
  *
@@ -52,12 +50,17 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
   locale,
   isLoading = false,
   isError = false,
-  submitted = false,
+  submitted: initialSubmitted = false,
   setSubmitted,
 }) => {
   const [review, setReview] = React.useState('');
   const [rating, setRating] = React.useState(0);
   const [neededMoreTime, setNeededMoreTime] = React.useState(false);
+  const [submitted, setLocalSubmitted] = React.useState(initialSubmitted);
+
+  React.useEffect(() => {
+    setLocalSubmitted(initialSubmitted);
+  }, [initialSubmitted]);
 
   const dictionary = getDictionary(locale);
   const isFormValid = rating > 0;
@@ -66,8 +69,8 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
     e.preventDefault();
     if (!onSubmit || !isFormValid) return;
 
+    // Call onSubmit and let parent/story handle submitted state
     onSubmit(rating, review, neededMoreTime, false);
-    // Note: setSubmitted is called by the parent, not here
   };
 
   const handleClose = () => {
@@ -79,6 +82,14 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
   const handleSkip = () => {
     if (onSkip) {
       onSkip(true);
+    }
+    // Reset form state
+    setReview('');
+    setRating(0);
+    setNeededMoreTime(false);
+    setLocalSubmitted(false);
+    if (setSubmitted) {
+      setSubmitted(false);
     }
     handleClose();
   };
@@ -144,14 +155,8 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
         </div>
 
         <div className="flex flex-col w-full gap-2 text-justify text-stone-300">
-          <label
-            htmlFor="reviewText"
-            className="flex gap-1 items-center self-start text-sm leading-[120%]"
-          >
-            <Tooltip
-              description="This tooltip includes a title and description"
-              text={dictionary.components.reviewCoachingSessionModal.yourReview}
-            />
+          <label htmlFor="reviewText" className="self-start text-sm leading-[120%]">
+            {dictionary.components.reviewCoachingSessionModal.yourReview}
           </label>
 
           <div className="flex flex-col w-full text-base leading-6">
