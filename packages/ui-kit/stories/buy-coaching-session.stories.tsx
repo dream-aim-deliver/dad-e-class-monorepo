@@ -79,7 +79,7 @@ export const GermanLocale: Story = {
 
 export const GermanLocaleWithSessions: Story = {
     args: {
-        onClick:(totalCoast)=>console.log(` ${totalCoast}`),
+        onClick:(totalCoast)=>console.log(`${totalCoast}`),
         courses: mockCourses.map(course => ({
             ...course,
             totalSessions: course.id === '1' ? 2 : course.id === '3' ? 1 : 0

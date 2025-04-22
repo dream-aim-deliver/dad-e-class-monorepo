@@ -43,17 +43,17 @@ function Tooltip({
 
   // Map positions to appropriate classes
   const positionClasses = {
-    top: 'bottom-full left-0 -translate-x-1/2 mb-2',
-    bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
+    top: 'bottom-full -right-[10px] mb-2',
+    bottom: 'top-full -right-[10px] mt-2',
     left: 'right-full top-1/2 -translate-y-1/2 mr-2',
     right: 'left-full top-1/2 -translate-y-1/2 ml-2'
   };
 
   // Map positions to arrow classes
   const arrowClasses = {
-    top: 'bottom-[-5px] left-1/2 -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-b-0 border-l-transparent border-r-transparent border-t-tooltip-background',
-    bottom: 'top-[-5px] left-1/2 -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-t-0 border-l-transparent border-r-transparent border-b-tooltip-background',
-    left: 'right-[-5px] top-1/2 -translate-y-1/2 border-t-4 border-b-4 border-l-4 border-r-0 border-t-transparent border-b-transparent border-l-tooltip-background',
+    top: 'bottom-[-7px] right-[10px] border-l-8 border-r-8 border-t-8 border-b-0 border-l-transparent border-r-transparent border-t-tooltip-background',
+    bottom: 'top-[-5px] right-[10px]  border-l-8 border-r-8 border-b-8 border-t-0 border-l-transparent border-r-transparent border-b-tooltip-background',
+    left: 'right-[-5px] top-1/2 -translate-y-1/2 border-t-8 border-b-8 border-l-8 border-r-0 border-t-transparent border-b-transparent border-l-tooltip-background',
     right: 'left-[-5px] top-1/2 -translate-y-1/2 border-t-4 border-b-4 border-r-4 border-l-0 border-t-transparent border-b-transparent border-r-tooltip-background'
   };
 
@@ -132,16 +132,15 @@ function Tooltip({
         role="button"
       >
         <span className="line-clamp-2 text-text-secondary">{text}</span>
+        <div className='relative'>
         <IconInfoCircle size="4" classNames={cn('flex-shrink-0 text-text-secondary hover:text-text-primary')} />
-      
-      </div>
- {/* Tooltip content */}
+        {/* Tooltip content */}
  {(isVisible || isFocused) && (
         <div
           id="tooltip-content"
           ref={tooltipRef}
           className={cn(
-            'absolute z-10 p-4 w-64 max-w-xs text-xs rounded-lg shadow-lg',
+            'absolute z-10 p-4 w-64 max-w-xs text-xs  shadow-lg',
             'bg-tooltip-background border border-tooltip-border',
             'transition-opacity duration-200',
             tipPosition !== 'auto' ? positionClasses[tipPosition] : positionClasses[position],
@@ -161,6 +160,9 @@ function Tooltip({
           />
         </div>
       )}
+        </div> 
+      </div>
+ 
      
     </div>
   );
