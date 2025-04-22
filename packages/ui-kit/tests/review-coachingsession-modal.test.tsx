@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { ReviewDialog } from '../lib/components/review-coachingsession-modal';
+import { ReviewCoachingSessionModal } from '../lib/components/review-coachingsession-modal';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -130,14 +130,14 @@ describe('ReviewDialog', () => {
   };
 
   it('disables submit button when form is invalid', () => {
-    render(<ReviewDialog {...defaultProps} />);
+    render(<ReviewCoachingSessionModal {...defaultProps} />);
     const submitButton = screen.getByTestId('button-Send review');
     expect(submitButton).toBeDisabled();
     expect(defaultProps.onSubmit).not.toHaveBeenCalled();
   });
 
   it('calls onSkip and onClose when skip button is clicked', async () => {
-    render(<ReviewDialog {...defaultProps} />);
+    render(<ReviewCoachingSessionModal {...defaultProps} />);
 
     await act(async () => {
       fireEvent.click(screen.getByTestId('button-Skip'));
@@ -148,7 +148,7 @@ describe('ReviewDialog', () => {
   });
 
   it('toggles checkbox state correctly', async () => {
-    render(<ReviewDialog {...defaultProps} />);
+    render(<ReviewCoachingSessionModal {...defaultProps} />);
 
     const checkbox = screen.getByTestId('checkbox').querySelector('input')!;
     expect(checkbox).not.toBeChecked();
@@ -165,14 +165,14 @@ describe('ReviewDialog', () => {
   });
 
   it('renders tooltip with correct text', () => {
-    render(<ReviewDialog {...defaultProps} />);
+    render(<ReviewCoachingSessionModal {...defaultProps} />);
 
     const tooltip = screen.getByTestId('tooltip');
     expect(tooltip).toHaveTextContent('Your review');
   });
 
   it('does not submit form if review is empty and rating is not set', async () => {
-    render(<ReviewDialog {...defaultProps} />);
+    render(<ReviewCoachingSessionModal {...defaultProps} />);
 
     await act(async () => {
       const submitButton = screen.getByTestId('button-Send review');
@@ -184,12 +184,12 @@ describe('ReviewDialog', () => {
   });
 
   it('does not call onSubmit on mount', () => {
-    render(<ReviewDialog {...defaultProps} />);
+    render(<ReviewCoachingSessionModal {...defaultProps} />);
     expect(defaultProps.onSubmit).not.toHaveBeenCalled();
   });
 
   it('displays loading spinner when isLoading is true', () => {
-    render(<ReviewDialog {...defaultProps} isLoading={true} />);
+    render(<ReviewCoachingSessionModal {...defaultProps} isLoading={true} />);
 
     expect(screen.getByTestId('icon-loader-spinner')).toBeInTheDocument();
     expect(screen.getByTestId('button-Send review')).toBeDisabled();
@@ -197,7 +197,7 @@ describe('ReviewDialog', () => {
   });
 
   it('displays error message when isError is true', () => {
-    render(<ReviewDialog {...defaultProps} isError={true} />);
+    render(<ReviewCoachingSessionModal {...defaultProps} isError={true} />);
 
     expect(screen.getByText('An error occurred. Please try again.')).toBeInTheDocument();
   });
