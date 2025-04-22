@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CourseCard, CourseCardProps } from '../../lib/components/coursecard/course-card';
+import { CourseCard } from '../../lib/components/course-card/course-card';
 
 const sampleCourseData = {
   id: 'course-123',

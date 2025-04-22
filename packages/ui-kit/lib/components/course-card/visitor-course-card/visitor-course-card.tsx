@@ -1,86 +1,75 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { z } from 'zod';
+import { Button } from '../../button';
 import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
-import { ProgressBar } from '../../progress-bar';
-import { CourseActions } from './course-actions';
 import { StarRating } from '../../star-rating';
 import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 
-export type TCourseMetadata = z.infer<typeof course.CourseMetadataSchema>;
-
-interface StudentCourseCardProps extends TCourseMetadata {
-  locale: TLocale;
-  sales: number;
+// Extend the existing type with the properties we need that aren't in TCourseMetadata
+export interface VisitorCourseCardProps extends course.TCourseMetadata {
   reviewCount: number;
-  progress?: number;
-  onBegin?: () => void;
-  onResume?: () => void;
-  onReview?: () => void;
+  sessions: number;
+  sales: number;
   onDetails?: () => void;
+  onBuy?: () => void;
   onClickUser?: () => void;
+  locale: TLocale
 }
 
 /**
- * Card component for displaying course information tailored for students, including progress and actions.
+ * Card component for displaying course information tailored for visitors, including options to view details or buy.
  *
  * @param title The title of the course.
- * @param description The description of the course, displayed when study progress is 'yet-to-start'.
- * @param duration The duration object containing video, coaching, and self-study times in minutes.
- * @param reviewCount The number of reviews for the course.
- * @param pricing The pricing object containing the full price of the course.
- * @param imageUrl The URL of the course image.
  * @param rating The average rating of the course.
+ * @param reviewCount The number of reviews for the course.
  * @param author The author object containing the name and image of the course creator.
  * @param language The language object containing the name of the course language.
- * @param progress Optional numeric value representing the course completion progress (defaults to 0).
+ * @param sessions The number of sessions in the course.
+ * @param duration The duration object containing video, coaching, and self-study times in minutes.
+ * @param sales The number of sales for the course.
+ * @param imageUrl The URL of the course image.
  * @param locale The locale for translation and localization purposes.
- * @param onBegin Optional callback function triggered when the "Begin Course" button is clicked.
- * @param onResume Optional callback function triggered when the "Resume Course" button is clicked.
- * @param onReview Optional callback function triggered when the "Review Course" button is clicked.
  * @param onDetails Optional callback function triggered when the "Details" button is clicked.
+ * @param onBuy Optional callback function triggered when the "Buy Course" button is clicked.
  * @param onClickUser Optional callback function triggered when the user name is clicked.
  *
  * @example
- * <StudentCourseCard
- *   title="Introduction to Programming"
- *   description="Learn the basics of coding."
- *   duration={{ video: 120, coaching: 60, selfStudy: 30 }}
- *   reviewCount={15}
- *   pricing={{ fullPrice: 99 }}
- *   imageUrl="course-image.jpg"
- *   rating={4.2}
- *   author={{ name: "Alice Johnson", image: "author-image.jpg" }}
+ * <VisitorCourseCard
+ *   title="Web Development Basics"
+ *   rating={4.5}
+ *   reviewCount={20}
+ *   author={{ name: "Bob Smith", image: "author-image.jpg" }}
  *   language={{ name: "English" }}
- *   progress={50}
+ *   sessions={8}
+ *   duration={{ video: 150, coaching: 60, selfStudy: 90 }}
+ *   sales={120}
+ *   imageUrl="course-image.jpg"
  *   locale="en"
- *   onBegin={() => console.log("Begin clicked!")}
- *   onResume={() => console.log("Resume clicked!")}
- *   onReview={() => console.log("Review clicked!")}
  *   onDetails={() => console.log("Details clicked!")}
- *   onClickUser={() => console.log("User clicked!")}
+ *   onBuy={() => console.log("Buy clicked!")}
+ *  onClickUser={() => console.log("Author clicked!")}
  * />
  */
-export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
+export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   title,
   description,
-  duration,
-  reviewCount,
-  sales,
-  imageUrl,
   rating,
+  reviewCount,
+  pricing,
   author,
   language,
-  progress = 0,
+  sessions,
+  duration,
+  sales,
+  imageUrl,
   locale,
-  onBegin,
-  onResume,
-  onReview,
   onDetails,
   onClickUser,
+  onBuy
 }) => {
+  const [isImageError, setIsImageError] = React.useState(false);
+  const dictionary = getDictionary(locale);
 
   // Calculate total course duration in minutes and convert to hours
   const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
@@ -90,22 +79,11 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
     ? totalDurationInHours.toString()
     : totalDurationInHours.toFixed(2);
 
-  const dictionary = getDictionary(locale);
-  const [isImageError, setIsImageError] = useState(false);
-
   const handleImageError = () => {
     setIsImageError(true);
   };
 
   const shouldShowPlaceholder = !imageUrl || isImageError;
-  // Determine study progress based on progress value
-  const studyProgress =
-    progress === 100
-      ? 'completed'
-      : progress > 0
-        ? 'in-progress'
-        : 'yet-to-start';
-
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
@@ -133,12 +111,13 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
             <div className="group relative">
               <h6
                 title={title}
-                className="text-md font-bold text-text-primary line-clamp-2 text-start"
+                className="text-md font-bold text-text-primary line-clamp-1 text-start"
               >
                 {title}
               </h6>
-              
+
             </div>
+
             <div className="flex gap-1 items-end">
               <StarRating totalStars={5} rating={rating} />
               <span className="text-xs text-text-primary leading-[100%]">
@@ -149,48 +128,41 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               </span>
             </div>
 
-            <CourseCreator
-              creatorName={author?.name}
-              imageUrl={author?.image}
-              locale={locale as TLocale}
-              onClickUser={onClickUser}
-            />
+            <CourseCreator creatorName={author?.name} imageUrl={author?.image} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
 
             <CourseStats
               locale={locale as TLocale}
               language={language.name}
-              sessions={10}
-              duration={`${formattedDuration} ${dictionary.components.courseCard.hours}`}
+              sessions={sessions}
+              duration={`${formattedDuration}  ${dictionary.components.courseCard.hours}`}
               sales={sales}
             />
           </div>
 
-          {studyProgress === 'yet-to-start' && description && (
+          {description && (
             <p className="text-sm leading-[150%] text-text-secondary text-start">
               {description}
             </p>
           )}
 
-          {studyProgress === 'in-progress' && (
-            <div className='flex gap-4'>
-              <ProgressBar progress={progress} />
-              <p className='text-sm leading-[100%] text-text-secondary'>{progress}%</p>
-            </div>
-          )}
-
           <div className="flex flex-col gap-2">
-            <CourseActions
-              locale={locale as TLocale}
-              studyProgress={studyProgress}
-              progress={progress}
-              onBegin={onBegin}
-              onResume={onResume}
-              onReview={onReview}
-              onDetails={onDetails}
+            <Button
+              className=""
+              variant={'secondary'}
+              size={'medium'}
+              onClick={onDetails}
+              text={dictionary.components.courseCard.detailsCourseButton}
+            />
+            <Button
+              className=""
+              variant={'primary'}
+              size={'medium'}
+              onClick={onBuy}
+              text={`${dictionary.components.courseCard.buyButton} (${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.fullPrice})`}
             />
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 };

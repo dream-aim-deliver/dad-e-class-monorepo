@@ -1,96 +1,96 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { Button } from '../../button';
 import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
 import { StarRating } from '../../star-rating';
+import { IconGroup } from '../../icons/icon-group';
 import { course } from '@maany_shr/e-class-models';
-import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
-import { useEffect } from 'react';
+import {
+  TLocale,
+  getDictionary,
+} from '@maany_shr/e-class-translations';
 
-// Extend the existing type with the properties we need that aren't in TCourseMetadata
-export interface VisitorCourseCardProps extends course.TCourseMetadata {
+export interface CoachCourseCardProps extends Omit<course.TCourseMetadata, 'description' | 'pricing'> {
   reviewCount: number;
   sessions: number;
   sales: number;
-  onDetails?: () => void;
-  onBuy?: () => void;
+  groupName?: string;
+  onManage?: () => void;
   onClickUser?: () => void;
-  locale: TLocale
+  locale: TLocale;
 }
 
 /**
- * Card component for displaying course information tailored for visitors, including options to view details or buy.
+ * Card component for displaying course information relevant to a coach.
  *
  * @param title The title of the course.
  * @param rating The average rating of the course.
  * @param reviewCount The number of reviews for the course.
- * @param author The author object containing the name and image of the course creator.
  * @param language The language object containing the name of the course language.
  * @param sessions The number of sessions in the course.
+ * @param author The author object containing the name and image of the course creator.
  * @param duration The duration object containing video, coaching, and self-study times in minutes.
  * @param sales The number of sales for the course.
+ * @param groupName Optional name of the group associated with the course.
  * @param imageUrl The URL of the course image.
- * @param locale The locale for translation and localization purposes.
- * @param onDetails Optional callback function triggered when the "Details" button is clicked.
- * @param onBuy Optional callback function triggered when the "Buy Course" button is clicked.
+ * @param onManage Optional callback function triggered when the manage button is clicked.
  * @param onClickUser Optional callback function triggered when the user name is clicked.
+ * @param locale The locale for translation and localization purposes.
  *
  * @example
- * <VisitorCourseCard
- *   title="Web Development Basics"
- *   rating={4.5}
- *   reviewCount={20}
- *   author={{ name: "Bob Smith", image: "author-image.jpg" }}
+ * <CoachCourseCard
+ *   title="Advanced Coaching Techniques"
+ *   rating={4.8}
+ *   reviewCount={30}
  *   language={{ name: "English" }}
- *   sessions={8}
- *   duration={{ video: 150, coaching: 60, selfStudy: 90 }}
- *   sales={120}
+ *   sessions={12}
+ *   author={{ name: "Jane Smith", image: "author-image.jpg" }}
+ *   duration={{ video: 180, coaching: 90, selfStudy: 60 }}
+ *   sales={200}
+ *   groupName="Coaching Pros"
  *   imageUrl="course-image.jpg"
+ *   onManage={() => console.log("Manage clicked!")}
+ *   onClickUser={() => console.log("Author clicked!")}
  *   locale="en"
- *   onDetails={() => console.log("Details clicked!")}
- *   onBuy={() => console.log("Buy clicked!")}
- *  onClickUser={() => console.log("Author clicked!")}
  * />
  */
-export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
+export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
   title,
-  description,
   rating,
   reviewCount,
-  pricing,
-  author,
   language,
   sessions,
+  author,
   duration,
   sales,
+  groupName = '',
   imageUrl,
-  locale,
-  onDetails,
+  onManage,
   onClickUser,
-  onBuy
+  locale
 }) => {
-  const [isImageError, setIsImageError] = React.useState(false);
   const dictionary = getDictionary(locale);
-
-  // Calculate total course duration in minutes and convert to hours
-  const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
-  const totalDurationInHours = totalDurationInMinutes / 60;
-  // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
-  const formattedDuration = Number.isInteger(totalDurationInHours)
-    ? totalDurationInHours.toString()
-    : totalDurationInHours.toFixed(2);
+  const [isImageError, setIsImageError] = useState(false);
 
   const handleImageError = () => {
     setIsImageError(true);
   };
-  
+
   const shouldShowPlaceholder = !imageUrl || isImageError;
+
+  // Calculate total course duration in minutes and convert to hours
+  const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+  const totalDurationInHours = totalDurationInMinutes / 60;
+  const formattedDuration = Number.isInteger(totalDurationInHours)
+    ? totalDurationInHours.toString()
+    : totalDurationInHours.toFixed(2);
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
         <div className="relative">
           {shouldShowPlaceholder ? (
-            // Placeholder for broken image (matching CoachBanner styling)
             <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
               <span className="text-text-secondary text-md">
                 {dictionary.components.coachBanner.placeHolderText}
@@ -112,11 +112,11 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
             <div className="group relative">
               <h6
                 title={title}
-                className="text-md font-bold text-text-primary line-clamp-1 text-start"
+                className="text-md font-bold text-text-primary line-clamp-2 text-start"
               >
                 {title}
               </h6>
-              
+
             </div>
 
             <div className="flex gap-1 items-end">
@@ -129,41 +129,32 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               </span>
             </div>
 
-            <CourseCreator creatorName={author?.name} imageUrl={author?.image} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
+            <CourseCreator creatorName={author.name} imageUrl={author.image} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
 
             <CourseStats
               locale={locale as TLocale}
               language={language.name}
               sessions={sessions}
-              duration={`${formattedDuration}  ${dictionary.components.courseCard.hours}`}
+              duration={`${formattedDuration} ${dictionary.components.courseCard.hours}`}
               sales={sales}
             />
           </div>
-
-          {description && (
-            <p className="text-sm leading-[150%] text-text-secondary text-start">
-              {description}
-            </p>
-          )}
-
-          <div className="flex flex-col gap-2">
-            <Button
-              className=""
-              variant={'secondary'}
-              size={'medium'}
-              onClick={onDetails}
-              text={dictionary.components.courseCard.detailsCourseButton}
-            />
-            <Button
-              className=""
-              variant={'primary'}
-              size={'medium'}
-              onClick={onBuy}
-              text={`${dictionary.components.courseCard.buyButton} (${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.fullPrice})`}
-            />
+          <div className="flex gap-1 flex-wrap items-center w-full">
+            <div className="flex items-center gap-1">
+              <IconGroup classNames="text-text-primary" size="5" />
+              <p className="text-text-secondary text-sm">{dictionary.components.courseCard.group}</p>
+            </div>
+            <Button variant="text" text={groupName} className="p-0 max-w-full" />
           </div>
+          <Button
+            onClick={onManage}
+            className="w-full"
+            variant="secondary"
+            size="medium"
+            text={dictionary.components.courseCard.manageButton}
+          />
         </div>
       </div>
     </div>
-  )
+  );
 };

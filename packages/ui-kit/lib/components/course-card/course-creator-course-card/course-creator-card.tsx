@@ -9,7 +9,6 @@ import { getDictionary, isLocalAware, TLocale } from "@maany_shr/e-class-transla
 import { IconCheck } from "../../icons/icon-check";
 import { IconHourglass } from "../../icons/icon-hourglass";
 import { IconEdit } from "../../icons/icon-edit";
-import { useEffect } from "react";
 
 export type CourseStatus = "published" | "under-review" | "draft";
 
@@ -120,7 +119,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
     setIsImageError(true);
   };
   const shouldShowPlaceholder = !imageUrl || isImageError;
-  
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
@@ -151,7 +150,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
               >
                 {title}
               </h6>
-              
+
             </div>
 
             {status === "published" && (

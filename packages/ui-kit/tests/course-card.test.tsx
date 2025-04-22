@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { CourseCard, CourseCardProps } from '../lib/components/coursecard/course-card';
+import { CourseCard, CourseCardProps } from '../lib/components/course-card/course-card';
 
 // Define mock data with specific literal types to match CourseCardProps
 const mockLocale = 'en';
@@ -103,10 +103,10 @@ describe('CourseCard', () => {
 
   it('logs an error if required props are missing for student user type', () => {
     const consoleErrorSpy = vi.spyOn(console, 'error');
-    
+
     // Create a modified version of baseProps without course to trigger the error
     const { course, ...propsWithoutCourse } = baseProps;
-    
+
     render(<CourseCard {...propsWithoutCourse} userType="student" />);
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Course is required for student view'

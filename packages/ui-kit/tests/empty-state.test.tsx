@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { EmptyState } from '../lib/components/coursecard/empty-state';
+import { EmptyState } from '../lib/components/course-card/empty-state';
 
 // Mock the translation module
 vi.mock('@maany_shr/e-class-translations', () => ({

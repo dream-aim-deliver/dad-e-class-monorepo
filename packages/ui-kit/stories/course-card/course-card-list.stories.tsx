@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
-import { CourseCardList } from '../../lib/components/coursecard/course-card-list';
-import { CourseCard, CourseCardProps } from '../../lib/components/coursecard/course-card';
+import { CourseCardList } from '../../lib/components/course-card/course-card-list';
+import { CourseCard, CourseCardProps } from '../../lib/components/course-card/course-card';
 
 // Sample course data with unique IDs
 const sampleCourses: Record<string, CourseCardProps[]> = {

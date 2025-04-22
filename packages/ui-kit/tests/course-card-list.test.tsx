@@ -1,10 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { CourseCardList, CourseCardListProps } from '../lib/components/coursecard/course-card-list';
+import { CourseCardList, CourseCardListProps } from '../lib/components/course-card/course-card-list';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 // Mock the EmptyState component
-vi.mock('../lib/components/coursecard/empty-state', () => ({
+vi.mock('../lib/components/course-card/empty-state', () => ({
   EmptyState: ({ message, buttonText, onButtonClick, locale }: any) => (
     <div data-testid="empty-state">
       <p data-testid="empty-state-message">{`${message} (${locale})`}</p>

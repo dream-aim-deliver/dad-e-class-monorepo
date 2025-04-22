@@ -1,8 +1,8 @@
 import React from 'react';
-import { CourseCreatorCard, CourseStatus } from './course-creator-coursecard/course-creator-card';
-import { CoachCourseCard } from './coach-coursecard/coach-coursecard';
-import { StudentCourseCard } from './student-coursecard/student-course-card';
-import { VisitorCourseCard } from './visitor-coursecard/visitor-coursecard';
+import { CourseCreatorCard, CourseStatus } from './course-creator-course-card/course-creator-card';
+import { CoachCourseCard } from './coach-course-card/coach-course-card';
+import { StudentCourseCard } from './student-course-card/student-course-card';
+import { VisitorCourseCard } from './visitor-course-card/visitor-course-card';
 import { course, language } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
 
