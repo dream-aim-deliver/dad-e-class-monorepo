@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {CourseCard} from '../lib/components/coursecard/course-card';
+import { CourseCard } from '../../lib/components/course-card/course-card';
 
 const sampleCourseData = {
   id: 'course-123',
@@ -21,12 +21,13 @@ const sampleCourseData = {
     image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
   },
   language: {
-    code: "ENG" as const,
-    name: "English" as const,
+    code: 'ENG' as const,
+    name: 'English' as const,
   },
   groupName: 'Design Professionals',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
+  rating: 4.7,
 };
 
 const meta: Meta<typeof CourseCard> = {
@@ -42,12 +43,16 @@ const meta: Meta<typeof CourseCard> = {
       options: ['creator', 'coach', 'student', 'visitor'],
       description: 'Type of user viewing the course card',
     },
-    reviewCount: { 
+    course: {
+      control: 'object',
+      description: 'Course metadata object',
+    },
+    reviewCount: {
       control: 'number',
       description: 'Number of reviews for the course',
     },
-    locale: { 
-      control: 'select', 
+    locale: {
+      control: 'select',
       options: ['en', 'de'],
       description: 'Locale for translations',
     },
@@ -55,153 +60,217 @@ const meta: Meta<typeof CourseCard> = {
       control: 'object',
       description: 'Language of the course content',
     },
-    creatorStatus: { 
+    creatorStatus: {
       control: 'select',
       options: ['draft', 'under-review', 'published'],
       if: { arg: 'userType', eq: 'creator' },
       description: 'Status of the course for creator view',
     },
-    progress: { 
+    progress: {
       control: 'number',
       min: 0,
       max: 100,
       if: { arg: 'userType', eq: 'student' },
       description: 'Progress percentage for student view',
     },
-    sessions: { 
+    sessions: {
       control: 'number',
       description: 'Number of sessions in the course',
     },
-    sales: { 
+    sales: {
       control: 'number',
       description: 'Number of course sales',
     },
-    groupName: { 
+    groupName: {
       control: 'text',
       description: 'Name of the group/cohort',
     },
-    className: { 
+    className: {
       control: 'text',
       description: 'Additional CSS classes',
     },
-  }
+    onEdit: {
+      action: 'edit-clicked',
+      description: 'Callback for edit action',
+    },
+    onManage: {
+      action: 'manage-clicked',
+      description: 'Callback for manage action',
+    },
+    onBegin: {
+      action: 'begin-clicked',
+      description: 'Callback for begin action',
+    },
+    onResume: {
+      action: 'resume-clicked',
+      description: 'Callback for resume action',
+    },
+    onReview: {
+      action: 'review-clicked',
+      description: 'Callback for review action',
+    },
+    onDetails: {
+      action: 'details-clicked',
+      description: 'Callback for details action',
+    },
+    onBuy: {
+      action: 'buy-clicked',
+      description: 'Callback for buy action',
+    },
+  },
 };
 
 export default meta;
+
+const Template: StoryObj<typeof CourseCard> = {
+  render: (args) => {
+    const createCallback = (message: string) => () => window.alert(message);
+    return (
+      <CourseCard
+        {...args}
+        onEdit={createCallback('Edit clicked')}
+        onManage={createCallback('Manage clicked')}
+        onBegin={createCallback('Begin clicked')}
+        onResume={createCallback('Resume clicked')}
+        onReview={createCallback('Review clicked')}
+        onDetails={createCallback('Details clicked')}
+        onBuy={createCallback('Buy clicked')}
+        onClickUser={createCallback('Author clicked')}
+
+      />
+    );
+  },
+};
+
 type Story = StoryObj<typeof CourseCard>;
 
 // Creator view stories
 export const CreatorPublishedView: Story = {
+  ...Template,
   args: {
     userType: 'creator',
-    reviewCount: 328, 
+    reviewCount: 328,
     locale: 'en',
     language: sampleCourseData.language,
     creatorStatus: 'published',
-    course: { ...sampleCourseData,
-      rating: 4.7,
-    },
+    course: sampleCourseData,
     sessions: 24,
     sales: 1850,
-    onEdit: () => console.log('Edit course clicked'),
-    onManage: () => console.log('Manage course clicked'),
     className: 'max-w-[352px]',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A published course card for a creator with sample course data.',
+      },
+    },
   },
 };
 
 export const CreatorDraftView: Story = {
+  ...Template,
   args: {
-    ...CreatorPublishedView.args,
+    userType: 'creator',
+    reviewCount: 250,
+    locale: 'en',
+    language: sampleCourseData.language,
     creatorStatus: 'draft',
     course: {
       ...sampleCourseData,
       title: 'New Course (Draft)',
     },
-    reviewCount: 250,
-    sales: 10,
     sessions: 10,
+    sales: 10,
+    className: 'max-w-[352px]',
   },
 };
 
 export const CreatorUnderReviewView: Story = {
+  ...Template,
   args: {
-    ...CreatorPublishedView.args,
+    userType: 'creator',
+    reviewCount: 10,
+    locale: 'en',
+    language: sampleCourseData.language,
     creatorStatus: 'under-review',
     course: {
       ...sampleCourseData,
       title: 'Course Under Review',
     },
-    reviewCount: 10,
     sales: 10,
+    className: 'max-w-[352px]',
   },
 };
 
 // Coach view stories
 export const CoachView: Story = {
+  ...Template,
   args: {
     userType: 'coach',
     reviewCount: 328,
     locale: 'en',
     language: sampleCourseData.language,
-    course: { ...sampleCourseData,
-      rating: 4.7,
-    },
+    course: sampleCourseData,
     sessions: 24,
     sales: 1850,
     groupName: 'Advanced Design Cohort',
-    onManage: () => console.log('Manage course clicked'),
     className: 'max-w-[352px]',
+    onClickUser: () => alert('Author clicked'),
   },
 };
 
 // Student view stories
 export const StudentYetToStartedView: Story = {
+  ...Template,
   args: {
     userType: 'student',
     reviewCount: 328,
     locale: 'en',
     language: sampleCourseData.language,
-    course: { ...sampleCourseData,
-      rating: 4.7,
-    },
+    course: sampleCourseData,
     sales: 1850,
     progress: 0,
-    onBegin: () => console.log('Begin course clicked'),
-    onDetails: () => console.log('Course details clicked'),
     className: 'max-w-[352px]',
   },
 };
 
 export const StudentInProgressView: Story = {
+  ...Template,
   args: {
-    ...StudentYetToStartedView.args,
+    userType: 'student',
+    reviewCount: 328,
+    locale: 'en',
+    language: sampleCourseData.language,
+    course: sampleCourseData,
     sales: 1850,
     progress: 42,
-    onResume: () => console.log('Resume course clicked'),
-    onDetails: () => console.log('Course details clicked'),
+    className: 'max-w-[352px]',
   },
 };
 
 export const StudentCompletedView: Story = {
+  ...Template,
   args: {
-    ...StudentYetToStartedView.args,
+    userType: 'student',
+    reviewCount: 328,
+    locale: 'en',
+    language: sampleCourseData.language,
+    course: sampleCourseData,
     sales: 1850,
     progress: 100,
-    onReview: () => console.log('Review course clicked'),
-    onDetails: () => console.log('Course details clicked'),
+    className: 'max-w-[352px]',
   },
 };
 
 // Visitor view stories
 export const VisitorView: Story = {
+  ...Template,
   args: {
     userType: 'visitor',
     reviewCount: 328,
     locale: 'en',
     language: sampleCourseData.language,
-    course: { ...sampleCourseData,
-      rating: 4.7,
-    },
+    course: sampleCourseData,
     sales: 1850,
     sessions: 24,
     groupName: 'Design Professionals',
@@ -211,6 +280,7 @@ export const VisitorView: Story = {
 
 // German locale examples
 export const GermanCreatorView: Story = {
+  ...Template,
   args: {
     ...CreatorPublishedView.args,
     locale: 'de',
@@ -218,6 +288,7 @@ export const GermanCreatorView: Story = {
 };
 
 export const GermanStudentView: Story = {
+  ...Template,
   args: {
     ...StudentInProgressView.args,
     locale: 'de',
@@ -225,6 +296,7 @@ export const GermanStudentView: Story = {
 };
 
 export const GermanCoachView: Story = {
+  ...Template,
   args: {
     ...CoachView.args,
     locale: 'de',
@@ -232,6 +304,7 @@ export const GermanCoachView: Story = {
 };
 
 export const GermanVisitorView: Story = {
+  ...Template,
   args: {
     ...VisitorView.args,
     locale: 'de',

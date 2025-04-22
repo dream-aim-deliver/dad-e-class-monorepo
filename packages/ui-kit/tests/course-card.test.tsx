@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { CourseCard, CourseCardProps } from '../lib/components/coursecard/course-card';
+import { CourseCard, CourseCardProps } from '../lib/components/course-card/course-card';
 
 // Define mock data with specific literal types to match CourseCardProps
 const mockLocale = 'en';
@@ -15,6 +15,7 @@ describe('CourseCard', () => {
   const mockOnReview = vi.fn();
   const mockOnDetails = vi.fn();
   const mockOnBuy = vi.fn();
+  const mockOnBrowseCourses = vi.fn();
 
   const baseProps: Omit<CourseCardProps, 'userType'> = {
     course: {
@@ -44,6 +45,7 @@ describe('CourseCard', () => {
     onReview: mockOnReview,
     onDetails: mockOnDetails,
     onBuy: mockOnBuy,
+    onBrowseCourses: mockOnBrowseCourses,
   };
 
   beforeEach(() => {
@@ -55,9 +57,7 @@ describe('CourseCard', () => {
       <CourseCard
         {...baseProps}
         userType="coach"
-        creatorName="John Doe"
         groupName="React Group"
-        sessions={8}
       />
     );
 
@@ -78,7 +78,6 @@ describe('CourseCard', () => {
       <CourseCard
         {...baseProps}
         userType="visitor"
-        sessions={5}
       />
     );
 
@@ -95,7 +94,7 @@ describe('CourseCard', () => {
 
   it('logs an error if required props are missing for creator user type', () => {
     const consoleErrorSpy = vi.spyOn(console, 'error');
-    render(<CourseCard {...baseProps} userType="creator" />);
+    render(<CourseCard userType="creator" locale={mockLocale} language={mockLanguage} reviewCount={120} />);
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Course and creatorStatus are required for creator view'
     );
@@ -104,14 +103,15 @@ describe('CourseCard', () => {
 
   it('logs an error if required props are missing for student user type', () => {
     const consoleErrorSpy = vi.spyOn(console, 'error');
-    
+
     // Create a modified version of baseProps without course to trigger the error
     const { course, ...propsWithoutCourse } = baseProps;
-    
+
     render(<CourseCard {...propsWithoutCourse} userType="student" />);
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Course is required for student view'
     );
     consoleErrorSpy.mockRestore();
   });
+
 });

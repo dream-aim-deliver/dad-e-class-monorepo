@@ -9,10 +9,19 @@ export const EN: TDictionary = {
   login: Login_EN,
   sso: SSO_EN,
   components: {
+    coachBanner: {
+      buttonText: 'Become a Coach',
+      placeHolderText: 'Image not available',
+    },
     skills: {
       title: 'Skills',
     },
     courseCard: {
+      courseEmptyState: {
+        message: "You haven't purchased any course yet",
+        buttonText: 'Browse courses',
+        message2: 'No available courses',
+      },
       createdBy: 'Created by',
       you: 'You',
       group: 'Group',
@@ -30,6 +39,7 @@ export const EN: TDictionary = {
       completedBadge: 'Course Completed',
       cochingSession: 'Coaching Session',
       sales: 'sales',
+      hours: 'hours',
     },
     dragDrop: {
       title: ' Drop the files here...',

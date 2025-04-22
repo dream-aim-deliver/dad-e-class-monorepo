@@ -13,6 +13,7 @@ export interface VisitorCourseCardProps extends course.TCourseMetadata {
   sales: number;
   onDetails?: () => void;
   onBuy?: () => void;
+  onClickUser?: () => void;
   locale: TLocale
 }
 
@@ -31,6 +32,7 @@ export interface VisitorCourseCardProps extends course.TCourseMetadata {
  * @param locale The locale for translation and localization purposes.
  * @param onDetails Optional callback function triggered when the "Details" button is clicked.
  * @param onBuy Optional callback function triggered when the "Buy Course" button is clicked.
+ * @param onClickUser Optional callback function triggered when the user name is clicked.
  *
  * @example
  * <VisitorCourseCard
@@ -46,6 +48,7 @@ export interface VisitorCourseCardProps extends course.TCourseMetadata {
  *   locale="en"
  *   onDetails={() => console.log("Details clicked!")}
  *   onBuy={() => console.log("Buy clicked!")}
+ *  onClickUser={() => console.log("Author clicked!")}
  * />
  */
 export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
@@ -62,31 +65,58 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   imageUrl,
   locale,
   onDetails,
+  onClickUser,
   onBuy
 }) => {
+  const [isImageError, setIsImageError] = React.useState(false);
   const dictionary = getDictionary(locale);
-  // Calculate total course duration in minutes
-  const totalDurationInMinutes =
-    duration.video + duration.coaching + duration.selfStudy;
-  const totalDurationInHours = (totalDurationInMinutes / 60).toFixed(2);
 
+  // Calculate total course duration in minutes and convert to hours
+  const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+  const totalDurationInHours = totalDurationInMinutes / 60;
+  // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
+  const formattedDuration = Number.isInteger(totalDurationInHours)
+    ? totalDurationInHours.toString()
+    : totalDurationInHours.toFixed(2);
+
+  const handleImageError = () => {
+    setIsImageError(true);
+  };
+
+  const shouldShowPlaceholder = !imageUrl || isImageError;
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
         <div className="relative">
-          <img
-            loading="lazy"
-            src={imageUrl}
-            alt={title}
-            className="w-full aspect-[2.15] object-cover"
-          />
+          {shouldShowPlaceholder ? (
+            // Placeholder for broken image (matching CoachBanner styling)
+            <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
+              <span className="text-text-secondary text-md">
+                {dictionary.components.coachBanner.placeHolderText}
+              </span>
+            </div>
+          ) : (
+            <img
+              loading="lazy"
+              src={imageUrl}
+              alt={title}
+              className="w-full aspect-[2.15] object-cover"
+              onError={handleImageError}
+            />
+          )}
         </div>
 
         <div className="flex flex-col p-4 gap-4">
           <div className="flex flex-col gap-2">
-            <h6 className="text-md font-bold text-text-primary line-clamp-2 text-start">
-              {title}
-            </h6>
+            <div className="group relative">
+              <h6
+                title={title}
+                className="text-md font-bold text-text-primary line-clamp-1 text-start"
+              >
+                {title}
+              </h6>
+
+            </div>
 
             <div className="flex gap-1 items-end">
               <StarRating totalStars={5} rating={rating} />
@@ -98,13 +128,13 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               </span>
             </div>
 
-            <CourseCreator creatorName={author?.name} imageUrl={author?.image} you={false} locale={locale as TLocale} />
+            <CourseCreator creatorName={author?.name} imageUrl={author?.image} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
 
             <CourseStats
               locale={locale as TLocale}
               language={language.name}
               sessions={sessions}
-              duration={`${totalDurationInHours} hours`}
+              duration={`${formattedDuration}  ${dictionary.components.courseCard.hours}`}
               sales={sales}
             />
           </div>
