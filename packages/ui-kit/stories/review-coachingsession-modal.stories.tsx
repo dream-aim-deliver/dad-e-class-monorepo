@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ReviewCoachingSessionModal } from '../lib/components/review-coachingsession-modal';
 import { getDictionary } from '@maany_shr/e-class-translations';
 
-// Mock provider for locale (replace with actual provider if needed)
+// Mock provider for locale
 const LocaleProvider: React.FC<{ locale: string; children: React.ReactNode }> = ({ locale, children }) => {
   return <div data-locale={locale}>{children}</div>;
 };
@@ -64,32 +64,57 @@ export default meta;
 type Story = StoryObj<typeof ReviewCoachingSessionModal>;
 
 export const DefaultForm: Story = {
+  decorators: [
+    (Story, context) => {
+      const [isLoading, setIsLoading] = React.useState(false);
+      const [isError, setIsError] = React.useState(false);
+      const [submitted, setSubmitted] = React.useState(false);
+
+      return (
+        <Story
+          args={{
+            ...context.args,
+            isLoading,
+            isError,
+            submitted,
+            onSubmit: (rating, review, neededMoreTime, skipped) => {
+              setIsLoading(true);
+              setTimeout(() => {
+                setIsLoading(false);
+                setSubmitted(true); // Set submitted to true for success
+                alert(
+                  `Review Submitted Successfully: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`
+                );
+                console.log(
+                  `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`
+                );
+              }, 1000);
+            },
+            setSubmitted: (value) => {
+              setSubmitted(value);
+              console.log(`Set Submitted: ${value}`);
+            },
+          }}
+        />
+      );
+    },
+  ],
   args: {
     locale: 'en',
-    isLoading: false,
-    isError: false,
-    submitted: false,
     onClose: () => {
-      alert('Dialog Closed');
+      alert('Close button clicked');
       console.log('Dialog Closed');
     },
-    onSubmit: (rating, review, neededMoreTime, skipped) => {
-      alert(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
-      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
-    },
     onSkip: (skipped) => {
-      alert(`Review Skipped: Skipped=${skipped}`);
+      alert('Skip button clicked');
       console.log(`Review Skipped: Skipped=${skipped}`);
-    },
-    setSubmitted: (value) => {
-      alert(`Set Submitted: ${value}`);
-      console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
     docs: {
       description: {
-        story: 'The default ReviewDialog in its form state (English), allowing users to rate, write a review, check "Did you need more time?", submit, skip, or close. The skip button is always enabled, and the submit button is enabled when a rating is provided. Alerts show the submitted data.',
+        story:
+          'The default ReviewDialog in its form state (English), allowing users to rate, write a review, check "Did you need more time?", submit, skip, or close. On successful submission, it shows the success view after a 1-second loading state. Alerts show the submitted data, skip action, and close action.',
       },
     },
   },
@@ -100,10 +125,12 @@ export const DefaultFormGerman: Story = {
     ...DefaultForm.args,
     locale: 'de',
   },
+  decorators: DefaultForm.decorators, // Reuse the same decorator
   parameters: {
     docs: {
       description: {
-        story: 'The ReviewDialog in its form state with German locale, showing translated text for all elements. Alerts show the submitted data.',
+        story:
+          'The ReviewDialog in its form state with German locale, showing translated text. On successful submission, it shows the success view after a 1-second loading state. Alerts show the submitted data, skip action, and close action.',
       },
     },
   },
@@ -116,26 +143,25 @@ export const SuccessView: Story = {
     isError: false,
     submitted: true, // Force success view
     onClose: () => {
-      alert('Dialog Closed');
+      alert('Close button clicked');
       console.log('Dialog Closed');
     },
     onSubmit: (rating, review, neededMoreTime, skipped) => {
-      alert(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
       console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
     },
     onSkip: (skipped) => {
-      alert(`Review Skipped: Skipped=${skipped}`);
+      alert('Skip button clicked');
       console.log(`Review Skipped: Skipped=${skipped}`);
     },
     setSubmitted: (value) => {
-      alert(`Set Submitted: ${value}`);
       console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
     docs: {
       description: {
-        story: 'The ReviewDialog in its success view, shown when submitted is true. To test submission, use the DefaultForm story and trigger setSubmitted(true) via the parent. An alert shows the submitted data.',
+        story:
+          'The ReviewDialog in its success view, shown when submitted is true. Use the DefaultForm story to test submission flow. Alerts show the close action.',
       },
     },
   },
@@ -148,26 +174,25 @@ export const LoadingState: Story = {
     isError: false,
     submitted: false,
     onClose: () => {
-      alert('Dialog Closed');
+      alert('Close button clicked');
       console.log('Dialog Closed');
     },
     onSubmit: (rating, review, neededMoreTime, skipped) => {
-      alert(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
       console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
     },
     onSkip: (skipped) => {
-      alert(`Review Skipped: Skipped=${skipped}`);
+      alert('Skip button clicked');
       console.log(`Review Skipped: Skipped=${skipped}`);
     },
     setSubmitted: (value) => {
-      alert(`Set Submitted: ${value}`);
       console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
     docs: {
       description: {
-        story: 'The ReviewDialog in its loading state, shown when isLoading is true. The submit and skip buttons are disabled, and the IconLoaderSpinner is displayed.',
+        story:
+          'The ReviewDialog in its loading state, shown when isLoading is true. The submit and skip buttons are disabled, and the IconLoaderSpinner is displayed. Alerts show the close action.',
       },
     },
   },
@@ -180,26 +205,25 @@ export const ErrorState: Story = {
     isError: true,
     submitted: false,
     onClose: () => {
-      alert('Dialog Closed');
+      alert('Close button clicked');
       console.log('Dialog Closed');
     },
     onSubmit: (rating, review, neededMoreTime, skipped) => {
-      alert(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
       console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
     },
     onSkip: (skipped) => {
-      alert(`Review Skipped: Skipped=${skipped}`);
+      alert('Skip button clicked');
       console.log(`Review Skipped: Skipped=${skipped}`);
     },
     setSubmitted: (value) => {
-      alert(`Set Submitted: ${value}`);
       console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
     docs: {
       description: {
-        story: 'The ReviewDialog in its error state, shown when isError is true. Displays the error message from dictionary.components.reviewCoachingSessionModal.errorState. User inputs are preserved.',
+        story:
+          'The ReviewDialog in its error state, shown when isError is true. Displays the error message from dictionary.components.reviewCoachingSessionModal.errorState. User inputs are preserved. Alerts show the close action.',
       },
     },
   },
@@ -213,7 +237,8 @@ export const ErrorStateGerman: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'The ReviewDialog in its error state with German locale, showing the translated error message from dictionary.components.reviewCoachingSessionModal.errorState. User inputs are preserved.',
+        story:
+          'The ReviewDialog in its error state with German locale, showing the translated error message from dictionary.components.reviewCoachingSessionModal.errorState. User inputs are preserved. Alerts show the close action.',
       },
     },
   },
@@ -226,26 +251,25 @@ export const SkippedAction: Story = {
     isError: false,
     submitted: false,
     onClose: () => {
-      alert('Dialog Closed');
+      alert('Close button clicked');
       console.log('Dialog Closed');
     },
     onSubmit: (rating, review, neededMoreTime, skipped) => {
-      alert(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
       console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
     },
     onSkip: (skipped) => {
-      alert(`Review Skipped: Skipped=${skipped}`);
+      alert('Skip button clicked');
       console.log(`Review Skipped: Skipped=${skipped}`);
     },
     setSubmitted: (value) => {
-      alert(`Set Submitted: ${value}`);
       console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
     docs: {
       description: {
-        story: 'The ReviewDialog demonstrating the skip action. The skip button is always enabled, and clicking it triggers the onSkip callback with skipped=true. An alert confirms the action.',
+        story:
+          'The ReviewDialog demonstrating the skip action. The skip button is always enabled, and clicking it triggers the onSkip callback with skipped=true, showing an alert. Alerts also show the close action.',
       },
     },
   },
@@ -265,32 +289,31 @@ export const ErrorStateWithPreservedData: Story = {
             isError,
             isLoading,
             submitted,
-            onSubmit: (rating, review, neededMoreTime, skipped) => {
+            onSubmit: async (rating, review, neededMoreTime, skipped) => {
               setIsLoading(true);
               // Simulate an API call that fails
-              setTimeout(() => {
-                setIsLoading(false);
-                setIsError(true); // Set error state
-                // Do NOT set submitted to true
-                alert(
-                  `Submission Failed (Simulated Error): Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`
-                );
-                console.log(
-                  `Submission Failed: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`
-                );
-              }, 1000);
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              setIsLoading(false);
+              setIsError(true); // Set error state
+              // Do NOT set submitted to true
+              alert(
+                `Submission Failed (Simulated Error): Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`
+              );
+              console.log(
+                `Submission Failed: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`
+              );
+              throw new Error('Simulated submission error'); // Throw error to trigger component's error handling
             },
             onClose: () => {
-              alert('Dialog Closed');
+              alert('Close button clicked');
               console.log('Dialog Closed');
             },
             onSkip: (skipped) => {
-              alert(`Review Skipped: Skipped=${skipped}`);
+              alert('Skip button clicked');
               console.log(`Review Skipped: Skipped=${skipped}`);
             },
             setSubmitted: (value) => {
               setSubmitted(value);
-              alert(`Set Submitted: ${value}`);
               console.log(`Set Submitted: ${value}`);
             },
           }}
@@ -305,7 +328,7 @@ export const ErrorStateWithPreservedData: Story = {
     docs: {
       description: {
         story:
-          'The ReviewDialog with a simulated error on submission. When the user submits the form, it enters a loading state for 1 second, then shows an error state in the form view. User inputs (rating, review, neededMoreTime) are preserved, and the success view is not shown. An alert shows the attempted submission data.',
+          'The ReviewDialog with a simulated error on submission. When the user submits the form, it enters a loading state for 1 second, then shows an error state in the form view. User inputs (rating, review, neededMoreTime) are preserved, and the success view is not shown. Alerts show the attempted submission data, skip action, and close action.',
       },
     },
   },
