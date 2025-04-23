@@ -221,7 +221,7 @@ export const EN: TDictionary = {
       readMoreText: 'Read more',
       readLessText: 'Read less',
       requestSentText: 'Request sent',
-      cancelRequestText: 'Cancle request',
+      cancelRequestText: 'Cancel request',
       declineText: 'Decline',
       acceptText: 'Accept',
       suggestAnotherDateText: 'Suggest another date',

@@ -10,13 +10,13 @@ import { IconCheck } from '../../icons/icon-check';
 
 export interface CoachActionProps extends isLocalAware {
   status:
-    | 'ongoing'
-    | 'upcoming-editable'
-    | 'upcoming-locked'
-    | 'ended'
-    | 'requested'
-    | 'rescheduled'
-    | 'canceled';
+  | 'ongoing'
+  | 'upcoming-editable'
+  | 'upcoming-locked'
+  | 'ended'
+  | 'requested'
+  | 'rescheduled'
+  | 'canceled';
   hoursLeftToEdit?: number;
   meetingLink?: string;
   callQualityRating?: number;
@@ -114,9 +114,8 @@ export const CoachAction: React.FC<CoachActionProps> = ({
             className="flex items-center gap-1 px-3 py-1 rounded-medium max-w-fit"
             variant="info"
             size="big"
-            text={`${hoursLeftToEdit} ${
-              dictionary.components.coachingSessionCard.hoursLeftToEditText
-            }`}
+            text={`${hoursLeftToEdit} ${dictionary.components.coachingSessionCard.hoursLeftToEditText
+              }`}
           />
           <div className="flex gap-[9px] justify-between">
             <Button

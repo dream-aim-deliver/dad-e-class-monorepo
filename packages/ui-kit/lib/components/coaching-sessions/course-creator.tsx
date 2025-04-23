@@ -7,18 +7,18 @@ import { IconGroup } from '../icons/icon-group';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 export interface CourseCreatorProps extends isLocalAware {
-  userRole: string;
-  studentName?: string;
-  studentImageUrl?: string;
-  creatorName?: string;
-  creatorImageUrl?: string;
-  courseName?: string;
-  courseImageUrl?: string;
-  groupName?: string;
-  onClickStudent?: () => void;
-  onClickCreator?: () => void;
-  onClickCourse?: () => void;
-  onClickGroup?: () => void;
+    userRole: string;
+    studentName?: string;
+    studentImageUrl?: string;
+    creatorName?: string;
+    creatorImageUrl?: string;
+    courseName?: string;
+    courseImageUrl?: string;
+    groupName?: string;
+    onClickStudent?: () => void;
+    onClickCreator?: () => void;
+    onClickCourse?: () => void;
+    onClickGroup?: () => void;
 }
 
 /**
@@ -57,19 +57,19 @@ export interface CourseCreatorProps extends isLocalAware {
  */
 
 export const CourseCreator: React.FC<CourseCreatorProps> = ({
-  userRole,
-  studentName,
-  studentImageUrl,
-  creatorName,
-  creatorImageUrl,
-  courseName,
-  courseImageUrl,
-  groupName,
-  onClickStudent,
-  onClickCourse,
-  onClickCreator,
-  onClickGroup,
-  locale,
+    userRole,
+    studentName,
+    studentImageUrl,
+    creatorName,
+    creatorImageUrl,
+    courseName,
+    courseImageUrl,
+    groupName,
+    onClickStudent,
+    onClickCourse,
+    onClickCreator,
+    onClickGroup,
+    locale,
 }) => {
     const dictionary = getDictionary(locale);
     const createdByText =
@@ -79,75 +79,75 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
     const groupText = dictionary.components.coachingSessionCard.groupText;
     return (
         <div className="flex flex-col items-start w-full gap-1">
-        <div className="flex flex-wrap items-center gap-1 w-full">
-            <div className="flex items-center gap-1 text-sm text-text-secondary">
-            {userRole === 'student' ? (
-                <>
-                <IconCoachingOffer size="4" />
-                <p className="text-sm text-text-secondary">{createdByText}</p>
-                </>
-            ) : (
-                <>
-                <IconAccountInformation size="4" />
-                <p className="text-sm text-text-secondary">{studentText}</p>
-                </>
+            <div className="flex flex-wrap items-center gap-1 w-full">
+                <div className="flex items-center gap-1 text-sm text-text-secondary">
+                    {userRole === 'student' ? (
+                        <>
+                            <IconCoachingOffer size="4" />
+                            <p className="text-sm text-text-secondary">{createdByText}</p>
+                        </>
+                    ) : (
+                        <>
+                            <IconAccountInformation size="4" />
+                            <p className="text-sm text-text-secondary">{studentText}</p>
+                        </>
+                    )}
+                </div>
+                <Button
+                    size="small"
+                    variant="text"
+                    className="flex gap-1 p-0 h-8 max-w-full"
+                    text={userRole === 'student' ? creatorName : studentName}
+                    onClick={userRole === 'student' ? onClickCreator : onClickStudent}
+                    hasIconLeft
+                    iconLeft={
+                        <UserAvatar
+                            size="xSmall"
+                            imageUrl={
+                                userRole === 'student' ? creatorImageUrl : studentImageUrl
+                            }
+                        />
+                    }
+                />
+            </div>
+            {courseName && (
+                <div className="flex flex-wrap items-center gap-1 w-full">
+                    <div className="flex items-center gap-1 text-sm text-text-secondary">
+                        <IconCourse size="4" />
+                        <p className="text-sm text-text-secondary">{courseText}</p>
+                    </div>
+                    <Button
+                        size="small"
+                        variant="text"
+                        className="flex gap-1 p-0 h-8 max-w-full"
+                        text={courseName}
+                        onClick={onClickCourse}
+                        hasIconLeft
+                        iconLeft={
+                            <UserAvatar
+                                className="rounded-small"
+                                size="xSmall"
+                                imageUrl={courseImageUrl}
+                            />
+                        }
+                    />
+                </div>
             )}
-            </div>
-            <Button
-            size="small"
-            variant="text"
-            className="flex gap-1 p-0 h-8 max-w-full"
-            text={userRole === 'student' ? creatorName : studentName}
-            onClick={userRole === 'student' ? onClickCreator : onClickStudent}
-            hasIconLeft
-            iconLeft={
-                <UserAvatar
-                size="xSmall"
-                imageUrl={
-                    userRole === 'student' ? creatorImageUrl : studentImageUrl
-                }
-                />
-            }
-            />
-        </div>
-        {courseName && (
-            <div className="flex flex-wrap items-center gap-1 w-full">
-            <div className="flex items-center gap-1 text-sm text-text-secondary">
-                <IconCourse size="4" />
-                <p className="text-sm text-text-secondary">{courseText}</p>
-            </div>
-            <Button
-                size="small"
-                variant="text"
-                className="flex gap-1 p-0 h-8 max-w-full"
-                text={courseName}
-                onClick={onClickCourse}
-                hasIconLeft
-                iconLeft={
-                <UserAvatar
-                    className="rounded-small"
-                    size="xSmall"
-                    imageUrl={courseImageUrl}
-                />
-                }
-            />
-            </div>
-        )}
-        {groupName && (
-            <div className="flex flex-wrap items-center gap-1 w-full">
-            <div className="flex items-center gap-1 text-sm text-text-secondary">
-                <IconGroup size="4" data-testid="briefcase-icon" />
-                <p className="text-sm text-text-secondary">{groupText}</p>
-            </div>
-            <Button
-                size="small"
-                variant="text"
-                className="p-0 max-w-full"
-                text={groupName}
-                onClick={onClickGroup}
-            />
-            </div>
-        )}
+            {groupName && (
+                <div className="flex flex-wrap items-center gap-1 w-full">
+                    <div className="flex items-center gap-1 text-sm text-text-secondary">
+                        <IconGroup size="4" data-testid="briefcase-icon" />
+                        <p className="text-sm text-text-secondary">{groupText}</p>
+                    </div>
+                    <Button
+                        size="small"
+                        variant="text"
+                        className="p-0 max-w-full"
+                        text={groupName}
+                        onClick={onClickGroup}
+                    />
+                </div>
+            )}
         </div>
     );
 };
