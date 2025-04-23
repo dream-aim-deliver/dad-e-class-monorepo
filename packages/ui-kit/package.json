@@ -19,8 +19,11 @@
   "dependencies": {
     "@maany_shr/e-class-models": "workspace:*",
     "@maany_shr/e-class-translations": "workspace:*",
+    "@mux/mux-player-react": "^3.3.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "16.1.0",
+    "ag-grid-community": "^33.2.4",
+    "ag-grid-react": "^33.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.473.0",
@@ -31,8 +34,7 @@
     "slate-react": "^0.112.1",
     "tailwind-merge": "^2.5.5",
     "vitest": "^2.1.8",
-    "zod": "^3.24.1",
-    "@mux/mux-player-react": "^3.3.0"
+    "zod": "^3.24.1"
   },
   "publishConfig": {
     "access": "public"
