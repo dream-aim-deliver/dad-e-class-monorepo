@@ -6,13 +6,13 @@ import { CoachAction } from './coach-action';
 
 export interface CoachCoachingSessionCardProps extends isLocalAware {
   status:
-    | 'ongoing'
-    | 'upcoming-editable'
-    | 'upcoming-locked'
-    | 'ended'
-    | 'requested'
-    | 'rescheduled'
-    | 'canceled';
+  | 'ongoing'
+  | 'upcoming-editable'
+  | 'upcoming-locked'
+  | 'ended'
+  | 'requested'
+  | 'rescheduled'
+  | 'canceled';
   title: string;
   duration: number;
   date: Date;
@@ -103,7 +103,7 @@ export const CoachCoachingSessionCard: React.FC<
   duration,
   date,
   previousDate,
-  startTime ,
+  startTime,
   endTime,
   previousStartTime,
   previousEndTime,
@@ -131,65 +131,65 @@ export const CoachCoachingSessionCard: React.FC<
   onClickSuggestAnotherDate,
   locale,
 }) => {
-  const dictionary = getDictionary(locale);
-  return (
-    <div
-      className={`flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-auto max-w-[24rem]`}
-    >
-      <div className="flex gap-4 items-center justify-between">
-        <p title={title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
-          {title}
-        </p>
-        <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
-          {duration}
-          {dictionary.components.coachingSessionCard.durationText}
-        </p>
-      </div>
-      <DateAndTime
-        date={date}
-        previousDate={previousDate}
-        startTime={startTime}
-        endTime={endTime}
-        previousStartTime={previousStartTime}
-        previousEndTime={previousEndTime}
-        hasReview={rating > 0 ? true : false}
-      />
-      {rating > 0 && (
-        <ReviewCard
-          reviewText={reviewText}
-          rating={rating}
-          callQualityRating={callQualityRating}
+    const dictionary = getDictionary(locale);
+    return (
+      <div
+        className={`flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-auto max-w-[24rem]`}
+      >
+        <div className="flex gap-4 items-center justify-between">
+          <p title={title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
+            {title}
+          </p>
+          <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
+            {duration}
+            {dictionary.components.coachingSessionCard.durationText}
+          </p>
+        </div>
+        <DateAndTime
+          date={date}
+          previousDate={previousDate}
+          startTime={startTime}
+          endTime={endTime}
+          previousStartTime={previousStartTime}
+          previousEndTime={previousEndTime}
+          hasReview={rating > 0 ? true : false}
+        />
+        {rating > 0 && (
+          <ReviewCard
+            reviewText={reviewText}
+            rating={rating}
+            callQualityRating={callQualityRating}
+            locale={locale}
+          />
+        )}
+        <CourseCreator
+          studentName={studentName}
+          studentImageUrl={studentImageUrl}
+          courseName={courseName}
+          courseImageUrl={courseImageUrl}
+          groupName={groupName}
+          userRole="coach"
+          onClickStudent={onClickStudent}
+          onClickCourse={onClickCourse}
+          onClickGroup={onClickGroup}
           locale={locale}
         />
-      )}
-      <CourseCreator
-        studentName={studentName}
-        studentImageUrl={studentImageUrl}
-        courseName={courseName}
-        courseImageUrl={courseImageUrl}
-        groupName={groupName}
-        userRole="coach"
-        onClickStudent={onClickStudent}
-        onClickCourse={onClickCourse}
-        onClickGroup={onClickGroup}
-        locale={locale}
-      />
-      <CoachAction
-        status={status}
-        hoursLeftToEdit={hoursLeftToEdit}
-        meetingLink={meetingLink}
-        callQualityRating={callQualityRating}
-        isRecordingDownloading={isRecordingDownloading}
-        onClickJoinMeeting={onClickJoinMeeting}
-        onClickReschedule={onClickReschedule}
-        onClickCancel={onClickCancel}
-        onClickRateCallQuality={onClickRateCallQuality}
-        onClickDownloadRecording={onClickDownloadRecording}
-        onClickAccept={onClickAccept}
-        onClickDecline={onClickDecline}
-        onClickSuggestAnotherDate={onClickSuggestAnotherDate}
-        locale={locale}
-      />
-    </div>
-  );
-};
+        <CoachAction
+          status={status}
+          hoursLeftToEdit={hoursLeftToEdit}
+          meetingLink={meetingLink}
+          callQualityRating={callQualityRating}
+          isRecordingDownloading={isRecordingDownloading}
+          onClickJoinMeeting={onClickJoinMeeting}
+          onClickReschedule={onClickReschedule}
+          onClickCancel={onClickCancel}
+          onClickRateCallQuality={onClickRateCallQuality}
+          onClickDownloadRecording={onClickDownloadRecording}
+          onClickAccept={onClickAccept}
+          onClickDecline={onClickDecline}
+          onClickSuggestAnotherDate={onClickSuggestAnotherDate}
+          locale={locale}
+        />
+      </div>
+    );
+  };

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {CoachingSessionList} from '../../lib/components/coaching-sessions/coaching-session-list'
+import { CoachingSessionList } from '../../lib/components/coaching-sessions/coaching-session-list'
 import { TLocale } from '@maany_shr/e-class-translations';
-import { CoachingSessionCard , CoachingSessionCardProps} from '../../lib/components/coaching-sessions/coaching-session-card';
+import { CoachingSessionCard, CoachingSessionCardProps } from '../../lib/components/coaching-sessions/coaching-session-card';
 
 const meta: Meta<typeof CoachingSessionList> = {
   title: 'Components/CoachingSessionComponents/CoachingSessionList',
@@ -82,7 +82,7 @@ const generateMockSessions = (
 };
 
 export const Default: Story = {
-  render: ({ locale}) => {
+  render: ({ locale }) => {
     const sessions = generateMockSessions(6, 'coach', locale as TLocale);
     return (
       <CoachingSessionList locale={locale as TLocale}>

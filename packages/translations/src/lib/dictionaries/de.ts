@@ -223,7 +223,7 @@ export const DE: TDictionary = {
       readLessText: 'Weniger lesen',
       requestSentText: 'Anfrage gesendet',
       cancelRequestText: 'Anfrage abbrechen',
-      declineText: 'Abfall',
+      declineText: 'Ablehnen',
       acceptText: 'Akzeptieren',
       suggestAnotherDateText: 'Schlagen Sie einen anderen Termin vor',
       sessionCanceledText: 'Sitzung abgebrochen',

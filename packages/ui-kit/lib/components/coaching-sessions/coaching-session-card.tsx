@@ -5,15 +5,15 @@ import { StudentCoachingSessionCard } from './student-coaching-session/student-c
 
 export interface CoachingSessionCardProps {
   locale: TLocale;
-  userType:  Exclude<TRole, 'admin' | 'visitor'>;
+  userType: Exclude<TRole, 'admin' | 'visitor'>;
   status:
-    | 'ongoing'
-    | 'upcoming-editable'
-    | 'upcoming-locked'
-    | 'ended'
-    | 'requested'
-    | 'rescheduled'
-    | 'canceled';
+  | 'ongoing'
+  | 'upcoming-editable'
+  | 'upcoming-locked'
+  | 'ended'
+  | 'requested'
+  | 'rescheduled'
+  | 'canceled';
   title: string;
   duration: number;
   date: Date;
@@ -136,7 +136,7 @@ export const CoachingSessionCard: React.FC<CoachingSessionCardProps> = (
           console.error('Student Name is required for coach view');
           return null;
         }
-        return <CoachCoachingSessionCard {...props} studentName={props.studentName}/>;
+        return <CoachCoachingSessionCard {...props} studentName={props.studentName} />;
       },
     },
 
@@ -146,7 +146,7 @@ export const CoachingSessionCard: React.FC<CoachingSessionCardProps> = (
           console.error('Creator Name is required for student view');
           return null;
         }
-        return <StudentCoachingSessionCard {...props} creatorName={props.creatorName}/>;
+        return <StudentCoachingSessionCard {...props} creatorName={props.creatorName} />;
       },
     },
   };

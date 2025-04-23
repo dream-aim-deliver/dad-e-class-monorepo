@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { TRole } from 'packages/models/src/role';
-import {CoachingSessionCard} from '../../lib/components/coaching-sessions/coaching-session-card'
+import { CoachingSessionCard } from '../../lib/components/coaching-sessions/coaching-session-card'
 
 const meta: Meta<typeof CoachingSessionCard> = {
   title: 'Components/CoachingSessionComponents/CoachingSessionCard',
@@ -63,7 +63,7 @@ type Story = StoryObj<typeof CoachingSessionCard>;
 
 const baseArgs = {
   locale: 'en' as TLocale,
-  userType: 'coach' as Exclude<TRole , 'admin' | 'visitor'>,
+  userType: 'coach' as Exclude<TRole, 'admin' | 'visitor'>,
   title: 'Design Principles Discussion',
   duration: 60,
   date: new Date('2025-03-20T10:00:00'),
