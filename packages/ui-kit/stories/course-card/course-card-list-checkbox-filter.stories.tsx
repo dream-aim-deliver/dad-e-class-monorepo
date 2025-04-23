@@ -102,7 +102,7 @@ function CourseCardListStory({
                         {locale === 'de' ? 'Unsere Kurse' : 'Our Courses'}
                     </h3>
                     <CheckBox
-                        label={locale === 'de' ? 'Coaching-Sitzungen enthalten' : 'Coaching Sessions Included'}
+                        label={locale === 'de' ? 'Coaching enthalten' : 'Coaching Included'}
                         labelClass="text-text-primary text-sm sm:text-base md:text-lg leading-[100%]"
                         name="coaching-filter"
                         value="coaching-included"
