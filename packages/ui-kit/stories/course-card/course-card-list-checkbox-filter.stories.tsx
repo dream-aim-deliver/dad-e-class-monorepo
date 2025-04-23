@@ -127,7 +127,7 @@ function CourseCardListStory({
 }
 
 const meta: Meta<typeof CourseCardListStory> = {
-    title: 'Components/CourseCardList',
+    title: 'Components/CourseCardComponents/CourseCardListWithCheckboxFilter',
     component: CourseCardListStory,
     parameters: {
         layout: 'centered',
