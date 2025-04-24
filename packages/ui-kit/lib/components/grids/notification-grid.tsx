@@ -33,12 +33,14 @@ export const NotificationCard = ({ notification, onClick }: {
     const isPending = !notification.isRead;
     return (
         <div className={cn(
-            "@3xl:flex items-center p-4 justify-between rounded-md my-2 space-x-2",
-            isPending && "bg-base-neutral-800"
+            '@3xl:flex items-center p-4 justify-between rounded-md my-2 space-x-2',
+            isPending && 'bg-base-neutral-800'
         )}>
             <p className="text-base-neutral-50 text-wrap text-sm">{notification.message}</p>
             <div className="flex space-x-2 items-center">
-                <span className="font-bold text-base-brand-500 hover:text-base-brand-600 max-w-sm truncate cursor-pointer" onClick={() => onClick(notification)}>
+                <span
+                    className="font-bold text-base-brand-500 hover:text-base-brand-600 max-w-sm truncate cursor-pointer"
+                    onClick={() => onClick(notification)}>
                     {notification.action.title}
                 </span>
                 <p className="text-xs text-base-neutral-300">{formatDate(new Date(notification.timestamp))}</p>
@@ -67,15 +69,16 @@ export const NotificationGrid = ({ notifications, onNotificationClick }: Notific
             sortable: false,
             filter: false,
             autoHeight: true,
-            cellStyle: { padding: '0px', border: 'none', overflow: 'hidden' },
+            cellStyle: { padding: '0px', border: 'none', overflow: 'hidden' }
         }
     ]);
     const gridRef = useRef<AgGridReact>(null);
 
-    return <div className="flex flex-col h-full notification-grid @container">
+    return <div className="flex flex-col h-full @container">
         <BaseGrid
             gridRef={gridRef}
             headerHeight={0}
+            suppressRowHoverHighlight={true}
             columnDefs={columnDefs}
             rowData={notifications}
             pagination={true}
