@@ -240,5 +240,11 @@ export const EN: TDictionary = {
       rateCallQualityText: 'Rate Call Quality',
       loadMoreText: 'Load more...',
     },
+    coachingSessionTracker: {
+      minuteText: 'minutes',
+      usedText: 'used',
+      buyMoreSessionsText: 'Buy more sessions',
+      coachingSessionText: 'Coaching sessions included',
+    },
   },
 };
