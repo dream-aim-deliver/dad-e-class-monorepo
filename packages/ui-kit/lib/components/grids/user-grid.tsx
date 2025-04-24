@@ -45,8 +45,12 @@ const RatingCellRenderer = (props: any) => {
     if (rating === undefined || rating === null) {
         return <span>-</span>;
     }
+
+    const rounded = Number(rating.toFixed(2));
+    const value = rounded % 1 === 0 ? Math.floor(rounded) : rounded;
+
     return <div className="flex items-center space-x-2">
-        <span>{rating}</span>
+        <span>{value}</span>
         <StarRating rating={rating} totalStars={5} />
     </div>;
 };
