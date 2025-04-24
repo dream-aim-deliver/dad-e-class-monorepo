@@ -60,7 +60,7 @@ export const WithLeftContent: Story = {
   args: {
     hasLeftContent: true,
     hasRightContent: false,
-    leftContent: <IconSearch />,
+    leftContent: <div className='px-2'><IconSearch /></div>,
     rightContent: null,
     inputText: 'Search...',
     state: 'placeholder',

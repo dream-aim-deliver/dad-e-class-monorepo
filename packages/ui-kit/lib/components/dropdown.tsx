@@ -179,7 +179,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <div ref={dropdownRef} className={clsx('relative', className)}>
       {/* Dropdown Button */}
       <button
-        className="flex items-center justify-between p-2 pl-4 w-full bg-base-neutral-800 text-base-white rounded-medium border-[1px] border-base-neutral-700 group relative"
+        className="flex cursor-pointer items-center justify-between p-2 pl-4 w-full bg-base-neutral-800 text-base-white rounded-medium border-[1px] border-base-neutral-700 group relative"
         onClick={toggleDropdown}
       >
         <div
@@ -272,14 +272,14 @@ export const Dropdown: React.FC<DropdownProps> = ({
                               optionRefs.current.delete(option.value);
                             }
                           }}
-                          className="truncate max-w-[200px]" // Adjust max-width as needed
+                          className="truncate max-w-[200px] cursor-pointer" // Adjust max-width as needed
                         >
                           {option.label}
                         </div>
                       }
                       checked={selectedOption === option.value}
                       onChange={() => handleSelect(option.value, option.label)}
-                      labelClass="text-sm text-text-primary leading-[150%] whitespace-nowrap"
+                      labelClass="text-sm text-text-primary leading-[150%] whitespace-nowrap w-full"
                     />
                     {truncatedOptions.has(option.value) && (
                       <span
@@ -325,14 +325,14 @@ export const Dropdown: React.FC<DropdownProps> = ({
                               optionRefs.current.delete(option.value);
                             }
                           }}
-                          className="truncate max-w-[180px]"
+                          className="truncate max-w-[180px] cursor-pointer"
                         >
                           {option.label}
                         </div>
                       }
                       checked={selectedOptions.includes(option.value)}
                       onChange={() => handleMultiSelect(option.value)}
-                      labelClass="text-sm text-text-primary leading-[150%] whitespace-nowrap"
+                      labelClass="text-sm text-text-primary leading-[150%] whitespace-nowrap w-full"
                     />
                     {truncatedOptions.has(option.value) && (
                       <span
