@@ -5,24 +5,14 @@ import { useRef, useState } from 'react';
 import { Check } from 'lucide-react';
 import { cn } from '../../utils/style-utils';
 import { BaseGrid } from './base-grid';
+import { formatDate } from '../../utils/format-utils';
+import { Button } from '../button';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 export interface NotificationGridProps {
     notifications: notification.TNotification[];
     onNotificationClick: (notification: notification.TNotification) => void;
-}
-
-// TODO: possibly support 12-hour format
-function formatDate(date: Date = new Date()): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-
-    return `${year}-${month}-${day} at ${hours}:${minutes}`;
 }
 
 // TODO: ensure styling matching Figma
@@ -38,11 +28,12 @@ export const NotificationCard = ({ notification, onClick }: {
         )}>
             <p className="text-base-neutral-50 text-wrap text-sm">{notification.message}</p>
             <div className="flex space-x-2 items-center">
-                <span
-                    className="font-bold text-base-brand-500 hover:text-base-brand-600 max-w-sm truncate cursor-pointer"
-                    onClick={() => onClick(notification)}>
-                    {notification.action.title}
-                </span>
+                <Button
+                    variant="text"
+                    className="text-sm px-0 truncate max-w-sm"
+                    onClick={() => onClick(notification)}
+                    text={notification.action.title}
+                />
                 <p className="text-xs text-base-neutral-300">{formatDate(new Date(notification.timestamp))}</p>
                 {isPending && <Check className="text-base-brand-500 h-5 w-5 flex-shrink-0" />}
             </div>
