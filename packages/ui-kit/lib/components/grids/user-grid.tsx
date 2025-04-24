@@ -30,6 +30,7 @@ export interface UserGridProps {
     users: UserCMS[];
     onSortChanged?: (event: SortChangedEvent) => void; // Might be required if we switch to server-side sorting
     doesExternalFilterPass?: (node: RowNode<UserCMS>) => boolean;
+    enableSelection?: boolean;
 }
 
 const DetailsCellRenderer = () => {
@@ -131,6 +132,7 @@ export const UserGrid = (props: UserGridProps) => {
             paginationAutoPageSize={true}
             isExternalFilterPresent={() => props.doesExternalFilterPass !== undefined}
             doesExternalFilterPass={props.doesExternalFilterPass}
+            rowSelection={props.enableSelection && { mode: 'multiRow' }}
         />
     </div>;
 };

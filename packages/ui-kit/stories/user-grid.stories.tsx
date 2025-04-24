@@ -186,6 +186,19 @@ export const Default: Story = {
     }
 };
 
+export const Selectable: Story = {
+    args: {
+        users: Array.from({ length: 5 }, () => [...mockUsers]).flat(),
+        enableSelection: true,
+        onUserDetailsClick: (user) => {
+            alert(`User details clicked: ${user.name} ${user.surname}`);
+        },
+        onEmailClick: (email) => {
+            alert(`Email clicked: ${email}`);
+        }
+    }
+};
+
 export const Empty: Story = {
     args: {
         users: [],
