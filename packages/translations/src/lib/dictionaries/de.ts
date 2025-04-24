@@ -243,5 +243,11 @@ export const DE: TDictionary = {
       rateCallQualityText: 'Bewerten Sie die Anrufqualität',
       loadMoreText: 'Mehr laden...',
     },
+    coachingSessionTracker: {
+      minuteText: 'Minuten',
+      usedText: 'gebraucht',
+      buyMoreSessionsText: 'Kaufen Sie weitere Sitzungen',
+      coachingSessionText: 'Coaching-Sitzungen inklusive',
+    },
   },
 };

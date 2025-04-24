@@ -252,6 +252,12 @@ export const DictionarySchema = z.object({
       rateCallQualityText: z.string(),
       loadMoreText: z.string(),
     }),
+    coachingSessionTracker: z.object({
+      minuteText: z.string(),
+      usedText: z.string(),
+      buyMoreSessionsText: z.string(),
+      coachingSessionText: z.string(),
+    }),
   }),
 
 });
