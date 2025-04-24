@@ -662,11 +662,6 @@
   font-family: var(--font-figtree);
 }
 
-/* Notification Grid AG Grid specifics */
-.notification-grid {
-  --ag-accent-color: none; /* No background change on cell hover */
-}
-
 .ag-root-wrapper {
   padding: 0 0.75rem; /* Horizontal padding for cells which includes their borders */
   border-bottom-left-radius: 0!important; /* No rounding of the bottom border for pagination panel integration */
