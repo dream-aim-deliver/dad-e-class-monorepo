@@ -2,7 +2,7 @@ import { AgGridReact } from 'ag-grid-react';
 import React, { RefObject, useState } from 'react';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
-import { AllCommunityModule, ModuleRegistry, RowNode, SortChangedEvent } from 'ag-grid-community';
+import { AllCommunityModule, IRowNode, ModuleRegistry, SortChangedEvent } from 'ag-grid-community';
 import { StarRating } from '../star-rating';
 import { Button } from '../button';
 
@@ -24,12 +24,12 @@ export interface UserCMS {
 }
 
 export interface UserGridProps {
-    gridRef: RefObject<AgGridReact>;
+    gridRef: RefObject<AgGridReact | null>;
     onUserDetailsClick: (user: UserCMS) => void;
     onEmailClick: (email: string) => void;
     users: UserCMS[];
     onSortChanged?: (event: SortChangedEvent) => void; // Might be required if we switch to server-side sorting
-    doesExternalFilterPass?: (node: RowNode<UserCMS>) => boolean;
+    doesExternalFilterPass?: (node: IRowNode<UserCMS>) => boolean;
     enableSelection?: boolean;
 }
 
@@ -132,7 +132,7 @@ export const UserGrid = (props: UserGridProps) => {
             paginationAutoPageSize={true}
             isExternalFilterPresent={() => props.doesExternalFilterPass !== undefined}
             doesExternalFilterPass={props.doesExternalFilterPass}
-            rowSelection={props.enableSelection && { mode: 'multiRow' }}
+            rowSelection={props.enableSelection ? { mode: 'multiRow' } : undefined}
         />
     </div>;
 };

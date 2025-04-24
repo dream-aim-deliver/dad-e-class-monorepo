@@ -3,7 +3,7 @@ import { UserCMS, UserGrid } from '../lib/components/grids/user-grid';
 import { AgGridReact } from 'ag-grid-react';
 import { useCallback, useRef, useState } from 'react';
 import { Button } from '../lib/components/button';
-import { RowNode } from 'ag-grid-community';
+import { IRowNode } from 'ag-grid-community';
 
 const meta: Meta<typeof UserGrid> = {
     title: 'Components/UserGrid',
@@ -240,7 +240,7 @@ export const Filter: Story = {
             const [filteringByRating, setFilteringByRating] = useState<boolean>(false);
             const [filteringByAccess, setFilteringByAccess] = useState<boolean>(false);
 
-            const doesFilterPass = useCallback((node: RowNode<UserCMS>) => {
+            const doesFilterPass = useCallback((node: IRowNode<UserCMS>) => {
                 if (filteringByName && !node.data.name.toLowerCase().includes('an')) {
                     return false;
                 }

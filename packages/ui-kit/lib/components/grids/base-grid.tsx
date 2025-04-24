@@ -5,7 +5,7 @@ import { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import { GridReadyEvent } from 'ag-grid-community';
 
 export interface BaseTableProps extends AgGridReactProps {
-    gridRef: RefObject<AgGridReact>;
+    gridRef: RefObject<AgGridReact | null>;
     shouldDelayRender?: boolean;
 }
 
@@ -13,13 +13,13 @@ export interface BaseTableProps extends AgGridReactProps {
  * A component for flexible and responsive pagination of the table
  */
 export const SimplePaginationPanel = (props: {
-    currentPageRef: RefObject<HTMLSpanElement>;
-    totalPagesRef: RefObject<HTMLSpanElement>;
-    previousPageRef: RefObject<HTMLButtonElement>;
-    nextPageRef: RefObject<HTMLButtonElement>;
-    lastPageRef: RefObject<HTMLButtonElement>;
-    firstPageRef: RefObject<HTMLButtonElement>;
-    containerRef: RefObject<HTMLDivElement>;
+    currentPageRef: RefObject<HTMLSpanElement | null>;
+    totalPagesRef: RefObject<HTMLSpanElement | null>;
+    previousPageRef: RefObject<HTMLButtonElement | null>;
+    nextPageRef: RefObject<HTMLButtonElement | null>;
+    lastPageRef: RefObject<HTMLButtonElement | null>;
+    firstPageRef: RefObject<HTMLButtonElement | null>;
+    containerRef: RefObject<HTMLDivElement | null>;
 }) => {
     const enabledTextClasses = 'text-neutral-50';
     const disabledTextClasses = 'disabled:text-neutral-500';
@@ -70,16 +70,17 @@ export const BaseGrid = ({ gridRef, shouldDelayRender, ...props }: BaseTableProp
     https://stackoverflow.com/questions/73560068/ag-grid-autoheight-true-coldef-property-on-cell-renderer-causes-stutter
      */
     const [isRenderDelayed, setIsRenderDelayed] = useState<boolean>(false);
-    const isRenderDelayedTimeout = useRef<NodeJS.Timeout>(null);
+    const isRenderDelayedTimeout = useRef<number | undefined>(undefined);
 
     const delayRender = () => {
         if (!shouldDelayRender) return;
 
         clearTimeout(isRenderDelayedTimeout.current);
         setIsRenderDelayed(true);
+        // In browser this is a number, but in Node it is a Timeout object
         isRenderDelayedTimeout.current = setTimeout(() => {
             setIsRenderDelayed(false);
-        }, 500);
+        }, 500) as unknown as number;
     };
 
     const onNextPage = () => {
