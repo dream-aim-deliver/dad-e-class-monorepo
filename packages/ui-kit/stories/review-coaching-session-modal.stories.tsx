@@ -1,7 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ReviewCoachingSessionModal } from '../lib/components/review-coachingsession-modal';
-import { getDictionary } from '@maany_shr/e-class-translations';
+import { ReviewCoachingSessionModal } from '../lib/components/review-coaching-session-modal';
 
 // Mock provider for locale
 const LocaleProvider: React.FC<{ locale: string; children: React.ReactNode }> = ({ locale, children }) => {
@@ -209,6 +208,9 @@ export const ErrorState: Story = {
       console.log('Dialog Closed');
     },
     onSubmit: (rating, review, neededMoreTime) => {
+      alert(
+        `Review Submitted (Simulated Error): Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`
+      );
       console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`);
     },
     onSkip: () => {
