@@ -255,5 +255,10 @@ export const DE: TDictionary = {
       resumeText: 'Wieder aufnehmen',
       progressText: 'Fortschritt',
     },
+    errorPage: {
+      title: 'Ups! Beim Anmelden ist ein Problem aufgetreten.',
+      description: 'Bitte überprüfe deinen Benutzernamen und dein Passwort und versuch’s nochmals.',
+      tryAgain: 'Nochmal versuchen',
   },
+}
 };

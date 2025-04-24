@@ -252,5 +252,10 @@ export const EN: TDictionary = {
       resumeText: 'Resume',
       progressText: 'Progress',
     },
+    errorPage: {
+      title: 'Oops! There was a problem signing you in.',
+      description: 'Please check your username and password and try again.',
+      tryAgain: 'Try Again',
   },
+}
 };
