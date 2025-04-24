@@ -12,19 +12,20 @@ import { TextAreaInput } from './text-areaInput';
 
 export interface ReviewFlowProps extends isLocalAware {
   onClose?: () => void;
-  onSubmit?: (rating: number, review: string, neededMoreTime: boolean, skipped: boolean) => void;
-  onSkip?: (skipped: boolean) => void;
+  onSubmit?: (rating: number, review: string, neededMoreTime: boolean) => void;
+  onSkip?: () => void;
   isLoading?: boolean;
   isError?: boolean;
   submitted?: boolean;
   setSubmitted?: (value: boolean) => void;
 }
+
 /**
  * A modal component for submitting or skipping a review of a coaching session.
  *
  * @param onClose Callback function triggered when the modal is closed.
- * @param onSubmit Callback function triggered when the review is submitted. Receives the rating, review text, neededMoreTime flag, and skipped flag.
- * @param onSkip Callback function triggered when the review is skipped. Receives the skipped flag.
+ * @param onSubmit Callback function triggered when the review is submitted. Receives the rating, review text, and neededMoreTime flag.
+ * @param onSkip Callback function triggered when the review is skipped.
  * @param locale The locale used for translations and localization.
  * @param isLoading Optional boolean indicating if the form is in a loading state. Defaults to false.
  * @param isError Optional boolean indicating if an error occurred during submission. Defaults to false.
@@ -34,8 +35,8 @@ export interface ReviewFlowProps extends isLocalAware {
  * @example
  * <ReviewCoachingSessionModal
  *   onClose={() => console.log("Modal closed")}
- *   onSubmit={(rating, review, neededMoreTime, skipped) => console.log("Review submitted:", { rating, review, neededMoreTime, skipped })}
- *   onSkip={(skipped) => console.log("Review skipped:", skipped)}
+ *   onSubmit={(rating, review, neededMoreTime) => console.log("Review submitted:", { rating, review, neededMoreTime })}
+ *   onSkip={() => console.log("Review skipped")}
  *   locale="en"
  *   isLoading={false}
  *   isError={false}
@@ -70,29 +71,9 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
     if (!onSubmit || !isFormValid) return;
 
     // Call onSubmit and let parent/story handle submitted state
-    onSubmit(rating, review, neededMoreTime, false);
+    onSubmit(rating, review, neededMoreTime);
   };
 
-  const handleClose = () => {
-    if (onClose) {
-      onClose();
-    }
-  };
-
-  const handleSkip = () => {
-    if (onSkip) {
-      onSkip(true);
-    }
-    // Reset form state
-    setReview('');
-    setRating(0);
-    setNeededMoreTime(false);
-    setLocalSubmitted(false);
-    if (setSubmitted) {
-      setSubmitted(false);
-    }
-    handleClose();
-  };
 
   if (submitted) {
     return (
@@ -103,7 +84,7 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
             styles="text"
             icon={<IconClose />}
             size="small"
-            onClick={handleClose}
+            onClick={onClose}
             className="text-button-text-text"
           />
         </div>
@@ -129,7 +110,7 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
           variant="primary"
           size="medium"
           text={dictionary.components.reviewCoachingSessionModal.closeButton}
-          onClick={handleClose}
+          onClick={onClose}
         />
       </div>
     );
@@ -183,7 +164,7 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
         </div>
 
         {isError && (
-          <div className="w-full text-sm text-red-500 text-justify">
+          <div className="w-full text-sm text-feedback-error-primary text-justify">
             {dictionary.components.reviewCoachingSessionModal.errorState}
           </div>
         )}
@@ -208,7 +189,7 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
           variant="text"
           size="medium"
           text={dictionary.components.reviewCoachingSessionModal.skipButton}
-          onClick={handleSkip}
+          onClick={onSkip}
           disabled={isLoading}
         />
       </form>

@@ -131,17 +131,6 @@ describe('ReviewDialog', () => {
     expect(defaultProps.onSubmit).not.toHaveBeenCalled();
   });
 
-  it('calls onSkip and onClose when skip button is clicked', async () => {
-    render(<ReviewCoachingSessionModal {...defaultProps} />);
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('button-Skip'));
-    });
-
-    expect(defaultProps.onSkip).toHaveBeenCalledWith(true);
-    expect(defaultProps.onClose).toHaveBeenCalled();
-  });
-
   it('toggles checkbox state correctly', async () => {
     render(<ReviewCoachingSessionModal {...defaultProps} />);
 

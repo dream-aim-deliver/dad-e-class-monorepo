@@ -46,11 +46,11 @@ const meta: Meta<typeof ReviewCoachingSessionModal> = {
     },
     onSubmit: {
       action: 'review-submitted',
-      description: 'Callback triggered when the review is submitted with rating, review, neededMoreTime, and skipped status.',
+      description: 'Callback triggered when the review is submitted with rating, review, and neededMoreTime.',
     },
     onSkip: {
       action: 'review-skipped',
-      description: 'Callback triggered when the user skips the review with skipped status.',
+      description: 'Callback triggered when the user skips the review.',
     },
     setSubmitted: {
       action: 'set-submitted',
@@ -77,16 +77,16 @@ export const DefaultForm: Story = {
             isLoading,
             isError,
             submitted,
-            onSubmit: (rating, review, neededMoreTime, skipped) => {
+            onSubmit: (rating, review, neededMoreTime) => {
               setIsLoading(true);
               setTimeout(() => {
                 setIsLoading(false);
                 setSubmitted(true); // Set submitted to true for success
                 alert(
-                  `Review Submitted Successfully: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`
+                  `Review Submitted Successfully: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`
                 );
                 console.log(
-                  `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`
+                  `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`
                 );
               }, 1000);
             },
@@ -105,9 +105,9 @@ export const DefaultForm: Story = {
       alert('Close button clicked');
       console.log('Dialog Closed');
     },
-    onSkip: (skipped) => {
+    onSkip: () => {
       alert('Skip button clicked');
-      console.log(`Review Skipped: Skipped=${skipped}`);
+      console.log('Review Skipped');
     },
   },
   parameters: {
@@ -146,12 +146,12 @@ export const SuccessView: Story = {
       alert('Close button clicked');
       console.log('Dialog Closed');
     },
-    onSubmit: (rating, review, neededMoreTime, skipped) => {
-      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
+    onSubmit: (rating, review, neededMoreTime) => {
+      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`);
     },
-    onSkip: (skipped) => {
+    onSkip: () => {
       alert('Skip button clicked');
-      console.log(`Review Skipped: Skipped=${skipped}`);
+      console.log('Review Skipped');
     },
     setSubmitted: (value) => {
       console.log(`Set Submitted: ${value}`);
@@ -177,12 +177,12 @@ export const LoadingState: Story = {
       alert('Close button clicked');
       console.log('Dialog Closed');
     },
-    onSubmit: (rating, review, neededMoreTime, skipped) => {
-      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
+    onSubmit: (rating, review, neededMoreTime) => {
+      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`);
     },
-    onSkip: (skipped) => {
+    onSkip: () => {
       alert('Skip button clicked');
-      console.log(`Review Skipped: Skipped=${skipped}`);
+      console.log('Review Skipped');
     },
     setSubmitted: (value) => {
       console.log(`Set Submitted: ${value}`);
@@ -208,12 +208,12 @@ export const ErrorState: Story = {
       alert('Close button clicked');
       console.log('Dialog Closed');
     },
-    onSubmit: (rating, review, neededMoreTime, skipped) => {
-      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
+    onSubmit: (rating, review, neededMoreTime) => {
+      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`);
     },
-    onSkip: (skipped) => {
+    onSkip: () => {
       alert('Skip button clicked');
-      console.log(`Review Skipped: Skipped=${skipped}`);
+      console.log('Review Skipped');
     },
     setSubmitted: (value) => {
       console.log(`Set Submitted: ${value}`);
@@ -254,12 +254,12 @@ export const SkippedAction: Story = {
       alert('Close button clicked');
       console.log('Dialog Closed');
     },
-    onSubmit: (rating, review, neededMoreTime, skipped) => {
-      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`);
+    onSubmit: (rating, review, neededMoreTime) => {
+      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`);
     },
-    onSkip: (skipped) => {
+    onSkip: () => {
       alert('Skip button clicked');
-      console.log(`Review Skipped: Skipped=${skipped}`);
+      console.log('Review Skipped');
     },
     setSubmitted: (value) => {
       console.log(`Set Submitted: ${value}`);
@@ -269,7 +269,7 @@ export const SkippedAction: Story = {
     docs: {
       description: {
         story:
-          'The ReviewDialog demonstrating the skip action. The skip button is always enabled, and clicking it triggers the onSkip callback with skipped=true, showing an alert. Alerts also show the close action.',
+          'The ReviewDialog demonstrating the skip action. The skip button is always enabled, and clicking it triggers the onSkip callback, showing an alert. Alerts also show the close action.',
       },
     },
   },
@@ -289,7 +289,7 @@ export const ErrorStateWithPreservedData: Story = {
             isError,
             isLoading,
             submitted,
-            onSubmit: async (rating, review, neededMoreTime, skipped) => {
+            onSubmit: async (rating, review, neededMoreTime) => {
               setIsLoading(true);
               // Simulate an API call that fails
               await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -297,10 +297,10 @@ export const ErrorStateWithPreservedData: Story = {
               setIsError(true); // Set error state
               // Do NOT set submitted to true
               alert(
-                `Submission Failed (Simulated Error): Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`
+                `Submission Failed (Simulated Error): Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`
               );
               console.log(
-                `Submission Failed: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}, Skipped=${skipped}`
+                `Submission Failed: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`
               );
               throw new Error('Simulated submission error'); // Throw error to trigger component's error handling
             },
@@ -308,9 +308,9 @@ export const ErrorStateWithPreservedData: Story = {
               alert('Close button clicked');
               console.log('Dialog Closed');
             },
-            onSkip: (skipped) => {
+            onSkip: () => {
               alert('Skip button clicked');
-              console.log(`Review Skipped: Skipped=${skipped}`);
+              console.log('Review Skipped');
             },
             setSubmitted: (value) => {
               setSubmitted(value);
