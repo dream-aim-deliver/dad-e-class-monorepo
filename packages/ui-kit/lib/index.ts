@@ -32,3 +32,4 @@ export * as contexts from './contexts';
 export { Navbar } from './components/navbar';
 
 export { NotificationGrid, NotificationCard } from './components/grids/notification-grid';
+export { UserGrid } from './components/grids/user-grid';
