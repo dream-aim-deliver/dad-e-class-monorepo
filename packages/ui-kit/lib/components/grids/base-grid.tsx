@@ -6,6 +6,7 @@ import { GridReadyEvent } from 'ag-grid-community';
 
 export interface BaseTableProps extends AgGridReactProps {
     gridRef: RefObject<AgGridReact>;
+    shouldDelayRender?: boolean;
 }
 
 /**
@@ -32,7 +33,7 @@ export const SimplePaginationPanel = (props: {
                 enabledTextClasses,
                 'py-4 !m-0',
                 'bg-base-neutral-900',
-                'rounded-b-md',
+                'rounded-b-md'
             )}
         >
             <div className="flex justify-center invisible items-center" ref={props.containerRef}>
@@ -56,7 +57,7 @@ export const SimplePaginationPanel = (props: {
     );
 };
 
-export const BaseGrid = ({gridRef, ...props}: BaseTableProps) => {
+export const BaseGrid = ({ gridRef, shouldDelayRender, ...props }: BaseTableProps) => {
     const currentPageRef = useRef<HTMLSpanElement>(null);
     const totalPagesRef = useRef<HTMLSpanElement>(null);
     const previousPageRef = useRef<HTMLButtonElement>(null);
@@ -68,38 +69,39 @@ export const BaseGrid = ({gridRef, ...props}: BaseTableProps) => {
     /* This is implemented to counteract a bug in ag-grid of flickering with autoHeight.
     https://stackoverflow.com/questions/73560068/ag-grid-autoheight-true-coldef-property-on-cell-renderer-causes-stutter
      */
-    const [isTableCovered, setIsTableCovered] = useState<boolean>(false);
-    const isTableCoveredTimeout = useRef<NodeJS.Timeout>(null);
+    const [isRenderDelayed, setIsRenderDelayed] = useState<boolean>(false);
+    const isRenderDelayedTimeout = useRef<NodeJS.Timeout>(null);
 
-    const coverTable = () => {
-        clearTimeout(isTableCoveredTimeout.current);
-        setIsTableCovered(true);
-        const timeoutId = setTimeout(() => {
-            setIsTableCovered(false);
+    const delayRender = () => {
+        if (!shouldDelayRender) return;
+
+        clearTimeout(isRenderDelayedTimeout.current);
+        setIsRenderDelayed(true);
+        isRenderDelayedTimeout.current = setTimeout(() => {
+            setIsRenderDelayed(false);
         }, 500);
-        isTableCoveredTimeout.current = timeoutId;
     };
 
     const onNextPage = () => {
-        coverTable();
+        delayRender();
         const gridApi = gridRef.current?.api;
         gridApi?.paginationGoToNextPage();
     };
 
     const onPreviousPage = () => {
-        coverTable();
+        delayRender();
         const gridApi = gridRef.current?.api;
         gridApi?.paginationGoToPreviousPage();
     };
 
     const onFirstPage = () => {
-        coverTable();
+        delayRender();
         const gridApi = gridRef.current?.api;
         gridApi?.paginationGoToFirstPage();
     };
 
     const onLastPage = () => {
-        coverTable();
+        delayRender();
         const gridApi = gridRef.current?.api;
         gridApi?.paginationGoToLastPage();
     };
@@ -134,7 +136,7 @@ export const BaseGrid = ({gridRef, ...props}: BaseTableProps) => {
 
     const onGridReady = (event: GridReadyEvent) => {
         setIsTableLoaded(true);
-        coverTable();
+        delayRender();
         if (props.onGridReady) {
             props.onGridReady(event);
         }
@@ -150,9 +152,11 @@ export const BaseGrid = ({gridRef, ...props}: BaseTableProps) => {
     return (
         <>
             <div className={cn('grid grow w-full', 'relative', 'min-h-[300px]')}>
-                {(!isTableLoaded || isTableCovered) && <div className="absolute flex items-center justify-center w-full h-full rounded-b-none bg-neutral-800 z-10 rounded-md" />}
+                {(!isTableLoaded || isRenderDelayed) && <div
+                    className="absolute flex items-center justify-center w-full h-full rounded-b-none bg-neutral-800 z-10 rounded-md" />}
                 {/*The substitute div is required to supress hydration warning*/}
-                <AgGridReact {...props} ref={gridRef} onGridReady={onGridReady} onPaginationChanged={onPaginationChanged} />
+                <AgGridReact {...props} ref={gridRef} onGridReady={onGridReady}
+                             onPaginationChanged={onPaginationChanged} />
             </div>
             <SimplePaginationPanel
                 currentPageRef={currentPageRef}
