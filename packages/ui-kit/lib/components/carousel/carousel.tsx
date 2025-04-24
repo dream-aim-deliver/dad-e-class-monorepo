@@ -20,8 +20,8 @@ export const CarouselContent: React.FC<{
       {items.map((item, index) => (
         <div
           key={index}
-          className={`flex-shrink-0 px-2 ${
-            itemsPerView === 1
+          className={`flex-shrink-0 px-2 transition-all duration-300 ${
+            itemsPerView === 1 || items.length === 1
               ? "w-full max-w-[90%] mx-auto"
               : itemsPerView === 2
               ? "w-1/2 max-w-[45%]"
@@ -60,7 +60,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
   ({ children, className = "", locale, onClick }) => {
     const carouselRef = useRef<HTMLDivElement>(null);
     const [currentPage, setCurrentPage] = useState(0);
-    const [itemsPerView, setItemsPerView] = useState(3); // Default to 3, will be adjusted by screen size
+    const [itemsPerView, setItemsPerView] = useState(3); // Default to 3, adjusted by screen size
     const [touchStart, setTouchStart] = useState(0);
     const dictionary = getDictionary(locale);
     const childrenArray = React.Children.toArray(children);
@@ -77,23 +77,23 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
     // Responsive items per view
     useEffect(() => {
       const updateItemsPerView = () => {
-        if (window.innerWidth < 640) setItemsPerView(1);
-        else if (window.innerWidth < 1024) setItemsPerView(2);
-        else setItemsPerView(3);
+        const width = window.innerWidth;
+        if (width < 640) {
+          setItemsPerView(1);
+        } else if (width < 1024) {
+          setItemsPerView(2);
+        } else {
+          setItemsPerView(3);
+        }
       };
 
       updateItemsPerView();
-      let resizeTimer: ReturnType<typeof setTimeout>;
-      const debouncedResize = () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(updateItemsPerView, 100);
+      const handleResize = () => {
+        updateItemsPerView();
       };
 
-      window.addEventListener("resize", debouncedResize);
-      return () => {
-        window.removeEventListener("resize", debouncedResize);
-        clearTimeout(resizeTimer);
-      };
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     // Keep currentPage valid
@@ -162,13 +162,13 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
             {/* Carousel Content Wrapper */}
             <div
               ref={carouselRef}
-              className="overflow-hidden"
+              className="overflow-hidden transition-all duration-500"
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               role="region"
               aria-label="Carousel"
             >
-              <div className="relative flex transition-transform duration-300 ease-in-out w-full justify-center">
+              <div className="relative flex ease-in-out w-full justify-center">
                 {itemGroups[currentPage] && (
                   <CarouselContent items={itemGroups[currentPage]} itemsPerView={itemsPerView} />
                 )}
@@ -180,7 +180,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
               <button
                 onClick={goNext}
                 disabled={currentPage === itemGroups.length - 1}
-                className={`absolute right-[-10px] sm:right-[-20px] md:-right-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${
+                className={`absolute right-[-10px] sm:right-[-20px] md:-right-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transitionupdating colors ${
                   currentPage === itemGroups.length - 1
                     ? "opacity-50 cursor-not-allowed"
                     : "cursor-pointer"
