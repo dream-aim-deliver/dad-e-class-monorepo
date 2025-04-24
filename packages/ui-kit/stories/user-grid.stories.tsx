@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UserGrid } from '../lib/components/grids/user-grid';
+import { UserCMS, UserGrid } from '../lib/components/grids/user-grid';
 import { AgGridReact } from 'ag-grid-react';
-import { useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
+import { Button } from '../lib/components/button';
+import { RowNode } from 'ag-grid-community';
 
 const meta: Meta<typeof UserGrid> = {
     title: 'Components/UserGrid',
@@ -35,7 +37,7 @@ const mockUsers = [
         coachingSessionsCount: 24,
         coursesBought: 5,
         coursesCreated: 2,
-        lastAccess: 1714022400000 // April 24, 2025
+        lastAccess: 1714022400000 // April 24, 2024
     },
     {
         id: 1002,
@@ -48,7 +50,7 @@ const mockUsers = [
         coachingSessionsCount: 38,
         coursesBought: 12,
         coursesCreated: 0,
-        lastAccess: 1713936000000 // April 23, 2025
+        lastAccess: 1713936000000 // April 23, 2024
     },
     {
         id: 1003,
@@ -61,7 +63,7 @@ const mockUsers = [
         coachingSessionsCount: 7,
         coursesBought: 3,
         coursesCreated: 0,
-        lastAccess: 1713418800000 // April 17, 2025
+        lastAccess: 1713418800000 // April 17, 2024
     },
     {
         id: 1004,
@@ -74,7 +76,7 @@ const mockUsers = [
         coachingSessionsCount: 52,
         coursesBought: 0,
         coursesCreated: 6,
-        lastAccess: 1713849600000 // April 22, 2025
+        lastAccess: 1713849600000 // April 22, 2024
     },
     {
         id: 1005,
@@ -87,7 +89,7 @@ const mockUsers = [
         coachingSessionsCount: undefined,
         coursesBought: 7,
         coursesCreated: 1,
-        lastAccess: 1714022400000 // April 24, 2025
+        lastAccess: 1714022400000 // April 24, 2024
     },
     {
         id: 1006,
@@ -100,7 +102,7 @@ const mockUsers = [
         coachingSessionsCount: 31,
         coursesBought: undefined,
         coursesCreated: 3,
-        lastAccess: 1713504000000 // April 18, 2025
+        lastAccess: 1713504000000 // April 18, 2024
     },
     {
         id: 1007,
@@ -113,7 +115,7 @@ const mockUsers = [
         coachingSessionsCount: 9,
         coursesBought: 2,
         coursesCreated: 0,
-        lastAccess: 1712812800000 // April 10, 2025
+        lastAccess: 1712812800000 // April 10, 2024
     },
     {
         id: 1008,
@@ -126,7 +128,7 @@ const mockUsers = [
         coachingSessionsCount: 45,
         coursesBought: 9,
         coursesCreated: 5,
-        lastAccess: 1713763200000 // April 21, 2025
+        lastAccess: 1713763200000 // April 21, 2024
     },
     {
         id: 1009,
@@ -139,7 +141,7 @@ const mockUsers = [
         coachingSessionsCount: 18,
         coursesBought: 6,
         coursesCreated: 0,
-        lastAccess: 1713676800000 // April 20, 2025
+        lastAccess: 1713676800000 // April 20, 2024
     },
     {
         id: 1010,
@@ -152,7 +154,7 @@ const mockUsers = [
         coachingSessionsCount: 27,
         coursesBought: 3,
         coursesCreated: 1,
-        lastAccess: 1713936000000 // April 23, 2025
+        lastAccess: 1713936000000 // April 23, 2024
     },
     {
         id: 1011,
@@ -194,7 +196,7 @@ export const Empty: Story = {
             alert(`Email clicked: ${email}`);
         }
     }
-}
+};
 
 export const Loading: Story = {
     args: {
@@ -206,4 +208,69 @@ export const Loading: Story = {
             alert(`Email clicked: ${email}`);
         }
     }
-}
+};
+
+export const Filter: Story = {
+    args: {
+        users: Array.from({ length: 5 }, () => [...mockUsers]).flat(),
+        onUserDetailsClick: (user) => {
+            alert(`User details clicked: ${user.name} ${user.surname}`);
+        },
+        onEmailClick: (email) => {
+            alert(`Email clicked: ${email}`);
+        }
+    },
+    decorators: [
+        (Story, context) => {
+            const [filteringByName, setFilteringByName] = useState<boolean>(false);
+            const [filteringByPhone, setFilteringByPhone] = useState<boolean>(false);
+            const [filteringByRating, setFilteringByRating] = useState<boolean>(false);
+            const [filteringByAccess, setFilteringByAccess] = useState<boolean>(false);
+
+            const doesFilterPass = useCallback((node: RowNode<UserCMS>) => {
+                if (filteringByName && !node.data.name.toLowerCase().includes('an')) {
+                    return false;
+                }
+                if (filteringByPhone && !node.data.phone.startsWith('+1')) {
+                    return false;
+                }
+                if (filteringByRating && ((node.data.rating !== undefined && node.data.rating <= 4.5) || !node.data.rating)) {
+                    return false;
+                }
+                if (filteringByAccess && node.data.lastAccess > new Date('2024-04-20').getTime()) {
+                    return false;
+                }
+                return true;
+            }, [filteringByName, filteringByPhone, filteringByRating, filteringByAccess]);
+
+            const filterByName = () => {
+                setFilteringByName(prevState => !prevState);
+            };
+
+            const filterByPhone = () => {
+                setFilteringByPhone(prevState => !prevState);
+            };
+
+            const filterByRating = () => {
+                setFilteringByRating(prevState => !prevState);
+            };
+
+            const filterByAccess = () => {
+                setFilteringByAccess(prevState => !prevState);
+            };
+
+            return <div className="flex grow h-full w-full flex-col">
+                <div className="flex space-x-2">
+                    <Button text="Filter by name contains an" onClick={filterByName} />
+                    <Button text="Filter by phone starts with +1" onClick={filterByPhone} />
+                    <Button text="Filter by rating greater than 4.5" onClick={filterByRating} />
+                    <Button text="Filter by access before April 20" onClick={filterByAccess} />
+                </div>
+                <Story args={{
+                    ...context.args,
+                    doesExternalFilterPass: doesFilterPass
+                }} />
+            </div>;
+        }
+    ]
+};

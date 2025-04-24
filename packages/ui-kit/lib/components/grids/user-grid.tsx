@@ -2,14 +2,14 @@ import { AgGridReact } from 'ag-grid-react';
 import React, { RefObject, useState } from 'react';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
-import { AllCommunityModule, ModuleRegistry, SortChangedEvent } from 'ag-grid-community';
+import { AllCommunityModule, ModuleRegistry, RowNode, SortChangedEvent } from 'ag-grid-community';
 import { StarRating } from '../star-rating';
 import { Button } from '../button';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 // TODO: define in models
-interface User {
+export interface UserCMS {
     id: number;
     name: string;
     surname: string;
@@ -25,10 +25,11 @@ interface User {
 
 export interface UserGridProps {
     gridRef: RefObject<AgGridReact>;
-    onUserDetailsClick: (user: User) => void;
+    onUserDetailsClick: (user: UserCMS) => void;
     onEmailClick: (email: string) => void;
-    users: User[];
+    users: UserCMS[];
     onSortChanged?: (event: SortChangedEvent) => void; // Might be required if we switch to server-side sorting
+    doesExternalFilterPass?: (node: RowNode<UserCMS>) => boolean;
 }
 
 const DetailsCellRenderer = () => {
@@ -128,6 +129,8 @@ export const UserGrid = (props: UserGridProps) => {
             pagination={true}
             suppressPaginationPanel={true}
             paginationAutoPageSize={true}
+            isExternalFilterPresent={() => props.doesExternalFilterPass !== undefined}
+            doesExternalFilterPass={props.doesExternalFilterPass}
         />
     </div>;
 };
