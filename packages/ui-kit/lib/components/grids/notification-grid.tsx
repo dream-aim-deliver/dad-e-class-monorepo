@@ -82,6 +82,7 @@ export const NotificationGrid = ({ notifications, onNotificationClick }: Notific
             paginationPageSize={PAGE_SIZE}
             suppressPaginationPanel={true}
             domLayout="normal"
+            shouldDelayRender={true}
         />
     </div>;
 };
