@@ -6,7 +6,7 @@ const type:ElementType="singleChoice";
 const singleChoiceElement:PreAssessmentElement={
     type,
     designerBtnElement:{
-        icon:()=><IconSingleChoice/>,
+        icon:IconSingleChoice,
         label:"Rich Text"
     },
     designerComponent:()=><div>Single Choice Designer</div>,

@@ -23,11 +23,11 @@ export type PreAssessmentElement={
     }>;
 }
 
-export type PreAssessmentInstance={
-   id:string;
-type:  ElementType;
+export interface PreAssessmentInstance{
+    id:string;
+    type:  ElementType;
     extraAttributes?:Record<string,any>;
-children?:PreAssessmentInstance[];
+    
 }
 
 type PreAssessmentType={
