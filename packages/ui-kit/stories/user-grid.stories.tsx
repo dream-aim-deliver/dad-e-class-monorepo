@@ -183,3 +183,27 @@ export const Default: Story = {
         }
     }
 };
+
+export const Empty: Story = {
+    args: {
+        users: [],
+        onUserDetailsClick: (user) => {
+            alert(`User details clicked: ${user.name} ${user.surname}`);
+        },
+        onEmailClick: (email) => {
+            alert(`Email clicked: ${email}`);
+        }
+    }
+}
+
+export const Loading: Story = {
+    args: {
+        users: undefined,
+        onUserDetailsClick: (user) => {
+            alert(`User details clicked: ${user.name} ${user.surname}`);
+        },
+        onEmailClick: (email) => {
+            alert(`Email clicked: ${email}`);
+        }
+    }
+}
