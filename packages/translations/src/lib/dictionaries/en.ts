@@ -248,5 +248,9 @@ export const EN: TDictionary = {
       coachingSessionText: 'Coaching sessions included',
       noCoachingSessionText: 'No coaching sessions included',
     },
+    courseProgressBar: {
+      resumeText: 'Resume',
+      progressText: 'Progress',
+    },
   },
 };

@@ -260,6 +260,10 @@ export const DictionarySchema = z.object({
       coachingSessionText: z.string(),
       noCoachingSessionText: z.string(),
     }),
+    courseProgressBar: z.object({
+      resumeText: z.string(),
+      progressText: z.string(),
+    }),
   }),
 
 });
