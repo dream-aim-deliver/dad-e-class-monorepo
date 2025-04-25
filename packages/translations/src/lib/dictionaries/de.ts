@@ -251,5 +251,9 @@ export const DE: TDictionary = {
       coachingSessionText: 'Coaching-Sitzungen inklusive',
       noCoachingSessionText: 'Keine Coaching-Sitzungen enthalten',
     },
+    courseProgressBar: {
+      resumeText: 'Wieder aufnehmen',
+      progressText: 'Fortschritt',
+    },
   },
 };
