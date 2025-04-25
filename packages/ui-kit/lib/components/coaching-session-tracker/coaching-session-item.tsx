@@ -3,13 +3,13 @@ import { TCoachingOffer } from "packages/models/src/coaching-offer";
 import { FC } from "react";
 import { Badge } from "../badge";
 
-export interface CoachingSessionCardProps extends TCoachingOffer , isLocalAware {
+export interface CoachingSessionItemProps extends TCoachingOffer , isLocalAware {
     used: number;
     included: number;
 };
 
 /**
- * A coaching session card component displaying session details and usage tracking.
+ * A coaching session Item component displaying session details and usage tracking.
  *
  * @param title - The title/name of the coaching session.
  * @param duration - Duration of the session in minutes.
@@ -18,7 +18,7 @@ export interface CoachingSessionCardProps extends TCoachingOffer , isLocalAware 
  * @param locale - Locale string for internationalization (inherited from `isLocalAware`).
  *
  * @example
- * <CoachingSessionCard
+ * <CoachingSessionItem
  *   title="Career Coaching"
  *   duration={60}
  *   used={3}
@@ -32,7 +32,7 @@ export interface CoachingSessionCardProps extends TCoachingOffer , isLocalAware 
  * - Responsive layout with mobile-first sizing
  */
 
-export const CoachingSessionCard: FC<CoachingSessionCardProps> = ({
+export const CoachingSessionItem: FC<CoachingSessionItemProps> = ({
     title,
     duration,
     used,
@@ -41,21 +41,26 @@ export const CoachingSessionCard: FC<CoachingSessionCardProps> = ({
 }) => {
     const dictionary = getDictionary(locale);
     return (
-        <div className="flex p-2 gap-2 items-center bg-base-neutral-800 border-1 border-base-neutral-700 rounded-medium min-w-[219px] md:w-auto w-full">
-            <div className="flex flex-col items-start gap-1 w-full">
-                <p className="text-sm text-text-primary font-bold leading-[100%]">
+        <div className="flex p-2 gap-2 items-center justify-between bg-base-neutral-800 border border-base-neutral-700 rounded-medium md:w-[219px] lg:w-[219px] w-full">
+            <div className="flex flex-col items-start gap-1">
+                <p
+                    title={title}
+                    className="text-sm text-text-primary font-bold leading-[100%] line-clamp-1"
+                >
                     {title}
                 </p>
                 <p className="text-sm text-text-secondary leading-[100%]">
                     {`${duration} ${dictionary.components.coachingSessionTracker.minuteText}`}
                 </p>
             </div>
-            <Badge 
-                text={`${used}/${included} ${dictionary.components.coachingSessionTracker.usedText}`} 
-                variant="info" 
+            <div className="flex-shrink-0">
+                <Badge
+                text={`${used}/${included} ${dictionary.components.coachingSessionTracker.usedText}`}
+                variant="info"
                 size="big"
-                className="py-1" 
-            />
+                className="py-1"
+                />
+            </div>
         </div>
     )
 };

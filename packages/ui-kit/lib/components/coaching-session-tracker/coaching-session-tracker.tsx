@@ -4,19 +4,19 @@ import { Button } from "../button";
 
 export interface CoachingSessionTrackerProps extends isLocalAware {
     children: React.ReactNode;
-    onClickByMoreSessions: () => void;
+    onClickBuyMoreSessions: () => void;
 };
 
 /**
  * A container component for managing and displaying coaching sessions with a "Buy More" action.
  *
  * @param children - Coaching session cards (typically `CoachingSessionCard` components)
- * @param onClickByMoreSessions - Callback for the "Buy More Sessions" button click
+ * @param onClickBuyMoreSessions - Callback for the "Buy More Sessions" button click
  * @param locale - Locale string for internationalization (inherited from `isLocalAware`)
  *
  * @example
  * <CoachingSessionTracker 
- *   onClickByMoreSessions={handlePurchase} 
+ *   onClickBuyMoreSessions={handlePurchase} 
  *   locale="en"
  * >
  *   <CoachingSessionCard {...session1} />
@@ -32,7 +32,7 @@ export interface CoachingSessionTrackerProps extends isLocalAware {
 
 export const CoachingSessionTracker: FC<CoachingSessionTrackerProps> = ({
     children,
-    onClickByMoreSessions,
+    onClickBuyMoreSessions,
     locale
 }) => {
     const dictionary = getDictionary(locale);
@@ -42,12 +42,31 @@ export const CoachingSessionTracker: FC<CoachingSessionTrackerProps> = ({
                 <p className="text-xs text-text-secondary font-bold">
                     {dictionary.components.coachingSessionTracker.coachingSessionText}
                 </p>
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-2 flex-wrap max-h-[7.1rem] overflow-y-scroll relative scrollable-container">
                     {children}
+                    {/* Scrollbar styling */}
+                    <style>{`
+                        .scrollable-container::-webkit-scrollbar {
+                            width: 8px;
+                            height: 8px;
+                        }
+                        .scrollable-container::-webkit-scrollbar-track {
+                            background: var(--color-base-neutral-800);
+                            border-radius: 4px;
+                        }
+                        .scrollable-container::-webkit-scrollbar-thumb {
+                            background: var(--color-base-neutral-400);
+                            border-radius: 4px;
+                        }
+                        .scrollable-container::-webkit-scrollbar-thumb:hover {
+                            background: var(--color-base-neutral-500);
+                            cursor: pointer;
+                        }
+                    `}</style>
                 </div>
             </div>
             <Button 
-                onClick={onClickByMoreSessions} 
+                onClick={onClickBuyMoreSessions} 
                 variant="secondary" 
                 size="medium" 
                 text={dictionary.components.coachingSessionTracker.buyMoreSessionsText}
