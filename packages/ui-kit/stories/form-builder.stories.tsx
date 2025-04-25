@@ -45,7 +45,6 @@ const richTextElements: preAssessmentInstance[] = [
     id: "singleChoice-1",
     type: "singleChoice",
     extraAttributes: {
-      title: "Instructions",
       content:{
        title:"What is your favorite color?",
        options:[
