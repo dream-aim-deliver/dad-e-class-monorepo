@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { CoachingSessionTracker } from '../lib/components/coaching-session-tracker/coaching-session-tracker';
-import { CoachingSessionCard } from '../lib/components/coaching-session-tracker/coaching-session-card';
+import { CoachingSessionItem } from '../lib/components/coaching-session-tracker/coaching-session-item';
 
 // Mock the dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -18,8 +18,8 @@ vi.mock('@maany_shr/e-class-translations', () => ({
 describe('CoachingSessionTracker', () => {
   const defaultProps = {
     locale: 'en' as 'en' | 'de',
-    children: [<CoachingSessionCard key="1" title="Test Session" duration={30} used={1} included={5} locale="en" />],
-    onClickByMoreSessions: vi.fn(),
+    children: [<CoachingSessionItem key="1" title="Test Session" duration={30} used={1} included={5} locale="en" />],
+    onClickBuyMoreSessions: vi.fn(),
   };
 
   it('renders children components', () => {
