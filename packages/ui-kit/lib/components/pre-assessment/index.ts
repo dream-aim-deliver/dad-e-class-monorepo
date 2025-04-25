@@ -3,38 +3,39 @@ import  richTextElement from "./rich-text";
 import  singleChoiceElement  from "./single-choice";
 
 
-export type ElementType = "richText" |"singleChoice";
+export type elementType = "richText" |"singleChoice";
 
+export type submitFunction = (key: string, value: string) => void;
 
-export type PreAssessmentElement={
-    type:  ElementType;
+export type preAssessmentElement={
+    type:  elementType;
     designerBtnElement:{
         icon:React.ElementType,
         label:string
     }
     designerComponent:React.FC<{
-        elementInstance:PreAssessmentInstance
+        elementInstance:preAssessmentInstance
     }>;
     formComponent:React.FC<{
-        elementInstance:PreAssessmentInstance
+        elementInstance:preAssessmentInstance,
+        submitValue?: submitFunction;
     }>;
     submissionComponent:React.FC<{
-        elementInstance:PreAssessmentInstance
+        elementInstance:preAssessmentInstance
     }>;
 }
 
-export interface PreAssessmentInstance{
+export interface preAssessmentInstance{
     id:string;
-    type:  ElementType;
+    type:  elementType;
     extraAttributes?:Record<string,any>;
-    
 }
 
-type PreAssessmentType={
-    [key in ElementType]: PreAssessmentElement
+type preAssessmentType={
+    [key in elementType]: preAssessmentElement
 }
 
-export const preAssessmentElements:PreAssessmentType={
+export const preAssessmentElements:preAssessmentType={
     richText:richTextElement,
     singleChoice:singleChoiceElement,
 }

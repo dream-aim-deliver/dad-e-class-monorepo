@@ -17,12 +17,11 @@ export default function SingleChoicePreview({
     onChange,
     filled = false,
 }: SingleChoicePreviewProps) {
-
     return (
         <div className="flex flex-col gap-4 text-text-primary">
             <h5 className="">{title}</h5>
             <div className='flex flex-col gap-4'>
-                {options.map((option) => (
+                {options?.map((option) => (
                     <RadioButton
                         value=''
                         key={option.label}

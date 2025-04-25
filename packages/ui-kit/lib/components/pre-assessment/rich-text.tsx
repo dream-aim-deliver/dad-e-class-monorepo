@@ -2,11 +2,18 @@
 import { useState } from "react";
 import { IconRichText } from "../icons/icon-rich-text";
 import RichTextEditor from "../rich-text-element/editor";
-import { PreAssessmentElement,ElementType, PreAssessmentInstance } from "./index";
-import { RichTextAction } from "../../utils/constants";
+import { preAssessmentElement,elementType, preAssessmentInstance, submitFunction } from "./index";
 import RichTextRenderer from "../rich-text-element/renderer";
-const type:ElementType="richText";
-const richTextElement:PreAssessmentElement={
+import { Descendant } from "slate";
+import { serialize } from "../rich-text-element/serializer";
+
+const type:elementType="richText";
+/**
+ * Rich Text Element for Pre-Assessment
+ * This element allows users to input rich text content.
+ * It includes a designer component, form component, and submission component.
+ */
+const richTextElement:preAssessmentElement={
     type,
     designerBtnElement:{
         icon:IconRichText,
@@ -17,22 +24,37 @@ const richTextElement:PreAssessmentElement={
     submissionComponent:ViewComponent,
 }
 
-export function FormComponent({elementInstance}:{elementInstance:PreAssessmentInstance}){
+export function FormComponent({elementInstance,submitValue}:{elementInstance:preAssessmentInstance,submitValue?:submitFunction}){
     const {extraAttributes} = elementInstance;
-    const [value,setValue]=useState<string>("")
-    return(<div className="text-text-primary flex flex-col">
+    const [value, setValue] = useState<Descendant[]>([
+        {
+          type: 'paragraph',
+          children: [{ text: 'ggg' }],
+        },
+      ]);
+      
+
+      const onLoseFocus = () => {
+        if (!submitValue || !value) return;
+        const content = serialize(value);
+        submitValue(elementInstance.id, content);
+      };
+     
+
+    return(<div className="text-text-primary flex flex-col gap-2">
      <p>{extraAttributes.content}</p>
      <RichTextEditor
      locale="en"
      name="rich-text"
      placeholder="Start typing..."
-     initialValue={[]}
-     onLoseFocus={(value)=>setValue(value)}
+     initialValue={value}
+     onChange={(value)=>setValue(value)}
+     onLoseFocus={onLoseFocus}
      />
     </div>)
 }
 
-export function ViewComponent({elementInstance}:{elementInstance:PreAssessmentInstance}){
+export function ViewComponent({elementInstance}:{elementInstance:preAssessmentInstance}){
     const {extraAttributes} = elementInstance;
     const content="[{\"type\":\"paragraph\",\"children\":[{\"text\":\"This is a basic paragraph.\"}]}]"
     return(<div className="text-text-primary flex flex-col">

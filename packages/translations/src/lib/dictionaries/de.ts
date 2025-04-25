@@ -240,6 +240,11 @@ export const DE: TDictionary = {
       rateCallQualityText: 'Bewerten Sie die Anrufqualität',
       loadMoreText: 'Mehr laden...',
     },
+    formBuilder:{
+    title:'Leistungsbewertung vor dem Kurs',
+    alertText:'Sobald Sie Ihre Antwort abgeschickt haben, können Sie keine Änderungen mehr vornehmen. Bitte überprüfen Sie sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
+      submitText:'Antwort senden' 
+  },
     coachingSessionTracker: {
       minuteText: 'Minuten',
       usedText: 'gebraucht',

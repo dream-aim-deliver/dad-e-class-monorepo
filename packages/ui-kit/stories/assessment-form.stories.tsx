@@ -2,12 +2,12 @@
 import React from "react";
 import { StoryObj, Meta } from "@storybook/react";
 import { FormComponent } from "../lib/components/pre-assessment/rich-text";
-import { preAssessmentElements, PreAssessmentInstance, ElementType } from "../lib/components/pre-assessment/index";
+import { preAssessmentElements, preAssessmentInstance, elementType } from "../lib/components/pre-assessment/index";
 
 // Create a component that will handle all element types
-const DynamicElementComponent = ({ elementType, ...args }: { elementType: ElementType } & any) => {
+const DynamicElementComponent = ({ elementType, ...args }: { elementType: elementType } & any) => {
   // Create a sample instance based on the selected type
-  const sampleInstance: PreAssessmentInstance = {
+  const sampleInstance: preAssessmentInstance = {
     id: `sample-${elementType}-1`,
     type: elementType,
     extraAttributes: getSampleExtraAttributes(elementType),
@@ -16,7 +16,7 @@ const DynamicElementComponent = ({ elementType, ...args }: { elementType: Elemen
   const ElementComponent = preAssessmentElements[elementType].formComponent;
   return <ElementComponent elementInstance={sampleInstance} {...args} />;
 };
-function getSampleExtraAttributes(elementType: ElementType) {
+function getSampleExtraAttributes(elementType: elementType) {
   switch (elementType) {
     case 'richText':
       return { content: "This is a sample rich text content" };
