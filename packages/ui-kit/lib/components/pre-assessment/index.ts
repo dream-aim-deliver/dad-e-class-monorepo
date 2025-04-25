@@ -1,9 +1,9 @@
 import React from "react";
 import  richTextElement from "./rich-text";
 import  singleChoiceElement  from "./single-choice";
+import  textInputElement  from "./text-input";
 
-
-export type elementType = "richText" |"singleChoice";
+export type elementType = "richText" |"singleChoice" | "textInput";
 
 export type submitFunction = (key: string, value: string) => void;
 
@@ -38,4 +38,5 @@ type preAssessmentType={
 export const preAssessmentElements:preAssessmentType={
     richText:richTextElement,
     singleChoice:singleChoiceElement,
+    textInput:textInputElement
 }

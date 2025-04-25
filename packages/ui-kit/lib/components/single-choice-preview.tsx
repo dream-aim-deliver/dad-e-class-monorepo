@@ -1,11 +1,11 @@
 import React from 'react';
-type options = {
+export type optionsType = {
     label: string;
     isSelected: boolean;
 }
 interface SingleChoicePreviewProps {
     title: string;
-    options: options[];
+    options: optionsType[];
     onChange?: (option: string) => void;
     filled?: boolean;
 }

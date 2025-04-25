@@ -30,15 +30,15 @@ const richTextElements: preAssessmentInstance[] = [
     type: "richText",
     extraAttributes: {
       title: "Introduction",
-      content: "Welcome to the pre-assessment form. Please read this information carefully before proceeding."
+      content:{ 
+        description:"Welcome to the pre-assessment form. Please read this information carefully before proceeding."
+      }
     }
   },
   {
     id: "rich-text-2",
-    type: "richText",
+    type: "textInput",
     extraAttributes: {
-      title: "Introduction",
-      content: "Welcome to the pre-assessment form. Please read this information carefully before proceeding."
     }
   },
   {

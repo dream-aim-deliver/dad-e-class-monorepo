@@ -27,7 +27,7 @@ export function FormBuilder({
         formValues.current[id] = value;
     };
     const handleSubmit = (e) => {
-        if (e) e.preventDefault(); // Prevent default form submission
+        if (e) e.preventDefault();
         
         
         

@@ -1,8 +1,9 @@
 
 import React, { useEffect, useState } from "react";
 import { IconSingleChoice } from "../icons/icon-single-choice";
-import { preAssessmentElement,elementType, preAssessmentInstance } from "./index";
-import SingleChoicePreview from "../single-choice-preview";
+import { preAssessmentElement,elementType, preAssessmentInstance, submitFunction } from "./index";
+import SingleChoicePreview, { optionsType } from "../single-choice-preview";
+import { serialize } from "../rich-text-element/serializer";
 const type:elementType="singleChoice";
 const singleChoiceElement:preAssessmentElement={
     type,
@@ -19,13 +20,13 @@ const singleChoiceElement:preAssessmentElement={
 export function FormComponent({elementInstance,submitValue}:{elementInstance:preAssessmentInstance,submitValue?:submitFunction}){
     const {extraAttributes} = elementInstance;
     console.log(elementInstance);
-    const [options, setOptions] = useState<Record<string,string>[]>();
+    const [options, setOptions] = useState<optionsType[]>([]);
 
     useEffect(()=>{
         setOptions(extraAttributes.content.options);
     },[]);
 
- function onChange(option: string) {
+   function onChange(option: string) {
   setOptions((prevOptions) =>
     prevOptions?.map((opt) => ({
       ...opt,
@@ -40,7 +41,8 @@ export function FormComponent({elementInstance,submitValue}:{elementInstance:pre
         onChange={(option)=>{
             console.log(option)
             onChange(option);
-            submitValue?.(elementInstance.id,options)
+
+            submitValue?.(elementInstance.id,JSON.stringify(options));
         }}
         />
      
