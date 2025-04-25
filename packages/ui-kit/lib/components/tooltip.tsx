@@ -61,6 +61,7 @@ function Tooltip({
   useEffect(() => {
     if ((isVisible || isFocused) && tipPosition === 'auto' && tooltipRef.current && triggerRef.current) {
       const updatePosition = () => {
+        if (!tooltipRef.current || !triggerRef.current) return;
         const tooltipRect = tooltipRef.current.getBoundingClientRect();
         const triggerRect = triggerRef.current.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
@@ -94,7 +95,7 @@ function Tooltip({
             } else if (spaceRight >= tooltipWidth + 10) {
               bestPosition = 'right';
             }
-            // If no good position is found, keep the default 'top'
+          
           }
         }
         
