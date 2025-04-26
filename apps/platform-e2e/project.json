@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/platform-e2e/src",
   "tags": [],
-  "implicitDependencies": ["platform"],
+  "implicitDependencies": ["platform", "translations"],
   "// targets": "to see all targets run: nx show project platform-e2e --web",
   "targets": {}
 }

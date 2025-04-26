@@ -17,8 +17,11 @@
   ],
   "exclude": ["node_modules", "dist", "eslint.config.js"],
   "references": [
-    {
-      "path": "../../packages/models"
-    }
+      {
+        "path": "../../packages/models",
+      },
+      {
+        "path": "../../packages/translations",
+      },
   ]
 }
