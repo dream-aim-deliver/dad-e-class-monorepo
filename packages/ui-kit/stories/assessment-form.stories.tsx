@@ -2,7 +2,7 @@
 import React from "react";
 import { StoryObj, Meta } from "@storybook/react";
 import { FormComponent } from "../lib/components/pre-assessment/rich-text";
-import { preAssessmentElements, preAssessmentInstance, elementType } from "../lib/components/pre-assessment/index";
+import { preAssessmentElements, preAssessmentInstance, elementType } from "../lib/components/pre-assessment/form-element-core";
 
 // Create a component that will handle all element types
 const DynamicElementComponent = ({ elementType, ...args }: { elementType: elementType } & any) => {
@@ -12,7 +12,7 @@ const DynamicElementComponent = ({ elementType, ...args }: { elementType: elemen
     type: elementType,
     extraAttributes: getSampleExtraAttributes(elementType),
   };
-  
+
   const ElementComponent = preAssessmentElements[elementType].formComponent;
   return <ElementComponent elementInstance={sampleInstance} {...args} />;
 };
@@ -23,12 +23,12 @@ function getSampleExtraAttributes(elementType: elementType) {
     case 'header':
       return { content: "This is a sample header" };
     case 'singleChoice':
-      return { 
+      return {
         question: "Sample single choice question?",
         options: ["Option 1", "Option 2", "Option 3"]
       };
     case 'multipleChoice':
-      return { 
+      return {
         question: "Sample multiple choice question?",
         options: ["Option A", "Option B", "Option C"]
       };

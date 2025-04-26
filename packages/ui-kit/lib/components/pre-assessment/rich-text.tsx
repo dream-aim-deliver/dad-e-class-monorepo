@@ -1,43 +1,41 @@
-
-import { useState } from "react";
+import React from "react";
 import { IconRichText } from "../icons/icon-rich-text";
-import RichTextEditor from "../rich-text-element/editor";
-import { preAssessmentElement,elementType, preAssessmentInstance, submitFunction } from "./index";
-import RichTextRenderer from "../rich-text-element/renderer";
-import { Descendant } from "slate";
-import { serialize } from "../rich-text-element/serializer";
 
-const type:elementType="richText";
+import { FormElement, FormElementTemplate, FormElementType } from "./types";
 /**
  * Rich Text Element for Pre-Assessment
- * This element allows users to input rich text content.
- * It includes a designer component, form component, and submission component.
+ * This element displays rich text content.
  */
-const richTextElement:preAssessmentElement={
-    type,
-    designerBtnElement:{
-        icon:IconRichText,
-        label:"Rich Text"
+const richTextElement: FormElementTemplate = {
+    type: FormElementType.RichText,
+    designerBtnElement: {
+        icon: IconRichText,
+        label: "Rich Text"
     },
-    designerComponent:()=><div>Rich Text Designer</div>,
-    formComponent:FormComponent,
-    submissionComponent:ViewComponent,
+    designerComponent: () => <div>Rich Text Designer</div>,
+    formComponent: FormComponent,
+    submissionComponent: ViewComponent,
+};
+
+function FormComponent({ elementInstance }: { elementInstance: FormElement }) {
+    if (elementInstance.type !== FormElementType.RichText) return null;
+
+    return (
+        <div className="text-text-primary flex flex-col gap-2">
+            <p>{elementInstance.content}</p>
+        </div>
+    );
 }
 
-export function FormComponent({elementInstance,submitValue}:{elementInstance:preAssessmentInstance,submitValue?:submitFunction}){
-    const {extraAttributes} = elementInstance;
-     
+function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
+    if (elementInstance.type !== FormElementType.RichText) return null;
 
-    return(<div className="text-text-primary flex flex-col gap-2">
-     <p>{extraAttributes.content.description}</p>
-    </div>)
+    return (
+        <div className="text-text-primary flex flex-col">
+            <p>{elementInstance.content}</p>
+        </div>
+    );
 }
 
-export function ViewComponent({elementInstance}:{elementInstance:preAssessmentInstance}){
-    const {extraAttributes} = elementInstance;
-    return(<div className="text-text-primary flex flex-col">
-     <p>{extraAttributes.content}</p>
-    </div>)
-}
 export default richTextElement;
 
