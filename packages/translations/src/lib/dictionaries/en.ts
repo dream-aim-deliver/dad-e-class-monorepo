@@ -244,7 +244,9 @@ export const EN: TDictionary = {
       minuteText: 'minutes',
       usedText: 'used',
       buyMoreSessionsText: 'Buy more sessions',
+      buyCoachingSessionsText: 'Buy coaching sessions',
       coachingSessionText: 'Coaching sessions included',
+      noCoachingSessionText: 'No coaching sessions included',
     },
   },
 };

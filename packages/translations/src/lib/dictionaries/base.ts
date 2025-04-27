@@ -256,7 +256,9 @@ export const DictionarySchema = z.object({
       minuteText: z.string(),
       usedText: z.string(),
       buyMoreSessionsText: z.string(),
+      buyCoachingSessionsText: z.string(),
       coachingSessionText: z.string(),
+      noCoachingSessionText: z.string(),
     }),
   }),
 
