@@ -47,7 +47,7 @@ const coachingSessions = [
 
 export const Default: Story = {
   render: (args) => (
-    <CoachingSessionTracker {...args} onClickBuyMoreSessions={() => alert('Buy more coaching sessions')}>
+    <CoachingSessionTracker {...args} onClickBuySessions={() => alert('Buy more coaching sessions')}>
       {coachingSessions.map((session, index) => (
         <CoachingSessionItem
           key={index}
@@ -67,7 +67,7 @@ export const Default: Story = {
 
 export const EmptyState: Story = {
   render: (args) => (
-    <CoachingSessionTracker {...args} onClickBuyMoreSessions={() => alert('Buy more coaching sessions')}>
+    <CoachingSessionTracker {...args} onClickBuySessions={() => alert('Buy coaching sessions')}>
       {/* No CoachingSessionCard components */}
     </CoachingSessionTracker>
   ),
@@ -78,7 +78,7 @@ export const EmptyState: Story = {
 
 export const GermanLocale: Story = {
   render: (args) => (
-    <CoachingSessionTracker {...args} onClickBuyMoreSessions={() => alert('Buy more coaching sessions')}>
+    <CoachingSessionTracker {...args} onClickBuySessions={() => alert('Buy more coaching sessions')}>
       {coachingSessions.map((session, index) => (
         <CoachingSessionItem
           key={index}
@@ -110,7 +110,7 @@ export const ManySessions: Story = {
       { title: 'Detailed Follow-Up on Previous Action Items', duration: 20, used: 1, included: 1 },
     ];    
     return (
-      <CoachingSessionTracker {...args} onClickBuyMoreSessions={() => alert('Buy more coaching sessions')}>
+      <CoachingSessionTracker {...args} onClickBuySessions={() => alert('Buy more coaching sessions')}>
         {manySessions.map((session, index) => (
           <CoachingSessionItem
             key={index}

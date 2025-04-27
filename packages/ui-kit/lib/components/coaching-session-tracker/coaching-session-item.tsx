@@ -41,7 +41,7 @@ export const CoachingSessionItem: FC<CoachingSessionItemProps> = ({
 }) => {
     const dictionary = getDictionary(locale);
     return (
-        <div className="flex p-2 gap-2 items-center justify-between bg-base-neutral-800 border border-base-neutral-700 rounded-medium md:w-[219px] lg:w-[219px] w-full">
+        <div className="flex p-2 gap-2 items-center justify-between bg-base-neutral-800 border border-base-neutral-700 rounded-medium md:w-[230px] lg:w-[230px] w-full">
             <div className="flex flex-col items-start gap-1">
                 <p
                     title={title}

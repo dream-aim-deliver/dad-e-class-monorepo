@@ -8,7 +8,10 @@ vi.mock('@maany_shr/e-class-translations', () => ({
   getDictionary: (locale: string) => ({
     components: {
       coachingSessionTracker: {
-        noSessionsText: 'No sessions available',
+        coachingSessionText: 'Your Coaching Sessions',
+        noCoachingSessionText: 'No sessions available',
+        buyMoreSessionsText: 'Buy More Sessions',
+        buyCoachingSessionsText: 'Buy Sessions'
       },
     },
   }),
@@ -19,7 +22,7 @@ describe('CoachingSessionTracker', () => {
   const defaultProps = {
     locale: 'en' as 'en' | 'de',
     children: [<CoachingSessionItem key="1" title="Test Session" duration={30} used={1} included={5} locale="en" />],
-    onClickBuyMoreSessions: vi.fn(),
+    onClickBuySessions: vi.fn(),
   };
 
   it('renders children components', () => {
@@ -40,5 +43,26 @@ describe('CoachingSessionTracker', () => {
 
     const childrenWrapper = container.querySelector('.flex-wrap');
     expect(childrenWrapper).toHaveClass('flex', 'gap-2', 'flex-wrap');
+    expect(childrenWrapper).toHaveClass('pr-2');
+  });
+
+  it('shows "no sessions" text when empty', () => {
+    const { rerender } = render(
+      <CoachingSessionTracker {...defaultProps} children={[]} />
+    );
+    expect(screen.getByText('No sessions available')).toBeInTheDocument();
+    
+    rerender(<CoachingSessionTracker {...defaultProps} />);
+    expect(screen.getByText('Your Coaching Sessions')).toBeInTheDocument();
+  });
+
+  it('displays correct button text based on children', () => {
+    const { rerender } = render(
+      <CoachingSessionTracker {...defaultProps} children={[]} />
+    );
+    expect(screen.getByText('Buy Sessions')).toBeInTheDocument();
+    
+    rerender(<CoachingSessionTracker {...defaultProps} />);
+    expect(screen.getByText('Buy More Sessions')).toBeInTheDocument();
   });
 });

@@ -247,7 +247,9 @@ export const DE: TDictionary = {
       minuteText: 'Minuten',
       usedText: 'gebraucht',
       buyMoreSessionsText: 'Kaufen Sie weitere Sitzungen',
+      buyCoachingSessionsText: 'Coaching-Sitzungen kaufen',
       coachingSessionText: 'Coaching-Sitzungen inklusive',
+      noCoachingSessionText: 'Keine Coaching-Sitzungen enthalten',
     },
   },
 };
