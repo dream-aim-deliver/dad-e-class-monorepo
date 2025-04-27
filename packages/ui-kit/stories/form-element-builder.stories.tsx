@@ -50,7 +50,7 @@ const Elements: FormElement[] = [
 ];
 
 // Mock functions
-const handleSubmit = (values: Record<string, string>) => {
+const handleSubmit = (values: Record<string, FormElement>) => {
     console.log("Form submitted with values:", values);
 };
 

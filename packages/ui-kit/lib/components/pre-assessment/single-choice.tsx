@@ -39,6 +39,15 @@ function FormComponent({ elementInstance, submitValue }: { elementInstance: Form
                 isSelected: opt.label === option,
             }))
         );
+
+        if (submitValue) {
+            // Create a new object with the selected option
+            const updatedElement = {
+                ...elementInstance,
+                selectedOption: option
+            };
+            submitValue(elementInstance.id.toString(), updatedElement);
+        }
     }
 
     return (
@@ -48,9 +57,6 @@ function FormComponent({ elementInstance, submitValue }: { elementInstance: Form
                 options={options}
                 onChange={(option) => {
                     onChange(option);
-                    if (submitValue) {
-                        submitValue(elementInstance.id.toString(), JSON.stringify(options));
-                    }
                 }}
             />
         </div>

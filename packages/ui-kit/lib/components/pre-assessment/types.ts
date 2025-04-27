@@ -23,21 +23,7 @@ export enum FormElementType {
     TextInput = "textInput",
 }
 
-/**
- * Function type for handling form submissions.
- * This function is called when a form element's value changes.
- * 
- * @param key - The unique identifier of the form element
- * @param value - The submitted value from the form element
- * 
- * @example
- * ```tsx
- * const handleSubmit: SubmitFunction = (key, value) => {
- *   console.log(`Element ${key} submitted with value:`, value);
- * };
- * ```
- */
-export type SubmitFunction = (key: string, value: any) => void;
+
 
 /**
  * Base interface for all form elements.
@@ -169,6 +155,22 @@ export type FormElement =
     | RichTextElement
     | TextInputElement
     | SingleChoiceElement;
+
+/**
+ * Function type for handling form submissions.
+ * This function is called when a form element's value changes.
+ * 
+ * @param key - The unique identifier of the form element
+ * @param value - The submitted value from the form element
+ * 
+ * @example
+ * ```tsx
+ * const handleSubmit: SubmitFunction = (key, value) => {
+ *   console.log(`Element ${key} submitted with value:`, value);
+ * };
+ * ```
+ */
+export type SubmitFunction = (key: string, value: FormElement) => void;
 
 /**
  * Interface for the designer button element.

@@ -9,7 +9,7 @@ import { FormElement } from "./types";
 interface FormElementBuilderProps extends isLocalAware {
     isLoading: boolean;
     isError: boolean;
-    onSubmit: (formValues: Record<string, string>) => void;
+    onSubmit: (formValues: Record<string, FormElement>) => void;
     elements: FormElement[];
     errorMessage?: string;
 }
@@ -23,9 +23,9 @@ export function FormElementBuilder({
     errorMessage
 }: FormElementBuilderProps) {
     const dictionary = getDictionary(locale);
-    const formValues = useRef<{ [key: string]: string }>({});
+    const formValues = useRef<{ [key: string]: FormElement }>({});
 
-    const submitValue = (id: string, value: string) => {
+    const submitValue = (id: string, value: FormElement) => {
         formValues.current[id] = value;
     };
 
