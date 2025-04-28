@@ -6,7 +6,6 @@ import { GridReadyEvent } from 'ag-grid-community';
 
 export interface BaseTableProps extends AgGridReactProps {
     gridRef: RefObject<AgGridReact | null>;
-    shouldDelayRender?: boolean;
 }
 
 /**
@@ -57,7 +56,7 @@ export const SimplePaginationPanel = (props: {
     );
 };
 
-export const BaseGrid = ({ gridRef, shouldDelayRender, ...props }: BaseTableProps) => {
+export const BaseGrid = ({ gridRef, ...props }: BaseTableProps) => {
     const currentPageRef = useRef<HTMLSpanElement>(null);
     const totalPagesRef = useRef<HTMLSpanElement>(null);
     const previousPageRef = useRef<HTMLButtonElement>(null);
@@ -66,43 +65,22 @@ export const BaseGrid = ({ gridRef, shouldDelayRender, ...props }: BaseTableProp
     const lastPageRef = useRef<HTMLButtonElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    /* This is implemented to counteract a bug in ag-grid of flickering with autoHeight.
-    https://stackoverflow.com/questions/73560068/ag-grid-autoheight-true-coldef-property-on-cell-renderer-causes-stutter
-     */
-    const [isRenderDelayed, setIsRenderDelayed] = useState<boolean>(false);
-    const isRenderDelayedTimeout = useRef<number | undefined>(undefined);
-
-    const delayRender = () => {
-        if (!shouldDelayRender) return;
-
-        clearTimeout(isRenderDelayedTimeout.current);
-        setIsRenderDelayed(true);
-        // In browser this is a number, but in Node it is a Timeout object
-        isRenderDelayedTimeout.current = setTimeout(() => {
-            setIsRenderDelayed(false);
-        }, 500) as unknown as number;
-    };
-
     const onNextPage = () => {
-        delayRender();
         const gridApi = gridRef.current?.api;
         gridApi?.paginationGoToNextPage();
     };
 
     const onPreviousPage = () => {
-        delayRender();
         const gridApi = gridRef.current?.api;
         gridApi?.paginationGoToPreviousPage();
     };
 
     const onFirstPage = () => {
-        delayRender();
         const gridApi = gridRef.current?.api;
         gridApi?.paginationGoToFirstPage();
     };
 
     const onLastPage = () => {
-        delayRender();
         const gridApi = gridRef.current?.api;
         gridApi?.paginationGoToLastPage();
     };
@@ -137,7 +115,6 @@ export const BaseGrid = ({ gridRef, shouldDelayRender, ...props }: BaseTableProp
 
     const onGridReady = (event: GridReadyEvent) => {
         setIsTableLoaded(true);
-        delayRender();
         if (props.onGridReady) {
             props.onGridReady(event);
         }
@@ -153,7 +130,7 @@ export const BaseGrid = ({ gridRef, shouldDelayRender, ...props }: BaseTableProp
     return (
         <>
             <div className={cn('grid grow w-full', 'relative', 'min-h-[300px]')}>
-                {(!isTableLoaded || isRenderDelayed) && <div
+                {!isTableLoaded && <div
                     className="absolute flex items-center justify-center w-full h-full rounded-b-none bg-neutral-800 z-10 rounded-md" />}
                 {/*The substitute div is required to supress hydration warning*/}
                 <AgGridReact {...props} ref={gridRef} onGridReady={onGridReady}

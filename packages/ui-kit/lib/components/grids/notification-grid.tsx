@@ -2,7 +2,7 @@ import { notification } from '@maany_shr/e-class-models';
 import { AllCommunityModule, ColDef, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useRef, useState } from 'react';
-import { Check } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, Dot } from 'lucide-react';
 import { cn } from '../../utils/style-utils';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
@@ -47,20 +47,67 @@ const NotificationCellRenderer = (props: any) => {
     return <NotificationCard notification={notification} onClick={onClick} />;
 };
 
-const PAGE_SIZE = 7;
+const PAGE_SIZE = 15;
+
+const NotificationMessageRenderer = (props: any) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const message = props.value;
+    return <div className="flex items-center space-x-2" onClick={() => setIsExpanded(prevState => !prevState)}>
+        <span className={isExpanded ? 'text-wrap' : 'truncate'}>{message}</span>
+        {isExpanded ? <ChevronUp className="flex-shrink-0 w-4 h-4" /> :
+            <ChevronDown className="flex-shrink-0 w-4 h-4" />}
+    </div>;
+};
+
+const NotificationActionRenderer = (props: any) => {
+    const action = props.value;
+
+    return (
+        <Button
+            variant="text"
+            className="text-sm px-0"
+            text={action.title}
+        />
+    );
+};
+
+const NotificationStatusRenderer = (props: any) => {
+    const isRead = props.value;
+    return isRead ? null : <div className="flex items-center justify-center h-full">
+        <div className="rounded-full bg-base-brand-500 w-2 h-2"></div>
+    </div>;
+};
 
 export const NotificationGrid = ({ notifications, onNotificationClick }: NotificationGridProps) => {
     const [columnDefs, setColumnDefs] = useState<ColDef[]>([
         {
+            headerName: '',
+            field: 'isRead',
+            cellRenderer: NotificationStatusRenderer,
+            maxWidth: 40,
+            minWidth: 40
+        },
+        {
             flex: 1,
-            cellRenderer: NotificationCellRenderer,
-            cellRendererParams: {
-                onClick: onNotificationClick
-            },
-            sortable: false,
-            filter: false,
+            field: 'message',
+            wrapText: true,
             autoHeight: true,
-            cellStyle: { padding: '0px', border: 'none', overflow: 'hidden' }
+            cellRenderer: NotificationMessageRenderer
+        },
+        {
+            field: 'action',
+            headerName: 'Action',
+            cellRenderer: NotificationActionRenderer,
+            onCellClicked: (event) => {
+                const notification = event.data;
+                onNotificationClick(notification);
+            }
+        },
+        {
+            field: 'timestamp',
+            headerName: 'Date & Time',
+            valueFormatter: (params) => formatDate(new Date(params.value))
         }
     ]);
     const gridRef = useRef<AgGridReact>(null);
@@ -68,7 +115,6 @@ export const NotificationGrid = ({ notifications, onNotificationClick }: Notific
     return <div className="flex flex-col h-full @container">
         <BaseGrid
             gridRef={gridRef}
-            headerHeight={0}
             suppressRowHoverHighlight={true}
             columnDefs={columnDefs}
             rowData={notifications}
@@ -76,7 +122,11 @@ export const NotificationGrid = ({ notifications, onNotificationClick }: Notific
             paginationPageSize={PAGE_SIZE}
             suppressPaginationPanel={true}
             domLayout="normal"
-            shouldDelayRender={true}
+            getRowStyle={(params) => {
+                if (!params.data.isRead) {
+                    return { backgroundColor: 'var(--color-base-neutral-800)' };
+                }
+            }}
         />
     </div>;
 };
