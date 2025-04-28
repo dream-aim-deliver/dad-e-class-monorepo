@@ -17,12 +17,19 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.17",
+    "@fullcalendar/daygrid": "^6.1.17",
+    "@fullcalendar/interaction": "^6.1.17",
+    "@fullcalendar/react": "^6.1.17",
+    "@fullcalendar/timegrid": "^6.1.17",
     "@maany_shr/e-class-models": "workspace:*",
     "@maany_shr/e-class-translations": "workspace:*",
+    "@mux/mux-player-react": "^3.3.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "16.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "fullcalendar": "^6.1.17",
     "lucide-react": "^0.473.0",
     "react": "19.0.0",
     "react-dropzone": "^14.3.5",
@@ -31,8 +38,7 @@
     "slate-react": "^0.112.1",
     "tailwind-merge": "^2.5.5",
     "vitest": "^2.1.8",
-    "zod": "^3.24.1",
-    "@mux/mux-player-react": "^3.3.0"
+    "zod": "^3.24.1"
   },
   "publishConfig": {
     "access": "public"
