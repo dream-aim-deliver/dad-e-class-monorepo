@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
+import React, { useRef, useState, useLayoutEffect, useCallback, useMemo, useEffect } from "react";
 import { IconChevronLeft } from "../icons/icon-chevron-left";
 import { IconChevronRight } from "../icons/icon-chevron-right";
 import { Button } from "../button";
@@ -60,7 +60,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
   ({ children, className = "", locale, onClick }) => {
     const carouselRef = useRef<HTMLDivElement>(null);
     const [currentPage, setCurrentPage] = useState(0);
-    const [itemsPerView, setItemsPerView] = useState(3); // Default to 3, adjusted by screen size
+    const [itemsPerView, setItemsPerView] = useState(3);
     const [touchStart, setTouchStart] = useState(0);
     const dictionary = getDictionary(locale);
     const childrenArray = React.Children.toArray(children);
@@ -75,7 +75,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
     }, [childrenArray, itemsPerView]);
 
     // Responsive items per view
-    useEffect(() => {
+    useLayoutEffect(() => {
       const updateItemsPerView = () => {
         const width = window.innerWidth;
         if (width < 640) {
@@ -180,7 +180,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
               <button
                 onClick={goNext}
                 disabled={currentPage === itemGroups.length - 1}
-                className={`absolute right-[-10px] sm:right-[-20px] md:-right-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transitionupdating colors ${
+                className={`absolute right-[-10px] sm:right-[-20px] md:-right-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${
                   currentPage === itemGroups.length - 1
                     ? "opacity-50 cursor-not-allowed"
                     : "cursor-pointer"
