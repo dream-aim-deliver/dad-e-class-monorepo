@@ -108,7 +108,7 @@ export const ManySessions: Story = {
       { title: 'Comprehensive Strategy Call for Long-Term Goals', duration: 45, used: 3, included: 3 },
       { title: 'Thorough Review Session Covering Key Deliverables', duration: 30, used: 2, included: 2 },
       { title: 'Detailed Follow-Up on Previous Action Items', duration: 20, used: 1, included: 1 },
-    ];    
+    ];
     return (
       <CoachingSessionTracker {...args} onClickBuySessions={() => alert('Buy more coaching sessions')}>
         {manySessions.map((session, index) => (

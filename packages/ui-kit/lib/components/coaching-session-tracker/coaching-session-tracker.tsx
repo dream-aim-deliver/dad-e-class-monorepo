@@ -41,9 +41,9 @@ export const CoachingSessionTracker: FC<CoachingSessionTrackerProps> = ({
         <div className="flex md:flex-row flex-col p-4 gap-4 bg-card-fill border-1 border-card-stroke rounded-medium items-center w-full">
             <div className="flex flex-col gap-2 items-start w-full">
                 <p className="text-xs text-text-secondary font-bold">
-                    {hasChildren ? 
+                    {hasChildren ?
                         dictionary.components.coachingSessionTracker.coachingSessionText :
-                        dictionary.components.coachingSessionTracker.noCoachingSessionText 
+                        dictionary.components.coachingSessionTracker.noCoachingSessionText
                     }
                 </p>
                 <div className="flex gap-2 pr-2 flex-wrap max-h-[7.1rem] overflow-y-auto relative scrollable-container">
@@ -69,12 +69,12 @@ export const CoachingSessionTracker: FC<CoachingSessionTrackerProps> = ({
                     `}</style>
                 </div>
             </div>
-            <Button 
-                onClick={onClickBuySessions} 
-                variant="secondary" 
-                size="medium" 
-                text={hasChildren ? 
-                    dictionary.components.coachingSessionTracker.buyMoreSessionsText : 
+            <Button
+                onClick={onClickBuySessions}
+                variant="secondary"
+                size="medium"
+                text={hasChildren ?
+                    dictionary.components.coachingSessionTracker.buyMoreSessionsText :
                     dictionary.components.coachingSessionTracker.buyCoachingSessionsText
                 }
                 className='md:w-auto w-full'

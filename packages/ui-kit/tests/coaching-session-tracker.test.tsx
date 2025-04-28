@@ -51,7 +51,7 @@ describe('CoachingSessionTracker', () => {
       <CoachingSessionTracker {...defaultProps} children={[]} />
     );
     expect(screen.getByText('No sessions available')).toBeInTheDocument();
-    
+
     rerender(<CoachingSessionTracker {...defaultProps} />);
     expect(screen.getByText('Your Coaching Sessions')).toBeInTheDocument();
   });
@@ -61,7 +61,7 @@ describe('CoachingSessionTracker', () => {
       <CoachingSessionTracker {...defaultProps} children={[]} />
     );
     expect(screen.getByText('Buy Sessions')).toBeInTheDocument();
-    
+
     rerender(<CoachingSessionTracker {...defaultProps} />);
     expect(screen.getByText('Buy More Sessions')).toBeInTheDocument();
   });

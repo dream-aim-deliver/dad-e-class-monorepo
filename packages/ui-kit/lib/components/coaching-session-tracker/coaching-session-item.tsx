@@ -3,7 +3,7 @@ import { TCoachingOffer } from "packages/models/src/coaching-offer";
 import { FC } from "react";
 import { Badge } from "../badge";
 
-export interface CoachingSessionItemProps extends TCoachingOffer , isLocalAware {
+export interface CoachingSessionItemProps extends TCoachingOffer, isLocalAware {
     used: number;
     included: number;
 };
@@ -36,7 +36,7 @@ export const CoachingSessionItem: FC<CoachingSessionItemProps> = ({
     title,
     duration,
     used,
-    included ,
+    included,
     locale
 }) => {
     const dictionary = getDictionary(locale);
@@ -55,10 +55,10 @@ export const CoachingSessionItem: FC<CoachingSessionItemProps> = ({
             </div>
             <div className="flex-shrink-0">
                 <Badge
-                text={`${used}/${included} ${dictionary.components.coachingSessionTracker.usedText}`}
-                variant="info"
-                size="big"
-                className="py-1"
+                    text={`${used}/${included} ${dictionary.components.coachingSessionTracker.usedText}`}
+                    variant="info"
+                    size="big"
+                    className="py-1"
                 />
             </div>
         </div>
