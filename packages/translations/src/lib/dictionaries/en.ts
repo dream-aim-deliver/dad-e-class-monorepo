@@ -5,9 +5,6 @@ import { SSO_EN } from '../pages/sso/sso-en';
 
 
 export const EN: TDictionary = {
-  home: Home_EN,
-  login: Login_EN,
-  sso: SSO_EN,
   components: {
     coachBanner: {
       buttonText: 'Become a Coach',
@@ -252,10 +249,17 @@ export const EN: TDictionary = {
       resumeText: 'Resume',
       progressText: 'Progress',
     },
-    errorPage: {
-      title: 'Oops! There was a problem signing you in.',
-      description: 'Please check your username and password and try again.',
-      tryAgain: 'Try Again',
   },
-}
+  pages: {
+    home: Home_EN,
+    login: Login_EN,
+    sso: SSO_EN,
+    auth: {
+      errorPage: {
+        title: 'Oops! There was a problem signing you in.',
+        description: 'Please check your username and password and try again.',
+        tryAgain: 'Try Again',
+      },
+    },
+  },
 };

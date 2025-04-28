@@ -5,9 +5,6 @@ import { SSO_DE } from '../pages/sso/sso-de';
 
 import { TDictionary } from './base';
 export const DE: TDictionary = {
-  home: Home_DE,
-  login:Login_DE,
-  sso: SSO_DE,
   components: {
     coachBanner: {
       buttonText: 'Coach werden',
@@ -255,10 +252,17 @@ export const DE: TDictionary = {
       resumeText: 'Wieder aufnehmen',
       progressText: 'Fortschritt',
     },
-    errorPage: {
-      title: 'Ups! Beim Anmelden ist ein Problem aufgetreten.',
-      description: 'Bitte überprüfe deinen Benutzernamen und dein Passwort und versuch’s nochmals.',
-      tryAgain: 'Nochmal versuchen',
-  },
-}
+},
+  pages: {
+    home: Home_DE,
+    login: Login_DE,
+    sso: SSO_DE,
+    auth: {
+      errorPage: {
+        title: 'Ups! Beim Anmelden ist ein Problem aufgetreten.',
+        description: 'Bitte überprüfe deinen Benutzernamen und dein Passwort und versuch’s nochmals.',
+        tryAgain: 'Nochmal versuchen',
+      },
+    },
+  },  
 };
