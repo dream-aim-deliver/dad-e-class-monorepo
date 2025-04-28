@@ -3,7 +3,7 @@
 import { TLocale, getDictionary } from "@maany_shr/e-class-translations";
 import React from "react";
 import { Button } from '@maany_shr/e-class-ui-kit';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface ErrorPageProps {
     platform: string;
@@ -11,14 +11,15 @@ interface ErrorPageProps {
 }
 
 const ErrorPage = (props: ErrorPageProps) => {
+  const router = useRouter();
   const tryAgain = () => {
-    redirect(`/${props.locale}/auth/login`);
+    router.push(`/${props.locale}/auth/login`);
   };
 
 const dictionary = getDictionary(props.locale);
-const title = dictionary.components.errorPage.title;
-const description = dictionary.components.errorPage.description;
-const tryAgainText = dictionary.components.errorPage.tryAgain;
+const title = dictionary.pages.auth.errorPage.title;
+const description = dictionary.pages.auth.errorPage.description;
+const tryAgainText = dictionary.pages.auth.errorPage.tryAgain;
   
 return (
     <div className="theme-Cms flex items-center justify-center text-neutral-50">

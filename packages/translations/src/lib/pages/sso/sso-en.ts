@@ -1,6 +1,6 @@
 import { TDictionary } from "../../dictionaries/base";
 
-export const SSO_EN: TDictionary["sso"] = {
+export const SSO_EN: TDictionary["pages"]["sso"] = {
     termsAndConditions: {
         title: 'Terms and Conditions',
         content: 'Please read the platform policy carefully before proceeding.',

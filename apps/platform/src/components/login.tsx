@@ -2,8 +2,7 @@
 import React, { Suspense } from 'react';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { TLocale } from '@maany_shr/e-class-translations';
-import { useTranslations } from 'next-intl';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 
 interface LoginPageProps {
   platform: string;
@@ -11,11 +10,13 @@ interface LoginPageProps {
   enableCredentials: boolean;
   isProduction: boolean;
 }
+
 const LoginPage = (props: LoginPageProps) => {
   const searchParams = useSearchParams();
   const loggedOut = searchParams?.get('loggedout');
-  const t = useTranslations('login');
-  const sso = useTranslations('sso');
+
+  const dictionary = getDictionary(props.locale);
+
   const handleSubmit = async (inputValues: {
     userName: string;
     userPassword: string;
@@ -36,9 +37,9 @@ const LoginPage = (props: LoginPageProps) => {
         platform: props.platform,
         platform_logo_public_url: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL}`,
         platform_short_name: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_SHORT_NAME}`,
-        terms_and_conditions_title: sso('termsAndConditions.title'),
-        terms_and_conditions_content: sso('termsAndConditions.content'),
-        terms_and_conditions_confirmation_text: sso('termsAndConditions.confirmationText'),
+        terms_and_conditions_title: dictionary.pages.sso.termsAndConditions.title,
+        terms_and_conditions_content: dictionary.pages.sso.termsAndConditions.content,
+        terms_and_conditions_confirmation_text: dictionary.pages.sso.termsAndConditions.confirmationText,
         privacy_policy_url: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL}/${props.locale}/privacy-policy`,
         terms_of_use_url: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL}/${props.locale}/terms-of-use`,
         rules_url: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL}/${props.locale}/rules`,
@@ -51,7 +52,7 @@ const LoginPage = (props: LoginPageProps) => {
     handleAuth0();
     return (
       <div className="flex text-white w-full items-center justify-center ">
-        Loading...
+        {dictionary.pages.login.loading}
       </div>
     );
   }
@@ -66,10 +67,10 @@ const LoginPage = (props: LoginPageProps) => {
         <div className="text-left space-y-4 animate-fade-in transform rounded-md border border-gray-300 p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
           {loggedOut && (
             <div className="mb-4 rounded bg-green-500 p-4 text-white">
-              {t('postLogout')}
+              {dictionary.pages.login.postLogout}
             </div>
           )}
-          <h2 className="mb-4 text-2xl font-bold">{t('title')}</h2>
+          <h2 className="mb-4 text-2xl font-bold">{dictionary.pages.login.title}</h2>
           {props.enableCredentials && (
             <form
               onSubmit={async (e) => {
@@ -87,7 +88,7 @@ const LoginPage = (props: LoginPageProps) => {
                   htmlFor="username"
                   className="block text-sm font-medium text-gray-500"
                 >
-                  {t('username')}
+                  {dictionary.pages.login.username}
                 </label>
                 <input
                   type="text"
@@ -102,7 +103,7 @@ const LoginPage = (props: LoginPageProps) => {
                   htmlFor="password"
                   className="block text-sm font-medium text-gray-500"
                 >
-                  {t('password')}
+                  {dictionary.pages.login.password}
                 </label>
                 <input
                   type="password"
@@ -117,7 +118,7 @@ const LoginPage = (props: LoginPageProps) => {
                   type="submit"
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  {t('signIn')}
+                  {dictionary.pages.login.signIn}
                 </button>
               </div>
             </form>
@@ -126,7 +127,7 @@ const LoginPage = (props: LoginPageProps) => {
             onClick={handleAuth0}
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
-            {t('signIn') + ' (E-Class)'}
+            {dictionary.pages.login.signIn + ' (E-Class)'}
           </button>
         </div>
       </div>
@@ -135,8 +136,10 @@ const LoginPage = (props: LoginPageProps) => {
 };
 
 const LoginPageWithSuspense = (props: LoginPageProps) => {
+  const dictionary = getDictionary(props.locale);
+  
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>{dictionary.pages.login.loading}</div>}>
       <LoginPage {...props} />
     </Suspense>
   );

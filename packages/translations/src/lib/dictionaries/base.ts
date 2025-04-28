@@ -2,29 +2,7 @@
 import { z } from 'zod';
 
 export const DictionarySchema = z.object({
-  sso: z.object({
-    termsAndConditions: z.object({
-      title: z.string(),
-      content: z.string(),
-      confirmationText: z.string(),
-    })
-  }),
-  home: z.object({
-    title: z.string(),
-    buttonText: z.string(),
-    badgeText: z.string(),
-    signInButtonText: z.string(),
-    notSignedInText: z.string(),
-    welcomeText: z.string(),
-    signOut: z.string(),
-  }),
-  login: z.object({
-    title: z.string(),
-    postLogout: z.string(),
-    username: z.string(),
-    password: z.string(),
-    signIn: z.string(),
-  }),
+  
   components: z.object({
     coachBanner: z.object({
       buttonText: z.string(),
@@ -264,12 +242,40 @@ export const DictionarySchema = z.object({
       resumeText: z.string(),
       progressText: z.string(),
     }),
-    errorPage: z.object({
-      title: z.string(),
-      description: z.string(),
-      tryAgain: z.string(),
+  }),
+  pages: z.object({
+      sso: z.object({
+        termsAndConditions: z.object({
+          title: z.string(),
+          content: z.string(),
+          confirmationText: z.string(),
+        })
+      }),
+      home: z.object({
+        title: z.string(),
+        buttonText: z.string(),
+        badgeText: z.string(),
+        signInButtonText: z.string(),
+        notSignedInText: z.string(),
+        welcomeText: z.string(),
+        signOutText: z.string(),
+      }),
+      login: z.object({
+        title: z.string(),
+        postLogout: z.string(),
+        username: z.string(),
+        password: z.string(),
+        signIn: z.string(),
+        loading: z.string(),
+      }),
+      auth: z.object({
+        errorPage: z.object({
+          title: z.string(),
+          description: z.string(),
+          tryAgain: z.string(),
+      }),
     }),
-    
   }),
 });
+
 export type TDictionary = z.infer<typeof DictionarySchema>;
