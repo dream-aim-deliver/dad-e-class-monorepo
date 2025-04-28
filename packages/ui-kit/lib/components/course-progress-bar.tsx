@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import {Button} from './button';
+import { Button } from './button';
 import { ProgressBar } from "./progress-bar";
 
 export interface CourseProgressBarProps extends isLocalAware {
@@ -38,7 +38,7 @@ export const CourseProgressBar: FC<CourseProgressBarProps> = ({
                     <p className="text-xs text-text-secondary font-bold leading-[100%]">
                         {dictionary.components.courseProgressBar.progressText}
                     </p>
-                    <ProgressBar 
+                    <ProgressBar
                         progress={percentage}
                         type="progress"
                     />
@@ -47,7 +47,7 @@ export const CourseProgressBar: FC<CourseProgressBarProps> = ({
                     {percentage}%
                 </p>
             </div>
-            <Button 
+            <Button
                 variant="text"
                 size="small"
                 className="px-0"
