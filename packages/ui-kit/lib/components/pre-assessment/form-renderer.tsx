@@ -1,12 +1,12 @@
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
-import { formElements} from "./form-element-core";
+import { formElements } from "./form-element-core";
 import { useRef } from "react";
 import { Button } from "../button";
 import Banner from "../banner";
 import { IconLoaderSpinner } from "../icons/icon-loader-spinner";
 import { FormElement } from "./types";
 
-interface FormElementBuilderProps extends isLocalAware {
+interface FormElementRendererProps extends isLocalAware {
     isLoading: boolean;
     isError: boolean;
     onSubmit: (formValues: Record<string, FormElement>) => void;
@@ -14,14 +14,14 @@ interface FormElementBuilderProps extends isLocalAware {
     errorMessage?: string;
 }
 
-export function FormElementBuilder({
+export function FormElementRenderer({
     isLoading,
     isError,
     onSubmit,
     elements,
     locale,
     errorMessage
-}: FormElementBuilderProps) {
+}: FormElementRendererProps) {
     const dictionary = getDictionary(locale);
     const formValues = useRef<{ [key: string]: FormElement }>({});
 
@@ -64,7 +64,7 @@ export function FormElementBuilder({
                     type="submit"
                     variant="primary"
                     className="w-full capitalize"
-                    disabled={isLoading || isError}
+                    disabled={isLoading}
                     text={dictionary.components.formBuilder.submitText}
                 />
                 {isLoading && <IconLoaderSpinner classNames="absolute left-[50%] top-[20%] animate-spin" />}

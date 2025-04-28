@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { IconSingleChoice } from "../icons/icon-single-choice";
 import { FormElement, FormElementTemplate, SubmitFunction } from "./types";
 import SingleChoicePreview, { optionsType } from "../single-choice-preview";
@@ -24,7 +24,6 @@ function FormComponent({ elementInstance, submitValue }: { elementInstance: Form
     const [options, setOptions] = useState<optionsType[]>([]);
 
     useEffect(() => {
-        // Map ChoiceOption to optionsType
         const mappedOptions = elementInstance.options.map(option => ({
             label: option.name,
             isSelected: false
@@ -32,22 +31,27 @@ function FormComponent({ elementInstance, submitValue }: { elementInstance: Form
         setOptions(mappedOptions);
     }, [elementInstance.options]);
 
-    function onChange(option: string) {
-        setOptions((prevOptions) =>
-            prevOptions?.map((opt) => ({
+    const handleOptionChange = (option: string) => {
+        setOptions(prevOptions => {
+            const newOptions = prevOptions.map(opt => ({
                 ...opt,
                 isSelected: opt.label === option,
-            }))
-        );
+            }));
 
-        if (submitValue) {
-            // Create a new object with the selected option
-            const updatedElement = {
-                ...elementInstance,
-                selectedOption: option
-            };
-            submitValue(elementInstance.id.toString(), updatedElement);
-        }
+            // Notify form builder of the change
+            if (submitValue) {
+                const updatedElement = {
+                    ...elementInstance,
+                    options: newOptions.map(opt => ({
+                        name: opt.label,
+                        isSelected: opt.isSelected
+                    }))
+                };
+                submitValue(elementInstance.id, updatedElement);
+            }
+
+            return newOptions;
+        });
     }
 
     return (
@@ -55,9 +59,7 @@ function FormComponent({ elementInstance, submitValue }: { elementInstance: Form
             <SingleChoicePreview
                 title={elementInstance.title}
                 options={options}
-                onChange={(option) => {
-                    onChange(option);
-                }}
+                onChange={handleOptionChange}
             />
         </div>
     );

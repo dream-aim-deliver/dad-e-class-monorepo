@@ -11,4 +11,4 @@ export const formElements: FormElementRegistry = {
     [FormElementType.RichText]: richTextElement,
     [FormElementType.SingleChoice]: singleChoiceElement,
     [FormElementType.TextInput]: textInputElement,
-}; 
+};

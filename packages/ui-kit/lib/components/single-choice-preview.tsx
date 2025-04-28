@@ -26,6 +26,7 @@ export default function SingleChoicePreview({
                         value=''
                         key={option.label}
                         name={option.label}
+                        label={option.label}
                         withText={true}
                         disabled={filled}
                         checked={option.isSelected}

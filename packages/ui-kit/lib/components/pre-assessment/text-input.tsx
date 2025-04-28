@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { IconRichText } from "../icons/icon-rich-text";
-import RichTextEditor from "../rich-text-element/editor";
+import { RichTextEditor as TextInputEditor } from "../rich-text-element/editor";
 import { FormElement, FormElementTemplate, SubmitFunction } from "./types";
-import RichTextRenderer from "../rich-text-element/renderer";
+import { default as TextInputRenderer } from "../rich-text-element/renderer";
 import { Descendant } from "slate";
 import { serialize } from "../rich-text-element/serializer";
 import { FormElementType } from "./types";
@@ -35,12 +35,16 @@ function FormComponent({ elementInstance, submitValue }: { elementInstance: Form
   const onLoseFocus = () => {
     if (!submitValue || !value) return;
     const content = serialize(value);
-    submitValue(elementInstance.id.toString(), content);
+    const updatedElement = {
+      ...elementInstance,
+      content
+    };
+    submitValue(elementInstance.id.toString(), updatedElement);
   };
 
   return (
     <div className="text-text-primary flex flex-col gap-2">
-      <RichTextEditor
+      <TextInputEditor
         locale="en"
         name={`rich-text-${elementInstance.id}`}
         placeholder="Start typing..."
@@ -57,8 +61,8 @@ function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
 
   return (
     <div className="text-text-primary flex flex-col">
-      <p>{elementInstance.helperText}</p>
-      <RichTextRenderer content={elementInstance.helperText} />
+      <p>{elementInstance.content}</p>
+      <TextInputRenderer content={elementInstance.content} />
     </div>
   );
 }

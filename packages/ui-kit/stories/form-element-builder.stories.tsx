@@ -1,10 +1,10 @@
 import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
-import { FormElementBuilder } from "../lib/components/pre-assessment/form-builder";
+import { FormElementRenderer } from "../lib/components/pre-assessment/form-renderer";
 import { FormElementType,FormElement  } from "../lib/components/pre-assessment/types";
-const meta: Meta<typeof FormElementBuilder> = {
+const meta: Meta<typeof FormElementRenderer> = {
     title: "Components/FormElementBuilder",
-    component: FormElementBuilder,
+    component: FormElementRenderer,
     parameters: {
         layout: "centered",
     },
@@ -20,7 +20,7 @@ const meta: Meta<typeof FormElementBuilder> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof FormElementBuilder>;
+type Story = StoryObj<typeof FormElementRenderer>;
 
 // Sample form element instances
 const Elements: FormElement[] = [
@@ -28,13 +28,12 @@ const Elements: FormElement[] = [
         id: "rich-text-1",
         type: FormElementType.RichText,
         order: 1,
-        content: "Welcome to the pre-assessment form. Please read this information carefully before proceeding."
+        helperText: "Welcome to the pre-assessment form. Please read this information carefully before proceeding."
     },
     {
         id: "text-input-1",
         type: FormElementType.TextInput,
         order: 2,
-        helperText: "Please enter your name"
     },
     {
         id: "single-choice-1",

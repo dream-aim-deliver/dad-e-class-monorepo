@@ -22,7 +22,7 @@ function FormComponent({ elementInstance }: { elementInstance: FormElement }) {
 
     return (
         <div className="text-text-primary flex flex-col gap-2">
-            <p>{elementInstance.content}</p>
+            <p>{elementInstance.helperText}</p>
         </div>
     );
 }
@@ -32,7 +32,7 @@ function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
 
     return (
         <div className="text-text-primary flex flex-col">
-            <p>{elementInstance.content}</p>
+            <p>{elementInstance.helperText}</p>
         </div>
     );
 }

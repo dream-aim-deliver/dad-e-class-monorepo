@@ -3,7 +3,7 @@ import React from "react";
 /**
  * Enum representing the available form element types in the pre-assessment form builder.
  * Each type corresponds to a specific form element that can be used in the form.
- * 
+ *
  * @example
  * ```tsx
  * const element: FormElement = {
@@ -51,10 +51,10 @@ export interface BaseFormElement {
 /**
  * Rich Text element interface.
  * This element is used for displaying formatted text content in the form.
- * 
+ *
  * @property type - Must be FormElementType.RichText
  * @property content - The rich text content to display
- * 
+ *
  * @example
  * ```tsx
  * const richText: RichTextElement = {
@@ -67,16 +67,16 @@ export interface BaseFormElement {
  */
 export interface RichTextElement extends BaseFormElement {
     type: FormElementType.RichText;
-    content: string;
+    helperText?: string;
 }
 
 /**
  * Text Input element interface.
  * This element is used for text input in the form.
- * 
+ *
  * @property type - Must be FormElementType.TextInput
  * @property helperText - Text to display below the input field
- * 
+ *
  * @example
  * ```tsx
  * const textInput: TextInputElement = {
@@ -89,15 +89,15 @@ export interface RichTextElement extends BaseFormElement {
  */
 export interface TextInputElement extends BaseFormElement {
     type: FormElementType.TextInput;
-    helperText: string;
+    content?: string;
 }
 
 /**
  * Option interface for choice elements.
  * This interface defines the structure of options in choice elements.
- * 
+ *
  * @property name - The name/label of the option
- * 
+ *
  * @example
  * ```tsx
  * const option: ChoiceOption = {
@@ -107,16 +107,17 @@ export interface TextInputElement extends BaseFormElement {
  */
 export interface ChoiceOption {
     name: string;
+    isSelected?: boolean;
 }
 
 /**
  * Single Choice element interface.
  * This element is used for selecting one option from a list.
- * 
+ *
  * @property type - Must be FormElementType.SingleChoice
  * @property title - The title/question for the choice
  * @property options - Array of options to choose from
- * 
+ *
  * @example
  * ```tsx
  * const singleChoice: SingleChoiceElement = {
@@ -133,8 +134,8 @@ export interface ChoiceOption {
  */
 export interface SingleChoiceElement extends BaseFormElement {
     type: FormElementType.SingleChoice;
-    title: string;
-    options: ChoiceOption[];
+    title?: string;
+    options?: ChoiceOption[];
 }
 
 /**
