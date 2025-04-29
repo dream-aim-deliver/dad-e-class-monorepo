@@ -1,4 +1,6 @@
 import React from "react";
+import { Descendant } from "slate";
+import { isLocalAware } from "@maany_shr/e-class-translations";
 
 /**
  * Enum representing the available form element types in the pre-assessment form builder.
@@ -46,6 +48,7 @@ export interface BaseFormElement {
     type: FormElementType;
     order: number;
     id: string;
+    required?: boolean; // Changed from required:true to optional boolean
 }
 
 /**
@@ -67,7 +70,7 @@ export interface BaseFormElement {
  */
 export interface RichTextElement extends BaseFormElement {
     type: FormElementType.RichText;
-    helperText?: string;
+    content?: string;
 }
 
 /**
@@ -89,6 +92,7 @@ export interface RichTextElement extends BaseFormElement {
  */
 export interface TextInputElement extends BaseFormElement {
     type: FormElementType.TextInput;
+    helperText?: string;
     content?: string;
 }
 
@@ -211,7 +215,7 @@ export interface DesignerButtonProps {
  * };
  * ```
  */
-export interface DesignerComponentProps {
+export interface DesignerComponentProps extends isLocalAware {
     elementInstance: FormElement;
 }
 
@@ -235,7 +239,7 @@ export interface DesignerComponentProps {
  * };
  * ```
  */
-export interface FormComponentProps {
+export interface FormComponentProps extends isLocalAware {
     elementInstance: FormElement;
     submitValue?: SubmitFunction;
 }
@@ -273,6 +277,7 @@ export interface SubmissionComponentProps {
  * @property designerComponent - Component for the designer view
  * @property formComponent - Component for the form view
  * @property submissionComponent - Component for the submission view
+ * @property validate - Validation function for the form element
  * 
  * @example
  * ```tsx
@@ -284,16 +289,27 @@ export interface SubmissionComponentProps {
  *   },
  *   designerComponent: DesignerComponent,
  *   formComponent: FormComponent,
- *   submissionComponent: SubmissionComponent
+ *   submissionComponent: SubmissionComponent,
+ *   validate: (element, value) => {
+ *     // Implementation of validate function;
+ *     return true || false;
+ *   }
  * };
  * ```
  */
+type singleChoiceValue = {
+    name: string;
+    isSelected: boolean;
+}
+export type valueType = string | singleChoiceValue[] | Descendant[];
+
 export interface FormElementTemplate {
     type: FormElementType;
     designerBtnElement: DesignerButtonProps;
     designerComponent: React.FC<DesignerComponentProps>;
     formComponent: React.FC<FormComponentProps>;
     submissionComponent: React.FC<SubmissionComponentProps>;
+    validate: (element: FormElement, value: valueType) => boolean;
 }
 
 /**

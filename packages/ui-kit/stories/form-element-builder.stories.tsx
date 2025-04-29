@@ -28,18 +28,21 @@ const Elements: FormElement[] = [
         id: "rich-text-1",
         type: FormElementType.RichText,
         order: 1,
-        helperText: "Welcome to the pre-assessment form. Please read this information carefully before proceeding."
+        content: "Welcome to the pre-assessment form. Please read this information carefully before proceeding."
     },
     {
         id: "text-input-1",
         type: FormElementType.TextInput,
+        required: true,
         order: 2,
+        helperText: "Please enter your name"
     },
     {
         id: "single-choice-1",
         type: FormElementType.SingleChoice,
         order: 3,
         title: "What is your favorite color?",
+        required: true,
         options: [
             { name: "Red" },
             { name: "Blue" },

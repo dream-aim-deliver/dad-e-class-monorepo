@@ -1,7 +1,7 @@
 import React from 'react';
 export type optionsType = {
-    label: string;
-    isSelected: boolean;
+    name: string;
+    isSelected?: boolean;
 }
 interface SingleChoicePreviewProps {
     title: string;
@@ -22,17 +22,18 @@ export default function SingleChoicePreview({
             <h5 className="">{title}</h5>
             <div className='flex flex-col gap-4'>
                 {options?.map((option) => (
-                    <RadioButton
-                        value=''
-                        key={option.label}
-                        name={option.label}
-                        label={option.label}
-                        withText={true}
-                        disabled={filled}
-                        checked={option.isSelected}
-                        onChange={() => onChange(option.label)}
-                    />))
-                }
+                    <div key={option.name} className="flex items-center">
+                        <RadioButton
+                            value=''
+                            name={option.name}
+                            label={option.name}
+                            withText={true}
+                            disabled={filled}
+                            checked={option.isSelected}
+                            onChange={() => onChange?.(option.name)}
+                        />
+                    </div>
+                ))}
             </div>
         </div>
     )

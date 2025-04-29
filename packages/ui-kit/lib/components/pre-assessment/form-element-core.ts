@@ -1,7 +1,7 @@
 import { FormElementType, FormElementRegistry } from "./types";
-import richTextElement from "./rich-text";
-import singleChoiceElement from "./single-choice";
-import textInputElement from "./text-input";
+import richTextElement from "../lesson-components/rich-text";
+import singleChoiceElement from "../lesson-components/single-choice";
+import textInputElement from "../lesson-components/text-input";
 
 /**
  * Collection of all available form elements

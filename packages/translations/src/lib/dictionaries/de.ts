@@ -243,7 +243,13 @@ export const DE: TDictionary = {
     formBuilder:{
     title:'Leistungsbewertung vor dem Kurs',
     alertText:'Sobald Sie Ihre Antwort abgeschickt haben, können Sie keine Änderungen mehr vornehmen. Bitte überprüfen Sie sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
-      submitText:'Antwort senden' 
+    submitText:'Antwort senden',
+      fieldRequired:'Dieses Feld ist erforderlich',
+      selectOption:'Bitte wählen Sie eine Option',
+      pleaseEnterText:'Bitte geben Sie Text ein',
+      delete:'Löschen',
+      moveUp:'Nach oben',
+      moveDown:'Nach unten'
   },
     coachingSessionTracker: {
       minuteText: 'Minuten',

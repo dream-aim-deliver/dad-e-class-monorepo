@@ -234,6 +234,12 @@ export const DictionarySchema = z.object({
       title: z.string(),
       alertText: z.string(),
       submitText: z.string(),
+      fieldRequired: z.string(),
+      selectOption: z.string(),
+      pleaseEnterText: z.string(),
+      delete: z.string(),
+      moveUp: z.string(),
+      moveDown: z.string(),
      }),
     coachingSessionTracker: z.object({
       minuteText: z.string(),

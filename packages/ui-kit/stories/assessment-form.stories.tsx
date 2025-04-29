@@ -1,44 +1,60 @@
-// RichTextElement.stories.tsx
+// AssessmentForm.stories.tsx
 import React from "react";
 import { StoryObj, Meta } from "@storybook/react";
-import { FormComponent } from "../lib/components/pre-assessment/rich-text";
-import { preAssessmentElements, preAssessmentInstance, elementType } from "../lib/components/pre-assessment/form-element-core";
+import { FormElementType } from "../lib/components/pre-assessment/types";
+import { formElements } from "../lib/components/pre-assessment/form-element-core";
+import { Descendant } from "slate";
 
 // Create a component that will handle all element types
-const DynamicElementComponent = ({ elementType, ...args }: { elementType: elementType } & any) => {
+const DynamicElementComponent = ({ elementType, ...args }: { elementType: FormElementType } & any) => {
   // Create a sample instance based on the selected type
-  const sampleInstance: preAssessmentInstance = {
+  const sampleInstance = {
     id: `sample-${elementType}-1`,
     type: elementType,
-    extraAttributes: getSampleExtraAttributes(elementType),
+    order: 1,
+    title: elementType === FormElementType.RichText
+      ? "Welcome to the Course"
+      : elementType === FormElementType.TextInput
+        ? "Enter your name"
+        : "What is your favorite programming language?",
+    required: true,
+    content: elementType === FormElementType.RichText
+      ? [
+        {
+          type: 'paragraph',
+          children: [{ text: 'Welcome to our comprehensive programming course! This course will cover various programming concepts and best practices.' }],
+        }
+      ] as Descendant[]
+      : elementType === FormElementType.TextInput
+        ? [
+          {
+            type: 'paragraph',
+            children: [{ text: 'John Doe' }],
+          }
+        ] as Descendant[]
+        : "",
+    helperText: elementType === FormElementType.TextInput
+      ? [
+        {
+          type: 'paragraph',
+          children: [{ text: 'Please enter your full name as it appears on your official documents. This will be used for your course certificate.' }],
+        }
+      ] as Descendant[]
+      : undefined,
+    options: elementType === FormElementType.SingleChoice ? [
+      { name: "JavaScript", isSelected: true },
+      { name: "Python", isSelected: false },
+      { name: "Java", isSelected: false },
+      { name: "C++", isSelected: false }
+    ] : undefined
   };
 
-  const ElementComponent = preAssessmentElements[elementType].formComponent;
+  const ElementComponent = formElements[elementType].submissionComponent;
   return <ElementComponent elementInstance={sampleInstance} {...args} />;
 };
-function getSampleExtraAttributes(elementType: elementType) {
-  switch (elementType) {
-    case 'richText':
-      return { content: "This is a sample rich text content" };
-    case 'header':
-      return { content: "This is a sample header" };
-    case 'singleChoice':
-      return {
-        question: "Sample single choice question?",
-        options: ["Option 1", "Option 2", "Option 3"]
-      };
-    case 'multipleChoice':
-      return {
-        question: "Sample multiple choice question?",
-        options: ["Option A", "Option B", "Option C"]
-      };
-    default:
-      return { content: "Default content" };
-  }
-}
 
 export default {
-  title: "Components/PreAssessment",
+  title: "Components/PreAssessment/View",
   component: DynamicElementComponent,
   parameters: {
     layout: "centered",
@@ -46,16 +62,30 @@ export default {
   argTypes: {
     elementType: {
       control: 'select',
-      options: ['richText', 'singleChoice', 'multipleChoice', 'header'],
+      options: Object.values(FormElementType),
       description: 'Type of pre-assessment element',
-      defaultValue: 'richText'
+      defaultValue: FormElementType.SingleChoice
     }
   }
 } as Meta<typeof DynamicElementComponent>;
 
-export const Dynamic: StoryObj<typeof DynamicElementComponent> = {
+// Single Choice View
+export const SingleChoiceView: StoryObj<typeof DynamicElementComponent> = {
   args: {
-    elementType: 'richText',
-    // No need to pass elementInstance as it's created inside the component
+    elementType: FormElementType.SingleChoice
+  }
+};
+
+// Rich Text View
+export const RichTextView: StoryObj<typeof DynamicElementComponent> = {
+  args: {
+    elementType: FormElementType.RichText
+  }
+};
+
+// Text Input View
+export const TextInputView: StoryObj<typeof DynamicElementComponent> = {
+  args: {
+    elementType: FormElementType.TextInput
   }
 };
