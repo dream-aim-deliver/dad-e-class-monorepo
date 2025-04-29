@@ -11,6 +11,25 @@ interface ModulePaginationProps extends isLocalAware {
     onNext: () => void;
 };
 
+/**
+ * A reusable pagination component for navigating lessons within a module.
+ * Supports localization, disables navigation buttons at bounds, and provides contextual lesson count display.
+ *
+ * @param currentIndex The zero-based index of the currently viewed lesson.
+ * @param totalLessons Total number of lessons in the module.
+ * @param onPrevious Callback triggered when the user clicks the "Previous" button.
+ * @param onNext Callback triggered when the user clicks the "Next" button.
+ * @param locale The current locale string used to fetch localized dictionary content (from isLocalAware).
+ *
+ * @example
+ * <ModulePagination
+ *   currentIndex={1}
+ *   totalLessons={5}
+ *   onPrevious={() => handlePrev()}
+ *   onNext={() => handleNext()}
+ *   locale="en"
+ * />
+ */
 export const ModulePagination: React.FC<ModulePaginationProps> = ({ currentIndex, totalLessons, onPrevious, onNext, locale }) => {
     const dictionary = getDictionary(locale);
 
