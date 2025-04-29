@@ -53,9 +53,7 @@ const ModulePaginationWrapper = (args: any) => {
   );
 };
 
-/**
- * Storybook configuration for the ModulePagination component.
- */
+
 const meta: Meta<typeof ModulePagination> = {
   title: 'Components/ModulePagination',
   component: ModulePagination,
