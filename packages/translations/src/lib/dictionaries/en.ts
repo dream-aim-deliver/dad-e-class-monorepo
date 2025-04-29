@@ -13,6 +13,11 @@ export const EN: TDictionary = {
     skills: {
       title: 'Skills',
     },
+    modulePagination: {
+      previous: 'Previous',
+      next: 'Next',
+      lesson: 'Lesson',
+    },
     courseCard: {
       courseEmptyState: {
         message: "You haven't purchased any course yet",

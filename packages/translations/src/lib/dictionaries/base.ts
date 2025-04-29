@@ -15,6 +15,11 @@ export const DictionarySchema = z.object({
       personal: z.string(),
       professional: z.string(),
     }),
+    modulePagination: z.object({
+      previous: z.string(),
+      next: z.string(),
+      lesson: z.string(),
+    }),
     dragDrop: z.object({
       title: z.string(),
       buttontext: z.string(),
