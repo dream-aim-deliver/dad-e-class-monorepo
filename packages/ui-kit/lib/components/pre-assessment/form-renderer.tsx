@@ -4,16 +4,56 @@ import { useRef, useState } from "react";
 import { Button } from "../button";
 import Banner from "../banner";
 import { IconLoaderSpinner } from "../icons/icon-loader-spinner";
-import { FormElement, FormElementType, valueType, TextInputElement, SingleChoiceElement, RichTextElement, ChoiceOption } from "./types";
+import { FormElement, FormElementType, valueType, TextInputElement, SingleChoiceElement, RichTextElement } from "./types";
 
+/**
+ * Props for the FormElementRenderer component
+ * 
+ * @interface FormElementRendererProps
+ * @extends {isLocalAware}
+ */
 interface FormElementRendererProps extends isLocalAware {
+    /** Indicates if the form is currently in loading state (e.g., during submission) */
     isLoading: boolean;
+    /** Indicates if there was an error during form submission */
     isError: boolean;
+    /** Callback function invoked when the form is successfully submitted and validated */
     onSubmit: (formValues: Record<string, FormElement>) => void;
+    /** Array of form elements to render in the form */
     elements: FormElement[];
+    /** Optional error message to display when isError is true */
     errorMessage?: string;
 }
 
+/**
+ * FormElementRenderer - Renders a complete form with form elements and validation
+ * 
+ * This component takes an array of form elements and renders them in a form layout with
+ * proper validation. It handles form submission, validation of required fields, and
+ * displays appropriate error messages.
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <FormElementRenderer
+ *   locale="en"
+ *   isLoading={false}
+ *   isError={false}
+ *   elements={formElements}
+ *   onSubmit={(values) => console.log("Form submitted:", values)}
+ * />
+ * ```
+ *
+ * @param {FormElementRendererProps} props - Component props
+ * @param {boolean} props.isLoading - Indicates if the form is in loading state
+ * @param {boolean} props.isError - Indicates if there was a submission error
+ * @param {Function} props.onSubmit - Callback function called on successful form submission
+ * @param {FormElement[]} props.elements - Array of form elements to render
+ * @param {string} props.locale - Language locale for translations
+ * @param {string} [props.errorMessage] - Optional error message to display
+ * 
+ * @returns {React.ReactElement} The rendered form with all elements and validation
+ */
 export function FormElementRenderer({
     isLoading,
     isError,
@@ -45,21 +85,24 @@ export function FormElementRenderer({
             // Extract the appropriate value based on element type
             let value: valueType;
             switch (element.type) {
-                case FormElementType.TextInput:
+                case FormElementType.TextInput: {
                     const textInput = formElement as TextInputElement;
                     value = textInput?.content ? JSON.parse(textInput.content) : [];
                     break;
-                case FormElementType.SingleChoice:
+                }
+                case FormElementType.SingleChoice: {
                     const singleChoice = formElement as SingleChoiceElement;
                     value = (singleChoice?.options || []).map(opt => ({
                         name: opt.name,
                         isSelected: opt.isSelected
                     }));
                     break;
-                case FormElementType.RichText:
+                }
+                case FormElementType.RichText: {
                     const richText = formElement as RichTextElement;
                     value = richText?.content || '';
                     break;
+                }
                 default:
                     value = '';
             }

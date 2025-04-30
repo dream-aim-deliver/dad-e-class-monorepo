@@ -245,6 +245,17 @@ export const EN: TDictionary = {
       coachingSessionText: 'Coaching sessions included',
       noCoachingSessionText: 'No coaching sessions included',
     },
+    formBuilder:{
+      title:'Pre course assessment',
+      alertText:'Once you submit your response, you won’t be able to make changes, so please review it carefully. Completing this form is required to begin the course.',
+       submitText:'send reply',
+       fieldRequired:'This field is required',
+       selectOption:'Please select an option',
+       pleaseEnterText:'Please enter text',
+       delete:'Delete',
+       moveUp:'Move up',
+       moveDown:'Move down'
+    },
     courseProgressBar: {
       resumeText: 'Resume',
       progressText: 'Progress',
@@ -261,16 +272,6 @@ export const EN: TDictionary = {
         tryAgain: 'Try Again',
       },
     },
-    formBuilder:{
-      title:'Pre course assessment',
-      alertText:'Once you submit your response, you won’t be able to make changes, so please review it carefully. Completing this form is required to begin the course.',
-       submitText:'send reply',
-       fieldRequired:'This field is required',
-       selectOption:'Please select an option',
-       pleaseEnterText:'Please enter text',
-       delete:'Delete',
-       moveUp:'Move up',
-       moveDown:'Move down'
-    }
+    
   },
 };

@@ -8,6 +8,7 @@ interface SingleChoicePreviewProps {
     options: optionsType[];
     onChange?: (option: string) => void;
     filled?: boolean;
+    required:boolean
 }
 import { RadioButton } from './radio-button';
 
@@ -16,10 +17,13 @@ export default function SingleChoicePreview({
     options,
     onChange,
     filled = false,
+    required
 }: SingleChoicePreviewProps) {
     return (
         <div className="flex flex-col gap-4 text-text-primary">
-            <h5 className="">{title}</h5>
+            <h5 className="">{title}
+                {required && <span className="text-feedback-error-primary ml-1 text-sm">*</span>}
+            </h5>
             <div className='flex flex-col gap-4'>
                 {options?.map((option) => (
                     <div key={option.name} className="flex items-center">

@@ -100,6 +100,7 @@ function FormComponent({ elementInstance, submitValue }: { elementInstance: Form
     return (
         <div className="text-text-primary flex flex-col gap-2">
             <SingleChoicePreview
+             required={elementInstance.required}
                 title={elementInstance.title}
                 options={options}
                 onChange={handleOptionChange}
@@ -119,6 +120,7 @@ function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
     return (
         <div className="text-text-primary flex flex-col gap-2">
             <SingleChoicePreview
+               required={elementInstance.required}
                 title={elementInstance.title}
                 options={elementInstance.options}
                 filled={true}
