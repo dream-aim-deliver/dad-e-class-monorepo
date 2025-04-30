@@ -90,23 +90,34 @@ export const BaseGrid = ({ gridRef, ...props }: BaseTableProps) => {
         // Make sure the table is loaded before updating the pagination component to avoid flickering
         if (isTableLoaded && gridApi) {
             const totalPages = gridApi.paginationGetTotalPages();
-            totalPagesRef.current!.textContent = totalPages.toString();
+            if (totalPagesRef.current) {
+                totalPagesRef.current.textContent = totalPages.toString();
+            }
             // Ensure visibility of the pagination panel only after some data is loaded
-            containerRef.current!.style.visibility = totalPages === 0 ? 'hidden' : 'visible';
-
+            if (containerRef.current) {
+                containerRef.current.style.visibility = totalPages === 0 ? 'hidden' : 'visible';
+            }
             // Pages are zero based, hence the +1
             const currentPage = gridApi.paginationGetCurrentPage() + 1;
-            currentPageRef.current!.textContent = currentPage.toString();
-
-            previousPageRef.current!.disabled = currentPage === 1;
-            firstPageRef.current!.disabled = currentPage === 1;
-            previousPageRef.current!.onclick = onPreviousPage;
-            firstPageRef.current!.onclick = onFirstPage;
-
-            nextPageRef.current!.disabled = currentPage === totalPages;
-            lastPageRef.current!.disabled = currentPage === totalPages;
-            nextPageRef.current!.onclick = onNextPage;
-            lastPageRef.current!.onclick = onLastPage;
+            if (currentPageRef.current) {
+                currentPageRef.current.textContent = currentPage.toString();
+            }
+            if (previousPageRef.current) {
+                previousPageRef.current.disabled = currentPage === 1;
+                previousPageRef.current.onclick = onPreviousPage;
+            }
+            if (firstPageRef.current) {
+                firstPageRef.current.disabled = currentPage === 1;
+                firstPageRef.current.onclick = onFirstPage;
+            }
+            if (nextPageRef.current) {
+                nextPageRef.current.disabled = currentPage === totalPages;
+                nextPageRef.current.onclick = onNextPage;
+            }
+            if (lastPageRef.current) {
+                lastPageRef.current.disabled = currentPage === totalPages;
+                lastPageRef.current.onclick = onLastPage;
+            }
         }
     };
 
