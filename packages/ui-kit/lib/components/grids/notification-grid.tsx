@@ -2,8 +2,7 @@ import { notification } from '@maany_shr/e-class-models';
 import { AllCommunityModule, ColDef, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useRef, useState } from 'react';
-import { Check, ChevronDown, ChevronUp, Dot } from 'lucide-react';
-import { cn } from '../../utils/style-utils';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
 import { Button } from '../button';
@@ -15,45 +14,14 @@ export interface NotificationGridProps {
     onNotificationClick: (notification: notification.TNotification) => void;
 }
 
-// TODO: ensure styling matching Figma
-export const NotificationCard = ({ notification, onClick }: {
-    notification: notification.TNotification,
-    onClick: (notification: notification.TNotification) => void;
-}) => {
-    const isPending = !notification.isRead;
-    return (
-        <div className={cn(
-            '@3xl:flex items-center p-4 justify-between rounded-md my-2 space-x-2',
-            isPending && 'bg-base-neutral-800'
-        )}>
-            <p className="text-base-neutral-50 text-wrap text-sm">{notification.message}</p>
-            <div className="flex space-x-2 items-center">
-                <Button
-                    variant="text"
-                    className="text-sm px-0 truncate max-w-sm"
-                    onClick={() => onClick(notification)}
-                    text={notification.action.title}
-                />
-                <p className="text-xs text-base-neutral-300">{formatDate(new Date(notification.timestamp))}</p>
-                {isPending && <Check className="text-base-brand-500 h-5 w-5 flex-shrink-0" />}
-            </div>
-        </div>
-    );
-};
-
-const NotificationCellRenderer = (props: any) => {
-    const notification = props.data;
-    const onClick = props.onClick;
-    return <NotificationCard notification={notification} onClick={onClick} />;
-};
-
 const PAGE_SIZE = 15;
 
 const NotificationMessageRenderer = (props: any) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const message = props.value;
-    return <div className="flex items-center space-x-2" onClick={() => setIsExpanded(prevState => !prevState)}>
+    return <div className="flex items-center text-sm my-2.5 space-x-2"
+                onClick={() => setIsExpanded(prevState => !prevState)}>
         <span className={isExpanded ? 'text-wrap' : 'truncate'}>{message}</span>
         {isExpanded ? <ChevronUp className="flex-shrink-0 w-4 h-4" /> :
             <ChevronDown className="flex-shrink-0 w-4 h-4" />}
