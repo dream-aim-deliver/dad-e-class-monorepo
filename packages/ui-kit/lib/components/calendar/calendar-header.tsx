@@ -41,7 +41,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   };
 
   return (
-    <div className="border-b border-[var(--color-divider)] p-6">
+    <div className="border-b border-[var(--color-divider)] p-6 ">
       <div className="flex flex-row items-center justify-between">
         <div className="flex items-center space-x-4">
           <h2 className="text-2xl font-semibold text-text-primary">
