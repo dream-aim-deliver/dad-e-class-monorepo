@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from '../button';
 import { X } from 'lucide-react';
 
-// Type definitions
 export type Event = {
   id: string;
   title: string;
@@ -18,7 +17,6 @@ export type Event = {
   };
 };
 
-// EventContent component
 type EventContentProps = {
   eventInfo: any;
   onClick: () => void;

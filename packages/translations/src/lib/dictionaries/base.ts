@@ -1,5 +1,5 @@
 
-import { z } from 'zod';
+import { date, z } from 'zod';
 
 export const DictionarySchema = z.object({
   sso: z.object({
@@ -109,6 +109,17 @@ export const DictionarySchema = z.object({
     }),
     coachReview: z.object({
       by:z.string()
+    }),
+    scheduleSession: z.object({
+      session: z.string(),
+      date: z.string(),
+      time: z.string(),
+      coach: z.string(),
+      course: z.string(),
+      group: z.string(),
+      na: z.string(),
+      discardButton: z.string(),
+      sendRequestButton: z.string(),
     }),
     coachCard: z.object({
       coachingSession: z.string(),

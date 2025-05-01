@@ -95,7 +95,7 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
   return (
     <div
       ref={containerRef}
-      className="z-30 flex flex-col items-start p-4 gap-[0.875rem] bg-card-fill rounded-medium h-fit w-[300px] shadow-lg"
+      className="z-30 flex flex-col items-start p-4 gap-[0.875rem] bg-card-fill rounded-medium h-fit w-full shadow-lg"
     >
       <p className="text-lg text-text-primary font-bold leading-[120%]">
         {dictionary?.components?.availableCoachingSessions?.title}
