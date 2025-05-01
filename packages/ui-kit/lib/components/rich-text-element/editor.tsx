@@ -154,7 +154,10 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
         }
       }
     };
-   const handleBlur = () => {
+   const handleBlur = (e: React.FocusEvent
+
+   ) => {
+
     const serialized = serialize(editor.children);
     onLoseFocus(serialized);
    }

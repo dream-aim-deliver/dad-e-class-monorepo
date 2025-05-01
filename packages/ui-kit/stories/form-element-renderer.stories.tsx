@@ -3,7 +3,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import { FormElementRenderer } from "../lib/components/pre-assessment/form-renderer";
 import { FormElementType,FormElement  } from "../lib/components/pre-assessment/types";
 const meta: Meta<typeof FormElementRenderer> = {
-    title: "Components/FormElementBuilder",
+    title: "Components/Pre-Assessment/FormElementRenderer",
     component: FormElementRenderer,
     parameters: {
         layout: "centered",
@@ -28,14 +28,14 @@ const Elements: FormElement[] = [
         id: "rich-text-1",
         type: FormElementType.RichText,
         order: 1,
-        content: "Welcome to the pre-assessment form. Please read this information carefully before proceeding."
+        content:"[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Welcome to the pre-assessment form. Please read this information carefully before proceeding.\"}]}]" 
     },
     {
         id: "text-input-1",
         type: FormElementType.TextInput,
         required: true,
         order: 2,
-        helperText: "Please enter your name"
+        helperText: "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"What is your name?\"}]}]"
     },
     {
         id: "single-choice-1",

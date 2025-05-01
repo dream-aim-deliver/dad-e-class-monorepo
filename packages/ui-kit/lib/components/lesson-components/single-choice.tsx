@@ -1,3 +1,8 @@
+import React, { useEffect, useState, useCallback } from "react";
+import { IconSingleChoice } from "../icons/icon-single-choice";
+import { FormElement, FormElementTemplate, SubmitFunction, FormElementType,  valueType, DesignerComponentProps } from "../pre-assessment/types";
+import SingleChoicePreview, { optionsType, SingleChoiceEdit } from "../single-choice";
+import DesignerLayout from "./designer-layout";
 /**
  * Single Choice Element for Pre-Assessment
  * This component provides a single-choice selection element for pre-assessment forms.
@@ -28,10 +33,6 @@
  * ```
  */
 
-import React, { useEffect, useState, useCallback } from "react";
-import { IconSingleChoice } from "../icons/icon-single-choice";
-import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, SingleChoiceElement, valueType } from "../pre-assessment/types";
-import SingleChoicePreview, { optionsType } from "../single-choice-preview";
 
 /**
  * Template for the single choice form element
@@ -43,7 +44,7 @@ const singleChoiceElement: FormElementTemplate = {
         icon: IconSingleChoice,
         label: "Single Choice"
     },
-    designerComponent: () => <div>Single Choice Designer</div>,
+    designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
     validate: (elementInstance: FormElement, value: valueType) => {
@@ -53,6 +54,58 @@ const singleChoiceElement: FormElementTemplate = {
         return true;
     }
 };
+/**
+ * Designer Component for Single Choice
+ * Renders the configuration interface for single choice questions in the form builder
+ * 
+ * Features:
+ * - Title editing
+ * - Option management (add/remove/edit)
+ * - Required field toggle
+ * - Drag and drop reordering
+ * 
+ * @param elementInstance - The form element instance containing configuration
+ * @param locale - The current locale for translations
+ * @param onUpClick - Callback when moving element up
+ * @param onDownClick - Callback when moving element down 
+ * @param onDeleteClick - Callback when deleting element
+ */
+
+
+function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+    if (elementInstance.type !== FormElementType.SingleChoice) return null;
+
+  const [options,setOptions]=useState<optionsType[]>(elementInstance.options || []);
+  const [title,setTitle]=useState<string>(elementInstance.title || "");
+   const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
+
+    const handleRequiredChange = () => {
+        setIsRequired(prev => !prev);
+        console.log('Required changed:', !isRequired);
+      };
+    
+    return (
+      <DesignerLayout
+        type={elementInstance.type}
+        title="Single Choice"
+        icon={<IconSingleChoice classNames="w-6 h-6" />}
+        onUpClick={() => onUpClick?.(elementInstance.id)}
+        onDownClick={() => onDownClick?.(elementInstance.id)}
+        onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
+        locale={locale}
+        courseBuilder={true}
+        isChecked={isRequired}
+        onChange={handleRequiredChange}
+      >
+      <SingleChoiceEdit
+      title={title}
+      options={options}
+      setOptions={setOptions}
+      setTitle={setTitle}
+      />
+      </DesignerLayout>
+    );
+  }
 
 /**
  * Form Component for Single Choice
@@ -100,7 +153,7 @@ function FormComponent({ elementInstance, submitValue }: { elementInstance: Form
     return (
         <div className="text-text-primary flex flex-col gap-2">
             <SingleChoicePreview
-             required={elementInstance.required}
+                required={elementInstance.required}
                 title={elementInstance.title}
                 options={options}
                 onChange={handleOptionChange}
@@ -120,7 +173,7 @@ function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
     return (
         <div className="text-text-primary flex flex-col gap-2">
             <SingleChoicePreview
-               required={elementInstance.required}
+                required={elementInstance.required}
                 title={elementInstance.title}
                 options={elementInstance.options}
                 filled={true}

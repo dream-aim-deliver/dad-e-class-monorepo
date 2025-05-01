@@ -4,8 +4,8 @@ import { useRef, useState } from "react";
 import { Button } from "../button";
 import Banner from "../banner";
 import { IconLoaderSpinner } from "../icons/icon-loader-spinner";
-import { FormElement, FormElementType, valueType, TextInputElement, SingleChoiceElement, RichTextElement } from "./types";
-
+import { FormElement, FormElementType, valueType } from "./types";
+import {TextInputElement, SingleChoiceElement, RichTextElement} from "../lesson-components/types";
 /**
  * Props for the FormElementRenderer component
  * 
@@ -123,8 +123,9 @@ export function FormElementRenderer({
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         if (e) e.preventDefault();
-
+        e.stopPropagation();
         // Validate the form before submission
+      
         if (!validateForm()) {
             // If validation fails, don't submit
             return;
@@ -136,19 +137,17 @@ export function FormElementRenderer({
     const getErrorMessage = (element: FormElement): string => {
         switch (element.type) {
             case FormElementType.TextInput:
-                return dictionary.components.formBuilder.fieldRequired;
+                return dictionary.components.formRenderer.fieldRequired;
             case FormElementType.SingleChoice:
-                return dictionary.components.formBuilder.selectOption;
-            case FormElementType.RichText:
-                return dictionary.components.formBuilder.fieldRequired;
+                return dictionary.components.formRenderer.selectOption;
             default:
-                return dictionary.components.formBuilder.fieldRequired;
+                return dictionary.components.formRenderer.fieldRequired;
         }
     };
 
     return (
         <form onSubmit={handleSubmit} className="max-w-[560px] p-6 flex flex-col gap-4 bg-card-fill shadow-[0px_4px_12px_0px_base-neutral-950] border-1 rounded-medium border-card-stroke text-text-primary">
-            <h3>{dictionary.components.formBuilder.title}</h3>
+            <h3>{dictionary.components.formRenderer.title}</h3>
             <div className="flex flex-col gap-4">
                 {elements.map((elementInstance) => {
                     const Element = formElements[elementInstance.type].formComponent;
@@ -177,7 +176,7 @@ export function FormElementRenderer({
             )}
             <Banner
                 style="warning"
-                description={dictionary.components.formBuilder.alertText}
+                description={dictionary.components.formRenderer.alertText}
             />
             <div className="relative w-full">
                 <Button
@@ -185,7 +184,7 @@ export function FormElementRenderer({
                     variant="primary"
                     className="w-full capitalize"
                     disabled={isLoading}
-                    text={dictionary.components.formBuilder.submitText}
+                    text={dictionary.components.formRenderer.submitText}
                 />
                 {isLoading && <IconLoaderSpinner classNames="absolute left-[50%] top-[20%] animate-spin" />}
             </div>

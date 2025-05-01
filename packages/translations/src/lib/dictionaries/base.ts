@@ -230,7 +230,7 @@ export const DictionarySchema = z.object({
       rateCallQualityText: z.string(),
       loadMoreText: z.string(),
     }),
-    formBuilder: z.object({
+    formRenderer: z.object({
       title: z.string(),
       alertText: z.string(),
       submitText: z.string(),
@@ -240,6 +240,7 @@ export const DictionarySchema = z.object({
       delete: z.string(),
       moveUp: z.string(),
       moveDown: z.string(),
+      showInCourseBuilderDescription: z.string(),
      }),
     coachingSessionTracker: z.object({
       minuteText: z.string(),

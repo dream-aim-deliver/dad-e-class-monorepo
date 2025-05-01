@@ -161,8 +161,8 @@ export const DE: TDictionary = {
       videoErrorText: 'Video existiert nicht'
     },
     richTextToolbar:{
-      paragraph: "Absatz",
       bold: "Fett (Strg+B)",
+      paragraph: "Absatz",
       italic: "Kursiv (Strg+I)",
       underline: "Unterstrichen (Strg+U)",
       undo: "Rückgängig (Strg+Z)",
@@ -240,7 +240,7 @@ export const DE: TDictionary = {
       rateCallQualityText: 'Bewerten Sie die Anrufqualität',
       loadMoreText: 'Mehr laden...',
     },
-    formBuilder:{
+    formRenderer:{
     title:'Leistungsbewertung vor dem Kurs',
     alertText:'Sobald Sie Ihre Antwort abgeschickt haben, können Sie keine Änderungen mehr vornehmen. Bitte überprüfen Sie sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
     submitText:'Antwort senden',
@@ -249,7 +249,8 @@ export const DE: TDictionary = {
       pleaseEnterText:'Bitte geben Sie Text ein',
       delete:'Löschen',
       moveUp:'Nach oben',
-      moveDown:'Nach unten'
+      moveDown:'Nach unten',
+      showInCourseBuilderDescription:"Rich Text in die Registerkarte „Kursmaterial“ einbinden"
   },
     coachingSessionTracker: {
       minuteText: 'Minuten',

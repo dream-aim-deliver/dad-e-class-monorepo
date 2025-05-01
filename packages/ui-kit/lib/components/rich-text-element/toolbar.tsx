@@ -65,6 +65,7 @@ export default function Toolbar ({locale}:isLocalAware) {
         <div className="flex items-center space-x-4 text-text-secondary">
           {TEXT_ACTION_OPTIONS(dictionary).map((option) => (
             <button
+            type="button" 
               key={option.id}
               title={`${option.label}`}
               onClick={() => handleAction(option.id)}>
@@ -72,12 +73,14 @@ export default function Toolbar ({locale}:isLocalAware) {
             </button>
           ))}
             <button
+            type="button" 
             title={dictionary.components.richTextToolbar.link}
             className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("link" as RichTextAction)}`}
             onClick={handleInsertLink}>
             <Link size={24} />
           </button>
           <button
+          type="button" 
             title={dictionary.components.richTextToolbar.unlink}
             className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("unlink" as RichTextAction)} `}
             onClick={() => removeLink(editor)} disabled={!isLinkActive(editor)}>
@@ -87,11 +90,13 @@ export default function Toolbar ({locale}:isLocalAware) {
         {TEXT_FORMAT_OPTIONS(dictionary).map(({ id, label, icon }) => (
           <button
             title={label}
+            type="button" 
             key={id}
             aria-label={label}
             className={`p-2 rounded   text-text-primary ${getMarkSelectionClass(id)}`}
             onMouseDown={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               onMarkClick(id);
             }}
           >
@@ -103,6 +108,7 @@ export default function Toolbar ({locale}:isLocalAware) {
       <div className="flex   items-center space-x-2">
         {TEXT_BLOCK_OPTIONS(dictionary).map(({ id, label, icon }) => (
           <button
+          type="button" 
             title={label}
             key={id}
             aria-label={label}

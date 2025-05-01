@@ -245,7 +245,7 @@ export const EN: TDictionary = {
       coachingSessionText: 'Coaching sessions included',
       noCoachingSessionText: 'No coaching sessions included',
     },
-    formBuilder:{
+    formRenderer:{
       title:'Pre course assessment',
       alertText:'Once you submit your response, you won’t be able to make changes, so please review it carefully. Completing this form is required to begin the course.',
        submitText:'send reply',
@@ -254,7 +254,8 @@ export const EN: TDictionary = {
        pleaseEnterText:'Please enter text',
        delete:'Delete',
        moveUp:'Move up',
-       moveDown:'Move down'
+       moveDown:'Move down',
+       showInCourseBuilderDescription:"Include rich text in course material tab"
     },
     courseProgressBar: {
       resumeText: 'Resume',

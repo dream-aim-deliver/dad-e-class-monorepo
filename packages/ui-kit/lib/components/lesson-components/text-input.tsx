@@ -1,3 +1,39 @@
+import { useState } from "react";
+import { IconRichText } from "../icons/icon-rich-text";
+import { RichTextEditor as TextInputEditor } from "../rich-text-element/editor";
+import { FormElement, FormElementTemplate,FormElementType, SubmitFunction, valueType, FormComponentProps, DesignerComponentProps } from "../pre-assessment/types";
+import { default as TextInputRenderer } from "../rich-text-element/renderer";
+import { Descendant, Node } from "slate";
+import { serialize,deserialize } from "../rich-text-element/serializer";
+import { getDictionary } from "@maany_shr/e-class-translations";
+import DesignerLayout from "./designer-layout";
+import { IconTextInput } from "../icons/icon-text-input";
+import { AnimatedRadioButton } from "../animated-radio-button";
+
+/**
+ * Template for the text input form element
+ * Defines the component's behavior, validation, and UI elements
+ */
+const textInputElement: FormElementTemplate = {
+  type: FormElementType.TextInput,
+  designerBtnElement: {
+    icon: IconRichText,
+    label: "Text Input"
+  },
+  designerComponent: DesignerComponent,
+  formComponent: FormComponent,
+  submissionComponent: ViewComponent,
+  validate: (elementInstance: FormElement, value: valueType) => {
+    if (elementInstance.required) {
+      if (Array.isArray(value)) {
+        const content = value.map(n => Node.string(n)).join('\n').trim();
+        return content.length > 0;
+      }
+      return false;
+    }
+    return true;
+  }
+};
 /**
  * Text Input Element for Pre-Assessment
  * This component provides a rich text input field for pre-assessment forms.
@@ -25,41 +61,52 @@
  * ```
  */
 
-import { useState } from "react";
-import { IconRichText } from "../icons/icon-rich-text";
-import { RichTextEditor as TextInputEditor } from "../rich-text-element/editor";
-import { FormElement, FormElementTemplate, SubmitFunction, valueType, FormComponentProps } from "../pre-assessment/types";
-import { default as TextInputRenderer } from "../rich-text-element/renderer";
-import { Descendant, Node } from "slate";
-import { serialize } from "../rich-text-element/serializer";
-import { FormElementType } from "../pre-assessment/types";
-import { getDictionary } from "@maany_shr/e-class-translations";
+function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+  if (elementInstance.type !== FormElementType.TextInput) return null;
 
-/**
- * Template for the text input form element
- * Defines the component's behavior, validation, and UI elements
- */
-const textInputElement: FormElementTemplate = {
-  type: FormElementType.TextInput,
-  designerBtnElement: {
-    icon: IconRichText,
-    label: "Text Input"
-  },
-  designerComponent: () => <div>Text Input Designer</div>,
-  formComponent: FormComponent,
-  submissionComponent: ViewComponent,
-  validate: (elementInstance: FormElement, value: valueType) => {
-    if (elementInstance.required) {
-      if (Array.isArray(value)) {
-        const content = value.map(n => Node.string(n)).join('\n').trim();
-        return content.length > 0;
-      }
-      return false;
-    }
-    return true;
-  }
-};
+  const [helperText, setHelperText] = useState<Descendant[]>(deserialize(elementInstance.helperText));
+  const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
 
+  const handleContentChange = (value: Descendant[]) => {
+   const contentString = serialize(value);
+    setHelperText(value);
+    console.log('Content changed:',contentString);
+  };
+
+  const handleLoseFocus = (value: string) => {
+    console.log('Final content:', value);
+  };
+
+  const handleRequiredChange = () => {
+    setIsRequired(prev => !prev);
+    console.log('Required changed:', !isRequired);
+  };
+
+
+  return (
+    <DesignerLayout
+      type={elementInstance.type}
+      title="Text Input"
+      icon={<IconTextInput classNames="w-6 h-6" />}
+      onUpClick={() => onUpClick?.(elementInstance.id)}
+      onDownClick={() => onDownClick?.(elementInstance.id)}
+      onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
+      locale={locale}
+      courseBuilder={true}
+      isChecked={isRequired}
+      onChange={handleRequiredChange}
+    >
+      <TextInputEditor
+        name={`rich-text-${elementInstance.id}`}
+        initialValue={helperText}
+        onChange={handleContentChange}
+        onLoseFocus={handleLoseFocus}
+        placeholder="Enter helper text..."
+        locale={locale}
+      />
+    </DesignerLayout>
+  );
+}
 /**
  * Form Component for Text Input
  * Renders the editable text input field with validation and submission handling
@@ -70,12 +117,7 @@ const textInputElement: FormElementTemplate = {
  */
 function FormComponent({ elementInstance, submitValue, locale }: FormComponentProps) {
   if (elementInstance.type !== FormElementType.TextInput) return null;
-  const [value, setValue] = useState<Descendant[]>([
-    {
-      type: 'paragraph',
-      children: [{ text: '' }],
-    },
-  ]);
+  const [value, setValue] = useState<Descendant[]>(deserialize(elementInstance.content || ""));
   const dictionary = getDictionary(locale);
 
   const onLoseFocus = () => {
@@ -87,17 +129,17 @@ function FormComponent({ elementInstance, submitValue, locale }: FormComponentPr
     };
     submitValue(elementInstance.id.toString(), updatedElement);
   };
-
+console.log(elementInstance.helperText);
   return (
     <div className="text-text-primary flex flex-col gap-2">
-      <p className="text-sm leading-[21px]">
-        {elementInstance.helperText}
+      <div className="text-sm flex leading-[21px]">
+      <TextInputRenderer content={elementInstance.helperText} />
         {elementInstance.required && <span className="text-feedback-error-primary ml-1">*</span>}
-      </p>
+      </div>
       <TextInputEditor
         locale={locale}
         name={`rich-text-${elementInstance.id}`}
-        placeholder={dictionary.components.formBuilder.pleaseEnterText}
+        placeholder={dictionary.components.formRenderer.pleaseEnterText}
         initialValue={value}
         onChange={(value) => setValue(value)}
         onLoseFocus={onLoseFocus}
