@@ -98,6 +98,17 @@ export const EN: TDictionary = {
       clearFilters: 'Clear Filters',
       filterButton: 'Filters',
     },
+    scheduleSession: {
+      session: 'Session',
+      coach: 'Coach',
+      course: 'Course',
+      group: 'Group',
+      date: 'Date',
+      time: 'Start Time',
+      na: 'N/A',
+      discardButton: 'Discard',
+      sendRequestButton: 'Send Request',
+    },
     courseCard: {
       courseEmptyState: {
         message: "You haven't purchased any course yet",

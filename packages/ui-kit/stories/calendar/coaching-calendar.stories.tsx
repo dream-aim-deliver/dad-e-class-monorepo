@@ -82,7 +82,7 @@ const Template: StoryObj<typeof Calendar> = {
       </div>
 
       {/* Container for Calendar with padding to avoid overlap */}
-      <div className="flex-1 p-4 pt-10 pr-80">
+      <div className="flex-1 p-4 pt-10 pr-75">
         <Calendar {...args} />
       </div>
     </div>

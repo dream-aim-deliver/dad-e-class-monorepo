@@ -98,6 +98,17 @@ export const DE: TDictionary = {
       clearFilters: 'Filter zurücksetzen',
       filterButton: 'Filter',
     },
+    scheduleSession: {
+      session: 'Sitzung',
+      coach: 'Trainer',
+      course: 'Kurs',
+      group: 'Gruppe',
+      date: 'Datum',
+      time: 'Startzeit',
+      na: 'N/A',
+      discardButton: 'Verwerfen',
+      sendRequestButton: 'Anfrage senden',
+    },
     courseCard: {
       courseEmptyState: {
         message: 'Sie haben noch keine Kurse gekauft',

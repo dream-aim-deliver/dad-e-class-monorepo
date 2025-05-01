@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { IconButton } from './icon-button';
-import { IconCalendarAvailability } from './icons/icon-calendar-availability';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { IconCalendarAlt } from './icons/icon-calendar-alt';
 
 export interface DateInputProps extends isLocalAware {
   label?: string;
@@ -148,7 +148,7 @@ export const DateInput: React.FC<DateInputProps> = ({
         <IconButton
           size="small"
           styles="text"
-          icon={<IconCalendarAvailability />}
+          icon={<IconCalendarAlt />}
           onClick={handleTextFieldClick}
           data-testid="date-input-icon-button"
         />

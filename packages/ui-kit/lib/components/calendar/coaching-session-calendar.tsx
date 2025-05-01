@@ -158,9 +158,9 @@ const Calendar: React.FC<CalendarProps> = ({
         coachAvailability={coachAvailability}
         yourMeetings={yourMeetings}
       />
-      <div className="w-full max-w-full p-6">
+      <div className="w-full max-w-full p-4">
         <style>{calendarStyles}</style>
-        <div className="h-[750px]">
+        <div className="h-[920px] overflow-hidden rounded-md border border-divider  shadow-md">
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -211,7 +211,7 @@ const Calendar: React.FC<CalendarProps> = ({
             droppable={true}
             drop={handleExternalDrop}
             slotMinTime="07:00:00"
-            slotMaxTime="22:00:00"
+            slotMaxTime="18:00:00"
             allDaySlot={false}
             height="100%"
             slotDuration="01:00:00"
