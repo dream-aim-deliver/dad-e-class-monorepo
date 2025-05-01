@@ -1,4 +1,4 @@
-import React, { useRef, useState, useLayoutEffect, useCallback, useMemo, useEffect } from "react";
+import React, { useRef, useState, useCallback, useMemo, useEffect } from "react";
 import { IconChevronLeft } from "../icons/icon-chevron-left";
 import { IconChevronRight } from "../icons/icon-chevron-right";
 import { Button } from "../button";
@@ -20,7 +20,7 @@ export const CarouselContent: React.FC<{
       {items.map((item, index) => (
         <div
           key={index}
-          className={`flex-shrink-0 px-2 transition-all duration-300 ${
+          className={`flex-shrink-0 justify-items-center px-2 transition-all duration-300 ${
             itemsPerView === 1 || items.length === 1
               ? "w-full max-w-[90%] mx-auto"
               : itemsPerView === 2
@@ -60,8 +60,18 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
   ({ children, className = "", locale, onClick }) => {
     const carouselRef = useRef<HTMLDivElement>(null);
     const [currentPage, setCurrentPage] = useState(0);
-    const [itemsPerView, setItemsPerView] = useState(3);
-    const [touchStart, setTouchStart] = useState(0);
+    const [itemsPerView, setItemsPerView] = useState(() => {
+        // Initialize with the correct value based on window width
+        if (typeof window !== 'undefined') {
+            const width = window.innerWidth;
+            if (width < 640) return 1;
+            if (width < 1024) return 2;
+            return 3;
+        }
+        return 3; // Default for SSR
+    });
+
+      const [touchStart, setTouchStart] = useState(0);
     const dictionary = getDictionary(locale);
     const childrenArray = React.Children.toArray(children);
 
@@ -75,7 +85,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
     }, [childrenArray, itemsPerView]);
 
     // Responsive items per view
-    useLayoutEffect(() => {
+    useEffect(() => {
       const updateItemsPerView = () => {
         const width = window.innerWidth;
         if (width < 640) {
