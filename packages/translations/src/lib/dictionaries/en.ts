@@ -254,6 +254,14 @@ export const EN: TDictionary = {
       resumeText: 'Resume',
       progressText: 'Progress',
     },
+    milestone: {
+      milestoneText: 'Milestone',
+    },
+    courseOutline: {
+      optionalText: 'Optional',
+      updatedText:  'Updated',
+      moduleText: 'Module',
+    },
   },
   pages: {
     home: Home_EN,

@@ -247,6 +247,14 @@ export const DictionarySchema = z.object({
       resumeText: z.string(),
       progressText: z.string(),
     }),
+    milestone: z.object({
+      milestoneText: z.string(),
+    }),
+    courseOutline: z.object({
+      optionalText: z.string(),
+      updatedText: z.string(),
+      moduleText: z.string(),
+    }),
   }),
   pages: z.object({
       sso: z.object({
