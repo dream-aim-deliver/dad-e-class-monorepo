@@ -255,6 +255,19 @@ export const DictionarySchema = z.object({
       updatedText: z.string(),
       moduleText: z.string(),
     }),
+    courseGeneralInformationView: z.object({
+      durationText: z.string(),
+      minutesText: z.string(),
+      hourText: z.string(),
+      hoursText: z.string(),
+      filmMaterialText: z.string(),
+      coachingWithAProfessionalText: z.string(),
+      selfStudyMaterialText: z.string(),
+      createdByText: z.string(),
+      yourProgressText: z.string(),
+      resumeText: z.string(),
+      viewProfileText: z.string(),
+    }),
   }),
   pages: z.object({
       sso: z.object({
