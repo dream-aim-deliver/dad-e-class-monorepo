@@ -1,17 +1,7 @@
 import React from 'react';
 import { Button } from '../button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Tabs, TabList } from '../tabs/tab';
-import { cn } from '../../utils/style-utils';
-
-type Event = {
-  id: string;
-  title: string;
-  description: string;
-  start: string;
-  end: string;
-  attendees?: string;
-};
+import { Event } from './event';
 
 type CalendarHeaderProps = {
   viewType: string;
@@ -41,7 +31,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   };
 
   return (
-    <div className="border-b border-[var(--color-divider)] p-6 ">
+    <div className="border-b border-[var(--color-divider)] p-6">
       <div className="flex flex-row items-center justify-between">
         <div className="flex items-center space-x-4">
           <h2 className="text-2xl font-semibold text-text-primary">
@@ -82,31 +72,6 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
               <span className="text-sm font-medium text-text-primary">Your Meeting</span>
             </div>
           </div>
-          {/* <div className="flex space-x-2">
-            <Tabs.Root
-              defaultTab={viewType}
-              onValueChange={(value) => onViewChange(value)}
-              className="flex"
-            >
-              <Tabs.List className="flex space-x-2" variant="small">
-                {viewOptions.map((option) => (
-                  <Tabs.Trigger
-                    key={option.value}
-                    value={option.value}
-                    className={cn(
-                      'px-3 py-1 text-sm font-medium rounded-md',
-                      viewType === option.value
-                        ? 'bg-base-neutral-700 text-white'
-                        : 'bg-transparent text-gray-500 hover:bg-base-neutral-700/10'
-                    )}
-                  >
-                    {option.label}
-                  </Tabs.Trigger>
-                ))}
-              </Tabs.List>
-            </Tabs.Root>
-
-          </div> */}
           <div className="flex space-x-2">
             {viewOptions.map((option) => (
               <Button
@@ -114,10 +79,10 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
                 onClick={() => handleViewTypeChange(option.value)}
                 variant={viewType === option.value ? 'primary' : 'secondary'}
                 text={option.label}
-                size='medium'
+                size="medium"
               />
             ))}
-          </div>  
+          </div>
         </div>
       </div>
     </div>
