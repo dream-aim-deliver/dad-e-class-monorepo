@@ -47,10 +47,6 @@ const meta: Meta<typeof Calendar> = {
       action: 'addEvent',
       description: 'Callback for adding a new event.',
     },
-    onUpdateEvent: {
-      action: 'updateEvent',
-      description: 'Callback for updating an existing event.',
-    },
     onEventDrop: {
       action: 'eventDrop',
       description: 'Callback for dragging and dropping an event.',
@@ -164,7 +160,7 @@ export const Default: StoryObj<typeof Calendar> = {
     yourMeetings: mockYourMeetings,
     availableCoachingSessionsData: mockCoachingSessions,
     onAddEvent: (event) => console.log('Add Event:', event),
-    onUpdateEvent: (event) => console.log('Update Event:', event),
+   
     onEventDrop: (event) => console.log('Event Dropped:', event),
   },
   parameters: {
@@ -185,7 +181,7 @@ export const MonthView: StoryObj<typeof Calendar> = {
     yourMeetings: mockYourMeetings,
     availableCoachingSessionsData: mockCoachingSessions,
     onAddEvent: (event) => console.log('Add Event:', event),
-    onUpdateEvent: (event) => console.log('Update Event:', event),
+   
     onEventDrop: (event) => console.log('Event Dropped:', event),
     // initialView: 'dayGridMonth', // Removed as it is not a valid property
   },
@@ -206,7 +202,7 @@ export const Empty: StoryObj<typeof Calendar> = {
     yourMeetings: [],
     availableCoachingSessionsData: [],
     onAddEvent: (event) => console.log('Add Event:', event),
-    onUpdateEvent: (event) => console.log('Update Event:', event),
+   
     onEventDrop: (event) => console.log('Event Dropped:', event),
   },
   parameters: {
@@ -264,7 +260,7 @@ export const CustomEvents: StoryObj<typeof Calendar> = {
       },
     ],
     onAddEvent: (event) => console.log('Add Event:', event),
-    onUpdateEvent: (event) => console.log('Update Event:', event),
+   
     onEventDrop: (event) => console.log('Event Dropped:', event),
   },
   parameters: {
@@ -284,7 +280,6 @@ export const Interactive: StoryObj<typeof Calendar> = {
     yourMeetings: mockYourMeetings,
     availableCoachingSessionsData: mockCoachingSessions,
     onAddEvent: (event) => alert(`Added Event: ${event.title}`),
-    onUpdateEvent: (event) => alert(`Updated Event: ${event.title}`),
     onEventDrop: (event) =>
       alert(`Dropped Event: ${event.title} to ${new Date(event.start).toLocaleString()}`),
   },
