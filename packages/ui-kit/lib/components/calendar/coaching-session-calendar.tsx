@@ -4,15 +4,15 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { CalendarHeader } from './calendar-header';
-import { Event, EventModal, EventContent } from './event';
+import { EventContent, Event } from './event';
 import { calendarStyles } from './calendar-styles';
+import { ScheduleSession } from './schedule-session';
 
 type CalendarProps = {
   events: Event[];
   coachAvailability: Event[];
   yourMeetings: Event[];
   onAddEvent?: (event: Event) => void;
-  onUpdateEvent?: (event: Event) => void;
   onEventDrop?: (event: Event) => void;
   availableCoachingSessionsData?: { title: string; time: number; numberOfSessions: number }[];
 };
@@ -34,19 +34,16 @@ const Calendar: React.FC<CalendarProps> = ({
   coachAvailability,
   yourMeetings,
   onAddEvent,
-  onUpdateEvent,
   onEventDrop,
 }) => {
   const [viewType, setViewType] = useState('timeGridWeek');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [newEvent, setNewEvent] = useState({
-    title: '',
-    description: '',
-    start: '',
-    end: '',
-    attendees: '',
-  });
+  const [isScheduleSessionOpen, setIsScheduleSessionOpen] = useState(false);
+  const [scheduleSessionData, setScheduleSessionData] = useState<{
+    date: Date;
+    time: string;
+    title: string;
+    sessionId?: string;
+  } | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const calendarRef = useRef<FullCalendar>(null);
@@ -67,33 +64,6 @@ const Calendar: React.FC<CalendarProps> = ({
       else calendarApi.today();
       setCurrentDate(calendarApi.getDate());
     }
-  };
-
-  const handleAddEvent = () => {
-    if (!newEvent.title || !newEvent.start || !newEvent.end) {
-      alert('Please fill in all required fields');
-      return;
-    }
-
-    const eventId = selectedEvent?.id || Date.now().toString();
-    const formattedEvent: Event = {
-      id: eventId,
-      title: newEvent.title,
-      description: newEvent.description,
-      start: new Date(newEvent.start).toISOString(),
-      end: new Date(newEvent.end).toISOString(),
-      attendees: newEvent.attendees,
-    };
-
-    if (selectedEvent) {
-      onUpdateEvent?.(formattedEvent);
-    } else {
-      onAddEvent?.(formattedEvent);
-    }
-
-    setNewEvent({ title: '', description: '', start: '', end: '', attendees: '' });
-    setSelectedEvent(null);
-    setIsModalOpen(false);
   };
 
   const handleEventDrop = (info: any) => {
@@ -121,21 +91,18 @@ const Calendar: React.FC<CalendarProps> = ({
     const [hours, minutes] = duration.split(':').map(Number);
     end.setHours(start.getHours() + hours, start.getMinutes() + minutes);
 
-    const newEvent: Event = {
-      id: Date.now().toString(),
+    setScheduleSessionData({
+      date: start,
+      time: `${start.getHours().toString().padStart(2, '0')}:${start
+        .getMinutes()
+        .toString()
+        .padStart(2, '0')}`,
       title,
-      description: '',
-      start: start.toISOString(),
-      end: end.toISOString(),
-      attendees: '',
-      extendedProps: { numberOfSessions, sessionId },
-    };
+      sessionId,
+    });
+    setIsScheduleSessionOpen(true);
 
-    onAddEvent?.(newEvent);
-
-    window.dispatchEvent(
-      new CustomEvent('sessionDropped', { detail: { sessionId } })
-    );
+    window.dispatchEvent(new CustomEvent('sessionDropped', { detail: { sessionId } }));
   };
 
   const handleDatesSet = (dateInfo: any) => {
@@ -147,6 +114,29 @@ const Calendar: React.FC<CalendarProps> = ({
     ...coachAvailability.map((event) => ({ ...event, isCoachAvailability: true })),
     ...yourMeetings.map((event) => ({ ...event, isYourMeeting: true })),
   ];
+
+  const handleSendRequest = () => {
+    if (!scheduleSessionData) return;
+
+    const { date, time, title, sessionId } = scheduleSessionData;
+    const [hours, minutes] = time.split(':').map(Number);
+    const start = new Date(date);
+    start.setHours(hours, minutes);
+    const end = new Date(start);
+    end.setHours(hours + 1, minutes);
+
+    const newEvent: Event = {
+      id: Date.now().toString(),
+      title,
+      start: start.toISOString(),
+      end: end.toISOString(),
+      extendedProps: { sessionId },
+    };
+
+    onAddEvent?.(newEvent);
+    setIsScheduleSessionOpen(false);
+    setScheduleSessionData(null);
+  };
 
   return (
     <div className="w-full bg-card-fill">
@@ -160,53 +150,20 @@ const Calendar: React.FC<CalendarProps> = ({
       />
       <div className="w-full max-w-full p-4">
         <style>{calendarStyles}</style>
-        <div className="h-[920px] overflow-hidden rounded-md border border-divider  shadow-md">
+        <div className="h-[920px] overflow-hidden rounded-md border border-divider shadow-md"> 
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={viewType}
             headerToolbar={false}
             editable={true}
-            selectable={true}
-            selectMirror={true}
+            selectable={false}
+            selectMirror={false}
             dayMaxEvents={true}
             weekends={true}
             events={allEvents}
             datesSet={handleDatesSet}
-            select={(info) => {
-              setNewEvent({
-                title: '',
-                description: '',
-                start: info.startStr,
-                end: info.endStr,
-                attendees: '',
-              });
-              setSelectedEvent(null);
-              setIsModalOpen(true);
-            }}
-            eventContent={(eventInfo) => (
-              <EventContent
-                eventInfo={eventInfo}
-                onClick={() => {
-                  setSelectedEvent({
-                    id: eventInfo.event.id,
-                    title: eventInfo.event.title,
-                    description: eventInfo.event.extendedProps.description || '',
-                    start: eventInfo.event.start.toISOString(),
-                    end: eventInfo.event.end.toISOString(),
-                    attendees: eventInfo.event.extendedProps.attendees || '',
-                  });
-                  setNewEvent({
-                    title: eventInfo.event.title,
-                    description: eventInfo.event.extendedProps.description || '',
-                    start: eventInfo.event.start.toISOString(),
-                    end: eventInfo.event.end.toISOString(),
-                    attendees: eventInfo.event.extendedProps.attendees || '',
-                  });
-                  setIsModalOpen(true);
-                }}
-              />
-            )}
+            eventContent={(eventInfo) => <EventContent eventInfo={eventInfo} />}
             eventDrop={handleEventDrop}
             droppable={true}
             drop={handleExternalDrop}
@@ -234,18 +191,38 @@ const Calendar: React.FC<CalendarProps> = ({
           />
         </div>
       </div>
-      <EventModal
-        isOpen={isModalOpen}
-        selectedEvent={selectedEvent}
-        newEvent={newEvent}
-        setNewEvent={setNewEvent}
-        onClose={() => {
-          setIsModalOpen(false);
-          setNewEvent({ title: '', description: '', start: '', end: '', attendees: '' });
-          setSelectedEvent(null);
-        }}
-        onSave={handleAddEvent}
-      />
+      {isScheduleSessionOpen && scheduleSessionData && (
+        <div className="fixed inset-0 flex items-center justify-center bg-transparent bg-opacity-10 z-50 backdrop-blur-xs">
+          <div className="bg-card-fill p-6 rounded-md border border-card-stroke max-w-[320px] w-full ">
+            <ScheduleSession
+              user="student"
+              isError={false}
+              groupSession={true}
+              coachName="John Doe"
+              groupName="Group A"
+              courseTitle="Course Title"
+              course={true}
+              dateValue={scheduleSessionData.date}
+              timeValue={scheduleSessionData.time}
+              sessionName={scheduleSessionData.title}
+              onDateChange={(value) =>
+                setScheduleSessionData((prev) =>
+                  prev ? { ...prev, date: new Date(value) } : prev
+                )
+              }
+              onTimeChange={(value) =>
+                setScheduleSessionData((prev) => (prev ? { ...prev, time: value } : prev))
+              }
+              onClickDiscard={() => {
+                setIsScheduleSessionOpen(false);
+                setScheduleSessionData(null);
+              }}
+              onClickSendRequest={handleSendRequest}
+              locale="en"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 export const calendarStyles = `
   .fc-daygrid-day {
-    border-color: #white !important;
+    color: white !important;
   }
   .fc-timegrid-slot, .fc-timegrid-col {
     border-color: var(--color-divider) !important;
@@ -22,10 +22,6 @@ export const calendarStyles = `
   .fc-col-header-cell:first-child {
     background-color: var(--color-input-stroke) !important;
     border-color: var(--color-divider) !important;
-  }
-  .fc-daygrid-day {
-    border-color: white !important;
-    color: white !important;
   }
   .fc-timegrid-axis.fc-scrollgrid-shrink {
     background-color: #1C1917 !important;
@@ -66,6 +62,7 @@ export const calendarStyles = `
   .fc-event {
     border: none !important;
     padding: 0 !important;
+    background-color: transparent !important;
   }
   .fc-day-today {
     background-color: var(--color-base-neutral-800) !important;
