@@ -102,7 +102,7 @@ export function ImageUploader({
   className,
   onImageUpload,
   text,
-  maxSize
+  maxSize=5
 }: ImageUploaderProps) {
   const handleDownload = (file: File) => {
     const url = URL.createObjectURL(file);
