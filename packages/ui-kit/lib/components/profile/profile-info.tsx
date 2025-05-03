@@ -4,7 +4,7 @@ import { Button } from '../button';
 import { CheckBox } from '../checkbox';
 import { profile } from '@maany_shr/e-class-models';
 import { TextInput } from '../text-input';
-import { UploadedImage } from '../drag&drop/uploaded-image';
+import { ImageUploader } from '../drag&drop/image-uploader';
 import { LanguageSelector } from '../language-selector';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { language } from '@maany_shr/e-class-models';
@@ -67,10 +67,10 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
         isRepresentingCompany: initialData?.isRepresentingCompany ?? false,
         ...(initialData?.isRepresentingCompany
           ? {
-              representingCompanyName: initialData.representingCompanyName,
-              representedCompanyUID: initialData.representedCompanyUID,
-              representedCompanyAddress: initialData.representedCompanyAddress,
-            }
+            representingCompanyName: initialData.representingCompanyName,
+            representedCompanyUID: initialData.representedCompanyUID,
+            representedCompanyAddress: initialData.representedCompanyAddress,
+          }
           : {}),
       }) as profile.TPersonalProfile,
   );
@@ -128,11 +128,11 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           {dictionary.components.profileInfo.title}
         </h1>
         <TextInput
-        
+
           label={dictionary.components.profileInfo.name}
           inputField={{
             id: 'name',
-            className:"w-full",
+            className: "w-full",
             value: formData.name,
             setValue: (value) => handleChange('name', value),
             inputText: dictionary.components.profileInfo.namePlaceholder,
@@ -142,7 +142,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.surname}
           inputField={{
             id: 'surname',
-            className:"w-full",
+            className: "w-full",
             value: formData.surname,
             setValue: (value) => handleChange('surname', value),
             inputText: dictionary.components.profileInfo.surnamePlaceholder,
@@ -152,7 +152,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.email}
           inputField={{
             id: 'email',
-            className:"w-full",
+            className: "w-full",
             value: formData.email,
             setValue: (value) => handleChange('email', value),
             inputText: dictionary.components.profileInfo.emailPlaceholder,
@@ -162,7 +162,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.phoneNumber}
           inputField={{
             id: 'phone',
-            className:"w-full",
+            className: "w-full",
             value: formData.phoneNumber || '',
             setValue: (value) => handleChange('phoneNumber', value),
             inputText: dictionary.components.profileInfo.phoneNumberPlaceholder,
@@ -172,7 +172,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.password}
           inputField={{
             id: 'password',
-            className:"w-full",
+            className: "w-full",
             value: formData.phoneNumber || '',
             setValue: (value) => handleChange('phoneNumber', value),
             inputText: dictionary.components.profileInfo.password,
@@ -247,9 +247,10 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             {' '}
             {dictionary.components.profileInfo.profilePicture}{' '}
           </p>
-          <UploadedImage
+          <ImageUploader
             files={files}
             className="w-full"
+            maxSize={5}
             onUpload={handleUploadedFiles}
             handleDelete={handleDelete}
             text={dictionary.components.dragDrop}

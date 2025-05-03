@@ -6,7 +6,7 @@ import { TextInput } from '../text-input';
 import { InputField } from '../input-field';
 import { TextAreaInput } from '../text-areaInput';
 import { CheckBox } from '../checkbox';
-import { UploadedFile } from '../drag&drop/uploaded-file';
+import { FileUploader } from '../drag&drop/file-uploader';
 import { IconPlus } from '../icons/icon-plus';
 import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
@@ -157,7 +157,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <TextInput
             label={dictionary.components.professionalInfo.linkedinUrl}
             inputField={{
-              className:"w-full",
+              className: "w-full",
               value: formData.linkedinUrl ? formData.linkedinUrl : '',
               setValue: (value) => handleChange('linkedinUrl', value),
               inputText:
@@ -170,10 +170,11 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             {' '}
             {dictionary.components.professionalInfo.curriculumVitae}
           </p>
-          <UploadedFile
+          <FileUploader
             text={dictionary.components.dragDrop}
             files={files}
             className="w-full"
+            maxSize={5}
             onUpload={handleUploadedFiles}
             handleDelete={handleDelete}
           />
@@ -185,7 +186,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             inputField={{
               value: formData.portfolioWebsite ? formData.portfolioWebsite : '',
               setValue: (value) => handleChange('portfolioWebsite', value),
-              className:"w-full",
+              className: "w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .portfolioWebsitePlaceholder,
@@ -201,7 +202,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 ? formData.associatedCompanyName
                 : '',
               setValue: (value) => handleChange('associatedCompanyName', value),
-              className:"w-full",
+              className: "w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .associatedCompanyPlaceholder,
@@ -217,7 +218,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 ? formData.associatedCompanyRole
                 : '',
               setValue: (value) => handleChange('associatedCompanyRole', value),
-              className:"w-full",
+              className: "w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .associatedCompanyIndustryPlaceholder,
@@ -236,7 +237,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 : '',
               setValue: (value) =>
                 handleChange('associatedCompanyIndustry', value),
-              className:"w-full",
+              className: "w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .associatedCompanyPlaceholder,
