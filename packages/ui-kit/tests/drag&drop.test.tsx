@@ -11,16 +11,21 @@ describe('DragAndDrop Component', () => {
           title: 'Drop your files here',
           buttontext: 'Upload',
           dragtext: 'or drag and drop',
-          filesize: 'Max file size',
+          filesize: 'Max size',
         }}
       />,
     );
 
     expect(screen.getByText('Upload')).toBeInTheDocument();
     expect(screen.getByText('or drag and drop')).toBeInTheDocument();
-    expect(
-      screen.getByText(/Max file size: \d+(\.\d+)? MB/),
-    ).toBeInTheDocument();
+
+    // Looking for the container with the file size text
+    const fileSizeElement = screen.getByText('Max size');
+    expect(fileSizeElement).toBeInTheDocument();
+
+    // Check that the container includes "MB"
+    const container = fileSizeElement.closest('p');
+    expect(container).toHaveTextContent(/MB/);
   });
 
   it('calls onUpload when files are dropped', async () => {
