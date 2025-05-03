@@ -94,7 +94,7 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
             <p className="text-sm text-text-primary">{text?.dragtext}</p>
           </div>
           <p className="text-xs text-text-secondary flex items-start">
-            Max size: {maxSize/(1024*1024)} MB
+            <span>{text.filesize}</span>: {maxSize/(1024*1024)} MB
           </p>
         </div>
       </div>
