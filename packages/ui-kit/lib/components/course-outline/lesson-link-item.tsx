@@ -64,7 +64,7 @@ export const LessonLinkItem: FC<LessonLinkItemProps> = ({
     onClick,
     locale
 }) => {
-    const disctionary = getDictionary(locale);
+    const dictionary = getDictionary(locale);
     return (
         <div 
             className="flex items-center p-2 gap-2 w-full hover:bg-base-neutral-800 rounded-medium cursor-pointer" 
@@ -75,7 +75,14 @@ export const LessonLinkItem: FC<LessonLinkItemProps> = ({
             <p className={cn('text-xs' , isActive ? 'text-action-default' : 'text-text-primary')}>
                 {lessonNumber}.
             </p>
-            <p title={lessonTitle} className={cn('text-sm line-clamp-1' ,  isActive ? 'text-action-default font-bold' : 'text-text-primary')}>
+            <p 
+                title={lessonTitle}
+                className={cn(
+                    'text-sm truncate flex-1',
+                    'break-all', // Force mid-word breaks
+                    isActive ? 'text-action-default font-bold' : 'text-text-primary'
+                )}
+            >
                 {lessonTitle}
             </p>
             {isCompleted && (
@@ -87,13 +94,13 @@ export const LessonLinkItem: FC<LessonLinkItemProps> = ({
                 <Badge 
                     variant="info"
                     size="small"
-                    text={disctionary.components.courseOutline.optionalText}
+                    text={dictionary.components.courseOutline.optionalText}
                 />
             )}
             {isUpdated && (
                 <Badge 
                     size="small"
-                    text={disctionary.components.courseOutline.updatedText}
+                    text={dictionary.components.courseOutline.updatedText}
                     className="bg-action-default"
                 />
             )}

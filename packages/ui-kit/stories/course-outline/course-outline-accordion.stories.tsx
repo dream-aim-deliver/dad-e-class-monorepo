@@ -8,12 +8,12 @@ import {
 import {ModuleHeader} from '../../lib/components/course-outline/module-header';
 import { LessonLink } from '../../lib/components/course-outline/lesson-link';
 import { LessonLinkItem } from '../../lib/components/course-outline/lesson-link-item';
-import { Milestone } from '../../lib/components/milestone';
+import { Milestone } from '../../lib/components/course-outline/milestone';
 import { cn } from '../../lib/utils/style-utils';
 import { FC, useState } from 'react'; 
 
 const meta: Meta = {
-  title: 'Components/CourseOutline/CourseOutlineAccordian',
+  title: 'Components/CourseOutline/CourseOutlineAccordion',
   component: Accordion,
   tags: ['docs'],
   parameters: {
@@ -199,8 +199,8 @@ const modulesData: TAccordionList = {
   ]
 };
 
-// Define the CourseOutlineAccordian component
-const CourseOutlineAccordian: FC<TAccordionList> = ({
+// Define the CourseOutlineAccordion component
+const CourseOutlineAccordion: FC<TAccordionList> = ({
   title,
   modules,
 }) => {
@@ -277,5 +277,5 @@ const CourseOutlineAccordian: FC<TAccordionList> = ({
 };
 
 export const Default: StoryObj = {
-  render: () => <CourseOutlineAccordian {...modulesData} />,
+  render: () => <CourseOutlineAccordion {...modulesData} />,
 };

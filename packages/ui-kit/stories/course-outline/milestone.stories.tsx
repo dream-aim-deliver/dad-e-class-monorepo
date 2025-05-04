@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Milestone } from '../lib/components/milestone';
+import { Milestone } from '../../lib/components/course-outline/milestone';
 
 const meta: Meta<typeof Milestone> = {
   title: 'Components/Milestone',
