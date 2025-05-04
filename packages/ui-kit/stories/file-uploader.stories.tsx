@@ -80,7 +80,7 @@ const Template = (args: TemplateArgs) => {
       setFiles((prev) =>
         prev.map((f) =>
           f.file === file
-            ? { ...f, isUploading: false, fileData: response } // Fixed property name from videoData to fileData
+            ? { ...f, isUploading: false, serverData: response } // Fixed property name from videoData to fileData
             : f,
         ),
       );
