@@ -275,7 +275,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             className="w-full"
             maxSize={5}
             onImageUpload={handleImageUpload}
-            handleDelete={handleDelete}
+            onDelete={handleDelete}
           />
         </div>
 

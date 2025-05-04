@@ -21,7 +21,7 @@ const meta: Meta<typeof FileUploader> = {
       options: ['single', 'multiple'],
       defaultValue: 'multiple',
     },
-    maxFiles: {
+    filesCount: {
       control: { type: 'number', min: 1, max: 10 },
       defaultValue: 5,
     },
@@ -35,7 +35,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 // Define the type for Template args
 type TemplateArgs = {
   type: 'single' | 'multiple';
-  maxFiles: number;
+  filesCount: number;
   locale: 'en' | 'de';
 };
 
@@ -53,7 +53,7 @@ const Template = (args: TemplateArgs) => {
     URL.revokeObjectURL(url);
   };
 
-  const handleDelete = (index: number) => {
+  const onDelete = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -99,11 +99,11 @@ const Template = (args: TemplateArgs) => {
   return (
     <FileUploader
       type={args.type}
-      maxFiles={args.maxFiles}
+      filesCount={args.filesCount}
       locale={args.locale}
       files={files}
       onDownload={(file) => handleDownload(file)}
-      handleDelete={handleDelete}
+      onDelete={onDelete}
       maxSize={5}
       onFileUpload={onFileUpload}
     />
@@ -113,7 +113,7 @@ const Template = (args: TemplateArgs) => {
 export const Default: StoryObj<TemplateArgs> = {
   args: {
     type: 'multiple',
-    maxFiles: 5,
+    filesCount: 5,
     locale: 'en',
   },
   render: (args) => <Template {...args} />,
@@ -122,7 +122,7 @@ export const Default: StoryObj<TemplateArgs> = {
 export const SingleUpload: StoryObj<TemplateArgs> = {
   args: {
     type: 'single',
-    maxFiles: 1,
+    filesCount: 1,
     locale: 'en',
   },
   render: (args) => <Template {...args} />,
@@ -131,7 +131,7 @@ export const SingleUpload: StoryObj<TemplateArgs> = {
 export const GermanLocale: StoryObj<TemplateArgs> = {
   args: {
     type: 'multiple',
-    maxFiles: 5,
+    filesCount: 5,
     locale: 'de',
   },
   render: (args) => <Template {...args} />,
@@ -140,7 +140,7 @@ export const GermanLocale: StoryObj<TemplateArgs> = {
 export const MaxFilesReached: StoryObj<TemplateArgs> = {
   args: {
     type: 'multiple',
-    maxFiles: 2, // Setting a lower value to better demonstrate max files limitation
+    filesCount: 2, // Setting a lower value to better demonstrate max files limitation
     locale: 'en',
   },
   render: (args) => <Template {...args} />,

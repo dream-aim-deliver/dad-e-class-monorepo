@@ -26,7 +26,7 @@ export type ImageUploadedType = {
 interface CommonImageUploaderProps extends isLocalAware{
   files: ImageUploadedType[];
   maxSize?: number;
-  handleDelete: (index: number) => void;
+  onDelete: (index: number) => void;
   onDownload: (file: File) => void;
   className?: string;
   onImageUpload: (fileObject: File) => Promise<ImageUploadResponse>;
@@ -44,7 +44,7 @@ type SingleImageUploaderProps = CommonImageUploaderProps & {
  */
 type MultipleImageUploaderProps = CommonImageUploaderProps & {
   type: 'multiple';
-  maxFiles: number;
+  filesCount: number;
 };
 
 /**
@@ -61,7 +61,7 @@ export type ImageUploaderProps = SingleImageUploaderProps | MultipleImageUploade
  *  - `error`: A boolean indicating if there was an error uploading the file.
  *  - `imageData`: Optional object containing image_id and image_thumbnail_url from server.
  * @param type Determines upload behavior - "single" (default) or "multiple"
- * @param maxFiles Maximum number of files allowed for multiple uploads
+ * @param filesCount Maximum number of files allowed for multiple uploads
  * @param handleDelete Callback function triggered when an image is deleted. Receives the index of the image to delete.
  * @param className Optional additional CSS class names to customize the component's appearance.
  * @param onImageUpload Optional callback for server-side upload. Returns a Promise with image_id and thumbnail URL.
@@ -70,9 +70,9 @@ export type ImageUploaderProps = SingleImageUploaderProps | MultipleImageUploade
  * <ImageUploader
  *   files={files}
  *   type="multiple"
- *   maxFiles={5}
+ *   filesCount={5}
  *   onUpload={handleUpload}
- *   handleDelete={handleDelete}
+ *   onDelete={onDelete}
  *   className="custom-class"
  *   onImageUpload={async (file) => {
  *     const response = await uploadToServer(file);
@@ -88,7 +88,7 @@ export type ImageUploaderProps = SingleImageUploaderProps | MultipleImageUploade
  *     filesize: "Max size",
  *     uploading: "Uploading...",
  *     cancelUpload: "Cancel",
- *     maxFilesReached: "Maximum file limit reached",
+ *     filesCountReached: "Maximum file limit reached",
  *     uploadError: "Failed to upload. Try again."
  *   }}
  * />
@@ -99,7 +99,7 @@ export function ImageUploader(props: ImageUploaderProps) {
     locale,
     files,
     type,
-    handleDelete,
+    onDelete,
     onDownload,
     className,
     onImageUpload,
@@ -107,8 +107,8 @@ export function ImageUploader(props: ImageUploaderProps) {
   } = props;
   
   const dictionary=getDictionary(locale);
-  // Get maxFiles based on type
-  const maxFiles = type === 'multiple' ? props.maxFiles : 1;
+  // Get filesCount based on type
+  const filesCount = type === 'multiple' ? props.filesCount : 1;
   
  
 
@@ -116,14 +116,14 @@ export function ImageUploader(props: ImageUploaderProps) {
   const validFilesCount = files.filter(file => !file.error).length;
   
   // Determine if we should show the drag & drop component
-  const showDragDrop = type === 'multiple' && validFilesCount < maxFiles;
+  const showDragDrop = type === 'multiple' && validFilesCount < filesCount;
   
   // For single type, show drag & drop only if no valid files exist
   const showSingleDragDrop = type === 'single' && validFilesCount === 0;
 
   // Handle upload based on type and call the onImageUpload callback if provided
   const handleImageUpload = async (newFiles: File[]) => {
-    const slotsRemaining = type === 'single' ? (validFilesCount === 0 ? 1 : 0) : (maxFiles - validFilesCount);
+    const slotsRemaining = type === 'single' ? (validFilesCount === 0 ? 1 : 0) : (filesCount - validFilesCount);
     const filesToProcess = newFiles.slice(0, slotsRemaining);
 
     if (filesToProcess.length === 0) return;
@@ -192,7 +192,7 @@ export function ImageUploader(props: ImageUploaderProps) {
                   <Button
                     variant="text"
                     className="px-0"
-                    onClick={() => handleDelete(index)}
+                    onClick={() => onDelete(index)}
                     text={dictionary.components.uploadingSection.cancelUpload}
                   />
                 ) : (
@@ -209,7 +209,7 @@ export function ImageUploader(props: ImageUploaderProps) {
                       styles="text"
                       size="small"
                       title={dictionary.components.uploadingSection.deleteText}
-                      onClick={() => handleDelete(index)}
+                      onClick={() => onDelete(index)}
                     />
                   </div>
                 )}
@@ -233,7 +233,7 @@ export function ImageUploader(props: ImageUploaderProps) {
           maxSize={maxSize*1024*1024 } // Convert MB to bytes
         />
       ) : (
-        type === 'multiple' && validFilesCount >= maxFiles && (
+        type === 'multiple' && validFilesCount >= filesCount && (
           <p className="text-text-secondary text-sm mt-2">
             {dictionary.components.uploadingSection.maxFilesText}
           </p>

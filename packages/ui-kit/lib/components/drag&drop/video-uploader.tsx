@@ -33,7 +33,7 @@ export type VideoType = {
 interface CommonVideoUploaderProps extends isLocalAware {
   files: VideoType[];
   maxSize?: number;
-  handleDelete: (index: number) => void;
+  onDelete: (index: number) => void;
   onDownload: (file: File) => void;
   className?: string;
   onVideoUpload: (fileObject: File) => Promise<VideoUploadResponse>;
@@ -51,7 +51,7 @@ type SingleVideoUploaderProps = CommonVideoUploaderProps & {
  */
 type MultipleVideoUploaderProps = CommonVideoUploaderProps & {
   type: 'multiple';
-  maxFiles: number;
+  filesCount: number;
 };
 
 /**
@@ -69,8 +69,8 @@ export type VideoUploaderProps = SingleVideoUploaderProps | MultipleVideoUploade
  *  - `error`: A boolean indicating if there was an error uploading the file.
  *  - `videoData`: Optional object containing video_id and thumbnail_url from server.
  * @param type Determines upload behavior - "single" (default) or "multiple"
- * @param maxFiles Maximum number of files allowed for multiple uploads (default: 5)
- * @param handleDelete Callback function triggered when a video is deleted. Receives the index of the video to delete.
+ * @param filesCount Maximum number of files allowed for multiple uploads (default: 5)
+ * @param onDelete Callback function triggered when a video is deleted. Receives the index of the video to delete.
  * @param className Optional additional CSS class names to customize the component's appearance.
  * @param onVideoUpload Callback for server-side upload. Returns a Promise with video_id and thumbnail URL.
  * @param maxSize Maximum file size allowed in MB
@@ -79,8 +79,8 @@ export type VideoUploaderProps = SingleVideoUploaderProps | MultipleVideoUploade
  * <VideoUploader
  *   files={videoFiles}
  *   type="multiple"
- *   maxFiles={3}
- *   handleDelete={handleVideoDelete}
+ *   filesCount={3}
+ *   onDelete={handleVideoDelete}
  *   className="custom-class"
  *   onVideoUpload={async (file) => {
  *     const response = await uploadVideoToServer(file);
@@ -90,16 +90,7 @@ export type VideoUploaderProps = SingleVideoUploaderProps | MultipleVideoUploade
  *     };
  *   }}
  *   maxSize={100}
- *   text={{
- *     title: "Drop your videos here",
- *     buttontext: "Choose Videos",
- *     dragtext: "or drag and drop videos here",
- *     filesize: "Max size",
- *     uploading: "Uploading...",
- *     cancelUpload: "Cancel",
- *     maxFilesReached: "Maximum of 3 videos reached",
- *     uploadError: "Failed to upload. Try again."
- *   }}
+ * 
  * />
  */
 export function VideoUploader(props: VideoUploaderProps) {
@@ -107,7 +98,7 @@ export function VideoUploader(props: VideoUploaderProps) {
     locale,
     files,
     type,
-    handleDelete,
+    onDelete,
     onDownload,
     className,
     onVideoUpload,
@@ -116,16 +107,16 @@ export function VideoUploader(props: VideoUploaderProps) {
   
 
   const dictionary=getDictionary(locale);
-  const maxFiles = type === 'multiple' ? props.maxFiles : 1;
+  const filesCount = type === 'multiple' ? props.filesCount : 1;
   
   
 
   const validFilesCount = files.filter(file => !file.error).length;
-  const showDragDrop = type === 'multiple' && validFilesCount < maxFiles;
+  const showDragDrop = type === 'multiple' && validFilesCount < filesCount;
   const showSingleDragDrop = type === 'single' && validFilesCount === 0;
 
   const handleFileUpload = async (newFiles: File[]) => {
-    const slotsRemaining = type === 'single' ? (validFilesCount === 0 ? 1 : 0) : (maxFiles - validFilesCount);
+    const slotsRemaining = type === 'single' ? (validFilesCount === 0 ? 1 : 0) : (filesCount - validFilesCount);
     const filesToProcess = newFiles.slice(0, slotsRemaining);
 
     if (filesToProcess.length === 0) return;
@@ -188,7 +179,7 @@ export function VideoUploader(props: VideoUploaderProps) {
                   <Button
                     variant="text"
                     className="px-0"
-                    onClick={() => handleDelete(index)}
+                    onClick={() => onDelete(index)}
                     text={dictionary.components.uploadingSection.cancelUpload}
                   />
                 ) : (
@@ -205,7 +196,7 @@ export function VideoUploader(props: VideoUploaderProps) {
                       styles="text"
                       size="small"
                       title={dictionary.components.uploadingSection.deleteText}
-                      onClick={() => handleDelete(index)}
+                      onClick={() => onDelete(index)}
                     />
                   </div>
                 )}
@@ -228,7 +219,7 @@ export function VideoUploader(props: VideoUploaderProps) {
           maxSize={maxSize * 1024 * 1024}
         />
       ) : (
-        type === 'multiple' && validFilesCount >= maxFiles && (
+        type === 'multiple' && validFilesCount >= filesCount && (
           <p className="text-text-secondary text-sm mt-2">
             {dictionary.components.uploadingSection.maxFilesText}
           </p>
