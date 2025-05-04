@@ -9,10 +9,10 @@ export type DragAndDropProps = {
   className?: string;
   acceptedFileTypes?: string[];
   text: {
-    title?: string;
-    buttontext?: string;
-    dragtext?: string;
-    filesize?: string;
+  title: string;
+  description: string;
+  maxSizeText: string;
+
   };
 };
 
@@ -90,11 +90,11 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
         <IconCloudUpload classNames="w-6 h-6 text-base-neutral-50 font-bold" />
         <div className="flex flex-col gap-1 items-center justify-center">
           <div className="flex gap-2 items-center justify-center">
-            <Button variant="text" text={text?.buttontext} className="px-0" />
-            <p className="text-sm text-text-primary">{text?.dragtext}</p>
+            <Button variant="text" text={text.title} className="px-0" />
+            <p className="text-sm text-text-primary">{text.description}</p>
           </div>
           <p className="text-xs text-text-secondary flex items-start">
-            <span>{text.filesize}</span>: {maxSize/(1024*1024)} MB
+            <span>{text.maxSizeText}</span>: {maxSize/(1024*1024)} MB
           </p>
         </div>
       </div>

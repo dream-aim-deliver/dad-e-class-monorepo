@@ -6,7 +6,7 @@ import { TextInput } from '../text-input';
 import { InputField } from '../input-field';
 import { TextAreaInput } from '../text-areaInput';
 import { CheckBox } from '../checkbox';
-import { FileUploader } from '../drag&drop/file-uploader';
+import { FileUploader, UploadResponse } from '../drag&drop/file-uploader';
 import { IconPlus } from '../icons/icon-plus';
 import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
@@ -93,25 +93,43 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     e.preventDefault();
     onSave?.(formData);
   };
-  const handleUploadedFiles = (uploadedFiles: File[]) => {
-    const filesWithStatus = uploadedFiles.map((file: any) => ({
-      file,
-      isUploading: true,
-    }));
+  const handleUploadedFiles =async (file: File): Promise<UploadResponse> => {
+    try {
+      // First add the file to the state with isUploading=true
+      const newFile = {
+        file,
+        isUploading: true,
+        error: false,
+      };
 
-    setFiles((prevFiles: any) => [...prevFiles, ...filesWithStatus]);
+      setFiles((prev) => [...prev, newFile]);
+      const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+      // Simulate upload delay
+      await sleep(1500);
 
-    setTimeout(() => {
-      setFiles((prevFiles: any[]) =>
-        prevFiles.map((f) =>
-          filesWithStatus.some(
-            (newFile: { file: any }) => newFile.file === f.file,
-          )
-            ? { ...f, isUploading: false }
+      const response: UploadResponse = {
+        file_id: Math.random().toString(36).substr(2, 9),
+        file_name: file.name
+      };
+
+      // Update the file state after upload completes
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.file === file
+            ? { ...f, isUploading: false, fileData: response } // Fixed property name from videoData to fileData
             : f,
         ),
       );
-    }, 2000);
+
+      return response;
+    } catch (e) {
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.file === file ? { ...f, isUploading: false, error: true } : f,
+        ),
+      );
+      throw e;
+    }
   };
   const handleDelete = (index: number) => {
     setFiles((prevFiles: any[]) => prevFiles.filter((f, i) => i !== index));
@@ -171,11 +189,15 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             {dictionary.components.professionalInfo.curriculumVitae}
           </p>
           <FileUploader
-            text={dictionary.components.dragDrop}
+            onDownload={() => {
+              // Handle download logic here
+            }}
+            type="single"
+            locale={locale}
             files={files}
             className="w-full"
             maxSize={5}
-            onUpload={handleUploadedFiles}
+            onFileUpload={handleUploadedFiles}
             handleDelete={handleDelete}
           />
         </div>

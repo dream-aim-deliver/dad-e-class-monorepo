@@ -11,6 +11,11 @@ const meta: Meta<typeof VideoUploader> = {
   component: VideoUploader,
   tags: ['autodocs'],
   argTypes: {
+    locale: {
+      control: 'select',
+      options: ['en', 'de'],
+      defaultValue: 'en',
+    },
     type: {
       control: 'radio',
       options: ['single', 'multiple'],
@@ -27,32 +32,43 @@ export default meta;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const Template = (args: { type: 'single' | 'multiple'; maxFiles: number }) => {
-  const { type = 'multiple', maxFiles = 5 } = args || {};
-  
+// Define the type for the Template args
+type TemplateArgs = {
+  type: 'single' | 'multiple';
+  maxFiles: number;
+  locale: 'en' | 'de';
+};
+
+const Template = (args: TemplateArgs) => {
   const [files, setFiles] = useState<VideoType[]>([]);
-
-  const handleUpload = (newFiles: File[]) => {
-    const allowed = Math.max(0, maxFiles - files.length);
-    const limitedFiles = newFiles.slice(0, allowed);
-
-    const updatedFiles = limitedFiles.map((file) => ({
-      file,
-      isUploading: true,
-      error: false,
-    }));
-
-    setFiles((prev) => [...prev, ...updatedFiles]);
-
-    limitedFiles.forEach(onVideoUpload);
-  };
 
   const handleDelete = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const handleDownload = (file: File) => {
+    const url = URL.createObjectURL(file);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const onVideoUpload = async (file: File): Promise<VideoUploadResponse> => {
     try {
+      // First add the file to the state with isUploading=true
+      const newFile = {
+        file,
+        isUploading: true,
+        error: false,
+      };
+
+      setFiles((prev) => [...prev, newFile]);
+
+      // Simulate upload delay
       await sleep(1500);
 
       const response: VideoUploadResponse = {
@@ -60,6 +76,7 @@ const Template = (args: { type: 'single' | 'multiple'; maxFiles: number }) => {
         thumbnail_url: URL.createObjectURL(file),
       };
 
+      // Update the file state after upload completes
       setFiles((prev) =>
         prev.map((f) =>
           f.file === file
@@ -81,34 +98,42 @@ const Template = (args: { type: 'single' | 'multiple'; maxFiles: number }) => {
 
   return (
     <VideoUploader
-      {...args}
+      type={args.type}
+      maxFiles={args.maxFiles}
+      locale={args.locale}
       files={files}
-      onUpload={handleUpload}
+      onDownload={(file) => handleDownload(file)}
       handleDelete={handleDelete}
       maxSize={50}
       onVideoUpload={onVideoUpload}
-      text={{
-        title: 'Drop your videos here',
-        buttontext: 'Choose Videos',
-        dragtext: 'or drag and drop videos here',
-        filesize: 'Max size',
-        uploading: 'Uploading...',
-        cancelUpload: 'Cancel',
-        maxFilesReached: 'Maximum file limit reached',
-        uploadError: 'Upload failed. Try again.',
-      }}
     />
   );
 };
 
-export const Default: StoryObj = {
-  render: (args) => <Template maxFiles={5} type='multiple' />,
+// Define your stories using the Template
+export const Default: StoryObj<TemplateArgs> = {
+  args: {
+    type: 'multiple',
+    maxFiles: 5,
+    locale: 'en',
+  },
+  render: (args) => <Template {...args} />,
 };
 
-export const SingleUpload: StoryObj = {
-  render: (args) => <Template type='single' maxFiles={1} />,
+export const SingleUpload: StoryObj<TemplateArgs> = {
+  args: {
+    type: 'single',
+    maxFiles: 1,
+    locale: 'en',
+  },
+  render: (args) => <Template {...args} />,
 };
 
-export const MaxFilesReached: StoryObj = {
-  render: (args) => <Template maxFiles={5} type='multiple' />,
+export const GermanLocale: StoryObj<TemplateArgs> = {
+  args: {
+    type: 'multiple',
+    maxFiles: 5,
+    locale: 'de',
+  },
+  render: (args) => <Template {...args} />,
 };
