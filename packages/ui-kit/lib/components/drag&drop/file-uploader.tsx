@@ -7,7 +7,6 @@ import { IconCloudDownload } from '../icons/icon-cloud-download';
 import { IconTrashAlt } from '../icons/icon-trash-alt';
 import { IconFile } from '../icons/icon-file';
 import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
-import { useCallback } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 /**
@@ -33,8 +32,8 @@ export type FileUploaderType = {
  */
 interface  CommonFileUploaderProps extends isLocalAware {
   files: FileUploaderType[];
-  maxSize?: number;
-  handleDelete: (index: number) => void;
+  maxSize: number;
+  onDelete: (index: number) => void;
   onDownload: (file: File) => void;
   className?: string;
   onFileUpload: (fileObject: File) => Promise<UploadResponse>;
@@ -52,7 +51,7 @@ type SingleFileUploaderProps = CommonFileUploaderProps & {
  */
 type MultipleFileUploaderProps = CommonFileUploaderProps & {
   type: 'multiple';
-  maxFiles: number;
+  filesCount: number;
 };
 
 /**
@@ -70,9 +69,9 @@ export type FileUploaderProps = SingleFileUploaderProps | MultipleFileUploaderPr
  *  - `error`: A boolean indicating if there was an error uploading the file.
  *  - `serverData`: Optional object containing file_id and file_name from server.
  * @param type Determines upload behavior - "single" (default) or "multiple"
- * @param maxFiles Maximum number of files allowed for multiple uploads (default: 5)
+ * @param filesCount Maximum number of files allowed for multiple uploads (default: 5)
  * @param maxSize Maximum file size allowed in MB (default: 5)
- *  @param handleDelete Callback function triggered when a file is deleted. Receives the index of the file to delete.
+ *  @param onDelete Callback function triggered when a file is deleted. Receives the index of the file to delete.
  * @param className Optional additional CSS class names to customize the component's appearance.
  * @param onFileUpload Optional callback for server-side upload. Returns a Promise with file_id and file_name. If not provided, only the onUpload callback will be used.
  *
@@ -80,10 +79,10 @@ export type FileUploaderProps = SingleFileUploaderProps | MultipleFileUploaderPr
  * <FileUploader
  *   files={documentFiles}
  *   type="multiple"
- *   maxFiles={10}
+ *   filesCount={10}
  *   maxSize={10}
  *   onUpload={handleFileUpload}
- *   handleDelete={handleFileDelete}
+ *   onDelete={handleFileDelete}
  *   className="custom-class"
  *   onFileUpload={async (file) => {
  *     const response = await uploadFileToServer(file);
@@ -92,16 +91,7 @@ export type FileUploaderProps = SingleFileUploaderProps | MultipleFileUploaderPr
  *       file_name: response.name 
  *     };
  *   }}
- *   text={{
- *     title: "Drop your documents here",
- *     buttontext: "Choose Files",
- *     dragtext: "or drag and drop PDF files here",
- *     filesize: "Max size",
- *     uploading: "Uploading...",
- *     cancelUpload: "Cancel",
- *     maxFilesReached: "Maximum of 10 files reached",
- *     uploadError: "Failed to upload. Try again."
- *   }}
+ *  
  * />
  */
 export function FileUploader(props: FileUploaderProps) {
@@ -109,25 +99,25 @@ export function FileUploader(props: FileUploaderProps) {
     locale,
     files,
     type,
-    handleDelete,
+    onDelete,
     onDownload,
     className,
     onFileUpload,
-    maxSize = 5
+    maxSize
   } = props;
   const dictionary = getDictionary(locale);
-  const maxFiles = type === 'multiple' ? props.maxFiles : 1;
+  const filesCount = type === 'multiple' ? props.filesCount : 1;
   const validFilesCount = files.filter((f) => !f.error).length;
-  const showDrop = (type === 'multiple' && validFilesCount < maxFiles) || (type === 'single' && validFilesCount === 0);
+  const showDrop = (type === 'multiple' && validFilesCount < filesCount) || (type === 'single' && validFilesCount === 0);
 
 
 
   const handleFileUpload =async (newFiles: File[]) => {
-    const slotsRemaining = type === 'single' ? (validFilesCount === 0 ? 1 : 0) : (maxFiles - validFilesCount);
+    const slotsRemaining = type === 'single' ? (validFilesCount === 0 ? 1 : 0) : (filesCount - validFilesCount);
     const filesToProcess = newFiles.slice(0, slotsRemaining);
 
     if (filesToProcess.length === 0) return;
-    
+
     try {
       for (const file of filesToProcess) {
         const updatedFileData = await onFileUpload(file);
@@ -170,7 +160,7 @@ export function FileUploader(props: FileUploaderProps) {
                 <Button
                   variant="text"
                   className="px-0"
-                  onClick={() => handleDelete(index)}
+                  onClick={() => onDelete(index)}
                   text={dictionary.components.uploadingSection.cancelUpload}
                 />
               ) : (
@@ -187,7 +177,7 @@ export function FileUploader(props: FileUploaderProps) {
                     size="small"
                     title={dictionary.components.uploadingSection.deleteText}
                     styles="text"
-                    onClick={() => handleDelete(index)}
+                    onClick={() => onDelete(index)}
                   />
                 </div>
               )}
@@ -210,7 +200,7 @@ export function FileUploader(props: FileUploaderProps) {
         />
       )}
 
-      {!showDrop && type === 'multiple' && validFilesCount >= maxFiles && (
+      {!showDrop && type === 'multiple' && validFilesCount >= filesCount && (
         <p className="text-xs text-warning mt-2">{dictionary.components.uploadingSection.maxFilesText}</p>
       )}
     </div>

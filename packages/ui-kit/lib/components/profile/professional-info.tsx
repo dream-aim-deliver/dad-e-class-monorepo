@@ -198,7 +198,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             className="w-full"
             maxSize={5}
             onFileUpload={handleUploadedFiles}
-            handleDelete={handleDelete}
+            onDelete={handleDelete}
           />
         </div>
 
