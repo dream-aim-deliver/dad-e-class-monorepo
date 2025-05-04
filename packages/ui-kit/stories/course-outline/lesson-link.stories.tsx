@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { LessonLink } from '../../lib/components/course-outline/lesson-link';
 import { LessonLinkItem } from '../../lib/components/course-outline/lesson-link-item';
-import { Milestone } from '../../lib/components/milestone';
+import { Milestone } from '../../lib/components/course-outline/milestone';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 const meta: Meta<typeof LessonLink> = {

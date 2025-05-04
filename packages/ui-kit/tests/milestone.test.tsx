@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { Milestone } from '../lib/components/milestone';
+import { Milestone } from '../lib/components/course-outline/milestone';
 import { vi } from 'vitest';
 
 const mockDictionary = {

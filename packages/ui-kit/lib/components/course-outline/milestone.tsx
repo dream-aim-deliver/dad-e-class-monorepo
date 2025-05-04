@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { IconMilestone } from "./icons/icon-milestone";
+import { IconMilestone } from "../icons/icon-milestone";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
-import { IconCheck } from "./icons/icon-check";
-import { cn } from "../utils/style-utils";
+import { IconCheck } from "../icons/icon-check";
+import { cn } from "../../utils/style-utils";
 
 export interface MilestoneProps extends isLocalAware {
     completed: boolean;
@@ -30,7 +30,7 @@ export const Milestone: FC<MilestoneProps> = ({
     completed,
     locale
 }) => {
-    const disctionary = getDictionary(locale);
+    const dictionary = getDictionary(locale);
     return (
         <div 
             role='milestone-container'
@@ -38,7 +38,7 @@ export const Milestone: FC<MilestoneProps> = ({
         >
             <IconMilestone classNames={cn(`${completed ? 'text-feedback-success-primary' : 'text-text-secondary'}`)} />
             <p className="text-sm font-bold text-text-primary">
-                {disctionary.components.milestone.milestoneText}
+                {dictionary.components.milestone.milestoneText}
             </p>
             {completed && (
                 <IconCheck classNames="text-feedback-success-primary" />
