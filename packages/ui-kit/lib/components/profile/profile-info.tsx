@@ -4,7 +4,7 @@ import { Button } from '../button';
 import { CheckBox } from '../checkbox';
 import { profile } from '@maany_shr/e-class-models';
 import { TextInput } from '../text-input';
-import { ImageUploader } from '../drag&drop/image-uploader';
+import { ImageUploader, ImageUploadResponse } from '../drag&drop/image-uploader';
 import { LanguageSelector } from '../language-selector';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { language } from '@maany_shr/e-class-models';
@@ -84,25 +84,43 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleUploadedFiles = (uploadedFiles: File[]) => {
-    const filesWithStatus = uploadedFiles.map((file: any) => ({
-      file,
-      isUploading: true,
-    }));
+  const handleImageUpload = async (file: File):Promise<ImageUploadResponse> => {
+    try {
+      // First add the file to the state with isUploading=true
+      const newFile = {
+        file,
+        isUploading: true,
+        error: false,
+      };
 
-    setFiles((prevFiles: any) => [...prevFiles, ...filesWithStatus]);
+      setFiles((prev) => [...prev, newFile]);
+      const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+      // Simulate upload delay
+      await sleep(1500);
 
-    setTimeout(() => {
-      setFiles((prevFiles: any[]) =>
-        prevFiles.map((f) =>
-          filesWithStatus.some(
-            (newFile: { file: any }) => newFile.file === f.file,
-          )
-            ? { ...f, isUploading: false }
+      const response: ImageUploadResponse = {
+        image_id: Math.random().toString(36).substr(2, 9),
+        image_thumbnail_url: "https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg"
+      };
+
+      // Update the file state after upload completes
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.file === file
+            ? { ...f, isUploading: false, imageData: response } // Fixed property name from videoData to imageData
             : f,
         ),
       );
-    }, 2000);
+
+      return response;
+    } catch (e) {
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.file === file ? { ...f, isUploading: false, error: true } : f,
+        ),
+      );
+      throw e;
+    }
   };
   const handleDelete = (index: number) => {
     setFiles((prevFiles: any[]) => prevFiles.filter((f, i) => i !== index));
@@ -248,12 +266,16 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             {dictionary.components.profileInfo.profilePicture}{' '}
           </p>
           <ImageUploader
+           type="single"
             files={files}
+            onDownload={() => {
+              // Handle download logic here
+            }}
+            locale={locale}
             className="w-full"
             maxSize={5}
-            onUpload={handleUploadedFiles}
+            onImageUpload={handleImageUpload}
             handleDelete={handleDelete}
-            text={dictionary.components.dragDrop}
           />
         </div>
 

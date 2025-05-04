@@ -5,33 +5,12 @@ import { Button } from '../button';
 import { IconButton } from '../icon-button';
 import { IconCloudDownload } from '../icons/icon-cloud-download';
 import { IconTrashAlt } from '../icons/icon-trash-alt';
-import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
-import { useCallback } from 'react';
+import { IconLoaderSpinner } from '../icons/icon-loader-spinner'
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 export type ImageUploadResponse = {
   image_id: string;
   image_thumbnail_url: string;
-};
-
-export type ImageUploaderProps = {
-  files: ImageUploadedType[];
-  type?: "multiple" | "single";
-  maxFiles?: number;
-  onUpload: (files: File[]) => void;
-  handleDelete: (index: number) => void;
-  className?: string;
-  onImageUpload?: (fileObject: File) => Promise<ImageUploadResponse>;
-  maxSize?: number;
-  text: {
-    title?: string;
-    buttontext?: string;
-    dragtext?: string;
-    filesize?: string;
-    uploading?: string;
-    cancelUpload?: string;
-    maxFilesReached?: string;
-    uploadError?: string;
-  };
 };
 
 export type ImageUploadedType = {
@@ -40,6 +19,38 @@ export type ImageUploadedType = {
   error?: boolean;
   imageData?: ImageUploadResponse;
 };
+
+/**
+ * Common props shared between single and multiple image uploaders
+ */
+interface CommonImageUploaderProps extends isLocalAware{
+  files: ImageUploadedType[];
+  maxSize?: number;
+  handleDelete: (index: number) => void;
+  onDownload: (file: File) => void;
+  className?: string;
+  onImageUpload: (fileObject: File) => Promise<ImageUploadResponse>;
+};
+
+/**
+ * Props specific to single image uploader
+ */
+type SingleImageUploaderProps = CommonImageUploaderProps & {
+  type: 'single';
+};
+
+/**
+ * Props specific to multiple image uploader
+ */
+type MultipleImageUploaderProps = CommonImageUploaderProps & {
+  type: 'multiple';
+  maxFiles: number;
+};
+
+/**
+ * Union type for image uploader props
+ */
+export type ImageUploaderProps = SingleImageUploaderProps | MultipleImageUploaderProps;
 
 /**
  * A reusable component for managing image uploads with support for drag-and-drop, image previews, progress indicators, and deletion.
@@ -51,22 +62,12 @@ export type ImageUploadedType = {
  *  - `imageData`: Optional object containing image_id and image_thumbnail_url from server.
  * @param type Determines upload behavior - "single" (default) or "multiple"
  * @param maxFiles Maximum number of files allowed for multiple uploads
- * @param onUpload Callback function triggered when new images are uploaded. Receives an array of `File` objects.
  * @param handleDelete Callback function triggered when an image is deleted. Receives the index of the image to delete.
  * @param className Optional additional CSS class names to customize the component's appearance.
  * @param onImageUpload Optional callback for server-side upload. Returns a Promise with image_id and thumbnail URL.
- * @param text Object containing customizable text for various parts of the component:
- *  - `title`: Text displayed when dragging images over the drop area.
- *  - `buttontext`: Text for the button in the drag-and-drop area.
- *  - `dragtext`: Instructional text displayed in the drag-and-drop area when no images are uploaded.
- *  - `filesize`: Label for displaying the maximum file size allowed.
- *  - `uploading`: Text displayed while an image is being uploaded.
- *  - `cancelUpload`: Text for the button to cancel an ongoing upload.
- *  - `maxFilesReached`: Text displayed when maximum file limit is reached.
- *  - `uploadError`: Text displayed when there's an error uploading a file.
  *
  * @example
- * <UploadedImage
+ * <ImageUploader
  *   files={files}
  *   type="multiple"
  *   maxFiles={5}
@@ -93,27 +94,23 @@ export type ImageUploadedType = {
  * />
  */
 
-export function ImageUploader({
-  files,
-  type = 'single',
-  maxFiles = 5,
-  onUpload,
-  handleDelete,
-  className,
-  onImageUpload,
-  text,
-  maxSize=5
-}: ImageUploaderProps) {
-  const handleDownload = (file: File) => {
-    const url = URL.createObjectURL(file);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = file.name;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
+export function ImageUploader(props: ImageUploaderProps) {
+  const {
+    locale,
+    files,
+    type,
+    handleDelete,
+    onDownload,
+    className,
+    onImageUpload,
+    maxSize = 5
+  } = props;
+  
+  const dictionary=getDictionary(locale);
+  // Get maxFiles based on type
+  const maxFiles = type === 'multiple' ? props.maxFiles : 1;
+  
+ 
 
   // Count valid files (exclude files with errors)
   const validFilesCount = files.filter(file => !file.error).length;
@@ -125,32 +122,18 @@ export function ImageUploader({
   const showSingleDragDrop = type === 'single' && validFilesCount === 0;
 
   // Handle upload based on type and call the onImageUpload callback if provided
-  const handleFileUpload = async (newFiles: File[]) => {
-    console.log(newFiles);
-    
-    // Calculate how many more files we can accept based on valid files
+  const handleImageUpload = async (newFiles: File[]) => {
     const slotsRemaining = type === 'single' ? (validFilesCount === 0 ? 1 : 0) : (maxFiles - validFilesCount);
-    
-    // Limit the number of files based on type and remaining slots
     const filesToProcess = newFiles.slice(0, slotsRemaining);
+
+    if (filesToProcess.length === 0) return;
     
-    if (filesToProcess.length === 0) return; // No files to process
-    
-    // Call the onUpload callback provided by the parent
-    onUpload(filesToProcess);
-    
-    // If onImageUpload is provided, call it for each file with error handling
-    if (onImageUpload) {
-      try {
-        for (const file of filesToProcess) {
-          const updatedFileData = await onImageUpload(file);
-          console.log('File uploaded successfully:', updatedFileData);
-        }
-      } catch (error) {
-        console.error('Error uploading image:', error);
-        // The error state should be managed in the parent component
-        // since the files state is managed there
+    try {
+      for (const file of filesToProcess) {
+        await onImageUpload(file);
       }
+    } catch (error) {
+      return error;
     }
   };
 
@@ -174,7 +157,7 @@ export function ImageUploader({
                       <div className="w-12 h-12 flex items-center justify-center rounded-medium bg-base-neutral-800 border border-base-neutral-700">
                         <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-primary" />
                       </div>
-                    ) : imageData?.image_thumbnail_url ?(
+                    ) : imageData?.image_thumbnail_url &&(
                       // Use server-provided thumbnail if available
                       <img
                         data-testid="image-preview"
@@ -182,15 +165,9 @@ export function ImageUploader({
                         alt={file.name}
                         className="w-12 h-12 object-cover rounded"
                       />
-                    ) : (
-                      // Otherwise use local object URL
-                      <img
-                        data-testid="image-preview"
-                        src={URL.createObjectURL(file)}
-                        alt={file.name}
-                        className="w-12 h-12 object-cover rounded"
-                      />
-                    )}
+                    )
+                    
+                    }
                   </>
                 )}
 
@@ -203,7 +180,7 @@ export function ImageUploader({
                   </p>
                   <p className="text-text-secondary text-xs flex items-start">
                     {isUploading ? (
-                      <Badge text={text.uploading} />
+                      <Badge text={dictionary.components.uploadingSection.uploadingText} />
                     ) : (
                       <span>{(file.size / (1024 * 1024)).toFixed(2)} MB</span>
                     )}
@@ -216,7 +193,7 @@ export function ImageUploader({
                     variant="text"
                     className="px-0"
                     onClick={() => handleDelete(index)}
-                    text={text.cancelUpload}
+                    text={dictionary.components.uploadingSection.cancelUpload}
                   />
                 ) : (
                   <div className="font-bold flex items-center cursor-pointer">
@@ -224,12 +201,14 @@ export function ImageUploader({
                       icon={<IconCloudDownload />}
                       size="small"
                       styles="text"
-                      onClick={() => handleDownload(file)}
+                      title={dictionary.components.uploadingSection.downloadText}
+                      onClick={() => onDownload(file)}
                     />
                     <IconButton
                       icon={<IconTrashAlt />}
                       styles="text"
                       size="small"
+                      title={dictionary.components.uploadingSection.deleteText}
                       onClick={() => handleDelete(index)}
                     />
                   </div>
@@ -244,15 +223,19 @@ export function ImageUploader({
       {(showDragDrop || showSingleDragDrop) ? (
         <DragAndDrop
           className="w-full"
-          onUpload={handleFileUpload}
+          onUpload={handleImageUpload}
           acceptedFileTypes={['image/*']}
-          text={text}
+          text={{
+            title:dictionary.components.uploadingSection.uploadImage.choseImages,
+            description:dictionary.components.uploadingSection.uploadImage.description,
+            maxSizeText: dictionary.components.uploadingSection.maxSizeText,
+          }}
           maxSize={maxSize*1024*1024 } // Convert MB to bytes
         />
       ) : (
         type === 'multiple' && validFilesCount >= maxFiles && (
           <p className="text-text-secondary text-sm mt-2">
-            {text.maxFilesReached || `Maximum of ${maxFiles} files reached`}
+            {dictionary.components.uploadingSection.maxFilesText}
           </p>
         )
       )}

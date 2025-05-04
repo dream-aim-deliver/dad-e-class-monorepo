@@ -11,6 +11,11 @@ const meta: Meta<typeof FileUploader> = {
   component: FileUploader,
   tags: ['autodocs'],
   argTypes: {
+    locale: {
+      control: 'select',
+      options: ['en', 'de'],
+      defaultValue: 'en',
+    },
     type: {
       control: 'radio',
       options: ['single', 'multiple'],
@@ -27,24 +32,25 @@ export default meta;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const Template = (args: { type: 'single' | 'multiple'; maxFiles: number }) => {
-  const { type = 'multiple', maxFiles = 5 } = args || {};
+// Define the type for Template args
+type TemplateArgs = {
+  type: 'single' | 'multiple';
+  maxFiles: number;
+  locale: 'en' | 'de';
+};
 
+const Template = (args: TemplateArgs) => {
   const [files, setFiles] = useState<FileUploaderType[]>([]);
 
-  const handleUpload = (newFiles: File[]) => {
-    const allowed = Math.max(0, maxFiles - files.length);
-    const limitedFiles = newFiles.slice(0, allowed);
-
-    const updatedFiles = limitedFiles.map((file) => ({
-      file,
-      isUploading: true,
-      error: false,
-    }));
-
-    setFiles((prev) => [...prev, ...updatedFiles]);
-
-    limitedFiles.forEach(onFileUpload);
+  const handleDownload = (file: File) => {
+    const url = URL.createObjectURL(file);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleDelete = (index: number) => {
@@ -53,17 +59,28 @@ const Template = (args: { type: 'single' | 'multiple'; maxFiles: number }) => {
 
   const onFileUpload = async (file: File): Promise<UploadResponse> => {
     try {
+      // First add the file to the state with isUploading=true
+      const newFile = {
+        file,
+        isUploading: true,
+        error: false,
+      };
+
+      setFiles((prev) => [...prev, newFile]);
+
+      // Simulate upload delay
       await sleep(1500);
 
       const response: UploadResponse = {
         file_id: Math.random().toString(36).substr(2, 9),
-        file_name: file.name,
+        file_name: file.name
       };
 
+      // Update the file state after upload completes
       setFiles((prev) =>
         prev.map((f) =>
           f.file === file
-            ? { ...f, isUploading: false, imageData: response }
+            ? { ...f, isUploading: false, fileData: response } // Fixed property name from videoData to fileData
             : f,
         ),
       );
@@ -81,38 +98,50 @@ const Template = (args: { type: 'single' | 'multiple'; maxFiles: number }) => {
 
   return (
     <FileUploader
-      {...args}
+      type={args.type}
+      maxFiles={args.maxFiles}
+      locale={args.locale}
       files={files}
-      onUpload={handleUpload}
+      onDownload={(file) => handleDownload(file)}
       handleDelete={handleDelete}
       maxSize={5}
       onFileUpload={onFileUpload}
-      text={{
-        title: 'Drop your files here',
-        buttontext: 'Choose Files',
-        dragtext: 'or drag and drop file here',
-        filesize: 'Max size',
-        uploading: 'Uploading...',
-        cancelUpload: 'Cancel',
-        maxFilesReached: 'Maximum file limit reached',
-        uploadError: 'Upload failed. Try again.',
-      }}
     />
   );
 };
 
-export const Default: StoryObj = {
-  render: (args) => <Template maxFiles={5} type="multiple" />,
+export const Default: StoryObj<TemplateArgs> = {
+  args: {
+    type: 'multiple',
+    maxFiles: 5,
+    locale: 'en',
+  },
+  render: (args) => <Template {...args} />,
 };
 
-export const SingleUpload: StoryObj = {
+export const SingleUpload: StoryObj<TemplateArgs> = {
   args: {
     type: 'single',
+    maxFiles: 1,
+    locale: 'en',
   },
-
-  render: (args) => <Template type="single" maxFiles={1} />,
+  render: (args) => <Template {...args} />,
 };
 
-export const MaxFilesReached: StoryObj = {
-  render: (args) => <Template maxFiles={5} type="multiple" />,
+export const GermanLocale: StoryObj<TemplateArgs> = {
+  args: {
+    type: 'multiple',
+    maxFiles: 5,
+    locale: 'de',
+  },
+  render: (args) => <Template {...args} />,
+};
+
+export const MaxFilesReached: StoryObj<TemplateArgs> = {
+  args: {
+    type: 'multiple',
+    maxFiles: 2, // Setting a lower value to better demonstrate max files limitation
+    locale: 'en',
+  },
+  render: (args) => <Template {...args} />,
 };

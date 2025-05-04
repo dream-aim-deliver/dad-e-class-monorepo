@@ -278,6 +278,27 @@ export const DE: TDictionary = {
       resumeText: 'Wieder aufnehmen',
       viewProfileText: 'Profil anzeigen',
     },
+    uploadingSection:{
+      maxSizeText:"maximale Größe",
+      uploadingText:"hochladen",
+      cancelUpload:"Hochladen abbrechen",
+      deleteText:"Löschen",
+      downloadText:"Herunterladen",
+      maxFilesText:"Maximale Anzahl an Dateien",
+      uploadImage:{
+        choseImages:"Bilder auswählen",
+        description:"oder ziehen Sie Bilder per Drag & Drop hierher",
+      },
+      uploadFile:{
+        choseFiles:"Dateien auswählen",
+        description:"oder ziehen Sie Dateien per Drag & Drop hierher",
+      },
+      uploadVideo:{
+        choseVideos:"Videos auswählen",
+        description:"oder ziehen Sie Videos per Drag & Drop hierher",
+
+      },
+    }
 },
   pages: {
     home: Home_DE,
