@@ -121,7 +121,6 @@ export function FileUploader(props: FileUploaderProps) {
     try {
       for (const file of filesToProcess) {
         const updatedFileData = await onFileUpload(file);
-        console.log('Video uploaded successfully:', updatedFileData);
       }
     } catch (error) {
       return error
@@ -131,9 +130,9 @@ export function FileUploader(props: FileUploaderProps) {
   return (
     <div>
       <div className={clsx('w-full', className)}>
-        {files.map(({ file, isUploading, error }, index) => (
+        {files.map(({ file, isUploading, error, serverData }, index) => (
           <div key={index} className="rounded flex w-full justify-between items-center py-2">
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-3 items-center w-full">
               <div className="min-w-12 h-12 flex items-center justify-center rounded bg-base-neutral-800 border-base-neutral-700 border">
                 {isUploading ? (
                   <IconLoaderSpinner classNames="w-6 h-6 fill-base-neutral-50 animate-spin" />
@@ -141,10 +140,12 @@ export function FileUploader(props: FileUploaderProps) {
                   <IconFile classNames="fill-text-primary" />
                 )}
               </div>
-              <div className="flex flex-col gap-1">
-                <p className="text-sm text-base-neutral-50 truncate max-w-[200px]" title={file.name}>
-                  {file.name}
-                </p>
+              <div className="flex flex-col gap-1 w-full">
+               {isUploading ?  <div className="h-[1.2rem] w-1/2 bg-divider rounded-small border border-divider animate-pulse bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] bg-[length:200%_100%] bg-no-repeat bg-left">
+                </div>
+                  :<p className="text-sm text-base-neutral-50 truncate max-w-[200px]" title={serverData?.file_name}>
+                  {serverData?.file_name}
+                </p>}
                 <p className="text-text-secondary text-xs flex items-start">
 
                   {isUploading ? (
