@@ -6,23 +6,23 @@ describe('UserAvatarReel Component', () => {
   // Mock avatars data
   const mockAvatars = (
     <>
-      <UserAvatar 
-        fullName="Alice Smith" 
-        imageUrl="https://example.com/alice.jpg" 
+      <UserAvatar
+        fullName="Alice Smith"
+        imageUrl="https://example.com/alice.jpg"
         className="mr-[-12px]"
       />
-      <UserAvatar 
-        fullName="Bob Johnson" 
-        imageUrl="https://example.com/bob.jpg" 
+      <UserAvatar
+        fullName="Bob Johnson"
+        imageUrl="https://example.com/bob.jpg"
         className="mr-[-12px]"
       />
-      <UserAvatar 
-        fullName="Charlie Brown" 
-        imageUrl="https://example.com/charlie.jpg" 
+      <UserAvatar
+        fullName="Charlie Brown"
+        imageUrl="https://example.com/charlie.jpg"
         className="mr-[-12px]"
       />
-      <UserAvatar 
-        fullName="+3" 
+      <UserAvatar
+        fullName="+3"
         className="mr-[-12px]"
       />
     </>
@@ -30,10 +30,10 @@ describe('UserAvatarReel Component', () => {
 
   it('renders multiple avatars', () => {
     render(<UserAvatarReel>{mockAvatars}</UserAvatarReel>);
-    
+
     const avatarContainer = screen.getByRole('group');
     expect(avatarContainer).toBeInTheDocument();
-    
+
     const avatars = screen.getAllByTestId('user-avatar');
     expect(avatars.length).toBe(4);
   });
@@ -44,7 +44,7 @@ describe('UserAvatarReel Component', () => {
         <UserAvatar fullName="Solo User" />
       </UserAvatarReel>
     );
-    
+
     const avatars = screen.getAllByTestId('user-avatar');
     expect(avatars.length).toBe(1);
     expect(avatars[0]).toHaveTextContent('SU');
@@ -56,7 +56,7 @@ describe('UserAvatarReel Component', () => {
         {mockAvatars}
       </UserAvatarReel>
     );
-    
+
     expect(screen.getByRole('group')).toHaveClass('custom-class');
   });
 
@@ -68,19 +68,19 @@ describe('UserAvatarReel Component', () => {
         <UserAvatar fullName="CC" imageUrl="https://example.com/cc.jpg" />
       </>
     );
-    
+
     render(<UserAvatarReel>{mixedAvatars}</UserAvatarReel>);
-    
+
     const images = screen.getAllByRole('img');
     const initials = screen.getAllByText('BB');
-    
+
     expect(images.length).toBe(2);
     expect(initials.length).toBe(1);
   });
 
   it('renders overflow indicator correctly', () => {
     render(<UserAvatarReel>{mockAvatars}</UserAvatarReel>);
-    
+
     const overflowAvatar = screen.getByText('+3');
     expect(overflowAvatar).toBeInTheDocument();
     expect(overflowAvatar.closest('div')).toHaveClass('bg-base-neutral-700');
