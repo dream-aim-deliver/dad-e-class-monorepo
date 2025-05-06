@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Milestone } from '../../lib/components/course-outline/milestone';
 
 const meta: Meta<typeof Milestone> = {
-  title: 'Components/Milestone',
+  title: 'Components/CourseOutline/Milestone',
   component: Milestone,
   tags: ['autodocs'],
   parameters: {
