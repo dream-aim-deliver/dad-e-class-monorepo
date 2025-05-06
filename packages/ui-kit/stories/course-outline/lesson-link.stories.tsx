@@ -83,7 +83,7 @@ const LessonLinkStateful = ({ args, locale, showMilestones = true }: LessonLinkS
   // Handle lesson item click
   const handleLessonClick = (lessonNumber: number) => {
     alert('Lesson ' + lessonNumber + ' clicked!');
-    setLessons(prevLessons => 
+    setLessons(prevLessons =>
       prevLessons.map(lesson => ({
         ...lesson,
         isActive: lesson.lessonNumber === lessonNumber
