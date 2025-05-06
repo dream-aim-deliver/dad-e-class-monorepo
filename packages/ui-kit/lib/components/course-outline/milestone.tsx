@@ -32,7 +32,7 @@ export const Milestone: FC<MilestoneProps> = ({
 }) => {
     const dictionary = getDictionary(locale);
     return (
-        <div 
+        <div
             role='milestone-container'
             className="flex justify-center items-center gap-2 w-full min-w-[13.5rem] h-[2rem] bg-base-neutral-800 border-1 border-base-neutral-700 rounded-medium"
         >

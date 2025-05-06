@@ -54,7 +54,7 @@ export interface LessonLinkItemProps extends isLocalAware {
  * />
  */
 
-export const LessonLinkItem: FC<LessonLinkItemProps> = ({ 
+export const LessonLinkItem: FC<LessonLinkItemProps> = ({
     lessonTitle,
     lessonNumber,
     isCompleted,
@@ -66,16 +66,16 @@ export const LessonLinkItem: FC<LessonLinkItemProps> = ({
 }) => {
     const dictionary = getDictionary(locale);
     return (
-        <div 
-            className="flex items-center p-2 gap-2 w-full hover:bg-base-neutral-800 rounded-medium cursor-pointer" 
-            role="lesson-link-item" 
+        <div
+            className="flex items-center p-2 gap-2 w-full hover:bg-base-neutral-800 rounded-medium cursor-pointer"
+            role="lesson-link-item"
             data-testid="lesson-link-item"
             onClick={onClick}
         >
-            <p className={cn('text-xs' , isActive ? 'text-action-default' : 'text-text-primary')}>
+            <p className={cn('text-xs', isActive ? 'text-action-default' : 'text-text-primary')}>
                 {lessonNumber}.
             </p>
-            <p 
+            <p
                 title={lessonTitle}
                 className={cn(
                     'text-sm truncate flex-1',
@@ -86,19 +86,19 @@ export const LessonLinkItem: FC<LessonLinkItemProps> = ({
                 {lessonTitle}
             </p>
             {isCompleted && (
-                <IconCheck 
+                <IconCheck
                     classNames="text-feedback-success-primary"
                 />
             )}
             {isOptional && (
-                <Badge 
+                <Badge
                     variant="info"
                     size="small"
                     text={dictionary.components.courseOutline.optionalText}
                 />
             )}
             {isUpdated && (
-                <Badge 
+                <Badge
                     size="small"
                     text={dictionary.components.courseOutline.updatedText}
                     className="bg-action-default"

@@ -5,12 +5,12 @@ import {
   AccordionTrigger,
   Accordion,
 } from '../../lib/components/accordion';
-import {ModuleHeader} from '../../lib/components/course-outline/module-header';
+import { ModuleHeader } from '../../lib/components/course-outline/module-header';
 import { LessonLink } from '../../lib/components/course-outline/lesson-link';
 import { LessonLinkItem } from '../../lib/components/course-outline/lesson-link-item';
 import { Milestone } from '../../lib/components/course-outline/milestone';
 import { cn } from '../../lib/utils/style-utils';
-import { FC, useState } from 'react'; 
+import { FC, useState } from 'react';
 
 const meta: Meta = {
   title: 'Components/CourseOutline/CourseOutlineAccordion',
@@ -61,7 +61,7 @@ interface TModule {
 
 interface TAccordionList {
   title: string;
-  modules: TModule[];  
+  modules: TModule[];
 }
 
 // Properly typed data with explicit literal types
@@ -71,33 +71,33 @@ const modulesData: TAccordionList = {
     {
       moduleTitle: 'Web Fundamentals',
       items: [
-        { 
-          type: 'lesson', 
-          title: 'HTML5 Essentials', 
-          completed: true, 
-          updated: true 
+        {
+          type: 'lesson',
+          title: 'HTML5 Essentials',
+          completed: true,
+          updated: true
         },
-        { 
-          type: 'lesson', 
-          title: 'CSS3 Styling Techniques', 
-          completed: true 
+        {
+          type: 'lesson',
+          title: 'CSS3 Styling Techniques',
+          completed: true
         },
-        { 
-          type: 'lesson', 
-          title: 'Responsive Design Principles', 
-          completed: true, 
-          optional: true 
+        {
+          type: 'lesson',
+          title: 'Responsive Design Principles',
+          completed: true,
+          optional: true
         },
-        { 
-          type: 'lesson', 
-          title: 'JavaScript Basics', 
-          completed: true, 
-          optional: true, 
-          updated: true 
+        {
+          type: 'lesson',
+          title: 'JavaScript Basics',
+          completed: true,
+          optional: true,
+          updated: true
         },
-        { 
-          type: 'milestone', 
-          completed: true 
+        {
+          type: 'milestone',
+          completed: true
         }
       ],
       completed: true
@@ -105,28 +105,28 @@ const modulesData: TAccordionList = {
     {
       moduleTitle: 'Frontend Development',
       items: [
-        { 
-          type: 'milestone', 
-          completed: true 
+        {
+          type: 'milestone',
+          completed: true
         },
-        { 
-          type: 'lesson', 
-          title: 'React.js Fundamentals', 
-          completed: true 
+        {
+          type: 'lesson',
+          title: 'React.js Fundamentals',
+          completed: true
         },
-        { 
-          type: 'lesson', 
-          title: 'State Management with Redux', 
-          completed: true 
+        {
+          type: 'lesson',
+          title: 'State Management with Redux',
+          completed: true
         },
-        { 
-          type: 'lesson', 
-          title: 'React Router v6', 
-          completed: true 
+        {
+          type: 'lesson',
+          title: 'React Router v6',
+          completed: true
         },
-        { 
-          type: 'milestone', 
-          completed: true 
+        {
+          type: 'milestone',
+          completed: true
         }
       ],
       completed: true
@@ -134,65 +134,65 @@ const modulesData: TAccordionList = {
     {
       moduleTitle: 'Backend Development',
       items: [
-        { 
-          type: 'lesson', 
-          title: 'Node.js & Express Basics', 
-          completed: true 
+        {
+          type: 'lesson',
+          title: 'Node.js & Express Basics',
+          completed: true
         },
-        { 
-          type: 'lesson', 
-          title: 'REST API Design' 
+        {
+          type: 'lesson',
+          title: 'REST API Design'
         },
-        { 
-          type: 'lesson', 
-          title: 'Database Modeling with MongoDB', 
-          updated: true 
+        {
+          type: 'lesson',
+          title: 'Database Modeling with MongoDB',
+          updated: true
         },
-        { 
-          type: 'lesson', 
-          title: 'Authentication Strategies' 
+        {
+          type: 'lesson',
+          title: 'Authentication Strategies'
         },
-        { 
-          type: 'milestone', 
-          completed: false 
+        {
+          type: 'milestone',
+          completed: false
         }
       ]
     },
     {
       moduleTitle: 'Advanced Concepts',
       items: [
-        { 
-          type: 'lesson', 
-          title: 'GraphQL Implementation' 
+        {
+          type: 'lesson',
+          title: 'GraphQL Implementation'
         },
-        { 
-          type: 'lesson', 
-          title: 'TypeScript for Full-Stack' 
+        {
+          type: 'lesson',
+          title: 'TypeScript for Full-Stack'
         },
-        { 
-          type: 'lesson', 
-          title: 'WebSockets & Real-time Features' 
+        {
+          type: 'lesson',
+          title: 'WebSockets & Real-time Features'
         }
       ]
     },
     {
       moduleTitle: 'Capstone Project',
       items: [
-        { 
-          type: 'lesson', 
-          title: 'Project Planning & Architecture' 
+        {
+          type: 'lesson',
+          title: 'Project Planning & Architecture'
         },
-        { 
-          type: 'lesson', 
-          title: 'Agile Development Workflow' 
+        {
+          type: 'lesson',
+          title: 'Agile Development Workflow'
         },
-        { 
-          type: 'lesson', 
-          title: 'Deployment Strategies' 
+        {
+          type: 'lesson',
+          title: 'Deployment Strategies'
         },
-        { 
-          type: 'milestone', 
-          completed: false 
+        {
+          type: 'milestone',
+          completed: false
         }
       ]
     }
@@ -205,14 +205,14 @@ const CourseOutlineAccordion: FC<TAccordionList> = ({
   modules,
 }) => {
   const [activeLessons, setActiveLessons] = useState<Record<string, number>>({});
-  
+
   let lessonCounter = 0;
 
   // Handle lesson item click
   const handleLessonClick = (moduleTitle: string, index: number) => {
     setActiveLessons(prev => ({
       ...prev,
-      [moduleTitle]: prev[moduleTitle] === index ? -1 : index 
+      [moduleTitle]: prev[moduleTitle] === index ? -1 : index
     }));
   };
 

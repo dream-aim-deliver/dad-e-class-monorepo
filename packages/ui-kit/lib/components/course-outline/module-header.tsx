@@ -31,8 +31,8 @@ interface ModuleHeaderProps extends isLocalAware {
  * />
  */
 
-export const ModuleHeader: FC<ModuleHeaderProps> = ({ 
-    totalModules ,
+export const ModuleHeader: FC<ModuleHeaderProps> = ({
+    totalModules,
     currentModule,
     moduleTitle,
     locale,

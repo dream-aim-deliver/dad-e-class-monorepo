@@ -41,8 +41,8 @@ export interface LessonLinkProps {
  * </LessonLink>
  */
 
-export const LessonLink: FC<LessonLinkProps> = ({ 
-    children 
+export const LessonLink: FC<LessonLinkProps> = ({
+    children
 }) => {
     return (
         <div className="flex flex-col">
