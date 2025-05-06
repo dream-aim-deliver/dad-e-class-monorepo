@@ -10,6 +10,7 @@ type CalendarHeaderProps = {
   formatDate: (date: Date, viewType: string) => string;
   coachAvailability: Event[];
   yourMeetings: Event[];
+  isVariantTwo?: boolean;
 };
 
 const viewOptions = [
@@ -24,6 +25,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   formatDate,
   coachAvailability,
   yourMeetings,
+  isVariantTwo = false,
 }) => {
   const handleViewTypeChange = (value: string) => {
     console.log('Changing view to:', value);
@@ -63,14 +65,29 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
         </div>
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <span className="w-4 h-4 rounded-full bg-action-semi-transparent-medium"></span>
-              <span className="text-sm font-medium text-text-primary">Coach's Availability</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="w-4 h-4 rounded-full bg-action-default"></span>
-              <span className="text-sm font-medium text-text-primary">Your Meeting</span>
-            </div>
+            {isVariantTwo ? (
+              <>
+                <div className="flex items-center space-x-2">
+                  <span className="w-4 h-4 rounded-full bg-action-semi-transparent-medium"></span>
+                  <span className="text-sm font-medium text-text-primary">Availability</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="w-4 h-4 rounded-full bg-action-default"></span>
+                  <span className="text-sm font-medium text-text-primary">Meeting</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center space-x-2">
+                  <span className="w-4 h-4 rounded-full bg-action-semi-transparent-medium"></span>
+                  <span className="text-sm font-medium text-text-primary">Coach's Availability</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="w-4 h-4 rounded-full bg-action-default"></span>
+                  <span className="text-sm font-medium text-text-primary">Your Meeting</span>
+                </div>
+              </>
+            )}
           </div>
           <div className="flex space-x-2">
             {viewOptions.map((option) => (

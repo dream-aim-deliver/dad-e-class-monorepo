@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -8,13 +8,16 @@ import { EventContent, Event } from './event';
 import { calendarStyles } from './calendar-styles';
 import { ScheduleSession } from './schedule-session';
 
+type Variant = 'dragAndDrop' | 'clickToSchedule';
+
 type CalendarProps = {
   events: Event[];
   coachAvailability: Event[];
   yourMeetings: Event[];
+  availableCoachingSessionsData?: { title: string; time: number; numberOfSessions: number }[];
   onAddEvent?: (event: Event) => void;
   onEventDrop?: (event: Event) => void;
-  availableCoachingSessionsData?: { title: string; time: number; numberOfSessions: number }[];
+  variant: Variant;
 };
 
 export const formatDate = (date: Date, viewType: string = 'timeGridWeek'): string => {
@@ -29,12 +32,13 @@ export const formatDate = (date: Date, viewType: string = 'timeGridWeek'): strin
   return [day, month, year].filter(Boolean).join(' ');
 };
 
-const Calendar: React.FC<CalendarProps> = ({
+const CoachingSessionCalendar: React.FC<CalendarProps> = ({
   events,
   coachAvailability,
   yourMeetings,
   onAddEvent,
   onEventDrop,
+  variant,
 }) => {
   const [viewType, setViewType] = useState('timeGridWeek');
   const [isScheduleSessionOpen, setIsScheduleSessionOpen] = useState(false);
@@ -42,11 +46,13 @@ const Calendar: React.FC<CalendarProps> = ({
     date: Date;
     time: string;
     title: string;
-    sessionId?: string;
+    coachingSessionId?: string;
   } | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [isHovering, setIsHovering] = useState(false);
 
   const calendarRef = useRef<FullCalendar>(null);
+  const draggableRef = useRef<HTMLDivElement>(null);
 
   const handleViewChange = useCallback((newView: string) => {
     setViewType(newView);
@@ -83,8 +89,7 @@ const Calendar: React.FC<CalendarProps> = ({
     const { draggedEl, date } = info;
     const title = draggedEl.getAttribute('data-title') || 'Coaching Session';
     const duration = draggedEl.getAttribute('data-duration') || '01:00';
-    const numberOfSessions = parseInt(draggedEl.getAttribute('data-sessions') || '1', 10);
-    const sessionId = draggedEl.getAttribute('data-session-id') || '';
+    const coachingSessionId = draggedEl.getAttribute('data-session-id') || '';
 
     const start = new Date(date);
     const end = new Date(start);
@@ -98,11 +103,57 @@ const Calendar: React.FC<CalendarProps> = ({
         .toString()
         .padStart(2, '0')}`,
       title,
-      sessionId,
+      coachingSessionId,
     });
     setIsScheduleSessionOpen(true);
 
-    window.dispatchEvent(new CustomEvent('sessionDropped', { detail: { sessionId } }));
+    window.dispatchEvent(new CustomEvent('sessionDropped', { detail: { coachingSessionId } }));
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+  };
+
+  const handleCalendarClick = (info: any) => {
+    const start = new Date(info.date);
+    const title = 'Coaching Session';
+    const coachingSessionId = `session-${Date.now()}`;
+    const time = `${start.getHours().toString().padStart(2, '0')}:${start
+      .getMinutes()
+      .toString()
+      .padStart(2, '0')}`;
+
+    setScheduleSessionData({
+      date: start,
+      time,
+      title,
+      coachingSessionId,
+    });
+    setIsScheduleSessionOpen(true);
+  };
+
+  const handleEventClick = (info: any) => {
+    if (info.event.extendedProps.isCoachAvailability) {
+      const start = new Date(info.event.start);
+      const title = 'Coaching Session';
+      const coachingSessionId = `session-${Date.now()}`;
+      const time = `${start.getHours().toString().padStart(2, '0')}:${start
+        .getMinutes()
+        .toString()
+        .padStart(2, '0')}`;
+
+      setScheduleSessionData({
+        date: start,
+        time,
+        title,
+        coachingSessionId,
+      });
+      setIsScheduleSessionOpen(true);
+    }
   };
 
   const handleDatesSet = (dateInfo: any) => {
@@ -111,14 +162,18 @@ const Calendar: React.FC<CalendarProps> = ({
 
   const allEvents = [
     ...events,
-    ...coachAvailability.map((event) => ({ ...event, isCoachAvailability: true })),
+    ...coachAvailability.map((event, index) => ({
+      ...event,
+      isCoachAvailability: true,
+      title: `Coach Available ${index + 1}`,
+    })),
     ...yourMeetings.map((event) => ({ ...event, isYourMeeting: true })),
   ];
 
   const handleSendRequest = () => {
     if (!scheduleSessionData) return;
 
-    const { date, time, title, sessionId } = scheduleSessionData;
+    const { date, time, title, coachingSessionId } = scheduleSessionData;
     const [hours, minutes] = time.split(':').map(Number);
     const start = new Date(date);
     start.setHours(hours, minutes);
@@ -130,7 +185,7 @@ const Calendar: React.FC<CalendarProps> = ({
       title,
       start: start.toISOString(),
       end: end.toISOString(),
-      extendedProps: { sessionId },
+      extendedProps: { coachingSessionId },
     };
 
     onAddEvent?.(newEvent);
@@ -139,7 +194,11 @@ const Calendar: React.FC<CalendarProps> = ({
   };
 
   return (
-    <div className="w-full bg-card-fill">
+    <div
+      className="w-full bg-card-fill"
+      onMouseEnter={variant === 'clickToSchedule' ? handleMouseEnter : undefined}
+      onMouseLeave={variant === 'clickToSchedule' ? handleMouseLeave : undefined}
+    >
       <CalendarHeader
         viewType={viewType}
         onNavigation={handleNavigation}
@@ -147,10 +206,11 @@ const Calendar: React.FC<CalendarProps> = ({
         formatDate={formatDate}
         coachAvailability={coachAvailability}
         yourMeetings={yourMeetings}
+        isVariantTwo={variant === 'clickToSchedule'}
       />
       <div className="w-full max-w-full p-4">
         <style>{calendarStyles}</style>
-        <div className="h-[920px] overflow-hidden rounded-md border border-divider shadow-md"> 
+        <div className="h-[920px] overflow-hidden rounded-md border border-divider shadow-md">
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -165,8 +225,10 @@ const Calendar: React.FC<CalendarProps> = ({
             datesSet={handleDatesSet}
             eventContent={(eventInfo) => <EventContent eventInfo={eventInfo} />}
             eventDrop={handleEventDrop}
-            droppable={true}
-            drop={handleExternalDrop}
+            droppable={variant === 'dragAndDrop'}
+            drop={variant === 'dragAndDrop' ? handleExternalDrop : undefined}
+            dateClick={variant === 'clickToSchedule' ? handleCalendarClick : undefined}
+            eventClick={variant === 'clickToSchedule' ? handleEventClick : undefined}
             slotMinTime="07:00:00"
             slotMaxTime="18:00:00"
             allDaySlot={false}
@@ -189,11 +251,20 @@ const Calendar: React.FC<CalendarProps> = ({
               );
             }}
           />
+          {variant === 'clickToSchedule' && isHovering && (
+            <div
+              ref={draggableRef}
+              className="absolute bg-button-primary text-button-primary-text px-2 py-1 rounded-md shadow-md pointer-events-none"
+              style={{ zIndex: 1000 }}
+            >
+              Schedule Coaching Session
+            </div>
+          )}
         </div>
       </div>
       {isScheduleSessionOpen && scheduleSessionData && (
         <div className="fixed inset-0 flex items-center justify-center bg-transparent bg-opacity-10 z-50 backdrop-blur-xs">
-          <div className="bg-card-fill p-6 rounded-md border border-card-stroke max-w-[320px] w-full ">
+          <div className="bg-card-fill p-6 rounded-md border border-card-stroke max-w-[320px] w-full">
             <ScheduleSession
               user="student"
               isError={false}
@@ -227,4 +298,4 @@ const Calendar: React.FC<CalendarProps> = ({
   );
 };
 
-export default Calendar;
+export default CoachingSessionCalendar;
