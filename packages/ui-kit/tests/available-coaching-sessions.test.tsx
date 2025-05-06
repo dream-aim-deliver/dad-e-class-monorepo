@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { AvailableCoachingSessions } from '../lib/components/available-coaching-sessions/available-coaching-sessions';
-import { TLocale } from '@maany_shr/e-class-translations';
 
 // Mock the dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({

@@ -1,6 +1,6 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import {PackageCard} from '../lib/components/packages/package-card';
+import { PackageCard } from '../lib/components/packages/package-card';
 
 // Mock the dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -42,7 +42,7 @@ describe('PackageCard', () => {
       fullPrice: 100,
       partialPrice: 50,
       currency: 'CHF',
-    } ,
+    },
     locale: 'en' as 'en' | 'de',
   };
 
@@ -100,7 +100,7 @@ describe('PackageCard', () => {
     const tooltipContainer = titleElement.parentElement?.querySelector(
       'div.bg-card-stroke.text-text-primary.text-sm'
     );
-    
+
     expect(tooltipContainer).toBeInTheDocument();
     expect(tooltipContainer).toHaveTextContent('Package Title');
 

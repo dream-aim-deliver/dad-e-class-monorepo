@@ -1,5 +1,4 @@
-import React from "react";
-import { ReactEditor, useSlate } from "slate-react";
+import { useSlate } from "slate-react";
 import {
   HEADINGS,
   RichTextAction,
@@ -13,7 +12,7 @@ import { EditorType, ElementKey, MarkKey } from "./types"
 import { Link, Unlink } from "lucide-react";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 
-export default function Toolbar ({locale}:isLocalAware) {
+export default function Toolbar({ locale }: isLocalAware) {
   const editor = useSlate();
 
   const onMarkClick = (id: RichTextAction) => {
@@ -71,7 +70,7 @@ export default function Toolbar ({locale}:isLocalAware) {
               {option.icon}
             </button>
           ))}
-            <button
+          <button
             title={dictionary.components.richTextToolbar.link}
             className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("link" as RichTextAction)}`}
             onClick={handleInsertLink}>
