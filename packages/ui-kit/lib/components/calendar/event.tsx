@@ -11,7 +11,7 @@ export type Event = {
   isYourMeeting?: boolean;
   extendedProps?: {
     numberOfSessions?: number;
-    sessionId?: string;
+    coachingSessionId?: string;
     coachName?: string;
   };
 };
