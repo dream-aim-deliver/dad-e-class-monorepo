@@ -6,11 +6,13 @@ import { TextInput } from '../text-input';
 import { InputField } from '../input-field';
 import { TextAreaInput } from '../text-areaInput';
 import { CheckBox } from '../checkbox';
-import { FileUploader, UploadResponse } from '../drag&drop/file-uploader';
+import { FileUploadResponse, UploadResponse } from '../drag&drop/uploader';
 import { IconPlus } from '../icons/icon-plus';
 import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { UploadedFileType, Uploader } from '../drag&drop/uploader';
+import { useState } from 'react';
 
 interface ProfessionalInfoProps extends isLocalAware {
   initialData?: profile.TProfessionalProfile;
@@ -69,7 +71,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   );
 
   const [skillSearchQuery, setSkillSearchQuery] = React.useState('');
-  const [files, setFiles] = React.useState<fileProps>([]);
+  const [files, setFiles] = useState<UploadedFileType | null>(null);
   const [allSkills, setAllSkills] = React.useState<string[]>(
     () => formData.skills ?? [],
   );
@@ -93,46 +95,43 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     e.preventDefault();
     onSave?.(formData);
   };
-  const handleUploadedFiles =async (file: File): Promise<UploadResponse> => {
+  const handleUploadedFiles = async (newFiles: UploadedFileType[]): Promise<UploadResponse> => {
+    // Get the uploaded file
+    const newFile = newFiles[0];
+
+    // Set state immediately to show loading
+    setFiles(newFile);
+
     try {
-      // First add the file to the state with isUploading=true
-      const newFile = {
-        file,
-        isUploading: true,
-        error: false,
-      };
+      // Simulate API call
+      const response = await new Promise<FileUploadResponse>((resolve) => {
+        // Create proper response based on your file variant
+        setTimeout(() => {
+          resolve({
+            file_id: `file-${Math.random().toString(36).substr(2, 9)}`,
+            file_name: newFiles[0].file.name
+          });
+        }, 2000)
+      });
 
-      setFiles((prev) => [...prev, newFile]);
-      const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-      // Simulate upload delay
-      await sleep(1500);
-
-      const response: UploadResponse = {
-        file_id: Math.random().toString(36).substr(2, 9),
-        file_name: file.name
-      };
-
-      // Update the file state after upload completes
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.file === file
-            ? { ...f, isUploading: false, serverData: response } // Fixed property name from videoData to fileData
-            : f,
-        ),
-      );
+      // Update state AGAIN after successful upload (important!)
+      setFiles({
+        ...newFile,
+        isUploading: false,  // Turn off loading
+        responseData: response
+      });
 
       return response;
-    } catch (e) {
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.file === file ? { ...f, isUploading: false, error: true } : f,
-        ),
-      );
-      throw e;
+    } catch (error) {
+      // Handle errors by updating state
+      setFiles({
+        ...newFile,
+        isUploading: false,
+        error: "Upload failed"
+      });
+
+      throw error;
     }
-  };
-  const handleDelete = (index: number) => {
-    setFiles((prevFiles: any[]) => prevFiles.filter((f, i) => i !== index));
   };
 
   const handleDiscard = () => {
@@ -188,17 +187,19 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             {' '}
             {dictionary.components.professionalInfo.curriculumVitae}
           </p>
-          <FileUploader
+          <Uploader
+            type="single"
+            variant="file"
+            file={files as UploadedFileType}
+            acceptedFileTypes={['application/pdf']}
+            onFilesChange={handleUploadedFiles}
+            onDelete={() => {
+              // Handle file deletion logic here
+            }}
             onDownload={() => {
               // Handle download logic here
             }}
-            type="single"
             locale={locale}
-            files={files}
-            className="w-full"
-            maxSize={5}
-            onFileUpload={handleUploadedFiles}
-            onDelete={handleDelete}
           />
         </div>
 

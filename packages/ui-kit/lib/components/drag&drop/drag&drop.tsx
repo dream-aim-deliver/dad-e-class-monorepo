@@ -8,11 +8,11 @@ export type DragAndDropProps = {
   maxSize?: number;
   className?: string;
   acceptedFileTypes?: string[];
+  multiple?: boolean; // Added property to control multiple file selection
   text: {
-  title: string;
-  description: string;
-  maxSizeText: string;
-
+    title: string;
+    description: string;
+    maxSizeText: string;
   };
 };
 
@@ -23,35 +23,36 @@ export type DragAndDropProps = {
  * @param maxSize Optional maximum file size allowed for uploads, in bytes. Defaults to 15 MB.
  * @param className Optional additional CSS class names to customize the component's appearance.
  * @param acceptedFileTypes Optional array of accepted file types (e.g., `['image/*', 'application/pdf']`). Defaults to images and PDFs.
+ * @param multiple Optional boolean to control if multiple files can be selected. Defaults to true.
  * @param text Object containing customizable text for various parts of the component:
  *  - `title`: Text displayed when a file is being dragged over the drop area.
- *  - `buttontext`: Text for the button displayed in the drop area.
- *  - `dragtext`: Instructional text displayed in the drop area when no file is being dragged.
- *  - `filesize`: Text label for displaying the maximum file size allowed.
+ *  - `description`: Instructional text displayed in the drop area.
+ *  - `maxSizeText`: Text label for displaying the maximum file size allowed.
  *
  * @example
  * <DragAndDrop
  *   onUpload={(files) => console.log(files)}
  *   maxSize={10 * 1024 * 1024}
  *   acceptedFileTypes={['image/png', 'application/pdf']}
+ *   multiple={false}
  *   text={{
- *     title: "Drop your files here",
- *     buttontext: "Choose Files",
- *     dragtext: "or drag and drop files here",
- *     filesize: "Max file size",
+ *     title: "Drop your file here",
+ *     description: "or click to browse",
+ *     maxSizeText: "Max file size",
  *   }}
  * />
  */
-
 export const DragAndDrop: React.FC<DragAndDropProps> = ({
   onUpload,
   maxSize = 15 * 1024 * 1024,
   className,
   acceptedFileTypes = ['image/*', 'application/pdf'],
+  multiple = true, // Default to true for backward compatibility
   text,
 }) => {
   const [error, setError] = useState<string | null>(null);
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
+  
+  const { getRootProps, getInputProps, isDragActive } =
     useDropzone({
       accept: acceptedFileTypes.reduce(
         (acc, type) => {
@@ -61,12 +62,19 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
         {} as { [key: string]: string[] },
       ),
       maxSize,
-      onDrop: (acceptedFiles: File[], fileRejections: string | any[]) => {
+      multiple, // Use the multiple prop to control file selection mode
+      onDrop: (acceptedFiles: File[], fileRejections) => {
         setError(null);
+        
         if (fileRejections.length > 0) {
           setError(
-            `Some files were rejected. Max size: ${maxSize / (1024 * 1024)} MB`,
+            `Some files were rejected. Max size: ${maxSize/(1024*1024)})} MB`,
           );
+        } else if (!multiple && acceptedFiles.length > 1) {
+          // Extra check for single file mode
+          setError('Only one file can be uploaded');
+          // Only pass the first file if in single mode
+          onUpload([acceptedFiles[0]]);
         } else {
           onUpload(acceptedFiles);
         }
@@ -95,11 +103,12 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
           </div>
           <p className="text-xs text-text-secondary flex items-start">
             <span>{text.maxSizeText}</span>: {maxSize/(1024*1024)} MB
+          
           </p>
         </div>
       </div>
-
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      
+      {error && <p className="text-sm text-feedback-error-primary">{error}</p>}
     </div>
   );
 };
