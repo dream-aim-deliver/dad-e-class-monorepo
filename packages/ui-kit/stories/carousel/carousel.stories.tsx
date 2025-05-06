@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Carousel } from '../../lib/components/carousel/carousel';
-import { GeneralCard } from '../../lib/components/carousel/generalcard'; 
+import { GeneralCard } from '../../lib/components/carousel/general-card'; 
 import { homePage } from '@maany_shr/e-class-models';
 
 // Define the meta configuration for the Carousel component

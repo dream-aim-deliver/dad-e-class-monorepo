@@ -45,7 +45,7 @@ export const CoachingOnDemandBanner: React.FC<CoachingOnDemandBannerProps> = ({
 
       const isValid = validateImageUrl(newImageUrl);
       setIsValidUrl(isValid);
-      
+
       // Reset image state when URL changes
       if (newImageUrl !== currentImageUrl) {
         setCurrentImageUrl(newImageUrl);
@@ -126,9 +126,8 @@ export const CoachingOnDemandBanner: React.FC<CoachingOnDemandBannerProps> = ({
             alt="Coaching on Demand"
             onError={handleImageError}
             onLoad={handleImageLoad}
-            className={`object-cover w-full h-full rounded-medium transition-opacity duration-300 ${
-              imageState === 'loaded' ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`object-cover w-full h-full rounded-medium transition-opacity duration-300 ${imageState === 'loaded' ? 'opacity-100' : 'opacity-0'
+              }`}
             loading="lazy"
           />
         )}

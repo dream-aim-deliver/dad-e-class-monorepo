@@ -96,18 +96,18 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
   useEffect(() => {
     // Set initial label
-    if(type !== 'multiple-choice-and-search' && defaultValue && typeof defaultValue === 'string') 
+    if (type !== 'multiple-choice-and-search' && defaultValue && typeof defaultValue === 'string')
       setSelectedLabel(options.find((option) => option.value === defaultValue)?.label || null);
 
     // Set initial selected option
-    if (type !== 'multiple-choice-and-search' && typeof defaultValue === 'string') 
+    if (type !== 'multiple-choice-and-search' && typeof defaultValue === 'string')
       setSelectedOption(defaultValue);
 
     // Set initial selected options
-    if (type === 'multiple-choice-and-search' && Array.isArray(defaultValue)) 
+    if (type === 'multiple-choice-and-search' && Array.isArray(defaultValue))
       setSelectedOptions(defaultValue);
-  } ,[defaultValue , type, options] );
-  
+  }, [defaultValue, type, options]);
+
   const buttonText =
     type === 'simple'
       ? selectedLabel || text?.simpleText

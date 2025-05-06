@@ -20,13 +20,12 @@ export const CarouselContent: React.FC<{
       {items.map((item, index) => (
         <div
           key={index}
-          className={`flex-shrink-0 justify-items-center px-2 transition-all duration-300 ${
-            itemsPerView === 1 || items.length === 1
+          className={`flex-shrink-0 justify-items-center px-2 transition-all duration-300 ${itemsPerView === 1 || items.length === 1
               ? "w-full max-w-[90%] mx-auto"
               : itemsPerView === 2
-              ? "w-1/2 max-w-[45%]"
-              : "w-1/3 max-w-[30%]"
-          }`}
+                ? "w-1/2 max-w-[45%]"
+                : "w-1/3 max-w-[30%]"
+            }`}
         >
           {item}
         </div>
@@ -61,17 +60,17 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
     const carouselRef = useRef<HTMLDivElement>(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerView, setItemsPerView] = useState(() => {
-        // Initialize with the correct value based on window width
-        if (typeof window !== 'undefined') {
-            const width = window.innerWidth;
-            if (width < 640) return 1;
-            if (width < 1024) return 2;
-            return 3;
-        }
-        return 3; // Default for SSR
+      // Initialize with the correct value based on window width
+      if (typeof window !== 'undefined') {
+        const width = window.innerWidth;
+        if (width < 640) return 1;
+        if (width < 1024) return 2;
+        return 3;
+      }
+      return 3; // Default for SSR
     });
 
-      const [touchStart, setTouchStart] = useState(0);
+    const [touchStart, setTouchStart] = useState(0);
     const dictionary = getDictionary(locale);
     const childrenArray = React.Children.toArray(children);
 
@@ -160,9 +159,8 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
               <button
                 onClick={goPrev}
                 disabled={currentPage === 0}
-                className={`absolute left-[-10px] sm:left-[-20px] md:-left-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${
-                  currentPage === 0 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                }`}
+                className={`absolute left-[-10px] sm:left-[-20px] md:-left-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${currentPage === 0 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                  }`}
                 aria-label="Previous slide"
               >
                 <IconChevronLeft classNames="text-button-primary-fill w-5 h-5 sm:w-6 sm:h-6" />
@@ -190,11 +188,10 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
               <button
                 onClick={goNext}
                 disabled={currentPage === itemGroups.length - 1}
-                className={`absolute right-[-10px] sm:right-[-20px] md:-right-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${
-                  currentPage === itemGroups.length - 1
+                className={`absolute right-[-10px] sm:right-[-20px] md:-right-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${currentPage === itemGroups.length - 1
                     ? "opacity-50 cursor-not-allowed"
                     : "cursor-pointer"
-                }`}
+                  }`}
                 aria-label="Next slide"
               >
                 <IconChevronRight classNames="text-button-primary-fill w-5 h-5 sm:w-6 sm:h-6" />
@@ -209,11 +206,10 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
                 <button
                   key={`page-${index}`}
                   onClick={() => goToPage(index)}
-                  className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-                    index === currentPage
+                  className={`w-3 h-3 rounded-full transition-colors duration-200 ${index === currentPage
                       ? "bg-button-primary-fill"
                       : "border border-button-primary-fill hover:bg-text-primary/20"
-                  }`}
+                    }`}
                   aria-label={`Go to page ${index + 1}`}
                 />
               ))}

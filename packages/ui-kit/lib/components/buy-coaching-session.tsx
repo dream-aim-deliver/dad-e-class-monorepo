@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations'
 import { Button } from './button'
 import { InputField } from './input-field'
@@ -17,7 +17,7 @@ type Course = {
 
 export interface BuyCoachingSessionProps extends isLocalAware {
     courses: Course[];
-    onClick: (totalCoast: number) => void;
+    onClick: (totalCost: number) => void;
     currencyType: string;
 }
 
@@ -45,7 +45,7 @@ export interface BuyCoachingSessionProps extends isLocalAware {
  *   currencyType="USD"
  * />
  */
-function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachingSessionProps) {
+function BuyCoachingSession({ courses, onClick, locale, currencyType }: BuyCoachingSessionProps) {
     const dictionary = getDictionary(locale);
     const [courseList, setCourseList] = useState<Course[]>(courses);
     const totalCost = useMemo(() => {
@@ -97,7 +97,7 @@ function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachi
                     <div key={course.id} className="flex justify-between items-center py-3 border-b border-divider">
                         <div className="flex flex-col gap-2">
                             <h6 className="flex items-center gap-2 text-text-primary text-md md:text-lg">
-                            <Tooltip contentClassName='max-w-[200px]' text={course.title} description={course.content}/>
+                                <Tooltip contentClassName='max-w-[200px]' text={course.title} description={course.content} />
                             </h6>
                             <div className='flex gap-2 items-center text-text-secondary'>
                                 <p className="text-xs md:text-sm font-important">{course.price} {currencyType}</p>
@@ -128,7 +128,7 @@ function BuyCoachingSession({ courses, onClick, locale,currencyType }: BuyCoachi
             </h6>
 
             {/* Footer */}
-            <Button onClick={()=>onClick(totalCost)} variant='primary' text={dictionary.components.buyCoachingSession.buttonText} />
+            <Button onClick={() => onClick(totalCost)} variant='primary' text={dictionary.components.buyCoachingSession.buttonText} />
         </div>
     );
 }

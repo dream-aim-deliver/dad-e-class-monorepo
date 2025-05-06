@@ -104,39 +104,39 @@ const HomeAccordion: React.FC<TAccordionList> = ({
 }) => {
   return (
     <Accordion className='flex flex-col gap-7 w-full' type="single" defaultValue={[items[0].title]}>
-      <h2  className="text-text-primary">{title}</h2>
+      <h2 className="text-text-primary">{title}</h2>
       <div className=" w-full  rounded-medium py-4 px-6">
         {items?.map((item, index) => (
-            <AccordionItem
-              className={cn(
-                'py-6',
-                items.length - 1 !== index && 'border-b border-divider',
-              )}
-              key={item.title}
+          <AccordionItem
+            className={cn(
+              'py-6',
+              items.length - 1 !== index && 'border-b border-divider',
+            )}
+            key={item.title}
+            value={item.title}
+          >
+            <AccordionTrigger
               value={item.title}
+
+
             >
-              <AccordionTrigger
-                value={item.title}
-
-
-              >
-                <div className="flex items-center gap-4">
-                 {showNumbers && item.position && <h4 className="text-action-default">{item.position}.</h4>}
-                 <div className="flex items-center gap-3 ">
-                {item.iconImageUrl && (
-                  <div className="flex items-center justify-center">
-                  <UserAvatar imageUrl={item.iconImageUrl} size="small" />
+              <div className="flex items-center gap-4">
+                {showNumbers && item.position && <h4 className="text-action-default">{item.position}.</h4>}
+                <div className="flex items-center gap-3 ">
+                  {item.iconImageUrl && (
+                    <div className="flex items-center justify-center">
+                      <UserAvatar imageUrl={item.iconImageUrl} size="small" />
+                    </div>
+                  )}
+                  <h5 className="text-text-primary font-medium">{item.title}</h5>
                 </div>
-                )}
-                <h5 className="text-text-primary font-medium">{item.title}</h5>
-                </div>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent value={item.title} className="px-8 pt-2 ">
-                <RichTextRenderer content={item.content} className="lg:text-md text-normal leading-[150%]  text-text-secondary" />
-              </AccordionContent>
-            </AccordionItem>
-          ))}
+              </div>
+            </AccordionTrigger>
+            <AccordionContent value={item.title} className="px-8 pt-2 ">
+              <RichTextRenderer content={item.content} className="lg:text-md text-normal leading-[150%]  text-text-secondary" />
+            </AccordionContent>
+          </AccordionItem>
+        ))}
       </div>
     </Accordion>
   );

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { GeneralCard } from '../../lib/components/carousel/generalcard';
+import { GeneralCard } from '../../lib/components/carousel/general-card';
 
 const meta: Meta<typeof GeneralCard> = {
   title: 'Components/GeneralCard',

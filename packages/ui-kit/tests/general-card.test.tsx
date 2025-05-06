@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { GeneralCard } from '../lib/components/carousel/generalcard';
+import { GeneralCard } from '../lib/components/carousel/general-card';
 
 // Mock the dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -41,7 +41,7 @@ describe('GeneralCard', () => {
 
   it('renders title, description, and button text', () => {
     render(<GeneralCard {...defaultProps} />);
-    
+
     expect(screen.getByText('Card Title')).toBeInTheDocument();
     expect(screen.getByText('Card Description')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Click Me' })).toBeInTheDocument();
@@ -49,7 +49,7 @@ describe('GeneralCard', () => {
 
   it('renders image with correct src and alt', () => {
     render(<GeneralCard {...defaultProps} />);
-    
+
     const img = screen.getByRole('img');
     expect(img).toHaveAttribute('src', 'https://example.com/image.jpg');
     expect(img).toHaveAttribute('alt', 'Card Title');
@@ -57,17 +57,17 @@ describe('GeneralCard', () => {
 
   it('shows placeholder when image URL is empty', () => {
     render(<GeneralCard {...defaultProps} imageUrl="" />);
-    
+
     expect(screen.getByText('Image not available')).toBeInTheDocument();
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
 
   it('shows placeholder when image fails to load', async () => {
     render(<GeneralCard {...defaultProps} />);
-    
+
     const img = screen.getByRole('img');
     img.dispatchEvent(new Event('error'));
-    
+
     await waitFor(() => {
       expect(screen.getByText('Image not available')).toBeInTheDocument();
     });
@@ -76,16 +76,16 @@ describe('GeneralCard', () => {
 
   it('renders badge when provided', () => {
     render(<GeneralCard {...defaultProps} badge="New" />);
-    
+
     expect(screen.getByText('New')).toBeInTheDocument();
   });
 
   it('applies correct container classes', () => {
     const { container } = render(<GeneralCard {...defaultProps} />);
-    
+
     const article = container.firstChild;
     expect(article).toHaveClass('flex', 'flex-col', 'h-auto', 'w-full', 'max-w-[382px]');
-    
+
     const cardDiv = within(article as HTMLElement).getByRole('img').parentElement?.parentElement;
     expect(cardDiv).toHaveClass('rounded-lg', 'border', 'border-solid', 'bg-card-fill', 'border-card-stroke');
   });

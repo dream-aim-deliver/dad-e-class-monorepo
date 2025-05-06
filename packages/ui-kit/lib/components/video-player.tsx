@@ -113,12 +113,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
       {/* Loading state - only shown when player is loading and no error */}
       {showPlayer && !isPlayerReady && !videoError && (
-      
-          <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
-          <IconLoaderSpinner 
-          classNames="animate-spin text-text-primary "
-          size="6"
-        />
+
+        <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
+          <IconLoaderSpinner
+            classNames="animate-spin text-text-primary "
+            size="6"
+          />
         </div>
       )}
 
