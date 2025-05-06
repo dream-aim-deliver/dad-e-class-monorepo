@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {UserAvatarReel} from '../lib/components/avatar/user-avatar-reel';
+import { UserAvatarReel } from '../lib/components/avatar/user-avatar-reel';
 import { UserAvatar } from '../lib/components/avatar/user-avatar';
 
 const meta: Meta<typeof UserAvatarReel> = {
@@ -19,9 +19,9 @@ export const Default: Story = {
   args: {
     children: (
       <>
-        <UserAvatar fullName="Alice Smith" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]'/>
-        <UserAvatar fullName="Bob Johnson" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]'/>
-        <UserAvatar fullName="Charlie Brown" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]'/>
+        <UserAvatar fullName="Alice Smith" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
+        <UserAvatar fullName="Bob Johnson" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
+        <UserAvatar fullName="Charlie Brown" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
         <UserAvatar fullName="+3" />
       </>
     ),
@@ -33,11 +33,11 @@ export const MixedAvatars: Story = {
   args: {
     children: (
       <>
-        <UserAvatar fullName="AA" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]'/>
-        <UserAvatar fullName="BB" className='mr-[-12px]'/>
-        <UserAvatar fullName="CC" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]'/>
-        <UserAvatar fullName="DD" className='mr-[-12px]'/>
-        <UserAvatar fullName="EE" className='mr-[-12px]'/>
+        <UserAvatar fullName="AA" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
+        <UserAvatar fullName="BB" className='mr-[-12px]' />
+        <UserAvatar fullName="CC" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
+        <UserAvatar fullName="DD" className='mr-[-12px]' />
+        <UserAvatar fullName="EE" className='mr-[-12px]' />
       </>
     ),
   },

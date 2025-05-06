@@ -23,17 +23,17 @@ type Story = StoryObj<typeof CourseGeneralInformationView>;
 
 // Reusable Avatar Reel Example
 const AvatarReelExample = (
-    <div className='flex gap-[15px] items-start md:flex-row flex-col'>
-        <UserAvatarReel>
-            <UserAvatar size='large' fullName="Alice Smith" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
-            <UserAvatar size='large' fullName="Bob Johnson" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
-            <UserAvatar size='large' fullName="Charlie Brown" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
-            <UserAvatar size='large' fullName="+3" />
-        </UserAvatarReel>
-        <p className='text-base-white text-lg leading-[120%] font-bold'>
-            Alice Smith, Bob Johnson and 4 others
-        </p>
-    </div>
+  <div className='flex gap-[15px] items-start md:flex-row flex-col'>
+    <UserAvatarReel>
+      <UserAvatar size='large' fullName="Alice Smith" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
+      <UserAvatar size='large' fullName="Bob Johnson" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
+      <UserAvatar size='large' fullName="Charlie Brown" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
+      <UserAvatar size='large' fullName="+3" />
+    </UserAvatarReel>
+    <p className='text-base-white text-lg leading-[120%] font-bold'>
+      Alice Smith, Bob Johnson and 4 others
+    </p>
+  </div>
 );
 
 // Test Case 1: Complete Course Details

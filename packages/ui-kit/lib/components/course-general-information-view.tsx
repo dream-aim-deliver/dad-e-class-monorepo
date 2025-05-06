@@ -7,7 +7,7 @@ import { FC, useState } from "react";
 import { IconClock } from "./icons/icon-clock";
 import { IconStar } from "./icons/icon-star";
 
-export interface CourseGeneralInformationViewProps extends TCourseMetadata , isLocalAware {
+export interface CourseGeneralInformationViewProps extends TCourseMetadata, isLocalAware {
     longDescription: string;
     onClickAuthor?: () => void;
     children?: React.ReactNode;
@@ -32,9 +32,9 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
 
     // Handle image loading errors
     const handleImageError = () => {
-      setIsImageError(true);
+        setIsImageError(true);
     };
-  
+
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
     // Helper function to format duration in hours and minutes
@@ -61,23 +61,22 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
         if (durationInMinutes < 60) {
             return `${durationInMinutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
         }
-    
+
         const hours = Math.floor(durationInMinutes / 60);
         const minutes = durationInMinutes % 60;
-    
-        let result = `${hours} ${
-            hours === 1
+
+        let result = `${hours} ${hours === 1
                 ? dictionary.components.courseGeneralInformationView.hourText
                 : dictionary.components.courseGeneralInformationView.hoursText
-        }`;
-    
+            }`;
+
         if (minutes > 0) {
             result += ` ${minutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
         }
-    
+
         return result;
     };
-    
+
     return (
         <div className="flex md:gap-20  gap-10 w-full md:flex-row flex-col-reverse">
             <div className="flex gap-[42px] flex-col basis-1/2">
@@ -92,7 +91,7 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
                         </p>
                         <Badge
                             hasIconLeft
-                            iconLeft={<IconClock size='4'/>}
+                            iconLeft={<IconClock size='4' />}
                             key={formattedTotalDuration}
                             text={formattedTotalDuration}
                             className="h-5 text-sm py-1 max-w-full"
@@ -122,9 +121,9 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
                         {dictionary.components.courseGeneralInformationView.createdByText}
                     </p>
                     <div className="flex gap-2">
-                        <UserAvatar 
+                        <UserAvatar
                             size="large"
-                            fullName={author.name} 
+                            fullName={author.name}
                             imageUrl={author.image}
                         />
                         <div className="flex flex-col justify-center items-start">
@@ -134,11 +133,11 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
                             <div className="flex gap-2 items-center">
                                 <Badge
                                     hasIconLeft
-                                    iconLeft={<IconStar size='4'/>}
+                                    iconLeft={<IconStar size='4' />}
                                     text={`${rating}`}
                                     className="h-5 py-1 text-sm max-w-full"
                                 />
-                                <Button 
+                                <Button
                                     size="small"
                                     variant="text"
                                     text={dictionary.components.courseGeneralInformationView.viewProfileText}
@@ -155,7 +154,7 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
                         {dictionary.components.courseGeneralInformationView.yourProgressText}
                     </h6>
                     <div className="flex gap-4">
-                        <ProgressBar 
+                        <ProgressBar
                             progress={studentProgress}
                             type="progress"
                         />
@@ -163,7 +162,7 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
                             {studentProgress}%
                         </p>
                     </div>
-                    <Button 
+                    <Button
                         size="huge"
                         text={dictionary.components.courseGeneralInformationView.resumeText}
                         onClick={onClickResume}
@@ -174,9 +173,9 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
             <div className="relative basis-1/2 h-full">
                 {shouldShowPlaceholder ? (
                     <div className="w-full h-[400px] bg-base-neutral-700 flex items-center justify-center">
-                    <span className="text-text-secondary text-md">
-                        {dictionary.components.coachBanner.placeHolderText}
-                    </span>
+                        <span className="text-text-secondary text-md">
+                            {dictionary.components.coachBanner.placeHolderText}
+                        </span>
                     </div>
                 ) : (
                     <img

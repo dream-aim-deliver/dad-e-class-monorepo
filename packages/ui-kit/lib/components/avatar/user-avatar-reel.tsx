@@ -30,9 +30,9 @@ export const UserAvatarReel: FC<UserAvatarReelProps> = ({
   className,
 }) => {
   return (
-    <div 
-        role='group'
-        className={cn('flex items-center', className)}
+    <div
+      role='group'
+      className={cn('flex items-center', className)}
     >
       {children}
     </div>
