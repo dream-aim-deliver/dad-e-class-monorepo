@@ -1,8 +1,7 @@
-import React from 'react';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { Carousel } from '../lib/components/carousel/carousel'; 
-import { GeneralCard } from '../lib/components/carousel/generalcard';
+import { Carousel } from '../lib/components/carousel/carousel';
+import { GeneralCard } from '../lib/components/carousel/general-card';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -25,7 +24,7 @@ vi.mock('../lib/components/button', () => ({
   ),
 }));
 
-vi.mock('../lib/components/carousel/generalcard', () => ({
+vi.mock('../lib/components/carousel/general-card', () => ({
   GeneralCard: ({ title, description, buttonText, buttonUrl }: any) => (
     <div data-testid="general-card">
       <h3>{title}</h3>
@@ -110,10 +109,10 @@ describe('Carousel', () => {
 
   it('navigates to next page when right arrow is clicked', async () => {
     render(<Carousel {...defaultProps} />);
-    
+
     const rightButton = screen.getByLabelText('Next slide');
     fireEvent.click(rightButton);
-    
+
     await vi.waitFor(() => {
       expect(screen.getByText('Card 4')).toBeInTheDocument();
       expect(screen.queryByText('Card 1')).not.toBeInTheDocument();
@@ -124,13 +123,13 @@ describe('Carousel', () => {
 
   it('navigates to previous page when left arrow is clicked', async () => {
     render(<Carousel {...defaultProps} />);
-    
+
     const rightButton = screen.getByLabelText('Next slide');
     fireEvent.click(rightButton);
-    
+
     const leftButton = screen.getByLabelText('Previous slide');
     fireEvent.click(leftButton);
-    
+
     await vi.waitFor(() => {
       expect(screen.getByText('Card 1')).toBeInTheDocument();
       expect(screen.getByText('Card 2')).toBeInTheDocument();
@@ -162,7 +161,7 @@ describe('Carousel', () => {
     render(<Carousel {...defaultProps} />);
     const dots = screen.getAllByLabelText(/Go to page/);
     fireEvent.click(dots[1]); // Go to page 2
-    
+
     await vi.waitFor(() => {
       expect(screen.getByText('Card 4')).toBeInTheDocument();
       expect(screen.queryByText('Card 1')).not.toBeInTheDocument();
@@ -173,12 +172,12 @@ describe('Carousel', () => {
 
   it('handles touch swipe to next page', async () => {
     const { container } = render(<Carousel {...defaultProps} />);
-    
+
     const carousel = container.querySelector('.overflow-hidden');
     if (carousel) {
       fireEvent.touchStart(carousel, { touches: [{ clientX: 200 }] });
       fireEvent.touchMove(carousel, { touches: [{ clientX: 100 }] });
-      
+
       await vi.waitFor(() => {
         expect(screen.getByText('Card 4')).toBeInTheDocument();
         expect(screen.queryByText('Card 1')).not.toBeInTheDocument();
@@ -190,17 +189,17 @@ describe('Carousel', () => {
 
   it('handles touch swipe to previous page', async () => {
     const { container } = render(<Carousel {...defaultProps} />);
-    
+
     const carousel = container.querySelector('.overflow-hidden');
     if (carousel) {
       // Swipe to next page first
       fireEvent.touchStart(carousel, { touches: [{ clientX: 200 }] });
       fireEvent.touchMove(carousel, { touches: [{ clientX: 100 }] });
-      
+
       // Swipe back to previous page
       fireEvent.touchStart(carousel, { touches: [{ clientX: 100 }] });
       fireEvent.touchMove(carousel, { touches: [{ clientX: 200 }] });
-      
+
       await vi.waitFor(() => {
         expect(screen.getByText('Card 1')).toBeInTheDocument();
         expect(screen.getByText('Card 2')).toBeInTheDocument();
@@ -212,33 +211,33 @@ describe('Carousel', () => {
 
   it('adjusts items per view on window resize', async () => {
     const { rerender } = render(<Carousel {...defaultProps} />);
-    
+
     // Initial state (3 items per view)
     await vi.waitFor(() => {
       const cards = screen.getAllByTestId('general-card');
       expect(cards).toHaveLength(3);
     });
-    
+
     // Simulate tablet view (2 items per view)
     vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(800);
     fireEvent.resize(window);
     rerender(<Carousel {...defaultProps} />);
-    
+
     await vi.waitFor(() => {
       const cards = screen.getAllByTestId('general-card');
       expect(cards).toHaveLength(2);
     }, { timeout: 200 });
-    
+
     // Simulate mobile view (1 item per view)
     vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(500);
     fireEvent.resize(window);
     rerender(<Carousel {...defaultProps} />);
-    
+
     await vi.waitFor(() => {
       const cards = screen.getAllByTestId('general-card');
       expect(cards).toHaveLength(1);
     }, { timeout: 200 });
-    
+
     vi.restoreAllMocks();
   });
 });

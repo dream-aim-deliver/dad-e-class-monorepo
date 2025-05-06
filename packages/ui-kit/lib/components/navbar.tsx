@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from 'react';
+import React, { useState } from 'react';
 import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { Button } from './button';
 import { Dropdown } from './dropdown';

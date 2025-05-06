@@ -26,7 +26,7 @@ const mockCourses = [
         price: 50,
         duration: 60,
         totalSessions: 0,
-        content:"This is a simple tooltip with some information"
+        content: "This is a simple tooltip with some information"
     },
     {
         id: '2',
@@ -34,8 +34,8 @@ const mockCourses = [
         price: 75,
         duration: 90,
         totalSessions: 0,
-     
-        content:"This is a simple tooltip with some information"
+
+        content: "This is a simple tooltip with some information"
     },
     {
         id: '3',
@@ -43,13 +43,13 @@ const mockCourses = [
         price: 60,
         duration: 45,
         totalSessions: 0,
-        content:"This is a simple tooltip with some information"
+        content: "This is a simple tooltip with some information"
     }
 ];
 
 export const Default: Story = {
     args: {
-        onClick:(totalCoast)=>console.log(`Total cost: ${totalCoast}`),
+        onClick: (totalCost) => console.log(`Total cost: ${totalCost}`),
         courses: mockCourses,
         currencyType: 'CHF',
         locale: 'en'
@@ -58,7 +58,7 @@ export const Default: Story = {
 
 export const WithPreselectedSessions: Story = {
     args: {
-        onClick:(totalCoast)=>console.log(`Total cost: ${totalCoast}`),
+        onClick: (totalCost) => console.log(`Total cost: ${totalCost}`),
         courses: mockCourses.map(course => ({
             ...course,
             totalSessions: course.id === '2' ? 3 : 1
@@ -70,7 +70,7 @@ export const WithPreselectedSessions: Story = {
 
 export const GermanLocale: Story = {
     args: {
-        onClick:(totalCoast)=>console.log(`Total cost: ${totalCoast}`),
+        onClick: (totalCost) => console.log(`Total cost: ${totalCost}`),
         courses: mockCourses,
         currencyType: 'CHF',
         locale: 'de'
@@ -79,7 +79,7 @@ export const GermanLocale: Story = {
 
 export const GermanLocaleWithSessions: Story = {
     args: {
-        onClick:(totalCoast)=>console.log(`${totalCoast}`),
+        onClick: (totalCost) => console.log(`${totalCost}`),
         courses: mockCourses.map(course => ({
             ...course,
             totalSessions: course.id === '1' ? 2 : course.id === '3' ? 1 : 0

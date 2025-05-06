@@ -41,8 +41,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   onChange,
 }) => {
   const [value, setValue] = useState(progress);
-  useEffect( () => setValue(progress), [progress] )
- 
+  useEffect(() => setValue(progress), [progress])
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = Number(event.target.value);
     setValue(newValue);

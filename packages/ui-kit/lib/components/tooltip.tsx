@@ -20,19 +20,19 @@ interface TooltipProps {
  * @param contentClassName Optional className for styling the tooltip content.
  * @param tipPosition Position of the tooltip or 'auto' to detect best position (default: 'auto').
  */
-function Tooltip({ 
-  text, 
-  title, 
-  description, 
-  contentClassName, 
-  tipPosition = 'auto' 
+function Tooltip({
+  text,
+  title,
+  description,
+  contentClassName,
+  tipPosition = 'auto'
 }: TooltipProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [position, setPosition] = useState<'top' | 'bottom' | 'left' | 'right'>(
     tipPosition === 'auto' ? 'top' : tipPosition
   );
-  
+
   const tooltipRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -65,22 +65,22 @@ function Tooltip({
         const tooltipRect = tooltipRef.current.getBoundingClientRect();
         const triggerRect = triggerRef.current.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
-        
+
         // Default to top position (above the element)
         let bestPosition: 'top' | 'bottom' | 'left' | 'right' = 'top';
-        
+
         // Get tooltip dimensions
         const tooltipHeight = tooltipRect.height;
-        
+
         // Check if there's enough space on top (preferred position)
         const spaceTop = triggerRect.top;
         const minRequiredSpace = tooltipHeight + 10; // Adding 10px buffer
-        
+
         // Only change from top position if there's not enough space
         if (spaceTop < minRequiredSpace) {
           // Check space at bottom
           const spaceBottom = viewportHeight - triggerRect.bottom;
-          
+
           if (spaceBottom >= minRequiredSpace) {
             bestPosition = 'bottom';
           } else {
@@ -89,25 +89,25 @@ function Tooltip({
             const tooltipWidth = tooltipRect.width;
             const spaceLeft = triggerRect.left;
             const spaceRight = viewportWidth - triggerRect.right;
-            
+
             if (spaceLeft >= tooltipWidth + 10 && spaceLeft > spaceRight) {
               bestPosition = 'left';
             } else if (spaceRight >= tooltipWidth + 10) {
               bestPosition = 'right';
             }
-          
+
           }
         }
-        
+
         setPosition(bestPosition);
       };
-      
+
       // Calculate position after a short delay to ensure DOM is updated
       const timer = setTimeout(updatePosition, 10);
-      
+
       // Recalculate on resize
       window.addEventListener('resize', updatePosition);
-      
+
       return () => {
         clearTimeout(timer);
         window.removeEventListener('resize', updatePosition);
@@ -116,9 +116,9 @@ function Tooltip({
   }, [isVisible, isFocused, tipPosition]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      className="relative inline-block" 
+      className="relative inline-block"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -134,37 +134,37 @@ function Tooltip({
       >
         <span className="line-clamp-2 text-text-secondary">{text}</span>
         <div className='relative'>
-        <IconInfoCircle size="4" classNames={cn('flex-shrink-0 text-text-secondary hover:text-text-primary')} />
-        {/* Tooltip content */}
- {(isVisible || isFocused) && (
-        <div
-          id="tooltip-content"
-          ref={tooltipRef}
-          className={cn(
-            'absolute z-10 p-4 w-64 max-w-xs text-xs  shadow-lg',
-            'bg-tooltip-background border border-tooltip-border',
-            'transition-opacity duration-200',
-            tipPosition !== 'auto' ? positionClasses[tipPosition] : positionClasses[position],
-            contentClassName
-          )}
-          role="tooltip"
-        >
-          {title && <span className="block font-important text-sm text-text-primary mb-1">{title}</span>}
-          <p className="text-sm font-normal text-text-secondary">{description}</p>
+          <IconInfoCircle size="4" classNames={cn('flex-shrink-0 text-text-secondary hover:text-text-primary')} />
+          {/* Tooltip content */}
+          {(isVisible || isFocused) && (
+            <div
+              id="tooltip-content"
+              ref={tooltipRef}
+              className={cn(
+                'absolute z-10 p-4 w-64 max-w-xs text-xs  shadow-lg',
+                'bg-tooltip-background border border-tooltip-border',
+                'transition-opacity duration-200',
+                tipPosition !== 'auto' ? positionClasses[tipPosition] : positionClasses[position],
+                contentClassName
+              )}
+              role="tooltip"
+            >
+              {title && <span className="block font-important text-sm text-text-primary mb-1">{title}</span>}
+              <p className="text-sm font-normal text-text-secondary">{description}</p>
 
-          {/* Tooltip arrow */}
-          <div 
-            className={cn(
-              'absolute w-0 h-0', 
-              tipPosition !== 'auto' ? arrowClasses[tipPosition] : arrowClasses[position]
-            )} 
-          />
+              {/* Tooltip arrow */}
+              <div
+                className={cn(
+                  'absolute w-0 h-0',
+                  tipPosition !== 'auto' ? arrowClasses[tipPosition] : arrowClasses[position]
+                )}
+              />
+            </div>
+          )}
         </div>
-      )}
-        </div> 
       </div>
- 
-     
+
+
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "../button";
 import { Badge } from "../badge";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
@@ -40,8 +40,8 @@ export const GeneralCard: React.FC<GeneralCardProps> = React.memo(
     description,
     badge,
     buttonText,
-    buttonUrl,
     locale,
+    buttonUrl,
     onButtonClick,
   }) => {
     const [isImageError, setIsImageError] = useState(false);
