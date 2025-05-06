@@ -1,10 +1,17 @@
 import { Meta, StoryObj } from '@storybook/react';
-import Calendar from '../../lib/components/calendar/coaching-session-calendar';
+import CoachingSessionCalendar, { formatDate } from '../../lib/components/calendar/coaching-session-calendar';
+import { Button } from '../../lib/components/button';
+import React from 'react';
+import { ScheduleSession } from '../../lib/components/calendar/schedule-session';
 import { AvailableCoachingSessions } from '../../lib/components/available-coaching-sessions/available-coaching-sessions';
 
 // Mock dictionary for Storybook
 const mockDictionary = {
   components: {
+    calendar: {
+      title: 'Coaching Session Calendar',
+      noEventsText: 'No events scheduled',
+    },
     availableCoachingSessions: {
       title: 'Available Coaching Sessions',
       noAvailableSessionText: 'No sessions available',
@@ -15,9 +22,9 @@ const mockDictionary = {
   },
 };
 
-const meta: Meta<typeof Calendar> = {
-  title: 'Components/Calendar',
-  component: Calendar,
+const meta: Meta<typeof CoachingSessionCalendar> = {
+  title: 'Components/CoachingSessionCalendar',
+  component: CoachingSessionCalendar,
   tags: ['autodocs'],
   decorators: [
     (Story) => (
@@ -41,7 +48,7 @@ const meta: Meta<typeof Calendar> = {
     },
     availableCoachingSessionsData: {
       control: 'object',
-      description: 'Array of coaching session objects to display in the top-right corner.',
+      description: 'Array of coaching session objects for drag-and-drop (dragAndDrop variant only).',
     },
     onAddEvent: {
       action: 'addEvent',
@@ -51,55 +58,32 @@ const meta: Meta<typeof Calendar> = {
       action: 'eventDrop',
       description: 'Callback for dragging and dropping an event.',
     },
+    variant: {
+      control: 'select',
+      options: ['dragAndDrop', 'clickToSchedule'],
+      description: 'Determines the calendar behavior: dragAndDrop for external session dragging, clickToSchedule for hover and click scheduling.',
+    },
   },
 };
 
 export default meta;
 
-const Template: StoryObj<typeof Calendar> = {
-  render: (args: {
-    events: typeof mockEvents;
-    coachAvailability: typeof mockCoachAvailability;
-    yourMeetings: typeof mockYourMeetings;
-    availableCoachingSessionsData: typeof mockCoachingSessions;
-    onAddEvent?: (event: any) => void;
-    onUpdateEvent?: (event: any) => void;
-    onEventDrop?: (event: any) => void;
-  }) => (
-    <div className="relative flex flex-col min-h-screen bg-background">
-      {/* Container for AvailableCoachingSessions */}
-      <div className="absolute top-10 right-4 z-30">
-        <AvailableCoachingSessions
-          locale="en"
-          text="Drag these sessions to the calendar"
-          availableCoachingSessionsData={args.availableCoachingSessionsData}
-          onClickBuyMoreSessions={() => console.log('Buy more sessions')}
-        />
-      </div>
-
-      {/* Container for Calendar with padding to avoid overlap */}
-      <div className="flex-1 p-4 pt-10 pr-75">
-        <Calendar {...args} />
-      </div>
-    </div>
-  ),
-};
-
+// Mock data for this week (starting May 6, 2025)
 const mockEvents = [
   {
     id: '1',
     title: 'Team Meeting',
     description: 'Weekly sync with the development team',
-    start: '2025-04-28T10:00:00',
-    end: '2025-04-28T12:00:00',
+    start: '2025-05-06T10:00:00',
+    end: '2025-05-06T12:00:00',
     attendees: 'team@example.com',
   },
   {
     id: '2',
     title: 'Project Review',
-    description: 'Q1 project status review',
-    start: '2025-04-29T14:00:00',
-    end: '2025-04-29T17:30:00',
+    description: 'Q2 project status review',
+    start: '2025-05-07T14:00:00',
+    end: '2025-05-07T15:30:00',
     attendees: 'reviewers@example.com',
   },
 ];
@@ -109,27 +93,43 @@ const mockCoachAvailability = [
     id: '3',
     title: 'Coach Available',
     description: 'Available for coaching session',
-    start: '2025-04-30T09:00:00',
-    end: '2025-04-30T14:00:00',
+    start: '2025-05-06T09:00:00',
+    end: '2025-05-06T11:00:00',
     attendees: 'coach@example.com',
   },
   {
     id: '4',
-    title: 'Coach Available 1',
-    description: 'Available for coaching session 1',
-    start: '2025-04-01T09:00:00',
-    end: '2025-04-01T12:00:00',
+    title: 'Coach Available',
+    description: 'Available for coaching session',
+    start: '2025-05-07T13:00:00',
+    end: '2025-05-07T15:00:00',
+    attendees: 'coach@example.com',
+  },
+  {
+    id: '5',
+    title: 'Coach Available',
+    description: 'Available for coaching session',
+    start: '2025-05-08T10:00:00',
+    end: '2025-05-08T12:00:00',
+    attendees: 'coach@example.com',
+  },
+  {
+    id: '6',
+    title: 'Coach Available',
+    description: 'Available for coaching session',
+    start: '2025-05-09T14:00:00',
+    end: '2025-05-09T16:00:00',
     attendees: 'coach@example.com',
   },
 ];
 
 const mockYourMeetings = [
   {
-    id: '5',
+    id: '7',
     title: 'Your Meeting',
     description: 'Scheduled meeting with coach',
-    start: '2025-04-28T13:00:00',
-    end: '2025-04-28T14:00:00',
+    start: '2025-05-06T13:00:00',
+    end: '2025-05-06T14:00:00',
     attendees: 'user@example.com',
   },
 ];
@@ -152,7 +152,132 @@ const mockCoachingSessions = [
   },
 ];
 
-export const Default: StoryObj<typeof Calendar> = {
+const Template: StoryObj<typeof CoachingSessionCalendar> = {
+  render: (args: {
+    events: typeof mockEvents;
+    coachAvailability: typeof mockCoachAvailability;
+    yourMeetings: typeof mockYourMeetings;
+    availableCoachingSessionsData?: typeof mockCoachingSessions;
+    onAddEvent?: (event: any) => void;
+    onEventDrop?: (event: any) => void;
+    variant: 'dragAndDrop' | 'clickToSchedule';
+  }) => {
+    const [isScheduleSessionOpen, setIsScheduleSessionOpen] = React.useState(false);
+    const [scheduleSessionData, setScheduleSessionData] = React.useState<{
+      date: Date;
+      time: string;
+      title: string;
+      coachingSessionId?: string;
+    } | null>(null);
+
+    const handleOpenSessions = () => {
+      const now = new Date();
+      setScheduleSessionData({
+        date: now,
+        time: `${now.getHours().toString().padStart(2, '0')}:${now
+          .getMinutes()
+          .toString()
+          .padStart(2, '0')}`,
+        title: 'Coaching Session',
+        coachingSessionId: `session-${Date.now()}`,
+      });
+      setIsScheduleSessionOpen(true);
+    };
+
+    const handleSendRequest = () => {
+      if (!scheduleSessionData) return;
+
+      const { date, time, title, coachingSessionId: sessionId } = scheduleSessionData;
+      const [hours, minutes] = time.split(':').map(Number);
+      const start = new Date(date);
+      start.setHours(hours, minutes);
+      const end = new Date(start);
+      end.setHours(hours + 1, minutes);
+
+      const newEvent = {
+        id: Date.now().toString(),
+        title,
+        start: start.toISOString(),
+        end: end.toISOString(),
+        extendedProps: { coachingSessionId: sessionId },
+      };
+
+      args.onAddEvent?.(newEvent);
+      setIsScheduleSessionOpen(false);
+      setScheduleSessionData(null);
+    };
+
+    return (
+      <div className="flex flex-col min-h-screen bg-background p-4">
+        {args.variant === 'clickToSchedule' && (
+          <div className="flex justify-end mb-4">
+            <Button
+              onClick={handleOpenSessions}
+              variant="secondary"
+              size="medium"
+              text="Sessions"
+            />
+          </div>
+        )}
+        
+        {args.variant === 'dragAndDrop' && args.availableCoachingSessionsData ? (
+          <div className="flex flex-row gap-4">
+            <div className="flex-grow">
+              <CoachingSessionCalendar {...args} />
+            </div>
+            <div className="w-64">
+              <AvailableCoachingSessions
+                locale="en"
+                text="Drag these sessions to the calendar"
+                availableCoachingSessionsData={args.availableCoachingSessionsData}
+                onClickBuyMoreSessions={() => console.log('Buy more sessions')}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="flex-1">
+            <CoachingSessionCalendar {...args} />
+          </div>
+        )}
+        
+        {isScheduleSessionOpen && scheduleSessionData && (
+          <div className="fixed inset-0 flex items-center justify-center bg-transparent bg-opacity-10 z-50 backdrop-blur-xs">
+            <div className="bg-card-fill p-6 rounded-md border border-card-stroke max-w-[320px] w-full">
+              <ScheduleSession
+                user="student"
+                isError={false}
+                groupSession={true}
+                coachName="John Doe"
+                groupName="Group A"
+                courseTitle="Course Title"
+                course={true}
+                dateValue={scheduleSessionData.date}
+                timeValue={scheduleSessionData.time}
+                sessionName={scheduleSessionData.title}
+                onDateChange={(value) =>
+                  setScheduleSessionData((prev) =>
+                    prev ? { ...prev, date: new Date(value) } : prev
+                  )
+                }
+                onTimeChange={(value) =>
+                  setScheduleSessionData((prev) => (prev ? { ...prev, time: value } : prev))
+                }
+                onClickDiscard={() => {
+                  setIsScheduleSessionOpen(false);
+                  setScheduleSessionData(null);
+                }}
+                onClickSendRequest={handleSendRequest}
+                locale="en"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  },
+};
+
+export const DragAndDropVariant: StoryObj<typeof CoachingSessionCalendar> = {
   ...Template,
   args: {
     events: mockEvents,
@@ -160,41 +285,40 @@ export const Default: StoryObj<typeof Calendar> = {
     yourMeetings: mockYourMeetings,
     availableCoachingSessionsData: mockCoachingSessions,
     onAddEvent: (event) => console.log('Add Event:', event),
-   
     onEventDrop: (event) => console.log('Event Dropped:', event),
+    variant: 'dragAndDrop',
   },
   parameters: {
     docs: {
       description: {
         story:
-          'A default view of the Calendar component with sample events and draggable coaching sessions in the top-right corner.',
+          'The dragAndDrop variant of the CoachingSessionCalendar component, allowing users to drag coaching sessions from the AvailableCoachingSessions component placed next to the calendar on the right side.',
       },
     },
   },
 };
 
-export const MonthView: StoryObj<typeof Calendar> = {
+export const ClickToScheduleVariant: StoryObj<typeof CoachingSessionCalendar> = {
   ...Template,
   args: {
     events: mockEvents,
     coachAvailability: mockCoachAvailability,
     yourMeetings: mockYourMeetings,
-    availableCoachingSessionsData: mockCoachingSessions,
     onAddEvent: (event) => console.log('Add Event:', event),
-   
     onEventDrop: (event) => console.log('Event Dropped:', event),
-    // initialView: 'dayGridMonth', // Removed as it is not a valid property
+    variant: 'clickToSchedule',
   },
   parameters: {
     docs: {
       description: {
-        story: 'A month view of the Calendar component.',
+        story:
+          'The clickToSchedule variant of the CoachingSessionCalendar component, featuring hover-based scheduling, click-to-schedule on Coach Available slots, and a Sessions button to open the scheduling modal. The Sessions button is placed above the calendar in the top-right corner.',
       },
     },
   },
 };
 
-export const Empty: StoryObj<typeof Calendar> = {
+export const EmptyDragAndDrop: StoryObj<typeof CoachingSessionCalendar> = {
   ...Template,
   args: {
     events: [],
@@ -202,77 +326,39 @@ export const Empty: StoryObj<typeof Calendar> = {
     yourMeetings: [],
     availableCoachingSessionsData: [],
     onAddEvent: (event) => console.log('Add Event:', event),
-   
     onEventDrop: (event) => console.log('Event Dropped:', event),
+    variant: 'dragAndDrop',
   },
   parameters: {
     docs: {
       description: {
-        story: 'An empty view of the Calendar component.',
+        story: 'An empty view of the CoachingSessionCalendar component in dragAndDrop variant with an empty AvailableCoachingSessions box next to the calendar.',
       },
     },
   },
 };
 
-export const CustomEvents: StoryObj<typeof Calendar> = {
+export const EmptyClickToSchedule: StoryObj<typeof CoachingSessionCalendar> = {
   ...Template,
   args: {
-    events: [
-      {
-        id: '6',
-        title: 'Sprint Planning',
-        description: 'Planning for next sprint',
-        start: '2025-04-27T09:00:00',
-        end: '2025-04-27T10:30:00',
-        attendees: 'planners@example.com',
-      },
-    ],
-    coachAvailability: [
-      {
-        id: '7',
-        title: 'Coach Available',
-        description: 'Open slot for coaching',
-        start: '2025-04-27T11:00:00',
-        end: '2025-04-27T12:00:00',
-        attendees: 'coach@example.com',
-      },
-    ],
-    yourMeetings: [
-      {
-        id: '8',
-        title: 'Your Meeting',
-        description: 'Scheduled user meeting',
-        start: '2025-04-27T14:00:00',
-        end: '2025-04-27T15:00:00',
-        attendees: 'user@example.com',
-      },
-    ],
-    availableCoachingSessionsData: [
-      {
-        title: 'Advanced React',
-        time: 90,
-        numberOfSessions: 3,
-      },
-      {
-        title: 'TypeScript Intro',
-        time: 30,
-        numberOfSessions: 1,
-      },
-    ],
+    events: [],
+    coachAvailability: [],
+    yourMeetings: [],
     onAddEvent: (event) => console.log('Add Event:', event),
-   
     onEventDrop: (event) => console.log('Event Dropped:', event),
+    variant: 'clickToSchedule',
   },
   parameters: {
     docs: {
       description: {
-        story: 'A custom view of the Calendar component with different event data.',
+        story:
+          'An empty view of the CoachingSessionCalendar component in clickToSchedule variant with a Sessions button above the calendar.',
       },
     },
   },
 };
 
-export const Interactive: StoryObj<typeof Calendar> = {
+export const InteractiveDragAndDrop: StoryObj<typeof CoachingSessionCalendar> = {
   ...Template,
   args: {
     events: mockEvents,
@@ -282,11 +368,34 @@ export const Interactive: StoryObj<typeof Calendar> = {
     onAddEvent: (event) => alert(`Added Event: ${event.title}`),
     onEventDrop: (event) =>
       alert(`Dropped Event: ${event.title} to ${new Date(event.start).toLocaleString()}`),
+    variant: 'dragAndDrop',
   },
   parameters: {
     docs: {
       description: {
-        story: 'An interactive view of the Calendar component with alerts for event changes.',
+        story:
+          'An interactive view of the CoachingSessionCalendar component in dragAndDrop variant with alerts for event changes. The AvailableCoachingSessions box is placed next to the calendar.',
+      },
+    },
+  },
+};
+
+export const InteractiveClickToSchedule: StoryObj<typeof CoachingSessionCalendar> = {
+  ...Template,
+  args: {
+    events: mockEvents,
+    coachAvailability: mockCoachAvailability,
+    yourMeetings: mockYourMeetings,
+    onAddEvent: (event) => alert(`Added Event: ${event.title}`),
+    onEventDrop: (event) =>
+      alert(`Dropped Event: ${event.title} to ${new Date(event.start).toLocaleString()}`),
+    variant: 'clickToSchedule',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'An interactive view of the CoachingSessionCalendar component in clickToSchedule variant with alerts for event changes and a Sessions button above the calendar.',
       },
     },
   },
