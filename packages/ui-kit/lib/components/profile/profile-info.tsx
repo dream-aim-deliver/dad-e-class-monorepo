@@ -4,19 +4,17 @@ import { Button } from '../button';
 import { CheckBox } from '../checkbox';
 import { profile } from '@maany_shr/e-class-models';
 import { TextInput } from '../text-input';
-import { ImageUploader, ImageUploadResponse } from '../drag&drop/image-uploader';
 import { LanguageSelector } from '../language-selector';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { language } from '@maany_shr/e-class-models';
+import { ImageUploadResponse, UploadedFileType, Uploader, UploadResponse } from '../drag&drop/uploader';
+import { useState } from 'react';
 
 interface ProfileInfoProps extends isLocalAware {
   initialData?: profile.TPersonalProfile;
   onSave?: (profile: profile.TPersonalProfile) => void;
 }
-type fileProps = {
-  isUploading: boolean;
-  file: File;
-}[];
+
 
 /**
  * A reusable form component for managing and editing user profile information.
@@ -74,7 +72,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           : {}),
       }) as profile.TPersonalProfile,
   );
-  const [files, setFiles] = React.useState<fileProps>([]);
+  const [file, setFile] = useState<UploadedFileType | null>(null);
   const dictionary = getDictionary(locale);
 
   const handleChange = (
@@ -84,47 +82,43 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleImageUpload = async (file: File):Promise<ImageUploadResponse> => {
-    try {
-      // First add the file to the state with isUploading=true
-      const newFile = {
-        file,
-        isUploading: true,
-        error: false,
-      };
-
-      setFiles((prev) => [...prev, newFile]);
-      const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-      // Simulate upload delay
-      await sleep(1500);
-
-      const response: ImageUploadResponse = {
-        image_id: Math.random().toString(36).substr(2, 9),
-        image_thumbnail_url: "https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg"
-      };
-
-      // Update the file state after upload completes
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.file === file
-            ? { ...f, isUploading: false, imageData: response } // Fixed property name from videoData to imageData
-            : f,
-        ),
-      );
-
+  const handleUploadedFiles = async (newFiles: UploadedFileType[]): Promise<UploadResponse> => {
+      // Set the files immediately with loading state
+      const newFile = newFiles[0];
+    
+      // Update our local state immediately to show loading
+      setFile(newFile);
+      try {
+      // Return a Promise that resolves to the UploadResponse
+      const response = await new Promise<ImageUploadResponse>((resolve) => {
+        setTimeout(() => {
+          // Create a proper UploadResponse object
+           resolve ({
+            image_id: `123456`,
+            image_thumbnail_url: URL.createObjectURL(newFile.file),
+          });
+        }, 100);
+      });
+      setFile({
+        ...newFile,
+        isUploading: false,
+        responseData: response
+      });
+      
       return response;
-    } catch (e) {
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.file === file ? { ...f, isUploading: false, error: true } : f,
-        ),
-      );
-      throw e;
+    }catch (error) {
+      // Handle error properly by updating state
+      setFile({
+        ...newFile,
+        isUploading: false,
+        error: "Upload failed"
+      });
+      
+      throw error;
     }
-  };
-  const handleDelete = (index: number) => {
-    setFiles((prevFiles: any[]) => prevFiles.filter((f, i) => i !== index));
-  };
+
+    };
+ console.log(file)
   const handleSubmit = () => {
     onSave?.(formData);
   };
@@ -265,17 +259,20 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             {' '}
             {dictionary.components.profileInfo.profilePicture}{' '}
           </p>
-          <ImageUploader
+          <Uploader
            type="single"
-            files={files}
+           file={file as UploadedFileType}
+           onFilesChange={handleUploadedFiles}
+            variant='image'
             onDownload={() => {
               // Handle download logic here
             }}
             locale={locale}
             className="w-full"
             maxSize={5}
-            onImageUpload={handleImageUpload}
-            onDelete={handleDelete}
+            onDelete={()=>{
+              // Handle delete logic here
+            }}
           />
         </div>
 
