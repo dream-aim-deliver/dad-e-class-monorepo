@@ -1,10 +1,7 @@
 import { forwardRef, ReactNode, useContext } from "react";
 import { AccordionContext } from "./accordion";
-import { IconChevronUp } from "../icons/icon-chevron-up";
-import { IconTrashAlt } from "../icons/icon-trash-alt";
 import { IconPlus } from "../icons/icon-plus";
 import { IconMinus } from "../icons/icon-minus";
-import { IconChevronDown } from "../icons/icon-chevron-down";
 import { cn } from "../../utils/style-utils";
 
 /**
@@ -48,7 +45,7 @@ const AccordionTrigger = forwardRef<HTMLDivElement, AccordionTriggerProps>(
       >
         <div className="flex-1 flex">
           {children}
-          </div>
+        </div>
 
         <div className="flex items-center gap-4">
           {!context.value.includes(value) ? (

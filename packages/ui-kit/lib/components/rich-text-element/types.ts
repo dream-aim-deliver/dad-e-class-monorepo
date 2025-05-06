@@ -1,4 +1,4 @@
-import { isLocalAware, TLocale } from "@maany_shr/e-class-translations";
+import { isLocalAware } from "@maany_shr/e-class-translations";
 import { BaseEditor, Descendant } from "slate";
 import { HistoryEditor } from "slate-history";
 import { ReactEditor } from "slate-react";
@@ -6,12 +6,12 @@ import { ReactEditor } from "slate-react";
 /**
  * Props for the RichTextEditor component.
  */
-export interface RichTextEditorProps extends isLocalAware{
+export interface RichTextEditorProps extends isLocalAware {
   name: string;
   placeholder: string;
   initialValue: Descendant[] | undefined | string;
   onChange?: (value: Descendant[]) => void;
-  onLoseFocus: (value:string) => void;
+  onLoseFocus: (value: string) => void;
 }
 
 /**

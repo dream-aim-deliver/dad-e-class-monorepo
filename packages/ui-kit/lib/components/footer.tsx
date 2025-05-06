@@ -1,5 +1,5 @@
 import React from 'react';
-import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
+import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { Dropdown } from './dropdown';
 
 interface FooterProps extends isLocalAware {
@@ -44,7 +44,6 @@ export const Footer: React.FC<FooterProps> = ({
     footerChildren,
     availableLocales,
 }) => {
-    const dictionary = getDictionary(locale);
 
     const handleLocaleChange = (newLocale: TLocale) => {
         if (availableLocales.includes(newLocale) && onChangeLanguage) {

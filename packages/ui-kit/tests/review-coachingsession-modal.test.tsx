@@ -133,7 +133,10 @@ describe('ReviewDialog', () => {
   it('toggles checkbox state correctly', async () => {
     render(<ReviewCoachingSessionModal {...defaultProps} />);
 
-    const checkbox = screen.getByTestId('checkbox').querySelector('input')!;
+    const checkbox = screen.getByTestId('checkbox').querySelector('input');
+    if (!checkbox) {
+      throw new Error('Checkbox input not found');
+    }
     expect(checkbox).not.toBeChecked();
 
     await act(async () => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { IconCoachingSession } from '../../lib/components/icons/icon-coaching-session';
 // Meta configuration for Storybook
