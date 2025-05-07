@@ -50,7 +50,7 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(({ ch
         return (
             <div
                 ref={ref}
-                className="overflow-hidden h-auto transition-all duration-100 ease-in-out"
+                className="overflow-hidden w-full h-auto transition-all duration-100 ease-in-out"
                 style={{ height }}
             >
                 <div ref={contentRef} className={cn("", className)}>

@@ -78,7 +78,6 @@ export const IconButton: FC<IconButtonProps> = ({
   ...props
 }) => {
   const buttonSize = sizeMap[size].button;
-  const iconSize = sizeMap[size].icon;
 
   const buttonClasses = clsx(
     'flex items-center justify-center transition-all duration-200',

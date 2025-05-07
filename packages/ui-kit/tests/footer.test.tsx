@@ -1,8 +1,7 @@
-import React from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Footer } from '../lib/components/footer'; // Adjust the import path as needed
-import { getDictionary, locales, TLocale } from '@maany_shr/e-class-translations';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({

@@ -2,29 +2,7 @@
 import { date, z } from 'zod';
 
 export const DictionarySchema = z.object({
-  sso: z.object({
-    termsAndConditions: z.object({
-      title: z.string(),
-      content: z.string(),
-      confirmationText: z.string(),
-    })
-  }),
-  home: z.object({
-    title: z.string(),
-    buttonText: z.string(),
-    badgeText: z.string(),
-    signInButtonText: z.string(),
-    notSignedInText: z.string(),
-    welcomeText: z.string(),
-    signOut: z.string(),
-  }),
-  login: z.object({
-    title: z.string(),
-    postLogout: z.string(),
-    username: z.string(),
-    password: z.string(),
-    signIn: z.string(),
-  }),
+  
   components: z.object({
     coachBanner: z.object({
       buttonText: z.string(),
@@ -36,6 +14,11 @@ export const DictionarySchema = z.object({
     profileTab: z.object({
       personal: z.string(),
       professional: z.string(),
+    }),
+    modulePagination: z.object({
+      previous: z.string(),
+      next: z.string(),
+      lesson: z.string(),
     }),
     dragDrop: z.object({
       title: z.string(),
@@ -127,6 +110,17 @@ export const DictionarySchema = z.object({
       more: z.string(),
       viewProfile: z.string(),
       bookSession: z.string(),
+    }),
+    reviewCoachingSessionModal : z.object({
+      title: z.string(),
+      sendReviewButton: z.string(),
+      reviewPlaceholder: z.string(),
+      closeButton: z.string(),
+      skipButton: z.string(),
+      checkboxText: z.string(),
+      yourReview: z.string(),
+      thankYouText: z.string(),
+      errorState: z.string(),
     }),
     courseCard: z.object({
       courseEmptyState: z.object({
@@ -252,7 +246,73 @@ export const DictionarySchema = z.object({
       rateCallQualityText: z.string(),
       loadMoreText: z.string(),
     }),
+    coachingSessionTracker: z.object({
+      minuteText: z.string(),
+      usedText: z.string(),
+      buyMoreSessionsText: z.string(),
+      buyCoachingSessionsText: z.string(),
+      coachingSessionText: z.string(),
+      noCoachingSessionText: z.string(),
+    }),
+    courseProgressBar: z.object({
+      resumeText: z.string(),
+      progressText: z.string(),
+    }),
+    milestone: z.object({
+      milestoneText: z.string(),
+    }),
+    courseOutline: z.object({
+      optionalText: z.string(),
+      updatedText: z.string(),
+      moduleText: z.string(),
+    }),
+    courseGeneralInformationView: z.object({
+      durationText: z.string(),
+      minutesText: z.string(),
+      hourText: z.string(),
+      hoursText: z.string(),
+      filmMaterialText: z.string(),
+      coachingWithAProfessionalText: z.string(),
+      selfStudyMaterialText: z.string(),
+      createdByText: z.string(),
+      yourProgressText: z.string(),
+      resumeText: z.string(),
+      viewProfileText: z.string(),
+    }),
   }),
-
+  pages: z.object({
+      sso: z.object({
+        termsAndConditions: z.object({
+          title: z.string(),
+          content: z.string(),
+          confirmationText: z.string(),
+        })
+      }),
+      home: z.object({
+        title: z.string(),
+        buttonText: z.string(),
+        badgeText: z.string(),
+        signInButtonText: z.string(),
+        notSignedInText: z.string(),
+        welcomeText: z.string(),
+        signOutText: z.string(),
+      }),
+      login: z.object({
+        title: z.string(),
+        postLogout: z.string(),
+        username: z.string(),
+        password: z.string(),
+        signIn: z.string(),
+        loading: z.string(),
+      }),
+      auth: z.object({
+        errorPage: z.object({
+          title: z.string(),
+          description: z.string(),
+          tryAgain: z.string(),
+      }),
+    }),
+  }),
 });
+
 export type TDictionary = z.infer<typeof DictionarySchema>;

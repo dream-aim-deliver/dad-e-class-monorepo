@@ -146,6 +146,14 @@
 
   --color-tooltip-background: var(--tooltip-background);
   --color-tooltip-border: var(--tooltip-border);
+
+  /* AG Grid */
+  --ag-header-row-border: none;
+  /* TODO: ensure styling matching Figma */
+  --ag-background-color: var(--color-base-neutral-900);
+  --ag-foreground-color: var(--color-base-neutral-50);
+  --ag-header-background-color: var(--color-base-neutral-900);
+  --ag-accent-color: var(--color-base-brand-500);
 }
 
 @layer base {
@@ -293,6 +301,7 @@
   --font-weight-h3: var(--font-weight-important);
   --font-weight-h5: var(--font-weight-important);
   font-family: var(--font-nunito);
+  --ag-font-family: var(--font-nunito);
 }
 
 .theme-Job-rand-me {
@@ -415,6 +424,7 @@
   --font-weight-h3: var(--font-weight-important);
   --font-weight-h5: var(--font-weight-important);
   font-family: var(--font-roboto);
+  --ag-font-family: var(--font-roboto);
 }
 
 .theme-Bewerbeagentur {
@@ -537,6 +547,7 @@
   --font-weight-h3: 400;
   --font-weight-h5: 400;
   font-family: var(--font-raleway);
+  --ag-font-family: var(--font-raleway);
 }
 
 .theme-Cms {
@@ -654,4 +665,11 @@
   --font-weight-h3: var(--font-weight-important);
   --font-weight-h5: var(--font-weight-important);
   font-family: var(--font-figtree);
+  --ag-font-family: var(--font-figtree);
+}
+
+.ag-root-wrapper {
+  padding: 0 0.75rem; /* Horizontal padding for cells which includes their borders */
+  border-bottom-left-radius: 0!important; /* No rounding of the bottom border for pagination panel integration */
+  border-bottom-right-radius: 0!important;
 }

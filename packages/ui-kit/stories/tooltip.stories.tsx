@@ -87,7 +87,7 @@ export const PositionTop: Story = {
   args: {
     text: 'Always on Top',
     description: 'This tooltip is forced to appear above the trigger element',
-    tipPosition: 'up',
+    tipPosition: 'top',
   },
 };
 
@@ -95,26 +95,10 @@ export const PositionBottom: Story = {
   args: {
     text: 'Always on Bottom',
     description: 'This tooltip is forced to appear below the trigger element',
-    tipPosition: 'auto',
+    tipPosition: 'bottom',
     contentClassName: 'max-w-[500px]',
     title: 'hellop',
   },
 };
 
-// You might want to manually test focus behavior
-export const Keyboard: Story = {
-  args: {
-    text: 'Tab to me',
-    title: 'Keyboard Accessible',
-    description:
-      'This tooltip should appear when you tab to it, demonstrating keyboard accessibility',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'This story helps test keyboard focus behavior. Try tabbing to the element.',
-      },
-    },
-  },
-};
+

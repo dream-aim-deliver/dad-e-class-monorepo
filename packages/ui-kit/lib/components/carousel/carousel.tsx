@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
+import React, { useRef, useState, useCallback, useMemo, useEffect } from "react";
 import { IconChevronLeft } from "../icons/icon-chevron-left";
 import { IconChevronRight } from "../icons/icon-chevron-right";
 import { Button } from "../button";
@@ -20,13 +20,12 @@ export const CarouselContent: React.FC<{
       {items.map((item, index) => (
         <div
           key={index}
-          className={`flex-shrink-0 px-2 ${
-            itemsPerView === 1
+          className={`flex-shrink-0 justify-items-center px-2 transition-all duration-300 ${itemsPerView === 1 || items.length === 1
               ? "w-full max-w-[90%] mx-auto"
               : itemsPerView === 2
-              ? "w-1/2 max-w-[45%]"
-              : "w-1/3 max-w-[30%]"
-          }`}
+                ? "w-1/2 max-w-[45%]"
+                : "w-1/3 max-w-[30%]"
+            }`}
         >
           {item}
         </div>
@@ -60,7 +59,17 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
   ({ children, className = "", locale, onClick }) => {
     const carouselRef = useRef<HTMLDivElement>(null);
     const [currentPage, setCurrentPage] = useState(0);
-    const [itemsPerView, setItemsPerView] = useState(3); // Default to 3, will be adjusted by screen size
+    const [itemsPerView, setItemsPerView] = useState(() => {
+      // Initialize with the correct value based on window width
+      if (typeof window !== 'undefined') {
+        const width = window.innerWidth;
+        if (width < 640) return 1;
+        if (width < 1024) return 2;
+        return 3;
+      }
+      return 3; // Default for SSR
+    });
+
     const [touchStart, setTouchStart] = useState(0);
     const dictionary = getDictionary(locale);
     const childrenArray = React.Children.toArray(children);
@@ -77,23 +86,23 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
     // Responsive items per view
     useEffect(() => {
       const updateItemsPerView = () => {
-        if (window.innerWidth < 640) setItemsPerView(1);
-        else if (window.innerWidth < 1024) setItemsPerView(2);
-        else setItemsPerView(3);
+        const width = window.innerWidth;
+        if (width < 640) {
+          setItemsPerView(1);
+        } else if (width < 1024) {
+          setItemsPerView(2);
+        } else {
+          setItemsPerView(3);
+        }
       };
 
       updateItemsPerView();
-      let resizeTimer: ReturnType<typeof setTimeout>;
-      const debouncedResize = () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(updateItemsPerView, 100);
+      const handleResize = () => {
+        updateItemsPerView();
       };
 
-      window.addEventListener("resize", debouncedResize);
-      return () => {
-        window.removeEventListener("resize", debouncedResize);
-        clearTimeout(resizeTimer);
-      };
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     // Keep currentPage valid
@@ -150,9 +159,8 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
               <button
                 onClick={goPrev}
                 disabled={currentPage === 0}
-                className={`absolute left-[-10px] sm:left-[-20px] md:-left-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${
-                  currentPage === 0 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                }`}
+                className={`absolute left-[-10px] sm:left-[-20px] md:-left-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${currentPage === 0 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                  }`}
                 aria-label="Previous slide"
               >
                 <IconChevronLeft classNames="text-button-primary-fill w-5 h-5 sm:w-6 sm:h-6" />
@@ -162,13 +170,13 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
             {/* Carousel Content Wrapper */}
             <div
               ref={carouselRef}
-              className="overflow-hidden"
+              className="overflow-hidden transition-all duration-500"
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               role="region"
               aria-label="Carousel"
             >
-              <div className="relative flex transition-transform duration-300 ease-in-out w-full justify-center">
+              <div className="relative flex ease-in-out w-full justify-center">
                 {itemGroups[currentPage] && (
                   <CarouselContent items={itemGroups[currentPage]} itemsPerView={itemsPerView} />
                 )}
@@ -180,11 +188,10 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
               <button
                 onClick={goNext}
                 disabled={currentPage === itemGroups.length - 1}
-                className={`absolute right-[-10px] sm:right-[-20px] md:-right-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${
-                  currentPage === itemGroups.length - 1
+                className={`absolute right-[-10px] sm:right-[-20px] md:-right-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full transition-colors ${currentPage === itemGroups.length - 1
                     ? "opacity-50 cursor-not-allowed"
                     : "cursor-pointer"
-                }`}
+                  }`}
                 aria-label="Next slide"
               >
                 <IconChevronRight classNames="text-button-primary-fill w-5 h-5 sm:w-6 sm:h-6" />
@@ -199,11 +206,10 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
                 <button
                   key={`page-${index}`}
                   onClick={() => goToPage(index)}
-                  className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-                    index === currentPage
+                  className={`w-3 h-3 rounded-full transition-colors duration-200 ${index === currentPage
                       ? "bg-button-primary-fill"
                       : "border border-button-primary-fill hover:bg-text-primary/20"
-                  }`}
+                    }`}
                   aria-label={`Go to page ${index + 1}`}
                 />
               ))}

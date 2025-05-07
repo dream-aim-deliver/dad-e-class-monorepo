@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Button } from "../button";
-import { isLocalAware, TLocale } from "@maany_shr/e-class-translations";
+import { isLocalAware } from "@maany_shr/e-class-translations";
 
 interface EmptyStateProps extends isLocalAware {
   message: string;

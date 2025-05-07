@@ -1,6 +1,6 @@
 {
   "name": "@maany_shr/e-class-ui-kit",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -27,6 +27,8 @@
     "@mux/mux-player-react": "^3.3.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "16.1.0",
+    "ag-grid-community": "^33.2.4",
+    "ag-grid-react": "^33.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "fullcalendar": "^6.1.17",

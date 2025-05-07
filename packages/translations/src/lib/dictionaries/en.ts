@@ -5,9 +5,6 @@ import { SSO_EN } from '../pages/sso/sso-en';
 
 
 export const EN: TDictionary = {
-  home: Home_EN,
-  login: Login_EN,
-  sso: SSO_EN,
   components: {
     coachBanner: {
       buttonText: 'Become a Coach',
@@ -26,6 +23,11 @@ export const EN: TDictionary = {
       na: 'N/A',
       discardButton: 'Discard',
       sendRequestButton: 'Send Request',
+    },
+    modulePagination: {
+      previous: 'Previous',
+      next: 'Next',
+      lesson: 'Lesson',
     },
     courseCard: {
       courseEmptyState: {
@@ -51,6 +53,17 @@ export const EN: TDictionary = {
       cochingSession: 'Coaching Session',
       sales: 'sales',
       hours: 'hours',
+    },
+    reviewCoachingSessionModal: {
+      title: 'How would you rate this course?',
+      sendReviewButton: 'Send review',
+      skipButton: 'Skip',
+      closeButton: 'Close',
+      reviewPlaceholder: 'What did you think about the course? Any suggestion on how we can improve it?',
+      checkboxText: 'Did you need more time?',
+      yourReview: 'Your review',
+      thankYouText: 'Thank you for your feedback!',
+      errorState: 'Failed to submit review. Please try again later.',
     },
     dragDrop: {
       title: ' Drop the files here...',
@@ -239,6 +252,51 @@ export const EN: TDictionary = {
       sessionCanceledText: 'Session Canceled',
       rateCallQualityText: 'Rate Call Quality',
       loadMoreText: 'Load more...',
+    },
+    coachingSessionTracker: {
+      minuteText: 'minutes',
+      usedText: 'used',
+      buyMoreSessionsText: 'Buy more sessions',
+      buyCoachingSessionsText: 'Buy coaching sessions',
+      coachingSessionText: 'Coaching sessions included',
+      noCoachingSessionText: 'No coaching sessions included',
+    },
+    courseProgressBar: {
+      resumeText: 'Resume',
+      progressText: 'Progress',
+    },
+    milestone: {
+      milestoneText: 'Milestone',
+    },
+    courseOutline: {
+      optionalText: 'Optional',
+      updatedText:  'Updated',
+      moduleText: 'Module',
+    },
+    courseGeneralInformationView: {
+      durationText: 'Duration',
+      minutesText: 'minutes',
+      hourText: 'hour',
+      hoursText: 'hours',
+      filmMaterialText: 'of film material',
+      coachingWithAProfessionalText: 'of 1-to-1 coaching with a professional',
+      selfStudyMaterialText: 'of self-study material',
+      createdByText: 'Created by',
+      yourProgressText: 'Your progress',
+      resumeText: 'Resume',
+      viewProfileText: 'View profile',
+    },
+  },
+  pages: {
+    home: Home_EN,
+    login: Login_EN,
+    sso: SSO_EN,
+    auth: {
+      errorPage: {
+        title: 'Oops! There was a problem signing you in.',
+        description: 'Please check your username and password and try again.',
+        tryAgain: 'Try Again',
+      },
     },
   },
 };

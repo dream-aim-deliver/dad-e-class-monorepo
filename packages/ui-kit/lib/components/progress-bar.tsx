@@ -41,8 +41,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   onChange,
 }) => {
   const [value, setValue] = useState(progress);
-  useEffect( () => setValue(progress), [progress] )
- 
+  useEffect(() => setValue(progress), [progress])
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = Number(event.target.value);
     setValue(newValue);
@@ -75,12 +75,12 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
               max={totalProgress}
               value={value}
               onChange={handleChange}
-              className="absolute w-full opacity-0 cursor-pointer"
+              className="absolute top-0 w-full h-full opacity-0 cursor-pointer z-20" // Full height coverage
             />
 
             {/* Custom handle */}
             <div
-              className="absolute top-1/2 w-5 h-5 bg-slider-knob-fill border-[1px] border-slider-progress-stroke rounded-full shadow-md transform -translate-x-1/2 -translate-y-1/2"
+              className="absolute top-1/2 w-5 h-5 bg-slider-knob-fill border-[1px] border-slider-progress-stroke rounded-full shadow-md transform -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer"
               style={{ left: `${progressPercentage}%` }}
             ></div>
           </>

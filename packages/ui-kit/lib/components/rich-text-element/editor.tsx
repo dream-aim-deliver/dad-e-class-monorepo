@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { createEditor, Descendant } from "slate";
+import React, { useState } from "react";
+import { createEditor } from "slate";
 import { withHistory } from "slate-history";
 import {
   Editable,
@@ -12,7 +12,7 @@ import {
 import Toolbar from "./toolbar";
 import { CustomElement, CustomText, EditorType, RichTextEditorProps } from "./types";
 import { toggleMark } from "./slate";
-import { serialize,deserialize } from "./serializer";
+import { serialize, deserialize } from "./serializer";
 
 
 /**
@@ -108,7 +108,7 @@ export const RenderElement = ({ attributes, children, element }: RenderElementPr
  * Supports initial value parsing, custom key bindings, and a toolbar for formatting options.
  */
 export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
-  function RichTextEditor({ name,locale, onChange,onLoseFocus, placeholder, initialValue }) {
+  function RichTextEditor({ name, locale, onChange, onLoseFocus, placeholder, initialValue }) {
     // Convert initial string value to Slate format if necessary
     if (typeof initialValue === "string") {
       initialValue = deserialize(initialValue);
@@ -154,30 +154,30 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
         }
       }
     };
-   const handleBlur = () => {
-    const serialized = serialize(editor.children);
-    onLoseFocus(serialized);
-   }
+    const handleBlur = () => {
+      const serialized = serialize(editor.children);
+      onLoseFocus(serialized);
+    }
     return (
       <div className="text-text-primary">
         <Slate editor={editor} initialValue={initialValue} onChange={(value) => onChange(value)}>
-          
+
           <div
-          className="bg-black text-text-primary border-0 w-full max-w-[calc(100vw-40px)]  min-w-0 min-h-40  focus:outline-none overflow-y-auto"
-          style={{ resize: "vertical" }}
-         >
+            className="bg-black text-text-primary border-0 w-full max-w-[calc(100vw-40px)]  min-w-0 min-h-40  focus:outline-none overflow-y-auto"
+            style={{ resize: "vertical" }}
+          >
             <Toolbar locale={locale} />
             <div className="p-4 w-full">
-            <Editable
-              name={name}
-              placeholder={placeholder}
-              spellCheck
-              renderLeaf={RenderLeaf}
-              renderElement={RenderElement}
-              onKeyDown={onKeyDown}
-              className="focus:outline-none w-full"
-              onBlur={handleBlur}
-            />
+              <Editable
+                name={name}
+                placeholder={placeholder}
+                spellCheck
+                renderLeaf={RenderLeaf}
+                renderElement={RenderElement}
+                onKeyDown={onKeyDown}
+                className="focus:outline-none w-full"
+                onBlur={handleBlur}
+              />
             </div>
           </div>
         </Slate>

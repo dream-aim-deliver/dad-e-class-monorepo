@@ -7,115 +7,164 @@ interface TooltipProps {
   title?: string;
   description: string;
   contentClassName?: string;
-  tipPosition?: 'up' | 'down' | 'auto';
+  tipPosition?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
 }
+
 /**
  * A reusable Tooltip component that provides additional information when a user hovers over or focuses on the trigger element.
- * The tooltip dynamically adjusts its position to prevent it from being cut off by the viewport.
+ * This version prefers to show the tooltip above the element unless there's not enough space.
  *
  * @param text The text displayed alongside the info icon.
  * @param title Optional title displayed inside the tooltip.
  * @param description The main content of the tooltip.
  * @param contentClassName Optional className for styling the tooltip content.
- * @param tipPosition Position of the tooltip: 'up', 'down', or 'auto' (default: 'auto').
- *
- * @state showTooltip Controls the visibility of the tooltip.
- * @state position Determines whether the tooltip appears above (`up`) or below (`down`) the trigger element.
- *
- * @ref tooltipRef Reference to the tooltip element.
- * @ref triggerRef Reference to the element that triggers the tooltip.
- *
- * @behavior
- * - Displays the tooltip when the user hovers or focuses on the trigger element.
- * - Uses `Element.getBoundingClientRect()` to check if the tooltip is cut off.
- * - When tipPosition is 'auto':
- *   - Moves **downward** if it overflows the top.
- *   - Moves **upward** if it overflows the bottom.
- *   - Defaults to 'up' if there's enough space.
- * - Includes an arrow (`<div>`) to visually connect the tooltip with the trigger element.
- *
- * @example
- * <Tooltip 
- *   text="More Info" 
- *   title="Important Notice" 
- *   description="This tooltip provides extra details about this feature."
- *   tipPosition="auto"
- * />
+ * @param tipPosition Position of the tooltip or 'auto' to detect best position (default: 'auto').
  */
-
-function Tooltip({ text, title, description, contentClassName, tipPosition = 'auto' }: TooltipProps) {
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [position, setPosition] = useState<'up' | 'down'>(tipPosition === 'auto' ? 'up' : tipPosition);
+function Tooltip({
+  text,
+  title,
+  description,
+  contentClassName,
+  tipPosition = 'auto'
+}: TooltipProps) {
+  const [isFocused, setIsFocused] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [position, setPosition] = useState<'top' | 'bottom' | 'left' | 'right'>(
+    tipPosition === 'auto' ? 'top' : tipPosition
+  );
 
   const tooltipRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  // Handle hover state
+  const handleMouseEnter = () => setIsVisible(true);
+  const handleMouseLeave = () => setIsVisible(false);
+
+  // Map positions to appropriate classes
+  const positionClasses = {
+    top: 'bottom-full -right-[10px] mb-2',
+    bottom: 'top-full -right-[10px] mt-2',
+    left: 'right-full top-1/2 -translate-y-1/2 mr-2',
+    right: 'left-full top-1/2 -translate-y-1/2 ml-2'
+  };
+
+  // Map positions to arrow classes
+  const arrowClasses = {
+    top: 'bottom-[-7px] right-[10px] border-l-8 border-r-8 border-t-8 border-b-0 border-l-transparent border-r-transparent border-t-tooltip-background',
+    bottom: 'top-[-5px] right-[10px]  border-l-8 border-r-8 border-b-8 border-t-0 border-l-transparent border-r-transparent border-b-tooltip-background',
+    left: 'right-[-5px] top-1/2 -translate-y-1/2 border-t-8 border-b-8 border-l-8 border-r-0 border-t-transparent border-b-transparent border-l-tooltip-background',
+    right: 'left-[-5px] top-1/2 -translate-y-1/2 border-t-4 border-b-4 border-r-4 border-l-0 border-t-transparent border-b-transparent border-r-tooltip-background'
+  };
+
+  // Calculate best position if set to auto, preferring top position when possible
   useEffect(() => {
-    if (showTooltip && tooltipRef.current && triggerRef.current) {
-      // Only adjust position automatically if tipPosition is 'auto'
-      if (tipPosition === 'auto') {
+    if ((isVisible || isFocused) && tipPosition === 'auto' && tooltipRef.current && triggerRef.current) {
+      const updatePosition = () => {
+        if (!tooltipRef.current || !triggerRef.current) return;
         const tooltipRect = tooltipRef.current.getBoundingClientRect();
         const triggerRect = triggerRef.current.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
 
-        if (tooltipRect.top < 0) {
-          setPosition('down');
-        } else if (tooltipRect.bottom > viewportHeight) {
-          setPosition('up');
-        } else {
-          // Default to up if there's enough space
-          setPosition('up');
+        // Default to top position (above the element)
+        let bestPosition: 'top' | 'bottom' | 'left' | 'right' = 'top';
+
+        // Get tooltip dimensions
+        const tooltipHeight = tooltipRect.height;
+
+        // Check if there's enough space on top (preferred position)
+        const spaceTop = triggerRect.top;
+        const minRequiredSpace = tooltipHeight + 10; // Adding 10px buffer
+
+        // Only change from top position if there's not enough space
+        if (spaceTop < minRequiredSpace) {
+          // Check space at bottom
+          const spaceBottom = viewportHeight - triggerRect.bottom;
+
+          if (spaceBottom >= minRequiredSpace) {
+            bestPosition = 'bottom';
+          } else {
+            // If neither top nor bottom has enough space, try left or right
+            const viewportWidth = window.innerWidth;
+            const tooltipWidth = tooltipRect.width;
+            const spaceLeft = triggerRect.left;
+            const spaceRight = viewportWidth - triggerRect.right;
+
+            if (spaceLeft >= tooltipWidth + 10 && spaceLeft > spaceRight) {
+              bestPosition = 'left';
+            } else if (spaceRight >= tooltipWidth + 10) {
+              bestPosition = 'right';
+            }
+
+          }
         }
-      } else {
-        // Use the explicitly provided position
-        setPosition(tipPosition as 'up' | 'down');
-      }
+
+        setPosition(bestPosition);
+      };
+
+      // Calculate position after a short delay to ensure DOM is updated
+      const timer = setTimeout(updatePosition, 10);
+
+      // Recalculate on resize
+      window.addEventListener('resize', updatePosition);
+
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('resize', updatePosition);
+      };
     }
-  }, [showTooltip, tipPosition]);
+  }, [isVisible, isFocused, tipPosition]);
 
   return (
-    <div className="relative inline-block">
+    <div
+      ref={containerRef}
+      className="relative inline-block"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       {/* Tooltip trigger element */}
       <div
         ref={triggerRef}
-        className="inline-flex gap-1 items-center text-sm leading-[150%] cursor-pointer"
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        onFocus={() => setShowTooltip(true)}
-        onBlur={() => setShowTooltip(false)}
+        className="inline-flex relative gap-1 items-center text-sm leading-[150%] cursor-pointer"
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         tabIndex={0}
         aria-describedby="tooltip-content"
         role="button"
       >
         <span className="line-clamp-2 text-text-secondary">{text}</span>
-        <IconInfoCircle size="4" classNames={cn('flex-shrink-0 text-text-secondary hover:text-text-primary')} />
+        <div className='relative'>
+          <IconInfoCircle size="4" classNames={cn('flex-shrink-0 text-text-secondary hover:text-text-primary')} />
+          {/* Tooltip content */}
+          {(isVisible || isFocused) && (
+            <div
+              id="tooltip-content"
+              ref={tooltipRef}
+              className={cn(
+                'absolute z-10 p-4 w-64 max-w-xs text-xs  shadow-lg',
+                'bg-tooltip-background border border-tooltip-border',
+                'transition-opacity duration-200',
+                tipPosition !== 'auto' ? positionClasses[tipPosition] : positionClasses[position],
+                contentClassName
+              )}
+              role="tooltip"
+            >
+              {title && <span className="block font-important text-sm text-text-primary mb-1">{title}</span>}
+              <p className="text-sm font-normal text-text-secondary">{description}</p>
+
+              {/* Tooltip arrow */}
+              <div
+                className={cn(
+                  'absolute w-0 h-0',
+                  tipPosition !== 'auto' ? arrowClasses[tipPosition] : arrowClasses[position]
+                )}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
-      {showTooltip && (
-        <div
-          id="tooltip-content"
-          ref={tooltipRef}
-          className={cn(
-            'absolute z-10 p-4 text-xs text-text-secondary leading-[150%] bg-tooltip-background border-tooltip-border rounded-lg shadow-lg opacity-100 transition-opacity duration-200',
-            position === 'up' ? 'bottom-6 -right-1' : 'top-6 -right-1',
-            contentClassName
-          )}
-          role="tooltip"
-        >
-          {title && <span className="font-important text-sm text-text-primary">{title}</span>}
-          <p className="text-sm font-normal text-text-secondary">{description}</p>
 
-          {/* Tooltip arrow */}
-          <div
-            className={cn(
-              'w-0 h-0 border-l-8 border-r-8 border-transparent absolute',
-              position === 'up'
-                ? '-bottom-1.5 right-1 border-t-8 border-t-tooltip-background'
-                : '-top-1.5 right-1 border-b-8 border-b-tooltip-background'
-            )}
-          ></div>
-        </div>
-      )}
     </div>
   );
 }

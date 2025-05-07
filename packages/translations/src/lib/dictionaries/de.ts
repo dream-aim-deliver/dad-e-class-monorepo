@@ -5,9 +5,6 @@ import { SSO_DE } from '../pages/sso/sso-de';
 
 import { TDictionary } from './base';
 export const DE: TDictionary = {
-  home: Home_DE,
-  login:Login_DE,
-  sso: SSO_DE,
   components: {
     coachBanner: {
       buttonText: 'Coach werden',
@@ -26,6 +23,11 @@ export const DE: TDictionary = {
       na: 'N/A',
       discardButton: 'Verwerfen',
       sendRequestButton: 'Anfrage senden',
+    },
+    modulePagination: {
+      previous: 'Vorherige',
+      next: 'Nächste',
+      lesson: 'Lektion',
     },
     courseCard: {
       courseEmptyState: {
@@ -51,6 +53,19 @@ export const DE: TDictionary = {
       cochingSession: 'Coaching-Sitzung',
       sales: 'Verkauf',
       hours: 'stunden',
+    },
+    reviewCoachingSessionModal: {
+      title: 'Wie würden Sie diesen Kurs bewerten?',
+      sendReviewButton: 'Bewertung senden',
+      skipButton: 'Überspringen',
+      closeButton: 'Schließen',
+      reviewPlaceholder:
+        'Was halten Sie von dem Kurs? Vorschläge, wie wir ihn verbessern können?',
+      checkboxText: 'Brauchten Sie mehr Zeit?',
+      yourReview: 'Ihre Bewertung',
+      thankYouText: 'Vielen Dank für Ihr Feedback!',
+      errorState:
+        'Fehler beim Einreichen der Bewertung. Bitte versuchen Sie es später erneut.',
     },
     dragDrop: {
       title: 'Legen Sie die Dateien hier ab... ',
@@ -241,5 +256,50 @@ export const DE: TDictionary = {
       rateCallQualityText: 'Bewerten Sie die Anrufqualität',
       loadMoreText: 'Mehr laden...',
     },
-  },
+    coachingSessionTracker: {
+      minuteText: 'Minuten',
+      usedText: 'gebraucht',
+      buyMoreSessionsText: 'Kaufen Sie weitere Sitzungen',
+      buyCoachingSessionsText: 'Coaching-Sitzungen kaufen',
+      coachingSessionText: 'Coaching-Sitzungen inklusive',
+      noCoachingSessionText: 'Keine Coaching-Sitzungen enthalten',
+    },
+    courseProgressBar: {
+      resumeText: 'Wieder aufnehmen',
+      progressText: 'Fortschritt',
+    },
+    milestone: {
+      milestoneText: 'Meilenstein',
+    },
+    courseOutline: {
+      optionalText: 'Optional',
+      updatedText: 'Aktualisiert',
+      moduleText: 'Modul',
+    },
+    courseGeneralInformationView: {
+      durationText: 'Dauer',
+      minutesText: 'Minuten',
+      hourText: 'Stunde',
+      hoursText: 'Stunden',
+      filmMaterialText: 'von Filmmaterial',
+      coachingWithAProfessionalText: 'von 1-zu-1-Coaching mit einem professionellen',
+      selfStudyMaterialText: 'von Selbstlernmaterial',
+      createdByText: 'Erstellt von',
+      yourProgressText: 'Ihr Fortschritt',
+      resumeText: 'Wieder aufnehmen',
+      viewProfileText: 'Profil anzeigen',
+    },
+},
+  pages: {
+    home: Home_DE,
+    login: Login_DE,
+    sso: SSO_DE,
+    auth: {
+      errorPage: {
+        title: 'Ups! Beim Anmelden ist ein Problem aufgetreten.',
+        description: 'Bitte überprüfe deinen Benutzernamen und dein Passwort und versuch’s nochmals.',
+        tryAgain: 'Nochmal versuchen',
+      },
+    },
+  },  
 };

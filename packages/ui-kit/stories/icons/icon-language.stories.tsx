@@ -1,5 +1,3 @@
-
-import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { IconLanguage } from '../../lib/components/icons/icon-language';
 
