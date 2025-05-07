@@ -14,22 +14,22 @@ const createMockFile = (name: string, type: string, size: number): File => {
 // Mock response generators
 const mockFileResponse = (file: File): UploadResponse => {
   return {
-    file_id: `file-${Math.random().toString(36).substr(2, 9)}`,
-    file_name: file.name,
+    fileId: `file-${Math.random().toString(36).substr(2, 9)}`,
+    fileName: file.name,
   };
 };
 
 const mockImageResponse = (file: File): UploadResponse => {
   return {
-    image_id: `image-${Math.random().toString(36).substr(2, 9)}`,
-    image_thumbnail_url: URL.createObjectURL(file),
+    imageId: `image-${Math.random().toString(36).substr(2, 9)}`,
+    imageThumbnailUrl: URL.createObjectURL(file),
   };
 };
 
 const mockVideoResponse = (file: File): UploadResponse => {
   return {
-    video_id: `video-${Math.random().toString(36).substr(2, 9)}`,
-    thumbnail_url: 'https://via.placeholder.com/150',
+    videoId: `video-${Math.random().toString(36).substr(2, 9)}`,
+    thumbnailUrl: 'https://via.placeholder.com/150',
   };
 };
 
@@ -95,7 +95,7 @@ const SingleFileUploaderRender = (args: any) => {
           responseData: mockFileResponse(files[0].file),
         };
         setFile(updatedFile);
-      }, 10000);
+      }, 5000);
 
       // Update with loading state immediately
       setFile(files[0]);
@@ -140,7 +140,7 @@ const SingleImageUploaderRender = (args: any) => {
           responseData: mockImageResponse(files[0].file),
         };
         setFile(updatedFile);
-      }, 10000);
+      }, 5000);
 
       // Update with loading state immediately
       setFile(files[0]);
@@ -184,7 +184,7 @@ const SingleVideoUploaderRender = (args: any) => {
           responseData: mockVideoResponse(files[0].file),
         };
         setFile(updatedFile);
-      }, 10000);
+      }, 5000);
 
       // Update with loading state immediately
       setFile(files[0]);
@@ -307,7 +307,7 @@ const MultipleImageUploaderRender = (args: any) => {
         });
 
         setFiles(processedFiles);
-      }, 10000);
+      }, 5000);
     }
   };
 
@@ -368,7 +368,7 @@ const MultipleVideoUploaderRender = (args: any) => {
         });
 
         setFiles(processedFiles);
-      }, 10000);
+      }, 5000);
     }
   };
 
@@ -405,14 +405,14 @@ const UploaderWithPreloadedFilesRender = (args: any) => {
   const mockDocFile = createMockFile(
     'report.docx',
     'application/msword',
-    2 ,
+    2,
   );
 
   // Create a file with error for demo purposes
   const mockErrorFile = createMockFile(
     'error_file.exe',
     'application/x-msdownload',
-    3 ,
+    3,
   );
 
   const [files, setFiles] = useState<UploadedFileType[]>([
@@ -420,16 +420,16 @@ const UploaderWithPreloadedFilesRender = (args: any) => {
       file: mockPdfFile,
       isUploading: false,
       responseData: {
-        file_id: 'existing-file-1',
-        file_name: 'document.pdf',
+        fileId: 'existing-file-1',
+        fileName: 'document.pdf',
       },
     },
     {
       file: mockDocFile,
       isUploading: false,
       responseData: {
-        file_id: 'existing-file-2',
-        file_name: 'report.docx',
+        fileId: 'existing-file-2',
+        fileName: 'report.docx',
       },
     },
     {
@@ -461,7 +461,7 @@ const UploaderWithPreloadedFilesRender = (args: any) => {
         });
 
         setFiles(processedFiles);
-      }, 10000);
+      }, 5000);
     }
   };
 
@@ -527,7 +527,7 @@ const ErrorHandlingUploaderRender = (args: any) => {
         });
 
         setFiles(processedFiles);
-      }, 10000);
+      }, 5000);
     }
   };
 
@@ -576,7 +576,7 @@ export const SingleFileUploader: Story = {
 export const SingleImageUploader: Story = {
   render: SingleImageUploaderRender,
   args: {
-    maxSize: 10 * 1024 * 1024, // 10MB
+    maxSize: 10, // 10MB
     acceptedFileTypes: ['image/jpeg', 'image/png', 'image/gif'],
   },
 };

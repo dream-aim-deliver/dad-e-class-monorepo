@@ -83,19 +83,19 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   };
 
   const handleUploadedFiles = async (newFiles: UploadedFileType[]): Promise<UploadResponse> => {
-      // Set the files immediately with loading state
-      const newFile = newFiles[0];
-    
-      // Update our local state immediately to show loading
-      setFile(newFile);
-      try {
+    // Set the files immediately with loading state
+    const newFile = newFiles[0];
+
+    // Update our local state immediately to show loading
+    setFile(newFile);
+    try {
       // Return a Promise that resolves to the UploadResponse
       const response = await new Promise<ImageUploadResponse>((resolve) => {
         setTimeout(() => {
           // Create a proper UploadResponse object
-           resolve ({
-            image_id: `123456`,
-            image_thumbnail_url: URL.createObjectURL(newFile.file),
+          resolve({
+            imageId: `123456`,
+            imageThumbnailUrl: URL.createObjectURL(newFile.file),
           });
         }, 100);
       });
@@ -104,21 +104,21 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
         isUploading: false,
         responseData: response
       });
-      
+
       return response;
-    }catch (error) {
+    } catch (error) {
       // Handle error properly by updating state
       setFile({
         ...newFile,
         isUploading: false,
         error: "Upload failed"
       });
-      
+
       throw error;
     }
 
-    };
- console.log(file)
+  };
+  console.log(file)
   const handleSubmit = () => {
     onSave?.(formData);
   };
@@ -260,9 +260,9 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             {dictionary.components.profileInfo.profilePicture}{' '}
           </p>
           <Uploader
-           type="single"
-           file={file as UploadedFileType}
-           onFilesChange={handleUploadedFiles}
+            type="single"
+            file={file as UploadedFileType}
+            onFilesChange={handleUploadedFiles}
             variant='image'
             onDownload={() => {
               // Handle download logic here
@@ -270,7 +270,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             locale={locale}
             className="w-full"
             maxSize={5}
-            onDelete={()=>{
+            onDelete={() => {
               // Handle delete logic here
             }}
           />

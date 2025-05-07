@@ -108,8 +108,8 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
         // Create proper response based on your file variant
         setTimeout(() => {
           resolve({
-            file_id: `file-${Math.random().toString(36).substr(2, 9)}`,
-            file_name: newFiles[0].file.name
+            fileId: `file-${Math.random().toString(36).substr(2, 9)}`,
+            fileName: newFiles[0].file.name
           });
         }, 2000)
       });

@@ -13,18 +13,18 @@ export type FileVariant = 'file' | 'image' | 'video';
  * Type-specific response types
  */
 export type FileUploadResponse = {
-  file_id: string;
-  file_name: string;
+  fileId: string;
+  fileName: string;
 };
 
 export type ImageUploadResponse = {
-  image_id: string;
-  image_thumbnail_url: string;
+  imageId: string;
+  imageThumbnailUrl: string;
 };
 
 export type VideoUploadResponse = {
-  video_id: string;
-  thumbnail_url?: string;
+  videoId: string;
+  thumbnailUrl?: string;
 };
 
 /**
@@ -166,10 +166,10 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
           file,
           isUploading: true,
         };
-        
+
         // Only call onFilesChange once with the loading state
         await onFilesChange([newFile]);
-        
+
         // Let the parent component handle the rest of the upload process
         return;
       } catch (err) {
@@ -192,7 +192,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
         // Single call to onFilesChange with loading state
         const updatedFiles = [...successfulFiles, ...newUploadingFiles];
         await onFilesChange(updatedFiles);
-        
+
         return;
       } catch (err) {
         return err;
@@ -203,14 +203,14 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
   const handleCancelUpload = async (index: number) => {
     // For single uploader
     if (props.type === 'single') {
-        await onFilesChange([]);
-        return;
+      await onFilesChange([]);
+      return;
     }
-    
+
     // For multiple uploader
     const updatedFiles = files.filter((_, i) => i !== index);
     await onFilesChange(updatedFiles);
-};
+  };
 
   return (
     <div className={cn('flex flex-col gap-4 w-full', className)}>
