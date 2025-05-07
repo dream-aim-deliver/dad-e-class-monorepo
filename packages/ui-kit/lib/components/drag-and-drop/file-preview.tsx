@@ -66,9 +66,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file, index, onDelete,
                 {file.isUploading ? (
                     <div className="h-[1.2rem] w-full bg-divider rounded-small border border-divider animate-pulse bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] bg-[length:200%_100%] bg-no-repeat bg-left" />
                 ) : (
-                    <span title={file.responseData && 'fileName' in file.responseData
-                        ? (file.responseData as FileUploadResponse).fileName
-                        : file.file.name} className="text-sm font-medium text-text-primary truncate">
+                    <span className="text-sm font-medium text-text-primary truncate">
                         {file.responseData && 'fileName' in file.responseData
                             ? (file.responseData as FileUploadResponse).fileName
                             : file.file.name}
