@@ -276,7 +276,6 @@ export const EN: TDictionary = {
       viewProfileText: 'View profile',
     },
     uploadingSection: {
-      maxSizeText: 'Max size',
       uploadingText: 'Uploading...',
       cancelUpload: 'Cancel upload',
       deleteText: 'Delete',
@@ -335,7 +334,7 @@ export const EN: TDictionary = {
       singleChoice: "Single choice",
       oneOutOfThree: "one out of three",
       heading: "Heading",
-    },
+    }
   },
   pages: {
     home: Home_EN,

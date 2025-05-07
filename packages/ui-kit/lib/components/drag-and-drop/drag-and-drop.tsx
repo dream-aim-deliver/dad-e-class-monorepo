@@ -59,7 +59,6 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
   text,
 }) => {
   const [error, setError] = useState<string | null>(null);
-
   const { getRootProps, getInputProps, isDragActive } =
     useDropzone({
       accept: acceptedFileTypes.reduce(
@@ -73,7 +72,6 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
       multiple, // Use the multiple prop to control file selection mode
       onDrop: (acceptedFiles: File[], fileRejections) => {
         setError(null);
-
         if (fileRejections.length > 0) {
           setError(
             `Some files were rejected. Max size: ${maxSize / (1024 * 1024)} MB`,
@@ -97,8 +95,8 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
       <div
         {...getRootProps()}
         className={`flex flex-col items-center bg-base-neutral-900 gap-[2px] justify-center md:p-6 p-2 md:pt-4 border-2 ${isDragActive
-            ? 'border-button-primary-stroke'
-            : 'border-base-neutral-700'
+          ? 'border-button-primary-stroke'
+          : 'border-base-neutral-700'
           } border-dashed border-base-neutral-700 custom-dashed-border rounded-medium cursor-pointer transition-colors ${className}`}
       >
         <input {...getInputProps()} />
