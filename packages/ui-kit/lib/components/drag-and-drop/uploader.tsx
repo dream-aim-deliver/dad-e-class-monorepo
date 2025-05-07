@@ -240,7 +240,6 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
         // Single call to onFilesChange with loading state
         const updatedFiles = [...successfulFiles, ...newUploadingFiles];
         await onFilesChange(updatedFiles);
-
         return;
       } catch (err) {
         return err;
