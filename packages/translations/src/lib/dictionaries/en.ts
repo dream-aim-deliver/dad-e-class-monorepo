@@ -23,6 +23,7 @@ export const EN: TDictionary = {
       na: 'N/A',
       discardButton: 'Discard',
       sendRequestButton: 'Send Request',
+      errorMessage: 'The coach is not available in the selected timeslot.',
     },
     modulePagination: {
       previous: 'Previous',

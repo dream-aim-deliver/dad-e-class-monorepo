@@ -23,6 +23,7 @@ export const DE: TDictionary = {
       na: 'N/A',
       discardButton: 'Verwerfen',
       sendRequestButton: 'Anfrage senden',
+      errorMessage: 'Der Trainer ist in dem ausgewählten Zeitraum nicht verfügbar.',
     },
     modulePagination: {
       previous: 'Vorherige',
