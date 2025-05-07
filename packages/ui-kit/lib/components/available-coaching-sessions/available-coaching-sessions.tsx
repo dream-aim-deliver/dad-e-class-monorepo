@@ -4,14 +4,52 @@ import { DragDropSession, DragDropSessionProps } from './drag-drop-session';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Draggable } from '@fullcalendar/interaction';
 
+export interface CoachingSessionData {
+  id: string;
+  title: string;
+  time: number;
+  numberOfSessions: number;
+}
+
+
 export interface AvailableCoachingSessionsProps extends isLocalAware {
   text?: string;
-  availableCoachingSessionsData?: DragDropSessionProps[];
-  onClickBuyMoreSessions?: () => void;
+  availableCoachingSessionsData: CoachingSessionData[];
+  onClickBuyMoreSessions: () => void;
   isLoading?: boolean;
   onSessionDrag?: (sessionId: string) => void;
 }
 
+/**
+ * A component that displays and manages available coaching sessions with drag-and-drop functionality.
+ *
+ * @param locale The locale for internationalization, used to fetch the appropriate dictionary.
+ * @param text Optional description text for the available sessions section.
+ * @param availableCoachingSessionsData Array of coaching session data, each containing id, title, time, and numberOfSessions.
+ * @param onClickBuyMoreSessions Handler function for the "Buy More Sessions" button click.
+ * @param isLoading Optional boolean indicating if the component is in a loading state (default: false).
+ * @param onSessionDrag Optional handler function triggered when a session is dragged, receiving the session ID.
+ *
+ * @example
+ * <AvailableCoachingSessions
+ *   locale="en"
+ *   text="Drag sessions to schedule"
+ *   availableCoachingSessionsData={[
+ *     { id: "1", title: "Intro Session", time: 60, numberOfSessions: 2 },
+ *     { id: "2", title: "Advanced Session", time: 90, numberOfSessions: 1 }
+ *   ]}
+ *   onClickBuyMoreSessions={() => console.log("Buy more clicked")}
+ *   isLoading={false}
+ *   onSessionDrag={(sessionId) => console.log(`Session ${sessionId} dragged`)}
+ * />
+ *
+ * @example
+ * <AvailableCoachingSessions
+ *   locale="en"
+ *   availableCoachingSessionsData={[]}
+ *   onClickBuyMoreSessions={() => console.log("Buy more clicked")}
+ * />
+ */
 export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
   locale,
   text,
@@ -72,6 +110,9 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
     }
   }, [availableCoachingSessionsData, isLoading, sessionCounts]);
 
+  /**
+   * Handle session drag event
+   */
   const handleSessionDrag = (sessionId: string) => {
     setSessionCounts((prev) => ({
       ...prev,
@@ -123,10 +164,9 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                 <DragDropSession isLoading={isLoading} />
               </>
             ) : (
-              availableCoachingSessionsData.map((session, index) => {
-                const sessionId = `${session.title}-${index}`;
-                const remainingSessions =
-                  (session.numberOfSessions || 1) - (sessionCounts[sessionId] || 0);
+              availableCoachingSessionsData.map((session) => {
+                const sessionId = session.id;
+                const remainingSessions = session.numberOfSessions - (sessionCounts[sessionId] || 0);
 
                 if (remainingSessions <= 0) return null;
 
@@ -138,10 +178,10 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                     } w-full`}
                     data-session-id={sessionId}
                     data-title={session.title}
-                    data-duration={`${Math.floor(session.time! / 60)}:${(session.time! % 60)
+                    data-duration={`${Math.floor(session.time / 60)}:${(session.time % 60)
                       .toString()
                       .padStart(2, '0')}`}
-                    data-sessions={session.numberOfSessions?.toString()}
+                    data-sessions={session.numberOfSessions.toString()}
                   >
                     <DragDropSession
                       {...session}
@@ -155,9 +195,9 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
               })
             )}
           </div>
-          {availableCoachingSessionsData.every((session, index) => {
-            const sessionId = `${session.title}-${index}`;
-            return (session.numberOfSessions || 1) - (sessionCounts[sessionId] || 0) <= 0;
+          {availableCoachingSessionsData.every((session) => {
+            const sessionId = session.id;
+            return session.numberOfSessions - (sessionCounts[sessionId] || 0) <= 0;
           }) &&
             !isLoading &&
             availableCoachingSessionsData.length > 0 && (
