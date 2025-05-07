@@ -4,11 +4,13 @@ import { InputField } from '../input-field';
 import { Button } from '../button';
 import { UserAvatar } from '../avatar/user-avatar';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-
+import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
+import type { Meta, StoryObj } from '@storybook/react';
 
 export interface ScheduleSessionProps extends isLocalAware {
   user: 'student' | 'coach';
   isError: boolean;
+  isLoading?: boolean;
   groupSession: boolean;
   course: boolean;
   coachImageUrl?: string;
@@ -33,6 +35,7 @@ export interface ScheduleSessionProps extends isLocalAware {
  *
  * @param user The type of user scheduling the session: `student` or `coach`.
  * @param isError Boolean indicating if there is an error (e.g., coach not available).
+ * @param isLoading Boolean indicating if the form is in a loading state.
  * @param groupSession Boolean indicating if the session is for a group.
  * @param course Boolean indicating if the session is tied to a specific course.
  * @param coachImageUrl Optional URL for the coach's profile picture.
@@ -56,6 +59,7 @@ export interface ScheduleSessionProps extends isLocalAware {
  * <ScheduleSession
  *   user="student"
  *   isError={false}
+ *   isLoading={false}
  *   groupSession={true}
  *   course={true}
  *   coachImageUrl="https://example.com/coach.jpg"
@@ -75,25 +79,11 @@ export interface ScheduleSessionProps extends isLocalAware {
  *   onClickGroup={() => console.log("Group clicked")}
  *   locale="en"
  * />
- *
- * @example
- * <ScheduleSession
- *   user="coach"
- *   isError={true}
- *   groupSession={false}
- *   course={false}
- *   dateValue={new Date()}
- *   timeValue="14:00"
- *   onDateChange={(value) => console.log("Date changed:", value)}
- *   onTimeChange={(value) => console.log("Time changed:", value)}
- *   onClickDiscard={() => console.log("Discard clicked")}
- *   onClickSendRequest={() => console.log("Send request clicked")}
- *   locale="en"
- * />
  */
 export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
   user,
   isError,
+  isLoading = false,
   groupSession,
   course,
   coachImageUrl,
@@ -122,7 +112,7 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
   const shouldShowPlaceholder = !courseImageUrl || isImageError;
 
   return (
-    <div className="flex flex-col items-start gap-6 w-full max-w-[320px]">
+    <div className={`flex flex-col items-start gap-6 w-full max-w-[320px] ${isLoading ? 'opacity-50' : ''}`}>
       <div className="flex flex-col items-start w-full p-4 rounded-md border border-base-neutral-700 bg-base-neutral-800">
         <div className="text-text-primary font-bold text-md flex flex-row items-center">
           <span className="text-sm text-text-secondary">{dictionary.components.scheduleSession.session}:</span>
@@ -138,6 +128,7 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
               size="small"
               className="ml-[-15px]"
               onClick={onClickCoach}
+              disabled={isLoading}
             />
           </div>
         )}
@@ -162,6 +153,7 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
               size="small"
               className="ml-[-15px]"
               onClick={onClickCourse}
+              disabled={isLoading}
             />
           </div>
         )}
@@ -174,12 +166,19 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
               size="small"
               className="ml-[-8px]"
               onClick={onClickGroup}
+              disabled={isLoading}
             />
           </div>
         )}
       </div>
       <div className="flex flex-col items-start gap-4 w-full">
-        <DateInput label="Date" value={dateValue.toISOString().split('T')[0]} onChange={onDateChange} />
+        <DateInput
+          label="Date"
+          value={dateValue.toISOString().split('T')[0]}
+          onChange={onDateChange}
+          disabled={isLoading}
+          className={isError ? 'border-feedback-error-primary' : ''}
+        />
         <div className="flex flex-col gap-1 w-full">
           <label className="text-white text-sm">{dictionary.components.scheduleSession.time}</label>
           <InputField
@@ -188,12 +187,14 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
             rightContent={null}
             setValue={onTimeChange}
             type="text"
+            disabled={isLoading}
+            className={isError ? 'border-feedback-error-primary' : ''}
           />
         </div>
       </div>
       {isError && (
-        <div className="text-red-500 text-sm w-full flex items-center gap-2">
-          The coach is not available in the selected timeslot.
+        <div className="w-full text-sm text-feedback-error-primary text-justify">
+          {dictionary.components.scheduleSession.errorMessage || 'The coach is not available in the selected timeslot.'}
         </div>
       )}
       <div className="flex flex-row gap-4 w-full">
@@ -202,13 +203,22 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
           variant="secondary"
           className="flex-1 justify-center"
           onClick={onClickDiscard}
+          disabled={isLoading}
         />
-        <Button
-          text={dictionary.components.scheduleSession.sendRequestButton}
-          variant="primary"
-          className="flex-1 justify-center"
-          onClick={onClickSendRequest}
-        />
+        <div className="relative flex-1">
+          <Button
+            text={dictionary.components.scheduleSession.sendRequestButton}
+            variant="primary"
+            className="w-full justify-center"
+            onClick={onClickSendRequest}
+            disabled={isLoading}
+          />
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-base-neutral-800 bg-opacity-50 rounded">
+              <IconLoaderSpinner classNames="animate-spin h-6 w-6 text-primary" />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

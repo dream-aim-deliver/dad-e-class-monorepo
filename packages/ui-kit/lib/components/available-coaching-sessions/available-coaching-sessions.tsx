@@ -11,7 +11,6 @@ export interface CoachingSessionData {
   numberOfSessions: number;
 }
 
-
 export interface AvailableCoachingSessionsProps extends isLocalAware {
   text?: string;
   availableCoachingSessionsData: CoachingSessionData[];
