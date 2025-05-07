@@ -4,19 +4,17 @@ import { Button } from '../button';
 import { CheckBox } from '../checkbox';
 import { profile } from '@maany_shr/e-class-models';
 import { TextInput } from '../text-input';
-import { UploadedImage } from '../drag&drop/uploaded-image';
 import { LanguageSelector } from '../language-selector';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { language } from '@maany_shr/e-class-models';
+import { ImageUploadResponse, UploadedFileType, Uploader, UploadResponse } from '../drag&drop/uploader';
+import { useState } from 'react';
 
 interface ProfileInfoProps extends isLocalAware {
   initialData?: profile.TPersonalProfile;
   onSave?: (profile: profile.TPersonalProfile) => void;
 }
-type fileProps = {
-  isUploading: boolean;
-  file: File;
-}[];
+
 
 /**
  * A reusable form component for managing and editing user profile information.
@@ -67,14 +65,14 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
         isRepresentingCompany: initialData?.isRepresentingCompany ?? false,
         ...(initialData?.isRepresentingCompany
           ? {
-              representingCompanyName: initialData.representingCompanyName,
-              representedCompanyUID: initialData.representedCompanyUID,
-              representedCompanyAddress: initialData.representedCompanyAddress,
-            }
+            representingCompanyName: initialData.representingCompanyName,
+            representedCompanyUID: initialData.representedCompanyUID,
+            representedCompanyAddress: initialData.representedCompanyAddress,
+          }
           : {}),
       }) as profile.TPersonalProfile,
   );
-  const [files, setFiles] = React.useState<fileProps>([]);
+  const [file, setFile] = useState<UploadedFileType | null>(null);
   const dictionary = getDictionary(locale);
 
   const handleChange = (
@@ -84,29 +82,43 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleUploadedFiles = (uploadedFiles: File[]) => {
-    const filesWithStatus = uploadedFiles.map((file: any) => ({
-      file,
-      isUploading: true,
-    }));
+  const handleUploadedFiles = async (newFiles: UploadedFileType[]): Promise<UploadResponse> => {
+      // Set the files immediately with loading state
+      const newFile = newFiles[0];
+    
+      // Update our local state immediately to show loading
+      setFile(newFile);
+      try {
+      // Return a Promise that resolves to the UploadResponse
+      const response = await new Promise<ImageUploadResponse>((resolve) => {
+        setTimeout(() => {
+          // Create a proper UploadResponse object
+           resolve ({
+            image_id: `123456`,
+            image_thumbnail_url: URL.createObjectURL(newFile.file),
+          });
+        }, 100);
+      });
+      setFile({
+        ...newFile,
+        isUploading: false,
+        responseData: response
+      });
+      
+      return response;
+    }catch (error) {
+      // Handle error properly by updating state
+      setFile({
+        ...newFile,
+        isUploading: false,
+        error: "Upload failed"
+      });
+      
+      throw error;
+    }
 
-    setFiles((prevFiles: any) => [...prevFiles, ...filesWithStatus]);
-
-    setTimeout(() => {
-      setFiles((prevFiles: any[]) =>
-        prevFiles.map((f) =>
-          filesWithStatus.some(
-            (newFile: { file: any }) => newFile.file === f.file,
-          )
-            ? { ...f, isUploading: false }
-            : f,
-        ),
-      );
-    }, 2000);
-  };
-  const handleDelete = (index: number) => {
-    setFiles((prevFiles: any[]) => prevFiles.filter((f, i) => i !== index));
-  };
+    };
+ console.log(file)
   const handleSubmit = () => {
     onSave?.(formData);
   };
@@ -128,11 +140,11 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           {dictionary.components.profileInfo.title}
         </h1>
         <TextInput
-        
+
           label={dictionary.components.profileInfo.name}
           inputField={{
             id: 'name',
-            className:"w-full",
+            className: "w-full",
             value: formData.name,
             setValue: (value) => handleChange('name', value),
             inputText: dictionary.components.profileInfo.namePlaceholder,
@@ -142,7 +154,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.surname}
           inputField={{
             id: 'surname',
-            className:"w-full",
+            className: "w-full",
             value: formData.surname,
             setValue: (value) => handleChange('surname', value),
             inputText: dictionary.components.profileInfo.surnamePlaceholder,
@@ -152,7 +164,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.email}
           inputField={{
             id: 'email',
-            className:"w-full",
+            className: "w-full",
             value: formData.email,
             setValue: (value) => handleChange('email', value),
             inputText: dictionary.components.profileInfo.emailPlaceholder,
@@ -162,7 +174,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.phoneNumber}
           inputField={{
             id: 'phone',
-            className:"w-full",
+            className: "w-full",
             value: formData.phoneNumber || '',
             setValue: (value) => handleChange('phoneNumber', value),
             inputText: dictionary.components.profileInfo.phoneNumberPlaceholder,
@@ -172,7 +184,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.password}
           inputField={{
             id: 'password',
-            className:"w-full",
+            className: "w-full",
             value: formData.phoneNumber || '',
             setValue: (value) => handleChange('phoneNumber', value),
             inputText: dictionary.components.profileInfo.password,
@@ -247,12 +259,20 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             {' '}
             {dictionary.components.profileInfo.profilePicture}{' '}
           </p>
-          <UploadedImage
-            files={files}
+          <Uploader
+           type="single"
+           file={file as UploadedFileType}
+           onFilesChange={handleUploadedFiles}
+            variant='image'
+            onDownload={() => {
+              // Handle download logic here
+            }}
+            locale={locale}
             className="w-full"
-            onUpload={handleUploadedFiles}
-            handleDelete={handleDelete}
-            text={dictionary.components.dragDrop}
+            maxSize={5}
+            onDelete={()=>{
+              // Handle delete logic here
+            }}
           />
         </div>
 
