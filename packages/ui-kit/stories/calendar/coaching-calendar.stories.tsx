@@ -5,7 +5,6 @@ import React from 'react';
 import { ScheduleSession } from '../../lib/components/calendar/schedule-session';
 import { AvailableCoachingSessions } from '../../lib/components/available-coaching-sessions/available-coaching-sessions';
 
-// Mock dictionary for Storybook
 const mockDictionary = {
   components: {
     calendar: {
@@ -69,7 +68,16 @@ const meta: Meta<typeof CoachingSessionCalendar> = {
 export default meta;
 
 // Mock data for this week (starting May 6, 2025)
-const mockEvents = [
+type CalendarEvent = {
+  id: string;
+  title: string;
+  description?: string;
+  start: string;
+  end: string;
+  attendees?: string;
+};
+
+const mockEvents: CalendarEvent[] = [
   {
     id: '1',
     title: 'Team Meeting',
@@ -88,7 +96,25 @@ const mockEvents = [
   },
 ];
 
-const mockCoachAvailability = [
+type CoachAvailabilityEvent = {
+  id: string;
+  title: string;
+  description?: string;
+  start: string;
+  end: string;
+  attendees: string;
+};
+
+type BaseEvent = {
+  id: string;
+  title: string;
+  description?: string;
+  start: string;
+  end: string;
+  attendees: string; // Ensure attendees is required
+};
+
+const mockCoachAvailability: CoachAvailabilityEvent[] = [
   {
     id: '3',
     title: 'Coach Available',
@@ -136,16 +162,19 @@ const mockYourMeetings = [
 
 const mockCoachingSessions = [
   {
+    id: '1',
     title: 'Quick Sprint',
     time: 20,
     numberOfSessions: 2,
   },
   {
+    id: '2',
     title: 'Normal Sprint',
     time: 30,
     numberOfSessions: 1,
   },
   {
+    id: '3',
     title: 'Full Immersion',
     time: 60,
     numberOfSessions: 2,
@@ -219,11 +248,11 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
             />
           </div>
         )}
-        
+
         {args.variant === 'dragAndDrop' && args.availableCoachingSessionsData ? (
           <div className="flex flex-row gap-4">
             <div className="flex-grow">
-              <CoachingSessionCalendar {...args} />
+              <CoachingSessionCalendar {...args} onAddEvent={args.onAddEvent} onEventDrop={args.onEventDrop} />
             </div>
             <div className="w-64">
               <AvailableCoachingSessions
@@ -236,10 +265,10 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
           </div>
         ) : (
           <div className="flex-1">
-            <CoachingSessionCalendar {...args} />
+            <CoachingSessionCalendar {...args} onAddEvent={args.onAddEvent || (() => { })} onEventDrop={args.onEventDrop || (() => { })} />
           </div>
         )}
-        
+
         {isScheduleSessionOpen && scheduleSessionData && (
           <div className="fixed inset-0 flex items-center justify-center bg-transparent bg-opacity-10 z-50 backdrop-blur-xs">
             <div className="bg-card-fill p-6 rounded-md border border-card-stroke max-w-[320px] w-full">
@@ -288,14 +317,6 @@ export const DragAndDropVariant: StoryObj<typeof CoachingSessionCalendar> = {
     onEventDrop: (event) => console.log('Event Dropped:', event),
     variant: 'dragAndDrop',
   },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'The dragAndDrop variant of the CoachingSessionCalendar component, allowing users to drag coaching sessions from the AvailableCoachingSessions component placed next to the calendar on the right side.',
-      },
-    },
-  },
 };
 
 export const ClickToScheduleVariant: StoryObj<typeof CoachingSessionCalendar> = {
@@ -308,15 +329,8 @@ export const ClickToScheduleVariant: StoryObj<typeof CoachingSessionCalendar> = 
     onEventDrop: (event) => console.log('Event Dropped:', event),
     variant: 'clickToSchedule',
   },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'The clickToSchedule variant of the CoachingSessionCalendar component, featuring hover-based scheduling, click-to-schedule on Coach Available slots, and a Sessions button to open the scheduling modal. The Sessions button is placed above the calendar in the top-right corner.',
-      },
-    },
-  },
 };
+
 
 export const EmptyDragAndDrop: StoryObj<typeof CoachingSessionCalendar> = {
   ...Template,
@@ -329,13 +343,6 @@ export const EmptyDragAndDrop: StoryObj<typeof CoachingSessionCalendar> = {
     onEventDrop: (event) => console.log('Event Dropped:', event),
     variant: 'dragAndDrop',
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'An empty view of the CoachingSessionCalendar component in dragAndDrop variant with an empty AvailableCoachingSessions box next to the calendar.',
-      },
-    },
-  },
 };
 
 export const EmptyClickToSchedule: StoryObj<typeof CoachingSessionCalendar> = {
@@ -347,14 +354,6 @@ export const EmptyClickToSchedule: StoryObj<typeof CoachingSessionCalendar> = {
     onAddEvent: (event) => console.log('Add Event:', event),
     onEventDrop: (event) => console.log('Event Dropped:', event),
     variant: 'clickToSchedule',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'An empty view of the CoachingSessionCalendar component in clickToSchedule variant with a Sessions button above the calendar.',
-      },
-    },
   },
 };
 
@@ -370,15 +369,8 @@ export const InteractiveDragAndDrop: StoryObj<typeof CoachingSessionCalendar> = 
       alert(`Dropped Event: ${event.title} to ${new Date(event.start).toLocaleString()}`),
     variant: 'dragAndDrop',
   },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'An interactive view of the CoachingSessionCalendar component in dragAndDrop variant with alerts for event changes. The AvailableCoachingSessions box is placed next to the calendar.',
-      },
-    },
-  },
 };
+
 
 export const InteractiveClickToSchedule: StoryObj<typeof CoachingSessionCalendar> = {
   ...Template,
@@ -390,13 +382,5 @@ export const InteractiveClickToSchedule: StoryObj<typeof CoachingSessionCalendar
     onEventDrop: (event) =>
       alert(`Dropped Event: ${event.title} to ${new Date(event.start).toLocaleString()}`),
     variant: 'clickToSchedule',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'An interactive view of the CoachingSessionCalendar component in clickToSchedule variant with alerts for event changes and a Sessions button above the calendar.',
-      },
-    },
   },
 };

@@ -5,7 +5,8 @@ import { Button } from '../button';
 import { UserAvatar } from '../avatar/user-avatar';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
-interface ScheduleSessionProps extends isLocalAware {
+
+export interface ScheduleSessionProps extends isLocalAware {
   user: 'student' | 'coach';
   isError: boolean;
   groupSession: boolean;
@@ -20,13 +21,76 @@ interface ScheduleSessionProps extends isLocalAware {
   courseTitle?: string;
   groupName?: string;
   sessionName?: string;
-  onClickDiscard?: () => void;
-  onClickSendRequest?: () => void;
+  onClickDiscard: () => void;
+  onClickSendRequest: () => void;
   onClickCoach?: () => void;
   onClickCourse?: () => void;
   onClickGroup?: () => void;
 }
 
+/**
+ * A component for scheduling a coaching session with date, time, and session details.
+ *
+ * @param user The type of user scheduling the session: `student` or `coach`.
+ * @param isError Boolean indicating if there is an error (e.g., coach not available).
+ * @param groupSession Boolean indicating if the session is for a group.
+ * @param course Boolean indicating if the session is tied to a specific course.
+ * @param coachImageUrl Optional URL for the coach's profile picture.
+ * @param courseImageUrl Optional URL for the course image.
+ * @param dateValue The selected date for the session.
+ * @param timeValue The selected time for the session in `HH:mm` format.
+ * @param onDateChange Handler function for updating the selected date.
+ * @param onTimeChange Handler function for updating the selected time.
+ * @param coachName Optional name of the coach.
+ * @param courseTitle Optional title of the course.
+ * @param groupName Optional name of the group.
+ * @param sessionName Optional name of the session.
+ * @param onClickDiscard Handler function for discarding the session scheduling.
+ * @param onClickSendRequest Handler function for sending the session request.
+ * @param onClickCoach Optional handler function for clicking the coach's name.
+ * @param onClickCourse Optional handler function for clicking the course title.
+ * @param onClickGroup Optional handler function for clicking the group name.
+ * @param locale The locale for internationalization, used to fetch the appropriate dictionary.
+ *
+ * @example
+ * <ScheduleSession
+ *   user="student"
+ *   isError={false}
+ *   groupSession={true}
+ *   course={true}
+ *   coachImageUrl="https://example.com/coach.jpg"
+ *   courseImageUrl="https://example.com/course.jpg"
+ *   dateValue={new Date("2025-05-07")}
+ *   timeValue="10:00"
+ *   onDateChange={(value) => console.log("Date changed:", value)}
+ *   onTimeChange={(value) => console.log("Time changed:", value)}
+ *   coachName="John Doe"
+ *   courseTitle="Leadership Training"
+ *   groupName="Group A"
+ *   sessionName="Intro Session"
+ *   onClickDiscard={() => console.log("Discard clicked")}
+ *   onClickSendRequest={() => console.log("Send request clicked")}
+ *   onClickCoach={() => console.log("Coach clicked")}
+ *   onClickCourse={() => console.log("Course clicked")}
+ *   onClickGroup={() => console.log("Group clicked")}
+ *   locale="en"
+ * />
+ *
+ * @example
+ * <ScheduleSession
+ *   user="coach"
+ *   isError={true}
+ *   groupSession={false}
+ *   course={false}
+ *   dateValue={new Date()}
+ *   timeValue="14:00"
+ *   onDateChange={(value) => console.log("Date changed:", value)}
+ *   onTimeChange={(value) => console.log("Time changed:", value)}
+ *   onClickDiscard={() => console.log("Discard clicked")}
+ *   onClickSendRequest={() => console.log("Send request clicked")}
+ *   locale="en"
+ * />
+ */
 export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
   user,
   isError,
