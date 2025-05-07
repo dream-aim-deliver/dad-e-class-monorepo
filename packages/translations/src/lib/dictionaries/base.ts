@@ -1,5 +1,5 @@
 
-import { date, z } from 'zod';
+import { z } from 'zod';
 
 export const DictionarySchema = z.object({
   
