@@ -294,8 +294,12 @@ export const EN: TDictionary = {
         choseFiles: 'Choose files',
         description: 'or drag and drop files here',
       }
-
-    }
+    },
+    lessonHeader: {
+      moduleText: 'Module',
+      showNotesText: 'Show Notes (Alt/Ctrl + N)',
+      hideNotesText: 'Hide Notes (Alt/Ctrl + N)',
+    },
   },
   pages: {
     home: Home_EN,

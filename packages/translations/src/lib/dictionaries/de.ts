@@ -298,7 +298,12 @@ export const DE: TDictionary = {
         description:"oder ziehen Sie Videos per Drag & Drop hierher",
 
       },
-    }
+    },
+    lessonHeader: {
+      moduleText: 'Modul',
+      showNotesText: 'Notizen anzeigen (Alt/Ctrl + N)',
+      hideNotesText: 'Notizen verbergen (Alt/Ctrl + N)',
+    },
 },
   pages: {
     home: Home_DE,
