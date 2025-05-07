@@ -288,7 +288,12 @@ export const DictionarySchema = z.object({
         choseFiles: z.string(),
         description: z.string(),
       })
-    })
+    }),
+    lessonHeader: z.object({
+      moduleText: z.string(),
+      showNotesText: z.string(),
+      hideNotesText: z.string(),
+    }),
   }),
   pages: z.object({
       sso: z.object({
