@@ -29,7 +29,7 @@ interface FilePreviewProps extends isLocalAware {
  * @param locale The locale for translations.
  **/
 
-export const FilePreview: React.FC<FilePreviewProps> = ({ file, index, onDelete, onDownload,onCancelUpload, locale }) => {
+export const FilePreview: React.FC<FilePreviewProps> = ({ file, index, onDelete, onDownload, onCancelUpload, locale }) => {
     const fileType = file.file.type.split('/')[0];
     const dictionary = getDictionary(locale);
 
@@ -41,7 +41,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file, index, onDelete,
             </div>
         );
     }
-    
+
     return (
         <div className={cn('flex items-center justify-between gap-2 p-2 rounded-medium', 'bg-base-neutral-900')}>
             <div className="flex items-center gap-2">
@@ -49,9 +49,9 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file, index, onDelete,
                     {file.isUploading ? (
                         <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-primary" />
                     ) : fileType === 'image' ? (
-                        file.responseData && 'image_thumbnail_url' in file.responseData ? (
+                        file.responseData && 'imageThumbnailUrl' in file.responseData ? (
                             <img
-                                src={(file.responseData as ImageUploadResponse).image_thumbnail_url}
+                                src={(file.responseData as ImageUploadResponse).imageThumbnailUrl}
                                 alt={file.file.name}
                                 className="w-10 h-10 object-cover rounded-small"
                             />
@@ -68,13 +68,13 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file, index, onDelete,
                     <div className="h-[1.2rem] w-full bg-divider rounded-small border border-divider animate-pulse bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] bg-[length:200%_100%] bg-no-repeat bg-left" />
                 ) : (
                     <span className="text-sm font-medium text-text-primary truncate">
-                        {file.responseData && 'file_name' in file.responseData
-                            ? (file.responseData as FileUploadResponse).file_name
+                        {file.responseData && 'fileName' in file.responseData
+                            ? (file.responseData as FileUploadResponse).fileName
                             : file.file.name}
                     </span>
                 )}
                 <span className="text-xs text-text-secondary">
-                {(file.file.size / (1024 * 1024)).toFixed(2)} MB
+                    {(file.file.size / (1024 * 1024)).toFixed(2)} MB
                 </span>
             </div>
             <div>
@@ -82,7 +82,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file, index, onDelete,
                     <Button
                         variant="text"
                         className="px-0"
-                        onClick={() => onCancelUpload(index)} 
+                        onClick={() => onCancelUpload(index)}
                         text={dictionary.components.uploadingSection.cancelUpload}
                     />
                 ) : (
