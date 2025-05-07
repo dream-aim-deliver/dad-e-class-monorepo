@@ -216,6 +216,7 @@ export const DictionarySchema = z.object({
       na: z.string(),
       discardButton: z.string(),
       sendRequestButton: z.string(),
+      errorMessage: z.string(),
     }),
     coachCard: z.object({
       coachingSession: z.string(),

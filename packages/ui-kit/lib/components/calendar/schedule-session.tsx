@@ -112,7 +112,7 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
   const shouldShowPlaceholder = !courseImageUrl || isImageError;
 
   return (
-    <div className={`flex flex-col items-start gap-6 w-full max-w-[320px] ${isLoading ? 'opacity-50' : ''}`}>
+    <div className="flex flex-col items-start gap-6 w-full max-w-[320px]">
       <div className="flex flex-col items-start w-full p-4 rounded-md border border-base-neutral-700 bg-base-neutral-800">
         <div className="text-text-primary font-bold text-md flex flex-row items-center">
           <span className="text-sm text-text-secondary">{dictionary.components.scheduleSession.session}:</span>
@@ -128,7 +128,6 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
               size="small"
               className="ml-[-15px]"
               onClick={onClickCoach}
-              disabled={isLoading}
             />
           </div>
         )}
@@ -153,7 +152,6 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
               size="small"
               className="ml-[-15px]"
               onClick={onClickCourse}
-              disabled={isLoading}
             />
           </div>
         )}
@@ -166,7 +164,6 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
               size="small"
               className="ml-[-8px]"
               onClick={onClickGroup}
-              disabled={isLoading}
             />
           </div>
         )}
@@ -176,8 +173,6 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
           label="Date"
           value={dateValue.toISOString().split('T')[0]}
           onChange={onDateChange}
-          disabled={isLoading}
-          className={isError ? 'border-feedback-error-primary' : ''}
         />
         <div className="flex flex-col gap-1 w-full">
           <label className="text-white text-sm">{dictionary.components.scheduleSession.time}</label>
@@ -187,14 +182,12 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
             rightContent={null}
             setValue={onTimeChange}
             type="text"
-            disabled={isLoading}
-            className={isError ? 'border-feedback-error-primary' : ''}
           />
         </div>
       </div>
       {isError && (
         <div className="w-full text-sm text-feedback-error-primary text-justify">
-          {dictionary.components.scheduleSession.errorMessage || 'The coach is not available in the selected timeslot.'}
+          {dictionary.components.scheduleSession.errorMessage}
         </div>
       )}
       <div className="flex flex-row gap-4 w-full">
@@ -214,8 +207,8 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
             disabled={isLoading}
           />
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-base-neutral-800 bg-opacity-50 rounded">
-              <IconLoaderSpinner classNames="animate-spin h-6 w-6 text-primary" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <IconLoaderSpinner classNames="animate-spin h-5 w-5 text-white" />
             </div>
           )}
         </div>
