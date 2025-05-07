@@ -275,6 +275,27 @@ export const EN: TDictionary = {
       resumeText: 'Resume',
       viewProfileText: 'View profile',
     },
+    uploadingSection:{
+      maxSizeText: 'Max size',
+      uploadingText: 'Uploading...',
+      cancelUpload: 'Cancel upload',
+      deleteText: 'Delete',
+      downloadText: 'Download',
+      maxFilesText: 'Maximum file limit reached',
+      uploadImage:{
+        choseImages: 'Choose images',
+        description: 'or drag and drop images here',
+      },
+      uploadVideo:{
+        choseVideos: 'Choose videos',
+        description: 'or drag and drop videos here',
+      },
+    uploadFile:{
+        choseFiles: 'Choose files',
+        description: 'or drag and drop files here',
+      }
+
+    }
   },
   pages: {
     home: Home_EN,

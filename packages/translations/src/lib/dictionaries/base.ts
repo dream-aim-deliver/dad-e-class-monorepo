@@ -268,6 +268,27 @@ export const DictionarySchema = z.object({
       resumeText: z.string(),
       viewProfileText: z.string(),
     }),
+    uploadingSection: z.object({
+      maxSizeText: z.string(),
+      uploadingText: z.string(),
+      cancelUpload: z.string(),
+      deleteText: z.string(),
+      downloadText: z.string(),
+      maxFilesText: z.string(),
+      uploadImage:z.object({
+        choseImages: z.string(),
+        description: z.string(),
+
+      }),
+      uploadVideo: z.object({
+        choseVideos: z.string(),
+        description: z.string(),
+      }),
+      uploadFile: z.object({
+        choseFiles: z.string(),
+        description: z.string(),
+      })
+    })
   }),
   pages: z.object({
       sso: z.object({
