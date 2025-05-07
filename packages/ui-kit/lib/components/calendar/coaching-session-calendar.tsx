@@ -57,7 +57,7 @@ export interface CalendarProps {
   variant: Variant;
 }
 
-export const formatDate = (date: Date, viewType: string = 'timeGridWeek'): string => {
+export const formatDate = (date: Date, viewType = 'timeGridWeek'): string => {
   const year = date.getFullYear();
   const month = date.toLocaleString('default', { month: 'long' });
 

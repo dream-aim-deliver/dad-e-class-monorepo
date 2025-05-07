@@ -1,25 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
-import CoachingSessionCalendar, { formatDate } from '../../lib/components/calendar/coaching-session-calendar';
+import CoachingSessionCalendar from '../../lib/components/calendar/coaching-session-calendar';
 import { Button } from '../../lib/components/button';
 import React from 'react';
 import { ScheduleSession } from '../../lib/components/calendar/schedule-session';
 import { AvailableCoachingSessions } from '../../lib/components/available-coaching-sessions/available-coaching-sessions';
-
-const mockDictionary = {
-  components: {
-    calendar: {
-      title: 'Coaching Session Calendar',
-      noEventsText: 'No events scheduled',
-    },
-    availableCoachingSessions: {
-      title: 'Available Coaching Sessions',
-      noAvailableSessionText: 'No sessions available',
-      loadingText: 'Loading...',
-      durationMinutes: 'minutes',
-      buyMoreSessions: 'Buy More Sessions',
-    },
-  },
-};
 
 const meta: Meta<typeof CoachingSessionCalendar> = {
   title: 'Components/CoachingSessionCalendar',
@@ -67,7 +51,25 @@ const meta: Meta<typeof CoachingSessionCalendar> = {
 
 export default meta;
 
-// Mock data for this week (starting May 6, 2025)
+type Event = {
+  id: string;
+  title: string;
+  start: string;
+  end: string;
+  extendedProps?: {
+    coachingSessionId?: string;
+  };
+};
+
+type BaseEvent = {
+  id: string;
+  title: string;
+  description?: string;
+  start: string;
+  end: string;
+  attendees?: string;
+};
+
 type CalendarEvent = {
   id: string;
   title: string;
@@ -96,25 +98,7 @@ const mockEvents: CalendarEvent[] = [
   },
 ];
 
-type CoachAvailabilityEvent = {
-  id: string;
-  title: string;
-  description?: string;
-  start: string;
-  end: string;
-  attendees: string;
-};
-
-type BaseEvent = {
-  id: string;
-  title: string;
-  description?: string;
-  start: string;
-  end: string;
-  attendees: string; // Ensure attendees is required
-};
-
-const mockCoachAvailability: CoachAvailabilityEvent[] = [
+const mockCoachAvailability: BaseEvent[] = [
   {
     id: '3',
     title: 'Coach Available',
@@ -149,7 +133,7 @@ const mockCoachAvailability: CoachAvailabilityEvent[] = [
   },
 ];
 
-const mockYourMeetings = [
+const mockYourMeetings: BaseEvent[] = [
   {
     id: '7',
     title: 'Your Meeting',
@@ -187,8 +171,8 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
     coachAvailability: typeof mockCoachAvailability;
     yourMeetings: typeof mockYourMeetings;
     availableCoachingSessionsData?: typeof mockCoachingSessions;
-    onAddEvent?: (event: any) => void;
-    onEventDrop?: (event: any) => void;
+    onAddEvent?: (event: Event) => void;
+    onEventDrop?: (event: Event) => void;
     variant: 'dragAndDrop' | 'clickToSchedule';
   }) => {
     const [isScheduleSessionOpen, setIsScheduleSessionOpen] = React.useState(false);
@@ -223,7 +207,7 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
       const end = new Date(start);
       end.setHours(hours + 1, minutes);
 
-      const newEvent = {
+      const newEvent: Event = {
         id: Date.now().toString(),
         title,
         start: start.toISOString(),
@@ -235,6 +219,12 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
       setIsScheduleSessionOpen(false);
       setScheduleSessionData(null);
     };
+
+    const handleBuyMoreSessions = () => {
+      console.log('Buy more sessions');
+    };
+
+    const noop = () => console.log('No operation performed');
 
     return (
       <div className="flex flex-col min-h-screen bg-background p-4">
@@ -252,20 +242,20 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
         {args.variant === 'dragAndDrop' && args.availableCoachingSessionsData ? (
           <div className="flex flex-row gap-4">
             <div className="flex-grow">
-              <CoachingSessionCalendar {...args} onAddEvent={args.onAddEvent} onEventDrop={args.onEventDrop} />
+              <CoachingSessionCalendar {...args} onAddEvent={args.onAddEvent || noop} onEventDrop={args.onEventDrop || noop} />
             </div>
             <div className="w-64">
               <AvailableCoachingSessions
                 locale="en"
                 text="Drag these sessions to the calendar"
                 availableCoachingSessionsData={args.availableCoachingSessionsData}
-                onClickBuyMoreSessions={() => console.log('Buy more sessions')}
+                onClickBuyMoreSessions={handleBuyMoreSessions}
               />
             </div>
           </div>
         ) : (
           <div className="flex-1">
-            <CoachingSessionCalendar {...args} onAddEvent={args.onAddEvent || (() => { })} onEventDrop={args.onEventDrop || (() => { })} />
+            <CoachingSessionCalendar {...args} onAddEvent={args.onAddEvent || noop} onEventDrop={args.onEventDrop || noop} />
           </div>
         )}
 
@@ -313,8 +303,8 @@ export const DragAndDropVariant: StoryObj<typeof CoachingSessionCalendar> = {
     coachAvailability: mockCoachAvailability,
     yourMeetings: mockYourMeetings,
     availableCoachingSessionsData: mockCoachingSessions,
-    onAddEvent: (event) => console.log('Add Event:', event),
-    onEventDrop: (event) => console.log('Event Dropped:', event),
+    onAddEvent: (event: Event) => console.log('Add Event:', event),
+    onEventDrop: (event: Event) => console.log('Event Dropped:', event),
     variant: 'dragAndDrop',
   },
 };
@@ -325,12 +315,11 @@ export const ClickToScheduleVariant: StoryObj<typeof CoachingSessionCalendar> = 
     events: mockEvents,
     coachAvailability: mockCoachAvailability,
     yourMeetings: mockYourMeetings,
-    onAddEvent: (event) => console.log('Add Event:', event),
-    onEventDrop: (event) => console.log('Event Dropped:', event),
+    onAddEvent: (event: Event) => console.log('Add Event:', event),
+    onEventDrop: (event: Event) => console.log('Event Dropped:', event),
     variant: 'clickToSchedule',
   },
 };
-
 
 export const EmptyDragAndDrop: StoryObj<typeof CoachingSessionCalendar> = {
   ...Template,
@@ -339,8 +328,8 @@ export const EmptyDragAndDrop: StoryObj<typeof CoachingSessionCalendar> = {
     coachAvailability: [],
     yourMeetings: [],
     availableCoachingSessionsData: [],
-    onAddEvent: (event) => console.log('Add Event:', event),
-    onEventDrop: (event) => console.log('Event Dropped:', event),
+    onAddEvent: (event: Event) => console.log('Add Event:', event),
+    onEventDrop: (event: Event) => console.log('Event Dropped:', event),
     variant: 'dragAndDrop',
   },
 };
@@ -351,8 +340,8 @@ export const EmptyClickToSchedule: StoryObj<typeof CoachingSessionCalendar> = {
     events: [],
     coachAvailability: [],
     yourMeetings: [],
-    onAddEvent: (event) => console.log('Add Event:', event),
-    onEventDrop: (event) => console.log('Event Dropped:', event),
+    onAddEvent: (event: Event) => console.log('Add Event:', event),
+    onEventDrop: (event: Event) => console.log('Event Dropped:', event),
     variant: 'clickToSchedule',
   },
 };
@@ -364,13 +353,12 @@ export const InteractiveDragAndDrop: StoryObj<typeof CoachingSessionCalendar> = 
     coachAvailability: mockCoachAvailability,
     yourMeetings: mockYourMeetings,
     availableCoachingSessionsData: mockCoachingSessions,
-    onAddEvent: (event) => alert(`Added Event: ${event.title}`),
-    onEventDrop: (event) =>
+    onAddEvent: (event: Event) => alert(`Added Event: ${event.title}`),
+    onEventDrop: (event: Event) =>
       alert(`Dropped Event: ${event.title} to ${new Date(event.start).toLocaleString()}`),
     variant: 'dragAndDrop',
   },
 };
-
 
 export const InteractiveClickToSchedule: StoryObj<typeof CoachingSessionCalendar> = {
   ...Template,
@@ -378,8 +366,8 @@ export const InteractiveClickToSchedule: StoryObj<typeof CoachingSessionCalendar
     events: mockEvents,
     coachAvailability: mockCoachAvailability,
     yourMeetings: mockYourMeetings,
-    onAddEvent: (event) => alert(`Added Event: ${event.title}`),
-    onEventDrop: (event) =>
+    onAddEvent: (event: Event) => alert(`Added Event: ${event.title}`),
+    onEventDrop: (event: Event) =>
       alert(`Dropped Event: ${event.title} to ${new Date(event.start).toLocaleString()}`),
     variant: 'clickToSchedule',
   },
