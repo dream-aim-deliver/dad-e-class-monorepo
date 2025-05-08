@@ -1,6 +1,6 @@
 import {InputField} from "../input-field";
 import {RadioButton} from "../radio-button";
-import React, { FC } from "react";
+import  { FC } from "react";
 
 interface RowHeaderProps {
   row: {
