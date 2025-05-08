@@ -1,5 +1,5 @@
 import React from 'react';
-import { DragAndDrop } from './drag&drop';
+import { DragAndDrop } from './drag-and-drop';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { cn } from '../../utils/style-utils';
 import { FilePreview } from './file-preview';

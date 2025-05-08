@@ -4,7 +4,7 @@ import {
   Uploader,
   UploadedFileType,
   UploadResponse,
-} from '../lib/components/drag&drop/uploader';
+} from '../lib/components/drag-and-drop/uploader';
 
 // Mock file data for demos
 const createMockFile = (name: string, type: string, size: number): File => {
