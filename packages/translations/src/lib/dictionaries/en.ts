@@ -316,7 +316,6 @@ export const EN: TDictionary = {
       singleChoice:"Single choice",
       oneOutOfThree:"one out of three",
       heading:"Heading",
-    }
     },
     lessonHeader: {
       moduleText: 'Module',
