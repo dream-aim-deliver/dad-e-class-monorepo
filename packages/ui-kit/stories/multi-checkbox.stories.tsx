@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import MultipleChoicePreview from '../lib/components/multiple-choice';
+import MultipleChoicePreview from '../lib/components/multiple-check';
 
 const meta: Meta<typeof MultipleChoicePreview> = {
   title: 'Components/MultiCheckboxPreview',

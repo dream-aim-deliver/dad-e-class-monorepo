@@ -2,7 +2,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { MultipleChoiceEdit } from '../lib/components/multiple-choice';
+import { MultipleChoiceEdit } from '../lib/components/multiple-check';
 
 const meta: Meta<typeof MultipleChoiceEdit> = {
     title: 'Components/MultipleChoiceEdit',
@@ -12,7 +12,7 @@ const meta: Meta<typeof MultipleChoiceEdit> = {
     },
     tags: ['autodocs'],
     argTypes: {
-        locale:{
+        locale: {
             control: {
                 type: 'select',
                 options: ['en', 'de'],
@@ -30,12 +30,12 @@ type Story = StoryObj<typeof MultipleChoiceEdit>;
 
 // --- Story 1: Default ---
 const DefaultWrapper = () => {
-  
+
 
     return (
         <div className="w-[500px]">
             <MultipleChoiceEdit
-            locale='en'
+                locale='en'
                 initialTitle={"Select your favorite color"}
                 initialOptions={[]}
                 onChange={(value) => console.log(value)}
@@ -50,13 +50,13 @@ export const Default: Story = {
 
 // --- Story 2: Empty ---
 const EmptyWrapper = () => {
-    
+
 
     return (
         <div className="w-[500px]">
             <MultipleChoiceEdit
-            locale='en'
-            initialTitle={"Select an option"}
+                locale='en'
+                initialTitle={"Select an option"}
                 initialOptions={[]}
             />
         </div>

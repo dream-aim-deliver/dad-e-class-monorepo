@@ -1,9 +1,9 @@
-import  { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps } from "../pre-assessment/types";
-import { optionsType } from "../multiple-choice";
+import { optionsType } from "../multiple-check";
 import DesignerLayout from "./designer-layout";
 import { IconMultiChoice } from "../icons/icon-multi-choice";
-import MultipleChoicePreview, { MultipleChoiceEdit } from "../multiple-choice";
+import MultipleChoicePreview, { MultipleChoiceEdit } from "../multiple-check";
 import { getDictionary } from "@maany_shr/e-class-translations";
 
 const multiCheckElement: FormElementTemplate = {
@@ -27,7 +27,7 @@ const multiCheckElement: FormElementTemplate = {
 
 function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
     if (elementInstance.type !== FormElementType.MultiCheck) return null;
-const dictionary=getDictionary(locale);
+    const dictionary = getDictionary(locale);
     const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
 
     const handleRequiredChange = () => {
@@ -48,14 +48,14 @@ const dictionary=getDictionary(locale);
             onChange={handleRequiredChange}
         >
             <MultipleChoiceEdit
-            locale={locale}
-            initialTitle={elementInstance.title ||""}
-            initialOptions={elementInstance.options || []}
-            onChange={()=>{
-                // Handle change
-            }}/>
+                locale={locale}
+                initialTitle={elementInstance.title || ""}
+                initialOptions={elementInstance.options || []}
+                onChange={() => {
+                    // Handle change
+                }} />
 
-               
+
         </DesignerLayout>
     );
 }
