@@ -294,6 +294,26 @@ export const EN: TDictionary = {
         description: 'or drag and drop files here',
       }
     },
+    formRenderer: {
+      title: 'Pre course assessment',
+      alertText: 'Once you submit your response, you won’t be able to make changes, so please review it carefully. Completing this form is required to begin the course.',
+      submitText: 'send reply',
+      fieldRequired: 'This field is required',
+      selectOption: 'Please select an option',
+      pleaseEnterText: 'Please enter text',
+      delete: 'Delete',
+      moveUp: 'Move up',
+      moveDown: 'Move down',
+      showInCourseBuilderDescription: "Include rich text in course material tab"
+    },
+    lessons: {
+      headingPlaceholder: "Enter heading",
+      addChoice: "Add choice",
+      multiChoice: "Multi choice",
+      singleChoice: "Single choice",
+      oneOutOfThree: "one out of three",
+      heading: "Heading",
+    },
     lessonHeader: {
       moduleText: 'Module',
       showNotesText: 'Show Notes (Alt/Ctrl + N)',
@@ -315,26 +335,6 @@ export const EN: TDictionary = {
       minutesText: 'minutes',
       minText: 'min',
     },
-    formRenderer: {
-      title: 'Pre course assessment',
-      alertText: 'Once you submit your response, you won’t be able to make changes, so please review it carefully. Completing this form is required to begin the course.',
-      submitText: 'send reply',
-      fieldRequired: 'This field is required',
-      selectOption: 'Please select an option',
-      pleaseEnterText: 'Please enter text',
-      delete: 'Delete',
-      moveUp: 'Move up',
-      moveDown: 'Move down',
-      showInCourseBuilderDescription: "Include rich text in course material tab"
-    },
-    lessons: {
-      headingPlaceholder: "Enter heading",
-      addChoice: "Add choice",
-      multiChoice: "Multi choice",
-      singleChoice: "Single choice",
-      oneOutOfThree: "one out of three",
-      heading: "Heading",
-    }
   },
   pages: {
     home: Home_EN,
