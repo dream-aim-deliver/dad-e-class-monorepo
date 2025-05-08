@@ -278,6 +278,27 @@ export const DE: TDictionary = {
       resumeText: 'Wieder aufnehmen',
       viewProfileText: 'Profil anzeigen',
     },
+    formRenderer:{
+      title:'Leistungsbewertung vor dem Kurs',
+      alertText:'Sobald Sie Ihre Antwort abgeschickt haben, können Sie keine Änderungen mehr vornehmen. Bitte überprüfen Sie sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
+      submitText:'Antwort senden',
+        fieldRequired:'Dieses Feld ist erforderlich',
+        selectOption:'Bitte wählen Sie eine Option',
+        pleaseEnterText:'Bitte geben Sie Text ein',
+        delete:'Löschen',
+        moveUp:'Nach oben',
+        moveDown:'Nach unten',
+        showInCourseBuilderDescription:"Rich Text in die Registerkarte „Kursmaterial“ einbinden"
+    },
+    lessons:{
+      headingPlaceholder:"Überschrift eingeben",
+      addChoice:"Auswahl hinzufügen",
+      multiChoice:"Mehrfachauswahl",
+      singleChoice:"Einzelwahl",
+      oneOutOfThree:"einer von drei",
+      heading:"Überschrift",
+      
+    }
 },
   pages: {
     home: Home_DE,
