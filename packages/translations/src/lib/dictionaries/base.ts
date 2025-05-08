@@ -308,7 +308,12 @@ export const DictionarySchema = z.object({
       singleChoice:z.string(),
       heading:z.string(),
       oneOutOfThree:z.string(),
-   })
+   }),
+    lessonHeader: z.object({
+      moduleText: z.string(),
+      showNotesText: z.string(),
+      hideNotesText: z.string(),
+    }),
   }),
   pages: z.object({
       sso: z.object({

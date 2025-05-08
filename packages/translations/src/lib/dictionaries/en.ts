@@ -295,6 +295,7 @@ export const EN: TDictionary = {
         description: 'or drag and drop files here',
       }
 
+
     },
     formRenderer:{
       title:'Pre course assessment',
@@ -316,6 +317,12 @@ export const EN: TDictionary = {
       oneOutOfThree:"one out of three",
       heading:"Heading",
     }
+    },
+    lessonHeader: {
+      moduleText: 'Module',
+      showNotesText: 'Show Notes (Alt/Ctrl + N)',
+      hideNotesText: 'Hide Notes (Alt/Ctrl + N)',
+    },
   },
   pages: {
     home: Home_EN,

@@ -299,7 +299,6 @@ export const DE: TDictionary = {
 
       },
     },
-
      formRenderer:{
       title:'Leistungsbewertung vor dem Kurs',
       alertText:'Sobald Sie Ihre Antwort abgeschickt haben, können Sie keine Änderungen mehr vornehmen. Bitte überprüfen Sie sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
@@ -320,7 +319,12 @@ export const DE: TDictionary = {
       oneOutOfThree:"einer von drei",
       heading:"Überschrift",
       
-    }
+    },
+    lessonHeader: {
+      moduleText: 'Modul',
+      showNotesText: 'Notizen anzeigen (Alt/Ctrl + N)',
+      hideNotesText: 'Notizen verbergen (Alt/Ctrl + N)',
+    },
 
 },
   pages: {
