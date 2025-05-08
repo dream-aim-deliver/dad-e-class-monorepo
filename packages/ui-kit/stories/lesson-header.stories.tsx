@@ -43,7 +43,7 @@ const LessonHeaderStateful = ({ args }: LessonHeaderStatefulProps) => {
   const handleNotesClick = () => {
     setShowNotes((prev: boolean) => !prev);
   };
-  
+
 
   return (
     <LessonHeader

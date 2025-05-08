@@ -96,15 +96,15 @@ export const LessonHeader: FC<LessonHeaderProps> = ({
                 </p>
             </div>
             <div className="flex flex-col gap-2 items-center">
-                <ModulePagination 
-                    currentIndex={currentLesson-1}
+                <ModulePagination
+                    currentIndex={currentLesson - 1}
                     totalLessons={totalLessons}
                     onPrevious={onClickPrevious}
                     onNext={onClickNext}
                     locale={locale}
                     className="p-0 w-full"
                 />
-                <Button 
+                <Button
                     variant="secondary"
                     size="small"
                     text={showNotes ? dictionary.components.lessonHeader.showNotesText : dictionary.components.lessonHeader.hideNotesText}
