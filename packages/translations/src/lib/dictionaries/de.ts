@@ -145,10 +145,10 @@ export const DE: TDictionary = {
       loadingText: 'Sitzungen werden geladen...',
       noAvailableSessionText: 'Keine verfügbaren Sitzungen',
     },
-    coachReview:{
-      by:'von'
+    coachReview: {
+      by: 'von'
     },
-    coachCard:{
+    coachCard: {
       coachingSession: "Coaching-Sitzung",
       more: "mehr",
       teaches: "Lehrt",
@@ -165,7 +165,7 @@ export const DE: TDictionary = {
     videoPlayer: {
       videoErrorText: 'Video existiert nicht'
     },
-    richTextToolbar:{
+    richTextToolbar: {
       paragraph: "Absatz",
       bold: "Fett (Strg+B)",
       italic: "Kursiv (Strg+I)",
@@ -178,14 +178,14 @@ export const DE: TDictionary = {
       subscript: "Tiefgestellt",
       highlight: "Hervorheben",
       code: "Code",
-      leftAlign:"Links ausrichten",
-      centerAlign:"Zentriert ausrichten",
-      rightAlign:"Rechts ausrichten",
-      justifyAlign:"Blocksatz",
-      blockQuote:"Zitat",
-      numberedList:"Nummerierte Liste",
-      bulletedList:"Aufzählungsliste",
-      unlink:"Link entfernen"
+      leftAlign: "Links ausrichten",
+      centerAlign: "Zentriert ausrichten",
+      rightAlign: "Rechts ausrichten",
+      justifyAlign: "Blocksatz",
+      blockQuote: "Zitat",
+      numberedList: "Nummerierte Liste",
+      bulletedList: "Aufzählungsliste",
+      unlink: "Link entfernen"
     },
     coachingOnDemandBanner: {
       noImageText: 'Kein Bild verfügbar',
@@ -209,8 +209,8 @@ export const DE: TDictionary = {
       purchasePackageText: 'Kaufpaket',
       detailsText: 'Details',
       placeHolderText: 'Kein Bild verfugbar',
-      coursesText: 'Kurse' ,
-      saveText: 'speichern' ,
+      coursesText: 'Kurse',
+      saveText: 'speichern',
       ourPackagesText: 'Unsere Pakete',
     },
     sideMenu: {
@@ -278,24 +278,24 @@ export const DE: TDictionary = {
       resumeText: 'Wieder aufnehmen',
       viewProfileText: 'Profil anzeigen',
     },
-    uploadingSection:{
-      maxSizeText:"maximale Größe",
-      uploadingText:"hochladen",
-      cancelUpload:"Hochladen abbrechen",
-      deleteText:"Löschen",
-      downloadText:"Herunterladen",
-      maxFilesText:"Maximale Anzahl an Dateien",
-      uploadImage:{
-        choseImages:"Bilder auswählen",
-        description:"oder ziehen Sie Bilder per Drag & Drop hierher",
+    uploadingSection: {
+      maxSizeText: "maximale Größe",
+      uploadingText: "hochladen",
+      cancelUpload: "Hochladen abbrechen",
+      deleteText: "Löschen",
+      downloadText: "Herunterladen",
+      maxFilesText: "Maximale Anzahl an Dateien",
+      uploadImage: {
+        choseImages: "Bilder auswählen",
+        description: "oder ziehen Sie Bilder per Drag & Drop hierher",
       },
-      uploadFile:{
-        choseFiles:"Dateien auswählen",
-        description:"oder ziehen Sie Dateien per Drag & Drop hierher",
+      uploadFile: {
+        choseFiles: "Dateien auswählen",
+        description: "oder ziehen Sie Dateien per Drag & Drop hierher",
       },
-      uploadVideo:{
-        choseVideos:"Videos auswählen",
-        description:"oder ziehen Sie Videos per Drag & Drop hierher",
+      uploadVideo: {
+        choseVideos: "Videos auswählen",
+        description: "oder ziehen Sie Videos per Drag & Drop hierher",
 
       },
     },
@@ -320,7 +320,27 @@ export const DE: TDictionary = {
       minutesText: 'Minuten',
       minText: 'Min.',
     },
-},
+    formRenderer: {
+      title: 'Leistungsbewertung vor dem Kurs',
+      alertText: 'Sobald Sie Ihre Antwort abgeschickt haben, können Sie keine Änderungen mehr vornehmen. Bitte überprüfen Sie sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
+      submitText: 'Antwort senden',
+      fieldRequired: 'Dieses Feld ist erforderlich',
+      selectOption: 'Bitte wählen Sie eine Option',
+      pleaseEnterText: 'Bitte geben Sie Text ein',
+      delete: 'Löschen',
+      moveUp: 'Nach oben',
+      moveDown: 'Nach unten',
+      showInCourseBuilderDescription: "Rich Text in die Registerkarte „Kursmaterial“ einbinden"
+    },
+    lessons: {
+      headingPlaceholder: "Überschrift eingeben",
+      addChoice: "Auswahl hinzufügen",
+      multiChoice: "Mehrfachauswahl",
+      singleChoice: "Einzelwahl",
+      oneOutOfThree: "einer von drei",
+      heading: "Überschrift",
+    },
+  },
   pages: {
     home: Home_DE,
     login: Login_DE,
@@ -332,5 +352,5 @@ export const DE: TDictionary = {
         tryAgain: 'Nochmal versuchen',
       },
     },
-  },  
+  },
 };

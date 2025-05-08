@@ -142,17 +142,17 @@ export const EN: TDictionary = {
       noAvailableSessionText: 'No available sessions',
       loadingText: 'Loading Sessions...',
     },
-    coachReview:{
-      by:'by'
+    coachReview: {
+      by: 'by'
     },
-    coachCard:{
+    coachCard: {
       coachingSession: "Coaching Session",
       teaches: "Teaches",
       more: "more",
       viewProfile: "View Profile",
       bookSession: "Book a Session",
     },
-    buyCoachingSession:{
+    buyCoachingSession: {
       title: 'Buy Coaching Session',
       description: 'Schedule your sessions anytime, each with your favourite coach.',
       buttonText: 'Buy coaching sessions',
@@ -162,7 +162,7 @@ export const EN: TDictionary = {
     videoPlayer: {
       videoErrorText: 'Video does not exist'
     },
-    richTextToolbar:{
+    richTextToolbar: {
       paragraph: "Paragraph",
       bold: "Bold (Ctrl+B)",
       italic: "Italic (Ctrl+I)",
@@ -259,7 +259,7 @@ export const EN: TDictionary = {
     },
     courseOutline: {
       optionalText: 'Optional',
-      updatedText:  'Updated',
+      updatedText: 'Updated',
       moduleText: 'Module',
     },
     courseGeneralInformationView: {
@@ -275,22 +275,22 @@ export const EN: TDictionary = {
       resumeText: 'Resume',
       viewProfileText: 'View profile',
     },
-    uploadingSection:{
+    uploadingSection: {
       maxSizeText: 'Max size',
       uploadingText: 'Uploading...',
       cancelUpload: 'Cancel upload',
       deleteText: 'Delete',
       downloadText: 'Download',
       maxFilesText: 'Maximum file limit reached',
-      uploadImage:{
+      uploadImage: {
         choseImages: 'Choose images',
         description: 'or drag and drop images here',
       },
-      uploadVideo:{
+      uploadVideo: {
         choseVideos: 'Choose videos',
         description: 'or drag and drop videos here',
       },
-    uploadFile:{
+      uploadFile: {
         choseFiles: 'Choose files',
         description: 'or drag and drop files here',
       }
@@ -315,6 +315,26 @@ export const EN: TDictionary = {
       coachingSessionText: 'Coaching Session',
       minutesText: 'minutes',
       minText: 'min',
+    },
+    formRenderer: {
+      title: 'Pre course assessment',
+      alertText: 'Once you submit your response, you won’t be able to make changes, so please review it carefully. Completing this form is required to begin the course.',
+      submitText: 'send reply',
+      fieldRequired: 'This field is required',
+      selectOption: 'Please select an option',
+      pleaseEnterText: 'Please enter text',
+      delete: 'Delete',
+      moveUp: 'Move up',
+      moveDown: 'Move down',
+      showInCourseBuilderDescription: "Include rich text in course material tab"
+    },
+    lessons: {
+      headingPlaceholder: "Enter heading",
+      addChoice: "Add choice",
+      multiChoice: "Multi choice",
+      singleChoice: "Single choice",
+      oneOutOfThree: "one out of three",
+      heading: "Heading",
     },
   },
   pages: {
