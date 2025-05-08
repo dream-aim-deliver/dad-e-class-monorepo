@@ -108,8 +108,56 @@ type MultipleUploaderProps = CommonUploaderProps & {
 export type UploaderProps = SingleUploaderProps | MultipleUploaderProps;
 
 /**
- * A universal file uploader component that can handle different file types (files, images, videos)
- * with support for single or multiple file uploads.
+ * A universal file uploader component that can handle different file types with support for single or multiple file uploads.
+ * 
+ * @param maxSize Maximum file size in MB. Defaults to 5MB.
+ * @param onDelete Callback function triggered when a file is deleted. Receives the file ID as a parameter.
+ * @param onDownload Callback function triggered when a file download is requested. Receives the file ID as a parameter.
+ * @param className Additional CSS classes for styling the uploader container.
+ * @param variant Determines the type of files the uploader will handle. This affects the default acceptedFileTypes and UI text:
+ *   - 'file': General file uploader for any file type
+ *   - 'image': Specialized for image uploads, defaults to accepting 'image/*'
+ *   - 'video': Specialized for video uploads, defaults to accepting 'video/*'
+ * @param acceptedFileTypes Optional array of MIME types to override the default accepted types for the chosen variant.
+ *   Examples:
+ *   - For images: ['image/jpeg', 'image/png', 'image/gif']
+ *   - For videos: ['video/mp4', 'video/quicktime']
+ *   - For files: ['application/pdf', '.doc', '.docx']
+ *   If not provided, defaults are set based on the variant.
+ * @param onFilesChange Main callback for handling file changes. Receives array of UploadedFileType and should return Promise<UploadResponse>.
+ * @param locale Locale string for translations (e.g., 'en', 'es')
+ * @param isLocalAware Indicates if the component should use localized strings
+ * @param type Upload mode: 'single' for one file only, 'multiple' for multiple files
+ * @param maxFile For multiple upload mode: maximum number of files allowed
+ * @param files For multiple upload mode: array of currently uploaded files
+ * @param file For single upload mode: the currently uploaded file
+ * 
+ * @example
+ * ```tsx
+ * // Single image uploader
+ * <Uploader
+ *   maxSize={5}
+ *   onDelete={handleDelete}
+ *   onDownload={handleDownload}
+ *   variant="image"
+ *   acceptedFileTypes={['image/jpeg', 'image/png']}
+ *   onFilesChange={handleFilesChange}
+ *   locale="en"
+ *   type="single"
+ *   file={currentFile}
+ * />
+ * 
+ * // Multiple file uploader
+ * <Uploader
+ *   maxSize={10}
+ *   variant="file"
+ *   acceptedFileTypes={['application/pdf', '.doc']}
+ *   onFilesChange={handleFilesChange}
+ *   type="multiple"
+ *   maxFile={3}
+ *   files={uploadedFiles}
+ * />
+ * ```
  */
 export const Uploader: React.FC<UploaderProps> = (props) => {
   const { maxSize = 5, onDelete, onDownload, className, variant, locale, onFilesChange } = props;

@@ -22,12 +22,18 @@ export type DragAndDropProps = {
  * @param onUpload Callback function triggered when files are successfully uploaded. Receives an array of `File` objects.
  * @param maxSize Optional maximum file size allowed for uploads, in bytes. Defaults to 15 MB.
  * @param className Optional additional CSS class names to customize the component's appearance.
- * @param acceptedFileTypes Optional array of accepted file types (e.g., `['image/*', 'application/pdf']`). Defaults to images and PDFs.
- * @param multiple Optional boolean to control if multiple files can be selected. Defaults to true.
+ * @param acceptedFileTypes Optional array of accepted file types using MIME type format. Can include:
+ *  - Specific MIME types: 'application/pdf', 'image/png', 'image/jpeg'
+ *  - Wildcard MIME types: 'image/*' (accepts all image formats)
+ *  - Common categories: 'application/pdf', 'image/*', 'video/*', 'audio/*'
+ *  Defaults to ['image/*', 'application/pdf'].
+ * @param multiple Optional boolean to control if multiple files can be selected:
+ *  - true (default): Allows uploading multiple files at once
+ *  - false: Restricts to single file selection
  * @param text Object containing customizable text for various parts of the component:
- *  - `title`: Text displayed when a file is being dragged over the drop area.
- *  - `description`: Instructional text displayed in the drop area.
- *  - `maxSizeText`: Text label for displaying the maximum file size allowed.
+ *  - `title`: Text displayed when a file is being dragged over the drop area
+ *  - `description`: Instructional text displayed in the drop area
+ *  - `maxSizeText`: Text label for displaying the maximum file size allowed
  *
  * @example
  * <DragAndDrop
@@ -38,10 +44,12 @@ export type DragAndDropProps = {
  *   text={{
  *     title: "Drop your file here",
  *     description: "or click to browse",
- *     maxSizeText: "Max file size",
+ *     maxSizeText: "Max file size"
  *   }}
  * />
- */
+ * */
+
+
 export const DragAndDrop: React.FC<DragAndDropProps> = ({
   onUpload,
   maxSize = 15 * 1024 * 1024,
