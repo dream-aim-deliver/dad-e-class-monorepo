@@ -2,7 +2,7 @@
 import { z } from 'zod';
 
 export const DictionarySchema = z.object({
-  
+
   components: z.object({
     coachBanner: z.object({
       buttonText: z.string(),
@@ -91,7 +91,7 @@ export const DictionarySchema = z.object({
       buttontext2: z.string(),
     }),
     coachReview: z.object({
-      by:z.string()
+      by: z.string()
     }),
     coachCard: z.object({
       coachingSession: z.string(),
@@ -100,7 +100,7 @@ export const DictionarySchema = z.object({
       viewProfile: z.string(),
       bookSession: z.string(),
     }),
-    reviewCoachingSessionModal : z.object({
+    reviewCoachingSessionModal: z.object({
       title: z.string(),
       sendReviewButton: z.string(),
       reviewPlaceholder: z.string(),
@@ -144,11 +144,11 @@ export const DictionarySchema = z.object({
       noAvailableSessionText: z.string(),
     }),
     buyCoachingSession: z.object({
-      title:z.string(),
-      description:z.string(),
-      buttonText:z.string(),
-      total:z.string(),
-      minutes:z.string(),
+      title: z.string(),
+      description: z.string(),
+      buttonText: z.string(),
+      total: z.string(),
+      minutes: z.string(),
     }),
     videoPlayer: z.object({
       videoErrorText: z.string()
@@ -275,7 +275,7 @@ export const DictionarySchema = z.object({
       deleteText: z.string(),
       downloadText: z.string(),
       maxFilesText: z.string(),
-      uploadImage:z.object({
+      uploadImage: z.object({
         choseImages: z.string(),
         description: z.string(),
 
@@ -310,37 +310,57 @@ export const DictionarySchema = z.object({
       minutesText: z.string(),
       minText: z.string(),
     }),
+    formRenderer: z.object({
+      title: z.string(),
+      alertText: z.string(),
+      submitText: z.string(),
+      fieldRequired: z.string(),
+      selectOption: z.string(),
+      pleaseEnterText: z.string(),
+      delete: z.string(),
+      moveUp: z.string(),
+      moveDown: z.string(),
+      showInCourseBuilderDescription: z.string(),
+    }),
+    lessons: z.object({
+      headingPlaceholder: z.string(),
+      addChoice: z.string(),
+      multiChoice: z.string(),
+      singleChoice: z.string(),
+      heading: z.string(),
+      oneOutOfThree: z.string(),
+    }),
   }),
   pages: z.object({
-      sso: z.object({
-        termsAndConditions: z.object({
-          title: z.string(),
-          content: z.string(),
-          confirmationText: z.string(),
-        })
-      }),
-      home: z.object({
+    sso: z.object({
+      termsAndConditions: z.object({
         title: z.string(),
-        buttonText: z.string(),
-        badgeText: z.string(),
-        signInButtonText: z.string(),
-        notSignedInText: z.string(),
-        welcomeText: z.string(),
-        signOutText: z.string(),
-      }),
-      login: z.object({
+        content: z.string(),
+        confirmationText: z.string(),
+      })
+    }),
+    home: z.object({
+      title: z.string(),
+      buttonText: z.string(),
+      badgeText: z.string(),
+      signInButtonText: z.string(),
+      notSignedInText: z.string(),
+      welcomeText: z.string(),
+      signOutText: z.string(),
+    }),
+    login: z.object({
+      title: z.string(),
+      postLogout: z.string(),
+      username: z.string(),
+      password: z.string(),
+      signIn: z.string(),
+      loading: z.string(),
+    }),
+    auth: z.object({
+      errorPage: z.object({
         title: z.string(),
-        postLogout: z.string(),
-        username: z.string(),
-        password: z.string(),
-        signIn: z.string(),
-        loading: z.string(),
-      }),
-      auth: z.object({
-        errorPage: z.object({
-          title: z.string(),
-          description: z.string(),
-          tryAgain: z.string(),
+        description: z.string(),
+        tryAgain: z.string(),
       }),
     }),
   }),
