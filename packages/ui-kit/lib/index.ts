@@ -1,5 +1,5 @@
 import { ProfileTabs } from './components/profile-tabs';
-import { DragAndDrop } from './components/drag&drop/drag&drop';
+import { DragAndDrop } from './components/drag-and-drop/drag-and-drop';
 import { Badge } from './components/badge';
 
 

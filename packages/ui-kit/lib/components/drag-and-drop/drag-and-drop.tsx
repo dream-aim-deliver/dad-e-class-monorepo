@@ -59,7 +59,7 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
   text,
 }) => {
   const [error, setError] = useState<string | null>(null);
-  
+
   const { getRootProps, getInputProps, isDragActive } =
     useDropzone({
       accept: acceptedFileTypes.reduce(
@@ -73,10 +73,10 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
       multiple, // Use the multiple prop to control file selection mode
       onDrop: (acceptedFiles: File[], fileRejections) => {
         setError(null);
-        
+
         if (fileRejections.length > 0) {
           setError(
-            `Some files were rejected. Max size: ${maxSize/(1024*1024)} MB`,
+            `Some files were rejected. Max size: ${maxSize / (1024 * 1024)} MB`,
           );
         } else if (!multiple && acceptedFiles.length > 1) {
           // Extra check for single file mode
@@ -96,24 +96,23 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
     >
       <div
         {...getRootProps()}
-        className={`flex flex-col items-center bg-base-neutral-900 gap-[2px] justify-center md:p-6 p-2 md:pt-4 border-2 ${
-          isDragActive
+        className={`flex flex-col items-center bg-base-neutral-900 gap-[2px] justify-center md:p-6 p-2 md:pt-4 border-2 ${isDragActive
             ? 'border-button-primary-stroke'
             : 'border-base-neutral-700'
-        } border-dashed border-base-neutral-700 custom-dashed-border rounded-medium cursor-pointer transition-colors ${className}`}
+          } border-dashed border-base-neutral-700 custom-dashed-border rounded-medium cursor-pointer transition-colors ${className}`}
       >
         <input {...getInputProps()} />
         <IconCloudUpload classNames="w-6 h-6 text-base-neutral-50 font-bold" />
         <div className="flex flex-col gap-1 items-center justify-center">
-        <div className="flex flex-wrap gap-2 items-center justify-center text-center w-full">
+          <div className="flex flex-wrap gap-2 items-center justify-center text-center w-full">
             <Button variant="text" text={text.title} className="md:h-[2.5rem] h-4 px-0" />
             <p className="text-sm text-text-primary truncate max-w-[200px] sm:max-w-full">
               {text.description}
             </p>
           </div>
           <p className="text-xs text-text-secondary flex items-start">
-            <span>{text.maxSizeText}</span>: {maxSize/(1024*1024)} MB
-          
+            <span>{text.maxSizeText}</span>: {maxSize / (1024 * 1024)} MB
+
           </p>
         </div>
       </div>
