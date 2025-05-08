@@ -195,20 +195,21 @@ export interface OneOutOfThreePreviewProps  {
            </div>
            {/* Rows */}
            {rows.map((row, rowIdx) => (
-             <div
-               className="grid grid-cols-[repeat(4,_1fr)_0.2fr] gap-2 w-full items-center"
-               key={rowIdx}
-             >
-               <div className="flex items-center">
-                 <p className="text-md text-text-primary leading-[150%]">
-                   {row.rowTitle}
-                 </p>
-               </div>
-               {row.columns.map((col, colIdx) => (
-                 <div
-                   className="flex items-center justify-center"
-                   key={colIdx}
-                 >
+             <div 
+             className="grid grid-cols-[repeat(4,_1fr)_0.2fr] gap-2 w-full items-center" 
+             key={rowIdx}
+           >
+             <div className="flex items-center">
+               <p className="text-md text-text-primary leading-[150%]">
+                 {row.rowTitle}
+               </p>
+             </div>
+             {row.columns.map((col, colIdx) => (
+               <div
+                 className="flex items-center justify-center w-full h-full"
+                 key={colIdx}
+               >
+                 <div className="flex items-center justify-center">
                    <RadioButton
                      name={`row-${rowIdx}`}
                      value={`col-${colIdx}`}
@@ -217,9 +218,10 @@ export interface OneOutOfThreePreviewProps  {
                      onChange={() => handleChange(rowIdx, colIdx)}
                    />
                  </div>
-               ))}
-               <div className="flex items-center justify-center"></div>
-             </div>
+               </div>
+             ))}
+             <div className="flex items-center justify-center"></div>
+           </div>
            ))}
          </div>
        </div>

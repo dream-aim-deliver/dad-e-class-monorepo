@@ -35,7 +35,7 @@ const RowHeader: FC<RowHeaderProps> = ({
         />
       </div>
       {columns.map((col, colIndex) => (
-        <div className="flex-1 flex justify-center" key={colIndex}>
+        <div className="flex-1 flex justify-center items-center" key={colIndex}>
           <RadioButton
             value={col.columnTitle}
             name={`row-radio-${rowIndex}`}
