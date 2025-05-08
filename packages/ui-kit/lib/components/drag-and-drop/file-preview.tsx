@@ -69,7 +69,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file, index, onDelete,
                 ) : (
                     <span title={file.responseData && 'fileName' in file.responseData
                         ? (file.responseData as FileUploadResponse).fileName
-                        : file.file.name}  className="text-sm font-medium text-text-primary truncate">
+                        : file.file.name} className="text-sm font-medium text-text-primary truncate">
                         {file.responseData && 'fileName' in file.responseData
                             ? (file.responseData as FileUploadResponse).fileName
                             : file.file.name}

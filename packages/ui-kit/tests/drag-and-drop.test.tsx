@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { DragAndDrop } from '../lib/components/drag&drop/drag&drop';
+import { DragAndDrop } from '../lib/components/drag-and-drop/drag-and-drop';
 
 describe('DragAndDrop Component', () => {
   it('renders without crashing', () => {
@@ -58,7 +58,7 @@ describe('DragAndDrop Component', () => {
   it('shows error message when file exceeds max size', async () => {
     const onUploadMock = vi.fn();
     const maxSize = 10; // 10 bytes
-    
+
     render(
       <DragAndDrop
         onUpload={onUploadMock}
@@ -75,16 +75,16 @@ describe('DragAndDrop Component', () => {
     const fileInput = screen.getByTestId('file-input').querySelector('input');
     if (fileInput) {
       // Create a file larger than maxSize
-      const largeFile = new File(['this is more than 10 bytes'], 'large.jpg', { 
-        type: 'image/jpeg' 
+      const largeFile = new File(['this is more than 10 bytes'], 'large.jpg', {
+        type: 'image/jpeg'
       });
-      
+
       // Manually trigger the onDrop callback with empty accepted files and non-empty rejections
       await act(async () => {
         // This will be caught by the Dropzone's internal validation and trigger our error state
         fireEvent.change(fileInput, { target: { files: [largeFile] } });
       });
-      
+
       // The error might not appear immediately in the DOM, so we need to wait for it
       // Since we can't directly trigger the fileRejections in this test environment,
       // we'll verify the component handles files properly

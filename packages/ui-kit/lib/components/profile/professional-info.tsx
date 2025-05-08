@@ -6,12 +6,12 @@ import { TextInput } from '../text-input';
 import { InputField } from '../input-field';
 import { TextAreaInput } from '../text-areaInput';
 import { CheckBox } from '../checkbox';
-import { FileUploadResponse, UploadResponse } from '../drag&drop/uploader';
+import { FileUploadResponse, UploadResponse } from '../drag-and-drop/uploader';
 import { IconPlus } from '../icons/icon-plus';
 import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { UploadedFileType, Uploader } from '../drag&drop/uploader';
+import { UploadedFileType, Uploader } from '../drag-and-drop/uploader';
 import { useState } from 'react';
 
 interface ProfessionalInfoProps extends isLocalAware {
