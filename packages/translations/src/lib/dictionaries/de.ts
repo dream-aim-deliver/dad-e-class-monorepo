@@ -298,8 +298,9 @@ export const DE: TDictionary = {
         description:"oder ziehen Sie Videos per Drag & Drop hierher",
 
       },
-    }
-    formRenderer:{
+    },
+
+     formRenderer:{
       title:'Leistungsbewertung vor dem Kurs',
       alertText:'Sobald Sie Ihre Antwort abgeschickt haben, können Sie keine Änderungen mehr vornehmen. Bitte überprüfen Sie sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
       submitText:'Antwort senden',
@@ -320,6 +321,7 @@ export const DE: TDictionary = {
       heading:"Überschrift",
       
     }
+
 },
   pages: {
     home: Home_DE,

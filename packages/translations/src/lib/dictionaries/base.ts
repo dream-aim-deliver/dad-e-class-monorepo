@@ -288,7 +288,7 @@ export const DictionarySchema = z.object({
         choseFiles: z.string(),
         description: z.string(),
       })
-    })
+    }),
     formRenderer: z.object({
       title: z.string(),
       alertText: z.string(),
