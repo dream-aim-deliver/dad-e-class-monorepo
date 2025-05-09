@@ -163,7 +163,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
         <Slate editor={editor} initialValue={initialValue} onChange={(value) => onChange(value)}>
 
           <div
-            className="bg-black text-text-primary border-0 w-full max-w-[calc(100vw-40px)]  min-w-0 min-h-40  focus:outline-none overflow-y-auto"
+            className="bg-black text-text-primary border-0 w-full  min-w-0 min-h-40  focus:outline-none overflow-y-auto"
             style={{ resize: "vertical" }}
           >
             <Toolbar locale={locale} />

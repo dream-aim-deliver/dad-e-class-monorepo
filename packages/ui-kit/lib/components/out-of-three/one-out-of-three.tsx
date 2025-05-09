@@ -206,18 +206,19 @@ export interface OneOutOfThreePreviewProps  {
              </div>
              {row.columns.map((col, colIdx) => (
                <div
-                 className="flex items-center justify-center w-full h-full"
+                className="flex-1 flex justify-center items-center" 
                  key={colIdx}
                >
-                 <div className="flex items-center justify-center">
+                 
                    <RadioButton
                      name={`row-${rowIdx}`}
                      value={`col-${colIdx}`}
                      checked={col.selected}
                      disabled={displayOnly}
+              
                      onChange={() => handleChange(rowIdx, colIdx)}
                    />
-                 </div>
+               
                </div>
              ))}
              <div className="flex items-center justify-center"></div>
