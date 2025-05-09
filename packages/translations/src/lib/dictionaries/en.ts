@@ -300,6 +300,12 @@ export const EN: TDictionary = {
       showNotesText: 'Show Notes (Alt/Ctrl + N)',
       hideNotesText: 'Hide Notes (Alt/Ctrl + N)',
     },
+    moduleCompletionModal: {
+      moduleCompletedText: 'Module completed, well done!',
+      moduleText: 'Module',
+      descriptionText: 'Keep going, you’re doing great!',
+      goToNextModuleText: 'Go to next module',
+    },
   },
   pages: {
     home: Home_EN,
