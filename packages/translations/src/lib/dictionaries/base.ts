@@ -294,6 +294,12 @@ export const DictionarySchema = z.object({
       showNotesText: z.string(),
       hideNotesText: z.string(),
     }),
+    moduleCompletionModal: z.object({
+      moduleCompletedText: z.string(),
+      moduleText: z.string(),
+      descriptionText: z.string(),
+      goToNextModuleText: z.string(),
+    }),
   }),
   pages: z.object({
       sso: z.object({

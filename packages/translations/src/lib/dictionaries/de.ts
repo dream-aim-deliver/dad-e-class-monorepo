@@ -304,6 +304,12 @@ export const DE: TDictionary = {
       showNotesText: 'Notizen anzeigen (Alt/Ctrl + N)',
       hideNotesText: 'Notizen verbergen (Alt/Ctrl + N)',
     },
+    moduleCompletionModal: {
+      moduleCompletedText: 'Modul abgeschlossen, gut gemacht!',
+      moduleText: 'Modul',
+      descriptionText: 'Mach weiter, du machst das großartig!',
+      goToNextModuleText: 'Gehen Sie zum nächsten Modul',
+    },
 },
   pages: {
     home: Home_DE,
