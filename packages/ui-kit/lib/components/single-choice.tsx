@@ -110,10 +110,14 @@ export const SingleChoiceEdit: React.FC<SingleChoiceEditProps> = ({
             </div>
             {options.map((choice, index) => (
                 <div key={index} className="flex gap-[10px] items-center">
+                    
                     <RadioButton
                         name="single-choice"
                         value={`choice-${index}`}
+                        labelClass="w-fit justify-center"
+                        disabled={true}
                     />
+                    
                     <div className="w-full">
                         <InputField
                             className="border-0"

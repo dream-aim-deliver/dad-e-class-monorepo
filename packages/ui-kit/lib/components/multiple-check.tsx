@@ -41,6 +41,7 @@ export default function MultipleChoicePreview({
                     key={option.name}
                    label={option.name}
                    disabled={filled}
+
                    checked={option.isSelected}
                    onChange={() => onChange(option.name)}
                    withText
@@ -108,14 +109,16 @@ export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
             </div>
             {options.map((choice, index) => (
                 <div key={index} className="flex gap-[10px] items-center">
+                    <div className="w-fit flex items-center">
                     <CheckBox
-                    
+                       disabled={true}
                         name="multi-choice"
                         value={`choice-${index}`}
                     />
+                    </div>
                     <div className="w-full">
                         <InputField
-                            className="border-0"
+                            className="border-0 w-full"
                             inputText="choice-name"
                             value={choice.name}
                             setValue={(value) => handleInputChange(index, value)}

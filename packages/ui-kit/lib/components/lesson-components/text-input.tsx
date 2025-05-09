@@ -96,7 +96,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
       isChecked={isRequired}
       onChange={handleRequiredChange}
     >
-      <div className="w-full flex items-center">
+      <section className="w-full flex items-center">
         <TextInputEditor
           name={`rich-text-${elementInstance.id}`}
           initialValue={helperText}
@@ -105,7 +105,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
           placeholder={dictionary.components.formRenderer.pleaseEnterText}
           locale={locale}
         />
-      </div>
+      </section>
     </DesignerLayout>
   );
 }
@@ -131,13 +131,14 @@ export function FormComponent({ elementInstance, submitValue, locale }: FormComp
     };
     submitValue(elementInstance.id.toString(), updatedElement);
   };
-  console.log(elementInstance.helperText);
+
   return (
-    <div className="text-text-primary flex flex-col gap-2">
-      <div className="text-sm flex leading-[21px]">
+    <div className="text-text-primary flex flex-col gap-2 w-full">
+      <section className="text-sm flex leading-[21px]">
         <TextInputRenderer content={elementInstance.helperText} />
         {elementInstance.required && <span className="text-feedback-error-primary ml-1">*</span>}
-      </div>
+      </section>
+      <section className="w-full">
       <TextInputEditor
         locale={locale}
         name={`rich-text-${elementInstance.id}`}
@@ -146,6 +147,7 @@ export function FormComponent({ elementInstance, submitValue, locale }: FormComp
         onChange={(value) => setValue(value)}
         onLoseFocus={onLoseFocus}
       />
+      </section>
     </div>
   );
 }
@@ -161,9 +163,9 @@ function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
 
   return (
     <div className="text-text-primary flex flex-col gap-4">
-      <div className="text-sm leading-[21px] text-text-secondary">
+      <section className="text-sm leading-[21px] text-text-secondary">
         <TextInputRenderer content={elementInstance.helperText} />
-      </div>
+      </section>
       {"content" in elementInstance && (
         <TextInputRenderer
           className="p-2 bg-base-neutral-800 rounded-md"

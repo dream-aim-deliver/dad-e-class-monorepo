@@ -157,7 +157,7 @@ export function FormElementRenderer({
                 {elements.map((elementInstance) => {
                     const Element = formElements[elementInstance.type].formComponent;
                     return (
-                        <div key={elementInstance.id.toString()} className="flex flex-col gap-2">
+                        <div key={elementInstance.id.toString()} className="flex flex-col gap-2 items-start">
                             <Element
                                 submitValue={submitValue}
                                 elementInstance={elementInstance}
