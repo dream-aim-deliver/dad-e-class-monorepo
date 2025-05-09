@@ -427,7 +427,13 @@ export const EN: TDictionary = {
       by: 'by',
       readMore: 'Read more',
       readLess: 'Read less',
-    }
+    },
+    moduleCompletionModal: {
+      moduleCompletedText: 'Module completed, well done!',
+      moduleText: 'Module',
+      descriptionText: 'Keep going, you’re doing great!',
+      goToNextModuleText: 'Go to next module',
+    },
   },
   pages: {
     home: Home_EN,
