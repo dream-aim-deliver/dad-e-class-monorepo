@@ -278,6 +278,12 @@ export const DE: TDictionary = {
       resumeText: 'Wieder aufnehmen',
       viewProfileText: 'Profil anzeigen',
     },
+    moduleCompletionModal: {
+      moduleCompletedText: 'Modul abgeschlossen, gut gemacht!',
+      moduleText: 'Modul',
+      descriptionText: 'Mach weiter, du machst das großartig!',
+      goToNextModuleText: 'Gehen Sie zum nächsten Modul',
+    },
 },
   pages: {
     home: Home_DE,

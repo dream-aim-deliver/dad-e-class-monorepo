@@ -275,6 +275,12 @@ export const EN: TDictionary = {
       resumeText: 'Resume',
       viewProfileText: 'View profile',
     },
+    moduleCompletionModal: {
+      moduleCompletedText: 'Module completed, well done!',
+      moduleText: 'Module',
+      descriptionText: 'Keep going, you’re doing great!',
+      goToNextModuleText: 'Go to next module',
+    },
   },
   pages: {
     home: Home_EN,
