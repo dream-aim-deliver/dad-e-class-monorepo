@@ -288,7 +288,45 @@ export const DictionarySchema = z.object({
         choseFiles: z.string(),
         description: z.string(),
       })
-    })
+    }),
+    quiz: z.object({
+      quizText: z.string(),
+      enterTitleText: z.string(),
+      quizTitleText: z.string(),
+      descriptionText: z.string(),
+      addChoiceText: z.string(),
+      enterDescriptionText: z.string(),
+      successBannerText: z.string(),
+      errorBannerText: z.string(),
+      showSolutionText: z.string(),
+      tryAgainText: z.string(),
+      hideSolutionText: z.string(),
+      checkAnswerText: z.string(),
+      clearText: z.string(),
+      quizTypeOne: z.object({
+        headingText: z.string(),
+        radioButtonText: z.string(),
+      }),
+      quizTypeTwo: z.object({
+        headingText: z.string(),
+        UploadImageText: z.string(),
+        errorText: z.string(),
+        groupTitleText: z.string(),
+        radioButtonText: z.string(),
+      }),
+      quizTypeThree: z.object({
+        headingText: z.string(),
+        choiceDescriptionText: z.string(),
+      }),
+      quizTypeFour: z.object({
+        headingText: z.string(),
+        choiceDescriptionText: z.string(),
+        correctLetterText: z.string(),
+      }),
+      quizTypeFourView: z.object({
+        descriptionText: z.string(),
+      }),
+    }),
   }),
   pages: z.object({
       sso: z.object({

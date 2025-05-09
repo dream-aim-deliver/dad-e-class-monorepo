@@ -1,9 +1,10 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import React from "react";
 import { Descendant } from "slate";
+import { QuizElementType } from "../lesson-components/types";
 
 export enum CourseElementType {
-
+    Quiz = "quiz",
 }
 
 
@@ -27,12 +28,7 @@ export enum CourseElementType {
  * };
  * ```
  */
-export type courseElement = {
-    type: CourseElementType;
-    id: string;
-    order: number;
-    content?: string;
-};
+export type courseElement = QuizElementType;
 /**
  * Function type for handling course element submissions.
  * This callback function is used when a course element's value changes or is submitted.
@@ -96,9 +92,9 @@ export interface DesignerButtonProps {
  */
 export interface DesignerComponentProps extends isLocalAware {
     elementInstance: courseElement;
-    onUpClick?: (id: string) => void;
-    onDownClick?: (id: string) => void;
-    onDeleteClick?: (id: string) => void;
+    onUpClick?: (id: number) => void;
+    onDownClick?: (id: number) => void;
+    onDeleteClick?: (id: number) => void;
 }
 
 /**
@@ -187,7 +183,6 @@ export interface CourseElementTemplate {
     designerBtnElement: DesignerButtonProps;
     designerComponent: React.FC<DesignerComponentProps>;
     formComponent: React.FC<FormComponentProps>;
-    validate: (element: courseElement, value: valueType) => boolean;
 }
 
 /**

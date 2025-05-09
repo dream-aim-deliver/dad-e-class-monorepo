@@ -295,7 +295,45 @@ export const EN: TDictionary = {
         description: 'or drag and drop files here',
       }
 
-    }
+    },
+    quiz: {
+      quizText: 'Quiz',
+      enterTitleText: 'Enter title',
+      quizTitleText: 'Quiz title',
+      descriptionText: 'Description',
+      addChoiceText: 'Add Choice',
+      enterDescriptionText: 'Enter description',
+      successBannerText: 'Great job! You got it right!',
+      errorBannerText: 'Oops! That’s not correct. Give it another try!',
+      showSolutionText: 'Show solution',
+      tryAgainText: 'Try again',
+      hideSolutionText: 'Hide solution',
+      checkAnswerText: 'Check answer',
+      clearText: 'Clear',
+      quizTypeOne: {
+        headingText: 'Student picks one correct answer out of many choices',
+        radioButtonText: 'Radio button text',
+      },
+      quizTypeTwo: {
+        headingText: 'Student has to choose the right choice for each group',
+        UploadImageText: 'Upload Image (Required)',
+        errorText: "You need to define what's the correct answer",
+        groupTitleText: 'Group title',
+        radioButtonText: 'Radio button text',
+      },
+      quizTypeThree: {
+        headingText: 'The user picks one of the 2 images',
+        choiceDescriptionText: 'Choice description',
+      },
+      quizTypeFour: {
+        headingText: 'The user picks one of the 2 videos',
+        choiceDescriptionText: 'Choice description',
+        correctLetterText: 'Correct letter',
+      },
+      quizTypeFourView: {
+        descriptionText: 'Enter the letter that corresponds to the correct description below each image. Only one letter (uppercase or lowercase) is allowed-no other characters, or it will result in an error.',
+      },
+    },
   },
   pages: {
     home: Home_EN,

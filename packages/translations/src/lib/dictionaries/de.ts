@@ -298,6 +298,44 @@ export const DE: TDictionary = {
         description:"oder ziehen Sie Videos per Drag & Drop hierher",
 
       },
+    },
+    quiz: {
+      quizText: 'Quiz',
+      enterTitleText: 'Titel eingeben',
+      quizTitleText: 'Titel der Quizfrage',
+      descriptionText: 'Beschreibung',
+      addChoiceText: 'Eintrag hinzufügen',
+      enterDescriptionText: 'Beschreibung eingeben',
+      successBannerText: 'Super! Sie haben es richtig gemacht!',
+      errorBannerText: 'Ups! Das ist leider nicht richtig. Versuchen Sie es noch einmal!',
+      showSolutionText: 'Loesung anzeigen',
+      tryAgainText: 'Nochmal versuchen',
+      hideSolutionText: 'Loesung verbergen',
+      checkAnswerText: 'Antwort prüfen',
+      clearText: 'Zurücksetzen',
+      quizTypeOne: {
+        headingText: 'Der Student entscheidet sich selbst',
+        radioButtonText: 'Text der Optionsschaltfläche',
+      },
+      quizTypeTwo: {
+        headingText: 'Der Student muss für jede Gruppe die richtige Wahl treffen',
+        UploadImageText: 'Bild hochladen (erforderlich)',
+        errorText: 'Sie sollten wissen, was die richtige Antwort ist',
+        groupTitleText: 'Titel der Gruppe',
+        radioButtonText: 'Text der Optionsschaltfläche',
+      },
+      quizTypeThree: {
+        headingText: 'Der Student entscheidet sich selbst',
+        choiceDescriptionText: 'Beschreibung der Option',
+      },
+      quizTypeFour: {
+        headingText: 'Der Student entscheidet sich selbst',
+        choiceDescriptionText: 'Beschreibung der Option',
+        correctLetterText: 'Richtiges Zeichen',
+      },
+      quizTypeFourView: {
+        descriptionText: 'Geben Sie unter jedem Bild den Buchstaben ein, der der korrekten Beschreibung entspricht. Es ist nur ein Buchstabe (Groß- oder Kleinbuchstabe) zulässig – keine anderen Zeichen, da sonst ein Fehler auftritt.',
+      },
     }
 },
   pages: {
