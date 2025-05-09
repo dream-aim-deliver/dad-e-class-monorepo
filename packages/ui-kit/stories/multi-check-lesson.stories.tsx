@@ -12,10 +12,10 @@ const MultiChoiceDesignerComponent = (props) => {
         required: true,
         title: 'Select all programming languages you know',
         options: [
-            { name: 'JavaScript',isSelected: false },
-            { name: 'TypeScript', isSelected: false },
-            { name: 'Python', isSelected: false },
-            { name: 'Java', isSelected: false }
+            { name: 'JavaScript'},
+            { name: 'TypeScript' },
+            { name: 'Python' },
+            { name: 'Java' }
         ],
     };
 
@@ -51,7 +51,7 @@ export const Designer: StoryObj<typeof MultiChoiceDesignerComponent> = {
 export const FormView: StoryObj<typeof MultiChoiceDesignerComponent> = {
     render: (args) => {
         const sampleInstance = {
-            id: 'sample-multichoice-1',
+            id: 'sample-multi-check-1',
             type: FormElementType.MultiCheck,
             order: 1,
             required: true,
@@ -79,7 +79,7 @@ export const FormView: StoryObj<typeof MultiChoiceDesignerComponent> = {
 export const SubmissionView: StoryObj<typeof MultiChoiceDesignerComponent> = {
     render: (args) => {
         const sampleInstance = {
-            id: 'sample-multi-choice-1',
+            id: 'sample-multi-check-1',
             type: FormElementType.MultiCheck,
             order: 1,
             required: true,

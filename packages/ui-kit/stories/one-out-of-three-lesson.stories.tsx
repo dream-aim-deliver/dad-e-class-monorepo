@@ -18,21 +18,21 @@ const OneOutOfThreeDesignerComponent = (props) => {
             columns: [
                 { columnTitle: 'Not Important', selected: false },
                 { columnTitle: 'Somewhat Important', selected: false },
-                { columnTitle: 'Very Important', selected: true },
+                { columnTitle: 'Very Important', selected: false },
             ],
         },
         {
             rowTitle: 'Performance',
             columns: [
                 { columnTitle: 'Not Important', selected: false },
-                { columnTitle: 'Somewhat Important', selected: true },
+                { columnTitle: 'Somewhat Important', selected: false },
                 { columnTitle: 'Very Important', selected: false },
             ],
         },
         {
             rowTitle: 'New Features',
             columns: [
-                { columnTitle: 'Not Important', selected: true },
+                { columnTitle: 'Not Important', selected: false},
                 { columnTitle: 'Somewhat Important', selected: false },
                 { columnTitle: 'Very Important', selected: false },
             ],
