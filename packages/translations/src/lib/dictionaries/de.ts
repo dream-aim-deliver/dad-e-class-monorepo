@@ -13,6 +13,18 @@ export const DE: TDictionary = {
     skills: {
       title: 'Fähigkeiten',
     },
+    scheduleSession: {
+      session: 'Sitzung',
+      coach: 'Trainer',
+      course: 'Kurs',
+      group: 'Gruppe',
+      date: 'Datum',
+      time: 'Startzeit',
+      na: 'N/A',
+      discardButton: 'Verwerfen',
+      sendRequestButton: 'Anfrage senden',
+      errorMessage: 'Der Trainer ist in dem ausgewählten Zeitraum nicht verfügbar.',
+    },
     modulePagination: {
       previous: 'Vorherige',
       next: 'Nächste',
