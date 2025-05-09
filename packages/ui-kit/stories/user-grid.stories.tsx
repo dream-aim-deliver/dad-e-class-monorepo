@@ -176,7 +176,7 @@ type Story = StoryObj<typeof UserGrid>;
 
 export const Default: Story = {
     args: {
-        users: Array.from({ length: 5 }, () => [...mockUsers]).flat(),
+        users: Array.from({ length: 5 }, () => [...mockUsers.map(user => ({ ...user, userId: user.id }))]).flat(),
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -188,13 +188,16 @@ export const Default: Story = {
 
 export const Selectable: Story = {
     args: {
-        users: Array.from({ length: 5 }, () => [...mockUsers]).flat(),
+        users: Array.from({ length: 5 }, () => [...mockUsers.map(user => ({ ...user, userId: user.id }))]).flat(),
         enableSelection: true,
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
         onEmailClick: (email) => {
             alert(`Email clicked: ${email}`);
+        },
+        onSendNotifications: (userIds) => {
+            alert(`Send notifications to ${userIds.length} users: ${userIds.join(', ')}`);
         }
     }
 };
@@ -223,9 +226,77 @@ export const Loading: Story = {
     }
 };
 
+export const WithNotifications: Story = {
+    name: 'With Notifications',
+    args: {
+        users: Array.from({ length: 2 }, () => [...mockUsers.map(user => ({ ...user, userId: user.id }))]).flat(),
+        enableSelection: true,
+        onUserDetailsClick: (user) => {
+            alert(`User details clicked: ${user.name} ${user.surname}`);
+        },
+        onEmailClick: (email) => {
+            alert(`Email clicked: ${email}`);
+        },
+        onSendNotifications: (userIds) => {
+            alert(`Notification sent to ${userIds.length} users: ${userIds.join(', ')}`);
+        }
+    },
+    decorators: [
+        (Story, context) => {
+            const gridRef = useRef<AgGridReact>(null);
+            
+            // Helper function to select all users
+            const selectAllUsers = () => {
+                if (gridRef.current?.api) {
+                    gridRef.current.api.selectAll();
+                }
+            };
+            
+            // Helper function to select specific users
+            const selectFirstThreeUsers = () => {
+                if (gridRef.current?.api) {
+                    gridRef.current.api.deselectAll();
+                    
+                    // Get the first 3 nodes and select them
+                    let count = 0;
+                    gridRef.current.api.forEachNode(node => {
+                        if (count < 3 && node.data) {
+                            node.setSelected(true);
+                            count++;
+                        }
+                    });
+                }
+            };
+            
+            // Helper function to clear selection
+            const clearSelection = () => {
+                if (gridRef.current?.api) {
+                    gridRef.current.api.deselectAll();
+                }
+            };
+            
+            return (
+                <div className="h-screen w-full p-4 flex flex-col">
+                    <div className="mb-4 flex space-x-2">
+                        <Button text="Select All Users" onClick={selectAllUsers} variant="secondary" />
+                        <Button text="Select First 3 Users" onClick={selectFirstThreeUsers} variant="secondary" />
+                        <Button text="Clear Selection" onClick={clearSelection} variant="secondary" />
+                    </div>
+                    <div className="flex-1">
+                        <Story args={{
+                            ...context.args,
+                            gridRef: gridRef
+                        }} />
+                    </div>
+                </div>
+            );
+        }
+    ]
+};
+
 export const Filter: Story = {
     args: {
-        users: Array.from({ length: 5 }, () => [...mockUsers]).flat(),
+        users: Array.from({ length: 5 }, () => [...mockUsers.map(user => ({ ...user, userId: user.id }))]).flat(),
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
