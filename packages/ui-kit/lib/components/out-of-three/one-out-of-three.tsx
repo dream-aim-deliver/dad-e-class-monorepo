@@ -1,4 +1,3 @@
-
 import {InputField} from "../input-field";
 import  { FC, useState } from "react";
 import HeaderAdmin from "./header-admin";
@@ -6,6 +5,8 @@ import RowHeader from "./row-admin";
 import {Button} from "../button";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { RadioButton } from "../radio-button";
+import { IconTrashAlt } from "../icons/icon-trash-alt";
+import { IconButton } from "../icon-button";
 
 export interface OneOutOfThreeData {
   tableTitle: string;
@@ -30,6 +31,12 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
   // Change table title
   const handleTableTitleChange = (value: string) => {
     onUpdate({ ...data, tableTitle: value });
+  };
+
+  // Delete a row
+  const deleteRow = (rowIndex: number) => {
+    const updatedRows = data.rows.filter((_, index) => index !== rowIndex);
+    onUpdate({ ...data, rows: updatedRows });
   };
 
   // Change column header (all rows' column titles must stay in sync)
@@ -106,13 +113,22 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
             onHeaderChange={handleHeaderChange}
           />
           {data.rows.length>0 && data.rows?.map((row, rowIndex) => (
-            <RowHeader
-              key={rowIndex}
-              row={row}
-              rowIndex={rowIndex}
-              onRowTitleChange={handleRowTitleChange}
-              onSelectColumn={handleSelectColumn}
-            />
+            <div key={rowIndex} className="flex items-center gap-2 w-full">
+              <div className="flex-1">
+                <RowHeader
+                  row={row}
+                  rowIndex={rowIndex}
+                  onRowTitleChange={handleRowTitleChange}
+                  onSelectColumn={handleSelectColumn}
+                />
+              </div>
+              <IconButton
+                icon={<IconTrashAlt />}
+                onClick={() => deleteRow(rowIndex)}
+                styles="text"
+                size="small"
+              />
+            </div>
           ))}
           <Button 
               variant="secondary" 

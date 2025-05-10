@@ -70,16 +70,15 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
   const handleContentChange = (value: Descendant[]) => {
     const contentString = serialize(value);
     setHelperText(value);
-    console.log('Content changed:', contentString);
+
   };
 
   const handleLoseFocus = (value: string) => {
-    console.log('Final content:', value);
+    // Update the element instance with the new content
   };
 
   const handleRequiredChange = () => {
     setIsRequired(prev => !prev);
-    console.log('Required changed:', !isRequired);
   };
 
 

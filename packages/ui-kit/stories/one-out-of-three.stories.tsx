@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import {  OneOutOfThree, OneOutOfThreeData } from '../lib/components/out-of-three/one-out-of-three';
+import { OneOutOfThree, OneOutOfThreeData } from '../lib/components/out-of-three/one-out-of-three';
 import React, { useState } from 'react';
 
 /**
@@ -11,10 +11,13 @@ const mockMessages = {
   columnTitle: 'Column Title',
   rowTitle: 'Row Title',
   addRow: 'Add Row',
+  deleteRow: 'Delete Row', // Added delete row text
 };
 
 /**
  * Storybook configuration for the OneOutOfThree component.
+ * The component allows creating and managing a table with rows where each row has three options,
+ * and only one option can be selected. Each row can be deleted using the trash icon button.
  */
 const meta: Meta<typeof OneOutOfThree> = {
   title: 'Components/OneOutOfThree/OneOutOfThreeEdit',
@@ -29,12 +32,26 @@ export default meta;
 
 type Story = StoryObj<typeof OneOutOfThree>;
 
+// Wrapper component to handle state
+const OneOutOfThreeWithState = ({ initialData }: { initialData: OneOutOfThreeData }) => {
+  const [data, setData] = useState<OneOutOfThreeData>(initialData);
+  return (
+    <OneOutOfThree
+      locale="en"
+      data={data}
+      onUpdate={(updatedData) => setData(updatedData)}
+    />
+  );
+};
+
 /**
- * Interactive story for the OneOutOfThree component
+ * Interactive story for the OneOutOfThree component.
+ * Shows basic functionality with two rows that can be edited or deleted.
+ * Each row has a trash icon button that allows removal of that specific row.
  */
 export const Default: Story = {
-  render: function Render() {
-    const [data, setData] = useState<OneOutOfThreeData>({
+  render: () => {
+    const initialData: OneOutOfThreeData = {
       tableTitle: "Sample Table",
       rows: [
         {
@@ -54,31 +71,25 @@ export const Default: Story = {
           ],
         },
       ],
-    });
-
-    return (
-      <OneOutOfThree
-      locale="en"
-        data={data}
-        onUpdate={(updatedData) => setData(updatedData)}
-      />
-    );
+    };
+    return <OneOutOfThreeWithState initialData={initialData} />;
   },
   parameters: {
     docs: {
       description: {
-        story: 'A component that allows users to select one option out of three for each row in a table.',
+        story: 'A component that allows users to select one option out of three for each row in a table. Each row can be deleted using the trash icon button on the right. You can also add new rows using the "Add Choice" button at the bottom.',
       },
     },
   },
 };
 
 /**
- * Empty state story for the OneOutOfThree component
+ * Empty state story for the OneOutOfThree component.
+ * Shows the initial state with one empty row that can be filled or deleted.
  */
 export const Empty: Story = {
-  render: function Render() {
-    const [data, setData] = useState<OneOutOfThreeData>({
+  render: () => {
+    const initialData: OneOutOfThreeData = {
       tableTitle: "",
       rows: [
         {
@@ -90,31 +101,26 @@ export const Empty: Story = {
           ],
         },
       ],
-    });
-
-    return (
-      <OneOutOfThree
-      locale="en"
-        data={data}
-        onUpdate={(updatedData) => setData(updatedData)}
-      />
-    );
+    };
+    return <OneOutOfThreeWithState initialData={initialData} />;
   },
   parameters: {
     docs: {
       description: {
-        story: 'An empty state of the OneOutOfThree component with no pre-filled data.',
+        story: 'An empty state of the OneOutOfThree component with no pre-filled data. Contains one blank row that can be edited or deleted. Additional rows can be added using the "Add Choice" button.',
       },
     },
   },
 };
 
 /**
- * Multiple rows story for the OneOutOfThree component
+ * Multiple rows story for the OneOutOfThree component.
+ * Demonstrates how the component handles multiple rows with different questions and options.
+ * Each row has its own delete button for easy removal.
  */
 export const MultipleRows: Story = {
-  render: function Render() {
-    const [data, setData] = useState<OneOutOfThreeData>({
+  render: () => {
+    const initialData: OneOutOfThreeData = {
       tableTitle: "Evaluation Form",
       rows: [
         {
@@ -150,20 +156,13 @@ export const MultipleRows: Story = {
           ],
         },
       ],
-    });
-
-    return (
-      <OneOutOfThree
-      locale="en"
-        data={data}
-        onUpdate={(updatedData) => setData(updatedData)}
-      />
-    );
+    };
+    return <OneOutOfThreeWithState initialData={initialData} />;
   },
   parameters: {
     docs: {
       description: {
-        story: 'A OneOutOfThree component with multiple rows of questions and options.',
+        story: 'A OneOutOfThree component with multiple rows of questions and options. Shows how the component handles a larger set of data. Each row can be independently deleted using the trash icon, and new rows can be added as needed.',
       },
     },
   },

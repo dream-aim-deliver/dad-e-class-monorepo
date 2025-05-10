@@ -303,6 +303,7 @@ export const DE: TDictionary = {
       title:'Leistungsbewertung vor dem Kurs',
       alertText:'Sobald Sie Ihre Antwort abgeschickt haben, können Sie keine Änderungen mehr vornehmen. Bitte überprüfen Sie sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
       submitText:'Antwort senden',
+      requiredText:'erforderlich',
         fieldRequired:'Dieses Feld ist erforderlich',
         selectOption:'Bitte wählen Sie eine Option',
         pleaseEnterText:'Bitte geben Sie Text ein',

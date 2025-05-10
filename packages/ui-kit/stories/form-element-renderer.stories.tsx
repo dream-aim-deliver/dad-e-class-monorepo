@@ -53,7 +53,7 @@ const Elements: FormElement[] = [
     {
         id: "Multi-choice-1",
         type: FormElementType.MultiCheck,
-        order: 3,
+        order: 4,
         title: "What is your favorite color?",
         required: true,
         options: [
@@ -65,7 +65,7 @@ const Elements: FormElement[] = [
     {
     id: 'sample-multi-choice-1',
             type: FormElementType.OneOutOfThree,
-            order: 1,
+            order: 5,
             required: true,
             data:{
             tableTitle: 'Product Feature Feedback',

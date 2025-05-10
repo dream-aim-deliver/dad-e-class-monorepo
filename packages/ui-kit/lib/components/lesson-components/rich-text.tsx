@@ -57,11 +57,10 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
     const handleContentChange = (value: Descendant[]) => {
         setContent(value);
         const contentString = serialize(value);
-        console.log('Content changed:', contentString);
     };
 
     const handleLoseFocus = (value: string) => {
-        console.log('Final content:', value);
+      // Update the content in the element instance
     };
 
     return (
