@@ -88,7 +88,9 @@ const DesignerLayout = ({
                             checked={isChecked}
                             size="small"
                             onChange={onChange}
-                          
+                            withText={true}
+                            labelClass="text-text-primary capitalize"
+                            label={dictionary.components.formRenderer.requiredText} 
                             
                         
                         />

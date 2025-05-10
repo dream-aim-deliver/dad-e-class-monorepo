@@ -72,7 +72,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
            initialHeadingType={elementInstance.headingType}
            initialHeadingValue={elementInstance.heading}
            locale={locale}
-           onChange={(value)=>console.log(value)}
+           onChange={(value)=>  value}
            />
         </DesignerLayout>
     );

@@ -313,6 +313,7 @@ export const DictionarySchema = z.object({
     formRenderer: z.object({
       title: z.string(),
       alertText: z.string(),
+      requiredText: z.string(),
       submitText: z.string(),
       fieldRequired: z.string(),
       selectOption: z.string(),
