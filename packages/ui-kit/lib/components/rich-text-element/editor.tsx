@@ -159,7 +159,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
       onLoseFocus(serialized);
     }
     return (
-      <div className="text-text-primary">
+      <div className="text-text-primary w-full">
         <Slate editor={editor} initialValue={initialValue} onChange={(value) => onChange(value)}>
 
           <div
