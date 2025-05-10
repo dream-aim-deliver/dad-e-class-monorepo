@@ -129,6 +129,7 @@ export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
                         icon={<IconTrashAlt />}
                         size="medium"
                         onClick={() => handleRemoveChoice(index)}
+                        title={dictionary.components.formRenderer.delete}
                     />
                 </div>
             ))}
