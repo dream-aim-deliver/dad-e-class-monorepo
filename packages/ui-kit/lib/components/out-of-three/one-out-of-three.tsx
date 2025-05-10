@@ -127,6 +127,8 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
                 onClick={() => deleteRow(rowIndex)}
                 styles="text"
                 size="small"
+                title={dictionary.components.formRenderer.delete}
+
               />
             </div>
           ))}
