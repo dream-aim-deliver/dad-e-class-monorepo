@@ -70,8 +70,9 @@ export const DE: TDictionary = {
       sales: 'Verkauf',
       hours: 'stunden',
     },
-    reviewCoachingSessionModal: {
-      title: 'Wie würden Sie diesen Kurs bewerten?',
+    reviewModal: {
+      coachingTitle: 'Wie würden Sie diesen Trainer bewerten?',
+      courseTitle: 'Wie würden Sie diesen Kurs bewerten?',
       sendReviewButton: 'Bewertung senden',
       skipButton: 'Überspringen',
       closeButton: 'Schließen',

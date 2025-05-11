@@ -126,8 +126,9 @@ export const DictionarySchema = z.object({
       viewProfile: z.string(),
       bookSession: z.string(),
     }),
-    reviewCoachingSessionModal: z.object({
-      title: z.string(),
+    reviewModal: z.object({
+      coachingTitle: z.string(),
+      courseTitle: z.string(),
       sendReviewButton: z.string(),
       reviewPlaceholder: z.string(),
       closeButton: z.string(),

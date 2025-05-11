@@ -12,6 +12,7 @@ import { TextAreaInput } from '../text-areaInput';
 
 export interface ReviewFlowProps extends isLocalAware {
   onClose?: () => void;
+  modalType: 'coaching' | 'course';
   onSubmit?: (rating: number, review: string, neededMoreTime: boolean) => void;
   onSkip?: () => void;
   isLoading?: boolean;
@@ -21,9 +22,10 @@ export interface ReviewFlowProps extends isLocalAware {
 }
 
 /**
- * A modal component for submitting or skipping a review of a coaching session.
+ * A modal component for submitting or skipping a review of a coaching session or course.
  *
  * @param onClose Callback function triggered when the modal is closed.
+ * @param modalType The type of review modal, either 'coaching' or 'course'.
  * @param onSubmit Callback function triggered when the review is submitted. Receives the rating, review text, and neededMoreTime flag.
  * @param onSkip Callback function triggered when the review is skipped.
  * @param locale The locale used for translations and localization.
@@ -33,8 +35,9 @@ export interface ReviewFlowProps extends isLocalAware {
  * @param setSubmitted Optional callback function to set the submitted state.
  *
  * @example
- * <ReviewCoachingSessionModal
+ * <ReviewModal
  *   onClose={() => console.log("Modal closed")}
+ *   modalType="coaching"
  *   onSubmit={(rating, review, neededMoreTime) => console.log("Review submitted:", { rating, review, neededMoreTime })}
  *   onSkip={() => console.log("Review skipped")}
  *   locale="en"
@@ -44,8 +47,9 @@ export interface ReviewFlowProps extends isLocalAware {
  *   setSubmitted={(value) => console.log("Submitted state:", value)}
  * />
  */
-export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
+export const ReviewModal: React.FC<ReviewFlowProps> = ({
   onClose,
+  modalType,
   onSubmit,
   onSkip,
   locale,
@@ -93,7 +97,7 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
           <div className="flex flex-col gap-4 w-full">
             <IconSuccess classNames="text-feedback-success-primary" />
             <div className="text-lg text-base-white text-justify leading-none">
-              {dictionary.components.reviewCoachingSessionModal.thankYouText}
+              {dictionary.components.reviewModal.thankYouText}
             </div>
 
             <div className="bg-base-neutral-800 p-3 rounded-lg border border-card-stroke w-full">
@@ -109,7 +113,7 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
           className="w-full mt-4"
           variant="primary"
           size="medium"
-          text={dictionary.components.reviewCoachingSessionModal.closeButton}
+          text={dictionary.components.reviewModal.closeButton}
           onClick={onClose}
         />
       </div>
@@ -117,13 +121,24 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
   }
 
   return (
-    <div className="flex flex-col items-end gap-4 p-6 rounded-lg border border-card-stroke bg-card-fill max-w-[340px] shadow-[0_4px_12px_rgba(12,10,9,1)]">
+    <div className="flex flex-col items-end gap-4 p-6 rounded-lg border border-card-stroke bg-card-fill max-w-[340px] shadow-[0_4px_12px_rgba(12,10,9,1)] relative">
+      <div className="absolute right-0 top-0">
+        <IconButton
+          data-testid="close-modal-button"
+          styles="text"
+          icon={<IconClose />}
+          size="small"
+          onClick={onClose}
+          className="text-button-text-text p-1"
+        />
+      </div>
       <form onSubmit={handleReviewSubmit} className="flex flex-col items-end gap-4 w-full">
+        {/* Title based on modal type */}
         <label
           htmlFor="courseRating"
           className="text-lg font-bold leading-tight text-white text-left w-full"
         >
-          {dictionary.components.reviewCoachingSessionModal.title}
+          {modalType === 'coaching' ? dictionary.components.reviewModal.coachingTitle : dictionary.components.reviewModal.courseTitle}
         </label>
 
         <div className="flex flex-col justify-center items-center p-5 w-full rounded-lg bg-base-neutral-700 border border-card-stroke">
@@ -137,35 +152,37 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
 
         <div className="flex flex-col w-full gap-2 text-justify text-stone-300">
           <label htmlFor="reviewText" className="self-start text-sm leading-[120%]">
-            {dictionary.components.reviewCoachingSessionModal.yourReview}
+            {dictionary.components.reviewModal.yourReview}
           </label>
 
           <div className="flex flex-col w-full text-base leading-6">
             <TextAreaInput
               className="px-3 pt-2.5 pb-4 w-full rounded-lg border border-stone-800 bg-stone-950 min-h-[104px] text-stone-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder={dictionary.components.reviewCoachingSessionModal.reviewPlaceholder}
+              placeholder={dictionary.components.reviewModal.reviewPlaceholder}
               value={review}
               setValue={(value: string) => setReview(value)}
               aria-label="Course review"
             />
           </div>
         </div>
-
-        <div className="flex items-center gap-2 w-full">
-          <CheckBox
-            label={dictionary.components.reviewCoachingSessionModal.checkboxText}
-            labelClass="text-text-primary text-sm leading-[100%]"
-            name="profile-visibility"
-            value="private-profile"
-            withText={true}
-            checked={neededMoreTime}
-            onChange={() => setNeededMoreTime(!neededMoreTime)}
-          />
-        </div>
+        {/* Show checkbox for modalType === 'coaching' only */}
+        {modalType === 'coaching' && (
+          <div className="flex items-center gap-2 w-full">
+            <CheckBox
+              label={dictionary.components.reviewModal.checkboxText}
+              labelClass="text-text-primary text-sm leading-[100%]"
+              name="profile-visibility"
+              value="private-profile"
+              withText={true}
+              checked={neededMoreTime}
+              onChange={() => setNeededMoreTime(!neededMoreTime)}
+            />
+          </div>
+        )}
 
         {isError && (
           <div className="w-full text-sm text-feedback-error-primary text-justify">
-            {dictionary.components.reviewCoachingSessionModal.errorState}
+            {dictionary.components.reviewModal.errorState}
           </div>
         )}
 
@@ -174,7 +191,7 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
             className="w-full"
             variant="primary"
             size="medium"
-            text={dictionary.components.reviewCoachingSessionModal.sendReviewButton}
+            text={dictionary.components.reviewModal.sendReviewButton}
             disabled={!isFormValid || isLoading}
           />
           {isLoading && (
@@ -188,7 +205,7 @@ export const ReviewCoachingSessionModal: React.FC<ReviewFlowProps> = ({
           className="w-full"
           variant="text"
           size="medium"
-          text={dictionary.components.reviewCoachingSessionModal.skipButton}
+          text={dictionary.components.reviewModal.skipButton}
           onClick={onSkip}
           disabled={isLoading}
         />
