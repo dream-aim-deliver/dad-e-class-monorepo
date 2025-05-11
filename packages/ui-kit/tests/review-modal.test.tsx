@@ -1,13 +1,14 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { ReviewCoachingSessionModal } from '../lib/components/review/review-coaching-session-modal';
+import { ReviewModal } from '../lib/components/review/review-modal';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
   getDictionary: (locale: string) => ({
     components: {
-      reviewCoachingSessionModal: {
-        title: 'How would you rate the course?',
+      reviewModal: {
+        coachingTitle: 'How would you rate this coach?',
+        courseTitle: 'How would you rate this course?',
         yourReview: 'Your review',
         reviewPlaceholder: 'What did you think about the course? Any suggestion on how we can improve it?',
         checkboxText: 'Did you need more time?',
@@ -121,22 +122,20 @@ describe('ReviewDialog', () => {
     onSkip: vi.fn(),
     isLoading: false,
     isError: false,
+    modalType: 'coaching' as const,
   };
 
   it('disables submit button when form is invalid', () => {
-    render(<ReviewCoachingSessionModal {...defaultProps} />);
+    render(<ReviewModal {...defaultProps} />);
     const submitButton = screen.getByTestId('button-Send review');
     expect(submitButton).toBeDisabled();
     expect(defaultProps.onSubmit).not.toHaveBeenCalled();
   });
 
-  it('toggles checkbox state correctly', async () => {
-    render(<ReviewCoachingSessionModal {...defaultProps} />);
-
+  it('toggles checkbox state correctly for coaching', async () => {
+    render(<ReviewModal {...defaultProps} />);
     const checkbox = screen.getByTestId('checkbox').querySelector('input');
-    if (!checkbox) {
-      throw new Error('Checkbox input not found');
-    }
+    if (!checkbox) throw new Error('Checkbox input not found');
     expect(checkbox).not.toBeChecked();
 
     await act(async () => {
@@ -150,34 +149,52 @@ describe('ReviewDialog', () => {
     expect(checkbox).not.toBeChecked();
   });
 
-  it('does not submit form if review is empty and rating is not set', async () => {
-    render(<ReviewCoachingSessionModal {...defaultProps} />);
+  it('does not render checkbox for course modalType', () => {
+    render(<ReviewModal {...defaultProps} modalType="course" />);
+    expect(screen.queryByTestId('checkbox')).not.toBeInTheDocument();
+  });
 
+  it('does not submit form if review is empty and rating is not set', async () => {
+    render(<ReviewModal {...defaultProps} />);
+    const submitButton = screen.getByTestId('button-Send review');
+    expect(submitButton).toBeDisabled();
     await act(async () => {
-      const submitButton = screen.getByTestId('button-Send review');
-      expect(submitButton).toBeDisabled();
       fireEvent.click(submitButton);
     });
-
     expect(defaultProps.onSubmit).not.toHaveBeenCalled();
   });
 
   it('does not call onSubmit on mount', () => {
-    render(<ReviewCoachingSessionModal {...defaultProps} />);
+    render(<ReviewModal {...defaultProps} />);
     expect(defaultProps.onSubmit).not.toHaveBeenCalled();
   });
 
   it('displays loading spinner when isLoading is true', () => {
-    render(<ReviewCoachingSessionModal {...defaultProps} isLoading={true} />);
-
+    render(<ReviewModal {...defaultProps} isLoading={true} />);
     expect(screen.getByTestId('icon-loader-spinner')).toBeInTheDocument();
     expect(screen.getByTestId('button-Send review')).toBeDisabled();
     expect(screen.getByTestId('button-Skip')).toBeDisabled();
   });
 
   it('displays error message when isError is true', () => {
-    render(<ReviewCoachingSessionModal {...defaultProps} isError={true} />);
-
+    render(<ReviewModal {...defaultProps} isError={true} />);
     expect(screen.getByText('An error occurred. Please try again.')).toBeInTheDocument();
+  });
+
+  it('renders close button and triggers onClose', () => {
+    render(<ReviewModal {...defaultProps} />);
+    const closeButton = screen.getByTestId('icon-button');
+    fireEvent.click(closeButton);
+    expect(defaultProps.onClose).toHaveBeenCalled();
+  });
+
+  it('shows correct title for coaching', () => {
+    render(<ReviewModal {...defaultProps} modalType="coaching" />);
+    expect(screen.getByText('How would you rate this coach?')).toBeInTheDocument();
+  });
+
+  it('shows correct title for course', () => {
+    render(<ReviewModal {...defaultProps} modalType="course" />);
+    expect(screen.getByText('How would you rate this course?')).toBeInTheDocument();
   });
 });
