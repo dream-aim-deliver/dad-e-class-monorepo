@@ -303,6 +303,13 @@ export const DictionarySchema = z.object({
       saveNotesText: z.string(),
       notesNotSavedText: z.string(),
     }),
+    coachingSessionCourseBuilder: z.object({
+      profileText: z.string(),
+      bookText: z.string(),
+      coachingSessionText: z.string(),
+      minutesText: z.string(),
+      minText: z.string(),
+    }),
   }),
   pages: z.object({
       sso: z.object({
