@@ -10,9 +10,9 @@ import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TextAreaInput } from '../text-areaInput';
 
-export interface ReviewFlowProps extends isLocalAware {
+export interface CoachingReviewProps extends isLocalAware {
   onClose?: () => void;
-  modalType: 'coaching' | 'course';
+  modalType: 'coaching';
   onSubmit?: (rating: number, review: string, neededMoreTime: boolean) => void;
   onSkip?: () => void;
   isLoading?: boolean;
@@ -20,6 +20,20 @@ export interface ReviewFlowProps extends isLocalAware {
   submitted?: boolean;
   setSubmitted?: (value: boolean) => void;
 }
+
+export interface CourseCourseReviewProps extends isLocalAware {
+  onClose?: () => void;
+  modalType: 'course';
+  onSubmit?: (rating: number, review: string) => void;
+  onSkip?: () => void;
+  isLoading?: boolean;
+  isError?: boolean;
+  submitted?: boolean;
+  setSubmitted?: (value: boolean) => void;
+}
+
+// The ReviewProps type is a union of CoachingReviewProps and CourseCourseReviewProps
+export type ReviewProps = CoachingReviewProps | CourseCourseReviewProps;
 
 /**
  * A modal component for submitting or skipping a review of a coaching session or course.
@@ -47,7 +61,7 @@ export interface ReviewFlowProps extends isLocalAware {
  *   setSubmitted={(value) => console.log("Submitted state:", value)}
  * />
  */
-export const ReviewModal: React.FC<ReviewFlowProps> = ({
+export const ReviewModal: React.FC<ReviewProps> = ({
   onClose,
   modalType,
   onSubmit,
@@ -76,6 +90,9 @@ export const ReviewModal: React.FC<ReviewFlowProps> = ({
 
     // Call onSubmit and let parent/story handle submitted state
     onSubmit(rating, review, neededMoreTime);
+    if (setSubmitted) {
+      setSubmitted(true);
+    }
   };
 
 
