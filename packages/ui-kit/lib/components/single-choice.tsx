@@ -96,7 +96,6 @@ export const SingleChoiceEdit: React.FC<SingleChoiceEditProps> = ({
         };
         setOptions(updatedChoices);
     };
-    console.log(options);
     
     return (
         <div className="flex flex-col gap-4 mt-4 w-full">
