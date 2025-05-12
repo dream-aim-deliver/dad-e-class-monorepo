@@ -2,8 +2,9 @@ import React from 'react';
 import { Button } from '../button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Event } from './event';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
-type CalendarHeaderProps = {
+interface CalendarHeaderProps extends isLocalAware {
   viewType: string;
   onNavigation: (action: 'next' | 'prev' | 'today') => void;
   onViewChange: (view: string) => void;
@@ -26,12 +27,13 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   coachAvailability,
   yourMeetings,
   isVariantTwo = false,
+  locale,
 }) => {
   const handleViewTypeChange = (value: string) => {
     console.log('Changing view to:', value);
     onViewChange(value);
   };
-
+  const dictionary = getDictionary(locale);
   return (
     <div className="border-b border-[var(--color-divider)] p-6">
       <div className="flex flex-row items-center justify-between">
@@ -69,22 +71,22 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
               <>
                 <div className="flex items-center space-x-2">
                   <span className="w-4 h-4 rounded-full bg-action-semi-transparent-medium"></span>
-                  <span className="text-sm font-medium text-text-primary">Availability</span>
+                  <span className="text-sm font-medium text-text-primary">{dictionary.components.calendar.availability}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="w-4 h-4 rounded-full bg-action-default"></span>
-                  <span className="text-sm font-medium text-text-primary">Meeting</span>
+                  <span className="text-sm font-medium text-text-primary">{dictionary.components.calendar.meeting}</span>
                 </div>
               </>
             ) : (
               <>
                 <div className="flex items-center space-x-2">
                   <span className="w-4 h-4 rounded-full bg-action-semi-transparent-medium"></span>
-                  <span className="text-sm font-medium text-text-primary">Coach's Availability</span>
+                  <span className="text-sm font-medium text-text-primary">{dictionary.components.calendar.coachAvailability}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="w-4 h-4 rounded-full bg-action-default"></span>
-                  <span className="text-sm font-medium text-text-primary">Your Meeting</span>
+                  <span className="text-sm font-medium text-text-primary">{dictionary.components.calendar.yourMeeting}</span>
                 </div>
               </>
             )}

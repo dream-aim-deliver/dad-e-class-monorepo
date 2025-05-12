@@ -13,6 +13,13 @@ export const DE: TDictionary = {
     skills: {
       title: 'Fähigkeiten',
     },
+    calendar: {
+      coachAvailability: 'Coach-Verfügbarkeit',
+      yourMeeting: 'Ihr Meeting',
+      availability: 'Verfügbarkeit',
+      meeting: 'Meeting',
+      scheduleSession: 'Sitzung planen',
+    },
     scheduleSession: {
       session: 'Sitzung',
       coach: 'Trainer',
