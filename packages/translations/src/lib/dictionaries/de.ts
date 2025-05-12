@@ -304,6 +304,13 @@ export const DE: TDictionary = {
       showNotesText: 'Notizen anzeigen (Alt/Ctrl + N)',
       hideNotesText: 'Notizen verbergen (Alt/Ctrl + N)',
     },
+    coachingSessionCourseBuilder: {
+      profileText: 'Profil',
+      bookText: 'Buch',
+      coachingSessionText: 'Coaching-Sitzung',
+      minutesText: 'Minuten',
+      minText: 'Min.',
+    },
 },
   pages: {
     home: Home_DE,
