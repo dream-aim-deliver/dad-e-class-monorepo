@@ -1,9 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
 import CoachingSessionCalendar from '../../lib/components/calendar/coaching-session-calendar';
 import { Button } from '../../lib/components/button';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ScheduleSession } from '../../lib/components/calendar/schedule-session';
 import { AvailableCoachingSessions } from '../../lib/components/available-coaching-sessions/available-coaching-sessions';
+import { getDictionary, locales } from '@maany_shr/e-class-translations';
 
 const meta: Meta<typeof CoachingSessionCalendar> = {
   title: 'Components/CoachingSessionCalendar',
@@ -45,6 +46,12 @@ const meta: Meta<typeof CoachingSessionCalendar> = {
       control: 'select',
       options: ['dragAndDrop', 'clickToSchedule'],
       description: 'Determines the calendar behavior: dragAndDrop for external session dragging, clickToSchedule for hover and click scheduling.',
+    },
+    locale: {
+      control: 'select',
+      options: ['en', 'de'],
+      defaultValue: 'en',
+      description: 'The locale for the component (e.g., for date formatting and translations).',
     },
   },
 };
@@ -174,6 +181,7 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
     onAddEvent?: (event: Event) => void;
     onEventDrop?: (event: Event) => void;
     variant: 'dragAndDrop' | 'clickToSchedule';
+    locale: 'en' | 'de';
   }) => {
     const [isScheduleSessionOpen, setIsScheduleSessionOpen] = React.useState(false);
     const [scheduleSessionData, setScheduleSessionData] = React.useState<{
@@ -189,8 +197,8 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
         date: now,
         time: `${now.getHours().toString().padStart(2, '0')}:${now
           .getMinutes()
-          .toString()
-          .padStart(2, '0')}`,
+          .toString
+          .toString().padStart(2, '0')}`,
         title: 'Coaching Session',
         coachingSessionId: `session-${Date.now()}`,
       });
@@ -224,6 +232,22 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
       console.log('Buy more sessions');
     };
 
+    // Fetch dictionary based on the selected locale
+    const dictionary = getDictionary(args.locale);
+
+    const handleInvalidDrop = () => {
+      if (args.variant === 'dragAndDrop') {
+        alert( 'Cannot schedule session: No coach availability for this time slot.');
+      }
+    };
+
+    useEffect(() => {
+      window.addEventListener('invalidSessionDrop' as any, handleInvalidDrop);
+      return () => {
+        window.removeEventListener('invalidSessionDrop' as any, handleInvalidDrop);
+      };
+    }, [args.variant, args.locale]);
+
     const noop = () => console.log('No operation performed');
 
     return (
@@ -234,7 +258,7 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
               onClick={handleOpenSessions}
               variant="secondary"
               size="medium"
-              text="Sessions"
+              text={dictionary.components.calendar.scheduleSession}
             />
           </div>
         )}
@@ -242,12 +266,17 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
         {args.variant === 'dragAndDrop' && args.availableCoachingSessionsData ? (
           <div className="flex flex-row gap-4">
             <div className="flex-grow">
-              <CoachingSessionCalendar {...args} onAddEvent={args.onAddEvent || noop} onEventDrop={args.onEventDrop || noop} />
+              <CoachingSessionCalendar
+                {...args}
+                locale={args.locale}
+                onAddEvent={args.onAddEvent || noop}
+                onEventDrop={args.onEventDrop || noop}
+              />
             </div>
             <div className="w-64">
               <AvailableCoachingSessions
-                locale="en"
-                text="Drag these sessions to the calendar"
+                locale={args.locale}
+                text={ 'Drag these sessions to the calendar'}
                 availableCoachingSessionsData={args.availableCoachingSessionsData}
                 onClickBuyMoreSessions={handleBuyMoreSessions}
               />
@@ -255,7 +284,12 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
           </div>
         ) : (
           <div className="flex-1">
-            <CoachingSessionCalendar {...args} onAddEvent={args.onAddEvent || noop} onEventDrop={args.onEventDrop || noop} />
+            <CoachingSessionCalendar
+              {...args}
+              locale={args.locale}
+              onAddEvent={args.onAddEvent || noop}
+              onEventDrop={args.onEventDrop || noop}
+            />
           </div>
         )}
 
@@ -286,7 +320,7 @@ const Template: StoryObj<typeof CoachingSessionCalendar> = {
                   setScheduleSessionData(null);
                 }}
                 onClickSendRequest={handleSendRequest}
-                locale="en"
+                locale={args.locale}
               />
             </div>
           </div>
@@ -306,6 +340,7 @@ export const DragAndDropVariant: StoryObj<typeof CoachingSessionCalendar> = {
     onAddEvent: (event: Event) => console.log('Add Event:', event),
     onEventDrop: (event: Event) => console.log('Event Dropped:', event),
     variant: 'dragAndDrop',
+    locale: 'en',
   },
 };
 
@@ -318,6 +353,7 @@ export const ClickToScheduleVariant: StoryObj<typeof CoachingSessionCalendar> = 
     onAddEvent: (event: Event) => console.log('Add Event:', event),
     onEventDrop: (event: Event) => console.log('Event Dropped:', event),
     variant: 'clickToSchedule',
+    locale: 'en',
   },
 };
 
@@ -331,6 +367,7 @@ export const EmptyDragAndDrop: StoryObj<typeof CoachingSessionCalendar> = {
     onAddEvent: (event: Event) => console.log('Add Event:', event),
     onEventDrop: (event: Event) => console.log('Event Dropped:', event),
     variant: 'dragAndDrop',
+    locale: 'en',
   },
 };
 
@@ -343,6 +380,7 @@ export const EmptyClickToSchedule: StoryObj<typeof CoachingSessionCalendar> = {
     onAddEvent: (event: Event) => console.log('Add Event:', event),
     onEventDrop: (event: Event) => console.log('Event Dropped:', event),
     variant: 'clickToSchedule',
+    locale: 'en',
   },
 };
 
@@ -357,6 +395,7 @@ export const InteractiveDragAndDrop: StoryObj<typeof CoachingSessionCalendar> = 
     onEventDrop: (event: Event) =>
       alert(`Dropped Event: ${event.title} to ${new Date(event.start).toLocaleString()}`),
     variant: 'dragAndDrop',
+    locale: 'en',
   },
 };
 
@@ -370,5 +409,33 @@ export const InteractiveClickToSchedule: StoryObj<typeof CoachingSessionCalendar
     onEventDrop: (event: Event) =>
       alert(`Dropped Event: ${event.title} to ${new Date(event.start).toLocaleString()}`),
     variant: 'clickToSchedule',
+    locale: 'en',
+  },
+};
+
+export const GermanLocaleDragAndDrop: StoryObj<typeof CoachingSessionCalendar> = {
+  ...Template,
+  args: {
+    events: mockEvents,
+    coachAvailability: mockCoachAvailability,
+    yourMeetings: mockYourMeetings,
+    availableCoachingSessionsData: mockCoachingSessions,
+    onAddEvent: (event: Event) => console.log('Add Event:', event),
+    onEventDrop: (event: Event) => console.log('Event Dropped:', event),
+    variant: 'dragAndDrop',
+    locale: 'de',
+  },
+};
+
+export const GermanLocaleClickToSchedule: StoryObj<typeof CoachingSessionCalendar> = {
+  ...Template,
+  args: {
+    events: mockEvents,
+    coachAvailability: mockCoachAvailability,
+    yourMeetings: mockYourMeetings,
+    onAddEvent: (event: Event) => console.log('Add Event:', event),
+    onEventDrop: (event: Event) => console.log('Event Dropped:', event),
+    variant: 'clickToSchedule',
+    locale: 'de',
   },
 };
