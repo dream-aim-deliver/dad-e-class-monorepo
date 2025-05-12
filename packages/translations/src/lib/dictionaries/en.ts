@@ -98,6 +98,13 @@ export const EN: TDictionary = {
       clearFilters: 'Clear Filters',
       filterButton: 'Filters',
     },
+    calendar: {
+      coachAvailability: 'Coach Availability',
+      yourMeeting: 'Your Meeting',
+      availability: 'Availability',
+      meeting: 'Meeting',
+      scheduleSession: 'Schedule Session',
+    },
     scheduleSession: {
       session: 'Session',
       coach: 'Coach',

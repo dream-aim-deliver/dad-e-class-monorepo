@@ -7,9 +7,9 @@ import { CalendarHeader } from './calendar-header';
 import { EventContent } from './event';
 import { calendarStyles } from './calendar-styles';
 import { ScheduleSession } from './schedule-session';
+import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 
 export type Variant = 'dragAndDrop' | 'clickToSchedule';
-
 
 export interface BaseEvent {
   id: string;
@@ -24,21 +24,15 @@ export interface CoachAvailabilityEvent extends BaseEvent {
   isCoachAvailability: true;
 }
 
-
 export interface UserMeetingEvent extends BaseEvent {
   isYourMeeting: true;
 }
-
 
 export interface CalendarEvent extends BaseEvent {
   coachingSessionId?: string;
 }
 
-/**
- * Union type for all event kinds
- */
 export type Event = CalendarEvent | CoachAvailabilityEvent | UserMeetingEvent;
-
 
 export interface ScheduleSessionData {
   date: Date;
@@ -47,7 +41,7 @@ export interface ScheduleSessionData {
   coachingSessionId?: string;
 }
 
-export interface CalendarProps {
+export interface CalendarProps extends isLocalAware{
   events: CalendarEvent[];
   coachAvailability: BaseEvent[];
   yourMeetings: BaseEvent[];
@@ -69,48 +63,6 @@ export const formatDate = (date: Date, viewType = 'timeGridWeek'): string => {
   return [day, month, year].filter(Boolean).join(' ');
 };
 
-/**
- * A calendar component for managing coaching sessions with drag-and-drop or click-to-schedule functionality.
- *
- * @param events Array of calendar events representing scheduled coaching sessions.
- * @param coachAvailability Array of events indicating the coach's available time slots.
- * @param yourMeetings Array of events representing the user's scheduled meetings.
- * @param availableCoachingSessionsData Optional array of available coaching session data, each containing id, title, time, and numberOfSessions.
- * @param onAddEvent Handler function for adding a new event to the calendar.
- * @param onEventDrop Handler function for updating an event after it is dropped or dragged.
- * @param variant The interaction mode for scheduling:
- *   - `dragAndDrop`: Allows dragging sessions from available sessions to the calendar.
- *   - `clickToSchedule`: Allows clicking on the calendar or coach availability slots to schedule.
- *
- * @example
- * <CoachingSessionCalendar
- *   events={[
- *     { id: "1", title: "Session 1", start: "2025-05-07T10:00:00", end: "2025-05-07T11:00:00" }
- *   ]}
- *   coachAvailability={[
- *     { id: "2", title: "Available", start: "2025-05-07T12:00:00", end: "2025-05-07T13:00:00" }
- *   ]}
- *   yourMeetings={[
- *     { id: "3", title: "Your Meeting", start: "2025-05-07T14:00:00", end: "2025-05-07T15:00:00" }
- *   ]}
- *   availableCoachingSessionsData={[
- *     { id: "4", title: "Intro Session", time: 60, numberOfSessions: 2 }
- *   ]}
- *   onAddEvent={(event) => console.log("Event added:", event)}
- *   onEventDrop={(event) => console.log("Event dropped:", event)}
- *   variant="dragAndDrop"
- * />
- *
- * @example
- * <CoachingSessionCalendar
- *   events={[]}
- *   coachAvailability={[]}
- *   yourMeetings={[]}
- *   onAddEvent={(event) => console.log("Event added:", event)}
- *   onEventDrop={(event) => console.log("Event dropped:", event)}
- *   variant="clickToSchedule"
- * />
- */
 const CoachingSessionCalendar: React.FC<CalendarProps> = ({
   events,
   coachAvailability,
@@ -118,6 +70,7 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
   onAddEvent,
   onEventDrop,
   variant,
+  locale,
 }) => {
   const [viewType, setViewType] = useState('timeGridWeek');
   const [isScheduleSessionOpen, setIsScheduleSessionOpen] = useState(false);
@@ -128,9 +81,19 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
   const calendarRef = useRef<FullCalendar>(null);
   const draggableRef = useRef<HTMLDivElement>(null);
 
-  /**
-   * Handle view type change (day, week, month)
-   */
+  // Helper function to check if a time slot is within coach availability
+  const isWithinCoachAvailability = (start: Date, duration: string): boolean => {
+    const [hours, minutes] = duration.split(':').map(Number);
+    const end = new Date(start);
+    end.setHours(start.getHours() + hours, start.getMinutes() + minutes);
+
+    return coachAvailability.some((availability) => {
+      const availStart = new Date(availability.start);
+      const availEnd = new Date(availability.end);
+      return start >= availStart && end <= availEnd;
+    });
+  };
+
   const handleViewChange = useCallback((newView: string) => {
     setViewType(newView);
     if (calendarRef.current) {
@@ -139,22 +102,17 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
     }
   }, []);
 
-  /**
-   * Handle calendar navigation (prev, next, today)
-   */
   const handleNavigation = (action: 'next' | 'prev' | 'today') => {
     if (calendarRef.current) {
       const calendarApi = calendarRef.current.getApi();
       if (action === 'next') calendarApi.next();
+ 
       else if (action === 'prev') calendarApi.prev();
       else calendarApi.today();
       setCurrentDate(calendarApi.getDate());
     }
   };
 
-  /**
-   * Handle event drag and drop within calendar
-   */
   const handleEventDrop = (info: any) => {
     const updatedEvent: CalendarEvent = {
       id: info.event.id,
@@ -169,9 +127,6 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
     onEventDrop(updatedEvent);
   };
 
-  /**
-   * Handle external drop (from available sessions)
-   */
   const handleExternalDrop = (info: any) => {
     const { draggedEl, date } = info;
     const title = draggedEl.getAttribute('data-title') || 'Coaching Session';
@@ -179,6 +134,13 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
     const coachingSessionId = draggedEl.getAttribute('data-session-id') || '';
 
     const start = new Date(date);
+
+    // Check if the dropped slot is within coach availability
+    if (!isWithinCoachAvailability(start, duration)) {
+      window.dispatchEvent(new CustomEvent('invalidSessionDrop'));
+      return;
+    }
+
     const end = new Date(start);
     const [hours, minutes] = duration.split(':').map(Number);
     end.setHours(start.getHours() + hours, start.getMinutes() + minutes);
@@ -197,27 +159,26 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
     window.dispatchEvent(new CustomEvent('sessionDropped', { detail: { coachingSessionId } }));
   };
 
-  /**
-   * Handle mouse enter for click to schedule variant
-   */
   const handleMouseEnter = () => {
     setIsHovering(true);
   };
 
-  /**
-   * Handle mouse leave for click to schedule variant
-   */
   const handleMouseLeave = () => {
     setIsHovering(false);
   };
 
-  /**
-   * Handle calendar click for click to schedule variant
-   */
   const handleCalendarClick = (info: any) => {
     const start = new Date(info.date);
     const title = 'Coaching Session';
     const coachingSessionId = `session-${Date.now()}`;
+    const duration = '01:00'; // Default duration for click-to-schedule
+
+    // Check if the clicked slot is within coach availability
+    if (!isWithinCoachAvailability(start, duration)) {
+      console.log('Cannot schedule session: No coach availability for this time slot.');
+      return;
+    }
+
     const time = `${start.getHours().toString().padStart(2, '0')}:${start
       .getMinutes()
       .toString()
@@ -232,19 +193,18 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
     setIsScheduleSessionOpen(true);
   };
 
-  /**
-   * Handle event click for coach availability slots
-   */
   const handleEventClick = (info: any) => {
     if (info.event.extendedProps.isCoachAvailability) {
       const start = new Date(info.event.start);
       const title = 'Coaching Session';
       const coachingSessionId = `session-${Date.now()}`;
+      const duration = '01:00'; // Default duration for click-to-schedule
       const time = `${start.getHours().toString().padStart(2, '0')}:${start
         .getMinutes()
         .toString()
         .padStart(2, '0')}`;
 
+      // Since this is a coach availability event, it's inherently valid
       setScheduleSessionData({
         date: start,
         time,
@@ -255,16 +215,10 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
     }
   };
 
-  /**
-   * Handle date set to update current date
-   */
   const handleDatesSet = (dateInfo: any) => {
     setCurrentDate(dateInfo.view.currentStart);
   };
 
-  /**
-   * Combine all events with their specific types
-   */
   const allEvents = [
     ...events,
     ...coachAvailability.map((event, index) => ({
@@ -275,9 +229,6 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
     ...yourMeetings.map((event) => ({ ...event, isYourMeeting: true })),
   ];
 
-  /**
-   * Handle session scheduling request
-   */
   const handleSendRequest = () => {
     if (!scheduleSessionData) return;
 
@@ -301,6 +252,33 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
     setScheduleSessionData(null);
   };
 
+  // Custom day cell content to limit events and show "+X more"
+  const renderDayCellContent = (args: any) => {
+    const dayNumber = args.date.getDate();
+    const isToday = args.date.toDateString() === new Date().toDateString();
+    const eventsForDay = allEvents.filter((event) => {
+      const eventDate = new Date(event.start).toDateString();
+      return eventDate === args.date.toDateString();
+    });
+
+    const maxEvents = window.innerWidth < 640 ? 2 : 3; // 2 events on small screens, 3 on larger
+    const displayedEvents = eventsForDay.slice(0, maxEvents);
+    const moreEventsCount = eventsForDay.length - maxEvents;
+
+    return (
+      <div className="fc-daygrid-day-top">
+        <span className={`fc-daygrid-day-number ${isToday ? 'text-button-secondary-text' : ''}`}>
+          {dayNumber}
+        </span>
+        {moreEventsCount > 0 && (
+          <div className="fc-daygrid-more">
+            <span className="fc-daygrid-more-text">+{moreEventsCount} more</span>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div
       className="w-full bg-card-fill"
@@ -315,6 +293,7 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
         coachAvailability={coachAvailability}
         yourMeetings={yourMeetings}
         isVariantTwo={variant === 'clickToSchedule'}
+        locale={locale as TLocale}
       />
       <div className="w-full max-w-full p-4">
         <style>{calendarStyles}</style>
@@ -327,7 +306,7 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
             editable={true}
             selectable={false}
             selectMirror={false}
-            dayMaxEvents={true}
+            dayMaxEvents={window.innerWidth < 640 ? 2 : 3} // Dynamic based on screen size
             weekends={true}
             events={allEvents}
             datesSet={handleDatesSet}
@@ -358,6 +337,7 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
                 </div>
               );
             }}
+            dayCellContent={viewType === 'dayGridMonth' ? renderDayCellContent : undefined}
           />
           {variant === 'clickToSchedule' && isHovering && (
             <div
@@ -397,7 +377,7 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
                 setScheduleSessionData(null);
               }}
               onClickSendRequest={handleSendRequest}
-              locale="en"
+              locale={locale as TLocale}
             />
           </div>
         </div>
