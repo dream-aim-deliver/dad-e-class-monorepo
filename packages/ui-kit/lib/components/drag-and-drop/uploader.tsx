@@ -15,16 +15,19 @@ export type FileVariant = 'file' | 'image' | 'video';
 export type FileUploadResponse = {
   fileId: string;
   fileName: string;
+  fileSize: number;
 };
 
 export type ImageUploadResponse = {
   imageId: string;
   imageThumbnailUrl: string;
+  fileSize: number;
 };
 
 export type VideoUploadResponse = {
   videoId: string;
   thumbnailUrl?: string;
+  fileSize: number;
 };
 
 /**
