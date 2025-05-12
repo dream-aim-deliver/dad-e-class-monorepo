@@ -39,7 +39,9 @@ const OneOutOfThreeWithState = ({ initialData }: { initialData: OneOutOfThreeDat
     <OneOutOfThree
       locale="en"
       data={data}
-      onUpdate={(updatedData) => setData(updatedData)}
+      onUpdate={(updatedData) =>{ 
+        console.log('Updated data:', updatedData);
+        setData(updatedData)}}
     />
   );
 };
