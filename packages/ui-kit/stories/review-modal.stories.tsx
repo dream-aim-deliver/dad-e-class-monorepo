@@ -1,6 +1,10 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ReviewModal } from '../lib/components/review-modal';
+import {
+  CoachingReviewProps,
+  CourseCourseReviewProps,
+  ReviewModal,
+} from '../lib/components/review-modal';
 
 // Mock provider for locale
 const LocaleProvider: React.FC<{
@@ -86,6 +90,7 @@ export const DefaultForm: Story = {
         <Story
           args={{
             ...context.args,
+            ...({} as CoachingReviewProps),
             isLoading,
             isError,
             submitted,
@@ -145,19 +150,20 @@ export const courseModal: Story = {
         <Story
           args={{
             ...context.args,
+            ...({} as CourseCourseReviewProps),
             isLoading,
             isError,
             submitted,
-            onSubmit: (rating, review, neededMoreTime) => {
+            onSubmit: (rating, review) => {
               setIsLoading(true);
               setTimeout(() => {
                 setIsLoading(false);
                 setSubmitted(true); // Set submitted to true for success
                 alert(
-                  `Review Submitted Successfully: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
+                  `Review Submitted Successfully: Rating=${rating}, Review="${review}"`,
                 );
                 console.log(
-                  `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
+                  `Review Submitted: Rating=${rating}, Review="${review}"`,
                 );
               }, 1000);
             },
@@ -373,6 +379,7 @@ export const ErrorStateWithPreservedData: Story = {
         <Story
           args={{
             ...context.args,
+            ...({} as CoachingReviewProps),
             isError,
             isLoading,
             submitted,
