@@ -313,6 +313,13 @@ export const DE: TDictionary = {
       saveNotesText: 'Notizen speichern',
       notesNotSavedText: 'Notizen nicht gespeichert',
     },
+    coachingSessionCourseBuilder: {
+      profileText: 'Profil',
+      bookText: 'Buch',
+      coachingSessionText: 'Coaching-Sitzung',
+      minutesText: 'Minuten',
+      minText: 'Min.',
+    },
 },
   pages: {
     home: Home_DE,

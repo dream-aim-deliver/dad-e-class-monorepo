@@ -1,9 +1,13 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import React from "react";
-import { LessonNoteType } from "../course-builder-lesson-component/types";
+import { CoachingElement, LessonNoteType } from "../course-builder-lesson-component/types";
 
 export enum CourseElementType {
     LessonNote = "lessonNote",
+}
+
+export enum CourseElementType {
+    CoachingSession = "coachingSession",
 }
 
 
@@ -21,7 +25,8 @@ export enum CourseElementType {
  * };
  * ```
  */
-export type courseElement = LessonNoteType;
+export type courseElement = LessonNoteType | CoachingElement;
+
 /**
  * Function type for handling course element submissions.
  * This callback function is used when a course element's value changes or is submitted.
