@@ -12,7 +12,7 @@ interface CalendarHeaderProps extends isLocalAware {
   coachAvailability: Event[];
   yourMeetings: Event[];
   isVariantTwo?: boolean;
-};
+}
 
 const viewOptions = [
   { label: 'Week', value: 'timeGridWeek' },
