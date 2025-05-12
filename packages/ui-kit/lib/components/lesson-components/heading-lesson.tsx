@@ -54,8 +54,7 @@ const headingTextElement: FormElementTemplate = {
 function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
   if(elementInstance.type !== FormElementType.HeadingText) return null;
    const dictionary = getDictionary(locale);
-
-
+    
 
     return (
         <DesignerLayout
