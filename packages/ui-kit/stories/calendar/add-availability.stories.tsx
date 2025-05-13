@@ -39,6 +39,12 @@ const meta: Meta<typeof AvailabilityManager> = {
       action: 'cancelled',
       description: 'Callback when the action is cancelled.',
     },
+    locale: {
+      control: 'select',
+      options: ['en', 'de'],
+      defaultValue: 'en',
+      description: 'The locale for internationalization.',
+    },
   },
 };
 
@@ -108,6 +114,7 @@ const AvailabilityManagerWithState: React.FC<React.ComponentProps<typeof Availab
 export const AddSingleAvailability: Story = {
   render: (args) => <AvailabilityManagerWithState {...args} />,
   args: {
+    locale: 'en',
     onCancel: () => alert('Cancelled'),
   },
   parameters: {
@@ -122,6 +129,7 @@ export const AddSingleAvailability: Story = {
 export const AddRecurringAvailability: Story = {
   render: (args) => <AvailabilityManagerWithState {...args} />,
   args: {
+    locale: 'en',
     onCancel: () => alert('Cancelled'),
   },
   parameters: {
@@ -136,6 +144,7 @@ export const AddRecurringAvailability: Story = {
 export const EditSingleAvailability: Story = {
   render: (args) => <AvailabilityManagerWithState {...args} />,
   args: {
+    locale: 'en',
     availability: sampleSingleAvailability,
     onCancel: () => alert('Cancelled'),
   },
@@ -151,6 +160,7 @@ export const EditSingleAvailability: Story = {
 export const EditRecurringAvailability: Story = {
   render: (args) => <AvailabilityManagerWithState {...args} />,
   args: {
+    locale: 'en',
     availability: sampleRecurringAvailability,
     onCancel: () => alert('Cancelled'),
   },
@@ -166,6 +176,7 @@ export const EditRecurringAvailability: Story = {
 export const LoadingState: Story = {
   render: (args) => <AvailabilityManagerWithState {...args} />,
   args: {
+    locale: 'en',
     isLoading: true,
     onCancel: () => alert('Cancelled'),
   },
@@ -181,6 +192,7 @@ export const LoadingState: Story = {
 export const ErrorState: Story = {
   render: (args) => <AvailabilityManagerWithState {...args} />,
   args: {
+    locale: 'en',
     isError: true,
     onCancel: () => alert('Cancelled'),
   },
@@ -203,6 +215,7 @@ export const DeleteConfirmationSingle: Story = {
     />
   ),
   args: {
+    locale: 'en',
     isLoading: false,
     isError: false,
   },
@@ -225,6 +238,7 @@ export const DeleteConfirmationRecurring: Story = {
     />
   ),
   args: {
+    locale: 'en',
     isLoading: false,
     isError: false,
   },
@@ -247,6 +261,7 @@ export const DeleteConfirmationLoading: Story = {
     />
   ),
   args: {
+    locale: 'en',
     isLoading: true,
     isError: false,
   },
@@ -269,6 +284,7 @@ export const DeleteConfirmationError: Story = {
     />
   ),
   args: {
+    locale: 'en',
     isLoading: false,
     isError: true,
   },
@@ -289,6 +305,9 @@ export const DeleteSuccessSingle: Story = {
       {...args}
     />
   ),
+  args: {
+    locale: 'en',
+  },
   parameters: {
     docs: {
       description: {
@@ -306,6 +325,9 @@ export const DeleteSuccessRecurring: Story = {
       {...args}
     />
   ),
+  args: {
+    locale: 'en',
+  },
   parameters: {
     docs: {
       description: {

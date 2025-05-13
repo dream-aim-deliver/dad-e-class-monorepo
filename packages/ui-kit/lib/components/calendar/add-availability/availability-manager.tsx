@@ -1,3 +1,4 @@
+import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { Button } from "../../button";
 import { CheckBox } from "../../checkbox";
 import { DateInput } from "../../date-input";
@@ -25,7 +26,7 @@ export type TRecurringAvailability = {
 
 export type TAvailability = TSingleAvailability | TRecurringAvailability;
 
-interface AvailabilityManagerProps {
+interface AvailabilityManagerProps extends isLocalAware {
   availability?: TAvailability;
   isLoading?: boolean;
   isError?: boolean;
@@ -51,7 +52,9 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
   onSave,
   onDelete,
   onCancel,
+  locale,
 }) => {
+  const dictionary = getDictionary(locale);
   const isEdit = !!availability;
   const isRecurring = availability?.type === "recurring";
 
@@ -134,12 +137,12 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-6 w-[340px] p-6 bg-[#1C1917] border-[1px] border-[#27272A] rounded-[8px] shadow-[0px_4px_12px_0px_#09090B]">
-      <p className="text-[26px] text-[#FFF] font-bold leading-[110%]">
-        {isEdit ? "Edit Availability" : "Add Availability"}
+    <div className="flex flex-col gap-6 w-fit p-6 bg-card-fill border-[1px] border-card-stroke rounded-medium shadow-[0px_4px_12px_0px_#09090B]">
+      <p className="text-2xl text-base-white font-bold leading-[110%]">
+        {isEdit ? dictionary.components.calendar.availabilityManagement.editAvailability : dictionary.components.calendar.availabilityManagement.addAvailability}
       </p>
       {isError && (
-        <p className="text-red-500">An error occurred. Please try again.</p>
+        <p className="text-feedback-error-primary">{dictionary.components.calendar.availabilityManagement.errorText}</p>
       )}
       {!isEdit && (
         <Tabs.Root
@@ -147,14 +150,14 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
           onChange={(event) => setTab((event.target as HTMLInputElement).value as "recurring" | "single")}
         >
           <Tabs.List>
-            <Tabs.Trigger value="recurring">Recurring</Tabs.Trigger>
-            <Tabs.Trigger value="single">Single</Tabs.Trigger>
+            <Tabs.Trigger value="recurring">{dictionary.components.calendar.availabilityManagement.recurringText}</Tabs.Trigger>
+            <Tabs.Trigger value="single">{dictionary.components.calendar.availabilityManagement.singleText}</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="recurring">
             <div className="flex flex-col gap-6 mt-6">
               <div className="flex flex-col gap-4">
-                <p className="text-[16px] text-[#FFF] font-bold leading-[120%]">
-                  Choose days
+                <p className="text-md text-base-white font-bold leading-[120%]">
+                  {dictionary.components.calendar.availabilityManagement.chooseDaysText}
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   {daysOfWeek.map((day, index) => (
@@ -166,13 +169,13 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
                       onChange={() => handleDaySelection(day)}
                       withText
                       label={day}
-                      labelClass="text-[16px] text-[#FAFAF9] leading-[150%]"
+                      labelClass="text-md text-text-primary leading-[150%]"
                     />
                   ))}
                 </div>
                 <div className="flex flex-col gap-2">
-                  <p className="text-[16px] text-[#FFF] font-bold leading-[120%]">
-                    Choose time
+                  <p className="text-md text-base-white font-bold leading-[120%]">
+                    {dictionary.components.calendar.availabilityManagement.chooseTimeText}
                   </p>
                   <div className="flex gap-2">
                     <InputField
@@ -194,12 +197,12 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
                   </div>
                 </div>
                 <DateInput
-                  label="Start date"
+                  label={dictionary.components.calendar.availabilityManagement.startDateText}
                   value={startDate}
                   onChange={setStartDate}
                 />
                 <DateInput
-                  label="Expiration date"
+                  label={dictionary.components.calendar.availabilityManagement.expirationDateText}
                   value={expirationDate}
                   onChange={setExpirationDate}
                 />
@@ -210,13 +213,13 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
             <div className="flex flex-col gap-6 mt-6">
               <div className="flex flex-col gap-4">
                 <DateInput
-                  label="Date"
+                  label={dictionary.components.calendar.availabilityManagement.chooseDateText}
                   value={singleDate}
                   onChange={setSingleDate}
                 />
                 <div className="flex flex-col gap-2">
-                  <p className="text-[16px] text-[#FFF] font-bold leading-[120%]">
-                    Choose time
+                  <p className="text-md text-base-white font-bold leading-[120%]">
+                    {dictionary.components.calendar.availabilityManagement.chooseTimeText}
                   </p>
                   <div className="flex gap-2">
                     <InputField
@@ -246,8 +249,8 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
         <div className="flex flex-col gap-6">
           {isRecurring && (
             <>
-              <p className="text-[16px] text-[#FFF] font-bold leading-[120%]">
-                Choose days
+              <p className="text-md text-base-white font-bold leading-[120%]">
+                {dictionary.components.calendar.availabilityManagement.chooseDaysText}
               </p>
               <div className="grid grid-cols-2 gap-4">
                 {daysOfWeek.map((day, index) => (
@@ -259,17 +262,17 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
                     onChange={() => handleDaySelection(day)}
                     withText
                     label={day}
-                    labelClass="text-[16px] text-[#FAFAF9] leading-[150%]"
+                    labelClass="text-md text-text-primary leading-[150%]"
                   />
                 ))}
               </div>
               <DateInput
-                label="Start date"
+                label={dictionary.components.calendar.availabilityManagement.startDateText}
                 value={startDate}
                 onChange={setStartDate}
               />
               <DateInput
-                label="Expiration date"
+                label={dictionary.components.calendar.availabilityManagement.expirationDateText}
                 value={expirationDate}
                 onChange={setExpirationDate}
               />
@@ -277,14 +280,14 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
           )}
           {!isRecurring && (
             <DateInput
-              label="Date"
+              label={dictionary.components.calendar.availabilityManagement.chooseDateText}
               value={singleDate}
               onChange={setSingleDate}
             />
           )}
           <div className="flex flex-col gap-2">
-            <p className="text-[16px] text-[#FFF] font-bold leading-[120%]">
-              Choose time
+            <p className="text-md text-base-white font-bold leading-[120%]">
+              {dictionary.components.calendar.availabilityManagement.chooseTimeText}
             </p>
             <div className="flex gap-2">
               <InputField
@@ -315,14 +318,14 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
           className="w-full"
           onClick={onCancel}
           disabled={isLoading}
-          text={isEdit ? "Cancel" : "Go back"}
+          text={isEdit ? dictionary.components.calendar.availabilityManagement.cancelText : dictionary.components.calendar.availabilityManagement.goBackText}
         />
 
         <Button
           className="w-full"
           onClick={handleSave}
           disabled={isLoading}
-          text={isLoading ? "Saving..." : isEdit ? "Confirm changes" : "Save"}
+          text={isLoading ? dictionary.components.calendar.availabilityManagement.savingText : isEdit ? dictionary.components.calendar.availabilityManagement.confirmChangesText : dictionary.components.calendar.availabilityManagement.saveText}
         />
 
         {isEdit && onDelete && (
@@ -331,7 +334,7 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
             className="w-full"
             onClick={handleDelete}
             disabled={isLoading}
-            text="Delete"
+            text={dictionary.components.calendar.availabilityManagement.deleteText}
           />
         )}
       </div>
