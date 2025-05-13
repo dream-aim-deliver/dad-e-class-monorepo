@@ -304,6 +304,15 @@ export const DE: TDictionary = {
       showNotesText: 'Notizen anzeigen (Alt/Ctrl + N)',
       hideNotesText: 'Notizen verbergen (Alt/Ctrl + N)',
     },
+    lessonNotes: {
+      moduleText: 'Modul',
+      lessonNotesText: 'Lektionsnotizen',
+      savingNotesText: 'Notizen speichern...',
+      lessonText: 'Lektion',
+      viewLessonText: 'Lektion ansehen',
+      saveNotesText: 'Notizen speichern',
+      notesNotSavedText: 'Notizen nicht gespeichert',
+    },
 },
   pages: {
     home: Home_DE,
