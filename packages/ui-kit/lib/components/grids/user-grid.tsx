@@ -53,13 +53,11 @@ const RatingCellRenderer = (props: any) => {
         return <span>-</span>;
     }
 
-    const rounded = Number(rating.toFixed(2));
-    const value = rounded % 1 === 0 ? Math.floor(rounded) : rounded;
-
-    return <div className="flex items-center space-x-2">
-        <span>{value}</span>
-        <StarRating rating={rating} totalStars={5} />
-    </div>;
+    const rounded = Number(rating.toFixed(1));
+    if (rating % 1 === 0) {
+        return Math.floor(rating);
+    }
+    return rounded;
 };
 
 export const UserGrid = (props: UserGridProps) => {
@@ -68,10 +66,19 @@ export const UserGrid = (props: UserGridProps) => {
             headerCheckboxSelection: props.enableSelection,
             checkboxSelection: props.enableSelection,
             width: props.enableSelection ? 50 : 0,
-            hide: !props.enableSelection
+            hide: !props.enableSelection,
+            filter: false // Disable filter for checkbox column
         },
-        { field: 'name', headerName: 'Name' },
-        { field: 'surname', headerName: 'Surname' },
+        { 
+            field: 'name', 
+            headerName: 'Name', 
+            filter: 'agTextColumnFilter' 
+        },
+        { 
+            field: 'surname', 
+            headerName: 'Surname', 
+            filter: 'agTextColumnFilter' 
+        },
         {
             cellRenderer: DetailsCellRenderer,
             onCellClicked: (params: any) => {
@@ -81,7 +88,8 @@ export const UserGrid = (props: UserGridProps) => {
             cellClass: 'cursor-pointer',
             width: 100,
             resizable: false,
-            sortable: false
+            sortable: false,
+            filter: false // Disable filter for details column
         },
         {
             field: 'email',
@@ -90,44 +98,63 @@ export const UserGrid = (props: UserGridProps) => {
             onCellClicked: (params: any) => {
                 const email = params.value;
                 props.onEmailClick(email);
-            }
+            },
+            filter: 'agTextColumnFilter'
         },
-        { field: 'phone', headerName: 'Phone' },
+        { 
+            field: 'phone', 
+            headerName: 'Phone', 
+            filter: 'agTextColumnFilter' 
+        },
         {
             field: 'rating',
             headerName: 'Rating',
-            cellRenderer: RatingCellRenderer
+            cellRenderer: RatingCellRenderer,
+            filter: 'agNumberColumnFilter'
         },
-        { field: 'platform', headerName: 'Platform' },
+        { 
+            field: 'platform', 
+            headerName: 'Platform', 
+            filter: 'agTextColumnFilter' 
+        },
         {
-            field: 'coachingSessionsCount', headerName: '# coaching sessions',
+            field: 'coachingSessionsCount', 
+            headerName: '# coaching sessions',
             valueFormatter: (params: any) => {
                 const count = params.value;
                 if (!count || count === 0) return '-';
                 return count;
-            }
+            },
+            filter: 'agNumberColumnFilter'
         },
         {
-            field: 'coursesBought', headerName: 'Courses bought',
+            field: 'coursesBought', 
+            headerName: 'Courses bought',
             valueFormatter: (params: any) => {
                 const count = params.value;
                 if (!count || count === 0) return '-';
                 return count;
-            }
+            },
+            filter: 'agNumberColumnFilter'
         },
         {
-            field: 'coursesCreated', headerName: 'Courses created',
+            field: 'coursesCreated', 
+            headerName: 'Courses created',
             valueFormatter: (params: any) => {
                 const count = params.value;
                 if (!count || count === 0) return '-';
                 return count;
-            }
+            },
+            filter: 'agNumberColumnFilter'
         },
         {
-            field: 'lastAccess', headerName: 'Last access', valueFormatter: (params: any) => {
+            field: 'lastAccess', 
+            headerName: 'Last access', 
+            valueFormatter: (params: any) => {
                 const date = new Date(params.value);
                 return formatDate(date);
-            }
+            },
+            filter: 'agDateColumnFilter'
         }
     ]);
 
@@ -135,7 +162,7 @@ export const UserGrid = (props: UserGridProps) => {
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
     const [filters, setFilters] = useState<Partial<UserFilterModel>>({});
     const [searchTerm, setSearchTerm] = useState<string>('');
-    
+
     // For tracking selected users
     const [selectedUserCount, setSelectedUserCount] = useState<number>(0);
 
@@ -157,19 +184,27 @@ export const UserGrid = (props: UserGridProps) => {
     const handleSendNotifications = useCallback(() => {
         const selectedUserIds = getSelectedUserIds();
         if (selectedUserIds.length === 0) {
-            // Show error message
             alert("Error: no users selected to send notification");
             return;
         }
-        
+
         if (props.onSendNotifications) {
-            // First show an alert confirming the action
             alert(`Sending notifications to ${selectedUserIds.length} selected users`);
-            
-            // Then call the handler
             props.onSendNotifications(selectedUserIds);
         }
     }, [getSelectedUserIds, props.onSendNotifications]);
+
+    // Export current view to CSV
+    const handleExportCurrentView = useCallback(() => {
+        if (props.gridRef.current?.api) {
+            props.gridRef.current.api.exportDataAsCsv({
+                fileName: `user_grid_export_${new Date().toISOString()}.csv`,
+                onlySelected: false, // Export all filtered rows, not just selected
+                skipPinnedTop: true,
+                skipPinnedBottom: true
+            });
+        }
+    }, [props.gridRef]);
 
     // Toggle batch actions visibility
     const toggleBatchActions = useCallback(() => {
@@ -179,16 +214,15 @@ export const UserGrid = (props: UserGridProps) => {
     // Listen for selection changes
     useEffect(() => {
         if (props.gridRef.current?.api && props.enableSelection) {
-
             const selectionListener = () => {
                 const selectedRows = props.gridRef.current?.api?.getSelectedRows() || [];
                 setSelectedUserCount(selectedRows.length);
                 console.log(`Selection changed: ${selectedRows.length} users selected`);
             };
-            
+
             props.gridRef.current.api.addEventListener('selectionChanged', selectionListener);
             selectionListener(); // Check initial selection state
-            
+
             return () => {
                 props.gridRef.current?.api?.removeEventListener('selectionChanged', selectionListener);
             };
@@ -207,7 +241,7 @@ export const UserGrid = (props: UserGridProps) => {
             const surnameMatch = user.surname?.toLowerCase().includes(searchLower);
             const emailMatch = user.email?.toLowerCase().includes(searchLower);
             const phoneMatch = user.phone?.toLowerCase().includes(searchLower);
-            
+
             if (!(nameMatch || surnameMatch || emailMatch || phoneMatch)) {
                 return false;
             }
@@ -283,7 +317,7 @@ export const UserGrid = (props: UserGridProps) => {
 
     return (
         <div className="flex flex-col h-full">
-            {/* First row: Search bar and Filter button */}
+            {/* First row: Search bar, Filter button, and Export button */}
             <div className="flex items-center justify-between mb-2">
                 {/* Search bar */}
                 <div className="relative w-64">
@@ -297,13 +331,23 @@ export const UserGrid = (props: UserGridProps) => {
                     <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-text-primary opacity-50" />
                 </div>
                 
-                {/* Filter button */}
-                <Button 
-                    variant="secondary" 
-                    size="medium" 
-                    text="Filters" 
-                    onClick={() => setShowFilterModal(true)} 
-                />
+                <div className="flex space-x-2">
+                    {/* Export button */}
+                    <Button 
+                        variant="text" 
+                        size="medium" 
+                        text="Export View" 
+                        onClick={handleExportCurrentView} 
+                    />
+                    {/* Filter button */}
+                    <Button 
+                        variant="secondary" 
+                        size="medium" 
+                        text="Filters" 
+                        onClick={() => setShowFilterModal(true)} 
+                    />
+                    
+                </div>
             </div>
             
             {/* Second row: Batch actions controls */}
