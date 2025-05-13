@@ -3,11 +3,11 @@ import React, { RefObject, useRef, useState, useCallback, useMemo, useEffect } f
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
 import { AllCommunityModule, IRowNode, ModuleRegistry, SortChangedEvent } from 'ag-grid-community';
-import { StarRating } from '../star-rating';
 import { Button } from '../button';
 import { UserGridFilterModal, UserFilterModel } from './user-grid-filter-modal';
 import { TBasePersonalProfile } from '../../../../models/src/profile';
-import { Search } from 'lucide-react';
+import { Search, User, Book, Video, Shield } from 'lucide-react';
+import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -21,6 +21,7 @@ export interface UserCMS extends TBasePersonalProfile {
     phone: string;
     rating?: number;
     platform: string;
+    roles: string[]; // Array of roles: admin, course creator, coach, student
     coachingSessionsCount?: number;
     coursesBought?: number;
     coursesCreated?: number;
@@ -37,6 +38,29 @@ export interface UserGridProps {
     enableSelection?: boolean;
     onSendNotifications?: (userIds: number[]) => void;
 }
+
+// Role icon component
+const RoleIcon = ({ role }: { role: string }) => {
+    const icons = {
+        admin: <Shield className="w-4 h-4" />,
+        'course creator': <Book className="w-4 h-4" />,
+        coach: <Video className="w-4 h-4" />,
+        student: <User className="w-4 h-4" />
+    };
+
+    return icons[role as keyof typeof icons] || <User className="w-4 h-4" />;
+};
+
+// Get highest role based on hierarchy
+const getHighestRole = (roles: string[]): string => {
+    const hierarchy = ['admin', 'course creator', 'coach', 'student'];
+    if (!roles || roles.length === 0) return 'student';
+    return roles.reduce((highest, role) => {
+        const currentIndex = hierarchy.indexOf(role);
+        const highestIndex = hierarchy.indexOf(highest);
+        return currentIndex < highestIndex ? role : highest;
+    }, roles[0]);
+};
 
 const DetailsCellRenderer = () => {
     return <Button variant="text" text="Details" className="text-sm px-0" />;
@@ -60,14 +84,28 @@ const RatingCellRenderer = (props: any) => {
     return rounded;
 };
 
+const PlatformCellRenderer = (props: any) => {
+    const { platform, roles } = props.data;
+    const highestRole = getHighestRole(roles);
+    
+    return (
+        <div className="flex items-center gap-2">
+            <RoleIcon role={highestRole} />
+            <span>{platform}</span>
+        </div>
+    );
+};
+
 export const UserGrid = (props: UserGridProps) => {
+    const [selectedRole, setSelectedRole] = useState<string>('all');
+
     const [columnDefs, setColumnDefs] = useState([
         { 
             headerCheckboxSelection: props.enableSelection,
             checkboxSelection: props.enableSelection,
             width: props.enableSelection ? 50 : 0,
             hide: !props.enableSelection,
-            filter: false // Disable filter for checkbox column
+            filter: false
         },
         { 
             field: 'name', 
@@ -89,7 +127,7 @@ export const UserGrid = (props: UserGridProps) => {
             width: 100,
             resizable: false,
             sortable: false,
-            filter: false // Disable filter for details column
+            filter: false
         },
         {
             field: 'email',
@@ -112,10 +150,11 @@ export const UserGrid = (props: UserGridProps) => {
             cellRenderer: RatingCellRenderer,
             filter: 'agNumberColumnFilter'
         },
-        { 
-            field: 'platform', 
-            headerName: 'Platform', 
-            filter: 'agTextColumnFilter' 
+        {
+            field: 'platform',
+            headerName: 'Platform',
+            cellRenderer: PlatformCellRenderer,
+            filter: 'agTextColumnFilter'
         },
         {
             field: 'coachingSessionsCount', 
@@ -199,7 +238,7 @@ export const UserGrid = (props: UserGridProps) => {
         if (props.gridRef.current?.api) {
             props.gridRef.current.api.exportDataAsCsv({
                 fileName: `user_grid_export_${new Date().toISOString()}.csv`,
-                onlySelected: false, // Export all filtered rows, not just selected
+                onlySelected: false,
                 skipPinnedTop: true,
                 skipPinnedBottom: true
             });
@@ -221,7 +260,7 @@ export const UserGrid = (props: UserGridProps) => {
             };
 
             props.gridRef.current.api.addEventListener('selectionChanged', selectionListener);
-            selectionListener(); // Check initial selection state
+            selectionListener();
 
             return () => {
                 props.gridRef.current?.api?.removeEventListener('selectionChanged', selectionListener);
@@ -231,8 +270,17 @@ export const UserGrid = (props: UserGridProps) => {
 
     // Client-side filtering logic
     const doesExternalFilterPass = useCallback((node: IRowNode<UserCMS>) => {
-        if (!node.data) return false;
+        if (!node.data) {
+            return false;
+        }
         const user = node.data;
+
+        // Apply role filter from tabs
+        if (selectedRole !== 'all') {
+            if (!user.roles || !user.roles.includes(selectedRole)) {
+                return false;
+            }
+        }
 
         // Apply search term filter (fuzzy search)
         if (searchTerm) {
@@ -294,7 +342,7 @@ export const UserGrid = (props: UserGridProps) => {
         }
 
         return true;
-    }, [searchTerm, filters, props.doesExternalFilterPass]);
+    }, [searchTerm, filters, selectedRole, props.doesExternalFilterPass]);
 
     // Extract unique platforms for filter modal
     const platforms = useMemo(() => {
@@ -303,23 +351,82 @@ export const UserGrid = (props: UserGridProps) => {
         return Array.from(platformSet);
     }, [props.users]);
 
-    // Apply filter when search or filters change
-    const applyFilters = useCallback(() => {
+    // Force refresh the grid when the external filter changes
+    const refreshGrid = useCallback(() => {
         if (props.gridRef.current?.api) {
+            // Ensure the external filter is set
+            props.gridRef.current.api.setGridOption('doesExternalFilterPass', doesExternalFilterPass);
+            // Trigger filter re-evaluation
             props.gridRef.current.api.onFilterChanged();
         }
-    }, [props.gridRef]);
+    }, [props.gridRef, doesExternalFilterPass]);
 
-    // Apply filters when they change
-    React.useEffect(() => {
-        applyFilters();
-    }, [searchTerm, filters, applyFilters]);
+    // Apply filter when search, filters, or role changes
+    useEffect(() => {
+        refreshGrid();
+    }, [refreshGrid, searchTerm, filters, selectedRole]);
+
+    // Handle tab change for role filtering
+    const handleTabChange = (value: string) => {
+        console.log(`Tab changed to: ${value}`);
+        setSelectedRole(value);
+        // Explicitly refresh the grid to apply the new role filter
+        refreshGrid();
+    };
+
+    // Initialize the grid with external filters enabled
+    useEffect(() => {
+        if (props.gridRef.current?.api) {
+            props.gridRef.current.api.setGridOption('isExternalFilterPresent', () => true);
+            props.gridRef.current.api.setGridOption('doesExternalFilterPass', doesExternalFilterPass);
+            refreshGrid();
+        }
+    }, [props.gridRef, doesExternalFilterPass, refreshGrid]);
 
     return (
         <div className="flex flex-col h-full">
-            {/* First row: Search bar, Filter button, and Export button */}
-            <div className="flex items-center justify-between mb-2">
-                {/* Search bar */}
+            {/* Role Tabs */}
+            <div className="overflow-auto">
+                <Tabs.Root 
+                    defaultTab="all" 
+                    onValueChange={handleTabChange}
+                >
+                    <TabList 
+                        className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2"
+                    >
+                        <TabTrigger value="all">
+                            All
+                        </TabTrigger>
+                        <TabTrigger
+                            value="student"
+                            icon={<RoleIcon role="student" />}
+                        >
+                            Students
+                        </TabTrigger>
+                        <TabTrigger
+                            value="coach"
+                            icon={<RoleIcon role="coach" />}
+                        >
+                            Coaches
+                        </TabTrigger>
+                        <TabTrigger
+                            value="course creator"
+                            icon={<RoleIcon role="course creator" />}
+                        >
+                            Course Creators
+                        </TabTrigger>
+                        <TabTrigger
+                            value="admin"
+                            icon={<RoleIcon role="admin" />}
+                        >
+                            Admins
+                        </TabTrigger>
+                    </TabList>
+                </Tabs.Root>
+            </div>
+
+            {/* Search bar, Filter button, and Export button */}
+            <div className="flex items-center justify-between mb-2 mt-4">
                 <div className="relative w-64">
                     <input
                         type="text"
@@ -332,25 +439,22 @@ export const UserGrid = (props: UserGridProps) => {
                 </div>
                 
                 <div className="flex space-x-2">
-                    {/* Export button */}
                     <Button 
                         variant="text" 
                         size="medium" 
                         text="Export View" 
                         onClick={handleExportCurrentView} 
                     />
-                    {/* Filter button */}
                     <Button 
                         variant="secondary" 
                         size="medium" 
                         text="Filters" 
                         onClick={() => setShowFilterModal(true)} 
                     />
-                    
                 </div>
             </div>
             
-            {/* Second row: Batch actions controls */}
+            {/* Batch actions controls */}
             {props.enableSelection && (
                 <div className="flex items-center mb-4">
                     {!showBatchActions ? (
@@ -406,12 +510,10 @@ export const UserGrid = (props: UserGridProps) => {
                 }}
             />
 
-            {/* Filter Modal */}
             {showFilterModal && (
                 <UserGridFilterModal
                     onApplyFilters={(newFilters) => {
                         setFilters(newFilters);
-                        applyFilters();
                     }}
                     onClose={() => setShowFilterModal(false)}
                     initialFilters={filters}
