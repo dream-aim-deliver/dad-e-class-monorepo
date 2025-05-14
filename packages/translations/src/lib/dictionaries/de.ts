@@ -304,6 +304,15 @@ export const DE: TDictionary = {
       showNotesText: 'Notizen anzeigen (Alt/Ctrl + N)',
       hideNotesText: 'Notizen verbergen (Alt/Ctrl + N)',
     },
+    courseBuilder:{
+      deleteText: 'Löschen',
+      moveUpText: 'Nach oben verschieben',
+      moveDownText: 'Nach unten verschieben',
+      ImageFileText: 'Hinzufügen',
+      videoFileText: 'Video hinzufügen',
+      ImageGalleryText: 'Bildergalerie hinzufügen',
+    },
+
 },
   pages: {
     home: Home_DE,

@@ -63,7 +63,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
     return (
         <DesignerLayout
             type={elementInstance.type}
-            title="video"
+            title={dictionary.components.courseBuilder.videoFileText}
             icon={<IconVideo classNames="w-6 h-6" />}
             onUpClick={() => onUpClick(elementInstance.id)}
             onDownClick={() => onDownClick(elementInstance.id)}
@@ -90,7 +90,6 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
  */
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
-    const dictionary = getDictionary(locale);
     const [error, setError] = useState<string | null>(null);
 
    return (

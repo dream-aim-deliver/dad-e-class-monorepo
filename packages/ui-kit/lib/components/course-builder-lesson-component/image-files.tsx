@@ -62,7 +62,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
     return (
         <DesignerLayout
             type={elementInstance.type}
-            title="Image"
+            title={dictionary.components.courseBuilder.ImageFileText}
             icon={<IconImage classNames="w-6 h-6" />}
             onUpClick={() => onUpClick(elementInstance.id)}
             onDownClick={() => onDownClick(elementInstance.id)}
