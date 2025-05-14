@@ -1,7 +1,7 @@
-import React, { FC, ReactNode, useState } from 'react';
+import React, { FC, ReactNode, useState, InputHTMLAttributes } from 'react';
 import { cn } from '../utils/style-utils';
 
-export interface InputFieldProps {
+export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> {
   hasLeftContent?: boolean;
   hasRightContent?: boolean;
   leftContent?: ReactNode;
@@ -16,7 +16,7 @@ export interface InputFieldProps {
     | 'error';
   value?: string;
   setValue: (value: string) => void;
-  type?: 'text' | 'password'|'number';
+  type?: 'text' | 'password'|'number'|'url' |'file';
   id?: string;
   className?: string;
   inputClassName?: string;
@@ -69,7 +69,8 @@ export const InputField: FC<InputFieldProps> = ({
   type = 'text',
   id,
   className,
-  inputClassName
+  inputClassName,
+  ...inputProps
 }) => {
   const [borderColor, setBorderColor] = useState(false);
 
@@ -100,6 +101,7 @@ export const InputField: FC<InputFieldProps> = ({
           onChange={(e) => setValue(e.target.value)}
           onFocus={() => setBorderColor(true)}
           onBlur={() => setBorderColor(false)}
+          {...inputProps}
           className={cn("bg-transparent outline-none [-moz-appearance:textfield] flex-1 placeholder-text-secondary h-full w-full appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",inputClassName)}
         />
         {hasRightContent && rightContent}
