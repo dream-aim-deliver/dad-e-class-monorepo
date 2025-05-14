@@ -230,10 +230,10 @@ interface LinkPreviewProps {
     customIcon?: File | string;  // Can be either a File object or image URL string
     onEdit?: () => void;
     onDelete?: () => void;
-    
+    preview?: boolean;
 }
 
-const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIcon, onDelete, onEdit }) => {
+const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIcon, onDelete, onEdit,preview=false }) => {
     const [favicon, setFavicon] = useState<string>("");
     const [customIconUrl, setCustomIconUrl] = useState<string>("");
 
@@ -278,9 +278,9 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIcon, onDel
                         {renderIcon()}
                     </div>
                     <div className="flex flex-col flex-grow min-w-0"> {/* Added min-w-0 to enable truncation */}
-                        <a target="blank" href={url} className="md:text-xl flex gap-1 items-center truncate underline">
+                        <a target="blank" href={url} className="md:text-xl flex gap-1 items-center truncate underline hover:text-button-primary-fill">
                             <span className="truncate">{title}</span>
-                            <IconExternalLink classNames="w-4 h-4 flex-shrink-0" /> {/* Prevent icon from shrinking */}
+                            <IconExternalLink classNames="w-4 h-4 flex-shrink-0 hover:text-button-primary-fill" /> {/* Prevent icon from shrinking */}
                         </a>
                         <p className="text-sm text-text-secondary truncate">
                             {url}
@@ -288,7 +288,7 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIcon, onDel
                     </div>
                 </div>
             </main>
-            <div className="flex items-center gap-1 flex-shrink-0"> {/* Added flex-shrink-0 to prevent shrinking */}
+           {preview && <div className="flex items-center gap-1 flex-shrink-0"> {/* Added flex-shrink-0 to prevent shrinking */}
                 <IconButton
                     styles="text"
                     icon={<IconEdit />}
@@ -301,7 +301,7 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIcon, onDel
                     size="medium"
                     onClick={onDelete}
                 />
-            </div>
+            </div>}
         </div>
     );
 }

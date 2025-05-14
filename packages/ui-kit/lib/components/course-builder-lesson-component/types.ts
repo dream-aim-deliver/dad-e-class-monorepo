@@ -11,11 +11,7 @@ export interface DownloadFilesEdit extends BaseCourseElement {
     files: UploadResponse[];
 }
 export interface DownloadFilesPreview extends BaseCourseElement {
-    fileUrls: {
-        fileName: string,
-        url: string,
-        fileSize: number,
-      }[]
+    fileUrls: UploadResponse[];
     
 }
 
@@ -27,7 +23,7 @@ export interface LinkLessonEdit extends BaseCourseElement {
         title: string;
         url: string;
     }>,
-    include_in_materials: boolean
+    includeInMaterials: boolean
     customIcon: string
 
 
@@ -41,11 +37,12 @@ export interface LinkLessonPreview extends BaseCourseElement {
     }>;
 }
 
-export interface UplaodFileType extends BaseCourseElement {
+export interface UploadFileType extends BaseCourseElement {
     description: string,
-    student_uploaded_files: (UploadResponse & {
+    studentUploadedFiles: (UploadResponse & {
         url: string,
-        uploaded_at: string,
+        uploadedAt: string,
     })[],
-    student_comment: string
+    studentComment: string,
+
 }

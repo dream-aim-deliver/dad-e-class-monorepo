@@ -17,9 +17,9 @@ export const Designer = {
         const elementInstance = {
             id: '1',
             type: CourseElementType.uploadFile,
-            student_comment: '',
+            studentComment: '',
             description: 'Upload your files here',
-            student_uploaded_files: [],
+            studentUploadedFiles: [],
             order: 1
         };
 
@@ -39,9 +39,9 @@ export const Form: Story = {
         elementInstance: {
             id: '1',
             type: CourseElementType.uploadFile,
-            student_comment: 'Initial comment',
+            studentComment: 'Initial comment',
             description: 'Please upload your assignment files',
-            student_uploaded_files: [],
+            studentUploadedFiles: [],
             order: 1
         },
         locale: 'en',
@@ -54,22 +54,22 @@ export const FormWithFiles: Story = {
         elementInstance: {
             id: '1',
             type: CourseElementType.uploadFile,
-            student_comment: '',
+            studentComment: '',
             description: 'Upload multiple files',
-            student_uploaded_files: [
+            studentUploadedFiles: [
                 {
                     fileId: 'file-1',
                     fileName: 'document.pdf',
                     fileSize: 1024000,
                     url: 'https://example.com/document.pdf',
-                    uploaded_at: '2025-05-14T12:00:00Z'
+                    uploadedAt: '2025-05-14T12:00:00Z'
                 },
                 {
                     imageId: 'image-1',
                     imageThumbnailUrl: 'https://via.placeholder.com/150',
                     fileSize: 512000,
                     url: 'https://example.com/image.jpg',
-                    uploaded_at: '2025-05-14T12:00:00Z'
+                    uploadedAt: '2025-05-14T12:00:00Z'
                 }
             ],
             order: 1

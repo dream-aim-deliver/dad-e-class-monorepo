@@ -2,10 +2,9 @@ import { useState } from "react";
 import { courseElement, CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
 import DesignerLayout from "./designer-layout";
 import { getDictionary } from "@maany_shr/e-class-translations";
-import { IconCloudDownload } from "../icons/icon-cloud-download";
 import { UploadedFileType, Uploader, UploadResponse } from "../drag-and-drop/uploader";
 import { InputField } from "../input-field";
-import { UplaodFileType } from "./types";
+import { UploadFileType } from "./types";
 import { IconCloudUpload } from "../icons/icon-cloud-upload";
 import { TextAreaInput } from "../text-areaInput";
 
@@ -28,7 +27,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
     return (
         <DesignerLayout
             type={elementInstance.type}
-            title="Upload"
+            title={dictionary.components.courseBuilder.uploadFilesText}
             icon={<IconCloudUpload classNames="w-6 h-6" />}
             onUpClick={() => onUpClick(elementInstance.id)}
             onDownClick={() => onDownClick(elementInstance.id)}
@@ -38,7 +37,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
         >
             <div>
                 <label className="text-text-secondary">
-                    Description
+                    {dictionary.components.courseBuilder.descriptionText}
                 </label>
                 <InputField
                     placeholder="e.g. Upload your resume"
@@ -58,9 +57,8 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
  */
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.uploadFile) return null;
-    const dictionary = getDictionary(locale);
     const [files, setFiles] = useState<UploadedFileType[]>([]);
-    const [value, seValue] = useState<string>((elementInstance as UplaodFileType).student_comment);
+    const [value, seValue] = useState<string>((elementInstance as UploadFileType).studentComment);
     console.log(value, files)
     const handleFilesChange = (newFiles: UploadedFileType[]): Promise<UploadResponse> => {
         const uploadingFiles = newFiles.filter((f) => f.isUploading);
@@ -152,7 +150,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                 <p className="text-md font-important leading-[24px] word-break">Upload</p>
             </div>
 
-            <p className="font-important text-text-primary leading-[24px]">{(elementInstance as UplaodFileType).description}</p>
+            <p className="font-important text-text-primary leading-[24px]">{(elementInstance as UploadFileType).description}</p>
             <Uploader
                 type="multiple"
                 variant="file"

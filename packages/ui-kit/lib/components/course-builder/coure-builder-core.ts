@@ -1,9 +1,7 @@
-import downloadFilesElement from "../lesson-components/download-files";
-import imageFilesElement from "../lesson-components/image-files";
-import uploadFilesElement from "../lesson-components/upload-files";
-import videoFileElement from "../lesson-components/video-file";
+import downloadFilesElement from "../course-builder-lesson-component/download-files";
+import linkElement from "../course-builder-lesson-component/link-lesson";
 import { CourseElementRegistry, CourseElementType } from "./types";
-
+import uploadFilesElement from "../course-builder-lesson-component/upload-files";
 
 
 
@@ -13,8 +11,6 @@ import { CourseElementRegistry, CourseElementType } from "./types";
  */
 export const courseElements: CourseElementRegistry = {
    [CourseElementType.DownloadFiles]:downloadFilesElement,
-    [CourseElementType.ImageFiles]:imageFilesElement,
-    [CourseElementType.VideoFile]:videoFileElement,
     [CourseElementType.Links]: linkElement,
     [CourseElementType.uploadFile]: uploadFilesElement,
 };
