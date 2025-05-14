@@ -88,7 +88,6 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
     return (
         <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50">
             <div className="flex flex-col gap-2 p-6 bg-card-fill text-text-primary w-full max-w-[350px] h-full max-h-[90vh] overflow-y-auto rounded-md">
-
                 <div className="flex justify-between items-center">
                     <h2 className="text-2xl font-bold">User Filters</h2>
                     <div className="flex top-0 right-0 p-0">
@@ -107,7 +106,8 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 id: 'minRating',
                                 className: "w-full text-white border-input-stroke",
                                 value: filters.minRating?.toString() || '',
-                                setValue: (value: string) => handleChange('minRating', parseFloat(value) || 0),
+                                setValue: (value: string | string[]) =>
+                                    handleChange('minRating', parseFloat(typeof value === 'string' ? value : value[0] || '0') || 0),
                                 inputText: 'e.g. 1',
                             }}
                         />
@@ -117,7 +117,8 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 id: 'maxRating',
                                 className: "w-full text-white border-input-stroke",
                                 value: filters.maxRating?.toString() || '',
-                                setValue: (value: string) => handleChange('maxRating', parseFloat(value) || 5),
+                                setValue: (value: string | string[]) =>
+                                    handleChange('maxRating', parseFloat(typeof value === 'string' ? value : value[0] || '5') || 5),
                                 inputText: 'e.g. 5',
                             }}
                         />
@@ -155,7 +156,8 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 id: 'minCoachingSessions',
                                 className: "w-full text-white border-input-stroke",
                                 value: filters.minCoachingSessions || '',
-                                setValue: (value: string) => handleChange('minCoachingSessions', value),
+                                setValue: (value: string | string[]) =>
+                                    handleChange('minCoachingSessions', typeof value === 'string' ? value : value[0] || ''),
                                 inputText: 'e.g. 5',
                             }}
                         />
@@ -165,7 +167,8 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 id: 'maxCoachingSessions',
                                 className: "w-full text-white border-input-stroke",
                                 value: filters.maxCoachingSessions || '',
-                                setValue: (value: string) => handleChange('maxCoachingSessions', value),
+                                setValue: (value: string | string[]) =>
+                                    handleChange('maxCoachingSessions', typeof value === 'string' ? value : value[0] || ''),
                                 inputText: 'e.g. 50',
                             }}
                         />
@@ -183,7 +186,8 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 id: 'minCoursesBought',
                                 className: "w-full text-white border-input-stroke",
                                 value: filters.minCoursesBought || '',
-                                setValue: (value: string) => handleChange('minCoursesBought', value),
+                                setValue: (value: string | string[]) =>
+                                    handleChange('minCoursesBought', typeof value === 'string' ? value : value[0] || ''),
                                 inputText: 'e.g. 1',
                             }}
                         />
@@ -193,7 +197,8 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 id: 'maxCoursesBought',
                                 className: "w-full text-white border-input-stroke",
                                 value: filters.maxCoursesBought || '',
-                                setValue: (value: string) => handleChange('maxCoursesBought', value),
+                                setValue: (value: string | string[]) =>
+                                    handleChange('maxCoursesBought', typeof value === 'string' ? value : value[0] || ''),
                                 inputText: 'e.g. 20',
                             }}
                         />
@@ -211,7 +216,8 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 id: 'minCoursesCreated',
                                 className: "w-full text-white border-input-stroke",
                                 value: filters.minCoursesCreated || '',
-                                setValue: (value: string) => handleChange('minCoursesCreated', value),
+                                setValue: (value: string | string[]) =>
+                                    handleChange('minCoursesCreated', typeof value === 'string' ? value : value[0] || ''),
                                 inputText: 'e.g. 0',
                             }}
                         />
@@ -221,7 +227,8 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 id: 'maxCoursesCreated',
                                 className: "w-full text-white border-input-stroke",
                                 value: filters.maxCoursesCreated || '',
-                                setValue: (value: string) => handleChange('maxCoursesCreated', value),
+                                setValue: (value: string | string[]) =>
+                                    handleChange('maxCoursesCreated', typeof value === 'string' ? value : value[0] || ''),
                                 inputText: 'e.g. 10',
                             }}
                         />
