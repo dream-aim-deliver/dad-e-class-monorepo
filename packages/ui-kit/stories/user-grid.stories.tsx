@@ -198,7 +198,55 @@ type Story = StoryObj<typeof UserGrid>;
 
 export const Default: Story = {
     args: {
-        users: Array.from({ length: 5 }, () => [...mockUsers]).flat(),
+        users: mockUsers,
+        onUserDetailsClick: (user) => {
+            alert(`User details clicked: ${user.name} ${user.surname}`);
+        },
+        onEmailClick: (email) => {
+            alert(`Email clicked: ${email}`);
+        }
+    }
+};
+
+export const StudentsOnly: Story = {
+    args: {
+        users: mockUsers.filter(user => user.roles.includes('student')),
+        onUserDetailsClick: (user) => {
+            alert(`User details clicked: ${user.name} ${user.surname}`);
+        },
+        onEmailClick: (email) => {
+            alert(`Email clicked: ${email}`);
+        }
+    }
+};
+
+export const CoachesOnly: Story = {
+    args: {
+        users: mockUsers.filter(user => user.roles.includes('coach')),
+        onUserDetailsClick: (user) => {
+            alert(`User details clicked: ${user.name} ${user.surname}`);
+        },
+        onEmailClick: (email) => {
+            alert(`Email clicked: ${email}`);
+        }
+    }
+};
+
+export const CourseCreatorsOnly: Story = {
+    args: {
+        users: mockUsers.filter(user => user.roles.includes('course creator')),
+        onUserDetailsClick: (user) => {
+            alert(`User details clicked: ${user.name} ${user.surname}`);
+        },
+        onEmailClick: (email) => {
+            alert(`Email clicked: ${email}`);
+        }
+    }
+};
+
+export const AdminsOnly: Story = {
+    args: {
+        users: mockUsers.filter(user => user.roles.includes('admin')),
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },

@@ -87,7 +87,7 @@ const RatingCellRenderer = (props: any) => {
 const PlatformCellRenderer = (props: any) => {
     const { platform, roles } = props.data;
     const highestRole = getHighestRole(roles);
-    
+
     return (
         <div className="flex items-center gap-2">
             <RoleIcon role={highestRole} />
@@ -100,22 +100,22 @@ export const UserGrid = (props: UserGridProps) => {
     const [selectedRole, setSelectedRole] = useState<string>('all');
 
     const [columnDefs, setColumnDefs] = useState([
-        { 
+        {
             headerCheckboxSelection: props.enableSelection,
             checkboxSelection: props.enableSelection,
             width: props.enableSelection ? 50 : 0,
             hide: !props.enableSelection,
             filter: false
         },
-        { 
-            field: 'name', 
-            headerName: 'Name', 
-            filter: 'agTextColumnFilter' 
+        {
+            field: 'name',
+            headerName: 'Name',
+            filter: 'agTextColumnFilter'
         },
-        { 
-            field: 'surname', 
-            headerName: 'Surname', 
-            filter: 'agTextColumnFilter' 
+        {
+            field: 'surname',
+            headerName: 'Surname',
+            filter: 'agTextColumnFilter'
         },
         {
             cellRenderer: DetailsCellRenderer,
@@ -139,10 +139,10 @@ export const UserGrid = (props: UserGridProps) => {
             },
             filter: 'agTextColumnFilter'
         },
-        { 
-            field: 'phone', 
-            headerName: 'Phone', 
-            filter: 'agTextColumnFilter' 
+        {
+            field: 'phone',
+            headerName: 'Phone',
+            filter: 'agTextColumnFilter'
         },
         {
             field: 'rating',
@@ -157,7 +157,7 @@ export const UserGrid = (props: UserGridProps) => {
             filter: 'agTextColumnFilter'
         },
         {
-            field: 'coachingSessionsCount', 
+            field: 'coachingSessionsCount',
             headerName: '# coaching sessions',
             valueFormatter: (params: any) => {
                 const count = params.value;
@@ -167,7 +167,7 @@ export const UserGrid = (props: UserGridProps) => {
             filter: 'agNumberColumnFilter'
         },
         {
-            field: 'coursesBought', 
+            field: 'coursesBought',
             headerName: 'Courses bought',
             valueFormatter: (params: any) => {
                 const count = params.value;
@@ -177,7 +177,7 @@ export const UserGrid = (props: UserGridProps) => {
             filter: 'agNumberColumnFilter'
         },
         {
-            field: 'coursesCreated', 
+            field: 'coursesCreated',
             headerName: 'Courses created',
             valueFormatter: (params: any) => {
                 const count = params.value;
@@ -187,8 +187,8 @@ export const UserGrid = (props: UserGridProps) => {
             filter: 'agNumberColumnFilter'
         },
         {
-            field: 'lastAccess', 
-            headerName: 'Last access', 
+            field: 'lastAccess',
+            headerName: 'Last access',
             valueFormatter: (params: any) => {
                 const date = new Date(params.value);
                 return formatDate(date);
@@ -218,6 +218,35 @@ export const UserGrid = (props: UserGridProps) => {
     // Get total users count
     const totalUsersCount = useMemo(() => {
         return props.users?.length || 0;
+    }, [props.users]);
+
+    // Filter users based on selected role
+    const filteredUsers = useMemo(() => {
+        if (!props.users) return [];
+        if (selectedRole === 'all') return props.users;
+        
+        return props.users.filter(user => 
+            user.roles && user.roles.includes(selectedRole)
+        );
+    }, [props.users, selectedRole]);
+
+    // Get filtered users counts for each role category
+    const userCounts = useMemo(() => {
+        if (!props.users) return { all: 0, student: 0, coach: 0, 'course creator': 0, admin: 0 };
+        
+        return props.users.reduce((counts: Record<string, number>, user) => {
+            counts.all++;
+            
+            if (user.roles) {
+                user.roles.forEach(role => {
+                    if (counts[role] !== undefined) {
+                        counts[role]++;
+                    }
+                });
+            }
+            
+            return counts;
+        }, { all: 0, student: 0, coach: 0, 'course creator': 0, admin: 0 });
     }, [props.users]);
 
     const handleSendNotifications = useCallback(() => {
@@ -275,13 +304,6 @@ export const UserGrid = (props: UserGridProps) => {
         }
         const user = node.data;
 
-        // Apply role filter from tabs
-        if (selectedRole !== 'all') {
-            if (!user.roles || !user.roles.includes(selectedRole)) {
-                return false;
-            }
-        }
-
         // Apply search term filter (fuzzy search)
         if (searchTerm) {
             const searchLower = searchTerm.toLowerCase();
@@ -305,27 +327,27 @@ export const UserGrid = (props: UserGridProps) => {
         if (filters.platform && filters.platform.length > 0 && !filters.platform.includes(user.platform)) {
             return false;
         }
-        if (filters.minCoachingSessions && user.coachingSessionsCount !== undefined && 
+        if (filters.minCoachingSessions && user.coachingSessionsCount !== undefined &&
             user.coachingSessionsCount < parseInt(filters.minCoachingSessions)) {
             return false;
         }
-        if (filters.maxCoachingSessions && user.coachingSessionsCount !== undefined && 
+        if (filters.maxCoachingSessions && user.coachingSessionsCount !== undefined &&
             user.coachingSessionsCount > parseInt(filters.maxCoachingSessions)) {
             return false;
         }
-        if (filters.minCoursesBought && user.coursesBought !== undefined && 
+        if (filters.minCoursesBought && user.coursesBought !== undefined &&
             user.coursesBought < parseInt(filters.minCoursesBought)) {
             return false;
         }
-        if (filters.maxCoursesBought && user.coursesBought !== undefined && 
+        if (filters.maxCoursesBought && user.coursesBought !== undefined &&
             user.coursesBought > parseInt(filters.maxCoursesBought)) {
             return false;
         }
-        if (filters.minCoursesCreated && user.coursesCreated !== undefined && 
+        if (filters.minCoursesCreated && user.coursesCreated !== undefined &&
             user.coursesCreated < parseInt(filters.minCoursesCreated)) {
             return false;
         }
-        if (filters.maxCoursesCreated && user.coursesCreated !== undefined && 
+        if (filters.maxCoursesCreated && user.coursesCreated !== undefined &&
             user.coursesCreated > parseInt(filters.maxCoursesCreated)) {
             return false;
         }
@@ -342,7 +364,7 @@ export const UserGrid = (props: UserGridProps) => {
         }
 
         return true;
-    }, [searchTerm, filters, selectedRole, props.doesExternalFilterPass]);
+    }, [searchTerm, filters, props.doesExternalFilterPass]);
 
     // Extract unique platforms for filter modal
     const platforms = useMemo(() => {
@@ -361,17 +383,15 @@ export const UserGrid = (props: UserGridProps) => {
         }
     }, [props.gridRef, doesExternalFilterPass]);
 
-    // Apply filter when search, filters, or role changes
+    // Apply filter when search or filters change
     useEffect(() => {
         refreshGrid();
-    }, [refreshGrid, searchTerm, filters, selectedRole]);
+    }, [refreshGrid, searchTerm, filters]);
 
     // Handle tab change for role filtering
     const handleTabChange = (value: string) => {
         console.log(`Tab changed to: ${value}`);
         setSelectedRole(value);
-        // Explicitly refresh the grid to apply the new role filter
-        refreshGrid();
     };
 
     // Initialize the grid with external filters enabled
@@ -383,48 +403,9 @@ export const UserGrid = (props: UserGridProps) => {
         }
     }, [props.gridRef, doesExternalFilterPass, refreshGrid]);
 
-    return (
-        <div className="flex flex-col h-full">
-            {/* Role Tabs */}
-            <div className="overflow-auto">
-                <Tabs.Root 
-                    defaultTab="all" 
-                    onValueChange={handleTabChange}
-                >
-                    <TabList 
-                        className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2"
-                    >
-                        <TabTrigger value="all">
-                            All
-                        </TabTrigger>
-                        <TabTrigger
-                            value="student"
-                            icon={<RoleIcon role="student" />}
-                        >
-                            Students
-                        </TabTrigger>
-                        <TabTrigger
-                            value="coach"
-                            icon={<RoleIcon role="coach" />}
-                        >
-                            Coaches
-                        </TabTrigger>
-                        <TabTrigger
-                            value="course creator"
-                            icon={<RoleIcon role="course creator" />}
-                        >
-                            Course Creators
-                        </TabTrigger>
-                        <TabTrigger
-                            value="admin"
-                            icon={<RoleIcon role="admin" />}
-                        >
-                            Admins
-                        </TabTrigger>
-                    </TabList>
-                </Tabs.Root>
-            </div>
-
+    // Render the common UI parts for all tab contents
+    const renderGridWithActions = (roleUsers: UserCMS[]) => (
+        <div>
             {/* Search bar, Filter button, and Export button */}
             <div className="flex items-center justify-between mb-2 mt-4">
                 <div className="relative w-64">
@@ -437,55 +418,55 @@ export const UserGrid = (props: UserGridProps) => {
                     />
                     <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-text-primary opacity-50" />
                 </div>
-                
+
                 <div className="flex space-x-2">
-                    <Button 
-                        variant="text" 
-                        size="medium" 
-                        text="Export View" 
-                        onClick={handleExportCurrentView} 
+                    <Button
+                        variant="text"
+                        size="medium"
+                        text="Export View"
+                        onClick={handleExportCurrentView}
                     />
-                    <Button 
-                        variant="secondary" 
-                        size="medium" 
-                        text="Filters" 
-                        onClick={() => setShowFilterModal(true)} 
+                    <Button
+                        variant="secondary"
+                        size="medium"
+                        text="Filters"
+                        onClick={() => setShowFilterModal(true)}
                     />
                 </div>
             </div>
-            
+
             {/* Batch actions controls */}
             {props.enableSelection && (
                 <div className="flex items-center mb-4">
                     {!showBatchActions ? (
-                        <Button 
-                            variant="secondary" 
-                            size="medium" 
-                            text="Batch Actions" 
-                            onClick={toggleBatchActions} 
+                        <Button
+                            variant="secondary"
+                            size="medium"
+                            text="Batch Actions"
+                            onClick={toggleBatchActions}
                         />
                     ) : (
                         <div className="flex space-x-2 items-center">
                             <span className="text-sm text-white mr-2">
-                                {selectedUserCount}/{totalUsersCount} selected
+                                {selectedUserCount}/{roleUsers.length} selected
                             </span>
-                            
+
                             {props.onSendNotifications && (
-                                <Button 
-                                    variant="primary" 
-                                    size="medium" 
-                                    text="Send Notifications" 
+                                <Button
+                                    variant="primary"
+                                    size="medium"
+                                    text="Send Notifications"
                                     onClick={handleSendNotifications}
                                     disabled={selectedUserCount === 0}
                                     className={selectedUserCount > 0 ? "opacity-100" : "opacity-50"}
                                 />
                             )}
-                            
-                            <Button 
-                                variant="secondary" 
-                                size="medium" 
-                                text="Hide Actions" 
-                                onClick={toggleBatchActions} 
+
+                            <Button
+                                variant="secondary"
+                                size="medium"
+                                text="Hide Actions"
+                                onClick={toggleBatchActions}
                             />
                         </div>
                     )}
@@ -495,7 +476,7 @@ export const UserGrid = (props: UserGridProps) => {
             <BaseGrid
                 gridRef={props.gridRef}
                 columnDefs={columnDefs}
-                rowData={props.users}
+                rowData={roleUsers}
                 enableCellTextSelection={true}
                 onSortChanged={props.onSortChanged}
                 pagination={true}
@@ -509,6 +490,73 @@ export const UserGrid = (props: UserGridProps) => {
                     setSelectedUserCount(selectedRows.length);
                 }}
             />
+        </div>
+    );
+
+    return (
+        <div className="flex flex-col h-full">
+            {/* Role Tabs */}
+            <div className="overflow-auto">
+                <Tabs.Root
+                    defaultTab="all"
+                    onValueChange={handleTabChange}
+                >
+                    <TabList
+                        className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2"
+                    >
+                        <TabTrigger value="all">
+                            All ({userCounts.all})
+                        </TabTrigger>
+                        <TabTrigger
+                            value="student"
+                            icon={<RoleIcon role="student" />}
+                        >
+                            Students ({userCounts.student})
+                        </TabTrigger>
+                        <TabTrigger
+                            value="coach"
+                            icon={<RoleIcon role="coach" />}
+                        >
+                            Coaches ({userCounts.coach})
+                        </TabTrigger>
+                        <TabTrigger
+                            value="course creator"
+                            icon={<RoleIcon role="course creator" />}
+                        >
+                            Course Creators ({userCounts['course creator']})
+                        </TabTrigger>
+                        <TabTrigger
+                            value="admin"
+                            icon={<RoleIcon role="admin" />}
+                        >
+                            Admins ({userCounts.admin})
+                        </TabTrigger>
+                    </TabList>
+
+                    <div className="mt-4">
+                        {/* Tab content with individual grid instances for each role */}
+                        <TabContent value="all">
+                            {renderGridWithActions(props.users || [])}
+                        </TabContent>
+                        
+                        <TabContent value="student">
+                            {renderGridWithActions(props.users?.filter(user => user.roles?.includes('student')) || [])}
+                        </TabContent>
+                        
+                        <TabContent value="coach">
+                            {renderGridWithActions(props.users?.filter(user => user.roles?.includes('coach')) || [])}
+                        </TabContent>
+                        
+                        <TabContent value="course creator">
+                            {renderGridWithActions(props.users?.filter(user => user.roles?.includes('course creator')) || [])}
+                        </TabContent>
+                        
+                        <TabContent value="admin">
+                            {renderGridWithActions(props.users?.filter(user => user.roles?.includes('admin')) || [])}
+                        </TabContent>
+                    </div>
+                </Tabs.Root>
+            </div>
 
             {showFilterModal && (
                 <UserGridFilterModal
