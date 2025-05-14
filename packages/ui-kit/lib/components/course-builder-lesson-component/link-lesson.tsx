@@ -126,6 +126,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                     ) : (
                         <div className="flex flex-col" key={index}>
                             <LinkPreview
+                            preview={true}
                                 title={link.title}
                                 url={link.url}
                                 customIcon={link.file}

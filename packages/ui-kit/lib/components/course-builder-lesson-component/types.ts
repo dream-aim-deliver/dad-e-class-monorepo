@@ -25,8 +25,6 @@ export interface LinkLessonEdit extends BaseCourseElement {
     }>,
     includeInMaterials: boolean
     customIcon: string
-
-
 }
 
 export interface LinkLessonPreview extends BaseCourseElement {

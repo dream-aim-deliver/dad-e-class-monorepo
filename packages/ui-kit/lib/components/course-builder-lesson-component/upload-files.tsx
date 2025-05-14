@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { courseElement, CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
+import {  CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
 import DesignerLayout from "./designer-layout";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { UploadedFileType, Uploader, UploadResponse } from "../drag-and-drop/uploader";
@@ -19,7 +19,7 @@ const uploadFilesElement: CourseElementTemplate = {
     formComponent: FormComponent
 };
 
-function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
     if (elementInstance.type !== CourseElementType.uploadFile) return null;
     const dictionary = getDictionary(locale);
     const [value, setValue] = useState<string>("");
@@ -43,7 +43,6 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
                     placeholder="e.g. Upload your resume"
                     value={value}
                     setValue={setValue}
-                    inputText=""
                 />
             </div>
 
@@ -136,13 +135,6 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
         });
     };
 
-    const handleDelete = (index: number) => {
-        setFiles(files.filter((_, i) => i !== index));
-    };
-
-    const handleDownload = (index: number) => {
-        // Implement download logic here
-    };
     return (
         <div className="p-4 border rounded-md bg-base-neutral-800 flex flex-col gap-4">
             <div className="flex items-center gap-2 flex-1 text-text-primary py-2  border-b border-divider">
@@ -157,8 +149,6 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                 files={files}
                 maxFile={5}
                 onFilesChange={handleFilesChange}
-                onDelete={handleDelete}
-                onDownload={handleDownload}
                 locale={locale}
             />
             <div className="w-full">
