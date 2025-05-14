@@ -244,7 +244,7 @@ export const AdminCourseFiltersExpanded: React.FC<AdminCourseFiltersExpandedProp
               id: 'minSales',
               className: "w-full text-white border-input-stroke",
               value: filters.minSales,
-              setValue: (value: string) => handleChange('minSales', value),
+              setValue: (value: string | string[]) => handleChange('minSales', Array.isArray(value) ? value[0] : value),
               inputText: 'e.g. 28',
             }}
           />
@@ -254,7 +254,7 @@ export const AdminCourseFiltersExpanded: React.FC<AdminCourseFiltersExpandedProp
               id: 'maxSales',
               className: "w-full text-white border-input-stroke",
               value: filters.maxSales,
-              setValue: (value: string) => handleChange('maxSales', value),
+              setValue: (value: string | string[]) => handleChange('maxSales', Array.isArray(value) ? value[0] : value),
               inputText: 'e.g. 120',
             }}
           />
@@ -270,7 +270,7 @@ export const AdminCourseFiltersExpanded: React.FC<AdminCourseFiltersExpandedProp
             id: 'createdBy',
             className: "w-full text-white border-input-stroke",
             value: filters.createdBy,
-            setValue: (value: string) => handleChange('createdBy', value),
+            setValue: (value: string | string[]) => handleChange('createdBy', Array.isArray(value) ? value[0] : value),
             inputText: 'Search course creator',
             options: creators,
           }}
@@ -281,7 +281,7 @@ export const AdminCourseFiltersExpanded: React.FC<AdminCourseFiltersExpandedProp
             id: 'taughtBy',
             className: "w-full text-white border-input-stroke",
             value: filters.taughtBy,
-            setValue: (value: string) => handleChange('taughtBy', value),
+            setValue: (value: string | string[]) => handleChange('taughtBy', Array.isArray(value) ? value[0] : value),
             inputText: 'Search coach',
             options: coaches,
           }}
@@ -294,7 +294,7 @@ export const AdminCourseFiltersExpanded: React.FC<AdminCourseFiltersExpandedProp
               id: 'minCoaches',
               className: "w-full text-white border-input-stroke",
               value: filters.minCoaches,
-              setValue: (value: string) => handleChange('minCoaches', value),
+              setValue: (value: string | string[]) => handleChange('minCoaches', typeof value === 'string' ? value : value[0] || ''),
               inputText: 'e.g. 28',
             }}
           />
@@ -304,7 +304,7 @@ export const AdminCourseFiltersExpanded: React.FC<AdminCourseFiltersExpandedProp
               id: 'maxCoaches',
               className: "w-full text-white border-input-stroke",
               value: filters.maxCoaches,
-              setValue: (value: string) => handleChange('maxCoaches', value),
+              setValue: (value: string | string[]) => handleChange('maxCoaches', typeof value === 'string' ? value : value[0] || ''),
               inputText: 'e.g. 120',
             }}
           />
@@ -338,7 +338,7 @@ export const AdminCourseFiltersExpanded: React.FC<AdminCourseFiltersExpandedProp
             id: 'tags',
             className: "w-full text-white border-input-stroke",
             value: filters.tags,
-            setValue: (value: string[]) => handleChange('tags', value),
+            setValue: (value: string | string[]) => handleChange('tags', Array.isArray(value) ? value : [value]),
             inputText: 'Search tag',
             options: tags,
             multiple: true,
