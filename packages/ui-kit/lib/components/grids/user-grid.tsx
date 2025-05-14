@@ -5,7 +5,7 @@ import { formatDate } from '../../utils/format-utils';
 import { AllCommunityModule, IRowNode, ModuleRegistry, SortChangedEvent } from 'ag-grid-community';
 import { Button } from '../button';
 import { UserGridFilterModal, UserFilterModel } from './user-grid-filter-modal';
-import { TBasePersonalProfile } from '../../../../models/src/profile';
+import { profile } from '@maany_shr/e-class-models';
 import { Search, User, Book, Video, Shield } from 'lucide-react';
 import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
@@ -14,7 +14,7 @@ import { IconCloudDownload } from '../icons/icon-cloud-download';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 // Extended User model
-export interface UserCMS extends TBasePersonalProfile {
+export interface UserCMS extends profile.TBasePersonalProfile {
     userId: number;
     id: number;
     name: string;
