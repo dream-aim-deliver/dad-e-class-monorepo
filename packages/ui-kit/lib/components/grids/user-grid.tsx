@@ -8,6 +8,8 @@ import { UserGridFilterModal, UserFilterModel } from './user-grid-filter-modal';
 import { TBasePersonalProfile } from '../../../../models/src/profile';
 import { Search, User, Book, Video, Shield } from 'lucide-react';
 import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { IconCloudDownload } from '../icons/icon-cloud-download';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -28,7 +30,7 @@ export interface UserCMS extends TBasePersonalProfile {
     lastAccess: number; // timestamp
 }
 
-export interface UserGridProps {
+export interface UserGridProps extends isLocalAware {
     gridRef: RefObject<AgGridReact | null>;
     onUserDetailsClick: (user: UserCMS) => void;
     onEmailClick: (email: string) => void;
@@ -98,7 +100,7 @@ const PlatformCellRenderer = (props: any) => {
 
 export const UserGrid = (props: UserGridProps) => {
     const [selectedRole, setSelectedRole] = useState<string>('all');
-
+    const dictionary = getDictionary(props.locale);
     const [columnDefs, setColumnDefs] = useState([
         {
             headerCheckboxSelection: props.enableSelection,
@@ -224,8 +226,8 @@ export const UserGrid = (props: UserGridProps) => {
     const filteredUsers = useMemo(() => {
         if (!props.users) return [];
         if (selectedRole === 'all') return props.users;
-        
-        return props.users.filter(user => 
+
+        return props.users.filter(user =>
             user.roles && user.roles.includes(selectedRole)
         );
     }, [props.users, selectedRole]);
@@ -233,10 +235,10 @@ export const UserGrid = (props: UserGridProps) => {
     // Get filtered users counts for each role category
     const userCounts = useMemo(() => {
         if (!props.users) return { all: 0, student: 0, coach: 0, 'course creator': 0, admin: 0 };
-        
+
         return props.users.reduce((counts: Record<string, number>, user) => {
             counts.all++;
-            
+
             if (user.roles) {
                 user.roles.forEach(role => {
                     if (counts[role] !== undefined) {
@@ -244,7 +246,7 @@ export const UserGrid = (props: UserGridProps) => {
                     }
                 });
             }
-            
+
             return counts;
         }, { all: 0, student: 0, coach: 0, 'course creator': 0, admin: 0 });
     }, [props.users]);
@@ -407,29 +409,31 @@ export const UserGrid = (props: UserGridProps) => {
     const renderGridWithActions = (roleUsers: UserCMS[]) => (
         <div>
             {/* Search bar, Filter button, and Export button */}
-            <div className="flex items-center justify-between mb-2 mt-4">
-                <div className="relative w-64">
+            <div className="flex items-center justify-between mb-2 mt-4 ml-1">
+                <div className="flex-grow mr-2 relative">
                     <input
                         type="text"
-                        placeholder="Search users..."
+                        placeholder={dictionary.components.userGrid.searchPlaceholder}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full p-2 pl-10 border rounded bg-input-fill text-text-primary border-input-stroke focus:outline-none focus:ring-2 focus:ring-primary"
                     />
-                    <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-text-primary opacity-50" />
+                    <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 text-gray-500 opacity-50 z-10" />
                 </div>
 
-                <div className="flex space-x-2">
+                <div className="flex space-x-1.5">
                     <Button
                         variant="text"
                         size="medium"
-                        text="Export View"
+                        text={dictionary.components.userGrid.exportCurrentView}
+                        hasIconLeft
+                        iconLeft={<IconCloudDownload />}
                         onClick={handleExportCurrentView}
                     />
                     <Button
                         variant="secondary"
                         size="medium"
-                        text="Filters"
+                        text={dictionary.components.userGrid.filterButton}
                         onClick={() => setShowFilterModal(true)}
                     />
                 </div>
@@ -442,20 +446,20 @@ export const UserGrid = (props: UserGridProps) => {
                         <Button
                             variant="secondary"
                             size="medium"
-                            text="Batch Actions"
+                            text={dictionary.components.userGrid.batchActions}
                             onClick={toggleBatchActions}
                         />
                     ) : (
                         <div className="flex space-x-2 items-center">
                             <span className="text-sm text-white mr-2">
-                                {selectedUserCount}/{roleUsers.length} selected
+                                {selectedUserCount}/{roleUsers.length} {dictionary.components.userGrid.selected}
                             </span>
 
                             {props.onSendNotifications && (
                                 <Button
                                     variant="primary"
                                     size="medium"
-                                    text="Send Notifications"
+                                    text={dictionary.components.userGrid.sendNotification}
                                     onClick={handleSendNotifications}
                                     disabled={selectedUserCount === 0}
                                     className={selectedUserCount > 0 ? "opacity-100" : "opacity-50"}
@@ -465,7 +469,7 @@ export const UserGrid = (props: UserGridProps) => {
                             <Button
                                 variant="secondary"
                                 size="medium"
-                                text="Hide Actions"
+                                text={dictionary.components.userGrid.hideActions}
                                 onClick={toggleBatchActions}
                             />
                         </div>
@@ -496,62 +500,63 @@ export const UserGrid = (props: UserGridProps) => {
     return (
         <div className="flex flex-col h-full">
             {/* Role Tabs */}
-            <div className="overflow-auto">
+            <div className="w-full">
                 <Tabs.Root
                     defaultTab="all"
                     onValueChange={handleTabChange}
                 >
                     <TabList
-                        className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2"
+                        className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap min-w-max"
+                        variant='small'
                     >
                         <TabTrigger value="all">
-                            All ({userCounts.all})
+                            {dictionary.components.userGrid.all} ({userCounts.all})
                         </TabTrigger>
                         <TabTrigger
                             value="student"
                             icon={<RoleIcon role="student" />}
                         >
-                            Students ({userCounts.student})
+                            {dictionary.components.userGrid.students} ({userCounts.student})
                         </TabTrigger>
                         <TabTrigger
                             value="coach"
                             icon={<RoleIcon role="coach" />}
                         >
-                            Coaches ({userCounts.coach})
+                            {dictionary.components.userGrid.coaches} ({userCounts.coach})
                         </TabTrigger>
                         <TabTrigger
                             value="course creator"
                             icon={<RoleIcon role="course creator" />}
                         >
-                            Course Creators ({userCounts['course creator']})
+                            {dictionary.components.userGrid.courseCreators} ({userCounts['course creator']})
                         </TabTrigger>
                         <TabTrigger
                             value="admin"
                             icon={<RoleIcon role="admin" />}
                         >
-                            Admins ({userCounts.admin})
+                            {dictionary.components.userGrid.admin} ({userCounts.admin})
                         </TabTrigger>
                     </TabList>
 
                     <div className="mt-4">
                         {/* Tab content with individual grid instances for each role */}
-                        <TabContent value="all">
+                        <TabContent value="all" className="overflow-auto max-h-[70vh]">
                             {renderGridWithActions(props.users || [])}
                         </TabContent>
-                        
-                        <TabContent value="student">
+
+                        <TabContent value="student" className="overflow-auto max-h-[70vh]">
                             {renderGridWithActions(props.users?.filter(user => user.roles?.includes('student')) || [])}
                         </TabContent>
-                        
-                        <TabContent value="coach">
+
+                        <TabContent value="coach" className="overflow-auto max-h-[70vh]">
                             {renderGridWithActions(props.users?.filter(user => user.roles?.includes('coach')) || [])}
                         </TabContent>
-                        
-                        <TabContent value="course creator">
+
+                        <TabContent value="course creator" className="overflow-auto max-h-[70vh]">
                             {renderGridWithActions(props.users?.filter(user => user.roles?.includes('course creator')) || [])}
                         </TabContent>
-                        
-                        <TabContent value="admin">
+
+                        <TabContent value="admin" className="overflow-auto max-h-[70vh]">
                             {renderGridWithActions(props.users?.filter(user => user.roles?.includes('admin')) || [])}
                         </TabContent>
                     </div>

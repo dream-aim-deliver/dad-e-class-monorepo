@@ -18,6 +18,19 @@ export const EN: TDictionary = {
       next: 'Next',
       lesson: 'Lesson',
     },
+    userGrid: {
+      filterButton: 'Filters',
+      searchPlaceholder: 'Search',
+      exportCurrentView: 'Export current view',
+      batchActions: 'Batch actions',
+      all: 'All',
+      students: 'Students',
+      coaches: 'Coaches',
+      courseCreators: 'Course Creators',
+      admin: 'Admin',
+      hideActions: 'Hide actions',
+      selected: 'Selected',
+    },
     courseCard: {
       courseEmptyState: {
         message: "You haven't purchased any course yet",
