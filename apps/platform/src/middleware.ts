@@ -1,6 +1,6 @@
 import createMiddleware from 'next-intl/middleware';
 import { i18nConfig } from '@maany_shr/e-class-translations';
-import AuthContext from './auth/config';
+import AuthContext from './lib/infrastructure/server/config/auth/next-auth.config';
 import { NextRequest, NextResponse } from 'next/server';
 import { NextApiRequest, NextApiResponse } from 'next';
 
