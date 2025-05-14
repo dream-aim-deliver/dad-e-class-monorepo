@@ -2,7 +2,10 @@ import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from 'next';
 const { composePlugins, withNx } = require('@nx/next');
 
-const withNextIntl = createNextIntlPlugin();
+const withNextIntl = createNextIntlPlugin(
+  './src/lib/infrastructure/server/config/next-intl/request.ts',
+);
+
 
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
