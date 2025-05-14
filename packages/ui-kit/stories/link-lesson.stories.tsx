@@ -34,12 +34,12 @@ const mockFormElement = {
     links: [
         {
             title: 'Documentation',
-            url: 'https://example.com/docs',
+            url: 'https://miro.com/',
             file: null,
         },
         {
             title: 'Tutorial Video',
-            url: 'https://example.com/tutorial',
+            url: 'https://canva.com/',
             file: null,
         },
     ],

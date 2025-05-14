@@ -53,7 +53,7 @@ export const MultipleFiles: Story = {
                 fileName: 'presentation.pptx',
                 fileSize: 1024 * 1024 * 5.5, // 5.5MB
                 url: 'https://example.com/presentation.pptx',
-                uploadedAt: '2025-05-14T10:32:00Z'
+                uploadedAt: '2025-05-14 10:32'
             }
         ],
         studentComment: 'I have included my main assignment, supplementary materials, and a presentation that explains my approach.',
@@ -79,7 +79,7 @@ export const LongComment: Story = {
                 fileName: 'final-project.pdf',
                 fileSize: 1024 * 1024 * 4.7, // 4.7MB
                 url: 'https://example.com/final-project.pdf',
-                uploadedAt: '2025-05-14T15:45:00Z'
+                uploadedAt: '2025-05-14 15:45'
             }
         ],
         studentComment: 'I would like to provide some context for my assignment. I chose this particular approach because it aligns with the course objectives and demonstrates the practical application of the concepts we learned. I have included detailed explanations in the document and tried to address all the requirements mentioned in the assignment brief. Please let me know if you need any clarification or have questions about my submission.',
