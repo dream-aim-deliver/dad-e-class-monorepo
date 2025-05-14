@@ -18,6 +18,10 @@ export const EN: TDictionary = {
       next: 'Next',
       lesson: 'Lesson',
     },
+    notificationGrid: {
+      markAllAsRead: 'Mark all as read',
+      searchPlaceholder: 'Search activity',
+    },
     courseCard: {
       courseEmptyState: {
         message: "You haven't purchased any course yet",
