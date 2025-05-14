@@ -98,6 +98,54 @@ const PlatformCellRenderer = (props: any) => {
     );
 };
 
+/**
+ * A reusable UserGrid component for displaying and managing a grid of user data with filtering, sorting, and selection capabilities.
+ *
+ * @param gridRef A React ref object to access the AG Grid instance for programmatic control.
+ * @param onUserDetailsClick Callback function triggered when the "Details" button is clicked for a user. Receives the selected `UserCMS` object.
+ * @param onEmailClick Callback function triggered when an email is clicked. Receives the email string.
+ * @param users An array of `UserCMS` objects representing the users to display in the grid.
+ * @param onSortChanged Optional callback function triggered when the grid's sort order changes. Receives the `SortChangedEvent` from AG Grid.
+ * @param doesExternalFilterPass Optional function to define custom external filtering logic. Receives an `IRowNode<UserCMS>` and returns a boolean.
+ * @param enableSelection Optional boolean to enable row selection with checkboxes. Defaults to `false`.
+ * @param onSendNotifications Optional callback function triggered when notifications are sent to selected users. Receives an array of selected user IDs.
+ * @param locale The locale used for translations and localization.
+ *
+ * @example
+ * ```tsx
+ * const gridRef = useRef<AgGridReact>(null);
+ * const users = [
+ *   {
+ *     userId: 1,
+ *     id: 1,
+ *     name: "John",
+ *     surname: "Doe",
+ *     email: "john.doe@example.com",
+ *     phone: "+1234567890",
+ *     rating: 4.5,
+ *     platform: "Web",
+ *     roles: ["student", "coach"],
+ *     coachingSessionsCount: 10,
+ *     coursesBought: 3,
+ *     coursesCreated: 0,
+ *     lastAccess: 1697059200000
+ *   },
+ *   // Additional users...
+ * ];
+ *
+ * <UserGrid
+ *   gridRef={gridRef}
+ *   onUserDetailsClick={(user) => console.log("User details:", user)}
+ *   onEmailClick={(email) => console.log("Email clicked:", email)}
+ *   users={users}
+ *   onSortChanged={(event) => console.log("Sort changed:", event)}
+ *   doesExternalFilterPass={(node) => node.data.rating > 3}
+ *   enableSelection={true}
+ *   onSendNotifications={(userIds) => console.log("Send notifications to:", userIds)}
+ *   locale="en"
+ * />
+ * ```
+ */
 export const UserGrid = (props: UserGridProps) => {
     const [selectedRole, setSelectedRole] = useState<string>('all');
     const dictionary = getDictionary(props.locale);
