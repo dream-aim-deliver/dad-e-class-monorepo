@@ -45,6 +45,10 @@ export const EN: TDictionary = {
       courseCreators: 'Course Creators',
       admin: 'Admin',
     },
+    notificationGrid: {
+      markAllAsRead: 'Mark all as read',
+      searchPlaceholder: 'Search activity',
+    },
     courseCard: {
       courseEmptyState: {
         message: "You haven't purchased any course yet",

@@ -45,6 +45,10 @@ export const DE: TDictionary = {
       courseCreators: 'Kurs-Creators',
       admin: 'Admin',
     },
+    notificationGrid: {
+      markAllAsRead: 'Alle als gelesen markieren',
+      searchPlaceholder: 'Suchaktivität',
+    },
     courseCard: {
       courseEmptyState: {
         message: 'Sie haben noch keine Kurse gekauft',
