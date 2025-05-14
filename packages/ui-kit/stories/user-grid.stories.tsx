@@ -4,6 +4,40 @@ import { AgGridReact } from 'ag-grid-react';
 import { useCallback, useRef, useState } from 'react';
 import { Button } from '../lib/components/button';
 import { IRowNode } from 'ag-grid-community';
+import { NextIntlClientProvider } from 'next-intl';
+
+const mockMessages = {
+  en: {
+    userGrid: {
+      name: 'Name',
+      surname: 'Surname',
+      email: 'Email',
+      phone: 'Phone',
+      rating: 'Rating',
+      platform: 'Platform',
+      roles: 'Roles',
+      sessions: 'Sessions',
+      coursesBought: 'Courses Bought',
+      coursesCreated: 'Courses Created',
+      lastAccess: 'Last Access'
+    }
+  },
+  de: {
+    userGrid: {
+      name: 'Name',
+      surname: 'Nachname',
+      email: 'E-Mail',
+      phone: 'Telefon',
+      rating: 'Bewertung',
+      platform: 'Plattform',
+      roles: 'Rollen',
+      sessions: 'Sitzungen',
+      coursesBought: 'Gekaufte Kurse',
+      coursesCreated: 'Erstellte Kurse',
+      lastAccess: 'Letzter Zugriff'
+    }
+  }
+};
 
 const meta: Meta<typeof UserGrid> = {
     title: 'Components/UserGrid',
@@ -12,15 +46,28 @@ const meta: Meta<typeof UserGrid> = {
     parameters: {
         layout: 'fullscreen'
     },
+    argTypes: {
+      locale: {
+        control: 'select',
+        options: ['en', 'de'],
+      },
+    },
     decorators: [
         (Story, context) => {
             const gridRef = useRef<AgGridReact>(null);
-            return <div className="h-screen w-full p-4">
-                <Story args={{
-                    ...context.args,
-                    gridRef: gridRef
-                }} />
-            </div>;
+            return (
+                <NextIntlClientProvider 
+                    locale={context.args.locale || 'en'} 
+                    messages={mockMessages[context.args.locale || 'en']}
+                >
+                    <div className="h-screen w-full p-4">
+                        <Story args={{
+                            ...context.args,
+                            gridRef: gridRef
+                        }} />
+                    </div>
+                </NextIntlClientProvider>
+            );
         }
     ]
 };
@@ -199,6 +246,20 @@ type Story = StoryObj<typeof UserGrid>;
 export const Default: Story = {
     args: {
         users: mockUsers,
+        locale: 'en',
+        onUserDetailsClick: (user) => {
+            alert(`User details clicked: ${user.name} ${user.surname}`);
+        },
+        onEmailClick: (email) => {
+            alert(`Email clicked: ${email}`);
+        }
+    }
+};
+
+export const GermanLocale: Story = {
+    args: {
+        users: mockUsers,
+        locale: 'de',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -211,6 +272,7 @@ export const Default: Story = {
 export const StudentsOnly: Story = {
     args: {
         users: mockUsers.filter(user => user.roles.includes('student')),
+        locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -223,6 +285,7 @@ export const StudentsOnly: Story = {
 export const CoachesOnly: Story = {
     args: {
         users: mockUsers.filter(user => user.roles.includes('coach')),
+        locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -235,6 +298,7 @@ export const CoachesOnly: Story = {
 export const CourseCreatorsOnly: Story = {
     args: {
         users: mockUsers.filter(user => user.roles.includes('course creator')),
+        locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -247,6 +311,7 @@ export const CourseCreatorsOnly: Story = {
 export const AdminsOnly: Story = {
     args: {
         users: mockUsers.filter(user => user.roles.includes('admin')),
+        locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -260,6 +325,7 @@ export const Selectable: Story = {
     args: {
         users: Array.from({ length: 5 }, () => [...mockUsers]).flat(),
         enableSelection: true,
+        locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -275,6 +341,7 @@ export const Selectable: Story = {
 export const Empty: Story = {
     args: {
         users: [],
+        locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -287,6 +354,7 @@ export const Empty: Story = {
 export const Loading: Story = {
     args: {
         users: undefined,
+        locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -301,6 +369,7 @@ export const WithNotifications: Story = {
     args: {
         users: Array.from({ length: 2 }, () => [...mockUsers]).flat(),
         enableSelection: true,
+        locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -346,19 +415,24 @@ export const WithNotifications: Story = {
             };
             
             return (
-                <div className="h-screen w-full p-4 flex flex-col">
-                    <div className="mb-4 flex space-x-2">
-                        <Button text="Select All Users" onClick={selectAllUsers} variant="secondary" />
-                        <Button text="Select First 3 Users" onClick={selectFirstThreeUsers} variant="secondary" />
-                        <Button text="Clear Selection" onClick={clearSelection} variant="secondary" />
+                <NextIntlClientProvider 
+                    locale={context.args.locale || 'en'} 
+                    messages={mockMessages[context.args.locale || 'en']}
+                >
+                    <div className="h-screen w-full p-4 flex flex-col">
+                        <div className="mb-4 flex space-x-2">
+                            <Button text="Select All Users" onClick={selectAllUsers} variant="secondary" />
+                            <Button text="Select First 3 Users" onClick={selectFirstThreeUsers} variant="secondary" />
+                            <Button text="Clear Selection" onClick={clearSelection} variant="secondary" />
+                        </div>
+                        <div className="flex-1">
+                            <Story args={{
+                                ...context.args,
+                                gridRef: gridRef
+                            }} />
+                        </div>
                     </div>
-                    <div className="flex-1">
-                        <Story args={{
-                            ...context.args,
-                            gridRef: gridRef
-                        }} />
-                    </div>
-                </div>
+                </NextIntlClientProvider>
             );
         }
     ]
@@ -367,6 +441,7 @@ export const WithNotifications: Story = {
 export const Filter: Story = {
     args: {
         users: Array.from({ length: 5 }, () => [...mockUsers]).flat(),
+        locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
         },
@@ -414,18 +489,25 @@ export const Filter: Story = {
                 setFilteringByAccess(prevState => !prevState);
             };
 
-            return <div className="flex grow h-full w-full flex-col">
-                <div className="flex space-x-2 mb-4">
-                    <Button text="Filter by name contains an" onClick={filterByName} />
-                    <Button text="Filter by phone starts with +1" onClick={filterByPhone} />
-                    <Button text="Filter by rating greater than 4.5" onClick={filterByRating} />
-                    <Button text="Filter by access before April 20" onClick={filterByAccess} />
-                </div>
-                <Story args={{
-                    ...context.args,
-                    doesExternalFilterPass: doesFilterPass
-                }} />
-            </div>;
+            return (
+                <NextIntlClientProvider 
+                    locale={context.args.locale || 'en'} 
+                    messages={mockMessages[context.args.locale || 'en']}
+                >
+                    <div className="flex grow h-full w-full flex-col">
+                        <div className="flex space-x-2 mb-4">
+                            <Button text="Filter by name contains an" onClick={filterByName} />
+                            <Button text="Filter by phone starts with +1" onClick={filterByPhone} />
+                            <Button text="Filter by rating greater than 4.5" onClick={filterByRating} />
+                            <Button text="Filter by access before April 20" onClick={filterByAccess} />
+                        </div>
+                        <Story args={{
+                            ...context.args,
+                            doesExternalFilterPass: doesFilterPass
+                        }} />
+                    </div>
+                </NextIntlClientProvider>
+            );
         }
     ]
 };
