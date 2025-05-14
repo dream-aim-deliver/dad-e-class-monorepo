@@ -30,6 +30,7 @@ export const DE: TDictionary = {
       admin: 'Admin',
       hideActions: 'Aktionen ausblenden',
       selected: 'Ausgewählt',
+      sendNotification: 'Benachrichtigung senden',
     },
     courseCard: {
       courseEmptyState: {
