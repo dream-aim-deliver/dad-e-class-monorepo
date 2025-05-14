@@ -4,11 +4,11 @@ import { DateInput } from '../date-input';
 import { CheckBox } from '../checkbox';
 import { RadioButton } from '../radio-button';
 import { AutocompleteInput } from '../admin-course-filters-expanded';
-import { TBasePersonalProfile } from '../../../../models/src/profile';
+import { profile } from '@maany_shr/e-class-models';
 import { IconClose } from '../icons/icon-close';
 
 // User filter interface extending TBasePersonalProfile
-export interface UserFilterModel extends TBasePersonalProfile {
+export interface UserFilterModel extends profile.TBasePersonalProfile {
     userId: number;
     minRating?: number;
     maxRating?: number;
