@@ -8,7 +8,7 @@ import { notFound } from 'next/navigation';
 import { SessionProvider } from "next-auth/react"
 import { auth } from "@maany_shr/e-class-models"
 import { NextAuthGateway } from "@maany_shr/e-class-auth"
-import nextAuth from '../../auth/config';
+import nextAuth from '../../lib/infrastructure/server/config/auth/next-auth.config';
 
 export const metadata = {
   title: 'Welcome to Platform',
