@@ -435,6 +435,13 @@ export const EN: TDictionary = {
       descriptionText: 'Keep going, you’re doing great!',
       goToNextModuleText: 'Go to next module',
     },
+    courseCompletionModal: {
+      courseCompletedText: 'Course completed, well done!',
+      completedOnText: 'Completed on',
+      atText: 'at',
+      downloadCertificateText: 'Download certificate',
+      rateTheCourseText: 'Rate the course',
+    },
   },
   pages: {
     home: Home_EN,

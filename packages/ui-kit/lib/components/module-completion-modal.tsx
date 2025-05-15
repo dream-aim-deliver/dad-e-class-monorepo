@@ -6,6 +6,7 @@ import { Button } from "./button";
 import { IconModule } from "./icons/icon-module";
 import { IconSuccess } from "./icons/icon-success";
 import { IconChevronRight } from "./icons/icon-chevron-right";
+import { cn } from "../utils/style-utils";
 
 export interface ModuleCompletionModalProps extends isLocalAware {
     currentModule: number;
@@ -13,6 +14,7 @@ export interface ModuleCompletionModalProps extends isLocalAware {
     moduleTitle: string;
     onClose: () => void;
     onClickNextModule: () => void;
+    className?: string;
 }
 
 /**
@@ -25,6 +27,7 @@ export interface ModuleCompletionModalProps extends isLocalAware {
  * @param moduleTitle The title of the completed module.
  * @param onClose Function to close the modal.
  * @param onClickNextModule Function to go to the next module.
+ * @param className Optional additional CSS classes for styling.
  * @param locale (Optional) The current locale for translations.
  *
  * @example
@@ -35,6 +38,7 @@ export interface ModuleCompletionModalProps extends isLocalAware {
  *   onClose={() => setShowModal(false)}
  *   onClickNextModule={goToNextModule}
  *   locale="en"
+ *   className="custom-class"
  * />
  */
 
@@ -44,11 +48,12 @@ export const ModuleCompletionModal: FC<ModuleCompletionModalProps> = ({
     moduleTitle,
     onClose,
     onClickNextModule,
+    className,
     locale,
 }) => {
     const dictionary = getDictionary(locale);
     return (
-        <div className="flex flex-col items-end gap-6 p-6 rounded-lg border-1 border-card-stroke bg-card-fill max-w-auto shadow-[0_4px_12px_rgba(12,10,9,1)] relative">
+        <div className={cn(`w-[390px] flex flex-col items-end gap-6 p-6 rounded-lg border-1 border-card-stroke bg-card-fill shadow-[0_4px_12px_rgba(12,10,9,1)] relative`, className)}>
             {/* Close button to close the modal */}
             <div className="absolute right-0 top-0">
                 <IconButton

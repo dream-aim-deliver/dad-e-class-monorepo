@@ -428,6 +428,13 @@ export const DictionarySchema = z.object({
       descriptionText: z.string(),
       goToNextModuleText: z.string(),
     }),
+    courseCompletionModal: z.object({
+      courseCompletedText: z.string(),
+      completedOnText: z.string(),
+      atText: z.string(),
+      downloadCertificateText: z.string(),
+      rateTheCourseText: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({
