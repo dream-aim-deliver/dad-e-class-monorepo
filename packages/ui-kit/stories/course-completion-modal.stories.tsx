@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { CourseCompletionModal } from '../lib/components/course-completion-modal';
-import { on } from 'events';
 
 const meta: Meta<typeof CourseCompletionModal> = {
   title: 'Components/CourseCompletionModal',
