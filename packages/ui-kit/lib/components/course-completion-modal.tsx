@@ -65,9 +65,11 @@ export const CourseCompletionModal: React.FC<CourseCompletionModalProps> = ({
     };
     const shouldShowPlaceholder = !courseImage || isImageError;
     
-    // Format date and time
-    const formattedDate = completionDate.toLocaleDateString('en-CA'); // YYYY-MM-DD
-    const formattedTime = completionDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // HH:mm
+    // Format date and time (UTC, ISO format)
+    const isoString = new Date(completionDate).toISOString();
+    const [datePart, timePart] = isoString.split('T');
+    const formattedDate = datePart; // "YYYY-MM-DD"
+    const formattedTime = timePart.slice(0, 5); // "HH:mm"
 
     return (
         <div className={cn(`w-[390px] flex flex-col items-end gap-6 p-6 rounded-lg border-1 border-card-stroke bg-card-fill shadow-[0_4px_12px_rgba(12,10,9,1)] relative`, className)}>
