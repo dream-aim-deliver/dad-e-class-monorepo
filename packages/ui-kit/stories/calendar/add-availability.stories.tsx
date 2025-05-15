@@ -131,6 +131,7 @@ export const AddRecurringAvailability: Story = {
   args: {
     locale: 'en',
     onCancel: () => alert('Cancelled'),
+    onSave: (availability) => alert(`Saved availability: ${JSON.stringify(availability)}`),
   },
   parameters: {
     docs: {
