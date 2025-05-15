@@ -10,6 +10,11 @@ import { Search, User, Book, Video, Shield } from 'lucide-react';
 import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconCloudDownload } from '../icons/icon-cloud-download';
+import { IconAdmin } from '../icons/icon-admin';
+import { IconCourseCreator } from '../icons/icon-course-creator';
+import { IconCoach } from '../icons/icon-coach';
+import { IconStudent } from '../icons/icon-student';
+import { IconAll } from '../icons/icon-all';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -23,7 +28,7 @@ export interface UserCMS extends profile.TBasePersonalProfile {
     phone: string;
     rating?: number;
     platform: string;
-    roles: string[]; // Array of roles: admin, course creator, coach, student
+    roles: { platformName: string; role: string }[]; // Updated roles structure
     coachingSessionsCount?: number;
     coursesBought?: number;
     coursesCreated?: number;
@@ -44,24 +49,24 @@ export interface UserGridProps extends isLocalAware {
 // Role icon component
 const RoleIcon = ({ role }: { role: string }) => {
     const icons = {
-        admin: <Shield className="w-4 h-4" />,
-        'course creator': <Book className="w-4 h-4" />,
-        coach: <Video className="w-4 h-4" />,
-        student: <User className="w-4 h-4" />
+        admin: <IconAdmin classNames='text-text-primary'/>,
+        'course creator': <IconCourseCreator classNames='text-text-primary'/>,
+        coach: <IconCoach classNames='text-text-primary'/>,
+        student: <IconStudent classNames='text-text-primary'/>
     };
 
-    return icons[role as keyof typeof icons] || <User className="w-4 h-4" />;
+    return icons[role as keyof typeof icons] || <IconAll classNames='text-text-primary'/>;
 };
 
 // Get highest role based on hierarchy
-const getHighestRole = (roles: string[]): string => {
+const getHighestRole = (roles: { platformName: string; role: string }[]): string => {
     const hierarchy = ['admin', 'course creator', 'coach', 'student'];
     if (!roles || roles.length === 0) return 'student';
-    return roles.reduce((highest, role) => {
-        const currentIndex = hierarchy.indexOf(role);
+    return roles.reduce((highest, roleObj) => {
+        const currentIndex = hierarchy.indexOf(roleObj.role);
         const highestIndex = hierarchy.indexOf(highest);
-        return currentIndex < highestIndex ? role : highest;
-    }, roles[0]);
+        return currentIndex < highestIndex ? roleObj.role : highest;
+    }, roles[0].role);
 };
 
 const DetailsCellRenderer = () => {
@@ -124,7 +129,10 @@ const PlatformCellRenderer = (props: any) => {
  *     phone: "+1234567890",
  *     rating: 4.5,
  *     platform: "Web",
- *     roles: ["student", "coach"],
+ *     roles: [
+ *       { platformName: "Web", role: "student" },
+ *       { platformName: "Mobile", role: "coach" }
+ *     ],
  *     coachingSessionsCount: 10,
  *     coursesBought: 3,
  *     coursesCreated: 0,
@@ -276,7 +284,7 @@ export const UserGrid = (props: UserGridProps) => {
         if (selectedRole === 'all') return props.users;
 
         return props.users.filter(user =>
-            user.roles && user.roles.includes(selectedRole)
+            user.roles && user.roles.some(roleObj => roleObj.role === selectedRole)
         );
     }, [props.users, selectedRole]);
 
@@ -288,9 +296,9 @@ export const UserGrid = (props: UserGridProps) => {
             counts.all++;
 
             if (user.roles) {
-                user.roles.forEach(role => {
-                    if (counts[role] !== undefined) {
-                        counts[role]++;
+                user.roles.forEach(roleObj => {
+                    if (counts[roleObj.role] !== undefined) {
+                        counts[roleObj.role]++;
                     }
                 });
             }
@@ -426,9 +434,7 @@ export const UserGrid = (props: UserGridProps) => {
     // Force refresh the grid when the external filter changes
     const refreshGrid = useCallback(() => {
         if (props.gridRef.current?.api) {
-            // Ensure the external filter is set
             props.gridRef.current.api.setGridOption('doesExternalFilterPass', doesExternalFilterPass);
-            // Trigger filter re-evaluation
             props.gridRef.current.api.onFilterChanged();
         }
     }, [props.gridRef, doesExternalFilterPass]);
@@ -557,7 +563,7 @@ export const UserGrid = (props: UserGridProps) => {
                         className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap min-w-max"
                         variant='small'
                     >
-                        <TabTrigger value="all">
+                        <TabTrigger value="all" icon={<IconAll classNames='text-text-primary'/>}>
                             {dictionary.components.userGrid.all} ({userCounts.all})
                         </TabTrigger>
                         <TabTrigger
@@ -593,19 +599,19 @@ export const UserGrid = (props: UserGridProps) => {
                         </TabContent>
 
                         <TabContent value="student" className="overflow-auto max-h-[70vh]">
-                            {renderGridWithActions(props.users?.filter(user => user.roles?.includes('student')) || [])}
+                            {renderGridWithActions(props.users?.filter(user => user.roles?.some(roleObj => roleObj.role === 'student')) || [])}
                         </TabContent>
 
                         <TabContent value="coach" className="overflow-auto max-h-[70vh]">
-                            {renderGridWithActions(props.users?.filter(user => user.roles?.includes('coach')) || [])}
+                            {renderGridWithActions(props.users?.filter(user => user.roles?.some(roleObj => roleObj.role === 'coach')) || [])}
                         </TabContent>
 
                         <TabContent value="course creator" className="overflow-auto max-h-[70vh]">
-                            {renderGridWithActions(props.users?.filter(user => user.roles?.includes('course creator')) || [])}
+                            {renderGridWithActions(props.users?.filter(user => user.roles?.some(roleObj => roleObj.role === 'course creator')) || [])}
                         </TabContent>
 
                         <TabContent value="admin" className="overflow-auto max-h-[70vh]">
-                            {renderGridWithActions(props.users?.filter(user => user.roles?.includes('admin')) || [])}
+                            {renderGridWithActions(props.users?.filter(user => user.roles?.some(roleObj => roleObj.role === 'admin')) || [])}
                         </TabContent>
                     </div>
                 </Tabs.Root>
