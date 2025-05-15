@@ -10,13 +10,13 @@ import { AnimatedRadioButton } from "../animated-radio-button";
  * Designer Layout Component
  * This component provides the layout structure for the form designer interface.
  * It handles the arrangement and styling of form elements in the designer view.
- * 
+ *
  * Features:
  * - Responsive layout
  * - Form element arrangement
  * - Designer-specific styling
  * - Component organization
- * 
+ *
  * @example
  * ```tsx
  * <DesignerLayout>
@@ -42,7 +42,7 @@ interface DesignerLayoutProps extends isLocalAware {
 /**
  * Designer Layout Component
  * Renders the layout structure for the form designer interface
- * 
+ *
  * @param title - The title of the form
  * @param icon - The icon to be displayed in the header
  * @param isChecked - Whether the radio button is checked
@@ -70,10 +70,10 @@ const DesignerLayout = ({
     return (
         <div className="p-4 w-full flex flex-col gap-2 bg-base-neutral-800 rounded-md border-1 border-base-neutral-700">
             {/* Header Row */}
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-4 overflow-x-auto">
                 {/* Title and Icon */}
-                <div className="flex items-center gap-2 flex-1 text-text-primary ">
-                    <span className="min-w-0">{icon}</span> 
+                <div className="flex items-center gap-2 flex-1 text-text-primary">
+                    <span className="min-w-0 flex-shrink-0">{icon}</span>
                     <p className="text-md font-important leading-[24px] word-break">{title}</p>
                 </div>
 
@@ -90,9 +90,9 @@ const DesignerLayout = ({
                             onChange={onChange}
                             withText={true}
                             labelClass="text-text-primary capitalize"
-                            label={dictionary.components.formRenderer.requiredText} 
-                            
-                        
+                            label={dictionary.components.formRenderer.requiredText}
+
+
                         />
                         </div>
                     }
