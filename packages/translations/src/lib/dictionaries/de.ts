@@ -43,8 +43,9 @@ export const DE: TDictionary = {
       sales: 'Verkauf',
       hours: 'stunden',
     },
-    reviewCoachingSessionModal: {
-      title: 'Wie würden Sie diesen Kurs bewerten?',
+    reviewModal: {
+      coachingTitle: 'Wie würden Sie diesen Trainer bewerten?',
+      courseTitle: 'Wie würden Sie diesen Kurs bewerten?',
       sendReviewButton: 'Bewertung senden',
       skipButton: 'Überspringen',
       closeButton: 'Schließen',
@@ -303,6 +304,19 @@ export const DE: TDictionary = {
       moduleText: 'Modul',
       showNotesText: 'Notizen anzeigen (Alt/Ctrl + N)',
       hideNotesText: 'Notizen verbergen (Alt/Ctrl + N)',
+    },
+    moduleCompletionModal: {
+      moduleCompletedText: 'Modul abgeschlossen, gut gemacht!',
+      moduleText: 'Modul',
+      descriptionText: 'Mach weiter, du machst das großartig!',
+      goToNextModuleText: 'Gehen Sie zum nächsten Modul',
+    },
+    courseCompletionModal: {
+      courseCompletedText: 'Kurs abgeschlossen, gut gemacht!',
+      completedOnText: 'Abgeschlossen am',
+      atText: 'bei',
+      downloadCertificateText: 'Zertifikat herunterladen',
+      rateTheCourseText: 'Bewerten Sie den Kurs',
     },
 },
   pages: {

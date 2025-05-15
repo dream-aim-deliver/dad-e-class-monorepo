@@ -100,8 +100,9 @@ export const DictionarySchema = z.object({
       viewProfile: z.string(),
       bookSession: z.string(),
     }),
-    reviewCoachingSessionModal : z.object({
-      title: z.string(),
+    reviewModal : z.object({
+      coachingTitle: z.string(),
+      courseTitle: z.string(),
       sendReviewButton: z.string(),
       reviewPlaceholder: z.string(),
       closeButton: z.string(),
@@ -293,6 +294,19 @@ export const DictionarySchema = z.object({
       moduleText: z.string(),
       showNotesText: z.string(),
       hideNotesText: z.string(),
+    }),
+    moduleCompletionModal: z.object({
+      moduleCompletedText: z.string(),
+      moduleText: z.string(),
+      descriptionText: z.string(),
+      goToNextModuleText: z.string(),
+    }),
+    courseCompletionModal: z.object({
+      courseCompletedText: z.string(),
+      completedOnText: z.string(),
+      atText: z.string(),
+      downloadCertificateText: z.string(),
+      rateTheCourseText: z.string(),
     }),
   }),
   pages: z.object({
