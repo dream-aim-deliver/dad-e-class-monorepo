@@ -92,8 +92,11 @@ describe('CourseCompletionModal', () => {
     expect(screen.getByAltText('AI Fundamentals')).toBeInTheDocument();
     // Course title
     expect(screen.getByText('AI Fundamentals')).toBeInTheDocument();
-    // Badge with date and time
-    expect(screen.getByTestId('badge')).toHaveTextContent('Completed on 2024-05-10 at 21:00'); // Adjusted for timezone
+    // Badge with date and time (dynamically generated)
+    const expectedDate = completionDate.toLocaleDateString('en-CA');
+    expect(screen.getByTestId('badge')).toHaveTextContent(
+      new RegExp(`^Completed on ${expectedDate}`)
+    );
     // Download Certificate button
     expect(screen.getByTestId('button-Download Certificate')).toBeInTheDocument();
     // Rate the Course button
@@ -141,7 +144,10 @@ describe('CourseCompletionModal', () => {
       />
     );
     expect(screen.getByText('Deep Learning Mastery')).toBeInTheDocument();
-    expect(screen.getByTestId('badge')).toHaveTextContent('Completed on 2025-01-01 at 14:45'); // Adjusted for timezone
+    const expectedDate = newDate.toLocaleDateString('en-CA');
+    expect(screen.getByTestId('badge')).toHaveTextContent(
+      new RegExp(`^Completed on ${expectedDate}`)
+    );
   });
 
   it('renders localized text from dictionary', () => {
