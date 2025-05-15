@@ -62,24 +62,18 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
 
 /**
  * FormComponent for rendering a multiple choice question in the form
- * 
+ *
  * @param {Object} props - Component props
  * @param {FormElement} props.elementInstance - The form element instance containing the multiple choice question data
  * @param {SubmitFunction} [props.submitValue] - Function to handle submission of the form element value
  * @returns {JSX.Element|null} - Rendered component or null if element type doesn't match
  */
 export function FormComponent({ elementInstance, submitValue }: { elementInstance: FormElement; submitValue?: SubmitFunction }) {
-    if (elementInstance.type !== FormElementType.MultiCheck) return null;
+    const isMultiCheck = elementInstance.type === FormElementType.MultiCheck;
 
-    const [options, setOptions] = useState<optionsType[]>([]);
+    const [options, setOptions] = useState<optionsType[]>(isMultiCheck ? elementInstance.options : []);
 
-    useEffect(() => {
-        const mappedOptions = elementInstance.options.map(option => ({
-            ...option,
-            isSelected: false
-        }));
-        setOptions(mappedOptions);
-    }, [elementInstance.options]);
+    if (!isMultiCheck) return null;
 
     const handleOptionChange = (option: string) => {
         setOptions(prevOptions => {
@@ -118,7 +112,7 @@ export function FormComponent({ elementInstance, submitValue }: { elementInstanc
 
 /**
  * ViewComponent for displaying a multiple choice question in read-only mode
- * 
+ *
  * @param {Object} props - Component props
  * @param {FormElement} props.elementInstance - The form element instance containing the multiple choice question data
  * @returns {JSX.Element|null} - Rendered component or null if element type doesn't match
