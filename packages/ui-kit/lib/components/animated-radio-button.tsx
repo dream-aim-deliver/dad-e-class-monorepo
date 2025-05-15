@@ -90,7 +90,7 @@ export const AnimatedRadioButton: FC<AnimatedRadioButtonProps> = ({
     };
 
     return (
-        <label className="inline-flex items-center gap-3 relative">
+        <label className="inline-flex items-center gap-3 relative cursor-pointer">
             <div className="absolute top-0 left-4 z-10 hidden">
                 <CheckBox
                     name={name}
