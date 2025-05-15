@@ -16,48 +16,15 @@ const imageFilesElement: CourseElementTemplate = {
     designerComponent: DesignerComponent,
     formComponent: FormComponent
 };
-
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+interface ImageFileEditProps extends DesignerComponentProps  {
+  onFilesChange: (files: UploadedFileType[]) => Promise<UploadResponse>;
+  onFileDelete: () => void;
+  onFileDownload: () => void;
+  file: UploadedFileType | null;
+}
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, file, onFilesChange, onFileDownload, onFileDelete }: ImageFileEditProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
     const dictionary = getDictionary(locale);
-    const [file, setFile] = useState<UploadedFileType | null>(null);
-
-    const handleFilesChange = async (files: UploadedFileType[]): Promise<UploadResponse> => {
-        if (files.length > 0) {
-            const currentFile = files[0];
-            setFile(currentFile);
-
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    const response: UploadResponse = {
-                        imageId: `image-${Math.random().toString(36).substr(2, 9)}`,
-                        imageThumbnailUrl: URL.createObjectURL(currentFile.file),
-                        fileSize: currentFile.file.size,
-                    };
-                    setFile({
-                        ...currentFile,
-                        isUploading: false,
-                        responseData: response
-                    });
-                    resolve(response);
-                }, 5000);
-            });
-        }
-        setFile(null);
-        return Promise.resolve({
-            imageId: '',
-            imageThumbnailUrl: '',
-            fileSize: 0
-        });
-    };
-
-    const handleDelete = () => {
-        setFile(null);
-    };
-
-    const handleDownload = () => {
-        //handle download logic here
-    };
 
     return (
         <DesignerLayout
@@ -74,9 +41,9 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 type="single"
                 variant="image"
                 file={file}
-                onFilesChange={handleFilesChange}
-                onDelete={handleDelete}
-                onDownload={handleDownload}
+                onFilesChange={onFilesChange}
+                onDelete={onFileDelete}
+                onDownload={onFileDownload}
                 locale={locale}
             />
         </DesignerLayout>
@@ -89,7 +56,6 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
  */
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
-    const dictionary = getDictionary(locale);
    return (
     <section className="w-ful">
         <img src={(elementInstance as ImageFilePreview).imageUrl}

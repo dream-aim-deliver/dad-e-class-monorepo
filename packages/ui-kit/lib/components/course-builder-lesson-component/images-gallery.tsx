@@ -19,58 +19,15 @@ const imageGalleryElement: CourseElementTemplate = {
     designerComponent: DesignerComponent,
     formComponent: FormComponent
 };
-
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+interface ImageGalleryEditProps extends DesignerComponentProps  {
+  onFilesChange: (files: UploadedFileType[]) => Promise<UploadResponse>;
+  onFileDelete: () => void;
+  onFileDownload: () => void;
+  files: UploadedFileType[] | null;
+}
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, files, onFilesChange, onFileDownload, onFileDelete }: ImageGalleryEditProps) {
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
     const dictionary = getDictionary(locale);
-    const [files, setFiles] = useState<UploadedFileType[]>([]);
-
-    const handleFilesChange = async (files: UploadedFileType[]): Promise<UploadResponse> => {
-        // Find which files are new (still uploading)
-        const uploadingFiles = files.filter((f) => f.isUploading);
-
-        // Set the files immediately with loading state
-        setFiles(files);
-
-        // Process each uploading file
-        if (uploadingFiles.length > 0) {
-            const processedFiles = files.map((file) => {
-                if (file.isUploading) {
-                    return {
-                        ...file,
-                        isUploading: false,
-                        responseData: {
-                            imageId: `image-${Math.random().toString(36).substr(2, 9)}`,
-                            imageThumbnailUrl: URL.createObjectURL(file.file),
-                            fileSize: file.file.size,
-                        },
-                    };
-                }
-                return file;
-            });
-
-            setFiles(processedFiles);
-            
-            // Return the response for the last uploaded file
-            const lastUploadedFile = processedFiles[processedFiles.length - 1];
-            return Promise.resolve(lastUploadedFile.responseData);
-        }
-
-        // If no files are uploading, return an empty response
-        return Promise.resolve({
-            imageId: '',
-            imageThumbnailUrl: '',
-            fileSize: 0
-        });
-    };
-
-    const handleDelete = (index:number) => {
-        //delete logic here
-    };
-
-    const handleDownload = () => {
-        //handle download logic here
-    };
 
     return (
         <DesignerLayout
@@ -88,9 +45,9 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 variant="image"
                 files={files}
                 maxFile={6}
-                onFilesChange={handleFilesChange}
-                onDelete={handleDelete}
-                onDownload={handleDownload}
+                onFilesChange={onFilesChange}
+                onDelete={onFileDelete}
+                onDownload={onFileDownload}
                 locale={locale}
             />
         </DesignerLayout>
@@ -167,11 +124,11 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
             {imageElements.map((image, index) => (
               <div 
                 key={index} 
-                className={cn("flex-shrink-0",index === currentIndex && "border-2 border-button-primary-fill")}
+                className={cn("flex-shrink-0",index === currentIndex && "border-2 border-button-primary-fill rounded-md")}
                 style={{ width: `${100 / visibleItems}%` }}
               >
                 <img
-                  className="w-full h-24 object-cover rounded cursor-pointer"   
+                  className="w-full h-24 object-cover cursor-pointer rounded-md"   
                   src={image}
                   alt={`Image ${index}`}
                   onClick={() => setCurrentIndex(index)}
