@@ -440,6 +440,13 @@ export const DE: TDictionary = {
       descriptionText: 'Mach weiter, du machst das großartig!',
       goToNextModuleText: 'Gehen Sie zum nächsten Modul',
     },
+    courseCompletionModal: {
+      courseCompletedText: 'Kurs abgeschlossen, gut gemacht!',
+      completedOnText: 'Abgeschlossen am',
+      atText: 'bei',
+      downloadCertificateText: 'Zertifikat herunterladen',
+      rateTheCourseText: 'Bewerten Sie den Kurs',
+    },
   },
   pages: {
     home: Home_DE,
