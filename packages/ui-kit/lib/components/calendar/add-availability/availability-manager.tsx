@@ -2,9 +2,12 @@ import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { Button } from "../../button";
 import { CheckBox } from "../../checkbox";
 import { DateInput } from "../../date-input";
-import { InputField } from "../../input-field";
 import { Tabs } from "../../tabs/tab";
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
+import { IconButton } from "../../icon-button";
+import { IconClose } from "../../icons/icon-close";
+import { TextInput } from "../../text-input";
+import { IconLoaderSpinner } from "../../icons/icon-loader-spinner";
 
 export type TSingleAvailability = {
   id: number;
@@ -137,7 +140,17 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-6 w-fit p-6 bg-card-fill border-[1px] border-card-stroke rounded-medium shadow-[0px_4px_12px_0px_#09090B]">
+    <div className="flex flex-col gap-6 w-fit p-6 bg-card-fill border-[1px] border-card-stroke rounded-medium shadow-[0px_4px_12px_0px_#09090B] relative">
+      <div className="absolute right-0 top-0">
+        <IconButton
+            data-testid="close-modal-button"
+            styles="text"
+            icon={<IconClose />}
+            size="small"
+            onClick={onCancel}
+            className="text-button-text-text"
+        />
+      </div>
       <p className="text-2xl text-base-white font-bold leading-[110%]">
         {isEdit ? dictionary.components.calendar.availabilityManagement.editAvailability : dictionary.components.calendar.availabilityManagement.addAvailability}
       </p>
@@ -178,31 +191,30 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
                     {dictionary.components.calendar.availabilityManagement.chooseTimeText}
                   </p>
                   <div className="flex gap-2">
-                    <InputField
-                      className="w-full"
-                      inputText="12:00"
-                      type="text"
-                      value={recurringStartTime}
-                      setValue={setRecurringStartTime}
+                    <TextInput 
+                      label={dictionary.components.calendar.availabilityManagement.startText}
+                      inputField={{
+                        value: recurringStartTime,
+                        setValue: setRecurringStartTime,
+                        inputText: "12:00",
+                        className: "w-full"
+                      }}
                       id="recurring-start-time"
                     />
-                    <InputField
-                      className="w-full"
-                      inputText="14:00"
-                      type="text"
-                      value={recurringEndTime}
-                      setValue={setRecurringEndTime}
+                    <TextInput 
+                      label={dictionary.components.calendar.availabilityManagement.endText}
+                      inputField={{
+                        value: recurringEndTime,
+                        setValue: setRecurringEndTime,
+                        inputText: "14:00",
+                        className: "w-full"
+                      }}
                       id="recurring-end-time"
                     />
                   </div>
                 </div>
                 <DateInput
-                  label={dictionary.components.calendar.availabilityManagement.startDateText}
-                  value={startDate}
-                  onChange={setStartDate}
-                />
-                <DateInput
-                  label={dictionary.components.calendar.availabilityManagement.expirationDateText}
+                  label={`${dictionary.components.calendar.availabilityManagement.expirationDateText} (YYYY/MM/DD)`}
                   value={expirationDate}
                   onChange={setExpirationDate}
                 />
@@ -212,30 +224,38 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
           <Tabs.Content value="single">
             <div className="flex flex-col gap-6 mt-6">
               <div className="flex flex-col gap-4">
-                <DateInput
-                  label={dictionary.components.calendar.availabilityManagement.chooseDateText}
-                  value={singleDate}
-                  onChange={setSingleDate}
-                />
+                <div className="flex flex-col gap-2">
+                  <p className="text-md text-base-white font-bold leading-[120%]">
+                    {dictionary.components.calendar.availabilityManagement.chooseDateText}
+                  </p>
+                  <DateInput
+                    value={singleDate}
+                    onChange={setSingleDate}
+                  />
+                </div>
                 <div className="flex flex-col gap-2">
                   <p className="text-md text-base-white font-bold leading-[120%]">
                     {dictionary.components.calendar.availabilityManagement.chooseTimeText}
                   </p>
                   <div className="flex gap-2">
-                    <InputField
-                      className="w-full"
-                      inputText="12:00"
-                      type="text"
-                      value={singleStartTime}
-                      setValue={setSingleStartTime}
+                    <TextInput 
+                      label={dictionary.components.calendar.availabilityManagement.startText}
+                      inputField={{
+                        value: singleStartTime,
+                        setValue: setSingleStartTime,
+                        inputText: "12:00",
+                        className: "w-full"
+                      }}
                       id="single-start-time"
                     />
-                    <InputField
-                      className="w-full"
-                      inputText="14:00"
-                      type="text"
-                      value={singleEndTime}
-                      setValue={setSingleEndTime}
+                    <TextInput 
+                      label={dictionary.components.calendar.availabilityManagement.endText}
+                      inputField={{
+                        value: singleEndTime,
+                        setValue: setSingleEndTime,
+                        inputText: "14:00",
+                        className: "w-full"
+                      }}
                       id="single-end-time"
                     />
                   </div>
@@ -266,77 +286,72 @@ const AvailabilityManager: FC<AvailabilityManagerProps> = ({
                   />
                 ))}
               </div>
-              <DateInput
-                label={dictionary.components.calendar.availabilityManagement.startDateText}
-                value={startDate}
-                onChange={setStartDate}
-              />
-              <DateInput
-                label={dictionary.components.calendar.availabilityManagement.expirationDateText}
-                value={expirationDate}
-                onChange={setExpirationDate}
-              />
             </>
-          )}
-          {!isRecurring && (
-            <DateInput
-              label={dictionary.components.calendar.availabilityManagement.chooseDateText}
-              value={singleDate}
-              onChange={setSingleDate}
-            />
           )}
           <div className="flex flex-col gap-2">
             <p className="text-md text-base-white font-bold leading-[120%]">
               {dictionary.components.calendar.availabilityManagement.chooseTimeText}
             </p>
             <div className="flex gap-2">
-              <InputField
-                className="w-full"
-                inputText="12:00"
-                type="text"
-                value={isRecurring ? recurringStartTime : singleStartTime}
-                setValue={
-                  isRecurring ? setRecurringStartTime : setSingleStartTime
-                }
+              <TextInput 
+                label={dictionary.components.calendar.availabilityManagement.startText}
+                inputField={{
+                  value: isRecurring ? recurringStartTime : singleStartTime,
+                  setValue: isRecurring ? setRecurringStartTime : setSingleStartTime,
+                  inputText: "12:00",
+                  className: "w-full"
+                }}
                 id={isRecurring ? "recurring-start-time" : "single-start-time"}
               />
-              <InputField
-                className="w-full"
-                inputText="14:00"
-                type="text"
-                value={isRecurring ? recurringEndTime : singleEndTime}
-                setValue={isRecurring ? setRecurringEndTime : setSingleEndTime}
+              <TextInput 
+                label={dictionary.components.calendar.availabilityManagement.endText}
+                inputField={{
+                  value: isRecurring ? recurringEndTime : singleEndTime,
+                  setValue: isRecurring ? setRecurringEndTime : setSingleEndTime,
+                  inputText: "14:00",
+                  className: "w-full"
+                }}
                 id={isRecurring ? "recurring-end-time" : "single-end-time"}
               />
             </div>
           </div>
+          {isRecurring ? (
+              <DateInput
+                label={dictionary.components.calendar.availabilityManagement.expirationDateText}
+                value={expirationDate}
+                onChange={setExpirationDate}
+              />
+            ) : (
+              <DateInput
+                label={dictionary.components.calendar.availabilityManagement.chooseDateText}
+                value={singleDate}
+                onChange={setSingleDate}
+              />
+            )
+          }
         </div>
       )}
-      <div className="flex gap-2 w-full">
+      <div className="flex gap-2">
         <Button
           variant="secondary"
           className="w-full"
           onClick={onCancel}
           disabled={isLoading}
-          text={isEdit ? dictionary.components.calendar.availabilityManagement.cancelText : dictionary.components.calendar.availabilityManagement.goBackText}
+          text={dictionary.components.calendar.availabilityManagement.goBackText}
         />
-
-        <Button
-          className="w-full"
-          onClick={handleSave}
-          disabled={isLoading}
-          text={isLoading ? dictionary.components.calendar.availabilityManagement.savingText : isEdit ? dictionary.components.calendar.availabilityManagement.confirmChangesText : dictionary.components.calendar.availabilityManagement.saveText}
-        />
-
-        {isEdit && onDelete && (
+        <div className="relative w-full">
           <Button
-            variant="primary"
             className="w-full"
-            onClick={handleDelete}
+            onClick={handleSave}
             disabled={isLoading}
-            text={dictionary.components.calendar.availabilityManagement.deleteText}
+            text={isEdit ? dictionary.components.calendar.availabilityManagement.confirmChangesText : dictionary.components.calendar.availabilityManagement.addText}
           />
-        )}
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <IconLoaderSpinner classNames="animate-spin h-5 w-5 text-white" />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
