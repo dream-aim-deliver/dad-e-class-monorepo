@@ -289,6 +289,27 @@ export const DictionarySchema = z.object({
         description: z.string(),
       })
     }),
+    formRenderer: z.object({
+      title: z.string(),
+      alertText: z.string(),
+      requiredText: z.string(),
+      submitText: z.string(),
+      fieldRequired: z.string(),
+      selectOption: z.string(),
+      pleaseEnterText: z.string(),
+      delete: z.string(),
+      moveUp: z.string(),
+      moveDown: z.string(),
+      showInCourseBuilderDescription: z.string(),
+     }),
+     lessons: z.object({
+      headingPlaceholder: z.string(),
+      addChoice:z.string(),
+      multiChoice:z.string(),
+      singleChoice:z.string(),
+      heading:z.string(),
+      oneOutOfThree:z.string(),
+   }),
     lessonHeader: z.object({
       moduleText: z.string(),
       showNotesText: z.string(),
