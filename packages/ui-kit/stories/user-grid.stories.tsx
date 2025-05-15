@@ -82,7 +82,10 @@ const mockUsers: UserCMS[] = [
         phone: '+1-555-123-4567',
         rating: 4.7,
         platform: 'iOS',
-        roles: ['student', 'coach'],
+        roles: [
+            { platformName: 'iOS', role: 'student' },
+            { platformName: 'iOS', role: 'coach' }
+        ],
         coachingSessionsCount: 24,
         coursesBought: 5,
         coursesCreated: 2,
@@ -97,7 +100,7 @@ const mockUsers: UserCMS[] = [
         phone: '+1-555-987-6543',
         rating: 4.9,
         platform: 'Android',
-        roles: ['student'],
+        roles: [{ platformName: 'Android', role: 'student' }],
         coachingSessionsCount: 38,
         coursesBought: 12,
         coursesCreated: 0,
@@ -112,7 +115,7 @@ const mockUsers: UserCMS[] = [
         phone: '+34-611-222-333',
         rating: 3.8,
         platform: 'Web',
-        roles: ['student'],
+        roles: [{ platformName: 'Web', role: 'student' }],
         coachingSessionsCount: 7,
         coursesBought: 3,
         coursesCreated: 0,
@@ -127,7 +130,10 @@ const mockUsers: UserCMS[] = [
         phone: '+1-555-444-3333',
         rating: 5.0,
         platform: 'iOS',
-        roles: ['course creator', 'coach'],
+        roles: [
+            { platformName: 'iOS', role: 'course creator' },
+            { platformName: 'iOS', role: 'coach' }
+        ],
         coachingSessionsCount: 52,
         coursesBought: 0,
         coursesCreated: 6,
@@ -142,7 +148,10 @@ const mockUsers: UserCMS[] = [
         phone: '+81-90-1234-5678',
         rating: undefined,
         platform: 'Android',
-        roles: ['student', 'course creator'],
+        roles: [
+            { platformName: 'Android', role: 'student' },
+            { platformName: 'Android', role: 'course creator' }
+        ],
         coachingSessionsCount: undefined,
         coursesBought: 7,
         coursesCreated: 1,
@@ -157,7 +166,7 @@ const mockUsers: UserCMS[] = [
         phone: '+1-555-777-8888',
         rating: 4.2,
         platform: 'Web',
-        roles: ['course creator'],
+        roles: [{ platformName: 'Web', role: 'course creator' }],
         coachingSessionsCount: 31,
         coursesBought: undefined,
         coursesCreated: 3,
@@ -172,7 +181,7 @@ const mockUsers: UserCMS[] = [
         phone: '+52-555-987-6543',
         rating: 3.5,
         platform: 'iOS',
-        roles: ['student'],
+        roles: [{ platformName: 'iOS', role: 'student' }],
         coachingSessionsCount: 9,
         coursesBought: 2,
         coursesCreated: 0,
@@ -187,7 +196,10 @@ const mockUsers: UserCMS[] = [
         phone: '+48-512-345-678',
         rating: 4.8,
         platform: 'Android',
-        roles: ['admin', 'course creator'],
+        roles: [
+            { platformName: 'Android', role: 'admin' },
+            { platformName: 'Android', role: 'course creator' }
+        ],
         coachingSessionsCount: 45,
         coursesBought: 9,
         coursesCreated: 5,
@@ -202,7 +214,10 @@ const mockUsers: UserCMS[] = [
         phone: '+1-555-222-1111',
         rating: undefined,
         platform: 'Web',
-        roles: ['student', 'coach'],
+        roles: [
+            { platformName: 'Web', role: 'student' },
+            { platformName: 'Web', role: 'coach' }
+        ],
         coachingSessionsCount: 18,
         coursesBought: 6,
         coursesCreated: 0,
@@ -217,7 +232,10 @@ const mockUsers: UserCMS[] = [
         phone: '+55-11-98765-4321',
         rating: 4.1,
         platform: 'iOS',
-        roles: ['student', 'course creator'],
+        roles: [
+            { platformName: 'iOS', role: 'student' },
+            { platformName: 'iOS', role: 'course creator' }
+        ],
         coachingSessionsCount: 27,
         coursesBought: 3,
         coursesCreated: 1,
@@ -232,7 +250,12 @@ const mockUsers: UserCMS[] = [
         phone: '+123-456-7890-1234-5678-9012-3456-7890-1234-5678-9012-3456-7890-1234-5678-9012',
         rating: 4.9999999999999,
         platform: 'iOS/Android/Web/Desktop/Mobile/Tablet/SmartTV/Wearable/IoT/EmbeddedSystems',
-        roles: ['admin', 'course creator', 'coach', 'student'],
+        roles: [
+            { platformName: 'iOS', role: 'admin' },
+            { platformName: 'iOS', role: 'course creator' },
+            { platformName: 'iOS', role: 'coach' },
+            { platformName: 'iOS', role: 'student' }
+        ],
         coachingSessionsCount: 9939999,
         coursesBought: 88888888,
         coursesCreated: 7777777,
@@ -271,7 +294,7 @@ export const GermanLocale: Story = {
 
 export const StudentsOnly: Story = {
     args: {
-        users: mockUsers.filter(user => user.roles.includes('student')),
+        users: mockUsers.filter(user => user.roles.some(role => role.role === 'student')),
         locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
@@ -284,7 +307,7 @@ export const StudentsOnly: Story = {
 
 export const CoachesOnly: Story = {
     args: {
-        users: mockUsers.filter(user => user.roles.includes('coach')),
+        users: mockUsers.filter(user => user.roles.some(role => role.role === 'coach')),
         locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
@@ -297,7 +320,7 @@ export const CoachesOnly: Story = {
 
 export const CourseCreatorsOnly: Story = {
     args: {
-        users: mockUsers.filter(user => user.roles.includes('course creator')),
+        users: mockUsers.filter(user => user.roles.some(role => role.role === 'course creator')),
         locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
@@ -310,7 +333,7 @@ export const CourseCreatorsOnly: Story = {
 
 export const AdminsOnly: Story = {
     args: {
-        users: mockUsers.filter(user => user.roles.includes('admin')),
+        users: mockUsers.filter(user => user.roles.some(role => role.role === 'admin')),
         locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
