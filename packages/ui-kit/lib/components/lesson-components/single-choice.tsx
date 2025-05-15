@@ -7,14 +7,14 @@ import DesignerLayout from "./designer-layout";
  * Single Choice Element for Pre-Assessment
  * This component provides a single-choice selection element for pre-assessment forms.
  * It supports multiple options with radio button selection and validation.
- * 
+ *
  * Features:
  * - Radio button selection
  * - Required field validation
  * - Form submission handling
  * - Title and helper text display
  * - Disabled state support
- * 
+ *
  * @example
  * ```tsx
  * <SingleChoice
@@ -57,17 +57,17 @@ const singleChoiceElement: FormElementTemplate = {
 /**
  * Designer Component for Single Choice
  * Renders the configuration interface for single choice questions in the form builder
- * 
+ *
  * Features:
  * - Title editing
  * - Option management (add/remove/edit)
  * - Required field toggle
  * - Drag and drop reordering
- * 
+ *
  * @param elementInstance - The form element instance containing configuration
  * @param locale - The current locale for translations
  * @param onUpClick - Callback when moving element up
- * @param onDownClick - Callback when moving element down 
+ * @param onDownClick - Callback when moving element down
  * @param onDeleteClick - Callback when deleting element
  */
 
@@ -82,7 +82,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
     const handleRequiredChange = () => {
         setIsRequired(prev => !prev);
       };
-    
+
     return (
       <DesignerLayout
         type={elementInstance.type}
@@ -99,7 +99,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
       <SingleChoiceEdit
       initialTitle={title}
       initialOptions={options}
-     
+
       locale={locale}
       />
       </DesignerLayout>
@@ -109,17 +109,17 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
 /**
  * Form Component for Single Choice
  * Renders the interactive single choice selection with radio buttons
- * 
+ *
  * @param elementInstance - The form element instance containing configuration
  * @param submitValue - Callback function for form submission
  */
 export function FormComponent({ elementInstance, submitValue }: { elementInstance: FormElement; submitValue?: SubmitFunction }) {
-    if (elementInstance.type !== FormElementType.SingleChoice) return null;
+    const isSingleChoice = elementInstance.type === FormElementType.SingleChoice;
 
-    const [options, setOptions] = useState<optionsType[]>([]);
-useEffect(()=>{
- setOptions(elementInstance.options);
-},[])
+    const [options, setOptions] = useState<optionsType[]>(isSingleChoice ? elementInstance.options : []);
+
+    if (!isSingleChoice) return null;
+
     const handleOptionChange = (option: string) => {
         setOptions(prevOptions => {
             const newOptions = prevOptions.map(opt => ({
@@ -157,7 +157,7 @@ useEffect(()=>{
 /**
  * View Component for Single Choice
  * Renders the read-only view of the selected option
- * 
+ *
  * @param elementInstance - The form element instance containing the selected option
  */
 function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
