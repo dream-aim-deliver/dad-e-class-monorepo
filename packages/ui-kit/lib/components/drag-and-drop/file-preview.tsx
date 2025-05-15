@@ -10,6 +10,7 @@ import { Button } from '../button';
 import { IconError } from '../icons/icon-error';
 import { UploadedFileType, FileUploadResponse, ImageUploadResponse } from './uploader';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { FeedBackMessage } from '../feedback-message';
 
 interface FilePreviewProps extends isLocalAware {
     file: UploadedFileType;
@@ -19,9 +20,9 @@ interface FilePreviewProps extends isLocalAware {
     onCancelUpload: (index: number) => void;
 }
 /**
- * 
+ *
  * A component that displays a preview of a file being uploaded, including its name, size, and options to delete or download it.
- * 
+ *
  * @param file The file object containing information about the uploaded file.
  * @param index The index of the file in the list of uploaded files.
  * @param onDelete Callback function to handle file deletion.
@@ -34,12 +35,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file, index, onDelete,
     const dictionary = getDictionary(locale);
 
     if (file.error) {
-        return (
-            <div className="text-feedback-error-primary text-sm flex items-center gap-2">
-                <IconError classNames="w-6 h-6" />
-                <p>{file.error}</p>
-            </div>
-        );
+        return <FeedBackMessage type="error" message={file.error} />;
     }
     return (
         <div className={cn('flex items-center justify-between gap-2 p-2 rounded-medium', 'bg-base-neutral-900')}>
