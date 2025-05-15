@@ -90,7 +90,7 @@ export const RadioButton: FC<RadioButtonProps> = ({
   );
 
   return (
-    <label className={clsx("inline-flex gap-2 items-center")}>
+    <label className={clsx("inline-flex gap-2 items-center cursor-pointer")}>
       <div className="relative flex items-center justify-center ">
         <input
           type="radio"
