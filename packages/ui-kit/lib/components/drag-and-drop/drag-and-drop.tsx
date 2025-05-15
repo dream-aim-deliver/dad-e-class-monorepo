@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from '../button';
 import { IconCloudUpload } from '../icons/icon-cloud-upload';
+import { FeedBackMessage } from '../feedback-message';
 
 export type DragAndDropProps = {
   onUpload: (files: File[]) => void;
@@ -76,7 +77,7 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
 
         if (fileRejections.length > 0) {
           setError(
-            `Some files were rejected. Max size: ${maxSize / (1024 * 1024)} MB`,
+            `Some files were rejected. Max size: ${maxSize / (1024 * 1024)} MB. Accepted types: ${acceptedFileTypes.join(', ')}`,
           );
         } else if (!multiple && acceptedFiles.length > 1) {
           // Extra check for single file mode
@@ -112,11 +113,10 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({
           </div>
           <p className="text-xs text-text-secondary flex items-start">
             <span>{text.maxSizeText}</span>: {maxSize / (1024 * 1024)} MB
-
           </p>
         </div>
       </div>
-
+      {error && <FeedBackMessage type="error" message={error} />}
     </div>
   );
 };
