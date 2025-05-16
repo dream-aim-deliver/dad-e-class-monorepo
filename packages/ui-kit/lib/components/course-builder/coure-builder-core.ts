@@ -7,7 +7,7 @@ import { CourseElementRegistry, CourseElementType } from "./types";
 
 
 /**
- * Collection of all available form elements
+ * Collection of all available Course elements
  * @public
  */
 export const courseElements: CourseElementRegistry = {

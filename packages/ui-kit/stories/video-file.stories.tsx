@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import videoFileElement, { DesignerComponent, FormComponent } from '../lib/components/course-builder-lesson-component/video-file';
+import { DesignerComponent, FormComponent } from '../lib/components/course-builder-lesson-component/video-file';
 import { CourseElementType } from '../lib/components/course-builder/types';
 import { useState } from 'react';
 import { UploadedFileType, UploadResponse } from '../lib/components/drag-and-drop/uploader';
@@ -23,7 +23,7 @@ const mockElementInstance = {
     id: '1',
     order: 1,
     type: CourseElementType.VideoFile,
-    VideoId: 'vrJKveKVWWV3lAxGIWxlzaAsx9ArmD9KdGlgxmb1Rso'
+    videoId: 'vrJKveKVWWV3lAxGIWxlzaAsx9ArmD9KdGlgxmb1Rso'
 };
 
 // Wrapper component to handle state
@@ -77,7 +77,7 @@ const DesignerWithState = (args: Parameters<typeof DesignerComponent>[0]) => {
         <DesignerComponent
             {...args}
             file={file}
-            onFilesChange={handleFilesChange}
+            onChange={handleFilesChange}
             onFileDelete={handleDelete}
             onFileDownload={handleDownload}
         />
@@ -120,7 +120,7 @@ export const FormWithoutVideo: FormStory = {
                 id: 'video-2',
                 type: CourseElementType.VideoFile,
                 order: 1,
-                VideoId: '',
+                videoId: '',
             }}
             locale="en"
         />

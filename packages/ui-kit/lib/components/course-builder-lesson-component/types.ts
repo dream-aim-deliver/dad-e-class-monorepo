@@ -10,7 +10,7 @@ export interface BaseCourseElement {
 
 
 export interface ImageFileEdit extends BaseCourseElement {
-    ImageId: string,
+    imageId: string,
     imageThumbnailUrl: string
 }
 
@@ -21,17 +21,17 @@ export interface ImageFilePreview extends BaseCourseElement {
 export type ImageFile = ImageFileEdit | ImageFilePreview;
 
 export interface VideoFileEdit extends BaseCourseElement {
-    VideoId: string,
-    VideoThumbnailUrl: string
+    videoId: string,
+    videoThumbnailUrl: string
 }
 
 export interface VideoFilePreview extends BaseCourseElement {
-    VideoId: string
+    videoId: string
 }
 export type VideoFile = VideoFileEdit | VideoFilePreview;
 
 export interface ImageGalleryEdit extends BaseCourseElement {
-    ImageId: string,
+    imageId: string,
     imageThumbnailUrl: string
 }
 

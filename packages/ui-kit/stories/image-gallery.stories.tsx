@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { DesignerComponent, FormComponent } from '../lib/components/course-builder-lesson-component/images-gallery';
-import { CourseElementType, courseElement } from '../lib/components/course-builder/types';
+import { CourseElementType,  CourseElement } from '../lib/components/course-builder/types';
 import { useState } from 'react';
 import { UploadedFileType, UploadResponse } from '../lib/components/drag-and-drop/uploader';
 
@@ -17,7 +17,7 @@ export default meta;
 type Story = StoryObj<typeof DesignerComponent>;
 
 // Mock element instance for stories
-const mockElementInstance: courseElement = {
+const mockElementInstance:  CourseElement = {
     id: 'gallery-1',
     type: CourseElementType.ImageGallery,
     order: 1,
@@ -33,43 +33,48 @@ const DesignerWithState = (args: Parameters<typeof DesignerComponent>[0]) => {
     const [files, setFiles] = useState<UploadedFileType[]>([]);
 
     const handleFilesChange = async (files: UploadedFileType[]): Promise<UploadResponse> => {
-            // Find which files are new (still uploading)
-            const uploadingFiles = files.filter((f) => f.isUploading);
-    
-            // Set the files immediately with loading state
-            setFiles(files);
-    
-            // Process each uploading file
-            if (uploadingFiles.length > 0) {
-                const processedFiles = files.map((file) => {
-                    if (file.isUploading) {
-                        return {
-                            ...file,
-                            isUploading: false,
-                            responseData: {
-                                imageId: `image-${Math.random().toString(36).substr(2, 9)}`,
-                                imageThumbnailUrl: URL.createObjectURL(file.file),
-                                fileSize: file.file.size,
-                            },
-                        };
-                    }
-                    return file;
-                });
-    
-                setFiles(processedFiles);
-                
-                // Return the response for the last uploaded file
-                const lastUploadedFile = processedFiles[processedFiles.length - 1];
-                return Promise.resolve(lastUploadedFile.responseData);
-            }
-    
-            // If no files are uploading, return an empty response
-            return Promise.resolve({
-                imageId: '',
-                imageThumbnailUrl: '',
-                fileSize: 0
+        // Find which files are new (still uploading)
+        const uploadingFiles = files.filter((f) => f.isUploading);
+
+        // Set the files immediately with loading state
+        setFiles(files);
+
+        // Process each uploading file
+        if (uploadingFiles.length > 0) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const processedFiles = files.map((file) => {
+                        if (file.isUploading) {
+                            return {
+                                ...file,
+                                isUploading: false,
+                                responseData: {
+                                    imageId: `image-${Math.random().toString(36).substr(2, 9)}`,
+                                    imageThumbnailUrl: URL.createObjectURL(file.file),
+                                    fileSize: file.file.size,
+                                },
+                            };
+                        }
+                        return file;
+                    });
+
+                    setFiles(processedFiles);
+                    
+                    // Return the response for the last uploaded file
+                    const lastUploadedFile = processedFiles[processedFiles.length - 1];
+                    resolve(lastUploadedFile.responseData);
+                }, 2000); // 2 second delay to show loading state
             });
-        };
+        }
+
+        // If no files are uploading, return an empty response
+        return Promise.resolve({
+            imageId: '',
+            imageThumbnailUrl: '',
+            fileSize: 0
+        });
+    };
+
     const handleDelete = () => {
        alert('File deleted');
     };
@@ -82,7 +87,7 @@ const DesignerWithState = (args: Parameters<typeof DesignerComponent>[0]) => {
         <DesignerComponent
             {...args}
             files={files}
-            onFilesChange={handleFilesChange}
+            onChange={handleFilesChange}
             onFileDelete={handleDelete}
             onFileDownload={handleDownload}
         />

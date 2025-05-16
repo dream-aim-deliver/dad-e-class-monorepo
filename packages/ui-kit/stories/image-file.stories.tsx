@@ -11,7 +11,16 @@ const meta: Meta<typeof DesignerComponent> = {
     parameters: {
         layout: 'centered',
     },
+argTypes:{
+    locale:{
+        control: {
+            type: 'select',
+            options: ['en', 'de'],
+        },
+    }
+},
     tags: ['autodocs'],
+
 };
 
 export default meta;
@@ -25,11 +34,11 @@ const mockElementInstance: ImageFile = {
     order: 0,
     type: CourseElementType.ImageFile,
     imageThumbnailUrl: 'https://picsum.photos/400/300',
-    ImageId: 'image-1',
+    imageId: 'image-1',
 }
 
 // Wrapper component to handle state
-const DesignerWithState = (args: any) => {
+const DesignerWithState = (args) => {
     const [file, setFile] = useState<UploadedFileType | null>(null);
 
     const handleFilesChange = async (files: UploadedFileType[]): Promise<UploadResponse> => {
@@ -81,7 +90,7 @@ const DesignerWithState = (args: any) => {
         <DesignerComponent
             {...args}
             file={file}
-            onFilesChange={handleFilesChange}
+            onChange={handleFilesChange}
             onFileDelete={handleDelete}
             onFileDownload={handleDownload}
         />

@@ -81,7 +81,7 @@ const DesignerLayout = ({
                 {/* Action Buttons */}
                 <div className="flex items-center gap-1">
                     {
-                        type != "richText" && type!=="headingText" &&  !courseBuilder &&
+                        type !== "richText" && type!=="headingText" &&  !courseBuilder &&
                         <div className="mr-4 flex items-center">
                         <AnimatedRadioButton
                             name="required"

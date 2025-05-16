@@ -305,7 +305,7 @@ export const EN: TDictionary = {
        moveUpText: "Move Up",
        moveDownText: "Move Down",
        ImageFileText: "Image",
-       videoFileText: "Video File",
+       videoFileText: "Video",
        ImageGalleryText: "Image Gallery",
     }
   },
