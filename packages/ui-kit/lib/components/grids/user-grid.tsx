@@ -15,6 +15,7 @@ import { IconCourseCreator } from '../icons/icon-course-creator';
 import { IconCoach } from '../icons/icon-coach';
 import { IconStudent } from '../icons/icon-student';
 import { IconAll } from '../icons/icon-all';
+import { IconFilter } from '../icons/icon-filter';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -49,13 +50,13 @@ export interface UserGridProps extends isLocalAware {
 // Role icon component
 const RoleIcon = ({ role }: { role: string }) => {
     const icons = {
-        admin: <IconAdmin classNames='text-text-primary'/>,
-        'course creator': <IconCourseCreator classNames='text-text-primary'/>,
-        coach: <IconCoach classNames='text-text-primary'/>,
-        student: <IconStudent classNames='text-text-primary'/>
+        admin: <IconAdmin />,
+        'course creator': <IconCourseCreator />,
+        coach: <IconCoach />,
+        student: <IconStudent />
     };
 
-    return icons[role as keyof typeof icons] || <IconAll classNames='text-text-primary'/>;
+    return icons[role as keyof typeof icons] || <IconAll />;
 };
 
 // Get highest role based on hierarchy
@@ -450,6 +451,24 @@ export const UserGrid = (props: UserGridProps) => {
         setSelectedRole(value);
     };
 
+    const handleClearAllFilters = useCallback(() => {
+        setSearchTerm(''); // Clear search input
+        setFilters({
+            minRating: 0,
+            maxRating: 5,
+            platform: [],
+            minCoachingSessions: '',
+            maxCoachingSessions: '',
+            minCoursesBought: '',
+            maxCoursesBought: '',
+            minCoursesCreated: '',
+            maxCoursesCreated: '',
+            lastAccessAfter: '',
+            lastAccessBefore: '',
+        }); // Reset modal filters to initial state
+    }, []);
+
+
     // Initialize the grid with external filters enabled
     useEffect(() => {
         if (props.gridRef.current?.api) {
@@ -463,8 +482,8 @@ export const UserGrid = (props: UserGridProps) => {
     const renderGridWithActions = (roleUsers: UserCMS[]) => (
         <div>
             {/* Search bar, Filter button, and Export button */}
-            <div className="flex items-center justify-between mb-2 mt-4 ml-1">
-                <div className="flex-grow mr-2 relative">
+            <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-2 mt-4 ml-1">
+                <div className="flex-grow relative md:mr-2">
                     <input
                         type="text"
                         placeholder={dictionary.components.userGrid.searchPlaceholder}
@@ -475,7 +494,7 @@ export const UserGrid = (props: UserGridProps) => {
                     <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 text-gray-500 opacity-50 z-10" />
                 </div>
 
-                <div className="flex space-x-1.5">
+                <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-1.5">
                     <Button
                         variant="text"
                         size="medium"
@@ -483,12 +502,23 @@ export const UserGrid = (props: UserGridProps) => {
                         hasIconLeft
                         iconLeft={<IconCloudDownload />}
                         onClick={handleExportCurrentView}
+                        className="w-full md:w-auto"
                     />
                     <Button
                         variant="secondary"
                         size="medium"
                         text={dictionary.components.userGrid.filterButton}
                         onClick={() => setShowFilterModal(true)}
+                        hasIconLeft
+                        iconLeft={<IconFilter />}
+                        className="w-full md:w-auto"
+                    />
+                    <Button
+                        variant="secondary"
+                        size="medium"
+                        text={dictionary.components.userGrid.clearfilters}
+                        onClick={handleClearAllFilters}
+                        className="w-full md:w-auto"
                     />
                 </div>
             </div>
@@ -558,35 +588,40 @@ export const UserGrid = (props: UserGridProps) => {
                 <Tabs.Root
                     defaultTab="all"
                     onValueChange={handleTabChange}
+                // className="overflow-auto w-full relative"
                 >
                     <TabList
-                        className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap min-w-max"
+                        className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap"
                         variant='small'
                     >
-                        <TabTrigger value="all" icon={<IconAll classNames='text-text-primary'/>}>
+                        <TabTrigger value="all" icon={<IconAll />} className="cursor-pointer" >
                             {dictionary.components.userGrid.all} ({userCounts.all})
                         </TabTrigger>
                         <TabTrigger
                             value="student"
                             icon={<RoleIcon role="student" />}
+                            className="cursor-pointer"
                         >
                             {dictionary.components.userGrid.students} ({userCounts.student})
                         </TabTrigger>
                         <TabTrigger
                             value="coach"
                             icon={<RoleIcon role="coach" />}
+                            className="cursor-pointer"
                         >
                             {dictionary.components.userGrid.coaches} ({userCounts.coach})
                         </TabTrigger>
                         <TabTrigger
                             value="course creator"
                             icon={<RoleIcon role="course creator" />}
+                            className="cursor-pointer"
                         >
                             {dictionary.components.userGrid.courseCreators} ({userCounts['course creator']})
                         </TabTrigger>
                         <TabTrigger
                             value="admin"
                             icon={<RoleIcon role="admin" />}
+                            className="cursor-pointer"
                         >
                             {dictionary.components.userGrid.admin} ({userCounts.admin})
                         </TabTrigger>
