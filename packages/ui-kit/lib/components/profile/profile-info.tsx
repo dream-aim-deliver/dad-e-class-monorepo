@@ -96,6 +96,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           resolve({
             imageId: `123456`,
             imageThumbnailUrl: URL.createObjectURL(newFile.file),
+            fileSize: newFile.file.size,
           });
         }, 100);
       });

@@ -109,7 +109,8 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
         setTimeout(() => {
           resolve({
             fileId: `file-${Math.random().toString(36).substr(2, 9)}`,
-            fileName: newFiles[0].file.name
+            fileName: newFiles[0].file.name,
+            fileSize: newFiles[0].file.size,
           });
         }, 2000)
       });
