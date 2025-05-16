@@ -32,8 +32,10 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "postcss.config.mjs",
-    "eslint.config.mjs"
-, "src/auth/config.ts", "../../packages/auth/src/infrastructure/gateway/next-auth-gateway.ts"  ],
+    "eslint.config.mjs",
+      "src/lib/infrastructure/server/config/auth/next-auth.config.ts",
+      "../../packages/auth/src/infrastructure/gateway/next-auth-gateway.ts",
+  ],
   "exclude": [
     "node_modules",
     "jest.config.ts",
@@ -52,6 +54,9 @@
     },
     {
       "path": "../../packages/auth"
-    }
+    },
+      {
+          "path": "src/lib/infrastructure/server"
+      }
   ]
 }
