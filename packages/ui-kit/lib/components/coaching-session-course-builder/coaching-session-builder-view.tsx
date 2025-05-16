@@ -69,10 +69,10 @@ export const CoachingSessionBuilderView: FC<CoachingSessionTypes> = ({
                         />
                     </div>
                     <div className="flex gap-1 items-center">
-                        <span className="text-text-primary text-xs leading-[100%] font-bold">
+                        <span className="text-text-primary text-sm leading-[100%] font-bold">
                             {session.name}
                         </span>
-                        <span className="text-text-secondary text-xs leading-[100%]">
+                        <span className="text-text-secondary text-sm leading-[100%]">
                             {session.duration} {dictionary.components.coachingSessionCourseBuilder.minText}
                         </span>
                     </div>
