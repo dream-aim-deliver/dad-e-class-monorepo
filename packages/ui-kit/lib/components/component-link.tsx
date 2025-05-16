@@ -9,6 +9,7 @@ import { IconLink } from "./icons/icon-link";
 import { IconTrashAlt } from "./icons/icon-trash-alt";
 import { IconEdit } from "./icons/icon-edit";
 import { ImageUploadResponse, UploadedFileType } from "./drag-and-drop/uploader";
+import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 /**
  * 
  * @param url The URL of the website to fetch the favicon from.
@@ -28,7 +29,6 @@ const getFaviconUrl = (url: string): string => {
         // Parse the URL
         const urlObject = new URL(url);
         const hostname = urlObject.hostname;
-        const protocol = urlObject.protocol;
 
         // Try multiple common favicon locations in order of preference
         // 1. Google's favicon service (reliable for many sites)
@@ -40,7 +40,7 @@ const getFaviconUrl = (url: string): string => {
     }
 };
 
-interface LinkEditProps {
+interface LinkEditProps extends isLocalAware {
     initialTitle?: string;
     initialUrl?: string;
     initialFile?: File | null;
@@ -71,7 +71,8 @@ const LinkEdit: React.FC<LinkEditProps> = ({
     initialFile = null,
     onChange,
     onSave,
-    onDiscard
+    onDiscard,
+    locale,
 }) => {
     const [title, setTitle] = useState<string>(initialTitle);
     const [url, setUrl] = useState<string>(initialUrl);
@@ -80,7 +81,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
     const [errors, setErrors] = useState<{ title?: string; url?: string }>({});
     const fileInputRef = useRef(null);
     const [customIconUrl, setCustomIconUrl] = useState<string>("");
-
+   const dictionary = getDictionary(locale);
     const validateFields = () => {
         const newErrors: { title?: string; url?: string } = {};
         if (!title.trim()) {
@@ -163,12 +164,12 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                 URL.revokeObjectURL(customIconUrl);
             }
         };
-    }, [title, url, customIconUrl]);
+    }, [title, url, customIconUrl,file]);
 
     return (
         <div className="p-4 flex flex-col border-1 rounded-md border-card-stroke w-full bg-card-fill gap-4 text-text-primary">
             <main className="flex flex-col gap-2">
-                <h6>Title</h6>
+                <h6 className="capitalize">{dictionary.components.courseBuilder.titleText}</h6>
                 <InputField
                     value={title}
                     setValue={setTitle}
@@ -176,19 +177,19 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                 />
             </main>
             <div className="flex flex-col gap-2">
-                <h6>Url</h6>
+                <h6 className="capitalize">{dictionary.components.courseBuilder.urlText}</h6>
                 <InputField
                     value={url}
                     setValue={setUrl}
                     type="url"
                     hasRightContent
                     rightContent={<IconPaste />}
-                    inputText="my new video assignment"
+                    inputText="https://example.com"
                 />
 
                 <div className="flex flex-col gap-2">
-                    <h6>Icon Link</h6>
-                    {(customIconUrl || (favicon && url)) && (
+                    <h6 className="capitalize">{dictionary.components.courseBuilder.iconLinkText}</h6>
+                    {(customIconUrl || (favicon && /^https?:\/\//.test(url))) ? (
                         <div className="inline-flex items-center gap-2 mt-1">
                             <img
                                 src={customIconUrl || favicon}
@@ -196,7 +197,13 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                                 className="w-12 h-12 object-cover rounded"
                             />
                         </div>
-                    )}
+                    ):
+                    <IconButton
+                        icon={<IconLink />}
+                        size="medium"
+                        className="bg-base-neutral-700 rounded-md text-text-primary"
+                    />
+                    }
                     <Button
                         text="custom icon"
                         onClick={handleButtonClick}
@@ -217,8 +224,8 @@ const LinkEdit: React.FC<LinkEditProps> = ({
             </div>
 
             <div className="flex gap-2">
-                <Button onClick={handleSave} variant="secondary" className="w-full capitalize" text="Save" />
-                <Button onClick={onDiscard} variant="primary" className="w-full capitalize" text="discard" />
+                <Button onClick={handleSave} variant="secondary" className="w-full capitalize" text={dictionary.components.courseBuilder.saveText} />
+                <Button onClick={onDiscard} variant="primary" className="w-full capitalize" text={dictionary.components.courseBuilder.discardText} />
             </div>
         </div>
     )

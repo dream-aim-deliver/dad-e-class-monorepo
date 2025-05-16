@@ -1,15 +1,35 @@
 import React from 'react';
 import { Button } from "./button";
-import { UploadFileType as UploadFileType } from "./course-builder-lesson-component/types";
+import { UploadFileStudent, UploadFileType as UploadFileType } from "./course-builder-lesson-component/types";
 import { IconCloudUpload } from "./icons/icon-cloud-upload";
 import { IconFile } from "./icons/icon-file";
 import { FileUploadResponse, ImageUploadResponse, VideoUploadResponse } from './drag-and-drop/uploader';
 
-interface UploadCoachViewProps extends UploadFileType {
+/**
+ * Props interface for the Upload Coach View component
+ * Extends UploadFileStudent to add file download capability
+ */
+interface UploadCoachViewProps extends UploadFileStudent {
+    /** Optional callback function triggered when a file download is requested */
     onDownload?: (fileId: string) => void;
 }
 
+/**
+ * Component for displaying student uploaded files in the coach's view
+ * Shows a list of uploaded files with download options and student comments
+ * 
+ * @param param0 - Component props
+ * @param param0.studentUploadedFiles - Array of files uploaded by the student
+ * @param param0.studentComment - Comment provided by the student
+ * @param param0.onDownload - Optional callback for handling file downloads
+ */
 const UploadCoachView: React.FC<UploadCoachViewProps> = ({ studentUploadedFiles, studentComment, onDownload }) => {
+    /**
+     * Determines the display name for a file based on its type
+     * 
+     * @param file - The uploaded file object which could be a regular file, image, or video
+     * @returns The display name of the file based on its type
+     */
     const getFileName = (file: FileUploadResponse | ImageUploadResponse | VideoUploadResponse & { url: string, uploadedAt: string }): string => {
         if ('fileName' in file) {
             return file.fileName;
@@ -23,6 +43,12 @@ const UploadCoachView: React.FC<UploadCoachViewProps> = ({ studentUploadedFiles,
         return 'Unknown file';
     };
 
+    /**
+     * Extracts the unique identifier for a file based on its type
+     * 
+     * @param file - The uploaded file object which could be a regular file, image, or video
+     * @returns The unique identifier of the file, or an empty string if no valid ID is found
+     */
     const getFileId = (file: FileUploadResponse | ImageUploadResponse | VideoUploadResponse & { url: string, uploadedAt: string }): string => {
         if ('fileId' in file) {
             return file.fileId;

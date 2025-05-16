@@ -34,7 +34,6 @@ export interface DesignerComponentProps extends isLocalAware {
 
 export interface FormComponentProps extends isLocalAware {
     elementInstance: courseElement;
-    submitValue?: SubmitFunction;
 }
 
 

@@ -301,6 +301,11 @@ export const DictionarySchema = z.object({
       linkText: z.string(),
       includeInMaterialsText: z.string(),
       descriptionText: z.string(),
+      titleText: z.string(),
+      urlText: z.string(),
+      iconLinkText: z.string(),
+      saveText: z.string(),
+      discardText: z.string(),
     })
   }),
   pages: z.object({

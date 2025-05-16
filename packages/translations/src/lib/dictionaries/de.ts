@@ -311,6 +311,11 @@ export const DE: TDictionary = {
       linkText:"Link",
       includeInMaterialsText:"Links in die Registerkarte „Kursmaterial“ einschließen",
       descriptionText:"Beschreibung",
+      titleText:"Titel",
+      urlText:"url",
+      iconLinkText:"Symbol-Link",
+      saveText:"Speichern",
+      discardText:"Verwerfen",
 
     }
 },

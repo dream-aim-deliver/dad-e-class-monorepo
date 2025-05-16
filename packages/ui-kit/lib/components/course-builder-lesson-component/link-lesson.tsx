@@ -1,91 +1,121 @@
-import { useState, useEffect } from "react";
 import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
 import DesignerLayout from "./designer-layout";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { IconCloudDownload } from "../icons/icon-cloud-download";
 import { LinkEdit, LinkPreview } from "../component-link";
 import { IconPlus } from "../icons/icon-plus";
-import { LinkLessonEdit, LinkLessonPreview } from "./types";
+import { LinkLessonPreview } from "./types";
 import { CheckBox } from "../checkbox";
 import { IconLink } from "../icons/icon-link";
 
+/**
+ * Template configuration for the Link Lesson course element
+ * Defines the type, design elements, and component mappings for the links feature
+ * This element allows course creators to add external links and resources to their courses
+ */
 const linkElement: CourseElementTemplate = {
     type: CourseElementType.Links,
     designerBtnElement: {
         icon: IconCloudDownload,
         label: "Links"
     },
-    designerComponent: DesignerComponent,
+    designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
     formComponent: FormComponent
 };
-type LinkType = {
+
+/** 
+ * Represents a link item in the course content
+ * @property title - The display title of the link
+ * @property url - The URL the link points to
+ * @property file - Optional custom icon file for the link
+ * @property isEdit - Whether the link is currently being edited
+ */
+export type LinkType = {
     title: string;
     url: string;
     file?: File | null;
     isEdit?: boolean;
 };
 
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+/**
+ * Extended props interface for the Link Designer component
+ * Adds link management capabilities to the base designer props
+ */
+interface DesignerComponentExtendedProps extends DesignerComponentProps {
+    /** Array of link items to display and manage */
+    links: LinkType[];
+    /** Whether to include these links in course materials */
+    includeInMaterials: boolean;
+    /** Callback for when links or materials setting changes */
+    onChange: (links: LinkType[], includeInMaterials: boolean) => void;
+}
+
+/**
+ * Designer Component for Link Lesson
+ * Provides an interface for managing a collection of links in the course builder
+ * Allows adding, editing, and removing links, plus configuring material settings
+ * 
+ * @param param0 - Component props
+ * @param param0.elementInstance - The current instance of the link element
+ * @param param0.locale - The current locale for internationalization
+ * @param param0.onUpClick - Callback for moving the element up
+ * @param param0.onDownClick - Callback for moving the element down
+ * @param param0.onDeleteClick - Callback for deleting the element
+ * @param param0.links - Array of current links
+ * @param param0.includeInMaterials - Whether links are included in materials
+ * @param param0.onChange - Callback for link or settings changes
+ */
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, links, includeInMaterials, onChange }: DesignerComponentExtendedProps) {
     if (elementInstance.type !== CourseElementType.Links) return null;
 
     const dictionary = getDictionary(locale);
-    const [links, setLinks] = useState<LinkType[]>([]);
-    const [checkBox, setCheckBox] = useState<boolean>((elementInstance as LinkLessonEdit).includeInMaterials);
-
-    useEffect(() => {
-        const existingLinks = (elementInstance as LinkLessonEdit).links || [];
-        if (existingLinks.length > 0) {
-            setLinks(existingLinks.map(link => ({
-                title: link.title,
-                url: link.url,
-                file: null,
-                isEdit: false,
-            })));
-        } else {
-            setLinks([{
-                title: "",
-                url: "",
-                file: null,
-                isEdit: true,
-            }]);
-        }
-    }, [elementInstance]);
 
     const handleAddLink = () => {
-        setLinks((prevLinks) => [
-            ...prevLinks,
+        onChange([
+            ...links,
             {
                 title: "",
                 url: "",
                 file: null,
                 isEdit: true,
-            },
-        ]);
+            }
+        ], includeInMaterials);
     };
 
     const handleLinkEdit = (title: string, url: string, file: File | null, index: number) => {
-        setLinks((prevLinks) => {
-            const updatedLinks = [...prevLinks];
-            updatedLinks[index] = {
-                ...updatedLinks[index],
-                title,
-                url,
-                file,
-                isEdit: true,
-            };
-            return updatedLinks;
-        });
+        const updatedLinks = [...links];
+        updatedLinks[index] = {
+            ...updatedLinks[index],
+            title,
+            url,
+            file,
+            isEdit: true,
+        };
+        onChange(updatedLinks, includeInMaterials);
     }
 
     const handleSave = (index: number) => {
-        setLinks((prevLinks) => {
-            const updatedLinks = [...prevLinks];
-            updatedLinks[index] = {
-                ...updatedLinks[index],
-                isEdit: false,
-            };
-            return updatedLinks;
-        });
+        const updatedLinks = [...links];
+        updatedLinks[index] = {
+            ...updatedLinks[index],
+            isEdit: false,
+        };
+        onChange(updatedLinks, includeInMaterials);
+    }
+
+    const handleDelete = (index: number) => {
+        const updatedLinks = links.filter((_, i) => i !== index);
+        onChange(updatedLinks, includeInMaterials);
+    }
+
+    const handleEdit = (index: number) => {
+        const updatedLinks = [...links];
+        updatedLinks[index] = { ...updatedLinks[index], isEdit: true };
+        onChange(updatedLinks, includeInMaterials);
+    }
+
+    const handleCheckboxChange = () => {
+        onChange(links, !includeInMaterials);
     }
 
     return (
@@ -105,8 +135,8 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                     withText
                     value="includeInMaterials"
                     label={dictionary.components.courseBuilder.includeInMaterialsText}
-                    checked={checkBox}
-                    onChange={() => setCheckBox(!checkBox)}
+                    checked={includeInMaterials}
+                    onChange={handleCheckboxChange}
                     labelClass="text-text-primary"
                 />
             </div>
@@ -115,27 +145,24 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                     link.isEdit ? (
                         <div className="flex flex-col" key={index}>
                             <LinkEdit
+                                locale={locale}
                                 initialTitle={link.title}
                                 initialUrl={link.url}
                                 initialFile={link.file}
                                 onSave={() => handleSave(index)}
-                                onDiscard={() => setLinks((prevLinks) => prevLinks.filter((_, i) => i !== index))}
+                                onDiscard={() => handleDelete(index)}
                                 onChange={(title, url, file) => handleLinkEdit(title, url, file, index)}
                             />
                         </div>
                     ) : (
                         <div className="flex flex-col" key={index}>
                             <LinkPreview
-                            preview={true}
+                                preview={true}
                                 title={link.title}
                                 url={link.url}
                                 customIcon={link.file}
-                                onEdit={() => setLinks((prevLinks) => {
-                                    const updatedLinks = [...prevLinks];
-                                    updatedLinks[index] = { ...updatedLinks[index], isEdit: true };
-                                    return updatedLinks;
-                                })}
-                                onDelete={() => setLinks((prevLinks) => prevLinks.filter((_, i) => i !== index))}
+                                onEdit={() => handleEdit(index)}
+                                onDelete={() => handleDelete(index)}
                             />
                         </div>
                     )
@@ -156,6 +183,16 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
     );
 }
 
+/**
+ * Form Component for Link Lesson
+ * Renders the preview of all links in the course content
+ * Displays links with their titles and custom icons if available
+ * 
+ * @param param0 - Component props
+ * @param param0.elementInstance - The current instance of the link element
+ * @param param0.locale - The current locale for internationalization
+ * @returns JSX element displaying the links or null if invalid type
+ */
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.Links) return null;
     const links = (elementInstance as LinkLessonPreview).links || [];
@@ -165,7 +202,6 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
             {links.map((link, index) => (
                 <LinkPreview
                     key={index}
-
                     title={link.title}
                     url={link.url}
                     customIcon={link.file || undefined}
@@ -174,7 +210,5 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
         </div>
     );
 }
-
-
 
 export default linkElement;

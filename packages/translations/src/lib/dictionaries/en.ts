@@ -307,6 +307,11 @@ export const EN: TDictionary = {
       linkText:"Link",
       includeInMaterialsText:"Include links in course material tab",
       descriptionText:"Description",
+      titleText:"Title",
+      urlText:"Url",
+      iconLinkText:"Icon link",
+      saveText:"Save",
+      discardText:"Discard"
     }
   },
   pages: {

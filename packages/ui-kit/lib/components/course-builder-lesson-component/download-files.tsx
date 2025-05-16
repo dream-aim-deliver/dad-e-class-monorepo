@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
+import { CourseElementTemplate, CourseElementType, FormComponentProps, DesignerComponentProps as BaseDesignerComponentProps } from "../course-builder/types";
 import DesignerLayout from "./designer-layout";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { IconCloudDownload } from "../icons/icon-cloud-download";
@@ -8,8 +7,17 @@ import { IconFile } from "../icons/icon-file";
 import { IconVideo } from "../icons/icon-video";
 import { IconEdit } from "../icons/icon-edit";
 import { IconTrashAlt } from "../icons/icon-trash-alt";
-import {IconButton} from "../icon-button";
+import { IconButton } from "../icon-button";
 
+/** 
+ * Template configuration for the Download Files course element
+ * Defines the type, design elements, and component mappings
+ */
+/**
+ * Template configuration for the Download Files course element
+ * Defines the type, design elements, and component mappings for the downloadable files feature
+ * This element allows course creators to add downloadable resources to their courses
+ */
 const downloadFilesElement: CourseElementTemplate = {
     type: CourseElementType.DownloadFiles,
     designerBtnElement: {
@@ -20,68 +28,40 @@ const downloadFilesElement: CourseElementTemplate = {
     formComponent: FormComponent
 };
 
-function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+/** Props interface for the Download Files Designer component */
+/** 
+ * Props interface for the Download Files Designer component
+ * Extends the base designer component props with file handling capabilities
+ */
+interface DownloadFilesDesignerProps extends BaseDesignerComponentProps {
+    /** Callback function triggered when files are changed */
+    onChange: (files: UploadedFileType[]) => Promise<UploadResponse>;
+    /** Callback function to handle file deletion */
+    onFileDelete: (fileId: number) => void;
+    /** Callback function to handle file download */
+    onFileDownload: (fileId: number) => void;
+    /** Currently selected files or null if no files are selected */
+    files: UploadedFileType[] | null;
+}
+
+/**
+ * Designer Component for Download Files
+ * Provides an interface for uploading and managing downloadable files in the course builder
+ * 
+ * @param elementInstance - The current instance of the download files element
+ * @param locale - The current locale for internationalization
+ * @param onUpClick - Callback for moving the element up in order
+ * @param onDownClick - Callback for moving the element down in order
+ * @param onDeleteClick - Callback for deleting the element
+ * @param onChange - Callback for handling file changes
+ * @param onFileDelete - Callback for handling file deletion
+ * @param onFileDownload - Callback for handling file downloads
+ * @param files - Array of currently uploaded files
+ */
+
+function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onFileDelete, onFileDownload, files }: DownloadFilesDesignerProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
     const dictionary = getDictionary(locale);
-    const [files, setFiles] = useState<UploadedFileType[]>([]);
-
-    const handleFilesChange = (newFiles: UploadedFileType[]): Promise<UploadResponse> => {
-        const uploadingFiles = newFiles.filter((f) => f.isUploading);
-        setFiles(newFiles);
-
-        return new Promise((resolve) => {
-            if (uploadingFiles.length > 0) {
-                setTimeout(() => {
-                    const processedFiles = newFiles.map((file) => {
-                        if (file.isUploading) {
-                            const fileType = file.file.type.split('/')[0];
-                            let responseData: UploadResponse;
-
-                            switch (fileType) {
-                                case 'image':
-                                    responseData = {
-                                        imageId: `image-${Math.random().toString(36).substr(2, 9)}`,
-                                        imageThumbnailUrl: URL.createObjectURL(file.file),
-                                        fileSize: file.file.size,
-                                    };
-                                    break;
-                                case 'video':
-                                    responseData = {
-                                        videoId: `video-${Math.random().toString(36).substr(2, 9)}`,
-                                        thumbnailUrl: 'https://via.placeholder.com/150',
-                                        fileSize: file.file.size,
-                                    };
-                                    break;
-                                default:
-                                    responseData = {
-                                        fileId: `file-${Math.random().toString(36).substr(2, 9)}`,
-                                        fileName: file.file.name,
-                                        fileSize: file.file.size,
-                                    };
-                            }
-
-                            return {
-                                ...file,
-                                isUploading: false,
-                                responseData,
-                            };
-                        }
-                        return file;
-                    });
-
-                    setFiles(processedFiles);
-                    resolve(processedFiles[0].responseData);
-                }, 2000);
-            } else {
-                resolve({
-                    fileId: 'no-upload',
-                    fileName: 'No file uploaded',
-                    fileSize: 0
-                });
-            }
-        });
-    };
-
 
     return (
         <DesignerLayout
@@ -99,7 +79,9 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
                 variant="file"
                 files={files}
                 maxFile={5}
-                onFilesChange={handleFilesChange}
+                onFilesChange={onChange}
+                onDelete={onFileDelete}
+                onDownload={onFileDownload}
                 locale={locale}
             />
         </DesignerLayout>
@@ -108,9 +90,14 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
 
 /**
  * Form Component for Download Files
- * Renders the rich text content in the form view
+ * Renders the preview of uploaded files with their metadata and action buttons
+ * Supports different file types including images and videos with appropriate icons
+ * 
+ * @param elementInstance - The current instance of the download files element containing file data
+ * @returns JSX element displaying the files or null if invalid type
  */
-export function FormComponent({ elementInstance, locale }: FormComponentProps) {
+
+export function FormComponent({ elementInstance }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
     if ('fileUrls' in elementInstance) {
         return (
@@ -139,7 +126,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                                         />
                                     ) : isVideo ? (
                                         <div className="w-12 h-12 flex items-center justify-center rounded-medium bg-base-neutral-800 border border-base-neutral-700 relative">
-                                            
+
                                             <IconVideo classNames="w-6 h-6 text-text-primary" />
                                         </div>
                                     ) : (

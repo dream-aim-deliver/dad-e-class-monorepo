@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {  CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
+import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
 import DesignerLayout from "./designer-layout";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { UploadedFileType, Uploader, UploadResponse } from "../drag-and-drop/uploader";
@@ -9,6 +9,11 @@ import { IconCloudUpload } from "../icons/icon-cloud-upload";
 import { TextAreaInput } from "../text-areaInput";
 
 
+/**
+ * Template configuration for the Upload Files course element
+ * Defines the structure and components for file upload functionality in courses
+ * Allows students to upload files and add comments for review
+ */
 const uploadFilesElement: CourseElementTemplate = {
     type: CourseElementType.uploadFile,  // Changed from DownloadFiles to uploadFile
     designerBtnElement: {
@@ -19,11 +24,42 @@ const uploadFilesElement: CourseElementTemplate = {
     formComponent: FormComponent
 };
 
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+/**
+ * Props interface for the Upload File Coach component
+ * Extends base designer props to handle file description changes
+ */
+interface UploadFileCoach extends DesignerComponentProps {
+    /** Callback function triggered when the description changes, returns a Promise with upload response */
+    onChange: (description: string) => Promise<UploadResponse>;
+}
+/**
+ * Designer Component for Upload Files
+ * Provides an interface for configuring file upload requirements and description
+ * 
+ * @param param0 - Component props
+ * @param param0.elementInstance - Current instance of the upload file element
+ * @param param0.locale - Current locale for internationalization
+ * @param param0.onUpClick - Callback for moving element up
+ * @param param0.onDownClick - Callback for moving element down
+ * @param param0.onDeleteClick - Callback for deleting element
+ * @param param0.onChange - Callback for handling description changes
+ */
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange }: UploadFileCoach) {
     if (elementInstance.type !== CourseElementType.uploadFile) return null;
     const dictionary = getDictionary(locale);
-    const [value, setValue] = useState<string>("");
-
+    const [description, setDescription] = useState<string>("");
+    /**
+     * Handles changes to the description input field
+     * Updates local state and triggers the onChange callback
+     * 
+     * @param newValue - The new description text
+     */
+    const handleValue = (newValue: string) => {
+        setDescription(newValue);
+        if (onChange) {
+            onChange(newValue);
+        }
+    }
     return (
         <DesignerLayout
             type={elementInstance.type}
@@ -41,8 +77,9 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 </label>
                 <InputField
                     placeholder="e.g. Upload your resume"
-                    value={value}
-                    setValue={setValue}
+                    value={description}
+                    setValue={handleValue}
+
                 />
             </div>
 
@@ -51,93 +88,61 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
 }
 
 /**
- * Form Component for Download Files
- * Renders the rich text content in the form view
+ * Form Component for Upload Files
+ * Renders the upload form and handles file uploads and student comments
  */
-export function FormComponent({ elementInstance, locale }: FormComponentProps) {
+interface UploadFileFormProps extends FormComponentProps {
+    /** Callback function when either files or comment changes */
+    onFileDelete?: (fileId: number) => void;
+    onFileDownload?: (fileId: number) => void;
+    files?: UploadedFileType[] | null;
+    onFilesChange?: (newFiles: UploadedFileType[]) => Promise<UploadResponse>;
+    onStudentCommentChange?: (newValue: string) => void;
+}
+
+/**
+ * Form Component for handling file uploads and student comments
+ * Provides interface for students to upload files and add comments
+ * 
+ * @param param0 - Component props
+ * @param param0.elementInstance - Current upload file element instance
+ * @param param0.locale - Current locale for internationalization
+ * @param param0.onStudentCommentChange - Callback for comment changes
+ * @param param0.onFileDelete - Callback for file deletion
+ * @param param0.onFileDownload - Callback for file downloads
+ * @param param0.files - Currently uploaded files
+ * @param param0.onFilesChange - Callback for file changes
+ */
+export function FormComponent({
+    elementInstance,
+    locale,
+    onStudentCommentChange,
+    onFileDelete,
+    onFileDownload,
+    files,
+    onFilesChange
+}: UploadFileFormProps) {
     if (elementInstance.type !== CourseElementType.uploadFile) return null;
-    const [files, setFiles] = useState<UploadedFileType[]>([]);
-    const [value, seValue] = useState<string>((elementInstance as UploadFileType).studentComment);
-    console.log(value, files)
-    const handleFilesChange = (newFiles: UploadedFileType[]): Promise<UploadResponse> => {
-        const uploadingFiles = newFiles.filter((f) => f.isUploading);
-        setFiles(newFiles);
 
-        return new Promise((resolve, reject) => {
-            if (uploadingFiles.length > 0) {
-                setTimeout(() => {
-                    try {
-                        const processedFiles = newFiles.map((file) => {
-                            if (file.isUploading) {
-                                const fileType = file.file.type.split('/')[0];
-                                let responseData: UploadResponse;
+    const [comment, setComment] = useState<string>(
+        ("studentComment" in elementInstance) ? elementInstance.studentComment : ""
+    );
 
-                                // Validate file size (max 10MB)
-                                if (file.file.size > 10 * 1024 * 1024) {
-                                    throw new Error(`File ${file.file.name} exceeds maximum size of 10MB`);
-                                }
-
-                                switch (fileType) {
-                                    case 'image':
-                                        responseData = {
-                                            imageId: `image-${Math.random().toString(36).substr(2, 9)}`,
-                                            imageThumbnailUrl: URL.createObjectURL(file.file),
-                                            fileSize: file.file.size,
-                                        };
-                                        break;
-                                    case 'video':
-                                        responseData = {
-                                            videoId: `video-${Math.random().toString(36).substr(2, 9)}`,
-                                            thumbnailUrl: 'https://via.placeholder.com/150',
-                                            fileSize: file.file.size,
-                                        };
-                                        break;
-                                    case 'application':
-                                    case 'text':
-                                        responseData = {
-                                            fileId: `file-${Math.random().toString(36).substr(2, 9)}`,
-                                            fileName: file.file.name,
-                                            fileSize: file.file.size,
-                                        };
-                                        break;
-                                    default:
-                                        throw new Error(`Unsupported file type: ${fileType}`);
-                                }
-
-                                return {
-                                    ...file,
-                                    isUploading: false,
-                                    responseData,
-                                };
-                            }
-                            return file;
-                        });
-
-                        setFiles(processedFiles);
-                        resolve(processedFiles[0].responseData);
-                    } catch (error) {
-                        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-                        setFiles(newFiles.map(file => ({
-                            ...file,
-                            isUploading: false,
-                            error: errorMessage
-                        })));
-                        reject(error);
-                    }
-                }, 2000);
-            } else {
-                resolve({
-                    fileId: 'no-upload',
-                    fileName: 'No file uploaded',
-                    fileSize: 0
-                });
-            }
-        });
+    /**
+     * Handles changes to student comments
+     * Updates local state and triggers the onChange callback
+     * 
+     * @param newValue - The new comment text
+     */
+    const handleStudentComment = (newValue: string) => {
+        setComment(newValue);
+        if (onStudentCommentChange) {
+            onStudentCommentChange(newValue);
+        }
     };
-
     return (
         <div className="p-4 border rounded-md bg-base-neutral-800 flex flex-col gap-4">
-            <div className="flex items-center gap-2 flex-1 text-text-primary py-2  border-b border-divider">
+            <div className="flex items-center gap-2 flex-1 text-text-primary py-2 border-b border-divider">
                 <span className="min-w-0"><IconCloudUpload /></span>
                 <p className="text-md font-important leading-[24px] word-break">Upload</p>
             </div>
@@ -146,21 +151,22 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
             <Uploader
                 type="multiple"
                 variant="file"
-                files={files}
+                files={files || []}
                 maxFile={5}
-                onFilesChange={handleFilesChange}
+                onFilesChange={onFilesChange}
+                onDelete={onFileDelete}
+                onDownload={onFileDownload}
                 locale={locale}
             />
             <div className="w-full">
                 <TextAreaInput
-
-                    setValue={seValue}
-                    value={value}
-                    placeholder="write additional comments here"
+                    setValue={handleStudentComment}
+                    value={comment}
+                    placeholder="Write additional comments here"
                 />
             </div>
         </div>
-    )
+    );
 }
 
 export default uploadFilesElement;

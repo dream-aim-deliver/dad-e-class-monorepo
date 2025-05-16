@@ -80,8 +80,8 @@ export type UploadedFileType = {
 
 interface CommonUploaderProps extends isLocalAware {
   maxSize?: number;
-  onDelete?: (fileId: number) => void;
-  onDownload?: (fileId: number) => void;
+  onDelete: (fileId: number) => void;
+  onDownload: (fileId: number) => void;
   className?: string;
   acceptedFileTypes?: string[];
   variant: FileVariant;

@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { DesignerComponent, FormComponent } from '../lib/components/course-builder-lesson-component/link-lesson';
+import { DesignerComponent, FormComponent, LinkType } from '../lib/components/course-builder-lesson-component/link-lesson';
 import { CourseElementType } from '../lib/components/course-builder/types';
 
 const meta: Meta<typeof DesignerComponent> = {
@@ -10,6 +11,9 @@ const meta: Meta<typeof DesignerComponent> = {
         locale: {
             control: 'select',
             options: ['en', 'de'],
+        },
+        includeInMaterials: {
+            control: 'boolean',
         },
     },
 };
@@ -45,7 +49,36 @@ const mockFormElement = {
     ],
 };
 
+type DesignerWrapperProps = Omit<Parameters<typeof DesignerComponent>[0], 'links' | 'includeInMaterials' | 'onChange'>;
+
+const DesignerWrapper = (args: DesignerWrapperProps) => {
+    const [links, setLinks] = useState<LinkType[]>([{
+                title: "",
+                url: "",
+                file: null,
+                isEdit: true,
+            }]);
+    const [includeInMaterials, setIncludeInMaterials] = useState(false);
+
+    const handleChange = (newLinks: LinkType[], newIncludeInMaterials: boolean) => {
+        setLinks(newLinks);
+        setIncludeInMaterials(newIncludeInMaterials);
+        console.log('Links changed:', newLinks);
+        console.log('Include in materials changed:', newIncludeInMaterials);
+    };
+
+    return (
+        <DesignerComponent
+            {...args}
+            links={links}
+            includeInMaterials={includeInMaterials}
+            onChange={handleChange}
+        />
+    );
+};
+
 export const EmptyDesigner: Story = {
+    render: (args) => <DesignerWrapper {...args} />,
     args: {
         elementInstance: mockDesignerElement,
         locale: 'en',
@@ -56,6 +89,7 @@ export const EmptyDesigner: Story = {
 };
 
 export const GermanDesigner: Story = {
+    render: (args) => <DesignerWrapper {...args} />,
     args: {
         ...EmptyDesigner.args,
         locale: 'de',
