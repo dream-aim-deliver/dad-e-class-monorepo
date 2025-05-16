@@ -10,6 +10,8 @@ import { Button } from '../button';
 import { IconError } from '../icons/icon-error';
 import { UploadedFileType, FileUploadResponse, ImageUploadResponse } from './uploader';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { Badge } from '../badge';
+
 
 interface FilePreviewProps extends isLocalAware {
     file: UploadedFileType;
@@ -76,7 +78,19 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file, index, onDelete,
                     </span>
                 )}
                 <span className="text-xs text-text-secondary">
-                    {(file.file.size / (1024 * 1024)).toFixed(2)} MB
+                    {file.isUploading ?
+                        <div className="inline-flex w-auto">
+                            <Badge
+                                size="small"
+                                className="w-auto"
+                                text={dictionary.components.uploadingSection.uploadingText}
+                            />
+                        </div>
+                        :
+                        <span>
+                            {((file.responseData?.fileSize || file.file.size) / (1024 * 1024)).toFixed(2)} MB
+                        </span>
+                    }
                 </span>
             </div>
             <div>

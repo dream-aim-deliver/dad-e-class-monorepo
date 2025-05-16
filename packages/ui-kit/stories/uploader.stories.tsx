@@ -16,6 +16,7 @@ const mockFileResponse = (file: File): UploadResponse => {
   return {
     fileId: `file-${Math.random().toString(36).substr(2, 9)}`,
     fileName: file.name,
+    fileSize: file.size,
   };
 };
 
@@ -23,6 +24,7 @@ const mockImageResponse = (file: File): UploadResponse => {
   return {
     imageId: `image-${Math.random().toString(36).substr(2, 9)}`,
     imageThumbnailUrl: URL.createObjectURL(file),
+    fileSize: file.size,
   };
 };
 
@@ -30,6 +32,7 @@ const mockVideoResponse = (file: File): UploadResponse => {
   return {
     videoId: `video-${Math.random().toString(36).substr(2, 9)}`,
     thumbnailUrl: 'https://via.placeholder.com/150',
+    fileSize: file.size,
   };
 };
 
@@ -422,6 +425,7 @@ const UploaderWithPreloadedFilesRender = (args: any) => {
       responseData: {
         fileId: 'existing-file-1',
         fileName: 'document.pdf',
+        fileSize: 1024 * 1024 * 1, // 1MB
       },
     },
     {
@@ -430,6 +434,7 @@ const UploaderWithPreloadedFilesRender = (args: any) => {
       responseData: {
         fileId: 'existing-file-2',
         fileName: 'report.docx',
+        fileSize: 1024 * 1024 * 2, // 2MB
       },
     },
     {

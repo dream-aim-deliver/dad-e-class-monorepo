@@ -294,6 +294,19 @@ export const DictionarySchema = z.object({
       showNotesText: z.string(),
       hideNotesText: z.string(),
     }),
+    courseBuilder: z.object({
+      addLinkText: z.string(),
+      downloadFilesText: z.string(),
+      uploadFilesText: z.string(),
+      linkText: z.string(),
+      includeInMaterialsText: z.string(),
+      descriptionText: z.string(),
+      titleText: z.string(),
+      urlText: z.string(),
+      iconLinkText: z.string(),
+      saveText: z.string(),
+      discardText: z.string(),
+    })
   }),
   pages: z.object({
       sso: z.object({

@@ -300,6 +300,19 @@ export const EN: TDictionary = {
       showNotesText: 'Show Notes (Alt/Ctrl + N)',
       hideNotesText: 'Hide Notes (Alt/Ctrl + N)',
     },
+    courseBuilder: {
+      addLinkText:"Add Link",
+      downloadFilesText:"Download",
+      uploadFilesText:"Upload",
+      linkText:"Link",
+      includeInMaterialsText:"Include links in course material tab",
+      descriptionText:"Description",
+      titleText:"Title",
+      urlText:"Url",
+      iconLinkText:"Icon link",
+      saveText:"Save",
+      discardText:"Discard"
+    }
   },
   pages: {
     home: Home_EN,

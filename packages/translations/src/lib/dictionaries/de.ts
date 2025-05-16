@@ -304,6 +304,20 @@ export const DE: TDictionary = {
       showNotesText: 'Notizen anzeigen (Alt/Ctrl + N)',
       hideNotesText: 'Notizen verbergen (Alt/Ctrl + N)',
     },
+    courseBuilder: {
+      addLinkText:"Link hinzufügen",
+      downloadFilesText:"Dateien herunterladen",
+      uploadFilesText:"Dateien hochladen",
+      linkText:"Link",
+      includeInMaterialsText:"Links in die Registerkarte „Kursmaterial“ einschließen",
+      descriptionText:"Beschreibung",
+      titleText:"Titel",
+      urlText:"url",
+      iconLinkText:"Symbol-Link",
+      saveText:"Speichern",
+      discardText:"Verwerfen",
+
+    }
 },
   pages: {
     home: Home_DE,

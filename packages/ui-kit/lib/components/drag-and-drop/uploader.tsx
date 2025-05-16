@@ -15,16 +15,19 @@ export type FileVariant = 'file' | 'image' | 'video';
 export type FileUploadResponse = {
   fileId: string;
   fileName: string;
+  fileSize: number;
 };
 
 export type ImageUploadResponse = {
   imageId: string;
   imageThumbnailUrl: string;
+  fileSize: number;
 };
 
 export type VideoUploadResponse = {
   videoId: string;
   thumbnailUrl?: string;
+  fileSize: number;
 };
 
 /**
@@ -260,6 +263,44 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
     await onFilesChange(updatedFiles);
   };
 
+  // Wrapper function to adapt onDelete callback
+  const handleDelete = (index: number) => {
+    const file = files[index];
+    if (onDelete && file.responseData) {
+      // For FileUploadResponse
+      if ('fileId' in file.responseData) {
+        onDelete(parseInt(file.responseData.fileId));
+      }
+      // For ImageUploadResponse
+      else if ('imageId' in file.responseData) {
+        onDelete(parseInt(file.responseData.imageId));
+      }
+      // For VideoUploadResponse
+      else if ('videoId' in file.responseData) {
+        onDelete(parseInt(file.responseData.videoId));
+      }
+    }
+  };
+
+  // Wrapper function to adapt onDownload callback
+  const handleDownload = (index: number) => {
+    const file = files[index];
+    if (onDownload && file.responseData) {
+      // For FileUploadResponse
+      if ('fileId' in file.responseData) {
+        onDownload(parseInt(file.responseData.fileId));
+      }
+      // For ImageUploadResponse
+      else if ('imageId' in file.responseData) {
+        onDownload(parseInt(file.responseData.imageId));
+      }
+      // For VideoUploadResponse
+      else if ('videoId' in file.responseData) {
+        onDownload(parseInt(file.responseData.videoId));
+      }
+    }
+  };
+
   return (
     <div className={cn('flex flex-col gap-4 w-full', className)}>
       {files?.length > 0 && (
@@ -269,8 +310,8 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
               key={index}
               file={file}
               index={index}
-              onDelete={onDelete}
-              onDownload={onDownload}
+              onDelete={handleDelete}
+              onDownload={handleDownload}
               locale={locale}
               onCancelUpload={handleCancelUpload}
             />
