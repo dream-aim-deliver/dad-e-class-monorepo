@@ -70,34 +70,66 @@ const sampleRecurringAvailability: TRecurringAvailability = {
   expirationDate: '2025/12/31',
 };
 
+/**
+ * Displays availability data in a formatted way for both console and alert
+ */
+const displayAvailabilityData = (operation: string, availability: TAvailability) => {
+  // Format availability data for display
+  const formattedData = JSON.stringify(availability, null, 2);
+  
+  // Log to console for developers
+  console.log(`${operation} Availability Data:`, availability);
+  
+  // Show prettier alert to users
+  const displayText = `${operation} Availability Data:\n\n${formattedData}`;
+  alert(displayText);
+};
+
 const AvailabilityManagerWithState: React.FC<React.ComponentProps<typeof AvailabilityManager>> = (props) => {
   const [isLoading, setIsLoading] = useState(props.isLoading || false);
   const [isError, setIsError] = useState(props.isError || false);
 
   const handleSave = async (availability: TAvailability) => {
     setIsLoading(true);
+    console.log('Sending to backend:', availability);
+    
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    
     if (Math.random() > 0.7) {
       setIsError(true);
       console.error('Failed to save:', availability);
+      setIsLoading(false);
+      alert('Error: Failed to save availability');
       return;
     }
+    
     setIsLoading(false);
     props.onSave?.(availability);
-    alert('Availability saved!');
+    
+    // Display the saved data
+    displayAvailabilityData('Saved', availability);
   };
 
   const handleDelete = async (id: number) => {
     setIsLoading(true);
+    console.log('Deleting availability with ID:', id);
+    
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    
     if (Math.random() > 0.7) {
       setIsError(true);
-      console.error('Failed to delete:', id);
+      console.error('Failed to delete availability with ID:', id);
+      setIsLoading(false);
+      alert('Error: Failed to delete availability');
       return;
     }
+    
     setIsLoading(false);
     props.onDelete?.(id);
-    alert('Availability deleted!');
+    
+    // For delete operations, show what was deleted
+    const availabilityData = props.availability || { id, type: 'unknown' };
+    displayAvailabilityData('Deleted', availabilityData as TAvailability);
   };
 
   return (
@@ -115,7 +147,7 @@ export const AddSingleAvailability: Story = {
   render: (args) => <AvailabilityManagerWithState {...args} />,
   args: {
     locale: 'en',
-    onCancel: () => alert('Cancelled'),
+    onCancel: () => alert('Action cancelled'),
   },
   parameters: {
     docs: {
@@ -130,8 +162,7 @@ export const AddRecurringAvailability: Story = {
   render: (args) => <AvailabilityManagerWithState {...args} />,
   args: {
     locale: 'en',
-    onCancel: () => alert('Cancelled'),
-    onSave: (availability) => alert(`Saved availability: ${JSON.stringify(availability)}`),
+    onCancel: () => alert('Action cancelled'),
   },
   parameters: {
     docs: {
@@ -147,7 +178,7 @@ export const EditSingleAvailability: Story = {
   args: {
     locale: 'en',
     availability: sampleSingleAvailability,
-    onCancel: () => alert('Cancelled'),
+    onCancel: () => alert('Action cancelled'),
   },
   parameters: {
     docs: {
@@ -163,7 +194,7 @@ export const EditRecurringAvailability: Story = {
   args: {
     locale: 'en',
     availability: sampleRecurringAvailability,
-    onCancel: () => alert('Cancelled'),
+    onCancel: () => alert('Action cancelled'),
   },
   parameters: {
     docs: {
@@ -179,7 +210,7 @@ export const LoadingState: Story = {
   args: {
     locale: 'en',
     isLoading: true,
-    onCancel: () => alert('Cancelled'),
+    onCancel: () => alert('Action cancelled'),
   },
   parameters: {
     docs: {
@@ -195,7 +226,7 @@ export const ErrorState: Story = {
   args: {
     locale: 'en',
     isError: true,
-    onCancel: () => alert('Cancelled'),
+    onCancel: () => alert('Action cancelled'),
   },
   parameters: {
     docs: {
@@ -206,12 +237,52 @@ export const ErrorState: Story = {
   },
 };
 
+/**
+ * Helper to display deletion data in DeleteAvailabilityConfirmation
+ */
+const DeleteConfirmationWithState: React.FC<{
+  availability: TAvailability;
+  locale?: "en" | "de";
+  isLoading?: boolean;
+  isError?: boolean;
+}> = ({ availability, locale = 'en', isLoading = false, isError = false }) => {
+  const [loading, setLoading] = useState(isLoading);
+  const [error, setError] = useState(isError);
+
+  const handleConfirm = async (id: number) => {
+    setLoading(true);
+    console.log('Sending delete request for ID:', id);
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    if (Math.random() > 0.7) {
+      setError(true);
+      console.error('Failed to delete:', id);
+      setLoading(false);
+      alert('Error: Failed to delete availability');
+      return;
+    }
+    
+    setLoading(false);
+    displayAvailabilityData('Deleted', availability);
+  };
+
+  return (
+    <DeleteAvailabilityConfirmation
+      availability={availability}
+      onConfirm={handleConfirm}
+      onCancel={() => alert('Delete cancelled')}
+      locale={locale}
+      isLoading={loading}
+      isError={error}
+    />
+  );
+};
+
 export const DeleteConfirmationSingle: Story = {
   render: (args) => (
-    <DeleteAvailabilityConfirmation
+    <DeleteConfirmationWithState
       availability={sampleSingleAvailability}
-      onConfirm={(id) => alert(`Deleted availability ${id}`)}
-      onCancel={() => alert('Cancelled')}
       {...args}
     />
   ),
@@ -231,10 +302,8 @@ export const DeleteConfirmationSingle: Story = {
 
 export const DeleteConfirmationRecurring: Story = {
   render: (args) => (
-    <DeleteAvailabilityConfirmation
+    <DeleteConfirmationWithState
       availability={sampleRecurringAvailability}
-      onConfirm={(id) => alert(`Deleted availability ${id}`)}
-      onCancel={() => alert('Cancelled')}
       {...args}
     />
   ),
@@ -256,8 +325,11 @@ export const DeleteConfirmationLoading: Story = {
   render: (args) => (
     <DeleteAvailabilityConfirmation
       availability={sampleSingleAvailability}
-      onConfirm={(id) => alert(`Deleted availability ${id}`)}
-      onCancel={() => alert('Cancelled')}
+      onConfirm={(id) => {
+        console.log('Deleting ID:', id);
+        alert(`Deleting availability ${id}`);
+      }}
+      onCancel={() => alert('Delete cancelled')}
       {...args}
     />
   ),
@@ -279,8 +351,11 @@ export const DeleteConfirmationError: Story = {
   render: (args) => (
     <DeleteAvailabilityConfirmation
       availability={sampleSingleAvailability}
-      onConfirm={(id) => alert(`Deleted availability ${id}`)}
-      onCancel={() => alert('Cancelled')}
+      onConfirm={(id) => {
+        console.log('Deleting ID:', id);
+        alert(`Deleting availability ${id}`);
+      }}
+      onCancel={() => alert('Delete cancelled')}
       {...args}
     />
   ),
@@ -302,7 +377,10 @@ export const DeleteSuccessSingle: Story = {
   render: (args) => (
     <DeleteAvailabilitySuccess
       availability={sampleSingleAvailability}
-      onClose={() => alert('Closed')}
+      onClose={() => {
+        console.log('Successfully deleted:', sampleSingleAvailability);
+        alert('Delete success screen closed');
+      }}
       {...args}
     />
   ),
@@ -322,7 +400,10 @@ export const DeleteSuccessRecurring: Story = {
   render: (args) => (
     <DeleteAvailabilitySuccess
       availability={sampleRecurringAvailability}
-      onClose={() => alert('Closed')}
+      onClose={() => {
+        console.log('Successfully deleted:', sampleRecurringAvailability);
+        alert('Delete success screen closed');
+      }}
       {...args}
     />
   ),
