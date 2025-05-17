@@ -34,7 +34,7 @@ export const TextAreaInput: FC<TextAreaInputProps> = ({
   className = '',
 }) => {
   return (
-    <div className="flex flex-col gap-2 items-start">
+    <div className="flex flex-col gap-2 items-start h-full w-full">
       {label && <label className="text-sm text-text-secondary">{label}</label>}
       <textarea
         className={`w-full px-3 py-[10px] bg-input-fill text-text-primary border border-input-stroke rounded-medium focus:outline-none placeholder:text-text-secondary ${className}`}
