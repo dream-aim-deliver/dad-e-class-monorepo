@@ -132,7 +132,7 @@ const Template: StoryObj<typeof CoachAvailabilityCalendar> = {
         Saturday: 6,
       };
 
-      let currentDate = new Date(startDate);
+      const currentDate = new Date(startDate);
       while (currentDate <= endDate) {
         const dayName = currentDate.toLocaleDateString('en-US', { weekday: 'long' });
         if (availability.days.includes(dayName as any)) {
