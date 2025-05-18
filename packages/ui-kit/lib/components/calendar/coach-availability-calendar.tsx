@@ -57,7 +57,7 @@ export interface CoachAvailabilityCalendarProps extends isLocalAware {
 }
 
 // Utility to generate recurring events
-const generateRecurringEvents = (availability: TRecurringAvailability, maxEvents: number = 100): BaseEvent[] => {
+const generateRecurringEvents = (availability: TRecurringAvailability, maxEvents = 100): BaseEvent[] => {
   const events: BaseEvent[] = [];
   const startDate = new Date(availability.startDate);
   const endDate = new Date(availability.expirationDate);
@@ -73,7 +73,7 @@ const generateRecurringEvents = (availability: TRecurringAvailability, maxEvents
     Saturday: 6,
   };
 
-  let currentDate = new Date(startDate);
+  const currentDate = new Date(startDate);
   let eventCount = 0;
 
   while (currentDate <= endDate && eventCount < maxEvents) {
