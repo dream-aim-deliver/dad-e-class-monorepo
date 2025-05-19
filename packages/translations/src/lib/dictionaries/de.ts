@@ -193,6 +193,18 @@ export const DE: TDictionary = {
     navbar: {
       workspace: 'Arbeitsbereich',
       login: 'Anmelden',
+      offers: 'Angebote',
+      coaching: 'Coaching',
+      howItWorks: 'Wie es funktioniert',
+      about: 'Über uns',
+    },
+    footer: {
+      impressum: 'Impressum (DE)',
+      privacyPolicy: 'Datenschutzrichtlinie',
+      termsOfUse: 'Nutzungsbedingungen',
+      rules: 'Regeln',
+      coursesInformation: 'Kursinformationen',
+      companyInfo: '© 2024 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • hallo@justdoad.ai',
     },
     activity: {
       atText: 'bei',
@@ -316,5 +328,5 @@ export const DE: TDictionary = {
         tryAgain: 'Nochmal versuchen',
       },
     },
-  },  
+  },
 };
