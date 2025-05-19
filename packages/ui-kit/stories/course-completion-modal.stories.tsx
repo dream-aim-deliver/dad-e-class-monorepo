@@ -46,10 +46,11 @@ export default meta;
 
 type Story = StoryObj<typeof CourseCompletionModal>;
 
-const mockDate = new Date('2024-05-15T15:30:00Z');
+const mockDate = '2024-05-15T15:30:00Z';
 
 const mockData = {
-  courseImage: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+  courseImage:
+    'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
   courseTitle: 'Introduction to Artificial Intelligence',
   completionDate: mockDate,
   onClickDownloadCertificate: () => alert('Download Certificate clicked'),
