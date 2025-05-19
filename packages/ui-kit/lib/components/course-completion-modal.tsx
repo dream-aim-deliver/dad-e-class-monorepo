@@ -12,7 +12,7 @@ import { cn } from "../utils/style-utils";
 export interface CourseCompletionModalProps extends isLocalAware {
     courseImage: string;
     courseTitle: string;
-    completionDate: Date;
+    completionDate: string;
     onClickDownloadCertificate: () => void;
     onClickRateCourse: () => void;
     onClose: () => void;
@@ -64,7 +64,7 @@ export const CourseCompletionModal: React.FC<CourseCompletionModalProps> = ({
         setIsImageError(true);
     };
     const shouldShowPlaceholder = !courseImage || isImageError;
-    
+
     // Format date and time (UTC, ISO format)
     const isoString = new Date(completionDate).toISOString();
     const [datePart, timePart] = isoString.split('T');
@@ -101,22 +101,22 @@ export const CourseCompletionModal: React.FC<CourseCompletionModalProps> = ({
                                     </span>
                                 </div>
                             ) : (
-                                <img    
+                                <img
                                     loading="lazy"
                                     src={courseImage}
-                                    alt={courseTitle} 
+                                    alt={courseTitle}
                                     onError={handleImageError}
                                     className="w-12 h-12 rounded-medium"
                                 />
                             )}
-                            <p 
+                            <p
                                 className="text-text-primary text-md font-bold leading-[150%] line-clamp-1 w-full"
                                 title={courseTitle}
                             >
                                 {courseTitle}
                             </p>
                         </div>
-                        <Badge 
+                        <Badge
                             variant="successprimary"
                             size="big"
                             text={`${dictionary.components.courseCompletionModal.completedOnText} ${formattedDate} ${dictionary.components.courseCompletionModal.atText} ${formattedTime}`}
@@ -125,7 +125,7 @@ export const CourseCompletionModal: React.FC<CourseCompletionModalProps> = ({
                     </div>
                 </div>
                 <div className="flex flex-col gap-2 w-full">
-                    <Button 
+                    <Button
                         hasIconLeft
                         iconLeft={<IconCertification />}
                         variant="secondary"
@@ -134,7 +134,7 @@ export const CourseCompletionModal: React.FC<CourseCompletionModalProps> = ({
                         text={dictionary.components.courseCompletionModal.downloadCertificateText}
                         className="w-full"
                     />
-                    <Button 
+                    <Button
                         hasIconLeft
                         iconLeft={<IconStar />}
                         variant="primary"

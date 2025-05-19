@@ -67,7 +67,7 @@ vi.mock('../lib/components/badge', () => ({
 }));
 
 describe('CourseCompletionModal', () => {
-  const completionDate = new Date('2024-05-10T15:30:00Z');
+  const completionDate = new Date('2024-05-10T15:30:00Z').toISOString();
   const defaultProps = {
     courseImage: 'https://example.com/course.jpg',
     courseTitle: 'AI Fundamentals',
@@ -93,7 +93,7 @@ describe('CourseCompletionModal', () => {
     // Course title
     expect(screen.getByText('AI Fundamentals')).toBeInTheDocument();
     // Badge with date and time (dynamically generated)
-    const expectedDate = completionDate.toLocaleDateString('en-CA');
+    const expectedDate = new Date(completionDate).toLocaleDateString('en-CA');
     expect(screen.getByTestId('badge')).toHaveTextContent(
       new RegExp(`^Completed on ${expectedDate}`)
     );
@@ -135,7 +135,7 @@ describe('CourseCompletionModal', () => {
   });
 
   it('renders with different course title and date', () => {
-    const newDate = new Date('2025-01-01T09:15:00Z');
+    const newDate = new Date('2025-01-01T09:15:00Z').toLocaleDateString('en-CA');
     render(
       <CourseCompletionModal
         {...defaultProps}
@@ -144,7 +144,7 @@ describe('CourseCompletionModal', () => {
       />
     );
     expect(screen.getByText('Deep Learning Mastery')).toBeInTheDocument();
-    const expectedDate = newDate.toLocaleDateString('en-CA');
+    const expectedDate = newDate
     expect(screen.getByTestId('badge')).toHaveTextContent(
       new RegExp(`^Completed on ${expectedDate}`)
     );

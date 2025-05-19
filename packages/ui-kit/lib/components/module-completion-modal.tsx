@@ -82,7 +82,7 @@ export const ModuleCompletionModal: FC<ModuleCompletionModalProps> = ({
                                 {moduleTitle}
                             </p>
                         </div>
-                        <IconModule 
+                        <IconModule
                             classNames="text-text-primary"
                         />
                     </div>
@@ -90,7 +90,7 @@ export const ModuleCompletionModal: FC<ModuleCompletionModalProps> = ({
                         {dictionary.components.moduleCompletionModal.descriptionText}
                     </p>
                 </div>
-                <Button 
+                <Button
                     variant="primary"
                     hasIconRight
                     iconRight={<IconChevronRight />}
