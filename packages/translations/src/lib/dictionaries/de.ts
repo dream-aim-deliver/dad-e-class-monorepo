@@ -268,12 +268,11 @@ export const DE: TDictionary = {
       about: 'Über uns',
     },
     footer: {
-      impressum: 'Impressum (DE)',
+      impressum: 'Impressum',
       privacyPolicy: 'Datenschutzrichtlinie',
       termsOfUse: 'Nutzungsbedingungen',
       rules: 'Regeln',
       coursesInformation: 'Kursinformationen',
-      companyInfo: '© 2024 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • hallo@justdoad.ai',
     },
     activity: {
       atText: 'bei',

@@ -30,6 +30,7 @@ export { default as BuyCoachingSession, type BuyCoachingSessionProps } from './c
 export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/accordion';
 export * as contexts from './contexts';
 export { Navbar } from './components/navbar';
+export { Footer } from './components/footer';
 
 export { NotificationGrid } from './components/grids/notification-grid';
 export { UserGrid } from './components/grids/user-grid';
