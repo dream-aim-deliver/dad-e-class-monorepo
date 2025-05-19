@@ -1,6 +1,5 @@
 'use client';
 import { Button, DummySkills } from '@maany_shr/e-class-ui-kit';
-import '@maany_shr/e-class-ui-kit/tailwind.css';
 import { useTheme } from '@maany_shr/e-class-ui-kit/contexts';
 import {
     isLocalAware,
