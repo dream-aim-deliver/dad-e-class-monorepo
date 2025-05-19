@@ -101,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <nav className="bg-transparent text-white py-4 px-4 flex items-center justify-between">
+    <nav className="bg-transparent text-white py-4 px-4 flex items-center justify-between w-full">
       {/* Logo */}
       <div className="flex items-center">
         <a href="/">
