@@ -80,8 +80,8 @@ export default async function RootLayout({
 
     // Check if the locale is supported
     const params = await paramsPromise;
-    const locale = params?.locale;
-    if (!availableLocales.includes(locale as TLocale)) {
+    const locale = params.locale as TLocale;
+    if (!availableLocales.includes(locale)) {
         notFound();
     }
     const messages = await getMessages({ locale });
@@ -90,9 +90,7 @@ export default async function RootLayout({
     const authGateway = new NextAuthGateway(nextAuth);
     const sessionDTO = await authGateway.getSession();
     let session: auth.TSession | null = null;
-    if (!sessionDTO.success) {
-        session = null;
-    } else {
+    if (sessionDTO.success) {
         session = sessionDTO.data;
     }
 
@@ -105,7 +103,12 @@ export default async function RootLayout({
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <ClientProviders>
                             <div className="w-full min-h-screen bg-black flex flex-col items-center">
-                                <Header platform={platform} />
+                                <Header
+                                    platform={platform}
+                                    availableLocales={availableLocales}
+                                    locale={locale}
+                                    session={session}
+                                />
                                 <main className="flex-grow w-full max-w-screen-2xl pt-24">
                                     {children}
                                 </main>
