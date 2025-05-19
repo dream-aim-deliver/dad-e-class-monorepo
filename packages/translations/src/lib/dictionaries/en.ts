@@ -229,7 +229,6 @@ export const EN: TDictionary = {
       termsOfUse: 'Terms of Use',
       rules: 'Rules',
       coursesInformation: 'Courses Information',
-      companyInfo: '© 2024 JUST DO AD GmbH  •  Hermetschloostrasse 70, 8048 Zürich  •  hi@justdoad.ai',
     },
     activity: {
       atText: 'at',

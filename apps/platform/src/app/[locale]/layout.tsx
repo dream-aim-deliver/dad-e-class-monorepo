@@ -14,6 +14,7 @@ import { env } from '../../lib/infrastructure/server/utils/env';
 import { unstable_cache } from 'next/cache';
 import Header from '../../lib/infrastructure/client/pages/header';
 import { languageCodeToLocale } from '../../lib/infrastructure/server/utils/language-mapping';
+import Footer from '../../lib/infrastructure/client/pages/footer';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -102,7 +103,13 @@ export default async function RootLayout({
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <ClientProviders>
-                            <div className="w-full min-h-screen bg-black flex flex-col items-center">
+                            <div
+                                className="w-full min-h-screen bg-black flex flex-col items-center"
+                                style={{
+                                    backgroundImage: `url(${platform.backgroundImageUrl})`,
+                                    // TODO: have a fallback color
+                                }}
+                            >
                                 <Header
                                     platform={platform}
                                     availableLocales={availableLocales}
@@ -112,6 +119,11 @@ export default async function RootLayout({
                                 <main className="flex-grow w-full max-w-screen-2xl pt-24">
                                     {children}
                                 </main>
+                                <Footer
+                                    locale={locale}
+                                    availableLocales={availableLocales}
+                                    platform={platform}
+                                />
                             </div>
                         </ClientProviders>
                     </NextIntlClientProvider>

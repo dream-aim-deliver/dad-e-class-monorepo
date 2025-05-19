@@ -223,7 +223,6 @@ export const DictionarySchema = z.object({
       termsOfUse: z.string(),
       rules: z.string(),
       coursesInformation: z.string(),
-      companyInfo: z.string(),
     }),
     activity: z.object({
       atText: z.string(),
