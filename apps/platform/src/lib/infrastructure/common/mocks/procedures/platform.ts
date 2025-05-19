@@ -2,7 +2,7 @@ import { platform } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 import { z } from 'zod';
 
-const getAdMock = (id: string | number) => ({
+const getAdMock = (id: string | number): platform.TPlatform => ({
     id: id,
     name: 'Just Do Ad',
     logoUrl:
