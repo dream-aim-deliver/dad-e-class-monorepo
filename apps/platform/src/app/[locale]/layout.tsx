@@ -9,6 +9,11 @@ import { auth } from '@maany_shr/e-class-models';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
 import nextAuth from '../../lib/infrastructure/server/config/auth/next-auth.config';
 import Providers from '../../lib/infrastructure/client/utils/providers';
+import { trpc } from '../../lib/infrastructure/server/config/trpc/server';
+import { env } from '../../lib/infrastructure/server/utils/env';
+import { unstable_cache } from 'next/cache';
+import Header from '../../lib/infrastructure/client/pages/header';
+import { Suspense } from 'react';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -36,6 +41,16 @@ const figtree = Figtree({
     subsets: ['latin'],
 });
 
+interface RootLayoutProps {
+    children: React.ReactNode;
+    params: { locale: string };
+}
+
+// TODO: revalidation can be configured
+const getCachedPlatform = unstable_cache(
+    async () => await trpc.getPlatform({ id: env.platformId }),
+);
+
 export async function generateStaticParams() {
     return i18nConfig.locales.map((locale) => ({ locale }));
 }
@@ -47,6 +62,7 @@ export default async function RootLayout({
     children: React.ReactNode;
     params: Promise<{ locale: string }>;
 }) {
+    const platform = await getCachedPlatform();
     const authGateway = new NextAuthGateway(nextAuth);
     const sessionDTO = await authGateway.getSession();
     let session: auth.TSession | null = null;
@@ -74,6 +90,7 @@ export default async function RootLayout({
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <Providers>
                             <div className="w-full min-h-screen bg-black flex flex-col items-center">
+                                <Header platform={platform} />
                                 <main className="flex-grow w-full max-w-screen-2xl pt-24">
                                     {children}
                                 </main>
