@@ -12,7 +12,7 @@ interface ProvidersProps {
     children: ReactNode;
 }
 
-export default function Providers({ children }: ProvidersProps) {
+export default function ClientProviders({ children }: ProvidersProps) {
     const queryClient = getQueryClient();
     const [trpcClient] = useState(() =>
         trpc.createClient({

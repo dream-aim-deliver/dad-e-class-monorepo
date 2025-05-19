@@ -8,12 +8,12 @@ import { SessionProvider } from 'next-auth/react';
 import { auth } from '@maany_shr/e-class-models';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
 import nextAuth from '../../lib/infrastructure/server/config/auth/next-auth.config';
-import Providers from '../../lib/infrastructure/client/utils/providers';
+import ClientProviders from '../../lib/infrastructure/client/utils/client-providers';
 import { trpc } from '../../lib/infrastructure/server/config/trpc/server';
 import { env } from '../../lib/infrastructure/server/utils/env';
 import { unstable_cache } from 'next/cache';
 import Header from '../../lib/infrastructure/client/pages/header';
-import { Suspense } from 'react';
+import { languageCodeToLocale } from '../../lib/infrastructure/server/utils/language-mapping';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -51,9 +51,9 @@ const getCachedPlatform = unstable_cache(
     async () => await trpc.getPlatform({ id: env.platformId }),
 );
 
-export async function generateStaticParams() {
-    return i18nConfig.locales.map((locale) => ({ locale }));
-}
+const listCachedLanguages = unstable_cache(
+    async () => await trpc.listLanguages({ platformId: env.platformId }),
+);
 
 export default async function RootLayout({
     children,
@@ -62,7 +62,31 @@ export default async function RootLayout({
     children: React.ReactNode;
     params: Promise<{ locale: string }>;
 }) {
+    // Fetch cached configuration
     const platform = await getCachedPlatform();
+    const languages = await listCachedLanguages();
+
+    // Check if platform's languages are supported
+    const availableLocales: TLocale[] = [];
+    for (const language of languages) {
+        const availableLocale = languageCodeToLocale[language.code];
+        if (availableLocale && i18nConfig.locales.includes(availableLocale)) {
+            availableLocales.push(availableLocale);
+        } else {
+            // TODO: might be a soft error
+            throw new Error('A platform language is not supported');
+        }
+    }
+
+    // Check if the locale is supported
+    const params = await paramsPromise;
+    const locale = params?.locale;
+    if (!availableLocales.includes(locale as TLocale)) {
+        notFound();
+    }
+    const messages = await getMessages({ locale });
+
+    // Perform authentication
     const authGateway = new NextAuthGateway(nextAuth);
     const sessionDTO = await authGateway.getSession();
     let session: auth.TSession | null = null;
@@ -72,15 +96,6 @@ export default async function RootLayout({
         session = sessionDTO.data;
     }
 
-    const params = await paramsPromise;
-    const locale = params?.locale;
-
-    if (!i18nConfig.locales.includes(locale as TLocale)) {
-        notFound();
-    }
-
-    const messages = await getMessages({ locale });
-
     return (
         <html lang={locale}>
             <body
@@ -88,14 +103,14 @@ export default async function RootLayout({
             >
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
-                        <Providers>
+                        <ClientProviders>
                             <div className="w-full min-h-screen bg-black flex flex-col items-center">
                                 <Header platform={platform} />
                                 <main className="flex-grow w-full max-w-screen-2xl pt-24">
                                     {children}
                                 </main>
                             </div>
-                        </Providers>
+                        </ClientProviders>
                     </NextIntlClientProvider>
                 </SessionProvider>
             </body>
