@@ -21,7 +21,7 @@ export default async function HomeServerComponent() {
         session = sessionDTO.data;
     }
 
-    await trpc.getSkills.prefetch();
+    // await trpc.getSkills.prefetch();
 
     return (
         <HydrateClient>
