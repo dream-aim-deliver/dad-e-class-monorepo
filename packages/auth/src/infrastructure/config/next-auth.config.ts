@@ -117,6 +117,7 @@ export const generateNextAuthConfig = (config: {
                 if (!platformId) {
                     throw new Error("CRITICAL! Configuration Error: Platform ID not found in the environment variables");
                 }
+                // TODO: how is this actually supposed to be handled?
                 session.platform = platformId;
 
                 const nextAuthToken = token as DefaultJWT & {
