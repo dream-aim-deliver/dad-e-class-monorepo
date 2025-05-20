@@ -6,7 +6,7 @@ export interface LessonNoteBuilderViewType extends isLocalAware {
     id: number;
     order: number;
     initialValue: string;
-    onChange: (value: string) => void;
+    onChange: (value: string) => boolean;
     children?: React.ReactNode;
     placeholder: string;
 };

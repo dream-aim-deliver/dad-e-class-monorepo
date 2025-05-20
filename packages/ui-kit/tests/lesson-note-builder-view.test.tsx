@@ -34,7 +34,7 @@ vi.mock('../lib/components/banner', () => ({
 }));
 
 // Mock RichTextEditor
-const mockOnChange = vi.fn();
+const mockOnChange = vi.fn(() => true);
 const mockOnLoseFocus = vi.fn();
 vi.mock('../lib/components/rich-text-element/editor', () => ({
   __esModule: true,

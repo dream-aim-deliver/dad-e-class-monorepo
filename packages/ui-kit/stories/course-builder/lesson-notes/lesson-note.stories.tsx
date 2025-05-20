@@ -14,6 +14,7 @@ const designerLessonNote: LessonNoteBuilderViewType = {
   initialValue: "<p>This is a <strong>lesson note</strong> for editing.</p>",
   onChange: (value) => {
     console.log("Designer LessonNote changed:", value);
+    return Math.random() < 0.5; // Simulate a 50% chance of saving successfully
   },
   placeholder: "Write your lesson notes here...",
   locale: "en",
@@ -35,8 +36,8 @@ const getPreviewLessonNote = (locale: "en" | "de"): LessonNoteStudentViewType =>
       lessonTitle={locale === "de" ? "Einführung" : "Introduction"}
       lessonDescription={
         locale === "de"
-          ? "Dies ist die erste Notiz für das Modul."
-          : "This is the first note for the module."
+          ? `[{"type":"paragraph","children":[{"text":"Dies ist die erste Notiz für das Modul."}]}]`
+          : `[{"type":"paragraph","children":[{"text":"This is the first note for the module."}]}]`
       }
       onClickViewLesson={() => alert("View Lesson clicked")}
       locale={locale}
@@ -47,8 +48,8 @@ const getPreviewLessonNote = (locale: "en" | "de"): LessonNoteStudentViewType =>
       lessonTitle={locale === "de" ? "Vertiefung" : "Deep Dive"}
       lessonDescription={
         locale === "de"
-          ? "Dies ist die zweite Notiz für das Modul."
-          : "This is the second note for the module."
+          ? `[{"type":"paragraph","children":[{"text":"Dies ist die zweite Notiz für das Modul."}]}]`
+          : `[{"type":"paragraph","children":[{"text":"This is the second note for the module."}]}]`
       }
       onClickViewLesson={() => alert("View Lesson clicked")}
       locale={locale}
@@ -59,8 +60,8 @@ const getPreviewLessonNote = (locale: "en" | "de"): LessonNoteStudentViewType =>
       lessonTitle={locale === "de" ? "Zusammenfassung" : "Summary"}
       lessonDescription={
         locale === "de"
-          ? "Dies ist die dritte Notiz für das Modul."
-          : "This is the third note for the module."
+          ? `[{"type":"paragraph","children":[{"text":"Dies ist die dritte Notiz für das Modul."}]}]`
+          : `[{"type":"paragraph","children":[{"text":"This is the third note for the module."}]}]`
       }
       onClickViewLesson={() => alert("View Lesson clicked")}
       locale={locale}
@@ -106,6 +107,7 @@ export const Designer: StoryObj<StoryArgs> = {
         setTimeout(() => {
           setSaving(false);
         }, 2000); // simulate 2 seconds saving
+        return Math.random() < 0.5; // Simulate a 50% chance of saving successfully
       };
 
       return (
@@ -153,7 +155,7 @@ export const Preview: StoryObj<StoryArgs> = {
       </div>
     ),
   ],
-  
+
   render: (args) =>
     LessonNoteElement.formComponent({
       elementInstance: getPreviewLessonNote(args.locale),

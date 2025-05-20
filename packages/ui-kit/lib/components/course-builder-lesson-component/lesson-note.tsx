@@ -17,7 +17,7 @@ import { LessonNoteBuilderViewType, LessonNoteStudentViewType } from "./types";
  * @property formComponent The React component rendered in the student-facing form view.
  */
 
-const LessonNoteElement: CourseElementTemplate ={
+const LessonNoteElement: CourseElementTemplate = {
     type: CourseElementType.LessonNote,
     designerBtnElement: {
         icon: IconNotes,
@@ -51,7 +51,7 @@ function DesignerComponent({
 }: DesignerComponentProps) {
     if (elementInstance.type !== CourseElementType.LessonNote) return null;
     return (
-        <LessonNoteBuilderView 
+        <LessonNoteBuilderView
             {...elementInstance as LessonNoteBuilderViewType}
             locale={locale}
         />
@@ -79,7 +79,7 @@ function FormComponent({
 }: DesignerComponentProps) {
     if (elementInstance.type !== CourseElementType.LessonNote) return null;
     return (
-        <LessonNoteStudentView 
+        <LessonNoteStudentView
             {...elementInstance as LessonNoteStudentViewType}
             locale={locale}
         />

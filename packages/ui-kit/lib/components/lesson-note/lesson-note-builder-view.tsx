@@ -1,7 +1,7 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import RichTextEditor from "../rich-text-element/editor";
 import { IconNotes } from "../icons/icon-notes";
-import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
+import { getDictionary } from "@maany_shr/e-class-translations";
 import Banner from "../banner";
 import { IconSave } from "../icons/icon-save";
 import { LessonNoteBuilderViewType } from "../course-builder-lesson-component/types";
@@ -11,6 +11,7 @@ import { LessonNoteBuilderViewType } from "../course-builder-lesson-component/ty
  * 
  * @component
  * @props {LessonNoteBuilderViewType} props - The component props.
+ * Note: the `onChange` function should return a boolean indicating whether the notes were saved successfully.
  * @props {string} props.initialValue - The initial value of the lesson notes.
  * @props {(value: string) => void} props.onChange - Callback function triggered when the notes are updated.
  * @props {string} props.placeholder - Placeholder text for the rich text editor.
@@ -22,7 +23,10 @@ import { LessonNoteBuilderViewType } from "../course-builder-lesson-component/ty
  * ```
  * <LessonNoteBuilderView
  *   initialValue="This is a sample note."
- *   onChange={(value) => console.log('Notes updated:', value)}
+ *   onChange={(value) => {
+ *     console.log('Notes updated:', value);
+ *     return Math.random() < 0.5; // Simulate 50% save success
+ *   }}
  *   placeholder="Write your lesson notes here..."
  *   locale="en"
  * />
@@ -35,28 +39,21 @@ export const LessonNoteBuilderView: FC<LessonNoteBuilderViewType> = ({
     children,
     placeholder,
     locale,
-}) => { 
+}) => {
     const dictionary = getDictionary(locale);
-    const [value, setValue] = useState<string>('');
-    const [notesNotSaved, setNotesNotSaved] = useState<boolean>(false);
-
-    // set the initial value of editor
-    useEffect(() => {
-        if(initialValue) {
-            setValue(initialValue);
-        }
-    }, [initialValue]);
+    const [value, setValue] = useState<string>(initialValue);
+    const [notesSaved, setNotesSaved] = useState<boolean>(true);
 
     // function to handle the loss of focus from the editor
     const handleLoseFocus = (value: string) => {
-        onChange(value);
-        setNotesNotSaved(false);
+        const savedSuccess = onChange(value);
+        setNotesSaved(savedSuccess);
     };
 
     // function to handle the change in the editor
     const handleChange = (value: any) => {
-        if(!notesNotSaved)
-            setNotesNotSaved(true);
+        if (notesSaved)
+            setNotesSaved(false);
         setValue(value);
     };
 
@@ -65,7 +62,7 @@ export const LessonNoteBuilderView: FC<LessonNoteBuilderViewType> = ({
             <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center justify-center gap-4">
                     <div className="p-2 bg-base-neutral-800 border-1 border-base-neutral-700 rounded-medium">
-                        <IconNotes 
+                        <IconNotes
                             classNames="text-text-primary"
                             size="6"
                         />
@@ -74,7 +71,7 @@ export const LessonNoteBuilderView: FC<LessonNoteBuilderViewType> = ({
                         {dictionary.components.lessonNotes.lessonNotesText}
                     </p>
                 </div>
-                <div 
+                <div
                     className="p-2 bg-base-neutral-800 border-1 border-base-neutral-700 rounded-medium cursor-pointer"
                     onClick={() => handleLoseFocus(value)}
                     title={dictionary.components.lessonNotes.saveNotesText}
@@ -85,7 +82,7 @@ export const LessonNoteBuilderView: FC<LessonNoteBuilderViewType> = ({
                     />
                 </div>
             </div>
-            <RichTextEditor 
+            <RichTextEditor
                 name='lessonNote'
                 placeholder={placeholder}
                 initialValue={value}
@@ -94,8 +91,8 @@ export const LessonNoteBuilderView: FC<LessonNoteBuilderViewType> = ({
                 locale={locale}
             />
             {children}
-            {notesNotSaved && !children && (
-                <Banner 
+            {!notesSaved && !children && (
+                <Banner
                     title={dictionary.components.lessonNotes.notesNotSavedText}
                     style='error'
                 />
