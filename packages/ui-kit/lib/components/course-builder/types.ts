@@ -1,17 +1,10 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import React from "react";
-import { Descendant } from "slate";
 import { LessonNoteType } from "../course-builder-lesson-component/types";
 
 export enum CourseElementType {
     LessonNote = "lessonNote",
 }
-
-
-
-
-
-
 
 
 /**

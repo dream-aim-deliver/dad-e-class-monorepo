@@ -1,6 +1,7 @@
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { FC } from "react";
 import { Button } from "../button";
+import RichTextRenderer from "../rich-text-element/renderer";
 
 export interface LessonNoteViewType extends isLocalAware {
     lessonNumber: number;
@@ -46,20 +47,20 @@ export const LessonNoteView: FC<LessonNoteViewType> = ({
         <div className="flex flex-col gap-4 p-4 bg-base-neutral-800 border-1 border-base-neutral-700 rounded-medium w-full">
             <div className="flex items-center justify-between gap-4 w-full">
                 <h5 className="text-text-primary text-lg font-bold leading-[120%]">
-                    {dictionary.components.lessonNotes.lessonText} {lessonNumber} - {lessonTitle}   
+                    {dictionary.components.lessonNotes.lessonText} {lessonNumber} - {lessonTitle}
                 </h5>
-                <Button 
+                <Button
                     variant="text"
                     text={dictionary.components.lessonNotes.viewLessonText}
                     onClick={onClickViewLesson}
                     size="small"
                 />
             </div>
-            <div 
+            <div
                 className="bg-divider h-[1px] w-full"
             />
             <p className="text-text-secondary text-lg leading-[150%]">
-                {lessonDescription}
+                <RichTextRenderer content={lessonDescription} />
             </p>
         </div>
     );

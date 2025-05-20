@@ -29,10 +29,11 @@ vi.mock('../lib/components/button', () => ({
 
 describe('LessonNoteView Component', () => {
   const mockOnClick = vi.fn();
+  const lessonDescriptionPlain = "Learn about arrays, stacks, and queues."
   const mockProps = {
     lessonNumber: 3,
     lessonTitle: 'Data Structures',
-    lessonDescription: 'Learn about arrays, stacks, and queues.',
+    lessonDescription: `[{"type": "paragraph", "children": [{ "text": "${lessonDescriptionPlain}"}] }]`,
     onClickViewLesson: mockOnClick,
     locale: 'en' as TLocale,
   };
@@ -52,7 +53,7 @@ describe('LessonNoteView Component', () => {
 
   it('renders lesson description', () => {
     render(<LessonNoteView {...mockProps} />);
-    expect(screen.getByText(mockProps.lessonDescription)).toBeInTheDocument();
+    expect(screen.getByText(lessonDescriptionPlain)).toBeInTheDocument();
   });
 
   it('renders the "View Lesson" button with correct text', () => {
