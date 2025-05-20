@@ -48,6 +48,9 @@ export const EN: TDictionary = {
     notificationGrid: {
       markAllAsRead: 'Mark all as read',
       searchPlaceholder: 'Search activity',
+      all: 'All',
+      loading: 'Loading...',
+      noNotifications: 'No notifications found',
     },
     courseCard: {
       courseEmptyState: {
