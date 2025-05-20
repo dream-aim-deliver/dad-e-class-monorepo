@@ -1,5 +1,5 @@
 import { notification } from '@maany_shr/e-class-models';
-import { AllCommunityModule, ColDef, ModuleRegistry, RowNode } from 'ag-grid-community';
+import { AllCommunityModule, ColDef, IRowNode, ModuleRegistry, RowNode } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { RefObject, useState, useCallback, useMemo, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
@@ -168,7 +168,7 @@ export const NotificationGrid = ({
 
   // Client-side filtering logic for search
   const doesExternalFilterPass = useCallback(
-    (node: RowNode<ExtendedNotification>) => {
+    (node: IRowNode<any>) => {
       const notification = node.data as ExtendedNotification;
       if (!notification) return false;
 
