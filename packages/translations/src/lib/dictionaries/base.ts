@@ -18,6 +18,9 @@ export const DictionarySchema = z.object({
     notificationGrid: z.object({
       markAllAsRead: z.string(),
       searchPlaceholder: z.string(),
+      all: z.string(),
+      noNotifications: z.string(),
+      loading: z.string(),
     }),
     modulePagination: z.object({
       previous: z.string(),

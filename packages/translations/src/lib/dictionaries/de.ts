@@ -21,6 +21,9 @@ export const DE: TDictionary = {
     notificationGrid: {
       markAllAsRead: 'Alle als gelesen markieren',
       searchPlaceholder: 'Suchaktivität',
+      all: 'Alle',
+      loading: 'Laden...',
+      noNotifications: 'Keine Aktivität gefunden',
     },
     courseCard: {
       courseEmptyState: {
