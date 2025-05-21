@@ -301,6 +301,15 @@ export const EN: TDictionary = {
       showNotesText: 'Show Notes (Alt/Ctrl + N)',
       hideNotesText: 'Hide Notes (Alt/Ctrl + N)',
     },
+    lessonNotes: {
+      moduleText: 'Module',
+      lessonNotesText: 'Lesson Notes',
+      savingNotesText: 'Saving notes...',
+      lessonText: 'Lesson',
+      viewLessonText: 'View lesson',
+      saveNotesText: 'Save notes',
+      notesNotSavedText: 'Notes not saved',
+    },
     moduleCompletionModal: {
       moduleCompletedText: 'Module completed, well done!',
       moduleText: 'Module',

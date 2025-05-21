@@ -295,6 +295,15 @@ export const DictionarySchema = z.object({
       showNotesText: z.string(),
       hideNotesText: z.string(),
     }),
+    lessonNotes: z.object({
+      moduleText: z.string(),
+      lessonNotesText: z.string(),
+      savingNotesText: z.string(),
+      lessonText: z.string(),
+      viewLessonText: z.string(),
+      saveNotesText: z.string(),
+      notesNotSavedText: z.string(),
+    }),
     moduleCompletionModal: z.object({
       moduleCompletedText: z.string(),
       moduleText: z.string(),
