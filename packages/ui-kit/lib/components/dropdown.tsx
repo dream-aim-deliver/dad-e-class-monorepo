@@ -105,7 +105,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const initialState = getInitialState();
-  const [selectedOption, setSelectedOption] = useState<string>(initialState.selectedOption);
+  const [selectedOption, setSelectedOption] = useState<string | null>(initialState.selectedOption);
   const [selectedLabel, setSelectedLabel] = useState<React.ReactNode>(initialState.selectedLabel);
   const [selectedOptions, setSelectedOptions] = useState<string[]>(initialState.selectedOptions);
 
