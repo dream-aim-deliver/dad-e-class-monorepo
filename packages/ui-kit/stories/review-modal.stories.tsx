@@ -1,15 +1,22 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ReviewCoachingSessionModal } from '../lib/components/review-coaching-session-modal';
+import {
+  CoachingReviewProps,
+  CourseCourseReviewProps,
+  ReviewModal,
+} from '../lib/components/review-modal';
 
 // Mock provider for locale
-const LocaleProvider: React.FC<{ locale: string; children: React.ReactNode }> = ({ locale, children }) => {
+const LocaleProvider: React.FC<{
+  locale: string;
+  children: React.ReactNode;
+}> = ({ locale, children }) => {
   return <div data-locale={locale}>{children}</div>;
 };
 
-const meta: Meta<typeof ReviewCoachingSessionModal> = {
-  title: 'Components/ReviewCoachingSessionModal',
-  component: ReviewCoachingSessionModal,
+const meta: Meta<typeof ReviewModal> = {
+  title: 'Components/ReviewModal',
+  component: ReviewModal,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
@@ -29,7 +36,8 @@ const meta: Meta<typeof ReviewCoachingSessionModal> = {
     },
     isLoading: {
       control: 'boolean',
-      description: 'Indicates if the form is in a loading state, showing a spinner.',
+      description:
+        'Indicates if the form is in a loading state, showing a spinner.',
     },
     isError: {
       control: 'boolean',
@@ -37,7 +45,8 @@ const meta: Meta<typeof ReviewCoachingSessionModal> = {
     },
     submitted: {
       control: 'boolean',
-      description: 'Indicates if the form has been successfully submitted, showing the success view.',
+      description:
+        'Indicates if the form has been successfully submitted, showing the success view.',
     },
     onClose: {
       action: 'dialog-closed',
@@ -45,22 +54,25 @@ const meta: Meta<typeof ReviewCoachingSessionModal> = {
     },
     onSubmit: {
       action: 'review-submitted',
-      description: 'Callback triggered when the review is submitted with rating, review, and neededMoreTime.',
+      description:
+        'Callback triggered when the review is submitted with rating, review, and neededMoreTime.',
     },
     onSkip: {
       action: 'review-skipped',
       description: 'Callback triggered when the user skips the review.',
     },
-    setSubmitted: {
-      action: 'set-submitted',
-      description: 'Callback to set the submitted state, controlling the success view.',
+    modalType: {
+      control: 'select',
+      options: ['coaching', 'course'],
+      description:
+        'The type of modal, either "coaching" or "course", affecting the dialog content.',
     },
   },
 };
 
 export default meta;
 
-type Story = StoryObj<typeof ReviewCoachingSessionModal>;
+type Story = StoryObj<typeof ReviewModal>;
 
 export const DefaultForm: Story = {
   decorators: [
@@ -73,6 +85,7 @@ export const DefaultForm: Story = {
         <Story
           args={{
             ...context.args,
+            ...({} as CoachingReviewProps),
             isLoading,
             isError,
             submitted,
@@ -82,16 +95,12 @@ export const DefaultForm: Story = {
                 setIsLoading(false);
                 setSubmitted(true); // Set submitted to true for success
                 alert(
-                  `Review Submitted Successfully: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`
+                  `Review Submitted Successfully: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
                 );
                 console.log(
-                  `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`
+                  `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
                 );
               }, 1000);
-            },
-            setSubmitted: (value) => {
-              setSubmitted(value);
-              console.log(`Set Submitted: ${value}`);
             },
           }}
         />
@@ -100,6 +109,63 @@ export const DefaultForm: Story = {
   ],
   args: {
     locale: 'en',
+    modalType: 'coaching',
+    onClose: () => {
+      alert('Close button clicked');
+      console.log('Dialog Closed');
+    },
+
+    onSkip: () => {
+      alert('Skip button clicked');
+      console.log('Review Skipped');
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The default ReviewDialog in its form state (English), allowing users to rate, write a review, check "Did you need more time?", submit, skip, or close. On successful submission, it shows the success view after a 1-second loading state. Alerts show the submitted data, skip action, and close action.',
+      },
+    },
+  },
+};
+
+export const courseModal: Story = {
+  decorators: [
+    (Story, context) => {
+      const [isLoading, setIsLoading] = React.useState(false);
+      const [isError, setIsError] = React.useState(false);
+      const [submitted, setSubmitted] = React.useState(false);
+
+      return (
+        <Story
+          args={{
+            ...context.args,
+            ...({} as CourseCourseReviewProps),
+            isLoading,
+            isError,
+            submitted,
+            onSubmit: async (rating, review) => {
+              setIsLoading(true);
+              setTimeout(() => {
+                setIsLoading(false);
+                setSubmitted(true); // Set submitted to true for success
+                alert(
+                  `Review Submitted Successfully: Rating=${rating}, Review="${review}"`,
+                );
+                console.log(
+                  `Review Submitted: Rating=${rating}, Review="${review}"`,
+                );
+              }, 1000);
+            },
+          }}
+        />
+      );
+    },
+  ],
+  args: {
+    locale: 'en',
+    modalType: 'course',
     onClose: () => {
       alert('Close button clicked');
       console.log('Dialog Closed');
@@ -113,7 +179,7 @@ export const DefaultForm: Story = {
     docs: {
       description: {
         story:
-          'The default ReviewDialog in its form state (English), allowing users to rate, write a review, check "Did you need more time?", submit, skip, or close. On successful submission, it shows the success view after a 1-second loading state. Alerts show the submitted data, skip action, and close action.',
+          'The ReviewDialog in its form state (English) for course modal type, allowing users to rate, write a review, check "Did you need more time?", submit, skip, or close. On successful submission, it shows the success view after a 1-second loading state. Alerts show the submitted data, skip action, and close action.',
       },
     },
   },
@@ -146,14 +212,13 @@ export const SuccessView: Story = {
       console.log('Dialog Closed');
     },
     onSubmit: (rating, review, neededMoreTime) => {
-      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`);
+      console.log(
+        `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
+      );
     },
     onSkip: () => {
       alert('Skip button clicked');
       console.log('Review Skipped');
-    },
-    setSubmitted: (value) => {
-      console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
@@ -169,6 +234,7 @@ export const SuccessView: Story = {
 export const LoadingState: Story = {
   args: {
     locale: 'en',
+    modalType: 'coaching',
     isLoading: true,
     isError: false,
     submitted: false,
@@ -177,14 +243,13 @@ export const LoadingState: Story = {
       console.log('Dialog Closed');
     },
     onSubmit: (rating, review, neededMoreTime) => {
-      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`);
+      console.log(
+        `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
+      );
     },
     onSkip: () => {
       alert('Skip button clicked');
       console.log('Review Skipped');
-    },
-    setSubmitted: (value) => {
-      console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
@@ -200,6 +265,7 @@ export const LoadingState: Story = {
 export const ErrorState: Story = {
   args: {
     locale: 'en',
+    modalType: 'coaching',
     isLoading: false,
     isError: true,
     submitted: false,
@@ -209,23 +275,22 @@ export const ErrorState: Story = {
     },
     onSubmit: (rating, review, neededMoreTime) => {
       alert(
-        `Review Submitted (Simulated Error): Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`
+        `Review Submitted (Simulated Error): Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
       );
-      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`);
+      console.log(
+        `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
+      );
     },
     onSkip: () => {
       alert('Skip button clicked');
       console.log('Review Skipped');
-    },
-    setSubmitted: (value) => {
-      console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
     docs: {
       description: {
         story:
-          'The ReviewDialog in its error state, shown when isError is true. Displays the error message from dictionary.components.reviewCoachingSessionModal.errorState. User inputs are preserved. Alerts show the close action.',
+          'The ReviewDialog in its error state, shown when isError is true. Displays the error message from dictionary.components.ReviewModal.errorState. User inputs are preserved. Alerts show the close action.',
       },
     },
   },
@@ -235,12 +300,13 @@ export const ErrorStateGerman: Story = {
   args: {
     ...ErrorState.args,
     locale: 'de',
+    modalType: 'coaching',
   },
   parameters: {
     docs: {
       description: {
         story:
-          'The ReviewDialog in its error state with German locale, showing the translated error message from dictionary.components.reviewCoachingSessionModal.errorState. User inputs are preserved. Alerts show the close action.',
+          'The ReviewDialog in its error state with German locale, showing the translated error message from dictionary.components.ReviewModal.errorState. User inputs are preserved. Alerts show the close action.',
       },
     },
   },
@@ -249,6 +315,7 @@ export const ErrorStateGerman: Story = {
 export const SkippedAction: Story = {
   args: {
     locale: 'en',
+    modalType: 'coaching',
     isLoading: false,
     isError: false,
     submitted: false,
@@ -257,14 +324,13 @@ export const SkippedAction: Story = {
       console.log('Dialog Closed');
     },
     onSubmit: (rating, review, neededMoreTime) => {
-      console.log(`Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`);
+      console.log(
+        `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
+      );
     },
     onSkip: () => {
       alert('Skip button clicked');
       console.log('Review Skipped');
-    },
-    setSubmitted: (value) => {
-      console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
@@ -288,6 +354,7 @@ export const ErrorStateWithPreservedData: Story = {
         <Story
           args={{
             ...context.args,
+            ...({} as CoachingReviewProps),
             isError,
             isLoading,
             submitted,
@@ -299,10 +366,10 @@ export const ErrorStateWithPreservedData: Story = {
               setIsError(true); // Set error state
               // Do NOT set submitted to true
               alert(
-                `Submission Failed (Simulated Error): Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`
+                `Submission Failed (Simulated Error): Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
               );
               console.log(
-                `Submission Failed: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`
+                `Submission Failed: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
               );
               throw new Error('Simulated submission error'); // Throw error to trigger component's error handling
             },
@@ -314,10 +381,6 @@ export const ErrorStateWithPreservedData: Story = {
               alert('Skip button clicked');
               console.log('Review Skipped');
             },
-            setSubmitted: (value) => {
-              setSubmitted(value);
-              console.log(`Set Submitted: ${value}`);
-            },
           }}
         />
       );
@@ -325,6 +388,7 @@ export const ErrorStateWithPreservedData: Story = {
   ],
   args: {
     locale: 'en',
+    modalType: 'coaching',
   },
   parameters: {
     docs: {
