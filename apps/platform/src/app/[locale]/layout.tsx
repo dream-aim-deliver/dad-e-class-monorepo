@@ -9,7 +9,10 @@ import { auth } from '@maany_shr/e-class-models';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
 import nextAuth from '../../lib/infrastructure/server/config/auth/next-auth.config';
 import ClientProviders from '../../lib/infrastructure/client/utils/client-providers';
-import { trpc } from '../../lib/infrastructure/server/config/trpc/server';
+import {
+    getQueryClient,
+    trpc,
+} from '../../lib/infrastructure/server/config/trpc/server';
 import { env } from '../../lib/infrastructure/server/utils/env';
 import { unstable_cache } from 'next/cache';
 import Header from '../../lib/infrastructure/client/pages/header';
@@ -52,13 +55,19 @@ interface RootLayoutProps {
 }
 
 // TODO: revalidation can be configured
-const getCachedPlatform = unstable_cache(
-    async () => await trpc.getPlatform({ id: env.platformId }),
-);
+const getCachedPlatform = unstable_cache(async () => {
+    const queryOptions = trpc.getPlatform.queryOptions({ id: env.platformId });
+    const queryClient = getQueryClient();
+    return await queryClient.fetchQuery(queryOptions);
+});
 
-const listCachedLanguages = unstable_cache(
-    async () => await trpc.listLanguages({ platformId: env.platformId }),
-);
+const listCachedLanguages = unstable_cache(async () => {
+    const queryOptions = trpc.listLanguages.queryOptions({
+        platformId: env.platformId,
+    });
+    const queryClient = getQueryClient();
+    return await queryClient.fetchQuery(queryOptions);
+});
 
 export default async function RootLayout({
     children,
@@ -107,6 +116,14 @@ export default async function RootLayout({
 
     return (
         <html lang={locale}>
+            <head>
+                <link rel="preload" href={platform.logoUrl} as="image" />
+                <link
+                    rel="preload"
+                    href={platform.backgroundImageUrl}
+                    as="image"
+                />
+            </head>
             <body
                 className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
             >
