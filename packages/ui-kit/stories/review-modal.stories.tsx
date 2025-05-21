@@ -61,11 +61,6 @@ const meta: Meta<typeof ReviewModal> = {
       action: 'review-skipped',
       description: 'Callback triggered when the user skips the review.',
     },
-    setSubmitted: {
-      action: 'set-submitted',
-      description:
-        'Callback to set the submitted state, controlling the success view.',
-    },
     modalType: {
       control: 'select',
       options: ['coaching', 'course'],
@@ -106,10 +101,6 @@ export const DefaultForm: Story = {
                   `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
                 );
               }, 1000);
-            },
-            setSubmitted: (value) => {
-              setSubmitted(value);
-              console.log(`Set Submitted: ${value}`);
             },
           }}
         />
@@ -154,7 +145,7 @@ export const courseModal: Story = {
             isLoading,
             isError,
             submitted,
-            onSubmit: (rating, review) => {
+            onSubmit: async (rating, review) => {
               setIsLoading(true);
               setTimeout(() => {
                 setIsLoading(false);
@@ -166,10 +157,6 @@ export const courseModal: Story = {
                   `Review Submitted: Rating=${rating}, Review="${review}"`,
                 );
               }, 1000);
-            },
-            setSubmitted: (value) => {
-              setSubmitted(value);
-              console.log(`Set Submitted: ${value}`);
             },
           }}
         />
@@ -233,9 +220,6 @@ export const SuccessView: Story = {
       alert('Skip button clicked');
       console.log('Review Skipped');
     },
-    setSubmitted: (value) => {
-      console.log(`Set Submitted: ${value}`);
-    },
   },
   parameters: {
     docs: {
@@ -266,9 +250,6 @@ export const LoadingState: Story = {
     onSkip: () => {
       alert('Skip button clicked');
       console.log('Review Skipped');
-    },
-    setSubmitted: (value) => {
-      console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
@@ -303,9 +284,6 @@ export const ErrorState: Story = {
     onSkip: () => {
       alert('Skip button clicked');
       console.log('Review Skipped');
-    },
-    setSubmitted: (value) => {
-      console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
@@ -353,9 +331,6 @@ export const SkippedAction: Story = {
     onSkip: () => {
       alert('Skip button clicked');
       console.log('Review Skipped');
-    },
-    setSubmitted: (value) => {
-      console.log(`Set Submitted: ${value}`);
     },
   },
   parameters: {
@@ -405,10 +380,6 @@ export const ErrorStateWithPreservedData: Story = {
             onSkip: () => {
               alert('Skip button clicked');
               console.log('Review Skipped');
-            },
-            setSubmitted: (value) => {
-              setSubmitted(value);
-              console.log(`Set Submitted: ${value}`);
             },
           }}
         />

@@ -18,7 +18,6 @@ export interface CoachingReviewProps extends isLocalAware {
   isLoading?: boolean;
   isError?: boolean;
   submitted?: boolean;
-  setSubmitted?: (value: boolean) => void;
 }
 
 export interface CourseCourseReviewProps extends isLocalAware {
@@ -29,7 +28,6 @@ export interface CourseCourseReviewProps extends isLocalAware {
   isLoading?: boolean;
   isError?: boolean;
   submitted?: boolean;
-  setSubmitted?: (value: boolean) => void;
 }
 
 // The ReviewProps type is a union of CoachingReviewProps and CourseCourseReviewProps
@@ -46,7 +44,6 @@ export type ReviewProps = CoachingReviewProps | CourseCourseReviewProps;
  * @param isLoading Optional boolean indicating if the form is in a loading state. Defaults to false.
  * @param isError Optional boolean indicating if an error occurred during submission. Defaults to false.
  * @param submitted Optional boolean indicating if the review has been submitted. Defaults to false.
- * @param setSubmitted Optional callback function to set the submitted state.
  *
  * @example
  * <ReviewModal
@@ -58,7 +55,6 @@ export type ReviewProps = CoachingReviewProps | CourseCourseReviewProps;
  *   isLoading={false}
  *   isError={false}
  *   submitted={false}
- *   setSubmitted={(value) => console.log("Submitted state:", value)}
  * />
  */
 export const ReviewModal: React.FC<ReviewProps> = ({
@@ -70,7 +66,6 @@ export const ReviewModal: React.FC<ReviewProps> = ({
   isLoading = false,
   isError = false,
   submitted: initialSubmitted = false,
-  setSubmitted,
 }) => {
   const [review, setReview] = React.useState('');
   const [rating, setRating] = React.useState(0);
@@ -90,9 +85,6 @@ export const ReviewModal: React.FC<ReviewProps> = ({
 
     // Call onSubmit and let parent/story handle submitted state
     onSubmit(rating, review, neededMoreTime);
-    if (setSubmitted) {
-      setSubmitted(true);
-    }
   };
 
 
