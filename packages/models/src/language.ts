@@ -12,3 +12,4 @@ export const PlatformLanguageSchema = LanguageSchema.extend({
 
 export type TLanguage = z.infer<typeof LanguageSchema>;
 export type TPlatformLanguage = z.infer<typeof PlatformLanguageSchema>;
+export type TPlatformLanguageId = TPlatformLanguage["platformLanguageId"];

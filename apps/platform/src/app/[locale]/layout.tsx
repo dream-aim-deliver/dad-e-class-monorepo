@@ -13,7 +13,11 @@ import { trpc } from '../../lib/infrastructure/server/config/trpc/server';
 import { env } from '../../lib/infrastructure/server/utils/env';
 import { unstable_cache } from 'next/cache';
 import Header from '../../lib/infrastructure/client/pages/header';
-import { languageCodeToLocale } from '../../lib/infrastructure/server/utils/language-mapping';
+import {
+    languageCodeToLocale,
+    localeToLanguageCode,
+    storePlatformLanguageId,
+} from '../../lib/infrastructure/server/utils/language-mapping';
 import Footer from '../../lib/infrastructure/client/pages/footer';
 
 export const metadata = {
@@ -82,9 +86,15 @@ export default async function RootLayout({
     // Check if the locale is supported
     const params = await paramsPromise;
     const locale = params.locale as TLocale;
-    if (!availableLocales.includes(locale)) {
+    const language = languages.find(
+        (value) => value.code === localeToLanguageCode[locale],
+    );
+
+    if (!availableLocales.includes(locale) || !language) {
         notFound();
     }
+
+    storePlatformLanguageId(locale, language.platformLanguageId);
     const messages = await getMessages({ locale });
 
     // Perform authentication
@@ -102,7 +112,11 @@ export default async function RootLayout({
             >
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
-                        <ClientProviders>
+                        <ClientProviders
+                            initialPlatformLanguageId={
+                                language.platformLanguageId
+                            }
+                        >
                             <div
                                 className="w-full min-h-screen bg-black flex flex-col items-center"
                                 style={{
