@@ -3,11 +3,15 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { createContext, ReactNode, useContext, useState } from 'react';
 import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
-import { getQueryClient } from '../../common/utils/get-query-client';
+import {
+    getQueryClient,
+    getTRPCUrl,
+} from '../../common/utils/get-query-client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { getClientTRPCUrl, trpc } from '../trpc/client';
+import { trpc } from '../trpc/client';
 import { httpBatchLink } from '@trpc/client';
 import { language } from '@maany_shr/e-class-models';
+import superjson from 'superjson';
 
 interface ClientProvidersProps {
     children: ReactNode;
@@ -27,7 +31,8 @@ export default function ClientProviders({
         trpc.createClient({
             links: [
                 httpBatchLink({
-                    url: getClientTRPCUrl(),
+                    transformer: superjson,
+                    url: getTRPCUrl(),
                 }),
             ],
         }),

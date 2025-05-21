@@ -4,7 +4,7 @@ import { auth } from '@maany_shr/e-class-models';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
 import nextAuth from '../config/auth/next-auth.config';
 import Home from '../../client/pages/home';
-import { HydrateClient, trpc } from '../config/trpc/server';
+import { HydrateClient, prefetch, trpc } from '../config/trpc/server';
 import { Suspense } from 'react';
 
 export default async function HomeServerComponent() {
@@ -21,7 +21,7 @@ export default async function HomeServerComponent() {
         session = sessionDTO.data;
     }
 
-    // await trpc.getSkills.prefetch();
+    void prefetch(trpc.getSkills.queryOptions());
 
     return (
         <HydrateClient>
