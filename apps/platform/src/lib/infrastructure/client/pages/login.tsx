@@ -28,6 +28,7 @@ const LoginPage = (props: LoginPageProps) => {
         });
     };
 
+    // TODO: what is the purpose of this?
     const handleAuth0 = async () => {
         await signIn(
             'auth0',
@@ -35,8 +36,10 @@ const LoginPage = (props: LoginPageProps) => {
             {
                 ui_locales: props.locale,
                 platform: props.platform,
-                platform_logo_public_url: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL}`,
-                platform_short_name: `${process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_SHORT_NAME}`,
+                // TODO: the logo URL is passed from the backend
+                platform_logo_public_url: 'mock',
+                // TODO: the platform is identified by its ID
+                platform_short_name: 'mock',
                 terms_and_conditions_title:
                     dictionary.pages.sso.termsAndConditions.title,
                 terms_and_conditions_content:
