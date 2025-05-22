@@ -4,6 +4,7 @@ import { IconTrashAlt } from "../icons/icon-trash-alt"
 import { IconButton } from "../icon-button"
 import { IconChevronUp } from "../icons/icon-chevron-up"
 import { IconChevronDown } from "../icons/icon-chevron-down"
+
 /**
  * Designer Layout Component
  * This component provides the layout structure for the form designer interface.
@@ -82,21 +83,19 @@ const DesignerLayout = ({
                         onClick={onDeleteClick}
                         size="medium"
                         styles="text"
-                        // title={dictionary.components.formRenderer.delete}
+                    // title={dictionary.components.formRenderer.delete}
                     />
                     <IconButton
                         icon={<IconChevronUp />}
                         onClick={onUpClick}
                         size="medium"
                         styles="text"
-                        // title={dictionary.components.formRenderer.moveUp}
                     />
                     <IconButton
                         icon={<IconChevronDown />}
                         onClick={onDownClick}
                         size="medium"
                         styles="text"
-                        // title={dictionary.components.formRenderer.moveDown}
                     />
                 </div>
             </div>

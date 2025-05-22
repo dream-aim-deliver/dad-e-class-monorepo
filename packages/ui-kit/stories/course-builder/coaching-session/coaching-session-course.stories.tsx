@@ -130,13 +130,11 @@ const getPreviewCoachingSession = (
     <div className="flex flex-col gap-4">
       {hadSession ?
         <CoachingSessionHeader
-          id={3}
           name={locale === "de" ? "Schneller Sprint" : "Quick Sprint"}
           duration={30}
           locale={locale}
         />
         : <CoachingSessionHeader
-          id={3}
           name={locale === "de" ? "Vollimmersion" : "Full Immersion"}
           duration={60}
           locale={locale}

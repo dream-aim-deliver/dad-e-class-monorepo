@@ -52,7 +52,7 @@ export const CoachingSessionBuilderView: FC<CoachingSessionTypes> = ({
             type,
             id,
             order,
-            coaching_offering_type_id: numValue,
+            coachingOfferingTypeId: numValue,
         });
     };
     return (

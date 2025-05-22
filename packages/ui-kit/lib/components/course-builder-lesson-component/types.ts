@@ -36,7 +36,7 @@ export interface CoachingSessionTypes extends isLocalAware {
         type: CourseElementType.CoachingSession;
         id: number;
         order: number;
-        coaching_offering_type_id: number;
+        coachingOfferingTypeId: number;
     }) => void;
 };
 

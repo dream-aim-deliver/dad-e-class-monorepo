@@ -13,28 +13,17 @@ import { CoachingSessionStudentViewTypes } from "../course-builder-lesson-compon
  * @param locale The locale for translation and localization purposes.
  *
  * @example
- * <CoachingSessionStudentView
- *   type="group"
- *   id={2}
- *   order={1}
- *   studentHadSessionBeforeInCourse={true}
- *   locale="en"
- * >
- *   <p>This is the content of the coaching session.</p>
+ * <CoachingSessionStudentView>
+ *   <p>This is the content of the list of coaching session.</p>
  * </CoachingSessionStudentView>
  */
 
 export const CoachingSessionStudentView: FC<CoachingSessionStudentViewTypes> = ({
-        type,
-        id,
-        order,
-        children,
-        studentHadSessionBeforeInCourse,
-        locale,
+  children,
 }) => {
   return (
     <div className="flex flex-col gap-4 p-4 bg-card-fill border-1 border-card-stroke rounded-medium">
-        {children}
+      {children}
     </div>
   );
 };

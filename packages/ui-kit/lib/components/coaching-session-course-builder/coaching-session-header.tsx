@@ -3,7 +3,6 @@ import { FC } from "react";
 import { IconCoachingSession } from "../icons/icon-coaching-session";
 
 export interface CoachingSessionHeaderProps extends isLocalAware {
-    id: number;
     name: string;
     duration: number; // in minutes
 };
@@ -15,31 +14,28 @@ export interface CoachingSessionHeaderProps extends isLocalAware {
  * It shows a session icon, a translated label, the session's name, and its duration.
  * The component supports internationalization/localization via the `locale` prop.
  *
- * @param id The unique identifier for the coaching session.
  * @param name The name of the coaching session.
  * @param duration The duration of the session in minutes.
  * @param locale (Optional) The locale code for translations.
  *
  * @example
  * <CoachingSessionHeader
- *   id={1}
  *   name="Session A"
  *   duration={45}
  *   locale="en"
  * />
  */
 
-export const CoachingSessionHeader: FC<CoachingSessionHeaderProps> = ({ 
-    id,
+export const CoachingSessionHeader: FC<CoachingSessionHeaderProps> = ({
     name,
     duration,
     locale,
- }) => {
+}) => {
     const dictionary = getDictionary(locale);
     return (
         <div className="flex gap-4 items-center">
             <div className="flex gap-1 w-full">
-                <IconCoachingSession 
+                <IconCoachingSession
                     classNames="text-base-white"
                 />
                 <p className="text-base-white font-bold leading-[150%] text-sm">
