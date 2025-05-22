@@ -22,8 +22,8 @@ import { CoachingSessionStudentView } from "../coaching-session-course-builder/c
 const coachingSessionElement: CourseElementTemplate = {
     type: CourseElementType.CoachingSession,
     designerBtnElement: {
-      icon: IconCoachingSession,
-      label: "Coaching Session"
+        icon: IconCoachingSession,
+        label: "Coaching Session"
     },
     designerComponent: DesignerComponent,
     formComponent: formComponent,
@@ -64,7 +64,7 @@ function DesignerComponent({
     const dictionary = getDictionary(locale);
     return (
         <DesignerLayout
-            data-testid="designer-layout" 
+            data-testid="designer-layout"
             type={elementInstance.type}
             title={dictionary.components.coachingSessionCourseBuilder.coachingSessionText}
             icon={<IconCoachingSession classNames="w-6 h-6" />}
@@ -74,7 +74,7 @@ function DesignerComponent({
             locale={locale}
             courseBuilder={true}
         >
-            <CoachingSessionBuilderView 
+            <CoachingSessionBuilderView
                 {...(elementInstance as CoachingSessionTypes)}
                 locale={locale}
             />
@@ -97,7 +97,7 @@ function DesignerComponent({
  * {formComponent({ elementInstance, locale: "en" })}
  */
 
-function formComponent({ elementInstance , locale}: FormComponentProps) {
+function formComponent({ elementInstance, locale }: FormComponentProps) {
     return (
         <CoachingSessionStudentView
             {...(elementInstance as CoachingSessionStudentViewTypes)}

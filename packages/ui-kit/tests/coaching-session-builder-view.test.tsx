@@ -49,7 +49,7 @@ describe('CoachingSessionBuilderView Component', () => {
       type: 'coachingSession',
       id: 202,
       order: 2,
-      coaching_offering_type_id: 1,
+      coachingOfferingTypeId: 1,
     });
 
     // Test second session selection
@@ -58,7 +58,7 @@ describe('CoachingSessionBuilderView Component', () => {
       type: 'coachingSession',
       id: 202,
       order: 2,
-      coaching_offering_type_id: 2,
+      coachingOfferingTypeId: 2,
     });
   });
 

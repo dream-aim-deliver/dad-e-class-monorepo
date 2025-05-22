@@ -59,7 +59,7 @@ export const LessonCoachComponent: FC<LessonCoachComponentProps> = ({
     return (
         <div className="flex flex-col p-4 gap-4 bg-base-neutral-800 border-1 border-base-neutral-700 rounded-medium items-start w-full">
             <div className="flex gap-2">
-                <UserAvatar 
+                <UserAvatar
                     imageUrl={imageUrl}
                     size="medium"
                     fullName={name}
@@ -80,7 +80,7 @@ export const LessonCoachComponent: FC<LessonCoachComponentProps> = ({
                 {description}
             </p>
             <div className="flex gap-4 w-full">
-                <Button 
+                <Button
                     variant="text"
                     size="medium"
                     hasIconLeft
@@ -89,7 +89,7 @@ export const LessonCoachComponent: FC<LessonCoachComponentProps> = ({
                     onClick={onClickProfile}
                     className="p-0"
                 />
-                <Button 
+                <Button
                     variant={defaultCoach ? "primary" : "secondary"}
                     size="medium"
                     text={dictionary.components.coachingSessionCourseBuilder.bookText}
