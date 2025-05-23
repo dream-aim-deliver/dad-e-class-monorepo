@@ -7,6 +7,8 @@ import { IconLoaderSpinner } from "../icons/icon-loader-spinner";
 import { FormElement, FormElementType, valueType } from "./types";
 import { TextInputElement, SingleChoiceElement, RichTextElement, multiCheckElement, OneOutOfThreeElement } from "../lesson-components/types";
 import { deserialize } from "../rich-text-element/serializer";
+
+
 /**
  * Props for the FormElementRenderer component
  * 
@@ -107,7 +109,7 @@ export function FormElementRenderer({
                     value = multiCheck?.options ?? [];
                     break;
                 }
-                case FormElementType.OneOutOfThree:{
+                case FormElementType.OneOutOfThree: {
                     const oneOutOfThree = formElement as OneOutOfThreeElement;
                     value = oneOutOfThree.data ?? [];
                     break;

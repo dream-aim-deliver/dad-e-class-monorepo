@@ -1,12 +1,5 @@
-import React, { useState } from "react";
-import { IconRichText } from "../icons/icon-rich-text";
 import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps } from "../pre-assessment/types";
-import RichTextRenderer from "../rich-text-element/renderer";
 import DesignerLayout from "./designer-layout";
-import { RichTextEditor } from "../rich-text-element/editor";
-import { Descendant } from "slate";
-import { deserialize, serialize } from "../rich-text-element/serializer";
-import { getDictionary } from "@maany_shr/e-class-translations";
 import { IconHeading } from "../icons/icon-heading";
 import { HeadingLesson, HeadingLessonPreview } from "../heading-type";
 
@@ -52,9 +45,7 @@ const headingTextElement: FormElementTemplate = {
  */
 
 function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
-  if(elementInstance.type !== FormElementType.HeadingText) return null;
-   const dictionary = getDictionary(locale);
-    
+    if (elementInstance.type !== FormElementType.HeadingText) return null;
 
     return (
         <DesignerLayout
@@ -67,12 +58,12 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
             locale={locale}
             courseBuilder={false}
         >
-           <HeadingLesson
-           initialHeadingType={elementInstance.headingType}
-           initialHeadingValue={elementInstance.heading}
-           locale={locale}
-           onChange={(value)=>  value}
-           />
+            <HeadingLesson
+                initialHeadingType={elementInstance.headingType}
+                initialHeadingValue={elementInstance.heading}
+                locale={locale}
+                onChange={(value) => value}  // TODO: no-op that will be replaced with a real function when we implment the builder
+            />
         </DesignerLayout>
     );
 }
@@ -91,12 +82,12 @@ export function FormComponent({ elementInstance }: { elementInstance: FormElemen
 
     const headingValue = {
         heading,
-         type
+        type
     };
 
     return (
-     <HeadingLessonPreview headingValue={headingValue} />
-    
+        <HeadingLessonPreview headingValue={headingValue} />
+
     );
 }
 
@@ -107,12 +98,13 @@ export function FormComponent({ elementInstance }: { elementInstance: FormElemen
 function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
     if (elementInstance.type !== FormElementType.HeadingText) return null;
 
-    const heading = elementInstance.heading || ""; // Default to "h1" if undefined
+    const heading = elementInstance.heading || "";
+    // NOTE: Defaults to "h1" if undefined
     const type = elementInstance.headingType || "h1";
 
     const headingValue = {
         heading,
-       type
+        type
     };
 
     return (

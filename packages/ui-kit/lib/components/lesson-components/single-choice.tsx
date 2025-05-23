@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import { IconSingleChoice } from "../icons/icon-single-choice";
-import { FormElement, FormElementTemplate, SubmitFunction, FormElementType,  valueType, DesignerComponentProps } from "../pre-assessment/types";
+import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps } from "../pre-assessment/types";
 import SingleChoicePreview, { optionsType, SingleChoiceEdit } from "../single-choice";
 import DesignerLayout from "./designer-layout";
+
+
 /**
  * Single Choice Element for Pre-Assessment
  * This component provides a single-choice selection element for pre-assessment forms.
@@ -54,6 +56,8 @@ const singleChoiceElement: FormElementTemplate = {
         return true;
     }
 };
+
+
 /**
  * Designer Component for Single Choice
  * Renders the configuration interface for single choice questions in the form builder
@@ -75,36 +79,37 @@ const singleChoiceElement: FormElementTemplate = {
 function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
     if (elementInstance.type !== FormElementType.SingleChoice) return null;
 
-  const [options,setOptions]=useState<optionsType[]>(elementInstance.options || []);
-  const [title,setTitle]=useState<string>(elementInstance.title || "");
-   const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
+    const [options, setOptions] = useState<optionsType[]>(elementInstance.options || []);
+    const [title, setTitle] = useState<string>(elementInstance.title || "");
+    const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
 
     const handleRequiredChange = () => {
         setIsRequired(prev => !prev);
-      };
+    };
 
     return (
-      <DesignerLayout
-        type={elementInstance.type}
-        title="Single Choice"
-        icon={<IconSingleChoice classNames="w-6 h-6" />}
-        onUpClick={() => onUpClick?.(elementInstance.id)}
-        onDownClick={() => onDownClick?.(elementInstance.id)}
-        onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
-        locale={locale}
-        courseBuilder={false}
-        isChecked={isRequired}
-        onChange={handleRequiredChange}
-      >
-      <SingleChoiceEdit
-      initialTitle={title}
-      initialOptions={options}
+        <DesignerLayout
+            type={elementInstance.type}
+            title="Single Choice"
+            icon={<IconSingleChoice classNames="w-6 h-6" />}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
+            locale={locale}
+            courseBuilder={false}
+            isChecked={isRequired}
+            onChange={handleRequiredChange}
+        >
+            <SingleChoiceEdit
+                initialTitle={title}
+                initialOptions={options}
 
-      locale={locale}
-      />
-      </DesignerLayout>
+                locale={locale}
+            />
+        </DesignerLayout>
     );
-  }
+}
+
 
 /**
  * Form Component for Single Choice

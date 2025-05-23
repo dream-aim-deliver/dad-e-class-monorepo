@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { IconRichText } from "../icons/icon-rich-text";
 import { RichTextEditor as TextInputEditor } from "../rich-text-element/editor";
-import { FormElement, FormElementTemplate, FormElementType, SubmitFunction, valueType, FormComponentProps, DesignerComponentProps } from "../pre-assessment/types";
+import { FormElement, FormElementTemplate, FormElementType, valueType, FormComponentProps, DesignerComponentProps } from "../pre-assessment/types";
 import { default as TextInputRenderer } from "../rich-text-element/renderer";
 import { Descendant, Node } from "slate";
 import { serialize, deserialize } from "../rich-text-element/serializer";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import DesignerLayout from "./designer-layout";
 import { IconTextInput } from "../icons/icon-text-input";
-import { AnimatedRadioButton } from "../animated-radio-button";
+
 
 /**
  * Template for the text input form element
@@ -34,6 +34,8 @@ const textInputElement: FormElementTemplate = {
     return true;
   }
 };
+
+
 /**
  * Text Input Element for Pre-Assessment
  * This component provides a rich text input field for pre-assessment forms.
@@ -108,6 +110,8 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
     </DesignerLayout>
   );
 }
+
+
 /**
  * Form Component for Text Input
  * Renders the editable text input field with validation and submission handling
@@ -138,18 +142,19 @@ export function FormComponent({ elementInstance, submitValue, locale }: FormComp
         {elementInstance.required && <span className="text-feedback-error-primary ml-1">*</span>}
       </section>
       <section className="w-full">
-      <TextInputEditor
-        locale={locale}
-        name={`rich-text-${elementInstance.id}`}
-        placeholder={dictionary.components.formRenderer.pleaseEnterText}
-        initialValue={value}
-        onChange={(value) => setValue(value)}
-        onLoseFocus={onLoseFocus}
-      />
+        <TextInputEditor
+          locale={locale}
+          name={`rich-text-${elementInstance.id}`}
+          placeholder={dictionary.components.formRenderer.pleaseEnterText}
+          initialValue={value}
+          onChange={(value) => setValue(value)} // TODO: This is a no-op that will be replaced with a real function when we implement the builder
+          onLoseFocus={onLoseFocus}
+        />
       </section>
     </div>
   );
 }
+
 
 /**
  * View Component for Text Input

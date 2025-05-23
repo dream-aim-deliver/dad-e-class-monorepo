@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { IconRichText } from "../icons/icon-rich-text";
 import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps } from "../pre-assessment/types";
 import RichTextRenderer from "../rich-text-element/renderer";
@@ -25,6 +25,8 @@ const richTextElement: FormElementTemplate = {
     validate: (elementInstance: FormElement, value: string) => true
 
 };
+
+
 /**
  * Rich Text Element for Pre-Assessment
  * This component provides a rich text display element for pre-assessment forms.
@@ -51,7 +53,7 @@ const richTextElement: FormElementTemplate = {
 
 function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
     if (elementInstance.type !== FormElementType.RichText) return null;
-   const dictionary = getDictionary(locale);
+    const dictionary = getDictionary(locale);
     const [content, setContent] = useState<Descendant[]>(deserialize(elementInstance.content || ""));
 
     const handleContentChange = (value: Descendant[]) => {
@@ -60,7 +62,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
     };
 
     const handleLoseFocus = (value: string) => {
-      // Update the content in the element instance
+        // Update the content in the element instance
     };
 
     return (

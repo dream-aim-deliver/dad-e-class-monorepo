@@ -109,10 +109,9 @@ export const RenderElement = ({ attributes, children, element }: RenderElementPr
  */
 export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
   function RichTextEditor({ name, locale, onChange, onLoseFocus, placeholder, initialValue }) {
-    // Convert initial string value to Slate format if necessary
-    if (typeof initialValue === "string") {
-      initialValue = deserialize(initialValue);
-    }
+
+    // Deserialize the initial value to Slate format
+    const deserializedInitialValue = deserialize(initialValue);
 
     // Initialize the editor with history and React plugin
     const [editor] = useState(() => {
@@ -122,7 +121,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
       return editor;
     });
 
-    if (!initialValue) return null;
+    if (!deserializedInitialValue) return null;
 
     /**
      * Handles keyboard shortcuts for text formatting.
@@ -160,7 +159,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
     }
     return (
       <div className="text-text-primary w-full">
-        <Slate editor={editor} initialValue={initialValue} onChange={(value) => onChange(value)}>
+        <Slate editor={editor} initialValue={deserializedInitialValue} onChange={(value) => onChange(value)}>
 
           <div
             className="bg-black text-text-primary border-0 w-full  min-w-0 min-h-40  focus:outline-none overflow-y-auto"
