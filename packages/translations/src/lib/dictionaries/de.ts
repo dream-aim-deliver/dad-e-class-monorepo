@@ -428,6 +428,11 @@ export const DE: TDictionary = {
       takenAlsoBy: 'Ebenfalls belegt von',
       groupWorkspaceButton: 'Gruppenarbeitsbereich',
     },
+    reviewSnippet: {
+      by: 'von',
+      readMore: 'Mehr lesen',
+      readLess: 'Weniger lesen',
+    }
   },
   pages: {
     home: Home_DE,

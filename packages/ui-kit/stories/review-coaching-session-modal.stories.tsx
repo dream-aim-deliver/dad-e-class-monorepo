@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ReviewCoachingSessionModal } from '../lib/components/review-coaching-session-modal';
+import { ReviewCoachingSessionModal } from '../lib/components/review/review-coaching-session-modal';
 
 // Mock provider for locale
 const LocaleProvider: React.FC<{ locale: string; children: React.ReactNode }> = ({ locale, children }) => {
