@@ -28,6 +28,45 @@ const slateify = (rawString: string): Descendant[] => {
   return [{ type: "paragraph", children: [{ text: rawString }] }];
 }
 
+/**
+ * Converts a plain text string into Slate editor data, and then serializes it to JSON.
+ * 
+ * @param rawString 
+ * @returns {string} - JSON string representation of the Slate content.
+ */
+const slateifySerialize = (input: string): string => serialize(slateify(input));
+
+
+
+const safeStringify = (data: unknown): string => {
+  if (data === null || data === undefined) {
+    return "";
+  } else if (typeof data === "string") {
+    return data;
+
+  } else if (Array.isArray(data)) {
+    try {
+      return JSON.stringify(data);
+    } catch (error) {
+      return `[[ Error stringifying array '${data}': ${error} ]]`;
+    }
+
+  } else if (typeof data === "object") {
+    try {
+      return JSON.stringify(data);
+    } catch (error) {
+      return `[[ Error stringifying object '${data}': ${error} ]]`;
+    }
+  };
+
+  return String(data);
+}
+
+
+export interface SlateDeserializerInput {
+  serializedData: string | Descendant[];
+  onError: (message: string, error: Error) => void;
+}
 
 /**
  * Converts a JSON string back into Slate editor data.
@@ -35,9 +74,10 @@ const slateify = (rawString: string): Descendant[] => {
  * Also handles cases where the input is already a parsed Descendant array, returning it directly (making this function idempotent).
  *
  * @param {string | Descendant[]} serializedData - The JSON string representing Slate content, or an already parsed Descendant array.
+ * @param {function} onError - Callback function to handle errors during deserialization.
  * @returns {Descendant[]} - Parsed Slate content or a default paragraph if invalid.
  */
-const deserialize = (serializedData: string | Descendant[]): Descendant[] => {
+const deserialize = ({ serializedData, onError }: SlateDeserializerInput): Descendant[] => {
 
   if (!serializedData || serializedData === "" || serializedData === "null" || serializedData === "undefined") {
     return [{ type: "paragraph", children: [{ text: "" }] }];
@@ -51,8 +91,15 @@ const deserialize = (serializedData: string | Descendant[]): Descendant[] => {
           return [{ type: "paragraph", children: [{ text: "" }] }];
         }
         return parsed;
+
       } catch (error) {
-        console.error(`SlateJS deserializer: error parsing string '${serializedData}': ${error}`);
+        // Handle parsing error
+        onError(
+          `SlateJS deserializer: error parsing '${safeStringify(serializedData)}' -- '${serializedData}''`,
+          error as Error
+        )
+
+        // TBD: should we return an empty slate object?
         return [{ type: "paragraph", children: [{ text: "" }] }];
       }
 
@@ -65,4 +112,4 @@ const deserialize = (serializedData: string | Descendant[]): Descendant[] => {
 
 };
 
-export { serialize, slateify, deserialize };
+export { serialize, slateify, slateifySerialize, deserialize };

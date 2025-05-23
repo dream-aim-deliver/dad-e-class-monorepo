@@ -15,6 +15,11 @@ const mockDictionary = {
   },
 };
 
+const mockOnDeserializationError = vi.fn((message: string, error: Error): void => {
+  // This is empty on purpose, don't remove this comment or ESLint will complain
+});
+
+
 // Mock getDictionary
 vi.mock('@maany_shr/e-class-translations', () => ({
   getDictionary: () => mockDictionary,
@@ -35,7 +40,6 @@ vi.mock('../lib/components/banner', () => ({
 
 // Mock RichTextEditor
 const mockOnChange = vi.fn(() => true);
-const mockOnLoseFocus = vi.fn();
 vi.mock('../lib/components/rich-text-element/editor', () => ({
   __esModule: true,
   default: ({ initialValue, placeholder, onChange, onLoseFocus, name, locale }: any) => (
@@ -51,7 +55,7 @@ vi.mock('../lib/components/rich-text-element/editor', () => ({
 
 describe('LessonNoteBuilderView Component', () => {
   const mockProps = {
-    type: CourseElementType.LessonNote,
+    type: CourseElementType.LessonNote as CourseElementType.LessonNote,
     id: 1,
     order: 1,
     initialValue: 'Initial lesson note',
@@ -59,6 +63,7 @@ describe('LessonNoteBuilderView Component', () => {
     placeholder: 'Write your lesson notes here...',
     locale: 'en' as TLocale,
     children: undefined,
+    onDeserializationError: mockOnDeserializationError,
   };
 
   beforeEach(() => {

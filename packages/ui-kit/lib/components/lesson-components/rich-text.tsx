@@ -54,7 +54,12 @@ const richTextElement: FormElementTemplate = {
 function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
     if (elementInstance.type !== FormElementType.RichText) return null;
     const dictionary = getDictionary(locale);
-    const [content, setContent] = useState<Descendant[]>(deserialize(elementInstance.content || ""));
+
+    const onDeserializationError = (message: string, error: Error) => {
+        // TODO: see how to pass a callback from the parent to here
+    }
+
+    const [content, setContent] = useState<Descendant[]>(deserialize({ serializedData: elementInstance.content || "", onError: onDeserializationError }));
 
     const handleContentChange = (value: Descendant[]) => {
         setContent(value);
@@ -83,6 +88,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
                 onLoseFocus={handleLoseFocus}
                 placeholder={dictionary.components.formRenderer.pleaseEnterText}
                 locale={locale}
+                onDeserializationError={onDeserializationError}
             />
         </DesignerLayout>
     );
@@ -97,9 +103,13 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
 export function FormComponent({ elementInstance }: { elementInstance: FormElement }) {
     if (elementInstance.type !== FormElementType.RichText) return null;
 
+    const onDeserializationError = (message: string, error: Error) => {
+        // TODO: see how to pass a callback from the parent to here
+    }
+
     return (
         <div className="text-text-primary flex flex-col gap-2">
-            <RichTextRenderer content={elementInstance.content} />
+            <RichTextRenderer content={elementInstance.content} onDeserializationError={onDeserializationError} />
         </div>
     );
 }
@@ -111,9 +121,13 @@ export function FormComponent({ elementInstance }: { elementInstance: FormElemen
 function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
     if (elementInstance.type !== FormElementType.RichText) return null;
 
+    const onDeserializationError = (message: string, error: Error) => {
+        // TODO: see how to pass a callback from the parent to here
+    }
+
     return (
         <div className="text-text-primary flex flex-col">
-            <RichTextRenderer content={elementInstance.content} />
+            <RichTextRenderer content={elementInstance.content} onDeserializationError={onDeserializationError} />
         </div>
     );
 }
