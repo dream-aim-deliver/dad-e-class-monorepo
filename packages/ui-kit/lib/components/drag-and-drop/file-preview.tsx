@@ -7,7 +7,6 @@ import { IconVideo } from '../icons/icon-video';
 import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
 import { cn } from '../../utils/style-utils';
 import { Button } from '../button';
-import { IconError } from '../icons/icon-error';
 import { UploadedFileType, FileUploadResponse, ImageUploadResponse } from './uploader';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { FeedBackMessage } from '../feedback-message';
@@ -42,7 +41,9 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file, index, onDelete,
             <div className="flex items-center gap-2">
                 <div className="w-12 h-12 flex items-center justify-center rounded-medium bg-base-neutral-800 border border-base-neutral-700">
                     {file.isUploading ? (
-                        <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-primary" />
+                        <div className="select-none pointer-events-none">
+                            <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-primary" />
+                        </div>
                     ) : fileType === 'image' ? (
                         file.responseData && 'imageThumbnailUrl' in file.responseData ? (
                             <img

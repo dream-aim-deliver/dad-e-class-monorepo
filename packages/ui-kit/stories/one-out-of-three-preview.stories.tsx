@@ -1,8 +1,5 @@
-import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import { OneOutOfThreePreview, OneOutOfThreePreviewProps } from '../lib/components/out-of-three/one-out-of-three';
-
-// This is just for the story, assuming this is what the actual component looks like
+import { OneOutOfThreePreview } from '../lib/components/out-of-three/one-out-of-three';
 
 
 // Define the meta for the component
@@ -90,9 +87,9 @@ const productFeedbackData = {
     ],
 };
 
-const emptyData= {
+const emptyData = {
     tableTitle: 'New Survey',
-    
+
     rows: [
         {
             rowTitle: 'Question 1',
@@ -153,7 +150,7 @@ export const EmptySurvey: Story = {
 export const CustomizableExample: Story = {
     args: {
         data: {
-           
+
             tableTitle: 'Custom Survey',
             rows: [
                 {

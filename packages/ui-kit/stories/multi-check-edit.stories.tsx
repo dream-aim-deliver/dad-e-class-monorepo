@@ -1,7 +1,4 @@
-// stories/MultipleChoiceEdit.stories.tsx
-
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
 import { MultipleChoiceEdit } from '../lib/components/multiple-check';
 
 const meta: Meta<typeof MultipleChoiceEdit> = {

@@ -1,11 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { HeadingLesson, HeadingLessonPreview } from '../lib/components/heading-type';
 
-// Type definition (shared between components)
-type HeadingType = {
-    heading: string;
-    type: string;
-};
 
 // The main issue is here - we need to export default the HeadingLessonMeta
 // and use that as the primary meta export

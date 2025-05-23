@@ -276,6 +276,7 @@ export const EN: TDictionary = {
       viewProfileText: 'View profile',
     },
     uploadingSection: {
+      maxSizeText: 'Max size',
       uploadingText: 'Uploading...',
       cancelUpload: 'Cancel upload',
       deleteText: 'Delete',
@@ -298,6 +299,7 @@ export const EN: TDictionary = {
       title: 'Pre course assessment',
       alertText: 'Once you submit your response, you won’t be able to make changes, so please review it carefully. Completing this form is required to begin the course.',
       submitText: 'send reply',
+      requiredText: 'required',
       fieldRequired: 'This field is required',
       selectOption: 'Please select an option',
       pleaseEnterText: 'Please enter text',
