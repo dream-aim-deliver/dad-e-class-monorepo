@@ -5,19 +5,26 @@ import { LessonNoteBuilderViewType, LessonNoteStudentViewType } from '../../../l
 import { LessonNoteView } from '../../../lib/components/lesson-note/lesson-note-view';
 import Banner from '../../../lib/components/banner';
 import { useState } from 'react';
+import { slateifySerialize } from '../../../lib/components/rich-text-element/serializer';
+
+
+const onDeserializationError = (message: string, error: Error) => {
+  console.error(`${message}. Error: ${error}`);
+}
 
 // --- DESIGNER MOCK DATA ---
 const designerLessonNote: LessonNoteBuilderViewType = {
   type: CourseElementType.LessonNote,
   id: 101,
   order: 1,
-  initialValue: "<p>This is a <strong>lesson note</strong> for editing.</p>",
+  initialValue: slateifySerialize("This is a sample note."),
   onChange: (value) => {
     console.log("Designer LessonNote changed:", value);
     return Math.random() < 0.5; // Simulate a 50% chance of saving successfully
   },
   placeholder: "Write your lesson notes here...",
   locale: "en",
+  onDeserializationError: onDeserializationError,
 };
 
 
@@ -41,6 +48,7 @@ const getPreviewLessonNote = (locale: "en" | "de"): LessonNoteStudentViewType =>
       }
       onClickViewLesson={() => alert("View Lesson clicked")}
       locale={locale}
+      onDeserializationError={onDeserializationError}
     />,
     <LessonNoteView
       key="note2"
@@ -53,6 +61,7 @@ const getPreviewLessonNote = (locale: "en" | "de"): LessonNoteStudentViewType =>
       }
       onClickViewLesson={() => alert("View Lesson clicked")}
       locale={locale}
+      onDeserializationError={onDeserializationError}
     />,
     <LessonNoteView
       key="note3"
@@ -65,6 +74,7 @@ const getPreviewLessonNote = (locale: "en" | "de"): LessonNoteStudentViewType =>
       }
       onClickViewLesson={() => alert("View Lesson clicked")}
       locale={locale}
+      onDeserializationError={onDeserializationError}
     />,
   ],
 });

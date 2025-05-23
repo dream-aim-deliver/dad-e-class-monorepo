@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { OneOutOfThree, OneOutOfThreeData } from '../lib/components/out-of-three/one-out-of-three';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 /**
  * Mock messages for translations.

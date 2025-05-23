@@ -66,17 +66,23 @@ const textInputElement: FormElementTemplate = {
 function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
   if (elementInstance.type !== FormElementType.TextInput) return null;
   const dictionary = getDictionary(locale);
-  const [helperText, setHelperText] = useState<Descendant[]>(deserialize(elementInstance.helperText));
+
+  const onDeserializationError = (message: string, error: Error) => {
+    // TODO: see how to pass a callback from the parent component to here
+  };
+
+  const [helperText, setHelperText] = useState<Descendant[]>(deserialize({ serializedData: elementInstance.helperText, onError: onDeserializationError }
+  ));
   const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
 
   const handleContentChange = (value: Descendant[]) => {
     const contentString = serialize(value);
     setHelperText(value);
-
+    // TODO: Update the content in the element instance
   };
 
   const handleLoseFocus = (value: string) => {
-    // Update the element instance with the new content
+    // TODO: Update the element instance with the new content
   };
 
   const handleRequiredChange = () => {
@@ -105,6 +111,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
           onLoseFocus={handleLoseFocus}
           placeholder={dictionary.components.formRenderer.pleaseEnterText}
           locale={locale}
+          onDeserializationError={onDeserializationError}
         />
       </section>
     </DesignerLayout>
@@ -122,7 +129,14 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
  */
 export function FormComponent({ elementInstance, submitValue, locale }: FormComponentProps) {
   if (elementInstance.type !== FormElementType.TextInput) return null;
-  const [value, setValue] = useState<Descendant[]>(deserialize(""));
+
+  const onDeserializationError = (message: string, error: Error) => {
+    // TODO: see how to pass a callback from the parent component to here
+  }
+
+  const [value, setValue] = useState<Descendant[]>(deserialize(
+    { serializedData: "", onError: onDeserializationError }));
+
   const dictionary = getDictionary(locale);
 
   const onLoseFocus = () => {
@@ -138,7 +152,7 @@ export function FormComponent({ elementInstance, submitValue, locale }: FormComp
   return (
     <div className="text-text-primary flex flex-col gap-2 w-full">
       <section className="text-sm flex leading-[21px]">
-        <TextInputRenderer content={elementInstance.helperText} />
+        <TextInputRenderer content={elementInstance.helperText} onDeserializationError={onDeserializationError} />
         {elementInstance.required && <span className="text-feedback-error-primary ml-1">*</span>}
       </section>
       <section className="w-full">
@@ -149,6 +163,7 @@ export function FormComponent({ elementInstance, submitValue, locale }: FormComp
           initialValue={value}
           onChange={(value) => setValue(value)} // TODO: This is a no-op that will be replaced with a real function when we implement the builder
           onLoseFocus={onLoseFocus}
+          onDeserializationError={onDeserializationError}
         />
       </section>
     </div>
@@ -165,15 +180,20 @@ export function FormComponent({ elementInstance, submitValue, locale }: FormComp
 function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
   if (elementInstance.type !== FormElementType.TextInput) return null;
 
+  const onDeserializationError = (message: string, error: Error) => {
+    // TODO: see how to pass a callback from the parent component to here
+  }
+
   return (
     <div className="text-text-primary flex flex-col gap-4">
       <section className="text-sm leading-[21px] text-text-secondary">
-        <TextInputRenderer content={elementInstance.helperText} />
+        <TextInputRenderer content={elementInstance.helperText} onDeserializationError={onDeserializationError} />
       </section>
       {"content" in elementInstance && (
         <TextInputRenderer
           className="p-2 bg-base-neutral-800 rounded-md"
           content={elementInstance.content}
+          onDeserializationError={onDeserializationError}
         />
       )}
     </div>

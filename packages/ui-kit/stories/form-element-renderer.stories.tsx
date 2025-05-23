@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { FormElementRenderer } from "../lib/components/pre-assessment/form-renderer";
 import { FormElementType, FormElement } from "../lib/components/pre-assessment/types";
+import { slateifySerialize } from "../lib/components/rich-text-element/serializer";
 const meta: Meta<typeof FormElementRenderer> = {
     title: "Components/Pre-Assessment/FormElementRenderer",
     component: FormElementRenderer,
@@ -27,14 +28,14 @@ const Elements: FormElement[] = [
         id: "rich-text-1",
         type: FormElementType.RichText,
         order: 1,
-        content: "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Welcome to the pre-assessment form. Please read this information carefully before proceeding.\"}]}]"
+        content: slateifySerialize("Welcome to the pre-assessment form. Please read this information carefully before proceeding."),
     },
     {
         id: "text-input-1",
         type: FormElementType.TextInput,
         required: true,
         order: 2,
-        helperText: "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"What is your name?\"}]}]"
+        helperText: slateifySerialize("What is your name?"),
     },
     {
         id: "single-choice-1",
@@ -46,7 +47,6 @@ const Elements: FormElement[] = [
             { name: "Red", isSelected: false },
             { name: "Blue", isSelected: false },
             { name: "Green", isSelected: false }
-
         ]
     },
     {

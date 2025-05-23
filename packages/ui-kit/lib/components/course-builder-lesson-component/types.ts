@@ -9,6 +9,7 @@ export interface LessonNoteBuilderViewType extends isLocalAware {
     onChange: (value: string) => boolean;
     children?: React.ReactNode;
     placeholder: string;
+    onDeserializationError: (message: string, error: Error) => void;
 };
 
 export interface LessonNoteStudentViewType extends isLocalAware {

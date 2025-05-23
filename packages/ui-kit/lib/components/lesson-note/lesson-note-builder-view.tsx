@@ -39,6 +39,7 @@ export const LessonNoteBuilderView: FC<LessonNoteBuilderViewType> = ({
     children,
     placeholder,
     locale,
+    onDeserializationError
 }) => {
     const dictionary = getDictionary(locale);
     const [value, setValue] = useState<string>(initialValue);
@@ -89,6 +90,7 @@ export const LessonNoteBuilderView: FC<LessonNoteBuilderViewType> = ({
                 onLoseFocus={handleLoseFocus}
                 onChange={handleChange}
                 locale={locale}
+                onDeserializationError={onDeserializationError}
             />
             {children}
             {!notesSaved && !children && (

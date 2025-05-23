@@ -91,7 +91,16 @@ export function FormElementRenderer({
             switch (element.type) {
                 case FormElementType.TextInput: {
                     const textInput = formElement as TextInputElement;
-                    value = 'content' in textInput ? deserialize(textInput.content) : [];
+
+                    const onDeserializationError = (message: string, error: Error) => {
+                        // TODO: check how to pass a callback from the parent to here
+                    }
+
+                    value = 'content' in textInput ? deserialize({
+                        serializedData: textInput.content,
+                        onError: onDeserializationError
+                    }
+                    ) : [];
                     break;
                 }
                 case FormElementType.SingleChoice: {
