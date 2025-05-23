@@ -1,7 +1,6 @@
-import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { FormElementRenderer } from "../lib/components/pre-assessment/form-renderer";
-import { FormElementType,FormElement  } from "../lib/components/pre-assessment/types";
+import { FormElementType, FormElement } from "../lib/components/pre-assessment/types";
 const meta: Meta<typeof FormElementRenderer> = {
     title: "Components/Pre-Assessment/FormElementRenderer",
     component: FormElementRenderer,
@@ -28,7 +27,7 @@ const Elements: FormElement[] = [
         id: "rich-text-1",
         type: FormElementType.RichText,
         order: 1,
-        content:"[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Welcome to the pre-assessment form. Please read this information carefully before proceeding.\"}]}]" 
+        content: "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Welcome to the pre-assessment form. Please read this information carefully before proceeding.\"}]}]"
     },
     {
         id: "text-input-1",
@@ -47,7 +46,7 @@ const Elements: FormElement[] = [
             { name: "Red", isSelected: false },
             { name: "Blue", isSelected: false },
             { name: "Green", isSelected: false }
-           
+
         ]
     },
     {
@@ -63,39 +62,39 @@ const Elements: FormElement[] = [
         ]
     },
     {
-    id: 'sample-multi-choice-1',
-            type: FormElementType.OneOutOfThree,
-            order: 5,
-            required: true,
-            data:{
+        id: 'sample-multi-choice-1',
+        type: FormElementType.OneOutOfThree,
+        order: 5,
+        required: true,
+        data: {
             tableTitle: 'Product Feature Feedback',
             rows: [
-            {
-                rowTitle: 'User Interface',
-                columns: [
-                    { columnTitle: 'Not Important', selected: false },
-                    { columnTitle: 'Somewhat Important', selected: false },
-                    { columnTitle: 'Very Important', selected: false },
-                ],
-            },
-            {
-                rowTitle: 'Performance',
-                columns: [
-                    { columnTitle: 'Not Important', selected: false },
-                    { columnTitle: 'Somewhat Important', selected: false },
-                    { columnTitle: 'Very Important', selected: false },
-                ],
-            },
-            {
-                rowTitle: 'New Features',
-                columns: [
-                    { columnTitle: 'Not Important', selected: false },
-                    { columnTitle: 'Somewhat Important', selected: false },
-                    { columnTitle: 'Very Important', selected: false },
-                ],
-            }
+                {
+                    rowTitle: 'User Interface',
+                    columns: [
+                        { columnTitle: 'Not Important', selected: false },
+                        { columnTitle: 'Somewhat Important', selected: false },
+                        { columnTitle: 'Very Important', selected: false },
+                    ],
+                },
+                {
+                    rowTitle: 'Performance',
+                    columns: [
+                        { columnTitle: 'Not Important', selected: false },
+                        { columnTitle: 'Somewhat Important', selected: false },
+                        { columnTitle: 'Very Important', selected: false },
+                    ],
+                },
+                {
+                    rowTitle: 'New Features',
+                    columns: [
+                        { columnTitle: 'Not Important', selected: false },
+                        { columnTitle: 'Somewhat Important', selected: false },
+                        { columnTitle: 'Very Important', selected: false },
+                    ],
+                }
             ]
-            }
+        }
     }
 ];
 

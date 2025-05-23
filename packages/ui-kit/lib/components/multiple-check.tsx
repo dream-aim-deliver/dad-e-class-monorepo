@@ -1,5 +1,4 @@
-
-import react, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckBox } from './checkbox';
 import { InputField } from './input-field';
 import { IconButton } from './icon-button';
@@ -16,7 +15,7 @@ interface MultipleChoicePreviewProps {
     options: optionsType[];
     onChange?: (option: string) => void;
     filled?: boolean;
-    required?:boolean;
+    required?: boolean;
 }
 
 
@@ -31,20 +30,20 @@ export default function MultipleChoicePreview({
     return (
         <div className="flex flex-col gap-4 text-text-primary">
             <h5 className="">{title}
-            {required && <span className="text-feedback-error-primary ml-1 text-sm">*</span>}
+                {required && <span className="text-feedback-error-primary ml-1 text-sm">*</span>}
             </h5>
             <div className='flex flex-col gap-4'>
                 {options.map((option) => (
                     <CheckBox
-                    name={option.name}
-                    value={option.name}
-                    key={option.name}
-                   label={option.name}
-                   disabled={filled}
+                        name={option.name}
+                        value={option.name}
+                        key={option.name}
+                        label={option.name}
+                        disabled={filled}
 
-                   checked={option.isSelected}
-                   onChange={() => onChange(option.name)}
-                   withText
+                        checked={option.isSelected}
+                        onChange={() => onChange(option.name)}
+                        withText
                     />
                 ))
                 }
@@ -53,7 +52,7 @@ export default function MultipleChoicePreview({
     )
 }
 
-interface MultipleChoiceEditProps extends isLocalAware{
+interface MultipleChoiceEditProps extends isLocalAware {
     initialTitle?: string;
     initialOptions?: optionsType[];
     onChange?: (data: { title: string; options: optionsType[] }) => void;
@@ -68,7 +67,7 @@ export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
     const dictionary = getDictionary(locale);
     const [title, setTitle] = useState(initialTitle);
     const [options, setOptions] = useState(initialOptions);
-    
+
     useEffect(() => {
         if (onChange) {
             onChange({ title, options });
@@ -82,12 +81,12 @@ export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
         };
         setOptions([...options, newOption]);
     };
-    
+
     const handleRemoveChoice = (index: number) => {
         const updatedChoices = options.filter((_, i) => i !== index);
         setOptions(updatedChoices);
     };
-    
+
     const handleInputChange = (index: number, value: string) => {
         const updatedChoices = [...options];
         updatedChoices[index] = {
@@ -96,7 +95,7 @@ export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
         };
         setOptions(updatedChoices);
     };
-    
+
     return (
         <div className="flex flex-col gap-4 mt-4 w-full">
             <div className="w-full">
@@ -110,11 +109,11 @@ export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
             {options.map((choice, index) => (
                 <div key={index} className="flex gap-[10px] items-center">
                     <div className="w-fit flex items-center">
-                    <CheckBox
-                       disabled={true}
-                        name="multi-choice"
-                        value={`choice-${index}`}
-                    />
+                        <CheckBox
+                            disabled={true}
+                            name="multi-choice"
+                            value={`choice-${index}`}
+                        />
                     </div>
                     <div className="w-full">
                         <InputField
