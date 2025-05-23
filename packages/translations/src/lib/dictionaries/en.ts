@@ -423,6 +423,11 @@ export const EN: TDictionary = {
       takenAlsoBy: 'Taken also by',
       groupWorkspaceButton: 'Group Workspace',
     },
+    reviewSnippet: {
+      by: 'by',
+      readMore: 'Read more',
+      readLess: 'Read less',
+    }
   },
   pages: {
     home: Home_EN,

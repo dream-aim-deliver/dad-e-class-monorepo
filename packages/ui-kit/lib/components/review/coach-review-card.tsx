@@ -1,8 +1,8 @@
-import { UserAvatar } from './avatar/user-avatar';
-import { Button } from './button';
-import { IconCalendar } from './icons/icon-calendar';
-import { IconClock } from './icons/icon-clock';
-import { StarRating } from './star-rating';
+import { UserAvatar } from '../avatar/user-avatar';
+import { Button } from '../button';
+import { IconCalendar } from '../icons/icon-calendar';
+import { IconClock } from '../icons/icon-clock';
+import { StarRating } from '../star-rating';
 import {
   getDictionary,
   isLocalAware,
