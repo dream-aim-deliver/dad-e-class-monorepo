@@ -1,4 +1,4 @@
-import { AdminCourseFiltersExpanded } from '../lib/components/admin-course-filters-expanded';
+import { AdminCourseFilterModalExpanded } from '../lib/components/admin-course-filter-modal';
 import type { Meta } from '@storybook/react';
 
 // Mock Data
@@ -40,7 +40,7 @@ const mockLanguageOptions = [
 // Default Export for Storybook
 const meta = {
   title: 'Components/AdminCourseFiltersExpanded',
-  component: AdminCourseFiltersExpanded,
+  component: AdminCourseFilterModalExpanded,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
@@ -59,7 +59,7 @@ const meta = {
 export default meta;
 
 // Template for the Story
-const Template = (args) => <AdminCourseFiltersExpanded {...args} />;
+const Template = (args) => <AdminCourseFilterModalExpanded {...args} />;
 
 // Stories
 export const DefaultFilters = Template.bind({});
