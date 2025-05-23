@@ -31,7 +31,7 @@ export const DE: TDictionary = {
       hideActions: 'Aktionen ausblenden',
       selected: 'Ausgewählt',
       sendNotification: 'Benachrichtigung senden',
-      clearfilters: 'Filter zurücksetzen',
+      clearFilters: 'Filter zurücksetzen',
     },
     courseCard: {
       courseEmptyState: {

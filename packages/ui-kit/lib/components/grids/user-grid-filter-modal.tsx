@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../button';
 import { DateInput } from '../date-input';
 import { CheckBox } from '../checkbox';
-import { RadioButton } from '../radio-button';
-import { AutocompleteInput } from '../admin-course-filters-expanded';
+import { AutocompleteInput } from '../admin-course-filter-modal';
 import { profile } from '@maany_shr/e-class-models';
 import { IconClose } from '../icons/icon-close';
 

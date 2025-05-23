@@ -1,12 +1,11 @@
 import { AgGridReact } from 'ag-grid-react';
-import React, { RefObject, useRef, useState, useCallback, useMemo, useEffect } from 'react';
+import { RefObject, useState, useCallback, useMemo, useEffect } from 'react';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
 import { AllCommunityModule, IRowNode, ModuleRegistry, SortChangedEvent } from 'ag-grid-community';
 import { Button } from '../button';
 import { UserGridFilterModal, UserFilterModel } from './user-grid-filter-modal';
 import { profile } from '@maany_shr/e-class-models';
-import { Search, User, Book, Video, Shield } from 'lucide-react';
 import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconCloudDownload } from '../icons/icon-cloud-download';
@@ -16,6 +15,7 @@ import { IconCoach } from '../icons/icon-coach';
 import { IconStudent } from '../icons/icon-student';
 import { IconAll } from '../icons/icon-all';
 import { IconFilter } from '../icons/icon-filter';
+import { IconSearch } from '../icons/icon-search';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -29,7 +29,7 @@ export interface UserCMS extends profile.TBasePersonalProfile {
     phone: string;
     rating?: number;
     platform: string;
-    roles: { platformName: string; role: string }[]; // Updated roles structure
+    roles: { platformName: string; role: string }[];
     coachingSessionsCount?: number;
     coursesBought?: number;
     coursesCreated?: number;
@@ -453,6 +453,8 @@ export const UserGrid = (props: UserGridProps) => {
 
     const handleClearAllFilters = useCallback(() => {
         setSearchTerm(''); // Clear search input
+
+        // Reset modal filters to initial state
         setFilters({
             minRating: 0,
             maxRating: 5,
@@ -464,9 +466,16 @@ export const UserGrid = (props: UserGridProps) => {
             minCoursesCreated: '',
             maxCoursesCreated: '',
             lastAccessAfter: '',
-            lastAccessBefore: '',
-        }); // Reset modal filters to initial state
-    }, []);
+            lastAccessBefore: ''
+        });
+
+        // Reset grid filters
+        if (props.gridRef.current?.api) {
+            props.gridRef.current.api.setFilterModel(null);
+            props.gridRef.current.api.onFilterChanged();
+        }
+
+    }, [props.gridRef]);
 
 
     // Initialize the grid with external filters enabled
@@ -491,7 +500,7 @@ export const UserGrid = (props: UserGridProps) => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full p-2 pl-10 border rounded bg-input-fill text-text-primary border-input-stroke focus:outline-none focus:ring-2 focus:ring-primary"
                     />
-                    <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 text-gray-500 opacity-50 z-10" />
+                    <IconSearch classNames="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 text-gray-500 opacity-50 z-10" />
                 </div>
 
                 <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-1.5">
@@ -516,7 +525,7 @@ export const UserGrid = (props: UserGridProps) => {
                     <Button
                         variant="secondary"
                         size="medium"
-                        text={dictionary.components.userGrid.clearfilters}
+                        text={dictionary.components.userGrid.clearFilters}
                         onClick={handleClearAllFilters}
                         className="w-full md:w-auto"
                     />
@@ -588,7 +597,6 @@ export const UserGrid = (props: UserGridProps) => {
                 <Tabs.Root
                     defaultTab="all"
                     onValueChange={handleTabChange}
-                // className="overflow-auto w-full relative"
                 >
                     <TabList
                         className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap"

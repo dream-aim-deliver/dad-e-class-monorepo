@@ -112,7 +112,7 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ label, inp
 };
 
 // Define the props interface
-interface AdminCourseFiltersExpandedProps {
+interface AdminCourseFilterModalProps {
   onApplyFilters: (filters: any) => void;
   categories: string[];
   languageOptions: { name: string; code: string }[];
@@ -123,7 +123,7 @@ interface AdminCourseFiltersExpandedProps {
 }
 
 // Main Component
-export const AdminCourseFiltersExpanded: React.FC<AdminCourseFiltersExpandedProps> = ({
+export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProps> = ({
   onApplyFilters,
   categories,
   languageOptions,
