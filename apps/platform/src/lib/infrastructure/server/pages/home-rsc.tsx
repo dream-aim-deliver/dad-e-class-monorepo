@@ -3,6 +3,7 @@ import { HydrateClient, prefetch, trpc } from '../config/trpc/server';
 import { Suspense } from 'react';
 
 export default async function HomeServerComponent() {
+    // TODO: might be cached
     await prefetch(trpc.getHomePage.queryOptions());
 
     return (
@@ -10,11 +11,7 @@ export default async function HomeServerComponent() {
             <HydrateClient>
                 <div className="bg-card-color-fill">
                     <Suspense
-                        fallback={
-                            <div className="text-white">
-                                Loading... Hello...
-                            </div>
-                        }
+                        fallback={<div className="text-white">Loading...</div>}
                     >
                         <Home />
                     </Suspense>

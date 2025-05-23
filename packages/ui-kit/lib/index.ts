@@ -35,6 +35,8 @@ export { Footer } from './components/footer';
 export { NotificationGrid } from './components/grids/notification-grid';
 export { UserGrid } from './components/grids/user-grid';
 export { Hero } from './components/home-banner/hero';
+export { Carousel } from './components/carousel/carousel';
+export { GeneralCard } from './components/carousel/general-card';
 
 export { ReviewSnippet } from './components/review/review-snippet';
 export { CreateContentModal } from './components/create-content-modal';
