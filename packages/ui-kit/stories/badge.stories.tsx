@@ -1,6 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Badge } from '../lib/components/badge';
-import React from 'react';
 
 /**
  * Storybook configuration for the Badge component.
@@ -57,10 +56,12 @@ const Template: StoryObj<typeof Badge> = {
   render: (args) => <Badge {...args} />,
 };
 
+type Story = StoryObj<typeof Badge>;
+
 /**
  * Default story showcasing an informational badge.
  */
-export const Info = {
+export const Info: Story = {
   ...Template,
   args: {
     variant: 'info',
@@ -80,7 +81,7 @@ export const Info = {
 /**
  * Primary badge story.
  */
-export const Primary = {
+export const Primary: Story = {
   ...Template,
   args: {
     variant: 'primary',
@@ -92,7 +93,7 @@ export const Primary = {
 /**
  * Success badge story.
  */
-export const SuccessPrimary = {
+export const SuccessPrimary: Story = {
   ...Template,
   args: {
     variant: 'successprimary',
@@ -104,7 +105,7 @@ export const SuccessPrimary = {
 /**
  * Warning badge story.
  */
-export const WarningPrimary = {
+export const WarningPrimary: Story = {
   ...Template,
   args: {
     variant: 'warningprimary',
@@ -116,7 +117,7 @@ export const WarningPrimary = {
 /**
  * Error badge story.
  */
-export const ErrorPrimary = {
+export const ErrorPrimary: Story = {
   ...Template,
   args: {
     variant: 'errorprimary',
@@ -128,7 +129,7 @@ export const ErrorPrimary = {
 /**
  * Interactive badge story with an onClick handler.
  */
-export const ClickableBadge = {
+export const ClickableBadge: Story = {
   ...Template,
   args: {
     variant: 'info',

@@ -18,7 +18,7 @@ export function TabList({
     default:
       'flex overflow-x-auto w-full bg-base-neutral-800 rounded-medium p-2 gap-2 border-[1px] border-base-neutral-700',
     small:
-      'flex overflow-x-autob w-full bg-base-neutral-800 rounded-medium p-1 gap-2 border-[1px] border-base-neutral-700',
+      'flex overflow-x-auto w-full bg-base-neutral-800 rounded-medium p-1 gap-2 border-[1px] border-base-neutral-700',
   };
 
   return (
