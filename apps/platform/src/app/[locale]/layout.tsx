@@ -135,10 +135,11 @@ export default async function RootLayout({
                             }
                         >
                             <div
-                                className="w-full min-h-screen bg-black flex flex-col items-center"
+                                className="w-full min-h-screen bg-cover bg-repeat-y flex flex-col justify-center items-center"
                                 style={{
                                     backgroundImage: `url(${platform.backgroundImageUrl})`,
                                     // TODO: have a fallback color
+                                    backgroundColor: '#141414',
                                 }}
                             >
                                 <Header
@@ -147,7 +148,7 @@ export default async function RootLayout({
                                     locale={locale}
                                     session={session}
                                 />
-                                <main className="flex-grow w-full max-w-screen-2xl pt-24">
+                                <main className="flex-grow w-full max-w-7xl mx-auto px-4 pt-12 pb-12">
                                     {children}
                                 </main>
                                 <Footer
