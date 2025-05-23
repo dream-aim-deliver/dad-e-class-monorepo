@@ -13,14 +13,13 @@ import { cn } from '../../utils/style-utils';
  * @param {string | Descendant[]} props.content - The Slate content, either as a string (which is parsed) or as a Descendant array.
  */
 function RichTextRenderer({ content, className }: { content: string | Descendant[], className?: string }) {
-  // Convert string content to Slate's internal structure if necessary
-  if (typeof content === 'string') {
-    content = deserialize(content);
-  }
+
+  // Deserialize the content to Slate format
+  const deserializedContent = deserialize(content);
 
   return (
     <div className={cn(className)}>
-      {content.map((element, index) => (
+      {deserializedContent.map((element, index) => (
         <ElementNode key={index} element={element} />
       ))}
     </div>

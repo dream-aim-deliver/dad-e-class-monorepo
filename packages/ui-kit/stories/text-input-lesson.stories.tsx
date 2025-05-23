@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { FormElementType } from '../lib/components/pre-assessment/types';
 import textInputElement from '../lib/components/lesson-components/text-input';
+import { slateify } from '../lib/components/rich-text-element/serializer';
 
 // Text Input Designer Component
 const TextInputDesignerComponent = (props) => {
@@ -10,7 +11,7 @@ const TextInputDesignerComponent = (props) => {
         order: 1,
         required: true,
         content: '',
-        helperText: 'Please enter your answer',
+        helperText: slateify('Please enter your answer'),
         title: 'Text Input Title',
     };
 
@@ -25,7 +26,7 @@ const meta: Meta<typeof TextInputDesignerComponent> = {
     title: 'Components/Pre-Assessment/Lessons/TextInput',
     component: TextInputDesignerComponent,
     parameters: {
-       
+
     },
     argTypes: {
         locale: {
@@ -51,16 +52,16 @@ export const FormView: StoryObj<typeof TextInputDesignerComponent> = {
     render: (args) => {
         const sampleInstance = {
             id: 'sample-text-input-1',
-            type: FormElementType.TextInput,
+            type: FormElementType.TextInput as FormElementType.TextInput,
             order: 1,
             required: true,
             content: '',
-             helperText: JSON.stringify([
+            helperText: JSON.stringify([
                 {
-                  type: 'paragraph',
-                  children: [{ text: 'This is a basic paragraph.' }],
+                    type: 'paragraph',
+                    children: [{ text: 'This is a basic paragraph.' }],
                 },
-              ])
+            ])
         };
 
         return <textInputElement.formComponent
@@ -79,7 +80,7 @@ export const SubmissionView: StoryObj<typeof TextInputDesignerComponent> = {
     render: (args) => {
         const sampleInstance = {
             id: 'sample-text-input-1',
-            type: FormElementType.TextInput,
+            type: FormElementType.TextInput as FormElementType.TextInput,
             order: 1,
             required: true,
             content: JSON.stringify([
@@ -100,11 +101,11 @@ export const SubmissionView: StoryObj<typeof TextInputDesignerComponent> = {
         };
 
         return (
-           
-                <textInputElement.submissionComponent
-                    elementInstance={sampleInstance}
-                />
-            
+
+            <textInputElement.submissionComponent
+                elementInstance={sampleInstance}
+            />
+
         );
     },
     args: {

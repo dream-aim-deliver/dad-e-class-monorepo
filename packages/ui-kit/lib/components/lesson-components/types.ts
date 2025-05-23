@@ -68,14 +68,14 @@ export interface RichTextElement extends BaseFormElement {
 interface TextInputWithHelperOnly extends BaseFormElement {
     type: FormElementType.TextInput;
     helperText: string;
-  }
-  
-  interface TextInputWithBoth extends BaseFormElement {
+}
+
+interface TextInputWithBoth extends BaseFormElement {
     type: FormElementType.TextInput;
     helperText: string;
     content: string;
-  }
-  
+}
+
 export type TextInputElement = TextInputWithHelperOnly | TextInputWithBoth;
 
 /**
@@ -145,8 +145,8 @@ export interface SingleChoiceElement extends BaseFormElement {
  */
 export interface HeadingElement extends BaseFormElement {
     type: FormElementType.HeadingText;
-    heading:string;
-    headingType:string;
+    heading: string;
+    headingType: string;
 }
 
 
@@ -158,7 +158,7 @@ export interface multiCheckElement extends BaseFormElement {
 
 export interface OneOutOfThreeElement extends BaseFormElement {
     type: FormElementType.OneOutOfThree;
-    
+
     data: OneOutOfThreeData;
 
 }

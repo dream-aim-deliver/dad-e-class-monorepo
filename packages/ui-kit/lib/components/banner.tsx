@@ -92,7 +92,7 @@ const Banner: FC<BannerProps> = ({
         <div className="flex flex-col min-w-0">
           {title && (
             <div className="flex items-center gap-2">
-              <span className="font-bold truncate">
+              <span className="font-bold truncate" title={title}>
                 {title}
               </span>
             </div>

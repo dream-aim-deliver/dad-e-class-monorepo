@@ -24,7 +24,7 @@ export type HeadingType = {
   type: string;
 }
 
-const HeadingLesson = ({ initialHeadingValue,initialHeadingType,onChange, locale }: HeadingLessonProps) => {
+const HeadingLesson = ({ initialHeadingValue, initialHeadingType, onChange, locale }: HeadingLessonProps) => {
   const dictionary = getDictionary(locale);
   const [headingValue, setHeadingValue] = useState<HeadingType>({
     heading: initialHeadingValue || "",

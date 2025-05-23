@@ -80,20 +80,20 @@ const DesignerLayout = ({
                 {/* Action Buttons */}
                 <div className="flex items-center gap-1">
                     {
-                        type != "richText" && type!=="headingText" &&  !courseBuilder &&
+                        type != "richText" && type !== "headingText" && !courseBuilder &&
                         <div className="mr-4 flex items-center">
-                        <AnimatedRadioButton
-                            name="required"
-                            value="required"
-                            checked={isChecked}
-                            size="small"
-                            onChange={onChange}
-                            withText={true}
-                            labelClass="text-text-primary capitalize"
-                            label={dictionary.components.formRenderer.requiredText}
+                            <AnimatedRadioButton
+                                name="required"
+                                value="required"
+                                checked={isChecked}
+                                size="small"
+                                onChange={onChange}
+                                withText={true}
+                                labelClass="text-text-primary capitalize"
+                                label={dictionary.components.formRenderer.requiredText}
 
 
-                        />
+                            />
                         </div>
                     }
                     <IconButton

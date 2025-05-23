@@ -1,10 +1,10 @@
-import  { useState } from "react";
-
+import { useState } from "react";
 import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps } from "../pre-assessment/types";
 import DesignerLayout from "./designer-layout";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { IconOneOutOfThree } from "../icons/icon-one-out-of-three";
 import { OneOutOfThree, OneOutOfThreeData, OneOutOfThreePreview } from "../out-of-three/one-out-of-three";
+
 
 const oneOutOfThreeElement: FormElementTemplate = {
     type: FormElementType.OneOutOfThree,
@@ -60,11 +60,11 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
             isChecked={isRequired}
             onChange={handleRequiredChange}
         >
-             <OneOutOfThree
-          locale={locale}
-              data={data}
-        onUpdate={(updatedData) => setData(updatedData)}
-      />
+            <OneOutOfThree
+                locale={locale}
+                data={data}
+                onUpdate={(updatedData) => setData(updatedData)}
+            />
 
 
         </DesignerLayout>
