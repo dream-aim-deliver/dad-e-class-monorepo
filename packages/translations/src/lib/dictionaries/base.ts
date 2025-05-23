@@ -28,7 +28,7 @@ export const DictionarySchema = z.object({
       admin: z.string(),
       hideActions: z.string(),
       selected: z.string(),
-      clearfilters: z.string(),
+      clearFilters: z.string(),
     }),
     modulePagination: z.object({
       previous: z.string(),
