@@ -84,7 +84,7 @@ export const Badge: FC<BadgeProps> = ({
 
   return (
     <span
-    role="badge"
+      role="badge"
       className={cn(
         badgeSizeClasses,
         onClick ? 'cursor-pointer' : '',
@@ -103,7 +103,7 @@ export const Badge: FC<BadgeProps> = ({
           {iconLeft}
         </span>
       )}
-       <span className="truncate">{text}</span>
+      <span className="truncate">{text}</span>
       {hasIconRight && iconRight && (
         <span
           className={cn(
