@@ -137,7 +137,8 @@ export default async function RootLayout({
                             <div
                                 className="w-full min-h-screen bg-cover bg-repeat-y flex flex-col justify-center items-center"
                                 style={{
-                                    backgroundImage: `url(${platform.backgroundImageUrl})`,
+                                    // Temporary linear gradient to match the Figma. Should be uploaded this dark.
+                                    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platform.backgroundImageUrl})`,
                                     // TODO: have a fallback color
                                     backgroundColor: '#141414',
                                 }}
@@ -148,7 +149,7 @@ export default async function RootLayout({
                                     locale={locale}
                                     session={session}
                                 />
-                                <main className="flex-grow w-full max-w-7xl mx-auto px-4 pt-12 pb-12">
+                                <main className="flex-grow w-full max-w-7xl mx-auto px-4 py-16">
                                     {children}
                                 </main>
                                 <Footer
