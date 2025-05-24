@@ -15,6 +15,13 @@ export const DictionarySchema = z.object({
       personal: z.string(),
       professional: z.string(),
     }),
+    notificationGrid: z.object({
+      markAllAsRead: z.string(),
+      searchPlaceholder: z.string(),
+      all: z.string(),
+      noNotifications: z.string(),
+      loading: z.string(),
+    }),
     modulePagination: z.object({
       previous: z.string(),
       next: z.string(),

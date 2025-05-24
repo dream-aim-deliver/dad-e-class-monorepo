@@ -18,6 +18,13 @@ export const DE: TDictionary = {
       next: 'Nächste',
       lesson: 'Lektion',
     },
+    notificationGrid: {
+      markAllAsRead: 'Alle als gelesen markieren',
+      searchPlaceholder: 'Suchaktivität',
+      all: 'Alle',
+      loading: 'Laden...',
+      noNotifications: 'Keine Aktivität gefunden',
+    },
     courseCard: {
       courseEmptyState: {
         message: 'Sie haben noch keine Kurse gekauft',
