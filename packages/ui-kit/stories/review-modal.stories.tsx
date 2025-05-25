@@ -189,6 +189,7 @@ export const DefaultFormGerman: Story = {
   args: {
     ...DefaultForm.args,
     locale: 'de',
+    modalType: 'course',
   },
   decorators: DefaultForm.decorators, // Reuse the same decorator
   parameters: {
