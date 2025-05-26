@@ -22,9 +22,12 @@ const mockElementInstance:  CourseElement = {
     type: CourseElementType.ImageGallery,
     order: 1,
     imageUrls: [
+        'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+        'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
+        'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+        'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         'https://picsum.photos/400/300?random=1',
         'https://picsum.photos/400/300?random=2',
-        'https://picsum.photos/400/300?random=3'
     ]
 };
 
@@ -112,7 +115,7 @@ export const DesignerWithImages: Story = {
         elementInstance: {
             ...mockElementInstance,
             imageUrls: [
-                'https://picsum.photos/400/300?random=1',
+                'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
                 'https://picsum.photos/400/300?random=2',
                 'https://picsum.photos/400/300?random=3',
                 'https://picsum.photos/400/300?random=4',
@@ -149,22 +152,3 @@ export const FormWithoutImages: StoryObj<typeof FormComponent> = {
     ),
 };
 
-// Mobile view story
-export const FormViewMobile: StoryObj<typeof FormComponent> = {
-    parameters: {
-        viewport: {
-            defaultViewport: 'mobile1'
-        },
-    },
-    render: FormView.render,
-};
-
-// Tablet view story
-export const FormViewTablet: StoryObj<typeof FormComponent> = {
-    parameters: {
-        viewport: {
-            defaultViewport: 'tablet'
-        },
-    },
-    render: FormView.render,
-};

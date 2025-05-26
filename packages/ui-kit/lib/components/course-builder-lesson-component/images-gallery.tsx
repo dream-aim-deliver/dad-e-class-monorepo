@@ -106,11 +106,12 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
      */
     const getVisibleItemCount = () => {
         if (typeof window !== "undefined") {
-            if (window.innerWidth < 640) return 3; // Small mobile
-            if (window.innerWidth < 768) return 4; // Mobile
-            if (window.innerWidth > 768) return 6; // Tablet
+            const width = window.innerWidth;
+            if (width < 640) return 3; // Small mobile devices (e.g., phones in portrait)
+            if (width < 768) return 4; // Mobile (640px to 767px)
+            return 6;                  // Tablet and larger (768px+)
         }
-        return 3; // Default fallback
+        return 3; // Default fallback (SSR or undefined window)
     };
   
     const [visibleItems, setVisibleItems] = useState(getVisibleItemCount());
@@ -132,18 +133,30 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
         };
     }, []);
 
+    const canScroll = totalSlides > visibleItems;
+
     const nextSlide = () => {
+        if (!canScroll) return;
         setCurrentIndex((prevIndex) =>
             prevIndex === totalSlides - 1 ? 0 : prevIndex + 1
         );
     };
 
     const prevSlide = () => {
-        setCurrentIndex((prevIndex) => 
+        if (!canScroll) return;
+        setCurrentIndex((prevIndex) =>
             prevIndex === 0 ? totalSlides - 1 : prevIndex - 1
         );
     };
-  
+
+    const thumbWidthPercent = canScroll
+        ? (100 / visibleItems)
+        : (totalSlides > 0 ? (100 / totalSlides) : 100);
+
+    const translateXPercent = canScroll
+        ? -(currentIndex * (100 / visibleItems))
+        : 0;
+
     return (
         <div className="flex flex-col items-center p-4">
             <div className="w-full max-w-xl">
@@ -159,17 +172,17 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
                     <div 
                         className="flex gap-2 transition-transform duration-500 ease-out"
                         style={{
-                            transform: `translateX(-${currentIndex * (100 / visibleItems)}%)`
+                            transform: `translateX(${translateXPercent}%)`
                         }}
                     >
                         {imageElements.map((image, index) => (
-                            <div 
-                                key={index} 
+                            <div
+                                key={index}
                                 className={cn("flex-shrink-0",index === currentIndex && "border-2 border-button-primary-fill rounded-md")}
-                                style={{ width: `${100 / visibleItems}%` }}
+                                style={{ width: `${thumbWidthPercent}%` }}
                             >
                                 <img
-                                    className="w-full h-24 object-cover cursor-pointer rounded-md"   
+                                    className="w-full h-24 object-cover cursor-pointer rounded-md"
                                     src={image}
                                     alt={`Image ${index}`}
                                     onClick={() => setCurrentIndex(index)}
@@ -179,22 +192,26 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
                     </div>
                     
                     {/* Navigation buttons */}
-                    <IconButton
-                        icon={<IconChevronLeft />}
-                        onClick={prevSlide}
-                        styles="secondary"
-                        size="small"
-                        className="absolute left-0 top-1/2 -translate-y-1/2  p-2  border-none cursor-pointer text-button-primary-fill bg-none z-10"
-                        aria-label="Previous slide"
-                    />
-                    <IconButton
-                        icon={<IconChevronRight />}
-                        onClick={nextSlide}
-                        styles="secondary"
-                        size="small"
-                        className="absolute  right-0 top-1/2 -translate-y-1/2  p-2  border-none cursor-pointer  z-10"
-                        aria-label="Next slide"
-                    />
+                    {canScroll && (
+                        <>
+                            <IconButton
+                                icon={<IconChevronLeft />}
+                                onClick={prevSlide}
+                                styles="secondary"
+                                size="small"
+                                className="absolute left-0 top-1/2 -translate-y-1/2 p-2 border-none cursor-pointer text-button-primary-fill bg-none z-10"
+                                aria-label="Previous slide"
+                            />
+                            <IconButton
+                                icon={<IconChevronRight />}
+                                onClick={nextSlide}
+                                styles="secondary"
+                                size="small"
+                                className="absolute right-0 top-1/2 -translate-y-1/2 p-2 border-none cursor-pointer z-10"
+                                aria-label="Next slide"
+                            />
+                        </>
+                    )}
                 </div>
             </div>
         </div>

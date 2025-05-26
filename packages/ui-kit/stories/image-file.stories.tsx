@@ -33,7 +33,7 @@ const mockElementInstance: ImageFile = {
     id: '1',
     order: 0,
     type: CourseElementType.ImageFile,
-    imageThumbnailUrl: 'https://picsum.photos/400/300',
+    imageThumbnailUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     imageId: 'image-1',
 }
 
@@ -121,7 +121,12 @@ export const DesignerWithImage: DesignerStory = {
 export const Form: FormStory = {
     render: (args) => (
         <FormComponent
-            elementInstance={mockElementInstance}
+            elementInstance={{
+                id: 'image-1',
+                type: CourseElementType.ImageFile,
+                order: 0,
+                imageUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+            }}
             locale="en"
         />
     ),

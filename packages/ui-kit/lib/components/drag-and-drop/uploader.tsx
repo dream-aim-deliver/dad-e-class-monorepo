@@ -26,7 +26,7 @@ export type ImageUploadResponse = {
 
 export type VideoUploadResponse = {
   videoId: string;
-  thumbnailUrl?: string;
+  thumbnailUrl: string;
   fileSize: number;
 };
 

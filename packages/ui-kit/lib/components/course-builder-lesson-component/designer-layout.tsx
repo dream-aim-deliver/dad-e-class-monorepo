@@ -67,7 +67,6 @@ const DesignerLayout = ({
     children,
     courseBuilder = false,
 }: DesignerLayoutProps) => {
-    const dictionary = getDictionary(locale);
     return (
         <div className="p-4 w-full flex flex-col gap-2 bg-base-neutral-800 rounded-md border-1 border-base-neutral-700">
             {/* Header Row */}
