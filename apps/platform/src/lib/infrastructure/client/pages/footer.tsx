@@ -5,6 +5,7 @@ import { Footer as FooterComponent } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 
 interface FooterProps {
     platform: platform.TPlatform;
@@ -56,7 +57,16 @@ export default function Footer({
         <FooterComponent
             availableLocales={availableLocales}
             locale={locale}
-            logoSrc={platform.logoUrl}
+            logo={
+                <Image
+                    priority
+                    src={platform.logoUrl}
+                    alt={platform.name}
+                    width={48}
+                    height={48}
+                    className="w-auto h-full"
+                />
+            }
             onChangeLanguage={changeLanguage}
             footerChildren={<span>{platform.footerContent}</span>}
         >
