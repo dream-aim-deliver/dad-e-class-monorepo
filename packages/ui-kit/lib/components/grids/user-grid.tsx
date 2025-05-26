@@ -1,5 +1,5 @@
 import { AgGridReact } from 'ag-grid-react';
-import { RefObject, useState, useCallback, useMemo, useEffect } from 'react';
+import React, { RefObject, useState, useCallback, useMemo, useEffect } from 'react';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
 import { AllCommunityModule, IRowNode, ModuleRegistry, SortChangedEvent } from 'ag-grid-community';
@@ -17,6 +17,7 @@ import { IconAll } from '../icons/icon-all';
 import { IconFilter } from '../icons/icon-filter';
 import { IconSearch } from '../icons/icon-search';
 import { InputField } from '../input-field';
+import { StarRating } from '../star-rating';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -86,11 +87,13 @@ const RatingCellRenderer = (props: any) => {
         return <span>-</span>;
     }
 
-    const rounded = Number(rating.toFixed(1));
-    if (rating % 1 === 0) {
-        return Math.floor(rating);
-    }
-    return rounded;
+    const rounded = Number(rating.toFixed(2));
+    const value = rounded % 1 === 0 ? Math.floor(rounded) : rounded;
+
+    return <div className="flex items-center space-x-2">
+        <span>{value}</span>
+        <StarRating rating={rating} totalStars={5} />
+    </div>;
 };
 
 const PlatformCellRenderer = (props: any) => {
