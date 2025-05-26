@@ -163,13 +163,13 @@ export const UserGrid = (props: UserGridProps) => {
     const [selectedRole, setSelectedRole] = useState<string>('all');
     const dictionary = getDictionary(props.locale);
     const [columnDefs, setColumnDefs] = useState([
-        {
-            headerCheckboxSelection: props.enableSelection,
-            checkboxSelection: props.enableSelection,
-            width: props.enableSelection ? 50 : 0,
-            hide: !props.enableSelection,
-            filter: false
-        },
+        // {
+        //     headerCheckboxSelection: props.enableSelection,
+        //     checkboxSelection: props.enableSelection,
+        //     width: props.enableSelection ? 50 : 0,
+        //     hide: !props.enableSelection,
+        //     filter: false
+        // },
         {
             field: 'name',
             headerName: 'Name',
@@ -582,7 +582,7 @@ export const UserGrid = (props: UserGridProps) => {
                     paginationAutoPageSize={true}
                     isExternalFilterPresent={() => true}
                     doesExternalFilterPass={doesExternalFilterPass}
-                    rowSelection={props.enableSelection ? 'multiple' : undefined}
+                    rowSelection={props.enableSelection ? { mode: 'multiRow' } : undefined}
                     onSelectionChanged={() => {
                         const selectedRows = props.gridRef.current?.api?.getSelectedRows() || [];
                         setSelectedUserCount(selectedRows.length);
