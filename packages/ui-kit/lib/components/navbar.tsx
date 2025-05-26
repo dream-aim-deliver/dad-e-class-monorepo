@@ -32,6 +32,7 @@ interface NavbarProps extends isLocalAware {
  * @param userProfileImageSrc The URL of the user's profile image.
  * @param userName The user's full name.
  * @param logoSrc The URL of the platform's logo.
+ * @param logo Optional React node to render as the logo, which can be an image or any other element.
  * @param availableLocales An array of available locales for the language dropdown.
  *
  * @example
@@ -106,7 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     <nav className="bg-transparent text-white py-4 px-4 flex items-center justify-between w-full">
       {/* Logo */}
       <div className="flex items-center">
-        <a href="/" className="h-12">
+        <a href="/" className="block h-12">
           {logo}
           {logoSrc && <img
             src={logoSrc}
@@ -211,7 +212,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="fixed top-0 left-0 w-full h-full bg-button-primary-text text-white flex flex-col items-center justify-center lg:hidden z-9999"
         >
           <div className="absolute top-3 left-0 right-0 flex justify-between items-center px-4 w-full">
-            <a href="/" className="h-12">
+            <a href="/" className="block h-12">
               {logo}
               {logoSrc && <img
                 src={logoSrc}
