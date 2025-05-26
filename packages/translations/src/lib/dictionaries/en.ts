@@ -419,6 +419,10 @@ export const EN: TDictionary = {
       resetFilters: 'Reset filters',
       applyFilters: 'Apply filters',
     },
+    groupCourseBanner: {
+      takenAlsoBy: 'Taken also by',
+      groupWorkspaceButton: 'Group Workspace',
+    },
   },
   pages: {
     home: Home_EN,

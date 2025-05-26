@@ -424,6 +424,10 @@ export const DE: TDictionary = {
       resetFilters: 'Filter zruggsetze',
       applyFilters: 'Filter aawände',
     },
+    groupCourseBanner: {
+      takenAlsoBy: 'Ebenfalls belegt von',
+      groupWorkspaceButton: 'Gruppenarbeitsbereich',
+    },
   },
   pages: {
     home: Home_DE,

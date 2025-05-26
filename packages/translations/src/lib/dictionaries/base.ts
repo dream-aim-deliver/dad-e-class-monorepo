@@ -412,6 +412,10 @@ export const DictionarySchema = z.object({
       resetFilters: z.string(),
       applyFilters: z.string(),
     }),
+    groupCourseBanner: z.object({
+      takenAlsoBy: z.string(),
+      groupWorkspaceButton: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({
