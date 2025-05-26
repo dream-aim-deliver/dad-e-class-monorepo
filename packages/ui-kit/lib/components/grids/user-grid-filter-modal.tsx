@@ -5,6 +5,7 @@ import { CheckBox } from '../checkbox';
 import { profile } from '@maany_shr/e-class-models';
 import { IconClose } from '../icons/icon-close';
 import { TextInput } from '../text-input';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 // User filter interface extending TBasePersonalProfile
 export interface UserFilterModel extends profile.TBasePersonalProfile {
@@ -22,7 +23,7 @@ export interface UserFilterModel extends profile.TBasePersonalProfile {
     lastAccessBefore?: string;
 }
 
-interface UserGridFilterModalProps {
+interface UserGridFilterModalProps extends isLocalAware {
     onApplyFilters: (filters: UserFilterModel) => void;
     onClose: () => void;
     initialFilters?: Partial<UserFilterModel>;
@@ -34,7 +35,11 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
     onClose,
     initialFilters = {},
     platforms,
+    locale,
 }) => {
+
+    const dictionary = getDictionary(locale).components.userGridFilterModal;
+
     const [filters, setFilters] = useState<Partial<UserFilterModel>>({
         minRating: initialFilters.minRating,
         maxRating: initialFilters.maxRating,
@@ -90,9 +95,9 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
 
     return (
         <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50" onClick={onClose}>
-            <div className="flex flex-col gap-2 p-6 bg-card-fill text-text-primary w-full max-w-[350px] h-full max-h-[90vh] overflow-y-auto rounded-md">
+            <div className="flex flex-col gap-2 p-6 bg-card-fill text-text-primary w-full max-w-[350px] h-full max-h-[90vh] overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-bold">User Filters</h2>
+                    <h2 className="text-2xl font-bold">{dictionary.title}</h2>
                     <div className="flex top-0 right-0 p-0">
                         <Button variant="text" size="small" hasIconLeft iconLeft={<IconClose size="6" />} onClick={onClose} />
                     </div>
@@ -101,10 +106,10 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
 
                 {/* Rating Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">Rating</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.ratingFilter}</h3>
                     <div className="flex gap-2">
                         <TextInput
-                            label="Min"
+                            label={dictionary.min}
                             key={`minRating-${resetKey}`}
                             inputField={{
                                 id: 'minRating',
@@ -114,11 +119,11 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 // TODO: possibly check if the value is in range of 0-5
                                 setValue: (value: string) =>
                                     handleChange('minRating', parseFloat(value) || undefined),
-                                inputText: 'e.g. 1',
+                                inputText: dictionary.minimumRatingPlaceholder,
                             }}
                         />
                         <TextInput
-                            label="Max"
+                            label={dictionary.max}
                             key={`maxRating-${resetKey}`}
                             inputField={{
                                 id: 'maxRating',
@@ -126,7 +131,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 defaultValue: filters.maxRating?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('maxRating', parseFloat(value) || undefined),
-                                inputText: 'e.g. 5',
+                                inputText: dictionary.maximumRatingPlaceholder,
                             }}
                         />
                     </div>
@@ -135,15 +140,22 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
 
                 {/* Platform Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">Platform</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.platformFilter}</h3>
                     <div className="grid grid-cols-2 gap-3 line-clamp-3">
                         {platforms.map((platform) => (
                             <CheckBox
                                 key={platform}
                                 name={platform}
                                 value={platform}
-                                label={platform}
-                                labelClass="text-white text-sm"
+                                label={
+                                    <span
+                                        className="block w-full overflow-hidden text-ellipsis whitespace-nowrap"
+                                        title={platform}
+                                    >
+                                        {platform}
+                                    </span>
+                                }
+                                labelClass="text-white text-sm w-full"
                                 checked={(filters.platform || []).includes(platform)}
                                 withText
                                 onChange={() => handlePlatformToggle(platform)}
@@ -155,30 +167,30 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
 
                 {/* Coaching Sessions Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">Coaching Sessions</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.coachingSessionFilter}</h3>
                     <div className="flex gap-2">
                         <TextInput
                             key={`minCoachingSessions-${resetKey}`}
-                            label="Min"
+                            label={dictionary.min}
                             inputField={{
                                 id: 'minCoachingSessions',
                                 className: "w-full text-white border-input-stroke",
                                 defaultValue: filters.minCoachingSessions?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('minCoachingSessions', parseInt(value) || undefined),
-                                inputText: 'e.g. 5',
+                                inputText: dictionary.minimumCoachingSessionsPlaceholder,
                             }}
                         />
                         <TextInput
                             key={`maxCoachingSessions-${resetKey}`}
-                            label="Max"
+                            label={dictionary.max}
                             inputField={{
                                 id: 'maxCoachingSessions',
                                 className: "w-full text-white border-input-stroke",
                                 value: filters.maxCoachingSessions?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('maxCoachingSessions', parseInt(value) || undefined),
-                                inputText: 'e.g. 50',
+                                inputText: dictionary.maximumCoachingSessionsPlaceholder,
                             }}
                         />
                     </div>
@@ -187,10 +199,10 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
 
                 {/* Courses Bought Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">Courses Bought</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.coursesBoughtFilter}</h3>
                     <div className="flex gap-2">
                         <TextInput
-                            label="Min"
+                            label={dictionary.min}
                             key={`minCoursesBought-${resetKey}`}
                             inputField={{
                                 id: 'minCoursesBought',
@@ -198,11 +210,11 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 defaultValue: filters.minCoursesBought?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('minCoursesBought', parseInt(value) || undefined),
-                                inputText: 'e.g. 1',
+                                inputText: dictionary.minimumCoursesBoughtPlaceholder,
                             }}
                         />
                         <TextInput
-                            label="Max"
+                            label={dictionary.max}
                             key={`maxCoursesBought-${resetKey}`}
                             inputField={{
                                 id: 'maxCoursesBought',
@@ -210,7 +222,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 defaultValue: filters.maxCoursesBought?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('maxCoursesBought', parseInt(value) || undefined),
-                                inputText: 'e.g. 20',
+                                inputText: dictionary.maximumCoursesBoughtPlaceholder,
                             }}
                         />
                     </div>
@@ -219,10 +231,10 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
 
                 {/* Courses Created Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">Courses Created</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.coursesCreatedFilter}</h3>
                     <div className="flex gap-2">
                         <TextInput
-                            label="Min"
+                            label={dictionary.min}
                             key={`minCoursesCreated-${resetKey}`}
                             inputField={{
                                 id: 'minCoursesCreated',
@@ -230,11 +242,11 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 defaultValue: filters.minCoursesCreated?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('minCoursesCreated', parseInt(value) || undefined),
-                                inputText: 'e.g. 0',
+                                inputText: dictionary.minimumCoursesCreatedPlaceholder,
                             }}
                         />
                         <TextInput
-                            label="Max"
+                            label={dictionary.max}
                             key={`maxCoursesCreated-${resetKey}`}
                             inputField={{
                                 id: 'maxCoursesCreated',
@@ -242,7 +254,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 defaultValue: filters.maxCoursesCreated?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('maxCoursesCreated', parseInt(value) || undefined),
-                                inputText: 'e.g. 10',
+                                inputText: dictionary.maximumCoursesCreatedPlaceholder,
                             }}
                         />
                     </div>
@@ -251,16 +263,18 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
 
                 {/* Last Access Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">Last Access</h3>
+                    <h3 className="text-xl font-semibold">{dictionary.lastAccessFilter}</h3>
                     <DateInput
-                        label="After"
+                        label={dictionary.before}
                         value={filters.lastAccessAfter || ''}
                         onChange={(value: string) => handleChange('lastAccessAfter', value)}
+                        locale={locale}
                     />
                     <DateInput
-                        label="Before"
+                        label={dictionary.after}
                         value={filters.lastAccessBefore || ''}
                         onChange={(value: string) => handleChange('lastAccessBefore', value)}
+                        locale={locale}
                     />
                 </div>
                 <div className="h-px w-full bg-divider"></div>
@@ -272,14 +286,14 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                         size="medium"
                         onClick={handleReset}
                         className="flex-1"
-                        text="Reset filters"
+                        text={dictionary.resetFilters}
                     />
                     <Button
                         variant="primary"
                         size="medium"
                         onClick={handleApply}
                         className="flex-1"
-                        text="Apply filters"
+                        text={dictionary.applyFilters}
                     />
                 </div>
             </div>

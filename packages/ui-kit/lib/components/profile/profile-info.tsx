@@ -204,6 +204,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           label={dictionary.components.profileInfo.date}
           value={formData.dateOfBirth || ''}
           onChange={(value) => handleChange('dateOfBirth', value)}
+          locale={locale}
         />
         <CheckBox
           name="isRepresentingCompany"

@@ -7,7 +7,7 @@ import { Button } from '../button';
 import { UserGridFilterModal, UserFilterModel } from './user-grid-filter-modal';
 import { profile } from '@maany_shr/e-class-models';
 import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';
-import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { dictionaryFormat, getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconCloudDownload } from '../icons/icon-cloud-download';
 import { IconAdmin } from '../icons/icon-admin';
 import { IconCourseCreator } from '../icons/icon-course-creator';
@@ -18,7 +18,6 @@ import { IconFilter } from '../icons/icon-filter';
 import { IconSearch } from '../icons/icon-search';
 import { InputField } from '../input-field';
 import { StarRating } from '../star-rating';
-import { platform } from 'os';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -52,25 +51,14 @@ export interface UserGridProps extends isLocalAware {
 // Role icon component
 const RoleIcon = ({ role, className }: { role: string; className?: string }) => {
     const icons = {
-        'admin': <IconAdmin classNames={className} />,
-        'course creator': <IconCourseCreator classNames={className} />,
-        'coach': <IconCoach classNames={className} />,
-        'student': <IconStudent classNames={className} />
+        admin: <IconAdmin classNames={className} />,
+        courseCreator: <IconCourseCreator classNames={className} />,
+        coach: <IconCoach classNames={className} />,
+        student: <IconStudent classNames={className} />
 
     };
 
     return icons[role as keyof typeof icons] || <IconAll classNames={className} />;
-};
-
-// Get highest role based on hierarchy
-const getHighestRole = (roles: { platformName: string; role: string }[]): string => {
-    const hierarchy = ['admin', 'course creator', 'coach', 'student'];
-    if (!roles || roles.length === 0) return 'student';
-    return roles.reduce((highest, roleObj) => {
-        const currentIndex = hierarchy.indexOf(roleObj.role);
-        const highestIndex = hierarchy.indexOf(highest);
-        return currentIndex < highestIndex ? roleObj.role : highest;
-    }, roles[0].role);
 };
 
 const DetailsCellRenderer = () => {
@@ -176,17 +164,17 @@ const PlatformCellRenderer = (props: any) => {
 export const UserGrid = (props: UserGridProps) => {
 
     const [selectedRole, setSelectedRole] = useState<string>('all');
-    const dictionary = getDictionary(props.locale);
+    const dictionary = getDictionary(props.locale).components.userGrid;
 
-    const [columnDefs, setColumnDefs] = useState([
+    const columnDefs = useMemo(() => [
         {
             field: 'name',
-            headerName: 'Name',
+            headerName: dictionary.nameColumn,
             filter: 'agTextColumnFilter'
         },
         {
             field: 'surname',
-            headerName: 'Surname',
+            headerName: dictionary.surnameColumn,
             filter: 'agTextColumnFilter'
         },
         {
@@ -203,7 +191,7 @@ export const UserGrid = (props: UserGridProps) => {
         },
         {
             field: 'email',
-            headerName: 'Email',
+            headerName: dictionary.emailColumn,
             cellRenderer: EmailCellRenderer,
             onCellClicked: (params: any) => {
                 const email = params.value;
@@ -213,24 +201,24 @@ export const UserGrid = (props: UserGridProps) => {
         },
         {
             field: 'phone',
-            headerName: 'Phone',
+            headerName: dictionary.phoneNumberColumn,
             filter: 'agTextColumnFilter'
         },
         {
             field: 'rating',
-            headerName: 'Rating',
+            headerName: dictionary.ratingColumn,
             cellRenderer: RatingCellRenderer,
             filter: 'agNumberColumnFilter'
         },
         {
             field: 'platform',
-            headerName: 'Platform',
+            headerName: dictionary.platformColumn,
             cellRenderer: PlatformCellRenderer,
             filter: 'agTextColumnFilter'
         },
         {
             field: 'coachingSessionsCount',
-            headerName: '# coaching sessions',
+            headerName: dictionary.coachingSessionsColumn,
             valueFormatter: (params: any) => {
                 const count = params.value;
                 if (!count || count === 0) return '-';
@@ -240,7 +228,7 @@ export const UserGrid = (props: UserGridProps) => {
         },
         {
             field: 'coursesBought',
-            headerName: 'Courses bought',
+            headerName: dictionary.coursesBoughtColumn,
             valueFormatter: (params: any) => {
                 const count = params.value;
                 if (!count || count === 0) return '-';
@@ -250,7 +238,7 @@ export const UserGrid = (props: UserGridProps) => {
         },
         {
             field: 'coursesCreated',
-            headerName: 'Courses created',
+            headerName: dictionary.coursesCreatedColumn,
             valueFormatter: (params: any) => {
                 const count = params.value;
                 if (!count || count === 0) return '-';
@@ -260,14 +248,14 @@ export const UserGrid = (props: UserGridProps) => {
         },
         {
             field: 'lastAccess',
-            headerName: 'Last access',
+            headerName: dictionary.lastAccessColumn,
             valueFormatter: (params: any) => {
                 const date = new Date(params.value);
                 return formatDate(date);
             },
             filter: 'agDateColumnFilter'
         }
-    ]);
+    ], [dictionary]);
 
     // For filter modal
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
@@ -309,12 +297,12 @@ export const UserGrid = (props: UserGridProps) => {
     const handleSendNotifications = useCallback(() => {
         const selectedUserIds = getSelectedUserIds();
         if (selectedUserIds.length === 0) {
-            alert('Error: no users selected to send notification');
+            alert(dictionary.sendNotificationNoUsersError);
             return;
         }
 
         if (props.onSendNotifications) {
-            alert(`Sending notifications to ${selectedUserIds.length} selected users`);
+            alert(dictionaryFormat(dictionary.sendingNotifications, { count: selectedUserIds.length }));
             props.onSendNotifications(selectedUserIds);
         }
     }, [getSelectedUserIds, props.onSendNotifications]);
@@ -342,7 +330,6 @@ export const UserGrid = (props: UserGridProps) => {
             const selectionListener = () => {
                 const selectedRows = props.gridRef.current?.api?.getSelectedRows() || [];
                 setSelectedUserCount(selectedRows.length);
-                console.log(`Selection changed: ${selectedRows.length} users selected`);
             };
 
             props.gridRef.current.api.addEventListener('selectionChanged', selectionListener);
@@ -458,7 +445,6 @@ export const UserGrid = (props: UserGridProps) => {
 
     // Handle tab change for role filtering
     const handleTabChange = (value: string) => {
-        console.log(`Tab changed to: ${value}`);
         setSelectedRole(value);
     };
 
@@ -506,7 +492,7 @@ export const UserGrid = (props: UserGridProps) => {
                 <InputField
                     className="flex-grow relative md:mr-2"
                     setValue={setSearchTerm} value={searchTerm}
-                    inputText={dictionary.components.userGrid.searchPlaceholder}
+                    inputText={dictionary.searchPlaceholder}
                     hasLeftContent
                     leftContent={<IconSearch />}
                 />
@@ -514,7 +500,7 @@ export const UserGrid = (props: UserGridProps) => {
                     <Button
                         variant="text"
                         size="medium"
-                        text={dictionary.components.userGrid.exportCurrentView}
+                        text={dictionary.exportCurrentView}
                         hasIconLeft
                         iconLeft={<IconCloudDownload />}
                         onClick={handleExportCurrentView}
@@ -523,7 +509,7 @@ export const UserGrid = (props: UserGridProps) => {
                     <Button
                         variant="secondary"
                         size="medium"
-                        text={dictionary.components.userGrid.filterButton}
+                        text={dictionary.filterButton}
                         onClick={() => setShowFilterModal(true)}
                         hasIconLeft
                         iconLeft={<IconFilter />}
@@ -532,7 +518,7 @@ export const UserGrid = (props: UserGridProps) => {
                     <Button
                         variant="secondary"
                         size="medium"
-                        text={dictionary.components.userGrid.clearFilters}
+                        text={dictionary.clearFilters}
                         onClick={handleClearAllFilters}
                         className="w-full md:w-auto"
                     />
@@ -546,20 +532,20 @@ export const UserGrid = (props: UserGridProps) => {
                         <Button
                             variant="secondary"
                             size="medium"
-                            text={dictionary.components.userGrid.batchActions}
+                            text={dictionary.batchActions}
                             onClick={toggleBatchActions}
                         />
                     ) : (
                         <div className="flex space-x-2 items-center overflow-x-auto">
                             <span className="text-sm text-white mr-2">
-                                {selectedUserCount}/{roleUsers.length} {dictionary.components.userGrid.selected}
+                                {selectedUserCount}/{roleUsers.length} {dictionary.selected}
                             </span>
 
                             {props.onSendNotifications && (
                                 <Button
                                     variant="primary"
                                     size="medium"
-                                    text={dictionary.components.userGrid.sendNotification}
+                                    text={dictionary.sendNotification}
                                     onClick={handleSendNotifications}
                                     disabled={selectedUserCount === 0}
                                     className={selectedUserCount > 0 ? 'opacity-100' : 'opacity-50'}
@@ -569,7 +555,7 @@ export const UserGrid = (props: UserGridProps) => {
                             <Button
                                 variant="secondary"
                                 size="medium"
-                                text={dictionary.components.userGrid.hideActions}
+                                text={dictionary.hideActions}
                                 onClick={toggleBatchActions}
                             />
                         </div>
@@ -613,35 +599,35 @@ export const UserGrid = (props: UserGridProps) => {
                         variant="small"
                     >
                         <TabTrigger value="all" icon={<IconAll />} className="cursor-pointer">
-                            {dictionary.components.userGrid.all} ({userCounts.all})
+                            {dictionary.all} ({userCounts.all})
                         </TabTrigger>
                         <TabTrigger
                             value="student"
                             icon={<RoleIcon role="student" />}
                             className="cursor-pointer"
                         >
-                            {dictionary.components.userGrid.students} ({userCounts.student})
+                            {dictionary.students} ({userCounts.student})
                         </TabTrigger>
                         <TabTrigger
                             value="coach"
                             icon={<RoleIcon role="coach" />}
                             className="cursor-pointer"
                         >
-                            {dictionary.components.userGrid.coaches} ({userCounts.coach})
+                            {dictionary.coaches} ({userCounts.coach})
                         </TabTrigger>
                         <TabTrigger
                             value="course creator"
                             icon={<RoleIcon role="course creator" />}
                             className="cursor-pointer"
                         >
-                            {dictionary.components.userGrid.courseCreators} ({userCounts['course creator']})
+                            {dictionary.courseCreators} ({userCounts.courseCreator})
                         </TabTrigger>
                         <TabTrigger
                             value="admin"
                             icon={<RoleIcon role="admin" />}
                             className="cursor-pointer"
                         >
-                            {dictionary.components.userGrid.admin} ({userCounts.admin})
+                            {dictionary.admin} ({userCounts.admin})
                         </TabTrigger>
                     </TabList>
 
@@ -678,6 +664,7 @@ export const UserGrid = (props: UserGridProps) => {
                     onClose={() => setShowFilterModal(false)}
                     initialFilters={filters}
                     platforms={platforms}
+                    locale={props.locale}
                 />
             )}
         </div>

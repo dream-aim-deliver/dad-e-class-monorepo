@@ -18,6 +18,7 @@ describe('<DateInput />', () => {
         label="Select Date"
         value="2025-02-18"
         onChange={mockOnChange}
+        locale='en'
       />,
     );
 
@@ -34,7 +35,7 @@ describe('<DateInput />', () => {
   });
 
   it('renders without a label when no label is provided', () => {
-    render(<DateInput value="2025-02-18" onChange={mockOnChange} />);
+    render(<DateInput value="2025-02-18" onChange={mockOnChange} locale='en' />);
 
     const label = screen.queryByTestId('date-input-label');
     const input = screen.getByTestId('date-input-field');
@@ -49,6 +50,7 @@ describe('<DateInput />', () => {
         label="Select Date"
         value="2025-02-18"
         onChange={mockOnChange}
+        locale='en'
       />,
     );
 
@@ -64,6 +66,7 @@ describe('<DateInput />', () => {
         label="Select Date"
         value="2025-02-18"
         onChange={mockOnChange}
+        locale='en'
       />,
     );
 
@@ -80,6 +83,7 @@ describe('<DateInput />', () => {
         label="Select Date"
         value="2025-02-18"
         onChange={mockOnChange}
+        locale='en'
       />,
     );
 
@@ -89,7 +93,7 @@ describe('<DateInput />', () => {
 
     expect(showPickerMock).toHaveBeenCalledTimes(2);
   });
-  
+
   it('calls showPicker when the input wrapper is clicked', () => {
     const showPickerMock = vi.fn();
     HTMLInputElement.prototype.showPicker = showPickerMock;
@@ -99,6 +103,7 @@ describe('<DateInput />', () => {
         label="Select Date"
         value="2025-02-18"
         onChange={mockOnChange}
+        locale='en'
       />,
     );
 
