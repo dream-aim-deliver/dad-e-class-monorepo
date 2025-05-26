@@ -55,11 +55,19 @@ interface RootLayoutProps {
 }
 
 // TODO: revalidation can be configured
-const getCachedPlatform = unstable_cache(async () => {
-    const queryOptions = trpc.getPlatform.queryOptions({ id: env.platformId });
-    const queryClient = getQueryClient();
-    return await queryClient.fetchQuery(queryOptions);
-});
+const getCachedPlatform = unstable_cache(
+    async () => {
+        const queryOptions = trpc.getPlatform.queryOptions({
+            id: env.platformId,
+        });
+        const queryClient = getQueryClient();
+        return await queryClient.fetchQuery(queryOptions);
+    },
+    ['platform', env.platformId],
+    {
+        tags: ['platform', `platform-${env.platformId}`],
+    },
+);
 
 const listCachedLanguages = unstable_cache(async () => {
     const queryOptions = trpc.listLanguages.queryOptions({
@@ -117,7 +125,6 @@ export default async function RootLayout({
     return (
         <html lang={locale}>
             <head>
-                <link rel="preload" href={platform.logoUrl} as="image" />
                 <link
                     rel="preload"
                     href={platform.backgroundImageUrl}
