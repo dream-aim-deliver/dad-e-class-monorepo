@@ -89,7 +89,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50" onClick={onClose}>
             <div className="flex flex-col gap-2 p-6 bg-card-fill text-text-primary w-full max-w-[350px] h-full max-h-[90vh] overflow-y-auto rounded-md">
                 <div className="flex justify-between items-center">
                     <h2 className="text-2xl font-bold">User Filters</h2>
