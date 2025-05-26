@@ -16,6 +16,7 @@ import { IconStudent } from '../icons/icon-student';
 import { IconAll } from '../icons/icon-all';
 import { IconFilter } from '../icons/icon-filter';
 import { IconSearch } from '../icons/icon-search';
+import { InputField } from '../input-field';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -311,7 +312,7 @@ export const UserGrid = (props: UserGridProps) => {
     const handleSendNotifications = useCallback(() => {
         const selectedUserIds = getSelectedUserIds();
         if (selectedUserIds.length === 0) {
-            alert("Error: no users selected to send notification");
+            alert('Error: no users selected to send notification');
             return;
         }
 
@@ -491,18 +492,14 @@ export const UserGrid = (props: UserGridProps) => {
     const renderGridWithActions = (roleUsers: UserCMS[]) => (
         <div>
             {/* Search bar, Filter button, and Export button */}
-            <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-2 mt-4 ml-1">
-                <div className="flex-grow relative md:mr-2">
-                    <input
-                        type="text"
-                        placeholder={dictionary.components.userGrid.searchPlaceholder}
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full p-2 pl-10 border rounded bg-input-fill text-text-primary border-input-stroke focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                    <IconSearch classNames="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 text-gray-500 opacity-50 z-10" />
-                </div>
-
+            <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-2">
+                <InputField
+                    className="flex-grow relative md:mr-2"
+                    setValue={setSearchTerm} value={searchTerm}
+                    inputText={dictionary.components.userGrid.searchPlaceholder}
+                    hasLeftContent
+                    leftContent={<IconSearch />}
+                />
                 <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-1.5">
                     <Button
                         variant="text"
@@ -555,7 +552,7 @@ export const UserGrid = (props: UserGridProps) => {
                                     text={dictionary.components.userGrid.sendNotification}
                                     onClick={handleSendNotifications}
                                     disabled={selectedUserCount === 0}
-                                    className={selectedUserCount > 0 ? "opacity-100" : "opacity-50"}
+                                    className={selectedUserCount > 0 ? 'opacity-100' : 'opacity-50'}
                                 />
                             )}
 
@@ -600,9 +597,9 @@ export const UserGrid = (props: UserGridProps) => {
                 >
                     <TabList
                         className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap"
-                        variant='small'
+                        variant="small"
                     >
-                        <TabTrigger value="all" icon={<IconAll />} className="cursor-pointer" >
+                        <TabTrigger value="all" icon={<IconAll />} className="cursor-pointer">
                             {dictionary.components.userGrid.all} ({userCounts.all})
                         </TabTrigger>
                         <TabTrigger
