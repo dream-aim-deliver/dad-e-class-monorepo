@@ -490,7 +490,7 @@ export const UserGrid = (props: UserGridProps) => {
 
     // Render the common UI parts for all tab contents
     const renderGridWithActions = (roleUsers: UserCMS[]) => (
-        <div>
+        <div className="h-full flex flex-col">
             {/* Search bar, Filter button, and Export button */}
             <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-2">
                 <InputField
@@ -567,33 +567,36 @@ export const UserGrid = (props: UserGridProps) => {
                 </div>
             )}
 
-            <BaseGrid
-                gridRef={props.gridRef}
-                columnDefs={columnDefs}
-                rowData={roleUsers}
-                enableCellTextSelection={true}
-                onSortChanged={props.onSortChanged}
-                pagination={true}
-                suppressPaginationPanel={true}
-                paginationAutoPageSize={true}
-                isExternalFilterPresent={() => true}
-                doesExternalFilterPass={doesExternalFilterPass}
-                rowSelection={props.enableSelection ? 'multiple' : undefined}
-                onSelectionChanged={() => {
-                    const selectedRows = props.gridRef.current?.api?.getSelectedRows() || [];
-                    setSelectedUserCount(selectedRows.length);
-                }}
-            />
+            <div className="flex flex-col grow">
+                <BaseGrid
+                    gridRef={props.gridRef}
+                    columnDefs={columnDefs}
+                    rowData={roleUsers}
+                    enableCellTextSelection={true}
+                    onSortChanged={props.onSortChanged}
+                    pagination={true}
+                    suppressPaginationPanel={true}
+                    paginationAutoPageSize={true}
+                    isExternalFilterPresent={() => true}
+                    doesExternalFilterPass={doesExternalFilterPass}
+                    rowSelection={props.enableSelection ? 'multiple' : undefined}
+                    onSelectionChanged={() => {
+                        const selectedRows = props.gridRef.current?.api?.getSelectedRows() || [];
+                        setSelectedUserCount(selectedRows.length);
+                    }}
+                />
+            </div>
         </div>
     );
 
     return (
         <div className="flex flex-col h-full">
             {/* Role Tabs */}
-            <div className="w-full">
+            <div className="w-full h-full">
                 <Tabs.Root
                     defaultTab="all"
                     onValueChange={handleTabChange}
+                    className="h-full flex flex-col"
                 >
                     <TabList
                         className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap"
@@ -632,25 +635,25 @@ export const UserGrid = (props: UserGridProps) => {
                         </TabTrigger>
                     </TabList>
 
-                    <div className="mt-4">
+                    <div className="mt-4 grow">
                         {/* Tab content with individual grid instances for each role */}
-                        <TabContent value="all" className="overflow-auto max-h-[70vh]">
+                        <TabContent value="all">
                             {renderGridWithActions(props.users || [])}
                         </TabContent>
 
-                        <TabContent value="student" className="overflow-auto max-h-[70vh]">
+                        <TabContent value="student">
                             {renderGridWithActions(props.users?.filter(user => user.roles?.some(roleObj => roleObj.role === 'student')) || [])}
                         </TabContent>
 
-                        <TabContent value="coach" className="overflow-auto max-h-[70vh]">
+                        <TabContent value="coach">
                             {renderGridWithActions(props.users?.filter(user => user.roles?.some(roleObj => roleObj.role === 'coach')) || [])}
                         </TabContent>
 
-                        <TabContent value="course creator" className="overflow-auto max-h-[70vh]">
+                        <TabContent value="course creator">
                             {renderGridWithActions(props.users?.filter(user => user.roles?.some(roleObj => roleObj.role === 'course creator')) || [])}
                         </TabContent>
 
-                        <TabContent value="admin" className="overflow-auto max-h-[70vh]">
+                        <TabContent value="admin">
                             {renderGridWithActions(props.users?.filter(user => user.roles?.some(roleObj => roleObj.role === 'admin')) || [])}
                         </TabContent>
                     </div>
