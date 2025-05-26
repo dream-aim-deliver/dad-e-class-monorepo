@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UserCMS, UserGrid } from '../lib/components/grids/user-grid';
+import { UserRow, UserGrid } from '../lib/components/grids/user-grid';
 import { AgGridReact } from 'ag-grid-react';
 import { useCallback, useRef, useState } from 'react';
 import { Button } from '../lib/components/button';
@@ -7,36 +7,34 @@ import { IRowNode } from 'ag-grid-community';
 import { NextIntlClientProvider } from 'next-intl';
 
 const mockMessages = {
-  en: {
-    userGrid: {
-      name: 'Name',
-      surname: 'Surname',
-      email: 'Email',
-      phone: 'Phone',
-      rating: 'Rating',
-      platform: 'Platform',
-      roles: 'Roles',
-      sessions: 'Sessions',
-      coursesBought: 'Courses Bought',
-      coursesCreated: 'Courses Created',
-      lastAccess: 'Last Access'
+    en: {
+        userGrid: {
+            name: 'Name',
+            surname: 'Surname',
+            email: 'Email',
+            phone: 'Phone',
+            rating: 'Rating',
+            roles: 'Roles',
+            sessions: 'Sessions',
+            coursesBought: 'Courses Bought',
+            coursesCreated: 'Courses Created',
+            lastAccess: 'Last Access'
+        }
+    },
+    de: {
+        userGrid: {
+            name: 'Name',
+            surname: 'Nachname',
+            email: 'E-Mail',
+            phone: 'Telefon',
+            rating: 'Bewertung',
+            roles: 'Rollen',
+            sessions: 'Sitzungen',
+            coursesBought: 'Gekaufte Kurse',
+            coursesCreated: 'Erstellte Kurse',
+            lastAccess: 'Letzter Zugriff'
+        }
     }
-  },
-  de: {
-    userGrid: {
-      name: 'Name',
-      surname: 'Nachname',
-      email: 'E-Mail',
-      phone: 'Telefon',
-      rating: 'Bewertung',
-      platform: 'Plattform',
-      roles: 'Rollen',
-      sessions: 'Sitzungen',
-      coursesBought: 'Gekaufte Kurse',
-      coursesCreated: 'Erstellte Kurse',
-      lastAccess: 'Letzter Zugriff'
-    }
-  }
 };
 
 const meta: Meta<typeof UserGrid> = {
@@ -47,17 +45,17 @@ const meta: Meta<typeof UserGrid> = {
         layout: 'fullscreen'
     },
     argTypes: {
-      locale: {
-        control: 'select',
-        options: ['en', 'de'],
-      },
+        locale: {
+            control: 'select',
+            options: ['en', 'de'],
+        },
     },
     decorators: [
         (Story, context) => {
             const gridRef = useRef<AgGridReact>(null);
             return (
-                <NextIntlClientProvider 
-                    locale={context.args.locale || 'en'} 
+                <NextIntlClientProvider
+                    locale={context.args.locale || 'en'}
                     messages={mockMessages[context.args.locale || 'en']}
                 >
                     <div className="h-screen w-full p-4">
@@ -72,7 +70,7 @@ const meta: Meta<typeof UserGrid> = {
     ]
 };
 
-const mockUsers: UserCMS[] = [
+const mockUsers: UserRow[] = [
     {
         id: 1001,
         userId: 1001,
@@ -81,10 +79,9 @@ const mockUsers: UserCMS[] = [
         email: 'john.smith@example.com',
         phone: '+1-555-123-4567',
         rating: 4.7,
-        platform: 'iOS',
         roles: [
-            { platformName: 'iOS', role: 'student' },
-            { platformName: 'iOS', role: 'coach' }
+            { platformName: 'JustDoAd', role: 'student' },
+            { platformName: 'Bewerbeagentur', role: 'coach' }
         ],
         coachingSessionsCount: 24,
         coursesBought: 5,
@@ -99,8 +96,7 @@ const mockUsers: UserCMS[] = [
         email: 'emma.j@example.com',
         phone: '+1-555-987-6543',
         rating: 4.9,
-        platform: 'Android',
-        roles: [{ platformName: 'Android', role: 'student' }],
+        roles: [{ platformName: 'Bewerbeagentur', role: 'student' }],
         coachingSessionsCount: 38,
         coursesBought: 12,
         coursesCreated: 0,
@@ -114,8 +110,7 @@ const mockUsers: UserCMS[] = [
         email: 'm.garcia@example.com',
         phone: '+34-611-222-333',
         rating: 3.8,
-        platform: 'Web',
-        roles: [{ platformName: 'Web', role: 'student' }],
+        roles: [{ platformName: 'JobBrandMe', role: 'student' }],
         coachingSessionsCount: 7,
         coursesBought: 3,
         coursesCreated: 0,
@@ -129,10 +124,9 @@ const mockUsers: UserCMS[] = [
         email: 'swilliams@example.com',
         phone: '+1-555-444-3333',
         rating: 5.0,
-        platform: 'iOS',
         roles: [
-            { platformName: 'iOS', role: 'course creator' },
-            { platformName: 'iOS', role: 'coach' }
+            { platformName: 'JustDoAd', role: 'course creator' },
+            { platformName: 'JobBrandMe', role: 'coach' }
         ],
         coachingSessionsCount: 52,
         coursesBought: 0,
@@ -147,10 +141,9 @@ const mockUsers: UserCMS[] = [
         email: 'a.tanaka@example.com',
         phone: '+81-90-1234-5678',
         rating: undefined,
-        platform: 'Android',
         roles: [
-            { platformName: 'Android', role: 'student' },
-            { platformName: 'Android', role: 'course creator' }
+            { platformName: 'Bewerbeagentur', role: 'student' },
+            { platformName: 'JobBrandMe', role: 'course creator' }
         ],
         coachingSessionsCount: undefined,
         coursesBought: 7,
@@ -165,8 +158,7 @@ const mockUsers: UserCMS[] = [
         email: 'oliviac@example.com',
         phone: '+1-555-777-8888',
         rating: 4.2,
-        platform: 'Web',
-        roles: [{ platformName: 'Web', role: 'course creator' }],
+        roles: [{ platformName: 'JobBrandMe', role: 'course creator' }],
         coachingSessionsCount: 31,
         coursesBought: undefined,
         coursesCreated: 3,
@@ -180,8 +172,7 @@ const mockUsers: UserCMS[] = [
         email: 'luis.r@example.com',
         phone: '+52-555-987-6543',
         rating: 3.5,
-        platform: 'iOS',
-        roles: [{ platformName: 'iOS', role: 'student' }],
+        roles: [{ platformName: 'JustDoAd', role: 'student' }],
         coachingSessionsCount: 9,
         coursesBought: 2,
         coursesCreated: 0,
@@ -195,10 +186,9 @@ const mockUsers: UserCMS[] = [
         email: 'annak@example.com',
         phone: '+48-512-345-678',
         rating: 4.8,
-        platform: 'Android',
         roles: [
-            { platformName: 'Android', role: 'admin' },
-            { platformName: 'Android', role: 'course creator' }
+            { platformName: 'JustDoAd', role: 'admin' },
+            { platformName: 'Bewerbeagentur', role: 'course creator' }
         ],
         coachingSessionsCount: 45,
         coursesBought: 9,
@@ -213,10 +203,9 @@ const mockUsers: UserCMS[] = [
         email: 'd.nguyen@example.com',
         phone: '+1-555-222-1111',
         rating: undefined,
-        platform: 'Web',
         roles: [
-            { platformName: 'Web', role: 'student' },
-            { platformName: 'Web', role: 'coach' }
+            { platformName: 'JobBrandMe', role: 'student' },
+            { platformName: 'Bewerbeagentur', role: 'coach' }
         ],
         coachingSessionsCount: 18,
         coursesBought: 6,
@@ -231,10 +220,9 @@ const mockUsers: UserCMS[] = [
         email: 'maria.s@example.com',
         phone: '+55-11-98765-4321',
         rating: 4.1,
-        platform: 'iOS',
         roles: [
-            { platformName: 'iOS', role: 'student' },
-            { platformName: 'iOS', role: 'course creator' }
+            { platformName: 'Bewerbeagentur', role: 'student' },
+            { platformName: 'JustDoAd', role: 'course creator' }
         ],
         coachingSessionsCount: 27,
         coursesBought: 3,
@@ -249,12 +237,10 @@ const mockUsers: UserCMS[] = [
         email: 'alexandraconstantinopolisworthingtonschlegelsteinhausenbergerdorffweilerwilsonsmithfield_verylongemail_testing_overflow_conditions_with_extra_characters_to_ensure_proper_handling@verylongdomainnametotestoverflowconditions.co.educational.systems',
         phone: '+123-456-7890-1234-5678-9012-3456-7890-1234-5678-9012-3456-7890-1234-5678-9012',
         rating: 4.9999999999999,
-        platform: 'iOS/Android/Web/Desktop/Mobile/Tablet/SmartTV/Wearable/IoT/EmbeddedSystems',
         roles: [
-            { platformName: 'iOS', role: 'admin' },
-            { platformName: 'iOS', role: 'course creator' },
-            { platformName: 'iOS', role: 'coach' },
-            { platformName: 'iOS', role: 'student' }
+            { platformName: 'Bewerbeagentur', role: 'admin' },
+            { platformName: 'JustDoAd', role: 'course creator' },
+            { platformName: 'JobBrandMe', role: 'coach' },
         ],
         coachingSessionsCount: 9939999,
         coursesBought: 88888888,
@@ -266,9 +252,11 @@ const mockUsers: UserCMS[] = [
 export default meta;
 type Story = StoryObj<typeof UserGrid>;
 
+const multipleMockUsers = Array(10).fill(mockUsers).flat();
+
 export const Default: Story = {
     args: {
-        users: mockUsers,
+        users: multipleMockUsers,
         locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
@@ -281,7 +269,7 @@ export const Default: Story = {
 
 export const GermanLocale: Story = {
     args: {
-        users: mockUsers,
+        users: multipleMockUsers,
         locale: 'de',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
@@ -294,7 +282,7 @@ export const GermanLocale: Story = {
 
 export const StudentsOnly: Story = {
     args: {
-        users: mockUsers.filter(user => user.roles.some(role => role.role === 'student')),
+        users: multipleMockUsers.filter(user => user.roles.some(role => role.role === 'student')),
         locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
@@ -307,7 +295,7 @@ export const StudentsOnly: Story = {
 
 export const CoachesOnly: Story = {
     args: {
-        users: mockUsers.filter(user => user.roles.some(role => role.role === 'coach')),
+        users: multipleMockUsers.filter(user => user.roles.some(role => role.role === 'coach')),
         locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
@@ -320,7 +308,7 @@ export const CoachesOnly: Story = {
 
 export const CourseCreatorsOnly: Story = {
     args: {
-        users: mockUsers.filter(user => user.roles.some(role => role.role === 'course creator')),
+        users: multipleMockUsers.filter(user => user.roles.some(role => role.role === 'course creator')),
         locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
@@ -333,7 +321,7 @@ export const CourseCreatorsOnly: Story = {
 
 export const AdminsOnly: Story = {
     args: {
-        users: mockUsers.filter(user => user.roles.some(role => role.role === 'admin')),
+        users: multipleMockUsers.filter(user => user.roles.some(role => role.role === 'admin')),
         locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
@@ -346,7 +334,7 @@ export const AdminsOnly: Story = {
 
 export const Selectable: Story = {
     args: {
-        users: Array.from({ length: 5 }, () => [...mockUsers]).flat(),
+        users: Array.from({ length: 5 }, () => [...multipleMockUsers]).flat(),
         enableSelection: true,
         locale: 'en',
         onUserDetailsClick: (user) => {
@@ -374,23 +362,10 @@ export const Empty: Story = {
     }
 };
 
-export const Loading: Story = {
-    args: {
-        users: undefined,
-        locale: 'en',
-        onUserDetailsClick: (user) => {
-            alert(`User details clicked: ${user.name} ${user.surname}`);
-        },
-        onEmailClick: (email) => {
-            alert(`Email clicked: ${email}`);
-        }
-    }
-};
-
 export const WithNotifications: Story = {
     name: 'With Notifications',
     args: {
-        users: Array.from({ length: 2 }, () => [...mockUsers]).flat(),
+        users: Array.from({ length: 2 }, () => [...multipleMockUsers]).flat(),
         enableSelection: true,
         locale: 'en',
         onUserDetailsClick: (user) => {
@@ -406,19 +381,19 @@ export const WithNotifications: Story = {
     decorators: [
         (Story, context) => {
             const gridRef = useRef<AgGridReact>(null);
-            
+
             // Helper function to select all users
             const selectAllUsers = () => {
                 if (gridRef.current?.api) {
                     gridRef.current.api.selectAll();
                 }
             };
-            
+
             // Helper function to select specific users
             const selectFirstThreeUsers = () => {
                 if (gridRef.current?.api) {
                     gridRef.current.api.deselectAll();
-                    
+
                     // Get the first 3 nodes and select them
                     let count = 0;
                     gridRef.current.api.forEachNode(node => {
@@ -429,17 +404,17 @@ export const WithNotifications: Story = {
                     });
                 }
             };
-            
+
             // Helper function to clear selection
             const clearSelection = () => {
                 if (gridRef.current?.api) {
                     gridRef.current.api.deselectAll();
                 }
             };
-            
+
             return (
-                <NextIntlClientProvider 
-                    locale={context.args.locale || 'en'} 
+                <NextIntlClientProvider
+                    locale={context.args.locale || 'en'}
                     messages={mockMessages[context.args.locale || 'en']}
                 >
                     <div className="h-screen w-full p-4 flex flex-col">
@@ -463,7 +438,7 @@ export const WithNotifications: Story = {
 
 export const Filter: Story = {
     args: {
-        users: Array.from({ length: 5 }, () => [...mockUsers]).flat(),
+        users: Array.from({ length: 5 }, () => [...multipleMockUsers]).flat(),
         locale: 'en',
         onUserDetailsClick: (user) => {
             alert(`User details clicked: ${user.name} ${user.surname}`);
@@ -479,7 +454,7 @@ export const Filter: Story = {
             const [filteringByRating, setFilteringByRating] = useState<boolean>(false);
             const [filteringByAccess, setFilteringByAccess] = useState<boolean>(false);
 
-            const doesFilterPass = useCallback((node: IRowNode<UserCMS>) => {
+            const doesFilterPass = useCallback((node: IRowNode<UserRow>) => {
                 if (!node.data) return false;
                 if (filteringByName && !node.data?.name?.toLowerCase().includes('an')) {
                     return false;
@@ -513,8 +488,8 @@ export const Filter: Story = {
             };
 
             return (
-                <NextIntlClientProvider 
-                    locale={context.args.locale || 'en'} 
+                <NextIntlClientProvider
+                    locale={context.args.locale || 'en'}
                     messages={mockMessages[context.args.locale || 'en']}
                 >
                     <div className="flex grow h-full w-full flex-col">

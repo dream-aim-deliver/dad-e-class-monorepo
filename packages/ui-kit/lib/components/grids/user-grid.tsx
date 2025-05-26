@@ -1,5 +1,5 @@
 import { AgGridReact } from 'ag-grid-react';
-import React, { RefObject, useState, useCallback, useMemo, useEffect } from 'react';
+import { RefObject, useState, useCallback, useMemo, useEffect } from 'react';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
 import { AllCommunityModule, IRowNode, ModuleRegistry, SortChangedEvent } from 'ag-grid-community';
@@ -18,11 +18,12 @@ import { IconFilter } from '../icons/icon-filter';
 import { IconSearch } from '../icons/icon-search';
 import { InputField } from '../input-field';
 import { StarRating } from '../star-rating';
+import { platform } from 'os';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 // Extended User model
-export interface UserCMS extends profile.TBasePersonalProfile {
+export interface UserRow extends profile.TBasePersonalProfile {
     userId: number;
     id: number;
     name: string;
@@ -30,7 +31,6 @@ export interface UserCMS extends profile.TBasePersonalProfile {
     email: string;
     phone: string;
     rating?: number;
-    platform: string;
     roles: { platformName: string; role: string }[];
     coachingSessionsCount?: number;
     coursesBought?: number;
@@ -40,25 +40,26 @@ export interface UserCMS extends profile.TBasePersonalProfile {
 
 export interface UserGridProps extends isLocalAware {
     gridRef: RefObject<AgGridReact | null>;
-    onUserDetailsClick: (user: UserCMS) => void;
+    onUserDetailsClick: (user: UserRow) => void;
     onEmailClick: (email: string) => void;
-    users: UserCMS[];
+    users: UserRow[];
     onSortChanged?: (event: SortChangedEvent) => void;
-    doesExternalFilterPass?: (node: IRowNode<UserCMS>) => boolean;
+    doesExternalFilterPass?: (node: IRowNode<UserRow>) => boolean;
     enableSelection?: boolean;
     onSendNotifications?: (userIds: number[]) => void;
 }
 
 // Role icon component
-const RoleIcon = ({ role }: { role: string }) => {
+const RoleIcon = ({ role, className }: { role: string; className?: string }) => {
     const icons = {
-        admin: <IconAdmin />,
-        'course creator': <IconCourseCreator />,
-        coach: <IconCoach />,
-        student: <IconStudent />
+        'admin': <IconAdmin classNames={className} />,
+        'course creator': <IconCourseCreator classNames={className} />,
+        'coach': <IconCoach classNames={className} />,
+        'student': <IconStudent classNames={className} />
+
     };
 
-    return icons[role as keyof typeof icons] || <IconAll />;
+    return icons[role as keyof typeof icons] || <IconAll classNames={className} />;
 };
 
 // Get highest role based on hierarchy
@@ -97,16 +98,29 @@ const RatingCellRenderer = (props: any) => {
 };
 
 const PlatformCellRenderer = (props: any) => {
-    const { platform, roles } = props.data;
-    const highestRole = getHighestRole(roles);
+    const data: UserRow = props.data;
+    const roles = data.roles;
+    if (!roles || roles.length === 0) return <span>-</span>;
+
+    const title = roles.map(({ platformName, role }) => `${platformName}: ${role}`).join(', ');
 
     return (
-        <div className="flex items-center gap-2">
-            <RoleIcon role={highestRole} />
-            <span>{platform}</span>
+        <div className="truncate">
+            {roles.map(({ platformName, role }, idx) => (
+                <span
+                    key={platformName + role}
+                    className="inline-flex items-center text-xs align-middle"
+                    title={`${platformName}: ${role}`}
+                >
+                    <RoleIcon role={role} className="w-4 h-4" />
+                    <span className="ml-1">{platformName}</span>
+                    {idx < roles.length - 1 && <span>,&nbsp;</span>}
+                </span>
+            ))}
         </div>
     );
 };
+
 
 /**
  * A reusable UserGrid component for displaying and managing a grid of user data with filtering, sorting, and selection capabilities.
@@ -160,16 +174,11 @@ const PlatformCellRenderer = (props: any) => {
  * ```
  */
 export const UserGrid = (props: UserGridProps) => {
+
     const [selectedRole, setSelectedRole] = useState<string>('all');
     const dictionary = getDictionary(props.locale);
+
     const [columnDefs, setColumnDefs] = useState([
-        // {
-        //     headerCheckboxSelection: props.enableSelection,
-        //     checkboxSelection: props.enableSelection,
-        //     width: props.enableSelection ? 50 : 0,
-        //     hide: !props.enableSelection,
-        //     filter: false
-        // },
         {
             field: 'name',
             headerName: 'Name',
@@ -278,21 +287,6 @@ export const UserGrid = (props: UserGridProps) => {
         return selectedRows.map(row => row.userId);
     }, [props.gridRef]);
 
-    // Get total users count
-    const totalUsersCount = useMemo(() => {
-        return props.users?.length || 0;
-    }, [props.users]);
-
-    // Filter users based on selected role
-    const filteredUsers = useMemo(() => {
-        if (!props.users) return [];
-        if (selectedRole === 'all') return props.users;
-
-        return props.users.filter(user =>
-            user.roles && user.roles.some(roleObj => roleObj.role === selectedRole)
-        );
-    }, [props.users, selectedRole]);
-
     // Get filtered users counts for each role category
     const userCounts = useMemo(() => {
         if (!props.users) return { all: 0, student: 0, coach: 0, 'course creator': 0, admin: 0 };
@@ -361,11 +355,12 @@ export const UserGrid = (props: UserGridProps) => {
     }, [props.gridRef, props.enableSelection]);
 
     // Client-side filtering logic
-    const doesExternalFilterPass = useCallback((node: IRowNode<UserCMS>) => {
+    const doesExternalFilterPass = useCallback((node: IRowNode<UserRow>) => {
         if (!node.data) {
             return false;
         }
         const user = node.data;
+        const userPlatforms = user.roles?.map(roleObj => roleObj.platformName) || [];
 
         // Apply search term filter (fuzzy search)
         if (searchTerm) {
@@ -387,7 +382,10 @@ export const UserGrid = (props: UserGridProps) => {
         if (filters.maxRating !== undefined && user.rating !== undefined && user.rating > filters.maxRating) {
             return false;
         }
-        if (filters.platform && filters.platform.length > 0 && !filters.platform.includes(user.platform)) {
+        if (
+            (filters.platform?.length ?? 0) > 0 &&
+            !userPlatforms.some(platform => filters.platform!.includes(platform))
+        ) {
             return false;
         }
         if (filters.minCoachingSessions && user.coachingSessionsCount !== undefined &&
@@ -432,7 +430,16 @@ export const UserGrid = (props: UserGridProps) => {
     // Extract unique platforms for filter modal
     const platforms = useMemo(() => {
         if (!props.users) return [];
-        const platformSet = new Set(props.users.map(user => user.platform));
+
+        const platformSet = new Set<string>();
+        props.users.forEach(user => {
+            user.roles?.forEach(roleObj => {
+                if (roleObj.platformName) {
+                    platformSet.add(roleObj.platformName);
+                }
+            });
+        });
+
         return Array.from(platformSet);
     }, [props.users]);
 
@@ -492,7 +499,7 @@ export const UserGrid = (props: UserGridProps) => {
     }, [props.gridRef, doesExternalFilterPass, refreshGrid]);
 
     // Render the common UI parts for all tab contents
-    const renderGridWithActions = (roleUsers: UserCMS[]) => (
+    const renderGridWithActions = (roleUsers: UserRow[]) => (
         <div className="h-full flex flex-col">
             {/* Search bar, Filter button, and Export button */}
             <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-2">
