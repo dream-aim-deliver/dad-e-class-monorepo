@@ -30,11 +30,11 @@ const mockCategories = [
 ];
 
 const mockLanguageOptions = [
+  { name: 'Deutsch', code: 'DEU' },
+  { name: 'Français', code: 'FRA' },
+  { name: 'Italiano', code: 'ITA' },
   { name: 'English', code: 'ENG' },
-  { name: 'German', code: 'DEU' },
-  { name: 'French', code: 'FRA' },
-  { name: 'Spanish', code: 'SPA' },
-  { name: 'Italian', code: 'ITA' },
+  { name: 'Español', code: 'SPA' },
 ];
 
 // Default Export for Storybook
@@ -46,6 +46,10 @@ const meta = {
     layout: 'centered',
   },
   argTypes: {
+    locale: {
+      control: 'select',
+      options: ['en', 'de'],
+    },
     onApplyFilters: { action: 'filters applied' },
     categories: { control: 'object' },
     languageOptions: { control: 'object' },
@@ -64,6 +68,7 @@ const Template = (args) => <AdminCourseFilterModalExpanded {...args} />;
 // Stories
 export const DefaultFilters = Template.bind({});
 DefaultFilters.args = {
+  locale: 'en',
   onApplyFilters: (filters: any) => console.log('Filters Applied:', filters),
   categories: mockCategories,
   languageOptions: mockLanguageOptions,
@@ -74,6 +79,7 @@ DefaultFilters.args = {
 
 export const WithPreAppliedFilters = Template.bind({});
 WithPreAppliedFilters.args = {
+  locale: 'en',
   onApplyFilters: (filters: any) => console.log('Filters Applied:', filters),
   initialFilters: mockFilters,
   categories: mockCategories,

@@ -4,6 +4,7 @@ import { Button } from './button';
 import { CheckBox } from './checkbox';
 import { RadioButton } from './radio-button';
 import StarRatingInput from './star-rating-input';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 // AutocompleteInput Component
 interface AutocompleteInputProps {
@@ -112,7 +113,7 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ label, inp
 };
 
 // Define the props interface
-interface AdminCourseFilterModalProps {
+interface AdminCourseFilterModalProps extends isLocalAware {
   onApplyFilters: (filters: any) => void;
   categories: string[];
   languageOptions: { name: string; code: string }[];
@@ -131,7 +132,11 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
   creators,
   coaches,
   tags,
+  locale
 }) => {
+
+  const dictionary = getDictionary(locale).components.courseFilterModal;
+
   const [filters, setFilters] = useState({
     minRating: initialFilters?.minRating || 0,
     maxRating: initialFilters?.maxRating || 5,
@@ -143,7 +148,7 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
     maxCoaches: initialFilters?.maxCoaches || '',
     categories: initialFilters?.categories || [],
     tags: initialFilters?.tags || [],
-    languages: initialFilters?.languages || ['English', 'German'],
+    languages: initialFilters?.languages || [],
     publishBefore: initialFilters?.publishBefore || '',
     publishAfter: initialFilters?.publishAfter || '',
   });
@@ -208,16 +213,17 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
 
   return (
     <div className="flex flex-col gap-4 p-6 bg-card-fill text-text-primary w-full max-w-[350px] h-full">
-      <h2 className="text-2xl font-bold">Filters</h2>
+      <h2 className="text-2xl font-bold">{dictionary.title}</h2>
       <div className="h-px w-full bg-divider"></div>
+
       {/* Performance Section */}
       <div className="flex flex-col gap-4">
-        <h3 className="text-xl font-semibold">Performance</h3>
+        <h3 className="text-xl font-semibold">{dictionary.performanceFilter}</h3>
         <div className="flex flex-col gap-2">
-          <h4 className="text-lg font-semibold">Rating</h4>
+          <h4 className="text-lg font-semibold">{dictionary.ratingFilter}</h4>
           <div className="flex flex-col gap-2">
             <div className="flex flex-row gap-2 items-center">
-              <p className="text-sm w-32">Minimum Rating</p>
+              <p className="text-sm w-32">{dictionary.minimumRating}</p>
               <StarRatingInput
                 totalStars={5}
                 size={20}
@@ -226,7 +232,7 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
               />
             </div>
             <div className="flex flex-row gap-2 items-center">
-              <p className="text-sm w-32">Maximum Rating</p>
+              <p className="text-sm w-32">{dictionary.maximumRating}</p>
               <StarRatingInput
                 totalStars={5}
                 size={20}
@@ -236,84 +242,86 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
             </div>
           </div>
         </div>
-        <h3 className="text-xl font-semibold">Number of sales</h3>
+        <h3 className="text-xl font-semibold">{dictionary.numberOfSalesFilter}</h3>
         <div className="flex gap-2 flex-row">
           <AutocompleteInput
-            label="Min"
+            label={dictionary.min}
             inputField={{
               id: 'minSales',
               className: "w-full text-white border-input-stroke",
               value: filters.minSales,
               setValue: (value: string | string[]) => handleChange('minSales', Array.isArray(value) ? value[0] : value),
-              inputText: 'e.g. 28',
+              inputText: dictionary.numberOfSalesMinPlaceholder,
             }}
           />
           <AutocompleteInput
-            label="Max"
+            label={dictionary.max}
             inputField={{
               id: 'maxSales',
               className: "w-full text-white border-input-stroke",
               value: filters.maxSales,
               setValue: (value: string | string[]) => handleChange('maxSales', Array.isArray(value) ? value[0] : value),
-              inputText: 'e.g. 120',
+              inputText: dictionary.numberOfSalesMaxPlaceholder,
             }}
           />
         </div>
       </div>
       <div className="h-px w-full bg-divider"></div>
+
       {/* Coaches Section */}
       <div className="flex flex-col gap-4">
-        <h3 className="text-xl font-semibold">Coaches</h3>
+        <h3 className="text-xl font-semibold">{dictionary.coachesFilter}</h3>
         <AutocompleteInput
-          label="Created by"
+          label={dictionary.createdBy}
           inputField={{
             id: 'createdBy',
             className: "w-full text-white border-input-stroke",
             value: filters.createdBy,
             setValue: (value: string | string[]) => handleChange('createdBy', Array.isArray(value) ? value[0] : value),
-            inputText: 'Search course creator',
+            inputText: dictionary.coachesCreatedByPlaceholder,
             options: creators,
           }}
         />
         <AutocompleteInput
-          label="Taught by"
+          label={dictionary.taughtBy}
           inputField={{
             id: 'taughtBy',
             className: "w-full text-white border-input-stroke",
             value: filters.taughtBy,
             setValue: (value: string | string[]) => handleChange('taughtBy', Array.isArray(value) ? value[0] : value),
-            inputText: 'Search coach',
+            inputText: dictionary.coachesTaughtByPlaceholder,
             options: coaches,
           }}
         />
-        <h3 className="text-xl font-semibold">Number of coaches</h3>
+        <h3 className="text-xl font-semibold">{dictionary.numberOfCoaches}</h3>
         <div className="flex gap-2">
           <AutocompleteInput
-            label="Min"
+            label={dictionary.min}
             inputField={{
               id: 'minCoaches',
               className: "w-full text-white border-input-stroke",
               value: filters.minCoaches,
               setValue: (value: string | string[]) => handleChange('minCoaches', typeof value === 'string' ? value : value[0] || ''),
-              inputText: 'e.g. 28',
+              inputText: dictionary.numberOfCoachesMinPlaceholder,
             }}
           />
           <AutocompleteInput
-            label="Max"
+            label={dictionary.max}
             inputField={{
               id: 'maxCoaches',
               className: "w-full text-white border-input-stroke",
               value: filters.maxCoaches,
               setValue: (value: string | string[]) => handleChange('maxCoaches', typeof value === 'string' ? value : value[0] || ''),
-              inputText: 'e.g. 120',
+              inputText: dictionary.numberOfCoachesMaxPlaceholder,
             }}
           />
         </div>
       </div>
       <div className="h-px w-full bg-divider"></div>
+
       {/* Taxonomy Section */}
       <div className="flex flex-col gap-4">
-        <h3 className="text-xl font-semibold">Taxonomy (aka Goals)</h3>
+        <h3 className="text-xl font-semibold">{dictionary.goalsFilter}</h3>
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => (
             <RadioButton
@@ -329,9 +337,10 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
           ))}
         </div>
       </div>
+
       {/* Tags Section */}
       <div className="flex flex-col gap-4">
-        <h3 className="text-xl font-semibold">Tags (aka Skills)</h3>
+        <h3 className="text-xl font-semibold">{dictionary.skillsFilter}</h3>
         <AutocompleteInput
           label=""
           inputField={{
@@ -339,7 +348,7 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
             className: "w-full text-white border-input-stroke",
             value: filters.tags,
             setValue: (value: string | string[]) => handleChange('tags', Array.isArray(value) ? value : [value]),
-            inputText: 'Search tag',
+            inputText: dictionary.skillsPlaceholder,
             options: tags,
             multiple: true,
           }}
@@ -348,9 +357,9 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
       <div className="h-px w-full bg-divider"></div>
       {/* Others Section */}
       <div className="flex flex-col gap-4">
-        <h3 className="text-xl font-semibold">Others</h3>
+        <h3 className="text-xl font-semibold">{dictionary.otherFilters}</h3>
         <div>
-          <p className="text-sm mb-2">Languages</p>
+          <p className="text-sm mb-2">{dictionary.languageFilter}</p>
           <div className="grid grid-cols-3 gap-3">
             {languageOptions.map((lang) => (
               <CheckBox
@@ -367,14 +376,16 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
           </div>
         </div>
         <DateInput
-          label="Published Before"
+          label={dictionary.publishedBefore}
           value={filters.publishBefore}
           onChange={(value: string) => handleChange('publishBefore', value)}
+          locale={locale}
         />
         <DateInput
-          label="Published After"
+          label={dictionary.publishedAfter}
           value={filters.publishAfter}
           onChange={(value: string) => handleChange('publishAfter', value)}
+          locale={locale}
         />
       </div>
       <div className="h-px w-full bg-divider"></div>
@@ -385,14 +396,14 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
           size="medium"
           onClick={handleReset}
           className="flex-1"
-          text="Reset filters"
+          text={dictionary.resetFilters}
         />
         <Button
           variant="primary"
           size="medium"
           onClick={handleApply}
           className="flex-1"
-          text="Apply filters"
+          text={dictionary.applyFilters}
         />
       </div>
     </div>
