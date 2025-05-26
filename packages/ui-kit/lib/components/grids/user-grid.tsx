@@ -602,7 +602,7 @@ export const UserGrid = (props: UserGridProps) => {
                     className="h-full flex flex-col"
                 >
                     <TabList
-                        className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap"
+                        className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap flex-shrink-0"
                         variant="small"
                     >
                         <TabTrigger value="all" icon={<IconAll />} className="cursor-pointer">
