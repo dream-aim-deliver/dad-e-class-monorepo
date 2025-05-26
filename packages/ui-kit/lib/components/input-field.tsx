@@ -43,7 +43,7 @@ export interface InputFieldProps {
  * @param id Optional unique ID for identifying this specific input field (useful for testing or accessibility).
  * @param className Optional additional CSS classes to apply to the outer container.
  * @param inputClassName Optional additional CSS classes to apply to the input element.
- * 
+ *
  * @example
  * <InputField
  *   hasLeftContent={true}
@@ -84,12 +84,12 @@ export const InputField: FC<InputFieldProps> = ({
 
   return (
     <div
-      className={cn(`flex gap-2 items-start justify-center flex-col px-3 py-[10px] bg-input-fill border rounded-medium 
+      className={cn(`flex gap-2 items-start justify-center flex-col px-3 py-[10px] bg-input-fill border rounded-medium
       ${stateClasses[state]}
-      ${className} 
+      ${className}
       `)}
     >
-      <div className="flex items-center md:gap-2 w-full h-full">
+      <div className="flex items-center gap-2 w-full h-full">
         {hasLeftContent && leftContent}
         <input
           data-testid={id}
