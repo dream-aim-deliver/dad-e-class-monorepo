@@ -69,7 +69,7 @@ export const Footer: React.FC<FooterProps> = ({
                     <div className="flex justify-between items-start">
                         {/* Logo (Left) */}
                         <div className="w-1/2">
-                            <a href="/" className="block h-12">
+                            <a href="/" className="block h-12 w-fit">
                                 {logo}
                                 {logoSrc && (
                                     <img
@@ -121,7 +121,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <div className="hidden py-6 px-10.5 lg:flex flex-row justify-between items-start lg:items-center">
                     {/* Left Section: Logo Only */}
                     <div className="mb-6 lg:mb-0">
-                        <a href="/" className="block h-12">
+                        <a href="/" className="block h-12 w-fit">
                             {logo}
                             {logoSrc && (
                                 <img
