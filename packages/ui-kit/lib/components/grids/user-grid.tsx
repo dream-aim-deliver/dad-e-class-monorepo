@@ -543,7 +543,7 @@ export const UserGrid = (props: UserGridProps) => {
                             onClick={toggleBatchActions}
                         />
                     ) : (
-                        <div className="flex space-x-2 items-center">
+                        <div className="flex space-x-2 items-center overflow-x-auto">
                             <span className="text-sm text-white mr-2">
                                 {selectedUserCount}/{roleUsers.length} {dictionary.components.userGrid.selected}
                             </span>
