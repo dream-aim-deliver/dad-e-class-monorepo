@@ -12,6 +12,7 @@ interface NavbarProps extends isLocalAware {
   notificationCount?: number;
   onChangeLanguage?: (locale: string) => void;
   children: React.ReactNode;
+  logo?: React.ReactNode;
   userProfile?: React.ReactNode;
   userProfileImageSrc?: string;
   userName?: string;
@@ -58,6 +59,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   userProfile,
   userProfileImageSrc,
   userName,
+  logo,
   logoSrc,
   availableLocales,
 }) => {
@@ -103,9 +105,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <nav className="bg-transparent text-white py-4 px-4 flex items-center justify-between w-full">
       {/* Logo */}
-      <div className="flex items-center h-13">
-        <a href="/" className="h-full">
-          <img src={logoSrc} alt="Logo" className="h-full w-auto" />
+      <div className="flex items-center">
+        <a href="/" className="h-12">
+          {logo}
+          {logoSrc && <img
+            src={logoSrc}
+            alt="Logo"
+            className="h-full w-auto"
+          />}
         </a>
       </div>
 
@@ -203,13 +210,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div
           className="fixed top-0 left-0 w-full h-full bg-button-primary-text text-white flex flex-col items-center justify-center lg:hidden z-9999"
         >
-          <div className="absolute top-4 left-0 right-0 flex justify-between items-center px-4 w-full">
-            <a href="/" className="h-13">
-              <img
+          <div className="absolute top-3 left-0 right-0 flex justify-between items-center px-4 w-full">
+            <a href="/" className="h-12">
+              {logo}
+              {logoSrc && <img
                 src={logoSrc}
                 alt="Logo"
                 className="h-full w-auto"
-              />
+              />}
             </a>
 
             <Button

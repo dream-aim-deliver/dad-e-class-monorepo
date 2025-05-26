@@ -5,6 +5,7 @@ import { Navbar } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface HeaderProps {
     platform: platform.TPlatform;
@@ -58,7 +59,16 @@ export default function Header({
             isLoggedIn={!!session}
             availableLocales={availableLocales}
             locale={locale}
-            logoSrc={platform.logoUrl}
+            logo={
+                <Image
+                    priority
+                    src={platform.logoUrl}
+                    alt={platform.name}
+                    width={48}
+                    height={48}
+                    className="w-auto h-full"
+                />
+            }
             onChangeLanguage={changeLanguage}
             userName={session?.user.name}
             userProfileImageSrc={session?.user.image}

@@ -15,6 +15,15 @@ const nextConfig: NextConfig = {
         // See: https://github.com/gregberge/svgr
         svgr: false,
     },
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                // The path for mock data. Should be configured with environment variables in production.
+                hostname: 'res.cloudinary.com',
+            },
+        ],
+    }
 };
 
 const plugins = [

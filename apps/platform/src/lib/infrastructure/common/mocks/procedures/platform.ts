@@ -6,7 +6,7 @@ const getAdMock = (id: string | number): platform.TPlatform => ({
     id: id,
     name: 'Just Do Ad',
     logoUrl:
-        'https://res.cloudinary.com/dsyephqpf/image/upload/v1747649972/a_wy7cuh.svg',
+        'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748270861/a_wy7cuh_kwevw6.png',
     backgroundImageUrl:
         'https://res.cloudinary.com/dsyephqpf/image/upload/v1747650265/background-eln_mhvipu.jpg',
     // TODO: determine if this should be a rich text field
