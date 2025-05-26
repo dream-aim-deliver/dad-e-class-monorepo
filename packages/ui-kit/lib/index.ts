@@ -37,3 +37,4 @@ export { UserGrid } from './components/grids/user-grid';
 export { Hero } from './components/home-banner/hero';
 export { Carousel } from './components/carousel/carousel';
 export { GeneralCard } from './components/carousel/general-card';
+export { Divider } from './components/divider';

@@ -1,7 +1,12 @@
 'use client';
 import { trpc } from '../trpc/client';
 import { useLocale } from 'next-intl';
-import { Carousel, GeneralCard, Hero } from '@maany_shr/e-class-ui-kit';
+import {
+    Carousel,
+    Divider,
+    GeneralCard,
+    Hero,
+} from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 export type HomeProps = {};
@@ -20,6 +25,7 @@ export default function Home(props: HomeProps) {
                 thumbnailUrl={homePage.banner.thumbnailUrl}
                 videoId={homePage.banner.videoId}
             />
+            <Divider />
             <Carousel locale={locale}>
                 {homePage.carousel.map((item) => {
                     const onClick = () => {};
