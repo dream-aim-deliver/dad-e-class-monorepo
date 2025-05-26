@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Button } from '../button';
 import { DateInput } from '../date-input';
 import { CheckBox } from '../checkbox';
-import { AutocompleteInput } from '../admin-course-filter-modal';
 import { profile } from '@maany_shr/e-class-models';
 import { IconClose } from '../icons/icon-close';
+import { TextInput } from '../text-input';
 
 // User filter interface extending TBasePersonalProfile
 export interface UserFilterModel extends profile.TBasePersonalProfile {
@@ -12,12 +12,12 @@ export interface UserFilterModel extends profile.TBasePersonalProfile {
     minRating?: number;
     maxRating?: number;
     platform?: string[];
-    minCoachingSessions?: string;
-    maxCoachingSessions?: string;
-    minCoursesBought?: string;
-    maxCoursesBought?: string;
-    minCoursesCreated?: string;
-    maxCoursesCreated?: string;
+    minCoachingSessions?: number;
+    maxCoachingSessions?: number;
+    minCoursesBought?: number;
+    maxCoursesBought?: number;
+    minCoursesCreated?: number;
+    maxCoursesCreated?: number;
     lastAccessAfter?: string;
     lastAccessBefore?: string;
 }
@@ -36,17 +36,17 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
     platforms,
 }) => {
     const [filters, setFilters] = useState<Partial<UserFilterModel>>({
-        minRating: initialFilters.minRating || 0,
-        maxRating: initialFilters.maxRating || 5,
+        minRating: initialFilters.minRating,
+        maxRating: initialFilters.maxRating,
         platform: initialFilters.platform || [],
-        minCoachingSessions: initialFilters.minCoachingSessions || '',
-        maxCoachingSessions: initialFilters.maxCoachingSessions || '',
-        minCoursesBought: initialFilters.minCoursesBought || '',
-        maxCoursesBought: initialFilters.maxCoursesBought || '',
-        minCoursesCreated: initialFilters.minCoursesCreated || '',
-        maxCoursesCreated: initialFilters.maxCoursesCreated || '',
-        lastAccessAfter: initialFilters.lastAccessAfter || '',
-        lastAccessBefore: initialFilters.lastAccessBefore || '',
+        minCoachingSessions: initialFilters.minCoachingSessions,
+        maxCoachingSessions: initialFilters.maxCoachingSessions,
+        minCoursesBought: initialFilters.minCoursesBought,
+        maxCoursesBought: initialFilters.maxCoursesBought,
+        minCoursesCreated: initialFilters.minCoursesCreated,
+        maxCoursesCreated: initialFilters.maxCoursesCreated,
+        lastAccessAfter: initialFilters.lastAccessAfter,
+        lastAccessBefore: initialFilters.lastAccessBefore,
     });
 
     const handleChange = (field: string, value: any) => {
@@ -63,20 +63,24 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
         });
     };
 
+    // This key is required to force re-render the modal when filters are reset.
+    const [resetKey, setResetKey] = useState(0);
+
     const handleReset = () => {
         setFilters({
-            minRating: 0,
-            maxRating: 5,
+            minRating: undefined,
+            maxRating: undefined,
             platform: [],
-            minCoachingSessions: '',
-            maxCoachingSessions: '',
-            minCoursesBought: '',
-            maxCoursesBought: '',
-            minCoursesCreated: '',
-            maxCoursesCreated: '',
-            lastAccessAfter: '',
-            lastAccessBefore: '',
+            minCoachingSessions: undefined,
+            maxCoachingSessions: undefined,
+            minCoursesBought: undefined,
+            maxCoursesBought: undefined,
+            minCoursesCreated: undefined,
+            maxCoursesCreated: undefined,
+            lastAccessAfter: undefined,
+            lastAccessBefore: undefined,
         });
+        setResetKey(prev => prev + 1);
     };
 
     const handleApply = () => {
@@ -99,25 +103,29 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                 <div className="flex flex-col gap-4">
                     <h3 className="text-xl font-semibold">Rating</h3>
                     <div className="flex gap-2">
-                        <AutocompleteInput
+                        <TextInput
                             label="Min"
+                            key={`minRating-${resetKey}`}
                             inputField={{
                                 id: 'minRating',
                                 className: "w-full text-white border-input-stroke",
-                                value: filters.minRating?.toString() || '',
-                                setValue: (value: string | string[]) =>
-                                    handleChange('minRating', parseFloat(typeof value === 'string' ? value : value[0] || '0') || 0),
+                                // We can't control the input with value property, as this will not fire updates until the value is a valid float.
+                                defaultValue: filters.minRating?.toString(),
+                                // TODO: possibly check if the value is in range of 0-5
+                                setValue: (value: string) =>
+                                    handleChange('minRating', parseFloat(value) || undefined),
                                 inputText: 'e.g. 1',
                             }}
                         />
-                        <AutocompleteInput
+                        <TextInput
                             label="Max"
+                            key={`maxRating-${resetKey}`}
                             inputField={{
                                 id: 'maxRating',
                                 className: "w-full text-white border-input-stroke",
-                                value: filters.maxRating?.toString() || '',
-                                setValue: (value: string | string[]) =>
-                                    handleChange('maxRating', parseFloat(typeof value === 'string' ? value : value[0] || '5') || 5),
+                                defaultValue: filters.maxRating?.toString(),
+                                setValue: (value: string) =>
+                                    handleChange('maxRating', parseFloat(value) || undefined),
                                 inputText: 'e.g. 5',
                             }}
                         />
@@ -149,25 +157,27 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                 <div className="flex flex-col gap-4">
                     <h3 className="text-xl font-semibold">Coaching Sessions</h3>
                     <div className="flex gap-2">
-                        <AutocompleteInput
+                        <TextInput
+                            key={`minCoachingSessions-${resetKey}`}
                             label="Min"
                             inputField={{
                                 id: 'minCoachingSessions',
                                 className: "w-full text-white border-input-stroke",
-                                value: filters.minCoachingSessions || '',
-                                setValue: (value: string | string[]) =>
-                                    handleChange('minCoachingSessions', typeof value === 'string' ? value : value[0] || ''),
+                                defaultValue: filters.minCoachingSessions?.toString(),
+                                setValue: (value: string) =>
+                                    handleChange('minCoachingSessions', parseInt(value) || undefined),
                                 inputText: 'e.g. 5',
                             }}
                         />
-                        <AutocompleteInput
+                        <TextInput
+                            key={`maxCoachingSessions-${resetKey}`}
                             label="Max"
                             inputField={{
                                 id: 'maxCoachingSessions',
                                 className: "w-full text-white border-input-stroke",
-                                value: filters.maxCoachingSessions || '',
-                                setValue: (value: string | string[]) =>
-                                    handleChange('maxCoachingSessions', typeof value === 'string' ? value : value[0] || ''),
+                                value: filters.maxCoachingSessions?.toString(),
+                                setValue: (value: string) =>
+                                    handleChange('maxCoachingSessions', parseInt(value) || undefined),
                                 inputText: 'e.g. 50',
                             }}
                         />
@@ -179,25 +189,27 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                 <div className="flex flex-col gap-4">
                     <h3 className="text-xl font-semibold">Courses Bought</h3>
                     <div className="flex gap-2">
-                        <AutocompleteInput
+                        <TextInput
                             label="Min"
+                            key={`minCoursesBought-${resetKey}`}
                             inputField={{
                                 id: 'minCoursesBought',
                                 className: "w-full text-white border-input-stroke",
-                                value: filters.minCoursesBought || '',
-                                setValue: (value: string | string[]) =>
-                                    handleChange('minCoursesBought', typeof value === 'string' ? value : value[0] || ''),
+                                defaultValue: filters.minCoursesBought?.toString(),
+                                setValue: (value: string) =>
+                                    handleChange('minCoursesBought', parseInt(value) || undefined),
                                 inputText: 'e.g. 1',
                             }}
                         />
-                        <AutocompleteInput
+                        <TextInput
                             label="Max"
+                            key={`maxCoursesBought-${resetKey}`}
                             inputField={{
                                 id: 'maxCoursesBought',
                                 className: "w-full text-white border-input-stroke",
-                                value: filters.maxCoursesBought || '',
-                                setValue: (value: string | string[]) =>
-                                    handleChange('maxCoursesBought', typeof value === 'string' ? value : value[0] || ''),
+                                defaultValue: filters.maxCoursesBought?.toString(),
+                                setValue: (value: string) =>
+                                    handleChange('maxCoursesBought', parseInt(value) || undefined),
                                 inputText: 'e.g. 20',
                             }}
                         />
@@ -209,25 +221,27 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                 <div className="flex flex-col gap-4">
                     <h3 className="text-xl font-semibold">Courses Created</h3>
                     <div className="flex gap-2">
-                        <AutocompleteInput
+                        <TextInput
                             label="Min"
+                            key={`minCoursesCreated-${resetKey}`}
                             inputField={{
                                 id: 'minCoursesCreated',
                                 className: "w-full text-white border-input-stroke",
-                                value: filters.minCoursesCreated || '',
-                                setValue: (value: string | string[]) =>
-                                    handleChange('minCoursesCreated', typeof value === 'string' ? value : value[0] || ''),
+                                defaultValue: filters.minCoursesCreated?.toString(),
+                                setValue: (value: string) =>
+                                    handleChange('minCoursesCreated', parseInt(value) || undefined),
                                 inputText: 'e.g. 0',
                             }}
                         />
-                        <AutocompleteInput
+                        <TextInput
                             label="Max"
+                            key={`maxCoursesCreated-${resetKey}`}
                             inputField={{
                                 id: 'maxCoursesCreated',
                                 className: "w-full text-white border-input-stroke",
-                                value: filters.maxCoursesCreated || '',
-                                setValue: (value: string | string[]) =>
-                                    handleChange('maxCoursesCreated', typeof value === 'string' ? value : value[0] || ''),
+                                defaultValue: filters.maxCoursesCreated?.toString(),
+                                setValue: (value: string) =>
+                                    handleChange('maxCoursesCreated', parseInt(value) || undefined),
                                 inputText: 'e.g. 10',
                             }}
                         />
