@@ -388,27 +388,27 @@ export const UserGrid = (props: UserGridProps) => {
             return false;
         }
         if (filters.minCoachingSessions && user.coachingSessionsCount !== undefined &&
-            user.coachingSessionsCount < parseInt(filters.minCoachingSessions)) {
+            user.coachingSessionsCount < filters.minCoachingSessions) {
             return false;
         }
         if (filters.maxCoachingSessions && user.coachingSessionsCount !== undefined &&
-            user.coachingSessionsCount > parseInt(filters.maxCoachingSessions)) {
+            user.coachingSessionsCount > filters.maxCoachingSessions) {
             return false;
         }
         if (filters.minCoursesBought && user.coursesBought !== undefined &&
-            user.coursesBought < parseInt(filters.minCoursesBought)) {
+            user.coursesBought < filters.minCoursesBought) {
             return false;
         }
         if (filters.maxCoursesBought && user.coursesBought !== undefined &&
-            user.coursesBought > parseInt(filters.maxCoursesBought)) {
+            user.coursesBought > filters.maxCoursesBought) {
             return false;
         }
         if (filters.minCoursesCreated && user.coursesCreated !== undefined &&
-            user.coursesCreated < parseInt(filters.minCoursesCreated)) {
+            user.coursesCreated < filters.minCoursesCreated) {
             return false;
         }
         if (filters.maxCoursesCreated && user.coursesCreated !== undefined &&
-            user.coursesCreated > parseInt(filters.maxCoursesCreated)) {
+            user.coursesCreated > filters.maxCoursesCreated) {
             return false;
         }
         if (filters.lastAccessAfter && user.lastAccess < new Date(filters.lastAccessAfter).getTime()) {
@@ -457,17 +457,17 @@ export const UserGrid = (props: UserGridProps) => {
 
         // Reset modal filters to initial state
         setFilters({
-            minRating: 0,
-            maxRating: 5,
+            minRating: undefined,
+            maxRating: undefined,
             platform: [],
-            minCoachingSessions: '',
-            maxCoachingSessions: '',
-            minCoursesBought: '',
-            maxCoursesBought: '',
-            minCoursesCreated: '',
-            maxCoursesCreated: '',
-            lastAccessAfter: '',
-            lastAccessBefore: ''
+            minCoachingSessions: undefined,
+            maxCoachingSessions: undefined,
+            minCoursesBought: undefined,
+            maxCoursesBought: undefined,
+            minCoursesCreated: undefined,
+            maxCoursesCreated: undefined,
+            lastAccessAfter: undefined,
+            lastAccessBefore: undefined,
         });
 
         // Reset grid filters
