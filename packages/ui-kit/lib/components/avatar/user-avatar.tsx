@@ -7,6 +7,7 @@ export interface UserAvatarProps {
   fullName?: string;
   className?: string;
   initialsCount?: number;
+  title?: string;
 }
 
 /**
@@ -55,9 +56,9 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
     if (!trimmedName) return '';
 
     if (trimmedName.startsWith('+')) {
-    const count = props.initialsCount ?? 3;
-    return trimmedName.substring(0, count);
-  }
+      const count = props.initialsCount ?? 3;
+      return trimmedName.substring(0, count);
+    }
 
     const nameParts = trimmedName.split(/\s+/);
 
@@ -84,7 +85,7 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
       className={cn(
         'flex items-center justify-center rounded-full overflow-hidden',
         shouldShowInitials &&
-          'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600',
+        'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600',
         sizeClasses[size],
         className,
       )}
@@ -96,6 +97,7 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
           alt={fullName || 'User profile'}
           className="w-full h-full object-cover object-center"
           onError={handleImageError}
+          title={props.title || ''}
         />
       ) : (
         <span className="uppercase">{initials}</span>
