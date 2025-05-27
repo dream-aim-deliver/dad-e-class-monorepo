@@ -45,3 +45,4 @@ export { CreateContentModal } from './components/create-content-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
 export { RemoveModal } from './components/remove-modal';
+export { default } from './components/topic-list';
