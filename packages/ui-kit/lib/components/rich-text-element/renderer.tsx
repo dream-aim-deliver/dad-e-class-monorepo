@@ -5,10 +5,10 @@ import { cn } from '../../utils/style-utils';
 
 /**
  * SlateRenderer Component
- * 
+ *
  * Renders Slate content in a read-only format.
  * Supports both string and Descendant array as input.
- * 
+ *
  * @param {Object} props - Component properties
  * @param {string | Descendant[]} props.content - The Slate content, either as a string (which is parsed) or as a Descendant array.
  */
@@ -29,9 +29,9 @@ function RichTextRenderer({ content, className }: { content: string | Descendant
 
 /**
  * ElementNode Component
- * 
+ *
  * Recursively renders a Slate element node and its children.
- * 
+ *
  * @param {Object} props - Component properties
  * @param {any} props.element - A Slate element containing children.
  */
@@ -77,7 +77,7 @@ const RenderElement = ({ attributes, children, element }: {
     case "h2":
       return <h2 {...attributes} style={style} className="text-xl font-bold">{children}</h2>;
     default:
-      return <p {...attributes} style={style} className="text-base">{children}</p>;
+      return <span {...attributes} style={style} className="text-base">{children}</span>;
   }
 };
 
@@ -104,10 +104,10 @@ const ElementNode = ({ element }: { element: any }) => {
 
 /**
  * LeafNode Component
- * 
+ *
  * Renders individual text formatting elements inside a Slate editor.
  * Supports bold, italic, underline, strikethrough, code, highlight, superscript, and subscript.
- * 
+ *
  * @param {Object} props - Component properties
  * @param {any} props.leaf - A Slate leaf node containing text and formatting.
  */
