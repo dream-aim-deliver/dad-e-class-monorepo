@@ -54,7 +54,6 @@ interface RootLayoutProps {
     params: { locale: string };
 }
 
-// TODO: revalidation can be configured
 const getCachedPlatform = unstable_cache(
     async () => {
         const queryOptions = trpc.getPlatform.queryOptions({
@@ -66,16 +65,24 @@ const getCachedPlatform = unstable_cache(
     ['platform', env.platformId],
     {
         tags: ['platform', `platform-${env.platformId}`],
+        revalidate: 3600, // 1 hour
     },
 );
 
-const listCachedLanguages = unstable_cache(async () => {
-    const queryOptions = trpc.listLanguages.queryOptions({
-        platformId: env.platformId,
-    });
-    const queryClient = getQueryClient();
-    return await queryClient.fetchQuery(queryOptions);
-});
+const listCachedLanguages = unstable_cache(
+    async () => {
+        const queryOptions = trpc.listLanguages.queryOptions({
+            platformId: env.platformId,
+        });
+        const queryClient = getQueryClient();
+        return await queryClient.fetchQuery(queryOptions);
+    },
+    ['languages', env.platformId],
+    {
+        tags: ['languages', `languages-${env.platformId}`],
+        revalidate: 3600, // 1 hour
+    },
+);
 
 export default async function RootLayout({
     children,
@@ -85,8 +92,10 @@ export default async function RootLayout({
     params: Promise<{ locale: string }>;
 }) {
     // Fetch cached configuration
-    const platform = await getCachedPlatform();
-    const languages = await listCachedLanguages();
+    const [platform, languages] = await Promise.all([
+        getCachedPlatform(),
+        listCachedLanguages()
+    ]);
 
     // Check if platform's languages are supported
     const availableLocales: TLocale[] = [];
