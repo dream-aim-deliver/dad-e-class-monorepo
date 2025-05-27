@@ -43,7 +43,7 @@ vi.mock('../lib/components/button', () => ({
 describe('GroupCourseBanner', () => {
     const baseProps: GroupCourseBannerProps = {
         locale: 'en',
-        studentsName: 'Alice Smith, Bob Johnson and 22 others',
+        studentNames: 'Alice Smith, Bob Johnson and 22 others',
         onClickGroupWorkspace: vi.fn(),
         children: <div data-testid="avatar-reel">Avatar Reel</div>,
     };
