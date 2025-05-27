@@ -2,13 +2,13 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Button } from './button';
 
 export interface GroupCourseBannerProps extends isLocalAware {
-    studentsName: string;
+    studentNames: string;
     children: React.ReactNode;
     onClickGroupWorkspace: () => void;
 }
 
 export const GroupCourseBanner = ({
-    studentsName,
+    studentNames,
     onClickGroupWorkspace,
     children,
     locale,
@@ -18,12 +18,11 @@ export const GroupCourseBanner = ({
         <div className="flex flex-row w-full p-3 items-center gap-16 bg-base-neutral-800 rounded-small border border-base-neutral-700">
             <div className="flex flex-col gap-3 justify-start items-left">
                 <p className="text-sm text-text-primary font-important">
-                    {' '}
-                    {dictionary.takenAlsoBy}{' '}
+                    {' '}{dictionary.takenAlsoBy}{' '}
                 </p>
                 <div className="flex flex-row items-center gap-4">
                     {children}
-                    <p className="text-sm text-text-primary">{studentsName}</p>
+                    <p className="text-sm text-text-primary">{studentNames}</p>
                 </div>
             </div>
             <div className="flex-1 flex justify-end">
