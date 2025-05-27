@@ -1,47 +1,49 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { GroupCourseBanner, GroupCourseBannerProps } from '../lib/components/group-course-banner';
+import {
+    GroupCourseBanner,
+    GroupCourseBannerProps,
+} from '../lib/components/group-course-banner';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
-  getDictionary: (locale: string) => ({
-    components: {
-      groupCourseBanner: {
-        takenAlsoBy: 'Taken also by',
-        groupWorkspaceButton: 'Go to Group Workspace',
-      },
-    },
-  }),
-  isLocalAware: vi.fn(),
+    getDictionary: (locale: string) => ({
+        components: {
+            groupCourseBanner: {
+                takenAlsoBy: 'Taken also by',
+                groupWorkspaceButton: 'Go to Group Workspace',
+            },
+        },
+    }),
+    isLocalAware: vi.fn(),
 }));
 
 vi.mock('../lib/components/button', () => ({
-  Button: ({
-    text,
-    onClick,
-    variant,
-    size,
-  }: {
-    text: string;
-    onClick: () => void;
-    variant: string;
-    size: string;
-  }) => (
-    <button
-      data-testid="group-workspace-button"
-      onClick={onClick}
-      className={`button-${variant} button-${size}`}
-    >
-      {text}
-    </button>
-  ),
+    Button: ({
+        text,
+        onClick,
+        variant,
+        size,
+    }: {
+        text: string;
+        onClick: () => void;
+        variant: string;
+        size: string;
+    }) => (
+        <button
+            data-testid="group-workspace-button"
+            onClick={onClick}
+            className={`button-${variant} button-${size}`}
+        >
+            {text}
+        </button>
+    ),
 }));
 
 describe('GroupCourseBanner', () => {
     const baseProps: GroupCourseBannerProps = {
         locale: 'en',
         studentsName: 'Alice Smith, Bob Johnson and 22 others',
-        avatarImageUrl: 'https://img.lalr.co/cms/2018/08/16181927/Mini-pig.jpg?r=1_1',
         onClickGroupWorkspace: vi.fn(),
         children: <div data-testid="avatar-reel">Avatar Reel</div>,
     };
@@ -51,7 +53,9 @@ describe('GroupCourseBanner', () => {
 
         expect(screen.getByText('Taken also by')).toBeInTheDocument();
         expect(screen.getByTestId('avatar-reel')).toBeInTheDocument();
-        expect(screen.getByText('Alice Smith, Bob Johnson and 22 others')).toBeInTheDocument();
+        expect(
+            screen.getByText('Alice Smith, Bob Johnson and 22 others'),
+        ).toBeInTheDocument();
     });
 
     it('renders the group workspace button', () => {
@@ -70,5 +74,4 @@ describe('GroupCourseBanner', () => {
 
         expect(baseProps.onClickGroupWorkspace).toHaveBeenCalledTimes(1);
     });
-
 });
