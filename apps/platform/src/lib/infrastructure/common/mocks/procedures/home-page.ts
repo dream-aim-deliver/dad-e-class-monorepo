@@ -41,6 +41,26 @@ const homePageMock: homePage.THomePage = {
             buttonUrl: '',
             badge: undefined,
         },
+        {
+            description:
+                'Ideal für Firmen oder Stellen, die einen freien und individuellen Zugang zu unserer Plattform brauchen und diese für einen längere Zeit nutzten wollen.',
+            title: 'Enterprise',
+            imageUrl:
+                'https://images.unsplash.com/photo-1580742432710-d3c3703559a9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            buttonText: 'Inquiries',
+            buttonUrl: '',
+            badge: undefined,
+        },
+        {
+            description:
+                'Our professionals provide support where they are needed. With workshops, tips and “learning by doing” we can reach our goals together more quickly.',
+            title: 'Coaching on Demand',
+            imageUrl:
+                'https://images.unsplash.com/photo-1626105985445-6430a31f6f96?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            buttonText: 'Find a coach (ab CHF 90)',
+            buttonUrl: '',
+            badge: undefined,
+        },
     ],
     coachingOnDemand: {
         description: '',
