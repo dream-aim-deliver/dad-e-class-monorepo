@@ -42,3 +42,4 @@ export { CarouselSkeleton } from './components/skeletons/carousel-skeleton'
 
 export { default } from './components/topic-list';
 export { CoachingOnDemandBanner } from './components/coaching-on-demand-banner/coaching-on-demand-banner';
+export { HomeAccordion } from './components/home-accordion';

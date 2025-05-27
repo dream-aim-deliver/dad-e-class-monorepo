@@ -1,0 +1,54 @@
+import React from 'react';
+import Accordion from './accordion/accordion';
+import AccordionItem from './accordion/accordion-item';
+import { cn } from '../utils/style-utils';
+import AccordionTrigger from './accordion/accordion-trigger';
+import { homePage } from '@maany_shr/e-class-models';
+import AccordionContent from './accordion/accordion-content';
+import RichTextRenderer from './rich-text-element/renderer';
+import { UserAvatar } from './avatar/user-avatar';
+
+export interface HomeAccordionProps {
+    title: string;
+    items: homePage.TAccordionItem[];
+    showNumbers?: boolean;
+}
+
+export function HomeAccordion({ title, items, showNumbers }: HomeAccordionProps) {
+    const defaultValue = items?.length ? [items[0].title] : [];
+
+    return (
+        <Accordion className="flex flex-col gap-7" type="single" defaultValue={defaultValue}>
+            <h2 className="text-text-primary">{title}</h2>
+            <div className="w-full py-4 px-6">
+                {items?.map((item, index) => (
+                    <AccordionItem
+                        className={cn(
+                            'py-6',
+                            items.length - 1 !== index && 'border-b border-divider'
+                        )}
+                        key={item.title}
+                        value={item.title}
+                    >
+                        <AccordionTrigger value={item.title}>
+                            <div className="flex items-center gap-4">
+                                {showNumbers && item.position &&
+                                    <h4 className="text-action-default">{item.position}.</h4>}
+                                <div className="flex items-center gap-2">
+                                    {item.iconImageUrl && (
+                                        <UserAvatar imageUrl={item.iconImageUrl} size="small" />
+                                    )}
+                                    <h5 className="text-text-primary font-medium">{item.title}</h5>
+                                </div>
+                            </div>
+                        </AccordionTrigger>
+                        <AccordionContent value={item.title} className="pl-8 pt-2 ">
+                            <RichTextRenderer content={item.content}
+                                              className="lg:text-md text-normal leading-[150%]  text-text-secondary" />
+                        </AccordionContent>
+                    </AccordionItem>
+                ))}
+            </div>
+        </Accordion>
+    );
+}
