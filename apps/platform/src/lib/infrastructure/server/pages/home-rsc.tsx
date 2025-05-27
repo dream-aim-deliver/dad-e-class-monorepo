@@ -3,9 +3,11 @@ import { HydrateClient, prefetch, trpc } from '../config/trpc/server';
 import { Suspense } from 'react';
 
 export default async function HomeServerComponent() {
-    // TODO: might be cached
-    await prefetch(trpc.getHomePage.queryOptions());
-    await prefetch(trpc.getHomePageTopics.queryOptions());
+    // TODO: might be cached without hydration
+    await Promise.all([
+        prefetch(trpc.getHomePage.queryOptions()),
+        prefetch(trpc.getHomePageTopics.queryOptions()),
+    ]);
 
     return (
         <>
