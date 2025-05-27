@@ -1,7 +1,7 @@
 'use client';
 import { trpc } from '../trpc/client';
-import { useLocale } from 'next-intl';
-import {
+import { useLocale, useTranslations } from 'next-intl';
+import TopicList, {
     CarouselSkeleton,
     Divider,
     GeneralCard,
@@ -22,8 +22,10 @@ export type HomeProps = {};
 
 export default function Home(props: HomeProps) {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.home');
 
     const [homePage] = trpc.getHomePage.useSuspenseQuery();
+    const [topics] = trpc.getHomePageTopics.useSuspenseQuery();
 
     return (
         <div className="flex flex-col">
@@ -48,6 +50,8 @@ export default function Home(props: HomeProps) {
                     );
                 })}
             </Carousel>
+            <Divider />
+            <TopicList list={topics} title={t('topicsTitle')} />
         </div>
     );
 }

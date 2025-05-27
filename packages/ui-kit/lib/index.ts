@@ -39,3 +39,5 @@ export { Carousel } from './components/carousel/carousel';
 export { GeneralCard } from './components/carousel/general-card';
 export { Divider } from './components/divider';
 export { CarouselSkeleton } from './components/skeletons/carousel-skeleton'
+
+export { default } from './components/topic-list';
