@@ -47,3 +47,4 @@ export { CoachesSkeleton } from './components/coaches-skeleton';
 export { RemoveModal } from './components/remove-modal';
 export { default } from './components/topic-list';
 export { CoachingOnDemandBanner } from './components/coaching-on-demand-banner/coaching-on-demand-banner';
+export { HomeAccordion } from './components/home-accordion';

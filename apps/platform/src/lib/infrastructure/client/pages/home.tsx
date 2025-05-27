@@ -7,6 +7,7 @@ import TopicList, {
     Divider,
     GeneralCard,
     Hero,
+    HomeAccordion,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import dynamic from 'next/dynamic';
@@ -54,6 +55,7 @@ export default function Home(props: HomeProps) {
             </Carousel>
             <Divider />
             <TopicList list={topics} title={t('topicsTitle')} />
+            {/* Breakpoints might be adjusted here */}
             <CoachingOnDemandBanner
                 title={homePage.coachingOnDemand.title}
                 description={homePage.coachingOnDemand.description}
@@ -85,6 +87,11 @@ export default function Home(props: HomeProps) {
                         />
                     </>
                 }
+            />
+            <HomeAccordion
+                title={homePage.accordion.title}
+                showNumbers={homePage.accordion.showNumbers}
+                items={homePage.accordion.items}
             />
         </div>
     );
