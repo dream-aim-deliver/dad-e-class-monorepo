@@ -34,4 +34,4 @@ export { Navbar } from './components/navbar';
 export { NotificationGrid } from './components/grids/notification-grid';
 export { UserGrid } from './components/grids/user-grid';
 
-export { ReviewSnippet } from './components/review/review-snippet'
+export { ReviewSnippet } from './components/review/review-snippet';

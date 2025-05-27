@@ -8,7 +8,6 @@ export interface ReviewSnippetProps extends isLocalAware {
     reviewText: string;
     rating: number;
     reviewerName: string;
-    reviewerIsUser: boolean;
     reviewerAvatarUrl: string;
 }
 
@@ -46,7 +45,7 @@ export const ReviewSnippet = ({
             </div>
 
             <p className="text-md text-text-primary text-left">
-                "{isExpanded ? reviewText : truncatedText}"
+                {isExpanded ? reviewText : truncatedText}
             </p>
             {isLongText && (
                 <Button
