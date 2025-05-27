@@ -206,7 +206,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
                 <button
                   key={`page-${index}`}
                   onClick={() => goToPage(index)}
-                  className={`w-3 h-3 rounded-full transition-colors duration-200 ${index === currentPage
+                  className={`w-3 h-3 rounded-full transition-colors duration-200 cursor-pointer ${index === currentPage
                       ? "bg-button-primary-fill"
                       : "border border-button-primary-fill hover:bg-text-primary/20"
                     }`}

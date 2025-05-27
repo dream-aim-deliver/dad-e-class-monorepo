@@ -2,12 +2,21 @@
 import { trpc } from '../trpc/client';
 import { useLocale } from 'next-intl';
 import {
-    Carousel,
+    CarouselSkeleton,
     Divider,
     GeneralCard,
     Hero,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
+import dynamic from 'next/dynamic';
+
+const Carousel = dynamic(
+    () => import('@maany_shr/e-class-ui-kit').then((mod) => mod.Carousel),
+    {
+        ssr: false,
+        loading: () => <CarouselSkeleton />,
+    },
+);
 
 export type HomeProps = {};
 

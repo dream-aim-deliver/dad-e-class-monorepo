@@ -38,6 +38,7 @@ export { Hero } from './components/home-banner/hero';
 export { Carousel } from './components/carousel/carousel';
 export { GeneralCard } from './components/carousel/general-card';
 export { Divider } from './components/divider';
+export { CarouselSkeleton } from './components/skeletons/carousel-skeleton'
 
 export { ReviewSnippet } from './components/review/review-snippet';
 export { CreateContentModal } from './components/create-content-modal';
