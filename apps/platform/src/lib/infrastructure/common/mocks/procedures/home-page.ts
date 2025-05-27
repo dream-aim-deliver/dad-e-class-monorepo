@@ -63,11 +63,15 @@ const homePageMock: homePage.THomePage = {
         },
     ],
     coachingOnDemand: {
-        description: '',
-        title: '',
-        desktopImageUrl: '',
-        tabletImageUrl: '',
-        mobileImageUrl: '',
+        description:
+            'Are you looking for someone to exchange ideas with on equal footing, or do you want to learn new skills? Do you need support in choosing the right tools or advice for your project? Our industry experts are ready to help you succeed.',
+        title: 'Coaching on demand',
+        desktopImageUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364855/Frame_4353_zxdyos.png',
+        tabletImageUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364854/tablet_rdfwwe.png',
+        mobileImageUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364853/mobile_s5v6sk.png',
     },
     accordion: {
         title: '',
