@@ -154,7 +154,7 @@ export const NotificationGrid = ({
 
   // Localized platform names for tabs
   const localizedPlatformName = (platform: string) => {
-    return dictionary?.[platform] || platform;
+    return (dictionary as Record<string, string>)[platform] || platform;
   };
 
   // Client-side filtering logic for search, platform, and modal filters
