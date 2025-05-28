@@ -245,7 +245,7 @@ export const NotificationGrid = ({
     if (notificationsToShow.length === 0) {
       return (
         <div className="flex justify-center items-center h-64 text-text-secondary">
-          {dictionary?.noNotifications}
+          {dictionary.noNotifications}
         </div>
       );
     }
@@ -282,7 +282,7 @@ export const NotificationGrid = ({
           <Button
             variant="primary"
             size="medium"
-            text={dictionary.markAllRead}
+            text={dictionary.markAllAsRead}
             onClick={handleMarkAllRead}
             disabled={loading}
           />
