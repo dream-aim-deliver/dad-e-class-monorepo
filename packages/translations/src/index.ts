@@ -4,4 +4,5 @@ export * from './lib/dictionaries/base';
 export * from './lib/dictionaries/de';
 export * from './lib/dictionaries/en';
 export * from './lib/utils/react';
+export * from './lib/utils/dictionary-utils';
 

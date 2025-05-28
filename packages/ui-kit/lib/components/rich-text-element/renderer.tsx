@@ -3,24 +3,38 @@ import { deserialize } from './serializer';
 import { cn } from '../../utils/style-utils';
 
 
+export interface RichTextRendererProps {
+  content: string | Descendant[];
+  onDeserializationError: (message: string, error: Error) => void;
+  className?: string;
+}
+
 /**
  * SlateRenderer Component
  * 
  * Renders Slate content in a read-only format.
  * Supports both string and Descendant array as input.
  * 
- * @param {Object} props - Component properties
  * @param {string | Descendant[]} props.content - The Slate content, either as a string (which is parsed) or as a Descendant array.
+ * @param {function} props.onDeserializationError - Callback function to handle deserialization errors.
+ * @param {string} [props.className] - Optional additional class names for styling.
  */
-function RichTextRenderer({ content, className }: { content: string | Descendant[], className?: string }) {
-  // Convert string content to Slate's internal structure if necessary
-  if (typeof content === 'string') {
-    content = deserialize(content);
-  }
+function RichTextRenderer({
+  content,
+  onDeserializationError,
+  className
+}: RichTextRendererProps) {
+
+
+  // Deserialize the content to Slate format
+  const deserializedContent = deserialize({
+    serializedData: content,
+    onError: onDeserializationError
+  });
 
   return (
     <div className={cn(className)}>
-      {content.map((element, index) => (
+      {deserializedContent.map((element, index) => (
         <ElementNode key={index} element={element} />
       ))}
     </div>

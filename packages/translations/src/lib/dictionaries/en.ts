@@ -18,6 +18,33 @@ export const EN: TDictionary = {
       next: 'Next',
       lesson: 'Lesson',
     },
+    userGrid: {
+      nameColumn: 'Name',
+      surnameColumn: 'Surname',
+      emailColumn: 'Email',
+      phoneNumberColumn: 'Phone',
+      ratingColumn: 'Rating',
+      platformColumn: 'Platform',
+      coachingSessionsColumn: '# coaching sessions',
+      coursesBoughtColumn: 'Courses bought',
+      coursesCreatedColumn: 'Courses created',
+      lastAccessColumn: 'Last access',
+      sendNotificationNoUsersError: 'Error: no users selected to send notification',
+      sendingNotifications: 'Sending notifications to %{count} selected users',
+      searchPlaceholder: 'Search',
+      exportCurrentView: 'Export current view',
+      filterButton: 'Filters',
+      clearFilters: 'Clear filters',
+      batchActions: 'Batch actions',
+      selected: 'Selected',
+      sendNotification: 'Send notification',
+      hideActions: 'Hide actions',
+      all: 'All',
+      students: 'Students',
+      coaches: 'Coaches',
+      courseCreators: 'Course Creators',
+      admin: 'Admin',
+    },
     notificationGrid: {
       markAllAsRead: 'Mark all as read',
       searchPlaceholder: 'Search activity',
@@ -149,17 +176,17 @@ export const EN: TDictionary = {
       noAvailableSessionText: 'No available sessions',
       loadingText: 'Loading Sessions...',
     },
-    coachReview:{
-      by:'by'
+    coachReview: {
+      by: 'by'
     },
-    coachCard:{
+    coachCard: {
       coachingSession: "Coaching Session",
       teaches: "Teaches",
       more: "more",
       viewProfile: "View Profile",
       bookSession: "Book a Session",
     },
-    buyCoachingSession:{
+    buyCoachingSession: {
       title: 'Buy Coaching Session',
       description: 'Schedule your sessions anytime, each with your favourite coach.',
       buttonText: 'Buy coaching sessions',
@@ -169,7 +196,7 @@ export const EN: TDictionary = {
     videoPlayer: {
       videoErrorText: 'Video does not exist'
     },
-    richTextToolbar:{
+    richTextToolbar: {
       paragraph: "Paragraph",
       bold: "Bold (Ctrl+B)",
       italic: "Italic (Ctrl+I)",
@@ -266,7 +293,7 @@ export const EN: TDictionary = {
     },
     courseOutline: {
       optionalText: 'Optional',
-      updatedText:  'Updated',
+      updatedText: 'Updated',
       moduleText: 'Module',
     },
     courseGeneralInformationView: {
@@ -282,30 +309,126 @@ export const EN: TDictionary = {
       resumeText: 'Resume',
       viewProfileText: 'View profile',
     },
-    uploadingSection:{
+    uploadingSection: {
       maxSizeText: 'Max size',
       uploadingText: 'Uploading...',
       cancelUpload: 'Cancel upload',
       deleteText: 'Delete',
       downloadText: 'Download',
       maxFilesText: 'Maximum file limit reached',
-      uploadImage:{
+      uploadImage: {
         choseImages: 'Choose images',
         description: 'or drag and drop images here',
       },
-      uploadVideo:{
+      uploadVideo: {
         choseVideos: 'Choose videos',
         description: 'or drag and drop videos here',
       },
-    uploadFile:{
+      uploadFile: {
         choseFiles: 'Choose files',
         description: 'or drag and drop files here',
       }
+    },
+    formRenderer: {
+      title: 'Pre course assessment',
+      alertText: 'Once you submit your response, you won’t be able to make changes, so please review it carefully. Completing this form is required to begin the course.',
+      submitText: 'send reply',
+      requiredText: 'required',
+      fieldRequired: 'This field is required',
+      selectOption: 'Please select an option',
+      pleaseEnterText: 'Please enter text',
+      delete: 'Delete',
+      moveUp: 'Move up',
+      moveDown: 'Move down',
+      showInCourseBuilderDescription: "Include rich text in course material tab"
+    },
+    lessons: {
+      headingPlaceholder: "Enter heading",
+      addChoice: "Add choice",
+      multiChoice: "Multi choice",
+      singleChoice: "Single choice",
+      oneOutOfThree: "one out of three",
+      heading: "Heading",
     },
     lessonHeader: {
       moduleText: 'Module',
       showNotesText: 'Show Notes (Alt/Ctrl + N)',
       hideNotesText: 'Hide Notes (Alt/Ctrl + N)',
+    },
+    lessonNotes: {
+      moduleText: 'Module',
+      lessonNotesText: 'Lesson Notes',
+      savingNotesText: 'Saving notes...',
+      lessonText: 'Lesson',
+      viewLessonText: 'View lesson',
+      saveNotesText: 'Save notes',
+      notesNotSavedText: 'Notes not saved',
+    },
+    coachingSessionCourseBuilder: {
+      profileText: 'Profile',
+      bookText: 'Book',
+      coachingSessionText: 'Coaching Session',
+      minutesText: 'minutes',
+      minText: 'min',
+    },
+    dateInput: {
+      placeholder: 'Select date...',
+    },
+    userGridFilterModal: {
+      title: 'User Filters',
+      ratingFilter: 'Rating',
+      min: 'Min',
+      max: 'Max',
+      minimumRatingPlaceholder: 'e.g., 1',
+      maximumRatingPlaceholder: 'e.g., 5',
+      platformFilter: 'Platform',
+      coachingSessionFilter: 'Coaching Session',
+      minimumCoachingSessionsPlaceholder: 'e.g., 5',
+      maximumCoachingSessionsPlaceholder: 'e.g., 50',
+      coursesBoughtFilter: 'Courses Bought',
+      minimumCoursesBoughtPlaceholder: 'e.g., 1',
+      maximumCoursesBoughtPlaceholder: 'e.g., 20',
+      coursesCreatedFilter: 'Courses Created',
+      minimumCoursesCreatedPlaceholder: 'e.g., 0',
+      maximumCoursesCreatedPlaceholder: 'e.g., 10',
+      lastAccessFilter: 'Last Access',
+      before: 'Before',
+      after: 'After',
+      resetFilters: 'Reset filters',
+      applyFilters: 'Apply filters',
+    },
+    courseFilterModal: {
+      title: 'Filters',
+      performanceFilter: 'Performance',
+      ratingFilter: 'Rating',
+      minimumRating: 'Minimum Rating',
+      maximumRating: 'Maximum Rating',
+      numberOfSalesFilter: 'Number of Sales',
+      min: "Min",
+      max: "Max",
+      numberOfSalesMinPlaceholder: 'e.g., 28',
+      numberOfSalesMaxPlaceholder: 'e.g., 120',
+      coachesFilter: 'Coaches',
+      createdBy: 'Created by',
+      coachesCreatedByPlaceholder: 'Search course creator',
+      taughtBy: 'Taught by',
+      coachesTaughtByPlaceholder: 'Search coach',
+      numberOfCoaches: 'Number of Coaches',
+      numberOfCoachesMinPlaceholder: 'e.g., 28',
+      numberOfCoachesMaxPlaceholder: 'e.g., 120',
+      goalsFilter: 'Taxonomy (aka Goals)',
+      skillsFilter: 'Tags (aka Skills)',
+      skillsPlaceholder: 'Search tag',
+      otherFilters: 'Others',
+      languageFilter: 'Languages',
+      publishedBefore: 'Published before',
+      publishedAfter: 'Published after',
+      resetFilters: 'Reset filters',
+      applyFilters: 'Apply filters',
+    },
+    groupCourseBanner: {
+      takenAlsoBy: 'Taken also by',
+      groupWorkspaceButton: 'Group Workspace',
     },
   },
   pages: {
