@@ -299,7 +299,7 @@ export const NotificationGrid = ({
           isExternalFilterPresent={() => true}
           doesExternalFilterPass={doesExternalFilterPass}
           getRowStyle={(params) => {
-            if (!params.data) return {};
+            if (!params.data) return undefined;
             return params.data.isRead
               ? { background: 'inherit' }
               : { background: 'rgba(0, 112, 243, 0.04)' };
