@@ -49,7 +49,7 @@ export const DE: TDictionary = {
       message: 'Nachricht',
       action: 'Aktion',
       dateTime: 'Datum & Uhrzeit',
-      markAllRead: 'Alle als gelesen markieren',
+      markAllAsRead: 'Alle als gelesen markieren',
       searchPlaceholder: 'Suchaktivität',
       all: 'Alle',
       loading: 'Laden...',
