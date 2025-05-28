@@ -64,7 +64,6 @@ export const DictionarySchema = z.object({
       message: z.string(),
       action: z.string(),
       dateTime: z.string(),
-      markAllRead: z.string(),
       filterButton: z.string(),
       clearFilters: z.string(),
     }),
