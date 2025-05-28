@@ -19,6 +19,8 @@ export const EN: TDictionary = {
       availability: 'Availability',
       meeting: 'Meeting',
       scheduleSession: 'Schedule Session',
+      month: 'Month',
+      week: 'Week',
       availabilityManagement: {
         minText: 'min',
         repeatsEveryText: 'Repeats every',
