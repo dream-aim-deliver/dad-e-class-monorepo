@@ -170,7 +170,7 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
       </div>
       <div className="flex flex-col items-start gap-4 w-full">
         <DateInput
-          label="Date"
+          label={dictionary.components.scheduleSession.date}
           value={dateValue.toISOString().split('T')[0]}
           onChange={onDateChange}
         />
