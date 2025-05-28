@@ -190,6 +190,14 @@ export const DefaultFormGerman: Story = {
     ...DefaultForm.args,
     locale: 'de',
     modalType: 'course',
+    onSubmit: (rating, review) => {
+      alert(
+        `Bewertung erfolgreich eingereicht: Bewertung=${rating}, Rezension="${review}"`,
+      );
+      console.log(
+        `Bewertung eingereicht: Bewertung=${rating}, Rezension="${review}"`,
+      );
+    }
   },
   decorators: DefaultForm.decorators, // Reuse the same decorator
   parameters: {
