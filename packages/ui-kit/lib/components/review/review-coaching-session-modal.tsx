@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { Button } from './button';
-import StarRatingInput from './star-rating-input';
-import { StarRating } from './star-rating';
-import { CheckBox } from './checkbox';
-import { IconSuccess } from './icons/icon-success';
-import { IconButton } from './icon-button';
-import { IconClose } from './icons/icon-close';
-import { IconLoaderSpinner } from './icons/icon-loader-spinner';
+import { Button } from '../button';
+import StarRatingInput from '../star-rating-input';
+import { StarRating } from '../star-rating';
+import { CheckBox } from '../checkbox';
+import { IconSuccess } from '../icons/icon-success';
+import { IconButton } from '../icon-button';
+import { IconClose } from '../icons/icon-close';
+import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { TextAreaInput } from './text-areaInput';
+import { TextAreaInput } from '../text-areaInput';
 
 export interface ReviewFlowProps extends isLocalAware {
   onClose?: () => void;

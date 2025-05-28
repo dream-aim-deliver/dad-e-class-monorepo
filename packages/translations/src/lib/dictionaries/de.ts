@@ -440,6 +440,11 @@ export const DE: TDictionary = {
       takenAlsoBy: 'Ebenfalls belegt von',
       groupWorkspaceButton: 'Gruppenarbeitsbereich',
     },
+    reviewSnippet: {
+      by: 'von',
+      readMore: 'Mehr lesen',
+      readLess: 'Weniger lesen',
+    },
     notificationGridFilterModal: {
       title: 'Benachrichtigungsfilter',
       platformFilter: 'Plattform',

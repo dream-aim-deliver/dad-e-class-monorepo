@@ -443,6 +443,11 @@ export const DictionarySchema = z.object({
       takenAlsoBy: z.string(),
       groupWorkspaceButton: z.string(),
     }),
+    reviewSnippet: z.object({
+      by: z.string(),
+      readMore: z.string(),
+      readLess: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({

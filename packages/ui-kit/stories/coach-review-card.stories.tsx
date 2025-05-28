@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import ReviewCard from "../lib/components/coach-review-card";
+import ReviewCard from "../lib/components/review/coach-review-card";
 
 export default {
   title: 'Components/CoachReviewCard',
