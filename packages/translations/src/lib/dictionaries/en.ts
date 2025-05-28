@@ -54,7 +54,6 @@ export const EN: TDictionary = {
       message: 'Message',
       action: 'Action',
       dateTime: 'Date & Time',
-      markAllRead: 'Mark All Read',
       clearFilters: 'Clear Filters',
       filterButton: 'Filters',
     },
