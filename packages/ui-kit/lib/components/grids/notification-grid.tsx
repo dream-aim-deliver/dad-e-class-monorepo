@@ -1,5 +1,5 @@
 import { notification } from '@maany_shr/e-class-models';
-import { AllCommunityModule, ColDef, IRowNode, ModuleRegistry, RowNode } from 'ag-grid-community';
+import { AllCommunityModule, ColDef, IRowNode, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { RefObject, useState, useCallback, useMemo, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
@@ -8,6 +8,8 @@ import { formatDate } from '../../utils/format-utils';
 import { Button } from '../button';
 import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { NotificationGridFilterModal, NotificationFilterModel } from './notification-grid-filter-modal';
+import { IconFilter } from '../icons/icon-filter';
 
 interface ExtendedNotification extends notification.TNotification {
   platform: string; // e.g., "justdoad", "bewerbeagentur", "cms"
@@ -18,7 +20,8 @@ export interface NotificationGridProps extends isLocalAware {
   onNotificationClick: (notification: ExtendedNotification) => void;
   gridRef: RefObject<AgGridReact>;
   variant?: 'student' | 'coach' | 'cms';
-  platforms?: string[]; // For CMS variant
+  platforms?: string[];
+  loading?: boolean;
 }
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -53,21 +56,6 @@ const NotificationStatusRenderer = (props: { value: boolean }) => {
   );
 };
 
-// Mock backend API call to fetch notifications with platform (only for CMS variant)
-const fetchNotificationsWithPlatform = async (
-  notifications: ExtendedNotification[],
-  platforms: string[]
-): Promise<ExtendedNotification[]> => {
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  return notifications.map(notification => {
-    const searchString = `${notification.message || ''} ${notification.action?.title || ''}`.toLowerCase();
-    let platform = platforms[0] || 'justdoad'; // Default to first platform or fallback
-    if (searchString.includes('assignment')) platform = platforms.find(p => p === 'bewerbeagentur') || platform;
-    else if (searchString.includes('workspace')) platform = platforms.find(p => p === 'cms') || platform;
-    return { ...notification, platform };
-  });
-};
-
 /**
  * A component that displays a grid of notifications with filtering, pagination, and tabbed navigation for different platforms.
  *
@@ -77,6 +65,7 @@ const fetchNotificationsWithPlatform = async (
  * @param variant Optional variant to determine the grid's behavior ('student', 'coach', or 'cms'). Defaults to 'student'.
  * @param platforms Optional array of platform names for filtering notifications in the CMS variant. Defaults to ['justdoad', 'bewerbeagentur', 'cms'].
  * @param locale The locale for translations, used to fetch localized dictionary strings.
+ * @param loading Optional boolean to indicate if the grid is in a loading state. Defaults to false.
  */
 export const NotificationGrid = ({
   notifications,
@@ -85,32 +74,15 @@ export const NotificationGrid = ({
   gridRef,
   variant = 'student',
   platforms = ['justdoad', 'bewerbeagentur', 'cms'],
+  loading = false,
 }: NotificationGridProps) => {
-  const dictionary = getDictionary(locale);
+  const dictionary = getDictionary(locale).components.notificationGrid;
   const [selectedTab, setSelectedTab] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [modifiedNotifications, setModifiedNotifications] = useState<ExtendedNotification[]>(notifications);
-  const [isLoading, setIsLoading] = useState(variant === 'cms');
-
-  // Fetch notifications with platform for CMS variant
-  useEffect(() => {
-    if (variant === 'cms') {
-      setIsLoading(true);
-      fetchNotificationsWithPlatform(notifications, platforms)
-        .then(fetchedNotifications => {
-          setModifiedNotifications(fetchedNotifications);
-          setIsLoading(false);
-        })
-        .catch(error => {
-          console.error('Error fetching notifications:', error);
-          setModifiedNotifications(notifications);
-          setIsLoading(false);
-        });
-    } else {
-      setModifiedNotifications(notifications);
-      setIsLoading(false);
-    }
-  }, [notifications, platforms, variant]);
+  // Modal and filter state
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [filters, setFilters] = useState<Partial<NotificationFilterModel>>({});
 
   // Mark all notifications as read
   const handleMarkAllRead = useCallback(() => {
@@ -118,6 +90,16 @@ export const NotificationGrid = ({
       prev.map(notification => ({ ...notification, isRead: true }))
     );
   }, []);
+
+  const handleClearAllFilters = useCallback(() => {
+    setSearchTerm(''); // Clear search input
+    setFilters({}); // Reset modal filters
+    if (gridRef.current?.api) {
+      gridRef.current.api.setFilterModel(null);
+      gridRef.current.api.refreshClientSideRowModel('filter');
+      gridRef.current.api.onFilterChanged();
+    }
+  }, [gridRef]);
 
   const [columnDefs] = useState<ColDef[]>([
     {
@@ -130,6 +112,7 @@ export const NotificationGrid = ({
     {
       flex: 1,
       field: 'message',
+      headerName: dictionary.message,
       wrapText: true,
       autoHeight: true,
       cellRenderer: NotificationMessageRenderer,
@@ -137,7 +120,7 @@ export const NotificationGrid = ({
     },
     {
       field: 'action',
-      headerName: 'Action',
+      headerName: dictionary.action,
       cellRenderer: NotificationActionRenderer,
       onCellClicked: (event) => {
         const notification = event.data as ExtendedNotification;
@@ -146,100 +129,169 @@ export const NotificationGrid = ({
     },
     {
       field: 'timestamp',
-      headerName: 'Date & Time',
+      headerName: dictionary.dateTime,
       valueFormatter: (params) => (params.value ? formatDate(new Date(params.value)) : ''),
       filter: 'agDateColumnFilter',
+    },
+    {
+      field: 'platform',
+      hide: true,
+      // filter: 'agSetColumnFilter', // Remove this line to avoid AG Grid SetFilterModule error
+      filterParams: {
+        values: platforms,
+      },
     },
   ]);
 
   // Get notification counts for each tab
   const notificationCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: 0 };
-    platforms.forEach(platform => (counts[platform] = 0));
+    const counts: Record<string, number> = { all: notifications.length };
+    platforms.forEach(platform => {
+      counts[platform] = notifications.filter(n => n.platform === platform).length;
+    });
+    return counts;
+  }, [notifications, platforms]);
 
-    if (isLoading) return counts;
+  // Localized platform names for tabs
+  const localizedPlatformName = (platform: string) => {
+    return dictionary?.[platform] || platform;
+  };
 
-    return modifiedNotifications.reduce((acc, notification) => {
-      acc.all++;
-      if (acc[notification.platform] !== undefined) acc[notification.platform]++;
-      return acc;
-    }, counts);
-  }, [modifiedNotifications, isLoading, platforms]);
-
-  // Client-side filtering logic for search
+  // Client-side filtering logic for search, platform, and modal filters
   const doesExternalFilterPass = useCallback(
-    (node: IRowNode<any>) => {
-      const notification = node.data as ExtendedNotification;
+    (node: IRowNode<ExtendedNotification>) => {
+      const notification = node.data;
       if (!notification) return false;
 
-      if (searchTerm) {
-        const searchLower = searchTerm.toLowerCase();
-        const messageMatch = notification.message?.toLowerCase().includes(searchLower);
-        const actionMatch = notification.action?.title?.toLowerCase().includes(searchLower);
-        return messageMatch || actionMatch;
+      // Search filter
+      const searchLower = searchTerm.toLowerCase();
+      const messageMatch = notification.message?.toLowerCase().includes(searchLower);
+      const actionMatch = notification.action?.title?.toLowerCase().includes(searchLower);
+
+      // Platform filter (only for CMS variant)
+      const platformMatch =
+        variant === 'cms'
+          ? selectedTab === 'all' || notification.platform === selectedTab
+          : true;
+
+      // Modal filters
+      if (filters.platform && filters.platform.length > 0 && !filters.platform.includes(notification.platform)) {
+        return false;
       }
-      return true;
+      if (filters.isRead !== undefined && notification.isRead !== filters.isRead) {
+        return false;
+      }
+      if (filters.dateAfter && typeof notification.timestamp === 'number' && notification.timestamp < new Date(filters.dateAfter).getTime()) {
+        return false;
+      }
+      if (filters.dateBefore && typeof notification.timestamp === 'number' && notification.timestamp > new Date(filters.dateBefore).getTime()) {
+        return false;
+      }
+      // Modal search filter (overrides top search if set)
+      if (filters.search && filters.search.length > 0) {
+        const modalSearch = filters.search.toLowerCase();
+        if (!notification.message?.toLowerCase().includes(modalSearch) && !notification.action?.title?.toLowerCase().includes(modalSearch)) {
+          return false;
+        }
+      } else if (searchTerm && !(messageMatch || actionMatch)) {
+        return false;
+      }
+      return platformMatch;
     },
-    [searchTerm]
+    [searchTerm, selectedTab, variant, filters]
   );
 
-  // Force refresh the grid when the external filter changes
+  // Force refresh the grid
   const refreshGrid = useCallback(() => {
     if (gridRef.current?.api) {
+      gridRef.current.api.setGridOption('isExternalFilterPresent', () => true);
       gridRef.current.api.setGridOption('doesExternalFilterPass', doesExternalFilterPass);
+      gridRef.current.api.setFilterModel(null);
+      gridRef.current.api.refreshClientSideRowModel('filter');
       gridRef.current.api.onFilterChanged();
     }
   }, [doesExternalFilterPass, gridRef]);
 
-  // Apply filter when search term changes
+  // Handle tab change (for CMS variant)
+  const handleTabChange = useCallback(
+    (value: string) => {
+      setSelectedTab(value);
+      refreshGrid();
+    },
+    [refreshGrid]
+  );
+
+  // Apply filter when search term or notifications change
   useEffect(() => {
     refreshGrid();
-  }, [refreshGrid, searchTerm]);
+  }, [refreshGrid, searchTerm, notifications, selectedTab, filters]);
 
-  // Initialize the grid with external filters
+  // Update modifiedNotifications when props.notifications change
   useEffect(() => {
-    if (gridRef.current?.api) {
-      gridRef.current.api.setGridOption('isExternalFilterPresent', () => true);
-      gridRef.current.api.setGridOption('doesExternalFilterPass', doesExternalFilterPass);
-      refreshGrid();
-    }
-  }, [doesExternalFilterPass, refreshGrid, gridRef]);
+    setModifiedNotifications(notifications);
+    refreshGrid();
+  }, [notifications, refreshGrid]);
 
   // Render grid with actions
-  const renderGridWithActions = (notifications: ExtendedNotification[]) => (
-    <div>
-      <div className="flex items-center justify-between mb-2 mt-4 ml-1">
-        <div className="flex-grow mr-2 relative">
-          <input
-            type="text"
-            placeholder={dictionary.components.notificationGrid?.searchPlaceholder || 'Search notifications...'}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-2 pl-10 border rounded bg-input-fill text-text-primary border-input-stroke focus:outline-none focus:ring-2 focus:ring-primary"
+  const renderGridWithActions = (notificationsToShow = modifiedNotifications) => {
+    if (loading) {
+      return (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-base-brand-500"></div>
+        </div>
+      );
+    }
+
+    if (notificationsToShow.length === 0) {
+      return (
+        <div className="flex justify-center items-center h-64 text-text-secondary">
+          {dictionary?.noNotifications}
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <div className="flex items-center justify-between mb-2 mt-4 ml-1">
+          <div className="flex-grow mr-2 relative">
+            <input
+              type="text"
+              placeholder={dictionary.searchPlaceholder}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full p-2 pl-10 border rounded bg-input-fill text-text-primary border-input-stroke focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 text-gray-500 opacity-50 z-10" />
+          </div>
+          <Button
+            variant="secondary"
+            size="medium"
+            text={dictionary.filterButton}
+            onClick={() => setShowFilterModal(true)}
+            hasIconLeft
+            iconLeft={<IconFilter />}
+            className="w-full md:w-auto mr-2"
           />
-          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 text-gray-500 opacity-50 z-10" />
+          <Button
+            variant="secondary"
+            size="medium"
+            text={dictionary.clearFilters}
+            onClick={handleClearAllFilters}
+            className="w-full md:w-auto mr-2"
+          />
+          <Button
+            variant="primary"
+            size="medium"
+            text={dictionary.markAllRead}
+            onClick={handleMarkAllRead}
+            disabled={loading}
+          />
         </div>
-        <Button
-          variant="primary"
-          size="medium"
-          text={dictionary.components.notificationGrid.markAllAsRead}
-          onClick={handleMarkAllRead}
-        />
-      </div>
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64 text-text-secondary">
-          [ Loading... ]
-        </div>
-      ) : notifications.length === 0 ? (
-        <div className="flex justify-center items-center h-64 text-text-secondary">
-          {dictionary.components.notificationGrid?.noNotifications}
-        </div>
-      ) : (
         <BaseGrid
           gridRef={gridRef}
           suppressRowHoverHighlight={true}
           columnDefs={columnDefs}
-          rowData={notifications}
+          rowData={notificationsToShow}
           pagination={true}
           paginationPageSize={PAGE_SIZE}
           suppressPaginationPanel={true}
@@ -247,48 +299,61 @@ export const NotificationGrid = ({
           isExternalFilterPresent={() => true}
           doesExternalFilterPass={doesExternalFilterPass}
           getRowStyle={(params) => {
-            if (!params.data.isRead) {
-              return { backgroundColor: 'var(--color-base-neutral-800)' };
-            }
+            if (!params.data) return {};
+            return params.data.isRead
+              ? { background: 'inherit' }
+              : { background: 'rgba(0, 112, 243, 0.04)' };
           }}
         />
-      )}
-    </div>
+        {showFilterModal && (
+          <NotificationGridFilterModal
+            onApplyFilters={(f) => setFilters(f)}
+            onClose={() => setShowFilterModal(false)}
+            initialFilters={filters}
+            platforms={platforms}
+            locale={locale}
+          />
+        )}
+      </div>
+    );
+  };
+
+  // Render tabs for CMS variant
+  const renderTabs = () => (
+    <Tabs.Root
+      defaultTab={selectedTab}
+      className="h-full flex flex-col"
+    >
+      <Tabs.List
+        className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap flex-shrink-0"
+        variant="small"
+      >
+        <Tabs.Trigger value="all" className="cursor-pointer">
+          {dictionary.all} ({notificationCounts.all})
+        </Tabs.Trigger>
+        {platforms.map((platform) => (
+          <Tabs.Trigger key={platform} value={platform} className="cursor-pointer">
+            {localizedPlatformName(platform)} ({notificationCounts[platform]})
+          </Tabs.Trigger>
+        ))}
+      </Tabs.List>
+      <div className="mt-4 grow">
+        <Tabs.Content value="all" className="w-full">
+          {renderGridWithActions()}
+        </Tabs.Content>
+        {platforms.map((platform) => (
+          <Tabs.Content key={platform} value={platform} className="w-full">
+            {renderGridWithActions(modifiedNotifications.filter(n => n.platform === platform))}
+          </Tabs.Content>
+        ))}
+      </div>
+    </Tabs.Root>
   );
 
+  // Main render
   return (
-    <div className="flex flex-col h-full">
-      {variant === 'cms' ? (
-        <Tabs.Root defaultTab="all" onValueChange={setSelectedTab}>
-          <TabList
-            className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap min-w-max"
-            variant="small"
-          >
-            <TabTrigger value="all">
-              {dictionary.components.notificationGrid?.all} ({notificationCounts.all})
-            </TabTrigger>
-            {platforms.map(platform => (
-              <TabTrigger key={platform} value={platform}>
-                {platform} ({notificationCounts[platform]})
-              </TabTrigger>
-            ))}
-          </TabList>
-          <div className="mt-4">
-            <TabContent value="all" className="overflow-auto max-h-[70vh]">
-              {renderGridWithActions(modifiedNotifications)}
-            </TabContent>
-            {platforms.map(platform => (
-              <TabContent key={platform} value={platform} className="overflow-auto max-h-[70vh]">
-                {renderGridWithActions(
-                  modifiedNotifications.filter(notification => notification.platform === platform)
-                )}
-              </TabContent>
-            ))}
-          </div>
-        </Tabs.Root>
-      ) : (
-        renderGridWithActions(modifiedNotifications)
-      )}
+    <div className="w-full h-full">
+      {variant === 'cms' ? renderTabs() : renderGridWithActions()}
     </div>
   );
 };

@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { NotificationGrid } from '../lib/components/grids/notification-grid';
 import { AgGridReact } from 'ag-grid-react';
 import { NextIntlClientProvider } from 'next-intl';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { Button } from '../lib/components/button';
 
 const mockMessages = {
   en: {
@@ -48,6 +49,9 @@ const meta: Meta<typeof NotificationGrid> = {
     variant: {
       control: 'select',
       options: ['student', 'coach', 'cms'],
+    },
+    loading: {
+      control: 'boolean',
     },
   },
   decorators: [
@@ -242,12 +246,69 @@ export const Empty: Story = {
 
 export const Loading: Story = {
   args: {
-    notifications: [], // Use mockNotifications to simulate loading with data
+    notifications: [],
     locale: 'en',
-    variant: 'cms', // Loading state is relevant for CMS variant
+    variant: 'cms',
+    platforms: ['justdoad', 'bewerbeagentur', 'cms'],
+    loading: true, // Enable loading state
+    onNotificationClick: (notification) => {
+      alert('Proceeding to ' + notification.action?.url);
+    },
+  },
+};
+
+const platformTabs = [
+  { value: 'all', label: mockMessages.en.components.notificationGrid.all },
+  { value: 'justdoad', label: mockMessages.en.components.notificationGrid.justdoad },
+  { value: 'bewerbeagentur', label: mockMessages.en.components.notificationGrid.bewerbeagentur },
+  { value: 'cms', label: mockMessages.en.components.notificationGrid.cms },
+];
+
+export const CMSWithTabs: Story = {
+  args: {
+    notifications: mockNotifications,
+    locale: 'en',
+    variant: 'cms',
     platforms: ['justdoad', 'bewerbeagentur', 'cms'],
     onNotificationClick: (notification) => {
       alert('Proceeding to ' + notification.action?.url);
     },
   },
+  decorators: [
+    (Story, context) => {
+      const gridRef = useRef<AgGridReact>(null);
+      const [selectedTab, setSelectedTab] = useState('all');
+      const notifications = context.args.notifications || [];
+      const filteredNotifications =
+        selectedTab === 'all'
+          ? notifications
+          : notifications.filter((n) => n.platform === selectedTab);
+      return (
+        <NextIntlClientProvider
+          locale={context.args.locale || 'en'}
+          messages={mockMessages[context.args.locale || 'en']}
+        >
+          <div className="h-screen w-full p-4 flex flex-col">
+            <div className="flex gap-2 mb-4">
+              {platformTabs.map((tab) => (
+                <Button
+                  key={tab.value}
+                  text={tab.label}
+                  variant={selectedTab === tab.value ? 'primary' : 'secondary'}
+                  onClick={() => setSelectedTab(tab.value)}
+                />
+              ))}
+            </div>
+            <Story
+              args={{
+                ...context.args,
+                gridRef: gridRef,
+                notifications: filteredNotifications,
+              }}
+            />
+          </div>
+        </NextIntlClientProvider>
+      );
+    },
+  ],
 };

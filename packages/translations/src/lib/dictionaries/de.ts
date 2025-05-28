@@ -46,11 +46,16 @@ export const DE: TDictionary = {
       admin: 'Admin',
     },
     notificationGrid: {
-      markAllAsRead: 'Alle als gelesen markieren',
+      message: 'Nachricht',
+      action: 'Aktion',
+      dateTime: 'Datum & Uhrzeit',
+      markAllRead: 'Alle als gelesen markieren',
       searchPlaceholder: 'Suchaktivität',
       all: 'Alle',
       loading: 'Laden...',
       noNotifications: 'Keine Aktivität gefunden',
+      clearFilters: 'Filter zurücksetzen',
+      filterButton: 'Filter',
     },
     courseCard: {
       courseEmptyState: {
@@ -453,6 +458,20 @@ export const DE: TDictionary = {
       atText: 'bei',
       downloadCertificateText: 'Zertifikat herunterladen',
       rateTheCourseText: 'Bewerten Sie den Kurs',
+    },
+    notificationGridFilterModal: {
+      title: 'Benachrichtigungsfilter',
+      platformFilter: 'Plattform',
+      readStatusFilter: 'Lesestatus',
+      read: 'Gelesen',
+      unread: 'Ungelesen',
+      searchFilter: 'Suchen',
+      searchPlaceholder: 'Benachrichtigungen suchen...',
+      dateFilter: 'Datum',
+      before: 'Vor',
+      after: 'Nach',
+      resetFilters: 'Filter zurücksetzen',
+      applyFilters: 'Filter anwenden',
     },
   },
   pages: {
