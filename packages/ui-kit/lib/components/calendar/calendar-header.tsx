@@ -14,11 +14,6 @@ interface CalendarHeaderProps extends isLocalAware {
   isVariantTwo?: boolean;
 }
 
-const viewOptions = [
-  { label: 'Week', value: 'timeGridWeek' },
-  { label: 'Month', value: 'dayGridMonth' },
-];
-
 export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   viewType,
   onNavigation,
@@ -29,11 +24,15 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   isVariantTwo = false,
   locale,
 }) => {
+  const dictionary = getDictionary(locale);
+  const viewOptions = [
+    { label: dictionary.components.calendar.week, value: 'timeGridWeek' },
+    { label: dictionary.components.calendar.month, value: 'dayGridMonth' },
+  ];
+
   const handleViewTypeChange = (value: string) => {
-    console.log('Changing view to:', value);
     onViewChange(value);
   };
-  const dictionary = getDictionary(locale);
   return (
     <div className="border-b border-[var(--color-divider)] p-6">
       <div className="flex flex-row items-center justify-between">
@@ -62,7 +61,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
             size="small"
             onClick={() => onNavigation('today')}
             className="px-4"
-            text="Today"
+            text={'Today'}
           />
         </div>
         <div className="flex items-center space-x-4">
