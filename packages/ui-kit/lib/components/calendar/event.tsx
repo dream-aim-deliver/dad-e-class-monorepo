@@ -44,26 +44,38 @@ export const EventContent: React.FC<EventContentProps> = ({ eventInfo }) => {
     return `${startTime} - ${endTime}`;
   };
 
+  const title = eventInfo.event.title;
+  const isSprint =
+    title === 'Quick Sprint' || title === 'Normal Sprint';
+
+  // Tooltip content for all details
+  const tooltipContent = `${title}\n${formatTime(eventInfo.event.start, eventInfo.event.end)}\n${eventInfo.event.extendedProps?.coachName ? 'Coach: ' + eventInfo.event.extendedProps.coachName : ''}\n${eventInfo.event.extendedProps?.numberOfSessions ? 'Sessions: ' + eventInfo.event.extendedProps.numberOfSessions : ''}`;
+
   return (
     <div
       className={`flex h-full flex-col rounded-md  ${eventStyle} p-1 shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl`}
+      title={tooltipContent}
     >
       <div className="flex flex-col">
         <span className="text-xs font-bold">
           {formatTime(eventInfo.event.start, eventInfo.event.end)}
         </span>
-        <h3 className="truncate text-sm font-bold">
-          {eventInfo.event.title}
-          {eventInfo.event.extendedProps.numberOfSessions &&
-            eventInfo.event.extendedProps.numberOfSessions > 1 && (
-              <span className="ml-1 text-xs">
-                (x{eventInfo.event.extendedProps.numberOfSessions})
-              </span>
-            )}
-        </h3>
-        <p className="truncate text-xs font-bold">
-          {eventInfo.event.extendedProps.coachName || 'No coach assigned'}
-        </p>
+        {!isSprint && (
+          <>
+            <h3 className="truncate text-sm font-bold">
+              {title}
+              {eventInfo.event.extendedProps.numberOfSessions &&
+                eventInfo.event.extendedProps.numberOfSessions > 1 && (
+                  <span className="ml-1 text-xs">
+                    (x{eventInfo.event.extendedProps.numberOfSessions})
+                  </span>
+                )}
+            </h3>
+            <p className="truncate text-xs font-bold">
+              {eventInfo.event.extendedProps.coachName || 'No coach assigned'}
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

@@ -49,6 +49,10 @@ export interface CalendarProps extends isLocalAware{
   onAddEvent: (event: CalendarEvent) => void;
   onEventDrop: (event: CalendarEvent) => void;
   variant: Variant;
+  // Add these props for modal details
+  coachName?: string;
+  groupName?: string;
+  courseTitle?: string;
 }
 
 export const formatDate = (date: Date, viewType = 'timeGridWeek'): string => {
@@ -71,6 +75,9 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
   onEventDrop,
   variant,
   locale,
+  coachName,
+  groupName,
+  courseTitle,
 }) => {
   const [viewType, setViewType] = useState('timeGridWeek');
   const [isScheduleSessionOpen, setIsScheduleSessionOpen] = useState(false);
@@ -219,15 +226,30 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
     setCurrentDate(dateInfo.view.currentStart);
   };
 
-  const allEvents = [
-    ...events,
-    ...coachAvailability.map((event, index) => ({
-      ...event,
-      isCoachAvailability: true,
-      title: `Coach Available ${index + 1}`,
-    })),
-    ...yourMeetings.map((event) => ({ ...event, isYourMeeting: true })),
-  ];
+  // Prepare events for FullCalendar, handling coach availability as visible events in month view
+  const getAllEvents = () => {
+    if (viewType === 'dayGridMonth') {
+      return [
+        ...events,
+        ...coachAvailability.map((event, index) => ({
+          ...event,
+          isCoachAvailability: true,
+          title: `Coach Available ${index + 1}`,
+        })),
+        ...yourMeetings.map((event) => ({ ...event, isYourMeeting: true })),
+      ];
+    } else {
+      return [
+        ...events,
+        ...coachAvailability.map((event, index) => ({
+          ...event,
+          isCoachAvailability: true,
+          title: `Coach Available ${index + 1}`,
+        })),
+        ...yourMeetings.map((event) => ({ ...event, isYourMeeting: true })),
+      ];
+    }
+  };
 
   const handleSendRequest = () => {
     if (!scheduleSessionData) return;
@@ -256,7 +278,7 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
   const renderDayCellContent = (args: any) => {
     const dayNumber = args.date.getDate();
     const isToday = args.date.toDateString() === new Date().toDateString();
-    const eventsForDay = allEvents.filter((event) => {
+    const eventsForDay = getAllEvents().filter((event) => {
       const eventDate = new Date(event.start).toDateString();
       return eventDate === args.date.toDateString();
     });
@@ -306,9 +328,9 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
             editable={true}
             selectable={false}
             selectMirror={false}
-            dayMaxEvents={window.innerWidth < 640 ? 2 : 3} // Dynamic based on screen size
+            dayMaxEvents={window.innerWidth < 640 ? 2 : 3}
             weekends={true}
-            events={allEvents}
+            events={getAllEvents()}
             datesSet={handleDatesSet}
             eventContent={(eventInfo) => <EventContent eventInfo={eventInfo} />}
             eventDrop={handleEventDrop}
@@ -357,9 +379,9 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
               user="student"
               isError={false}
               groupSession={true}
-              coachName="John Doe"
-              groupName="Group A"
-              courseTitle="Course Title"
+              coachName={coachName}
+              groupName={groupName}
+              courseTitle={courseTitle}
               course={true}
               dateValue={scheduleSessionData.date}
               timeValue={scheduleSessionData.time}
