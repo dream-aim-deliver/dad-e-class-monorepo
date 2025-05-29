@@ -447,6 +447,19 @@ export const DictionarySchema = z.object({
       readMore: z.string(),
       readLess: z.string(),
     }),
+    createCourseModal: z.object({
+      createNewCourse: z.string(),
+      close: z.string(),
+      startFromScratch: z.string(),
+      duplicateCourse: z.string(),
+      searchCourse: z.string(),
+      searching: z.string(),
+      noCourseFound: z.string(),
+      createdBy: z.string(),
+      title: z.string(),
+      description: z.string(),
+      you: z.string(),
+    })
   }),
   pages: z.object({
     sso: z.object({

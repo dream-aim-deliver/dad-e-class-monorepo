@@ -453,7 +453,20 @@ export const EN: TDictionary = {
       by: 'by',
       readMore: 'Read more',
       readLess: 'Read less',
-    }
+    },
+    createCourseModal: {
+      createNewCourse: 'Create new course draft',
+      close: 'Close',
+      startFromScratch: 'Start from scratch',
+      duplicateCourse: 'Duplicate course',
+      searchCourse: 'Search course',
+      searching: 'Searching',
+      noCourseFound: 'No course found...',
+      createdBy: 'Created by',
+      title: 'Create course',
+      description: 'Would you like to start from scratch or clone an existing course?',
+      you: 'You',
+}
   },
   pages: {
     home: Home_EN,
