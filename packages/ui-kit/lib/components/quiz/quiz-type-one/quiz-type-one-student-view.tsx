@@ -230,7 +230,7 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewElement> = ({
               {showingSolution && choice.correct && (
                 <Badge
                   variant='successprimary'
-                  className="h-[24px] ml-2"
+                  className="px-[2px] rounded-medium gap-0"
                   hasIconLeft
                   iconLeft={<IconCheck />}
                 />
