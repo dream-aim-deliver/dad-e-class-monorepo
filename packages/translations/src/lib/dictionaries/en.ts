@@ -442,6 +442,10 @@ export const EN: TDictionary = {
       downloadCertificateText: 'Download certificate',
       rateTheCourseText: 'Rate the course',
     },
+    coachesSkeleton: {
+      title: 'Many other coaches are waiting for you...',
+      registerButton: 'Register to see all',
+    }
   },
   pages: {
     home: Home_EN,

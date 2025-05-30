@@ -447,6 +447,10 @@ export const DE: TDictionary = {
       downloadCertificateText: 'Zertifikat herunterladen',
       rateTheCourseText: 'Bewerten Sie den Kurs',
     },
+    coachesSkeleton: {
+      title: 'Vil ander Coachs warte uf di...',
+      registerButton: 'Registriere dich, um alles zu sehen',
+    }
   },
   pages: {
     home: Home_DE,
