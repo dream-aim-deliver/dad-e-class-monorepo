@@ -35,5 +35,6 @@ export { NotificationGrid } from './components/grids/notification-grid';
 export { UserGrid } from './components/grids/user-grid';
 
 export { ReviewSnippet } from './components/review/review-snippet';
+export { CreateCourseModal } from './components/create-course-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
