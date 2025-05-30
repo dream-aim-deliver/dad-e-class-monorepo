@@ -51,6 +51,7 @@ export const EN: TDictionary = {
       all: 'All',
       loading: 'Loading...',
       noNotifications: 'No notifications found',
+      new: 'New',
       message: 'Message',
       action: 'Action',
       dateTime: 'Date & Time',

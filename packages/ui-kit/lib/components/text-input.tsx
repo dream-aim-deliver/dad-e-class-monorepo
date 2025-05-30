@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { FeedBackMessage, FeedBackMessageProps } from './feedback-message';
 import { InputField, InputFieldProps } from './input-field';
 
@@ -35,7 +35,7 @@ export interface TextInputProps {
  * />
  */
 export const TextInput: FC<TextInputProps> = ({
-  label = 'label',
+  label = '',
   hasFeedback = false,
   inputField,
   feedbackMessage,
@@ -47,9 +47,11 @@ export const TextInput: FC<TextInputProps> = ({
   return (
     <div className="flex flex-col items-start gap-1">
       <div className="flex flex-col items-start gap-[2px] w-full">
-        <label className="text-text-secondary text-sm " htmlFor={inputId}>
-          {label}
-        </label>
+        {label && (
+          <label className="text-text-secondary text-sm " htmlFor={inputId}>
+            {label}
+          </label>
+        )}
         <InputField {...inputField} id={inputId} />
       </div>
       {hasFeedback && <FeedBackMessage {...feedbackMessage} />}

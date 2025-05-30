@@ -70,7 +70,7 @@ export const NotificationGridFilterModal: React.FC<NotificationGridFilterModalPr
 
   return (
     <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50" onClick={onClose}>
-      <div className="flex flex-col gap-2 p-6 bg-card-fill text-text-primary w-full max-w-[350px] h-full max-h-[90vh] overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
+      <div className="flex flex-col gap-2 p-6 bg-card-fill text-text-primary w-full max-w-[370px] h-full max-h-[90vh] overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">{dictionary.title}</h2>
           <div className="flex top-0 right-0 p-0">
@@ -89,7 +89,7 @@ export const NotificationGridFilterModal: React.FC<NotificationGridFilterModalPr
                 name={platform}
                 value={platform}
                 label={<span className="block w-full overflow-hidden text-ellipsis whitespace-nowrap" title={platform}>{platform}</span>}
-                labelClass="text-white text-sm w-full"
+                labelClass="text-white text-sm truncate"
                 checked={(filters.platform || []).includes(platform)}
                 withText
                 onChange={() => handlePlatformToggle(platform)}

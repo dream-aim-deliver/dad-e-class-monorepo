@@ -46,6 +46,7 @@ export const DE: TDictionary = {
       admin: 'Admin',
     },
     notificationGrid: {
+      new: 'Neue',
       message: 'Nachricht',
       action: 'Aktion',
       dateTime: 'Datum & Uhrzeit',

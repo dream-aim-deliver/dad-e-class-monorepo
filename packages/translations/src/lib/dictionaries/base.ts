@@ -61,6 +61,7 @@ export const DictionarySchema = z.object({
       all: z.string(),
       noNotifications: z.string(),
       loading: z.string(),
+      new: z.string(),
       message: z.string(),
       action: z.string(),
       dateTime: z.string(),

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { NotificationGrid } from '../lib/components/grids/notification-grid';
+import { NotificationGrid, ExtendedNotification } from '../lib/components/grids/notification-grid';
 import { AgGridReact } from 'ag-grid-react';
 import { NextIntlClientProvider } from 'next-intl';
 import { useRef, useState } from 'react';
@@ -12,7 +12,7 @@ const mockMessages = {
         all: 'All',
         justdoad: 'Just Do Ad',
         bewerbeagentur: 'Bewerbeagentur',
-        cms: 'CMS',
+        jobbrandme: 'JobBrandMe',
         searchPlaceholder: 'Search notifications...',
         markAllRead: 'Mark All Read',
         noNotifications: 'No notifications found',
@@ -25,7 +25,7 @@ const mockMessages = {
         all: 'Alle',
         justdoad: 'Just Do Ad',
         bewerbeagentur: 'Bewerbeagentur',
-        cms: 'CMS',
+        jobbrandme: 'JobBrandMe',
         searchPlaceholder: 'Benachrichtigungen suchen...',
         markAllRead: 'Alle als gelesen markieren',
         noNotifications: 'Keine Benachrichtigungen gefunden',
@@ -84,7 +84,7 @@ const longMessage =
 const longActionText =
   'Session details. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
 
-const mockNotifications = [
+const mockNotificationsBase = [
   {
     message: longMessage,
     action: {
@@ -163,7 +163,7 @@ const mockNotifications = [
     },
     timestamp: '2025-04-21T21:17:00.000Z',
     isRead: true,
-    platform: 'cms',
+    platform: 'jobbrandme',
   },
   {
     message: 'Coach Thomas Wilson has updated the shared workspaces for the group Product Development',
@@ -173,7 +173,7 @@ const mockNotifications = [
     },
     timestamp: '2025-04-22T21:17:00.000Z',
     isRead: false,
-    platform: 'cms',
+    platform: 'jobbrandme',
   },
   {
     message: 'Coaching session ended',
@@ -187,46 +187,80 @@ const mockNotifications = [
   },
 ];
 
+const mockNotifications = Array(10).fill(mockNotificationsBase).flat();
+
+const mockOnNotificationClick = (notification: ExtendedNotification) => {
+  alert('Proceeding to ' + notification.action?.url);
+}
+
+const mockOnMarkAllRead = () => {
+  alert('All notifications marked as read');
+}
+
 export const StudentView: Story = {
   args: {
-    notifications: mockNotifications,
     locale: 'en',
     variant: 'student',
-    onNotificationClick: (notification) => {
-      alert('Proceeding to ' + notification.action?.url);
-    },
+    notifications: mockNotifications,
+    onNotificationClick: mockOnNotificationClick,
+    onMarkAllRead: mockOnMarkAllRead,
   },
 };
 
 export const CoachView: Story = {
   args: {
-    notifications: mockNotifications,
     locale: 'en',
     variant: 'coach',
-    onNotificationClick: (notification) => {
-      alert('Proceeding to ' + notification.action?.url);
-    },
+    notifications: mockNotifications,
+    onNotificationClick: mockOnNotificationClick,
+    onMarkAllRead: mockOnMarkAllRead,
   },
 };
 
 export const CMSView: Story = {
   args: {
-    notifications: mockNotifications,
     locale: 'en',
     variant: 'cms',
-    platforms: ['justdoad', 'bewerbeagentur', 'cms'],
-    onNotificationClick: (notification) => {
-      alert('Proceeding to ' + notification.action?.url);
-    },
+    platforms: ['justdoad', 'bewerbeagentur', 'jobbrandme'],
+    notifications: mockNotifications,
+    onNotificationClick: mockOnNotificationClick,
+    onMarkAllRead: mockOnMarkAllRead,
   },
 };
 
 export const GermanLocale: Story = {
   args: {
-    notifications: mockNotifications,
     locale: 'de',
     variant: 'cms',
-    platforms: ['justdoad', 'bewerbeagentur', 'cms'],
+    platforms: ['justdoad', 'bewerbeagentur', 'jobbrandme'],
+    notifications: mockNotifications,
+    onNotificationClick: mockOnNotificationClick,
+    onMarkAllRead: mockOnMarkAllRead,
+  },
+};
+
+export const MockMarkAllAsRead: Story = {
+  render: (args) => {
+    const [notifications, setNotifications] = useState(args.notifications);
+
+    const mockOnMarkAllRead = () => {
+      setNotifications((prev) =>
+        prev.map((notification) => ({ ...notification, isRead: true }))
+      );
+    };
+
+    return (
+      <NotificationGrid
+        {...args}
+        notifications={notifications}
+        onMarkAllRead={mockOnMarkAllRead}
+      />
+    );
+  },
+  args: {
+    notifications: mockNotifications,
+    locale: 'en',
+    variant: 'student',
     onNotificationClick: (notification) => {
       alert('Proceeding to ' + notification.action?.url);
     },
@@ -235,21 +269,20 @@ export const GermanLocale: Story = {
 
 export const Empty: Story = {
   args: {
-    notifications: [],
     locale: 'en',
     variant: 'student',
-    onNotificationClick: (notification) => {
-      alert('Proceeding to ' + notification.action?.url);
-    },
+    notifications: [],
+    onNotificationClick: mockOnNotificationClick,
+    onMarkAllRead: mockOnMarkAllRead,
   },
 };
 
 export const Loading: Story = {
   args: {
-    notifications: [],
     locale: 'en',
     variant: 'cms',
-    platforms: ['justdoad', 'bewerbeagentur', 'cms'],
+    platforms: ['justdoad', 'bewerbeagentur', 'jobbrandme'],
+    notifications: [],
     loading: true, // Enable loading state
     onNotificationClick: (notification) => {
       alert('Proceeding to ' + notification.action?.url);
@@ -261,18 +294,17 @@ const platformTabs = [
   { value: 'all', label: mockMessages.en.components.notificationGrid.all },
   { value: 'justdoad', label: mockMessages.en.components.notificationGrid.justdoad },
   { value: 'bewerbeagentur', label: mockMessages.en.components.notificationGrid.bewerbeagentur },
-  { value: 'cms', label: mockMessages.en.components.notificationGrid.cms },
+  { value: 'jobbrandme', label: mockMessages.en.components.notificationGrid.jobbrandme },
 ];
 
-export const CMSWithTabs: Story = {
+export const CMSWithCustomControls: Story = {
   args: {
-    notifications: mockNotifications,
     locale: 'en',
     variant: 'cms',
-    platforms: ['justdoad', 'bewerbeagentur', 'cms'],
-    onNotificationClick: (notification) => {
-      alert('Proceeding to ' + notification.action?.url);
-    },
+    platforms: ['justdoad', 'bewerbeagentur', 'jobbrandme'],
+    notifications: mockNotifications,
+    onNotificationClick: mockOnNotificationClick,
+    onMarkAllRead: mockOnMarkAllRead,
   },
   decorators: [
     (Story, context) => {

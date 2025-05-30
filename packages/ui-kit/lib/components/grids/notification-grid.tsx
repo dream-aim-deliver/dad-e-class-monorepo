@@ -1,46 +1,90 @@
 import { notification } from '@maany_shr/e-class-models';
-import { AllCommunityModule, ColDef, IRowNode, ModuleRegistry } from 'ag-grid-community';
+import { AllCommunityModule, IRowNode, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import { RefObject, useState, useCallback, useMemo, useEffect } from 'react';
+import { RefObject, useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
 import { Button } from '../button';
-import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';
+import { Tabs, } from '../tabs/tab';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { NotificationGridFilterModal, NotificationFilterModel } from './notification-grid-filter-modal';
 import { IconFilter } from '../icons/icon-filter';
 
-interface ExtendedNotification extends notification.TNotification {
-  platform: string; // e.g., "justdoad", "bewerbeagentur", "cms"
+
+export interface ExtendedNotification extends notification.TNotification {
+  platform: string;
 }
 
-export interface NotificationGridProps extends isLocalAware {
+export interface PlatformNotificationGridProps extends isLocalAware {
   notifications: ExtendedNotification[];
   onNotificationClick: (notification: ExtendedNotification) => void;
+  onMarkAllRead: () => void;
   gridRef: RefObject<AgGridReact>;
-  variant?: 'student' | 'coach' | 'cms';
-  platforms?: string[];
-  loading?: boolean;
+  variant: 'student' | 'coach';
+  loading: boolean;
 }
+
+export interface CMSNotificationGridProps extends isLocalAware {
+  notifications: ExtendedNotification[];
+  onNotificationClick: (notification: ExtendedNotification) => void;
+  onMarkAllRead: () => void;
+  gridRef: RefObject<AgGridReact>;
+  variant: 'cms';
+  platforms: string[];
+  loading: boolean;
+}
+
+export type NotificationGridProps = PlatformNotificationGridProps | CMSNotificationGridProps;
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const PAGE_SIZE = 15;
-
 const NotificationMessageRenderer = (props: { value: string }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isTruncated, setIsTruncated] = useState(false);
+  const spanRef = useRef<HTMLSpanElement>(null);
   const message = props.value || '';
+
+  useEffect(() => {
+    const el = spanRef.current;
+    if (!el) return;
+
+    const update = () => {
+      if (!isExpanded) {
+        setIsTruncated(el.scrollWidth > el.clientWidth);
+      }
+    };
+
+    update(); // initial check
+
+    const resizeObserver = new ResizeObserver(update);
+    resizeObserver.observe(el);
+
+    return () => resizeObserver.disconnect();
+  }, [message, isExpanded]);
+
   return (
     <div
       className="flex items-center text-sm my-2.5 space-x-2"
-      onClick={() => setIsExpanded(prevState => !prevState)}
+      onClick={() => isTruncated && setIsExpanded(prev => !prev)}
+      style={{ cursor: isTruncated ? 'pointer' : 'default' }}
     >
-      <span className={isExpanded ? 'text-wrap' : 'truncate'}>{message}</span>
-      {isExpanded ? <ChevronUp className="flex-shrink-0 w-4 h-4" /> : <ChevronDown className="flex-shrink-0 w-4 h-4" />}
+      <span
+        ref={spanRef}
+        className={isExpanded ? 'whitespace-normal' : 'truncate'}
+      >
+        {message}
+      </span>
+      {isTruncated &&
+        (isExpanded ? (
+          <ChevronUp className="flex-shrink-0 w-4 h-4" />
+        ) : (
+          <ChevronDown className="flex-shrink-0 w-4 h-4" />
+        ))}
     </div>
   );
 };
+
 
 const NotificationActionRenderer = (props: { value: notification.TNotification['action'] }) => {
   const action = props.value;
@@ -62,34 +106,34 @@ const NotificationStatusRenderer = (props: { value: boolean }) => {
  * @param notifications An array of notification objects, each extended with a platform property.
  * @param onNotificationClick Callback function to handle clicking on a notification action.
  * @param gridRef A React ref object for accessing the AgGridReact instance.
- * @param variant Optional variant to determine the grid's behavior ('student', 'coach', or 'cms'). Defaults to 'student'.
- * @param platforms Optional array of platform names for filtering notifications in the CMS variant. Defaults to ['justdoad', 'bewerbeagentur', 'cms'].
+ * @param variant Optional variant to determine the grid's behavior ('student', 'coach', or 'cms').
+ * @param platforms Optional array of platform names for filtering notifications in the CMS variant.
  * @param locale The locale for translations, used to fetch localized dictionary strings.
- * @param loading Optional boolean to indicate if the grid is in a loading state. Defaults to false.
+ * @param loading Optional boolean to indicate if the grid is in a loading state.
  */
-export const NotificationGrid = ({
-  notifications,
-  onNotificationClick,
-  locale,
-  gridRef,
-  variant = 'student',
-  platforms = ['justdoad', 'bewerbeagentur', 'cms'],
-  loading = false,
-}: NotificationGridProps) => {
+export const NotificationGrid = (props: NotificationGridProps) => {
+
+  const {
+    notifications,
+    onNotificationClick,
+    onMarkAllRead,
+    gridRef,
+    variant,
+    locale,
+    loading,
+  } = props;
+
+  const platforms = variant === 'cms' ? props.platforms : [];
+
   const dictionary = getDictionary(locale).components.notificationGrid;
+
   const [selectedTab, setSelectedTab] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [modifiedNotifications, setModifiedNotifications] = useState<ExtendedNotification[]>(notifications);
+
   // Modal and filter state
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [filters, setFilters] = useState<Partial<NotificationFilterModel>>({});
-
-  // Mark all notifications as read
-  const handleMarkAllRead = useCallback(() => {
-    setModifiedNotifications(prev =>
-      prev.map(notification => ({ ...notification, isRead: true }))
-    );
-  }, []);
 
   const handleClearAllFilters = useCallback(() => {
     setSearchTerm(''); // Clear search input
@@ -101,13 +145,13 @@ export const NotificationGrid = ({
     }
   }, [gridRef]);
 
-  const [columnDefs] = useState<ColDef[]>([
+  const columnDefs = useMemo(() => [
     {
-      headerName: '',
+      headerName: dictionary.new,
       field: 'isRead',
       cellRenderer: NotificationStatusRenderer,
-      maxWidth: 40,
-      minWidth: 40,
+      minWidth: 100,
+      maxWidth: 100,
     },
     {
       flex: 1,
@@ -122,7 +166,7 @@ export const NotificationGrid = ({
       field: 'action',
       headerName: dictionary.action,
       cellRenderer: NotificationActionRenderer,
-      onCellClicked: (event) => {
+      onCellClicked: (event: { data: ExtendedNotification; }) => {
         const notification = event.data as ExtendedNotification;
         onNotificationClick(notification);
       },
@@ -130,8 +174,9 @@ export const NotificationGrid = ({
     {
       field: 'timestamp',
       headerName: dictionary.dateTime,
-      valueFormatter: (params) => (params.value ? formatDate(new Date(params.value)) : ''),
+      valueFormatter: (params: { value: string | number | Date; }) => (params.value ? formatDate(new Date(params.value)) : ''),
       filter: 'agDateColumnFilter',
+      sort: 'desc' as 'asc' | 'desc' | null,
     },
     {
       field: 'platform',
@@ -141,7 +186,7 @@ export const NotificationGrid = ({
         values: platforms,
       },
     },
-  ]);
+  ], [dictionary]);
 
   // Get notification counts for each tab
   const notificationCounts = useMemo(() => {
@@ -181,10 +226,10 @@ export const NotificationGrid = ({
       if (filters.isRead !== undefined && notification.isRead !== filters.isRead) {
         return false;
       }
-      if (filters.dateAfter && typeof notification.timestamp === 'number' && notification.timestamp < new Date(filters.dateAfter).getTime()) {
+      if (filters.dateAfter && notification.timestamp && new Date(notification.timestamp).getTime() < new Date(filters.dateAfter).getTime()) {
         return false;
       }
-      if (filters.dateBefore && typeof notification.timestamp === 'number' && notification.timestamp > new Date(filters.dateBefore).getTime()) {
+      if (filters.dateBefore && notification.timestamp && new Date(notification.timestamp).getTime() > new Date(filters.dateBefore).getTime()) {
         return false;
       }
       // Modal search filter (overrides top search if set)
@@ -211,15 +256,6 @@ export const NotificationGrid = ({
       gridRef.current.api.onFilterChanged();
     }
   }, [doesExternalFilterPass, gridRef]);
-
-  // Handle tab change (for CMS variant)
-  const handleTabChange = useCallback(
-    (value: string) => {
-      setSelectedTab(value);
-      refreshGrid();
-    },
-    [refreshGrid]
-  );
 
   // Apply filter when search term or notifications change
   useEffect(() => {
@@ -251,7 +287,7 @@ export const NotificationGrid = ({
     }
 
     return (
-      <div>
+      <div className="flex flex-col h-full">
         <div className="flex items-center justify-between mb-2 mt-4 ml-1">
           <div className="flex-grow mr-2 relative">
             <input
@@ -263,37 +299,44 @@ export const NotificationGrid = ({
             />
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 text-gray-500 opacity-50 z-10" />
           </div>
-          <Button
-            variant="secondary"
-            size="medium"
-            text={dictionary.filterButton}
-            onClick={() => setShowFilterModal(true)}
-            hasIconLeft
-            iconLeft={<IconFilter />}
-            className="w-full md:w-auto mr-2"
-          />
-          <Button
-            variant="secondary"
-            size="medium"
-            text={dictionary.clearFilters}
-            onClick={handleClearAllFilters}
-            className="w-full md:w-auto mr-2"
-          />
-          <Button
-            variant="primary"
-            size="medium"
-            text={dictionary.markAllAsRead}
-            onClick={handleMarkAllRead}
-            disabled={loading}
-          />
+
+          <div className="flex flex-row gap-2">
+            { /* CMS-specific buttons */
+              variant === 'cms' && (
+                <>
+                  <Button
+                    variant="secondary"
+                    size="medium"
+                    text={dictionary.filterButton}
+                    onClick={() => setShowFilterModal(true)}
+                    hasIconLeft
+                    iconLeft={<IconFilter />}
+                    className="w-full md:w-auto" />
+                  <Button
+                    variant="secondary"
+                    size="medium"
+                    text={dictionary.clearFilters}
+                    onClick={handleClearAllFilters}
+                    className="w-full md:w-auto" />
+                </>
+              )}
+            <Button
+              variant="primary"
+              size="medium"
+              text={dictionary.markAllAsRead}
+              onClick={onMarkAllRead}
+              disabled={loading}
+            />
+          </div>
         </div>
+
         <BaseGrid
           gridRef={gridRef}
           suppressRowHoverHighlight={true}
           columnDefs={columnDefs}
           rowData={notificationsToShow}
           pagination={true}
-          paginationPageSize={PAGE_SIZE}
+          paginationAutoPageSize={true}
           suppressPaginationPanel={true}
           domLayout="normal"
           isExternalFilterPresent={() => true}
@@ -337,6 +380,7 @@ export const NotificationGrid = ({
           </Tabs.Trigger>
         ))}
       </Tabs.List>
+
       <div className="mt-4 grow">
         <Tabs.Content value="all" className="w-full">
           {renderGridWithActions()}
@@ -347,6 +391,7 @@ export const NotificationGrid = ({
           </Tabs.Content>
         ))}
       </div>
+
     </Tabs.Root>
   );
 
