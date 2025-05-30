@@ -435,6 +435,10 @@ export const DictionarySchema = z.object({
       downloadCertificateText: z.string(),
       rateTheCourseText: z.string(),
     }),
+    coachesSkeleton: z.object({
+      title: z.string(),
+      registerButton: z.string(),
+    })
   }),
   pages: z.object({
     sso: z.object({
