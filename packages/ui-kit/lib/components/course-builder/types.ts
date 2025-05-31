@@ -1,9 +1,11 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
-import { QuizElementType } from "../course-builder-lesson-component/types";
+import React from "react";
+import { CoachingElement, LessonNoteType, QuizElementType } from "../course-builder-lesson-component/types";
 
 export enum CourseElementType {
-  Quiz = "quiz",
- 
+    LessonNote = "lessonNote",
+    CoachingSession = "coachingSession",
+    Quiz = "quiz",
 }
 
 /**
@@ -12,7 +14,7 @@ export enum CourseElementType {
  * It includes QuizElementType and any other element types that may be added in the future.
  * 
  */
-export type courseElement = QuizElementType;
+export type courseElement = LessonNoteType | CoachingElement | QuizElementType;
 
 export type SubmitFunction = (key: string, value: courseElement) => void;
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import FilterSwitch from '../lib/components/filter-switch';
 
@@ -26,18 +25,18 @@ type Story = StoryObj<typeof FilterSwitch>;
 
 // Sample topic data
 const sampleTopics = [
-    { name: 'Branding and Identity' },
-    { name: 'Graphic and Visual Design'},
-    { name: 'Motion Design and Animation' },
-    { name: 'Sound Design and Editing'},
-    { name: 'Digital Content and Social Media Strategy'},
-    { name: 'Web Design and Development' },
-    { name: 'UI/UX Design' },
-    { name: 'Visual Storytelling' },
-    { name: 'Advertising Campaigns'},
-    { name: 'Key Visual Creation' },
-  ];
-  
+  { name: 'Branding and Identity' },
+  { name: 'Graphic and Visual Design' },
+  { name: 'Motion Design and Animation' },
+  { name: 'Sound Design and Editing' },
+  { name: 'Digital Content and Social Media Strategy' },
+  { name: 'Web Design and Development' },
+  { name: 'UI/UX Design' },
+  { name: 'Visual Storytelling' },
+  { name: 'Advertising Campaigns' },
+  { name: 'Key Visual Creation' },
+];
+
 
 const longTopicList = [
   ...sampleTopics,
@@ -82,10 +81,11 @@ export const CustomTitle: Story = {
   args: {
     title: 'Filter Categories',
     list: sampleTopics,
-    onFilterChange:  (selectedTopicName) => {
-        console.log('Selected topic:', selectedTopicName);
+    onFilterChange: (selectedTopicName) => {
+      console.log('Selected topic:', selectedTopicName);
 
-        }    }
+    }
+  }
 };
 
 
@@ -97,7 +97,7 @@ export const Empty: Story = {
     title: 'No Topics Available',
     list: [],
     onFilterChange: (selectedTopicName) => {
-        console.log('Selected topic:', selectedTopicName);
-      } ,
+      console.log('Selected topic:', selectedTopicName);
+    },
   },
 };

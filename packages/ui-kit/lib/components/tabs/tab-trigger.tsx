@@ -22,7 +22,7 @@ export function TabTrigger({
   const isActive = activeTab === value;
 
   const baseStyles =
-    'w-full px-4 py-2 font-bold transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 relative overflow-hidden';
+    'w-full min-w-[230px] px-4 py-2 font-bold transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 relative overflow-hidden';
   const variantStyles = {
     default: cn(
       'transform transition-transform hover:scale-95',
@@ -47,8 +47,8 @@ export function TabTrigger({
           <span
             className={cn(
               isActive
-                ? 'text-button-primary-text'
-                : 'text-button-primary-fill',
+                ? 'text-black'
+                : 'text-text-primary',
             )}
           >
             {icon}

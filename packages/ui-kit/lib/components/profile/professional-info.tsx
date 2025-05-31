@@ -19,10 +19,6 @@ interface ProfessionalInfoProps extends isLocalAware {
   onSave?: (profile: profile.TProfessionalProfile) => void;
 }
 
-type fileProps = {
-  isUploading: boolean;
-  file: File;
-}[];
 
 /**
  * A reusable form component for managing and editing professional profile information.

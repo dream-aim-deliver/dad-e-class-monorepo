@@ -82,7 +82,7 @@ export const CheckBox: FC<CheckBoxProps> = ({
   );
 
   return (
-    <label className="inline-flex items-center gap-3 w-full">
+    <label className="inline-flex items-center gap-3 w-full cursor-pointer">
       <div className="relative">
         <input
           type="checkbox"

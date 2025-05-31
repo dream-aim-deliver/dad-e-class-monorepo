@@ -15,11 +15,14 @@ export interface InputFieldProps {
     | 'warning'
     | 'error';
   value?: string;
+  defaultValue?: string;
   setValue: (value: string) => void;
   type?: 'text' | 'password'|'number';
   id?: string;
   className?: string;
   inputClassName?: string;
+  min?: number;
+  max?: number;
 }
 
 /**
@@ -43,7 +46,10 @@ export interface InputFieldProps {
  * @param id Optional unique ID for identifying this specific input field (useful for testing or accessibility).
  * @param className Optional additional CSS classes to apply to the outer container.
  * @param inputClassName Optional additional CSS classes to apply to the input element.
- * 
+ * @param defaultValue Optional default value for the input field, used when the component is first rendered.
+ * @param min Optional minimum value for number inputs.
+ * @param max Optional maximum value for number inputs.
+ *
  * @example
  * <InputField
  *   hasLeftContent={true}
@@ -69,7 +75,10 @@ export const InputField: FC<InputFieldProps> = ({
   type = 'text',
   id,
   className,
-  inputClassName
+  inputClassName,
+  defaultValue,
+  min,
+  max
 }) => {
   const [borderColor, setBorderColor] = useState(false);
 
@@ -84,14 +93,15 @@ export const InputField: FC<InputFieldProps> = ({
 
   return (
     <div
-      className={cn(`flex gap-2 items-start justify-center flex-col px-3 py-[10px] bg-input-fill border rounded-medium 
+      className={cn(`flex gap-2 items-start justify-center flex-col px-3 py-[10px] bg-input-fill border rounded-medium
       ${stateClasses[state]}
-      ${className} 
+      ${className}
       `)}
     >
-      <div className="flex items-center md:gap-2 w-full h-full">
+      <div className="flex items-center gap-2 w-full h-full">
         {hasLeftContent && leftContent}
         <input
+          defaultValue={defaultValue}
           data-testid={id}
           type={type}
           placeholder={inputText}
@@ -100,6 +110,8 @@ export const InputField: FC<InputFieldProps> = ({
           onChange={(e) => setValue(e.target.value)}
           onFocus={() => setBorderColor(true)}
           onBlur={() => setBorderColor(false)}
+          min={min}
+          max={max}
           className={cn("bg-transparent outline-none [-moz-appearance:textfield] flex-1 placeholder-text-secondary h-full w-full appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",inputClassName)}
         />
         {hasRightContent && rightContent}

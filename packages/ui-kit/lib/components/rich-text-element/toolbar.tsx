@@ -45,7 +45,6 @@ export default function Toolbar({ locale }: isLocalAware) {
     }
   };
   const dictionary = getDictionary(locale);
-  console.log(dictionary)
   return (
     <div className=" min-h-14  flex flex-nowrap  text-text-primary  overflow-x-auto gap-4 bg-base-neutral-700 p-3">
       <div className="flex items-center space-x-2">
@@ -64,6 +63,7 @@ export default function Toolbar({ locale }: isLocalAware) {
         <div className="flex items-center space-x-4 text-text-secondary">
           {TEXT_ACTION_OPTIONS(dictionary).map((option) => (
             <button
+              type="button"
               key={option.id}
               title={`${option.label}`}
               onClick={() => handleAction(option.id)}>
@@ -71,12 +71,14 @@ export default function Toolbar({ locale }: isLocalAware) {
             </button>
           ))}
           <button
+            type="button"
             title={dictionary.components.richTextToolbar.link}
             className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("link" as RichTextAction)}`}
             onClick={handleInsertLink}>
             <Link size={24} />
           </button>
           <button
+            type="button"
             title={dictionary.components.richTextToolbar.unlink}
             className={`p-2 rounded   text-text-primary ${getBlockSelectionClass("unlink" as RichTextAction)} `}
             onClick={() => removeLink(editor)} disabled={!isLinkActive(editor)}>
@@ -85,6 +87,7 @@ export default function Toolbar({ locale }: isLocalAware) {
         </div>
         {TEXT_FORMAT_OPTIONS(dictionary).map(({ id, label, icon }) => (
           <button
+            type="button"
             title={label}
             key={id}
             aria-label={label}
@@ -102,6 +105,7 @@ export default function Toolbar({ locale }: isLocalAware) {
       <div className="flex   items-center space-x-2">
         {TEXT_BLOCK_OPTIONS(dictionary).map(({ id, label, icon }) => (
           <button
+            type="button"
             title={label}
             key={id}
             aria-label={label}

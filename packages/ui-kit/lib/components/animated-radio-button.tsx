@@ -17,8 +17,8 @@ export interface AnimatedRadioButtonProps {
 const sizeConfig = {
     small: {
         container: 'w-[30px] h-[15px]',
-        indicator: 'w-[11px] h-[11px]',
-        translate: 'translate-x-[15px]',
+        indicator: 'w-[12px] h-[12px]',
+        translate: 'translate-x-[14px]',
         padding: 'top-[2px] left-[2px]'
     },
     medium: {
@@ -39,7 +39,7 @@ const sizeConfig = {
  * AnimatedRadioButton Component
  * A toggle switch with sliding animation.
  * The indicator slides from left to right when selected.
- * 
+ *
  * @param name - The name of the radio button group
  * @param value - The value of the radio button
  * @param label - Optional label text
@@ -90,7 +90,7 @@ export const AnimatedRadioButton: FC<AnimatedRadioButtonProps> = ({
     };
 
     return (
-        <label className="inline-flex items-center gap-3 relative">
+        <label className="inline-flex items-center gap-3 relative cursor-pointer">
             <div className="absolute top-0 left-4 z-10 hidden">
                 <CheckBox
                     name={name}

@@ -1,18 +1,17 @@
 import { FC, ReactNode } from 'react';
-
 import { cn } from '../utils/style-utils';
 import { IconClose } from './icons/icon-close';
 import { IconWarning } from './icons/icon-warning';
 
 interface BannerProps {
-    title?: string;
-    description?: string;
-    icon?: boolean;
-    customIcon?: ReactNode;
-    style?: 'success' | 'warning' | 'error';
-    closeable?: boolean;
-    onClose?: () => void;
-    className?: string;
+  title?: string;
+  description?: string;
+  icon?: boolean;
+  customIcon?: ReactNode;
+  style?: 'success' | 'warning' | 'error';
+  closeable?: boolean;
+  onClose?: () => void;
+  className?: string;
 }
 
 /**
@@ -37,7 +36,7 @@ interface BannerProps {
  *   style="success"
  * />
  * 
- * Error banner with custom icon
+ * Warning banner with icon
  * <Banner
  *   title="Warning"
  *   description="Your session will expire soon."
@@ -55,70 +54,70 @@ interface BannerProps {
  * />
  */
 const Banner: FC<BannerProps> = ({
-    title,
-    description,
-    icon = false,
-    customIcon,
-    style = 'success',
-    closeable = false,
-    onClose,
-    className,
+  title,
+  description,
+  icon = false,
+  customIcon,
+  style = 'success',
+  closeable = false,
+  onClose,
+  className,
 }) => {
-    const styleClasses: Record<string, string> = {
-        success: 'text-feedback-success-primary border-feedback-success-primary',
-        warning: 'text-feedback-warning-primary border-feedback-warning-primary',
-        error: 'text-feedback-error-primary border-feedback-error-primary',
-    };
+  const styleClasses: Record<string, string> = {
+    success: 'text-feedback-success-primary border-feedback-success-primary',
+    warning: 'text-feedback-warning-primary border-feedback-warning-primary',
+    error: 'text-feedback-error-primary border-feedback-error-primary',
+  };
 
-    const colorClass = styleClasses[style];
+  const colorClass = styleClasses[style];
 
-    const containerClasses = cn(
-        'flex items-start justify-between px-4 py-3',
-        'transition-all duration-200 rounded-small',
-        'bg-transparent',
-        'border border-[1px]',
-        colorClass,
-        className
-    );
+  const containerClasses = cn(
+    'flex items-start justify-between px-4 py-3',
+    'transition-all duration-200 rounded-small',
+    'bg-transparent',
+    'border border-[1px]',
+    colorClass,
+    className
+  );
 
-    return (
-        <div data-testid='parent' className={containerClasses}>
-            <div className="flex items-start gap-3">
-                {icon && (
-                    <div className="flex-shrink-0">
-                        {customIcon || <IconWarning data-testid='icon' />}
-                    </div>
-                )}
+  return (
+    <div data-testid='parent' className={containerClasses}>
+      <div className="flex items-start gap-3 flex-1 min-w-0">
+        {icon && (
+          <div className="flex-shrink-0">
+            {customIcon || <IconWarning data-testid='icon' />}
+          </div>
+        )}
 
-                <div className="flex flex-col">
-                    <div className="flex items-center gap-2">
-                        <span className="font-bold">
-                            {title}
-                        </span>
-                    </div>
-
-                    {description && (
-                        <span
-                            className="leading-tight"
-
-                        >
-                            {description}
-                        </span>
-                    )}
-                </div>
+        <div className="flex flex-col min-w-0">
+          {title && (
+            <div className="flex items-center gap-2">
+              <span className="font-bold truncate" title={title}>
+                {title}
+              </span>
             </div>
+          )}
 
-            {closeable && (
-                <button
-                    onClick={onClose}
-                    aria-label="Close"
-                    className="flex-shrink-0 hover:opacity-80 transition-all duration-200 mt-[2px]"
-                >
-                    <IconClose classNames="w-4 h-4 md:w-5 md:h-5" />
-                </button>
-            )}
+          {description && (
+            <span className="leading-tight break-words">
+              {description}
+            </span>
+          )}
         </div>
-    );
+      </div>
+
+      {closeable && (
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="flex-shrink-0 hover:opacity-80 transition-all duration-200 mt-[2px] ml-2"
+        >
+          <IconClose classNames="w-4 h-4 md:w-5 md:h-5" />
+        </button>
+      )}
+    </div>
+  );
 };
 
+// Example usage with long text to demonstrate overflow handling
 export default Banner;
