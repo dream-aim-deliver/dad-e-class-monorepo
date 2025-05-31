@@ -86,9 +86,9 @@ export const Badge: FC<BadgeProps> = ({
     <span
       role="badge"
       className={cn(
-        badgeSizeClasses,
         onClick ? 'cursor-pointer' : '',
         'flex items-center gap-1',
+        badgeSizeClasses,
       )}
       onClick={onClick}
     >
