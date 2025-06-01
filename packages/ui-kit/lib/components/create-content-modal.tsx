@@ -10,6 +10,25 @@ import { InputField } from './input-field';
 import { StarRating } from './star-rating';
 import { UserAvatar } from './avatar/user-avatar';
 
+type ContentItem = {
+    id: string;
+    title: string;
+    ownerName: string;
+    ownerAvatarUrl: string;
+    isYou: boolean;
+    totalRating: number;
+    rating: number;
+};
+
+export interface CreateContentModalProps extends isLocalAware {
+    variant: 'course' | 'lesson';
+    onClose: () => void;
+    onCreateNewContentDraft: () => void;
+    onDuplicateContent: (id: string) => void;
+    courses: ContentItem[];
+    lessons: ContentItem[];
+}
+
 /**
  * A modal component for creating or duplicating content, such as courses or lessons.
  *
@@ -38,25 +57,6 @@ import { UserAvatar } from './avatar/user-avatar';
  *   locale="en"
  * />
  */
-
-type ContentItem = {
-    id: string;
-    title: string;
-    ownerName: string;
-    ownerAvatarUrl: string;
-    isYou: boolean;
-    totalRating: number;
-    rating: number;
-};
-
-export interface CreateContentModalProps extends isLocalAware {
-    variant: 'course' | 'lesson';
-    onClose: () => void;
-    onCreateNewContentDraft: () => void;
-    onDuplicateContent: (id: string) => void;
-    courses: ContentItem[];
-    lessons: ContentItem[];
-}
 
 export const CreateContentModal = ({
     variant,
