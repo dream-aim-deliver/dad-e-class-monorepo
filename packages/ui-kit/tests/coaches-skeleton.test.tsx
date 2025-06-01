@@ -1,6 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { CoachesSkeleton, CoachesSkeletonProps } from '../lib/components/coaches-skeleton';
+import {
+    CoachesSkeleton,
+    CoachesSkeletonProps,
+} from '../lib/components/coaches-skeleton';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -45,25 +48,48 @@ describe('CoachesSkeleton', () => {
 
     it('renders with the correct title', () => {
         render(<CoachesSkeleton {...baseProps} />);
-        expect(screen.getByText('Many other coaches are waiting for you')).toBeInTheDocument();
+        expect(
+            screen.getByText('Many other coaches are waiting for you'),
+        ).toBeInTheDocument();
     });
 
     it('renders the correct number of skeleton items based on screen size', () => {
         // Mock window.innerWidth for different screen sizes
+        const originalInnerWidth = window.innerWidth;
+
+        // Test for mobile size
         Object.defineProperty(window, 'innerWidth', {
             writable: true,
             configurable: true,
-            value: 1280, // xl: desktop
+            value: 500,
         });
         render(<CoachesSkeleton {...baseProps} />);
+        expect(screen.getAllByText('Register to see all').length).toBe(1);
+
+        // Test for tablet size
         Object.defineProperty(window, 'innerWidth', {
-            value: 768, // md: tablet
+            writable: true,
+            configurable: true,
+            value: 800,
         });
         render(<CoachesSkeleton {...baseProps} />);
+        expect(screen.getAllByText('Register to see all').length).toBe(2);
+
+        // Test for desktop size
         Object.defineProperty(window, 'innerWidth', {
-            value: 480, // mobile
+            writable: true,
+            configurable: true,
+            value: 1300,
         });
         render(<CoachesSkeleton {...baseProps} />);
+        expect(screen.getAllByText('Register to see all').length).toBe(3);
+
+        // Restore original innerWidth
+        Object.defineProperty(window, 'innerWidth', {
+            writable: true,
+            configurable: true,
+            value: originalInnerWidth,
+        });
     });
 
     it('calls onRegister when the register button is clicked', () => {

@@ -28,6 +28,27 @@ function useResponsiveSkeletonCount() {
     return count;
 }
 
+/**
+ * A responsive skeleton component that displays placeholder coach cards while data is loading.
+ *
+ * It adapts the number of skeletons shown based on screen size:
+ * - 6 on large screens (≥1280px)
+ * - 4 on medium screens (≥768px)
+ * - 3 on small screens
+ *
+ * Also includes a register button to encourage user action while content is loading.
+ *
+ * @param onRegister A callback function triggered when the "Register" button is clicked.
+ * @param locale A string representing the current locale used for translated dictionary labels.
+ *
+ * @example
+ * <CoachesSkeleton
+ *   onRegister={() => console.log('Register clicked')}
+ *   locale="en"
+ * />
+ */
+
+
 export const CoachesSkeleton = ({
     onRegister,
     locale,
