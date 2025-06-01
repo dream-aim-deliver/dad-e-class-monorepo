@@ -475,19 +475,25 @@ export const EN: TDictionary = {
       title: 'Many other coaches are waiting for you...',
       registerButton: 'Register to see all',
     },
-    createCourseModal: {
+    createContentModal: {
       createNewCourse: 'Create new course draft',
+      createNewLesson: 'Create new lesson draft',
       close: 'Close',
       startFromScratch: 'Start from scratch',
       duplicateCourse: 'Duplicate course',
+      duplicateLesson: 'Duplicate lesson',
       searchCourse: 'Search course',
+      searchLesson: 'Search lesson',
       searching: 'Searching',
       noCourseFound: 'No course found...',
+      noLessonFound: 'No lesson found...',
       createdBy: 'Created by',
-      title: 'Create course',
-      description: 'Would you like to start from scratch or clone an existing course?',
+      titleCourse: 'Create course',
+      descriptionCourse: 'Would you like to start from scratch or clone an existing course?',
+      titleLesson: 'Create lesson',
+      descriptionLesson: 'Would you like to start from scratch or clone an existing lesson?',
       you: 'You',
-}
+    }
   },
   pages: {
     home: Home_EN,

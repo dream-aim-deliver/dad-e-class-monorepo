@@ -10,49 +10,109 @@ import { InputField } from './input-field';
 import { StarRating } from './star-rating';
 import { UserAvatar } from './avatar/user-avatar';
 
-export interface CreateCourseModalProps extends isLocalAware {
+/**
+ * A modal component for creating or duplicating content, such as courses or lessons.
+ *
+ * Provides two main workflows:
+ * 1. Start from scratch – allows users to create a new content draft.
+ * 2. Duplicate existing – allows users to search and duplicate existing content.
+ *
+ * @param variant Specifies the type of content being created (`"course"` or `"lesson"`), which controls labels and logic.
+ * @param onClose Callback function triggered when the modal is closed.
+ * @param onCreateNewContentDraft Callback function triggered when the user chooses to start from scratch.
+ * @param onDuplicateContent Callback function triggered when the user duplicates an existing item. Receives the `id` of the selected item.
+ * @param courses List of course content items available for duplication.
+ * @param lessons List of lesson content items available for duplication.
+ * @param locale Current locale used for dictionary translation.
+ *
+ * @example
+ * <CreateContentModal
+ *   variant="course"
+ *   onClose={() => console.log("Modal closed")}
+ *   onCreateNewContentDraft={() => console.log("New draft")}
+ *   onDuplicateContent={(id) => console.log("Duplicate content", id)}
+ *   courses={[
+ *     { id: "1", title: "React Basics", ownerName: "Jane Doe", ownerAvatarUrl: "/avatar1.jpg", isYou: true, rating: 4.5, totalRating: 200 }
+ *   ]}
+ *   lessons={[]}
+ *   locale="en"
+ * />
+ */
+
+type ContentItem = {
+    id: string;
+    title: string;
+    ownerName: string;
+    ownerAvatarUrl: string;
+    isYou: boolean;
+    totalRating: number;
+    rating: number;
+};
+
+export interface CreateContentModalProps extends isLocalAware {
+    variant: 'course' | 'lesson';
     onClose: () => void;
-    onCreateNewCourseDraft: () => void;
-    onDuplicateCourse: (courseId: string) => void;
-    courses: {
-        id: string;
-        title: string;
-        ownerName: string;
-        ownerAvatarUrl: string;
-        isYou: boolean;
-        totalRating: number;
-        rating: number;
-    }[];
+    onCreateNewContentDraft: () => void;
+    onDuplicateContent: (id: string) => void;
+    courses: ContentItem[];
+    lessons: ContentItem[];
 }
 
-export const CreateCourseModal = ({
+export const CreateContentModal = ({
+    variant,
     onClose,
-    onCreateNewCourseDraft,
-    onDuplicateCourse,
+    onCreateNewContentDraft: onCreateNewCourseDraft,
+    onDuplicateContent: onDuplicateCourse,
     locale,
     courses,
-}: CreateCourseModalProps) => {
-    const dictionary = getDictionary(locale).components.createCourseModal;
+    lessons,
+}: CreateContentModalProps) => {
+    const dictionary = getDictionary(locale).components.createContentModal;
+
+    // Determine labels based on the variant
+    const createNewLabel =
+        variant === 'lesson'
+            ? dictionary.createNewLesson
+            : dictionary.createNewCourse;
+    const duplicateLabel =
+        variant === 'lesson'
+            ? dictionary.duplicateLesson
+            : dictionary.duplicateCourse;
+    const searchLabel =
+        variant === 'lesson'
+            ? dictionary.searchLesson
+            : dictionary.searchCourse;
+    const noFoundLabel =
+        variant === 'lesson'
+            ? dictionary.noLessonFound
+            : dictionary.noCourseFound;
+    const titleLabel =
+        variant === 'lesson' ? dictionary.titleLesson : dictionary.titleCourse;
+    const descriptionLabel =
+        variant === 'lesson'
+            ? dictionary.descriptionLesson
+            : dictionary.descriptionCourse;
 
     const [activeTab, setActiveTab] = useState('start from scratch');
 
-    const [searchCourses, setSearchCourses] = useState('');
-    const [selectedCourse, setSelectedCourse] = useState<
-        null | (typeof courses)[0]
-    >(null);
+    const [searchContent, setSearchContent] = useState('');
+    const [selectedItem, setSelectedItem] = useState<null | ContentItem>(null);
 
-    const filteredCourses = useMemo(() => {
-        const search = searchCourses.toLowerCase();
-        return courses.filter(
-            (course) =>
-                course.title.toLowerCase().includes(search) ||
-                course.ownerName.toLowerCase().includes(search),
+    // Use the courses array for filtering based on the variant
+    const contentList = variant === 'course' ? courses : lessons;
+
+    const filteredItems = useMemo(() => {
+        const search = searchContent.toLowerCase();
+        return contentList.filter(
+            (item) =>
+                item.title.toLowerCase().includes(search) ||
+                item.ownerName.toLowerCase().includes(search),
         );
-    }, [searchCourses, courses]);
+    }, [searchContent, contentList]);
 
-    const handleSelect = (course: (typeof courses)[0]) => {
-        setSelectedCourse(course);
-        setSearchCourses(course.title);
+    const handleSelect = (item: ContentItem) => {
+        setSelectedItem(item);
+        setSearchContent(item.title);
     };
 
     return (
@@ -70,11 +130,9 @@ export const CreateCourseModal = ({
 
             <div className="flex flex-col items-start gap-4 w-full">
                 <h4 className="text-xl font-bold text-text-primary">
-                    {dictionary.title}
+                    {titleLabel}
                 </h4>
-                <p className="text-md text-text-primary">
-                    {dictionary.description}
-                </p>
+                <p className="text-md text-text-primary">{descriptionLabel}</p>
             </div>
             <Tabs.Root
                 defaultTab="start from scratch"
@@ -87,7 +145,7 @@ export const CreateCourseModal = ({
                         {dictionary.startFromScratch}
                     </TabTrigger>
                     <TabTrigger value="duplicate course">
-                        {dictionary.duplicateCourse}
+                        {duplicateLabel}
                     </TabTrigger>
                 </TabList>
 
@@ -97,7 +155,7 @@ export const CreateCourseModal = ({
                             className="w-full"
                             variant="primary"
                             size="big"
-                            text={dictionary.createNewCourse}
+                            text={createNewLabel}
                             onClick={onCreateNewCourseDraft}
                             hasIconLeft
                             iconLeft={<IconPlus size="6" />}
@@ -108,21 +166,21 @@ export const CreateCourseModal = ({
                 <TabContent value="duplicate course">
                     <div className="flex flex-col gap-4">
                         <InputField
-                            value={searchCourses}
+                            value={searchContent}
                             setValue={(value: string) => {
-                                setSearchCourses(value);
-                                setSelectedCourse(null);
+                                setSearchContent(value);
+                                setSelectedItem(null);
                             }}
                             hasLeftContent={true}
-                            inputText={dictionary.searchCourse}
+                            inputText={searchLabel}
                             leftContent={<IconSearch />}
                         />
-                        {searchCourses.trim() && (
+                        {searchContent.trim() && (
                             <ul className="max-h-70 overflow-y-auto pr-2">
-                                {filteredCourses.length === 0 ? (
+                                {filteredItems.length === 0 ? (
                                     <li>
                                         <h6 className="text-text-primary mb-4">
-                                            {dictionary.noCourseFound}
+                                            {noFoundLabel}
                                         </h6>
                                         <div className="flex justify-between items-center mt-2 mb-2 bg-base-neutral-800 rounded-lg border border-base-neutral-700 p-4">
                                             {/* Skeleton title and rating*/}
@@ -144,64 +202,58 @@ export const CreateCourseModal = ({
                                         </div>
                                     </li>
                                 ) : (
-                                    filteredCourses.map((course, idx) => (
+                                    filteredItems.map((item) => (
                                         <li
-                                            key={idx}
-                                            className={`p-4 cursor-pointer rounded-lg hover:bg-base-neutral-800 ${selectedCourse === course ? 'bg-base-neutral-800' : ''}`}
-                                            onClick={() => handleSelect(course)}
+                                            key={item.id}
+                                            className={`p-4 cursor-pointer rounded-lg hover:bg-base-neutral-800 ${selectedItem === item ? 'bg-base-neutral-800' : ''}`}
+                                            onClick={() => handleSelect(item)}
                                         >
                                             <div className="flex justify-between items-center mt-2 mb-2">
                                                 <div className="flex flex-col items-start">
                                                     <h6 className="text-text-primary">
-                                                        {course.title}
+                                                        {item.title}
                                                     </h6>
                                                     <div className="flex items-center gap-2 mt-1">
                                                         <StarRating
                                                             totalStars={5}
                                                             size={'4'}
-                                                            rating={
-                                                                course.rating
-                                                            }
+                                                            rating={item.rating}
                                                         />
                                                         <p className="text-text-primary text-sm font-important">
-                                                            {course.rating}
+                                                            {item.rating}
                                                         </p>
                                                         <p className="text-xs text-text-secondary font-important">
-                                                            (
-                                                            {course.totalRating}
-                                                            )
+                                                            ({item.totalRating})
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-end gap-2 ml-4 ">
                                                     <UserAvatar
                                                         fullName={
-                                                            course.ownerName
+                                                            item.ownerName
                                                         }
                                                         size="xSmall"
                                                         imageUrl={
-                                                            course.ownerAvatarUrl
+                                                            item.ownerAvatarUrl
                                                         }
                                                     />
                                                     <p className="text-sm text-text-secondary font-important">
-                                                        {course.isYou
+                                                        {item.isYou
                                                             ? dictionary.you
-                                                            : course.ownerName}
+                                                            : item.ownerName}
                                                     </p>
                                                 </div>
                                             </div>
-                                            {selectedCourse === course && (
+                                            {selectedItem === item && (
                                                 <div className="mt-2">
                                                     <Button
                                                         className="w-full"
                                                         variant="primary"
                                                         size="big"
-                                                        text={
-                                                            dictionary.duplicateCourse
-                                                        }
+                                                        text={duplicateLabel}
                                                         onClick={() =>
                                                             onDuplicateCourse(
-                                                                selectedCourse.id,
+                                                                selectedItem.id,
                                                             )
                                                         }
                                                     />
