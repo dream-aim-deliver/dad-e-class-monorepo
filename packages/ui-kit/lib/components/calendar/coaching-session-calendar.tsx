@@ -55,15 +55,15 @@ export interface CalendarProps extends isLocalAware{
   courseTitle?: string;
 }
 
-export const formatDate = (date: Date, viewType = 'timeGridWeek'): string => {
+export const formatDate = (date: Date, viewType = 'timeGridWeek', locale: string | undefined = 'default'): string => {
   const year = date.getFullYear();
-  const month = date.toLocaleString('default', { month: 'long' });
+  const month = date.toLocaleString(locale || 'default', { month: 'long' });
 
   if (viewType === 'dayGridMonth') {
     return `${month} ${year}`;
   }
 
-  const day = viewType === 'timeGridDay' ? date.getDate() : '';
+  const day = viewType === 'timeGridDay' ? date.toLocaleString(locale || 'default', { day: 'numeric' }) : '';
   return [day, month, year].filter(Boolean).join(' ');
 };
 
@@ -311,7 +311,7 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
         viewType={viewType}
         onNavigation={handleNavigation}
         onViewChange={handleViewChange}
-        formatDate={formatDate}
+        formatDate={(date, viewType) => formatDate(date, viewType, locale)}
         coachAvailability={coachAvailability}
         yourMeetings={yourMeetings}
         isVariantTwo={variant === 'clickToSchedule'}
@@ -321,6 +321,7 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
         <style>{calendarStyles}</style>
         <div className="h-[920px] overflow-hidden rounded-md border border-divider shadow-md">
           <FullCalendar
+            locale={locale as TLocale}
             ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={viewType}
@@ -347,7 +348,7 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
             stickyHeaderDates={true}
             nowIndicator={true}
             dayHeaderContent={(args) => {
-              const dayName = args.date.toLocaleDateString('en-US', { weekday: 'short' });
+              const dayName = args.date.toLocaleDateString(locale, { weekday: 'short' });
               const dayNumber = args.date.getDate();
               const isToday = args.date.toDateString() === new Date().toDateString();
               return (
