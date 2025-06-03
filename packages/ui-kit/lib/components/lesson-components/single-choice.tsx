@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IconSingleChoice } from "../icons/icon-single-choice";
 import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps } from "../pre-assessment/types";
 import SingleChoicePreview, { optionsType, SingleChoiceEdit } from "../single-choice";
-import DesignerLayout from "./designer-layout";
+import DesignerLayout from "../designer-layout";
 
 
 /**

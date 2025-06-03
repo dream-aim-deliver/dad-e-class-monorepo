@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps } from "../pre-assessment/types";
-import DesignerLayout from "./designer-layout";
+import DesignerLayout from "../designer-layout";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { IconOneOutOfThree } from "../icons/icon-one-out-of-three";
 import { OneOutOfThree, OneOutOfThreeData, OneOutOfThreePreview } from "../out-of-three/one-out-of-three";
