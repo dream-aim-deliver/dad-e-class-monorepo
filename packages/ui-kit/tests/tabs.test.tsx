@@ -30,7 +30,9 @@ describe('<Tabs />', () => {
       'aria-selected',
       'true',
     );
-    expect(screen.getByRole('tabpanel')).toHaveTextContent('Content for Tab 1');
+    const tabpanels = screen.getAllByRole('tabpanel');
+    const visiblePanel = tabpanels.find(panel => !panel.classList.contains('hidden'));
+    expect(visiblePanel).toHaveTextContent('Content for Tab 1');
   });
 
   it('renders custom class names for tabs and content', () => {
