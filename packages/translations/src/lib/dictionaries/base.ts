@@ -214,6 +214,7 @@ export const DictionarySchema = z.object({
       scheduleSession: z.string(),
       month: z.string(),
       week: z.string(),
+      today: z.string(),
       availabilityManagement: z.object ({
         minText: z.string(),
         repeatsEveryText: z.string(),

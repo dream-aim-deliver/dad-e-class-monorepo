@@ -61,7 +61,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
             size="small"
             onClick={() => onNavigation('today')}
             className="px-4"
-            text={'Today'}
+            text={new Date().toLocaleDateString(locale, { weekday: undefined, year: undefined, month: undefined, day: 'numeric' }) === new Date().toLocaleDateString(locale, { weekday: undefined, year: undefined, month: undefined, day: 'numeric' }) ? dictionary.components.calendar.today : (dictionary.components.calendar.today)}
           />
         </div>
         <div className="flex items-center space-x-4">

@@ -128,6 +128,7 @@ export const DE: TDictionary = {
       scheduleSession: 'Sitzung planen',
       month: 'Monat',
       week: 'Woche',
+      today: 'Heute',
       availabilityManagement: {
         minText: 'Min.',
         repeatsEveryText: 'Wiederholt sich alle',
