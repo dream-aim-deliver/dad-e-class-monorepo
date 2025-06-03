@@ -6,7 +6,7 @@ import { default as TextInputRenderer } from "../rich-text-element/renderer";
 import { Descendant, Node } from "slate";
 import { serialize, deserialize } from "../rich-text-element/serializer";
 import { getDictionary } from "@maany_shr/e-class-translations";
-import DesignerLayout from "./designer-layout";
+import DesignerLayout from "../designer-layout";
 import { IconTextInput } from "../icons/icon-text-input";
 
 

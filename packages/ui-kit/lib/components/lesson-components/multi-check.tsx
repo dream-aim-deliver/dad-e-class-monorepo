@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps } from "../pre-assessment/types";
 import { optionsType } from "../multiple-check";
-import DesignerLayout from "./designer-layout";
+import DesignerLayout from "../designer-layout";
 import { IconMultiChoice } from "../icons/icon-multi-choice";
 import MultipleChoicePreview, { MultipleChoiceEdit } from "../multiple-check";
 import { getDictionary } from "@maany_shr/e-class-translations";

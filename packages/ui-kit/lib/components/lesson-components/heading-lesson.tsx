@@ -1,5 +1,5 @@
 import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps } from "../pre-assessment/types";
-import DesignerLayout from "./designer-layout";
+import DesignerLayout from "../designer-layout";
 import { IconHeading } from "../icons/icon-heading";
 import { HeadingLesson, HeadingLessonPreview } from "../heading-type";
 

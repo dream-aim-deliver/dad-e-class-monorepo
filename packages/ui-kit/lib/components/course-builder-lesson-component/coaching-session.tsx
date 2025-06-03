@@ -1,10 +1,10 @@
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
 import { IconCoachingSession } from "../icons/icon-coaching-session";
-import DesignerLayout from "./designer-layout";
 import { CoachingSessionBuilderView } from "../coaching-session-course-builder/coaching-session-builder-view";
 import { CoachingSessionStudentViewTypes, CoachingSessionTypes } from "./types";
 import { CoachingSessionStudentView } from "../coaching-session-course-builder/coaching-session-student-view";
+import DesignerLayout from "../designer-layout";
 
 /**
  * Course element template definition for a Coaching Session.

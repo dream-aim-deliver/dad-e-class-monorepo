@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IconRichText } from "../icons/icon-rich-text";
 import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps } from "../pre-assessment/types";
 import RichTextRenderer from "../rich-text-element/renderer";
-import DesignerLayout from "./designer-layout";
+import DesignerLayout from "../designer-layout";
 import { RichTextEditor } from "../rich-text-element/editor";
 import { Descendant } from "slate";
 import { deserialize, serialize } from "../rich-text-element/serializer";
