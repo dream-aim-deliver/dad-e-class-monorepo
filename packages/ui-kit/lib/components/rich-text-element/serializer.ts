@@ -9,7 +9,7 @@ import { Descendant } from 'slate';
  */
 const serialize = (slateData: Descendant[]): string => {
   if (!slateData || (Array.isArray(slateData) && slateData.length === 0)) {
-    return JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }]);
+    return JSON.stringify([{ type: "paragraph", children: [{ text: "" }] } as Descendant]);
   }
   return JSON.stringify(slateData);
 };
@@ -80,7 +80,7 @@ export interface SlateDeserializerInput {
 const deserialize = ({ serializedData, onError }: SlateDeserializerInput): Descendant[] => {
 
   if (!serializedData || serializedData === "" || serializedData === "null" || serializedData === "undefined") {
-    return [{ type: "paragraph", children: [{ text: "" }] }];
+    return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
   }
 
   switch (typeof serializedData) {
@@ -88,7 +88,7 @@ const deserialize = ({ serializedData, onError }: SlateDeserializerInput): Desce
       try {
         const parsed = JSON.parse(serializedData);
         if (!Array.isArray(parsed) || parsed.length === 0) {
-          return [{ type: "paragraph", children: [{ text: "" }] }];
+          return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
         }
         return parsed;
 
@@ -107,7 +107,7 @@ const deserialize = ({ serializedData, onError }: SlateDeserializerInput): Desce
       if (Array.isArray(serializedData) && serializedData.length > 0) {
         return serializedData;
       }
-      return [{ type: "paragraph", children: [{ text: "" }] }];
+      return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
   }
 
 };
