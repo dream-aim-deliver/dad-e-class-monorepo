@@ -9,7 +9,7 @@ import { Descendant } from 'slate';
  */
 const serialize = (slateData: Descendant[]): string => {
     if (!slateData || (Array.isArray(slateData) && slateData.length === 0)) {
-      return JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }]);
+      return JSON.stringify([{ type: "paragraph", children: [{ text: "" }] } as Descendant]);
     }
     return JSON.stringify(slateData);
 };
@@ -23,17 +23,17 @@ const serialize = (slateData: Descendant[]): string => {
  */
 const deserialize = (stringData: string): Descendant[] => {
     if (!stringData || stringData === "" || stringData === "null" || stringData === "undefined") {
-      return [{ type: "paragraph", children: [{ text: "" }] }];
+      return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
     }
     try {
       const parsed = JSON.parse(stringData);
       if (!Array.isArray(parsed) || parsed.length === 0) {
-        return [{ type: "paragraph", children: [{ text: "" }] }];
+        return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
       }
       return parsed;
     } catch (error) {
       console.error("Error parsing slate content:", error);
-      return [{ type: "paragraph", children: [{ text: "" }] }];
+      return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
     }
 };
 
