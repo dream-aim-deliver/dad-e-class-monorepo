@@ -15,7 +15,9 @@ export type HomeProps = isLocalAware & isSessionAware;
 
 export default function Home(props: HomeProps) {
     const [data] = trpc.getSkills.useSuspenseQuery();
-
+    const { presenter} = usePresenter()
+    const { viewModel, setViewModel} = 
+    presenter.present(data)
     return (
         <div className="flex flex-col  text-base-neutral-50 gap-4 mt-3 items-center justify-center text-center">
             {data &&
