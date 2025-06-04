@@ -1,4 +1,4 @@
-import AuthContext from "../../../../auth/config"
+import AuthContext from '../../../../lib/infrastructure/server/config/auth/next-auth.config';
 
-const handlers = AuthContext.handlers
-export const { GET, POST } = handlers
+const handlers = AuthContext.handlers;
+export const { GET, POST } = handlers;

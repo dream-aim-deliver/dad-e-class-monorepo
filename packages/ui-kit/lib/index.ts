@@ -30,9 +30,19 @@ export { default as BuyCoachingSession, type BuyCoachingSessionProps } from './c
 export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/accordion';
 export * as contexts from './contexts';
 export { Navbar } from './components/navbar';
+export { Footer } from './components/footer';
 
 export { NotificationGrid } from './components/grids/notification-grid';
 export { UserGrid } from './components/grids/user-grid';
+export { Hero } from './components/home-banner/hero';
+export { Carousel } from './components/carousel/carousel';
+export { GeneralCard } from './components/carousel/general-card';
+export { Divider } from './components/divider';
+export { CarouselSkeleton } from './components/skeletons/carousel-skeleton'
+
+export { default } from './components/topic-list';
+export { CoachingOnDemandBanner } from './components/coaching-on-demand-banner/coaching-on-demand-banner';
+export { HomeAccordion } from './components/home-accordion';
 
 export { ReviewSnippet } from './components/review/review-snippet';
 

@@ -31,12 +31,9 @@ docker run -d --name e-class-platform \
     -e AUTH_AUTH0_ISSUER=<https://your-tenant.auth0.com> \
     -e AUTH_AUTH0_AUTHORIZATION_URL=<https://your-tenant.auth0.com/authorize> \
     -e AUTH_AUTH0_ROLES_CLAIM_KEY=<https://your-app.com/roles> \
-    -e E_CLASS_PLATFORM_SHORT_NAME=<dev> \
-    -e E_CLASS_PLATFORM_NAME=<E-Class Dev Platform> \
+    -e E_CLASS_PLATFORM_ID=<1> \
     -e E_CLASS_DEV_MODE=<true> \
     -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
-    -e NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL=<https://your-logo-url.com/logo.png> \
-    -e NEXT_PUBLIC_E_CLASS_PLATFORM_SHORT_NAME=<dev> \
     -p 80:80 -p 443:443 \
     --mount type=bind,source=your/hostcert.pem,target=/etc/dad/hostcert.pem \
     --mount type=bind,source=your/hostkey.pem,target=/etc/dad/hostkey.pem \
@@ -56,12 +53,9 @@ docker run -d --name e-class-platform \
     -e AUTH_AUTH0_ISSUER=<https://your-tenant.auth0.com> \
     -e AUTH_AUTH0_AUTHORIZATION_URL=<https://your-tenant.auth0.com/authorize> \
     -e AUTH_AUTH0_ROLES_CLAIM_KEY=<https://your-app.com/roles> \
-    -e E_CLASS_PLATFORM_SHORT_NAME=<dev> \
-    -e E_CLASS_PLATFORM_NAME=<E-Class Dev Platform> \
+    -e E_CLASS_PLATFORM_ID=<1> \
     -e E_CLASS_DEV_MODE=<true> \
     -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
-    -e NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL=<https://your-logo-url.com/logo.png> \
-    -e NEXT_PUBLIC_E_CLASS_PLATFORM_SHORT_NAME=<dev> \
     -p 80:80 -p 443:443 \
     -p 3000:3000 \
     maany/e-class-platform
@@ -72,23 +66,20 @@ You must set the following environment variables to run the container:
 
 # E-Class Platform Environment Variables
 
-| Environment Variable                   | Description                                                         |
-| ------------------------------------- | ------------------------------------------------------------------- |
-| AUTH_AUTH0_CLIENT_ID                  | The client ID for your Auth0 application                             |
-| AUTH_AUTH0_CLIENT_SECRET              | The client secret for your Auth0 application                         |
-| AUTH_AUTH0_ISSUER                     | The Auth0 domain URL that issues tokens                              |
-| AUTH_AUTH0_AUTHORIZATION_URL          | The URL for Auth0 authorization endpoint                             |
-| AUTH_AUTH0_ROLES_CLAIM_KEY            | The JWT claim key used to determine user roles                       |
-| NEXTAUTH_SECRET                       | The secret key used for encrypting NextAuth.js session               |
-| E_CLASS_PLATFORM_SHORT_NAME           | Short name identifier for the platform instance                      |
-| E_CLASS_PLATFORM_NAME                 | Full name of the platform instance                                   |
-| E_CLASS_DEV_MODE                      | Boolean flag to enable development mode                              |
-| NEXT_PUBLIC_E_CLASS_PLATFORM_URL      | Public URL where the platform is accessible                          |
-| NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL | URL to the platform logo image                                       |
-| NEXT_PUBLIC_E_CLASS_PLATFORM_SHORT_NAME | Short name identifier (accessible from client-side)                |
-| HTTPD_ENABLE_SSL                      | Boolean flag to enable SSL in HTTP server                            |
-| HTTPD_ENABLE_LOGS                     | Boolean flag to enable HTTP server logs                              |
-| HOSTNAME                              | Hostname for the server                                              |
+| Environment Variable                    | Description                                            |
+|-----------------------------------------|--------------------------------------------------------|
+| AUTH_AUTH0_CLIENT_ID                    | The client ID for your Auth0 application               |
+| AUTH_AUTH0_CLIENT_SECRET                | The client secret for your Auth0 application           |
+| AUTH_AUTH0_ISSUER                       | The Auth0 domain URL that issues tokens                |
+| AUTH_AUTH0_AUTHORIZATION_URL            | The URL for Auth0 authorization endpoint               |
+| AUTH_AUTH0_ROLES_CLAIM_KEY              | The JWT claim key used to determine user roles         |
+| NEXTAUTH_SECRET                         | The secret key used for encrypting NextAuth.js session |
+| E_CLASS_PLATFORM_ID                     | Identifier for the platform instance                   |
+| E_CLASS_DEV_MODE                        | Boolean flag to enable development mode                |
+| NEXT_PUBLIC_E_CLASS_PLATFORM_URL        | Public URL where the platform is accessible            |
+| HTTPD_ENABLE_SSL                        | Boolean flag to enable SSL in HTTP server              |
+| HTTPD_ENABLE_LOGS                       | Boolean flag to enable HTTP server logs                |
+| HOSTNAME                                | Hostname for the server                                |
 
 
 ## Additional Configuration

@@ -218,6 +218,17 @@ export const EN: TDictionary = {
     navbar: {
       workspace: 'Workspace',
       login: 'Login',
+      offers: 'Offers',
+      coaching: 'Coaching',
+      howItWorks: 'How It Works',
+      about: 'About',
+    },
+    footer: {
+      impressum: 'Impressum',
+      privacyPolicy: 'Privacy Policy',
+      termsOfUse: 'Terms of Use',
+      rules: 'Rules',
+      coursesInformation: 'Courses Information',
     },
     activity: {
       atText: 'at',

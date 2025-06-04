@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { Hero } from '../lib/components/home-banner/hero';
 import { vi } from 'vitest';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 // Mock the VideoPlayer component
 vi.mock('../lib/components/video-player', () => ({
@@ -13,6 +14,7 @@ describe('Hero Component', () => {
     description: 'Learn from the best instructors around the world.',
     videoId: 'abc123xyz',
     thumbnailUrl: 'https://example.com/thumbnail.jpg',
+    locale: 'en' as TLocale,
   };
 
   it('renders the title correctly', () => {

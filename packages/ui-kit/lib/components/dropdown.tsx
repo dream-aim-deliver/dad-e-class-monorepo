@@ -90,22 +90,30 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const [truncatedOptions, setTruncatedOptions] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [selectedLabel, setSelectedLabel] = useState<React.ReactNode | null>(null);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const getInitialState = () => {
+      const isMultiple = type === 'multiple-choice-and-search';
+      const isValidSingleValue = !isMultiple && typeof defaultValue === 'string';
+      const isValidMultipleValue = isMultiple && Array.isArray(defaultValue);
+
+      return {
+          selectedOption: isValidSingleValue ? defaultValue : null,
+          selectedLabel: isValidSingleValue
+              ? options.find(option => option.value === defaultValue)?.label || null
+              : null,
+          selectedOptions: isValidMultipleValue ? defaultValue : []
+      };
+  };
+
+  const initialState = getInitialState();
+  const [selectedOption, setSelectedOption] = useState<string | null>(initialState.selectedOption);
+  const [selectedLabel, setSelectedLabel] = useState<React.ReactNode>(initialState.selectedLabel);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(initialState.selectedOptions);
 
   useEffect(() => {
-    // Set initial label
-    if (type !== 'multiple-choice-and-search' && defaultValue && typeof defaultValue === 'string')
-      setSelectedLabel(options.find((option) => option.value === defaultValue)?.label || null);
-
-    // Set initial selected option
-    if (type !== 'multiple-choice-and-search' && typeof defaultValue === 'string')
-      setSelectedOption(defaultValue);
-
-    // Set initial selected options
-    if (type === 'multiple-choice-and-search' && Array.isArray(defaultValue))
-      setSelectedOptions(defaultValue);
+      const newState = getInitialState();
+      setSelectedOption(newState.selectedOption);
+      setSelectedLabel(newState.selectedLabel);
+      setSelectedOptions(newState.selectedOptions);
   }, [defaultValue, type, options]);
 
   const buttonText =

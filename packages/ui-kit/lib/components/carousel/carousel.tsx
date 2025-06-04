@@ -151,7 +151,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
     if (childrenArray.length === 0) return null;
 
     return (
-      <div className={`px-4 md:px-6 lg:px-8 py-8 ${className}`}>
+      <div className={`px-4 md:px-6 lg:px-8 ${className}`}>
         <div className="max-w-7xl mx-auto">
           <div className="relative">
             {/* Previous Button */}
@@ -206,7 +206,7 @@ export const CarouselController: React.FC<CarouselProps> = React.memo(
                 <button
                   key={`page-${index}`}
                   onClick={() => goToPage(index)}
-                  className={`w-3 h-3 rounded-full transition-colors duration-200 ${index === currentPage
+                  className={`w-3 h-3 rounded-full transition-colors duration-200 cursor-pointer ${index === currentPage
                       ? "bg-button-primary-fill"
                       : "border border-button-primary-fill hover:bg-text-primary/20"
                     }`}

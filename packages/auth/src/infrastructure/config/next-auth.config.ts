@@ -113,40 +113,36 @@ export const generateNextAuthConfig = (config: {
             session: async ({ session, token }) => {
                 console.log('Session Debug: ', session);
                 console.log('Token Debug: ', token);
-                const platformName = process.env.E_CLASS_PLATFORM_SHORT_NAME
-                if (!platformName) {
-                    throw new Error("CRITICAL! Configuration Error: Platform name not found in the environment variables");
+                const platformId = process.env.E_CLASS_PLATFORM_ID;
+                if (!platformId) {
+                    throw new Error("CRITICAL! Configuration Error: Platform ID not found in the environment variables");
                 }
-                const isValidPlatform = platform.PlatformSchema.safeParse(platformName);
-                if (!isValidPlatform.success) {
-                    // TODO log error
-                    throw new Error(`Invalid platform name ${platformName}. Check the app configuration.`);
-                }
-                session.platform = platformName as platform.TPlatform;
-    
+                // TODO: how is this actually supposed to be handled?
+                session.platform = platformId;
+
                 const nextAuthToken = token as DefaultJWT & {
                     user: TAuthProviderProfileDTO,
                     account: Account
                 }
-    
+
                 session.user.accessToken = nextAuthToken.account.access_token;
                 session.user.idToken = nextAuthToken.account.id_token;
-    
+
                 // TODO query the database
                 session.userId = nextAuthToken.user.sub;
                 session.user.email = nextAuthToken.user.email;
                 session.user.name = nextAuthToken.user.name;
                 session.user.image = nextAuthToken.user.image;
                 session.user.id = nextAuthToken.user.externalID;
-    
+
                 const roles = nextAuthToken.user.roles;
-                const platformSpecificRoles = extractPlatformSpecificRoles(roles, platformName);
-    
+                const platformSpecificRoles = extractPlatformSpecificRoles(roles, platformId);
+
                 if (session.user.roles === undefined || session.user.roles.length === 0) {
                     session.user.roles = ['visitor'];
                 }
                 const RoleSchema = role.RoleSchema;
-    
+
                 platformSpecificRoles.forEach(role => {
                     const isValidRole = RoleSchema.safeParse(role);
                     if (!isValidRole.success) {
@@ -156,7 +152,7 @@ export const generateNextAuthConfig = (config: {
                             session.user.roles?.push(role);
                     }
                 });
-                
+
                 // TODO: Enable this to align the session expiry with the token expiry, currently session_expiry < token_expiry
                 // if (nextAuthToken.account.expires_at) {
                 //     session.expires = new Date((nextAuthToken.account.expires_at) * 1000).toISOString() as unknown as (Date & string);

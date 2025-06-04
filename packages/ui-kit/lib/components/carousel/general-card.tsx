@@ -54,8 +54,8 @@ export const GeneralCard: React.FC<GeneralCardProps> = React.memo(
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
     return (
-      <article className="flex flex-col h-auto w-full max-w-[382px]">
-        <div className="relative flex flex-col justify-start w-full h-auto rounded-lg border border-solid bg-card-fill border-card-stroke">
+      <article className="flex flex-col w-full max-w-[382px]">
+        <div className="relative flex flex-col justify-start w-full h-[540px] rounded-lg border border-solid bg-card-fill border-card-stroke">
           {/* Image Container with Fixed Height */}
           <div className="relative w-full h-[262px] rounded-t-medium overflow-hidden">
             {shouldShowPlaceholder ? (
@@ -81,7 +81,7 @@ export const GeneralCard: React.FC<GeneralCardProps> = React.memo(
             </div>
           )}
 
-          <div className="flex flex-col p-4 w-full flex-grow gap-4">
+          <div className="flex flex-col p-4 w-full flex-grow gap-4 justify-between">
             <header className="text-left flex flex-col gap-2">
               <div className="group relative">
                 <h2
@@ -91,7 +91,7 @@ export const GeneralCard: React.FC<GeneralCardProps> = React.memo(
                   {title}
                 </h2>
               </div>
-              <p className="text-sm sm:text-base leading-snug sm:leading-6 text-stone-300">{description}</p>
+              <p className="text-sm sm:text-base leading-snug sm:leading-6 text-stone-300 line-clamp-6">{description}</p>
             </header>
 
             <Button
