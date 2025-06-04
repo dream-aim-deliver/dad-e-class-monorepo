@@ -151,7 +151,7 @@ export default async function RootLayout({
                             }
                         >
                             <div
-                                className="w-full min-h-screen bg-cover bg-repeat-y flex flex-col justify-center items-center"
+                                className="w-full min-h-screen bg-contain bg-repeat-y flex flex-col justify-center items-center"
                                 style={{
                                     // Temporary linear gradient to match the Figma. Should be uploaded this dark.
                                     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platform.backgroundImageUrl})`,
