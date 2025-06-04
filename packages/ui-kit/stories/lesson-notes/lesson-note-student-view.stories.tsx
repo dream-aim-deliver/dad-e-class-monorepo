@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { LessonNoteStudentView } from '../../../lib/components/lesson-note/lesson-note-student-view';
-import { LessonNoteView } from '../../../lib/components/lesson-note/lesson-note-view';
+import { LessonNoteStudentView } from '../../lib/components/lesson-note/lesson-note-student-view';
+import { LessonNoteView } from '../../lib/components/lesson-note/lesson-note-view';
 
 /**
  * Storybook configuration for the LessonNoteStudentView component.
@@ -33,7 +33,7 @@ export const Default: Story = {
             <LessonNoteView
                 lessonNumber={1}
                 lessonTitle="Getting Started"
-                lessonDescription="Learn the basics of programming and get familiar with the development environment."
+                lessonDescription={`[{"type":"paragraph","children":[{"text":"Learn the basics of programming and get familiar with the development environment."}]}]`}
                 onClickViewLesson={() => console.log('View Lesson clicked')}
                 locale="en"
                 onDeserializationError={(message, error) => console.error(message, error)}
@@ -57,7 +57,7 @@ export const MultipleChildLessons: Story = {
             <LessonNoteView
                 lessonNumber={1}
                 lessonTitle="Object-Oriented Programming"
-                lessonDescription="Learn about classes, objects, inheritance, and polymorphism."
+                lessonDescription={`[{"type":"paragraph","children":[{"text":"This is the first note for the module."}]}]`}
                 onClickViewLesson={() => console.log('View OOP Lesson clicked')}
                 locale="en"
                 onDeserializationError={(message, error) => console.error(message, error)}
@@ -65,7 +65,7 @@ export const MultipleChildLessons: Story = {
             <LessonNoteView
                 lessonNumber={2}
                 lessonTitle="Functional Programming"
-                lessonDescription="Explore functional programming concepts and paradigms."
+                lessonDescription={`[{"type":"paragraph","children":[{"text":"This is the second note for the module."}]}]`}
                 onClickViewLesson={() => console.log('View FP Lesson clicked')}
                 locale="en"
                 onDeserializationError={(message, error) => console.error(message, error)}
@@ -73,7 +73,7 @@ export const MultipleChildLessons: Story = {
             <LessonNoteView
                 lessonNumber={3}
                 lessonTitle="Design Patterns"
-                lessonDescription="Study common design patterns and their implementations."
+                lessonDescription={`[{"type":"paragraph","children":[{"text":"Study common design patterns and their implementations."}]}]`}
                 onClickViewLesson={() => console.log('View Design Patterns Lesson clicked')}
                 locale="en"
                 onDeserializationError={(message, error) => console.error(message, error)}

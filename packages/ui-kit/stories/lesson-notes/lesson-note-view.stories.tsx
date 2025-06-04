@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { LessonNoteView } from '../../../lib/components/lesson-note/lesson-note-view';
+import { LessonNoteView } from '../../lib/components/lesson-note/lesson-note-view';
 
 /**
  * Storybook configuration for the LessonNoteView component.
@@ -24,7 +24,7 @@ export const Default: Story = {
     args: {
         lessonNumber: 1,
         lessonTitle: 'Introduction to Programming',
-        lessonDescription: '<p>Learn the basics of programming, including variables, loops, and functions.</p>',
+        lessonDescription: `[{"type":"paragraph","children":[{"text":"Learn the basics of programming, including variables, loops, and functions."}]}]`,
         locale: 'en',
     },
     render: (args) => (
@@ -43,7 +43,7 @@ export const WithRichTextFormatting: Story = {
     args: {
         lessonNumber: 2,
         lessonTitle: 'Advanced JavaScript Concepts',
-        lessonDescription: '<h3>Key Topics</h3><ul><li><strong>Closures</strong>: Understanding lexical scoping</li><li><em>Promises</em>: Asynchronous programming patterns</li><li><u>Prototypal Inheritance</u>: Object-oriented JavaScript</li></ul><blockquote>JavaScript is a powerful language with many advanced concepts.</blockquote>',
+        lessonDescription: `[{"type":"heading","level":3,"children":[{"text":"Key Topics"}]},{"type":"unordered-list","children":[{"type":"list-item","children":[{"text":"Closures: Understanding lexical scoping","bold":true}]},{"type":"list-item","children":[{"text":"Promises: Asynchronous programming patterns","italic":true}]},{"type":"list-item","children":[{"text":"Prototypal Inheritance: Object-oriented JavaScript","underline":true}]}]},{"type":"blockquote","children":[{"text":"JavaScript is a powerful language with many advanced concepts."}]}]`,
         locale: 'en',
     },
     render: (args) => (
@@ -62,7 +62,7 @@ export const WithLongContent: Story = {
     args: {
         lessonNumber: 3,
         lessonTitle: 'Comprehensive Overview of Machine Learning Algorithms and Their Applications in Real-World Scenarios',
-        lessonDescription: '<p>This in-depth lesson explores the fundamentals and advanced concepts of various machine learning algorithms, including supervised learning techniques such as regression and classification, unsupervised learning methods like clustering and dimensionality reduction, and deep learning approaches with neural networks. We\'ll cover practical implementations, optimization strategies, and how to evaluate model performance effectively. By the end of this lesson, you\'ll understand how to select appropriate algorithms for different problem domains and datasets.</p>',
+        lessonDescription: `[{"type":"paragraph","children":[{"text":"This in-depth lesson explores the fundamentals and advanced concepts of various machine learning algorithms, including supervised learning techniques such as regression and classification, unsupervised learning methods like clustering and dimensionality reduction, and deep learning approaches with neural networks. We will cover practical implementations, optimization strategies, and how to evaluate model performance effectively. By the end of this lesson, you will understand how to select appropriate algorithms for different problem domains and datasets."}]}]`,
         locale: 'en',
     },
     render: (args) => (
