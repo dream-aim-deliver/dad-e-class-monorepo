@@ -14,7 +14,10 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 
 const Carousel = dynamic(
-    () => import('@maany_shr/e-class-ui-kit').then((mod) => mod.Carousel),
+    () =>
+        import('../wrappers/carousel-wrapper').then(
+            (mod) => mod.CarouselWrapper,
+        ),
     {
         ssr: false,
         loading: () => <CarouselSkeleton />,
