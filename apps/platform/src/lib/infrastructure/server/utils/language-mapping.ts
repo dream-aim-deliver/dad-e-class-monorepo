@@ -18,7 +18,7 @@ export const localeToLanguageCode: Record<TLocale, string> = Object.entries(
 );
 
 // Server-side global cache
-let cachedPlatformLanguageIds: Record<string, language.TPlatformLanguageId> =
+const cachedPlatformLanguageIds: Record<string, language.TPlatformLanguageId> =
     {};
 
 export function storePlatformLanguageId(

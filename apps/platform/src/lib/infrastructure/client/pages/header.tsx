@@ -6,6 +6,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface HeaderProps {
     platform: platform.TPlatform;
@@ -23,18 +24,18 @@ const NavLinks = () => {
     // TODO: possibly use Link from Next.js
     return (
         <>
-            <a href="/offers">
+            <Link href="/offers">
                 <span className={linkClass}>{t('offers')}</span>
-            </a>
-            <a href="/coaching">
+            </Link>
+            <Link href="/coaching">
                 <span className={linkClass}>{t('coaching')}</span>
-            </a>
-            <a href="/how-it-works">
+            </Link>
+            <Link href="/how-it-works">
                 <span className={linkClass}>{t('howItWorks')}</span>
-            </a>
-            <a href="/about">
+            </Link>
+            <Link href="/about">
                 <span className={linkClass}>{t('about')}</span>
-            </a>
+            </Link>
         </>
     );
 };

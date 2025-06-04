@@ -6,6 +6,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface FooterProps {
     platform: platform.TPlatform;
@@ -21,21 +22,21 @@ const FooterLinks = () => {
     // TODO: possibly use Link from Next.js
     return (
         <>
-            <a href="/impressum">
+            <Link href="/impressum">
                 <span className={linkClass}>{t('impressum')}</span>
-            </a>
-            <a href="/privacy-policy">
+            </Link>
+            <Link href="/privacy-policy">
                 <span className={linkClass}>{t('privacyPolicy')}</span>
-            </a>
-            <a href="/terms-of-use">
+            </Link>
+            <Link href="/terms-of-use">
                 <span className={linkClass}>{t('termsOfUse')}</span>
-            </a>
-            <a href="/rules">
+            </Link>
+            <Link href="/rules">
                 <span className={linkClass}>{t('rules')}</span>
-            </a>
-            <a href="/courses-information">
+            </Link>
+            <Link href="/courses-information">
                 <span className={linkClass}>{t('coursesInformation')}</span>
-            </a>
+            </Link>
         </>
     );
 };

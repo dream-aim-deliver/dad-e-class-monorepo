@@ -21,9 +21,7 @@ const Carousel = dynamic(
     },
 );
 
-export type HomeProps = {};
-
-export default function Home(props: HomeProps) {
+export default function Home() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.home');
 
@@ -42,7 +40,9 @@ export default function Home(props: HomeProps) {
             <Divider />
             <Carousel locale={locale}>
                 {homePage.carousel.map((item) => {
-                    const onClick = () => {};
+                    const onClick = () => {
+                        // TODO: Implement navigation logic
+                    };
                     return (
                         <GeneralCard
                             key={item.title}
