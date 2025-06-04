@@ -30,7 +30,8 @@ const accordionMockData: homePage.TAccordionItem[] = [
             },
         ]),
         position: 1,
-        iconImageUrl: '/icons/matching-icon.svg',
+        iconImageUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1749031184/icon_btkez8.png',
     },
     {
         title: 'Geführt zum Ziel',
@@ -73,7 +74,8 @@ const accordionMockData: homePage.TAccordionItem[] = [
             },
         ]),
         position: 2,
-        iconImageUrl: '/icons/guided-icon.svg',
+        iconImageUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1749031184/icon_1_rtoehe.png',
     },
     {
         title: 'Selbständig und Effizient',
@@ -121,7 +123,8 @@ const accordionMockData: homePage.TAccordionItem[] = [
             },
         ]),
         position: 3,
-        iconImageUrl: '/icons/independent-icon.svg',
+        iconImageUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1749031184/icon_3_ks2pdd.png',
     },
     {
         title: 'KI & Partner',
@@ -165,7 +168,8 @@ const accordionMockData: homePage.TAccordionItem[] = [
             },
         ]),
         position: 4,
-        iconImageUrl: '/icons/ai-partner-icon.svg',
+        iconImageUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1749031184/icon_2_ktoelf.png',
     },
     {
         title: 'Mehr Budget für andere Dinge',
@@ -239,7 +243,8 @@ const accordionMockData: homePage.TAccordionItem[] = [
             },
         ]),
         position: 5,
-        iconImageUrl: '/icons/budget-icon.svg',
+        iconImageUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1749031186/Group_5_descej.png',
     },
 ];
 
@@ -317,7 +322,7 @@ const homePageMock: homePage.THomePage = {
     },
     accordion: {
         title: 'How it works',
-        showNumbers: false,
+        showNumbers: true,
         items: accordionMockData,
     },
 };
