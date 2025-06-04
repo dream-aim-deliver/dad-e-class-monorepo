@@ -27,7 +27,7 @@ export const CoachingOnDemandBanner: React.FC<CoachingOnDemandBannerProps> = ({
           {description}
         </p>
       </div>
-      <div className="-mx-4">
+      <div className="-mr-4">
         {images}
       </div>
     </div>
