@@ -1,10 +1,11 @@
-//import { CourseElementRegistry } from "./types";
+import coachingSessionElement from "../course-builder-lesson-component/coaching-session";
+import { CourseElementRegistry, CourseElementType } from "./types";
 
 
 /**
- * Collection of all available form elements
+ * Collection of all available Course elements
  * @public
  */
-//export const courseElements: CourseElementRegistry = {
-// TODO: fill this properly, otherwise typechecking will fail
-//};
+export const courseElements: CourseElementRegistry = {
+[CourseElementType.CoachingSession]:coachingSessionElement
+};

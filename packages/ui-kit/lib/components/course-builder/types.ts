@@ -1,200 +1,98 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import React from "react";
-import { CoachingElement, LessonNoteType } from "../course-builder-lesson-component/types";
+import { CoachingElement} from "../course-builder-lesson-component/types";
 
+/**
+ * Enum defining the types of course elements available in the course builder.
+ * Each type represents a different kind of interactive element that can be added to a course.
+ */
 export enum CourseElementType {
-    LessonNote = "lessonNote",
-}
-
-export enum CourseElementType {
+    /** Represents a coaching session element */
     CoachingSession = "coachingSession",
 }
 
 
-/**
- * Union type of all possible form elements.
- * This type represents any valid form element that can be used in the form.
- * 
- * @example
- * ```tsx
- * const element: FormElement = {
- *   type: FormElementType.RichText,
- *   id: "rich-text-1",
- *   order: 1,
- *   content: "Welcome to the form"
- * };
- * ```
- */
-export type courseElement = LessonNoteType | CoachingElement;
 
 /**
- * Function type for handling course element submissions.
- * This callback function is used when a course element's value changes or is submitted.
- * 
- * @param key - The unique identifier (id) of the course element being submitted
- * @param value - The updated course element with its new value/content
- * 
- * @example
- * ```tsx
- * const handleSubmit: SubmitFunction = (key, value) => {
- *   // Update the course element in state or send to server
- *   updateCourseElement(key, value);
- * };
- * ```
+ * Union type representing all possible course element types.
+ * Currently includes CoachingElement, but can be extended for other element types.
+ */
+export type courseElement = CoachingElement;
+
+/**
+ * Function type for submitting form values in the course builder.
+ * @param key - The identifier key for the form field
+ * @param value - The course element value being submitted
  */
 export type SubmitFunction = (key: string, value: courseElement) => void;
 
 /**
- * Interface for the designer button element.
- * This interface defines the properties of the button that appears in the form designer.
- * 
- * @property icon - The icon component to display
- * @property label - The text label for the button
- * 
- * @example
- * ```tsx
- * const buttonProps: DesignerButtonProps = {
- *   icon: IconRichText,
- *   label: "Add Rich Text"
- * };
- * ```
+ * Props for designer button components in the course builder interface.
+ * These buttons are used to add new elements to the course.
  */
 export interface DesignerButtonProps {
+    /** The icon component to display on the button */
     icon: React.ElementType;
+    /** The text label to display on the button */
     label: string;
 }
 
+
 /**
- * Interface for the designer component props.
- * This interface defines the props passed to the designer component of a form element.
- * 
- * @property elementInstance - The form element instance being designed
- * @property onUpClick - Optional callback for moving the element up
- * @property onDownClick - Optional callback for moving the element down
- * @property onDeleteClick - Optional callback for deleting the element
- * 
- * @example
- * ```tsx
- * const designerProps: DesignerComponentProps = {
- *   elementInstance: {
- *     type: FormElementType.RichText,
- *     id: "rich-text-1",
- *     order: 1,
- *     content: "Welcome to the form"
- *   },
- *   onUpClick: () => console.log("Move up"),
- *   onDownClick: () => console.log("Move down"),
- *   onDeleteClick: () => console.log("Delete")
- * };
- * ```
+ * Props for designer components that handle the visual representation
+ * and interaction of course elements in the course builder interface.
+ * Extends isLocalAware for internationalization support.
  */
 export interface DesignerComponentProps extends isLocalAware {
+    /** The course element instance being designed */
     elementInstance: courseElement;
+    /** Optional callback fired when the element should move up in order */
     onUpClick?: (id: number) => void;
+    /** Optional callback fired when the element should move down in order */
     onDownClick?: (id: number) => void;
+    /** Optional callback fired when the element should be deleted */
     onDeleteClick?: (id: number) => void;
 }
 
 /**
- * Interface for the form component props.
- * This interface defines the props passed to the form component of a form element.
- * 
- * @property elementInstance - The form element instance being rendered
- * @property submitValue - Optional callback for form submission
- * 
- * @example
- * ```tsx
- * const formProps: FormComponentProps = {
- *   elementInstance: {
- *     type: FormElementType.TextInput,
- *     id: "text-input-1",
- *     order: 2,
- *     helperText: "Enter your name"
- *   },
- *   submitValue: (key, value) => console.log(key, value)
- * };
- * ```
+ * Props for form components that handle user input and data collection
+ * for course elements. Extends isLocalAware for internationalization support.
  */
 export interface FormComponentProps extends isLocalAware {
+    /** The course element instance being configured */
     elementInstance: courseElement;
+    /** Optional function to submit form values */
     submitValue?: SubmitFunction;
 }
 
 
-/**
- * Interface for the submission component props.
- * This interface defines the props passed to the submission component of a form element.
- * 
- * @property elementInstance - The form element instance being displayed
- * 
- * @example
- * ```tsx
- * const submissionProps: SubmissionComponentProps = {
- *   elementInstance: {
- *     type: FormElementType.SingleChoice,
- *     id: "choice-1",
- *     order: 3,
- *     title: "Selected option",
- *     options: [{ name: "Option 1" }]
- *   }
- * };
- * ```
- */
+
 
 
 /**
- * Template for form elements.
- * This interface defines the structure of a form element template, which includes
- * the element type, designer button, and all necessary components.
- * 
- * @property type - The type of the form element
- * @property designerBtnElement - Properties for the designer button
- * @property designerComponent - Component for the designer view
- * @property formComponent - Component for the form view
- * @property submissionComponent - Component for the submission view
- * @property validate - Validation function for the form element
- * 
- * @example
- * ```tsx
- * const template: FormElementTemplate = {
- *   type: FormElementType.RichText,
- *   designerBtnElement: {
- *     icon: IconRichText,
- *     label: "Add Rich Text"
- *   },
- *   designerComponent: DesignerComponent,
- *   formComponent: FormComponent,
- *   submissionComponent: SubmissionComponent,
- *   validate: (element, value) => {
- *     // Implementation of validate function;
- *     return true || false;
- *   }
- * };
- * ```
+ * Type alias for form input values.
+ * Currently defined as string but can be extended for other value types.
  */
-
-
 export type valueType = string
 
+/**
+ * Template interface that defines the structure for registering course elements.
+ * Each course element type must implement this template to be usable in the course builder.
+ */
 export interface CourseElementTemplate {
+    /** The type of course element this template represents */
     type: CourseElementType;
+    /** Configuration for the designer button that creates this element */
     designerBtnElement: DesignerButtonProps;
+    /** React component for rendering this element in the designer view */
     designerComponent: React.FC<DesignerComponentProps>;
+    /** React component for rendering the form to configure this element */
     formComponent: React.FC<FormComponentProps>;
 }
 
 /**
- * Type mapping element types to their respective element definitions.
- * This type ensures that each form element type has a corresponding template.
- * 
- * @example
- * ```tsx
- * const registry: FormElementRegistry = {
- *   [FormElementType.RichText]: richTextTemplate,
- *   [FormElementType.SingleChoice]: singleChoiceTemplate,
- *   [FormElementType.TextInput]: textInputTemplate
- * };
- * ```
+ * Registry type that maps course element types to their corresponding templates.
+ * This ensures type safety when accessing course element configurations.
  */
 export type CourseElementRegistry = {
     [key in CourseElementType]: CourseElementTemplate;
