@@ -96,6 +96,7 @@ describe('Navbar Component', () => {
         locale="en"
         onChangeLanguage={onChangeLanguageMock}
         availableLocales={['en', 'de']}
+        logoSrc={'https://example.com/logo.png'}
       >
         <a href="/home">Home</a>
         <a href="/about">About</a>
