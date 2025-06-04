@@ -9,11 +9,11 @@ interface TabContentProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
-export function TabContent({ 
-  value, 
-  children, 
+export function TabContent({
+  value,
+  children,
   className,
-  ...props 
+  ...props
 }: TabContentProps) {
   const { activeTab } = useTabContext();
   const isActive = activeTab === value;
@@ -25,14 +25,14 @@ export function TabContent({
       aria-labelledby={`tab-${value}`}
       hidden={!isActive}
       className={cn(
-        'mt-4 focus:outline-none transition-all duration-300',
+        'focus:outline-none transition-all duration-300 h-full',
         isActive ? 'tab-content-enter' : 'tab-content-exit text-button-primary-fill',
         className
       )}
       tabIndex={0}
       {...props}
     >
-      <div className="transform transition-all duration-300 ease-out">
+      <div className="transform transition-all duration-300 ease-out h-full">
         {isActive && children}
       </div>
     </div>

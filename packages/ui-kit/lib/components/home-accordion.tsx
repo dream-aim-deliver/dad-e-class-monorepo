@@ -6,7 +6,6 @@ import AccordionTrigger from './accordion/accordion-trigger';
 import { homePage } from '@maany_shr/e-class-models';
 import AccordionContent from './accordion/accordion-content';
 import RichTextRenderer from './rich-text-element/renderer';
-import { UserAvatar } from './avatar/user-avatar';
 
 export interface HomeAccordionProps {
     title: string;
@@ -42,6 +41,7 @@ export function HomeAccordion({ title, items, showNumbers }: HomeAccordionProps)
                         </AccordionTrigger>
                         <AccordionContent value={item.title} className={cn("pt-4", showNumbers && "pl-8")}>
                             <RichTextRenderer content={item.content}
+                                              onDeserializationError={() => console.error('Error deserializing content')}
                                               className="lg:text-md text-normal leading-[150%]  text-text-secondary" />
                         </AccordionContent>
                     </AccordionItem>
