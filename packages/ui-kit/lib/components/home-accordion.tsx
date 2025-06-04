@@ -20,7 +20,7 @@ export function HomeAccordion({ title, items, showNumbers }: HomeAccordionProps)
     return (
         <Accordion className="flex flex-col gap-7" type="single" defaultValue={defaultValue}>
             <h2 className="text-text-primary">{title}</h2>
-            <div className="w-full py-4 px-6">
+            <div className="w-full py-4">
                 {items?.map((item, index) => (
                     <AccordionItem
                         className={cn(
@@ -34,15 +34,13 @@ export function HomeAccordion({ title, items, showNumbers }: HomeAccordionProps)
                             <div className="flex items-center gap-4">
                                 {showNumbers && item.position &&
                                     <h4 className="text-action-default">{item.position}.</h4>}
-                                <div className="flex items-center gap-2">
-                                    {item.iconImageUrl && (
-                                        <UserAvatar imageUrl={item.iconImageUrl} size="small" />
-                                    )}
+                                <div className="flex items-center gap-4">
+                                    {item.iconImageUrl && <img alt={item.title} src={item.iconImageUrl} className="w-8 h-8"/>}
                                     <h5 className="text-text-primary font-medium">{item.title}</h5>
                                 </div>
                             </div>
                         </AccordionTrigger>
-                        <AccordionContent value={item.title} className="pl-8 pt-2 ">
+                        <AccordionContent value={item.title} className={cn("pt-4", showNumbers && "pl-8")}>
                             <RichTextRenderer content={item.content}
                                               className="lg:text-md text-normal leading-[150%]  text-text-secondary" />
                         </AccordionContent>

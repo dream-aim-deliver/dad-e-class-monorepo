@@ -94,7 +94,7 @@ export default async function RootLayout({
     // Fetch cached configuration
     const [platform, languages] = await Promise.all([
         getCachedPlatform(),
-        listCachedLanguages()
+        listCachedLanguages(),
     ]);
 
     // Check if platform's languages are supported
