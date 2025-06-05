@@ -172,6 +172,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
         const notification = event.data as ExtendedNotification;
         onNotificationClick(notification);
       },
+      sortable: false,
     },
     {
       field: 'timestamp',
