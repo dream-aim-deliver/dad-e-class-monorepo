@@ -39,8 +39,7 @@ export interface CreateContentModalProps extends isLocalAware {
  * @param onClose Callback function triggered when the modal is closed.
  * @param onCreateNewContentDraft Callback function triggered when the user chooses to start from scratch.
  * @param onDuplicateContent Callback function triggered when the user duplicates an existing item. Receives the `id` of the selected item.
- * @param courses List of course content items available for duplication.
- * @param lessons List of lesson content items available for duplication.
+ * @param content List of content items available for duplication.
  * @param locale Current locale used for dictionary translation.
  *
  * @example
@@ -49,10 +48,9 @@ export interface CreateContentModalProps extends isLocalAware {
  *   onClose={() => console.log("Modal closed")}
  *   onCreateNewContentDraft={() => console.log("New draft")}
  *   onDuplicateContent={(id) => console.log("Duplicate content", id)}
- *   courses={[
+ *   content={[
  *     { id: "1", title: "React Basics", ownerName: "Jane Doe", ownerAvatarUrl: "/avatar1.jpg", isYou: true, rating: 4.5, totalRating: 200 }
  *   ]}
- *   lessons={[]}
  *   locale="en"
  * />
  */
