@@ -331,6 +331,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
         </div>
 
         <BaseGrid
+          shouldDelayRender={true}
           gridRef={gridRef}
           suppressRowHoverHighlight={true}
           columnDefs={columnDefs}
