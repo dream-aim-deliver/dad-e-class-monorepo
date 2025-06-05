@@ -38,3 +38,4 @@ export { ReviewSnippet } from './components/review/review-snippet';
 export { CreateContentModal } from './components/create-content-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
+export { RemoveModal } from './components/remove-modal';
