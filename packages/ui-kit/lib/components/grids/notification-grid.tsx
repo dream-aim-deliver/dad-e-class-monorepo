@@ -345,7 +345,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
             if (!params.data) return undefined;
             return params.data.isRead
               ? { background: 'inherit' }
-              : { background: 'rgba(0, 112, 243, 0.04)' };
+              : { background: 'var(--color-base-neutral-800)' };
           }}
         />
         {showFilterModal && (
