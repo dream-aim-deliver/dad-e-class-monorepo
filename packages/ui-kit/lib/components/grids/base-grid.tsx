@@ -3,6 +3,7 @@ import { cn } from '../../utils/style-utils';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import { GridReadyEvent } from 'ag-grid-community';
+import GridSkeleton from '../skeletons/grid-skeleton';
 
 export interface BaseTableProps extends AgGridReactProps {
     gridRef: RefObject<AgGridReact | null>;
@@ -142,14 +143,14 @@ export const BaseGrid = ({ gridRef, shouldDelayRender, ...props }: BaseTableProp
         onPaginationChanged();
     }, [isTableLoaded]);
 
+    const isSkeletonVisible = !isTableLoaded || isRenderDelayed;
+
     /* loadingOverlayComponent is shown when the loading hasn't begun yet,
         whereas noRowsOverlayComponent is shown when the loading has started without data transactions */
-    // TODO: implement skeleton component and match border radius to AG Grid styling precisely
     return (
         <>
             <div className={cn('grid grow w-full', 'relative', 'min-h-[300px]')}>
-                {(!isTableLoaded || isRenderDelayed) && <div
-                    className="absolute flex items-center justify-center w-full h-full rounded-b-none bg-neutral-800 z-10 rounded-md" />}
+                {isSkeletonVisible && <GridSkeleton/>}
                 {/*The substitute div is required to supress hydration warning*/}
                 <AgGridReact {...props} ref={gridRef} onGridReady={onGridReady}
                              onPaginationChanged={onPaginationChanged} />
