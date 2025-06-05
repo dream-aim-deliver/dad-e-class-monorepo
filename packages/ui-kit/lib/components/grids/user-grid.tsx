@@ -488,9 +488,9 @@ export const UserGrid = (props: UserGridProps) => {
     const renderGridWithActions = (roleUsers: UserRow[]) => (
         <div className="h-full flex flex-col">
             {/* Search bar, Filter button, and Export button */}
-            <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-2">
+            <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-4">
                 <InputField
-                    className="flex-grow relative md:mr-2"
+                    className="flex-grow relative m-0 md:mr-2 h-10"
                     setValue={setSearchTerm} value={searchTerm}
                     inputText={dictionary.searchPlaceholder}
                     hasLeftContent

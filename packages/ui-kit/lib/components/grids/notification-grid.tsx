@@ -10,6 +10,8 @@ import { Tabs, } from '../tabs/tab';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { NotificationGridFilterModal, NotificationFilterModel } from './notification-grid-filter-modal';
 import { IconFilter } from '../icons/icon-filter';
+import { IconSearch } from '../icons/icon-search';
+import { InputField } from '../input-field';
 
 
 export interface ExtendedNotification extends notification.TNotification {
@@ -288,18 +290,14 @@ export const NotificationGrid = (props: NotificationGridProps) => {
 
     return (
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between mb-2 mt-4 ml-1">
-          <div className="flex-grow mr-2 relative">
-            <input
-              type="text"
-              placeholder={dictionary.searchPlaceholder}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-2 pl-10 border rounded bg-input-fill text-text-primary border-input-stroke focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 text-gray-500 opacity-50 z-10" />
-          </div>
-
+        <div className="flex items-center justify-between mb-4">
+          <InputField
+            className="flex-grow relative md:mr-2 h-10"
+            setValue={setSearchTerm} value={searchTerm}
+            inputText={dictionary.searchPlaceholder}
+            hasLeftContent
+            leftContent={<IconSearch />}
+          />
           <div className="flex flex-row gap-2">
             { /* CMS-specific buttons */
               variant === 'cms' && (
