@@ -63,7 +63,7 @@ const mockCourses = [
         isYou: false,
         totalRating: 8,
         rating: 4.8,
-        id: 'course-2',
+        id: 'course-3',
     },
     {
         title: 'Introduction to Web Development',
@@ -73,7 +73,7 @@ const mockCourses = [
         isYou: false,
         totalRating: 5,
         rating: 4.2,
-        id: 'course-3',
+        id: 'course-4',
     },
 ];
 
@@ -127,8 +127,7 @@ export const CourseVariant: Story = {
         onClose: () => alert('Modal closed'),
         onCreateNewContentDraft: () => alert('Create new course draft'),
         onDuplicateContent: (id) => alert(`Duplicate course with ID: ${id}`),
-        courses: mockCourses,
-        lessons: mockLessons,
+        content: mockCourses,
     },
 };
 
@@ -139,7 +138,6 @@ export const LessonVariant: Story = {
         onClose: () => alert('Modal closed'),
         onCreateNewContentDraft: () => alert('Create new lesson draft'),
         onDuplicateContent: (id) => alert(`Duplicate lesson with ID: ${id}`),
-        lessons: mockLessons,
-        courses: mockCourses,
+        content: mockLessons,
     },
 };

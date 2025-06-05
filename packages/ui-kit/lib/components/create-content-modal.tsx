@@ -25,8 +25,7 @@ export interface CreateContentModalProps extends isLocalAware {
     onClose: () => void;
     onCreateNewContentDraft: () => void;
     onDuplicateContent: (id: string) => void;
-    courses: ContentItem[];
-    lessons: ContentItem[];
+    content: ContentItem[];
 }
 
 /**
@@ -64,8 +63,7 @@ export const CreateContentModal = ({
     onCreateNewContentDraft: onCreateNewCourseDraft,
     onDuplicateContent: onDuplicateCourse,
     locale,
-    courses,
-    lessons,
+    content,
 }: CreateContentModalProps) => {
     const dictionary = getDictionary(locale).components.createContentModal;
 
@@ -98,8 +96,8 @@ export const CreateContentModal = ({
     const [searchContent, setSearchContent] = useState('');
     const [selectedItem, setSelectedItem] = useState<null | ContentItem>(null);
 
-    // Use the courses array for filtering based on the variant
-    const contentList = variant === 'course' ? courses : lessons;
+    // Use the content prop for filtering
+    const contentList = content;
 
     const filteredItems = useMemo(() => {
         const search = searchContent.toLowerCase();
