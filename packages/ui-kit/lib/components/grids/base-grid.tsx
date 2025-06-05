@@ -73,7 +73,7 @@ export const BaseGrid = ({ gridRef, shouldDelayRender, locale, ...props }: BaseT
   https://stackoverflow.com/questions/73560068/ag-grid-autoheight-true-coldef-property-on-cell-renderer-causes-stutter
    */
   const [isRenderDelayed, setIsRenderDelayed] = useState<boolean>(false);
-  const isRenderDelayedTimeout = useRef<NodeJS.Timeout>(null);
+  const isRenderDelayedTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const delayRender = () => {
     if (!shouldDelayRender) return;
