@@ -14,6 +14,10 @@ export const DictionarySchema = z.object({
       personal: z.string(),
       professional: z.string(),
     }),
+    baseGrid: z.object({
+      noRows: z.string(),
+      loading: z.string(),
+    }),
     userGrid: z.object({
       nameColumn: z.string(),
       surnameColumn: z.string(),
@@ -59,8 +63,6 @@ export const DictionarySchema = z.object({
       markAllAsRead: z.string(),
       searchPlaceholder: z.string(),
       all: z.string(),
-      noNotifications: z.string(),
-      loading: z.string(),
       new: z.string(),
       message: z.string(),
       action: z.string(),
