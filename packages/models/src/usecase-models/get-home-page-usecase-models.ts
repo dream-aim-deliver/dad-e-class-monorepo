@@ -2,8 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { z } from 'zod';
 import { HomepageCreatedSchema, HomePageRelationsSchema } from '../entity/home-page';
-import { BaseSuccessSchemaFactory } from '../cats/cats-core';
-import { ErrorResponseModelSchemaFactory, UseCaseErrorResponseFactory } from '../cats/usecase-models';
+import { BaseDiscriminatedErrorTypeSchemaFactory, BaseErrorDiscriminatedUnionSchemaFactory, BasePartialSchemaFactory, BaseSuccessSchemaFactory } from '../cats/cats-core';
 
 export const GetHomePageRequestSchema = z.object({
     filter: z.object({
@@ -12,61 +11,49 @@ export const GetHomePageRequestSchema = z.object({
 
 export type TGetHomePageRequest = z.infer<typeof GetHomePageRequestSchema>;
 
-export const GetHomePageResponseSchema = BaseSuccessSchemaFactory(HomepageCreatedSchema.merge(HomePageRelationsSchema));
+export const GetHomePageSuccessResponseSchema = BaseSuccessSchemaFactory(HomepageCreatedSchema.merge(HomePageRelationsSchema));
 
-export const ImageErrorSchema = ErrorResponseModelSchemaFactory(
+export const CMSError = BaseDiscriminatedErrorTypeSchemaFactory(
    {
-        type: 'ImageError',
+        type: 'CMSError',
         schema: z.object({
-            imageURL: z.string(),
+            trace: z.string().optional(),
         })
     }
 );
 
-export type TImageError = z.infer<typeof ImageErrorSchema>;
 
-export const NetworkErrorSchema = ErrorResponseModelSchemaFactory(
-    {
-        type: 'NetworkError',
-        schema: z.object({
-            statusCode: z.number(),
-        })
-    }
-);
-
-export const GetHomePageUsecaseErrorResponseSchema = UseCaseErrorResponseFactory({
-    ImageError: ImageErrorSchema,
-    NetworkError: NetworkErrorSchema,
+export const GetHomePageUsecaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({
+    CMSError: CMSError,
 });
 
 export type TGetHomePageUsecaseErrorResponse = z.infer<typeof GetHomePageUsecaseErrorResponseSchema>;
 
 export const DummyError: TGetHomePageUsecaseErrorResponse = {
     success: false,
-    errorType : 'ImageError',
+    errorType : 'CMSError',
     data: {
         operation: 'get-home-page',
-        imageURL: 'https://example.com/image-not-found.jpg',
-        statusCode: 404,
         message: 'Image not found',
+        trace: 'trace-id-12345',
         context: {
             random: 'random-value',
         },
     }
 };
 
-export const HomePageViewModelSchema = z.object({
-    mode: z.literal('error'),
-    banner: HomePageBannerSchema,
-    carousel: z.array(GeneralCardSchema),
-    coachingOnDemand: CoachingOnDemandSchema,
-    accordion: AccordionListSchema,
-});
+// export const HomePageViewModelSchema = z.object({
+//     mode: z.literal('error'),
+//     banner: HomePageBannerSchema,
+//     carousel: z.array(GeneralCardSchema),
+//     coachingOnDemand: CoachingOnDemandSchema,
+//     accordion: AccordionListSchema,
+// });
 
-const presentSuccess = (
-    response: z.infer<typeof GetHomePageResponseSchema>,
-    currentViewModel: z.infer<typeof HomePageViewModelSchema> | undefined,
-    setViewModel: (viewModel: z.infer<typeof HomePageViewModelSchema>) => void
-) => {
+// const presentSuccess = (
+//     response: z.infer<typeof GetHomePageResponseSchema>,
+//     currentViewModel: z.infer<typeof HomePageViewModelSchema> | undefined,
+//     setViewModel: (viewModel: z.infer<typeof HomePageViewModelSchema>) => void
+// ) => {
     
-}
+// }

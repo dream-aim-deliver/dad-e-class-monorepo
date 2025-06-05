@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { BaseModelCreatedSchemaFactory, BaseModelDeletedSchemaFactory, BaseModelDraftSchemaFactory } from '../cats/cats-core';
 
+export const HomePageMetadataSchema = z.object({
+});
 
 export const HomePageDraftSchema = BaseModelDraftSchemaFactory(z.object({
     title: z.string(),
@@ -19,8 +21,6 @@ export const HomePageIndexSchema = z.object({
 });
 
 export const HomePageRelationsSchema = z.object({
-    platform_language: z.object({
-        id: z.number().or(z.string()),
-    }),
+    // externalProvider: BaseExternalProviderSchema
 });
 
