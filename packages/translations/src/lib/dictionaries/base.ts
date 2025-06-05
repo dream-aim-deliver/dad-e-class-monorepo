@@ -486,7 +486,23 @@ export const DictionarySchema = z.object({
       titleLesson: z.string(),
       descriptionLesson: z.string(),
       you: z.string(),
-    })
+    }),
+    removeModal: z.object({
+      coach: z.string(),
+      course: z.string(),
+      backButton: z.string(),
+      deleteButton: z.string(),
+      closeButton: z.string(),
+      errorMessageCoach: z.string(),
+      errorMessageLesson: z.string(),
+      errorMessageModule: z.string(),
+      coachRemoved: z.string(),
+      lessonDeleted: z.string(),
+      moduleDeleted: z.string(),
+      titleCoach: z.string(),
+      titleLesson: z.string(),
+      titleModule: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({
