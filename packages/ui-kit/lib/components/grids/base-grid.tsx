@@ -6,6 +6,7 @@ import { GridReadyEvent } from 'ag-grid-community';
 
 export interface BaseTableProps extends AgGridReactProps {
     gridRef: RefObject<AgGridReact | null>;
+    shouldDelayRender?: boolean;
 }
 
 /**
@@ -56,7 +57,7 @@ export const SimplePaginationPanel = (props: {
     );
 };
 
-export const BaseGrid = ({ gridRef, ...props }: BaseTableProps) => {
+export const BaseGrid = ({ gridRef, shouldDelayRender, ...props }: BaseTableProps) => {
     const currentPageRef = useRef<HTMLSpanElement>(null);
     const totalPagesRef = useRef<HTMLSpanElement>(null);
     const previousPageRef = useRef<HTMLButtonElement>(null);
@@ -64,6 +65,22 @@ export const BaseGrid = ({ gridRef, ...props }: BaseTableProps) => {
     const firstPageRef = useRef<HTMLButtonElement>(null);
     const lastPageRef = useRef<HTMLButtonElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    /* This is implemented to counteract a bug in ag-grid of flickering with autoHeight.
+    https://stackoverflow.com/questions/73560068/ag-grid-autoheight-true-coldef-property-on-cell-renderer-causes-stutter
+     */
+    const [isRenderDelayed, setIsRenderDelayed] = useState<boolean>(false);
+    const isRenderDelayedTimeout = useRef<NodeJS.Timeout>(null);
+
+    const delayRender = () => {
+        if (!shouldDelayRender) return;
+
+        clearTimeout(isRenderDelayedTimeout.current);
+        setIsRenderDelayed(true);
+        isRenderDelayedTimeout.current = setTimeout(() => {
+            setIsRenderDelayed(false);
+        }, 500);
+    };
 
     const onNextPage = () => {
         const gridApi = gridRef.current?.api;
@@ -90,34 +107,23 @@ export const BaseGrid = ({ gridRef, ...props }: BaseTableProps) => {
         // Make sure the table is loaded before updating the pagination component to avoid flickering
         if (isTableLoaded && gridApi) {
             const totalPages = gridApi.paginationGetTotalPages();
-            if (totalPagesRef.current) {
-                totalPagesRef.current.textContent = totalPages.toString();
-            }
+            totalPagesRef.current!.textContent = totalPages.toString();
             // Ensure visibility of the pagination panel only after some data is loaded
-            if (containerRef.current) {
-                containerRef.current.style.visibility = totalPages === 0 ? 'hidden' : 'visible';
-            }
+            containerRef.current!.style.visibility = totalPages === 0 ? 'hidden' : 'visible';
+
             // Pages are zero based, hence the +1
             const currentPage = gridApi.paginationGetCurrentPage() + 1;
-            if (currentPageRef.current) {
-                currentPageRef.current.textContent = currentPage.toString();
-            }
-            if (previousPageRef.current) {
-                previousPageRef.current.disabled = currentPage === 1;
-                previousPageRef.current.onclick = onPreviousPage;
-            }
-            if (firstPageRef.current) {
-                firstPageRef.current.disabled = currentPage === 1;
-                firstPageRef.current.onclick = onFirstPage;
-            }
-            if (nextPageRef.current) {
-                nextPageRef.current.disabled = currentPage === totalPages;
-                nextPageRef.current.onclick = onNextPage;
-            }
-            if (lastPageRef.current) {
-                lastPageRef.current.disabled = currentPage === totalPages;
-                lastPageRef.current.onclick = onLastPage;
-            }
+            currentPageRef.current!.textContent = currentPage.toString();
+
+            previousPageRef.current!.disabled = currentPage === 1;
+            firstPageRef.current!.disabled = currentPage === 1;
+            previousPageRef.current!.onclick = onPreviousPage;
+            firstPageRef.current!.onclick = onFirstPage;
+
+            nextPageRef.current!.disabled = currentPage === totalPages;
+            lastPageRef.current!.disabled = currentPage === totalPages;
+            nextPageRef.current!.onclick = onNextPage;
+            lastPageRef.current!.onclick = onLastPage;
         }
     };
 
@@ -126,6 +132,7 @@ export const BaseGrid = ({ gridRef, ...props }: BaseTableProps) => {
 
     const onGridReady = (event: GridReadyEvent) => {
         setIsTableLoaded(true);
+        delayRender();
         if (props.onGridReady) {
             props.onGridReady(event);
         }
@@ -141,7 +148,7 @@ export const BaseGrid = ({ gridRef, ...props }: BaseTableProps) => {
     return (
         <>
             <div className={cn('grid grow w-full', 'relative', 'min-h-[300px]')}>
-                {!isTableLoaded && <div
+                {(!isTableLoaded || isRenderDelayed) && <div
                     className="absolute flex items-center justify-center w-full h-full rounded-b-none bg-neutral-800 z-10 rounded-md" />}
                 {/*The substitute div is required to supress hydration warning*/}
                 <AgGridReact {...props} ref={gridRef} onGridReady={onGridReady}
