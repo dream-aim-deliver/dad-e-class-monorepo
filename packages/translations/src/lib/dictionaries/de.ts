@@ -45,6 +45,10 @@ export const DE: TDictionary = {
       courseCreators: 'Kurs-Creators',
       admin: 'Admin',
     },
+    baseGrid: {
+      loading: 'Laden...',
+      noRows: 'Nichts gefunden',
+    },
     notificationGrid: {
       new: 'Neue',
       message: 'Nachricht',
@@ -53,8 +57,6 @@ export const DE: TDictionary = {
       markAllAsRead: 'Alle als gelesen markieren',
       searchPlaceholder: 'Suchaktivität',
       all: 'Alle',
-      loading: 'Laden...',
-      noNotifications: 'Keine Aktivität gefunden',
       clearFilters: 'Filter zurücksetzen',
       filterButton: 'Filter',
     },

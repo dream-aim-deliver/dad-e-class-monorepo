@@ -566,6 +566,7 @@ export const UserGrid = (props: UserGridProps) => {
             <div className="flex flex-col grow">
                 <BaseGrid
                     gridRef={props.gridRef}
+                    locale={props.locale}
                     columnDefs={columnDefs}
                     rowData={roleUsers}
                     enableCellTextSelection={true}

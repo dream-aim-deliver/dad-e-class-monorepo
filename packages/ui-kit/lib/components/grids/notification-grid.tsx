@@ -273,22 +273,6 @@ export const NotificationGrid = (props: NotificationGridProps) => {
 
   // Render grid with actions
   const renderGridWithActions = (notificationsToShow = modifiedNotifications) => {
-    if (loading) {
-      return (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-base-brand-500"></div>
-        </div>
-      );
-    }
-
-    if (notificationsToShow.length === 0) {
-      return (
-        <div className="flex justify-center items-center h-64 text-text-secondary">
-          {dictionary.noNotifications}
-        </div>
-      );
-    }
-
     return (
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-between mb-4">
@@ -332,6 +316,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
         <BaseGrid
           shouldDelayRender={true}
           gridRef={gridRef}
+          locale={locale}
           suppressRowHoverHighlight={true}
           columnDefs={columnDefs}
           rowData={notificationsToShow}

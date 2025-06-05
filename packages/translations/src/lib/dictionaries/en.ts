@@ -45,12 +45,14 @@ export const EN: TDictionary = {
       courseCreators: 'Course Creators',
       admin: 'Admin',
     },
+    baseGrid: {
+      loading: 'Loading...',
+      noRows: 'Nothing found',
+    },
     notificationGrid: {
       markAllAsRead: 'Mark all as read',
       searchPlaceholder: 'Search activity',
       all: 'All',
-      loading: 'Loading...',
-      noNotifications: 'No notifications found',
       new: 'New',
       message: 'Message',
       action: 'Action',

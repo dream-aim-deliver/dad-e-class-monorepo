@@ -277,16 +277,13 @@ export const Empty: Story = {
   },
 };
 
-export const Loading: Story = {
+export const EmptyGermanLocale: Story = {
   args: {
-    locale: 'en',
-    variant: 'cms',
-    platforms: ['justdoad', 'bewerbeagentur', 'jobbrandme'],
+    locale: 'de',
+    variant: 'student',
     notifications: [],
-    loading: true, // Enable loading state
-    onNotificationClick: (notification) => {
-      alert('Proceeding to ' + notification.action?.url);
-    },
+    onNotificationClick: mockOnNotificationClick,
+    onMarkAllRead: mockOnMarkAllRead,
   },
 };
 
