@@ -22,15 +22,15 @@ export function TabContent({
       role="tabpanel"
       id={`panel-${value}`}
       aria-labelledby={`tab-${value}`}
+      hidden={!isActive}
       className={cn(
         'h-full',
-        !isActive && 'hidden', // hides but does not unmount
         className
       )}
       tabIndex={0}
       {...props}
     >
-      {children} {/* Always render, just hidden when inactive */}
+      {isActive && children}
     </div>
   );
 }
