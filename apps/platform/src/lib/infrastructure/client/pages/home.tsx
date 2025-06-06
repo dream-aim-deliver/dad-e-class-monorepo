@@ -22,14 +22,41 @@ export default function Home(props: HomeProps) {
     const [viewModel, setViewModel] = useState<THomePageViewModel>();
     const { presenter } = useGetHomePagePresenter(setViewModel);
     presenter.present(data, viewModel);
-    return (
-        <div className="flex flex-col  text-base-neutral-50 gap-4 mt-3 items-center justify-center text-center">
-            {data &&
-                data.map((skill) => (
-                    <div key={skill} className="text-white">
-                        {skill}
-                    </div>
-                ))}
-        </div>
-    );
+    if (viewModel?.mode === 'kaboom') {
+        return (
+            <div className="text-white">
+                <h1 className="text-2xl font-bold">
+                    Kaboom! An error occurred
+                </h1>
+                <p>{viewModel.data.message}</p>
+                <button
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                    onClick={() => {
+                        signOut({
+                            callbackUrl: '/auth/signin',
+                        });
+                    }}
+                >
+                    Sign Out
+                </button>
+            </div>
+        );
+    }
+    if(viewModel?.mode === 'default') {
+        return (
+            <div className="bg-card-color-fill">
+                <h1 className="text-2xl font-bold">
+                    Welcome Amigo!
+                </h1>
+                <p>{viewModel.data.banner.description}</p>
+                <video
+                    src={viewModel.data.banner.videoId}
+                    poster={viewModel.data.banner.thumbnailUrl}
+                    controls
+                    className="w-full h-auto"
+                />
+            </div>
+        );
+    }
+
 }

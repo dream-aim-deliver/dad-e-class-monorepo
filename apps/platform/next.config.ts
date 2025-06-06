@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
         // See: https://github.com/gregberge/svgr
         svgr: false,
     },
+    transpilePackages: ['superjson']
 };
 
 const plugins = [

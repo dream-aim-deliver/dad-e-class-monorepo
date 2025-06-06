@@ -7,6 +7,7 @@ import { getQueryClient } from '../../common/utils/get-query-client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { getClientTRPCUrl, trpc } from '../trpc/client';
 import { httpBatchLink } from '@trpc/client';
+import superjson from 'superjson';
 
 interface ProvidersProps {
     children: ReactNode;
@@ -18,6 +19,7 @@ export default function ClientProviders({ children }: ProvidersProps) {
         trpc.createClient({
             links: [
                 httpBatchLink({
+                    transformer: superjson,
                     url: getClientTRPCUrl(),
                 }),
             ],
