@@ -174,16 +174,25 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
   };
 
   const handleCalendarClick = (info: any) => {
+    // Only allow click if the clicked slot is within coach availability
     const start = new Date(info.date);
+    const isWithinAvailability = coachAvailability.some((availability) => {
+      const availStart = new Date(availability.start);
+      const availEnd = new Date(availability.end);
+      return start >= availStart && start < availEnd;
+    });
+    if (!isWithinAvailability) {
+      // Show alert in Storybook (or browser)
+      alert('No coach availability for this time slot');
+      return;
+    }
     const title = 'Coaching Session';
     const coachingSessionId = `session-${Date.now()}`;
     const duration = '01:00'; // Default duration for click-to-schedule
-
     const time = `${start.getHours().toString().padStart(2, '0')}:${start
       .getMinutes()
       .toString()
       .padStart(2, '0')}`;
-
     setScheduleSessionData({
       date: start,
       time,
