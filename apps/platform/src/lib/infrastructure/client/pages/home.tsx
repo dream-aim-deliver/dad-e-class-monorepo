@@ -21,7 +21,20 @@ export default function Home(props: HomeProps) {
     });
     const [viewModel, setViewModel] = useState<THomePageViewModel>();
     const { presenter } = useGetHomePagePresenter(setViewModel);
-    presenter.present(data, viewModel);
+    
+    if(!viewModel) {
+        return (
+            <div className="text-white">
+                <h1 className="text-2xl font-bold">Loading...</h1>
+            </div>
+
+        );
+    }
+    
+    presenter.present(data, viewModel).catch((error) => {
+        console.error('Error presenting data:', error);
+    });
+    
     if (viewModel?.mode === 'kaboom') {
         return (
             <div className="text-white">
@@ -42,6 +55,7 @@ export default function Home(props: HomeProps) {
             </div>
         );
     }
+    
     if(viewModel?.mode === 'default') {
         return (
             <div className="bg-card-color-fill">

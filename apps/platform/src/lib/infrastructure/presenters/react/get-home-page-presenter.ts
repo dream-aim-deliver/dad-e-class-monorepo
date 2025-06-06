@@ -138,6 +138,7 @@ export default class HomePageReactPresenter extends cats.BasePresenter<
 export function useGetHomePagePresenter(
     setViewModel: (viewModel: HomePageViewModels.THomePageViewModel) => void,
 ) {
+    // TODO: VIKA Use Toast and Redirect can be obtained here from a context or from next/router
     const presenter = useMemo(() => {
         return new HomePageReactPresenter(setViewModel);
     }, [setViewModel]);
