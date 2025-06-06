@@ -5,7 +5,7 @@ import CoachAvailabilityCalendar from '../../lib/components/calendar/coach-avail
 import { TAvailability, TRecurringAvailability } from '../../lib/components/calendar/add-availability/availability-manager';
 
 const meta: Meta<typeof CoachAvailabilityCalendar> = {
-  title: 'Components/CoachAvailabilityCalendar',
+  title: 'Components/Calendar/CoachAvailabilityCalendar',
   component: CoachAvailabilityCalendar,
   tags: ['autodocs'],
   decorators: [
