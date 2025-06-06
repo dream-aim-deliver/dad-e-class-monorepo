@@ -2,6 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { LessonNoteBuilderView } from '../../lib/components/lesson-note/lesson-note-builder-view';
 import Banner from '../../lib/components/banner';
 import React from 'react';
+import { slateifySerialize } from "../../lib/components/rich-text-element/serializer";
 
 /**
  * Storybook configuration for the LessonNoteBuilderView component.
@@ -59,7 +60,7 @@ const DefaultStoryComponent = (args: any) => {
 export const Default: Story = {
     args: {
         id: 1,
-        initialValue: '<p>This is a sample lesson note that instructors can edit.</p>',
+        initialValue: slateifySerialize('This is a sample lesson note that instructors can edit.'),
         placeholder: 'Write your lesson notes here...',
         locale: 'en',
     },
@@ -99,7 +100,7 @@ const CustomChildrenStoryComponent = (args: any) => {
 export const WithCustomChildren: Story = {
     args: {
         id: 2,
-        initialValue: '<p>This is a sample lesson note with custom children.</p>',
+        initialValue: slateifySerialize('This is a sample lesson note with custom children.'),
         placeholder: 'Write your lesson notes here...',
         locale: 'en',
     },
