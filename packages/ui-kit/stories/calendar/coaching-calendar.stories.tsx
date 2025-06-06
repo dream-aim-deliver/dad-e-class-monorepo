@@ -7,7 +7,7 @@ import { AvailableCoachingSessions } from '../../lib/components/available-coachi
 import { getDictionary, locales } from '@maany_shr/e-class-translations';
 
 const meta: Meta<typeof CoachingSessionCalendar> = {
-  title: 'Components/CoachingSessionCalendar',
+  title: 'Components/Calendar/CoachingSessionCalendar',
   component: CoachingSessionCalendar,
   tags: ['autodocs'],
   decorators: [
