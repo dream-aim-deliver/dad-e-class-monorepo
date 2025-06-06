@@ -94,17 +94,14 @@ export const CreateContentModal = ({
     const [searchContent, setSearchContent] = useState('');
     const [selectedItem, setSelectedItem] = useState<null | ContentItem>(null);
 
-    // Use the content prop for filtering
-    const contentList = content;
-
     const filteredItems = useMemo(() => {
         const search = searchContent.toLowerCase();
-        return contentList.filter(
+        return content.filter(
             (item) =>
                 item.title.toLowerCase().includes(search) ||
                 item.ownerName.toLowerCase().includes(search),
         );
-    }, [searchContent, contentList]);
+    }, [searchContent, content]);
 
     const handleSelect = (item: ContentItem) => {
         setSelectedItem(item);
