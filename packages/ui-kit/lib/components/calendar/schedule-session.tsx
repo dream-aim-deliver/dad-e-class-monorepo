@@ -3,7 +3,7 @@ import { DateInput } from '../date-input';
 import { InputField } from '../input-field';
 import { Button } from '../button';
 import { UserAvatar } from '../avatar/user-avatar';
-import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
 import type { Meta, StoryObj } from '@storybook/react';
 
@@ -173,6 +173,7 @@ export const ScheduleSession: React.FC<ScheduleSessionProps> = ({
           label={dictionary.components.scheduleSession.date}
           value={dateValue.toISOString().split('T')[0]}
           onChange={onDateChange}
+          locale={locale as TLocale}
         />
         <div className="flex flex-col gap-1 w-full">
           <label className="text-white text-sm">{dictionary.components.scheduleSession.time}</label>

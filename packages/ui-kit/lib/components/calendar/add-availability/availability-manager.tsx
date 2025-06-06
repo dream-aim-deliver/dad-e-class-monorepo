@@ -1,4 +1,4 @@
-import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
+import { getDictionary, isLocalAware, TLocale } from "@maany_shr/e-class-translations";
 import { Button } from "../../button";
 import { CheckBox } from "../../checkbox";
 import { DateInput } from "../../date-input";
@@ -411,6 +411,7 @@ export const AvailabilityManager: FC<AvailabilityManagerProps> = ({
                   value={startDate}
                   onChange={setStartDate}
                   data-testid="recurring-start-date"
+                  locale={locale as TLocale}
                 />
 
                 <DateInput
@@ -418,6 +419,7 @@ export const AvailabilityManager: FC<AvailabilityManagerProps> = ({
                   value={expirationDate}
                   onChange={setExpirationDate}
                   data-testid="recurring-expiration-date"
+                  locale={locale as TLocale}
                 />
                 {renderValidationError("expirationDate")}
               </div>
@@ -463,6 +465,7 @@ export const AvailabilityManager: FC<AvailabilityManagerProps> = ({
                     value={singleDate}
                     onChange={setSingleDate}
                     data-testid="single-date"
+                    locale={locale as TLocale}
                   />
                   {renderValidationError("date")}
                 </div>
@@ -605,12 +608,14 @@ export const AvailabilityManager: FC<AvailabilityManagerProps> = ({
                 value={startDate}
                 onChange={setStartDate}
                 data-testid="recurring-start-date"
+                locale={locale as TLocale}
               />
               <DateInput
                 label={`${dictionary.components.calendar.availabilityManagement.expirationDateText || "Expiration Date"} (YYYY-MM-DD)`}
                 value={expirationDate}
                 onChange={setExpirationDate}
                 data-testid="recurring-expiration-date"
+                locale={locale as TLocale}
               />
               {renderValidationError("expirationDate")}
             </>
@@ -621,6 +626,7 @@ export const AvailabilityManager: FC<AvailabilityManagerProps> = ({
                 value={singleDate}
                 onChange={setSingleDate}
                 data-testid="single-date"
+                locale={locale as TLocale}
               />
               {renderValidationError("date")}
             </>
