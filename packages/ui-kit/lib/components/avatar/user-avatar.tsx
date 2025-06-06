@@ -6,10 +6,15 @@ export interface UserAvatarProps {
   imageUrl?: string;
   fullName?: string;
   className?: string;
+  initialsCount?: number;
+  title?: string;
 }
 
 /**
  * A component that displays a user's avatar, either as an image or initials.
+ *
+ * - If the `fullName` starts with a '+', the avatar will display up to 3 characters (the plus sign and two digits/letters, e.g., '+12', '+99').
+ * - Otherwise, it displays the initials from the user's name (first and last initials, or first two letters if only one word).
  *
  * @param size The size of the avatar. Options:
  *   - `xSmall`: Extra small avatar (24px)
@@ -26,7 +31,11 @@ export interface UserAvatarProps {
  *
  * @example
  * <UserAvatar fullName="John Doe" size="medium" />
+ *
+ * @example
+ * <UserAvatar fullName="+24" size="medium" /> // Will display '+24' (plus sign and two characters)
  */
+
 export const UserAvatar: FC<UserAvatarProps> = (props) => {
   const { size = 'medium', className, imageUrl, fullName = '' } = props;
   const [isImageValid, setIsImageValid] = useState(Boolean(imageUrl));
@@ -34,7 +43,7 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
   // Size mapping with consistent class structure
   const sizeClasses = {
     xSmall: 'w-6 h-6 text-2xs',
-    small: 'w-8 h-8 text-sm',
+    small: 'w-8 h-8 text-xs',
     medium: 'w-12 h-12 text-sm',
     large: 'w-16 h-16 text-sm',
     xLarge: 'w-20 h-20 text-sm',
@@ -45,6 +54,11 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
 
     const trimmedName = fullName.trim();
     if (!trimmedName) return '';
+
+    if (trimmedName.startsWith('+')) {
+      const count = props.initialsCount ?? 3;
+      return trimmedName.substring(0, count);
+    }
 
     const nameParts = trimmedName.split(/\s+/);
 
@@ -71,7 +85,7 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
       className={cn(
         'flex items-center justify-center rounded-full overflow-hidden',
         shouldShowInitials &&
-          'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600',
+        'bg-base-neutral-700 text-text-secondary font-bold border border-base-neutral-600',
         sizeClasses[size],
         className,
       )}
@@ -83,6 +97,7 @@ export const UserAvatar: FC<UserAvatarProps> = (props) => {
           alt={fullName || 'User profile'}
           className="w-full h-full object-cover object-center"
           onError={handleImageError}
+          title={props.title || ''}
         />
       ) : (
         <span className="uppercase">{initials}</span>

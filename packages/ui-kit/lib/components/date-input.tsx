@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { IconButton } from './icon-button';
-import { IconCalendarAlt } from './icons/icon-calendar-alt';
+import { IconCalendarAvailability } from './icons/icon-calendar-availability';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
-export interface DateInputProps {
+export interface DateInputProps extends isLocalAware {
   label?: string;
   value: string;
   onChange: (value: string) => void;
@@ -27,7 +28,11 @@ export const DateInput: React.FC<DateInputProps> = ({
   value,
   onChange,
   label,
+  locale
 }) => {
+
+  const dictionary = getDictionary(locale).components.dateInput;
+
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dateInputRef = useRef<HTMLInputElement>(null);
   const [isFirefox, setIsFirefox] = useState(false);
@@ -35,7 +40,7 @@ export const DateInput: React.FC<DateInputProps> = ({
   useEffect(() => {
     // Detect Firefox browser
     setIsFirefox(navigator.userAgent.toLowerCase().indexOf('firefox') > -1);
-    
+
     // Apply Firefox-specific positioning if needed
     if (isFirefox && dateInputRef.current) {
       const styleElement = document.createElement('style');
@@ -46,7 +51,7 @@ export const DateInput: React.FC<DateInputProps> = ({
         }
       `;
       document.head.appendChild(styleElement);
-      
+
       return () => {
         document.head.removeChild(styleElement);
       };
@@ -56,11 +61,11 @@ export const DateInput: React.FC<DateInputProps> = ({
   const handleTextFieldClick = () => {
     if (dateInputRef.current) {
       dateInputRef.current.showPicker();
-      
+
       // In some browsers, we need to apply additional positioning
       if (!isFirefox && wrapperRef.current) {
         const wrapperRect = wrapperRef.current.getBoundingClientRect();
-        
+
         // For webkit browsers, we can create a style to position the calendar
         const styleElement = document.createElement('style');
         styleElement.textContent = `
@@ -75,7 +80,7 @@ export const DateInput: React.FC<DateInputProps> = ({
           }
         `;
         document.head.appendChild(styleElement);
-        
+
         // Remove the style after a short delay
         setTimeout(() => {
           document.head.removeChild(styleElement);
@@ -120,7 +125,7 @@ export const DateInput: React.FC<DateInputProps> = ({
             `}
           </style>
         )}
-        
+
         {/* Custom date input wrapper to manage the hidden input */}
         <div className="relative flex-1">
           <input
@@ -132,10 +137,10 @@ export const DateInput: React.FC<DateInputProps> = ({
             className={`w-full h-full absolute top-3 left-0 opacity-0 cursor-pointer ${isFirefox ? 'z-10' : ''}`}
             data-testid="date-input-field"
           />
-          
+
           {/* Visible text that shows the selected date */}
           <div className="text-md text-text-primary">
-            {value ? new Date(value).toLocaleDateString() : "Select a date..."}
+            {value ? new Date(value).toLocaleDateString() : dictionary.placeholder}
           </div>
         </div>
 
@@ -143,7 +148,7 @@ export const DateInput: React.FC<DateInputProps> = ({
         <IconButton
           size="small"
           styles="text"
-          icon={<IconCalendarAlt />}
+          icon={<IconCalendarAvailability />}
           onClick={handleTextFieldClick}
           data-testid="date-input-icon-button"
         />

@@ -12,6 +12,7 @@ export interface RichTextEditorProps extends isLocalAware {
   initialValue: Descendant[] | undefined | string;
   onChange?: (value: Descendant[]) => void;
   onLoseFocus: (value: string) => void;
+  onDeserializationError: (message: string, error: Error) => void;
 }
 
 /**
@@ -70,6 +71,7 @@ export type ElementKey =
   | "block-quote"
   | "numbered-list"
   | "bulleted-list"
+  | "unordered-list"
   | "list-item"
   | "link"
   | "unlink";

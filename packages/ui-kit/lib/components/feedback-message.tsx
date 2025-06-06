@@ -32,15 +32,15 @@ export const FeedBackMessage: FC<FeedBackMessageProps> = ({
   }[type];
 
   return (
-    <div className="flex gap-[2px] items-center">
+    <div className="flex space-x-2 items-center">
       {type === 'error' ? (
-        <IconError classNames="fill-feedback-error-primary" />
+        <IconError classNames="fill-feedback-error-primary flex-shrink-0" />
       ) : type === 'success' ? (
-        <IconSuccess classNames="fill-feedback-success-primary" />
+        <IconSuccess classNames="fill-feedback-success-primary flex-shrink-0" />
       ) : (
-        <IconWarning classNames="fill-feedback-warning-primary" />
+        <IconWarning classNames="fill-feedback-warning-primary flex-shrink-0" />
       )}
-      <p className={`text-2xs ${textColorClass}`}>{message}</p>
+      <p className={`text-sm ${textColorClass}`}>{message}</p>
     </div>
   );
 };

@@ -108,11 +108,13 @@ export const RenderElement = ({ attributes, children, element }: RenderElementPr
  * Supports initial value parsing, custom key bindings, and a toolbar for formatting options.
  */
 export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
-  function RichTextEditor({ name, locale, onChange, onLoseFocus, placeholder, initialValue }) {
-    // Convert initial string value to Slate format if necessary
-    if (typeof initialValue === "string") {
-      initialValue = deserialize(initialValue);
-    }
+  function RichTextEditor({ name, locale, onChange, onLoseFocus, placeholder, initialValue, onDeserializationError }) {
+
+    // Deserialize the initial value to Slate format
+    const deserializedInitialValue = deserialize({
+      serializedData: initialValue,
+      onError: onDeserializationError
+    });
 
     // Initialize the editor with history and React plugin
     const [editor] = useState(() => {
@@ -122,7 +124,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
       return editor;
     });
 
-    if (!initialValue) return null;
+    if (!deserializedInitialValue) return null;
 
     /**
      * Handles keyboard shortcuts for text formatting.
@@ -159,11 +161,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
       onLoseFocus(serialized);
     }
     return (
-      <div className="text-text-primary">
-        <Slate editor={editor} initialValue={initialValue} onChange={(value) => onChange(value)}>
+      <div className="text-text-primary w-full">
+        <Slate editor={editor} initialValue={deserializedInitialValue} onChange={(value) => onChange(value)}>
 
           <div
-            className="bg-black text-text-primary border-0 w-full max-w-[calc(100vw-40px)]  min-w-0 min-h-40  focus:outline-none overflow-y-auto"
+            className="bg-black text-text-primary border-0 w-full  min-w-0 min-h-40  focus:outline-none overflow-y-auto"
             style={{ resize: "vertical" }}
           >
             <Toolbar locale={locale} />

@@ -6,21 +6,19 @@ import { TextInput } from '../text-input';
 import { InputField } from '../input-field';
 import { TextAreaInput } from '../text-areaInput';
 import { CheckBox } from '../checkbox';
-import { UploadedFile } from '../drag&drop/uploaded-file';
+import { FileUploadResponse, UploadResponse } from '../drag-and-drop/uploader';
 import { IconPlus } from '../icons/icon-plus';
 import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { UploadedFileType, Uploader } from '../drag-and-drop/uploader';
+import { useState } from 'react';
 
 interface ProfessionalInfoProps extends isLocalAware {
   initialData?: profile.TProfessionalProfile;
   onSave?: (profile: profile.TProfessionalProfile) => void;
 }
 
-type fileProps = {
-  isUploading: boolean;
-  file: File;
-}[];
 
 /**
  * A reusable form component for managing and editing professional profile information.
@@ -69,7 +67,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   );
 
   const [skillSearchQuery, setSkillSearchQuery] = React.useState('');
-  const [files, setFiles] = React.useState<fileProps>([]);
+  const [files, setFiles] = useState<UploadedFileType | null>(null);
   const [allSkills, setAllSkills] = React.useState<string[]>(
     () => formData.skills ?? [],
   );
@@ -93,28 +91,43 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     e.preventDefault();
     onSave?.(formData);
   };
-  const handleUploadedFiles = (uploadedFiles: File[]) => {
-    const filesWithStatus = uploadedFiles.map((file: any) => ({
-      file,
-      isUploading: true,
-    }));
+  const handleUploadedFiles = async (newFiles: UploadedFileType[]): Promise<UploadResponse> => {
+    // Get the uploaded file
+    const newFile = newFiles[0];
 
-    setFiles((prevFiles: any) => [...prevFiles, ...filesWithStatus]);
+    // Set state immediately to show loading
+    setFiles(newFile);
 
-    setTimeout(() => {
-      setFiles((prevFiles: any[]) =>
-        prevFiles.map((f) =>
-          filesWithStatus.some(
-            (newFile: { file: any }) => newFile.file === f.file,
-          )
-            ? { ...f, isUploading: false }
-            : f,
-        ),
-      );
-    }, 2000);
-  };
-  const handleDelete = (index: number) => {
-    setFiles((prevFiles: any[]) => prevFiles.filter((f, i) => i !== index));
+    try {
+      // Simulate API call
+      const response = await new Promise<FileUploadResponse>((resolve) => {
+        // Create proper response based on your file variant
+        setTimeout(() => {
+          resolve({
+            fileId: `file-${Math.random().toString(36).substr(2, 9)}`,
+            fileName: newFiles[0].file.name
+          });
+        }, 2000)
+      });
+
+      // Update state AGAIN after successful upload (important!)
+      setFiles({
+        ...newFile,
+        isUploading: false,  // Turn off loading
+        responseData: response
+      });
+
+      return response;
+    } catch (error) {
+      // Handle errors by updating state
+      setFiles({
+        ...newFile,
+        isUploading: false,
+        error: "Upload failed"
+      });
+
+      throw error;
+    }
   };
 
   const handleDiscard = () => {
@@ -157,7 +170,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <TextInput
             label={dictionary.components.professionalInfo.linkedinUrl}
             inputField={{
-              className:"w-full",
+              className: "w-full",
               value: formData.linkedinUrl ? formData.linkedinUrl : '',
               setValue: (value) => handleChange('linkedinUrl', value),
               inputText:
@@ -170,12 +183,19 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             {' '}
             {dictionary.components.professionalInfo.curriculumVitae}
           </p>
-          <UploadedFile
-            text={dictionary.components.dragDrop}
-            files={files}
-            className="w-full"
-            onUpload={handleUploadedFiles}
-            handleDelete={handleDelete}
+          <Uploader
+            type="single"
+            variant="file"
+            file={files as UploadedFileType}
+            acceptedFileTypes={['application/pdf']}
+            onFilesChange={handleUploadedFiles}
+            onDelete={() => {
+              // Handle file deletion logic here
+            }}
+            onDownload={() => {
+              // Handle download logic here
+            }}
+            locale={locale}
           />
         </div>
 
@@ -185,7 +205,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             inputField={{
               value: formData.portfolioWebsite ? formData.portfolioWebsite : '',
               setValue: (value) => handleChange('portfolioWebsite', value),
-              className:"w-full",
+              className: "w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .portfolioWebsitePlaceholder,
@@ -201,7 +221,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 ? formData.associatedCompanyName
                 : '',
               setValue: (value) => handleChange('associatedCompanyName', value),
-              className:"w-full",
+              className: "w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .associatedCompanyPlaceholder,
@@ -217,7 +237,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 ? formData.associatedCompanyRole
                 : '',
               setValue: (value) => handleChange('associatedCompanyRole', value),
-              className:"w-full",
+              className: "w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .associatedCompanyIndustryPlaceholder,
@@ -236,7 +256,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 : '',
               setValue: (value) =>
                 handleChange('associatedCompanyIndustry', value),
-              className:"w-full",
+              className: "w-full",
               inputText:
                 dictionary.components.professionalInfo
                   .associatedCompanyPlaceholder,

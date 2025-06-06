@@ -1,5 +1,5 @@
 import { ProfileTabs } from './components/profile-tabs';
-import { DragAndDrop } from './components/drag&drop/drag&drop';
+import { DragAndDrop } from './components/drag-and-drop/drag-and-drop';
 import { Badge } from './components/badge';
 
 
@@ -33,3 +33,7 @@ export { Navbar } from './components/navbar';
 
 export { NotificationGrid } from './components/grids/notification-grid';
 export { UserGrid } from './components/grids/user-grid';
+
+export { ReviewSnippet } from './components/review/review-snippet';
+
+export { CoachesSkeleton } from './components/coaches-skeleton';
