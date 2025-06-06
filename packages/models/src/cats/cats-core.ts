@@ -380,11 +380,9 @@ export type TBaseErrorResponseHandlerConfig<
     TProgressSteps extends string | undefined,
     TViewModeActionConfigMap extends { [key: string]: unknown }
 > = {
-    eventConfig: {
-        [K in TErrorTypes as `errorType:${K}`]?: keyof TViewModeActionConfigMap
-    } & {
-        [K in TProgressSteps as `step:${K}`]?: keyof TViewModeActionConfigMap
-    }
+    [K in TErrorTypes as `errorType:${K}`]?: keyof TViewModeActionConfigMap
+} & {
+    [K in TProgressSteps as `step:${K}`]?: keyof TViewModeActionConfigMap
 }
 export abstract class BasePresenter<
     TViewModes extends string,

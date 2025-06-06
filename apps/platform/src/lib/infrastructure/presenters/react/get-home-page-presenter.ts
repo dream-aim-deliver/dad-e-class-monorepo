@@ -14,31 +14,25 @@ type TGetHomePageResponseErrorTypes = GetHomePageUseCaseModels.TGetHomePageUseca
 type TGetHomePageResponseProgressSteps = undefined;
 
 
-const GetHomePageEventHandlerMap: TBaseResponseEventHandlerConfig<
+const GetHomePageEventHandlerMap = {
+        "errorType:AuthenticationError": "redirect",
+        "errorType:CMSError": "showToast",
+} satisfies TBaseResponseEventHandlerConfig<
     TGetHomePageResponseErrorTypes,
     TGetHomePageResponseProgressSteps,
     THomePageDefaultViewActionConfigMap
-> = {
-    eventConfig: {
-        "errorType:AuthenticationError": "redirect",
-        "errorType:CMSError": "showToast",
-    }
-}
+>;
+
+type TGetHomePageEventHandlerMap = typeof GetHomePageEventHandlerMap;
 
 type TestHandledErrorResponse = ExtractHandledErrorTypes<
     GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
-    {
-                    "errorType:AuthenticationError": "redirect",
-                    "errorType:CMSError": "showToast",
-    }
+    TGetHomePageEventHandlerMap
 >
 type TestUnhandledResponse =  UnhandledErrorResponse<
         GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
         GetHomePageUseCaseModels.TGetHomePageUsecaseResponse,
-        {
-                    "errorType:AuthenticationError": "redirect",
-                    "errorType:CMSError": "showToast",
-        }
+        TGetHomePageEventHandlerMap
     >['errorType']
 
 export default class HomePageReactPresenter extends cats.BasePresenter<
@@ -82,7 +76,7 @@ export default class HomePageReactPresenter extends cats.BasePresenter<
                     responseModel: GetHomePageUseCaseModels.GetHomePageUsecaseResponseSchema,
                     viewModel: HomePageViewModels.HomePageViewModelSchema,
                 },
-                actionMap: {
+                eventConfig: {
                     "errorType:AuthenticationError": "redirect",
                     "errorType:CMSError": "showToast",
                 },
@@ -112,21 +106,21 @@ export default class HomePageReactPresenter extends cats.BasePresenter<
     presentError(response: UnhandledErrorResponse<
         GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
         GetHomePageUseCaseModels.TGetHomePageUsecaseResponse,
-        THomePageDefaultViewActionConfigMap
+        TGetHomePageEventHandlerMap
     >): HomePageViewModels.THomePageViewModel {
         // Convert the use case error response to a view model
         const errorType = response.errorType;
         switch (errorType) {
-            case "CMSError":
-                // Handle CMSError
-                return {
-                    mode: "kaboom",
-                    data: {
-                        type: "CMSError",
-                        message: response.data.message,
-                        trace: 'something',
-                    }
-                };
+            // case "CMSError":
+            //     // Handle CMSError
+            //     return {
+            //         mode: "kaboom",
+            //         data: {
+            //             type: "CMSError",
+            //             message: response.data.message,
+            //             trace: 'something',
+            //         }
+            //     };
             case "ValidationError":
                 // Handle ValidationError
                 return {
