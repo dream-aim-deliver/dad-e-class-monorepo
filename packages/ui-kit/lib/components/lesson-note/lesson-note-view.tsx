@@ -61,9 +61,9 @@ export const LessonNoteView: FC<LessonNoteViewType> = ({
             <div
                 className="bg-divider h-[1px] w-full"
             />
-            <p className="text-text-secondary text-lg leading-[150%]">
+            <div className="text-text-secondary leading-[150%]">
                 <RichTextRenderer content={lessonDescription} onDeserializationError={onDeserializationError} />
-            </p>
+            </div>
         </div>
     );
 };
