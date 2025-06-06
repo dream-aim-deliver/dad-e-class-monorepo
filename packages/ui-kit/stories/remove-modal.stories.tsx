@@ -47,7 +47,7 @@ const meta: Meta<typeof RemoveModal> = {
             control: 'boolean',
             description: 'Indicates if the modal is in a loading state',
         },
-        deleted: {
+        isDeleted: {
             control: 'boolean',
             description: 'Indicates if the item has been deleted successfully',
         },
@@ -64,13 +64,13 @@ type Story = StoryObj<typeof RemoveModal>;
 
 // Template for the RemoveModal story
 const Template = (args: React.ComponentProps<typeof RemoveModal>) => {
-    const [deleted, setDeleted] = React.useState(args.deleted ?? false);
+    const [isDeleted, setisDeleted] = React.useState(args.isDeleted ?? false);
     const [isError, setIsError] = React.useState(args.isError ?? false);
     const [isLoading, setIsLoading] = React.useState(args.isLoading ?? false);
 
     React.useEffect(() => {
-        setDeleted(args.deleted ?? false);
-    }, [args.deleted]);
+        setisDeleted(args.isDeleted ?? false);
+    }, [args.isDeleted]);
 
     React.useEffect(() => {
         setIsError(args.isError ?? false);
@@ -88,7 +88,7 @@ const Template = (args: React.ComponentProps<typeof RemoveModal>) => {
                 setIsError(true);
                 alert('Error deleting item!');
             } else {
-                setDeleted(true);
+                setisDeleted(true);
                 setIsError(false);
                 alert('Item deleted successfully!');
             }
@@ -97,13 +97,24 @@ const Template = (args: React.ComponentProps<typeof RemoveModal>) => {
         args.onDelete?.();
     };
 
+    const handleClose = () => {
+        alert('Modal closed!');
+        args.onClose?.();
+    };
+
+    const handleBack = () => {
+        alert('Back button clicked!');
+        args.onBack?.();
+    };
     return (
         <RemoveModal
             {...args}
             isLoading={isLoading}
-            deleted={deleted}
+            isDeleted={isDeleted}
             isError={isError}
             onDelete={handleDelete}
+            onClose={handleClose}
+            onBack={handleBack}
         />
     );
 };
@@ -118,7 +129,7 @@ export const LessonDefault: Story = {
         locale: 'en',
         isError: false,
         isLoading: false,
-        deleted: false,
+        isDeleted: false,
     },
 };
 
@@ -142,7 +153,7 @@ export const LessonDeleted: Story = {
     render: Template,
     args: {
         ...LessonDefault.args,
-        deleted: true,
+        isDeleted: true,
     },
 };
 
@@ -156,7 +167,7 @@ export const ModuleDefault: Story = {
         locale: 'en',
         isError: false,
         isLoading: false,
-        deleted: false,
+        isDeleted: false,
     },
 };
 
@@ -178,7 +189,7 @@ export const ModuleDeleted: Story = {
     render: Template,
     args: {
         ...ModuleDefault.args,
-        deleted: true,
+        isDeleted: true,
     },
 };
 
@@ -197,7 +208,7 @@ export const CoachDefault: Story = {
         locale: 'en',
         isError: false,
         isLoading: false,
-        deleted: false,
+        isDeleted: false,
     },
 };
 
@@ -221,6 +232,6 @@ export const CoachDeleted: Story = {
     render: Template,
     args: {
         ...CoachDefault.args,
-        deleted: true,
+        isDeleted: true,
     },
 };
