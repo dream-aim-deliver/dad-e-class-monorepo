@@ -117,7 +117,7 @@ export const RemoveModal = (props: RemoveModalProps) => {
                     <div className="flex flex-row items-center gap-4">
                         {props.variant === 'lesson' && (
                             <>
-                                <IconCourse
+                                <IconLesson
                                     classNames="text-text-primary"
                                     size="5"
                                 />
