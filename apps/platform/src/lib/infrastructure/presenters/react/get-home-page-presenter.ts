@@ -10,38 +10,55 @@ type THomePageMiddlewareConfigMap = {
     }
 }
 
-type TGetHomePageResponseErrorTypes = GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'];
+type TGetHomePageResponseErrorTypes = GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse["data"]['errorType'];
 type TGetHomePageResponseProgressSteps = undefined;
 
 
 const GetHomePageErrorResponseHandlerMap = {
-        "errorType:AuthenticationError": "redirect", // replace wuth a callback
-        "errorType:CMSError": "showToast",
-        "errorType:UnknownError": "redirect"
+    "errorType:AuthenticationError": "redirect", // replace wuth a callback
+    "errorType:CMSError": "showToast",
 } satisfies cats.TBaseResponseActionHandlerConfig<
     TGetHomePageResponseErrorTypes,
     TGetHomePageResponseProgressSteps,
     THomePageMiddlewareConfigMap
 >;
-
 type TGetHomePageEventHandlerMap = typeof GetHomePageErrorResponseHandlerMap;
 
+type HandledErrorTypes = cats.ExtractHandledErrorTypes<
+    TGetHomePageResponseErrorTypes,
+    TGetHomePageEventHandlerMap
+>;
+
+type TestMid = Extract<GetHomePageUseCaseModels.TGetHomePageUsecaseResponse, { success: false }>['data']
+type TestExclude = {
+    success: false,
+    data: Exclude<TestMid, {
+        errorType: HandledErrorTypes;
+    }>;
+}
+
+
+type UnhandledErrorTypes = cats.UnhandledErrorResponse<
+    TGetHomePageResponseErrorTypes,
+    GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse,
+    TGetHomePageEventHandlerMap
+>
 export default class HomePageReactPresenter extends cats.BasePresenter<
     HomePageViewModels.THomePageViewModel['mode'],
     HomePageViewModels.THomePageViewModel,
-    GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
+    GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse["data"]['errorType'],
     undefined,
     GetHomePageUseCaseModels.TGetHomePageUsecaseResponse,
     THomePageMiddlewareConfigMap
 > {
     getViewActionInputForError<K extends keyof THomePageMiddlewareConfigMap>(
         error: cats.ExtractStatusModel<GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse, false>,
-        errorType: GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
+        errorType: GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse["data"]['errorType'],
         action: K
     ): THomePageMiddlewareConfigMap[K] {
         switch (action) {
             case "showToast":
-                if( errorType === "AuthenticationError") {
+                if (errorType === "AuthenticationError") {
                     // Handle authentication error specifically
                 }
                 return {
@@ -104,12 +121,12 @@ export default class HomePageReactPresenter extends cats.BasePresenter<
         }
     }
     presentError(response: cats.UnhandledErrorResponse<
-        GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
-        GetHomePageUseCaseModels.TGetHomePageUsecaseResponse,
+        TGetHomePageResponseErrorTypes,
+        GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse,
         TGetHomePageEventHandlerMap
     >): HomePageViewModels.THomePageViewModel {
         // Convert the use case error response to a view model
-        const errorType = response.errorType;
+        const errorType = response.data.errorType;
         switch (errorType) {
             case "ValidationError":
                 // Handle ValidationError

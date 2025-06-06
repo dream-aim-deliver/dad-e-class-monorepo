@@ -157,13 +157,14 @@ export const BaseDiscriminatedErrorTypeSchemaFactory = <TErrorType extends strin
     type: TErrorType;
     schema: z.ZodObject<TErrorShape>;
 }) => {
-    const errorDataSchema = z.object({
-        success: z.literal(false),
-        errorType: z.literal(config.type),
-        data: BaseErrorDataSchemaFactory(config.schema),
-    })
+    const errorDataSchema = BaseErrorDataSchemaFactory(config.schema).merge(
+        z.object({
+            errorType: z.literal(config.type),
+        })
+    )
     return errorDataSchema;
 };
+
 export const CommonErrorSchemaMap = {
     UnknownError: BaseDiscriminatedErrorTypeSchemaFactory({
         type: 'UnknownError',
@@ -194,7 +195,10 @@ export const BaseErrorDiscriminatedUnionSchemaFactory = <
 >(
     errorSchemasMap: TErrorSchemaMap
 ) => {
-    return makeDiscriminatedUnion("errorType", { ...errorSchemasMap, ...CommonErrorSchemaMap });
+    return z.object({
+        success: z.literal(false),
+        data: makeDiscriminatedUnion("errorType", { ...errorSchemasMap, ...CommonErrorSchemaMap })
+    });
 };
 
 
@@ -221,15 +225,12 @@ export const BaseDiscriminatedProgressStepSchemaFactory = <
     const progressDataSchema = config.progressDataSchema || BaseProgressDataSchema;
     const progressContextSchema = config.progressContextSchema || BaseProgressStepContextSchema;
 
-    return z.object({
-        success: z.literal("progress"),
-        data: progressDataSchema.merge(
-            z.object({
-                step: z.literal(config.step),
-                context: progressContextSchema,
-            })
-        )
-    });
+    return progressDataSchema.merge(
+        z.object({
+            step: z.literal(config.step),
+            context: progressContextSchema,
+        })
+    )
 }
 
 export const BaseProgressDiscriminatedUnionSchemaFactory = <
@@ -238,7 +239,10 @@ export const BaseProgressDiscriminatedUnionSchemaFactory = <
     progressStepSchemaMap: TErrorSchemaMap
 ) => {
     const progressSchemas = makeDiscriminatedUnion("step", progressStepSchemaMap);
-    return progressSchemas
+    return z.object({
+        success: z.literal("progress"),
+        data: progressSchemas
+    });
 }
 
 export const BasePartialSchemaFactory = <TSuccessModel extends z.ZodRawShape, TErrorSchemaMap extends Record<string, z.ZodDiscriminatedUnionOption<"errorType">>>(
@@ -288,6 +292,50 @@ export type TBaseStatusDiscriminatedUnion<TStatusSchemaTuple extends [z.ZodDiscr
     ReturnType<typeof BaseStatusDiscriminatedUnionSchemaFactory<TStatusSchemaTuple>>
 >;
 
+export type TBarebonesStatusDiscriminatedUnion<TErrorType, TProgressSteps> = {
+    success: true
+    data: object;
+} | {
+    success: false
+    data: {
+        operation: string;
+        message: string;
+        context: object;
+        errorType: TErrorType | undefined;
+    }
+} | {
+    success: "partial"
+    data: {
+        success: object[];
+        error: {
+            operation: string;
+            message: string;
+            context: object;
+            errorType: TErrorType | undefined;
+        }[]
+    }
+} | {
+    success: "partial-progress"
+    data: {
+        success: object[];
+        error: {
+            operation: string;
+            message: string;
+            context: object;
+            errorType: TErrorType | undefined;
+        }[];
+        progress: {
+            step: TProgressSteps;
+            context: object;
+        }[];
+    }
+} | {
+    success: "progress"
+    data: {
+        step: TProgressSteps;
+        context: object;
+    }
+};
 // END : BASE MODELS
 
 
@@ -356,15 +404,17 @@ export type ExtractHandledErrorTypes<
 
 export type UnhandledErrorResponse<
     TErrorTypes extends string | undefined,
-    TResponseModel,
+    TResponseModel extends { success: false, data: { errorType: TErrorTypes | undefined } },
     TMap extends object
-> = Extract<
-    TResponseModel,
-    {
-        success: false;
-        errorType: Exclude<TErrorTypes, ExtractHandledErrorTypes<TErrorTypes, TMap>>;
+> = {
+    success: false;
+    data: Exclude<
+        Extract<TResponseModel, { success: false }>['data'],
+        {
+            errorType: ExtractHandledErrorTypes<TErrorTypes, TMap>;
+        }>;
     }
->;
+
 
 
 export type TBaseResponseActionHandlerConfig<
@@ -372,17 +422,17 @@ export type TBaseResponseActionHandlerConfig<
     TProgressSteps extends string | undefined,
     TViewModeActionConfigMap extends { [key: string]: unknown }
 > = {
-        [K in TErrorTypes as `errorType:${K}`]?: keyof TViewModeActionConfigMap
-    } & {
+    [K in TErrorTypes as `errorType:${K}`]?: keyof TViewModeActionConfigMap
+} & {
         [K in TProgressSteps as `step:${K}`]?: keyof TViewModeActionConfigMap
-    } 
+    }
 
 export abstract class BasePresenter<
     TViewModes extends string,
     TViewModel extends { mode: TViewModes },
     TErrorTypes extends string | undefined,
     TProgressSteps extends string | undefined,
-    TResponseModel extends { success: boolean | "partial" | "partial-progress" | "progress", errorType?: TErrorTypes, step?: TProgressSteps },
+    TResponseModel extends TBarebonesStatusDiscriminatedUnion<TErrorTypes, TProgressSteps>,
     TViewActionConfigMap extends { [key: string]: unknown }
 > {
     config: TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>;
@@ -395,13 +445,13 @@ export abstract class BasePresenter<
     abstract presentSuccess(response: Extract<TResponseModel, { success: true }>, currentViewModel: TViewModel): TViewModel;
 
     abstract presentError(
-        response: UnhandledErrorResponse<TErrorTypes, TResponseModel, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>['eventConfig']>>,
+        response: UnhandledErrorResponse<TErrorTypes, Extract<TResponseModel, { success: false }>, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>['eventConfig']>>,
         currentViewModel: TViewModel
     ): TViewModel;
 
     abstract getViewActionInputForError<K extends keyof TViewActionConfigMap, E extends Extract<TResponseModel, { success: false }>>(
         error: Extract<TResponseModel, { success: false }>,
-        errorType: NonNullable<E['errorType']>,
+        errorType: NonNullable<E['data']['errorType']>,
         action: K
     ): TViewActionConfigMap[K];
 
@@ -420,7 +470,7 @@ export abstract class BasePresenter<
             throw new Error("Progress response not implemented");
         } else {
             // Handle error response
-            const errorType = (response).errorType;
+            const errorType = response.data.errorType;
             const eventConfig = this.config?.eventConfig as Record<string, keyof TViewActionConfigMap | undefined>;
             if (errorType && eventConfig?.[`errorType:${errorType}`]) {
                 const eventKey = eventConfig[`errorType:${errorType}`];
@@ -440,11 +490,10 @@ export abstract class BasePresenter<
                 );
 
                 await callback(input);
-                const viewModel = this.presentError(response as Extract<TResponseModel, {
-                    success: false;
-                    errorType: Exclude<TErrorTypes, ExtractHandledErrorTypes<TErrorTypes, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>['eventConfig']>>>;
-                }>,
-                    currentViewModel);
+                const viewModel = this.presentError(
+                    response as UnhandledErrorResponse<TErrorTypes, Extract<TResponseModel, { success: false }>, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>['eventConfig']>>,
+                    currentViewModel
+                );
                 this.config.setViewModel(viewModel);
             } else {
                 throw new Error("Error response not handled");

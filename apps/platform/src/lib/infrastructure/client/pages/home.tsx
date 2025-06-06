@@ -31,7 +31,9 @@ export default function Home(props: HomeProps) {
         );
     }
     
-    presenter.present(data, viewModel).catch((error) => {
+    presenter
+    .present(data, viewModel)
+    .catch((error) => {
         console.error('Error presenting data:', error);
     });
     

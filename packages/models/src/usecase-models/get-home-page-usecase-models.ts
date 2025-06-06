@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { HomepageCreatedSchema, HomePageRelationsSchema } from '../entity/home-page';
-import { BaseDiscriminatedErrorTypeSchemaFactory, BaseErrorDiscriminatedUnionSchemaFactory, BaseStatusDiscriminatedUnionSchemaFactory, BaseSuccessSchemaFactory } from '../cats/cats-core';
+import { BaseDiscriminatedErrorTypeSchemaFactory as BaseDiscriminatedErrorDataSchemaFactory, BaseErrorDiscriminatedUnionSchemaFactory, BaseStatusDiscriminatedUnionSchemaFactory, BaseSuccessSchemaFactory } from '../cats/cats-core';
 
 export const GetHomePageRequestSchema = z.object({
     filter: z.object({
@@ -11,7 +11,7 @@ export type TGetHomePageRequest = z.infer<typeof GetHomePageRequestSchema>;
 
 const GetHomePageSuccessResponseSchema = BaseSuccessSchemaFactory(HomepageCreatedSchema.merge(HomePageRelationsSchema));
 
-const CMSError = BaseDiscriminatedErrorTypeSchemaFactory(
+const CMSError = BaseDiscriminatedErrorDataSchemaFactory(
    {
         type: 'CMSError',
         schema: z.object({
@@ -29,7 +29,7 @@ export type TGetHomePageUsecaseErrorResponse = z.infer<typeof GetHomePageUsecase
 
 export const GetHomePageUsecaseResponseSchema =  BaseStatusDiscriminatedUnionSchemaFactory([
     GetHomePageSuccessResponseSchema,
-    ...GetHomePageUsecaseErrorResponseSchema.options,
-])
+    GetHomePageUsecaseErrorResponseSchema,
+]);
 
 export type TGetHomePageUsecaseResponse = z.infer<typeof GetHomePageUsecaseResponseSchema>;
