@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { RemoveModal, RemoveModalProps } from '../lib/components/remove-modal';
+import { RemoveModal } from '../lib/components/remove-modal';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -169,8 +169,32 @@ vi.mock('../lib/components/icons/icon-loader-spinner', () => ({
 }));
 
 describe('RemoveModal', () => {
-    const baseProps: RemoveModalProps = {
-        locale: 'en',
+    const lessonRemoveModalProps = {
+        locale: 'en' as const,
+        onClose: vi.fn(),
+        onDelete: vi.fn(),
+        onBack: vi.fn(),
+        lessonTitle: 'Lesson 1',
+        variant: 'lesson' as const,
+        isError: false,
+        isLoading: false,
+        isDeleted: false,
+    };
+
+    const moduleRemoveModalProps = {
+        locale: 'en' as const,
+        onClose: vi.fn(),
+        onDelete: vi.fn(),
+        onBack: vi.fn(),
+        moduleTitle: 'Module 1',
+        variant: 'module' as const,
+        isError: false,
+        isLoading: false,
+        isDeleted: false,
+    };
+
+    const coachRemoveModalProps = {
+        locale: 'en' as const,
         onClose: vi.fn(),
         onDelete: vi.fn(),
         onBack: vi.fn(),
@@ -178,25 +202,21 @@ describe('RemoveModal', () => {
         coachAvatarUrl: 'coach.jpg',
         courseTitle: 'Cool Course',
         courseImageUrl: 'course.jpg',
-        lessonTitle: 'Lesson 1',
-        moduleTitle: 'Module 1',
-        variant: 'lesson',
+        variant: 'coach' as const,
         isError: false,
         isLoading: false,
         isDeleted: false,
     };
 
     it('renders the confirmation state for lesson', () => {
-        render(<RemoveModal {...baseProps} />);
+        render(<RemoveModal {...lessonRemoveModalProps} />);
         expect(screen.getByText('Delete this lesson?')).toBeInTheDocument();
         expect(screen.getByText('Back')).toBeInTheDocument();
         expect(screen.getByText('Delete')).toBeInTheDocument();
     });
 
     it('renders the deleted state for module', () => {
-        render(
-            <RemoveModal {...baseProps} variant="module" isDeleted={true} />,
-        );
+        render(<RemoveModal {...moduleRemoveModalProps} isDeleted={true} />);
         expect(
             screen.getByText('Module has been deleted.'),
         ).toBeInTheDocument();
@@ -204,7 +224,7 @@ describe('RemoveModal', () => {
     });
 
     it('renders the error state for coach', () => {
-        render(<RemoveModal {...baseProps} variant="coach" isError={true} />);
+        render(<RemoveModal {...coachRemoveModalProps} isError={true} />);
         expect(
             screen.getByText('An error occurred while removing the coach.'),
         ).toBeInTheDocument();
@@ -212,25 +232,25 @@ describe('RemoveModal', () => {
     });
 
     it('calls onClose when close button is clicked', () => {
-        render(<RemoveModal {...baseProps} />);
+        render(<RemoveModal {...lessonRemoveModalProps} />);
         fireEvent.click(screen.getByTestId('close-modal-button'));
-        expect(baseProps.onClose).toHaveBeenCalled();
+        expect(lessonRemoveModalProps.onClose).toHaveBeenCalled();
     });
 
     it('calls onDelete when delete button is clicked', () => {
-        render(<RemoveModal {...baseProps} />);
+        render(<RemoveModal {...lessonRemoveModalProps} />);
         fireEvent.click(screen.getByText('Delete'));
-        expect(baseProps.onDelete).toHaveBeenCalled();
+        expect(lessonRemoveModalProps.onDelete).toHaveBeenCalled();
     });
 
     it('calls onBack when back button is clicked', () => {
-        render(<RemoveModal {...baseProps} />);
+        render(<RemoveModal {...lessonRemoveModalProps} />);
         fireEvent.click(screen.getByText('Back'));
-        expect(baseProps.onBack).toHaveBeenCalled();
+        expect(lessonRemoveModalProps.onBack).toHaveBeenCalled();
     });
 
     it('shows spinner when loading', () => {
-        render(<RemoveModal {...baseProps} isLoading={true} />);
+        render(<RemoveModal {...lessonRemoveModalProps} isLoading={true} />);
         expect(screen.getByTestId('spinner')).toBeInTheDocument();
     });
 });
