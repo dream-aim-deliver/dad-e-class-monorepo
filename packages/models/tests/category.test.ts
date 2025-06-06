@@ -1,6 +1,6 @@
 import { CategorySchema, TCategory } from '../src/category';
 import { describe, it, expect } from 'vitest';
-
+import deepEqual from 'deep-equal-js';
 describe('Category Schema Validation', () => {
 
     it('should validate a valid category', () => {
@@ -28,5 +28,31 @@ describe('Category Schema Validation', () => {
             imageUrl: true, // Should be a string
         };
         expect(CategorySchema.safeParse(invalidCategory).success).toBe(false);
+    });
+    it('should test view model', () => {
+        const currentViewModel = {
+            mode: 'default',
+            data: {
+                banner: {
+                    title: 'Sample Title',
+                    description: 'Sample Description',
+                    videoId: 'sample-video-id',
+                    thumbnailUrl: 'https://example.com/sample-thumbnail.jpg'
+                }
+            }
+        }
+        const viewModel = {
+            mode: 'default',
+            data: {
+                banner: {
+                    title: 'Sample Title',
+                    description: 'Sample Description',
+                    videoId: 'sample-video-id',
+                    thumbnailUrl: 'https://example.com/sample-thumbnail.jpg'
+                }
+            }
+        }
+        const result = deepEqual(currentViewModel, viewModel);
+        expect(result).toBe(true);
     });
 });

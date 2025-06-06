@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { z } from "zod";
+import deepEqual from 'deep-equal-js';
+
 
 export function makeDiscriminatedUnion<
     Discriminator extends string,
@@ -442,11 +444,12 @@ export abstract class BasePresenter<
         this.config = config;
     }
 
-    abstract presentSuccess(response: Extract<TResponseModel, { success: true }>, currentViewModel: TViewModel): TViewModel;
+    abstract presentSuccess(
+        response: Extract<TResponseModel, { success: true }>, currentViewModel: TViewModel | undefined): TViewModel;
 
     abstract presentError(
         response: UnhandledErrorResponse<TErrorTypes, Extract<TResponseModel, { success: false }>, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>['eventConfig']>>,
-        currentViewModel: TViewModel
+        currentViewModel: TViewModel | undefined
     ): TViewModel;
 
     abstract getViewActionInputForError<K extends keyof TViewActionConfigMap, E extends Extract<TResponseModel, { success: false }>>(
@@ -455,10 +458,10 @@ export abstract class BasePresenter<
         action: K
     ): TViewActionConfigMap[K];
 
-    async present(response: TResponseModel, currentViewModel: TViewModel): Promise<void> {
+    async present(response: TResponseModel, currentViewModel: TViewModel | undefined): Promise<void> {
+        let newViewModel: TViewModel | undefined = currentViewModel;
         if (response.success === true) {
-            const viewModel = this.presentSuccess(response as Extract<TResponseModel, { success: true }>, currentViewModel);
-            this.config.setViewModel(viewModel);
+            newViewModel = this.presentSuccess(response as Extract<TResponseModel, { success: true }>, currentViewModel);
         } else if (response.success === "partial") {
             // Handle partial response
             throw new Error("Partial response not implemented");
@@ -490,14 +493,15 @@ export abstract class BasePresenter<
                 );
 
                 await callback(input);
-                const viewModel = this.presentError(
+                newViewModel = this.presentError(
                     response as UnhandledErrorResponse<TErrorTypes, Extract<TResponseModel, { success: false }>, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>['eventConfig']>>,
                     currentViewModel
                 );
-                this.config.setViewModel(viewModel);
-            } else {
-                throw new Error("Error response not handled");
+                
             }
+        }
+        if (!deepEqual(newViewModel, currentViewModel)) {
+            this.config.setViewModel(newViewModel as TViewModel);
         }
     }
 }

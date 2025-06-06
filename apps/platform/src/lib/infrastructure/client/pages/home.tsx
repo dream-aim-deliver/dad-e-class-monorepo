@@ -22,15 +22,6 @@ export default function Home(props: HomeProps) {
     const [viewModel, setViewModel] = useState<THomePageViewModel>();
     const { presenter } = useGetHomePagePresenter(setViewModel);
     
-    if(!viewModel) {
-        return (
-            <div className="text-white">
-                <h1 className="text-2xl font-bold">Loading...</h1>
-            </div>
-
-        );
-    }
-    
     presenter
     .present(data, viewModel)
     .catch((error) => {
