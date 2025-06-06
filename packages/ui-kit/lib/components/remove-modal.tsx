@@ -9,7 +9,6 @@ import { IconModule } from './icons/icon-module';
 import { IconError } from './icons/icon-error';
 import { UserAvatar } from './avatar/user-avatar';
 import { IconButton } from './icon-button';
-import React from 'react';
 import { IconLoaderSpinner } from './icons/icon-loader-spinner';
 
 export interface RemoveModalProps extends isLocalAware {
@@ -25,7 +24,7 @@ export interface RemoveModalProps extends isLocalAware {
     variant: 'coach' | 'lesson' | 'module';
     isError: boolean;
     isLoading: boolean;
-    deleted: boolean;
+    isDeleted: boolean;
 }
 
 /**
@@ -50,7 +49,7 @@ export interface RemoveModalProps extends isLocalAware {
  * @param locale - The locale used for dictionary translations.
  * @param isError - Whether an error state should be displayed.
  * @param isLoading - Whether a loading spinner should be displayed.
- * @param deleted - Whether the item has already been deleted (initial state).
+ * @param isDeleted - Whether the item has already been deleted.
  *
  * @returns The modal JSX element for removing an item, with appropriate content for each state.
  */
@@ -66,19 +65,13 @@ export const RemoveModal = ({
     onBack,
     variant,
     locale,
-    isError = false,
-    isLoading = false,
-    deleted: initialDeleted = false,
+    isError,
+    isLoading,
+    isDeleted,
 }: RemoveModalProps) => {
-    const [deleted, setDeleted] = React.useState(initialDeleted);
-
-    React.useEffect(() => {
-        setDeleted(initialDeleted);
-    }, [initialDeleted]);
-
     const dictionary = getDictionary(locale).components.removeModal;
 
-    if (deleted) {
+    if (isDeleted) {
         return (
             <div className="flex flex-col w-[350px] items-end gap-6 p-6 rounded-lg border border-card-stroke bg-card-fill shadow-[0_4px_12px_rgba(12,10,9,1)] relative">
                 <div className="absolute right-0 top-0">
