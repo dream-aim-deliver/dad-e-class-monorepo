@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 // export abstract class BaseReactPresenter<TSuccessResponseModel, TProgressResponseModel> {
 //     abstract getViewModel(): void;
 //     abstract setViewModel(): void;
@@ -10,26 +8,19 @@ import { z } from "zod";
 //     abstract presentPartial(response: { success: "partial"; data: { success: TSuccessResponse[]; error: TErrorResponse[] } }): void;
 //     abstract presentPartialProgress(response: { success: "partial-progress"; data: { success: TSuccessResponse[]; error: TErrorResponse[]; progress: TProgressResponse[] } }): void;
 // }
+
+
 // export const useBaseReactPresenter = <
-//     TResponseModel,
-//     TViewModel
-//     >(
-//     success: {
-//         redirect?: string;
-//     }
+//     TViewModes extends string,
+//     TViewModel extends { mode: TViewModes },
+//     TErrorTypes extends string | undefined,
+//     TProgressSteps extends string | undefined,
+//     TResponseModel extends { success: boolean | "partial" | "partial-progress" | "progress", errorType?: TErrorTypes, step?: TProgressSteps },
+//     TViewActionConfigMap extends { [key: string]: unknown }
+// >(
 // ) => {
-//     class ReactPresenter<TResponseModel, TViewModel> {
-//         constructor(
-//             showToas: 
-//         )
-//         presentSuccess = (response: Extract<TResponseModel, { success: true }>) => {
-//             // Implement your logic here
-//         }
-//     }
-//     return ReactPresenter<TResponseModel>;
-    
+//     const presenter: BasePresenter<TViewModes, TViewModel, TErrorTypes, TProgressSteps, TResponseModel, TViewActionConfigMap> = useMemo(() => presenter, [presenter]);
 // }
-// END : REACT PRESENTER (Infrastructure Layer)
 
 // EXAMPLE USAGE OF REACT PRESENTER
 

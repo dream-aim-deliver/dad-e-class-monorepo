@@ -1,4 +1,5 @@
 import { cats, HomePageViewModels, GetHomePageUseCaseModels } from "@maany_shr/e-class-models"
+import { useMemo } from "react";
 
 
 type THomePageMiddlewareConfigMap = {
@@ -14,8 +15,9 @@ type TGetHomePageResponseProgressSteps = undefined;
 
 
 const GetHomePageErrorResponseHandlerMap = {
-        "errorType:AuthenticationError": "showToast",
+        "errorType:AuthenticationError": "redirect", // replace wuth a callback
         "errorType:CMSError": "showToast",
+        "errorType:UnknownError": "redirect"
 } satisfies cats.TBaseResponseActionHandlerConfig<
     TGetHomePageResponseErrorTypes,
     TGetHomePageResponseProgressSteps,
@@ -23,16 +25,6 @@ const GetHomePageErrorResponseHandlerMap = {
 >;
 
 type TGetHomePageEventHandlerMap = typeof GetHomePageErrorResponseHandlerMap;
-
-type TestHandledErrorResponse = cats.ExtractHandledErrorTypes<
-    GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
-    TGetHomePageEventHandlerMap
->
-type TestUnhandledResponse =  cats.UnhandledErrorResponse<
-        GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
-        GetHomePageUseCaseModels.TGetHomePageUsecaseResponse,
-        TGetHomePageEventHandlerMap
-    >['errorType']
 
 export default class HomePageReactPresenter extends cats.BasePresenter<
     HomePageViewModels.THomePageViewModel['mode'],
@@ -49,8 +41,8 @@ export default class HomePageReactPresenter extends cats.BasePresenter<
     ): THomePageMiddlewareConfigMap[K] {
         switch (action) {
             case "showToast":
-                if(errorType !== "CMSError") {
-                    throw new Error("Invalid error type for showToast action");
+                if( errorType === "AuthenticationError") {
+                    // Handle authentication error specifically
                 }
                 return {
                     message: error.data.message,
@@ -68,17 +60,16 @@ export default class HomePageReactPresenter extends cats.BasePresenter<
     // Define the properties and methods for the HomePageReactPresenter
     // This class will handle the presentation logic for the home page in a React application
 
-    constructor() {
+    constructor(
+        setViewModel: (viewModel: HomePageViewModels.THomePageViewModel) => void,
+    ) {
         super(
             {
                 schemas: {
                     responseModel: GetHomePageUseCaseModels.GetHomePageUsecaseResponseSchema,
                     viewModel: HomePageViewModels.HomePageViewModelSchema,
                 },
-                eventConfig: {
-                    "errorType:AuthenticationError": "redirect",
-                    "errorType:CMSError": "showToast",
-                },
+                eventConfig: GetHomePageErrorResponseHandlerMap,
                 callbacks: {
                     "redirect": async (data: { url: string }) => {
                         // Implement redirect logic here
@@ -92,15 +83,25 @@ export default class HomePageReactPresenter extends cats.BasePresenter<
                         // Implement warning notification logic here
                         console.warn("Warning message:", data.message);
                     }
-                }
+                },
+                setViewModel: setViewModel,
             },
 
         );
     }
 
     presentSuccess(response: Extract<GetHomePageUseCaseModels.TGetHomePageUsecaseResponse, { success: true }>): HomePageViewModels.THomePageViewModel {
-        // Convert the use case response to a view model
-        throw new Error("Method not implemented.");
+        return {
+            mode: "default",
+            data: {
+                banner: {
+                    title: response.data.title,
+                    description: response.data.description,
+                    videoId: response.data.videoId,
+                    thumbnailUrl: response.data.thumbnailUrl,
+                },
+            }
+        }
     }
     presentError(response: cats.UnhandledErrorResponse<
         GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
@@ -132,4 +133,15 @@ export default class HomePageReactPresenter extends cats.BasePresenter<
                 };
         }
     }
+}
+
+export function useGetHomePagePresenter(
+    setViewModel: (viewModel: HomePageViewModels.THomePageViewModel) => void,
+) {
+    const presenter = useMemo(() => {
+        return new HomePageReactPresenter(setViewModel);
+    }, [setViewModel]);
+    return {
+        presenter,
+    };
 }

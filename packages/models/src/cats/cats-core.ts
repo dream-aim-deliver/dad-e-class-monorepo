@@ -321,24 +321,27 @@ export type TBaseDiscriminatedViewModel<ViewModesSchemaMap extends Record<string
 export type TBasePresenterConfig<
     TErrorTypes extends string | undefined,
     TProgressSteps extends string | undefined,
-    TViewActionConfigMap extends { [key: string]: unknown }> = {
-        schemas: {
-            responseModel: z.ZodDiscriminatedUnion<"success", [z.ZodDiscriminatedUnionOption<"success">, ...z.ZodDiscriminatedUnionOption<"success">[]]>,
-            viewModel: z.ZodDiscriminatedUnion<"mode", [z.ZodDiscriminatedUnionOption<"mode">, ...z.ZodDiscriminatedUnionOption<"mode">[]]>,
-        },
-        eventConfig?: (
-            TErrorTypes extends string
-            ? { [K in TErrorTypes as `errorType:${K}`]?: keyof TViewActionConfigMap }
-            : object
-        ) & (
-            TProgressSteps extends string
-            ? { [K in TProgressSteps as `step:${K}`]?: keyof TViewActionConfigMap }
-            : object
-        ),
-        callbacks?: {
-            [K in keyof TViewActionConfigMap]: (data: TViewActionConfigMap[K]) => Promise<void> | void;
-        }
-    }
+    TViewActionConfigMap extends { [key: string]: unknown },
+    TViewModel
+> = {
+    schemas: {
+        responseModel: z.ZodDiscriminatedUnion<"success", [z.ZodDiscriminatedUnionOption<"success">, ...z.ZodDiscriminatedUnionOption<"success">[]]>,
+        viewModel: z.ZodDiscriminatedUnion<"mode", [z.ZodDiscriminatedUnionOption<"mode">, ...z.ZodDiscriminatedUnionOption<"mode">[]]>,
+    },
+    eventConfig?: (
+        TErrorTypes extends string
+        ? { [K in TErrorTypes as `errorType:${K}`]?: keyof TViewActionConfigMap }
+        : object
+    ) & (
+        TProgressSteps extends string
+        ? { [K in TProgressSteps as `step:${K}`]?: keyof TViewActionConfigMap }
+        : object
+    ),
+    callbacks: {
+        [K in keyof TViewActionConfigMap]: (data: TViewActionConfigMap[K]) => Promise<void> | void;
+    },
+    setViewModel: (viewModel: TViewModel) => void,
+}
 
 export type ExtractStatusModel<TResponseModel, TSuccess = boolean | "partial" | "progress" | "partial-progress"> = Extract<TResponseModel, { success: TSuccess }>;
 
@@ -352,15 +355,15 @@ export type ExtractHandledErrorTypes<
     : never;
 
 export type UnhandledErrorResponse<
-  TErrorTypes extends string | undefined,
-  TResponseModel,
-  TMap extends object
+    TErrorTypes extends string | undefined,
+    TResponseModel,
+    TMap extends object
 > = Extract<
-  TResponseModel,
-  {
-    success: false;
-    errorType: Exclude<TErrorTypes, ExtractHandledErrorTypes<TErrorTypes, TMap>>;
-  }
+    TResponseModel,
+    {
+        success: false;
+        errorType: Exclude<TErrorTypes, ExtractHandledErrorTypes<TErrorTypes, TMap>>;
+    }
 >;
 
 
@@ -369,10 +372,11 @@ export type TBaseResponseActionHandlerConfig<
     TProgressSteps extends string | undefined,
     TViewModeActionConfigMap extends { [key: string]: unknown }
 > = {
-    [K in TErrorTypes as `errorType:${K}`]?: keyof TViewModeActionConfigMap
-} & {
-    [K in TProgressSteps as `step:${K}`]?: keyof TViewModeActionConfigMap
-}
+        [K in TErrorTypes as `errorType:${K}`]?: keyof TViewModeActionConfigMap
+    } & {
+        [K in TProgressSteps as `step:${K}`]?: keyof TViewModeActionConfigMap
+    } 
+
 export abstract class BasePresenter<
     TViewModes extends string,
     TViewModel extends { mode: TViewModes },
@@ -381,16 +385,18 @@ export abstract class BasePresenter<
     TResponseModel extends { success: boolean | "partial" | "partial-progress" | "progress", errorType?: TErrorTypes, step?: TProgressSteps },
     TViewActionConfigMap extends { [key: string]: unknown }
 > {
-    config: TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap>;
+    config: TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>;
     constructor(
-        config: TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap>
+        config: TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>,
     ) {
         this.config = config;
     }
 
-    abstract presentSuccess(response: Extract<TResponseModel, { success: true }>): TViewModel;
+    abstract presentSuccess(response: Extract<TResponseModel, { success: true }>, currentViewModel: TViewModel): TViewModel;
 
-    abstract presentError(response: UnhandledErrorResponse<TErrorTypes, TResponseModel, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap>['eventConfig']>>
+    abstract presentError(
+        response: UnhandledErrorResponse<TErrorTypes, TResponseModel, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>['eventConfig']>>,
+        currentViewModel: TViewModel
     ): TViewModel;
 
     abstract getViewActionInputForError<K extends keyof TViewActionConfigMap, E extends Extract<TResponseModel, { success: false }>>(
@@ -398,10 +404,11 @@ export abstract class BasePresenter<
         errorType: NonNullable<E['errorType']>,
         action: K
     ): TViewActionConfigMap[K];
-    
-    async present(response: TResponseModel): Promise<TViewModel> {
+
+    async present(response: TResponseModel, currentViewModel: TViewModel): Promise<void> {
         if (response.success === true) {
-            return this.presentSuccess(response as Extract<TResponseModel, { success: true }>);
+            const viewModel = this.presentSuccess(response as Extract<TResponseModel, { success: true }>, currentViewModel);
+            this.config.setViewModel(viewModel);
         } else if (response.success === "partial") {
             // Handle partial response
             throw new Error("Partial response not implemented");
@@ -433,10 +440,12 @@ export abstract class BasePresenter<
                 );
 
                 await callback(input);
-                return this.presentError(response as Extract<TResponseModel, {
+                const viewModel = this.presentError(response as Extract<TResponseModel, {
                     success: false;
-                    errorType: Exclude<TErrorTypes, ExtractHandledErrorTypes<TErrorTypes, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap>['eventConfig']>>>;
-                }>);
+                    errorType: Exclude<TErrorTypes, ExtractHandledErrorTypes<TErrorTypes, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>['eventConfig']>>>;
+                }>,
+                    currentViewModel);
+                this.config.setViewModel(viewModel);
             } else {
                 throw new Error("Error response not handled");
             }

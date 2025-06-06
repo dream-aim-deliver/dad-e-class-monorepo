@@ -107,9 +107,9 @@ export type TAccordionList = z.infer<typeof AccordionListSchema>;
 
 export const HomePageSchema = z.object({
     banner: HomeBannerSchema,
-    carousel: z.array(GeneralCardSchema).optional(), // TODO VIKA: temporarily optional to allow for empty carousel
-    coachingOnDemand: CoachingOnDemandSchema.optional(),
-    accordion: AccordionListSchema.optional(),
+    // carousel: z.array(GeneralCardSchema).optional(), // TODO VIKA: temporarily optional to allow for empty carousel
+    // coachingOnDemand: CoachingOnDemandSchema.optional(),
+    // accordion: AccordionListSchema.optional(),
 });
 
 /**
