@@ -49,7 +49,6 @@ export interface CalendarProps extends isLocalAware{
   onAddEvent: (event: CalendarEvent) => void;
   onEventDrop: (event: CalendarEvent) => void;
   variant: Variant;
-  // Add these props for modal details
   coachName?: string;
   groupName?: string;
   courseTitle?: string;
@@ -179,12 +178,6 @@ const CoachingSessionCalendar: React.FC<CalendarProps> = ({
     const title = 'Coaching Session';
     const coachingSessionId = `session-${Date.now()}`;
     const duration = '01:00'; // Default duration for click-to-schedule
-
-    // Check if the clicked slot is within coach availability
-    if (!isWithinCoachAvailability(start, duration)) {
-      console.log('Cannot schedule session: No coach availability for this time slot.');
-      return;
-    }
 
     const time = `${start.getHours().toString().padStart(2, '0')}:${start
       .getMinutes()
