@@ -93,10 +93,12 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
       });
 
       return () => {
-        draggableInstances.current.forEach(({ element }, sessionId) => {
+        draggableInstances.current.forEach(({ element, draggable }, sessionId) => {
           const numberOfSessions = parseInt(element.getAttribute('data-sessions') || '1', 10);
           const remainingSessions = numberOfSessions - (sessionCounts[sessionId] || 0);
           if (remainingSessions <= 0) {
+            // Destroy the Draggable instance to avoid memory leaks
+            draggable.destroy();
             const newElement = document.createElement('div');
             newElement.className = element.className;
             newElement.setAttribute('data-session-id', sessionId);
