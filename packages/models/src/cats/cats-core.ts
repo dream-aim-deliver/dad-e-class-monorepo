@@ -363,19 +363,8 @@ export type UnhandledErrorResponse<
   }
 >;
 
-// export type TViewModeActionConfigMap<
-//     TViewModes extends string, 
-//     TViewModeActions extends { mode: TViewModes }
-// > = {
-//     [K in TViewModes]: {
-//         viewModel: TViewModel;
-//         actions: {
-//             [action: string]: (data: any) => Promise<void>;
-//         };
-//     }
-// };
 
-export type TBaseErrorResponseHandlerConfig<
+export type TBaseResponseActionHandlerConfig<
     TErrorTypes extends string | undefined,
     TProgressSteps extends string | undefined,
     TViewModeActionConfigMap extends { [key: string]: unknown }
