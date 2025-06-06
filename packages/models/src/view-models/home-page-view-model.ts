@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { BaseDiscriminatedViewModeSchemaFactory, BaseErrorDataSchemaFactory, BaseViewModelDiscriminatedUnionSchemaFactory } from '../cats/cats-core';
 
 export const HomeBannerSchema = z.object({
     title: z.string(),
@@ -146,8 +147,13 @@ export const HomePageSchema = z.object({
  *     - `iconImageUrl`: The URL of the associated icon.
  */
 
-export const HomePageDefaultViewModelSchema = z.object({
-    viewMode: z.literal('default'),
-}).merge(
-    HomePageSchema
-)
+const HomePageDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", HomePageSchema)
+const HomePageKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+
+export const HomePageViewModelSchemaMap = {
+    default: HomePageDefaultViewModelSchema,
+    kaboom: HomePageKaboomViewModelSchema,
+};
+export type THomePageViewModelSchemaMap = typeof HomePageViewModelSchemaMap;
+export const HomePageViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(HomePageViewModelSchemaMap);
+export type THomePageViewModel = z.infer<typeof HomePageViewModelSchema>;

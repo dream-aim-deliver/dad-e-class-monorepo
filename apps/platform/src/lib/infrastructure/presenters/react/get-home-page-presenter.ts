@@ -1,0 +1,152 @@
+import { cats, HomePageViewModels, GetHomePageUseCaseModels } from "@maany_shr/e-class-models"
+import { ExtractHandledErrorTypes, ExtractStatusModel, TBaseErrorResponseHandlerConfig as TBaseResponseEventHandlerConfig, UnhandledErrorResponse } from "packages/models/src/cats/cats-core";
+
+type THomePageDefaultViewActionConfigMap = {
+    showToast: { message: string };
+    showWarning: { message: string };
+    redirect: {
+        url: string;
+    }
+}
+
+type TGetHomePageResponseErrorTypes = GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'];
+
+type TGetHomePageResponseProgressSteps = undefined;
+
+
+const GetHomePageEventHandlerMap: TBaseResponseEventHandlerConfig<
+    TGetHomePageResponseErrorTypes,
+    TGetHomePageResponseProgressSteps,
+    THomePageDefaultViewActionConfigMap
+> = {
+    eventConfig: {
+        "errorType:AuthenticationError": "redirect",
+        "errorType:CMSError": "showToast",
+    }
+}
+
+type TestHandledErrorResponse = ExtractHandledErrorTypes<
+    GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
+    {
+                    "errorType:AuthenticationError": "redirect",
+                    "errorType:CMSError": "showToast",
+    }
+>
+type TestUnhandledResponse =  UnhandledErrorResponse<
+        GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
+        GetHomePageUseCaseModels.TGetHomePageUsecaseResponse,
+        {
+                    "errorType:AuthenticationError": "redirect",
+                    "errorType:CMSError": "showToast",
+        }
+    >['errorType']
+
+export default class HomePageReactPresenter extends cats.BasePresenter<
+    HomePageViewModels.THomePageViewModel['mode'],
+    HomePageViewModels.THomePageViewModel,
+    GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
+    undefined,
+    GetHomePageUseCaseModels.TGetHomePageUsecaseResponse,
+    THomePageDefaultViewActionConfigMap
+> {
+    getViewActionInputForError<K extends keyof THomePageDefaultViewActionConfigMap>(
+        error: ExtractStatusModel<GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse, false>,
+        errorType: GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
+        action: K
+    ): THomePageDefaultViewActionConfigMap[K] {
+        switch (action) {
+            case "showToast":
+                if(errorType !== "CMSError") {
+                    throw new Error("Invalid error type for showToast action");
+                }
+                return {
+                    message: error.data.message,
+                } as THomePageDefaultViewActionConfigMap[K];
+            case "showWarning":
+                return {
+                    message: error.data.message,
+                } as THomePageDefaultViewActionConfigMap[K];
+            case "redirect":
+                return {
+                    url: "/login",
+                } as THomePageDefaultViewActionConfigMap[K];
+        }
+    }
+    // Define the properties and methods for the HomePageReactPresenter
+    // This class will handle the presentation logic for the home page in a React application
+
+    constructor() {
+        super(
+            {
+                schemas: {
+                    responseModel: GetHomePageUseCaseModels.GetHomePageUsecaseResponseSchema,
+                    viewModel: HomePageViewModels.HomePageViewModelSchema,
+                },
+                actionMap: {
+                    "errorType:AuthenticationError": "redirect",
+                    "errorType:CMSError": "showToast",
+                },
+                callbacks: {
+                    "redirect": async (data: { url: string }) => {
+                        // Implement redirect logic here
+                        console.log("Redirecting to:", data.url);
+                    },
+                    "showToast": async (data: { message: string }) => {
+                        // Implement toast notification logic here
+                        console.log("Toast message:", data.message);
+                    },
+                    "showWarning": async (data: { message: string }) => {
+                        // Implement warning notification logic here
+                        console.warn("Warning message:", data.message);
+                    }
+                }
+            },
+
+        );
+    }
+
+    presentSuccess(response: Extract<GetHomePageUseCaseModels.TGetHomePageUsecaseResponse, { success: true }>): HomePageViewModels.THomePageViewModel {
+        // Convert the use case response to a view model
+        throw new Error("Method not implemented.");
+    }
+    presentError(response: UnhandledErrorResponse<
+        GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse['errorType'],
+        GetHomePageUseCaseModels.TGetHomePageUsecaseResponse,
+        THomePageDefaultViewActionConfigMap
+    >): HomePageViewModels.THomePageViewModel {
+        // Convert the use case error response to a view model
+        const errorType = response.errorType;
+        switch (errorType) {
+            case "CMSError":
+                // Handle CMSError
+                return {
+                    mode: "kaboom",
+                    data: {
+                        type: "CMSError",
+                        message: response.data.message,
+                        trace: 'something',
+                    }
+                };
+            case "ValidationError":
+                // Handle ValidationError
+                return {
+                    mode: "kaboom",
+                    data: {
+                        type: "ValidationError",
+                        message: response.data.message,
+                        trace: 'something',
+                    }
+                };
+            default:
+                // Handle unknown error type
+                return {
+                    mode: "kaboom",
+                    data: {
+                        type: "UnknownError",
+                        message: "An unknown error occurred",
+                        trace: 'something',
+                    }
+                };
+        }
+    }
+}

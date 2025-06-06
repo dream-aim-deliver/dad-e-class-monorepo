@@ -1,9 +1,17 @@
 import { z } from 'zod'
+export const MediaFileSchema = z.object({
+    id: z.string(),
+    url: z.string(),
+    type: z.enum(['image', 'video']),
+    thumbnailUrl: z.string().optional(),
+    provider: z.string(),
+    providerID: z.string(),
+});
 
 export const HomeBannerSchema = z.object({
     title: z.string(),
     description: z.string(),
-    videoId: z.string(),
+    video: z.string(),
     thumbnailUrl: z.string(),
 });
 /**

@@ -45,7 +45,7 @@ export const BaseModelCreatedSchemaFactory = <TModelShape extends z.ZodRawShape>
     return BaseModelCreatedSchema.merge(modelSchema)
 }
 
-export type TBaseModelCreated<TModelShape extends z.ZodRawShape> = z.infer<ReturnType<typeof BaseModelCreatedSchemaFactory<TModelShape>>>;
+export type TBaseModelCreated<TModelShape extends z.ZodRawShape> = z.infer<ReturnType<(typeof BaseModelCreatedSchemaFactory<TModelShape>)>>;
 
 export const BaseModelDeletedSchemaFactory = <TModelShape extends z.ZodRawShape>(
     modelSchema: z.ZodObject<TModelShape>
@@ -194,7 +194,7 @@ export const BaseErrorDiscriminatedUnionSchemaFactory = <
 >(
     errorSchemasMap: TErrorSchemaMap
 ) => {
-    return makeDiscriminatedUnion("errorType", {...errorSchemasMap, ...CommonErrorSchemaMap});
+    return makeDiscriminatedUnion("errorType", { ...errorSchemasMap, ...CommonErrorSchemaMap });
 };
 
 
@@ -275,29 +275,186 @@ export const BasePartialProgressSchemaFactory = <
         }),
     });
 }
+
+export const BaseStatusDiscriminatedUnionSchemaFactory = <
+    TStatusSchemaTuple extends [z.ZodDiscriminatedUnionOption<"success">, ...z.ZodDiscriminatedUnionOption<"success">[]]
+>(
+    statusSchemaTuple: TStatusSchemaTuple
+) => {
+    return z.discriminatedUnion("success", statusSchemaTuple);
+}
+
+export type TBaseStatusDiscriminatedUnion<TStatusSchemaTuple extends [z.ZodDiscriminatedUnionOption<"success">, ...z.ZodDiscriminatedUnionOption<"success">[]]> = z.infer<
+    ReturnType<typeof BaseStatusDiscriminatedUnionSchemaFactory<TStatusSchemaTuple>>
+>;
+
 // END : BASE MODELS
 
 
 
 // VIEW MODELS (Infrastructure Layer)
-// export const ReactViewModelSchemaFactory = <TResponseModel extends z.ZodRawShape>(
-//     responseModelSchema: z.ZodObject<TResponseModel>
-// ) => {
+export const BaseDiscriminatedViewModeSchemaFactory = <TMode extends string, TModelShape extends z.ZodRawShape>(
+    mode: TMode,
+    modelSchema: z.ZodObject<TModelShape>,
+) => {
+    return z.object({
+        mode: z.literal(mode),
+        data: modelSchema,
+    });
+}
 
-// }
+export const BaseViewModelDiscriminatedUnionSchemaFactory = <
+    TViewModesSchemaMap extends Record<string, z.ZodDiscriminatedUnionOption<"mode">>
+>(
+    viewModesSchemaMap: TViewModesSchemaMap
+) => {
+    return makeDiscriminatedUnion("mode", viewModesSchemaMap);
+}
+
+export type TBaseDiscriminatedViewModel<ViewModesSchemaMap extends Record<string, z.ZodDiscriminatedUnionOption<"mode">>> = z.infer<
+    ReturnType<typeof BaseViewModelDiscriminatedUnionSchemaFactory<ViewModesSchemaMap>>
+>;
 // END : VIEW MODELS (Infrastructure Layer)
 
 
 // PRIMARY OUTPUT PORTS
-export interface BasePresenterOutputPort<TSuccessModel extends z.ZodRawShape, TErrorModel extends z.ZodRawShape, TProgressModel extends z.ZodRawShape> {
-    presentSuccess: (response: { success: true; data: TSuccessModel }) => void;
-    presentError: (response: { success: false; data: TErrorModel }) => void;
-    presentProgress: (response: { success: "progress"; data: TProgressModel }) => void;
-    presentPartial: (response: { success: "partial"; data: { success: TSuccessModel[]; error: TErrorModel[] } }) => void;
-    presentPartialProgress: (response: { success: "partial-progress"; data: { success: TSuccessModel[]; error: TErrorModel[]; progress: TProgressModel[] } }) => void;
+export type TBasePresenterConfig<
+    TErrorTypes extends string | undefined,
+    TProgressSteps extends string | undefined,
+    TViewActionConfigMap extends { [key: string]: unknown }> = {
+        schemas: {
+            responseModel: z.ZodDiscriminatedUnion<"success", [z.ZodDiscriminatedUnionOption<"success">, ...z.ZodDiscriminatedUnionOption<"success">[]]>,
+            viewModel: z.ZodDiscriminatedUnion<"mode", [z.ZodDiscriminatedUnionOption<"mode">, ...z.ZodDiscriminatedUnionOption<"mode">[]]>,
+        },
+        eventConfig?: (
+            TErrorTypes extends string
+            ? { [K in TErrorTypes as `errorType:${K}`]?: keyof TViewActionConfigMap }
+            : object
+        ) & (
+            TProgressSteps extends string
+            ? { [K in TProgressSteps as `step:${K}`]?: keyof TViewActionConfigMap }
+            : object
+        ),
+        callbacks?: {
+            [K in keyof TViewActionConfigMap]: (data: TViewActionConfigMap[K]) => Promise<void> | void;
+        }
+    }
+
+export type ExtractStatusModel<TResponseModel, TSuccess = boolean | "partial" | "progress" | "partial-progress"> = Extract<TResponseModel, { success: TSuccess }>;
+
+export type ExtractHandledErrorTypes<
+    TErrorTypes extends string | undefined,
+    TMap extends object
+> = TErrorTypes extends string
+    ? {
+        [K in TErrorTypes]: `errorType:${K}` extends keyof TMap ? K : never
+    }[TErrorTypes]
+    : never;
+
+export type UnhandledErrorResponse<
+  TErrorTypes extends string | undefined,
+  TResponseModel,
+  TMap extends object
+> = Extract<
+  TResponseModel,
+  {
+    success: false;
+    errorType: Exclude<TErrorTypes, ExtractHandledErrorTypes<TErrorTypes, TMap>>;
+  }
+>;
+
+// export type TViewModeActionConfigMap<
+//     TViewModes extends string, 
+//     TViewModeActions extends { mode: TViewModes }
+// > = {
+//     [K in TViewModes]: {
+//         viewModel: TViewModel;
+//         actions: {
+//             [action: string]: (data: any) => Promise<void>;
+//         };
+//     }
+// };
+
+export type TBaseErrorResponseHandlerConfig<
+    TErrorTypes extends string | undefined,
+    TProgressSteps extends string | undefined,
+    TViewModeActionConfigMap extends { [key: string]: unknown }
+> = {
+    eventConfig: {
+        [K in TErrorTypes as `errorType:${K}`]?: keyof TViewModeActionConfigMap
+    } & {
+        [K in TProgressSteps as `step:${K}`]?: keyof TViewModeActionConfigMap
+    }
 }
+export abstract class BasePresenter<
+    TViewModes extends string,
+    TViewModel extends { mode: TViewModes },
+    TErrorTypes extends string | undefined,
+    TProgressSteps extends string | undefined,
+    TResponseModel extends { success: boolean | "partial" | "partial-progress" | "progress", errorType?: TErrorTypes, step?: TProgressSteps },
+    TViewActionConfigMap extends { [key: string]: unknown }
+> {
+    config: TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap>;
+    constructor(
+        config: TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap>
+    ) {
+        this.config = config;
+    }
 
-// End: PRIMARY OUTPUT PORTS
+    abstract presentSuccess(response: Extract<TResponseModel, { success: true }>): TViewModel;
 
+    abstract presentError(response: UnhandledErrorResponse<TErrorTypes, TResponseModel, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap>['eventConfig']>>
+    ): TViewModel;
+
+    abstract getViewActionInputForError<K extends keyof TViewActionConfigMap, E extends Extract<TResponseModel, { success: false }>>(
+        error: Extract<TResponseModel, { success: false }>,
+        errorType: NonNullable<E['errorType']>,
+        action: K
+    ): TViewActionConfigMap[K];
+    
+    async present(response: TResponseModel): Promise<TViewModel> {
+        if (response.success === true) {
+            return this.presentSuccess(response as Extract<TResponseModel, { success: true }>);
+        } else if (response.success === "partial") {
+            // Handle partial response
+            throw new Error("Partial response not implemented");
+        } else if (response.success === "partial-progress") {
+            // Handle partial progress response
+            throw new Error("Partial progress response not implemented");
+        } else if (response.success === "progress") {
+            // Handle progress response
+            throw new Error("Progress response not implemented");
+        } else {
+            // Handle error response
+            const errorType = (response).errorType;
+            const eventConfig = this.config?.eventConfig as Record<string, keyof TViewActionConfigMap | undefined>;
+            if (errorType && eventConfig?.[`errorType:${errorType}`]) {
+                const eventKey = eventConfig[`errorType:${errorType}`];
+                if (eventKey === undefined) {
+                    throw new Error(`Action key for error type ${String(errorType)} not found`);
+                }
+                const callback = this.config.callbacks?.[eventKey];
+
+                if (!callback) {
+                    throw new Error(`Callback for action ${String(eventKey)} not found`);
+                }
+
+                const input = this.getViewActionInputForError(
+                    response as Extract<TResponseModel, { success: false }>,
+                    errorType,
+                    eventKey
+                );
+
+                await callback(input);
+                return this.presentError(response as Extract<TResponseModel, {
+                    success: false;
+                    errorType: Exclude<TErrorTypes, ExtractHandledErrorTypes<TErrorTypes, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap>['eventConfig']>>>;
+                }>);
+            } else {
+                throw new Error("Error response not handled");
+            }
+        }
+    }
+}
 
 

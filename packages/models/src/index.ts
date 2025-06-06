@@ -13,3 +13,8 @@ export * as role from './role';
 export * as user from './user';
 export * as topic from './topic';
 export * as homePage from './home-page';
+
+export * as cats from './cats/cats-core';
+export * as HomePageViewModels from './view-models/home-page-view-model';
+export * as GetHomePageUseCaseModels from './usecase-models/get-home-page-usecase-models';
+export * as HomePageCoreModels from './entity/home-page';

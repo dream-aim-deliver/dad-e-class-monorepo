@@ -1,18 +1,24 @@
 import { z } from "zod";
-import { UsecaseResponseModelSchemaFactory } from "./cats-core";
 
+export abstract class BaseReactPresenter<TSuccessResponseModel, TProgressResponseModel> {
+    abstract getViewModel(): void;
+    abstract setViewModel(): void;
+
+    abstract presentSuccess(response: { success: true; data: TSuccessResponse }): void;
+    abstract presentError(response: { success: false; data: TErrorResponse }): void;
+    abstract presentProgress(response: { success: "progress"; data: TProgressResponse }): void;
+    abstract presentPartial(response: { success: "partial"; data: { success: TSuccessResponse[]; error: TErrorResponse[] } }): void;
+    abstract presentPartialProgress(response: { success: "partial-progress"; data: { success: TSuccessResponse[]; error: TErrorResponse[]; progress: TProgressResponse[] } }): void;
+}
 export const useBaseReactPresenter = <
-    TSuccessModel extends z.ZodRawShape,
-    TErrorTypes extends string,
-    TProgressSteps extends string,
-    TResponseModel extends z.infer<ReturnType<typeof UsecaseResponseModelSchemaFactory<TSuccessModel, TErrorTypes, TProgressSteps>>>,
+    TResponseModel,
+    TViewModel
     >(
     success: {
         redirect?: string;
     }
 ) => {
-    const toast = useToast()
-    class ReactPresenter<TResponseModel extends z.infer<ReturnType<typeof UsecaseResponseModelSchemaFactory<TSuccessModel, TErrorTypes, TProgressSteps>>>> {
+    class ReactPresenter<TResponseModel, TViewModel> {
         constructor(
             showToas: 
         )
