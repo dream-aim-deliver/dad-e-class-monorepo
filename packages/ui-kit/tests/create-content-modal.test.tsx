@@ -80,7 +80,7 @@ vi.mock('../lib/components/star-rating', () => ({
     ),
 }));
 
-// 🧪 Test
+// Test
 describe('CreateContentModal - Course variant', () => {
     const mockProps: CreateContentModalProps = {
         variant: 'course',
@@ -88,7 +88,7 @@ describe('CreateContentModal - Course variant', () => {
         onClose: vi.fn(),
         onCreateNewContentDraft: vi.fn(),
         onDuplicateContent: vi.fn(),
-        courses: [
+        content: [
             {
                 id: '1',
                 title: 'React Basics',
@@ -99,7 +99,6 @@ describe('CreateContentModal - Course variant', () => {
                 rating: 4.5,
             },
         ],
-        lessons: [],
     };
 
     it('renders modal with correct title and description', () => {
