@@ -28,7 +28,12 @@ export default async function HomeServerComponent() {
             <div className="bg-card-color-fill">
                 <Suspense
                     fallback={
-                        <div className="text-white">Loading... Hello...</div>
+                        <div className="flex flex-col items-center justify-center py-12 text-white animate-pulse space-y-4">
+                            <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <p className="text-lg font-medium">
+                                Loading content...
+                            </p>
+                        </div>
                     }
                 >
                     <Home locale={locale as TLocale} session={session} />

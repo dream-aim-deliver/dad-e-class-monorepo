@@ -15,7 +15,16 @@ const nextConfig: NextConfig = {
         // See: https://github.com/gregberge/svgr
         svgr: false,
     },
-    transpilePackages: ['superjson']
+    transpilePackages: ['superjson'],
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'img.youtube.com',
+                pathname: '/**',
+            },
+        ]
+    }
 };
 
 const plugins = [

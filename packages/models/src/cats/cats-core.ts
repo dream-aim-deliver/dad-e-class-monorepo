@@ -294,7 +294,7 @@ export type TBaseStatusDiscriminatedUnion<TStatusSchemaTuple extends [z.ZodDiscr
     ReturnType<typeof BaseStatusDiscriminatedUnionSchemaFactory<TStatusSchemaTuple>>
 >;
 
-export type TBarebonesStatusDiscriminatedUnion<TErrorType, TProgressSteps> = {
+export type TBarebonesStatusDiscriminatedUnion = {
     success: true
     data: object;
 } | {
@@ -303,7 +303,7 @@ export type TBarebonesStatusDiscriminatedUnion<TErrorType, TProgressSteps> = {
         operation: string;
         message: string;
         context: object;
-        errorType: TErrorType | undefined;
+        errorType: string;
     }
 } | {
     success: "partial"
@@ -313,7 +313,7 @@ export type TBarebonesStatusDiscriminatedUnion<TErrorType, TProgressSteps> = {
             operation: string;
             message: string;
             context: object;
-            errorType: TErrorType | undefined;
+            errorType: string;
         }[]
     }
 } | {
@@ -324,17 +324,17 @@ export type TBarebonesStatusDiscriminatedUnion<TErrorType, TProgressSteps> = {
             operation: string;
             message: string;
             context: object;
-            errorType: TErrorType | undefined;
+            errorType: string;
         }[];
         progress: {
-            step: TProgressSteps;
+            step: string;
             context: object;
         }[];
     }
 } | {
     success: "progress"
     data: {
-        step: TProgressSteps;
+        step: string;
         context: object;
     }
 };
@@ -366,30 +366,27 @@ export type TBaseDiscriminatedViewModel<ViewModesSchemaMap extends Record<string
 >;
 // END : VIEW MODELS (Infrastructure Layer)
 
-
+export type TBaseViewUtilities = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: (...args: any[]) => Promise<void> | void;
+}
 // PRIMARY OUTPUT PORTS
 export type TBasePresenterConfig<
-    TErrorTypes extends string | undefined,
-    TProgressSteps extends string | undefined,
-    TViewActionConfigMap extends { [key: string]: unknown },
-    TViewModel
+    TResponseModel extends TBarebonesStatusDiscriminatedUnion,
+    TViewModel,
+    TPageUtilities extends TBaseViewUtilities,
+    TResponseMiddleware extends TBaseResponseResponseMiddleware<
+        TResponseModel,
+        TViewModel,
+        TPageUtilities
+    >,
 > = {
     schemas: {
         responseModel: z.ZodDiscriminatedUnion<"success", [z.ZodDiscriminatedUnionOption<"success">, ...z.ZodDiscriminatedUnionOption<"success">[]]>,
         viewModel: z.ZodDiscriminatedUnion<"mode", [z.ZodDiscriminatedUnionOption<"mode">, ...z.ZodDiscriminatedUnionOption<"mode">[]]>,
     },
-    eventConfig?: (
-        TErrorTypes extends string
-        ? { [K in TErrorTypes as `errorType:${K}`]?: keyof TViewActionConfigMap }
-        : object
-    ) & (
-        TProgressSteps extends string
-        ? { [K in TProgressSteps as `step:${K}`]?: keyof TViewActionConfigMap }
-        : object
-    ),
-    callbacks: {
-        [K in keyof TViewActionConfigMap]: (data: TViewActionConfigMap[K]) => Promise<void> | void;
-    },
+    middleware?: TResponseMiddleware,
+    viewUtilities?: TBaseViewUtilities,
     setViewModel: (viewModel: TViewModel) => void,
 }
 
@@ -405,58 +402,81 @@ export type ExtractHandledErrorTypes<
     : never;
 
 export type UnhandledErrorResponse<
-    TErrorTypes extends string | undefined,
-    TResponseModel extends { success: false, data: { errorType: TErrorTypes | undefined } },
+    TResponseModel extends ExtractStatusModel<TBarebonesStatusDiscriminatedUnion, false>,
     TMap extends object
 > = {
     success: false;
     data: Exclude<
         Extract<TResponseModel, { success: false }>['data'],
         {
-            errorType: ExtractHandledErrorTypes<TErrorTypes, TMap>;
+            errorType: ExtractHandledErrorTypes<Extract<TResponseModel, { success: false }>['data']['errorType'], TMap>;
         }>;
-    }
+}
 
+type ViewUtilityContext<TResponseModel, TViewModel> = {
+    response: TResponseModel;
+    currentViewModel: TViewModel;
+    setViewModel: (currentViewModel: TViewModel, viewModel: TViewModel) => Promise<void> | void;
+};
 
+type InjectContext<
+    Fn,
+    Context
+> = Fn extends (...args: infer Args) => infer R
+    ? (context: Context, callback: Fn) => R
+    : never;
 
-export type TBaseResponseActionHandlerConfig<
-    TErrorTypes extends string | undefined,
-    TProgressSteps extends string | undefined,
-    TViewModeActionConfigMap extends { [key: string]: unknown }
+export type TBaseResponseResponseMiddleware<
+    TResponseModel extends TBarebonesStatusDiscriminatedUnion,
+    TViewModel,
+    TResponseMiddleware extends { [key: string]: CallableFunction }
 > = {
-    [K in TErrorTypes as `errorType:${K}`]?: keyof TViewModeActionConfigMap
+    [K in ExtractStatusModel<TResponseModel, false>['data']['errorType']as `errorType:${K}`]?: {
+        [A in keyof TResponseMiddleware]?: InjectContext<TResponseMiddleware[A], ViewUtilityContext<ExtractStatusModel<TResponseModel, false>, TViewModel>>;
+    }
 } & {
-        [K in TProgressSteps as `step:${K}`]?: keyof TViewModeActionConfigMap
+        [K in ExtractStatusModel<TResponseModel, 'progress'>['data']['step']as `step:${K}`]?: {
+            [A in keyof TResponseMiddleware]?: InjectContext<TResponseMiddleware[A], ViewUtilityContext<TResponseModel, TViewModel>>;
+        }
     }
 
 export abstract class BasePresenter<
-    TViewModes extends string,
-    TViewModel extends { mode: TViewModes },
-    TErrorTypes extends string | undefined,
-    TProgressSteps extends string | undefined,
-    TResponseModel extends TBarebonesStatusDiscriminatedUnion<TErrorTypes, TProgressSteps>,
-    TViewActionConfigMap extends { [key: string]: unknown }
+    TResponseModel extends TBarebonesStatusDiscriminatedUnion,
+    TViewModel,
+    TPageUtilities extends TBaseViewUtilities,
+    TResponseMiddleware extends TBaseResponseResponseMiddleware<
+        TResponseModel,
+        TViewModel,
+        TPageUtilities
+    >,
 > {
-    config: TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>;
+    config: TBasePresenterConfig<TResponseModel, TViewModel, TPageUtilities, TResponseMiddleware>;
+    setViewModel: (currentViewMode: TViewModel, viewModel: TViewModel) => Promise<void> | void;
     constructor(
-        config: TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>,
+        config: TBasePresenterConfig<TResponseModel, TViewModel, TPageUtilities, TResponseMiddleware>
     ) {
         this.config = config;
+        this.setViewModel = (currentViewModel: TViewModel, viewModel: TViewModel) => {
+            if (!deepEqual(currentViewModel, viewModel)) {
+                this.config.setViewModel(viewModel);
+            }
+        };
     }
 
     abstract presentSuccess(
-        response: Extract<TResponseModel, { success: true }>, currentViewModel: TViewModel | undefined): TViewModel;
-
-    abstract presentError(
-        response: UnhandledErrorResponse<TErrorTypes, Extract<TResponseModel, { success: false }>, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>['eventConfig']>>,
+        response: ExtractStatusModel<TResponseModel, true>,
         currentViewModel: TViewModel | undefined
     ): TViewModel;
 
-    abstract getViewActionInputForError<K extends keyof TViewActionConfigMap, E extends Extract<TResponseModel, { success: false }>>(
-        error: Extract<TResponseModel, { success: false }>,
-        errorType: NonNullable<E['data']['errorType']>,
-        action: K
-    ): TViewActionConfigMap[K];
+
+    abstract presentError(
+        response: UnhandledErrorResponse<
+            ExtractStatusModel<TResponseModel, false>,
+            TResponseMiddleware
+        >,
+        currentViewModel: TViewModel | undefined
+    ): TViewModel;
+
 
     async present(response: TResponseModel, currentViewModel: TViewModel | undefined): Promise<void> {
         let newViewModel: TViewModel | undefined = currentViewModel;
@@ -474,35 +494,34 @@ export abstract class BasePresenter<
         } else {
             // Handle error response
             const errorType = response.data.errorType;
-            const eventConfig = this.config?.eventConfig as Record<string, keyof TViewActionConfigMap | undefined>;
-            if (errorType && eventConfig?.[`errorType:${errorType}`]) {
-                const eventKey = eventConfig[`errorType:${errorType}`];
-                if (eventKey === undefined) {
-                    throw new Error(`Action key for error type ${String(errorType)} not found`);
+            const middleware = this.config?.middleware;
+            if (middleware && errorType && middleware[`errorType:${errorType}`]) {
+                const middlewareMapElement: Record<string, InjectContext<TPageUtilities[keyof TPageUtilities], ViewUtilityContext<TResponseModel, TViewModel>>> = middleware[`errorType:${errorType}`];
+                if (middlewareMapElement !== undefined) {
+                    
+                    // Execute the middleware actions for the error type
+                    for (const actionKey in middlewareMapElement) {
+                        const action = middlewareMapElement[actionKey];
+                        const context: ViewUtilityContext<TResponseModel, TViewModel> = {
+                            response: response as Extract<TResponseModel, { success: false }>,
+                            currentViewModel: currentViewModel as TViewModel,
+                            setViewModel: this.setViewModel,
+                        };
+                        const fn = this.config.viewUtilities?.[actionKey];
+                        if (!fn) {
+                            console.error(`Callback for action ${String(actionKey)} not found`);
+                            continue;
+                        }
+                        await action(context, fn);
+                    }
                 }
-                const callback = this.config.callbacks?.[eventKey];
-
-                if (!callback) {
-                    throw new Error(`Callback for action ${String(eventKey)} not found`);
-                }
-
-                const input = this.getViewActionInputForError(
-                    response as Extract<TResponseModel, { success: false }>,
-                    errorType,
-                    eventKey
-                );
-
-                await callback(input);
-                newViewModel = this.presentError(
-                    response as UnhandledErrorResponse<TErrorTypes, Extract<TResponseModel, { success: false }>, NonNullable<TBasePresenterConfig<TErrorTypes, TProgressSteps, TViewActionConfigMap, TViewModel>['eventConfig']>>,
+            }
+            newViewModel = this.presentError(
+                    response as UnhandledErrorResponse<Extract<TResponseModel, { success: false }>, TResponseMiddleware>,
                     currentViewModel
                 );
-                
-            }
         }
-        if (!deepEqual(newViewModel, currentViewModel)) {
-            this.config.setViewModel(newViewModel as TViewModel);
-        }
+        this.setViewModel(currentViewModel as TViewModel, newViewModel as TViewModel);
     }
 }
 
