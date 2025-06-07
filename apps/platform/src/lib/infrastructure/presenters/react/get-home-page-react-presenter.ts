@@ -1,9 +1,8 @@
 import { HomePageViewModels } from "@maany_shr/e-class-models";
 import HomePageReactPresenter, { THomePageUtilities } from "../common/get-home-page-presenter";
 import { useMemo } from "react";
-import { useRouter
+import { useRouter} from "next/navigation";
 
- } from "next/navigation";
 export function useGetHomePagePresenter(
     setViewModel: (viewModel: HomePageViewModels.THomePageViewModel) => void,
 ) {

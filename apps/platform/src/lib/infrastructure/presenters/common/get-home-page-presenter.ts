@@ -1,5 +1,4 @@
 import { cats, HomePageViewModels, GetHomePageUseCaseModels } from "@maany_shr/e-class-models"
-import { ExtractStatusModel } from "packages/models/src/cats/cats-core";
 
 export type THomePageUtilities = {
     showToast: (data: { message: string }) => Promise<void> | void;
@@ -11,7 +10,7 @@ export const GetHomePageResponseMiddleware = {
     "errorType:AuthenticationError": {
         "redirect": async(
             context: {
-                response: ExtractStatusModel<GetHomePageUseCaseModels.TGetHomePageUsecaseResponse, false>,
+                response: cats.ExtractStatusModel<GetHomePageUseCaseModels.TGetHomePageUsecaseResponse, false>,
                 currentViewModel: HomePageViewModels.THomePageViewModel,
                 setViewModel: (currentViewModel: HomePageViewModels.THomePageViewModel, viewModel: HomePageViewModels.THomePageViewModel) => void,
             },
