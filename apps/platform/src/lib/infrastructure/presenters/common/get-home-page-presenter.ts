@@ -4,7 +4,7 @@ import { ExtractStatusModel } from "packages/models/src/cats/cats-core";
 export type THomePageUtilities = {
     showToast: (data: { message: string }) => Promise<void> | void;
     showWarning: (data: { message: string }) => Promise<void> | void;
-    redirect: (url: string) => Promise<void> | void;
+    redirect: (page: 'login-page') => Promise<void> | void;
 };
 
 export const GetHomePageResponseMiddleware = {
@@ -28,7 +28,7 @@ export const GetHomePageResponseMiddleware = {
                     trace: 'something',
                 },
             };
-            setViewModel(context.currentViewModel, viewModel);
+            callback('login-page');
         },
         "showToast": async(
             context: {

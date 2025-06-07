@@ -46,8 +46,8 @@ const selectResponse = (success: boolean): GetHomePageUseCaseModels.TGetHomePage
     if (success) {
         return GetHomePageDummySuccessResponse;
     } else {
-        // return GetHomePageDummyAuthErrorResponse
-        return GetHomePageDummyValidationErrorResponse
+        return GetHomePageDummyAuthErrorResponse
+        // return GetHomePageDummyValidationErrorResponse
     }
 };
 
@@ -55,7 +55,7 @@ export const getHomePage = t.procedure
     .input(GetHomePageInputSchema)
     .query(async (opts): Promise<GetHomePageUseCaseModels.TGetHomePageUsecaseResponse> => {
         // Simulate a delay to mimic an actual API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
         // Return the dummy success response
         return selectResponse(opts.input.success ?? true);
     });

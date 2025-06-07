@@ -416,7 +416,7 @@ export type UnhandledErrorResponse<
 type ViewUtilityContext<TResponseModel, TViewModel> = {
     response: TResponseModel;
     currentViewModel: TViewModel;
-    setViewModel: (currentViewModel: TViewModel, viewModel: TViewModel) => Promise<void> | void;
+    setViewModel: (currentViewModel: TViewModel, viewModel: TViewModel) => void;
 };
 
 type InjectContext<
@@ -498,14 +498,13 @@ export abstract class BasePresenter<
             if (middleware && errorType && middleware[`errorType:${errorType}`]) {
                 const middlewareMapElement: Record<string, InjectContext<TPageUtilities[keyof TPageUtilities], ViewUtilityContext<TResponseModel, TViewModel>>> = middleware[`errorType:${errorType}`];
                 if (middlewareMapElement !== undefined) {
-                    
                     // Execute the middleware actions for the error type
                     for (const actionKey in middlewareMapElement) {
                         const action = middlewareMapElement[actionKey];
                         const context: ViewUtilityContext<TResponseModel, TViewModel> = {
                             response: response as Extract<TResponseModel, { success: false }>,
                             currentViewModel: currentViewModel as TViewModel,
-                            setViewModel: this.setViewModel,
+                            setViewModel: this.setViewModel
                         };
                         const fn = this.config.viewUtilities?.[actionKey];
                         if (!fn) {
@@ -515,11 +514,12 @@ export abstract class BasePresenter<
                         await action(context, fn);
                     }
                 }
-            }
+            } else {
             newViewModel = this.presentError(
                     response as UnhandledErrorResponse<Extract<TResponseModel, { success: false }>, TResponseMiddleware>,
                     currentViewModel
                 );
+            }
         }
         this.setViewModel(currentViewModel as TViewModel, newViewModel as TViewModel);
     }

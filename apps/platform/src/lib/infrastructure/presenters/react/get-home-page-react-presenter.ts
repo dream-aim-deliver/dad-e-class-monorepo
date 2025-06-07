@@ -17,7 +17,12 @@ export function useGetHomePagePresenter(
             // Example: Show a warning notification
             console.warn("Warning:", message);
         },
-        redirect: router.push
+        redirect: (page: 'login-page') => {
+            // Example: Redirect to the login page
+            if (page === 'login-page') {
+                router.push(`/auth/login?callbackUrl=${encodeURIComponent(window.location.href)}`);
+            }
+        },
     };
     // TODO: VIKA Use Toast and Redirect can be obtained here from a context or from next/router
     const presenter = useMemo(() => {
