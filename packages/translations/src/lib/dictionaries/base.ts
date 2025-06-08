@@ -191,6 +191,13 @@ export const DictionarySchema = z.object({
       cochingSession: z.string(),
       sales: z.string(),
       hours: z.string(),
+      includeCourseButton: z.string(),
+      excludeCourseButton: z.string(),
+      coachingIncluded: z.string(),
+      packageCourseSelectorTitle: z.string(),
+      packageCourseSelectorDescription: z.string(),
+      packageCourseSelectorButton: z.string(),
+      saveText: z.string(),
     }),
     availableCoachingSessions: z.object({
       title: z.string(),
