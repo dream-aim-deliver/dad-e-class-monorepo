@@ -103,6 +103,13 @@ export const EN: TDictionary = {
       cochingSession: 'Coaching Session',
       sales: 'sales',
       hours: 'hours',
+      includeCourseButton: 'Include',
+      excludeCourseButton: 'Exclude',
+      coachingIncluded: 'Coaching included',
+      packageCourseSelectorTitle: 'Buy the entire package or choose only the courses you need',
+      packageCourseSelectorDescription: 'With this package, you can select only specific courses or purchase the entire package for maximum savings.',
+      packageCourseSelectorButton: 'Purchase Selected Courses',
+      saveText: 'save',
     },
     reviewModal: {
       coachingTitle: 'How would you rate this coach?',
