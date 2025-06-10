@@ -1,26 +1,20 @@
 import { z } from 'zod';
-import { BaseModelCreatedSchemaFactory, BaseModelDeletedSchemaFactory, BaseModelDraftSchemaFactory } from '../cats/cats-core';
+import { BaseExternalModelSchemaFactory, BaseModelCreatedSchemaFactory, BaseModelDeletedSchemaFactory, BaseModelDraftSchemaFactory } from '../cats/cats-core';
+import { PlatformLanguageCreatedSchema } from './platform-language';
 
-export const HomePageMetadataSchema = z.object({
-});
+export const HomePageSchema = BaseModelDraftSchemaFactory(
+    BaseExternalModelSchemaFactory(z.object({
+    })),
+);
 
-export const HomePageDraftSchema = BaseModelDraftSchemaFactory(z.object({
-    title: z.string(),
-    description: z.string(),
-    videoId: z.string(),
-    thumbnailUrl: z.string(),
-}));
+export const HomepageCreatedSchema = BaseModelCreatedSchemaFactory(HomePageSchema);
 
-export const HomepageCreatedSchema = BaseModelCreatedSchemaFactory(HomePageDraftSchema);
-
-
-export const HomePageDeletedSchema = BaseModelDeletedSchemaFactory(HomePageDraftSchema);
+export const HomePageDeletedSchema = BaseModelDeletedSchemaFactory(HomePageSchema);
 
 export const HomePageIndexSchema = z.object({
-    by_id: z.number().or(z.string()),
+    byId: z.any(), // TODO: filter
 });
 
 export const HomePageRelationsSchema = z.object({
-    // externalProvider: BaseExternalProviderSchema
+   platformLanguage: PlatformLanguageCreatedSchema,
 });
-

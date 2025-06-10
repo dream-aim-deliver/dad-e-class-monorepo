@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 export const MediaFileSchema = z.object({
     id: z.string(),
     url: z.string(),

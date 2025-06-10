@@ -1,10 +1,11 @@
-import { z } from 'zod'
+import { z } from 'zod';
+import { FileMetadataCreatedSchema } from './file-model';
 
 export const HomeBannerSchema = z.object({
     title: z.string(),
     description: z.string(),
-    videoId: z.string(), // TODO: relation
-    thumbnailUrl: z.string(),
+    video: FileMetadataCreatedSchema,
+    thumbnail: FileMetadataCreatedSchema,
 });
 /**
  * Schema for a home banner.
@@ -23,7 +24,7 @@ export type THomeBanner = z.infer<typeof HomeBannerSchema>;
 export const GeneralCardSchema = z.object({
     title: z.string(),
     description: z.string(),
-    imageUrl: z.string(),
+    image: FileMetadataCreatedSchema,
     buttonText: z.string(),
     buttonUrl: z.string(),
     badge: z.string().optional(),
@@ -47,9 +48,9 @@ export type TGeneralCard = z.infer<typeof GeneralCardSchema>;
 export const CoachingOnDemandSchema = z.object({
     title: z.string(),
     description: z.string(),
-    desktopImageUrl: z.string(),
-    tabletImageUrl: z.string(),
-    mobileImageUrl: z.string(),
+    desktopImage: FileMetadataCreatedSchema,
+    tabletImage: FileMetadataCreatedSchema,
+    mobileImage: FileMetadataCreatedSchema,
 });
 /**
  * Schema for the coaching on demand section.
@@ -70,7 +71,7 @@ export const AccordionItemSchema = z.object({
     title: z.string(),
     content: z.string(),
     position: z.number(),
-    iconImageUrl: z.string(),
+    iconImage: FileMetadataCreatedSchema,
 });
 /**
  * Schema for an accordion item.
@@ -104,11 +105,11 @@ export const AccordionListSchema = z.object({
  */
 export type TAccordionList = z.infer<typeof AccordionListSchema>;
 
-export const HomePageDraftSchema = z.object({
+export const HomePageDocumentSchema = z.object({
     banner: HomeBannerSchema,
-    carousel: z.array(GeneralCardSchema),
-    coachingOnDemand: CoachingOnDemandSchema,
-    accordion: AccordionListSchema,
+    carousel: z.array(GeneralCardSchema).optional(),
+    coachingOnDemand: CoachingOnDemandSchema.optional(),
+    accordion: AccordionListSchema.optional(),
 });
 
 /**
@@ -146,4 +147,4 @@ export const HomePageDraftSchema = z.object({
  *     - `iconImageUrl`: The URL of the associated icon.
  */
 
-export type THomePage = z.infer<typeof HomePageDraftSchema>;
+export type THomePageDocument = z.infer<typeof HomePageDocumentSchema>;

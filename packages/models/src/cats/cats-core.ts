@@ -73,7 +73,7 @@ export const BaseStatefulModelSchemaFactory = <TModelShape extends z.ZodRawShape
 // External Models
 const BaseExternalModelSchema = z.object({
     provider: z.string(),
-    externalID: z.string(),
+    externalId: z.string(),
 }).strict();
 
 export const BaseExternalModelSchemaFactory = <TModelShape extends z.ZodRawShape>(
@@ -171,7 +171,6 @@ export const CommonErrorSchemaMap = {
     UnknownError: BaseDiscriminatedErrorTypeSchemaFactory({
         type: 'UnknownError',
         schema: z.object({
-            message: z.string(),
             trace: z.string().optional(),
         }),
     }),
@@ -179,17 +178,21 @@ export const CommonErrorSchemaMap = {
         type: 'AuthenticationError',
         schema: z.object({
             statusCode: z.number(),
-            message: z.string(),
             trace: z.string().optional(),
         }),
     }),
     ValidationError: BaseDiscriminatedErrorTypeSchemaFactory({
         type: 'ValidationError',
         schema: z.object({
-            message: z.string(),
             trace: z.string().optional(),
         }),
     }),
+    NotFoundError: BaseDiscriminatedErrorTypeSchemaFactory({
+        type: 'NotFound',
+        schema: z.object({
+            trace: z.string().optional(),
+        })
+    })
 }
 
 export const BaseErrorDiscriminatedUnionSchemaFactory = <
