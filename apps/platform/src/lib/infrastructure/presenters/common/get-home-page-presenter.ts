@@ -28,18 +28,7 @@ export const GetHomePageResponseMiddleware = {
                 },
             };
             callback('login-page');
-        },
-        "showToast": async(
-            context: {
-                response: GetHomePageUseCaseModels.TGetHomePageUsecaseResponse,
-                currentViewModel: HomePageViewModels.THomePageViewModel,
-                setViewModel: (currentViewModel: HomePageViewModels.THomePageViewModel, viewModel: HomePageViewModels.THomePageViewModel) => void,
-            },
-            callback: THomePageUtilities["showToast"],
-        ) => {
-            // Handle authentication error by showing a toast message
-            // You can implement the toast logic here if needed
-        },
+        }
     },
 } satisfies cats.TBaseResponseResponseMiddleware<
     GetHomePageUseCaseModels.TGetHomePageUsecaseResponse,
