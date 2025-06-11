@@ -7,7 +7,7 @@ export const HomePageSchema = BaseModelDraftSchemaFactory(
     })),
 );
 
-export const HomepageCreatedSchema = BaseModelCreatedSchemaFactory(HomePageSchema);
+export const HomePageCreatedSchema = BaseModelCreatedSchemaFactory(HomePageSchema);
 
 export const HomePageDeletedSchema = BaseModelDeletedSchemaFactory(HomePageSchema);
 

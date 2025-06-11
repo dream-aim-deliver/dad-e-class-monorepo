@@ -9,10 +9,10 @@ export const HomeBannerSchema = z.object({
 });
 /**
  * Schema for a home banner.
- * 
+ *
  * This schema defines the structure of the home banner object, ensuring all required
  * properties are present with their expected types.
- * 
+ *
  * Properties:
  * - `title`: The title of the banner.
  * - `description`: A brief description of the banner.
@@ -31,10 +31,10 @@ export const GeneralCardSchema = z.object({
 });
 /**
  * Schema for a general card.
- * 
+ *
  * This schema defines the structure of the general card object, ensuring all required
  * properties are present with their expected types.
- * 
+ *
  * Properties:
  * - `title`: The title of the card.
  * - `description`: A brief description of the card.
@@ -54,10 +54,10 @@ export const CoachingOnDemandSchema = z.object({
 });
 /**
  * Schema for the coaching on demand section.
- * 
+ *
  * This schema defines the structure of the coaching on demand object, ensuring all required
  * properties are present with their expected types.
- * 
+ *
  * Properties:
  * - `title`: The title of the section.
  * - `description`: A brief description of the section.
@@ -75,10 +75,10 @@ export const AccordionItemSchema = z.object({
 });
 /**
  * Schema for an accordion item.
- * 
+ *
  * This schema defines the structure of the accordion item object, ensuring all required
  * properties are present with their expected types.
- * 
+ *
  * Properties:
  * - `title`: The title of the accordion item.
  * - `content`: The content inside the accordion item.
@@ -94,10 +94,10 @@ export const AccordionListSchema = z.object({
 });
 /**
  * Schema for an accordion list.
- * 
+ *
  * This schema defines the structure of the accordion list object, ensuring all required
  * properties are present with their expected types.
- * 
+ *
  * Properties:
  * - `title`: The title of the accordion list.
  * - `showNumbers`: A boolean indicating whether to show numbering.
@@ -107,9 +107,9 @@ export type TAccordionList = z.infer<typeof AccordionListSchema>;
 
 export const HomePageSchema = z.object({
     banner: HomeBannerSchema,
-    // carousel: z.array(GeneralCardSchema).optional(), // TODO VIKA: temporarily optional to allow for empty carousel
-    // coachingOnDemand: CoachingOnDemandSchema.optional(),
-    // accordion: AccordionListSchema.optional(),
+    carousel: z.array(GeneralCardSchema),
+    coachingOnDemand: CoachingOnDemandSchema,
+    accordion: AccordionListSchema,
 });
 
 /**
