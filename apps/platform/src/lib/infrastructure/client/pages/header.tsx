@@ -1,6 +1,6 @@
 'use client';
 
-import { auth, platform } from '@maany_shr/e-class-models';
+import { auth, viewModels } from '@maany_shr/e-class-models';
 import { Navbar } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useTranslations } from 'next-intl';
@@ -9,7 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 interface HeaderProps {
-    platform: platform.TPlatform;
+    platformViewModel: viewModels.TPlatformViewModel;
     availableLocales: TLocale[];
     locale: TLocale;
     // TODO: implement session context
@@ -41,7 +41,7 @@ const NavLinks = () => {
 };
 
 export default function Header({
-    platform,
+    platformViewModel,
     availableLocales,
     locale,
     session,
@@ -63,8 +63,8 @@ export default function Header({
             logo={
                 <Image
                     priority
-                    src={platform.logoUrl}
-                    alt={platform.name}
+                    src={platformViewModel.data.logoUrl}
+                    alt={platformViewModel.data.name}
                     width={48}
                     height={48}
                     className="w-auto h-full"

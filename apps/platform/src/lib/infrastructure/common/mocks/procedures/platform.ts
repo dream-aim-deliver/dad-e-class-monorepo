@@ -1,26 +1,26 @@
-import { platform } from '@maany_shr/e-class-models';
+import { useCaseModels, viewModels, entities } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
-import { z } from 'zod';
 
-const getAdMock = (id: string | number): platform.TPlatform => ({
-    id: id,
+const platformMock: useCaseModels.TGetPlatformSuccessResponse['data'] = {
+    id: 1,
     name: 'Just Do Ad',
     logoUrl:
         'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748270861/a_wy7cuh_kwevw6.png',
     backgroundImageUrl:
         'https://res.cloudinary.com/dsyephqpf/image/upload/v1747650265/background-eln_mhvipu.jpg',
-    // TODO: determine if this should be a rich text field
-    footerContent:
-        '© 2024 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • hi@justdoad.ai',
-});
+    footerContent: entities.RichText.parse(
+        '"[{\\"type\\":\\"paragraph\\",\\"children\\":[{\\"text\\":\\"© 2024 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • \\"},{\\"type\\":\\"link\\",\\"url\\":\\"mailto:hi@justdoad.ai\\",\\"children\\":[{\\"text\\":\\"hi@justdoad.ai\\"}]}]}]"\n',
+    ),
+};
 
-const GetPlatformInputSchema = z.object({
-    id: z.string().or(z.number()),
-});
+const platformSuccess: useCaseModels.TGetPlatformSuccessResponse = {
+    success: true,
+    data: platformMock,
+};
 
 export const getPlatform = t.procedure
-    .input(GetPlatformInputSchema)
-    .query(async (opts): Promise<platform.TPlatform> => {
+    .input(useCaseModels.GetPlatformRequestSchema)
+    .query(async (opts): Promise<useCaseModels.TGetPlatformUseCaseResponse> => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        return getAdMock(opts.input.id);
+        return platformSuccess;
     });

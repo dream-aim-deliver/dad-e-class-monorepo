@@ -1,32 +1,32 @@
 import { cats, viewModels, useCaseModels } from '@maany_shr/e-class-models';
 
-export type THomePageUtilities = {};
+export type TPlatformUtilities = {};
 
-export const GetHomePageResponseMiddleware =
+export const GetPlatformResponseMiddleware =
     {} satisfies cats.TBaseResponseResponseMiddleware<
-        useCaseModels.TGetHomePageUseCaseResponse,
-        viewModels.THomePageViewModel,
-        THomePageUtilities
+        useCaseModels.TGetPlatformUseCaseResponse,
+        viewModels.TPlatformViewModel,
+        TPlatformUtilities
     >;
 
-type TGetHomePageResponseMiddleware = typeof GetHomePageResponseMiddleware;
+type TGetPlatformResponseMiddleware = typeof GetPlatformResponseMiddleware;
 
-export default class HomePageReactPresenter extends cats.BasePresenter<
-    useCaseModels.TGetHomePageUseCaseResponse,
-    viewModels.THomePageViewModel,
-    THomePageUtilities,
-    TGetHomePageResponseMiddleware
+export default class PlatformReactPresenter extends cats.BasePresenter<
+    useCaseModels.TGetPlatformUseCaseResponse,
+    viewModels.TPlatformViewModel,
+    TPlatformUtilities,
+    TGetPlatformResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.THomePageViewModel) => void,
-        viewUtilities: THomePageUtilities,
+        setViewModel: (viewModel: viewModels.TPlatformViewModel) => void,
+        viewUtilities: TPlatformUtilities,
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
-                viewModel: viewModels.HomePageViewModelSchema,
+                responseModel: useCaseModels.GetPlatformUseCaseResponseSchema,
+                viewModel: viewModels.PlatformViewModelSchema,
             },
-            middleware: GetHomePageResponseMiddleware,
+            middleware: GetPlatformResponseMiddleware,
             viewUtilities: viewUtilities,
             setViewModel: setViewModel,
         });
@@ -34,10 +34,10 @@ export default class HomePageReactPresenter extends cats.BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetHomePageUseCaseResponse,
+            useCaseModels.TGetPlatformUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.THomePageViewModel {
+    ): viewModels.TPlatformViewModel {
         return {
             mode: 'default',
             data: {
@@ -47,10 +47,10 @@ export default class HomePageReactPresenter extends cats.BasePresenter<
     }
     presentError(
         response: cats.UnhandledErrorResponse<
-            useCaseModels.TGetHomePageUseCaseErrorResponse,
-            TGetHomePageResponseMiddleware
+            useCaseModels.TGetPlatformUseCaseErrorResponse,
+            TGetPlatformResponseMiddleware
         >,
-    ): viewModels.THomePageViewModel {
+    ): viewModels.TPlatformViewModel {
         if (response.data.errorType === 'AuthenticationError') {
             return {
                 mode: 'unauthenticated',
