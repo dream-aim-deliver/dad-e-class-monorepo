@@ -12,6 +12,9 @@ import TopicList, {
 import { TLocale } from '@maany_shr/e-class-translations';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { HomePageViewModels } from '@maany_shr/e-class-models';
+import { useGetHomePagePresenter } from '../hooks/use-get-home-page-presenter';
 
 const Carousel = dynamic(
     () =>
@@ -28,8 +31,23 @@ export default function Home() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.home');
 
-    const [homePage] = trpc.getHomePage.useSuspenseQuery();
+    const [homePageResponse] = trpc.getHomePage.useSuspenseQuery();
     const [topics] = trpc.getHomePageTopics.useSuspenseQuery();
+
+    const [homePageViewModel, setHomePageViewModel] = useState<
+        HomePageViewModels.THomePageViewModel | undefined
+    >(undefined);
+    const { presenter } = useGetHomePagePresenter(setHomePageViewModel);
+
+    useEffect(() => {
+        presenter.present(homePageResponse, homePageViewModel);
+    }, [homePageResponse, setHomePageViewModel, presenter]);
+
+    if (!homePageViewModel || homePageViewModel.mode !== 'default') {
+        return null;
+    }
+
+    const homePage = homePageViewModel.data;
 
     return (
         <div className="flex flex-col">
