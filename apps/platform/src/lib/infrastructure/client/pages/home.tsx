@@ -12,9 +12,7 @@ import TopicList, {
 import { TLocale } from '@maany_shr/e-class-translations';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import { HomePageViewModels } from '@maany_shr/e-class-models';
-import { useGetHomePagePresenter } from '../hooks/use-get-home-page-presenter';
 
 const Carousel = dynamic(
     () =>
@@ -27,26 +25,15 @@ const Carousel = dynamic(
     },
 );
 
-export default function Home() {
+interface HomePageProps {
+    homePageViewModel: HomePageViewModels.THomePageViewModel;
+}
+
+export default function Home({homePageViewModel}: HomePageProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.home');
 
-    const [homePageResponse] = trpc.getHomePage.useSuspenseQuery();
     const [topics] = trpc.getHomePageTopics.useSuspenseQuery();
-
-    const [homePageViewModel, setHomePageViewModel] = useState<
-        HomePageViewModels.THomePageViewModel | undefined
-    >(undefined);
-    const { presenter } = useGetHomePagePresenter(setHomePageViewModel);
-
-    useEffect(() => {
-        presenter.present(homePageResponse, homePageViewModel);
-    }, [homePageResponse, setHomePageViewModel, presenter]);
-
-    if (!homePageViewModel || homePageViewModel.mode !== 'default') {
-        return null;
-    }
-
     const homePage = homePageViewModel.data;
 
     return (
@@ -60,7 +47,7 @@ export default function Home() {
             />
             <Divider />
             <Carousel locale={locale}>
-                {homePage.carousel.map((item) => {
+                {homePage.carousel.map((item: HomePageViewModels.TGeneralCard) => {
                     const onClick = () => {
                         // TODO: Implement navigation logic
                     };
