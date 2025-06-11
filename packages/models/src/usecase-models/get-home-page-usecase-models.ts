@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BaseDiscriminatedErrorTypeSchemaFactory, BaseErrorDiscriminatedUnionSchemaFactory, BaseStatusDiscriminatedUnionSchemaFactory, BaseSuccessSchemaFactory } from '../cats/cats-core';
+import { BaseErrorDiscriminatedUnionSchemaFactory, BaseStatusDiscriminatedUnionSchemaFactory, BaseSuccessSchemaFactory } from '../cats/cats-core';
 
 export const GetHomePageRequestSchema = z.object({});
 
@@ -42,13 +42,13 @@ const GetHomePageSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
 export type TGetHomePageSuccessResponse = z.infer<typeof GetHomePageSuccessResponseSchema>;
 
 
-const GetHomePageUsecaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
-export type TGetHomePageUsecaseErrorResponse = z.infer<typeof GetHomePageUsecaseErrorResponseSchema>;
+const GetHomePageUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
+export type TGetHomePageUseCaseErrorResponse = z.infer<typeof GetHomePageUseCaseErrorResponseSchema>;
 
 
-export const GetHomePageUsecaseResponseSchema =  BaseStatusDiscriminatedUnionSchemaFactory([
+export const GetHomePageUseCaseResponseSchema =  BaseStatusDiscriminatedUnionSchemaFactory([
     GetHomePageSuccessResponseSchema,
-    GetHomePageUsecaseErrorResponseSchema,
+    GetHomePageUseCaseErrorResponseSchema,
 ]);
 
-export type TGetHomePageUsecaseResponse = z.infer<typeof GetHomePageUsecaseResponseSchema>;
+export type TGetHomePageUseCaseResponse = z.infer<typeof GetHomePageUseCaseResponseSchema>;

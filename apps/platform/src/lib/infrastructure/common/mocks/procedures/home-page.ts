@@ -448,7 +448,7 @@ const homePageSuccess: GetHomePageUseCaseModels.TGetHomePageSuccessResponse = {
     data: homePageMock,
 };
 
-const homePageCriticalError: GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse =
+const homePageCriticalError: GetHomePageUseCaseModels.TGetHomePageUseCaseErrorResponse =
     {
         success: false,
         data: {
@@ -460,7 +460,7 @@ const homePageCriticalError: GetHomePageUseCaseModels.TGetHomePageUsecaseErrorRe
         },
     };
 
-const homePageAuthError: GetHomePageUseCaseModels.TGetHomePageUsecaseErrorResponse =
+const homePageAuthError: GetHomePageUseCaseModels.TGetHomePageUseCaseErrorResponse =
     {
         success: false,
         data: {
@@ -475,7 +475,7 @@ const homePageAuthError: GetHomePageUseCaseModels.TGetHomePageUsecaseErrorRespon
 export const getHomePage = t.procedure.query(
     async (
         opts,
-    ): Promise<GetHomePageUseCaseModels.TGetHomePageUsecaseResponse> => {
+    ): Promise<GetHomePageUseCaseModels.TGetHomePageUseCaseResponse> => {
         // Locale will be received from context
         await new Promise((resolve) => setTimeout(resolve, 250));
         return homePageSuccess;
