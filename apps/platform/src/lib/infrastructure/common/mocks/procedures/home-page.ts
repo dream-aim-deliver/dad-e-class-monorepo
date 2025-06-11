@@ -478,7 +478,7 @@ export const getHomePage = t.procedure.query(
     ): Promise<GetHomePageUseCaseModels.TGetHomePageUsecaseResponse> => {
         // Locale will be received from context
         await new Promise((resolve) => setTimeout(resolve, 250));
-        return homePageSuccess;
+        return homePageCriticalError;
     },
 );
 
