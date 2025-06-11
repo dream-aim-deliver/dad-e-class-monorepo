@@ -1,18 +1,10 @@
-import { z } from 'zod'
-
-export const MediaFileSchema = z.object({
-    id: z.string(),
-    url: z.string(),
-    type: z.enum(['image', 'video']),
-    thumbnailUrl: z.string().optional(),
-    provider: z.string(),
-    providerID: z.string(),
-});
+import { z } from 'zod';
+import { BaseDiscriminatedViewModeSchemaFactory, BaseErrorDataSchemaFactory, BaseViewModelDiscriminatedUnionSchemaFactory } from '../cats/cats-core';
 
 export const HomeBannerSchema = z.object({
     title: z.string(),
     description: z.string(),
-    video: z.string(),
+    videoId: z.string(),
     thumbnailUrl: z.string(),
 });
 /**
@@ -115,9 +107,9 @@ export type TAccordionList = z.infer<typeof AccordionListSchema>;
 
 export const HomePageSchema = z.object({
     banner: HomeBannerSchema,
-    carousel: z.array(GeneralCardSchema),
-    coachingOnDemand: CoachingOnDemandSchema,
-    accordion: AccordionListSchema,
+    // carousel: z.array(GeneralCardSchema).optional(), // TODO VIKA: temporarily optional to allow for empty carousel
+    // coachingOnDemand: CoachingOnDemandSchema.optional(),
+    // accordion: AccordionListSchema.optional(),
 });
 
 /**
@@ -155,4 +147,13 @@ export const HomePageSchema = z.object({
  *     - `iconImageUrl`: The URL of the associated icon.
  */
 
-export type THomePage = z.infer<typeof HomePageSchema>;
+const HomePageDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", HomePageSchema)
+const HomePageKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+
+export const HomePageViewModelSchemaMap = {
+    default: HomePageDefaultViewModelSchema,
+    kaboom: HomePageKaboomViewModelSchema,
+};
+export type THomePageViewModelSchemaMap = typeof HomePageViewModelSchemaMap;
+export const HomePageViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(HomePageViewModelSchemaMap);
+export type THomePageViewModel = z.infer<typeof HomePageViewModelSchema>;
