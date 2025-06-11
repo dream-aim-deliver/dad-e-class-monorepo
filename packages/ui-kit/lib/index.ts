@@ -40,10 +40,11 @@ export { GeneralCard } from './components/carousel/general-card';
 export { Divider } from './components/divider';
 export { CarouselSkeleton } from './components/skeletons/carousel-skeleton'
 
-export { default } from './components/topic-list';
+export { default as TopicList } from './components/topic-list';
 export { CoachingOnDemandBanner } from './components/coaching-on-demand-banner/coaching-on-demand-banner';
 export { HomeAccordion } from './components/home-accordion';
 
 export { ReviewSnippet } from './components/review/review-snippet';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
+export { default as RichTextRenderer } from './components/rich-text-element/renderer';

@@ -1,7 +1,7 @@
 'use client';
 
 import { viewModels } from '@maany_shr/e-class-models';
-import { Footer as FooterComponent } from '@maany_shr/e-class-ui-kit';
+import { Footer as FooterComponent, RichTextRenderer } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -69,7 +69,9 @@ export default function Footer({
                 />
             }
             onChangeLanguage={changeLanguage}
-            footerChildren={<span>{platformViewModel.data.footerContent}</span>}
+            footerChildren={<RichTextRenderer onDeserializationError={() => {
+                console.error('Error deserializing footer content');
+            }} content={platformViewModel.data.footerContent}/>}
         >
             <FooterLinks />
         </FooterComponent>

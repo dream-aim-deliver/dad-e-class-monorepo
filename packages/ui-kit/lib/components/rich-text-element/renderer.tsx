@@ -26,8 +26,6 @@ function RichTextRenderer({
   onDeserializationError,
   className
 }: RichTextRendererProps) {
-
-
   // Deserialize the content to Slate format
   const deserializedContent = deserialize({
     serializedData: content,

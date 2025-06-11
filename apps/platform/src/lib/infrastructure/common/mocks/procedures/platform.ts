@@ -9,7 +9,17 @@ const platformMock: useCaseModels.TGetPlatformSuccessResponse['data'] = {
     backgroundImageUrl:
         'https://res.cloudinary.com/dsyephqpf/image/upload/v1747650265/background-eln_mhvipu.jpg',
     footerContent: entities.RichText.parse(
-        '"[{\\"type\\":\\"paragraph\\",\\"children\\":[{\\"text\\":\\"© 2024 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • \\"},{\\"type\\":\\"link\\",\\"url\\":\\"mailto:hi@justdoad.ai\\",\\"children\\":[{\\"text\\":\\"hi@justdoad.ai\\"}]}]}]"\n',
+        JSON.stringify([
+                {
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "© 2024 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • hi@justdoad.ai"
+                        },
+                    ]
+                }
+            ]
+        )
     ),
 };
 
@@ -17,6 +27,16 @@ const platformSuccess: useCaseModels.TGetPlatformSuccessResponse = {
     success: true,
     data: platformMock,
 };
+
+const platformCriticalError: useCaseModels.TGetPlatformUseCaseErrorResponse = {
+    success: false,
+    data: {
+        message: 'Unknown critical error occurred',
+        errorType: 'UnknownError',
+        operation: 'getPlatform',
+        context: {},
+    }
+}
 
 export const getPlatform = t.procedure
     .input(useCaseModels.GetPlatformRequestSchema)
