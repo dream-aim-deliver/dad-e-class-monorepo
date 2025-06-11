@@ -1,7 +1,7 @@
 import { HomePageViewModels } from '@maany_shr/e-class-models';
 import HomePageReactPresenter, {
     THomePageUtilities,
-} from '../common/get-home-page-presenter';
+} from '../../common/presenters/get-home-page-presenter';
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
