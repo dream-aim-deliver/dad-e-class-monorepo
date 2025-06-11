@@ -45,6 +45,7 @@ export { CreateContentModal } from './components/create-content-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
 export { RemoveModal } from './components/remove-modal';
-export { default } from './components/topic-list';
+export { default as TopicList } from './components/topic-list';
 export { CoachingOnDemandBanner } from './components/coaching-on-demand-banner/coaching-on-demand-banner';
 export { HomeAccordion } from './components/home-accordion';
+export { default as RichTextRenderer } from './components/rich-text-element/renderer';

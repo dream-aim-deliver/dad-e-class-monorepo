@@ -1,13 +1,14 @@
 'use client';
 import { trpc } from '../trpc/client';
 import { useLocale, useTranslations } from 'next-intl';
-import TopicList, {
+import {
     CarouselSkeleton,
     CoachingOnDemandBanner,
     Divider,
     GeneralCard,
     Hero,
     HomeAccordion,
+    TopicList,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import dynamic from 'next/dynamic';
