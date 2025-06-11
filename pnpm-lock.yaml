@@ -316,6 +316,9 @@ importers:
 
   packages/models:
     dependencies:
+      deep-equal-js:
+        specifier: ^0.2.2
+        version: 0.2.2
       zod:
         specifier: ^3.24.1
         version: 3.24.1
@@ -4436,6 +4439,9 @@ packages:
   deep-eql@5.0.2:
     resolution: {integrity: sha512-h5k/5U50IJJFpzfL6nO9jaaumfjO/f2NjK/oYB2Djzm4p9L+3T9qWpZqZ2hAbLPuuYq9wrU08WQyBTL5GbPk5Q==}
     engines: {node: '>=6'}
+
+  deep-equal-js@0.2.2:
+    resolution: {integrity: sha512-XMRey2mDUvpnM9cJi9TaNU1Pqd+k2/kGPBZ0Xh8nuU5yq/D7ZQcuUz/TYIbuZcLv3mezslzd5xmmG513nORfNg==}
 
   deep-equal@1.0.1:
     resolution: {integrity: sha512-bHtC0iYvWhyaTzvV3CZgPeZQqCOBGyGsVV7v4eevpdkLHfiSrXUdBG+qAuSz4RI70sszvjQ1QSZ98An1yNwpSw==}
@@ -13952,6 +13958,8 @@ snapshots:
   dedent@1.5.3: {}
 
   deep-eql@5.0.2: {}
+
+  deep-equal-js@0.2.2: {}
 
   deep-equal@1.0.1: {}
 
