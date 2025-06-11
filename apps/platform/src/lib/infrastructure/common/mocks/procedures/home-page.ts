@@ -1,8 +1,8 @@
 import { homePage, topic } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
-import { GetHomePageUseCaseModels } from '@maany_shr/e-class-models';
+import { useCaseModels } from '@maany_shr/e-class-models';
 
-const accordionMockData: GetHomePageUseCaseModels.TGetHomePageSuccessResponse['data']['accordion']['items'] =
+const accordionMockData: useCaseModels.TGetHomePageSuccessResponse['data']['accordion']['items'] =
     [
         {
             title: 'Matching',
@@ -260,85 +260,84 @@ const accordionMockData: GetHomePageUseCaseModels.TGetHomePageSuccessResponse['d
         },
     ];
 
-const homePageMock: GetHomePageUseCaseModels.TGetHomePageSuccessResponse['data'] =
-    {
-        banner: {
+const homePageMock: useCaseModels.TGetHomePageSuccessResponse['data'] = {
+    banner: {
+        description:
+            'Platform introduction. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu.',
+        title: "Platform's Title, short and powerful",
+        videoId: 'o017yCZbw87zC9xDoy1Bl02FsbCBXuSdx6xPbkF01sW02IU',
+        thumbnailUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748006627/hb-thumb_eabema.png',
+    },
+    carousel: [
+        {
             description:
-                'Platform introduction. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu.',
-            title: "Platform's Title, short and powerful",
-            videoId: 'o017yCZbw87zC9xDoy1Bl02FsbCBXuSdx6xPbkF01sW02IU',
-            thumbnailUrl:
-                'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748006627/hb-thumb_eabema.png',
+                'Du hast ein Konzept und konkrete Vorstellungen davon, was du umsetzen möchtest. Entwickle mit uns dein Branding, dein CI/CD, deine Website oder dein Werbefilm für Social Media. Wähle nur die Massnahmen, die du wirklich brauchst.',
+            title: 'Visualisierung',
+            imageUrl:
+                'https://images.unsplash.com/photo-1543269866-8cd2dfe969d6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            buttonText: 'from CHF 3140',
+            buttonUrl: '',
+            badge: 'Package',
         },
-        carousel: [
-            {
-                description:
-                    'Du hast ein Konzept und konkrete Vorstellungen davon, was du umsetzen möchtest. Entwickle mit uns dein Branding, dein CI/CD, deine Website oder dein Werbefilm für Social Media. Wähle nur die Massnahmen, die du wirklich brauchst.',
-                title: 'Visualisierung',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1543269866-8cd2dfe969d6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                buttonText: 'from CHF 3140',
-                buttonUrl: '',
-                badge: 'Package',
-            },
-            {
-                description:
-                    'Ideal für Firmen oder Stellen, die einen freien und individuellen Zugang zu unserer Plattform brauchen und diese für einen längere Zeit nutzten wollen.',
-                title: 'Enterprise',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1580742432710-d3c3703559a9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                buttonText: 'Inquiries',
-                buttonUrl: '',
-                badge: undefined,
-            },
-            {
-                description:
-                    'Our professionals provide support where they are needed. With workshops, tips and “learning by doing” we can reach our goals together more quickly.',
-                title: 'Coaching on Demand',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1626105985445-6430a31f6f96?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                buttonText: 'Find a coach (ab CHF 90)',
-                buttonUrl: '',
-                badge: undefined,
-            },
-            {
-                description:
-                    'Ideal für Firmen oder Stellen, die einen freien und individuellen Zugang zu unserer Plattform brauchen und diese für einen längere Zeit nutzten wollen.',
-                title: 'Enterprise',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1580742432710-d3c3703559a9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                buttonText: 'Inquiries',
-                buttonUrl: '',
-                badge: undefined,
-            },
-            {
-                description:
-                    'Our professionals provide support where they are needed. With workshops, tips and “learning by doing” we can reach our goals together more quickly.',
-                title: 'Coaching on Demand',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1626105985445-6430a31f6f96?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                buttonText: 'Find a coach (ab CHF 90)',
-                buttonUrl: '',
-                badge: undefined,
-            },
-        ],
-        coachingOnDemand: {
+        {
             description:
-                'Are you looking for someone to exchange ideas with on equal footing, or do you want to learn new skills? Do you need support in choosing the right tools or advice for your project? Our industry experts are ready to help you succeed.',
-            title: 'Coaching on demand',
-            desktopImageUrl:
-                'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364855/Frame_4353_zxdyos.png',
-            tabletImageUrl:
-                'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364854/tablet_rdfwwe.png',
-            mobileImageUrl:
-                'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364853/mobile_s5v6sk.png',
+                'Ideal für Firmen oder Stellen, die einen freien und individuellen Zugang zu unserer Plattform brauchen und diese für einen längere Zeit nutzten wollen.',
+            title: 'Enterprise',
+            imageUrl:
+                'https://images.unsplash.com/photo-1580742432710-d3c3703559a9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            buttonText: 'Inquiries',
+            buttonUrl: '',
+            badge: undefined,
         },
-        accordion: {
-            title: 'How it works',
-            showNumbers: true,
-            items: accordionMockData,
+        {
+            description:
+                'Our professionals provide support where they are needed. With workshops, tips and “learning by doing” we can reach our goals together more quickly.',
+            title: 'Coaching on Demand',
+            imageUrl:
+                'https://images.unsplash.com/photo-1626105985445-6430a31f6f96?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            buttonText: 'Find a coach (ab CHF 90)',
+            buttonUrl: '',
+            badge: undefined,
         },
-    };
+        {
+            description:
+                'Ideal für Firmen oder Stellen, die einen freien und individuellen Zugang zu unserer Plattform brauchen und diese für einen längere Zeit nutzten wollen.',
+            title: 'Enterprise',
+            imageUrl:
+                'https://images.unsplash.com/photo-1580742432710-d3c3703559a9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            buttonText: 'Inquiries',
+            buttonUrl: '',
+            badge: undefined,
+        },
+        {
+            description:
+                'Our professionals provide support where they are needed. With workshops, tips and “learning by doing” we can reach our goals together more quickly.',
+            title: 'Coaching on Demand',
+            imageUrl:
+                'https://images.unsplash.com/photo-1626105985445-6430a31f6f96?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            buttonText: 'Find a coach (ab CHF 90)',
+            buttonUrl: '',
+            badge: undefined,
+        },
+    ],
+    coachingOnDemand: {
+        description:
+            'Are you looking for someone to exchange ideas with on equal footing, or do you want to learn new skills? Do you need support in choosing the right tools or advice for your project? Our industry experts are ready to help you succeed.',
+        title: 'Coaching on demand',
+        desktopImageUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364855/Frame_4353_zxdyos.png',
+        tabletImageUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364854/tablet_rdfwwe.png',
+        mobileImageUrl:
+            'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364853/mobile_s5v6sk.png',
+    },
+    accordion: {
+        title: 'How it works',
+        showNumbers: true,
+        items: accordionMockData,
+    },
+};
 
 const topicsMock: topic.TTopic[] = [
     {
@@ -443,44 +442,40 @@ const topicsMock: topic.TTopic[] = [
     },
 ];
 
-const homePageSuccess: GetHomePageUseCaseModels.TGetHomePageSuccessResponse = {
+const homePageSuccess: useCaseModels.TGetHomePageSuccessResponse = {
     success: true,
     data: homePageMock,
 };
 
-const homePageCriticalError: GetHomePageUseCaseModels.TGetHomePageUseCaseErrorResponse =
-    {
-        success: false,
-        data: {
-            errorType: 'NotFound',
-            message: 'Home page not found',
-            operation: 'getHomePage',
-            context: {},
-            trace: undefined,
-        },
-    };
+const homePageCriticalError: useCaseModels.TGetHomePageUseCaseErrorResponse = {
+    success: false,
+    data: {
+        errorType: 'NotFound',
+        message: 'Home page not found',
+        operation: 'getHomePage',
+        context: {},
+        trace: undefined,
+    },
+};
 
-const homePageAuthError: GetHomePageUseCaseModels.TGetHomePageUseCaseErrorResponse =
-    {
-        success: false,
-        data: {
-            errorType: 'AuthenticationError',
-            message: 'You are not authorized to access this resource',
-            operation: 'getHomePage',
-            context: {},
-            trace: undefined,
-        },
-    };
+const homePageAuthError: useCaseModels.TGetHomePageUseCaseErrorResponse = {
+    success: false,
+    data: {
+        errorType: 'AuthenticationError',
+        message: 'You are not authorized to access this resource',
+        operation: 'getHomePage',
+        context: {},
+        trace: undefined,
+    },
+};
 
-export const getHomePage = t.procedure.query(
-    async (
-        opts,
-    ): Promise<GetHomePageUseCaseModels.TGetHomePageUseCaseResponse> => {
+export const getHomePage = t.procedure
+    .input(useCaseModels.GetPlatformRequestSchema)
+    .query(async (opts): Promise<useCaseModels.TGetHomePageUseCaseResponse> => {
         // Locale will be received from context
         await new Promise((resolve) => setTimeout(resolve, 250));
         return homePageSuccess;
-    },
-);
+    });
 
 export const getHomePageTopics = t.procedure.query(
     async (opts): Promise<topic.TTopic[]> => {

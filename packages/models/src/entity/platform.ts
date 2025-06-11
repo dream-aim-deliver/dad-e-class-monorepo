@@ -10,6 +10,7 @@ import { RichText } from './custom-types';
 export const PlatformDraftSchema = BaseModelDraftSchemaFactory(
     z.object({
         name: z.string(),
+        // TODO: how are we going to implement those? haven't we decided on not including these in the configuration?
         accentColor: z.string(),
         font: z.string(),
         hasOnlyFreeCourses: z.boolean(), // TBD, not really sure why would we need this

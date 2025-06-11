@@ -7,7 +7,7 @@ import {
 } from '../config/trpc/server';
 import { Suspense } from 'react';
 import { getGetHomePagePresenter } from '../presenters/get-home-page-presenter';
-import { HomePageViewModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import { redirect } from 'next/navigation';
 import { unstable_cache } from 'next/cache';
 import { env } from '../utils/env';
@@ -15,12 +15,10 @@ import { cacheTags } from '../utils/cache-tags';
 
 const getCachedHomePage = unstable_cache(
     async () => {
-        const queryOptions = trpc.getHomePage.queryOptions();
+        const queryOptions = trpc.getHomePage.queryOptions({});
         const queryClient = getQueryClient();
         const homePageResponse = await queryClient.fetchQuery(queryOptions);
-        let homePageViewModel:
-            | HomePageViewModels.THomePageViewModel
-            | undefined;
+        let homePageViewModel: viewModels.THomePageViewModel | undefined;
         const presenter = getGetHomePagePresenter((newViewModel) => {
             homePageViewModel = newViewModel;
         });

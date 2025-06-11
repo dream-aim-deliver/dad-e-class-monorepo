@@ -5,7 +5,6 @@ export const PlatformSchema = z.object({
     name: z.string(),
     logoUrl: z.string(),
     backgroundImageUrl: z.string(),
-    // TODO: determine if this should be a rich text field
     footerContent: z.string()
 });
 

@@ -3,7 +3,7 @@ import './global.css';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
 import { auth } from '@maany_shr/e-class-models';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
@@ -22,6 +22,8 @@ import {
     storePlatformLanguageId,
 } from '../../lib/infrastructure/server/utils/language-mapping';
 import Footer from '../../lib/infrastructure/client/pages/footer';
+import { viewModels } from '@maany_shr/e-class-models';
+import { getPlatformPresenter } from '../../lib/infrastructure/server/presenters/get-platform-presenter';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -60,7 +62,25 @@ const getCachedPlatform = unstable_cache(
             id: env.platformId,
         });
         const queryClient = getQueryClient();
-        return await queryClient.fetchQuery(queryOptions);
+        const platformResponse = await queryClient.fetchQuery(queryOptions);
+        let platformViewModel: viewModels.TPlatformViewModel | undefined;
+        const presenter = getPlatformPresenter((newViewModel) => {
+            platformViewModel = newViewModel;
+        });
+        await presenter.present(platformResponse, platformViewModel);
+
+        if (!platformViewModel || platformViewModel.mode === 'kaboom') {
+            throw new Error(
+                platformViewModel?.data?.message ||
+                    'Unknown critical error occurred',
+            );
+        }
+
+        if (platformViewModel.mode === 'unauthenticated') {
+            redirect(`/auth/login`);
+        }
+
+        return platformViewModel;
     },
     ['platform', env.platformId],
     {
@@ -92,7 +112,7 @@ export default async function RootLayout({
     params: Promise<{ locale: string }>;
 }) {
     // Fetch cached configuration
-    const [platform, languages] = await Promise.all([
+    const [platformViewModel, languages] = await Promise.all([
         getCachedPlatform(),
         listCachedLanguages(),
     ]);
@@ -136,7 +156,7 @@ export default async function RootLayout({
             <head>
                 <link
                     rel="preload"
-                    href={platform.backgroundImageUrl}
+                    href={platformViewModel.data.backgroundImageUrl}
                     as="image"
                 />
             </head>
@@ -154,14 +174,14 @@ export default async function RootLayout({
                                 className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center"
                                 style={{
                                     // Temporary linear gradient to match the Figma. Should be uploaded this dark.
-                                    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platform.backgroundImageUrl})`,
+                                    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platformViewModel.data.backgroundImageUrl})`,
                                     backgroundSize: '100% auto',
                                     // TODO: have a fallback color
                                     backgroundColor: '#141414',
                                 }}
                             >
                                 <Header
-                                    platform={platform}
+                                    platformViewModel={platformViewModel}
                                     availableLocales={availableLocales}
                                     locale={locale}
                                     session={session}
@@ -172,7 +192,7 @@ export default async function RootLayout({
                                 <Footer
                                     locale={locale}
                                     availableLocales={availableLocales}
-                                    platform={platform}
+                                    platformViewModel={platformViewModel}
                                 />
                             </div>
                         </ClientProviders>

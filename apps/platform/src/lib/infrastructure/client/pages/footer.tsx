@@ -1,6 +1,6 @@
 'use client';
 
-import { platform } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import { Footer as FooterComponent } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { usePathname, useRouter } from 'next/navigation';
@@ -9,7 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 interface FooterProps {
-    platform: platform.TPlatform;
+    platformViewModel: viewModels.TPlatformViewModel;
     availableLocales: TLocale[];
     locale: TLocale;
 }
@@ -42,7 +42,7 @@ const FooterLinks = () => {
 };
 
 export default function Footer({
-    platform,
+    platformViewModel,
     availableLocales,
     locale,
 }: FooterProps) {
@@ -61,15 +61,15 @@ export default function Footer({
             logo={
                 <Image
                     priority
-                    src={platform.logoUrl}
-                    alt={platform.name}
+                    src={platformViewModel.data.logoUrl}
+                    alt={platformViewModel.data.name}
                     width={48}
                     height={48}
                     className="w-auto h-full"
                 />
             }
             onChangeLanguage={changeLanguage}
-            footerChildren={<span>{platform.footerContent}</span>}
+            footerChildren={<span>{platformViewModel.data.footerContent}</span>}
         >
             <FooterLinks />
         </FooterComponent>

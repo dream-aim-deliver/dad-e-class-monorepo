@@ -12,7 +12,7 @@ import TopicList, {
 import { TLocale } from '@maany_shr/e-class-translations';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { HomePageViewModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 
 const Carousel = dynamic(
     () =>
@@ -26,7 +26,7 @@ const Carousel = dynamic(
 );
 
 interface HomePageProps {
-    homePageViewModel: HomePageViewModels.THomePageViewModel;
+    homePageViewModel: viewModels.THomePageViewModel;
 }
 
 export default function Home({ homePageViewModel }: HomePageProps) {
@@ -47,21 +47,19 @@ export default function Home({ homePageViewModel }: HomePageProps) {
             />
             <Divider />
             <Carousel locale={locale}>
-                {homePage.carousel.map(
-                    (item: HomePageViewModels.TGeneralCard) => {
-                        const onClick = () => {
-                            // TODO: Implement navigation logic
-                        };
-                        return (
-                            <GeneralCard
-                                key={item.title}
-                                locale={locale}
-                                onButtonClick={onClick}
-                                {...item}
-                            />
-                        );
-                    },
-                )}
+                {homePage.carousel.map((item: viewModels.TGeneralCard) => {
+                    const onClick = () => {
+                        // TODO: Implement navigation logic
+                    };
+                    return (
+                        <GeneralCard
+                            key={item.title}
+                            locale={locale}
+                            onButtonClick={onClick}
+                            {...item}
+                        />
+                    );
+                })}
             </Carousel>
             <Divider />
             <TopicList list={topics} title={t('topicsTitle')} />
