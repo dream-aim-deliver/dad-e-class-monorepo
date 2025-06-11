@@ -29,7 +29,7 @@ interface HomePageProps {
     homePageViewModel: HomePageViewModels.THomePageViewModel;
 }
 
-export default function Home({homePageViewModel}: HomePageProps) {
+export default function Home({ homePageViewModel }: HomePageProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.home');
 
@@ -47,19 +47,21 @@ export default function Home({homePageViewModel}: HomePageProps) {
             />
             <Divider />
             <Carousel locale={locale}>
-                {homePage.carousel.map((item: HomePageViewModels.TGeneralCard) => {
-                    const onClick = () => {
-                        // TODO: Implement navigation logic
-                    };
-                    return (
-                        <GeneralCard
-                            key={item.title}
-                            locale={locale}
-                            onButtonClick={onClick}
-                            {...item}
-                        />
-                    );
-                })}
+                {homePage.carousel.map(
+                    (item: HomePageViewModels.TGeneralCard) => {
+                        const onClick = () => {
+                            // TODO: Implement navigation logic
+                        };
+                        return (
+                            <GeneralCard
+                                key={item.title}
+                                locale={locale}
+                                onButtonClick={onClick}
+                                {...item}
+                            />
+                        );
+                    },
+                )}
             </Carousel>
             <Divider />
             <TopicList list={topics} title={t('topicsTitle')} />
