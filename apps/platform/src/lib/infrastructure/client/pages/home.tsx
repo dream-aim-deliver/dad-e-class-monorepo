@@ -4,6 +4,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import {
     CarouselSkeleton,
     CoachingOnDemandBanner,
+    DefaultError,
+    DefaultLoading,
     Divider,
     GeneralCard,
     Hero,
@@ -41,13 +43,12 @@ export default function Home() {
 
     const [topics] = trpc.getHomePageTopics.useSuspenseQuery();
 
-    // TODO: replace loading and error handling with proper UI components
     if (!homePageViewModel) {
-        return <span>Loading...</span>;
+        return <DefaultLoading />;
     }
 
     if (homePageViewModel.mode === 'kaboom') {
-        return <span>Error</span>;
+        return <DefaultError errorMessage={homePageViewModel.data.message} />;
     }
 
     const homePage = homePageViewModel.data;

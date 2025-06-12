@@ -48,3 +48,7 @@ export { ReviewSnippet } from './components/review/review-snippet';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
 export { default as RichTextRenderer } from './components/rich-text-element/renderer';
+
+export { default as DefaultLoading } from './components/default-loading';
+export { default as DefaultError } from './components/default-error';
+
