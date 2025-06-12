@@ -14,6 +14,8 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { viewModels } from '@maany_shr/e-class-models';
+import { useState } from 'react';
+import { useGetHomePagePresenter } from '../hooks/use-home-page-presenter';
 
 const Carousel = dynamic(
     () =>
@@ -26,15 +28,28 @@ const Carousel = dynamic(
     },
 );
 
-interface HomePageProps {
-    homePageViewModel: viewModels.THomePageViewModel;
-}
-
-export default function Home({ homePageViewModel }: HomePageProps) {
+export default function Home() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.home');
 
+    const [homePageResponse] = trpc.getHomePage.useSuspenseQuery({});
+    const [homePageViewModel, setHomePageViewModel] = useState<
+        viewModels.THomePageViewModel | undefined
+    >(undefined);
+    const { presenter } = useGetHomePagePresenter(setHomePageViewModel);
+    presenter.present(homePageResponse, homePageViewModel);
+
     const [topics] = trpc.getHomePageTopics.useSuspenseQuery();
+
+    // TODO: replace loading and error handling with proper UI components
+    if (!homePageViewModel) {
+        return <span>Loading...</span>;
+    }
+
+    if (homePageViewModel.mode === 'kaboom') {
+        return <span>Error</span>;
+    }
+
     const homePage = homePageViewModel.data;
 
     return (

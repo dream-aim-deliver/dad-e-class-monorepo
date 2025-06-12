@@ -10,16 +10,15 @@ const platformMock: useCaseModels.TGetPlatformSuccessResponse['data'] = {
         'https://res.cloudinary.com/dsyephqpf/image/upload/v1747650265/background-eln_mhvipu.jpg',
     footerContent: entities.RichText.parse(
         JSON.stringify([
-                {
-                    "type": "paragraph",
-                    "children": [
-                        {
-                            "text": "© 2024 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • hi@justdoad.ai"
-                        },
-                    ]
-                }
-            ]
-        )
+            {
+                type: 'paragraph',
+                children: [
+                    {
+                        text: '© 2024 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • hi@justdoad.ai',
+                    },
+                ],
+            },
+        ]),
     ),
 };
 
@@ -35,8 +34,8 @@ const platformCriticalError: useCaseModels.TGetPlatformUseCaseErrorResponse = {
         errorType: 'UnknownError',
         operation: 'getPlatform',
         context: {},
-    }
-}
+    },
+};
 
 export const getPlatform = t.procedure
     .input(useCaseModels.GetPlatformRequestSchema)
