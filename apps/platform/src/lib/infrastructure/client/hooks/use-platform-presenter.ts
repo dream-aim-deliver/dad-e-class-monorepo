@@ -1,16 +1,16 @@
-import HomePagePresenter, {
-    THomePageUtilities,
-} from '../../common/presenters/get-home-page-presenter';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import PlatformPresenter, {
+    TPlatformUtilities,
+} from '../../common/presenters/get-platform-presenter';
 
-export function useGetHomePagePresenter(
-    setViewModel: (viewModel: viewModels.THomePageViewModel) => void,
+export function useGetPlatformPresenter(
+    setViewModel: (viewModel: viewModels.TPlatformViewModel) => void,
 ) {
     const router = useRouter();
 
-    const homePageUtilities: THomePageUtilities = {
+    const platformUtilities: TPlatformUtilities = {
         redirect: (page: 'login') => {
             if (page === 'login') {
                 router.push(
@@ -20,7 +20,7 @@ export function useGetHomePagePresenter(
         },
     };
     const presenter = useMemo(
-        () => new HomePagePresenter(setViewModel, homePageUtilities),
+        () => new PlatformPresenter(setViewModel, platformUtilities),
         [setViewModel],
     );
     return { presenter };

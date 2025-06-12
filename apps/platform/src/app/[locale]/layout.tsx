@@ -3,7 +3,7 @@ import './global.css';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
 import { auth } from '@maany_shr/e-class-models';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
@@ -15,15 +15,11 @@ import {
 } from '../../lib/infrastructure/server/config/trpc/server';
 import { env } from '../../lib/infrastructure/server/utils/env';
 import { unstable_cache } from 'next/cache';
-import Header from '../../lib/infrastructure/client/pages/header';
 import {
     languageCodeToLocale,
     localeToLanguageCode,
-    storePlatformLanguageId,
 } from '../../lib/infrastructure/server/utils/language-mapping';
-import Footer from '../../lib/infrastructure/client/pages/footer';
-import { viewModels } from '@maany_shr/e-class-models';
-import { getPlatformPresenter } from '../../lib/infrastructure/server/presenters/get-platform-presenter';
+import Layout from '../../lib/infrastructure/client/pages/layout';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -51,44 +47,6 @@ const figtree = Figtree({
     subsets: ['latin'],
 });
 
-interface RootLayoutProps {
-    children: React.ReactNode;
-    params: { locale: string };
-}
-
-const getCachedPlatform = unstable_cache(
-    async () => {
-        const queryOptions = trpc.getPlatform.queryOptions({
-            id: env.platformId,
-        });
-        const queryClient = getQueryClient();
-        const platformResponse = await queryClient.fetchQuery(queryOptions);
-        let platformViewModel: viewModels.TPlatformViewModel | undefined;
-        const presenter = getPlatformPresenter((newViewModel) => {
-            platformViewModel = newViewModel;
-        });
-        await presenter.present(platformResponse, platformViewModel);
-
-        if (!platformViewModel || platformViewModel.mode === 'kaboom') {
-            throw new Error(
-                platformViewModel?.data?.message ||
-                    'Unknown critical error occurred',
-            );
-        }
-
-        if (platformViewModel.mode === 'unauthenticated') {
-            redirect(`/auth/login`);
-        }
-
-        return platformViewModel;
-    },
-    ['platform', env.platformId],
-    {
-        tags: ['platform', `platform-${env.platformId}`],
-        revalidate: 3600, // 1 hour
-    },
-);
-
 const listCachedLanguages = unstable_cache(
     async () => {
         const queryOptions = trpc.listLanguages.queryOptions({
@@ -112,10 +70,7 @@ export default async function RootLayout({
     params: Promise<{ locale: string }>;
 }) {
     // Fetch cached configuration
-    const [platformViewModel, languages] = await Promise.all([
-        getCachedPlatform(),
-        listCachedLanguages(),
-    ]);
+    const [languages] = await Promise.all([listCachedLanguages()]);
 
     // Check if platform's languages are supported
     const availableLocales: TLocale[] = [];
@@ -140,7 +95,6 @@ export default async function RootLayout({
         notFound();
     }
 
-    storePlatformLanguageId(locale, language.platformLanguageId);
     const messages = await getMessages({ locale });
 
     // Perform authentication
@@ -153,13 +107,6 @@ export default async function RootLayout({
 
     return (
         <html lang={locale}>
-            <head>
-                <link
-                    rel="preload"
-                    href={platformViewModel.data.backgroundImageUrl}
-                    as="image"
-                />
-            </head>
             <body
                 className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
             >
@@ -170,31 +117,9 @@ export default async function RootLayout({
                                 language.platformLanguageId
                             }
                         >
-                            <div
-                                className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center"
-                                style={{
-                                    // Temporary linear gradient to match the Figma. Should be uploaded this dark.
-                                    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platformViewModel.data.backgroundImageUrl})`,
-                                    backgroundSize: '100% auto',
-                                    // TODO: have a fallback color
-                                    backgroundColor: '#141414',
-                                }}
-                            >
-                                <Header
-                                    platformViewModel={platformViewModel}
-                                    availableLocales={availableLocales}
-                                    locale={locale}
-                                    session={session}
-                                />
-                                <main className="flex-grow w-full max-w-7xl mx-auto px-4 py-16">
-                                    {children}
-                                </main>
-                                <Footer
-                                    locale={locale}
-                                    availableLocales={availableLocales}
-                                    platformViewModel={platformViewModel}
-                                />
-                            </div>
+                            <Layout locales={i18nConfig.locales}>
+                                {children}
+                            </Layout>
                         </ClientProviders>
                     </NextIntlClientProvider>
                 </SessionProvider>

@@ -31,7 +31,7 @@ export const GetHomePageResponseMiddleware = {
 
 type TGetHomePageResponseMiddleware = typeof GetHomePageResponseMiddleware;
 
-export default class HomePageReactPresenter extends cats.BasePresenter<
+export default class HomePagePresenter extends cats.BasePresenter<
     useCaseModels.TGetHomePageUseCaseResponse,
     viewModels.THomePageViewModel,
     THomePageUtilities,
