@@ -1,17 +1,37 @@
 import { cats, viewModels, useCaseModels } from '@maany_shr/e-class-models';
 
-export type TPlatformUtilities = {};
+export type TPlatformUtilities = {
+    redirect: (page: 'login') => Promise<void> | void;
+};
 
-export const GetPlatformResponseMiddleware =
-    {} satisfies cats.TBaseResponseResponseMiddleware<
-        useCaseModels.TGetPlatformUseCaseResponse,
-        viewModels.TPlatformViewModel,
-        TPlatformUtilities
-    >;
+export const GetPlatformResponseMiddleware = {
+    'errorType:AuthenticationError': {
+        redirect: async (
+            context: {
+                response: cats.ExtractStatusModel<
+                    useCaseModels.TGetPlatformUseCaseResponse,
+                    false
+                >;
+                currentViewModel: viewModels.TPlatformViewModel;
+                setViewModel: (
+                    currentViewModel: viewModels.TPlatformViewModel,
+                    viewModel: viewModels.TPlatformViewModel,
+                ) => void;
+            },
+            callback: TPlatformUtilities['redirect'],
+        ) => {
+            callback('login');
+        },
+    },
+} satisfies cats.TBaseResponseResponseMiddleware<
+    useCaseModels.TGetPlatformUseCaseResponse,
+    viewModels.TPlatformViewModel,
+    TPlatformUtilities
+>;
 
 type TGetPlatformResponseMiddleware = typeof GetPlatformResponseMiddleware;
 
-export default class PlatformReactPresenter extends cats.BasePresenter<
+export default class PlatformPresenter extends cats.BasePresenter<
     useCaseModels.TGetPlatformUseCaseResponse,
     viewModels.TPlatformViewModel,
     TPlatformUtilities,
@@ -51,17 +71,6 @@ export default class PlatformReactPresenter extends cats.BasePresenter<
             TGetPlatformResponseMiddleware
         >,
     ): viewModels.TPlatformViewModel {
-        if (response.data.errorType === 'AuthenticationError') {
-            return {
-                mode: 'unauthenticated',
-                data: {
-                    errorType: response.data.errorType,
-                    message: response.data.message,
-                    operation: response.data.operation,
-                    context: response.data.context,
-                },
-            };
-        }
         return {
             mode: 'kaboom',
             data: {
