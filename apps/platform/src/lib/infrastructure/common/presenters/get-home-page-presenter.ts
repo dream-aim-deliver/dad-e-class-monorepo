@@ -1,13 +1,33 @@
 import { cats, viewModels, useCaseModels } from '@maany_shr/e-class-models';
 
-export type THomePageUtilities = {};
+export type THomePageUtilities = {
+    redirect: (page: 'login') => Promise<void> | void;
+};
 
-export const GetHomePageResponseMiddleware =
-    {} satisfies cats.TBaseResponseResponseMiddleware<
-        useCaseModels.TGetHomePageUseCaseResponse,
-        viewModels.THomePageViewModel,
-        THomePageUtilities
-    >;
+export const GetHomePageResponseMiddleware = {
+    'errorType:AuthenticationError': {
+        redirect: async (
+            context: {
+                response: cats.ExtractStatusModel<
+                    useCaseModels.TGetHomePageUseCaseResponse,
+                    false
+                >;
+                currentViewModel: viewModels.THomePageViewModel;
+                setViewModel: (
+                    currentViewModel: viewModels.THomePageViewModel,
+                    viewModel: viewModels.THomePageViewModel,
+                ) => void;
+            },
+            callback: THomePageUtilities['redirect'],
+        ) => {
+            callback('login');
+        },
+    },
+} satisfies cats.TBaseResponseResponseMiddleware<
+    useCaseModels.TGetHomePageUseCaseResponse,
+    viewModels.THomePageViewModel,
+    THomePageUtilities
+>;
 
 type TGetHomePageResponseMiddleware = typeof GetHomePageResponseMiddleware;
 
@@ -51,17 +71,6 @@ export default class HomePageReactPresenter extends cats.BasePresenter<
             TGetHomePageResponseMiddleware
         >,
     ): viewModels.THomePageViewModel {
-        if (response.data.errorType === 'AuthenticationError') {
-            return {
-                mode: 'unauthenticated',
-                data: {
-                    errorType: response.data.errorType,
-                    message: response.data.message,
-                    operation: response.data.operation,
-                    context: response.data.context,
-                },
-            };
-        }
         return {
             mode: 'kaboom',
             data: {
