@@ -13,10 +13,10 @@ import { useSession } from 'next-auth/react';
 
 interface LayoutProps {
     children: React.ReactNode;
-    locales: TLocale[];
+    availableLocales: TLocale[];
 }
 
-export default function Layout({ children, locales }: LayoutProps) {
+export default function Layout({ children, availableLocales }: LayoutProps) {
     const locale = useLocale() as TLocale;
     const sessionDTO = useSession();
     const session = sessionDTO.data;
@@ -33,8 +33,6 @@ export default function Layout({ children, locales }: LayoutProps) {
     if (platformViewModel.mode === 'kaboom') {
         return <DefaultError errorMessage={platformViewModel.data.message} />;
     }
-
-    const availableLocales: TLocale[] = [];
 
     return (
         <div

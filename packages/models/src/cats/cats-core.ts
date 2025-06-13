@@ -482,6 +482,7 @@ export abstract class BasePresenter<
 
 
     async present(response: TResponseModel, currentViewModel: TViewModel | undefined): Promise<void> {
+        //await new Promise((resolve) => setTimeout(resolve, 50)); // Simulate async operation
         let newViewModel: TViewModel | undefined = currentViewModel;
         if (response.success === true) {
             newViewModel = this.presentSuccess(response as Extract<TResponseModel, { success: true }>, currentViewModel);

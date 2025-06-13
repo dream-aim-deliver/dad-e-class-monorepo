@@ -1,7 +1,7 @@
 'use client';
 
 import { QueryClientProvider } from '@tanstack/react-query';
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
 import {
     getQueryClient,
@@ -15,17 +15,9 @@ import superjson from 'superjson';
 
 interface ClientProvidersProps {
     children: ReactNode;
-    initialPlatformLanguageId: string | number;
 }
 
-const PlatformLanguageContext = createContext<
-    language.TPlatformLanguageId | undefined
->(undefined);
-
-export default function ClientProviders({
-    children,
-    initialPlatformLanguageId,
-}: ClientProvidersProps) {
+export default function ClientProviders({ children }: ClientProvidersProps) {
     const queryClient = getQueryClient();
     const [trpcClient] = useState(() =>
         trpc.createClient({
@@ -37,32 +29,17 @@ export default function ClientProviders({
             ],
         }),
     );
-    const [platformLanguageId] = useState(initialPlatformLanguageId);
 
     return (
-        <PlatformLanguageContext.Provider value={platformLanguageId}>
-            <ThemeProvider>
-                <trpc.Provider client={trpcClient} queryClient={queryClient}>
-                    <QueryClientProvider client={queryClient}>
-                        {children}
-                        {process.env.NODE_ENV === 'development' && (
-                            <ReactQueryDevtools />
-                        )}
-                    </QueryClientProvider>
-                </trpc.Provider>
-            </ThemeProvider>
-        </PlatformLanguageContext.Provider>
+        <ThemeProvider>
+            <trpc.Provider client={trpcClient} queryClient={queryClient}>
+                <QueryClientProvider client={queryClient}>
+                    {children}
+                    {process.env.NODE_ENV === 'development' && (
+                        <ReactQueryDevtools />
+                    )}
+                </QueryClientProvider>
+            </trpc.Provider>
+        </ThemeProvider>
     );
-}
-
-export function usePlatformLanguage(): language.TPlatformLanguageId {
-    const context = useContext(PlatformLanguageContext);
-
-    if (context === undefined) {
-        throw new Error(
-            'usePlatformLanguage must be used within a PlatformLanguageProvider',
-        );
-    }
-
-    return context;
 }

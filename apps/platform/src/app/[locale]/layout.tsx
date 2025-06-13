@@ -47,21 +47,6 @@ const figtree = Figtree({
     subsets: ['latin'],
 });
 
-const listCachedLanguages = unstable_cache(
-    async () => {
-        const queryOptions = trpc.listLanguages.queryOptions({
-            platformId: env.platformId,
-        });
-        const queryClient = getQueryClient();
-        return await queryClient.fetchQuery(queryOptions);
-    },
-    ['languages', env.platformId],
-    {
-        tags: ['languages', `languages-${env.platformId}`],
-        revalidate: 3600, // 1 hour
-    },
-);
-
 export default async function RootLayout({
     children,
     params: paramsPromise,
@@ -69,8 +54,11 @@ export default async function RootLayout({
     children: React.ReactNode;
     params: Promise<{ locale: string }>;
 }) {
-    // Fetch cached configuration
-    const [languages] = await Promise.all([listCachedLanguages()]);
+    const queryOptions = trpc.listLanguages.queryOptions({
+        platformId: env.platformId,
+    });
+    const queryClient = getQueryClient();
+    const languages = await queryClient.fetchQuery(queryOptions);
 
     // Check if platform's languages are supported
     const availableLocales: TLocale[] = [];
@@ -112,12 +100,8 @@ export default async function RootLayout({
             >
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
-                        <ClientProviders
-                            initialPlatformLanguageId={
-                                language.platformLanguageId
-                            }
-                        >
-                            <Layout locales={i18nConfig.locales}>
+                        <ClientProviders>
+                            <Layout availableLocales={availableLocales}>
                                 {children}
                             </Layout>
                         </ClientProviders>
