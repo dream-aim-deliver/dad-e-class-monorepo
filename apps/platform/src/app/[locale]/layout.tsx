@@ -5,7 +5,7 @@ import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
-import { auth } from '@maany_shr/e-class-models';
+import { auth, viewModels } from '@maany_shr/e-class-models';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
 import nextAuth from '../../lib/infrastructure/server/config/auth/next-auth.config';
 import ClientProviders from '../../lib/infrastructure/client/utils/client-providers';
@@ -14,12 +14,12 @@ import {
     trpc,
 } from '../../lib/infrastructure/server/config/trpc/server';
 import { env } from '../../lib/infrastructure/server/utils/env';
-import { unstable_cache } from 'next/cache';
 import {
     languageCodeToLocale,
     localeToLanguageCode,
 } from '../../lib/infrastructure/server/utils/language-mapping';
 import Layout from '../../lib/infrastructure/client/pages/layout';
+import { createGetLanguagesPresenter } from '../../lib/infrastructure/server/presenter/get-languages-presenter';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -58,12 +58,25 @@ export default async function RootLayout({
         platformId: env.platformId,
     });
     const queryClient = getQueryClient();
-    const languages = await queryClient.fetchQuery(queryOptions);
+    const languagesResponse = await queryClient.fetchQuery(queryOptions);
+    let languagesViewModel: viewModels.TLanguageListViewModel | undefined;
+    const presenter = createGetLanguagesPresenter((viewModel) => {
+        languagesViewModel = viewModel;
+    });
+    await presenter.present(languagesResponse, languagesViewModel);
+    if (!languagesViewModel || languagesViewModel.mode !== 'default') {
+        throw Error(
+            languagesViewModel?.data?.message ||
+                'Unknown error happened while loading languages',
+        );
+    }
+
+    const { languages } = languagesViewModel.data;
 
     // Check if platform's languages are supported
     const availableLocales: TLocale[] = [];
     for (const language of languages) {
-        const availableLocale = languageCodeToLocale[language.code];
+        const availableLocale = languageCodeToLocale[language.languageCode];
         if (availableLocale && i18nConfig.locales.includes(availableLocale)) {
             availableLocales.push(availableLocale);
         } else {
@@ -76,7 +89,7 @@ export default async function RootLayout({
     const params = await paramsPromise;
     const locale = params.locale as TLocale;
     const language = languages.find(
-        (value) => value.code === localeToLanguageCode[locale],
+        (value) => value.languageCode === localeToLanguageCode[locale],
     );
 
     if (!availableLocales.includes(locale) || !language) {

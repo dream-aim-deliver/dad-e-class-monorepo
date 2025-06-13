@@ -1,27 +1,38 @@
-import { language } from '@maany_shr/e-class-models';
+import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
-import { z } from 'zod';
 
-const listLanguagesMock: language.TPlatformLanguage[] = [
-    {
-        code: 'en',
-        name: 'English',
-        platformLanguageId: 1,
+const listLanguagesMock: useCaseModels.TGetLanguagesSuccessResponse = {
+    success: true,
+    data: {
+        languages: [
+            {
+                languageCode: 'en',
+                language: 'English',
+            },
+            {
+                languageCode: 'de',
+                language: 'Deutsch',
+            },
+        ],
     },
-    {
-        code: 'de',
-        name: 'Deutsch',
-        platformLanguageId: 2,
-    },
-];
+};
 
-const ListLanguageInputSchema = z.object({
-    platformId: z.string().or(z.number()),
-});
+const listLanguagesErrorMock: useCaseModels.TGetLanguagesUseCaseErrorResponse =
+    {
+        success: false,
+        data: {
+            errorType: 'UnknownError',
+            message: 'An unknown error occurred while fetching languages.',
+            operation: 'listLanguages',
+            context: {},
+        },
+    };
 
 export const listLanguages = t.procedure
-    .input(ListLanguageInputSchema)
-    .query(async (opts): Promise<language.TPlatformLanguage[]> => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        return listLanguagesMock;
-    });
+    .input(useCaseModels.GetLanguagesRequestSchema)
+    .query(
+        async (opts): Promise<useCaseModels.TGetLanguagesUseCaseResponse> => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            return listLanguagesMock;
+        },
+    );

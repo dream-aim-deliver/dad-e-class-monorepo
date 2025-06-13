@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { BaseErrorDiscriminatedUnionSchemaFactory, BaseStatusDiscriminatedUnionSchemaFactory, BaseSuccessSchemaFactory } from '../cats/cats-core';
-import { PlatformCreatedSchema } from '../entity/platform';
 import { RichText } from '../entity';
 
 export const GetPlatformRequestSchema = z.object({});
