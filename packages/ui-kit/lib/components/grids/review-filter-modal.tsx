@@ -57,7 +57,7 @@ export const ReviewFilterModal: React.FC<ReviewFilterModalProps> = ({
     initialFilters = {},
     locale,
 }) => {
-    const dictionary = getDictionary(locale).components.reviewFilterModel;
+    const dictionary = getDictionary(locale).components.reviewFilterModal;
 
     const [filters, setFilters] = useState<Partial<ReviewFilterModel>>({
         minRating: initialFilters.minRating,

@@ -18,7 +18,7 @@ export const DE: TDictionary = {
       next: 'Nächste',
       lesson: 'Lektion',
     },
-    reviewFilterModel: {
+    reviewFilterModal: {
       title: 'Bewertungsfilter',
       ratingFilter: 'Bewertung',
       min: 'Min',
