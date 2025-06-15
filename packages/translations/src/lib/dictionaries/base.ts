@@ -18,7 +18,7 @@ export const DictionarySchema = z.object({
       noRows: z.string(),
       loading: z.string(),
     }),
-    reviewFilterModel: z.object({
+    reviewFilterModal: z.object({
       title: z.string(),
       ratingFilter: z.string(),
       min: z.string(),
