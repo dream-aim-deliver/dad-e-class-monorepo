@@ -1,6 +1,5 @@
 import { ReviewFilterModal, ReviewFilterModel } from '../lib/components/grids/review-filter-modal';
 import type { Meta } from '@storybook/react';
-import React from 'react';
 
 // Mock Data
 const mockFilters: Partial<ReviewFilterModel> = {
@@ -42,9 +41,6 @@ DefaultFilters.args = {
   locale: 'en',
   onApplyFilters: (filters: ReviewFilterModel) => alert('Filters Applied: ' + JSON.stringify(filters)),
   onClose: () => alert('Modal Closed'),
-  onReset: () => alert('Reset Clicked'),
-  onApply: () => alert('Apply Clicked'),
-  onCloseButtonClick: () => alert('Close Button Clicked'),
 };
 
 export const WithPreAppliedFilters = Template.bind({});
@@ -52,9 +48,6 @@ WithPreAppliedFilters.args = {
   locale: 'en',
   onApplyFilters: (filters: ReviewFilterModel) => alert('Filters Applied: ' + JSON.stringify(filters)),
   onClose: () => alert('Modal Closed'),
-  onReset: () => alert('Reset Clicked'),
-  onApply: () => alert('Apply Clicked'),
-  onCloseButtonClick: () => alert('Close Button Clicked'),
   initialFilters: {
     ...mockFilters,
     minRating: 3,
