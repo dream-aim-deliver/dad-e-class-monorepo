@@ -18,9 +18,6 @@ export interface ReviewFilterModel {
 interface ReviewFilterModalProps extends isLocalAware {
     onApplyFilters: (filters: ReviewFilterModel) => void;
     onClose: () => void;
-    onReset?: () => void;
-    onApply?: () => void;
-    onCloseButtonClick?: () => void;
     initialFilters?: Partial<ReviewFilterModel>;
 }
 
@@ -31,7 +28,6 @@ interface ReviewFilterModalProps extends isLocalAware {
  * @param onClose Callback function triggered when the modal is closed (background or close button).
  * @param onReset Optional callback function triggered when the reset button is clicked.
  * @param onApply Optional callback function triggered when the apply button is clicked (in addition to onApplyFilters).
- * @param onCloseButtonClick Optional callback function triggered when the close button (X) is clicked.
  * @param initialFilters Optional initial filter values to pre-populate the modal fields.
  * @param locale The locale used for translations and localization.
  *
@@ -42,7 +38,6 @@ interface ReviewFilterModalProps extends isLocalAware {
  *   onClose={() => console.log('Modal closed')}
  *   onReset={() => console.log('Reset clicked')}
  *   onApply={() => console.log('Apply clicked')}
- *   onCloseButtonClick={() => console.log('Close button clicked')}
  *   initialFilters={{ minRating: 3, studentName: 'Alice' }}
  *   locale="en"
  * />
@@ -51,9 +46,6 @@ interface ReviewFilterModalProps extends isLocalAware {
 export const ReviewFilterModal: React.FC<ReviewFilterModalProps> = ({
     onApplyFilters,
     onClose,
-    onReset,
-    onApply,
-    onCloseButtonClick,
     initialFilters = {},
     locale,
 }) => {
@@ -70,9 +62,27 @@ export const ReviewFilterModal: React.FC<ReviewFilterModalProps> = ({
 
     const [resetKey, setResetKey] = useState(0);
 
+    const handleReset = () => {
+        setFilters({
+            minRating: undefined,
+            maxRating: undefined,
+            studentName: undefined,
+            courseName: undefined,
+            dateAfter: undefined,
+            dateBefore: undefined,
+        });
+        setResetKey((prev) => prev + 1);
+    };
+
     const handleChange = (field: string, value: any) => {
         setFilters((prev) => ({ ...prev, [field]: value }));
     };
+
+    const handleApply = () => {
+        onApplyFilters(filters);
+        onClose();
+    };
+
 
     return (
         <div className="flex flex-col gap-4 p-6 bg-card-fill text-text-primary w-auto min-w-[350px] max-w-full h-auto rounded-md relative">
@@ -81,11 +91,11 @@ export const ReviewFilterModal: React.FC<ReviewFilterModalProps> = ({
                 {/* Empty div to keep title centered */}
                 <div className="w-8" />
             </div>
-            
-            <Button 
+
+            <Button
                 variant="text"
                 size="small"
-                onClick={onCloseButtonClick ? onCloseButtonClick : onClose}
+                onClick={onClose}
                 className="absolute top-2 right-4 z-10 p-0"
                 hasIconRight
                 iconRight={<IconClose size="8" />}
@@ -177,14 +187,14 @@ export const ReviewFilterModal: React.FC<ReviewFilterModalProps> = ({
                 <Button
                     variant="secondary"
                     size="medium"
-                    onClick={onReset}
+                    onClick={handleReset}
                     className="flex-1"
                     text={dictionary.resetFilters}
                 />
                 <Button
                     variant="primary"
                     size="medium"
-                    onClick={onApply}
+                    onClick={handleApply}
                     className="flex-1"
                     text={dictionary.applyFilters}
                 />
