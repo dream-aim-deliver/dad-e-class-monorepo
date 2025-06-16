@@ -4,6 +4,7 @@ import { PackageCourseSelector } from '../lib/components/course-card/package-cou
 import { PackageCourseCard } from '../lib/components/course-card/package-course-selector/package-course-card';
 import { TLocale } from '@maany_shr/e-class-translations';
 
+
 // --- MOCKS ---
 vi.mock('@maany_shr/e-class-translations', () => ({
     getDictionary: (locale: string) => ({

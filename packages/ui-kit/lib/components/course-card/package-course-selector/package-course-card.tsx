@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { z } from 'zod';
 import { CourseStats } from '../course-stats';
 import { CourseCreator } from '../course-creator';
 import { StarRating } from '../../star-rating';
@@ -9,9 +8,8 @@ import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { PackageCourseActions } from './package-course-actions';
 import { cn } from "../../../utils/style-utils";
 
-export type TCourseMetadata = z.infer<typeof course.CourseMetadataSchema>;
 
-export interface PackageCourseCardProps extends TCourseMetadata {
+export interface PackageCourseCardProps extends course.TCourseMetadata {
     courseId: string;
     sales: number;
     courseIncluded: boolean;

@@ -1,11 +1,13 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { useState, useMemo } from 'react';
 import { PackageCourseSelector } from '../../lib/components/course-card/package-course-selector/package-course-selector';
-import { PackageCourseCard, TCourseMetadata } from '../../lib/components/course-card/package-course-selector/package-course-card';
+import { PackageCourseCard } from '../../lib/components/course-card/package-course-selector/package-course-card';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { course } from '@maany_shr/e-class-models';
+
 
 // ---- SAMPLE DATA ----
-const sampleCourses: (TCourseMetadata & {
+const sampleCourses: (course.TCourseMetadata & {
   courseId: string;
   sales: number;
   reviewCount: number;
