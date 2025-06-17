@@ -13,3 +13,6 @@ export * as role from './role';
 export * as user from './user';
 export * as topic from './topic';
 export * as homePage from './home-page';
+export * as fileMetadata from './file-metadata';
+export * as assignment from './assignment';
+
