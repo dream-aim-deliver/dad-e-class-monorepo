@@ -3,6 +3,8 @@ import {
     BaseModelCreatedSchemaFactory,
     BaseModelDeletedSchemaFactory,
     BaseModelDraftSchemaFactory,
+    ExternalProviderRelationFilterSchema,
+    IDFieldFilterSchema,
 } from '../cats';
 import { BaseExternalFileCreatedSchema } from './external-file';
 
@@ -35,12 +37,16 @@ export const FileMetadataDeletedSchema = BaseModelDeletedSchemaFactory(
     FileMetadataDraftSchema,
 );
 
-export const FileMetadataIndexSchema = z.object({
-    byId: z.any(),
-    byExternalId: z.any().optional(),
-});
-
 export const FileMetadataRelationsSchema = z.object({
     thumbnail: FileMetadataCreatedSchema.optional(),
-    externalProvider: z.array(BaseExternalFileCreatedSchema).optional(),
+    externalProvider: z.array(BaseExternalFileCreatedSchema),
+});
+
+export type TFileMetadataRelationsSchema = z.infer<
+    typeof FileMetadataRelationsSchema
+>;
+
+export const FileMetadataIndexSchema = z.object({
+    byId: IDFieldFilterSchema.optional(),
+    byExternalId: ExternalProviderRelationFilterSchema.optional(),
 });

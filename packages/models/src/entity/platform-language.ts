@@ -3,6 +3,7 @@ import {
     BaseModelCreatedSchemaFactory,
     BaseModelDeletedSchemaFactory,
     BaseModelDraftSchemaFactory,
+    IDFieldFilterSchema,
 } from '../cats';
 import { RichText } from './custom-types';
 import { PlatformSchema } from '../platform';
@@ -22,11 +23,11 @@ export const PlatformLanguageCreatedSchema = BaseModelCreatedSchemaFactory(Platf
 export const PlatformLanguageDeletedSchema = BaseModelDeletedSchemaFactory(PlatformLanguageDraftSchema);
 
 export const PlatformLanguageIndexSchema = z.object({
-    byLanguge: z.any(), // TODO: filter
-    byPlatform: z.any() // TODO: filter
+    byId: IDFieldFilterSchema
 });
 
 export const PlatformLanguageRelationsSchema = z.object({
     platform: PlatformSchema,
     language: LanguageSchema,
 });
+export type TPlatformLanguageRelationsSchema = z.infer<typeof PlatformLanguageRelationsSchema>

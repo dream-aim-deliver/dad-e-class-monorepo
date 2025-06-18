@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { BaseErrorDiscriminatedUnionSchemaFactory, BaseStatusDiscriminatedUnionSchemaFactory, BaseSuccessSchemaFactory } from '../cats/cats-core';
+import { HomePageIndexSchema } from '../entity/home-page';
 
-export const GetHomePageRequestSchema = z.object({});
+export const GetHomePageRequestSchema = HomePageIndexSchema.shape.byPlatformLanguageId
 
 export type TGetHomePageRequest = z.infer<typeof GetHomePageRequestSchema>;
 

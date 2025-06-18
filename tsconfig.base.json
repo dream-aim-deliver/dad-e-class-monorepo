@@ -9,6 +9,7 @@
     "emitDeclarationOnly": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "strictNullChecks": true,
     "importHelpers": true,
     "target": "ES2022",
     "module": "ESNext",

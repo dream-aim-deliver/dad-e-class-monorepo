@@ -3,9 +3,13 @@ import {
     BaseModelCreatedSchemaFactory,
     BaseModelDeletedSchemaFactory,
     BaseModelDraftSchemaFactory,
+    IDFieldFilterSchema,
 } from '../cats';
-import { FileMetadataCreatedSchema } from './file-model';
+import { 
+    FileMetadataCreatedSchema,
+} from './file-model';
 import { RichText } from './custom-types';
+
 
 export const PlatformDraftSchema = BaseModelDraftSchemaFactory(
     z.object({
@@ -26,7 +30,7 @@ export const PlatformDeletedSchema =
     BaseModelDeletedSchemaFactory(PlatformDraftSchema);
 
 export const PlatformIndexSchema = z.object({
-    byId: z.string(),
+    byId: IDFieldFilterSchema,
 });
 
 export const PlatformRelationsSchema = z.object({
