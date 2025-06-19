@@ -94,7 +94,6 @@ export const AssignmentBaseSchema = z.object({
     description: z.string(),  // plain text
     files: z.array(FileMetadataSchema).optional(),
     links: z.array(LinkSchema).optional(),
-    groupName: z.string().optional(),
 });
 export type TAssignmentBase = z.infer<typeof AssignmentBaseSchema>;
 
@@ -105,6 +104,7 @@ export const AssignmentSchema = AssignmentBaseSchema.extend({
     status: AssignmentStatusEnumSchema,
     replies: z.array(AssignmentReplySchema).optional(),
     student: AssignmentStudentSenderSchema,
+    groupName: z.string().optional(),
 });
 export type TAssignment = z.infer<typeof AssignmentSchema>;
 
@@ -112,7 +112,6 @@ export const AssignmentCreateRequestSchema = AssignmentBaseSchema.extend({
     courseId: z.number(),  // course ID
     moduleId: z.number(),  // module ID
     lessonId: z.number(),  // lesson ID
-    student: AssignmentStudentSenderSchema,
 });
 export type TAssignmentCreateRequest = z.infer<typeof AssignmentCreateRequestSchema>;
 
