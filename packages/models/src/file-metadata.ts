@@ -1,4 +1,5 @@
 import { z } from 'zod';
+// import { category } from '.';
 
 
 const FileCategoryEnumSchema = z.enum([
@@ -21,7 +22,7 @@ export const ExternalProviderSchema = z.object({
 });
 
 
-export const FileMetadataSchema = z.object({
+export const FileMetadataBaseSchema = z.object({
     name: z.string(),
     mimeType: z.string(), // TBD: should we add a validator?
     size: z.number(),
@@ -29,9 +30,35 @@ export const FileMetadataSchema = z.object({
     lfn: z.string(),
     status: FileStatusEnumSchema,
     thumbnailUrl: z.string().optional(),
-    externalProviders: z.array(ExternalProviderSchema),
     category: FileCategoryEnumSchema,
 });
+
+export const FileMetadataVideoSchema = FileMetadataBaseSchema.extend({
+    category: z.literal('video'),
+    videoId: z.number(),
+});
+
+export const FileMetadataImageSchema = FileMetadataBaseSchema.extend({
+    category: z.literal('image'),
+    url: z.string().url(),
+});
+
+export const FileMetadataDocumentSchema = FileMetadataBaseSchema.extend({
+    category: z.literal('document'),
+    url: z.string().url(),
+});
+
+export const FileMetadataGenericSchema = FileMetadataBaseSchema.extend({
+    category: z.literal('generic'), 
+    url: z.string().url(),
+});
+
+export const FileMetadataSchema = z.discriminatedUnion('category', [
+    FileMetadataVideoSchema,
+    FileMetadataImageSchema,
+    FileMetadataDocumentSchema,
+    FileMetadataGenericSchema,
+]);
 
 export type TFileMetadata = z.infer<
     typeof FileMetadataSchema

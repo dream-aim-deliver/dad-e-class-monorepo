@@ -67,7 +67,7 @@ export const AssignmentReplySchema = z.discriminatedUnion('type', [
 export type TAssignmentReply = z.infer<typeof AssignmentReplySchema>;
 
 
-export const AssignmentSchema = z.object({
+export const AssignmentBaseSchema = z.object({
     course: CourseMetadataSchema,
     module: z.number(),  // module number in the course
     lesson: z.number(),  // lesson number in the module
@@ -76,9 +76,20 @@ export const AssignmentSchema = z.object({
     description: z.string(),  // plain text
     files: z.array(FileMetadataSchema).optional(),
     links: z.array(LinkSchema).optional(),
-    status: AssignmentStatusEnumSchema,
-    replies: z.array(AssignmentReplySchema).optional(),
     groupName: z.string().optional(),
 });
+export type TAssignmentBase = z.infer<typeof AssignmentBaseSchema>;
 
+export const AssignmentSchema = AssignmentBaseSchema.extend({
+    status: AssignmentStatusEnumSchema,
+    replies: z.array(AssignmentReplySchema).optional(),
+});
 export type TAssignment = z.infer<typeof AssignmentSchema>;
+
+export const AssignmentCreateRequestSchema = AssignmentBaseSchema
+export type TAssignmentCreateRequest = z.infer<typeof AssignmentCreateRequestSchema>;
+
+export const AssignmentUpdateRequestSchema = AssignmentCreateRequestSchema.extend({
+    id: z.number(),  // assignment ID
+});
+export type TAssignmentUpdateRequest = z.infer<typeof AssignmentUpdateRequestSchema>;
