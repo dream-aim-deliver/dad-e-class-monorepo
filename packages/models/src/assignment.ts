@@ -68,9 +68,6 @@ export type TAssignmentReply = z.infer<typeof AssignmentReplySchema>;
 
 
 export const AssignmentBaseSchema = z.object({
-    course: CourseMetadataSchema,
-    module: z.number(),  // module number in the course
-    lesson: z.number(),  // lesson number in the module
     title: z.string(),  // plain text
     description: z.string(),  // plain text
     files: z.array(FileMetadataSchema).optional(),
@@ -80,13 +77,21 @@ export const AssignmentBaseSchema = z.object({
 export type TAssignmentBase = z.infer<typeof AssignmentBaseSchema>;
 
 export const AssignmentSchema = AssignmentBaseSchema.extend({
+    course: CourseMetadataSchema,
+    module: z.number(),  // module number in the course
+    lesson: z.number(),  // lesson number in the module
     status: AssignmentStatusEnumSchema,
     replies: z.array(AssignmentReplySchema).optional(),
     student: AssignmentStudentSenderSchema,
 });
 export type TAssignment = z.infer<typeof AssignmentSchema>;
 
-export const AssignmentCreateRequestSchema = AssignmentBaseSchema
+export const AssignmentCreateRequestSchema = AssignmentBaseSchema.extend({
+    courseId: z.number(),  // course ID
+    moduleId: z.number(),  // module ID
+    lessonId: z.number(),  // lesson ID
+    student: AssignmentStudentSenderSchema,
+});
 export type TAssignmentCreateRequest = z.infer<typeof AssignmentCreateRequestSchema>;
 
 export const AssignmentUpdateRequestSchema = AssignmentCreateRequestSchema.extend({
