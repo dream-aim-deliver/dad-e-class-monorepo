@@ -44,14 +44,36 @@ export const AssignmentTextReplySchema = BaseAssignmentReplySchema.extend({
 
 export type TAssignmentTextReply = z.infer<typeof AssignmentTextReplySchema>;
 
-export const AssignmentResourcesReplySchema = BaseAssignmentReplySchema.extend({
+export const AssignmentBaseResourceReplySchema = BaseAssignmentReplySchema.extend({
     type: z.literal('resources'),
     comment: z.string(),  // plain text
+});
+
+export const AssignmentResourcesReplySchema = AssignmentBaseResourceReplySchema.extend({
     files: z.array(FileMetadataSchema).optional(),
     links: z.array(LinkSchema).optional(),
 });
 
 export type TAssignmentResourcesReply = z.infer<typeof AssignmentResourcesReplySchema>;
+
+export const AssignmentFileDeleteReplySchema = AssignmentResourcesReplySchema.extend({
+    id: z.number(),  // reply ID
+    fileId: z.number(),  // ID of the single file to be deleted
+    type: z.literal('file'),
+});
+
+export const AssignmentLinkDeleteReplySchema = AssignmentResourcesReplySchema.extend({
+    id: z.number(),  // reply ID
+    linkId: z.number(),  // ID of the single link to be deleted
+    type: z.literal('link'),
+});
+
+export const AssignmentResourcesDeleteReplySchema = z.discriminatedUnion('type', [
+    AssignmentFileDeleteReplySchema,
+    AssignmentLinkDeleteReplySchema,
+]);
+
+export type TAssignmentResourcesDeleteReply = z.infer<typeof AssignmentResourcesDeleteReplySchema>;
 
 export const AssignmentReplyPassedSchema = BaseAssignmentReplySchema.extend({
     type: z.literal('passed'),
@@ -67,18 +89,33 @@ export const AssignmentReplySchema = z.discriminatedUnion('type', [
 export type TAssignmentReply = z.infer<typeof AssignmentReplySchema>;
 
 
-export const AssignmentSchema = z.object({
-    course: CourseMetadataSchema,
-    module: z.number(),  // module number in the course
-    lesson: z.number(),  // lesson number in the module
-    student: AssignmentStudentSenderSchema,
+export const AssignmentBaseSchema = z.object({
     title: z.string(),  // plain text
     description: z.string(),  // plain text
     files: z.array(FileMetadataSchema).optional(),
     links: z.array(LinkSchema).optional(),
+});
+export type TAssignmentBase = z.infer<typeof AssignmentBaseSchema>;
+
+export const AssignmentSchema = AssignmentBaseSchema.extend({
+    course: CourseMetadataSchema,
+    module: z.number(),  // module number in the course
+    lesson: z.number(),  // lesson number in the module
     status: AssignmentStatusEnumSchema,
     replies: z.array(AssignmentReplySchema).optional(),
+    student: AssignmentStudentSenderSchema,
     groupName: z.string().optional(),
 });
-
 export type TAssignment = z.infer<typeof AssignmentSchema>;
+
+export const AssignmentCreateRequestSchema = AssignmentBaseSchema.extend({
+    courseId: z.number(),  // course ID
+    moduleId: z.number(),  // module ID
+    lessonId: z.number(),  // lesson ID
+});
+export type TAssignmentCreateRequest = z.infer<typeof AssignmentCreateRequestSchema>;
+
+export const AssignmentUpdateRequestSchema = AssignmentCreateRequestSchema.extend({
+    id: z.number(),  // assignment ID
+});
+export type TAssignmentUpdateRequest = z.infer<typeof AssignmentUpdateRequestSchema>;
