@@ -44,20 +44,36 @@ export const AssignmentTextReplySchema = BaseAssignmentReplySchema.extend({
 
 export type TAssignmentTextReply = z.infer<typeof AssignmentTextReplySchema>;
 
-export const AssignmentResourcesReplySchema = BaseAssignmentReplySchema.extend({
+export const AssignmentBaseResourceReplySchema = BaseAssignmentReplySchema.extend({
     type: z.literal('resources'),
     comment: z.string(),  // plain text
+});
+
+export const AssignmentResourcesReplySchema = AssignmentBaseResourceReplySchema.extend({
     files: z.array(FileMetadataSchema).optional(),
     links: z.array(LinkSchema).optional(),
 });
 
 export type TAssignmentResourcesReply = z.infer<typeof AssignmentResourcesReplySchema>;
 
-export const AssignmentResourcesUpdateReplySchema = AssignmentResourcesReplySchema.extend({
+export const AssignmentFileDeleteReplySchema = AssignmentResourcesReplySchema.extend({
     id: z.number(),  // reply ID
+    resourceId: z.number(),  // ID of the single file to be deleted
+    type: z.literal('file'),
 });
 
-export type TAssignmentResourcesUpdateReply = z.infer<typeof AssignmentResourcesUpdateReplySchema>;
+export const AssignmentLinkDeleteReplySchema = AssignmentResourcesReplySchema.extend({
+    id: z.number(),  // reply ID
+    resourceId: z.number(),  // ID of the single link to be deleted
+    type: z.literal('link'),
+});
+
+export const AssignmentResourcesDeleteReplySchema = z.discriminatedUnion('type', [
+    AssignmentFileDeleteReplySchema,
+    AssignmentLinkDeleteReplySchema,
+]);
+
+export type TAssignmentResourcesDeleteReply = z.infer<typeof AssignmentResourcesDeleteReplySchema>;
 
 export const AssignmentReplyPassedSchema = BaseAssignmentReplySchema.extend({
     type: z.literal('passed'),
