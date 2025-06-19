@@ -58,13 +58,13 @@ export type TAssignmentResourcesReply = z.infer<typeof AssignmentResourcesReplyS
 
 export const AssignmentFileDeleteReplySchema = AssignmentResourcesReplySchema.extend({
     id: z.number(),  // reply ID
-    resourceId: z.number(),  // ID of the single file to be deleted
+    fileId: z.number(),  // ID of the single file to be deleted
     type: z.literal('file'),
 });
 
 export const AssignmentLinkDeleteReplySchema = AssignmentResourcesReplySchema.extend({
     id: z.number(),  // reply ID
-    resourceId: z.number(),  // ID of the single link to be deleted
+    linkId: z.number(),  // ID of the single link to be deleted
     type: z.literal('link'),
 });
 
