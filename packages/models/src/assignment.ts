@@ -56,24 +56,26 @@ export const AssignmentResourcesReplySchema = AssignmentBaseResourceReplySchema.
 
 export type TAssignmentResourcesReply = z.infer<typeof AssignmentResourcesReplySchema>;
 
-export const AssignmentFileDeleteReplySchema = AssignmentResourcesReplySchema.extend({
+export const AssignmentReplyFileDeleteSchema = z.object({
     id: z.number(),  // reply ID
     fileId: z.number(),  // ID of the single file to be deleted
     type: z.literal('file'),
 });
+export type TAssignmentReplyFileDeleteReply = z.infer<typeof AssignmentReplyFileDeleteSchema>;
 
-export const AssignmentLinkDeleteReplySchema = AssignmentResourcesReplySchema.extend({
+export const AssignmentReplyLinkDeleteSchema = z.object({
     id: z.number(),  // reply ID
     linkId: z.number(),  // ID of the single link to be deleted
     type: z.literal('link'),
 });
+export type TAssignmentReplyLinkDelete = z.infer<typeof AssignmentReplyLinkDeleteSchema>;
 
-export const AssignmentResourcesDeleteReplySchema = z.discriminatedUnion('type', [
-    AssignmentFileDeleteReplySchema,
-    AssignmentLinkDeleteReplySchema,
+export const AssignmentReplyResourcesDeleteSchema = z.discriminatedUnion('type', [
+    AssignmentReplyFileDeleteSchema,
+    AssignmentReplyLinkDeleteSchema,
 ]);
 
-export type TAssignmentResourcesDeleteReply = z.infer<typeof AssignmentResourcesDeleteReplySchema>;
+export type TAssignmentReplyResourcesDelete = z.infer<typeof AssignmentReplyResourcesDeleteSchema>;
 
 export const AssignmentReplyPassedSchema = BaseAssignmentReplySchema.extend({
     type: z.literal('passed'),
