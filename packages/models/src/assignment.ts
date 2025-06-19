@@ -71,7 +71,6 @@ export const AssignmentBaseSchema = z.object({
     course: CourseMetadataSchema,
     module: z.number(),  // module number in the course
     lesson: z.number(),  // lesson number in the module
-    student: AssignmentStudentSenderSchema,
     title: z.string(),  // plain text
     description: z.string(),  // plain text
     files: z.array(FileMetadataSchema).optional(),
@@ -83,6 +82,7 @@ export type TAssignmentBase = z.infer<typeof AssignmentBaseSchema>;
 export const AssignmentSchema = AssignmentBaseSchema.extend({
     status: AssignmentStatusEnumSchema,
     replies: z.array(AssignmentReplySchema).optional(),
+    student: AssignmentStudentSenderSchema,
 });
 export type TAssignment = z.infer<typeof AssignmentSchema>;
 

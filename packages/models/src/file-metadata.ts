@@ -29,18 +29,19 @@ export const FileMetadataBaseSchema = z.object({
     checksum: z.string(),
     lfn: z.string(),
     status: FileStatusEnumSchema,
-    thumbnailUrl: z.string().optional(),
     category: FileCategoryEnumSchema,
 });
 
 export const FileMetadataVideoSchema = FileMetadataBaseSchema.extend({
     category: z.literal('video'),
     videoId: z.number(),
+    thumbnailUrl: z.string().url(),
 });
 
 export const FileMetadataImageSchema = FileMetadataBaseSchema.extend({
     category: z.literal('image'),
     url: z.string().url(),
+    thumbnailUrl: z.string().url(),
 });
 
 export const FileMetadataDocumentSchema = FileMetadataBaseSchema.extend({
