@@ -53,6 +53,12 @@ export const AssignmentResourcesReplySchema = BaseAssignmentReplySchema.extend({
 
 export type TAssignmentResourcesReply = z.infer<typeof AssignmentResourcesReplySchema>;
 
+export const AssignmentResourcesUpdateReplySchema = AssignmentResourcesReplySchema.extend({
+    id: z.number(),  // reply ID
+});
+
+export type TAssignmentResourcesUpdateReply = z.infer<typeof AssignmentResourcesUpdateReplySchema>;
+
 export const AssignmentReplyPassedSchema = BaseAssignmentReplySchema.extend({
     type: z.literal('passed'),
 });
