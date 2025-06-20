@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { BaseErrorDiscriminatedUnionSchemaFactory, BaseStatusDiscriminatedUnionSchemaFactory, BaseSuccessSchemaFactory } from '../cats/cats-core';
+import {
+    BaseErrorDiscriminatedUnionSchemaFactory,
+    BaseStatusDiscriminatedUnionSchemaFactory,
+    BaseSuccessSchemaFactory
+} from '@dream-aim-deliver/dad-cats';
 
 export const GetHomePageRequestSchema = z.object({});
 

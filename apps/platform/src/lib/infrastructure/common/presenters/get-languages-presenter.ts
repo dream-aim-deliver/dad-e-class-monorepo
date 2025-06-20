@@ -1,9 +1,14 @@
-import { cats, viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import {
+    BasePresenter,
+    TBaseResponseResponseMiddleware,
+    UnhandledErrorResponse,
+} from '@dream-aim-deliver/dad-cats';
 
 export type TLanguagesUtilities = {};
 
 export const GetLanguagesResponseMiddleware =
-    {} satisfies cats.TBaseResponseResponseMiddleware<
+    {} satisfies TBaseResponseResponseMiddleware<
         useCaseModels.TGetLanguagesUseCaseResponse,
         viewModels.TLanguageListViewModel,
         TLanguagesUtilities
@@ -11,7 +16,7 @@ export const GetLanguagesResponseMiddleware =
 
 type TGetLanguagesResponseMiddleware = typeof GetLanguagesResponseMiddleware;
 
-export default class GetLanguagesPresenter extends cats.BasePresenter<
+export default class GetLanguagesPresenter extends BasePresenter<
     useCaseModels.TGetLanguagesUseCaseResponse,
     viewModels.TLanguageListViewModel,
     TLanguagesUtilities,
@@ -46,7 +51,7 @@ export default class GetLanguagesPresenter extends cats.BasePresenter<
         };
     }
     presentError(
-        response: cats.UnhandledErrorResponse<
+        response: UnhandledErrorResponse<
             useCaseModels.TGetLanguagesUseCaseErrorResponse,
             TGetLanguagesResponseMiddleware
         >,

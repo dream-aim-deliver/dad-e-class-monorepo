@@ -14,7 +14,6 @@ export * as user from './user';
 export * as topic from './topic';
 export * as homePage from './home-page';
 
-export * as cats from './cats/cats-core';
 export * as viewModels from './view-models/index';
 export * as useCaseModels from './usecase-models/index';
 export * as entities from './entity/index';

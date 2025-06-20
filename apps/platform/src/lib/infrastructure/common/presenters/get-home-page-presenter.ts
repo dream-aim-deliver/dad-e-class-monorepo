@@ -1,4 +1,10 @@
-import { cats, viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import {
+    BasePresenter,
+    ExtractStatusModel,
+    TBaseResponseResponseMiddleware,
+    UnhandledErrorResponse,
+} from '@dream-aim-deliver/dad-cats';
 
 export type THomePageUtilities = {
     redirect: (page: 'login') => Promise<void> | void;
@@ -8,7 +14,7 @@ export const GetHomePageResponseMiddleware = {
     'errorType:AuthenticationError': {
         redirect: async (
             context: {
-                response: cats.ExtractStatusModel<
+                response: ExtractStatusModel<
                     useCaseModels.TGetHomePageUseCaseResponse,
                     false
                 >;
@@ -23,7 +29,7 @@ export const GetHomePageResponseMiddleware = {
             callback('login');
         },
     },
-} satisfies cats.TBaseResponseResponseMiddleware<
+} satisfies TBaseResponseResponseMiddleware<
     useCaseModels.TGetHomePageUseCaseResponse,
     viewModels.THomePageViewModel,
     THomePageUtilities
@@ -31,7 +37,7 @@ export const GetHomePageResponseMiddleware = {
 
 type TGetHomePageResponseMiddleware = typeof GetHomePageResponseMiddleware;
 
-export default class HomePagePresenter extends cats.BasePresenter<
+export default class HomePagePresenter extends BasePresenter<
     useCaseModels.TGetHomePageUseCaseResponse,
     viewModels.THomePageViewModel,
     THomePageUtilities,
@@ -66,7 +72,7 @@ export default class HomePagePresenter extends cats.BasePresenter<
         };
     }
     presentError(
-        response: cats.UnhandledErrorResponse<
+        response: UnhandledErrorResponse<
             useCaseModels.TGetHomePageUseCaseErrorResponse,
             TGetHomePageResponseMiddleware
         >,

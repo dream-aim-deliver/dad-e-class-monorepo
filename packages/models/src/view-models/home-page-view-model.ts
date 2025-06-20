@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { BaseDiscriminatedViewModeSchemaFactory, BaseErrorDataSchemaFactory, BaseViewModelDiscriminatedUnionSchemaFactory } from '../cats/cats-core';
+import {
+    BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorDataSchemaFactory,
+    BaseViewModelDiscriminatedUnionSchemaFactory
+} from '@dream-aim-deliver/dad-cats';
 
 export const HomeBannerSchema = z.object({
     title: z.string(),

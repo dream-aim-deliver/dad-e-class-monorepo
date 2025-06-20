@@ -1,4 +1,10 @@
-import { cats, viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import {
+    BasePresenter,
+    ExtractStatusModel,
+    TBaseResponseResponseMiddleware,
+    UnhandledErrorResponse,
+} from '@dream-aim-deliver/dad-cats';
 
 export type TPlatformUtilities = {
     redirect: (page: 'login') => Promise<void> | void;
@@ -8,7 +14,7 @@ export const GetPlatformResponseMiddleware = {
     'errorType:AuthenticationError': {
         redirect: async (
             context: {
-                response: cats.ExtractStatusModel<
+                response: ExtractStatusModel<
                     useCaseModels.TGetPlatformUseCaseResponse,
                     false
                 >;
@@ -23,7 +29,7 @@ export const GetPlatformResponseMiddleware = {
             callback('login');
         },
     },
-} satisfies cats.TBaseResponseResponseMiddleware<
+} satisfies TBaseResponseResponseMiddleware<
     useCaseModels.TGetPlatformUseCaseResponse,
     viewModels.TPlatformViewModel,
     TPlatformUtilities
@@ -31,7 +37,7 @@ export const GetPlatformResponseMiddleware = {
 
 type TGetPlatformResponseMiddleware = typeof GetPlatformResponseMiddleware;
 
-export default class PlatformPresenter extends cats.BasePresenter<
+export default class PlatformPresenter extends BasePresenter<
     useCaseModels.TGetPlatformUseCaseResponse,
     viewModels.TPlatformViewModel,
     TPlatformUtilities,
@@ -66,7 +72,7 @@ export default class PlatformPresenter extends cats.BasePresenter<
         };
     }
     presentError(
-        response: cats.UnhandledErrorResponse<
+        response: UnhandledErrorResponse<
             useCaseModels.TGetPlatformUseCaseErrorResponse,
             TGetPlatformResponseMiddleware
         >,

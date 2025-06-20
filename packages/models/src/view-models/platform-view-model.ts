@@ -3,7 +3,7 @@ import {
     BaseDiscriminatedViewModeSchemaFactory,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
-} from '../cats';
+} from '@dream-aim-deliver/dad-cats';
 
 export const PlatformSuccessSchema = z.object({
     id: z.string().or(z.number()),

@@ -3,7 +3,7 @@ import {
     BaseDiscriminatedViewModeSchemaFactory,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
-} from '../cats';
+} from '@dream-aim-deliver/dad-cats';
 
 export const LanguageListSuccessSchema = z.object({
     languages: z.array(z.object({
