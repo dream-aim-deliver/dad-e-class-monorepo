@@ -1,10 +1,10 @@
-import {
-    BaseExternalModelSchemaFactory,
-    BaseModelDraftSchemaFactory,
-    BaseModelCreatedSchemaFactory,
-    BaseModelDeletedSchemaFactory,
-} from '../cats';
 import { z } from 'zod';
+import {
+    BaseModelDraftSchemaFactory,
+    BaseExternalModelSchemaFactory,
+    BaseModelCreatedSchemaFactory,
+    BaseModelDeletedSchemaFactory
+} from '@dream-aim-deliver/dad-cats';
 
 export const BaseExternalFileDraftSchema = BaseModelDraftSchemaFactory(
     BaseExternalModelSchemaFactory(z.object({})),

@@ -1,10 +1,9 @@
 import { z } from 'zod';
 import {
-    BaseModelCreatedSchemaFactory,
-    BaseModelDeletedSchemaFactory,
     BaseModelDraftSchemaFactory,
-} from '../cats';
-
+    BaseModelCreatedSchemaFactory,
+    BaseModelDeletedSchemaFactory
+} from '@dream-aim-deliver/dad-cats';
 
 export const LanguageDraftSchema = BaseModelDraftSchemaFactory(
     z.object({

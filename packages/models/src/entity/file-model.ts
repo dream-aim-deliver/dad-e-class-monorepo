@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import {
-    BaseModelCreatedSchemaFactory,
-    BaseModelDeletedSchemaFactory,
     BaseModelDraftSchemaFactory,
-} from '../cats';
+    BaseModelCreatedSchemaFactory,
+    BaseModelDeletedSchemaFactory
+} from '@dream-aim-deliver/dad-cats';
 import { BaseExternalFileCreatedSchema } from './external-file';
 
 // TODO: move to the view model, to be mapped from mime type in the usecase

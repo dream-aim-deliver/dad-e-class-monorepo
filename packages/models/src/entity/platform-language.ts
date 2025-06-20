@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import {
-    BaseModelCreatedSchemaFactory,
-    BaseModelDeletedSchemaFactory,
     BaseModelDraftSchemaFactory,
-} from '../cats';
+    BaseModelCreatedSchemaFactory,
+    BaseModelDeletedSchemaFactory
+} from '@dream-aim-deliver/dad-cats';
 import { RichText } from './custom-types';
 import { PlatformSchema } from '../platform';
 import { LanguageSchema } from '../language';

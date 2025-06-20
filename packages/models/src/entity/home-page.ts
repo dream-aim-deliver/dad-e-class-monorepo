@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { BaseExternalModelSchemaFactory, BaseModelCreatedSchemaFactory, BaseModelDeletedSchemaFactory, BaseModelDraftSchemaFactory } from '../cats/cats-core';
+import {
+    BaseModelDraftSchemaFactory,
+    BaseExternalModelSchemaFactory,
+    BaseModelCreatedSchemaFactory,
+    BaseModelDeletedSchemaFactory
+} from '@dream-aim-deliver/dad-cats';
 import { PlatformLanguageCreatedSchema } from './platform-language';
 
 export const HomePageSchema = BaseModelDraftSchemaFactory(

@@ -17,7 +17,6 @@ export * as fileMetadata from './file-metadata';
 export * as assignment from './assignment';
 
 
-export * as cats from './cats/cats-core';
 export * as viewModels from './view-models/index';
 export * as useCaseModels from './usecase-models/index';
 export * as entities from './entity/index';
