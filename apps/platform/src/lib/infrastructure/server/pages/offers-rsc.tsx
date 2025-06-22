@@ -1,19 +1,20 @@
-import Home from '../../client/pages/home';
 import { HydrateClient, prefetch, trpc } from '../config/trpc/server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
+import Offers from '../../client/pages/offers';
 
-export default async function HomeServerComponent() {
-    await Promise.all([
-        prefetch(trpc.getHomePage.queryOptions({})),
-        prefetch(trpc.getTopics.queryOptions({})),
-    ]);
+interface OffersProps {
+    topics?: string[];
+}
+
+export default async function OffersServerComponent(props: OffersProps) {
+    await Promise.all([]);
 
     return (
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <Home />
+                    <Offers />
                 </Suspense>
             </HydrateClient>
         </>

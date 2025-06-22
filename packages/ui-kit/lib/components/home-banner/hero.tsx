@@ -1,6 +1,7 @@
 import { VideoPlayer } from '../video-player';
 import { homePage } from '@maany_shr/e-class-models';
 import { isLocalAware } from '@maany_shr/e-class-translations';
+import { Outline } from '../outline';
 
 export interface HeroProps extends homePage.THomeBanner, isLocalAware {
 }
@@ -32,12 +33,7 @@ export const Hero: React.FC<HeroProps> = ({
 }) => {
     return (
         <div className="flex md:flex-row flex-col  gap-[4.1875rem] items-center w-full">
-            <div className="flex flex-col gap-[2.5625rem] items-start w-full  md:w-1/2">
-                <p className="text-4xl text-text-primary font-bold leading-[100%] tracking-[-0.08rem]">
-                    {title}
-                </p>
-                <p className="text-lg text-text-secondary leading-[150%]">{description}</p>
-            </div>
+            <Outline title={title} description={description} className="md:w-1/2"/>
             {/* VideoPlayer */}
             <div className="flex-1 w-full aspect-video md:min-h-[200px]">
                 <VideoPlayer
