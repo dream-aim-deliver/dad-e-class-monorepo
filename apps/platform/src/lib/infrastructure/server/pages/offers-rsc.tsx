@@ -8,7 +8,7 @@ interface OffersProps {
 }
 
 export default async function OffersServerComponent(props: OffersProps) {
-    await Promise.all([]);
+    await Promise.all([prefetch(trpc.getOffersPageOutline.queryOptions({}))]);
 
     return (
         <>

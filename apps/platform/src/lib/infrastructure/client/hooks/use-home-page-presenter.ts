@@ -10,7 +10,7 @@ export function useGetHomePagePresenter(
 ) {
     const router = useRouter();
 
-    const homePageUtilities: THomePagePresenterUtilities = {
+    const presenterUtilities: THomePagePresenterUtilities = {
         redirect: (page: 'login') => {
             if (page === 'login') {
                 router.push(
@@ -20,7 +20,7 @@ export function useGetHomePagePresenter(
         },
     };
     const presenter = useMemo(
-        () => new HomePagePresenter(setViewModel, homePageUtilities),
+        () => new HomePagePresenter(setViewModel, presenterUtilities),
         [setViewModel],
     );
     return { presenter };

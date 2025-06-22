@@ -10,7 +10,7 @@ export function useGetPlatformPresenter(
 ) {
     const router = useRouter();
 
-    const platformUtilities: TPlatformPresenterUtilities = {
+    const presenterUtilities: TPlatformPresenterUtilities = {
         redirect: (page: 'login') => {
             if (page === 'login') {
                 router.push(
@@ -20,7 +20,7 @@ export function useGetPlatformPresenter(
         },
     };
     const presenter = useMemo(
-        () => new PlatformPresenter(setViewModel, platformUtilities),
+        () => new PlatformPresenter(setViewModel, presenterUtilities),
         [setViewModel],
     );
     return { presenter };
