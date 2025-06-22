@@ -55,11 +55,17 @@ export default function Home() {
         return <DefaultLoading />;
     }
 
-    if (homePageViewModel.mode === 'kaboom') {
+    if (
+        homePageViewModel.mode === 'kaboom' ||
+        homePageViewModel.mode === 'unauthenticated'
+    ) {
         return <DefaultError errorMessage={homePageViewModel.data.message} />;
     }
 
-    if (topicsViewModel.mode === 'kaboom') {
+    if (
+        topicsViewModel.mode === 'kaboom' ||
+        topicsViewModel.mode === 'unauthenticated'
+    ) {
         return <DefaultError errorMessage={topicsViewModel.data.message} />;
     }
 

@@ -3,3 +3,4 @@ export * from './home-page-view-model';
 export * from './language-list-view-model';
 export * from './topic-list-view-model';
 export * from './offers-page-view-model';
+export * from './topics-by-category-view-model';

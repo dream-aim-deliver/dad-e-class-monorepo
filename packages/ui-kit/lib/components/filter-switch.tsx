@@ -1,9 +1,11 @@
-import { topic } from '@maany_shr/e-class-models';
 import React, { useState } from 'react';
 import { Button } from './button';
 
 interface TopicListProps {
-  list: topic.TTopic[];
+  list: {
+      name: string;
+      slug: string;
+  }[];
   title: string;
   onFilterChange?: (selectedTopicNames: string[]) => void; // Now accepts array of strings
 }
@@ -21,7 +23,7 @@ interface TopicListProps {
  *   { name: 'React' },
  *   { name: 'Next.js' },
  * ];
- * 
+ *
  * const handleFilterChange = (topicNames) => {
  *   console.log('Selected topics:', topicNames);
  * };
@@ -33,7 +35,7 @@ const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange })
 
   const handleTopicClick = (topicName: string) => {
     let newSelectedTopics: string[];
-    
+
     // If already selected, remove it from the array (toggle behavior)
     if (selectedTopics.includes(topicName)) {
       newSelectedTopics = selectedTopics.filter(name => name !== topicName);
@@ -41,9 +43,9 @@ const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange })
       // Otherwise, add it to the array
       newSelectedTopics = [...selectedTopics, topicName];
     }
-    
+
     setSelectedTopics(newSelectedTopics);
-    
+
     // Notify parent component if callback exists
     if (onFilterChange) {
       onFilterChange(newSelectedTopics);
