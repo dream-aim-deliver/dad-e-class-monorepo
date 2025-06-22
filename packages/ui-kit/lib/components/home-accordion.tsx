@@ -18,8 +18,8 @@ export function HomeAccordion({ title, items, showNumbers }: HomeAccordionProps)
 
     return (
         <Accordion className="flex flex-col gap-7" type="single" defaultValue={defaultValue}>
-            <h2 className="text-text-primary">{title}</h2>
-            <div className="w-full py-4">
+            <h3 className="text-text-primary lg:text-mega text-2xl">{title}</h3>
+            <div className="w-full">
                 {items?.map((item, index) => (
                     <AccordionItem
                         className={cn(
