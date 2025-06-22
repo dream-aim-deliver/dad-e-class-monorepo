@@ -20,9 +20,9 @@ export const CoachingOnDemandBanner: React.FC<CoachingOnDemandBannerProps> = ({
   return (
     <div className="flex flex-col gap-4 w-full py-24">
       <div className="flex flex-col gap-4 w-full">
-        <p className="text-2xl text-text-primary font-bold leading-[110%] break-words">
+        <h3 className="lg:text-mega text-2xl text-text-primary font-bold leading-[110%] break-words">
           {title}
-        </p>
+        </h3>
         <p className="text-md text-text-secondary leading-[150%] break-words">
           {description}
         </p>
