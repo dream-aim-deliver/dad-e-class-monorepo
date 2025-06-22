@@ -1,6 +1,6 @@
 import HomePagePresenter, {
-    THomePageUtilities,
-} from '../../common/presenters/get-home-page-presenter';
+    THomePagePresenterUtilities,
+} from '../../common/presenters/home-page-presenter';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -10,7 +10,7 @@ export function useGetHomePagePresenter(
 ) {
     const router = useRouter();
 
-    const homePageUtilities: THomePageUtilities = {
+    const homePageUtilities: THomePagePresenterUtilities = {
         redirect: (page: 'login') => {
             if (page === 'login') {
                 router.push(

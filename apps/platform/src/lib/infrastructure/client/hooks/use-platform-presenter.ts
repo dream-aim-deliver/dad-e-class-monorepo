@@ -2,15 +2,15 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import PlatformPresenter, {
-    TPlatformUtilities,
-} from '../../common/presenters/get-platform-presenter';
+    TPlatformPresenterUtilities,
+} from '../../common/presenters/platform-presenter';
 
 export function useGetPlatformPresenter(
     setViewModel: (viewModel: viewModels.TPlatformViewModel) => void,
 ) {
     const router = useRouter();
 
-    const platformUtilities: TPlatformUtilities = {
+    const platformUtilities: TPlatformPresenterUtilities = {
         redirect: (page: 'login') => {
             if (page === 'login') {
                 router.push(

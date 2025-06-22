@@ -6,7 +6,7 @@ import {
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
 
-export type THomePageUtilities = {
+export type THomePagePresenterUtilities = {
     redirect: (page: 'login') => Promise<void> | void;
 };
 
@@ -24,7 +24,7 @@ export const GetHomePageResponseMiddleware = {
                     viewModel: viewModels.THomePageViewModel,
                 ) => void;
             },
-            callback: THomePageUtilities['redirect'],
+            callback: THomePagePresenterUtilities['redirect'],
         ) => {
             callback('login');
         },
@@ -32,7 +32,7 @@ export const GetHomePageResponseMiddleware = {
 } satisfies TBaseResponseResponseMiddleware<
     useCaseModels.TGetHomePageUseCaseResponse,
     viewModels.THomePageViewModel,
-    THomePageUtilities
+    THomePagePresenterUtilities
 >;
 
 type TGetHomePageResponseMiddleware = typeof GetHomePageResponseMiddleware;
@@ -40,12 +40,12 @@ type TGetHomePageResponseMiddleware = typeof GetHomePageResponseMiddleware;
 export default class HomePagePresenter extends BasePresenter<
     useCaseModels.TGetHomePageUseCaseResponse,
     viewModels.THomePageViewModel,
-    THomePageUtilities,
+    THomePagePresenterUtilities,
     TGetHomePageResponseMiddleware
 > {
     constructor(
         setViewModel: (viewModel: viewModels.THomePageViewModel) => void,
-        viewUtilities: THomePageUtilities,
+        viewUtilities: THomePagePresenterUtilities,
     ) {
         super({
             schemas: {

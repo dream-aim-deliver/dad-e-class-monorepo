@@ -5,33 +5,33 @@ import {
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
 
-export type TTopicsUtilities = {};
+export type TLanguagesPresenterUtilities = {};
 
-export const GetTopicsResponseMiddleware =
+export const GetLanguagesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetTopicsUseCaseResponse,
-        viewModels.TTopicListViewModel,
-        TTopicsUtilities
+        useCaseModels.TGetLanguagesUseCaseResponse,
+        viewModels.TLanguageListViewModel,
+        TLanguagesPresenterUtilities
     >;
 
-type TGetTopicsResponseMiddleware = typeof GetTopicsResponseMiddleware;
+type TGetLanguagesResponseMiddleware = typeof GetLanguagesResponseMiddleware;
 
-export default class GetTopicsPresenter extends BasePresenter<
-    useCaseModels.TGetTopicsUseCaseResponse,
-    viewModels.TTopicListViewModel,
-    TTopicsUtilities,
-    TGetTopicsResponseMiddleware
+export default class LanguagesPresenter extends BasePresenter<
+    useCaseModels.TGetLanguagesUseCaseResponse,
+    viewModels.TLanguageListViewModel,
+    TLanguagesPresenterUtilities,
+    TGetLanguagesResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.TTopicListViewModel) => void,
-        viewUtilities: TTopicsUtilities,
+        setViewModel: (viewModel: viewModels.TLanguageListViewModel) => void,
+        viewUtilities: TLanguagesPresenterUtilities,
     ) {
         super({
             schemas: {
                 responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
                 viewModel: viewModels.HomePageViewModelSchema,
             },
-            middleware: GetTopicsResponseMiddleware,
+            middleware: GetLanguagesResponseMiddleware,
             viewUtilities: viewUtilities,
             setViewModel: setViewModel,
         });
@@ -39,26 +39,23 @@ export default class GetTopicsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetTopicsUseCaseResponse,
+            useCaseModels.TGetLanguagesUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TTopicListViewModel {
+    ): viewModels.TLanguageListViewModel {
         return {
             mode: 'default',
             data: {
-                topics: response.data.topics.map((topic) => ({
-                    name: topic.name,
-                    url: `/offers?topics=${topic.slug}`,
-                })),
+                ...response.data,
             },
         };
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetTopicsUseCaseErrorResponse,
-            TGetTopicsResponseMiddleware
+            useCaseModels.TGetLanguagesUseCaseErrorResponse,
+            TGetLanguagesResponseMiddleware
         >,
-    ): viewModels.TTopicListViewModel {
+    ): viewModels.TLanguageListViewModel {
         return {
             mode: 'kaboom',
             data: {

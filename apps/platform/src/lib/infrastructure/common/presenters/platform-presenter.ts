@@ -6,7 +6,7 @@ import {
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
 
-export type TPlatformUtilities = {
+export type TPlatformPresenterUtilities = {
     redirect: (page: 'login') => Promise<void> | void;
 };
 
@@ -24,7 +24,7 @@ export const GetPlatformResponseMiddleware = {
                     viewModel: viewModels.TPlatformViewModel,
                 ) => void;
             },
-            callback: TPlatformUtilities['redirect'],
+            callback: TPlatformPresenterUtilities['redirect'],
         ) => {
             callback('login');
         },
@@ -32,7 +32,7 @@ export const GetPlatformResponseMiddleware = {
 } satisfies TBaseResponseResponseMiddleware<
     useCaseModels.TGetPlatformUseCaseResponse,
     viewModels.TPlatformViewModel,
-    TPlatformUtilities
+    TPlatformPresenterUtilities
 >;
 
 type TGetPlatformResponseMiddleware = typeof GetPlatformResponseMiddleware;
@@ -40,12 +40,12 @@ type TGetPlatformResponseMiddleware = typeof GetPlatformResponseMiddleware;
 export default class PlatformPresenter extends BasePresenter<
     useCaseModels.TGetPlatformUseCaseResponse,
     viewModels.TPlatformViewModel,
-    TPlatformUtilities,
+    TPlatformPresenterUtilities,
     TGetPlatformResponseMiddleware
 > {
     constructor(
         setViewModel: (viewModel: viewModels.TPlatformViewModel) => void,
-        viewUtilities: TPlatformUtilities,
+        viewUtilities: TPlatformPresenterUtilities,
     ) {
         super({
             schemas: {
