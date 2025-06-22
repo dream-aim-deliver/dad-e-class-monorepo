@@ -6,66 +6,75 @@ import {
     FilterSwitch,
     Outline,
     SectionHeading,
+    Tabs,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../trpc/client';
 import { useEffect, useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetOffersPageOutlinePresenter } from '../hooks/use-offers-page-outline-presenter';
-import { Tabs } from '@maany_shr/e-class-ui-kit';
 import { useGetTopicsByCategoryPresenter } from '../hooks/use-topics-by-category-presenter';
 
 interface OffersFiltersProps {
-    initialSelectedTopics?: string[];
+    selectedTopics: string[];
+    setSelectedTopics: (selectedTopics: string[]) => void;
 }
 
-function OffersFilters(props: OffersFiltersProps) {
+function OffersFilters({
+    selectedTopics,
+    setSelectedTopics,
+}: OffersFiltersProps) {
+    // Data fetching and presentation logic
     const [topicsByCategoryResponse] =
         trpc.getTopicsByCategory.useSuspenseQuery({});
     const [topicsByCategoryViewModel, setTopicsByCategoryViewModel] = useState<
         viewModels.TTopicsByCategoryViewModel | undefined
     >(undefined);
+
     const { presenter } = useGetTopicsByCategoryPresenter(
         setTopicsByCategoryViewModel,
     );
     presenter.present(topicsByCategoryResponse, topicsByCategoryViewModel);
 
-    const viewModelInvalid =
-        !topicsByCategoryViewModel ||
-        topicsByCategoryViewModel.mode !== 'default';
+    // Validation and derived state
+    const isViewModelValid =
+        topicsByCategoryViewModel &&
+        topicsByCategoryViewModel.mode === 'default';
 
     const categories = useMemo(() => {
-        if (viewModelInvalid) return [];
+        if (!isViewModelValid) return [];
         return Object.keys(topicsByCategoryViewModel.data.topicsByCategory);
-    }, [topicsByCategoryViewModel]);
+    }, [isViewModelValid, topicsByCategoryViewModel]);
 
     const allTopics = useMemo(() => {
-        if (viewModelInvalid) return [];
+        if (!isViewModelValid) return [];
+
         return Object.values(topicsByCategoryViewModel.data.topicsByCategory)
             .flat()
             .reduce<viewModels.TMatrixTopic[]>((acc, topic) => {
-                if (!acc.find((t) => t.slug === topic.slug)) {
+                const isTopicAlreadyAdded = acc.find(
+                    (t) => t.slug === topic.slug,
+                );
+                if (!isTopicAlreadyAdded) {
                     acc.push(topic);
                 }
                 return acc;
             }, []);
-    }, [topicsByCategoryViewModel]);
+    }, [isViewModelValid, topicsByCategoryViewModel]);
 
-    const [selectedTopics, setSelectedTopics] = useState<string[]>(
-        props.initialSelectedTopics ?? [],
-    );
-
+    // URL synchronization
     // TODO: Validate whether this is truly necessary
     useEffect(() => {
         const url = new URL(window.location.toString());
         url.searchParams.set('topics', selectedTopics.join(','));
-        // Update URL without page reload
         window.history.pushState({}, '', url);
     }, [selectedTopics]);
 
+    // Loading state
     if (!topicsByCategoryViewModel) {
         return <DefaultLoading />;
     }
 
+    // Error state
     if (topicsByCategoryViewModel.mode !== 'default') {
         return (
             <DefaultError
@@ -74,53 +83,59 @@ function OffersFilters(props: OffersFiltersProps) {
         );
     }
 
-    const filterSwitchTitle = 'Filter by Topic';
-    const contentClassName = 'mt-8';
+    // Event handlers
+    const handleTabChange = () => {
+        setSelectedTopics([]);
+    };
 
-    return (
-        <Tabs.Root
-            defaultTab="all"
-            onValueChange={() => {
-                // Reset selected topics when switching tabs
-                setSelectedTopics([]);
-            }}
-        >
-            <Tabs.List>
-                <Tabs.Trigger value="all">All</Tabs.Trigger>
-                {categories.map((category) => {
-                    return (
-                        <Tabs.Trigger value={category} key={category}>
-                            {category}
-                        </Tabs.Trigger>
-                    );
-                })}
-            </Tabs.List>
-            <Tabs.Content value="all" className={contentClassName}>
+    // Constants
+    const FILTER_SWITCH_TITLE = 'Filter by Topic';
+    const CONTENT_CLASS_NAME = 'mt-8';
+
+    // Render helpers
+    const renderCategoryTab = (category: string) => (
+        <Tabs.Trigger value={category} key={category}>
+            {category}
+        </Tabs.Trigger>
+    );
+
+    const renderCategoryContent = (category: string) => {
+        const topics =
+            topicsByCategoryViewModel.data.topicsByCategory[category];
+
+        return (
+            <Tabs.Content
+                value={category}
+                key={category}
+                className={CONTENT_CLASS_NAME}
+            >
                 <FilterSwitch
                     selectedTopics={selectedTopics}
                     setSelectedTopics={setSelectedTopics}
-                    title={filterSwitchTitle}
+                    title={FILTER_SWITCH_TITLE}
+                    list={topics}
+                />
+            </Tabs.Content>
+        );
+    };
+
+    return (
+        <Tabs.Root defaultTab="all" onValueChange={handleTabChange}>
+            <Tabs.List>
+                <Tabs.Trigger value="all">All</Tabs.Trigger>
+                {categories.map(renderCategoryTab)}
+            </Tabs.List>
+
+            <Tabs.Content value="all" className={CONTENT_CLASS_NAME}>
+                <FilterSwitch
+                    selectedTopics={selectedTopics}
+                    setSelectedTopics={setSelectedTopics}
+                    title={FILTER_SWITCH_TITLE}
                     list={allTopics}
                 />
             </Tabs.Content>
-            {categories.map((category) => {
-                const topics =
-                    topicsByCategoryViewModel.data.topicsByCategory[category];
-                return (
-                    <Tabs.Content
-                        value={category}
-                        key={category}
-                        className={contentClassName}
-                    >
-                        <FilterSwitch
-                            selectedTopics={selectedTopics}
-                            setSelectedTopics={setSelectedTopics}
-                            title={filterSwitchTitle}
-                            list={topics}
-                        />
-                    </Tabs.Content>
-                );
-            })}
+
+            {categories.map(renderCategoryContent)}
         </Tabs.Root>
     );
 }
@@ -130,17 +145,26 @@ interface OffersProps {
 }
 
 export default function Offers(props: OffersProps) {
+    // Data fetching and presentation logic
     const [outlineResponse] = trpc.getOffersPageOutline.useSuspenseQuery({});
     const [outlineViewModel, setOutlineViewModel] = useState<
         viewModels.TOffersPageOutlineViewModel | undefined
     >(undefined);
+
     const { presenter } = useGetOffersPageOutlinePresenter(setOutlineViewModel);
     presenter.present(outlineResponse, outlineViewModel);
 
+    // Filter
+    const [selectedTopics, setSelectedTopics] = useState<string[]>(
+        props.initialSelectedTopics ?? [],
+    );
+
+    // Loading state
     if (!outlineViewModel) {
         return <DefaultLoading />;
     }
 
+    // Error state
     if (outlineViewModel.mode === 'kaboom') {
         return <DefaultError errorMessage={outlineViewModel.data.message} />;
     }
@@ -152,7 +176,8 @@ export default function Offers(props: OffersProps) {
             <Outline title={outline.title} description={outline.description} />
             <SectionHeading text="What's your goal?" />
             <OffersFilters
-                initialSelectedTopics={props.initialSelectedTopics}
+                selectedTopics={selectedTopics}
+                setSelectedTopics={setSelectedTopics}
             />
         </div>
     );

@@ -8,7 +8,7 @@ interface TopicListProps {
   }[];
   title: string;
   selectedTopics: string[];
-  setSelectedTopics: React.Dispatch<React.SetStateAction<string[]>>;
+  setSelectedTopics: (selectedTopics: string[]) => void;
   onFilterChange?: (selectedTopicNames: string[]) => void; // Now accepts array of strings
 }
 
