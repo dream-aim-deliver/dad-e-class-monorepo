@@ -17,7 +17,7 @@ export default async function OffersServerComponent(props: OffersProps) {
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <Offers />
+                    <Offers initialSelectedTopics={props.topics} />
                 </Suspense>
             </HydrateClient>
         </>

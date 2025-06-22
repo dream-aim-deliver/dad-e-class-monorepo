@@ -14,7 +14,9 @@ import { useGetOffersPageOutlinePresenter } from '../hooks/use-offers-page-outli
 import { Tabs } from '@maany_shr/e-class-ui-kit';
 import { useGetTopicsByCategoryPresenter } from '../hooks/use-topics-by-category-presenter';
 
-interface OffersFiltersProps {}
+interface OffersFiltersProps {
+    initialSelectedTopics?: string[];
+}
 
 function OffersFilters(props: OffersFiltersProps) {
     const [topicsByCategoryResponse] =
@@ -48,7 +50,17 @@ function OffersFilters(props: OffersFiltersProps) {
             }, []);
     }, [topicsByCategoryViewModel]);
 
-    const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+    const [selectedTopics, setSelectedTopics] = useState<string[]>(
+        props.initialSelectedTopics ?? [],
+    );
+
+    // TODO: Validate whether this is truly necessary
+    useEffect(() => {
+        const url = new URL(window.location.toString());
+        url.searchParams.set('topics', selectedTopics.join(','));
+        // Update URL without page reload
+        window.history.pushState({}, '', url);
+    }, [selectedTopics]);
 
     if (!topicsByCategoryViewModel) {
         return <DefaultLoading />;
@@ -113,7 +125,11 @@ function OffersFilters(props: OffersFiltersProps) {
     );
 }
 
-export default function Offers() {
+interface OffersProps {
+    initialSelectedTopics?: string[];
+}
+
+export default function Offers(props: OffersProps) {
     const [outlineResponse] = trpc.getOffersPageOutline.useSuspenseQuery({});
     const [outlineViewModel, setOutlineViewModel] = useState<
         viewModels.TOffersPageOutlineViewModel | undefined
@@ -135,7 +151,9 @@ export default function Offers() {
         <div className="flex flex-col space-y-5">
             <Outline title={outline.title} description={outline.description} />
             <SectionHeading text="What's your goal?" />
-            <OffersFilters />
+            <OffersFilters
+                initialSelectedTopics={props.initialSelectedTopics}
+            />
         </div>
     );
 }
