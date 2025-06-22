@@ -4,21 +4,13 @@ import { useRouter } from 'next/navigation';
 import TopicsPresenter, {
     TTopicsPresenterUtilities,
 } from '../../common/presenters/topics-presenter';
+import { getDefaultPresenterUtilities } from '../utils/get-default-presenter-utilities';
 
 export function useGetTopicsPresenter(
     setViewModel: (viewModel: viewModels.TTopicListViewModel) => void,
 ) {
-    const router = useRouter();
-
-    const presenterUtilities: TTopicsPresenterUtilities = {
-        redirect: (page: 'login') => {
-            if (page === 'login') {
-                router.push(
-                    `/auth/login?callbackUrl=${encodeURIComponent(window.location.href)}`,
-                );
-            }
-        },
-    };
+    const presenterUtilities: TTopicsPresenterUtilities =
+        getDefaultPresenterUtilities();
     const presenter = useMemo(
         () => new TopicsPresenter(setViewModel, presenterUtilities),
         [setViewModel],
