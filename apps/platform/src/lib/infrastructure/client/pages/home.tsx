@@ -18,6 +18,7 @@ import Image from 'next/image';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-home-page-presenter';
+import { useGetTopicsPresenter } from '../hooks/use-topics-presenter';
 
 const Carousel = dynamic(
     () =>
@@ -38,12 +39,19 @@ export default function Home() {
     const [homePageViewModel, setHomePageViewModel] = useState<
         viewModels.THomePageViewModel | undefined
     >(undefined);
-    const { presenter } = useGetHomePagePresenter(setHomePageViewModel);
-    presenter.present(homePageResponse, homePageViewModel);
+    const { presenter: homePagePresenter } =
+        useGetHomePagePresenter(setHomePageViewModel);
+    homePagePresenter.present(homePageResponse, homePageViewModel);
 
-    const [topics] = trpc.getHomePageTopics.useSuspenseQuery();
+    const [topicsResponse] = trpc.getTopics.useSuspenseQuery({});
+    const [topicsViewModel, setTopicsViewModel] = useState<
+        viewModels.TTopicListViewModel | undefined
+    >(undefined);
+    const { presenter: topicsPresenter } =
+        useGetTopicsPresenter(setTopicsViewModel);
+    topicsPresenter.present(topicsResponse, topicsViewModel);
 
-    if (!homePageViewModel) {
+    if (!homePageViewModel || !topicsViewModel) {
         return <DefaultLoading />;
     }
 
@@ -51,7 +59,12 @@ export default function Home() {
         return <DefaultError errorMessage={homePageViewModel.data.message} />;
     }
 
+    if (topicsViewModel.mode === 'kaboom') {
+        return <DefaultError errorMessage={topicsViewModel.data.message} />;
+    }
+
     const homePage = homePageViewModel.data;
+    const topics = topicsViewModel.data.topics;
 
     return (
         <div className="flex flex-col">
