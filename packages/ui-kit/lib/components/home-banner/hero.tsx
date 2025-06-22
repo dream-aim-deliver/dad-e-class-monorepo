@@ -33,7 +33,7 @@ export const Hero: React.FC<HeroProps> = ({
 }) => {
     return (
         <div className="flex md:flex-row flex-col  gap-[4.1875rem] items-center w-full">
-            <Outline title={title} description={description} className="md:w-1/2"/>
+            <Outline title={title} description={description} className="md:w-1/2 gap-[2.5625rem]"/>
             {/* VideoPlayer */}
             <div className="flex-1 w-full aspect-video md:min-h-[200px]">
                 <VideoPlayer

@@ -28,7 +28,7 @@ interface OutlineProps {
 
 export function Outline({ title, description, className }: OutlineProps) {
     return (
-        <div className={cn('flex flex-col gap-[2.5625rem] items-start w-full', className)}>
+        <div className={cn('flex flex-col gap-5 items-start w-full', className)}>
             <Title text={title} />
             <Description text={description} />
         </div>
