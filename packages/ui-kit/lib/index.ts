@@ -52,4 +52,4 @@ export { default as RichTextRenderer } from './components/rich-text-element/rend
 
 export { default as DefaultLoading } from './components/default-loading';
 export { default as DefaultError } from './components/default-error';
-
+export { Outline } from './components/outline';
