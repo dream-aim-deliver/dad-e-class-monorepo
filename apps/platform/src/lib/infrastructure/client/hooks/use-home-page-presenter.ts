@@ -4,21 +4,13 @@ import HomePagePresenter, {
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { getDefaultPresenterUtilities } from '../utils/get-default-presenter-utilities';
 
 export function useGetHomePagePresenter(
     setViewModel: (viewModel: viewModels.THomePageViewModel) => void,
 ) {
-    const router = useRouter();
-
-    const presenterUtilities: THomePagePresenterUtilities = {
-        redirect: (page: 'login') => {
-            if (page === 'login') {
-                router.push(
-                    `/auth/login?callbackUrl=${encodeURIComponent(window.location.href)}`,
-                );
-            }
-        },
-    };
+    const presenterUtilities: THomePagePresenterUtilities =
+        getDefaultPresenterUtilities();
     const presenter = useMemo(
         () => new HomePagePresenter(setViewModel, presenterUtilities),
         [setViewModel],

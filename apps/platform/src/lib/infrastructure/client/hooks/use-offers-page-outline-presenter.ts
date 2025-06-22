@@ -4,21 +4,13 @@ import { useRouter } from 'next/navigation';
 import OffersPageOutlinePresenter, {
     TOffersPageOutlinePresenterUtilities,
 } from '../../common/presenters/offers-page-outline-presenter';
+import { getDefaultPresenterUtilities } from '../utils/get-default-presenter-utilities';
 
 export function useGetOffersPageOutlinePresenter(
     setViewModel: (viewModel: viewModels.TOffersPageOutlineViewModel) => void,
 ) {
-    const router = useRouter();
-
-    const presenterUtilities: TOffersPageOutlinePresenterUtilities = {
-        redirect: (page: 'login') => {
-            if (page === 'login') {
-                router.push(
-                    `/auth/login?callbackUrl=${encodeURIComponent(window.location.href)}`,
-                );
-            }
-        },
-    };
+    const presenterUtilities: TOffersPageOutlinePresenterUtilities =
+        getDefaultPresenterUtilities();
     const presenter = useMemo(
         () => new OffersPageOutlinePresenter(setViewModel, presenterUtilities),
         [setViewModel],

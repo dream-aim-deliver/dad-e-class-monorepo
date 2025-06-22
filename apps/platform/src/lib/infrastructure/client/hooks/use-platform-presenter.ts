@@ -4,21 +4,13 @@ import { useRouter } from 'next/navigation';
 import PlatformPresenter, {
     TPlatformPresenterUtilities,
 } from '../../common/presenters/platform-presenter';
+import { getDefaultPresenterUtilities } from '../utils/get-default-presenter-utilities';
 
 export function useGetPlatformPresenter(
     setViewModel: (viewModel: viewModels.TPlatformViewModel) => void,
 ) {
-    const router = useRouter();
-
-    const presenterUtilities: TPlatformPresenterUtilities = {
-        redirect: (page: 'login') => {
-            if (page === 'login') {
-                router.push(
-                    `/auth/login?callbackUrl=${encodeURIComponent(window.location.href)}`,
-                );
-            }
-        },
-    };
+    const presenterUtilities: TPlatformPresenterUtilities =
+        getDefaultPresenterUtilities();
     const presenter = useMemo(
         () => new PlatformPresenter(setViewModel, presenterUtilities),
         [setViewModel],
