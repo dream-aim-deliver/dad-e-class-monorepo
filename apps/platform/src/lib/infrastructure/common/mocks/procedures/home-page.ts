@@ -1,4 +1,3 @@
-import { homePage, topic } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 import { useCaseModels } from '@maany_shr/e-class-models';
 
@@ -339,109 +338,6 @@ const homePageMock: useCaseModels.TGetHomePageSuccessResponse['data'] = {
     },
 };
 
-const topicsMock: topic.TTopic[] = [
-    {
-        name: 'Branding and Identity',
-        url: '/topics/branding-and-identity',
-    },
-    {
-        name: 'Graphic and Visual Design',
-        url: '/topics/graphic-and-visual-design',
-    },
-    {
-        name: 'Motion Design and Animation',
-        url: '/topics/motion-design-and-animation',
-    },
-    {
-        name: 'Sound Design and Editing',
-        url: '/topics/sound-design-and-editing',
-    },
-    {
-        name: 'Digital Content and Social Media Strategy',
-        url: '/topics/digital-content-and-social-media-strategy',
-    },
-    {
-        name: 'Web Design and Development',
-        url: '/topics/web-design-and-development',
-    },
-    {
-        name: 'UI/UX Design',
-        url: '/topics/ui-ux-design',
-    },
-    {
-        name: 'Visual Storytelling',
-        url: '/topics/visual-storytelling',
-    },
-    {
-        name: 'Advertising Campaigns',
-        url: '/topics/advertising-campaigns',
-    },
-    {
-        name: 'Key Visual Creation',
-        url: '/topics/key-visual-creation',
-    },
-    {
-        name: 'Holistic Concept Development',
-        url: '/topics/holistic-concept-development',
-    },
-    {
-        name: 'Photography and Editing',
-        url: '/topics/photography-and-editing',
-    },
-    {
-        name: 'Prompting and AI Tools',
-        url: '/topics/prompting-and-ai-tools',
-    },
-    {
-        name: 'Idea Generation and Brainstorming',
-        url: '/topics/idea-generation-and-brainstorming',
-    },
-    {
-        name: 'Copywriting and Content Creation',
-        url: '/topics/copywriting-and-content-creation',
-    },
-    {
-        name: 'Strategy and Concept Development',
-        url: '/topics/strategy-and-concept-development',
-    },
-    {
-        name: 'Creative and Art Direction',
-        url: '/topics/creative-and-art-direction',
-    },
-    {
-        name: 'Business Planning and Financing',
-        url: '/topics/business-planning-and-financing',
-    },
-    {
-        name: 'Pitching and Presentation Skills',
-        url: '/topics/pitching-and-presentation-skills',
-    },
-    {
-        name: 'Typography, Layout, and Composition',
-        url: '/topics/typography-layout-and-composition',
-    },
-    {
-        name: 'Cross-Channel Marketing',
-        url: '/topics/cross-channel-marketing',
-    },
-    {
-        name: 'Campaign Development',
-        url: '/topics/campaign-development',
-    },
-    {
-        name: 'Infographics and Data Visualization',
-        url: '/topics/infographics-and-data-visualization',
-    },
-    {
-        name: 'Packaging and Print Design',
-        url: '/topics/packaging-and-print-design',
-    },
-    {
-        name: 'Film and Cinematography',
-        url: '/topics/film-and-cinematography',
-    },
-];
-
 const homePageSuccess: useCaseModels.TGetHomePageSuccessResponse = {
     success: true,
     data: homePageMock,
@@ -473,14 +369,5 @@ export const getHomePage = t.procedure
     .input(useCaseModels.GetPlatformRequestSchema)
     .query(async (opts): Promise<useCaseModels.TGetHomePageUseCaseResponse> => {
         // Locale will be received from context
-        await new Promise((resolve) => setTimeout(resolve, 250));
         return homePageSuccess;
     });
-
-export const getHomePageTopics = t.procedure.query(
-    async (opts): Promise<topic.TTopic[]> => {
-        // The real implementation might build URLs from topic names (kebab-case)
-        await new Promise((resolve) => setTimeout(resolve, 250));
-        return topicsMock;
-    },
-);

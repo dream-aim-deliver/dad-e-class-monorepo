@@ -40,6 +40,5 @@ const platformCriticalError: useCaseModels.TGetPlatformUseCaseErrorResponse = {
 export const getPlatform = t.procedure
     .input(useCaseModels.GetPlatformRequestSchema)
     .query(async (opts): Promise<useCaseModels.TGetPlatformUseCaseResponse> => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
         return platformSuccess;
     });
