@@ -1,16 +1,16 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import TopicsPresenter, {
-    TTopicsPresenterUtilities,
-} from '../../common/presenters/topics-presenter';
+import OffersPageOutlinePresenter, {
+    TOffersPageOutlinePresenterUtilities,
+} from '../../common/presenters/offers-page-outline-presenter';
 
-export function useGetTopicsPresenter(
-    setViewModel: (viewModel: viewModels.TTopicListViewModel) => void,
+export function useGetOffersPageOutlinePresenter(
+    setViewModel: (viewModel: viewModels.TOffersPageOutlineViewModel) => void,
 ) {
     const router = useRouter();
 
-    const presenterUtilities: TTopicsPresenterUtilities = {
+    const presenterUtilities: TOffersPageOutlinePresenterUtilities = {
         redirect: (page: 'login') => {
             if (page === 'login') {
                 router.push(
@@ -20,7 +20,7 @@ export function useGetTopicsPresenter(
         },
     };
     const presenter = useMemo(
-        () => new TopicsPresenter(setViewModel, presenterUtilities),
+        () => new OffersPageOutlinePresenter(setViewModel, presenterUtilities),
         [setViewModel],
     );
     return { presenter };
