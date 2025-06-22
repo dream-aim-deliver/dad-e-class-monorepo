@@ -48,6 +48,8 @@ function OffersFilters(props: OffersFiltersProps) {
             }, []);
     }, [topicsByCategoryViewModel]);
 
+    const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+
     if (!topicsByCategoryViewModel) {
         return <DefaultLoading />;
     }
@@ -64,7 +66,13 @@ function OffersFilters(props: OffersFiltersProps) {
     const contentClassName = 'mt-8';
 
     return (
-        <Tabs.Root defaultTab="all">
+        <Tabs.Root
+            defaultTab="all"
+            onValueChange={() => {
+                // Reset selected topics when switching tabs
+                setSelectedTopics([]);
+            }}
+        >
             <Tabs.List>
                 <Tabs.Trigger value="all">All</Tabs.Trigger>
                 {categories.map((category) => {
@@ -76,7 +84,12 @@ function OffersFilters(props: OffersFiltersProps) {
                 })}
             </Tabs.List>
             <Tabs.Content value="all" className={contentClassName}>
-                <FilterSwitch title={filterSwitchTitle} list={allTopics} />
+                <FilterSwitch
+                    selectedTopics={selectedTopics}
+                    setSelectedTopics={setSelectedTopics}
+                    title={filterSwitchTitle}
+                    list={allTopics}
+                />
             </Tabs.Content>
             {categories.map((category) => {
                 const topics =
@@ -87,7 +100,12 @@ function OffersFilters(props: OffersFiltersProps) {
                         key={category}
                         className={contentClassName}
                     >
-                        <FilterSwitch title={filterSwitchTitle} list={topics} />
+                        <FilterSwitch
+                            selectedTopics={selectedTopics}
+                            setSelectedTopics={setSelectedTopics}
+                            title={filterSwitchTitle}
+                            list={topics}
+                        />
                     </Tabs.Content>
                 );
             })}

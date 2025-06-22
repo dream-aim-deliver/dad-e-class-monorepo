@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from './button';
 
 interface TopicListProps {
@@ -7,6 +7,8 @@ interface TopicListProps {
       slug: string;
   }[];
   title: string;
+  selectedTopics: string[];
+  setSelectedTopics: React.Dispatch<React.SetStateAction<string[]>>;
   onFilterChange?: (selectedTopicNames: string[]) => void; // Now accepts array of strings
 }
 
@@ -16,6 +18,8 @@ interface TopicListProps {
  *
  * @param title The title displayed above the topic list.
  * @param list An array of topics, each containing a `name`.
+ * @param selectedTopics An array of currently selected topic names.
+ * @param setSelectedTopics A function to update the selected topics state.
  * @param onFilterChange Optional callback function that receives an array of selected topic names.
  *
  * @example
@@ -30,9 +34,7 @@ interface TopicListProps {
  *
  * <FilterSwitch title="Filter By Topic" list={topics} onFilterChange={handleFilterChange} />
  */
-const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange }) => {
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-
+const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange, selectedTopics, setSelectedTopics }) => {
   const handleTopicClick = (topicName: string) => {
     let newSelectedTopics: string[];
 

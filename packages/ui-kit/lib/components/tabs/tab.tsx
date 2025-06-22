@@ -29,9 +29,9 @@ interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
  * - `Tabs.Root` - The root wrapper that manages tab state.
  */
 
-function TabsRoot({ defaultTab, children, className, ...props }: TabsProps) {
+function TabsRoot({ defaultTab, children, onValueChange, className, ...props }: TabsProps) {
   return (
-    <TabProvider defaultTab={defaultTab}>
+    <TabProvider defaultTab={defaultTab} onValueChange={onValueChange}>
       <div className={cn('w-full', className)} {...props}>
         {children}
       </div>
