@@ -35,15 +35,15 @@ interface TopicListProps {
  * <FilterSwitch title="Filter By Topic" list={topics} onFilterChange={handleFilterChange} />
  */
 const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange, selectedTopics, setSelectedTopics }) => {
-  const handleTopicClick = (topicName: string) => {
+  const handleTopicClick = (topicSlug: string) => {
     let newSelectedTopics: string[];
 
     // If already selected, remove it from the array (toggle behavior)
-    if (selectedTopics.includes(topicName)) {
-      newSelectedTopics = selectedTopics.filter(name => name !== topicName);
+    if (selectedTopics.includes(topicSlug)) {
+      newSelectedTopics = selectedTopics.filter(name => name !== topicSlug);
     } else {
       // Otherwise, add it to the array
-      newSelectedTopics = [...selectedTopics, topicName];
+      newSelectedTopics = [...selectedTopics, topicSlug];
     }
 
     setSelectedTopics(newSelectedTopics);
@@ -63,9 +63,9 @@ const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange, s
             key={index}
             size="medium"
             className='border-1 border-button-secondary-stroke'
-            variant={selectedTopics.includes(topic.name) ? "primary" : "secondary"}
+            variant={selectedTopics.includes(topic.slug) ? "primary" : "secondary"}
             text={topic.name}
-            onClick={() => handleTopicClick(topic.name)}
+            onClick={() => handleTopicClick(topic.slug)}
           />
         ))}
       </div>
