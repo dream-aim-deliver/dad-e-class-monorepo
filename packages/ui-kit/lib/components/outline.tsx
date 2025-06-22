@@ -1,24 +1,5 @@
 import { cn } from '../utils/style-utils';
-
-interface TitleProps {
-    text: string;
-}
-
-export function Title({ text }: TitleProps) {
-    return <p className="text-4xl text-text-primary font-bold leading-[100%] tracking-[-0.08rem]">
-        {text}
-    </p>;
-}
-
-interface DescriptionProps {
-    text: string;
-}
-
-export function Description({ text }: DescriptionProps) {
-    return <p className="text-lg text-text-secondary leading-[150%]">
-        {text}
-    </p>;
-}
+import { Description, PageTitle } from './text';
 
 interface OutlineProps {
     title: string;
@@ -29,7 +10,7 @@ interface OutlineProps {
 export function Outline({ title, description, className }: OutlineProps) {
     return (
         <div className={cn('flex flex-col gap-5 items-start w-full', className)}>
-            <Title text={title} />
+            <PageTitle text={title} />
             <Description text={description} />
         </div>
     );
