@@ -202,6 +202,14 @@ function CourseList({ selectedTopics, coachingIncluded }: CourseListProps) {
         return <DefaultLoading />;
     }
 
+    // TODO: Improve not found state display
+    if (
+        coursesViewModel.mode === 'not-found' ||
+        displayedCourses.length === 0
+    ) {
+        return <DefaultError errorMessage="No courses found" />;
+    }
+
     if (coursesViewModel.mode !== 'default') {
         return <DefaultError errorMessage={coursesViewModel.data.message} />;
     }
@@ -329,6 +337,8 @@ export default function Offers(props: OffersProps) {
                     coachingIncluded={coachingIncluded}
                 />
             </Suspense>
+            <Divider className="my-12" />
+            <SectionHeading text={t('ourPackages')} />
         </div>
     );
 }
