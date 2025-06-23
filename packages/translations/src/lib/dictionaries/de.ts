@@ -7,6 +7,9 @@ import { TDictionary } from './base';
 import { Offers_DE } from '../pages/offers/offers-de';
 export const DE: TDictionary = {
   components: {
+    paginationButton: {
+      loadMore: 'Mehr laden...',
+    },
     coachBanner: {
       buttonText: 'Coach werden',
       placeHolderText: 'Bild nicht verfügbar',
