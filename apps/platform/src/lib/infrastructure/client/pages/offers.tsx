@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    Button,
     CardListLayout,
     CheckBox,
     DefaultError,
@@ -153,6 +154,8 @@ interface CourseListProps {
     coachingIncluded: boolean;
 }
 
+const COURSES_PER_PAGE = 6;
+
 function CourseList({ selectedTopics, coachingIncluded }: CourseListProps) {
     const [coursesResponse] = trpc.getCourses.useSuspenseQuery({});
     const [coursesViewModel, setCoursesViewModel] = useState<
@@ -161,8 +164,7 @@ function CourseList({ selectedTopics, coachingIncluded }: CourseListProps) {
     const { presenter } = useGetCoursesPresenter(setCoursesViewModel);
     presenter.present(coursesResponse, coursesViewModel);
     const locale = useLocale() as TLocale;
-
-    console.log(selectedTopics);
+    const [displayedCount, setDisplayedCount] = useState(COURSES_PER_PAGE);
 
     const courses = useMemo(() => {
         if (!coursesViewModel || coursesViewModel.mode !== 'default') {
@@ -183,6 +185,16 @@ function CourseList({ selectedTopics, coachingIncluded }: CourseListProps) {
         });
     }, [coursesViewModel, selectedTopics, coachingIncluded]);
 
+    const displayedCourses = useMemo(() => {
+        return courses.slice(0, displayedCount);
+    }, [courses, displayedCount]);
+
+    const hasMoreCourses = displayedCount < courses.length;
+
+    const handleLoadMore = () => {
+        setDisplayedCount((prev) => Math.min(prev + 6, courses.length));
+    };
+
     // Validation and derived state
     if (!coursesViewModel) {
         return <DefaultLoading />;
@@ -193,54 +205,63 @@ function CourseList({ selectedTopics, coachingIncluded }: CourseListProps) {
     }
 
     return (
-        <CardListLayout>
-            {courses.map((course) => {
-                return (
-                    <VisitorCourseCard
-                        coachingIncluded={coachingIncluded}
-                        onDetails={() => {
-                            // TODO: Implement course details navigation
-                        }}
-                        onBuy={() => {
-                            // TODO: Implement course purchase navigation
-                        }}
-                        onClickUser={() => {
-                            // TODO: Implement user profile navigation
-                        }}
-                        key={course.id}
-                        reviewCount={course.reviewCount}
-                        sessions={course.coachingSessionCount ?? 0}
-                        sales={course.salesCount}
-                        locale={locale}
-                        title={course.title}
-                        description={course.description}
-                        language={{
-                            code: '',
-                            name: course.language,
-                        }}
-                        imageUrl={course.imageUrl ?? ''}
-                        author={{
-                            name:
-                                course.author.name +
-                                ' ' +
-                                course.author.surname,
-                            image: course.author.avatarUrl ?? '',
-                        }}
-                        pricing={{
-                            partialPrice: course.pricing.base,
-                            currency: course.pricing.currency,
-                            fullPrice: course.pricing.withCoaching ?? 0,
-                        }}
-                        duration={{
-                            video: 0,
-                            coaching: 0,
-                            selfStudy: course.fullDuration,
-                        }}
-                        rating={course.averageRating ?? 0}
-                    />
-                );
-            })}
-        </CardListLayout>
+        <div className="flex flex-col justify-center space-y-4">
+            <CardListLayout>
+                {displayedCourses.map((course) => {
+                    return (
+                        <VisitorCourseCard
+                            coachingIncluded={coachingIncluded}
+                            onDetails={() => {
+                                // TODO: Implement course details navigation
+                            }}
+                            onBuy={() => {
+                                // TODO: Implement course purchase navigation
+                            }}
+                            onClickUser={() => {
+                                // TODO: Implement user profile navigation
+                            }}
+                            key={course.id}
+                            reviewCount={course.reviewCount}
+                            sessions={course.coachingSessionCount ?? 0}
+                            sales={course.salesCount}
+                            locale={locale}
+                            title={course.title}
+                            description={course.description}
+                            language={{
+                                code: '',
+                                name: course.language,
+                            }}
+                            imageUrl={course.imageUrl ?? ''}
+                            author={{
+                                name:
+                                    course.author.name +
+                                    ' ' +
+                                    course.author.surname,
+                                image: course.author.avatarUrl ?? '',
+                            }}
+                            pricing={{
+                                partialPrice: course.pricing.base,
+                                currency: course.pricing.currency,
+                                fullPrice: course.pricing.withCoaching ?? 0,
+                            }}
+                            duration={{
+                                video: 0,
+                                coaching: 0,
+                                selfStudy: course.fullDuration,
+                            }}
+                            rating={course.averageRating ?? 0}
+                        />
+                    );
+                })}
+            </CardListLayout>
+            {hasMoreCourses && (
+                <Button
+                    variant="text"
+                    text="Load More..."
+                    onClick={handleLoadMore}
+                />
+            )}
+        </div>
     );
 }
 
