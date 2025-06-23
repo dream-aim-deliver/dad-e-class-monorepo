@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    CardListLayout,
     CheckBox,
     DefaultError,
     DefaultLoading,
@@ -192,7 +193,7 @@ function CourseList({ selectedTopics, coachingIncluded }: CourseListProps) {
     }
 
     return (
-        <div className="course-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <CardListLayout>
             {courses.map((course) => {
                 return (
                     <VisitorCourseCard
@@ -239,7 +240,7 @@ function CourseList({ selectedTopics, coachingIncluded }: CourseListProps) {
                     />
                 );
             })}
-        </div>
+        </CardListLayout>
     );
 }
 
