@@ -366,6 +366,7 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
 export const getCourses = t.procedure
     .input(useCaseModels.GetCoursesRequestSchema)
     .query(async (opts): Promise<useCaseModels.TGetCoursesUseCaseResponse> => {
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
         return {
             success: true,
             data: coursesMock,
