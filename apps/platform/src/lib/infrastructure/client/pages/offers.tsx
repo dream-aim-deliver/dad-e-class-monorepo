@@ -166,6 +166,7 @@ function CourseList({ selectedTopics, coachingIncluded }: CourseListProps) {
     presenter.present(coursesResponse, coursesViewModel);
     const locale = useLocale() as TLocale;
     const [displayedCount, setDisplayedCount] = useState(COURSES_PER_PAGE);
+    const t = useTranslations('components.paginationButton');
 
     const courses = useMemo(() => {
         if (!coursesViewModel || coursesViewModel.mode !== 'default') {
@@ -258,7 +259,7 @@ function CourseList({ selectedTopics, coachingIncluded }: CourseListProps) {
             {hasMoreCourses && (
                 <Button
                     variant="text"
-                    text="Load More..."
+                    text={t('loadMore')}
                     onClick={handleLoadMore}
                 />
             )}

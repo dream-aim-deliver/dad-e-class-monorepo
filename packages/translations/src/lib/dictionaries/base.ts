@@ -3,6 +3,9 @@ import { z } from 'zod';
 export const DictionarySchema = z.object({
 
   components: z.object({
+    paginationButton: z.object({
+      loadMore: z.string(),
+    }),
     coachBanner: z.object({
       buttonText: z.string(),
       placeHolderText: z.string(),
