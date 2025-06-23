@@ -4,6 +4,7 @@ import { SSO_DE } from '../pages/sso/sso-de';
 
 
 import { TDictionary } from './base';
+import { Offers_DE } from '../pages/offers/offers-de';
 export const DE: TDictionary = {
   components: {
     coachBanner: {
@@ -557,6 +558,7 @@ export const DE: TDictionary = {
     home: Home_DE,
     login: Login_DE,
     sso: SSO_DE,
+    offers: Offers_DE,
     auth: {
       errorPage: {
         title: 'Ups! Beim Anmelden ist ein Problem aufgetreten.',
