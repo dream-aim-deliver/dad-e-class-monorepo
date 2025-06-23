@@ -14,6 +14,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useGetOffersPageOutlinePresenter } from '../hooks/use-offers-page-outline-presenter';
 import { useGetTopicsByCategoryPresenter } from '../hooks/use-topics-by-category-presenter';
 import { useTranslations } from 'next-intl';
+import { useGetCoursesPresenter } from '../hooks/use-courses-presenter';
 
 interface OffersFiltersProps {
     selectedTopics: string[];
@@ -142,6 +143,28 @@ function OffersFilters({
     );
 }
 
+function CourseList() {
+    const [coursesResponse] = trpc.getCourses.useSuspenseQuery({});
+    const [coursesViewModel, setCoursesViewModel] = useState<
+        viewModels.TCourseListViewModel | undefined
+    >(undefined);
+    const { presenter } = useGetCoursesPresenter(setCoursesViewModel);
+    presenter.present(coursesResponse, coursesViewModel);
+
+    // Validation and derived state
+    if (!coursesViewModel) {
+        return <DefaultLoading />;
+    }
+
+    if (coursesViewModel.mode !== 'default') {
+        return <DefaultError errorMessage={coursesViewModel.data.message} />;
+    }
+
+    console.log(coursesViewModel);
+
+    return <div>Course List Component</div>;
+}
+
 interface OffersProps {
     initialSelectedTopics?: string[];
 }
@@ -183,6 +206,7 @@ export default function Offers(props: OffersProps) {
                 selectedTopics={selectedTopics}
                 setSelectedTopics={setSelectedTopics}
             />
+            <CourseList />
         </div>
     );
 }
