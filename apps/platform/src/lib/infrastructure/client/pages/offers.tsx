@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetOffersPageOutlinePresenter } from '../hooks/use-offers-page-outline-presenter';
 import { useGetTopicsByCategoryPresenter } from '../hooks/use-topics-by-category-presenter';
+import { useTranslations } from 'next-intl';
 
 interface OffersFiltersProps {
     selectedTopics: string[];
@@ -69,6 +70,8 @@ function OffersFilters({
         window.history.pushState({}, '', url);
     }, [selectedTopics]);
 
+    const t = useTranslations('pages.offers');
+
     // Loading state
     if (!topicsByCategoryViewModel) {
         return <DefaultLoading />;
@@ -89,7 +92,6 @@ function OffersFilters({
     };
 
     // Constants
-    const FILTER_SWITCH_TITLE = 'Filter by Topic';
     const CONTENT_CLASS_NAME = 'mt-8';
 
     // Render helpers
@@ -112,7 +114,7 @@ function OffersFilters({
                 <FilterSwitch
                     selectedTopics={selectedTopics}
                     setSelectedTopics={setSelectedTopics}
-                    title={FILTER_SWITCH_TITLE}
+                    title={t('filterByTopic')}
                     list={topics}
                 />
             </Tabs.Content>
@@ -130,7 +132,7 @@ function OffersFilters({
                 <FilterSwitch
                     selectedTopics={selectedTopics}
                     setSelectedTopics={setSelectedTopics}
-                    title={FILTER_SWITCH_TITLE}
+                    title={t('filterByTopic')}
                     list={allTopics}
                 />
             </Tabs.Content>
@@ -154,6 +156,8 @@ export default function Offers(props: OffersProps) {
     const { presenter } = useGetOffersPageOutlinePresenter(setOutlineViewModel);
     presenter.present(outlineResponse, outlineViewModel);
 
+    const t = useTranslations('pages.offers');
+
     // Filter
     const [selectedTopics, setSelectedTopics] = useState<string[]>(
         props.initialSelectedTopics ?? [],
@@ -174,7 +178,7 @@ export default function Offers(props: OffersProps) {
     return (
         <div className="flex flex-col space-y-5">
             <Outline title={outline.title} description={outline.description} />
-            <SectionHeading text="What's your goal?" />
+            <SectionHeading text={t('chooseCategory')} />
             <OffersFilters
                 selectedTopics={selectedTopics}
                 setSelectedTopics={setSelectedTopics}

@@ -469,6 +469,10 @@ export const DictionarySchema = z.object({
       signOutText: z.string(),
         topicsTitle: z.string(),
     }),
+    offers: z.object({
+      chooseCategory: z.string(),
+      filterByTopic: z.string(),
+    }),
     login: z.object({
       title: z.string(),
       postLogout: z.string(),
