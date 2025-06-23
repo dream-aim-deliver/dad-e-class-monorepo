@@ -1,5 +1,7 @@
+import { cn } from "../utils/style-utils";
+
 export function Divider({ className = "" }) {
     return (
-        <div className={`w-full border-t border-divider my-16 ${className}`} />
+        <div className={cn("w-full border-t border-divider my-16", className)} />
     );
 }

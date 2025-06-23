@@ -158,7 +158,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               variant={'primary'}
               size={'medium'}
               onClick={onBuy}
-              text={`${dictionary.components.courseCard.buyButton} (${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.fullPrice})`}
+              text={`${dictionary.components.courseCard.buyButton} (${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.partialPrice})`}
             />
           </div>
         </div>

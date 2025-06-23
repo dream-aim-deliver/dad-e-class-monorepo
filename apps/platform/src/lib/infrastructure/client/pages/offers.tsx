@@ -1,20 +1,24 @@
 'use client';
 
 import {
+    CheckBox,
     DefaultError,
     DefaultLoading,
+    Divider,
     FilterSwitch,
     Outline,
     SectionHeading,
     Tabs,
+    VisitorCourseCard,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../trpc/client';
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetOffersPageOutlinePresenter } from '../hooks/use-offers-page-outline-presenter';
 import { useGetTopicsByCategoryPresenter } from '../hooks/use-topics-by-category-presenter';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useGetCoursesPresenter } from '../hooks/use-courses-presenter';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 interface OffersFiltersProps {
     selectedTopics: string[];
@@ -150,6 +154,7 @@ function CourseList() {
     >(undefined);
     const { presenter } = useGetCoursesPresenter(setCoursesViewModel);
     presenter.present(coursesResponse, coursesViewModel);
+    const locale = useLocale() as TLocale;
 
     // Validation and derived state
     if (!coursesViewModel) {
@@ -160,9 +165,48 @@ function CourseList() {
         return <DefaultError errorMessage={coursesViewModel.data.message} />;
     }
 
-    console.log(coursesViewModel);
+    const courses = coursesViewModel.data.courses;
 
-    return <div>Course List Component</div>;
+    return (
+        <div className="course-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {courses.map((course) => {
+                return (
+                    <VisitorCourseCard
+                        key={course.id}
+                        reviewCount={course.reviewCount}
+                        sessions={course.coachingSessionCount ?? 0}
+                        sales={course.salesCount}
+                        locale={locale}
+                        title={course.title}
+                        description={course.description}
+                        language={{
+                            code: '',
+                            name: course.language,
+                        }}
+                        imageUrl={course.imageUrl ?? ''}
+                        author={{
+                            name:
+                                course.author.name +
+                                ' ' +
+                                course.author.surname,
+                            image: course.author.avatarUrl ?? '',
+                        }}
+                        pricing={{
+                            partialPrice: course.pricing.base,
+                            currency: course.pricing.currency,
+                            fullPrice: course.pricing.withCoaching ?? 0,
+                        }}
+                        duration={{
+                            video: 0,
+                            coaching: 0,
+                            selfStudy: course.fullDuration,
+                        }}
+                        rating={course.averageRating ?? 0}
+                    />
+                );
+            })}
+        </div>
+    );
 }
 
 interface OffersProps {
@@ -185,6 +229,7 @@ export default function Offers(props: OffersProps) {
     const [selectedTopics, setSelectedTopics] = useState<string[]>(
         props.initialSelectedTopics ?? [],
     );
+    const [coachingIncluded, setCoachingIncluded] = useState<boolean>(false);
 
     // Loading state
     if (!outlineViewModel) {
@@ -206,7 +251,23 @@ export default function Offers(props: OffersProps) {
                 selectedTopics={selectedTopics}
                 setSelectedTopics={setSelectedTopics}
             />
-            <CourseList />
+            <Divider className="my-12" />
+            <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:justify-between w-full">
+                <SectionHeading text={t('ourCourses')} />
+                <CheckBox
+                    name="coaching-filter"
+                    value="coaching-included"
+                    checked={coachingIncluded}
+                    onChange={() => setCoachingIncluded(!coachingIncluded)}
+                    withText
+                    label={t('coachingIncluded')}
+                    className="w-auto"
+                    labelClass="text-text-primary text-base"
+                />
+            </div>
+            <Suspense fallback={<div>Hello</div>}>
+                <CourseList />
+            </Suspense>
         </div>
     );
 }
