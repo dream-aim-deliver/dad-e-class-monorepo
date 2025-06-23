@@ -4,6 +4,7 @@ import {
     Button,
     CardListLayout,
     CheckBox,
+    CourseCardListSkeleton,
     DefaultError,
     DefaultLoading,
     Divider,
@@ -321,7 +322,7 @@ export default function Offers(props: OffersProps) {
                     labelClass="text-text-primary text-base"
                 />
             </div>
-            <Suspense fallback={<div>Hello</div>}>
+            <Suspense fallback={<CourseCardListSkeleton />}>
                 <CourseList
                     selectedTopics={selectedTopics}
                     coachingIncluded={coachingIncluded}
