@@ -19,7 +19,11 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 avatarUrl:
                     'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
             },
-            topicIds: [1, 2, 17],
+            topicSlugs: [
+                'branding-and-identity',
+                'graphic-and-visual-design',
+                'creative-and-art-direction',
+            ],
             language: 'English',
             coachingSessionCount: 3,
             salesCount: 234,
@@ -45,7 +49,10 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 surname: 'Chen',
                 avatarUrl: null,
             },
-            topicIds: [3, 5],
+            topicSlugs: [
+                'motion-design-and-animation',
+                'digital-content-and-social-media-strategy',
+            ],
             language: 'English',
             coachingSessionCount: null,
             salesCount: 12,
@@ -72,7 +79,11 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 avatarUrl:
                     'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
             },
-            topicIds: [7, 6, 16],
+            topicSlugs: [
+                'ui-ux-design',
+                'web-design-and-development',
+                'strategy-and-concept-development',
+            ],
             language: 'English',
             coachingSessionCount: 5,
             salesCount: 156,
@@ -98,7 +109,10 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 avatarUrl:
                     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
             },
-            topicIds: [12, 2],
+            topicSlugs: [
+                'photography-and-editing',
+                'graphic-and-visual-design',
+            ],
             language: 'English',
             coachingSessionCount: 2,
             salesCount: 87,
@@ -124,7 +138,7 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 surname: 'Walsh',
                 avatarUrl: null,
             },
-            topicIds: [4, 25],
+            topicSlugs: ['sound-design-and-editing', 'film-and-cinematography'],
             language: 'English',
             coachingSessionCount: 4,
             salesCount: 43,
@@ -151,7 +165,10 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 avatarUrl:
                     'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
             },
-            topicIds: ['13', 14],
+            topicSlugs: [
+                'prompting-and-ai-tools',
+                'idea-generation-and-brainstorming',
+            ],
             language: 'Spanish',
             coachingSessionCount: null,
             salesCount: 8,
@@ -178,7 +195,11 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 avatarUrl:
                     'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
             },
-            topicIds: [20, 2, 24],
+            topicSlugs: [
+                'typography-layout-and-composition',
+                'graphic-and-visual-design',
+                'packaging-and-print-design',
+            ],
             language: 'English',
             coachingSessionCount: 3,
             salesCount: 78,
@@ -204,7 +225,11 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 surname: 'Brown',
                 avatarUrl: null,
             },
-            topicIds: [21, 22, 5],
+            topicSlugs: [
+                'cross-channel-marketing',
+                'campaign-development',
+                'digital-content-and-social-media-strategy',
+            ],
             language: 'English',
             coachingSessionCount: null,
             salesCount: 112,
@@ -231,7 +256,10 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 avatarUrl:
                     'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face',
             },
-            topicIds: [23, 2],
+            topicSlugs: [
+                'infographics-and-data-visualization',
+                'graphic-and-visual-design',
+            ],
             language: 'German',
             coachingSessionCount: 2,
             salesCount: 45,
@@ -257,7 +285,10 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 avatarUrl:
                     'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
             },
-            topicIds: ['18', 19],
+            topicSlugs: [
+                'business-planning-and-financing',
+                'pitching-and-presentation-skills',
+            ],
             language: 'English',
             coachingSessionCount: 6,
             salesCount: 67,
@@ -283,7 +314,11 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 surname: 'Petrov',
                 avatarUrl: null,
             },
-            topicIds: [8, 15, 17],
+            topicSlugs: [
+                'visual-storytelling',
+                'copywriting-and-content-creation',
+                'creative-and-art-direction',
+            ],
             language: 'French',
             coachingSessionCount: null,
             salesCount: 3,
@@ -310,7 +345,11 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
                 avatarUrl:
                     'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&h=150&fit=crop&crop=face',
             },
-            topicIds: [24, 1, '2'],
+            topicSlugs: [
+                'packaging-and-print-design',
+                'branding-and-identity',
+                'graphic-and-visual-design',
+            ],
             language: 'Spanish',
             coachingSessionCount: 1,
             salesCount: 29,

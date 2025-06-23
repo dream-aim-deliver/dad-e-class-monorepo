@@ -22,7 +22,7 @@ export const GetCoursesSuccessResponseSchema = BaseSuccessSchemaFactory(z.object
             surname: z.string(),
             avatarUrl: z.string().nullable(),
         }),
-        topicIds: z.array(z.string().or(z.number())),
+        topicSlugs: z.array(z.string()),
         language: z.string(),
         coachingSessionCount: z.number().nullable(),
         salesCount: z.number(),

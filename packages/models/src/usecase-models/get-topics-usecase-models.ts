@@ -10,7 +10,6 @@ export type TGetTopicsRequest = z.infer<typeof GetTopicsRequestSchema>;
 
 const GetTopicsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
     topics: z.array(z.object({
-        id: z.string().or(z.number()),
         name: z.string(),
         slug: z.string(),
     }))

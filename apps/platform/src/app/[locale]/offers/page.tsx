@@ -8,10 +8,16 @@ export default async function Page({
     const searchParams = await searchParamsPromise;
     const topicsParams = searchParams.topics;
     let topics: string[] | undefined;
-    if (topicsParams && Array.isArray(topicsParams)) {
-        topics = topicsParams;
-    } else if (typeof topicsParams === 'string') {
-        topics = topicsParams.split(',');
+
+    if (topicsParams) {
+        const topicArray = Array.isArray(topicsParams)
+            ? topicsParams
+            : topicsParams.split(',');
+
+        const filteredTopics = topicArray.filter(
+            (topic) => topic.trim() !== '',
+        );
+        topics = filteredTopics.length > 0 ? filteredTopics : undefined;
     }
     return <OffersServerComponent topics={topics} />;
 }
