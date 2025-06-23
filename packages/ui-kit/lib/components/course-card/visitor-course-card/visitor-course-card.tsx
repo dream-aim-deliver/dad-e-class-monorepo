@@ -14,6 +14,7 @@ export interface VisitorCourseCardProps extends course.TCourseMetadata {
   onDetails?: () => void;
   onBuy?: () => void;
   onClickUser?: () => void;
+  coachingIncluded?: boolean;
   locale: TLocale
 }
 
@@ -64,6 +65,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   sales,
   imageUrl,
   locale,
+  coachingIncluded = false,
   onDetails,
   onClickUser,
   onBuy
@@ -84,6 +86,8 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   };
 
   const shouldShowPlaceholder = !imageUrl || isImageError;
+
+  const pricingValue = coachingIncluded ? `${pricing.currency} ${pricing.fullPrice}` : `${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.partialPrice}`;
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
@@ -158,7 +162,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               variant={'primary'}
               size={'medium'}
               onClick={onBuy}
-              text={`${dictionary.components.courseCard.buyButton} (${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.partialPrice})`}
+              text={`${dictionary.components.courseCard.buyButton} (${pricingValue})`}
             />
           </div>
         </div>

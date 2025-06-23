@@ -147,7 +147,12 @@ function OffersFilters({
     );
 }
 
-function CourseList() {
+interface CourseListProps {
+    selectedTopics: string[];
+    coachingIncluded: boolean;
+}
+
+function CourseList({ selectedTopics, coachingIncluded }: CourseListProps) {
     const [coursesResponse] = trpc.getCourses.useSuspenseQuery({});
     const [coursesViewModel, setCoursesViewModel] = useState<
         viewModels.TCourseListViewModel | undefined
@@ -155,6 +160,27 @@ function CourseList() {
     const { presenter } = useGetCoursesPresenter(setCoursesViewModel);
     presenter.present(coursesResponse, coursesViewModel);
     const locale = useLocale() as TLocale;
+
+    console.log(selectedTopics);
+
+    const courses = useMemo(() => {
+        if (!coursesViewModel || coursesViewModel.mode !== 'default') {
+            return [];
+        }
+
+        return coursesViewModel.data.courses.filter((course) => {
+            const matchesTopics =
+                selectedTopics.length === 0 ||
+                course.topicSlugs.some((topic) =>
+                    selectedTopics.includes(topic),
+                );
+
+            const matchesCoaching =
+                !coachingIncluded || course.coachingSessionCount;
+
+            return matchesTopics && matchesCoaching;
+        });
+    }, [coursesViewModel, selectedTopics, coachingIncluded]);
 
     // Validation and derived state
     if (!coursesViewModel) {
@@ -165,13 +191,21 @@ function CourseList() {
         return <DefaultError errorMessage={coursesViewModel.data.message} />;
     }
 
-    const courses = coursesViewModel.data.courses;
-
     return (
         <div className="course-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {courses.map((course) => {
                 return (
                     <VisitorCourseCard
+                        coachingIncluded={coachingIncluded}
+                        onDetails={() => {
+                            // TODO: Implement course details navigation
+                        }}
+                        onBuy={() => {
+                            // TODO: Implement course purchase navigation
+                        }}
+                        onClickUser={() => {
+                            // TODO: Implement user profile navigation
+                        }}
                         key={course.id}
                         reviewCount={course.reviewCount}
                         sessions={course.coachingSessionCount ?? 0}
@@ -266,7 +300,10 @@ export default function Offers(props: OffersProps) {
                 />
             </div>
             <Suspense fallback={<div>Hello</div>}>
-                <CourseList />
+                <CourseList
+                    selectedTopics={selectedTopics}
+                    coachingIncluded={coachingIncluded}
+                />
             </Suspense>
         </div>
     );
