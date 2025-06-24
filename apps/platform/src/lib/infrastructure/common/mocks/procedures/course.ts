@@ -16,6 +16,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'Sarah',
                 surname: 'Martinez',
+                username: 'sarah_martinez',
                 avatarUrl:
                     'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
             },
@@ -47,6 +48,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'Alex',
                 surname: 'Chen',
+                username: 'alex_chen',
                 avatarUrl: null,
             },
             topicSlugs: [
@@ -76,6 +78,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'Maria',
                 surname: 'Rodriguez',
+                username: 'maria_rodriguez',
                 avatarUrl:
                     'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
             },
@@ -106,6 +109,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'David',
                 surname: 'Thompson',
+                username: 'david_thompson',
                 avatarUrl:
                     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
             },
@@ -136,6 +140,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'Jennifer',
                 surname: 'Walsh',
+                username: 'jennifer_walsh',
                 avatarUrl: null,
             },
             topicSlugs: ['sound-design-and-editing', 'film-and-cinematography'],
@@ -162,6 +167,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'Roberto',
                 surname: 'Silva',
+                username: 'roberto_silva',
                 avatarUrl:
                     'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
             },
@@ -192,6 +198,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'Lisa',
                 surname: 'Anderson',
+                username: 'lisa_anderson',
                 avatarUrl:
                     'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
             },
@@ -223,6 +230,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'Michael',
                 surname: 'Brown',
+                username: 'michael_brown',
                 avatarUrl: null,
             },
             topicSlugs: [
@@ -253,6 +261,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'Emma',
                 surname: 'Johnson',
+                username: 'emma_johnson',
                 avatarUrl:
                     'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face',
             },
@@ -282,6 +291,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'James',
                 surname: 'Wilson',
+                username: 'james_wilson',
                 avatarUrl:
                     'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
             },
@@ -312,6 +322,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'Sofia',
                 surname: 'Petrov',
+                username: 'sofia_petrov',
                 avatarUrl: null,
             },
             topicSlugs: [
@@ -342,6 +353,7 @@ const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
             author: {
                 name: 'Carlos',
                 surname: 'Mendez',
+                username: 'carlos_mendez',
                 avatarUrl:
                     'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&h=150&fit=crop&crop=face',
             },

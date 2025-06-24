@@ -13,6 +13,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/client';
 import { useListCoursesPresenter } from '../../hooks/use-courses-presenter';
+import { useRouter } from 'next/navigation';
 
 interface OffersCourseHeadingProps {
     coachingIncluded: boolean;
@@ -62,6 +63,8 @@ export function OffersCourseList({
     const locale = useLocale() as TLocale;
     const [displayedCount, setDisplayedCount] = useState(COURSES_PER_PAGE);
     const t = useTranslations('components.paginationButton');
+
+    const router = useRouter();
 
     const courses = useMemo(() => {
         if (!coursesViewModel || coursesViewModel.mode !== 'default') {
@@ -118,13 +121,15 @@ export function OffersCourseList({
                         <VisitorCourseCard
                             coachingIncluded={coachingIncluded}
                             onDetails={() => {
-                                // TODO: Implement course details navigation
+                                router.push(`/courses/${course.slug}`);
                             }}
                             onBuy={() => {
-                                // TODO: Implement course purchase navigation
+                                router.push(`/checkout/${course.slug}`);
                             }}
                             onClickUser={() => {
-                                // TODO: Implement user profile navigation
+                                router.push(
+                                    `/coaches/${course.author.username}`,
+                                );
                             }}
                             key={`course-${course.id}`}
                             reviewCount={course.reviewCount}

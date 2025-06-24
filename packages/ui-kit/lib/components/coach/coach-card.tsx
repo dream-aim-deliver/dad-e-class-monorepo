@@ -11,6 +11,7 @@ import SkillBadges from '../skill-badges';
 interface Course {
   image: string;
   title: string;
+  slug: string;
 }
 
 export interface CoachCardDetails {
@@ -30,6 +31,7 @@ export interface CoachCardProps {
   byCourseCreator?: boolean;
   onClickViewProfile?: () => void;
   onClickBookSession?: () => void;
+  onClickCourse?: (slug: string) => void;
   className?: string;
   locale: TLocale;
 }
@@ -51,6 +53,7 @@ const CoachCard: FC<CoachCardProps> = ({
   cardDetails,
   onClickViewProfile,
   onClickBookSession,
+  onClickCourse,
   className,
   locale
 }) => {
@@ -120,6 +123,7 @@ const CoachCard: FC<CoachCardProps> = ({
               hasIconLeft
               iconLeft={<UserAvatar fullName={course.title} imageUrl={course.image} className="rounded-small" size="small" />}
               text={course.title}
+              onClick={() => onClickCourse?.(course.slug)}
             />
           ))}
         </div>

@@ -10,6 +10,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useListOffersPagePackagesPresenter } from '../../hooks/use-offers-page-packages-presenterr';
+import { useRouter } from 'next/navigation';
 
 export default function PackageList() {
     const locale = useLocale() as TLocale;
@@ -21,6 +22,7 @@ export default function PackageList() {
     const { presenter } =
         useListOffersPagePackagesPresenter(setPackagesViewModel);
     presenter.present(packagesResponse, packagesViewModel);
+    const router = useRouter();
 
     if (!packagesViewModel) {
         return <DefaultLoading />;
@@ -58,6 +60,12 @@ export default function PackageList() {
                         }}
                         duration={pkg.duration}
                         locale={locale}
+                        onClickDetails={() => {
+                            router.push(`/packages/${pkg.slug}`);
+                        }}
+                        onClickPurchase={() => {
+                            router.push(`/checkout/${pkg.slug}`);
+                        }}
                     />
                 );
             })}
