@@ -57,3 +57,4 @@ export * from './components/text';
 export { Tabs } from './components/tabs/tab';
 export { default as CardListLayout } from './components/card-list-layout';
 export { CourseCardListSkeleton } from './components/skeletons/courses-skeleton';
+export { PackageCard } from './components/packages/package-card';

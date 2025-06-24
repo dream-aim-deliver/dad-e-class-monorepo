@@ -1,7 +1,7 @@
 import { HydrateClient, prefetch, trpc } from '../config/trpc/server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
-import Offers from '../../client/pages/offers';
+import Offers from '../../client/pages/offers/offers';
 
 interface OffersProps {
     topics?: string[];

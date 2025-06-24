@@ -1,0 +1,51 @@
+import { z } from 'zod';
+import {
+    BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorDataSchemaFactory,
+    BaseViewModelDiscriminatedUnionSchemaFactory,
+} from '@dream-aim-deliver/dad-cats';
+import { GetOffersPagePackagesSuccessResponseSchema } from '../usecase-models/get-offers-page-packages-usecase-models';
+
+export const OffersPagePackageListSuccessSchema =
+    GetOffersPagePackagesSuccessResponseSchema.shape.data;
+
+export type TOffersPagePackageListSuccess = z.infer<
+    typeof OffersPagePackageListSuccessSchema
+>;
+
+const OffersPagePackageListDefaultViewModelSchema =
+    BaseDiscriminatedViewModeSchemaFactory(
+        'default',
+        OffersPagePackageListSuccessSchema,
+    );
+const OffersPagePackageListKaboomViewModelSchema =
+    BaseDiscriminatedViewModeSchemaFactory(
+        'kaboom',
+        BaseErrorDataSchemaFactory(),
+    );
+const OffersPagePackageListUnauthenticatedViewModelSchema =
+    BaseDiscriminatedViewModeSchemaFactory(
+        'unauthenticated',
+        BaseErrorDataSchemaFactory(),
+    );
+const OffersPagePackageListNotFoundViewModelSchema =
+    BaseDiscriminatedViewModeSchemaFactory(
+        'not-found',
+        BaseErrorDataSchemaFactory(),
+    );
+
+export const OffersPagePackageListViewModelSchemaMap = {
+    default: OffersPagePackageListDefaultViewModelSchema,
+    kaboom: OffersPagePackageListKaboomViewModelSchema,
+    unauthenticated: OffersPagePackageListUnauthenticatedViewModelSchema,
+    notFound: OffersPagePackageListNotFoundViewModelSchema,
+};
+export type TOffersPagePackageListViewModelSchemaMap =
+    typeof OffersPagePackageListViewModelSchemaMap;
+export const OffersPagePackageListViewModelSchema =
+    BaseViewModelDiscriminatedUnionSchemaFactory(
+        OffersPagePackageListViewModelSchemaMap,
+    );
+export type TOffersPagePackageListViewModel = z.infer<
+    typeof OffersPagePackageListViewModelSchema
+>;
