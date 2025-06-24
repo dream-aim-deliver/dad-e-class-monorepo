@@ -1,20 +1,19 @@
+import CardListLayout from '../card-list-layout';
 import { Skeleton } from './skeleton';
 
 interface CourseCardListSkeletonProps {
-    className?: string;
     cardCount?: number;
 }
 
 export function CourseCardListSkeleton({ 
-    className = "", 
     cardCount = 6 
 }: CourseCardListSkeletonProps) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <CardListLayout>
             {Array.from({ length: cardCount }).map((_, index) => (
                 <CourseCardSkeleton key={index} />
             ))}
-        </div>
+        </CardListLayout>
     );
 }
 

@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    CoachCardListSkeleton,
     CourseCardListSkeleton,
     DefaultError,
     DefaultLoading,
@@ -79,7 +80,7 @@ export default function Offers(props: OffersProps) {
             </Suspense>
             <Divider className="my-12" />
             <SectionHeading text={t('coachingOnDemand')} />
-            <Suspense fallback={<DefaultLoading />}>
+            <Suspense fallback={<CoachCardListSkeleton />}>
                 <OffersCoachList selectedTopics={selectedTopics} />
             </Suspense>
         </div>
