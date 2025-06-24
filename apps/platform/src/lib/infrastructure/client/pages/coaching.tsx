@@ -5,10 +5,11 @@ import { trpc } from '../trpc/client';
 import { useGetCoachingPagePresenter } from '../hooks/use-coaching-page-presenter';
 import { useState } from 'react';
 import DefaultLoading from '../wrappers/default-loading';
-import { CoachBanner, DefaultError, Outline } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
+import { CoachBanner, DefaultError, Outline, SectionHeading } from '@maany_shr/e-class-ui-kit';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
+import CategoryTopics from './common/category-topics';
 
 interface CoachingsProps {
     initialSelectedTopics?: string[];
@@ -17,6 +18,11 @@ interface CoachingsProps {
 export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
+    const t = useTranslations('pages.coaching');
+
+    const [selectedTopics, setSelectedTopics] = useState<string[]>(
+        initialSelectedTopics ?? [],
+    );
 
     const [coachingPageResponse] = trpc.getCoachingPage.useSuspenseQuery({});
     const [coachingPageViewModel, setCoachingPageViewModel] = useState<
@@ -45,6 +51,12 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
             <Outline
                 title={coachingPage.title}
                 description={coachingPage.description}
+            />
+            <SectionHeading text={t('chooseCategory')} />
+            <CategoryTopics
+                selectedTopics={selectedTopics}
+                setSelectedTopics={setSelectedTopics}
+                filterText={t('filterByTopic')}
             />
             <CoachBanner
                 locale={locale}

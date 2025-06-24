@@ -5,6 +5,7 @@ import { SSO_DE } from '../pages/sso/sso-de';
 
 import { TDictionary } from './base';
 import { Offers_DE } from '../pages/offers/offers-de';
+import { Coaching_DE } from '../pages/coaching/coaching-de';
 export const DE: TDictionary = {
   components: {
     paginationButton: {
@@ -563,6 +564,7 @@ export const DE: TDictionary = {
     login: Login_DE,
     sso: SSO_DE,
     offers: Offers_DE,
+    coaching: Coaching_DE,
     auth: {
       errorPage: {
         title: 'Ups! Beim Anmelden ist ein Problem aufgetreten.',
