@@ -53,7 +53,9 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
         return <DefaultError errorMessage="No coaches found" />;
     }
 
-    const handleViewAll = () => {};
+    const handleViewAll = () => {
+        router.push('/coaches');
+    };
 
     return (
         <div className="flex flex-col space-y-5">

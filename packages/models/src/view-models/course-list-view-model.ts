@@ -6,7 +6,6 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 import {
     ListCoursesSuccessResponseSchema,
-    ListCoursesUseCaseResponseSchema
 } from '../usecase-models/list-courses-usecase-models';
 
 export const CourseListSuccessSchema = ListCoursesSuccessResponseSchema.shape.data;

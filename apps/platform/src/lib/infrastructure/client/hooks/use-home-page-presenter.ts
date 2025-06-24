@@ -3,14 +3,13 @@ import HomePagePresenter, {
 } from '../../common/presenters/home-page-presenter';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import { getDefaultPresenterUtilities } from '../utils/get-default-presenter-utilities';
+import { useDefaultPresenterUtilities } from '../utils/use-default-presenter-utilities';
 
 export function useGetHomePagePresenter(
     setViewModel: (viewModel: viewModels.THomePageViewModel) => void,
 ) {
     const presenterUtilities: THomePagePresenterUtilities =
-        getDefaultPresenterUtilities();
+        useDefaultPresenterUtilities();
     const presenter = useMemo(
         () => new HomePagePresenter(setViewModel, presenterUtilities),
         [setViewModel],

@@ -381,14 +381,14 @@ export const listCourses = t.procedure
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
 
         // Create array with 5 copies of coursesMock with unique IDs
-        const multipliedCourses = Array(5)
-            .fill(null)
-            .flatMap((_, batchIndex) =>
-                coursesMock.courses.map((course, courseIndex) => ({
-                    ...course,
-                    id: `${course.id}_${batchIndex}_${courseIndex}`,
-                })),
-            );
+        // const multipliedCourses = Array(5)
+        //     .fill(null)
+        //     .flatMap((_, batchIndex) =>
+        //         coursesMock.courses.map((course, courseIndex) => ({
+        //             ...course,
+        //             id: `${course.id}_${batchIndex}_${courseIndex}`,
+        //         })),
+        //     );
 
         return {
             success: true,

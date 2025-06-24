@@ -5,6 +5,7 @@ import {
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TLanguagesPresenterUtilities = {};
 
 export const ListLanguagesResponseMiddleware =
