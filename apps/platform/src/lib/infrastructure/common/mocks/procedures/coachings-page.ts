@@ -12,6 +12,8 @@ const coachingPageMock: useCaseModels.TGetCoachingPageSuccessResponse['data'] =
                 'Are you passionate about sharing your expertise and helping others advance their careers while earning income? Join our community of coaches and make a real impact—whether you want to create your own course or offer one-on-one coaching, you have the freedom to choose how you contribute and grow. Take the leap and turn your skills into a rewarding opportunity today!',
             buttonText: 'Become a coach',
             buttonLink: '/become-a-coach',
+            imageUrl:
+                'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
         },
     };
 
