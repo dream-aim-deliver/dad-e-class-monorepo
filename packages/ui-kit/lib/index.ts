@@ -45,6 +45,7 @@ export { CoachingOnDemandBanner } from './components/coaching-on-demand-banner/c
 export { HomeAccordion } from './components/home-accordion';
 
 export { ReviewSnippet } from './components/review/review-snippet';
+export { CreateContentModal } from './components/create-content-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
 export { default as RichTextRenderer } from './components/rich-text-element/renderer';
@@ -60,3 +61,4 @@ export { CourseCardListSkeleton } from './components/skeletons/courses-skeleton'
 export { CoachCardListSkeleton } from './components/skeletons/coaches-skeleton';
 export { PackageCard } from './components/packages/package-card';
 export { default as CoachCard } from './components/coach/coach-card';
+export { RemoveModal } from './components/remove-modal';

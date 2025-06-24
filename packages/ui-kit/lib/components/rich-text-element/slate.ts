@@ -36,7 +36,7 @@ const isAlignFormat = (format: ElementKey) =>
  * @returns {boolean} - True if it is a list format, false otherwise.
  */
 const isListFormat = (format: ElementKey) =>
-  ["numbered-list", "bulleted-list"].includes(format);
+  ["numbered-list", "bulleted-list", "unordered-list"].includes(format);
 
 /**
  * Checks if a specific block format is active.

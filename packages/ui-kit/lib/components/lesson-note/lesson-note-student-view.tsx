@@ -1,6 +1,5 @@
 import { FC } from "react";
-import { LessonNoteStudentViewType } from "../course-builder-lesson-component/types";
-import { getDictionary } from "@maany_shr/e-class-translations";
+import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 
 /**
  * LessonNoteStudentView Component
@@ -52,6 +51,12 @@ import { getDictionary } from "@maany_shr/e-class-translations";
  * </LessonNoteStudentView>
  * ```
  */
+export interface LessonNoteStudentViewType extends isLocalAware {
+    id: number;
+    children: React.ReactNode;
+    ModuleNumber: number;
+    ModuleTitle: string;
+};
 
 export const LessonNoteStudentView: FC<LessonNoteStudentViewType> = ({
     ModuleNumber,

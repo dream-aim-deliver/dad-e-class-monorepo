@@ -1,10 +1,9 @@
 import { FC, useState } from "react";
 import RichTextEditor from "../rich-text-element/editor";
 import { IconNotes } from "../icons/icon-notes";
-import { getDictionary } from "@maany_shr/e-class-translations";
+import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import Banner from "../banner";
 import { IconSave } from "../icons/icon-save";
-import { LessonNoteBuilderViewType } from "../course-builder-lesson-component/types";
 
 /**
  * LessonNoteBuilderView Component
@@ -32,6 +31,16 @@ import { LessonNoteBuilderViewType } from "../course-builder-lesson-component/ty
  * />
  * ```
  */
+
+export interface LessonNoteBuilderViewType extends isLocalAware {
+    id: number;
+    initialValue: string;
+    onChange: (value: string) => boolean;
+    children?: React.ReactNode;
+    placeholder: string;
+    onDeserializationError: (message: string, error: Error) => void;
+};
+
 
 export const LessonNoteBuilderView: FC<LessonNoteBuilderViewType> = ({
     initialValue,

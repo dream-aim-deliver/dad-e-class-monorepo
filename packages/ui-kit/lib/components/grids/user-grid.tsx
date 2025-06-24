@@ -52,7 +52,7 @@ export interface UserGridProps extends isLocalAware {
 const RoleIcon = ({ role, className }: { role: string; className?: string }) => {
     const icons = {
         admin: <IconAdmin classNames={className} />,
-        courseCreator: <IconCourseCreator classNames={className} />,
+        'course creator': <IconCourseCreator classNames={className} />,
         coach: <IconCoach classNames={className} />,
         student: <IconStudent classNames={className} />
 
@@ -93,12 +93,11 @@ const PlatformCellRenderer = (props: any) => {
     const title = roles.map(({ platformName, role }) => `${platformName}: ${role}`).join(', ');
 
     return (
-        <div className="truncate">
+        <div className="truncate" title={title}>
             {roles.map(({ platformName, role }, idx) => (
                 <span
                     key={platformName + role}
                     className="inline-flex items-center text-xs align-middle"
-                    title={`${platformName}: ${role}`}
                 >
                     <RoleIcon role={role} className="w-4 h-4" />
                     <span className="ml-1">{platformName}</span>
@@ -488,9 +487,9 @@ export const UserGrid = (props: UserGridProps) => {
     const renderGridWithActions = (roleUsers: UserRow[]) => (
         <div className="h-full flex flex-col">
             {/* Search bar, Filter button, and Export button */}
-            <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-2">
+            <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-4">
                 <InputField
-                    className="flex-grow relative md:mr-2"
+                    className="flex-grow relative m-0 md:mr-2 h-10"
                     setValue={setSearchTerm} value={searchTerm}
                     inputText={dictionary.searchPlaceholder}
                     hasLeftContent
@@ -566,6 +565,7 @@ export const UserGrid = (props: UserGridProps) => {
             <div className="flex flex-col grow">
                 <BaseGrid
                     gridRef={props.gridRef}
+                    locale={props.locale}
                     columnDefs={columnDefs}
                     rowData={roleUsers}
                     enableCellTextSelection={true}
@@ -620,7 +620,7 @@ export const UserGrid = (props: UserGridProps) => {
                             icon={<RoleIcon role="course creator" />}
                             className="cursor-pointer"
                         >
-                            {dictionary.courseCreators} ({userCounts.courseCreator})
+                            {dictionary.courseCreators} ({userCounts['course creator']})
                         </TabTrigger>
                         <TabTrigger
                             value="admin"

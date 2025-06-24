@@ -17,3 +17,6 @@ export * as homePage from './home-page';
 export * as viewModels from './view-models/index';
 export * as useCaseModels from './usecase-models/index';
 export * as entities from './entity/index';
+export * as fileMetadata from './file-metadata';
+export * as assignment from './assignment';
+

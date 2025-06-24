@@ -71,6 +71,7 @@ export type ElementKey =
   | "block-quote"
   | "numbered-list"
   | "bulleted-list"
+  | "unordered-list"
   | "list-item"
   | "link"
   | "unlink";
