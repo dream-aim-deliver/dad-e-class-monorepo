@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 
-export function getDefaultPresenterUtilities() {
+export function useDefaultPresenterUtilities() {
     const router = useRouter();
 
     const redirect = (page: 'login') => {

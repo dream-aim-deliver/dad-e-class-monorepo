@@ -10,7 +10,6 @@ import {
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { trpc } from '../trpc/client';
 import { httpBatchLink } from '@trpc/client';
-import { language } from '@maany_shr/e-class-models';
 import superjson from 'superjson';
 
 interface ClientProvidersProps {

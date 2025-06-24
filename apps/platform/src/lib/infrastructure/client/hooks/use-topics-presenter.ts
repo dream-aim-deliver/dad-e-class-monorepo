@@ -1,19 +1,18 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import TopicsPresenter, {
     TTopicsPresenterUtilities,
 } from '../../common/presenters/topics-presenter';
-import { getDefaultPresenterUtilities } from '../utils/get-default-presenter-utilities';
+import { useDefaultPresenterUtilities } from '../utils/use-default-presenter-utilities';
 
 export function useListTopicsPresenter(
     setViewModel: (viewModel: viewModels.TTopicListViewModel) => void,
 ) {
     const presenterUtilities: TTopicsPresenterUtilities =
-        getDefaultPresenterUtilities();
+        useDefaultPresenterUtilities();
     const presenter = useMemo(
         () => new TopicsPresenter(setViewModel, presenterUtilities),
-        [setViewModel],
+        [setViewModel, presenterUtilities],
     );
     return { presenter };
 }

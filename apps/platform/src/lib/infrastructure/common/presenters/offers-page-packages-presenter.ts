@@ -5,6 +5,7 @@ import {
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TOffersPagePackagesPresenterUtilities = {};
 
 export const ListOffersPagePackagesResponseMiddleware =

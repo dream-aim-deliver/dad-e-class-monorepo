@@ -1,6 +1,6 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
-import { getDefaultPresenterUtilities } from '../utils/get-default-presenter-utilities';
+import { useDefaultPresenterUtilities } from '../utils/use-default-presenter-utilities';
 import TopicsByCategoryPresenter, {
     TTopicsByCategoryPresenterUtilities,
 } from '../../common/presenters/topics-by-category-presenter';
@@ -9,10 +9,10 @@ export function useListTopicsByCategoryPresenter(
     setViewModel: (viewModel: viewModels.TTopicsByCategoryViewModel) => void,
 ) {
     const presenterUtilities: TTopicsByCategoryPresenterUtilities =
-        getDefaultPresenterUtilities();
+        useDefaultPresenterUtilities();
     const presenter = useMemo(
         () => new TopicsByCategoryPresenter(setViewModel, presenterUtilities),
-        [setViewModel],
+        [setViewModel, presenterUtilities],
     );
     return { presenter };
 }
