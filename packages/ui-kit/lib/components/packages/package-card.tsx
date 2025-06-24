@@ -65,7 +65,7 @@ export const PackageCard = ({
 
     // Helper function to format duration in hours and minutes
     const formatDuration = (duration?: number): string => {
-        if (!duration || duration <= 0) return;
+        if (!duration || duration <= 0) return '0m';
         if (duration > 59) {
           const hours = Math.floor(duration / 60);
           const minutes = duration % 60;
