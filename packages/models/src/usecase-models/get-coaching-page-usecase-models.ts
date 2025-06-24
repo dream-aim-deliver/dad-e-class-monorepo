@@ -14,6 +14,7 @@ export const GetCoachingPageSuccessResponseSchema = BaseSuccessSchemaFactory(z.o
     banner: z.object({
         title: z.string(),
         description: z.string(),
+        imageUrl: z.string().nullable(),
         buttonText: z.string(),
         buttonLink: z.string(),
     })
