@@ -1,5 +1,5 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { useGetTopicsByCategoryPresenter } from '../../hooks/use-topics-by-category-presenter';
+import { useListTopicsByCategoryPresenter } from '../../hooks/use-topics-by-category-presenter';
 import { trpc } from '../../trpc/client';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -19,12 +19,12 @@ export default function OffersFilters({
 }: OffersFiltersProps) {
     // Data fetching and presentation logic
     const [topicsByCategoryResponse] =
-        trpc.getTopicsByCategory.useSuspenseQuery({});
+        trpc.listTopicsByCategory.useSuspenseQuery({});
     const [topicsByCategoryViewModel, setTopicsByCategoryViewModel] = useState<
         viewModels.TTopicsByCategoryViewModel | undefined
     >(undefined);
 
-    const { presenter } = useGetTopicsByCategoryPresenter(
+    const { presenter } = useListTopicsByCategoryPresenter(
         setTopicsByCategoryViewModel,
     );
     presenter.present(topicsByCategoryResponse, topicsByCategoryViewModel);

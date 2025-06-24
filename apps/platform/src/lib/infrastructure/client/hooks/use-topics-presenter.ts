@@ -6,7 +6,7 @@ import TopicsPresenter, {
 } from '../../common/presenters/topics-presenter';
 import { getDefaultPresenterUtilities } from '../utils/get-default-presenter-utilities';
 
-export function useGetTopicsPresenter(
+export function useListTopicsPresenter(
     setViewModel: (viewModel: viewModels.TTopicListViewModel) => void,
 ) {
     const presenterUtilities: TTopicsPresenterUtilities =

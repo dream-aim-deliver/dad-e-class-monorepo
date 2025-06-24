@@ -7,18 +7,18 @@ import {
 
 export type TOffersPagePackagesPresenterUtilities = {};
 
-export const GetOffersPagePackagesResponseMiddleware =
+export const ListOffersPagePackagesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetOffersPagePackagesUseCaseResponse,
+        useCaseModels.TListOffersPagePackagesUseCaseResponse,
         viewModels.TOffersPagePackageListViewModel,
         TOffersPagePackagesPresenterUtilities
     >;
 
 type TGetOffersPagePackagesResponseMiddleware =
-    typeof GetOffersPagePackagesResponseMiddleware;
+    typeof ListOffersPagePackagesResponseMiddleware;
 
 export default class OffersPagePackagesPresenter extends BasePresenter<
-    useCaseModels.TGetOffersPagePackagesUseCaseResponse,
+    useCaseModels.TListOffersPagePackagesUseCaseResponse,
     viewModels.TOffersPagePackageListViewModel,
     TOffersPagePackagesPresenterUtilities,
     TGetOffersPagePackagesResponseMiddleware
@@ -34,7 +34,7 @@ export default class OffersPagePackagesPresenter extends BasePresenter<
                 responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
                 viewModel: viewModels.HomePageViewModelSchema,
             },
-            middleware: GetOffersPagePackagesResponseMiddleware,
+            middleware: ListOffersPagePackagesResponseMiddleware,
             viewUtilities: viewUtilities,
             setViewModel: setViewModel,
         });
@@ -42,7 +42,7 @@ export default class OffersPagePackagesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetOffersPagePackagesUseCaseResponse,
+            useCaseModels.TListOffersPagePackagesUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TOffersPagePackageListViewModel {
@@ -55,7 +55,7 @@ export default class OffersPagePackagesPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetOffersPagePackagesUseCaseErrorResponse,
+            useCaseModels.TListOffersPagePackagesUseCaseErrorResponse,
             TGetOffersPagePackagesResponseMiddleware
         >,
     ): viewModels.TOffersPagePackageListViewModel {

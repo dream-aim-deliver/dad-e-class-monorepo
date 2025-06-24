@@ -18,7 +18,7 @@ import Image from 'next/image';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-home-page-presenter';
-import { useGetTopicsPresenter } from '../hooks/use-topics-presenter';
+import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
 
 const Carousel = dynamic(
     () =>
@@ -43,12 +43,12 @@ export default function Home() {
         useGetHomePagePresenter(setHomePageViewModel);
     homePagePresenter.present(homePageResponse, homePageViewModel);
 
-    const [topicsResponse] = trpc.getTopics.useSuspenseQuery({});
+    const [topicsResponse] = trpc.listTopics.useSuspenseQuery({});
     const [topicsViewModel, setTopicsViewModel] = useState<
         viewModels.TTopicListViewModel | undefined
     >(undefined);
     const { presenter: topicsPresenter } =
-        useGetTopicsPresenter(setTopicsViewModel);
+        useListTopicsPresenter(setTopicsViewModel);
     topicsPresenter.present(topicsResponse, topicsViewModel);
 
     if (!homePageViewModel || !topicsViewModel) {

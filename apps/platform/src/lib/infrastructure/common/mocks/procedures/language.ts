@@ -1,7 +1,7 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 
-const listLanguagesMock: useCaseModels.TGetLanguagesSuccessResponse = {
+const listLanguagesMock: useCaseModels.TListLanguagesSuccessResponse = {
     success: true,
     data: {
         languages: [
@@ -17,7 +17,7 @@ const listLanguagesMock: useCaseModels.TGetLanguagesSuccessResponse = {
     },
 };
 
-const listLanguagesErrorMock: useCaseModels.TGetLanguagesUseCaseErrorResponse =
+const listLanguagesErrorMock: useCaseModels.TListLanguagesUseCaseErrorResponse =
     {
         success: false,
         data: {
@@ -29,7 +29,7 @@ const listLanguagesErrorMock: useCaseModels.TGetLanguagesUseCaseErrorResponse =
     };
 
 export const listLanguages = t.procedure
-    .input(useCaseModels.GetLanguagesRequestSchema)
+    .input(useCaseModels.ListLanguagesRequestSchema)
     .query(
         async (opts): Promise<useCaseModels.TGetLanguagesUseCaseResponse> => {
             return listLanguagesMock;

@@ -7,20 +7,20 @@ import {
 
 export type TCoursesPresenterUtilities = {};
 
-export const GetCoursesResponseMiddleware =
+export const ListCoursesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetCoursesUseCaseResponse,
+        useCaseModels.TListCoursesUseCaseResponse,
         viewModels.TCourseListViewModel,
         TCoursesPresenterUtilities
     >;
 
-type TGetCoursesResponseMiddleware = typeof GetCoursesResponseMiddleware;
+type TListCoursesResponseMiddleware = typeof ListCoursesResponseMiddleware;
 
 export default class CoursesPresenter extends BasePresenter<
-    useCaseModels.TGetCoursesUseCaseResponse,
+    useCaseModels.TListCoursesUseCaseResponse,
     viewModels.TCourseListViewModel,
     TCoursesPresenterUtilities,
-    TGetCoursesResponseMiddleware
+    TListCoursesResponseMiddleware
 > {
     constructor(
         setViewModel: (viewModel: viewModels.TCourseListViewModel) => void,
@@ -31,7 +31,7 @@ export default class CoursesPresenter extends BasePresenter<
                 responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
                 viewModel: viewModels.HomePageViewModelSchema,
             },
-            middleware: GetCoursesResponseMiddleware,
+            middleware: ListCoursesResponseMiddleware,
             viewUtilities: viewUtilities,
             setViewModel: setViewModel,
         });
@@ -39,7 +39,7 @@ export default class CoursesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetCoursesUseCaseResponse,
+            useCaseModels.TListCoursesUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCourseListViewModel {
@@ -52,8 +52,8 @@ export default class CoursesPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetCoursesUseCaseErrorResponse,
-            TGetCoursesResponseMiddleware
+            useCaseModels.TListCoursesUseCaseErrorResponse,
+            TListCoursesResponseMiddleware
         >,
     ): viewModels.TCourseListViewModel {
         if (response.data.errorType === 'NotFound') {

@@ -1,7 +1,7 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 
-const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
+const coursesMock: useCaseModels.TListCoursesSuccessResponse['data'] = {
     courses: [
         {
             id: 1,
@@ -363,9 +363,9 @@ const coursesMock: useCaseModels.TGetCoursesSuccessResponse['data'] = {
     ],
 };
 
-export const getCourses = t.procedure
-    .input(useCaseModels.GetCoursesRequestSchema)
-    .query(async (opts): Promise<useCaseModels.TGetCoursesUseCaseResponse> => {
+export const listCourses = t.procedure
+    .input(useCaseModels.ListCoursesRequestSchema)
+    .query(async (opts): Promise<useCaseModels.TListCoursesUseCaseResponse> => {
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
 
         // Create array with 5 copies of coursesMock with unique IDs

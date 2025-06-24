@@ -4,7 +4,7 @@ import OffersPagePackagesPresenter, {
     TOffersPagePackagesPresenterUtilities,
 } from '../../common/presenters/offers-page-packages-presenter';
 
-export function useGetOffersPagePackagesPresenter(
+export function useListOffersPagePackagesPresenter(
     setViewModel: (
         viewModel: viewModels.TOffersPagePackageListViewModel,
     ) => void,

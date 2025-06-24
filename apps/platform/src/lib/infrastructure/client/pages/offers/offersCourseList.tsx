@@ -12,7 +12,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/client';
-import { useGetCoursesPresenter } from '../../hooks/use-courses-presenter';
+import { useListCoursesPresenter } from '../../hooks/use-courses-presenter';
 
 interface OffersCourseHeadingProps {
     coachingIncluded: boolean;
@@ -53,11 +53,11 @@ export function OffersCourseList({
     selectedTopics,
     coachingIncluded,
 }: CourseListProps) {
-    const [coursesResponse] = trpc.getCourses.useSuspenseQuery({});
+    const [coursesResponse] = trpc.listCourses.useSuspenseQuery({});
     const [coursesViewModel, setCoursesViewModel] = useState<
         viewModels.TCourseListViewModel | undefined
     >(undefined);
-    const { presenter } = useGetCoursesPresenter(setCoursesViewModel);
+    const { presenter } = useListCoursesPresenter(setCoursesViewModel);
     presenter.present(coursesResponse, coursesViewModel);
     const locale = useLocale() as TLocale;
     const [displayedCount, setDisplayedCount] = useState(COURSES_PER_PAGE);

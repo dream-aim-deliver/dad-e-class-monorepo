@@ -4,10 +4,10 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
-import { GetOffersPagePackagesSuccessResponseSchema } from '../usecase-models/get-offers-page-packages-usecase-models';
+import { ListOffersPagePackagesSuccessResponseSchema } from '../usecase-models/list-offers-page-packages-usecase-models';
 
 export const OffersPagePackageListSuccessSchema =
-    GetOffersPagePackagesSuccessResponseSchema.shape.data;
+    ListOffersPagePackagesSuccessResponseSchema.shape.data;
 
 export type TOffersPagePackageListSuccess = z.infer<
     typeof OffersPagePackageListSuccessSchema

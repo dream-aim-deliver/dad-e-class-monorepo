@@ -1,7 +1,7 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 
-const topicsByCategoryMock: useCaseModels.TGetTopicsByCategorySuccessResponse['data'] =
+const topicsByCategoryMock: useCaseModels.TListTopicsByCategorySuccessResponse['data'] =
     {
         topicsByCategory: {
             'Design & Creative': [
@@ -125,12 +125,12 @@ const topicsByCategoryMock: useCaseModels.TGetTopicsByCategorySuccessResponse['d
         },
     };
 
-export const getTopicsByCategory = t.procedure
-    .input(useCaseModels.GetTopicsByCategoryRequestSchema)
+export const listTopicsByCategory = t.procedure
+    .input(useCaseModels.ListTopicsByCategoryRequestSchema)
     .query(
         async (
             opts,
-        ): Promise<useCaseModels.TGetTopicsByCategoryUseCaseResponse> => {
+        ): Promise<useCaseModels.TListTopicsByCategoryUseCaseResponse> => {
             return {
                 success: true,
                 data: topicsByCategoryMock,

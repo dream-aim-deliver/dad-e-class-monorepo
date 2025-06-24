@@ -6,7 +6,7 @@ import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 export default async function HomeServerComponent() {
     await Promise.all([
         prefetch(trpc.getHomePage.queryOptions({})),
-        prefetch(trpc.getTopics.queryOptions({})),
+        prefetch(trpc.listTopics.queryOptions({})),
     ]);
 
     return (

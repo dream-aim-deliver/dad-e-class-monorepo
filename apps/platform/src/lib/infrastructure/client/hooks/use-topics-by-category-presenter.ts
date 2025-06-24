@@ -5,7 +5,7 @@ import TopicsByCategoryPresenter, {
     TTopicsByCategoryPresenterUtilities,
 } from '../../common/presenters/topics-by-category-presenter';
 
-export function useGetTopicsByCategoryPresenter(
+export function useListTopicsByCategoryPresenter(
     setViewModel: (viewModel: viewModels.TTopicsByCategoryViewModel) => void,
 ) {
     const presenterUtilities: TTopicsByCategoryPresenterUtilities =

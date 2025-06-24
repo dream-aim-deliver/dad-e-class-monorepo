@@ -5,11 +5,11 @@ import {
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
 import {
-    GetCoursesSuccessResponseSchema,
-    GetCoursesUseCaseResponseSchema
-} from '../usecase-models/get-courses-usecase-models';
+    ListCoursesSuccessResponseSchema,
+    ListCoursesUseCaseResponseSchema
+} from '../usecase-models/list-courses-usecase-models';
 
-export const CourseListSuccessSchema = GetCoursesSuccessResponseSchema.shape.data;
+export const CourseListSuccessSchema = ListCoursesSuccessResponseSchema.shape.data;
 
 export type TCourseListSuccess = z.infer<typeof CourseListSuccessSchema>;
 

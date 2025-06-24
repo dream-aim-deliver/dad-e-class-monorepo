@@ -10,12 +10,12 @@ export type TTopicsByCategoryPresenterUtilities = {
     redirect: (page: 'login') => Promise<void> | void;
 };
 
-export const GetTopicsByCategoryResponseMiddleware = {
+export const ListTopicsByCategoryResponseMiddleware = {
     'errorType:AuthenticationError': {
         redirect: async (
             context: {
                 response: ExtractStatusModel<
-                    useCaseModels.TGetTopicsByCategoryUseCaseResponse,
+                    useCaseModels.TListTopicsByCategoryUseCaseResponse,
                     false
                 >;
                 currentViewModel: viewModels.TTopicsByCategoryViewModel;
@@ -30,19 +30,19 @@ export const GetTopicsByCategoryResponseMiddleware = {
         },
     },
 } satisfies TBaseResponseResponseMiddleware<
-    useCaseModels.TGetTopicsByCategoryUseCaseResponse,
+    useCaseModels.TListTopicsByCategoryUseCaseResponse,
     viewModels.TTopicsByCategoryViewModel,
     TTopicsByCategoryPresenterUtilities
 >;
 
-type TGetTopicsByCategoryResponseMiddleware =
-    typeof GetTopicsByCategoryResponseMiddleware;
+type TListTopicsByCategoryResponseMiddleware =
+    typeof ListTopicsByCategoryResponseMiddleware;
 
 export default class TopicsByCategoryPresenter extends BasePresenter<
-    useCaseModels.TGetTopicsByCategoryUseCaseResponse,
+    useCaseModels.TListTopicsByCategoryUseCaseResponse,
     viewModels.TTopicsByCategoryViewModel,
     TTopicsByCategoryPresenterUtilities,
-    TGetTopicsByCategoryResponseMiddleware
+    TListTopicsByCategoryResponseMiddleware
 > {
     constructor(
         setViewModel: (
@@ -53,10 +53,10 @@ export default class TopicsByCategoryPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.GetTopicsByCategoryUseCaseResponseSchema,
+                    useCaseModels.ListTopicsByCategoryUseCaseResponseSchema,
                 viewModel: viewModels.TopicsByCategoryViewModelSchema,
             },
-            middleware: GetTopicsByCategoryResponseMiddleware,
+            middleware: ListTopicsByCategoryResponseMiddleware,
             viewUtilities: viewUtilities,
             setViewModel: setViewModel,
         });
@@ -64,7 +64,7 @@ export default class TopicsByCategoryPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetTopicsByCategoryUseCaseResponse,
+            useCaseModels.TListTopicsByCategoryUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TTopicsByCategoryViewModel {
@@ -77,8 +77,8 @@ export default class TopicsByCategoryPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetTopicsByCategoryUseCaseErrorResponse,
-            TGetTopicsByCategoryResponseMiddleware
+            useCaseModels.TListTopicsByCategoryUseCaseErrorResponse,
+            TListTopicsByCategoryResponseMiddleware
         >,
     ): viewModels.TTopicsByCategoryViewModel {
         return {

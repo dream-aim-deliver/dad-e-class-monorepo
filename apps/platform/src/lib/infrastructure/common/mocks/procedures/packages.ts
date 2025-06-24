@@ -1,7 +1,7 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 
-const packagesMock: useCaseModels.TGetOffersPagePackagesSuccessResponse['data'] =
+const packagesMock: useCaseModels.TListOffersPagePackagesSuccessResponse['data'] =
     {
         packages: [
             {
@@ -55,10 +55,10 @@ const packagesMock: useCaseModels.TGetOffersPagePackagesSuccessResponse['data'] 
         ],
     };
 
-export const getOffersPagePackages = t.procedure
-    .input(useCaseModels.GetOffersPagePackagesRequestSchema)
+export const listOffersPagePackages = t.procedure
+    .input(useCaseModels.ListOffersPagePackagesRequestSchema)
     .query(
-        async (): Promise<useCaseModels.TGetOffersPagePackagesUseCaseResponse> => {
+        async (): Promise<useCaseModels.TListOffersPagePackagesUseCaseResponse> => {
             await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
             return {
                 success: true,

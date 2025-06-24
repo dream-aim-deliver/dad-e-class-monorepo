@@ -9,17 +9,17 @@ import { useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useGetOffersPagePackagesPresenter } from '../../hooks/use-offers-page-packages-presenterr';
+import { useListOffersPagePackagesPresenter } from '../../hooks/use-offers-page-packages-presenterr';
 
 export default function PackageList() {
     const locale = useLocale() as TLocale;
 
-    const [packagesResponse] = trpc.getOffersPagePackages.useSuspenseQuery({});
+    const [packagesResponse] = trpc.listOffersPagePackages.useSuspenseQuery({});
     const [packagesViewModel, setPackagesViewModel] = useState<
         viewModels.TOffersPagePackageListViewModel | undefined
     >(undefined);
     const { presenter } =
-        useGetOffersPagePackagesPresenter(setPackagesViewModel);
+        useListOffersPagePackagesPresenter(setPackagesViewModel);
     presenter.present(packagesResponse, packagesViewModel);
 
     if (!packagesViewModel) {
