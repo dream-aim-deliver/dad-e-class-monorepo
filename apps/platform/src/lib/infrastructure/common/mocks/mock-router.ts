@@ -9,7 +9,7 @@ import {
 } from './procedures/offers-page';
 import { listTopicsByCategory } from './procedures/topics-by-category';
 import { listCourses } from './procedures/course';
-import { listOffersPagePackages } from './procedures/packages';
+import { listOffersPagePackages } from './procedures/package';
 import { listCoaches } from './procedures/coach';
 
 export const mockRouter = t.router({
