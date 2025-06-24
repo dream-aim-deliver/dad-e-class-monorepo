@@ -4,7 +4,7 @@ import CoursesPresenter, {
     TCoursesPresenterUtilities,
 } from '../../common/presenters/courses-presenter';
 
-export function useGetCoursesPresenter(
+export function useListCoursesPresenter(
     setViewModel: (viewModel: viewModels.TCourseListViewModel) => void,
 ) {
     const presenterUtilities: TCoursesPresenterUtilities = {};

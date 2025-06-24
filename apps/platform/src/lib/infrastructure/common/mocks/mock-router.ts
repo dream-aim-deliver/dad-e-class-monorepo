@@ -2,21 +2,21 @@ import { getPlatform } from './procedures/platform';
 import { t } from './trpc-setup';
 import { listLanguages } from './procedures/language';
 import { getHomePage } from './procedures/home-page';
-import { getTopics } from './procedures/topic';
+import { listTopics } from './procedures/topic';
 import { getOffersPageOutline } from './procedures/offers-page-outline';
-import { getTopicsByCategory } from './procedures/topics-by-category';
-import { getCourses } from './procedures/course';
-import { getOffersPagePackages } from './procedures/packages';
+import { listTopicsByCategory } from './procedures/topics-by-category';
+import { listCourses } from './procedures/course';
+import { listOffersPagePackages } from './procedures/packages';
 
 export const mockRouter = t.router({
     getPlatform,
     listLanguages,
     getHomePage,
-    getTopics,
+    listTopics,
     getOffersPageOutline,
-    getTopicsByCategory,
-    getCourses,
-    getOffersPagePackages,
+    listTopicsByCategory,
+    listCourses,
+    listOffersPagePackages,
 });
 
 export type MockRouter = typeof mockRouter;

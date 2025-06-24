@@ -1,7 +1,7 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 
-const topicsMock: useCaseModels.TGetTopicsSuccessResponse['data'] = {
+const topicsMock: useCaseModels.TListTopicsSuccessResponse['data'] = {
     topics: [
         {
             name: 'Branding and Identity',
@@ -128,9 +128,9 @@ const topicsAuthError: useCaseModels.TGetHomePageUseCaseErrorResponse = {
     },
 };
 
-export const getTopics = t.procedure
-    .input(useCaseModels.GetTopicsRequestSchema)
-    .query(async (opts): Promise<useCaseModels.TGetTopicsUseCaseResponse> => {
+export const listTopics = t.procedure
+    .input(useCaseModels.ListTopicsRequestSchema)
+    .query(async (opts): Promise<useCaseModels.TListTopicsUseCaseResponse> => {
         return {
             success: true,
             data: topicsMock,

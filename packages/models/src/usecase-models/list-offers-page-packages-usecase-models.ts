@@ -5,12 +5,12 @@ import {
     BaseSuccessSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
 
-export const GetOffersPagePackagesRequestSchema = z.object({});
-export type TGetOffersPagePackagesRequest = z.infer<
-    typeof GetOffersPagePackagesRequestSchema
+export const ListOffersPagePackagesRequestSchema = z.object({});
+export type TListOffersPagePackagesRequest = z.infer<
+    typeof ListOffersPagePackagesRequestSchema
 >;
 
-export const GetOffersPagePackagesSuccessResponseSchema =
+export const ListOffersPagePackagesSuccessResponseSchema =
     BaseSuccessSchemaFactory(
         z.object({
             packages: z.array(
@@ -32,20 +32,20 @@ export const GetOffersPagePackagesSuccessResponseSchema =
         }),
     );
 
-export type TGetOffersPagePackagesSuccessResponse = z.infer<
-    typeof GetOffersPagePackagesSuccessResponseSchema
+export type TListOffersPagePackagesSuccessResponse = z.infer<
+    typeof ListOffersPagePackagesSuccessResponseSchema
 >;
 
-const GetOffersPagePackagesUseCaseErrorResponseSchema =
+const ListOffersPagePackagesUseCaseErrorResponseSchema =
     BaseErrorDiscriminatedUnionSchemaFactory({});
-export type TGetOffersPagePackagesUseCaseErrorResponse = z.infer<
-    typeof GetOffersPagePackagesUseCaseErrorResponseSchema
+export type TListOffersPagePackagesUseCaseErrorResponse = z.infer<
+    typeof ListOffersPagePackagesUseCaseErrorResponseSchema
 >;
-export const GetOffersPagePackagesUseCaseResponseSchema =
+export const ListOffersPagePackagesUseCaseResponseSchema =
     BaseStatusDiscriminatedUnionSchemaFactory([
-        GetOffersPagePackagesSuccessResponseSchema,
-        GetOffersPagePackagesUseCaseErrorResponseSchema,
+        ListOffersPagePackagesSuccessResponseSchema,
+        ListOffersPagePackagesUseCaseErrorResponseSchema,
     ]);
-export type TGetOffersPagePackagesUseCaseResponse = z.infer<
-    typeof GetOffersPagePackagesUseCaseResponseSchema
+export type TListOffersPagePackagesUseCaseResponse = z.infer<
+    typeof ListOffersPagePackagesUseCaseResponseSchema
 >;

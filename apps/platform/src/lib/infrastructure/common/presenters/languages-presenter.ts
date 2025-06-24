@@ -7,20 +7,20 @@ import {
 
 export type TLanguagesPresenterUtilities = {};
 
-export const GetLanguagesResponseMiddleware =
+export const ListLanguagesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
         useCaseModels.TGetLanguagesUseCaseResponse,
         viewModels.TLanguageListViewModel,
         TLanguagesPresenterUtilities
     >;
 
-type TGetLanguagesResponseMiddleware = typeof GetLanguagesResponseMiddleware;
+type TListLanguagesResponseMiddleware = typeof ListLanguagesResponseMiddleware;
 
 export default class LanguagesPresenter extends BasePresenter<
     useCaseModels.TGetLanguagesUseCaseResponse,
     viewModels.TLanguageListViewModel,
     TLanguagesPresenterUtilities,
-    TGetLanguagesResponseMiddleware
+    TListLanguagesResponseMiddleware
 > {
     constructor(
         setViewModel: (viewModel: viewModels.TLanguageListViewModel) => void,
@@ -31,7 +31,7 @@ export default class LanguagesPresenter extends BasePresenter<
                 responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
                 viewModel: viewModels.HomePageViewModelSchema,
             },
-            middleware: GetLanguagesResponseMiddleware,
+            middleware: ListLanguagesResponseMiddleware,
             viewUtilities: viewUtilities,
             setViewModel: setViewModel,
         });
@@ -52,8 +52,8 @@ export default class LanguagesPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetLanguagesUseCaseErrorResponse,
-            TGetLanguagesResponseMiddleware
+            useCaseModels.TListLanguagesUseCaseErrorResponse,
+            TListLanguagesResponseMiddleware
         >,
     ): viewModels.TLanguageListViewModel {
         return {

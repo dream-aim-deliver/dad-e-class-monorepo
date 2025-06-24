@@ -5,10 +5,10 @@ import {
     BaseSuccessSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
 
-export const GetCoursesRequestSchema = z.object({});
-export type TGetCoursesRequest = z.infer<typeof GetCoursesRequestSchema>;
+export const ListCoursesRequestSchema = z.object({});
+export type TListCoursesRequest = z.infer<typeof ListCoursesRequestSchema>;
 
-export const GetCoursesSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
+export const ListCoursesSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
     courses: z.array(z.object({
         id: z.string().or(z.number()),
         title: z.string(),
@@ -35,12 +35,12 @@ export const GetCoursesSuccessResponseSchema = BaseSuccessSchemaFactory(z.object
     }))
 }));
 
-export type TGetCoursesSuccessResponse = z.infer<typeof GetCoursesSuccessResponseSchema>;
+export type TListCoursesSuccessResponse = z.infer<typeof ListCoursesSuccessResponseSchema>;
 
-const GetCoursesUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
-export type TGetCoursesUseCaseErrorResponse = z.infer<typeof GetCoursesUseCaseErrorResponseSchema>;
-export const GetCoursesUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
-    GetCoursesSuccessResponseSchema,
-    GetCoursesUseCaseErrorResponseSchema,
+const ListCoursesUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
+export type TListCoursesUseCaseErrorResponse = z.infer<typeof ListCoursesUseCaseErrorResponseSchema>;
+export const ListCoursesUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
+    ListCoursesSuccessResponseSchema,
+    ListCoursesUseCaseErrorResponseSchema,
 ]);
-export type TGetCoursesUseCaseResponse = z.infer<typeof GetCoursesUseCaseResponseSchema>;
+export type TListCoursesUseCaseResponse = z.infer<typeof ListCoursesUseCaseResponseSchema>;

@@ -7,20 +7,20 @@ import {
 
 export type TTopicsPresenterUtilities = {};
 
-export const GetTopicsResponseMiddleware =
+export const ListTopicsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetTopicsUseCaseResponse,
+        useCaseModels.TListTopicsUseCaseResponse,
         viewModels.TTopicListViewModel,
         TTopicsPresenterUtilities
     >;
 
-type TGetTopicsResponseMiddleware = typeof GetTopicsResponseMiddleware;
+type TListTopicsResponseMiddleware = typeof ListTopicsResponseMiddleware;
 
 export default class TopicsPresenter extends BasePresenter<
-    useCaseModels.TGetTopicsUseCaseResponse,
+    useCaseModels.TListTopicsUseCaseResponse,
     viewModels.TTopicListViewModel,
     TTopicsPresenterUtilities,
-    TGetTopicsResponseMiddleware
+    TListTopicsResponseMiddleware
 > {
     constructor(
         setViewModel: (viewModel: viewModels.TTopicListViewModel) => void,
@@ -31,7 +31,7 @@ export default class TopicsPresenter extends BasePresenter<
                 responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
                 viewModel: viewModels.HomePageViewModelSchema,
             },
-            middleware: GetTopicsResponseMiddleware,
+            middleware: ListTopicsResponseMiddleware,
             viewUtilities: viewUtilities,
             setViewModel: setViewModel,
         });
@@ -39,7 +39,7 @@ export default class TopicsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetTopicsUseCaseResponse,
+            useCaseModels.TListTopicsUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TTopicListViewModel {
@@ -55,8 +55,8 @@ export default class TopicsPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetTopicsUseCaseErrorResponse,
-            TGetTopicsResponseMiddleware
+            useCaseModels.TListTopicsUseCaseErrorResponse,
+            TListTopicsResponseMiddleware
         >,
     ): viewModels.TTopicListViewModel {
         return {
