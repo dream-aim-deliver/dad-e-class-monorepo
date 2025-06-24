@@ -102,6 +102,7 @@ export function OffersCourseList({
         coursesViewModel.mode === 'not-found' ||
         displayedCourses.length === 0
     ) {
+        // TODO: replace with a proper component
         return <DefaultError errorMessage="No courses found" />;
     }
 

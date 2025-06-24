@@ -27,6 +27,7 @@ export default function PackageList() {
     }
 
     if (packagesViewModel.mode === 'not-found') {
+        // TODO: replace with a proper component
         return <DefaultError errorMessage="No packages found" />;
     }
 
@@ -35,6 +36,10 @@ export default function PackageList() {
     }
 
     const packages = packagesViewModel.data.packages;
+
+    if (packages.length === 0) {
+        return <DefaultError errorMessage="No packages found" />;
+    }
 
     return (
         <CardListLayout>

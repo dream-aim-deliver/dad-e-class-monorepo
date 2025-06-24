@@ -6,4 +6,5 @@ export const Offers_DE: TDictionary['pages']['offers'] = {
   ourCourses: 'Unsere Kurse',
   ourPackages: 'Unsere Pakete',
   coachingIncluded: 'Coaching inklusive',
+  coachingOnDemand: 'Coaching auf Abruf',
 };
