@@ -9,6 +9,7 @@ export const EN: TDictionary = {
   components: {
     paginationButton: {
       loadMore: 'Load more...',
+      viewAll: 'View all',
     },
     coachBanner: {
       buttonText: 'Become a Coach',
