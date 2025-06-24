@@ -11,6 +11,7 @@ import {
 import dynamic from 'next/dynamic';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { useRouter } from 'next/navigation';
 
 const Carousel = dynamic(
     () =>
@@ -32,6 +33,7 @@ export default function OffersCarousel() {
         useGetOffersPageCarouselPresenter(setCarouselViewModel);
     presenter.present(carouselResponse, carouselViewModel);
     const locale = useLocale() as TLocale;
+    const router = useRouter();
 
     if (!carouselViewModel) {
         return <DefaultLoading />;
@@ -47,7 +49,7 @@ export default function OffersCarousel() {
         <Carousel locale={locale}>
             {carousel.items.map((item) => {
                 const onClick = () => {
-                    // TODO: Implement navigation logic
+                    router.push(item.buttonUrl);
                 };
                 return (
                     <GeneralCard

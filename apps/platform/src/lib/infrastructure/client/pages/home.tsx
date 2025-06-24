@@ -19,6 +19,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-home-page-presenter';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
+import { useRouter } from 'next/navigation';
 
 const Carousel = dynamic(
     () =>
@@ -50,6 +51,8 @@ export default function Home() {
     const { presenter: topicsPresenter } =
         useListTopicsPresenter(setTopicsViewModel);
     topicsPresenter.present(topicsResponse, topicsViewModel);
+
+    const router = useRouter();
 
     if (!homePageViewModel || !topicsViewModel) {
         return <DefaultLoading />;
@@ -85,7 +88,7 @@ export default function Home() {
             <Carousel locale={locale}>
                 {homePage.carousel.map((item: viewModels.TGeneralCard) => {
                     const onClick = () => {
-                        // TODO: Implement navigation logic
+                        router.push(item.buttonUrl);
                     };
                     return (
                         <GeneralCard
