@@ -7,4 +7,5 @@ export const Offers_EN: TDictionary["pages"]["offers"] = {
   ourPackages: "Our Packages",
   coachingIncluded: "Coaching Included",
   coachingOnDemand: "Coaching on demand",
+  haveNotFound: "Haven't found what you're looking for?",
 }

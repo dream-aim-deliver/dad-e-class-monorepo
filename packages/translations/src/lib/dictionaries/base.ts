@@ -570,6 +570,7 @@ export const DictionarySchema = z.object({
       ourPackages: z.string(),
       coachingOnDemand: z.string(),
       coachingIncluded: z.string(),
+      haveNotFound: z.string(),
     }),
     login: z.object({
       title: z.string(),

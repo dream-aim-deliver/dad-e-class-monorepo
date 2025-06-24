@@ -408,6 +408,8 @@ export const listCoaches = t.procedure
     .query(async (opts): Promise<useCaseModels.TListCoachesUseCaseResponse> => {
         const { page, pageSize, skillSlugs } = opts.input;
 
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
+
         // Start with all coaches
         let filteredCoaches = coachesMock.coaches;
 
@@ -434,8 +436,6 @@ export const listCoaches = t.procedure
                 },
             };
         }
-
-        await new Promise((resolve) => setTimeout(resolve, 5000)); // Simulate network delay
 
         return {
             success: true,

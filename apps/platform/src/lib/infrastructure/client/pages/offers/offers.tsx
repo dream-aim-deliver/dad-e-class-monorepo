@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    CarouselSkeleton,
     CoachCardListSkeleton,
     CourseCardListSkeleton,
     DefaultError,
@@ -19,6 +20,7 @@ import { OffersCourseHeading, OffersCourseList } from './offersCourseList';
 import OffersCoachList from './offersCoachList';
 
 const PackageList = lazy(() => import('./offersPackageList'));
+const Carousel = lazy(() => import('./offersCarousel'));
 
 interface OffersProps {
     initialSelectedTopics?: string[];
@@ -82,6 +84,11 @@ export default function Offers(props: OffersProps) {
             <SectionHeading text={t('coachingOnDemand')} />
             <Suspense fallback={<CoachCardListSkeleton />}>
                 <OffersCoachList selectedTopics={selectedTopics} />
+            </Suspense>
+            <Divider className="my-12" />
+            <SectionHeading text={t('haveNotFound')} className="text-center" />
+            <Suspense fallback={<CarouselSkeleton />}>
+                <Carousel />
             </Suspense>
         </div>
     );

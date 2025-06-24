@@ -3,7 +3,10 @@ import { t } from './trpc-setup';
 import { listLanguages } from './procedures/language';
 import { getHomePage } from './procedures/home-page';
 import { listTopics } from './procedures/topic';
-import { getOffersPageOutline } from './procedures/offers-page-outline';
+import {
+    getOffersPageCarousel,
+    getOffersPageOutline,
+} from './procedures/offers-page';
 import { listTopicsByCategory } from './procedures/topics-by-category';
 import { listCourses } from './procedures/course';
 import { listOffersPagePackages } from './procedures/packages';
@@ -15,6 +18,7 @@ export const mockRouter = t.router({
     getHomePage,
     listTopics,
     getOffersPageOutline,
+    getOffersPageCarousel,
     listTopicsByCategory,
     listCourses,
     listOffersPagePackages,
