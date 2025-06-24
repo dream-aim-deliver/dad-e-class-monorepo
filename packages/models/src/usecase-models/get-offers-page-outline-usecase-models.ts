@@ -8,7 +8,7 @@ import {
 export const GetOffersPageOutlineRequestSchema = z.object({});
 export type TGetOffersPageOutlineRequest = z.infer<typeof GetOffersPageOutlineRequestSchema>;
 
-const GetOffersPageOutlineSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
+export const GetOffersPageOutlineSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
     title: z.string(),
     description: z.string(),
 }));

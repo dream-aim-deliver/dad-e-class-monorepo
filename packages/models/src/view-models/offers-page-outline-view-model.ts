@@ -4,11 +4,9 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
+import { GetOffersPageOutlineSuccessResponseSchema } from '../usecase-models';
 
-export const OffersPageOutlineSuccessSchema = z.object({
-    title: z.string(),
-    description: z.string(),
-});
+export const OffersPageOutlineSuccessSchema = GetOffersPageOutlineSuccessResponseSchema.shape.data;
 
 export type TOffersPageOutlineSuccess = z.infer<typeof OffersPageOutlineSuccessSchema>;
 

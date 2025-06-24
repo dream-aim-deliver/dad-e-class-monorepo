@@ -1,11 +1,16 @@
+import { cn } from "../utils/style-utils";
+
 export function PageTitle({ text }: { text: string }) {
     return <h1 className="text-4xl lg:text-5xl text-text-primary font-bold">
         {text}
     </h1>;
 }
 
-export function SectionHeading({ text }: { text: string }) {
-    return <h2 className="text-2xl lg:text-mega text-text-primary font-bold">
+export function SectionHeading({ text, className = "" }: { text: string, className?: string }) {
+    return <h2 className={cn(
+        "text-2xl lg:text-mega text-text-primary font-bold",
+        className
+    )}>
         {text}
     </h2>;
 }
