@@ -477,6 +477,7 @@ export const DictionarySchema = z.object({
       filterByTopic: z.string(),
       ourCourses: z.string(),
       ourPackages: z.string(),
+      coachingOnDemand: z.string(),
       coachingIncluded: z.string(),
     }),
     login: z.object({

@@ -7,6 +7,7 @@ import { getOffersPageOutline } from './procedures/offers-page-outline';
 import { listTopicsByCategory } from './procedures/topics-by-category';
 import { listCourses } from './procedures/course';
 import { listOffersPagePackages } from './procedures/packages';
+import { listCoaches } from './procedures/coach';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -17,6 +18,7 @@ export const mockRouter = t.router({
     listTopicsByCategory,
     listCourses,
     listOffersPagePackages,
+    listCoaches,
 });
 
 export type MockRouter = typeof mockRouter;

@@ -15,6 +15,7 @@ import { useGetOffersPageOutlinePresenter } from '../../hooks/use-offers-page-ou
 import { useTranslations } from 'next-intl';
 import OffersFilters from './offersFilters';
 import { OffersCourseHeading, OffersCourseList } from './offersCourseList';
+import OffersCoachList from './offersCoachList';
 
 const PackageList = lazy(() => import('./offersPackageList'));
 
@@ -75,6 +76,11 @@ export default function Offers(props: OffersProps) {
             <SectionHeading text={t('ourPackages')} />
             <Suspense fallback={<DefaultLoading />}>
                 <PackageList />
+            </Suspense>
+            <Divider className="my-12" />
+            <SectionHeading text={t('coachingOnDemand')} />
+            <Suspense fallback={<DefaultLoading />}>
+                <OffersCoachList selectedTopics={selectedTopics} />
             </Suspense>
         </div>
     );

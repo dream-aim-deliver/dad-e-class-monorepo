@@ -15,7 +15,7 @@ interface Course {
 
 export interface CoachCardDetails {
   coachName: string;
-  coachImage: string;
+  coachImage?: string;
   languages: string[];
   sessionCount: number;
   skills: string[];
