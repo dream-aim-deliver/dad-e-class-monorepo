@@ -8,7 +8,10 @@ interface CoachingProps {
 }
 
 export default async function CoachingServerComponent(props: CoachingProps) {
-    await Promise.all([prefetch(trpc.getCoachingPage.queryOptions({}))]);
+    await Promise.all([
+        prefetch(trpc.getCoachingPage.queryOptions({})),
+        prefetch(trpc.listTopicsByCategory.queryOptions({}))
+    ]);
 
     return (
         <>

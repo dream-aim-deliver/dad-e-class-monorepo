@@ -572,6 +572,10 @@ export const DictionarySchema = z.object({
       coachingIncluded: z.string(),
       haveNotFound: z.string(),
     }),
+    coaching: z.object({
+      chooseCategory: z.string(),
+      filterByTopic: z.string(),
+    }),
     login: z.object({
       title: z.string(),
       postLogout: z.string(),
