@@ -11,6 +11,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { useRouter } from 'next/navigation';
 
 interface CoachListProps {
     selectedTopics: string[];
@@ -32,6 +33,7 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
 
     const t = useTranslations('components.paginationButton');
     const locale = useLocale() as TLocale;
+    const router = useRouter();
 
     if (!coachesViewModel) {
         return <DefaultLoading />;
@@ -69,10 +71,20 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
                             courses: coach.coursesTaught.map((course) => ({
                                 title: course.title,
                                 image: course.imageUrl ?? '',
+                                slug: course.slug,
                             })),
                             skills: coach.skills.map((skill) => skill.name),
                             rating: coach.averageRating ?? 0,
                             totalRatings: coach.reviewCount,
+                        }}
+                        onClickViewProfile={() => {
+                            router.push(`/coaches/${coach.username}`);
+                        }}
+                        onClickCourse={(courseSlug: string) => {
+                            router.push(`/courses/${courseSlug}`);
+                        }}
+                        onClickBookSession={() => {
+                            // TODO: Implement booking session navigation
                         }}
                     />
                 ))}

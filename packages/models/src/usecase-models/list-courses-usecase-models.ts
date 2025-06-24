@@ -18,6 +18,7 @@ export const ListCoursesSuccessResponseSchema = BaseSuccessSchemaFactory(z.objec
         averageRating: z.number().nullable(),
         reviewCount: z.number(),
         author: z.object({
+            username: z.string(),
             name: z.string(),
             surname: z.string(),
             avatarUrl: z.string().nullable(),
