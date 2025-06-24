@@ -15,12 +15,12 @@ import { Suspense, lazy, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetOffersPageOutlinePresenter } from '../../hooks/use-offers-page-outline-presenter';
 import { useTranslations } from 'next-intl';
-import OffersFilters from './offersFilters';
-import { OffersCourseHeading, OffersCourseList } from './offersCourseList';
-import OffersCoachList from './offersCoachList';
+import OffersFilters from './offers-filters';
+import { OffersCourseHeading, OffersCourseList } from './offers-course-list';
+import OffersCoachList from './offers-coach-list';
 
-const PackageList = lazy(() => import('./offersPackageList'));
-const Carousel = lazy(() => import('./offersCarousel'));
+const PackageList = lazy(() => import('./offers-package-list'));
+const Carousel = lazy(() => import('./offers-carousel'));
 
 interface OffersProps {
     initialSelectedTopics?: string[];
