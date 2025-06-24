@@ -5,6 +5,7 @@ export const DictionarySchema = z.object({
   components: z.object({
     paginationButton: z.object({
       loadMore: z.string(),
+      viewAll: z.string(),
     }),
     coachBanner: z.object({
       buttonText: z.string(),

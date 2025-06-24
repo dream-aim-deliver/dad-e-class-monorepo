@@ -8,6 +8,8 @@ const coachesMock: useCaseModels.TListCoachesSuccessResponse['data'] = {
             name: 'Sarah',
             surname: 'Johnson',
             languages: ['English', 'Spanish'],
+            avatarUrl:
+                'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             coachingSessionCount: 127,
             skills: [
                 {
@@ -45,6 +47,7 @@ const coachesMock: useCaseModels.TListCoachesSuccessResponse['data'] = {
             username: 'david_ux',
             name: 'David',
             surname: 'Chen',
+            avatarUrl: null,
             languages: ['English', 'Mandarin'],
             coachingSessionCount: 203,
             skills: [
@@ -88,6 +91,8 @@ const coachesMock: useCaseModels.TListCoachesSuccessResponse['data'] = {
             username: 'maria_motion',
             name: 'Maria',
             surname: 'Rodriguez',
+            avatarUrl:
+                'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             languages: ['English', 'Spanish', 'Portuguese'],
             coachingSessionCount: 78,
             skills: [
@@ -126,6 +131,8 @@ const coachesMock: useCaseModels.TListCoachesSuccessResponse['data'] = {
             username: 'alex_social',
             name: 'Alex',
             surname: 'Thompson',
+            avatarUrl:
+                'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             languages: ['English'],
             coachingSessionCount: 164,
             skills: [
@@ -164,6 +171,7 @@ const coachesMock: useCaseModels.TListCoachesSuccessResponse['data'] = {
             name: 'Emma',
             surname: 'Williams',
             languages: ['English', 'French'],
+            avatarUrl: null,
             coachingSessionCount: 93,
             skills: [
                 {
@@ -198,6 +206,7 @@ const coachesMock: useCaseModels.TListCoachesSuccessResponse['data'] = {
             name: 'James',
             surname: 'Miller',
             languages: ['English'],
+            avatarUrl: null,
             coachingSessionCount: 215,
             skills: [
                 {
@@ -241,6 +250,7 @@ const coachesMock: useCaseModels.TListCoachesSuccessResponse['data'] = {
             name: 'Lisa',
             surname: 'Park',
             languages: ['English', 'Korean'],
+            avatarUrl: null,
             coachingSessionCount: 45,
             skills: [
                 {
@@ -273,6 +283,7 @@ const coachesMock: useCaseModels.TListCoachesSuccessResponse['data'] = {
             name: 'Michael',
             surname: 'Davis',
             languages: ['English', 'German'],
+            avatarUrl: null,
             coachingSessionCount: 138,
             skills: [
                 {
@@ -311,6 +322,7 @@ const coachesMock: useCaseModels.TListCoachesSuccessResponse['data'] = {
             name: 'Sophia',
             surname: 'Anderson',
             languages: ['English', 'Italian'],
+            avatarUrl: null,
             coachingSessionCount: 172,
             skills: [
                 {
@@ -354,6 +366,7 @@ const coachesMock: useCaseModels.TListCoachesSuccessResponse['data'] = {
             name: 'Robert',
             surname: 'Taylor',
             languages: ['English'],
+            avatarUrl: null,
             coachingSessionCount: 89,
             skills: [
                 {
@@ -421,6 +434,8 @@ export const listCoaches = t.procedure
                 },
             };
         }
+
+        await new Promise((resolve) => setTimeout(resolve, 5000)); // Simulate network delay
 
         return {
             success: true,
