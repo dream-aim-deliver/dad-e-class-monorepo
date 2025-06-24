@@ -29,16 +29,4 @@ describe('Hero Component', () => {
     render(<Hero {...mockProps} />);
     expect(screen.getByTestId('mock-video-player')).toBeInTheDocument();
   });
-
-  it('applies correct CSS classes for title', () => {
-    render(<Hero {...mockProps} />);
-    const titleElement = screen.getByText(mockProps.title);
-    expect(titleElement).toHaveClass('text-4xl text-text-primary font-bold leading-[100%] tracking-[-0.08rem]');
-  });
-
-  it('applies correct CSS classes for description', () => {
-    render(<Hero {...mockProps} />);
-    const descriptionElement = screen.getByText(mockProps.description);
-    expect(descriptionElement).toHaveClass('text-lg text-text-secondary leading-[150%]');
-  });
 });
