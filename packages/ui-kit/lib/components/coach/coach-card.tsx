@@ -62,7 +62,7 @@ const CoachCard: FC<CoachCardProps> = ({
     <div
       role="article"
       className={cn(
-        'flex flex-col bg-card-fill gap-4 text-sm md:text-md border border-card-stroke p-4 max-w-[382px]  rounded-lg text-text-secondary',
+        'flex flex-col bg-card-fill gap-4 text-sm md:text-md border border-card-stroke p-4 rounded-lg text-text-secondary',
         className
       )}
     >
