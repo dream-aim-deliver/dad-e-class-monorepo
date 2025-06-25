@@ -8,6 +8,7 @@ import DefaultLoading from '../../wrappers/default-loading';
 import {
     CoachBanner,
     CoachCardListSkeleton,
+    CoachesSkeleton,
     DefaultError,
     Outline,
     SectionHeading,
@@ -17,6 +18,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import CategoryTopics from '../common/category-topics';
 import CoachingCoachList from './coaching-coach-list';
+import { useSession } from 'next-auth/react';
 
 interface CoachingsProps {
     initialSelectedTopics?: string[];
@@ -38,6 +40,10 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
 
     const { presenter } = useGetCoachingPagePresenter(setCoachingPageViewModel);
     presenter.present(coachingPageResponse, coachingPageViewModel);
+
+    const sessionDTO = useSession();
+    const session = sessionDTO.data;
+    const isLoggedIn = !!session;
 
     // Loading state
     if (!coachingPageViewModel) {
@@ -68,6 +74,14 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
             <Suspense fallback={<CoachCardListSkeleton />}>
                 <CoachingCoachList selectedTopics={selectedTopics} />
             </Suspense>
+            {!isLoggedIn && (
+                <CoachesSkeleton
+                    onRegister={() => {
+                        router.push('/signup');
+                    }}
+                    locale={locale}
+                />
+            )}
             <CoachBanner
                 locale={locale}
                 title={coachingPage.banner.title}
