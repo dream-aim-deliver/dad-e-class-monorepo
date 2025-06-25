@@ -53,27 +53,34 @@ vi.mock(
 
 describe('AvailableCoachingSessions', () => {
   it('renders the title from dictionary', () => {
-    render(<AvailableCoachingSessions locale="en" />);
+    render(<AvailableCoachingSessions locale="en" availableCoachingSessionsData={[]} onClickBuyMoreSessions={function (): void {
+      throw new Error('Function not implemented.');
+    } } />);
     expect(screen.getByText('Available Coaching Sessions')).toBeInTheDocument();
   });
 
   it('renders default coaching session data when none provided', () => {
-    render(<AvailableCoachingSessions locale="en" />);
+    render(<AvailableCoachingSessions locale="en" availableCoachingSessionsData={[]} onClickBuyMoreSessions={function (): void {
+      throw new Error('Function not implemented.');
+    } } />);
   });
 
   it('renders provided coaching session data', () => {
     const customData = [
       {
+        id: '1',
         title: 'Custom Session',
         time: 45,
         isMoreThan1Available: true,
+        numberOfSessions: 2,
       },
     ];
     render(
       <AvailableCoachingSessions
         locale="en"
-        availableCoachingSessionsData={customData}
-      />,
+        availableCoachingSessionsData={customData} onClickBuyMoreSessions={function (): void {
+          throw new Error('Function not implemented.');
+        } }      />,
     );
     expect(screen.getByText('Custom Session')).toBeInTheDocument();
     expect(screen.getByText('Multiple Available')).toBeInTheDocument();
@@ -82,14 +89,22 @@ describe('AvailableCoachingSessions', () => {
   });
 
   it('renders Buy More Sessions button with correct text and class', () => {
-    render(<AvailableCoachingSessions locale="en" />);
+    render(<AvailableCoachingSessions locale="en" availableCoachingSessionsData={[]} onClickBuyMoreSessions={function (): void {
+      throw new Error('Function not implemented.');
+    } } />);
     const button = screen.getByRole('button', { name: 'Buy More Sessions' });
     expect(button).toBeInTheDocument();
     expect(button).toHaveClass('w-full');
   });
 
   it('applies correct container classes', () => {
-    const { container } = render(<AvailableCoachingSessions locale="en" />);
+    const { container } = render(
+      <AvailableCoachingSessions
+        locale="en"
+        availableCoachingSessionsData={[]}
+        onClickBuyMoreSessions={vi.fn()}
+      />
+    );
     const wrapper = container.firstChild;
     expect(wrapper).toHaveClass(
       'flex',
