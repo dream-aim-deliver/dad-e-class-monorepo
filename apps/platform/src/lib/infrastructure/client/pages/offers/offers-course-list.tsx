@@ -14,6 +14,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/client';
 import { useListCoursesPresenter } from '../../hooks/use-courses-presenter';
 import { useRouter } from 'next/navigation';
+import useClientSidePagination from '../../utils/use-client-side-pagination';
 
 interface OffersCourseHeadingProps {
     coachingIncluded: boolean;
@@ -48,8 +49,6 @@ interface CourseListProps {
     coachingIncluded: boolean;
 }
 
-const COURSES_PER_PAGE = 6;
-
 export function OffersCourseList({
     selectedTopics,
     coachingIncluded,
@@ -61,7 +60,6 @@ export function OffersCourseList({
     const { presenter } = useListCoursesPresenter(setCoursesViewModel);
     presenter.present(coursesResponse, coursesViewModel);
     const locale = useLocale() as TLocale;
-    const [displayedCount, setDisplayedCount] = useState(COURSES_PER_PAGE);
     const t = useTranslations('components.paginationButton');
 
     const router = useRouter();
@@ -85,15 +83,13 @@ export function OffersCourseList({
         });
     }, [coursesViewModel, selectedTopics, coachingIncluded]);
 
-    const displayedCourses = useMemo(() => {
-        return courses.slice(0, displayedCount);
-    }, [courses, displayedCount]);
-
-    const hasMoreCourses = displayedCount < courses.length;
-
-    const handleLoadMore = () => {
-        setDisplayedCount((prev) => Math.min(prev + 6, courses.length));
-    };
+    const {
+        displayedItems: displayedCourses,
+        hasMoreItems: hasMoreCourses,
+        handleLoadMore,
+    } = useClientSidePagination({
+        items: courses,
+    });
 
     // Validation and derived state
     if (!coursesViewModel) {

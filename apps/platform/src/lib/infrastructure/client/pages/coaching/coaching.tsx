@@ -1,15 +1,22 @@
 'use client';
 
 import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../trpc/client';
-import { useGetCoachingPagePresenter } from '../hooks/use-coaching-page-presenter';
-import { useState } from 'react';
-import DefaultLoading from '../wrappers/default-loading';
-import { CoachBanner, DefaultError, Outline, SectionHeading } from '@maany_shr/e-class-ui-kit';
+import { trpc } from '../../trpc/client';
+import { useGetCoachingPagePresenter } from '../../hooks/use-coaching-page-presenter';
+import { Suspense, useState } from 'react';
+import DefaultLoading from '../../wrappers/default-loading';
+import {
+    CoachBanner,
+    CoachCardListSkeleton,
+    DefaultError,
+    Outline,
+    SectionHeading,
+} from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
-import CategoryTopics from './common/category-topics';
+import CategoryTopics from '../common/category-topics';
+import CoachingCoachList from './coaching-coach-list';
 
 interface CoachingsProps {
     initialSelectedTopics?: string[];
@@ -58,6 +65,9 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
                 setSelectedTopics={setSelectedTopics}
                 filterText={t('filterByTopic')}
             />
+            <Suspense fallback={<CoachCardListSkeleton />}>
+                <CoachingCoachList selectedTopics={selectedTopics} />
+            </Suspense>
             <CoachBanner
                 locale={locale}
                 title={coachingPage.banner.title}
