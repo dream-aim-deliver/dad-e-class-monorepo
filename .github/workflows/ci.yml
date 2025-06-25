@@ -39,6 +39,8 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cp .npmrc.template .npmrc
+          sed -i "s/\$DAD_GH_NPM_TOKEN/${{ secrets.DAD_GH_NPM_TOKEN }}/g" .npmrc
           pnpm install --frozen-lockfile
           pnpm exec playwright install --with-deps
 
