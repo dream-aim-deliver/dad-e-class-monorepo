@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react';
 
-interface UseClientSidePaginationProps {
-    items: any[];
+interface UseClientSidePaginationProps<T = any> {
+    items: T[];
     itemsPerPage?: number;
 }
 
-export default function useClientSidePagination({
+export default function useClientSidePagination<T = any>({
     items,
     itemsPerPage = 6,
-}: UseClientSidePaginationProps) {
+}: UseClientSidePaginationProps<T>) {
     const [displayedCount, setDisplayedCount] = useState(itemsPerPage);
 
     const displayedItems = useMemo(() => {
