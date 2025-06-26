@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { Button } from '../button';
-import { profile } from '@maany_shr/e-class-models';
+import { profile, fileMetadata } from '@maany_shr/e-class-models';
 import { IconButton } from '../icon-button';
 import { TextInput } from '../text-input';
 import { InputField } from '../input-field';
 import { TextAreaInput } from '../text-areaInput';
 import { CheckBox } from '../checkbox';
-import { FileUploadResponse, UploadResponse } from '../drag-and-drop/uploader';
 import { IconPlus } from '../icons/icon-plus';
 import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
@@ -91,7 +90,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     e.preventDefault();
     onSave?.(formData);
   };
-  const handleUploadedFiles = async (newFiles: UploadedFileType[]): Promise<UploadResponse> => {
+  const handleUploadedFiles = async (newFiles: UploadedFileType[]): Promise<fileMetadata.TFileMetadata> => {
     // Get the uploaded file
     const newFile = newFiles[0];
 
@@ -99,31 +98,39 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     setFiles(newFile);
 
     try {
-      // Simulate API call
-      const response = await new Promise<FileUploadResponse>((resolve) => {
-        // Create proper response based on your file variant
+      // Simulate API call - create a TFileMetadata response for document
+      const response: fileMetadata.TFileMetadata = await new Promise((resolve) => {
         setTimeout(() => {
           resolve({
-            fileId: `file-${Math.random().toString(36).substr(2, 9)}`,
-            fileName: newFiles[0].file.name
+            lfn: `file-${Math.random().toString(36).substr(2, 9)}`,
+            name: newFile.request.name,
+            url: `/uploads/${newFile.request.name}`,
+            size: newFile.request.buffer.length,
+            mimeType: 'application/pdf',
+            checksum: 'mock-checksum',
+            status: 'available' as const,
+            category: 'document' as const
           });
-        }, 2000)
+        }, 2000);
       });
 
-      // Update state AGAIN after successful upload (important!)
+      // Update state after successful upload
       setFiles({
         ...newFile,
-        isUploading: false,  // Turn off loading
         responseData: response
       });
+
+      // Update form data with the file URL (safe access since we know it's a document)
+      if (response.category === 'document') {
+        handleChange('curriculumVitae', response.url);
+      }
 
       return response;
     } catch (error) {
       // Handle errors by updating state
       setFiles({
         ...newFile,
-        isUploading: false,
-        error: "Upload failed"
+        responseData: undefined
       });
 
       throw error;
@@ -185,7 +192,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           </p>
           <Uploader
             type="single"
-            variant="file"
+            variant="document"
             file={files as UploadedFileType}
             acceptedFileTypes={['application/pdf']}
             onFilesChange={handleUploadedFiles}
