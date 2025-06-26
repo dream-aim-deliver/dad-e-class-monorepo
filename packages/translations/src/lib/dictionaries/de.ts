@@ -541,6 +541,20 @@ export const DE: TDictionary = {
       titleLesson: 'Lektion löschen?',
       titleModule: 'Modul löschen?',
     },
+     courseBuilder: {
+      addLinkText:"Link hinzufügen",
+      downloadFilesText:"Dateien herunterladen",
+      uploadFilesText:"Dateien hochladen",
+      linkText:"Link",
+      includeInMaterialsText:"Links in die Registerkarte „Kursmaterial“ einschließen",
+      descriptionText:"Beschreibung",
+      titleText:"Titel",
+      urlText:"url",
+      iconLinkText:"Symbol-Link",
+      saveText:"Speichern",
+      discardText:"Verwerfen",
+
+    }
   },
   pages: {
     home: Home_DE,

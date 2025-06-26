@@ -536,6 +536,19 @@ export const EN: TDictionary = {
       titleLesson: 'Delete lesson?',
       titleModule: 'Delete module?',
     },
+    courseBuilder: {
+      addLinkText:"Add Link",
+      downloadFilesText:"Download",
+      uploadFilesText:"Upload",
+      linkText:"Link",
+      includeInMaterialsText:"Include links in course material tab",
+      descriptionText:"Description",
+      titleText:"Title",
+      urlText:"Url",
+      iconLinkText:"Icon link",
+      saveText:"Save",
+      discardText:"Discard"
+    }
   },
   pages: {
     home: Home_EN,

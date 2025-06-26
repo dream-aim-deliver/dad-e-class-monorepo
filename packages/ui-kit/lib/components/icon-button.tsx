@@ -1,6 +1,7 @@
 import { FC, ButtonHTMLAttributes, ReactNode, isValidElement } from 'react';
 import clsx from 'clsx';
 import { IconRefresh } from './icons/icon-refresh';
+import { cn } from '../utils/style-utils';
 
 export interface IconButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -79,7 +80,7 @@ export const IconButton: FC<IconButtonProps> = ({
 }) => {
   const buttonSize = sizeMap[size].button;
 
-  const buttonClasses = clsx(
+  const buttonClasses =cn(
     'flex items-center justify-center transition-all duration-200',
     disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
     buttonSize,
