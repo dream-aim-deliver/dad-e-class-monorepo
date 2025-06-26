@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import {
   Uploader,
   UploadedFileType,
-} from '../lib/components/drag-and-drop/uploader';
+} from '../lib/components/drag-and-drop-uploader/uploader';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
 // Mock response generators

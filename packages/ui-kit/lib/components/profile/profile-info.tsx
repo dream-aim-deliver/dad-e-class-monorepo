@@ -7,7 +7,7 @@ import { TextInput } from '../text-input';
 import { LanguageSelector } from '../language-selector';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { language } from '@maany_shr/e-class-models';
-import { UploadedFileType, Uploader } from '../drag-and-drop/uploader';
+import { UploadedFileType, Uploader } from '../drag-and-drop-uploader/uploader';
 import { useState } from 'react';
 
 interface ProfileInfoProps extends isLocalAware {
