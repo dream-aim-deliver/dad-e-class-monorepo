@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { DragAndDrop } from '../lib/components/drag-and-drop/drag-and-drop';
+import { DragAndDrop } from '../lib/components/drag-and-drop-uploader/drag-and-drop';
 
 describe('DragAndDrop Component', () => {
   it('renders without crashing', () => {

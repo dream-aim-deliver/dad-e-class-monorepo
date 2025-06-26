@@ -10,7 +10,7 @@ import { IconPlus } from '../icons/icon-plus';
 import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { UploadedFileType, Uploader } from '../drag-and-drop/uploader';
+import { UploadedFileType, Uploader } from '../drag-and-drop-uploader/uploader';
 import { useState } from 'react';
 
 interface ProfessionalInfoProps extends isLocalAware {
