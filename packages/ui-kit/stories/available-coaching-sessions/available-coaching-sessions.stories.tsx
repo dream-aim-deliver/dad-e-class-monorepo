@@ -135,3 +135,32 @@ export const CustomData: StoryObj<typeof AvailableCoachingSessions> = {
     },
   },
 };
+
+export const HideButton: StoryObj<typeof AvailableCoachingSessions> = {
+  ...Template,
+  args: {
+    text: 'Here are your available coaching sessions.',
+    availableCoachingSessionsData: [
+      {
+        title: 'Custom Sprint',
+        time: 45,
+        numberOfSessions: 1,
+      },
+      {
+        title: 'Special Session',
+        time: 90,
+        numberOfSessions: 2,
+      },
+    ],
+    locale: 'en',
+    hideButton: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Component without the button',
+      },
+    },
+  },
+};
