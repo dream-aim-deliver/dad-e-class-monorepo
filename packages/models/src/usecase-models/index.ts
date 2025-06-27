@@ -10,3 +10,4 @@ export * from './list-coaches-usecase-models';
 export * from './get-offers-page-carousel-usecase-models';
 export * from './get-coaching-page-usecase-models';
 export * from './list-coaching-offerings-usecase-models';
+export * from './list-available-coachings-usecase-models';
