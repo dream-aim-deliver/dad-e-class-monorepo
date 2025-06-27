@@ -47,8 +47,8 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
       <p className="text-lg text-text-primary font-bold leading-[120%]">
         {dictionary?.components?.availableCoachingSessions?.title}
       </p>
-      {!availableCoachingSessionsData ||
-      availableCoachingSessionsData?.length === 0 ? (
+      {!isLoading && (!availableCoachingSessionsData ||
+      availableCoachingSessionsData?.length === 0) ? (
         <div className="flex items-center justify-center w-full">
           <p className="text-[1rem] text-text-secondary leading-[150%]">
             {
@@ -80,6 +80,7 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                 {availableCoachingSessionsData?.map(
                   (availableCoachingSession) => (
                     <DragDropSession
+                      key={availableCoachingSession.title}
                       {...availableCoachingSession}
                       durationMinutes={
                         dictionary?.components?.availableCoachingSessions

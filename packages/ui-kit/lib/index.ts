@@ -62,3 +62,4 @@ export { CoachCardListSkeleton } from './components/skeletons/coaches-skeleton';
 export { PackageCard } from './components/packages/package-card';
 export { default as CoachCard } from './components/coach/coach-card';
 export { RemoveModal } from './components/remove-modal';
+export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';

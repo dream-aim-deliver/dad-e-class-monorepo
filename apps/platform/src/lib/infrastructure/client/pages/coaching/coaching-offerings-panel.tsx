@@ -1,8 +1,9 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../trpc/client';
-import { useMemo, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { useListCoachingOfferingsPresenter } from '../../hooks/use-coaching-offerings-presenter';
 import {
+    AvailableCoachingSessions,
     BuyCoachingSession,
     DefaultError,
     DefaultLoading,
@@ -10,14 +11,56 @@ import {
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
-
-interface CoachingOfferingsPanelProps {}
+import { useListAvailableCoachingsPresenter } from '../../hooks/use-available-coachings-presenter';
+import { useSession } from 'next-auth/react';
 
 const PANEL_WIDTH = '400px';
 
-export default function CoachingOfferingsPanel(
-    props: CoachingOfferingsPanelProps,
-) {
+function AvailableCoachings() {
+    const [availableCoachingsResponse] =
+        trpc.listAvailableCoachings.useSuspenseQuery({});
+    const [availableCoachingsViewModel, setAvailableCoachingsViewModel] =
+        useState<viewModels.TAvailableCoachingListViewModel | undefined>(
+            undefined,
+        );
+    const { presenter } = useListAvailableCoachingsPresenter(
+        setAvailableCoachingsViewModel,
+    );
+    presenter.present(availableCoachingsResponse, availableCoachingsViewModel);
+
+    const locale = useLocale() as TLocale;
+
+    if (!availableCoachingsViewModel) {
+        return <DefaultLoading />;
+    }
+
+    if (availableCoachingsViewModel.mode !== 'default') {
+        return (
+            <DefaultError
+                errorMessage={availableCoachingsViewModel.data.message}
+            />
+        );
+    }
+
+    const availableOfferings = availableCoachingsViewModel.data.offerings;
+
+    return (
+        <AvailableCoachingSessions
+            locale={locale}
+            availableCoachingSessionsData={availableOfferings.map(
+                (offering) => ({
+                    id: offering.id,
+                    title: offering.name,
+                    time: offering.duration,
+                    numberOfSessions: offering.boughtCoachingIds.length,
+                }),
+            )}
+            hideButton
+        />
+    );
+}
+
+export default function CoachingOfferingsPanel() {
     const [coachingOfferingsResponse] =
         trpc.listCoachingOfferings.useSuspenseQuery({});
     const [coachingOfferingsViewModel, setCoachingOfferingsViewModel] =
@@ -31,6 +74,9 @@ export default function CoachingOfferingsPanel(
 
     const locale = useLocale() as TLocale;
     const router = useRouter();
+
+    const sessionDTO = useSession();
+    const isLoggedIn = !!sessionDTO.data;
 
     const currency = useMemo(() => {
         if (
@@ -59,8 +105,21 @@ export default function CoachingOfferingsPanel(
 
     return (
         <div
-            className={`gap-5 lg:min-w-[${PANEL_WIDTH}] lg:w-[${PANEL_WIDTH}]`}
+            className={`flex flex-col space-y-5 lg:min-w-[${PANEL_WIDTH}] lg:w-[${PANEL_WIDTH}]`}
         >
+            {isLoggedIn && (
+                <Suspense
+                    fallback={
+                        <AvailableCoachingSessions
+                            locale={locale}
+                            isLoading
+                            hideButton
+                        />
+                    }
+                >
+                    <AvailableCoachings />
+                </Suspense>
+            )}
             <BuyCoachingSession
                 offerings={coachingOfferings.map((offering) => ({
                     id: offering.id,
