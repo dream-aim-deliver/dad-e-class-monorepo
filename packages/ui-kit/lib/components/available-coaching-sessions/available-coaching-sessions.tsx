@@ -8,6 +8,7 @@ export interface AvailableCoachingSessionsProps extends isLocalAware {
   availableCoachingSessionsData?: DragDropSessionProps[];
   onClickBuyMoreSessions?: () => void;
   isLoading?: boolean;
+  hideButton?: boolean;
 }
 
 /**
@@ -38,6 +39,7 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
   availableCoachingSessionsData,
   onClickBuyMoreSessions,
   isLoading = false,
+  hideButton = false,
 }) => {
   const dictionary = getDictionary(locale);
   return (
@@ -91,13 +93,13 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
           </div>
         </>
       )}
-      <Button
+      {!hideButton && <Button
         className="w-full"
         onClick={onClickBuyMoreSessions}
         text={
           dictionary?.components?.availableCoachingSessions?.buyMoreSessions
         }
-      />
+      />}
     </div>
   );
 };
