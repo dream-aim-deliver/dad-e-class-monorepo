@@ -310,6 +310,8 @@ export const EN: TDictionary = {
       sessionCanceledText: 'Session Canceled',
       rateCallQualityText: 'Rate Call Quality',
       loadMoreText: 'Load more...',
+      toBeDefined: 'To be defined',
+      toBeDefinedMessage: 'Contact the coach with your availability. Use scheduling tools like Doodle to find a time that works for everyone.',
     },
     coachingSessionTracker: {
       minuteText: 'minutes',
