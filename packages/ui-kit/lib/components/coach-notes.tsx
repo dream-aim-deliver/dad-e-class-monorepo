@@ -113,6 +113,7 @@ function CoachNotesEdit({ noteDescription, noteLinks, includeInMaterials, locale
                         ) : (
                             <div className="flex flex-col" key={index}>
                                 <LinkPreview
+                                     preview
                                     title={link.title}
                                     url={link.url}
                                     customIcon={link.icon}

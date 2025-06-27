@@ -80,7 +80,7 @@ export const IconButton: FC<IconButtonProps> = ({
 }) => {
   const buttonSize = sizeMap[size].button;
 
-  const buttonClasses =cn(
+  const buttonClasses = cn(
     'flex items-center justify-center transition-all duration-200',
     disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
     buttonSize,

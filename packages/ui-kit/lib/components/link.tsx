@@ -9,6 +9,7 @@ import { IconLink } from "./icons/icon-link";
 import { IconTrashAlt } from "./icons/icon-trash-alt";
 import { IconEdit } from "./icons/icon-edit";
 import { ImageUploadResponse, UploadedFileType } from "./drag-and-drop/uploader";
+import { fileMetadata } from "@maany_shr/e-class-models";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { cn } from "../utils/style-utils";
 /**
@@ -46,13 +47,27 @@ interface LinkEditProps extends isLocalAware {
     initialUrl?: string;
     initialFile?: string | null;
     onChange: (title: string, url: string, customIcon?: File) => void;
+    onFileUpload?: (file: File) => Promise<fileMetadata.TFileMetadata>;
     onSave: () => void;
     onDiscard: () => void;
 }
 /**
+ * LinkEdit component allows users to edit a link's title, URL, and custom icon. 
+ * It validates the input fields and provides save and discard functionality.
  * 
- * @param param0 
- * @description LinkEdit component allows users to edit a link's title, URL, and custom icon. It validates the input fields and provides save and discard functionality.
+ * @param initialTitle - Initial title value
+ * @param initialUrl - Initial URL value  
+ * @param initialFile - Initial file (if any)
+ * @param onChange - Callback when title, url, or file changes
+ * @param onFileUpload - Optional callback to handle file upload. Should return Promise<TFileMetadata>
+ *                      The upload state will be determined by the status field in TFileMetadata:
+ *                      - 'processing': Shows loading state
+ *                      - 'available': File is ready and available
+ *                      - 'unavailable': Shows error state
+ * @param onSave - Callback when save button is clicked
+ * @param onDiscard - Callback when discard button is clicked
+ * @param locale - Locale for translations
+ * 
  * @example
  * ```tsx
  * <LinkEdit
@@ -60,10 +75,21 @@ interface LinkEditProps extends isLocalAware {
  *     initialUrl="https://example.com"
  *     initialFile={null}
  *     onChange={(title, url, customIcon) => console.log(title, url, customIcon)}
+ *     onFileUpload={async (file) => {
+ *         // Your file upload logic here
+ *         const uploadRequest = {
+ *             name: file.name,
+ *             buffer: new Uint8Array(await file.arrayBuffer())
+ *         };
+ *         const response = await uploadAPI(uploadRequest);
+ *         // Response should contain status: 'available' | 'processing' | 'unavailable'
+ *         return response;
+ *     }}
  *     onSave={() => console.log("Saved")}
  *     onDiscard={() => console.log("Discarded")}
+ *     locale="en"
  * />
- * @returns 
+ * ```
  */
 
 const LinkEdit: React.FC<LinkEditProps> = ({
@@ -71,6 +97,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
     initialUrl = "",
     initialFile = null,
     onChange,
+    onFileUpload,
     onSave,
     onDiscard,
     locale,
@@ -83,7 +110,6 @@ const LinkEdit: React.FC<LinkEditProps> = ({
             ? { file: initialFile, isUploading: false }
             : null
     );
-    const [errors, setErrors] = useState<{ title?: string; url?: string }>({});
     const fileInputRef = useRef(null);
     const [customIconUrl, setCustomIconUrl] = useState<string>("");
     const [customIconError, setCustomIconError] = useState<boolean>(false);
@@ -97,7 +123,6 @@ const LinkEdit: React.FC<LinkEditProps> = ({
         if (!url.trim()) {
             newErrors.url = "URL is required";
         }
-        setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
@@ -110,45 +135,62 @@ const LinkEdit: React.FC<LinkEditProps> = ({
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const newFile = e.target.files?.[0];
         if (newFile) {
-            // Create an UploadedFileType object
-            const uploadedFile: UploadedFileType = {
+            // Step 1: Create UI state for loading feedback (temporary until we get response)
+            const uploadedFile:= {
                 file: newFile,
-                isUploading: true
+
             };
             setFile(uploadedFile);
 
-            // Create and set the preview URL
+            // Step 2: Create preview URL for immediate feedback
             const previewUrl = URL.createObjectURL(newFile);
             setCustomIconUrl(previewUrl);
 
-            // Simulate upload process
             try {
-                const response: ImageUploadResponse = await new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve({
-                            imageId: `image-${Math.random().toString(36).substr(2, 9)}`,
+                // Step 3: Use external upload handler if provided
+                if (onFileUpload) {
+                    const response = await onFileUpload(newFile);
+
+                    // Step 4: Update UI state based on response status
+                    setFile({
+                        ...uploadedFile,
+                        isUploading: response.status === 'processing', // Use status from response
+                        responseData: {
+                            imageId: response.lfn, // Use logical file name as ID
+                            imageThumbnailUrl: response.category === 'image' ? response.url : previewUrl
+                        } as ImageUploadResponse
+                    });
+
+                    // Step 5: Handle different status cases
+                    if (response.status === 'unavailable') {
+                        setFile(prev => prev ? { ...prev, error: 'File upload failed or is unavailable' } : null);
+                        URL.revokeObjectURL(previewUrl);
+                        setCustomIconUrl("");
+                        return;
+                    }
+                } else {
+                    // Step 4: Fallback - just mark as uploaded without server processing
+                    setFile({
+                        ...uploadedFile,
+                        isUploading: false,
+                        responseData: {
+                            imageId: `local-${Date.now()}`,
                             imageThumbnailUrl: previewUrl
-                        });
-                    }, 2000);
-                });
+                        } as ImageUploadResponse
+                    });
+                }
 
-                // Update file state with response
-                setFile({
-                    ...uploadedFile,
-                    isUploading: false,
-                    responseData: response
-                });
-
-                // Call onChange with the new data
+                // Step 5: Notify parent component
                 onChange(title, url, newFile);
+
             } catch (uploadError) {
                 console.error('Upload error:', uploadError);
                 setFile({
                     ...uploadedFile,
                     isUploading: false,
-                    error: 'Upload failed'
+                    error: uploadError instanceof Error ? uploadError.message : 'Upload failed'
                 });
-                // Clean up the preview URL on error
+                // Clean up preview URL on error
                 URL.revokeObjectURL(previewUrl);
                 setCustomIconUrl("");
             }
@@ -256,7 +298,7 @@ interface LinkPreviewProps {
     className?: string;
 }
 
-const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIcon, onDelete, onEdit, preview = false , className}) => {
+const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIcon, onDelete, onEdit, preview = false, className }) => {
     const [favicon, setFavicon] = useState<string>("");
     const [customIconUrl, setCustomIconUrl] = useState<string>("");
     const [customIconError, setCustomIconError] = useState<boolean>(false);
