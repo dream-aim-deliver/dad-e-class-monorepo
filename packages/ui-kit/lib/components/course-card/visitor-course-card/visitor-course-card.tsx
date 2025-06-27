@@ -14,6 +14,7 @@ export interface VisitorCourseCardProps extends course.TCourseMetadata {
   onDetails?: () => void;
   onBuy?: () => void;
   onClickUser?: () => void;
+  coachingIncluded?: boolean;
   locale: TLocale
 }
 
@@ -64,6 +65,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   sales,
   imageUrl,
   locale,
+  coachingIncluded = false,
   onDetails,
   onClickUser,
   onBuy
@@ -84,10 +86,12 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   };
 
   const shouldShowPlaceholder = !imageUrl || isImageError;
+
+  const pricingValue = coachingIncluded ? `${pricing.currency} ${pricing.fullPrice}` : `${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.partialPrice}`;
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
-        <div className="relative">
+      <div className="flex flex-col w-auto h-[600px] rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
+        <div className="relative flex-shrink-0">
           {shouldShowPlaceholder ? (
             // Placeholder for broken image (matching CoachBanner styling)
             <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
@@ -100,14 +104,14 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               loading="lazy"
               src={imageUrl}
               alt={title}
-              className="w-full aspect-[2.15] object-cover"
+              className="w-full h-[200px] object-cover"
               onError={handleImageError}
             />
           )}
         </div>
 
-        <div className="flex flex-col p-4 gap-4">
-          <div className="flex flex-col gap-2">
+        <div className="flex flex-col flex-1 p-4 gap-4">
+          <div className="flex flex-col gap-2 flex-shrink-0">
             <div className="group relative">
               <h6
                 title={title}
@@ -115,7 +119,6 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               >
                 {title}
               </h6>
-
             </div>
 
             <div className="flex gap-1 items-end">
@@ -140,12 +143,14 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
           </div>
 
           {description && (
-            <p className="text-sm leading-[150%] text-text-secondary text-start">
-              {description}
-            </p>
+            <div className="flex-1 min-h-0">
+              <p className="text-sm leading-[150%] text-text-secondary text-start line-clamp-3">
+                {description}
+              </p>
+            </div>
           )}
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 flex-shrink-0 mt-auto">
             <Button
               className=""
               variant={'secondary'}
@@ -158,7 +163,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               variant={'primary'}
               size={'medium'}
               onClick={onBuy}
-              text={`${dictionary.components.courseCard.buyButton} (${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.fullPrice})`}
+              text={`${dictionary.components.courseCard.buyButton} (${pricingValue})`}
             />
           </div>
         </div>

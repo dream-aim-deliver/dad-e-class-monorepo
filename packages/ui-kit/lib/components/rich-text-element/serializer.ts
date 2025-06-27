@@ -9,7 +9,7 @@ import { Descendant } from 'slate';
  */
 const serialize = (slateData: Descendant[]): string => {
   if (!slateData || (Array.isArray(slateData) && slateData.length === 0)) {
-    return JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }]);
+    return JSON.stringify([{ type: "paragraph", children: [{ text: "" }] } as Descendant]);
   }
   return JSON.stringify(slateData);
 };
@@ -17,21 +17,21 @@ const serialize = (slateData: Descendant[]): string => {
 
 /**
  * Converts a plain text string into Slate editor data, put simply in a paragraph as text, with no formatting.
- * Useful for quickly converting plain text strings into Slate format, e.g., to test. 
- * @param rawString 
+ * Useful for quickly converting plain text strings into Slate format, e.g., to test.
+ * @param rawString
  * @returns {Descendant[]} - Slate content in a paragraph format.
  */
 const slateify = (rawString: string): Descendant[] => {
   if (!rawString || rawString === "" || rawString === "null" || rawString === "undefined") {
-    return [{ type: "paragraph", children: [{ text: "" }] }];
+    return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
   }
-  return [{ type: "paragraph", children: [{ text: rawString }] }];
+  return [{ type: "paragraph", children: [{ text: rawString }] } as Descendant];
 }
 
 /**
  * Converts a plain text string into Slate editor data, and then serializes it to JSON.
- * 
- * @param rawString 
+ *
+ * @param rawString
  * @returns {string} - JSON string representation of the Slate content.
  */
 const slateifySerialize = (input: string): string => serialize(slateify(input));
@@ -80,7 +80,7 @@ export interface SlateDeserializerInput {
 const deserialize = ({ serializedData, onError }: SlateDeserializerInput): Descendant[] => {
 
   if (!serializedData || serializedData === "" || serializedData === "null" || serializedData === "undefined") {
-    return [{ type: "paragraph", children: [{ text: "" }] }];
+    return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
   }
 
   switch (typeof serializedData) {
@@ -88,7 +88,7 @@ const deserialize = ({ serializedData, onError }: SlateDeserializerInput): Desce
       try {
         const parsed = JSON.parse(serializedData);
         if (!Array.isArray(parsed) || parsed.length === 0) {
-          return [{ type: "paragraph", children: [{ text: "" }] }];
+          return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
         }
         return parsed;
 
@@ -100,14 +100,14 @@ const deserialize = ({ serializedData, onError }: SlateDeserializerInput): Desce
         )
 
         // TBD: should we return an empty slate object?
-        return [{ type: "paragraph", children: [{ text: "" }] }];
+        return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
       }
 
     default:
       if (Array.isArray(serializedData) && serializedData.length > 0) {
         return serializedData;
       }
-      return [{ type: "paragraph", children: [{ text: "" }] }];
+      return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
   }
 
 };

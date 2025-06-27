@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import clsx from 'clsx';
+import { cn } from '../utils/style-utils';
 
 export interface CheckBoxProps {
   name: string;
@@ -10,6 +11,7 @@ export interface CheckBoxProps {
   withText?: boolean;
   size?: 'small' | 'medium' | 'large';
   onChange?: (value: string) => void;
+  className?: string;
   labelClass?: string;
 }
 
@@ -60,6 +62,7 @@ export const CheckBox: FC<CheckBoxProps> = ({
   disabled = false,
   withText = false,
   size = 'medium',
+  className,
   onChange,
   labelClass,
 }) => {
@@ -82,7 +85,7 @@ export const CheckBox: FC<CheckBoxProps> = ({
   );
 
   return (
-    <label className="inline-flex items-center gap-3 w-full cursor-pointer">
+    <label className={cn("inline-flex items-center gap-3 w-full cursor-pointer", className)}>
       <div className="relative">
         <input
           type="checkbox"

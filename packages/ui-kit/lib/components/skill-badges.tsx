@@ -4,7 +4,7 @@ import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 
 interface SkillBadgesProps {
     skills: string[];
-    locale?: TLocale;
+    locale: TLocale;
 }
 
 /**

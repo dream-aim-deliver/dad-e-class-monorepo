@@ -65,7 +65,7 @@ export const PackageCard = ({
 
     // Helper function to format duration in hours and minutes
     const formatDuration = (duration?: number): string => {
-        if (!duration || duration <= 0) return;
+        if (!duration || duration <= 0) return '0m';
         if (duration > 59) {
           const hours = Math.floor(duration / 60);
           const minutes = duration % 60;
@@ -96,7 +96,7 @@ export const PackageCard = ({
         return () => window.removeEventListener("resize", checkTruncation);
       }, [title]);
     return (
-        <div className="flex flex-col bg-card-fill border-2 border-card-stroke rounded-medium max-w-[385px] w-auto">
+        <div className="flex flex-col bg-card-fill border-2 border-card-stroke rounded-medium w-auto">
             {shouldShowPlaceholder ? (
                 <div className="rounded-t-lg w-full h-[262px] lg:max-h-[262px] bg-base-neutral-700 flex items-center justify-center">
                     <span className="text-text-secondary text-md">

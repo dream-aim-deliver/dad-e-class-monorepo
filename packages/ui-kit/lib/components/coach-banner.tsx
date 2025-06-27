@@ -7,6 +7,7 @@ interface CoachBannerProps {
   subtitle: string;
   description: string;
   imageUrl: string;
+  buttonText?: string; // Optional button text, defaults to localized text
   onClick?: () => void;
 }
 
@@ -37,6 +38,7 @@ export const CoachBanner: React.FC<isLocalAware & CoachBannerProps> = ({
   subtitle,
   description,
   imageUrl,
+  buttonText,
   onClick
 }) => {
   const dictionary = getDictionary(locale);
@@ -59,7 +61,7 @@ export const CoachBanner: React.FC<isLocalAware & CoachBannerProps> = ({
           <Button
             variant="primary"
             size="big"
-            text={dictionary.components.coachBanner.buttonText}
+            text={buttonText ?? dictionary.components.coachBanner.buttonText}
             className="self-start"
             onClick={onClick}
           />

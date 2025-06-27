@@ -11,6 +11,15 @@
 
 To install dependencies:
 
+Create a `.npmrc` file in the root of the workspace with the following content:
+
+```plaintext
+@dream-aim-deliver:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+Please issue the token in the developer settings on GitHub with `read:packages` scope.
+
 ```sh
 # At the root of the workspace
 pnpm install

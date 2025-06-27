@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import BuyCoachingSession from '../lib/components/buy-coaching-session';
+import { useState } from 'react';
 
 const meta: Meta<typeof BuyCoachingSession> = {
     title: 'Components/BuyCoachingSession',
@@ -19,7 +20,7 @@ export default meta;
 
 type Story = StoryObj<typeof BuyCoachingSession>;
 
-const mockCourses = [
+const mockOfferings = [
     {
         id: '1',
         title: 'Web Development Fundamentals',
@@ -49,8 +50,8 @@ const mockCourses = [
 
 export const Default: Story = {
     args: {
-        onClick: (totalCost) => console.log(`Total cost: ${totalCost}`),
-        courses: mockCourses,
+        onBuy: (sessionsPerOffering) => console.log(sessionsPerOffering),
+        offerings: mockOfferings,
         currencyType: 'CHF',
         locale: 'en'
     }
@@ -58,11 +59,8 @@ export const Default: Story = {
 
 export const WithPreselectedSessions: Story = {
     args: {
-        onClick: (totalCost) => console.log(`Total cost: ${totalCost}`),
-        courses: mockCourses.map(course => ({
-            ...course,
-            totalSessions: course.id === '2' ? 3 : 1
-        })),
+        onBuy: (sessionsPerOffering) => console.log(sessionsPerOffering),
+        offerings: mockOfferings,
         currencyType: 'CHF',
         locale: 'en'
     }
@@ -70,8 +68,8 @@ export const WithPreselectedSessions: Story = {
 
 export const GermanLocale: Story = {
     args: {
-        onClick: (totalCost) => console.log(`Total cost: ${totalCost}`),
-        courses: mockCourses,
+        onBuy: (sessionsPerOffering) => console.log(sessionsPerOffering),
+        offerings: mockOfferings,
         currencyType: 'CHF',
         locale: 'de'
     }
@@ -79,11 +77,8 @@ export const GermanLocale: Story = {
 
 export const GermanLocaleWithSessions: Story = {
     args: {
-        onClick: (totalCost) => console.log(`${totalCost}`),
-        courses: mockCourses.map(course => ({
-            ...course,
-            totalSessions: course.id === '1' ? 2 : course.id === '3' ? 1 : 0
-        })),
+        onBuy: (sessionsPerOffering) => console.log(sessionsPerOffering),
+        offerings: mockOfferings,
         currencyType: 'CHF',
         locale: 'de'
     }

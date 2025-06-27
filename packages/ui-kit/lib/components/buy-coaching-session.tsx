@@ -6,31 +6,25 @@ import { IconPlus } from './icons/icon-plus'
 import { IconMinus } from './icons/icon-minus'
 import Tooltip from './tooltip'
 
-type Course = {
-    id: string;
+type CoachingOffering = {
+    id: string | number;
     title: string;
     price: number;
     duration: number;
-    totalSessions: number;
-    content: string
+    content: string;
 }
 
 export interface BuyCoachingSessionProps extends isLocalAware {
-    courses: Course[];
-    onClick: (totalCost: number) => void;
+    offerings: CoachingOffering[];
+    onBuy: (sessionsPerOffering: Record<string | number, number>) => void;
     currencyType: string;
 }
 
 /**
  * A reusable component for purchasing coaching sessions, allowing users to select courses and adjust session quantities.
  *
- * @param courses An array of available courses, each containing:
- *   - `id`: A unique identifier for the course.
- *   - `title`: The name of the course.
- *   - `price`: The price per session of the course.
- *   - `duration`: The duration of a single session in minutes.
- *   - `totalSessions`: The number of sessions the user wants to purchase.
- * @param onClick A callback function triggered when the purchase button is clicked.
+ * @param offerings An array of coaching offerings, each containing an id, title, price, duration, and content for tooltips.
+ * @param onBuy A callback function triggered when the purchase button is clicked, receiving the selected sessions per offering.
  * @param locale A string representing the current locale for translations.
  * @param currencyType The type of currency to display for course prices.
  *
@@ -45,37 +39,50 @@ export interface BuyCoachingSessionProps extends isLocalAware {
  *   currencyType="USD"
  * />
  */
-function BuyCoachingSession({ courses, onClick, locale, currencyType }: BuyCoachingSessionProps) {
+function BuyCoachingSession({ offerings, onBuy, locale, currencyType }: BuyCoachingSessionProps) {
     const dictionary = getDictionary(locale);
-    const [courseList, setCourseList] = useState<Course[]>(courses);
+    // State to keep track of the number of sessions per offering
+    const [sessionsPerOffering, setSessionsPerOffering] = useState<Record<string | number, number>>({});
+    
     const totalCost = useMemo(() => {
-        return courseList.reduce((acc, course) => acc + course.price * course.totalSessions, 0);
-    }, [courseList]);
+        return offerings.reduce((total, offering) => {
+            const sessionCount = sessionsPerOffering[offering.id] ?? 0;
+            return offering.price * sessionCount + total;
+        }, 0);
+    }, [offerings, sessionsPerOffering]);
 
-    function handleIncrement(id: string): void {
-        setCourseList(prevCourses =>
-            prevCourses.map(course =>
-                course.id === id ? { ...course, totalSessions: course.totalSessions + 1 } : course
-            )
-        );
+    function handleIncrement(id: string | number): void {
+        setSessionsPerOffering(prev => {
+            const currentCount = prev?.[id] ?? 0;
+            return {
+                ...prev,
+                [id]: currentCount + 1
+            };
+        });
     }
-    function handleDecrement(id: string): void {
-        setCourseList(prevCourses =>
-            prevCourses.map(course =>
-                course.id === id && course.totalSessions > 0
-                    ? { ...course, totalSessions: course.totalSessions - 1 }
-                    : course
-            )
-        );
+
+    function handleDecrement(id: string | number): void {
+        setSessionsPerOffering(prev => {
+            const currentCount = prev?.[id] ?? 0;
+            if (currentCount > 0) {
+                return {
+                    ...prev,
+                    [id]: currentCount - 1
+                };
+            }
+            return prev;
+        });
     }
-    function handleInputChange(id: string, value: string): void {
+
+    function handleInputChange(id: string | number, value: string): void {
         const newValue = Number(value);
         if (!isNaN(newValue) && newValue >= 0) {
-            setCourseList(prevCourses =>
-                prevCourses.map(course =>
-                    course.id === id ? { ...course, totalSessions: newValue } : course
-                )
-            );
+            setSessionsPerOffering(prev => {
+                return {
+                    ...prev,
+                    [id]: newValue,
+                };
+            });
         }
     }
 
@@ -93,29 +100,29 @@ function BuyCoachingSession({ courses, onClick, locale, currencyType }: BuyCoach
 
             {/* Body */}
             <div className="flex flex-col">
-                {courseList.map(course => (
-                    <div key={course.id} className="flex justify-between items-center py-3 border-b border-divider">
+                {offerings.map(offering => (
+                    <div key={offering.id} className="flex justify-between items-center py-3 border-b border-divider">
                         <div className="flex flex-col gap-2">
                             <h6 className="flex items-center gap-2 text-text-primary text-md md:text-lg">
-                                <Tooltip contentClassName='max-w-[200px]' text={course.title} description={course.content} />
+                                <Tooltip contentClassName='max-w-[200px]' text={offering.title} description={offering.content} />
                             </h6>
                             <div className='flex gap-2 items-center text-text-secondary'>
-                                <p className="text-xs md:text-sm font-important">{course.price} {currencyType}</p>
-                                <p className="text-sm md:text-md">{course.duration} {dictionary.components.buyCoachingSession.minutes}</p>
+                                <p className="text-xs md:text-sm font-important">{offering.price} {currencyType}</p>
+                                <p className="text-sm md:text-md">{offering.duration} {dictionary.components.buyCoachingSession.minutes}</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <button onClick={() => handleDecrement(course.id)} aria-label="decrease" className="p-2 cursor-pointer">
+                            <button onClick={() => handleDecrement(offering.id)} aria-label="decrease" className="p-2 cursor-pointer">
                                 <IconMinus classNames='text-button-text-text' size="6" />
                             </button>
                             <InputField
                                 type='number'
                                 className='w-[3rem] h-[3rem] text-lg'
                                 inputClassName='text-center'
-                                value={course.totalSessions.toString()}
-                                setValue={(value) => handleInputChange(course.id, value)}
+                                value={sessionsPerOffering[offering.id]?.toString() ?? '0'}
+                                setValue={(value) => handleInputChange(offering.id, value)}
                             />
-                            <button onClick={() => handleIncrement(course.id)} className='cursor-pointer' aria-label="increase">
+                            <button onClick={() => handleIncrement(offering.id)} className='cursor-pointer' aria-label="increase">
                                 <IconPlus classNames='text-button-text-text' size="6" />
                             </button>
                         </div>
@@ -128,7 +135,7 @@ function BuyCoachingSession({ courses, onClick, locale, currencyType }: BuyCoach
             </h6>
 
             {/* Footer */}
-            <Button onClick={() => onClick(totalCost)} variant='primary' text={dictionary.components.buyCoachingSession.buttonText} />
+            <Button onClick={() => onBuy(sessionsPerOffering)} variant='primary' text={dictionary.components.buyCoachingSession.buttonText} />
         </div>
     );
 }

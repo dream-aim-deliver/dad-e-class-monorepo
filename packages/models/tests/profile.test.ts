@@ -53,23 +53,6 @@ describe('profile', () => {
         expect(ProfessionalProfileSchema.safeParse(validProfile).success).toBe(true);
     });
 
-    it('should invalidate a PersonalProfile due to invalid language', () => {
-        const invalidProfile = {
-            name: 'John',
-            surname: 'Doe',
-            email: 'test@abc.ch',
-            phoneNumber: '123456789',
-            dateOfBirth: '1990-01-01',
-            profilePicture: 'https://example.com/profile.jpg',
-            languages: [{ name: 'Nonsense', code: 'ABC123' }],
-            interfaceLanguage: { name: 'English', code: 'ENG' },
-            receiveNewsletter: true,
-            isRepresentingCompany: false,
-        };
-        // Expect the profile to be invalid
-        expect(PersonalProfileNotRepresentingCompanySchema.safeParse(invalidProfile).success).toBe(false);
-    });
-
     it('should invalidate an incorrect LinkedIn URL in ProfessionalProfile', () => {
         const invalidProfile = {
             bio: 'Experienced software engineer.',

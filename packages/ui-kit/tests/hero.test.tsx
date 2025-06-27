@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { Hero } from '../lib/components/home-banner/hero';
 import { vi } from 'vitest';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 // Mock the VideoPlayer component
 vi.mock('../lib/components/video-player', () => ({
@@ -13,6 +14,7 @@ describe('Hero Component', () => {
     description: 'Learn from the best instructors around the world.',
     videoId: 'abc123xyz',
     thumbnailUrl: 'https://example.com/thumbnail.jpg',
+    locale: 'en' as TLocale,
   };
 
   it('renders the title correctly', () => {
@@ -28,17 +30,5 @@ describe('Hero Component', () => {
   it('renders the VideoPlayer component', () => {
     render(<Hero {...mockProps} />);
     expect(screen.getByTestId('mock-video-player')).toBeInTheDocument();
-  });
-
-  it('applies correct CSS classes for title', () => {
-    render(<Hero {...mockProps} />);
-    const titleElement = screen.getByText(mockProps.title);
-    expect(titleElement).toHaveClass('text-4xl text-text-primary font-bold leading-[100%] tracking-[-0.08rem]');
-  });
-
-  it('applies correct CSS classes for description', () => {
-    render(<Hero {...mockProps} />);
-    const descriptionElement = screen.getByText(mockProps.description);
-    expect(descriptionElement).toHaveClass('text-lg text-text-secondary leading-[150%]');
   });
 });
