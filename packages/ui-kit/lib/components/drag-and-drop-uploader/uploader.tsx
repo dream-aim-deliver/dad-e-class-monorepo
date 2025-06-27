@@ -48,8 +48,8 @@ export type UploadedFileType = {
 
 interface CommonUploaderProps extends isLocalAware {
   maxSize?: number;
-  onDelete: (lfn: string) => void;
-  onDownload: (lfn: string) => void;
+  onDelete: (id: number) => void;
+  onDownload: (id: number) => void;
   className?: string;
   acceptedFileTypes?: string[];
   variant: fileMetadata.TFileCategoryEnum;
@@ -236,8 +236,8 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
               key={index}
               uploadResponse={file.responseData}
               index={index}
-              onDelete={() => onDelete(file.responseData.lfn)}
-              onDownload={() => onDownload(file.responseData.lfn)}
+              onDelete={() => onDelete(file.responseData.id)}
+              onDownload={() => onDownload(file.responseData.id)}
               locale={locale}
               onCancelUpload={handleCancelUpload}
             />

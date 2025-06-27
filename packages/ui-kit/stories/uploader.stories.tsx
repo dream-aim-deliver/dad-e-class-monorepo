@@ -9,7 +9,7 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 // Mock response generators
 const mockFileResponse = (fileName: string): fileMetadata.TFileMetadata => {
   return {
-    lfn: `file-${Math.random().toString(36).substr(2, 9)}`,
+    id: Math.random(),
     name: fileName,
     mimeType: 'application/octet-stream',
     size: Math.floor(Math.random() * 5000000) + 100000, // Random size between 100KB and 5MB
@@ -25,7 +25,7 @@ const mockImageResponse = (fileName: string): fileMetadata.TFileMetadata => {
   const thumbnailUrl = `https://picsum.photos/150/150?random=${Math.random()}`;
 
   return {
-    lfn: `image-${Math.random().toString(36).substr(2, 9)}`,
+    id: Math.random(),
     name: fileName,
     mimeType: 'image/jpeg',
     size: Math.floor(Math.random() * 3000000) + 50000, // Random size between 50KB and 3MB
@@ -39,7 +39,7 @@ const mockImageResponse = (fileName: string): fileMetadata.TFileMetadata => {
 
 const mockVideoResponse = (fileName: string): fileMetadata.TFileMetadata => {
   return {
-    lfn: `video-${Math.random().toString(36).substr(2, 9)}`,
+    id: Math.random(),
     name: fileName,
     mimeType: 'video/mp4',
     size: Math.floor(Math.random() * 50000000) + 1000000, // Random size between 1MB and 50MB
@@ -121,13 +121,13 @@ const SingleFileUploaderRender = (args: any) => {
       // });
       // 
       // 3. Update the UI with the response from your backend
-      
+
       // For this demo, we'll simulate the upload process
       // First, set the file with processing status
       const processingFile = {
         ...newFile,
         responseData: {
-          lfn: `temp-${Math.random().toString(36).substr(2, 9)}`,
+          id: Math.random(),
           name: newFile.request.name,
           mimeType: 'application/octet-stream',
           size: newFile.request.file.size,
@@ -157,13 +157,13 @@ const SingleFileUploaderRender = (args: any) => {
     }
   };
 
-  const handleDelete = (lfn: string) => {
-    console.log('Delete file with lfn:', lfn);
+  const handleDelete = (id: number) => {
+    console.log('Delete file with id:', id);
     setFile(null);
   };
 
-  const handleDownload = (lfn: string) => {
-    console.log('Download file with lfn:', lfn);
+  const handleDownload = (id: number) => {
+    console.log('Download file with id:', id);
     alert('Download clicked - in a real app, this would download the file');
   };
 
@@ -195,7 +195,7 @@ const SingleImageUploaderRender = (args: any) => {
       const processingFile = {
         ...newFile,
         responseData: {
-          lfn: `temp-${Math.random().toString(36).substr(2, 9)}`,
+          id: Math.random(),
           name: newFile.request.name,
           mimeType: 'image/jpeg',
           size: newFile.request.file.size,
@@ -225,11 +225,11 @@ const SingleImageUploaderRender = (args: any) => {
     }
   };
 
-  const handleDelete = (lfn: string) => {
+  const handleDelete = (id: number) => {
     setFile(null);
   };
 
-  const handleDownload = (lfn: string) => {
+  const handleDownload = (id: number) => {
     alert('Download clicked - in a real app, this would download the file');
   };
 
@@ -261,7 +261,7 @@ const SingleVideoUploaderRender = (args: any) => {
       const processingFile = {
         ...newFile,
         responseData: {
-          lfn: `temp-${Math.random().toString(36).substr(2, 9)}`,
+          id: Math.random(),
           name: newFile.request.name,
           mimeType: 'video/mp4',
           size: newFile.request.file.size,
@@ -291,11 +291,11 @@ const SingleVideoUploaderRender = (args: any) => {
     }
   };
 
-  const handleDelete = (lfn: string) => {
+  const handleDelete = (id: number) => {
     setFile(null);
   };
 
-  const handleDownload = (lfn: string) => {
+  const handleDownload = (id: number) => {
     alert('Download clicked - in a real app, this would download the file');
   };
 
@@ -330,7 +330,7 @@ const MultipleFileUploaderRender = (args: any) => {
           return {
             ...file,
             responseData: {
-              lfn: `temp-${Math.random().toString(36).substr(2, 9)}`,
+              id: Math.random(),
               name: file.request.name,
               mimeType: 'application/octet-stream',
               size: file.request.file.size,
@@ -371,12 +371,12 @@ const MultipleFileUploaderRender = (args: any) => {
     return Promise.resolve({} as fileMetadata.TFileMetadata);
   };
 
-  const handleDelete = (lfn: string) => {
-    setFiles(currentFiles => currentFiles.filter(file => file.responseData?.lfn !== lfn));
+  const handleDelete = (id: number) => {
+    setFiles(currentFiles => currentFiles.filter(file => file.responseData?.id !== id));
   };
 
-  const handleDownload = (lfn: string) => {
-    alert(`Download clicked for file with lfn: ${lfn}`);
+  const handleDownload = (id: number) => {
+    alert(`Download clicked for file with id: ${id}`);
   };
 
   return (
@@ -408,7 +408,7 @@ const MultipleImageUploaderRender = (args: any) => {
           return {
             ...file,
             responseData: {
-              lfn: `temp-${Math.random().toString(36).substr(2, 9)}`,
+              id: Math.random(),
               name: file.request.name,
               mimeType: 'image/jpeg',
               size: file.request.file.size,
@@ -449,12 +449,12 @@ const MultipleImageUploaderRender = (args: any) => {
     return Promise.resolve({} as fileMetadata.TFileMetadata);
   };
 
-  const handleDelete = (lfn: string) => {
-    setFiles(currentFiles => currentFiles.filter(file => file.responseData?.lfn !== lfn));
+  const handleDelete = (id: number) => {
+    setFiles(currentFiles => currentFiles.filter(file => file.responseData?.id !== id));
   };
 
-  const handleDownload = (lfn: string) => {
-    alert(`Download clicked for file with lfn: ${lfn}`);
+  const handleDownload = (id: number) => {
+    alert(`Download clicked for file with id: ${id}`);
   };
 
   return (
