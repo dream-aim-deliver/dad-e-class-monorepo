@@ -22,11 +22,11 @@ export const ExternalProviderSchema = z.object({
 
 
 export const FileMetadataBaseSchema = z.object({
+    id: z.number(),
     name: z.string(),
     mimeType: z.string(), // TBD: should we add a validator?
     size: z.number(),
     checksum: z.string(),
-    lfn: z.string(),
     status: FileStatusEnumSchema,
     category: FileCategoryEnumSchema,
 });

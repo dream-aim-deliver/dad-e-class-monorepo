@@ -86,6 +86,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
     // Set the files immediately with loading state
     const newFile = newFiles[0];
 
+    // TODO: handle upload properly
     // Update our local state immediately to show loading
     setFile(newFile);
     try {
@@ -94,7 +95,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
         setTimeout(() => {
           // Create a proper TFileMetadata object for image
           resolve({
-            lfn: `img-${Math.random().toString(36).substr(2, 9)}`,
+            id: Math.random(),
             name: newFile.request.name,
             url: URL.createObjectURL(newFile.request.file),
             thumbnailUrl: URL.createObjectURL(newFile.request.file),

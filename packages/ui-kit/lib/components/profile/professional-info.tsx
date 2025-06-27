@@ -98,11 +98,12 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     setFiles(newFile);
 
     try {
+      // TODO: remove this simulation and handle actual file upload logic
       // Simulate API call - create a TFileMetadata response for document
       const response: fileMetadata.TFileMetadata = await new Promise((resolve) => {
         setTimeout(() => {
           resolve({
-            lfn: `file-${Math.random().toString(36).substr(2, 9)}`,
+            id: Math.random(),
             name: newFile.request.name,
             url: `/uploads/${newFile.request.name}`,
             size: newFile.request.file.size,

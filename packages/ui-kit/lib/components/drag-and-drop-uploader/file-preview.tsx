@@ -14,8 +14,8 @@ import { FeedBackMessage } from '../feedback-message';
 interface FilePreviewProps extends isLocalAware {
     uploadResponse: fileMetadata.TFileMetadata;
     index: number;
-    onDelete: (lfn: string) => void;
-    onDownload: (lfn: string) => void;
+    onDelete: (id: number) => void;
+    onDownload: (id: number) => void;
     onCancelUpload: (index: number) => void;
 }
 /**
@@ -87,14 +87,14 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, index,
                             size="small"
                             styles="text"
                             title={dictionary.components.uploadingSection.downloadText}
-                            onClick={() => onDownload(uploadResponse.lfn)}
+                            onClick={() => onDownload(uploadResponse.id)}
                         />
                         <IconButton
                             icon={<IconTrashAlt />}
                             styles="text"
                             size="small"
                             title={dictionary.components.uploadingSection.deleteText}
-                            onClick={() => onDelete(uploadResponse.lfn)}
+                            onClick={() => onDelete(uploadResponse.id)}
                         />
                     </div>
                 )}
