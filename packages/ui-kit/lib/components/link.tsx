@@ -8,10 +8,11 @@ import { IconExternalLink } from "./icons/icon-external-link";
 import { IconLink } from "./icons/icon-link";
 import { IconTrashAlt } from "./icons/icon-trash-alt";
 import { IconEdit } from "./icons/icon-edit";
-import { ImageUploadResponse, UploadedFileType } from "./drag-and-drop/uploader";
-import { fileMetadata } from "@maany_shr/e-class-models";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { cn } from "../utils/style-utils";
+import { fileMetadata } from "@maany_shr/e-class-models";
+import Banner from "./banner";
+import { TLink } from "packages/models/src/shared";
 /**
  * 
  * @param url The URL of the website to fetch the favicon from.
@@ -32,58 +33,53 @@ const getFaviconUrl = (url: string): string => {
         const urlObject = new URL(url);
         const hostname = urlObject.hostname;
 
-        // Try multiple common favicon locations in order of preference
-        // 1. Google's favicon service (reliable for many sites)
-        return `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`
+        // Use Google's favicon service with a larger size parameter for better quality
+        return `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
     } catch (error) {
         // Return a default favicon or placeholder instead of empty string
         console.warn(`Failed to generate favicon URL for: ${url}`, error);
-        return "default-favicon.ico"; // Path to your default favicon
     }
 };
 
 interface LinkEditProps extends isLocalAware {
-    initialTitle?: string;
-    initialUrl?: string;
-    initialFile?: string | null;
-    onChange: (title: string, url: string, customIcon?: File) => void;
-    onFileUpload?: (file: File) => Promise<fileMetadata.TFileMetadata>;
+    title: string;
+    url: string;
+    customIconMetadata?: fileMetadata.TFileMetadata | null;
+    onChange: (data: { title: string; url: string; file?: File }) => void;
     onSave: () => void;
     onDiscard: () => void;
+    isValid?: boolean;
 }
 /**
  * LinkEdit component allows users to edit a link's title, URL, and custom icon. 
  * It validates the input fields and provides save and discard functionality.
  * 
- * @param initialTitle - Initial title value
- * @param initialUrl - Initial URL value  
- * @param initialFile - Initial file (if any)
- * @param onChange - Callback when title, url, or file changes
- * @param onFileUpload - Optional callback to handle file upload. Should return Promise<TFileMetadata>
- *                      The upload state will be determined by the status field in TFileMetadata:
- *                      - 'processing': Shows loading state
- *                      - 'available': File is ready and available
- *                      - 'unavailable': Shows error state
+ * @param title - Current title value
+ * @param url - Current URL value  
+ * @param customIconMetadata - File metadata for custom icon (contains status: 'available' | 'processing' | 'unavailable')
+ * @param onChange - Callback when title, url, or file changes. Receives { title, url, file? }
  * @param onSave - Callback when save button is clicked
  * @param onDiscard - Callback when discard button is clicked
  * @param locale - Locale for translations
  * 
  * @example
  * ```tsx
+ * const [linkData, setLinkData] = useState({
+ *   title: "My Link",
+ *   url: "https://example.com"
+ * });
+ * const [customIconMetadata, setCustomIconMetadata] = useState(null);
+ * 
  * <LinkEdit
- *     initialTitle="My Link"
- *     initialUrl="https://example.com"
- *     initialFile={null}
- *     onChange={(title, url, customIcon) => console.log(title, url, customIcon)}
- *     onFileUpload={async (file) => {
- *         // Your file upload logic here
- *         const uploadRequest = {
- *             name: file.name,
- *             buffer: new Uint8Array(await file.arrayBuffer())
- *         };
- *         const response = await uploadAPI(uploadRequest);
- *         // Response should contain status: 'available' | 'processing' | 'unavailable'
- *         return response;
+ *     title={linkData.title}
+ *     url={linkData.url}
+ *     customIconMetadata={customIconMetadata}
+ *     onChange={(data) => {
+ *       setLinkData(prev => ({ ...prev, ...data }));
+ *       // Handle file upload if file is provided
+ *       if (data.file) {
+ *         handleFileUpload(data.file);
+ *       }
  *     }}
  *     onSave={() => console.log("Saved")}
  *     onDiscard={() => console.log("Discarded")}
@@ -93,107 +89,55 @@ interface LinkEditProps extends isLocalAware {
  */
 
 const LinkEdit: React.FC<LinkEditProps> = ({
-    initialTitle = "",
-    initialUrl = "",
-    initialFile = null,
+    title,
+    url,
+    customIconMetadata = null,
     onChange,
-    onFileUpload,
     onSave,
     onDiscard,
     locale,
 }) => {
-    const [title, setTitle] = useState<string>(initialTitle);
-    const [url, setUrl] = useState<string>(initialUrl);
     const [favicon, setFavicon] = useState<string>("");
-    const [file, setFile] = useState<UploadedFileType | null>(
-        initialFile && typeof initialFile !== 'string'
-            ? { file: initialFile, isUploading: false }
-            : null
-    );
-    const fileInputRef = useRef(null);
-    const [customIconUrl, setCustomIconUrl] = useState<string>("");
-    const [customIconError, setCustomIconError] = useState<boolean>(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [faviconError, setFaviconError] = useState<boolean>(false);
+    const [validationErrors, setValidationErrors] = useState<{ title?: string; url?: string }>({});
+    const [showErrors, setShowErrors] = useState<boolean>(false);
     const dictionary = getDictionary(locale);
+
     const validateFields = () => {
         const newErrors: { title?: string; url?: string } = {};
+
         if (!title.trim()) {
-            newErrors.title = "Title is required";
+            newErrors.title = dictionary.components.coachNotes.validateTitle ;
         }
         if (!url.trim()) {
-            newErrors.url = "URL is required";
+            newErrors.url = dictionary.components.coachNotes.validateLink ;
         }
+
+        setValidationErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
+    const clearFieldError = (fieldName: 'title' | 'url') => {
+        setValidationErrors(prev => {
+            const newErrors = { ...prev };
+            delete newErrors[fieldName];
+            return newErrors;
+        });
+    };
+
     const handleSave = () => {
+        setShowErrors(true);
         if (validateFields()) {
             onSave();
         }
     };
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newFile = e.target.files?.[0];
-        if (newFile) {
-            // Step 1: Create UI state for loading feedback (temporary until we get response)
-            const uploadedFile:= {
-                file: newFile,
+        const selectedFile = e.target.files?.[0];
 
-            };
-            setFile(uploadedFile);
-
-            // Step 2: Create preview URL for immediate feedback
-            const previewUrl = URL.createObjectURL(newFile);
-            setCustomIconUrl(previewUrl);
-
-            try {
-                // Step 3: Use external upload handler if provided
-                if (onFileUpload) {
-                    const response = await onFileUpload(newFile);
-
-                    // Step 4: Update UI state based on response status
-                    setFile({
-                        ...uploadedFile,
-                        isUploading: response.status === 'processing', // Use status from response
-                        responseData: {
-                            imageId: response.lfn, // Use logical file name as ID
-                            imageThumbnailUrl: response.category === 'image' ? response.url : previewUrl
-                        } as ImageUploadResponse
-                    });
-
-                    // Step 5: Handle different status cases
-                    if (response.status === 'unavailable') {
-                        setFile(prev => prev ? { ...prev, error: 'File upload failed or is unavailable' } : null);
-                        URL.revokeObjectURL(previewUrl);
-                        setCustomIconUrl("");
-                        return;
-                    }
-                } else {
-                    // Step 4: Fallback - just mark as uploaded without server processing
-                    setFile({
-                        ...uploadedFile,
-                        isUploading: false,
-                        responseData: {
-                            imageId: `local-${Date.now()}`,
-                            imageThumbnailUrl: previewUrl
-                        } as ImageUploadResponse
-                    });
-                }
-
-                // Step 5: Notify parent component
-                onChange(title, url, newFile);
-
-            } catch (uploadError) {
-                console.error('Upload error:', uploadError);
-                setFile({
-                    ...uploadedFile,
-                    isUploading: false,
-                    error: uploadError instanceof Error ? uploadError.message : 'Upload failed'
-                });
-                // Clean up preview URL on error
-                URL.revokeObjectURL(previewUrl);
-                setCustomIconUrl("");
-            }
+        if (selectedFile) {
+            onChange({ title, url, file: selectedFile });
         }
     };
 
@@ -202,19 +146,11 @@ const LinkEdit: React.FC<LinkEditProps> = ({
     };
 
     useEffect(() => {
-        onChange(title, url, file?.file);
-        if (!customIconUrl && url) {
+        if (!customIconMetadata && url) {
             setFavicon(getFaviconUrl(url));
             setFaviconError(false); // Reset error state when URL changes
         }
-
-        // Cleanup function to revoke object URLs when component unmounts
-        return () => {
-            if (customIconUrl) {
-                URL.revokeObjectURL(customIconUrl);
-            }
-        };
-    }, [title, url, customIconUrl, file]);
+    }, [title, url, customIconMetadata]);
 
     return (
         <div className="p-4 flex flex-col border-1 rounded-md border-card-stroke w-full bg-card-fill gap-4 text-text-primary">
@@ -222,47 +158,70 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                 <h6 className="capitalize">{dictionary.components.courseBuilder.titleText}</h6>
                 <InputField
                     value={title}
-                    setValue={setTitle}
+                    setValue={(newTitle) => {
+                        onChange({ title: newTitle, url });
+                        clearFieldError('title'); // Clear only title error when user starts typing
+                    }}
                     inputText="my new video assignment"
                 />
+                {showErrors && validationErrors.title && (
+                    <Banner style="error" description={validationErrors.title} className="mt-1" />
+                )}
             </main>
             <div className="flex flex-col gap-2">
                 <h6 className="capitalize">{dictionary.components.courseBuilder.urlText}</h6>
                 <InputField
                     value={url}
-                    setValue={setUrl}
+                    setValue={(newUrl) => {
+                        onChange({ title, url: newUrl });
+                        clearFieldError('url'); // Clear only URL error when user starts typing
+                    }}
                     type="url"
                     hasRightContent
                     rightContent={<IconPaste />}
                     inputText="https://example.com"
                 />
+                {showErrors && validationErrors.url && (
+                    <Banner style="error" description={validationErrors.url} className="mt-1" />
+                )}
 
                 <div className="flex flex-col gap-2">
                     <h6 className="capitalize">{dictionary.components.courseBuilder.iconLinkText}</h6>
-                    {(customIconUrl && !customIconError) || (favicon && /^https?:\/\//.test(url) && !faviconError) ? (
+                    {/* Show custom icon if available and status is available */}
+                    {(customIconMetadata && customIconMetadata.status === 'available' && customIconMetadata.category === 'image') ? (
                         <div className="inline-flex items-center gap-2 mt-1">
                             <img
-                                src={customIconUrl || favicon}
-                                alt={customIconUrl ? "Custom icon" : "Site favicon"}
+                                src={customIconMetadata.url}
+                                alt="Custom icon"
                                 className="w-12 h-12 object-cover rounded"
-                                onError={() => {
-                                    if (customIconUrl) {
-                                        setCustomIconError(true);
-                                    } else {
-                                        setFaviconError(true);
-                                    }
-                                }}
                             />
                         </div>
-                    ) : (
-                        <IconButton
-                            icon={<IconLink />}
-                            size="medium"
-                            className="bg-base-neutral-700 rounded-md text-text-primary"
-                        />
-                    )}
+                    ) : /* Show loading state if processing */
+                        (customIconMetadata && customIconMetadata.status === 'processing') ? (
+                            <div className="inline-flex items-center gap-2 mt-1">
+                                <div className="w-12 h-12 bg-gray-200 rounded animate-pulse flex items-center justify-center">
+                                    <span className="text-xs">...</span>
+                                </div>
+                            </div>
+                        ) : /* Show favicon if no custom icon and URL is valid */
+                            (favicon && /^https?:\/\//.test(url) && !faviconError) ? (
+                                <div className="inline-flex items-center gap-2 mt-1">
+                                    <img
+                                        src={favicon}
+                                        alt="Site favicon"
+                                        className="w-12 h-12 object-cover rounded"
+                                        onError={() => setFaviconError(true)}
+                                    />
+                                </div>
+                            ) : (
+                                <IconButton
+                                    icon={<IconLink />}
+                                    size="medium"
+                                    className="bg-base-neutral-700 rounded-md text-text-primary"
+                                />
+                            )}
                     <Button
-                        text="custom icon"
+                        text={dictionary.components.coachNotes.customIcon}
                         onClick={handleButtonClick}
                         hasIconLeft
                         iconLeft={<IconCloudDownload />}
@@ -279,68 +238,53 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                     />
                 </div>
             </div>
-
+            
             <div className="flex gap-2">
                 <Button onClick={handleSave} variant="secondary" className="w-full capitalize" text={dictionary.components.courseBuilder.saveText} />
                 <Button onClick={onDiscard} variant="primary" className="w-full capitalize" text={dictionary.components.courseBuilder.discardText} />
             </div>
+
         </div>
     )
 }
 
-interface LinkPreviewProps {
+interface LinkPreviewProps extends TLink {
     title: string;
     url: string;
-    customIcon?: File | string;  // Can be either a File object or image URL string
+    customIconUrl?: string;  // Direct URL for custom icon
     onEdit?: () => void;
     onDelete?: () => void;
     preview?: boolean;
     className?: string;
 }
 
-const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIcon, onDelete, onEdit, preview = false, className }) => {
+const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIconUrl, onDelete, onEdit, preview = false, className }) => {
     const [favicon, setFavicon] = useState<string>("");
-    const [customIconUrl, setCustomIconUrl] = useState<string>("");
-    const [customIconError, setCustomIconError] = useState<boolean>(false);
-    const [faviconError, setFaviconError] = useState<boolean>(false);
 
     useEffect(() => {
         if (url) {
             setFavicon(getFaviconUrl(url));
-            setFaviconError(false); // Reset error state when URL changes
         } else {
             setFavicon("");
         }
-
-        // Handle custom icon
-        if (customIcon) {
-            if (customIcon instanceof File) {
-                setCustomIconUrl(URL.createObjectURL(customIcon));
-            } else {
-                setCustomIconUrl(customIcon);
-            }
-            setCustomIconError(false); // Reset error state when custom icon changes
-        }
-    }, [title, url, customIcon]);
+    }, [title, url]);
 
     const renderIcon = () => {
-        if (customIconUrl && !customIconError) {
+        if (customIconUrl) {
             return (
                 <img
                     src={customIconUrl}
                     alt={title}
                     className="w-12 h-12 object-cover rounded"
-                    onError={() => setCustomIconError(true)}
                 />
             );
         }
-        if (favicon && !faviconError) {
+        if (favicon) {
             return (
                 <img
                     src={favicon}
                     alt={title}
                     className="w-12 h-12 object-cover rounded"
-                    onError={() => setFaviconError(true)}
                 />
             );
         }
@@ -348,7 +292,7 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIcon, onDel
             <IconButton
                 icon={<IconLink />}
                 size="medium"
-                className="bg-base-neutral-700 rounded-md text-text-primary"
+                className="bg-base-neutral-700 rounded-md text-text-primary hove:bg-transparent"
             />
         );
     };
@@ -361,8 +305,8 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIcon, onDel
                         {renderIcon()}
                     </div>
                     <div className="flex flex-col flex-grow min-w-0"> {/* Added min-w-0 to enable truncation */}
-                        <a target="blank" href={url} className="md:text-xl flex gap-1 items-center truncate underline hover:text-button-primary-fill">
-                            <span className="truncate">{title}</span>
+                        <a target="blank" href={url} className="md:text-xl flex gap-1 items-center truncate underline ">
+                            <span className="truncate hover:text-button-primary-fill">{title}</span>
                             <IconExternalLink classNames="w-4 h-4 flex-shrink-0 hover:text-button-primary-fill" /> {/* Prevent icon from shrinking */}
                         </a>
                         <p className="text-sm text-text-secondary truncate">

@@ -541,6 +541,15 @@ export const DictionarySchema = z.object({
       iconLinkText: z.string(),
       saveText: z.string(),
       discardText: z.string(),
+    }),
+    coachNotes: z.object({
+      usefulLinks: z.string(),
+      validateLink: z.string(),
+      validateTitle: z.string(),
+      notesValidation: z.string(),
+      publishNotes: z.string(),
+      customIcon: z.string(),
+      includeInMaterials: z.string(),
     })
   }),
   pages: z.object({

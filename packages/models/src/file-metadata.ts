@@ -67,7 +67,7 @@ export type TFileMetadata = z.infer<
 
 export const FileUploadRequestSchema = z.object({
     name: z.string(),
-    buffer: z.instanceof(Uint8Array),
+    buffer: z.instanceof(File),
 });
 
 export type TFileUploadRequest = z.infer<

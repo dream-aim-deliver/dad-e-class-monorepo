@@ -89,11 +89,11 @@ const RenderElement = ({ attributes, children, element }: {
     case "list-item":
       return <li {...attributes} style={style}>{children}</li>;
     case "h1":
-      return <h1 {...attributes} style={style} className="text-2xl font-bold">{children}</h1>;
+      return <h1 {...attributes} style={style} className="font-bold">{children}</h1>;
     case "h2":
-      return <h2 {...attributes} style={style} className="text-xl font-bold">{children}</h2>;
+      return <h2 {...attributes} style={style} className="font-bold">{children}</h2>;
     default:
-      return <p {...attributes} style={style} className="text-base">{children}</p>;
+      return <p {...attributes} style={style}>{children}</p>;
   }
 };
 
