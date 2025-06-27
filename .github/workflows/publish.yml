@@ -35,7 +35,10 @@ jobs:
         shell: bash
 
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          cp .npmrc.template .npmrc
+          sed -i "s/\$DAD_GH_NPM_TOKEN/${{ secrets.DAD_GH_NPM_TOKEN }}/g" .npmrc
+          pnpm install
         shell: bash
 
       - name: Change back dependencies from 'workspace:*' to versions
