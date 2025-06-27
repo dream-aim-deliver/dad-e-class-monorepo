@@ -45,7 +45,6 @@ export interface coachNotesViewProps extends isLocalAware {
 function CoachNotesEdit({ noteDescription, noteLinks, includeInMaterials, locale, onChange, onPublish }: coachNotesProps) {
    const dictionary = getDictionary(locale);
     const handleAddLink = () => {
-        console.log("Adding new link");
         onChange(noteDescription.toLocaleString(), [
             ...noteLinks,
             {
