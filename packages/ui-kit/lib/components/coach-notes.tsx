@@ -36,8 +36,8 @@ export interface coachNotesViewProps extends isLocalAware {
     includeInMaterials: boolean;
     onExploreCourses?: () => void; // Optional callback for explore courses button
 }
-function CoachNotesEdit({ noteDescription, noteLinks, includeInMaterials, locale, onChange, onPublish }: coachNotesProps) {
-   const dictionary = getDictionary(locale);
+function CoachNotesCreate({ noteDescription, noteLinks, includeInMaterials, locale, onChange, onPublish }: coachNotesProps) {
+    const dictionary = getDictionary(locale);
     const handleAddLink = () => {
         onChange(noteDescription.toLocaleString(), [
             ...noteLinks,
@@ -86,17 +86,17 @@ function CoachNotesEdit({ noteDescription, noteLinks, includeInMaterials, locale
     return (
         <div className="w-full p-6 border border-card-stroke bg-card-fill rounded-md shadow-[0_4px_12px_0_base-neutral-800] flex flex-col gap-6">
             <div className="w-full">
-            <RichTextEditor
-              
-                name="coachNotes"
-                placeholder="Enter your notes here..."
-                initialValue={noteDescription}
-                locale={locale}
-                onDeserializationError={(error) => console.error("Deserialization error:", error)}
-                onLoseFocus={(values) => onChange(values.toLocaleString(), noteLinks, includeInMaterials)}
-                onChange={(values) => onChange(values.toLocaleString(), noteLinks, includeInMaterials)}
-            />
-</div>
+                <RichTextEditor
+
+                    name="coachNotes"
+                    placeholder="Enter your notes here..."
+                    initialValue={noteDescription}
+                    locale={locale}
+                    onDeserializationError={(error) => console.error("Deserialization error:", error)}
+                    onLoseFocus={(values) => onChange(values.toLocaleString(), noteLinks, includeInMaterials)}
+                    onChange={(values) => onChange(values.toLocaleString(), noteLinks, includeInMaterials)}
+                />
+            </div>
             <div className='p-4 rounded-md border border-base-neutral-700 bg-base-neutral-800 flex flex-col gap-4 text-text-primary'>
                 <div className="flex items-center gap-2 flex-1 text-text-primary py-2 border-b border-divider">
                     <span className="min-w-0"><IconLink /></span>
@@ -237,4 +237,4 @@ function CoachNotesView({ noteDescription, noteLinks, includeInMaterials, locale
 }
 
 
-export { CoachNotesEdit, CoachNotesView };
+export { CoachNotesCreate, CoachNotesView };

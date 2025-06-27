@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CoachNotesEdit, CoachNotesView } from '../lib/components/coach-notes';
+import { CoachNotesCreate, CoachNotesView } from '../lib/components/coach-notes';
 import { Descendant } from 'slate';
 import { useState } from 'react';
 import { fileMetadata } from '@maany_shr/e-class-models';
@@ -50,7 +50,7 @@ const CoachNotesWrapper = (args: CoachNotesWrapperProps) => {
   };
 
   return (
-    <CoachNotesEdit
+    <CoachNotesCreate
       {...args}
       noteLinks={noteLinks}
       includeInMaterials={includeInMaterials}
@@ -60,9 +60,9 @@ const CoachNotesWrapper = (args: CoachNotesWrapperProps) => {
   );
 };
 
-const meta: Meta<typeof CoachNotesEdit> = {
+const meta: Meta<typeof CoachNotesCreate> = {
   title: 'Components/CoachNotes',
-  component: CoachNotesEdit,
+  component: CoachNotesCreate,
   parameters: {
     layout: 'centered',
   },
@@ -81,7 +81,7 @@ const meta: Meta<typeof CoachNotesEdit> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof CoachNotesEdit>;
+type Story = StoryObj<typeof CoachNotesCreate>;
 
 // Default initial value for the rich text editor
 const defaultNoteDescription: Descendant[] = [
@@ -212,7 +212,7 @@ export const ViewDefault: ViewStory = {
     includeInMaterials: false,
     locale: 'en',
     // View component doesn't need onChange/onPublish but they're required by the interface
-   
+
   },
 };
 
