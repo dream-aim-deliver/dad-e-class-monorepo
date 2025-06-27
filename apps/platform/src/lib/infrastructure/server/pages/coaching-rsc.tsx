@@ -11,6 +11,7 @@ export default async function CoachingServerComponent(props: CoachingProps) {
     await Promise.all([
         prefetch(trpc.getCoachingPage.queryOptions({})),
         prefetch(trpc.listTopicsByCategory.queryOptions({})),
+        prefetch(trpc.listCoachingOfferings.queryOptions({})),
     ]);
 
     return (

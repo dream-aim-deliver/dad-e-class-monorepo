@@ -9,7 +9,7 @@ export function CoachCardListSkeleton({
     cardCount = 6 
 }: CoachCardListSkeletonProps) {
     return (
-        <CardListLayout>
+        <CardListLayout className="lg:grid-cols-2">
             {Array.from({ length: cardCount }).map((_, index) => (
                 <CoachCardSkeleton key={index} />
             ))}

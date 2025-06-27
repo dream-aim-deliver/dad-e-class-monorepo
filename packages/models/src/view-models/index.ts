@@ -9,3 +9,4 @@ export * from './offers-page-package-list-view-model';
 export * from './coach-list-view-model';
 export * from './offers-page-carousel-view-model';
 export * from './coaching-page-view-model';
+export * from './coaching-offering-list-view-model';
