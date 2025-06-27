@@ -96,9 +96,9 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           resolve({
             lfn: `img-${Math.random().toString(36).substr(2, 9)}`,
             name: newFile.request.name,
-            url: URL.createObjectURL(new Blob([newFile.request.buffer])),
-            thumbnailUrl: URL.createObjectURL(new Blob([newFile.request.buffer])),
-            size: newFile.request.buffer.length,
+            url: URL.createObjectURL(newFile.request.file),
+            thumbnailUrl: URL.createObjectURL(newFile.request.file),
+            size: newFile.request.file.size,
             mimeType: 'image/jpeg',
             checksum: 'mock-checksum',
             status: 'available' as const,
@@ -128,7 +128,6 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
       throw error;
     }
   };
-  console.log(file)
   const handleSubmit = () => {
     onSave?.(formData);
   };

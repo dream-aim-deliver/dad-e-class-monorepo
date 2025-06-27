@@ -107,6 +107,22 @@ const SingleFileUploaderRender = (args: any) => {
     if (files.length > 0) {
       const newFile = files[0];
 
+      // In a real application, you would:
+      // 1. Get a pre-signed URL from your backend
+      // const presignedUrl = await getPresignedUrl(newFile.request.name);
+      // 
+      // 2. Upload the file directly to storage (e.g., S3)
+      // await fetch(presignedUrl, {
+      //   method: 'PUT',
+      //   body: newFile.request.file,
+      //   headers: {
+      //     'Content-Type': newFile.request.file.type,
+      //   },
+      // });
+      // 
+      // 3. Update the UI with the response from your backend
+      
+      // For this demo, we'll simulate the upload process
       // First, set the file with processing status
       const processingFile = {
         ...newFile,
@@ -114,7 +130,7 @@ const SingleFileUploaderRender = (args: any) => {
           lfn: `temp-${Math.random().toString(36).substr(2, 9)}`,
           name: newFile.request.name,
           mimeType: 'application/octet-stream',
-          size: newFile.request.buffer.length,
+          size: newFile.request.file.size,
           checksum: 'processing',
           status: 'processing' as const,
           category: 'generic' as const,
@@ -157,7 +173,7 @@ const SingleFileUploaderRender = (args: any) => {
       type="single"
       variant="generic"
       file={file || {
-        request: { name: '', buffer: new Uint8Array(0) },
+        request: { name: '', file: new File([], '') },
       }}
       onFilesChange={handleFilesChange}
       onDelete={handleDelete}
@@ -182,7 +198,7 @@ const SingleImageUploaderRender = (args: any) => {
           lfn: `temp-${Math.random().toString(36).substr(2, 9)}`,
           name: newFile.request.name,
           mimeType: 'image/jpeg',
-          size: newFile.request.buffer.length,
+          size: newFile.request.file.size,
           checksum: 'processing',
           status: 'processing' as const,
           category: 'image' as const,
@@ -223,7 +239,7 @@ const SingleImageUploaderRender = (args: any) => {
       type="single"
       variant="image"
       file={file || {
-        request: { name: '', buffer: new Uint8Array(0) },
+        request: { name: '', file: new File([], '') },
       }}
       onFilesChange={handleFilesChange}
       onDelete={handleDelete}
@@ -248,7 +264,7 @@ const SingleVideoUploaderRender = (args: any) => {
           lfn: `temp-${Math.random().toString(36).substr(2, 9)}`,
           name: newFile.request.name,
           mimeType: 'video/mp4',
-          size: newFile.request.buffer.length,
+          size: newFile.request.file.size,
           checksum: 'processing',
           status: 'processing' as const,
           category: 'video' as const,
@@ -289,7 +305,7 @@ const SingleVideoUploaderRender = (args: any) => {
       type="single"
       variant="video"
       file={file || {
-        request: { name: '', buffer: new Uint8Array(0) },
+        request: { name: '', file: new File([], '') },
       }}
       onFilesChange={handleFilesChange}
       onDelete={handleDelete}
@@ -317,7 +333,7 @@ const MultipleFileUploaderRender = (args: any) => {
               lfn: `temp-${Math.random().toString(36).substr(2, 9)}`,
               name: file.request.name,
               mimeType: 'application/octet-stream',
-              size: file.request.buffer.length,
+              size: file.request.file.size,
               checksum: 'processing',
               status: 'processing' as const,
               category: 'generic' as const,
@@ -395,7 +411,7 @@ const MultipleImageUploaderRender = (args: any) => {
               lfn: `temp-${Math.random().toString(36).substr(2, 9)}`,
               name: file.request.name,
               mimeType: 'image/jpeg',
-              size: file.request.buffer.length,
+              size: file.request.file.size,
               checksum: 'processing',
               status: 'processing' as const,
               category: 'image' as const,

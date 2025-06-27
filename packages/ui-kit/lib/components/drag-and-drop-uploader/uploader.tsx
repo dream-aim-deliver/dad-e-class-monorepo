@@ -179,20 +179,17 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
 
   // Handle file upload
   const handleUpload = async (uploadedFiles: File[]) => {
-    console.log('handleUpload', uploadedFiles);
     if (uploadedFiles.length === 0) return;
 
     if (props.type === 'single') {
       const file = uploadedFiles[0];
       try {
-        const arrayBuffer = await file.arrayBuffer();
         const newFile: UploadedFileType = {
           request: {
             name: file.name,
-            buffer: new Uint8Array(arrayBuffer),
+            file: file,
           },
         };
-        console.log(newFile);
         await onFilesChange([newFile]);
         return;
       } catch (err) {
@@ -200,23 +197,18 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
       }
     } else {
       try {
-        const successfulFiles = files.filter(file => file.responseData?.status === 'available');
+        const successfulFiles = files.filter(file => file.responseData?.status === 'available' || file.responseData?.status === 'processing');
         const remainingSlots = props.maxFile - successfulFiles.length;
         const filesToAdd = uploadedFiles.slice(0, remainingSlots);
 
         if (filesToAdd.length === 0) return;
 
-        const newUploadingFiles = await Promise.all(
-          filesToAdd.map(async (file) => {
-            const arrayBuffer = await file.arrayBuffer();
-            return {
-              request: {
-                name: file.name,
-                buffer: new Uint8Array(arrayBuffer),
-              },
-            };
-          })
-        );
+        const newUploadingFiles = filesToAdd.map((file) => ({
+          request: {
+            name: file.name,
+            file: file,
+          },
+        }));
 
         const updatedFiles = [...successfulFiles, ...newUploadingFiles];
         await onFilesChange(updatedFiles);
@@ -239,13 +231,13 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
     <div className={cn('flex flex-col gap-4 w-full', className)}>
       {files?.length > 0 && files.some(file => file.request.name) && (
         <div className="flex flex-col gap-2 w-full">
-          {files.filter(file => file.request.name).map((file, index) => (
+          {files.filter((file): file is UploadedFileType & { responseData: fileMetadata.TFileMetadata } => !!file.responseData).map((file, index) => (
             <FilePreview
               key={index}
-              file={file}
+              uploadResponse={file.responseData}
               index={index}
-              onDelete={() => file.responseData && onDelete(file.responseData.lfn)}
-              onDownload={() => file.responseData && onDownload(file.responseData.lfn)}
+              onDelete={() => onDelete(file.responseData.lfn)}
+              onDownload={() => onDownload(file.responseData.lfn)}
               locale={locale}
               onCancelUpload={handleCancelUpload}
             />
