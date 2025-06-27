@@ -1,4 +1,4 @@
-import { extractListParams } from 'apps/platform/src/lib/infrastructure/server/utils/extract-params';
+import { extractListParams } from '../../../lib/infrastructure/server/utils/extract-params';
 import OffersServerComponent from '../../../lib/infrastructure/server/pages/offers-rsc';
 
 export default async function Page({
