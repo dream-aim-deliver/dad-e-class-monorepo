@@ -105,7 +105,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             lfn: `file-${Math.random().toString(36).substr(2, 9)}`,
             name: newFile.request.name,
             url: `/uploads/${newFile.request.name}`,
-            size: newFile.request.buffer.length,
+            size: newFile.request.file.size,
             mimeType: 'application/pdf',
             checksum: 'mock-checksum',
             status: 'available' as const,
