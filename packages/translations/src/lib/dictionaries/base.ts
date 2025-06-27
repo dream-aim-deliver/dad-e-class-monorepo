@@ -529,6 +529,28 @@ export const DictionarySchema = z.object({
       titleLesson: z.string(),
       titleModule: z.string(),
     }),
+     courseBuilder: z.object({
+      addLinkText: z.string(),
+      downloadFilesText: z.string(),
+      uploadFilesText: z.string(),
+      linkText: z.string(),
+      includeInMaterialsText: z.string(),
+      descriptionText: z.string(),
+      titleText: z.string(),
+      urlText: z.string(),
+      iconLinkText: z.string(),
+      saveText: z.string(),
+      discardText: z.string(),
+    }),
+    coachNotes: z.object({
+      usefulLinks: z.string(),
+      validateLink: z.string(),
+      validateTitle: z.string(),
+      notesValidation: z.string(),
+      publishNotes: z.string(),
+      customIcon: z.string(),
+      includeInMaterials: z.string(),
+    })
   }),
   pages: z.object({
     sso: z.object({

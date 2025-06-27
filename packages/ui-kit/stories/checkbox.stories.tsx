@@ -52,6 +52,7 @@ export const Default: Story = {
   args: {
     name: 'defaultCheckbox',
     value: 'defaultValue',
+    label: 'nnnn',
   },
 };
 

@@ -56,7 +56,7 @@ export default function SingleChoicePreview({
 interface SingleChoiceEditProps extends isLocalAware {
     initialTitle?: string;
     initialOptions?: optionsType[];
-    onChange?: (title: string,options: optionsType[] ) => void;
+    onChange?: (title: string, options: optionsType[]) => void;
 };
 
 export const SingleChoiceEdit: React.FC<SingleChoiceEditProps> = ({
@@ -68,10 +68,10 @@ export const SingleChoiceEdit: React.FC<SingleChoiceEditProps> = ({
     const dictionary = getDictionary(locale);
     const [title, setTitle] = useState(initialTitle);
     const [options, setOptions] = useState(initialOptions);
-    
+
     useEffect(() => {
         if (onChange) {
-            onChange(title, options );
+            onChange(title, options);
         }
     }, [title, options, onChange]);
 
@@ -82,12 +82,12 @@ export const SingleChoiceEdit: React.FC<SingleChoiceEditProps> = ({
         };
         setOptions([...options, newOption]);
     };
-    
+
     const handleRemoveChoice = (index: number) => {
         const updatedChoices = options.filter((_, i) => i !== index);
         setOptions(updatedChoices);
     };
-    
+
     const handleInputChange = (index: number, value: string) => {
         const updatedChoices = [...options];
         updatedChoices[index] = {
@@ -96,7 +96,7 @@ export const SingleChoiceEdit: React.FC<SingleChoiceEditProps> = ({
         };
         setOptions(updatedChoices);
     };
-    
+
     return (
         <div className="flex flex-col gap-4 mt-4 w-full">
             <div className="w-full">
@@ -109,14 +109,14 @@ export const SingleChoiceEdit: React.FC<SingleChoiceEditProps> = ({
             </div>
             {options.map((choice, index) => (
                 <div key={index} className="flex gap-[10px] items-center">
-                    
+
                     <RadioButton
                         name="single-choice"
                         value={`choice-${index}`}
                         labelClass="w-fit justify-center"
                         disabled={true}
                     />
-                    
+
                     <div className="w-full">
                         <InputField
                             className="border-0"
