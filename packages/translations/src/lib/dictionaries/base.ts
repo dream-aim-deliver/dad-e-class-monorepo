@@ -316,6 +316,8 @@ export const DictionarySchema = z.object({
       sessionCanceledText: z.string(),
       rateCallQualityText: z.string(),
       loadMoreText: z.string(),
+      toBeDefined: z.string(),
+      toBeDefinedMessage: z.string(),
     }),
     coachingSessionTracker: z.object({
       minuteText: z.string(),

@@ -313,6 +313,8 @@ export const DE: TDictionary = {
       sessionCanceledText: 'Sitzung abgebrochen',
       rateCallQualityText: 'Bewerten Sie die Anrufqualität',
       loadMoreText: 'Mehr laden...',
+      toBeDefined: 'Wird noch festgelegt',
+      toBeDefinedMessage: 'Kontaktieren Sie den Coach mit Ihrer Verfügbarkeit. Verwenden Sie Planungstools wie Doodle, um einen passenden Termin für alle zu finden.',
     },
     coachingSessionTracker: {
       minuteText: 'Minuten',
