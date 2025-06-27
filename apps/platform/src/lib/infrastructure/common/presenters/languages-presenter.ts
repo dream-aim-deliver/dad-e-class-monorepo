@@ -10,7 +10,7 @@ export type TLanguagesPresenterUtilities = {};
 
 export const ListLanguagesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetLanguagesUseCaseResponse,
+        useCaseModels.TListLanguagesUseCaseResponse,
         viewModels.TLanguageListViewModel,
         TLanguagesPresenterUtilities
     >;
@@ -18,7 +18,7 @@ export const ListLanguagesResponseMiddleware =
 type TListLanguagesResponseMiddleware = typeof ListLanguagesResponseMiddleware;
 
 export default class LanguagesPresenter extends BasePresenter<
-    useCaseModels.TGetLanguagesUseCaseResponse,
+    useCaseModels.TListLanguagesUseCaseResponse,
     viewModels.TLanguageListViewModel,
     TLanguagesPresenterUtilities,
     TListLanguagesResponseMiddleware
@@ -40,7 +40,7 @@ export default class LanguagesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetLanguagesUseCaseResponse,
+            useCaseModels.TListLanguagesUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TLanguageListViewModel {

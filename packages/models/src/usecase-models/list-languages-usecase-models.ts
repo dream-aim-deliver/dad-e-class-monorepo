@@ -23,4 +23,4 @@ export const ListLanguagesUseCaseResponseSchema = BaseStatusDiscriminatedUnionSc
     ListLanguagesSuccessResponseSchema,
     ListLanguagesUseCaseErrorResponseSchema,
 ]);
-export type TGetLanguagesUseCaseResponse = z.infer<typeof ListLanguagesUseCaseResponseSchema>;
+export type TListLanguagesUseCaseResponse = z.infer<typeof ListLanguagesUseCaseResponseSchema>;

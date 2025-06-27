@@ -19,6 +19,7 @@ import { useRouter } from 'next/navigation';
 import CategoryTopics from '../common/category-topics';
 import CoachingCoachList from './coaching-coach-list';
 import { useSession } from 'next-auth/react';
+import CoachingOfferingsPanel from './coaching-offerings-panel';
 
 interface CoachingsProps {
     initialSelectedTopics?: string[];
@@ -71,9 +72,12 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
                 setSelectedTopics={setSelectedTopics}
                 filterText={t('filterByTopic')}
             />
-            <Suspense fallback={<CoachCardListSkeleton />}>
-                <CoachingCoachList selectedTopics={selectedTopics} />
-            </Suspense>
+            <div className="flex flex-col lg:flex-row space-y-5 lg:space-y-0 lg:space-x-5">
+                <CoachingOfferingsPanel />
+                <Suspense fallback={<CoachCardListSkeleton />}>
+                    <CoachingCoachList selectedTopics={selectedTopics} />
+                </Suspense>
+            </div>
             {!isLoggedIn && (
                 <CoachesSkeleton
                     onRegister={() => {

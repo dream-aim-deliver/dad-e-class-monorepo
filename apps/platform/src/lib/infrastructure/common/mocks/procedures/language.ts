@@ -31,7 +31,7 @@ const listLanguagesErrorMock: useCaseModels.TListLanguagesUseCaseErrorResponse =
 export const listLanguages = t.procedure
     .input(useCaseModels.ListLanguagesRequestSchema)
     .query(
-        async (opts): Promise<useCaseModels.TGetLanguagesUseCaseResponse> => {
+        async (opts): Promise<useCaseModels.TListLanguagesUseCaseResponse> => {
             return listLanguagesMock;
         },
     );
