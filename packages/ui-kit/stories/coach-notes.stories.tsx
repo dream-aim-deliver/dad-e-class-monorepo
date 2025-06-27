@@ -2,14 +2,13 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { CoachNotesEdit, CoachNotesView } from '../lib/components/coach-notes';
 import { Descendant } from 'slate';
 import { useState } from 'react';
+import { fileMetadata } from '@maany_shr/e-class-models';
 
 // Define the noteLink type to match the component
 type noteLink = {
   url: string;
   title: string;
-  icon?: string;
-  file?: File | null;
-  isEdit?: boolean;
+  customIconMetadata?: fileMetadata.TFileMetadata;
 };
 
 // Define props for the wrapper component
@@ -194,7 +193,6 @@ export const EditGerman: Story = {
       {
         title: 'Zusätzliches Lesematerial',
         url: 'https://example.com/reading-de',
-        icon: 'document',
         isEdit: false,
       },
     ],
@@ -255,7 +253,6 @@ export const ViewWithManyLinks: ViewStory = {
       {
         title: 'TypeScript Handbook',
         url: 'https://typescriptlang.org/docs',
-        icon: 'typescript',
         isEdit: false,
       },
       {
@@ -291,7 +288,6 @@ export const ViewGerman: ViewStory = {
       {
         title: 'Deutsche Ressourcen',
         url: 'https://example.com/de-resources',
-        icon: 'document',
         isEdit: false,
       },
     ],

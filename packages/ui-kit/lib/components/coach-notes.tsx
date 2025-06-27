@@ -14,18 +14,12 @@ import RichTextRenderer from './rich-text-element/renderer';
  * * Interface for note links used in coach notes
  * * @property {string} url - The URL of the link.
  * * @property {string} title - The title of the link.
- * * @property {string} [icon] - Optional custom icon URL.
- * * @property {File | null} [file] - Optional file for custom icon upload.
- * * @property {fileMetadata.TFileMetadata | null} [customIconMetadata] - Metadata for file upload status.
  * * @property {boolean} [isEdit] - Flag to indicate if the link is in edit mode.
- * 
  */
 type noteLink = {
     url: string,
     title: string,
-    icon?: string,
-    file?: File | null,
-    customIconMetadata?: fileMetadata.TFileMetadata | null, // Add metadata for file upload status
+    customIconMetadata?: fileMetadata.TFileMetadata, // Add metadata for file upload status
     isEdit?: boolean
 }
 export interface coachNotesProps extends isLocalAware {
@@ -61,7 +55,6 @@ function CoachNotesEdit({ noteDescription, noteLinks, includeInMaterials, locale
             ...updatedLinks[index],
             title: data.title,
             url: data.url,
-            file: data.file || null,
             isEdit: true,
         };
         onChange(noteDescription.toLocaleString(), updatedLinks, includeInMaterials);
@@ -138,7 +131,6 @@ function CoachNotesEdit({ noteDescription, noteLinks, includeInMaterials, locale
                                     preview
                                     title={link.title}
                                     url={link.url}
-                                    customIconUrl={link.icon}
                                     onEdit={() => handleEdit(index)}
                                     onDelete={() => handleDelete(index)}
                                 />
@@ -235,7 +227,6 @@ function CoachNotesView({ noteDescription, noteLinks, includeInMaterials, locale
                                     preview={false}
                                     title={link.title}
                                     url={link.url}
-                                    customIconUrl={link.icon}
                                 />
                             ))}
                     </div>
