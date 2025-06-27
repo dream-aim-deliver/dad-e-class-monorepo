@@ -9,6 +9,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { useRouter } from 'next/navigation';
 
 interface CoachingOfferingsPanelProps {}
 
@@ -27,7 +28,9 @@ export default function CoachingOfferingsPanel(
         setCoachingOfferingsViewModel,
     );
     presenter.present(coachingOfferingsResponse, coachingOfferingsViewModel);
+
     const locale = useLocale() as TLocale;
+    const router = useRouter();
 
     const currency = useMemo(() => {
         if (
@@ -70,7 +73,8 @@ export default function CoachingOfferingsPanel(
                 onBuy={function (
                     sessionsPerOffering: Record<string | number, number>,
                 ): void {
-                    console.log(sessionsPerOffering);
+                    // TODO: construct query parameters from sessionPerOffering
+                    router.push('/checkout');
                 }}
                 currencyType={currency ?? ''}
                 locale={locale}
