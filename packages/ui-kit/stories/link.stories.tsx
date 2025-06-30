@@ -32,10 +32,6 @@ const meta: Meta<typeof LinkEdit> = {
             options: ['en', 'de'],
             description: 'Locale for translations',
         },
-        isValid: {
-            control: 'boolean',
-            description: 'Whether the form is valid',
-        },
     },
 };
 
@@ -129,7 +125,6 @@ export const Default: Story = {
         url: '',
         customIconMetadata: null,
         locale: 'en',
-        isValid: true,
     },
 };
 
@@ -140,7 +135,6 @@ export const WithData: Story = {
         url: 'https://www.google.com',
         customIconMetadata: null,
         locale: 'en',
-        isValid: true,
     },
 };
 
@@ -161,7 +155,6 @@ export const WithCustomIcon: Story = {
             thumbnailUrl: 'https://via.placeholder.com/64/0000FF/FFFFFF?text=ICON',
         },
         locale: 'en',
-        isValid: true,
     },
 };
 
@@ -182,7 +175,6 @@ export const ProcessingIcon: Story = {
             thumbnailUrl: '',
         },
         locale: 'en',
-        isValid: true,
     },
 };
 
@@ -203,7 +195,6 @@ export const FailedIcon: Story = {
             thumbnailUrl: '',
         },
         locale: 'en',
-        isValid: true,
     },
 };
 
@@ -214,7 +205,6 @@ export const German: Story = {
         url: 'https://www.deutschland.de',
         customIconMetadata: null,
         locale: 'de',
-        isValid: true,
     },
 };
 
