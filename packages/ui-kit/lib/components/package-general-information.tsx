@@ -65,31 +65,47 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
     };
 
     return (
-        <div className="flex w-full gap-15 md:flex-row flex-col-reverse p-10">
-            <div className="flex flex-col basis-1/2">
-                {/* Title section and duration bagde */}
-                <div className="flex flex-col gap-7 mb-7">
-                    <h1 className="text-text-primary">{title}</h1>
-                    <div className="flex gap-2">
-                        <Badge
-                            hasIconLeft
-                            iconLeft={<IconClock size="4" />}
-                            text={formatDuration(duration)}
-                            className="text-sm"
+        <div className="flex w-full md:gap-15 gap-3 md:p-10 flex-col md:flex-row">
+            <div className="flex flex-col basis-full md:basis-1/2">
+                {/* Title and duration badge */}
+                <h1 className="text-text-primary text-3xl mb-5 md:text-4xl">
+                    {title}
+                </h1>
+                <div className="flex gap-2 mb-5">
+                    <Badge
+                        hasIconLeft
+                        iconLeft={<IconClock size="4" />}
+                        text={formatDuration(duration)}
+                        className="text-sm"
+                    />
+                </div>
+
+                {/* IMAGE for mobile */}
+                <div className="block md:hidden w-full h-64 mb-5">
+                    {shouldShowPlaceholder ? (
+                        <div className="w-full h-full bg-base-neutral-700 flex items-center justify-center rounded-medium">
+                            <span className="text-text-secondary text-md">
+                                {dictionary.errorImageText}
+                            </span>
+                        </div>
+                    ) : (
+                        <img
+                            loading="lazy"
+                            src={imageUrl}
+                            className="w-full h-full object-cover rounded-medium"
+                            onError={handleImageError}
                         />
-                    </div>
+                    )}
                 </div>
 
                 {/* Subtitle and description */}
-                <div className="flex flex-col gap-2 mb-7">
-                    <h5 className="text-text-primary text-lg">{subTitle}</h5>
-                    <p className="text-text-secondary text-md leading-[150%]">
-                        {description}
-                    </p>
-                </div>
+                <h5 className="text-text-primary text-lg mb-2">{subTitle}</h5>
+                <p className="text-text-secondary text-md leading-[150%] mb-5">
+                    {description}
+                </p>
 
-                {/* Pricing, checkbox and button */}
-                <div className="flex gap-3 flex-col">
+                {/* Checkbox visible JUST in desktop */}
+                <div className="hidden md:block mb-5">
                     <CheckBox
                         name="coachingIncluded"
                         value="coachingIncluded"
@@ -99,32 +115,31 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                         label={dictionary.coachingIncluded}
                         labelClass="text-text-secondary text-md"
                     />
-                    <div className="flex flex-row gap-4 items-start">
-                        <Button
-                            className=""
-                            variant="primary"
-                            size="big"
-                            text={dictionary.purchaseButton}
-                            onClick={onClickPurchase}
-                        />
-                        <div className="flex flex-col items-start text-left">
-                            <h6 className="text-text-primary lg:text-lg text-md">
-                                {dictionary.fromText} {pricing.currency}{' '}
-                                {pricing.fullPrice}
-                            </h6>
-                            <p className="text-feedback-success-primary lg:text-md text-sm font-bold">
-                                {dictionary.saveText} {pricing.currency}{' '}
-                                {pricing.partialPrice}
-                            </p>
-                        </div>
-                    </div>
+                </div>
+
+                {/* Button and pricing */}
+                <Button
+                    variant="primary"
+                    size="big"
+                    text={dictionary.purchaseButton}
+                    onClick={onClickPurchase}
+                />
+                <div className="flex gap-4 mt-4 justify-start">
+                    <h6 className="text-text-primary lg:text-lg text-md">
+                        {dictionary.fromText} {pricing.currency}{' '}
+                        {pricing.fullPrice}
+                    </h6>
+                    <p className="text-feedback-success-primary lg:text-md text-sm font-bold">
+                        {dictionary.saveText} {pricing.currency}{' '}
+                        {pricing.partialPrice}
+                    </p>
                 </div>
             </div>
 
-            {/* Image section */}
-            <div className="w-full basis-1/2 h-full">
+            {/* IMAGE desktop */}
+            <div className="hidden md:block basis-1/2 h-full">
                 {shouldShowPlaceholder ? (
-                    <div className="w-full h-[400px] bg-base-neutral-700 flex items-center justify-center">
+                    <div className="w-full h-[400px] bg-base-neutral-700 flex items-center justify-center rounded-medium">
                         <span className="text-text-secondary text-md">
                             {dictionary.errorImageText}
                         </span>

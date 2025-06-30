@@ -52,7 +52,7 @@ describe('PackageGeneralInformation', () => {
         subTitle: 'Als Package oder flexibel:',
         description:
             'Das Angebot "Visualisierung" richtet sich an Firmen und Einzelpersonen, die bereits über eine Idee verfügen.',
-        duration: 165, // minutos
+        duration: 165,
         pricing: {
             fullPrice: 299,
             partialPrice: 249,
@@ -67,18 +67,18 @@ describe('PackageGeneralInformation', () => {
     it('renders all main content correctly', () => {
         render(<PackageGeneralInformation {...mockProps} />);
 
-        // Títulos
+        // Titles
         expect(screen.getByText(mockProps.title)).toBeInTheDocument();
         expect(screen.getByText(mockProps.subTitle)).toBeInTheDocument();
         expect(screen.getByText(mockProps.description)).toBeInTheDocument();
 
-        // Duración formateada (165 min = 2h 45m)
+        // Duration
         expect(screen.getByText('2h 45m')).toBeInTheDocument();
 
-        // Checkbox con label
+        // Checkbox
         expect(screen.getByLabelText('Coaching included')).toBeInTheDocument();
 
-        // Botón y precios
+        // Button and prices
         expect(screen.getByText('Buy Now')).toBeInTheDocument();
         expect(
             screen.getByText(`from CHF ${mockProps.pricing.fullPrice}`),
@@ -94,8 +94,7 @@ describe('PackageGeneralInformation', () => {
         expect(mockProps.onClickPurchase).toHaveBeenCalled();
     });
 
-    it('shows placeholder text if image is broken', () => {
-        // Pasamos una URL de imagen rota para forzar error
+    it('shows placeholder text if image is broken', async () => {
         render(
             <PackageGeneralInformation
                 {...mockProps}
@@ -103,13 +102,12 @@ describe('PackageGeneralInformation', () => {
             />,
         );
 
-        // Forzamos el error manualmente disparando el evento onError
-        const img = screen.queryByRole('img');
-        if (img) {
+        const imgs = screen.queryAllByRole('img');
+        imgs.forEach((img) => {
             fireEvent.error(img);
-        }
+        });
 
-        // Placeholder debe mostrarse con el texto del diccionario
-        expect(screen.getByText('Image not available')).toBeInTheDocument();
+        const placeholders = screen.getAllByText('Image not available');
+        expect(placeholders.length).toBeGreaterThan(0);
     });
 });
