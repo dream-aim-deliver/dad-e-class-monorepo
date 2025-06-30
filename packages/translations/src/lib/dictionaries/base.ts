@@ -3,6 +3,10 @@ import { z } from 'zod';
 export const DictionarySchema = z.object({
 
   components: z.object({
+    paginationButton: z.object({
+      loadMore: z.string(),
+      viewAll: z.string(),
+    }),
     coachBanner: z.object({
       buttonText: z.string(),
       placeHolderText: z.string(),
@@ -267,6 +271,17 @@ export const DictionarySchema = z.object({
     navbar: z.object({
       workspace: z.string(),
       login: z.string(),
+      offers: z.string(),
+      coaching: z.string(),
+      howItWorks: z.string(),
+      about: z.string(),
+    }),
+    footer: z.object({
+      impressum: z.string(),
+      privacyPolicy: z.string(),
+      termsOfUse: z.string(),
+      rules: z.string(),
+      coursesInformation: z.string(),
     }),
     activity: z.object({
       atText: z.string(),
@@ -546,6 +561,20 @@ export const DictionarySchema = z.object({
       notSignedInText: z.string(),
       welcomeText: z.string(),
       signOutText: z.string(),
+        topicsTitle: z.string(),
+    }),
+    offers: z.object({
+      chooseCategory: z.string(),
+      filterByTopic: z.string(),
+      ourCourses: z.string(),
+      ourPackages: z.string(),
+      coachingOnDemand: z.string(),
+      coachingIncluded: z.string(),
+      haveNotFound: z.string(),
+    }),
+    coaching: z.object({
+      chooseCategory: z.string(),
+      filterByTopic: z.string(),
     }),
     login: z.object({
       title: z.string(),

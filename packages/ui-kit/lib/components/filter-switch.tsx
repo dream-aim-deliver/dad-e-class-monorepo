@@ -1,10 +1,14 @@
-import { topic } from '@maany_shr/e-class-models';
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from './button';
 
 interface TopicListProps {
-  list: topic.TTopic[];
+  list: {
+      name: string;
+      slug: string;
+  }[];
   title: string;
+  selectedTopics: string[];
+  setSelectedTopics: (selectedTopics: string[]) => void;
   onFilterChange?: (selectedTopicNames: string[]) => void; // Now accepts array of strings
 }
 
@@ -14,6 +18,8 @@ interface TopicListProps {
  *
  * @param title The title displayed above the topic list.
  * @param list An array of topics, each containing a `name`.
+ * @param selectedTopics An array of currently selected topic names.
+ * @param setSelectedTopics A function to update the selected topics state.
  * @param onFilterChange Optional callback function that receives an array of selected topic names.
  *
  * @example
@@ -21,29 +27,27 @@ interface TopicListProps {
  *   { name: 'React' },
  *   { name: 'Next.js' },
  * ];
- * 
+ *
  * const handleFilterChange = (topicNames) => {
  *   console.log('Selected topics:', topicNames);
  * };
  *
  * <FilterSwitch title="Filter By Topic" list={topics} onFilterChange={handleFilterChange} />
  */
-const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange }) => {
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-
-  const handleTopicClick = (topicName: string) => {
+const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange, selectedTopics, setSelectedTopics }) => {
+  const handleTopicClick = (topicSlug: string) => {
     let newSelectedTopics: string[];
-    
+
     // If already selected, remove it from the array (toggle behavior)
-    if (selectedTopics.includes(topicName)) {
-      newSelectedTopics = selectedTopics.filter(name => name !== topicName);
+    if (selectedTopics.includes(topicSlug)) {
+      newSelectedTopics = selectedTopics.filter(name => name !== topicSlug);
     } else {
       // Otherwise, add it to the array
-      newSelectedTopics = [...selectedTopics, topicName];
+      newSelectedTopics = [...selectedTopics, topicSlug];
     }
-    
+
     setSelectedTopics(newSelectedTopics);
-    
+
     // Notify parent component if callback exists
     if (onFilterChange) {
       onFilterChange(newSelectedTopics);
@@ -59,9 +63,9 @@ const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange })
             key={index}
             size="medium"
             className='border-1 border-button-secondary-stroke'
-            variant={selectedTopics.includes(topic.name) ? "primary" : "secondary"}
+            variant={selectedTopics.includes(topic.slug) ? "primary" : "secondary"}
             text={topic.name}
-            onClick={() => handleTopicClick(topic.name)}
+            onClick={() => handleTopicClick(topic.slug)}
           />
         ))}
       </div>
