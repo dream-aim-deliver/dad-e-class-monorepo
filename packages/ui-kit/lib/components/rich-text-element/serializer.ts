@@ -23,9 +23,9 @@ const serialize = (slateData: Descendant[]): string => {
  */
 const slateify = (rawString: string): Descendant[] => {
   if (!rawString || rawString === "" || rawString === "null" || rawString === "undefined") {
-    return [{ type: "paragraph", children: [{ text: "" }] }];
+    return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
   }
-  return [{ type: "paragraph", children: [{ text: rawString }] }];
+  return [{ type: "paragraph", children: [{ text: rawString }] } as Descendant];
 }
 
 /**
@@ -100,7 +100,7 @@ const deserialize = ({ serializedData, onError }: SlateDeserializerInput): Desce
         )
 
         // TBD: should we return an empty slate object?
-        return [{ type: "paragraph", children: [{ text: "" }] }];
+        return [{ type: "paragraph", children: [{ text: "" }] } as Descendant];
       }
 
     default:
