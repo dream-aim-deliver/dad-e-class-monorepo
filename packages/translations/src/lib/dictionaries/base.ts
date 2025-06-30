@@ -529,6 +529,13 @@ export const DictionarySchema = z.object({
       titleLesson: z.string(),
       titleModule: z.string(),
     }),
+    packageGeneralInformation: z.object({
+      coachingIncluded: z.string(),
+      purchaseButton: z.string(),
+      fromText: z.string(),
+      saveText: z.string(),
+      errorImageText: z.string(),
+    })
   }),
   pages: z.object({
     sso: z.object({
