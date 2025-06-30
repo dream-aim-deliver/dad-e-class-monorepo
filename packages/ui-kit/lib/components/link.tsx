@@ -48,7 +48,6 @@ interface LinkEditProps extends isLocalAware {
     onChange: (data: { title: string; url: string; file?: File }) => void;
     onSave: () => void;
     onDiscard: () => void;
-    isValid?: boolean;
 }
 /**
  * LinkEdit component allows users to edit a link's title, URL, and custom icon. 
@@ -108,10 +107,10 @@ const LinkEdit: React.FC<LinkEditProps> = ({
         const newErrors: { title?: string; url?: string } = {};
 
         if (!title.trim()) {
-            newErrors.title = dictionary.components.coachNotes.validateTitle ;
+            newErrors.title = dictionary.components.coachNotes.validateTitle;
         }
         if (!url.trim()) {
-            newErrors.url = dictionary.components.coachNotes.validateLink ;
+            newErrors.url = dictionary.components.coachNotes.validateLink;
         }
 
         setValidationErrors(newErrors);
@@ -238,7 +237,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                     />
                 </div>
             </div>
-            
+
             <div className="flex gap-2">
                 <Button onClick={handleSave} variant="secondary" className="w-full capitalize" text={dictionary.components.courseBuilder.saveText} />
                 <Button onClick={onDiscard} variant="primary" className="w-full capitalize" text={dictionary.components.courseBuilder.discardText} />
