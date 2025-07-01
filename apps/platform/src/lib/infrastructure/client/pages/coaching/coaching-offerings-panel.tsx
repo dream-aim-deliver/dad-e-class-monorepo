@@ -14,8 +14,6 @@ import { useRouter } from 'next/navigation';
 import { useListAvailableCoachingsPresenter } from '../../hooks/use-available-coachings-presenter';
 import { useSession } from 'next-auth/react';
 
-const PANEL_WIDTH = '400px';
-
 function AvailableCoachings() {
     const [availableCoachingsResponse] =
         trpc.listAvailableCoachings.useSuspenseQuery({});
