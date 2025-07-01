@@ -1,39 +1,19 @@
 import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
-    ExtractStatusModel,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
 
-export type THomePagePresenterUtilities = {
-    redirect: (page: 'login') => Promise<void> | void;
-};
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type THomePagePresenterUtilities = {};
 
-export const GetHomePageResponseMiddleware = {
-    'errorType:AuthenticationError': {
-        redirect: async (
-            context: {
-                response: ExtractStatusModel<
-                    useCaseModels.TGetHomePageUseCaseResponse,
-                    false
-                >;
-                currentViewModel: viewModels.THomePageViewModel;
-                setViewModel: (
-                    currentViewModel: viewModels.THomePageViewModel,
-                    viewModel: viewModels.THomePageViewModel,
-                ) => void;
-            },
-            callback: THomePagePresenterUtilities['redirect'],
-        ) => {
-            callback('login');
-        },
-    },
-} satisfies TBaseResponseResponseMiddleware<
-    useCaseModels.TGetHomePageUseCaseResponse,
-    viewModels.THomePageViewModel,
-    THomePagePresenterUtilities
->;
+export const GetHomePageResponseMiddleware =
+    {} satisfies TBaseResponseResponseMiddleware<
+        useCaseModels.TGetHomePageUseCaseResponse,
+        viewModels.THomePageViewModel,
+        THomePagePresenterUtilities
+    >;
 
 type TGetHomePageResponseMiddleware = typeof GetHomePageResponseMiddleware;
 

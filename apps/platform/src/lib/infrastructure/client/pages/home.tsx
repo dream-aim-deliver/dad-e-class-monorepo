@@ -32,9 +32,40 @@ const Carousel = dynamic(
     },
 );
 
-export default function Home() {
+function Topics() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.home');
+
+    const [topicsResponse, { refetch }] = trpc.listTopics.useSuspenseQuery({});
+    const [topicsViewModel, setTopicsViewModel] = useState<
+        viewModels.TTopicListViewModel | undefined
+    >(undefined);
+    const { presenter: topicsPresenter } =
+        useListTopicsPresenter(setTopicsViewModel);
+    topicsPresenter.present(topicsResponse, topicsViewModel);
+
+    if (!topicsViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (topicsViewModel.mode === 'kaboom') {
+        return (
+            <DefaultError
+                locale={locale}
+                onRetry={() => {
+                    refetch();
+                }}
+            />
+        );
+    }
+
+    const topics = topicsViewModel.data.topics;
+
+    return <TopicList list={topics} title={t('topicsTitle')} />;
+}
+
+export default function Home() {
+    const locale = useLocale() as TLocale;
 
     const [homePageResponse] = trpc.getHomePage.useSuspenseQuery({});
     const [homePageViewModel, setHomePageViewModel] = useState<
@@ -44,36 +75,17 @@ export default function Home() {
         useGetHomePagePresenter(setHomePageViewModel);
     homePagePresenter.present(homePageResponse, homePageViewModel);
 
-    const [topicsResponse] = trpc.listTopics.useSuspenseQuery({});
-    const [topicsViewModel, setTopicsViewModel] = useState<
-        viewModels.TTopicListViewModel | undefined
-    >(undefined);
-    const { presenter: topicsPresenter } =
-        useListTopicsPresenter(setTopicsViewModel);
-    topicsPresenter.present(topicsResponse, topicsViewModel);
-
     const router = useRouter();
 
-    if (!homePageViewModel || !topicsViewModel) {
-        return <DefaultLoading />;
+    if (!homePageViewModel) {
+        return <DefaultLoading locale={locale} />;
     }
 
-    if (
-        homePageViewModel.mode === 'kaboom' ||
-        homePageViewModel.mode === 'unauthenticated'
-    ) {
-        return <DefaultError errorMessage={homePageViewModel.data.message} />;
-    }
-
-    if (
-        topicsViewModel.mode === 'kaboom' ||
-        topicsViewModel.mode === 'unauthenticated'
-    ) {
-        return <DefaultError errorMessage={topicsViewModel.data.message} />;
+    if (homePageViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
     }
 
     const homePage = homePageViewModel.data;
-    const topics = topicsViewModel.data.topics;
 
     return (
         <div className="flex flex-col">
@@ -101,7 +113,7 @@ export default function Home() {
                 })}
             </Carousel>
             <Divider />
-            <TopicList list={topics} title={t('topicsTitle')} />
+            <Topics />
             {/* Breakpoints might be adjusted here */}
             <CoachingOnDemandBanner
                 title={homePage.coachingOnDemand.title}
