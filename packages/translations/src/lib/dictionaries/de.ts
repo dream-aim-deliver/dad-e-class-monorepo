@@ -4,8 +4,14 @@ import { SSO_DE } from '../pages/sso/sso-de';
 
 
 import { TDictionary } from './base';
+import { Offers_DE } from '../pages/offers/offers-de';
+import { Coaching_DE } from '../pages/coaching/coaching-de';
 export const DE: TDictionary = {
   components: {
+    paginationButton: {
+      loadMore: 'Mehr laden...',
+      viewAll: 'Alle ansehen',
+    },
     coachBanner: {
       buttonText: 'Coach werden',
       placeHolderText: 'Bild nicht verfügbar',
@@ -262,6 +268,17 @@ export const DE: TDictionary = {
     navbar: {
       workspace: 'Arbeitsbereich',
       login: 'Anmelden',
+      offers: 'Angebote',
+      coaching: 'Coaching',
+      howItWorks: 'Wie es funktioniert',
+      about: 'Über uns',
+    },
+    footer: {
+      impressum: 'Impressum',
+      privacyPolicy: 'Datenschutzrichtlinie',
+      termsOfUse: 'Nutzungsbedingungen',
+      rules: 'Regeln',
+      coursesInformation: 'Kursinformationen',
     },
     activity: {
       atText: 'bei',
@@ -546,6 +563,8 @@ export const DE: TDictionary = {
     home: Home_DE,
     login: Login_DE,
     sso: SSO_DE,
+    offers: Offers_DE,
+    coaching: Coaching_DE,
     auth: {
       errorPage: {
         title: 'Ups! Beim Anmelden ist ein Problem aufgetreten.',

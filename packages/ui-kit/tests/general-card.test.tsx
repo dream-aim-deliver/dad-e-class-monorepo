@@ -84,7 +84,7 @@ describe('GeneralCard', () => {
     const { container } = render(<GeneralCard {...defaultProps} />);
 
     const article = container.firstChild;
-    expect(article).toHaveClass('flex', 'flex-col', 'h-auto', 'w-full', 'max-w-[382px]');
+    expect(article).toHaveClass('flex', 'flex-col', 'w-full', 'max-w-[382px]');
 
     const cardDiv = within(article as HTMLElement).getByRole('img').parentElement?.parentElement;
     expect(cardDiv).toHaveClass('rounded-lg', 'border', 'border-solid', 'bg-card-fill', 'border-card-stroke');

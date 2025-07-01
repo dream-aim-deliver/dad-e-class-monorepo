@@ -12,6 +12,7 @@ interface NavbarProps extends isLocalAware {
   notificationCount?: number;
   onChangeLanguage?: (locale: string) => void;
   children: React.ReactNode;
+  logo?: React.ReactNode;
   userProfile?: React.ReactNode;
   userProfileImageSrc?: string;
   userName?: string;
@@ -31,6 +32,7 @@ interface NavbarProps extends isLocalAware {
  * @param userProfileImageSrc The URL of the user's profile image.
  * @param userName The user's full name.
  * @param logoSrc The URL of the platform's logo.
+ * @param logo Optional React node to render as the logo, which can be an image or any other element.
  * @param availableLocales An array of available locales for the language dropdown.
  *
  * @example
@@ -58,6 +60,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   userProfile,
   userProfileImageSrc,
   userName,
+  logo,
   logoSrc,
   availableLocales,
 }) => {
@@ -101,11 +104,16 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <nav className="bg-transparent text-white py-4 px-4 flex items-center justify-between">
+    <nav className="bg-transparent text-white py-4 px-4 flex items-center justify-between w-full">
       {/* Logo */}
       <div className="flex items-center">
-        <a href="/">
-          <img src={logoSrc} width={40} height={40} alt="Logo" />
+        <a href="/" className="block h-12">
+          {logo}
+          {logoSrc && <img
+            src={logoSrc}
+            alt="Logo"
+            className="h-full w-auto"
+          />}
         </a>
       </div>
 
@@ -113,7 +121,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="hidden lg:flex items-center space-x-6 ml-auto">{children}</div>
 
       {/* Right Section (Profile+Workspace, Chat, Language Dropdown) */}
-      <div className="hidden lg:flex items-center space-x-6 ml-2.5">
+      <div className="hidden lg:flex items-center space-x-3 ml-3">
         {isLoggedIn ? (
           <>
             {userProfile || defaultUserProfile}
@@ -203,15 +211,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div
           className="fixed top-0 left-0 w-full h-full bg-button-primary-text text-white flex flex-col items-center justify-center lg:hidden z-9999"
         >
-          <div className="absolute top-4 left-0 right-0 flex justify-between items-center px-6 w-full">
-            <a href="/">
-              <img
+          <div className="absolute top-3 left-0 right-0 flex justify-between items-center px-4 w-full">
+            <a href="/" className="block h-12">
+              {logo}
+              {logoSrc && <img
                 src={logoSrc}
                 alt="Logo"
-                width={38}
-                height={38}
-                className="cursor-pointer"
-              />
+                className="h-full w-auto"
+              />}
             </a>
 
             <Button

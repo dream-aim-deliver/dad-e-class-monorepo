@@ -4,6 +4,7 @@ import { Dropdown } from './dropdown';
 
 interface FooterProps extends isLocalAware {
     logoSrc?: string;
+    logo?: React.ReactNode;
     onChangeLanguage?: (locale: string) => void;
     children?: React.ReactNode;
     footerChildren?: React.ReactNode;
@@ -16,6 +17,7 @@ interface FooterProps extends isLocalAware {
  *
  * @param locale The current locale for the footer, determining the language of displayed text.
  * @param logoSrc Optional URL for the logo image displayed in the footer.
+ * @param logo Optional React node to render as the logo, which can be an image or any other element.
  * @param onChangeLanguage Optional callback function triggered when the language is changed.
  * @param children Optional React nodes to render as navigation links in the footer.
  * @param footerChildren Optional React nodes to render as company information.
@@ -39,6 +41,7 @@ interface FooterProps extends isLocalAware {
 export const Footer: React.FC<FooterProps> = ({
     locale,
     logoSrc,
+    logo,
     onChangeLanguage,
     children,
     footerChildren,
@@ -58,7 +61,7 @@ export const Footer: React.FC<FooterProps> = ({
     }));
 
     return (
-        <footer className="bg-button-primary-text text-white">
+        <footer className="bg-button-primary-text text-white w-full">
             <div className="max-w-7xl mx-auto">
                 {/* Mobile Layout (Smaller Screens) */}
                 <div className="flex flex-col py-10 px-4 lg:hidden">
@@ -66,14 +69,13 @@ export const Footer: React.FC<FooterProps> = ({
                     <div className="flex justify-between items-start">
                         {/* Logo (Left) */}
                         <div className="w-1/2">
-                            <a href="/">
+                            <a href="/" className="block h-12 w-fit">
+                                {logo}
                                 {logoSrc && (
                                     <img
                                         src={logoSrc}
-                                        width={40}
-                                        height={40}
                                         alt="Logo"
-                                        className="mb-2"
+                                        className="w-auto h-full"
                                     />
                                 )}
                             </a>
@@ -119,21 +121,21 @@ export const Footer: React.FC<FooterProps> = ({
                 <div className="hidden py-6 px-10.5 lg:flex flex-row justify-between items-start lg:items-center">
                     {/* Left Section: Logo Only */}
                     <div className="mb-6 lg:mb-0">
-                        <a href="/">
+                        <a href="/" className="block h-12 w-fit">
+                            {logo}
                             {logoSrc && (
                                 <img
                                     src={logoSrc}
-                                    width={40}
-                                    height={40}
                                     alt="Logo"
-                                    className="mb-2"
+                                    className="w-auto h-full"
                                 />
                             )}
                         </a>
                     </div>
 
                     {/* Right Section: Navigation Links, Company Info, and Language Dropdown */}
-                    <div className="flex flex-col lg:flex-row items-end lg:items-center space-y-4 lg:space-y-0 lg:space-x-8">
+                    <div
+                        className="flex flex-col lg:flex-row items-end lg:items-center space-y-4 lg:space-y-0 lg:space-x-8">
                         <div className="flex flex-col gap-4">
                             {/* Navigation Links */}
                             {children && (

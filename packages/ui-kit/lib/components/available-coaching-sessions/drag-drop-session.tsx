@@ -53,7 +53,7 @@ export const DragDropSession: FC<DragDropSessionProps> = ({
               {time} {durationMinutes}
             </p>
           </div>
-          {numberOfSessions > 1 && (
+          {numberOfSessions && numberOfSessions > 1 && (
             <Badge
               className="h-[1.5rem] min-w-[2.0625rem] px-0 py-1 items-center justify-center text-sm leading-[100%]"
               text={'x' + numberOfSessions.toString()}

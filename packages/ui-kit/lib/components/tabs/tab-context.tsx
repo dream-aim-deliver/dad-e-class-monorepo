@@ -19,13 +19,21 @@ export function useTabContext() {
 interface TabProviderProps {
   children: React.ReactNode;
   defaultTab: string;
+  onValueChange?: (value: string) => void;
 }
 
-export function TabProvider({ children, defaultTab }: TabProviderProps) {
+export function TabProvider({ children, onValueChange, defaultTab }: TabProviderProps) {
   const [activeTab, setActiveTab] = useState(defaultTab);
 
+  const handleSetActiveTab = (id: string) => {
+    setActiveTab(id);
+    if (onValueChange) {
+      onValueChange(id);
+    }
+  }
+
   return (
-    <TabContext.Provider value={{ activeTab, setActiveTab }}>
+    <TabContext.Provider value={{ activeTab, setActiveTab: handleSetActiveTab }}>
       {children}
     </TabContext.Provider>
   );

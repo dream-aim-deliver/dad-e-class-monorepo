@@ -8,6 +8,7 @@ export interface AvailableCoachingSessionsProps extends isLocalAware {
   availableCoachingSessionsData?: DragDropSessionProps[];
   onClickBuyMoreSessions?: () => void;
   isLoading?: boolean;
+  hideButton?: boolean;
 }
 
 /**
@@ -38,6 +39,7 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
   availableCoachingSessionsData,
   onClickBuyMoreSessions,
   isLoading = false,
+  hideButton = false,
 }) => {
   const dictionary = getDictionary(locale);
   return (
@@ -45,8 +47,8 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
       <p className="text-lg text-text-primary font-bold leading-[120%]">
         {dictionary?.components?.availableCoachingSessions?.title}
       </p>
-      {!availableCoachingSessionsData ||
-      availableCoachingSessionsData?.length === 0 ? (
+      {!isLoading && (!availableCoachingSessionsData ||
+      availableCoachingSessionsData?.length === 0) ? (
         <div className="flex items-center justify-center w-full">
           <p className="text-[1rem] text-text-secondary leading-[150%]">
             {
@@ -78,6 +80,7 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                 {availableCoachingSessionsData?.map(
                   (availableCoachingSession) => (
                     <DragDropSession
+                      key={availableCoachingSession.title}
                       {...availableCoachingSession}
                       durationMinutes={
                         dictionary?.components?.availableCoachingSessions
@@ -91,13 +94,13 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
           </div>
         </>
       )}
-      <Button
+      {!hideButton && <Button
         className="w-full"
         onClick={onClickBuyMoreSessions}
         text={
           dictionary?.components?.availableCoachingSessions?.buyMoreSessions
         }
-      />
+      />}
     </div>
   );
 };

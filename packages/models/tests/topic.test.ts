@@ -5,6 +5,7 @@ describe('Topic Schema Validation', () => {
     it('should validate a valid topic', () => {
         const validTopic: TTopic = {
             name: 'JavaScript',
+            url: 'https://example.com/javascript',
         };
         expect(TopicSchema.safeParse(validTopic).success).toBe(true);
     });
@@ -17,6 +18,7 @@ describe('Topic Schema Validation', () => {
     it('should invalidate a topic with incorrect data type', () => {
         const invalidTopic = {
             name: 12345, // Should be a string
+            url: 'https://example.com/topic',
         };
         expect(TopicSchema.safeParse(invalidTopic).success).toBe(false);
     });
