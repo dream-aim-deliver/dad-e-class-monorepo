@@ -7,6 +7,9 @@ export const DictionarySchema = z.object({
       loadMore: z.string(),
       viewAll: z.string(),
     }),
+    defaultLoading: z.object({
+      loading: z.string(),
+    }),
     coachBanner: z.object({
       buttonText: z.string(),
       placeHolderText: z.string(),
