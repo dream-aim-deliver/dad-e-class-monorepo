@@ -8,12 +8,12 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TPlatformPresenterUtilities = {};
 
-export const GetPlatformResponseMiddleware = {
-} satisfies TBaseResponseResponseMiddleware<
-    useCaseModels.TGetPlatformUseCaseResponse,
-    viewModels.TPlatformViewModel,
-    TPlatformPresenterUtilities
->;
+export const GetPlatformResponseMiddleware =
+    {} satisfies TBaseResponseResponseMiddleware<
+        useCaseModels.TGetPlatformUseCaseResponse,
+        viewModels.TPlatformViewModel,
+        TPlatformPresenterUtilities
+    >;
 
 type TGetPlatformResponseMiddleware = typeof GetPlatformResponseMiddleware;
 
