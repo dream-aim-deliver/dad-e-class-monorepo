@@ -12,6 +12,9 @@ export const DE: TDictionary = {
       loadMore: 'Mehr laden...',
       viewAll: 'Alle ansehen',
     },
+    defaultLoading: {
+      loading: 'Laden...',
+    },
     coachBanner: {
       buttonText: 'Coach werden',
       placeHolderText: 'Bild nicht verfügbar',
