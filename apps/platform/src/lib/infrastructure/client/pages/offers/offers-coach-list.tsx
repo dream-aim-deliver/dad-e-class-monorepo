@@ -22,8 +22,10 @@ const COACHES_PER_PAGE = 6;
 export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
         skillSlugs: selectedTopics,
-        page: 1,
-        pageSize: COACHES_PER_PAGE,
+        pagination: {
+            page: 1,
+            pageSize: COACHES_PER_PAGE,
+        },
     });
     const [coachesViewModel, setCoachesViewModel] = useState<
         viewModels.TCoachListViewModel | undefined

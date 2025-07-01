@@ -406,7 +406,7 @@ const coachesMock: useCaseModels.TListCoachesSuccessResponse['data'] = {
 export const listCoaches = t.procedure
     .input(useCaseModels.ListCoachesRequestSchema)
     .query(async (opts): Promise<useCaseModels.TListCoachesUseCaseResponse> => {
-        const { page, pageSize, skillSlugs } = opts.input;
+        const { pagination, skillSlugs } = opts.input;
 
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
 
@@ -421,9 +421,9 @@ export const listCoaches = t.procedure
         }
 
         // Apply pagination only if both page and pageSize are provided
-        if (page !== undefined && pageSize !== undefined) {
-            const startIndex = (page - 1) * pageSize;
-            const endIndex = startIndex + pageSize;
+        if (pagination) {
+            const startIndex = (pagination.page - 1) * pagination.pageSize;
+            const endIndex = startIndex + pagination.pageSize;
             const paginatedCoaches = filteredCoaches.slice(
                 startIndex,
                 endIndex,
