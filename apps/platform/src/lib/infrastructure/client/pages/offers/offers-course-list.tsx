@@ -61,7 +61,10 @@ export function OffersCourseList({
     const { presenter } = useListCoursesPresenter(setCoursesViewModel);
     presenter.present(coursesResponse, coursesViewModel);
     const locale = useLocale() as TLocale;
-    const t = useTranslations('components.paginationButton');
+    const paginationTranslations = useTranslations(
+        'components.paginationButton',
+    );
+    const offersTranslations = useTranslations('pages.offers');
 
     const router = useRouter();
 
@@ -100,7 +103,13 @@ export function OffersCourseList({
         coursesViewModel.mode === 'not-found' ||
         displayedCourses.length === 0
     ) {
-        return <DefaultNotFound locale={locale} />;
+        return (
+            <DefaultNotFound
+                locale={locale}
+                title={offersTranslations('coursesNotFound.title')}
+                description={offersTranslations('coursesNotFound.description')}
+            />
+        );
     }
 
     if (coursesViewModel.mode !== 'default') {
@@ -162,7 +171,7 @@ export function OffersCourseList({
             {hasMoreCourses && (
                 <Button
                     variant="text"
-                    text={t('loadMore')}
+                    text={paginationTranslations('loadMore')}
                     onClick={handleLoadMore}
                 />
             )}
