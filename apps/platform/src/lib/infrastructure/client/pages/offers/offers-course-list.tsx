@@ -4,6 +4,7 @@ import {
     CheckBox,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
     SectionHeading,
     VisitorCourseCard,
 } from '@maany_shr/e-class-ui-kit';
@@ -91,22 +92,19 @@ export function OffersCourseList({
         items: courses,
     });
 
-    // Validation and derived state
     if (!coursesViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
-    // TODO: Improve not found state display
     if (
         coursesViewModel.mode === 'not-found' ||
         displayedCourses.length === 0
     ) {
-        // TODO: replace with a proper component
-        return <DefaultError errorMessage="No courses found" />;
+        return <DefaultNotFound locale={locale} />;
     }
 
     if (coursesViewModel.mode !== 'default') {
-        return <DefaultError errorMessage={coursesViewModel.data.message} />;
+        return <DefaultError locale={locale} />;
     }
 
     return (

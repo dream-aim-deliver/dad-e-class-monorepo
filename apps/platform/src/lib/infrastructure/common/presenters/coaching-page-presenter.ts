@@ -6,34 +6,15 @@ import {
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
 
-export type TCoachingPagePresenterUtilities = {
-    redirect: (page: 'login') => Promise<void> | void;
-};
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type TCoachingPagePresenterUtilities = {};
 
-export const GetCoachingPageResponseMiddleware = {
-    'errorType:AuthenticationError': {
-        redirect: async (
-            context: {
-                response: ExtractStatusModel<
-                    useCaseModels.TGetCoachingPageUseCaseResponse,
-                    false
-                >;
-                currentViewModel: viewModels.TCoachingPageViewModel;
-                setViewModel: (
-                    currentViewModel: viewModels.TCoachingPageViewModel,
-                    viewModel: viewModels.TCoachingPageViewModel,
-                ) => void;
-            },
-            callback: TCoachingPagePresenterUtilities['redirect'],
-        ) => {
-            callback('login');
-        },
-    },
-} satisfies TBaseResponseResponseMiddleware<
-    useCaseModels.TGetCoachingPageUseCaseResponse,
-    viewModels.TCoachingPageViewModel,
-    TCoachingPagePresenterUtilities
->;
+export const GetCoachingPageResponseMiddleware =
+    {} satisfies TBaseResponseResponseMiddleware<
+        useCaseModels.TGetCoachingPageUseCaseResponse,
+        viewModels.TCoachingPageViewModel,
+        TCoachingPagePresenterUtilities
+    >;
 
 type TGetCoachingPageResponseMiddleware =
     typeof GetCoachingPageResponseMiddleware;

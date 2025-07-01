@@ -23,12 +23,10 @@ export type TTopicsByCategorySuccess = z.infer<typeof TopicsByCategorySuccessSch
 
 const TopicsByCategoryDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", TopicsByCategorySuccessSchema)
 const TopicsByCategoryKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const TopicsByCategoryUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory())
 
 export const TopicsByCategoryViewModelSchemaMap = {
     default: TopicsByCategoryDefaultViewModelSchema,
     kaboom: TopicsByCategoryKaboomViewModelSchema,
-    unauthenticated: TopicsByCategoryUnauthenticatedViewModelSchema,
 };
 export type TTopicsByCategoryViewModelSchemaMap = typeof TopicsByCategoryViewModelSchemaMap;
 export const TopicsByCategoryViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(TopicsByCategoryViewModelSchemaMap);

@@ -12,12 +12,10 @@ export type TOffersPageCarouselSuccess = z.infer<typeof OffersPageCarouselSucces
 
 const OffersPageCarouselDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", OffersPageCarouselSuccessSchema)
 const OffersPageCarouselKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const OffersPageCarouselUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory())
 
 export const OffersPageCarouselViewModelSchemaMap = {
     default: OffersPageCarouselDefaultViewModelSchema,
     kaboom: OffersPageCarouselKaboomViewModelSchema,
-    unauthenticated: OffersPageCarouselUnauthenticatedViewModelSchema,
 };
 export type TOffersPageCarouselViewModelSchemaMap = typeof OffersPageCarouselViewModelSchemaMap;
 export const OffersPageCarouselViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(OffersPageCarouselViewModelSchemaMap);

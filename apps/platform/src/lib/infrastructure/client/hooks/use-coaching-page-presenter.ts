@@ -1,6 +1,5 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
-import { useDefaultPresenterUtilities } from '../utils/use-default-presenter-utilities';
 import CoachingPagePresenter, {
     TCoachingPagePresenterUtilities,
 } from '../../common/presenters/coaching-page-presenter';
@@ -8,8 +7,7 @@ import CoachingPagePresenter, {
 export function useGetCoachingPagePresenter(
     setViewModel: (viewModel: viewModels.TCoachingPageViewModel) => void,
 ) {
-    const presenterUtilities: TCoachingPagePresenterUtilities =
-        useDefaultPresenterUtilities();
+    const presenterUtilities: TCoachingPagePresenterUtilities = {};
     const presenter = useMemo(
         () => new CoachingPagePresenter(setViewModel, presenterUtilities),
         [setViewModel],
