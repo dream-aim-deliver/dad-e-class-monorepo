@@ -153,12 +153,10 @@ export const HomePageSchema = z.object({
 
 const HomePageDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", HomePageSchema)
 const HomePageKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const HomePageUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory())
 
 export const HomePageViewModelSchemaMap = {
     default: HomePageDefaultViewModelSchema,
     kaboom: HomePageKaboomViewModelSchema,
-    unauthenticated: HomePageUnauthenticatedViewModelSchema,
 };
 export type THomePageViewModelSchemaMap = typeof HomePageViewModelSchemaMap;
 export const HomePageViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(HomePageViewModelSchemaMap);
