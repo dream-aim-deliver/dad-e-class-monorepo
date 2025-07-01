@@ -38,7 +38,10 @@ function AvailableCoachings() {
         return <DefaultError locale={locale} />;
     }
 
-    if (availableCoachingsViewModel.mode === 'not-found') {
+    if (
+        availableCoachingsViewModel.mode === 'not-found' ||
+        availableCoachingsViewModel.mode === 'unauthenticated'
+    ) {
         return;
     }
 
