@@ -6,34 +6,15 @@ import {
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
 
-export type TTopicsByCategoryPresenterUtilities = {
-    redirect: (page: 'login') => Promise<void> | void;
-};
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type TTopicsByCategoryPresenterUtilities = {};
 
-export const ListTopicsByCategoryResponseMiddleware = {
-    'errorType:AuthenticationError': {
-        redirect: async (
-            context: {
-                response: ExtractStatusModel<
-                    useCaseModels.TListTopicsByCategoryUseCaseResponse,
-                    false
-                >;
-                currentViewModel: viewModels.TTopicsByCategoryViewModel;
-                setViewModel: (
-                    currentViewModel: viewModels.TTopicsByCategoryViewModel,
-                    viewModel: viewModels.TTopicsByCategoryViewModel,
-                ) => void;
-            },
-            callback: TTopicsByCategoryPresenterUtilities['redirect'],
-        ) => {
-            callback('login');
-        },
-    },
-} satisfies TBaseResponseResponseMiddleware<
-    useCaseModels.TListTopicsByCategoryUseCaseResponse,
-    viewModels.TTopicsByCategoryViewModel,
-    TTopicsByCategoryPresenterUtilities
->;
+export const ListTopicsByCategoryResponseMiddleware =
+    {} satisfies TBaseResponseResponseMiddleware<
+        useCaseModels.TListTopicsByCategoryUseCaseResponse,
+        viewModels.TTopicsByCategoryViewModel,
+        TTopicsByCategoryPresenterUtilities
+    >;
 
 type TListTopicsByCategoryResponseMiddleware =
     typeof ListTopicsByCategoryResponseMiddleware;

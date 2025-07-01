@@ -8,8 +8,7 @@ import { useDefaultPresenterUtilities } from '../utils/use-default-presenter-uti
 export function useGetOffersPageCarouselPresenter(
     setViewModel: (viewModel: viewModels.TOffersPageCarouselViewModel) => void,
 ) {
-    const presenterUtilities: TOffersPageCarouselPresenterUtilities =
-        useDefaultPresenterUtilities();
+    const presenterUtilities: TOffersPageCarouselPresenterUtilities = {};
     const presenter = useMemo(
         () => new OffersPageCarouselPresenter(setViewModel, presenterUtilities),
         [setViewModel],

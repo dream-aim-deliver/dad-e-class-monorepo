@@ -14,10 +14,11 @@ import { trpc } from '../../trpc/client';
 import { Suspense, lazy, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetOffersPageOutlinePresenter } from '../../hooks/use-offers-page-outline-presenter';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import OffersFilters from './offers-filters';
 import { OffersCourseHeading, OffersCourseList } from './offers-course-list';
 import OffersCoachList from './offers-coach-list';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 const PackageList = lazy(() => import('./offers-package-list'));
 const Carousel = lazy(() => import('./offers-carousel'));
@@ -36,6 +37,7 @@ export default function Offers(props: OffersProps) {
     const { presenter } = useGetOffersPageOutlinePresenter(setOutlineViewModel);
     presenter.present(outlineResponse, outlineViewModel);
 
+    const locale = useLocale() as TLocale;
     const t = useTranslations('pages.offers');
 
     // Filter
@@ -44,14 +46,12 @@ export default function Offers(props: OffersProps) {
     );
     const [coachingIncluded, setCoachingIncluded] = useState<boolean>(false);
 
-    // Loading state
     if (!outlineViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
-    // Error state
     if (outlineViewModel.mode === 'kaboom') {
-        return <DefaultError errorMessage={outlineViewModel.data.message} />;
+        return <DefaultError locale={locale} />;
     }
 
     const outline = outlineViewModel.data;
@@ -77,7 +77,7 @@ export default function Offers(props: OffersProps) {
             </Suspense>
             <Divider className="my-12" />
             <SectionHeading text={t('ourPackages')} />
-            <Suspense fallback={<DefaultLoading />}>
+            <Suspense fallback={<DefaultLoading locale={locale} />}>
                 <PackageList />
             </Suspense>
             <Divider className="my-12" />

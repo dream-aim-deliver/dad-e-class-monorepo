@@ -12,13 +12,11 @@ export type TCoachListSuccess = z.infer<typeof CoachListSuccessSchema>;
 
 const CoachListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CoachListSuccessSchema)
 const CoachListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const CoachListUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory())
 const CoachListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory())
 
 export const CoachListViewModelSchemaMap = {
     default: CoachListDefaultViewModelSchema,
     kaboom: CoachListKaboomViewModelSchema,
-    unauthenticated: CoachListUnauthenticatedViewModelSchema,
     notFound: CoachListNotFoundViewModelSchema,
 };
 export type TCoachListViewModelSchemaMap = typeof CoachListViewModelSchemaMap;

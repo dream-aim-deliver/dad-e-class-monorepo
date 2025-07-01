@@ -36,11 +36,11 @@ export default function OffersCarousel() {
     const router = useRouter();
 
     if (!carouselViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
-    if (carouselViewModel.mode !== 'default') {
-        return <DefaultError errorMessage={carouselViewModel.data.message} />;
+    if (carouselViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
     }
 
     const carousel = carouselViewModel.data;
