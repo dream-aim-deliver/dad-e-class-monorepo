@@ -14,7 +14,7 @@ export default function DefaultError(props: DefaultErrorProps) {
 
     return <Banner 
         title={props.title || dictionary.components.defaultError.title}
-        description={props.title || dictionary.components.defaultError.description}
+        description={props.description || dictionary.components.defaultError.description}
         style="error"
         button={props.onRetry && {
             onClick: props.onRetry,

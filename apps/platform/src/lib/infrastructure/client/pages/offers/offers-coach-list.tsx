@@ -34,7 +34,11 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     const { presenter } = useListCoachesPresenter(setCoachesViewModel);
     presenter.present(coachesResponse, coachesViewModel);
 
-    const t = useTranslations('components.paginationButton');
+    const paginationTranslations = useTranslations(
+        'components.paginationButton',
+    );
+    const offersTranslations = useTranslations('pages.offers');
+
     const locale = useLocale() as TLocale;
     const router = useRouter();
 
@@ -43,7 +47,13 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     }
 
     if (coachesViewModel.mode === 'not-found') {
-        return <DefaultNotFound locale={locale} />;
+        return (
+            <DefaultNotFound
+                locale={locale}
+                title={offersTranslations('coachesNotFound.title')}
+                description={offersTranslations('coachesNotFound.description')}
+            />
+        );
     }
 
     if (coachesViewModel.mode === 'kaboom') {
@@ -53,7 +63,13 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     const coaches = coachesViewModel.data.coaches;
 
     if (coaches.length === 0) {
-        return <DefaultNotFound locale={locale} />;
+        return (
+            <DefaultNotFound
+                locale={locale}
+                title={offersTranslations('coachesNotFound.title')}
+                description={offersTranslations('coachesNotFound.description')}
+            />
+        );
     }
 
     const handleViewAll = () => {
@@ -96,7 +112,7 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
             </CardListLayout>
             <Button
                 variant="text"
-                text={t('viewAll')}
+                text={paginationTranslations('viewAll')}
                 onClick={handleViewAll}
             />
         </div>
