@@ -4,8 +4,9 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
+import { DefaultPaginationSchema } from '../utils/pagination';
 
-export const ListLanguagesRequestSchema = z.object({});
+export const ListLanguagesRequestSchema = DefaultPaginationSchema.extend({});
 export type TListLanguagesRequest = z.infer<typeof ListLanguagesRequestSchema>;
 
 const ListLanguagesSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
