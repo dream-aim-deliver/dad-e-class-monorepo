@@ -14,7 +14,7 @@ export default function DefaultNotFound(props: DefaultNotFoundProps) {
 
     return <Banner 
         title={props.title || dictionary.components.defaultNotFound.title}
-        description={props.title || dictionary.components.defaultNotFound.description}
+        description={props.description || dictionary.components.defaultNotFound.description}
         style="neutral"
         button={props.onRetry && {
             onClick: props.onRetry,
