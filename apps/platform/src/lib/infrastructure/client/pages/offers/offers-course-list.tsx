@@ -112,7 +112,7 @@ export function OffersCourseList({
         );
     }
 
-    if (coursesViewModel.mode !== 'default') {
+    if (coursesViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
     }
 

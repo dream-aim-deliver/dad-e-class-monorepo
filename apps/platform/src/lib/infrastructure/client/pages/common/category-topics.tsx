@@ -2,8 +2,14 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useListTopicsByCategoryPresenter } from '../../hooks/use-topics-by-category-presenter';
 import { trpc } from '../../trpc/client';
 import { useEffect, useMemo, useState } from 'react';
-import DefaultLoading from '../../wrappers/default-loading';
-import { DefaultError, FilterSwitch, Tabs } from '@maany_shr/e-class-ui-kit';
+import {
+    DefaultError,
+    DefaultLoading,
+    FilterSwitch,
+    Tabs,
+} from '@maany_shr/e-class-ui-kit';
+import { useLocale } from 'next-intl';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 const CONTENT_CLASS_NAME = 'mt-8';
 
@@ -18,6 +24,8 @@ export default function CategoryTopics({
     setSelectedTopics,
     filterText,
 }: CategoryTopicsProps) {
+    const locale = useLocale() as TLocale;
+
     // Data fetching and presentation logic
     const [topicsByCategoryResponse] =
         trpc.listTopicsByCategory.useSuspenseQuery({});
@@ -66,16 +74,12 @@ export default function CategoryTopics({
 
     // Loading state
     if (!topicsByCategoryViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
     // Error state
-    if (topicsByCategoryViewModel.mode !== 'default') {
-        return (
-            <DefaultError
-                errorMessage={topicsByCategoryViewModel.data.message}
-            />
-        );
+    if (topicsByCategoryViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
     }
 
     // Event handlers
