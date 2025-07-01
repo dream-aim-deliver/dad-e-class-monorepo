@@ -4,10 +4,9 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
+import { DefaultPaginationSchema } from '../utils/pagination';
 
-export const ListCoachesRequestSchema = z.object({
-    page: z.number().int().min(1).optional(),
-    pageSize: z.number().int().min(1).max(100).optional(),
+export const ListCoachesRequestSchema = DefaultPaginationSchema.extend({
     skillSlugs: z.array(z.string()).optional(),
 });
 export type TListCoachesRequest = z.infer<typeof ListCoachesRequestSchema>;
