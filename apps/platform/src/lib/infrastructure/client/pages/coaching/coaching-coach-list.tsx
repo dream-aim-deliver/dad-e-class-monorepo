@@ -8,6 +8,7 @@ import {
     CoachCard,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -53,19 +54,19 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
     } = useClientSidePagination({ items: coaches });
 
     if (!coachesViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
     if (coachesViewModel.mode === 'not-found') {
-        return <DefaultError errorMessage="No coaches found" />;
+        return <DefaultNotFound locale={locale} />;
     }
 
-    if (coachesViewModel.mode !== 'default') {
-        return <DefaultError errorMessage={coachesViewModel.data.message} />;
+    if (coachesViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
     }
 
     if (displayedCoaches.length === 0) {
-        return <DefaultError errorMessage="No coaches found" />;
+        return <DefaultNotFound locale={locale} />;
     }
 
     return (
