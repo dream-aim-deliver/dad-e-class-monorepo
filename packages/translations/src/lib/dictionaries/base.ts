@@ -10,6 +10,11 @@ export const DictionarySchema = z.object({
     defaultLoading: z.object({
       loading: z.string(),
     }),
+    defaultError: z.object({
+      title: z.string(),
+      description: z.string(),
+      retry: z.string(),
+    }),
     coachBanner: z.object({
       buttonText: z.string(),
       placeHolderText: z.string(),
