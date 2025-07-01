@@ -3,13 +3,11 @@ import { useMemo } from 'react';
 import PlatformPresenter, {
     TPlatformPresenterUtilities,
 } from '../../common/presenters/platform-presenter';
-import { useDefaultPresenterUtilities } from '../utils/use-default-presenter-utilities';
 
 export function useGetPlatformPresenter(
     setViewModel: (viewModel: viewModels.TPlatformViewModel) => void,
 ) {
-    const presenterUtilities: TPlatformPresenterUtilities =
-        useDefaultPresenterUtilities();
+    const presenterUtilities: TPlatformPresenterUtilities = {};
     const presenter = useMemo(
         () => new PlatformPresenter(setViewModel, presenterUtilities),
         [setViewModel],
