@@ -72,6 +72,18 @@ export default class AvailableCoachingsPresenter extends BasePresenter<
                 },
             };
         }
+        if (response.data.errorType === 'AuthenticationError') {
+            return {
+                mode: 'unauthenticated',
+                data: {
+                    type: response.data.errorType,
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context,
+                    trace: undefined,
+                },
+            };
+        }
         return {
             mode: 'kaboom',
             data: {
