@@ -8,6 +8,7 @@ import {
     CoachCard,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -38,21 +39,21 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     const router = useRouter();
 
     if (!coachesViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
     if (coachesViewModel.mode === 'not-found') {
-        return <DefaultError errorMessage="No coaches found" />;
+        return <DefaultNotFound locale={locale} />;
     }
 
-    if (coachesViewModel.mode !== 'default') {
-        return <DefaultError errorMessage={coachesViewModel.data.message} />;
+    if (coachesViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
     }
 
     const coaches = coachesViewModel.data.coaches;
 
     if (coaches.length === 0) {
-        return <DefaultError errorMessage="No coaches found" />;
+        return <DefaultNotFound locale={locale} />;
     }
 
     const handleViewAll = () => {

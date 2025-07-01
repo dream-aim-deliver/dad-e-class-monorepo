@@ -2,6 +2,7 @@ import {
     CardListLayout,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
     PackageCard,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/client';
@@ -25,22 +26,21 @@ export default function PackageList() {
     const router = useRouter();
 
     if (!packagesViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
     if (packagesViewModel.mode === 'not-found') {
-        // TODO: replace with a proper component
-        return <DefaultError errorMessage="No packages found" />;
+        return <DefaultNotFound locale={locale} />;
     }
 
-    if (packagesViewModel.mode !== 'default') {
-        return <DefaultError errorMessage={packagesViewModel.data.message} />;
+    if (packagesViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
     }
 
     const packages = packagesViewModel.data.packages;
 
     if (packages.length === 0) {
-        return <DefaultError errorMessage="No packages found" />;
+        return <DefaultNotFound locale={locale} />;
     }
 
     return (

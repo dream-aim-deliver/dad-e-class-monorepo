@@ -6,34 +6,15 @@ import {
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
 
-export type TOffersPageOutlinePresenterUtilities = {
-    redirect: (page: 'login') => Promise<void> | void;
-};
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type TOffersPageOutlinePresenterUtilities = {};
 
-export const GetOffersPageOutlineResponseMiddleware = {
-    'errorType:AuthenticationError': {
-        redirect: async (
-            context: {
-                response: ExtractStatusModel<
-                    useCaseModels.TGetOffersPageOutlineUseCaseResponse,
-                    false
-                >;
-                currentViewModel: viewModels.TOffersPageOutlineViewModel;
-                setViewModel: (
-                    currentViewModel: viewModels.TOffersPageOutlineViewModel,
-                    viewModel: viewModels.TOffersPageOutlineViewModel,
-                ) => void;
-            },
-            callback: TOffersPageOutlinePresenterUtilities['redirect'],
-        ) => {
-            callback('login');
-        },
-    },
-} satisfies TBaseResponseResponseMiddleware<
-    useCaseModels.TGetOffersPageOutlineUseCaseResponse,
-    viewModels.TOffersPageOutlineViewModel,
-    TOffersPageOutlinePresenterUtilities
->;
+export const GetOffersPageOutlineResponseMiddleware =
+    {} satisfies TBaseResponseResponseMiddleware<
+        useCaseModels.TGetOffersPageOutlineUseCaseResponse,
+        viewModels.TOffersPageOutlineViewModel,
+        TOffersPageOutlinePresenterUtilities
+    >;
 
 type TGetOffersPageOutlineResponseMiddleware =
     typeof GetOffersPageOutlineResponseMiddleware;
