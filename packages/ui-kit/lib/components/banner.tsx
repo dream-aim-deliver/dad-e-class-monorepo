@@ -8,10 +8,14 @@ interface BannerProps {
   description?: string;
   icon?: boolean;
   customIcon?: ReactNode;
-  style?: 'success' | 'warning' | 'error';
+  style?: 'success' | 'warning' | 'error' | 'neutral';
   closeable?: boolean;
   onClose?: () => void;
   className?: string;
+  button?: {
+    label: string;
+    onClick: () => void;
+  };
 }
 
 /**
@@ -23,20 +27,23 @@ interface BannerProps {
  * @param {string} [props.description] - Additional explanatory text to display under the title
  * @param {boolean} [props.icon=false] - Whether to show an icon on the left side of the banner
  * @param {ReactNode} [props.customIcon] - Custom icon element to override the default warning icon
- * @param {'success'|'warning'|'error'} [props.style='success'] - Visual style of the banner that determines its color scheme
+ * @param {'success'|'warning'|'error'|'neutral'} [props.style='success'] - Visual style of the banner that determines its color scheme
  * @param {boolean} [props.closeable=false] - Whether to show a close button on the banner
  * @param {Function} [props.onClose] - Callback function triggered when the close button is clicked
  * @param {string} [props.className] - Additional CSS classes to apply to the banner
+ * @param {Object} [props.button] - Optional button configuration
+ * @param {string} props.button.label - Text to display on the button
+ * @param {Function} props.button.onClick - Callback function triggered when the button is clicked
  * 
  * @example
- *  Success Banner
+ * // Success Banner
  * <Banner 
  *   title="Success!" 
  *   description="Your changes have been saved."
  *   style="success"
  * />
  * 
- * Warning banner with icon
+ * // Warning banner with icon
  * <Banner
  *   title="Warning"
  *   description="Your session will expire soon."
@@ -44,13 +51,24 @@ interface BannerProps {
  *   icon={true}
  * />
  * 
- * Error banner with close button
+ * // Error banner with close button
  * <Banner
  *   title="Error"
  *   description="Failed to save changes."
  *   style="error"
  *   closeable={true}
  *   onClose={() => console.log('Banner closed')}
+ * />
+ * 
+ * // Neutral banner with button
+ * <Banner
+ *   title="Update Available"
+ *   description="A new version is available for download."
+ *   style="neutral"
+ *   button={{
+ *     label: "Download",
+ *     onClick: () => console.log('Download clicked')
+ *   }}
  * />
  */
 const Banner: FC<BannerProps> = ({
@@ -62,11 +80,13 @@ const Banner: FC<BannerProps> = ({
   closeable = false,
   onClose,
   className,
+  button,
 }) => {
   const styleClasses: Record<string, string> = {
     success: 'text-feedback-success-primary border-feedback-success-primary',
     warning: 'text-feedback-warning-primary border-feedback-warning-primary',
     error: 'text-feedback-error-primary border-feedback-error-primary',
+    neutral: 'text-white border-white',
   };
 
   const colorClass = styleClasses[style];
@@ -106,15 +126,26 @@ const Banner: FC<BannerProps> = ({
         </div>
       </div>
 
-      {closeable && (
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className="flex-shrink-0 hover:opacity-80 transition-all duration-200 mt-[2px] ml-2"
-        >
-          <IconClose classNames="w-4 h-4 md:w-5 md:h-5" />
-        </button>
-      )}
+      <div className="flex items-start gap-2 flex-shrink-0">
+        {button && (
+          <button
+            onClick={button.onClick}
+            className="px-3 py-1 text-sm font-medium rounded border border-current hover:bg-current hover:bg-current/20 transition-all duration-200 cursor-pointer"
+          >
+            {button.label}
+          </button>
+        )}
+
+        {closeable && (
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="hover:opacity-80 transition-all duration-200 mt-[2px]"
+          >
+            <IconClose classNames="w-4 h-4 md:w-5 md:h-5" />
+          </button>
+        )}
+      </div>
     </div>
   );
 };
