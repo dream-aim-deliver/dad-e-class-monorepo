@@ -13,11 +13,13 @@ export type TAvailableCoachingListSuccess = z.infer<typeof AvailableCoachingList
 const AvailableCoachingListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", AvailableCoachingListSuccessSchema)
 const AvailableCoachingListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
 const AvailableCoachingListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory())
+const AvailableCoachingListUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory());
 
 export const AvailableCoachingListViewModelSchemaMap = {
     default: AvailableCoachingListDefaultViewModelSchema,
     kaboom: AvailableCoachingListKaboomViewModelSchema,
     notFound: AvailableCoachingListNotFoundViewModelSchema,
+    unauthenticated: AvailableCoachingListUnauthenticatedViewModelSchema,
 };
 export type TAvailableCoachingListViewModelSchemaMap = typeof AvailableCoachingListViewModelSchemaMap;
 export const AvailableCoachingListViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(AvailableCoachingListViewModelSchemaMap);
