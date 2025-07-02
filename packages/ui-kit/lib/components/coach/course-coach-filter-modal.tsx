@@ -89,12 +89,12 @@ export const CourseCoachFilterModal: React.FC<CourseCoachFilterModalProps> = ({
     };
 
     return (<div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50" onClick={onClose}>
-        <div className="flex flex-col gap-2 p-6 bg-card-fill text-text-primary w-full max-w-[450px] h-full max-h-[90vh] overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
+        <div className="relative flex flex-col gap-2 p-6 bg-card-fill text-text-primary w-full max-w-[450px] h-full max-h-[90vh] overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
+            <div className="absolute top-0 right-0">
+                <Button variant="text" size="medium" hasIconLeft iconLeft={<IconClose size="8" />} onClick={onClose} />
+            </div>
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">{dictionary.title}</h2>
-                <div className="flex top-0 right-0 p-0">
-                    <Button variant="text" size="small" hasIconLeft iconLeft={<IconClose size="6" />} onClick={onClose} />
-                </div>
             </div>
             <div className="h-px w-full bg-divider"></div>
 
