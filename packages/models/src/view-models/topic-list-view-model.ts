@@ -16,12 +16,10 @@ export type TTopicListSuccess = z.infer<typeof TopicListSuccessSchema>;
 
 const TopicListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", TopicListSuccessSchema)
 const TopicListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const TopicListUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory())
 
 export const TopicListViewModelSchemaMap = {
     default: TopicListDefaultViewModelSchema,
     kaboom: TopicListKaboomViewModelSchema,
-    unauthenticated: TopicListUnauthenticatedViewModelSchema,
 };
 export type TTopicListViewModelSchemaMap = typeof TopicListViewModelSchemaMap;
 export const TopicListViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(TopicListViewModelSchemaMap);

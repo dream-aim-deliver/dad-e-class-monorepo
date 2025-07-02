@@ -6,34 +6,15 @@ import {
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
 
-export type TOffersPageCarouselPresenterUtilities = {
-    redirect: (page: 'login') => Promise<void> | void;
-};
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type TOffersPageCarouselPresenterUtilities = {};
 
-export const GetOffersPageCarouselResponseMiddleware = {
-    'errorType:AuthenticationError': {
-        redirect: async (
-            context: {
-                response: ExtractStatusModel<
-                    useCaseModels.TGetOffersPageCarouselUseCaseResponse,
-                    false
-                >;
-                currentViewModel: viewModels.TOffersPageCarouselViewModel;
-                setViewModel: (
-                    currentViewModel: viewModels.TOffersPageCarouselViewModel,
-                    viewModel: viewModels.TOffersPageCarouselViewModel,
-                ) => void;
-            },
-            callback: TOffersPageCarouselPresenterUtilities['redirect'],
-        ) => {
-            callback('login');
-        },
-    },
-} satisfies TBaseResponseResponseMiddleware<
-    useCaseModels.TGetOffersPageCarouselUseCaseResponse,
-    viewModels.TOffersPageCarouselViewModel,
-    TOffersPageCarouselPresenterUtilities
->;
+export const GetOffersPageCarouselResponseMiddleware =
+    {} satisfies TBaseResponseResponseMiddleware<
+        useCaseModels.TGetOffersPageCarouselUseCaseResponse,
+        viewModels.TOffersPageCarouselViewModel,
+        TOffersPageCarouselPresenterUtilities
+    >;
 
 type TGetOffersPageCarouselResponseMiddleware =
     typeof GetOffersPageCarouselResponseMiddleware;

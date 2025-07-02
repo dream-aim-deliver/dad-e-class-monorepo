@@ -12,6 +12,19 @@ export const EN: TDictionary = {
       loadMore: 'Load more...',
       viewAll: 'View all',
     },
+    defaultLoading: {
+      loading: 'Loading...',
+    },
+    defaultError: {
+      title: 'Something went wrong',
+      description: 'A critical error occurred. Please try reloading the page. If the issue persists, please contact us at example@mail.com.',
+      retry: 'Retry',
+    },
+    defaultNotFound: {
+      title: 'Not Found',
+      description: 'Could not find the requested resource.',
+      retry: 'Retry',
+    },
     coachBanner: {
       buttonText: 'Become a Coach',
       placeHolderText: 'Image not available',
