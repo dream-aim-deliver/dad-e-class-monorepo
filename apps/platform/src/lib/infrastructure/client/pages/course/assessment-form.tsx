@@ -11,14 +11,8 @@ import {
     DefaultLoading,
     FormElement,
     FormElementRenderer,
-    FormElementType,
-    HeadingElement,
-    OneOutOfThreeElement,
-    RichTextElement,
-    SingleChoiceElement,
-    TextInputElement,
-    MultiCheckElement,
 } from '@maany_shr/e-class-ui-kit';
+import { transformLessonComponents } from '../../utils/transform-lesson-components';
 
 interface AssessmentFormProps {
     courseSlug: string;
@@ -46,97 +40,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         }
         const components = componentsViewModel.data.components;
 
-        const elements: FormElement[] = [];
-        for (const component of components) {
-            let element: FormElement | undefined;
-            if (component.type === 'richText') {
-                const typedElement: RichTextElement = {
-                    type: FormElementType.RichText,
-                    order: component.order,
-                    id: component.id,
-                    content: component.text,
-                };
-                element = typedElement;
-            }
-            if (component.type === 'heading') {
-                const typedElement: HeadingElement = {
-                    type: FormElementType.HeadingText,
-                    order: component.order,
-                    id: component.id,
-                    heading: component.text,
-                    headingType: component.size,
-                };
-                element = typedElement;
-            }
-            if (component.type === 'singleChoice') {
-                const typedElement: SingleChoiceElement = {
-                    type: FormElementType.SingleChoice,
-                    order: component.order,
-                    id: component.id,
-                    title: component.title,
-                    options: component.options.map((option) => ({
-                        id: option.id,
-                        name: option.name,
-                        isSelected: false,
-                    })),
-                    required: component.required,
-                };
-                element = typedElement;
-            }
-            if (component.type === 'multipleChoice') {
-                const typedElement: MultiCheckElement = {
-                    type: FormElementType.MultiCheck,
-                    order: component.order,
-                    id: component.id,
-                    title: component.title,
-                    options: component.options.map((option) => ({
-                        id: option.id,
-                        name: option.name,
-                        isSelected: false,
-                    })),
-                    required: component.required,
-                };
-                element = typedElement;
-            }
-            if (component.type === 'textInput') {
-                const typedElement: TextInputElement = {
-                    type: FormElementType.TextInput,
-                    order: component.order,
-                    id: component.id,
-                    helperText: component.helperText,
-                    required: component.required,
-                };
-                element = typedElement;
-            }
-            if (component.type === 'oneOutOfThree') {
-                const columns = component.columns.map((column) => ({
-                    id: column.id,
-                    columnTitle: column.name,
-                    selected: false,
-                }));
-                const typedElement: OneOutOfThreeElement = {
-                    type: FormElementType.OneOutOfThree,
-                    order: component.order,
-                    id: component.id,
-                    data: {
-                        tableTitle: component.title,
-                        rows: component.rows.map((row) => ({
-                            id: row.id,
-                            rowTitle: row.name,
-                            columns: columns.slice(),
-                        })),
-                    },
-                    required: component.required,
-                };
-                element = typedElement;
-            }
-            if (!element) {
-                console.error(`Unknown component type: ${component.type}`);
-                continue;
-            }
-            elements.push(element);
-        }
-        return elements;
+        return transformLessonComponents(components);
     }, [componentsViewModel]);
 
     if (!componentsViewModel) {
