@@ -92,6 +92,7 @@ export type TextInputElement = TextInputWithHelperOnly | TextInputWithBoth;
  * ```
  */
 export interface ChoiceOption {
+    id?: number;
     name: string;
     isSelected: boolean;
 }

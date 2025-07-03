@@ -75,6 +75,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                     id: component.id,
                     title: component.title,
                     options: component.options.map((option) => ({
+                        id: option.id,
                         name: option.name,
                         isSelected: false,
                     })),
@@ -89,6 +90,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                     id: component.id,
                     title: component.title,
                     options: component.options.map((option) => ({
+                        id: option.id,
                         name: option.name,
                         isSelected: false,
                     })),
@@ -107,13 +109,22 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                 element = typedElement;
             }
             if (component.type === 'oneOutOfThree') {
+                const columns = component.columns.map((column) => ({
+                    id: column.id,
+                    columnTitle: column.name,
+                    selected: false,
+                }));
                 const typedElement: OneOutOfThreeElement = {
                     type: FormElementType.OneOutOfThree,
                     order: component.order,
                     id: component.id,
                     data: {
                         tableTitle: component.title,
-                        rows: [],
+                        rows: component.rows.map((row) => ({
+                            id: row.id,
+                            rowTitle: row.name,
+                            columns: columns.slice(),
+                        })),
                     },
                     required: component.required,
                 };

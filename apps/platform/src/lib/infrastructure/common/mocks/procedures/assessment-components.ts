@@ -323,7 +323,7 @@ export const listAssessmentComponents = t.procedure
         async (): Promise<useCaseModels.TListAssessmentComponentsUseCaseResponse> => {
             return {
                 success: true,
-                data: mockFiveComponents,
+                data: mockSevenComponents,
             };
         },
     );
