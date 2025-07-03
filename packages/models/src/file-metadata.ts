@@ -22,7 +22,7 @@ export const ExternalProviderSchema = z.object({
 
 
 export const FileMetadataBaseSchema = z.object({
-    id: z.number(),
+    id: z.string(),
     name: z.string(),
     mimeType: z.string(), // TBD: should we add a validator?
     size: z.number(),
@@ -66,6 +66,7 @@ export type TFileMetadata = z.infer<
 
 
 export const FileUploadRequestSchema = z.object({
+    id: z.string(),
     name: z.string(),
     file: z.instanceof(File),
 });
