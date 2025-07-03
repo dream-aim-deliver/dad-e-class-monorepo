@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconRichText } from "../icons/icon-rich-text";
-import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps } from "../pre-assessment/types";
+import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps, valueType } from "../pre-assessment/types";
 import RichTextRenderer from "../rich-text-element/renderer";
 import DesignerLayout from "../designer-layout";
 import { RichTextEditor } from "../rich-text-element/editor";
@@ -22,7 +22,7 @@ const richTextElement: FormElementTemplate = {
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: string) => true
+    validate: (elementInstance: FormElement, value: valueType) => true
 
 };
 
@@ -75,9 +75,9 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
             type={elementInstance.type}
             title="Rich Text"
             icon={<IconRichText classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(elementInstance.id)}
-            onDownClick={() => onDownClick(elementInstance.id)}
-            onDeleteClick={() => onDeleteClick(elementInstance.id)}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >

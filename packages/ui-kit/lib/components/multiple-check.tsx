@@ -43,7 +43,7 @@ export default function MultipleChoicePreview({
                         disabled={filled}
 
                         checked={option.isSelected}
-                        onChange={() => onChange(option.name)}
+                        onChange={() => onChange?.(option.name)}
                         withText
                     />
                 ))

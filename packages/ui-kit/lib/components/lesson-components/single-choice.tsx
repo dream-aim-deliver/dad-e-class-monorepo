@@ -51,7 +51,7 @@ const singleChoiceElement: FormElementTemplate = {
     submissionComponent: ViewComponent,
     validate: (elementInstance: FormElement, value: valueType) => {
         if (elementInstance.required) {
-            return Array.isArray(value) ? value.some(opt => opt.isSelected) : false;
+            return Array.isArray(value) ? (value as optionsType[]).some(opt => opt.isSelected) : false;
         }
         return true;
     }
@@ -151,7 +151,7 @@ export function FormComponent({ elementInstance, submitValue }: { elementInstanc
     return (
         <div className="text-text-primary flex flex-col gap-2">
             <SingleChoicePreview
-                required={elementInstance.required}
+                required={elementInstance.required ?? false}
                 title={elementInstance.title}
                 options={options}
                 onChange={handleOptionChange}
@@ -171,7 +171,7 @@ function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
     return (
         <div className="text-text-primary flex flex-col gap-2">
             <SingleChoicePreview
-                required={elementInstance.required}
+                required={elementInstance.required ?? false}
                 title={elementInstance.title}
                 options={elementInstance.options}
                 filled={true}
