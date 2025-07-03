@@ -4,6 +4,7 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
+import exp from 'constants';
 
 export const ListAssessmentComponentsRequestSchema = z.object({
   courseSlug: z.string(),
@@ -70,6 +71,7 @@ const ComponentSchema = z.discriminatedUnion('type', [
   MultipleChoiceSchema,
   OneOutOfThreeSchema,
 ]);
+export type TLessonComponent = z.infer<typeof ComponentSchema>;
 
 export const ListAssessmentComponentsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
   components: z.array(ComponentSchema),
