@@ -17,7 +17,7 @@ import {
     RichTextElement,
     SingleChoiceElement,
     TextInputElement,
-    multiCheckElement,
+    MultiCheckElement,
 } from '@maany_shr/e-class-ui-kit';
 
 interface AssessmentFormProps {
@@ -84,7 +84,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                 element = typedElement;
             }
             if (component.type === 'multipleChoice') {
-                const typedElement: multiCheckElement = {
+                const typedElement: MultiCheckElement = {
                     type: FormElementType.MultiCheck,
                     order: component.order,
                     id: component.id,
