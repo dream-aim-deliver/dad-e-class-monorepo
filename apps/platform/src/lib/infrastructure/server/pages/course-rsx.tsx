@@ -48,7 +48,7 @@ export default async function CourseServerComponent({
     }
 
     if (courseAccessViewModel.data.highestRole === 'student') {
-        if (courseAccessViewModel.data.isAssessmentCompleted) {
+        if (courseAccessViewModel.data.isAssessmentCompleted || courseAccessViewModel.data.isAssessmentCompleted === null) {
             return <div>Student View</div>;
         } else {
             return <AssessmentForm courseSlug={slug} />;
