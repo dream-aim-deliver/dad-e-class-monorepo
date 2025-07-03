@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { DragAndDrop } from './drag-and-drop';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
@@ -8,10 +8,6 @@ import { FilePreview } from './file-preview';
 /**
  * Represents a file being uploaded with its associated state
  */
-export type UploadedFileType = {
-  request: fileMetadata.TFileUploadRequest;
-  responseData?: fileMetadata.TFileMetadata;
-};
 
 /**
  * Common props shared between single and multiple uploaders
@@ -48,12 +44,15 @@ export type UploadedFileType = {
 
 interface CommonUploaderProps extends isLocalAware {
   maxSize?: number;
-  onDelete: (id: number) => void;
-  onDownload: (id: number) => void;
+  onDelete: (id: string) => void;
+  onDownload: (id: string) => void;
   className?: string;
   acceptedFileTypes?: string[];
   variant: fileMetadata.TFileCategoryEnum;
-  onFilesChange: (files: UploadedFileType[]) => Promise<fileMetadata.TFileMetadata>; // The main callback for handling file changes
+  onFilesChange: (
+    files: fileMetadata.TFileUploadRequest[],
+    abortSignal?: AbortSignal
+  ) => Promise<fileMetadata.TFileMetadata | null>;
 }
 
 /**
@@ -61,7 +60,7 @@ interface CommonUploaderProps extends isLocalAware {
  */
 type SingleUploaderProps = CommonUploaderProps & {
   type: 'single';
-  file: UploadedFileType;
+  file: fileMetadata.TFileMetadata | null;
 };
 
 /**
@@ -70,7 +69,7 @@ type SingleUploaderProps = CommonUploaderProps & {
 type MultipleUploaderProps = CommonUploaderProps & {
   type: 'multiple';
   maxFile: number;
-  files: UploadedFileType[];
+  files: fileMetadata.TFileMetadata[] | null;
 };
 
 /**
@@ -135,6 +134,8 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
   const { maxSize = 5, onDelete, onDownload, className, variant, locale, onFilesChange } = props;
   const files = props.type === 'single' ? (props.file ? [props.file] : []) : props.files;
   const dictionary = getDictionary(locale);
+  const abortControllers = useRef(new Map<string, AbortController>());
+
 
   // Determine accepted file types based on variant
   const getAcceptedFileTypes = (): string[] => {
@@ -146,6 +147,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
       case 'document':
         return props.acceptedFileTypes || ['application/pdf', '.doc', '.docx', 'application/msword'];
       case 'generic':
+        return ['*/*']; // Generic accepts all file types
       default:
         return props.acceptedFileTypes || ['*/*'];
     }
@@ -183,70 +185,92 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
 
     if (props.type === 'single') {
       const file = uploadedFiles[0];
+      const tempId = crypto.randomUUID();
+      const controller = new AbortController();
+      abortControllers.current.set(tempId, controller);
+
       try {
-        const newFile: UploadedFileType = {
-          request: {
-            name: file.name,
-            file: file,
-          },
+        const newFile: fileMetadata.TFileUploadRequest = {
+          id: tempId,
+          name: file.name,
+          file: file,
         };
-        await onFilesChange([newFile]);
-        return;
+        await onFilesChange([newFile], controller.signal);
       } catch (err) {
-        return err;
+        if ((err as Error).name !== 'AbortError') {
+          return err;
+        }
+      } finally {
+        abortControllers.current.delete(tempId);
       }
     } else {
+      const successfulFiles =files.length>0 && files.filter(file => (file.status === 'available' || file.status === 'processing'));
+      const remainingSlots = props.maxFile - successfulFiles.length;
+      const filesToAdd = uploadedFiles.slice(0, remainingSlots);
+      if (filesToAdd.length === 0) return;
+
+      const newUploadingFiles = filesToAdd.map((file) => {
+        const tempId = crypto.randomUUID();
+        const controller = new AbortController();
+        abortControllers.current.set(tempId, controller);
+        return {
+          id: tempId,
+          name: file.name,
+          file: file,
+        };
+      });
+
       try {
-        const successfulFiles = files.filter(file => file.responseData?.status === 'available' || file.responseData?.status === 'processing');
-        const remainingSlots = props.maxFile - successfulFiles.length;
-        const filesToAdd = uploadedFiles.slice(0, remainingSlots);
-
-        if (filesToAdd.length === 0) return;
-
-        const newUploadingFiles = filesToAdd.map((file) => ({
-          request: {
-            name: file.name,
-            file: file,
-          },
-        }));
-
-        const updatedFiles = [...successfulFiles, ...newUploadingFiles];
-        await onFilesChange(updatedFiles);
-        return;
+        const uploadPromises = newUploadingFiles.map(async (newFile) => {
+          const controller = abortControllers.current.get(newFile.id);
+          try {
+            await onFilesChange([newFile], controller?.signal);
+          } catch (err) {
+            if ((err as Error).name !== 'AbortError') {
+              return err;
+            }
+          } finally {
+            abortControllers.current.delete(newFile.id);
+          }
+        });
+        await Promise.all(uploadPromises);
       } catch (err) {
         return err;
       }
     }
   };
+  const handleCancelUpload = async (id: string) => {
+    const controller = abortControllers.current.get(id);
+    if (controller) {
+      controller.abort();
+      abortControllers.current.delete(id);
+    }
 
-  const handleCancelUpload = async (index: number) => {
-    // For single uploader
+    // For single uploader, we also clear the file via onFilesChange
     if (props.type === 'single') {
       await onFilesChange([]);
-      return;
     }
-  }
-
+  };
   return (
     <div className={cn('flex flex-col gap-4 w-full', className)}>
-      {files?.length > 0 && files.some(file => file.request.name) && (
+      {files?.length > 0 && (
         <div className="flex flex-col gap-2 w-full">
-          {files.filter((file): file is UploadedFileType & { responseData: fileMetadata.TFileMetadata } => !!file.responseData).map((file, index) => (
-            <FilePreview
-              key={index}
-              uploadResponse={file.responseData}
-              index={index}
-              onDelete={() => onDelete(file.responseData.id)}
-              onDownload={() => onDownload(file.responseData.id)}
-              locale={locale}
-              onCancelUpload={handleCancelUpload}
-            />
+          {files.map((file, index) => (
+            <div key={file.id}>
+              <FilePreview
+                uploadResponse={file}
+                onDelete={onDelete}
+                onDownload={onDownload}
+                onCancelUpload={handleCancelUpload}
+                locale={locale}
+              />
+            </div>
           ))}
         </div>
       )}
 
-      {((props.type === 'single' && (!props.file || !props.file.request.name || files.filter(f => f.request.name).length === 0)) ||
-        (props.type === 'multiple' && files.filter(f => f.request.name).length < props.maxFile)) && (
+      {((props.type === 'single' && (!props.file || !props.file.name || files.filter(f => f.name).length === 0)) ||
+        (props.type === 'multiple' && files.filter(f => f.name).length < props.maxFile)) && (
           <DragAndDrop
             onUpload={handleUpload}
             maxSize={maxSize * 1024 * 1024}
