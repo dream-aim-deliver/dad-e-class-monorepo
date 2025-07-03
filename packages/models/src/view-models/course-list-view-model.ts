@@ -14,13 +14,11 @@ export type TCourseListSuccess = z.infer<typeof CourseListSuccessSchema>;
 
 const CourseListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CourseListSuccessSchema)
 const CourseListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const CourseListUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory())
 const CourseListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory())
 
 export const CourseListViewModelSchemaMap = {
     default: CourseListDefaultViewModelSchema,
     kaboom: CourseListKaboomViewModelSchema,
-    unauthenticated: CourseListUnauthenticatedViewModelSchema,
     notFound: CourseListNotFoundViewModelSchema,
 };
 export type TCourseListViewModelSchemaMap = typeof CourseListViewModelSchemaMap;

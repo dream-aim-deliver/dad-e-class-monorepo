@@ -17,12 +17,10 @@ export type TPlatformSuccess = z.infer<typeof PlatformSuccessSchema>;
 
 const PlatformDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", PlatformSuccessSchema)
 const PlatformKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const PlatformUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory())
 
 export const PlatformViewModelSchemaMap = {
     default: PlatformDefaultViewModelSchema,
     kaboom: PlatformKaboomViewModelSchema,
-    unauthenticated: PlatformUnauthenticatedViewModelSchema,
 };
 export type TPlatformViewModelSchemaMap = typeof PlatformViewModelSchemaMap;
 export const PlatformViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(PlatformViewModelSchemaMap);

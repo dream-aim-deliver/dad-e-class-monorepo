@@ -96,7 +96,7 @@ export function FormComponent({ elementInstance, submitValue }: { elementInstanc
             data={oneOutOfThreeData}
             displayOnly={false}
             onChange={handleChange}
-            required={elementInstance.required}
+            required={elementInstance.required ?? false}
 
         />
 
@@ -115,7 +115,7 @@ function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
         <OneOutOfThreePreview
             data={oneOutOfThreeData}
             displayOnly={true}
-            required={elementInstance.required}
+            required={elementInstance.required ?? false}
         />
 
     );

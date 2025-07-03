@@ -7,6 +7,19 @@ export const DictionarySchema = z.object({
       loadMore: z.string(),
       viewAll: z.string(),
     }),
+    defaultLoading: z.object({
+      loading: z.string(),
+    }),
+    defaultError: z.object({
+      title: z.string(),
+      description: z.string(),
+      retry: z.string(),
+    }),
+    defaultNotFound: z.object({
+      title: z.string(),
+      description: z.string(),
+      retry: z.string(),
+    }),
     coachBanner: z.object({
       buttonText: z.string(),
       placeHolderText: z.string(),
@@ -571,6 +584,21 @@ export const DictionarySchema = z.object({
       coachingOnDemand: z.string(),
       coachingIncluded: z.string(),
       haveNotFound: z.string(),
+      coursesNotFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      packagesNotFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      coachesNotFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+    }),
+    assessmentForm: z.object({
+      defaultFormError: z.string(),
     }),
     coaching: z.object({
       chooseCategory: z.string(),

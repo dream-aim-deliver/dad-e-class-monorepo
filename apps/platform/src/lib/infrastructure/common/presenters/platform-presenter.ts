@@ -1,39 +1,19 @@
 import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
-    ExtractStatusModel,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse,
 } from '@dream-aim-deliver/dad-cats';
 
-export type TPlatformPresenterUtilities = {
-    redirect: (page: 'login') => Promise<void> | void;
-};
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type TPlatformPresenterUtilities = {};
 
-export const GetPlatformResponseMiddleware = {
-    'errorType:AuthenticationError': {
-        redirect: async (
-            context: {
-                response: ExtractStatusModel<
-                    useCaseModels.TGetPlatformUseCaseResponse,
-                    false
-                >;
-                currentViewModel: viewModels.TPlatformViewModel;
-                setViewModel: (
-                    currentViewModel: viewModels.TPlatformViewModel,
-                    viewModel: viewModels.TPlatformViewModel,
-                ) => void;
-            },
-            callback: TPlatformPresenterUtilities['redirect'],
-        ) => {
-            callback('login');
-        },
-    },
-} satisfies TBaseResponseResponseMiddleware<
-    useCaseModels.TGetPlatformUseCaseResponse,
-    viewModels.TPlatformViewModel,
-    TPlatformPresenterUtilities
->;
+export const GetPlatformResponseMiddleware =
+    {} satisfies TBaseResponseResponseMiddleware<
+        useCaseModels.TGetPlatformUseCaseResponse,
+        viewModels.TPlatformViewModel,
+        TPlatformPresenterUtilities
+    >;
 
 type TGetPlatformResponseMiddleware = typeof GetPlatformResponseMiddleware;
 

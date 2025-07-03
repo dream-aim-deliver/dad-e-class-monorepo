@@ -54,9 +54,7 @@ export default async function RootLayout({
     children: React.ReactNode;
     params: Promise<{ locale: string }>;
 }) {
-    const queryOptions = trpc.listLanguages.queryOptions({
-        platformId: env.platformId,
-    });
+    const queryOptions = trpc.listLanguages.queryOptions({});
     const queryClient = getQueryClient();
     const languagesResponse = await queryClient.fetchQuery(queryOptions);
     let languagesViewModel: viewModels.TLanguageListViewModel | undefined;

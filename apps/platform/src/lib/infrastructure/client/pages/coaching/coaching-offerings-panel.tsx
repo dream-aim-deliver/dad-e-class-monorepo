@@ -14,8 +14,6 @@ import { useRouter } from 'next/navigation';
 import { useListAvailableCoachingsPresenter } from '../../hooks/use-available-coachings-presenter';
 import { useSession } from 'next-auth/react';
 
-const PANEL_WIDTH = '400px';
-
 function AvailableCoachings() {
     const [availableCoachingsResponse] =
         trpc.listAvailableCoachings.useSuspenseQuery({});
@@ -31,18 +29,25 @@ function AvailableCoachings() {
     const locale = useLocale() as TLocale;
 
     if (!availableCoachingsViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
-    if (availableCoachingsViewModel.mode !== 'default') {
-        return (
-            <DefaultError
-                errorMessage={availableCoachingsViewModel.data.message}
-            />
-        );
+    if (availableCoachingsViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
+    }
+
+    if (
+        availableCoachingsViewModel.mode === 'not-found' ||
+        availableCoachingsViewModel.mode === 'unauthenticated'
+    ) {
+        return;
     }
 
     const availableOfferings = availableCoachingsViewModel.data.offerings;
+
+    if (availableOfferings.length === 0) {
+        return;
+    }
 
     return (
         <AvailableCoachingSessions
@@ -90,22 +95,26 @@ export default function CoachingOfferingsPanel() {
     }, [coachingOfferingsViewModel]);
 
     if (!coachingOfferingsViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
-    if (coachingOfferingsViewModel.mode !== 'default') {
-        return (
-            <DefaultError
-                errorMessage={coachingOfferingsViewModel.data.message}
-            />
-        );
+    if (coachingOfferingsViewModel.mode === 'not-found') {
+        return;
+    }
+
+    if (coachingOfferingsViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
     }
 
     const coachingOfferings = coachingOfferingsViewModel.data.offerings;
 
+    if (coachingOfferings.length === 0) {
+        return;
+    }
+
     return (
         <div
-            className={`flex flex-col space-y-5 lg:min-w-[${PANEL_WIDTH}] lg:w-[${PANEL_WIDTH}]`}
+            className={`flex flex-col space-y-5 lg:min-w-[400px] lg:w-[400px]`}
         >
             {isLoggedIn && (
                 <Suspense

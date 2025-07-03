@@ -29,9 +29,9 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
         useGetPlatformPresenter(setPlatformViewModel);
     platformPresenter.present(platformResponse, platformViewModel);
 
-    if (!platformViewModel) return <DefaultLoading />;
+    if (!platformViewModel) return <DefaultLoading locale={locale} />;
     if (platformViewModel.mode === 'kaboom') {
-        return <DefaultError errorMessage={platformViewModel.data.message} />;
+        return <DefaultError locale={locale} />;
     }
 
     return (

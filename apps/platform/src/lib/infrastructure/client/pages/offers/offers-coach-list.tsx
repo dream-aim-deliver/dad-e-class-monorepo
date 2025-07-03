@@ -8,6 +8,7 @@ import {
     CoachCard,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -22,8 +23,10 @@ const COACHES_PER_PAGE = 6;
 export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
         skillSlugs: selectedTopics,
-        page: 1,
-        pageSize: COACHES_PER_PAGE,
+        pagination: {
+            page: 1,
+            pageSize: COACHES_PER_PAGE,
+        },
     });
     const [coachesViewModel, setCoachesViewModel] = useState<
         viewModels.TCoachListViewModel | undefined
@@ -31,26 +34,42 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     const { presenter } = useListCoachesPresenter(setCoachesViewModel);
     presenter.present(coachesResponse, coachesViewModel);
 
-    const t = useTranslations('components.paginationButton');
+    const paginationTranslations = useTranslations(
+        'components.paginationButton',
+    );
+    const offersTranslations = useTranslations('pages.offers');
+
     const locale = useLocale() as TLocale;
     const router = useRouter();
 
     if (!coachesViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
     if (coachesViewModel.mode === 'not-found') {
-        return <DefaultError errorMessage="No coaches found" />;
+        return (
+            <DefaultNotFound
+                locale={locale}
+                title={offersTranslations('coachesNotFound.title')}
+                description={offersTranslations('coachesNotFound.description')}
+            />
+        );
     }
 
-    if (coachesViewModel.mode !== 'default') {
-        return <DefaultError errorMessage={coachesViewModel.data.message} />;
+    if (coachesViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
     }
 
     const coaches = coachesViewModel.data.coaches;
 
     if (coaches.length === 0) {
-        return <DefaultError errorMessage="No coaches found" />;
+        return (
+            <DefaultNotFound
+                locale={locale}
+                title={offersTranslations('coachesNotFound.title')}
+                description={offersTranslations('coachesNotFound.description')}
+            />
+        );
     }
 
     const handleViewAll = () => {
@@ -93,7 +112,7 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
             </CardListLayout>
             <Button
                 variant="text"
-                text={t('viewAll')}
+                text={paginationTranslations('viewAll')}
                 onClick={handleViewAll}
             />
         </div>

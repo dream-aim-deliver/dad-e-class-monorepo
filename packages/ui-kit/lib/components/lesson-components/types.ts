@@ -92,6 +92,7 @@ export type TextInputElement = TextInputWithHelperOnly | TextInputWithBoth;
  * ```
  */
 export interface ChoiceOption {
+    id?: number;
     name: string;
     isSelected: boolean;
 }
@@ -150,7 +151,7 @@ export interface HeadingElement extends BaseFormElement {
 }
 
 
-export interface multiCheckElement extends BaseFormElement {
+export interface MultiCheckElement extends BaseFormElement {
     type: FormElementType.MultiCheck;
     title: string;
     options: ChoiceOption[];
