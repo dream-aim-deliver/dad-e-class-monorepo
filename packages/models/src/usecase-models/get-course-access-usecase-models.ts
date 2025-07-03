@@ -12,8 +12,11 @@ export const GetCourseAccessRequestSchema = z.object({
 
 export type TGetCourseAccessRequest = z.infer<typeof GetCourseAccessRequestSchema>;
 
+export const CourseRoleSchema = z.enum(['visitor', 'student', 'coach', 'admin']);
+export type TCourseRole = z.infer<typeof CourseRoleSchema>;
+
 export const GetCourseAccessSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
-  roles: z.array(z.enum(['visitor', 'student', 'coach', 'admin'])),
+  roles: z.array(CourseRoleSchema),
   isAssessmentCompleted: z.boolean().nullable(),
 }));
 
