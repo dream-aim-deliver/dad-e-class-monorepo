@@ -35,6 +35,7 @@ export type TAssignmentReplySender = z.infer<typeof AssignmentReplySenderSchema>
 export const BaseAssignmentReplySchema = z.object({
     timestamp: z.string().datetime({ offset: true }),
     sender: AssignmentReplySenderSchema,
+    replyId: z.number(), // reply ID in the assignment
 });
 
 export const AssignmentTextReplySchema = BaseAssignmentReplySchema.extend({

@@ -15,4 +15,5 @@ export * as topic from './topic';
 export * as homePage from './home-page';
 export * as fileMetadata from './file-metadata';
 export * as assignment from './assignment';
+export * as shared from './shared';
 
