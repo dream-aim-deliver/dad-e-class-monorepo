@@ -78,6 +78,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                         name: option.name,
                         isSelected: false,
                     })),
+                    required: component.required,
                 };
                 element = typedElement;
             }
@@ -91,6 +92,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                         name: option.name,
                         isSelected: false,
                     })),
+                    required: component.required,
                 };
                 element = typedElement;
             }
@@ -100,6 +102,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                     order: component.order,
                     id: component.id,
                     helperText: component.helperText,
+                    required: component.required,
                 };
                 element = typedElement;
             }
@@ -112,6 +115,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                         tableTitle: component.title,
                         rows: [],
                     },
+                    required: component.required,
                 };
                 element = typedElement;
             }
@@ -137,7 +141,9 @@ export default function AssessmentForm(props: AssessmentFormProps) {
             <FormElementRenderer
                 isError={false}
                 isLoading={false}
-                onSubmit={() => {}}
+                onSubmit={() => {
+                    console.log('Form submitted');
+                }}
                 elements={formElements}
                 locale={locale}
             />

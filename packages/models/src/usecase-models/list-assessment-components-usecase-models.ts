@@ -59,6 +59,7 @@ const OneOutOfThreeSchema = BaseComponent.extend({
   title: z.string(),
   columns: z.array(OptionSchema),
   rows: z.array(OptionSchema),
+  required: z.boolean(),
 });
 
 const ComponentSchema = z.discriminatedUnion('type', [
