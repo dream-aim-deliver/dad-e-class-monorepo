@@ -1,7 +1,7 @@
 'use client';
 
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { trpc } from '../../trpc/client';
 import { useEffect, useMemo, useState } from 'react';
 import { useListAssessmentComponentsPresenter } from '../../hooks/use-assessment-components-presenter';
@@ -22,6 +22,7 @@ interface AssessmentFormProps {
 
 export default function AssessmentForm(props: AssessmentFormProps) {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.assessmentForm');
 
     const [componentsResponse] = trpc.listAssessmentComponents.useSuspenseQuery(
         {
@@ -85,7 +86,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
             return submitAssessmentViewModel.data.message;
         }
         if (submitMutation.error || hasViewModelError) {
-            return 'Unknown error occurred while submitting the assessment.';
+            return t('defaultFormError');
         }
         return undefined;
     };
