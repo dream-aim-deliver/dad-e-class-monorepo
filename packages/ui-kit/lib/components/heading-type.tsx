@@ -57,7 +57,10 @@ const HeadingLesson = ({ initialHeadingValue, initialHeadingType, onChange, loca
           simpleText: 'Select an option'
         }}
         options={HeadingOptions}
-        onSelectionChange={(selected: string) => handleChange({ ...headingValue, type: selected })}
+        onSelectionChange={(selected: string | string[] | null) => {
+          if (!selected || typeof selected !== 'string') return;
+          handleChange({ ...headingValue, type: selected })}
+        }
       />
     </div>
   );

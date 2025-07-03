@@ -112,7 +112,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
 
     // Deserialize the initial value to Slate format
     const deserializedInitialValue = deserialize({
-      serializedData: initialValue,
+      serializedData: initialValue ?? [],
       onError: onDeserializationError
     });
 
@@ -162,7 +162,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
     }
     return (
       <div className="text-text-primary w-full">
-        <Slate editor={editor} initialValue={deserializedInitialValue} onChange={(value) => onChange(value)}>
+        <Slate editor={editor} initialValue={deserializedInitialValue} onChange={(value) => onChange?.(value)}>
 
           <div
             className="bg-black text-text-primary border-0 w-full  min-w-0 min-h-40  focus:outline-none overflow-y-auto"

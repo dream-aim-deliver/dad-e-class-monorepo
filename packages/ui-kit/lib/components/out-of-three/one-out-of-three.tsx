@@ -32,17 +32,20 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
   
   // Change table title
   const handleTableTitleChange = (value: string) => {
+    if (!data) return;
     onUpdate({ ...data, tableTitle: value });
   };
 
   // Delete a row
   const deleteRow = (rowIndex: number) => {
+    if (!data) return;
     const updatedRows = data.rows.filter((_, index) => index !== rowIndex);
     onUpdate({ ...data, rows: updatedRows });
   };
 
   // Change column header (all rows' column titles must stay in sync)
   const handleHeaderChange = (colIndex: number, value: string) => {
+    if (!data) return;
     const updatedRows = data.rows.map(row => {
       // Ensure 3 columns
       const columns = [0, 1, 2].map(i =>
@@ -60,6 +63,7 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
 
   // Change row title
   const handleRowTitleChange = (rowIndex: number, value: string) => {
+    if (!data) return;
     const updatedRows = [...data.rows];
     const row = updatedRows[rowIndex];
     if (row && row.columns) {
@@ -73,6 +77,7 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
 
   // Select correct column for a row (radio button logic)
   const handleSelectColumn = (rowIndex: number, colIndex: number) => {
+    if (!data) return;
     const updatedRows = data.rows.map((row, rIdx) => {
       if (rIdx !== rowIndex) return row;
       // Ensure 3 columns
@@ -90,6 +95,7 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
   
   // Add a new row with same columns structure
   const addRow = () => {
+    if (!data) return;
     const columnTemplates = data.rows[0]?.columns || [];
     const newRow = {
       rowTitle: "",
@@ -107,14 +113,14 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
         <div className="flex flex-col gap-[15px] mt-4">
           <InputField
             inputText="Table Title"
-            value={data.tableTitle || " "}
+            value={data?.tableTitle || " "}
             setValue={(value) => handleTableTitleChange(value)}
           />
           <HeaderAdmin
-            headers={data.rows[0]?.columns || []}
+            headers={data?.rows[0]?.columns || []}
             onHeaderChange={handleHeaderChange}
           />
-          {data.rows.length>0 && data.rows?.map((row, rowIndex) => (
+          {data?.rows && data.rows.length > 0 && data.rows.map((row, rowIndex) => (
             <div key={rowIndex} className="flex items-center gap-2 w-full">
               <div className="flex-1">
                 <RowHeader
