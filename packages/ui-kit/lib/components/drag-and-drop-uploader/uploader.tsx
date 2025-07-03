@@ -132,7 +132,7 @@ export type UploaderProps = SingleUploaderProps | MultipleUploaderProps;
  */
 export const Uploader: React.FC<UploaderProps> = (props) => {
   const { maxSize = 5, onDelete, onDownload, className, variant, locale, onFilesChange } = props;
-  const files = props.type === 'single' ? (props.file ? [props.file] : []) : props.files;
+  const files = props.type === 'single' ? (props.file ? [props.file] : []) : props.files ?? [];
   const dictionary = getDictionary(locale);
   const abortControllers = useRef(new Map<string, AbortController>());
 
@@ -204,7 +204,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
         abortControllers.current.delete(tempId);
       }
     } else {
-      const successfulFiles =files.length>0 && files.filter(file => (file.status === 'available' || file.status === 'processing'));
+      const successfulFiles = files.filter(file => (file.status === 'available' || file.status === 'processing')) || [];
       const remainingSlots = props.maxFile - successfulFiles.length;
       const filesToAdd = uploadedFiles.slice(0, remainingSlots);
       if (filesToAdd.length === 0) return;
@@ -253,9 +253,8 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
   };
   return (
     <div className={cn('flex flex-col gap-4 w-full', className)}>
-      {files?.length > 0 && (
         <div className="flex flex-col gap-2 w-full">
-          {files.map((file, index) => (
+          {files?.map((file, index) => (
             <div key={file.id}>
               <FilePreview
                 uploadResponse={file}
@@ -267,7 +266,6 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
             </div>
           ))}
         </div>
-      )}
 
       {((props.type === 'single' && (!props.file || !props.file.name || files.filter(f => f.name).length === 0)) ||
         (props.type === 'multiple' && files.filter(f => f.name).length < props.maxFile)) && (
