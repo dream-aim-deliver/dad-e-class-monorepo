@@ -133,12 +133,14 @@ export default function AssessmentForm(props: AssessmentFormProps) {
     }
 
     return (
-        <FormElementRenderer
-            isError={false}
-            isLoading={false}
-            onSubmit={() => {}}
-            elements={formElements}
-            locale={locale}
-        />
+        <div className="flex justify-center">
+            <FormElementRenderer
+                isError={false}
+                isLoading={false}
+                onSubmit={() => {}}
+                elements={formElements}
+                locale={locale}
+            />
+        </div>
     );
 }
