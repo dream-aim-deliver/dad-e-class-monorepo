@@ -4,7 +4,6 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import exp from 'constants';
 
 export const ListAssessmentComponentsRequestSchema = z.object({
   courseSlug: z.string(),
