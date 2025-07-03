@@ -1,5 +1,5 @@
 import { ProfileTabs } from './components/profile-tabs';
-import { DragAndDrop } from './components/drag-and-drop/drag-and-drop';
+import { DragAndDrop } from './components/drag-and-drop-uploader/drag-and-drop';
 import { Badge } from './components/badge';
 
 
@@ -30,12 +30,35 @@ export { default as BuyCoachingSession, type BuyCoachingSessionProps } from './c
 export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/accordion';
 export * as contexts from './contexts';
 export { Navbar } from './components/navbar';
+export { Footer } from './components/footer';
 
 export { NotificationGrid } from './components/grids/notification-grid';
 export { UserGrid } from './components/grids/user-grid';
+export { Hero } from './components/home-banner/hero';
+export { Carousel } from './components/carousel/carousel';
+export { GeneralCard } from './components/carousel/general-card';
+export { Divider } from './components/divider';
+export { CarouselSkeleton } from './components/skeletons/carousel-skeleton'
 
 export { ReviewSnippet } from './components/review/review-snippet';
 export { CreateContentModal } from './components/create-content-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
 export { RemoveModal } from './components/remove-modal';
+export { default as TopicList } from './components/topic-list';
+export { CoachingOnDemandBanner } from './components/coaching-on-demand-banner/coaching-on-demand-banner';
+export { HomeAccordion } from './components/home-accordion';
+export { default as RichTextRenderer } from './components/rich-text-element/renderer';
+
+export { default as DefaultLoading } from './components/default-loading';
+export { default as DefaultError } from './components/default-error';
+export { Outline } from './components/outline';
+export { default as FilterSwitch } from './components/filter-switch';
+export * from './components/text';
+export { Tabs } from './components/tabs/tab';
+export { default as CardListLayout } from './components/card-list-layout';
+export { CourseCardListSkeleton } from './components/skeletons/courses-skeleton';
+export { CoachCardListSkeleton } from './components/skeletons/coaches-skeleton';
+export { PackageCard } from './components/packages/package-card';
+export { default as CoachCard } from './components/coach/coach-card';
+export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';

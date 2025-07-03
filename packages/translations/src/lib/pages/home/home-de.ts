@@ -8,4 +8,5 @@ export const Home_DE: TDictionary["pages"]["home"] = {
     notSignedInText: 'Nicht angemeldet',
     welcomeText: 'Willkommen',
     signOutText: 'Abmelden',
+    topicsTitle: 'Angebote nach Thema',
 };

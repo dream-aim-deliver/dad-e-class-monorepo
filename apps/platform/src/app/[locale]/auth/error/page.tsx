@@ -1,11 +1,5 @@
-import { TLocale } from "@maany_shr/e-class-translations";
-import ErrorPage from "../../../../components/login-error";
-import { getLocale } from "next-intl/server";
+import LoginErrorServerComponent from '../../../../lib/infrastructure/server/pages/auth/login-error-rsc';
 
 export default async function Login() {
-  const platform = process.env.E_CLASS_PLATFORM_SHORT_NAME || 'E-Class';
-  const locale = await getLocale();
-  return (
-    <ErrorPage platform={platform} locale={locale as TLocale}/>
-  )
+    return <LoginErrorServerComponent />;
 }

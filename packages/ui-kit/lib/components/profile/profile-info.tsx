@@ -2,12 +2,12 @@ import * as React from 'react';
 import { DateInput } from '../date-input';
 import { Button } from '../button';
 import { CheckBox } from '../checkbox';
-import { profile } from '@maany_shr/e-class-models';
+import { profile, fileMetadata } from '@maany_shr/e-class-models';
 import { TextInput } from '../text-input';
 import { LanguageSelector } from '../language-selector';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { language } from '@maany_shr/e-class-models';
-import { ImageUploadResponse, UploadedFileType, Uploader, UploadResponse } from '../drag-and-drop/uploader';
+import { UploadedFileType, Uploader } from '../drag-and-drop-uploader/uploader';
 import { useState } from 'react';
 
 interface ProfileInfoProps extends isLocalAware {
@@ -82,43 +82,53 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleUploadedFiles = async (newFiles: UploadedFileType[]): Promise<UploadResponse> => {
+  const handleUploadedFiles = async (newFiles: UploadedFileType[]): Promise<fileMetadata.TFileMetadata> => {
     // Set the files immediately with loading state
     const newFile = newFiles[0];
 
+    // TODO: handle upload properly
     // Update our local state immediately to show loading
     setFile(newFile);
     try {
-      // Return a Promise that resolves to the UploadResponse
-      const response = await new Promise<ImageUploadResponse>((resolve) => {
+      // Return a Promise that resolves to TFileMetadata for image
+      const response: fileMetadata.TFileMetadata = await new Promise((resolve) => {
         setTimeout(() => {
-          // Create a proper UploadResponse object
+          // Create a proper TFileMetadata object for image
           resolve({
-            imageId: `123456`,
-            imageThumbnailUrl: URL.createObjectURL(newFile.file),
+            id: Math.random(),
+            name: newFile.request.name,
+            url: URL.createObjectURL(newFile.request.file),
+            thumbnailUrl: URL.createObjectURL(newFile.request.file),
+            size: newFile.request.file.size,
+            mimeType: 'image/jpeg',
+            checksum: 'mock-checksum',
+            status: 'available' as const,
+            category: 'image' as const
           });
         }, 100);
       });
+
       setFile({
         ...newFile,
-        isUploading: false,
         responseData: response
       });
+
+      // Update form data with the image URL
+      if (response.category === 'image') {
+        handleChange('profilePicture', response.url);
+      }
 
       return response;
     } catch (error) {
       // Handle error properly by updating state
       setFile({
         ...newFile,
-        isUploading: false,
-        error: "Upload failed"
+        responseData: undefined
       });
 
       throw error;
     }
-
   };
-  console.log(file)
   const handleSubmit = () => {
     onSave?.(formData);
   };
