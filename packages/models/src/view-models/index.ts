@@ -11,3 +11,4 @@ export * from './offers-page-carousel-view-model';
 export * from './coaching-page-view-model';
 export * from './coaching-offering-list-view-model';
 export * from './available-coaching-list-view-model';
+export * from './course-access-view-model';
