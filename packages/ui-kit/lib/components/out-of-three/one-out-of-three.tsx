@@ -12,8 +12,10 @@ export interface OneOutOfThreeData {
   tableTitle: string;
 
   rows: {
+    id?: number;
     rowTitle: string;
     columns: {
+      id?: number;
       columnTitle: string;
       selected: boolean;
     }[];
