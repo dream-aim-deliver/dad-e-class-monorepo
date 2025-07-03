@@ -66,13 +66,16 @@ function transformMultiCheckAnswer(
 function transformOneOutOfThreeAnswer(
     element: OneOutOfThreeElement,
 ): Extract<useCaseModels.TAnswer, { type: 'oneOutOfThree' }> {
-    const answersMap: Record<number, number> = {};
+    const answers: Array<{ rowId: number; columnId: number }> = [];
 
     for (const row of element.data.rows) {
         const selectedColumn = row.columns.find((col) => col.selected);
 
         if (selectedColumn && selectedColumn.id && row.id) {
-            answersMap[row.id] = selectedColumn.id;
+            answers.push({
+                rowId: row.id,
+                columnId: selectedColumn.id,
+            });
         } else {
             throw new Error(
                 `One out of three element ${element.id} has incomplete selection for row ${row.id}`,
@@ -80,7 +83,7 @@ function transformOneOutOfThreeAnswer(
         }
     }
 
-    if (Object.keys(answersMap).length === 0) {
+    if (answers.length === 0) {
         throw new Error(
             `One out of three element ${element.id} has no answers`,
         );
@@ -89,7 +92,7 @@ function transformOneOutOfThreeAnswer(
     return {
         componentId: element.id,
         type: 'oneOutOfThree',
-        answers: answersMap,
+        answers: answers,
     };
 }
 

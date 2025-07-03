@@ -137,6 +137,7 @@ export function FormComponent({ elementInstance, submitValue }: { elementInstanc
                 const updatedElement = {
                     ...elementInstance,
                     options: newOptions.map(opt => ({
+                        id: opt.id,
                         name: opt.name,
                         isSelected: opt.isSelected
                     }))

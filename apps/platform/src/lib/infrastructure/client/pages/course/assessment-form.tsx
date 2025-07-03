@@ -63,6 +63,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                     console.log(formValues);
                     const answers: useCaseModels.TAnswer[] =
                         transformFormAnswers(formValues);
+                    console.log(answers);
                     submitMutation.mutate({
                         answers,
                         courseSlug: props.courseSlug,
