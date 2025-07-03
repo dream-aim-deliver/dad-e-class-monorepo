@@ -8,10 +8,6 @@ import { FilePreview } from './file-preview';
 /**
  * Represents a file being uploaded with its associated state
  */
-export type UploadedFileType = {
-  request: fileMetadata.TFileUploadRequest;
-  responseData?: fileMetadata.TFileMetadata;
-};
 
 /**
  * Common props shared between single and multiple uploaders
@@ -53,7 +49,9 @@ interface CommonUploaderProps extends isLocalAware {
   className?: string;
   acceptedFileTypes?: string[];
   variant: fileMetadata.TFileCategoryEnum;
-  onFilesChange: (files: UploadedFileType[]) => Promise<fileMetadata.TFileMetadata>; // The main callback for handling file changes
+  onFilesChange: (files: fileMetadata.TFileUploadRequest[]) => Promise<fileMetadata.TFileMetadata>; // The main callback for handling file changes
+  filePreviewClassName?: string;
+  isDeleteAllowed?: boolean;
 }
 
 /**
@@ -61,7 +59,7 @@ interface CommonUploaderProps extends isLocalAware {
  */
 type SingleUploaderProps = CommonUploaderProps & {
   type: 'single';
-  file: UploadedFileType;
+  file: fileMetadata.TFileMetadata;
 };
 
 /**
@@ -70,7 +68,7 @@ type SingleUploaderProps = CommonUploaderProps & {
 type MultipleUploaderProps = CommonUploaderProps & {
   type: 'multiple';
   maxFile: number;
-  files: UploadedFileType[];
+  files: fileMetadata.TFileMetadata[];
 };
 
 /**
@@ -103,6 +101,8 @@ export type UploaderProps = SingleUploaderProps | MultipleUploaderProps;
  * @param maxFile For multiple upload mode: maximum number of files allowed
  * @param files For multiple upload mode: array of currently uploaded files
  * @param file For single upload mode: the currently uploaded file
+ * @param filePreviewClassName Optional CSS class name to apply to the file preview component
+ * @param isDeleteAllowed Optional boolean indicating if file deletion is allowed
  * 
  * @example
  * ```tsx
@@ -132,7 +132,7 @@ export type UploaderProps = SingleUploaderProps | MultipleUploaderProps;
  * ```
  */
 export const Uploader: React.FC<UploaderProps> = (props) => {
-  const { maxSize = 5, onDelete, onDownload, className, variant, locale, onFilesChange } = props;
+  const { maxSize = 5, onDelete, onDownload, className, variant, locale, onFilesChange, filePreviewClassName, isDeleteAllowed } = props;
   const files = props.type === 'single' ? (props.file ? [props.file] : []) : props.files;
   const dictionary = getDictionary(locale);
 
@@ -146,6 +146,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
       case 'document':
         return props.acceptedFileTypes || ['application/pdf', '.doc', '.docx', 'application/msword'];
       case 'generic':
+        return ['*/*']; // Generic accepts all file types
       default:
         return props.acceptedFileTypes || ['*/*'];
     }
@@ -184,11 +185,11 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
     if (props.type === 'single') {
       const file = uploadedFiles[0];
       try {
-        const newFile: UploadedFileType = {
-          request: {
-            name: file.name,
-            file: file,
-          },
+        const newFile: fileMetadata.TFileUploadRequest = {
+
+          name: file.name,
+          file: file,
+
         };
         await onFilesChange([newFile]);
         return;
@@ -197,21 +198,19 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
       }
     } else {
       try {
-        const successfulFiles = files.filter(file => file.responseData?.status === 'available' || file.responseData?.status === 'processing');
+        const successfulFiles = files.filter(file => (file.status === 'available' || file.status === 'processing'));
         const remainingSlots = props.maxFile - successfulFiles.length;
         const filesToAdd = uploadedFiles.slice(0, remainingSlots);
-
         if (filesToAdd.length === 0) return;
-
         const newUploadingFiles = filesToAdd.map((file) => ({
-          request: {
-            name: file.name,
-            file: file,
-          },
+
+          name: file.name,
+          file: file,
+
         }));
 
-        const updatedFiles = [...successfulFiles, ...newUploadingFiles];
-        await onFilesChange(updatedFiles);
+        // Only pass the new upload requests, not the existing files
+        await onFilesChange(newUploadingFiles);
         return;
       } catch (err) {
         return err;
@@ -229,24 +228,26 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
 
   return (
     <div className={cn('flex flex-col gap-4 w-full', className)}>
-      {files?.length > 0 && files.some(file => file.request.name) && (
+      {files?.length > 0 && (
         <div className="flex flex-col gap-2 w-full">
-          {files.filter((file): file is UploadedFileType & { responseData: fileMetadata.TFileMetadata } => !!file.responseData).map((file, index) => (
+          {files.map((file, index) => (
             <FilePreview
               key={index}
-              uploadResponse={file.responseData}
+              uploadResponse={file}
               index={index}
-              onDelete={() => onDelete(file.responseData.id)}
-              onDownload={() => onDownload(file.responseData.id)}
+              onDelete={() => onDelete(file.id)}
+              onDownload={() => onDownload(file.id)}
               locale={locale}
               onCancelUpload={handleCancelUpload}
+              isDeleteAllowed={isDeleteAllowed}
+              className={filePreviewClassName}
             />
           ))}
         </div>
       )}
 
-      {((props.type === 'single' && (!props.file || !props.file.request.name || files.filter(f => f.request.name).length === 0)) ||
-        (props.type === 'multiple' && files.filter(f => f.request.name).length < props.maxFile)) && (
+      {((props.type === 'single' && (!props.file || !props.file.name || files.filter(f => f.name).length === 0)) ||
+        (props.type === 'multiple' && files.filter(f => f.name).length < props.maxFile)) && (
           <DragAndDrop
             onUpload={handleUpload}
             maxSize={maxSize * 1024 * 1024}

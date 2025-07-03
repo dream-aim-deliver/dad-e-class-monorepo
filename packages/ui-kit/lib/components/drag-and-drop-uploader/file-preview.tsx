@@ -17,6 +17,8 @@ interface FilePreviewProps extends isLocalAware {
     onDelete: (id: number) => void;
     onDownload: (id: number) => void;
     onCancelUpload: (index: number) => void;
+    isDeleteAllowed?: boolean;
+    className?: string;
 }
 /**
  *
@@ -26,50 +28,92 @@ interface FilePreviewProps extends isLocalAware {
  * @param index The index of the file in the list of uploaded files.
  * @param onDelete Callback function to handle file deletion.
  * @param onDownload Callback function to handle file download.
+ * @param isDeleteAllowed Optional boolean indicating if file deletion is allowed.
+ * @param className Optional CSS class name to apply to the component.
  * @param locale The locale for translations.
  **/
 
-export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, index, onDelete, onDownload, onCancelUpload, locale }) => {
+/**
+ * Determines the file type based on file extension
+ * @param fileName The name of the file
+ * @returns The determined file type: 'image', 'video', or 'document'
+ */
+const getFileTypeFromExtension = (fileName: string): 'image' | 'video' | 'document' => {
+    const extension = fileName.split('.').pop()?.toLowerCase() || '';
+    const imageTypes = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+    const videoTypes = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'wmv', 'flv', 'mkv'];
+
+    if (imageTypes.includes(extension)) return 'image';
+    if (videoTypes.includes(extension)) return 'video';
+    return 'document';
+};
+
+export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, index, onDelete, onDownload, onCancelUpload, isDeleteAllowed = true, className, locale }) => {
     const dictionary = getDictionary(locale);
 
     if (uploadResponse?.status === 'unavailable') {
         return <FeedBackMessage type="error" message="File upload failed" />;
     }
+
+    /**
+     * Gets the appropriate preview element based on file status and type
+     */
+    const getFilePreviewElement = () => {
+        // For files in processing state
+        if (uploadResponse?.status === 'processing') {
+            return (
+                <div className="select-none pointer-events-none">
+                    <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-primary" />
+                </div>
+            );
+        }
+
+        // Determine file category - use specified category or detect from extension if generic
+        const fileCategory = uploadResponse?.category === 'generic'
+            ? getFileTypeFromExtension(uploadResponse.name)
+            : uploadResponse?.category;
+
+        // Return appropriate element based on category
+        if (fileCategory === 'image') {
+            return (
+                <img
+                    src={(uploadResponse as fileMetadata.TFileMetadata & { thumbnailUrl?: string }).thumbnailUrl || ''}
+                    alt={uploadResponse.name}
+                    className="w-10 h-10 object-cover rounded-small"
+                />
+            );
+        }
+
+        if (fileCategory === 'video') {
+            return <IconVideo classNames="w-6 h-6 text-text-primary" />;
+        }
+
+        // Default to file icon for all other types
+        return <IconFile classNames="w-6 h-6 text-text-primary" />;
+    };
+
     return (
-        <div className={cn('flex items-center justify-between gap-2 p-2 rounded-medium', 'bg-base-neutral-900')}>
+        <div className={cn('flex items-center justify-between gap-2 p-2 rounded-medium', 'bg-base-neutral-900', className)}>
             <div className="flex items-center gap-2">
                 <div className="w-12 h-12 flex items-center justify-center rounded-medium bg-base-neutral-800 border border-base-neutral-700">
-                    {uploadResponse?.status === 'processing' ? (
-                        <div className="select-none pointer-events-none">
-                            <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-primary" />
-                        </div>
-                    ) : uploadResponse?.category === 'image' ? (
-                        <img
-                            src={(uploadResponse as fileMetadata.TFileMetadata & { category: 'image' }).thumbnailUrl}
-                            alt={uploadResponse.name}
-                            className="w-10 h-10 object-cover rounded-small"
-                        />
-                    ) : uploadResponse?.category === 'video' ? (
-                        <IconVideo classNames="w-6 h-6 text-text-primary" />
-                    ) : (
-                        <IconFile classNames="w-6 h-6 text-text-primary" />
-                    )}
+                    {getFilePreviewElement()}
                 </div>
             </div>
             <div className="flex flex-col flex-1 w-full gap-1 truncate">
                 {uploadResponse?.status === 'processing' ? (
-                    <div className="h-[1.2rem] w-full bg-divider rounded-small border border-divider animate-pulse bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] bg-[length:200%_100%] bg-no-repeat bg-left" />
+                    <>
+                        <div className="h-[1.2rem] w-full bg-divider rounded-small border border-divider animate-pulse bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] bg-[length:200%_100%] bg-no-repeat bg-left" />
+                        <div className="h-3 w-16 bg-divider rounded-small border border-divider animate-pulse bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] bg-[length:200%_100%] bg-no-repeat bg-left" />
+                    </>
                 ) : (
-                    <span title={uploadResponse.name} className="text-sm font-medium text-text-primary truncate">
-                        {uploadResponse.name}
-                    </span>
-                )}
-                {uploadResponse?.status === 'processing' ? (
-                    <div className="h-3 w-16 bg-divider rounded-small border border-divider animate-pulse bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] bg-[length:200%_100%] bg-no-repeat bg-left" />
-                ) : (
-                    <span className="text-xs text-text-secondary">
-                        {(uploadResponse.size / (1024 * 1024)).toFixed(2)} MB
-                    </span>
+                    <>
+                        <span title={uploadResponse.name} className="text-sm font-medium text-text-primary truncate">
+                            {uploadResponse.name}
+                        </span>
+                        <span className="text-xs text-text-secondary">
+                            {(uploadResponse.size / (1024 * 1024)).toFixed(2)} MB
+                        </span>
+                    </>
                 )}
             </div>
             <div>
@@ -89,13 +133,15 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, index,
                             title={dictionary.components.uploadingSection.downloadText}
                             onClick={() => onDownload(uploadResponse.id)}
                         />
-                        <IconButton
-                            icon={<IconTrashAlt />}
-                            styles="text"
-                            size="small"
-                            title={dictionary.components.uploadingSection.deleteText}
-                            onClick={() => onDelete(uploadResponse.id)}
-                        />
+                        {isDeleteAllowed &&
+                            <IconButton
+                                icon={<IconTrashAlt />}
+                                styles="text"
+                                size="small"
+                                title={dictionary.components.uploadingSection.deleteText}
+                                onClick={() => onDelete(uploadResponse.id)}
+                            />
+                        }
                     </div>
                 )}
             </div>
