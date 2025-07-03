@@ -3,7 +3,7 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { trpc } from '../../trpc/client';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useListAssessmentComponentsPresenter } from '../../hooks/use-assessment-components-presenter';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import {
@@ -14,6 +14,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { transformLessonComponents } from '../../utils/transform-lesson-components';
 import { transformFormAnswers } from '../../utils/transform-answers';
+import { useSubmitAssessmentProgressPresenter } from '../../hooks/use-assessment-progress-presenter';
 
 interface AssessmentFormProps {
     courseSlug: string;
@@ -30,10 +31,16 @@ export default function AssessmentForm(props: AssessmentFormProps) {
     const [componentsViewModel, setComponentsViewModel] = useState<
         viewModels.TAssessmentComponentListViewModel | undefined
     >(undefined);
-    const { presenter } = useListAssessmentComponentsPresenter(
-        setComponentsViewModel,
+    const { presenter: assessmentsPresenter } =
+        useListAssessmentComponentsPresenter(setComponentsViewModel);
+    assessmentsPresenter.present(componentsResponse, componentsViewModel);
+
+    const [submitAssessmentViewModel, setSubmitAssessmentViewModel] = useState<
+        viewModels.TAssessmentProgressViewModel | undefined
+    >(undefined);
+    const { presenter: submitPresenter } = useSubmitAssessmentProgressPresenter(
+        setSubmitAssessmentViewModel,
     );
-    presenter.present(componentsResponse, componentsViewModel);
 
     const formElements: FormElement[] = useMemo(() => {
         if (!componentsViewModel || componentsViewModel.mode !== 'default') {
@@ -46,6 +53,21 @@ export default function AssessmentForm(props: AssessmentFormProps) {
 
     const submitMutation = trpc.submitAssessmentProgress.useMutation({});
 
+    useEffect(() => {
+        if (submitMutation.isSuccess) {
+            submitPresenter.present(
+                submitMutation.data,
+                submitAssessmentViewModel,
+            );
+        }
+    }, [submitMutation.isSuccess]);
+
+    useEffect(() => {
+        if (submitAssessmentViewModel?.mode === 'default') {
+            window.location.reload();
+        }
+    }, [submitAssessmentViewModel]);
+
     if (!componentsViewModel) {
         return <DefaultLoading locale={locale} />;
     }
@@ -54,16 +76,28 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         return <DefaultError locale={locale} />;
     }
 
+    const hasViewModelError =
+        submitAssessmentViewModel &&
+        submitAssessmentViewModel.mode !== 'default';
+
+    const getErrorMessage = () => {
+        if (submitAssessmentViewModel?.mode === 'invalid') {
+            return submitAssessmentViewModel.data.message;
+        }
+        if (submitMutation.error || hasViewModelError) {
+            return 'Unknown error occurred while submitting the assessment.';
+        }
+        return undefined;
+    };
+
     return (
         <div className="flex justify-center">
             <FormElementRenderer
-                isError={false}
-                isLoading={false}
+                isError={hasViewModelError || submitMutation.isError}
+                isLoading={submitMutation.isPending}
                 onSubmit={(formValues) => {
-                    console.log(formValues);
                     const answers: useCaseModels.TAnswer[] =
                         transformFormAnswers(formValues);
-                    console.log(answers);
                     submitMutation.mutate({
                         answers,
                         courseSlug: props.courseSlug,
@@ -71,6 +105,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                 }}
                 elements={formElements}
                 locale={locale}
+                errorMessage={getErrorMessage()}
             />
         </div>
     );

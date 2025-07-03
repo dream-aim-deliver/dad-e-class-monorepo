@@ -10,6 +10,28 @@ export const submitAssessmentProgress = t.procedure
         async (
             opts,
         ): Promise<useCaseModels.TSubmitAssessmentProgressUseCaseResponse> => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            // return {
+            //     success: false,
+            //     data: {
+            //         message: 'The form has been filled in already',
+            //         context: {},
+            //         operation: 'submitAssessmentProgress',
+            //         errorType: 'DuplicateError'
+            //     }
+            // }
+
+            // return {
+            //     success: false,
+            //     data: {
+            //         message: 'Invalid answers',
+            //         context: {},
+            //         operation: 'submitAssessmentProgress',
+            //         errorType: 'ValidationError'
+            //     }
+            // }
+
             console.log(opts.input.answers);
 
             return {
