@@ -18,6 +18,13 @@ export const GetCourseAccessResponseMiddleware =
 type TGetCourseAccessResponseMiddleware =
     typeof GetCourseAccessResponseMiddleware;
 
+const roleHierarchy: Record<useCaseModels.TCourseRole, number> = {
+    visitor: 0,
+    student: 1,
+    coach: 2,
+    admin: 3,
+};
+
 export default class CourseAccessPresenter extends BasePresenter<
     useCaseModels.TGetCourseAccessUseCaseResponse,
     viewModels.TCourseAccessViewModel,
@@ -46,10 +53,18 @@ export default class CourseAccessPresenter extends BasePresenter<
             { success: true }
         >,
     ): viewModels.TCourseAccessViewModel {
+        let highestRole: useCaseModels.TCourseRole | null = null;
+        if (response.data.roles.length > 0) {
+            highestRole = response.data.roles.reduce((a, b) =>
+                roleHierarchy[a] > roleHierarchy[b] ? a : b,
+            );
+        }
+
         return {
             mode: 'default',
             data: {
                 ...response.data,
+                highestRole,
             },
         };
     }

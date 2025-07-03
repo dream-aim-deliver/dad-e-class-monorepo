@@ -4,9 +4,11 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { GetCourseAccessSuccessResponseSchema } from '../usecase-models/get-course-access-usecase-models';
+import { CourseRoleSchema, GetCourseAccessSuccessResponseSchema } from '../usecase-models/get-course-access-usecase-models';
 
-export const CourseAccessSuccessSchema = GetCourseAccessSuccessResponseSchema.shape.data;
+export const CourseAccessSuccessSchema = GetCourseAccessSuccessResponseSchema.shape.data.extend({
+    highestRole: CourseRoleSchema.nullable(),
+});
 
 export type TCourseAccessSuccess = z.infer<typeof CourseAccessSuccessSchema>;
 
