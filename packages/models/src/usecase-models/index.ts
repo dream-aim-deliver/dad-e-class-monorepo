@@ -12,3 +12,5 @@ export * from './get-coaching-page-usecase-models';
 export * from './list-coaching-offerings-usecase-models';
 export * from './list-available-coachings-usecase-models';
 export * from './get-course-access-usecase-models';
+
+export * from './list-assessment-components-usecase-models';

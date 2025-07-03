@@ -1,6 +1,6 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { createGetCourseAccessPresenter } from '../presenter/get-course-access-presenter';
-import { getQueryClient, trpc } from '../config/trpc/server';
+import { getQueryClient, prefetch, trpc } from '../config/trpc/server';
 import { notFound, redirect } from 'next/navigation';
 import AssessmentForm from '../../client/pages/course/assessment-form';
 
@@ -48,9 +48,17 @@ export default async function CourseServerComponent({
     }
 
     if (courseAccessViewModel.data.highestRole === 'student') {
-        if (courseAccessViewModel.data.isAssessmentCompleted || courseAccessViewModel.data.isAssessmentCompleted === null) {
+        if (
+            courseAccessViewModel.data.isAssessmentCompleted ||
+            courseAccessViewModel.data.isAssessmentCompleted === null
+        ) {
             return <div>Student View</div>;
         } else {
+            prefetch(
+                trpc.listAssessmentComponents.queryOptions({
+                    courseSlug: slug,
+                }),
+            );
             return <AssessmentForm courseSlug={slug} />;
         }
     }
