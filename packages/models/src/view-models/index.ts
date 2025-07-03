@@ -14,3 +14,5 @@ export * from './available-coaching-list-view-model';
 export * from './course-access-view-model';
 
 export * from './assessment-component-list-view-model';
+
+export * from './assessment-progress-view-model';

@@ -1,13 +1,11 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 
-// TODO: add mock data
 const mockThreeComponents: useCaseModels.TListAssessmentComponentsSuccessResponse['data'] =
     {
         components: [
             {
                 id: 'comp_001',
-                course_id: 101,
                 order: 1,
                 type: 'heading',
                 text: 'Welcome to the JavaScript Assessment',
@@ -15,7 +13,6 @@ const mockThreeComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
             },
             {
                 id: 'comp_002',
-                course_id: 101,
                 order: 2,
                 type: 'richText',
                 text: JSON.stringify([
@@ -45,7 +42,6 @@ const mockThreeComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
             },
             {
                 id: 'comp_003',
-                course_id: 101,
                 order: 3,
                 type: 'singleChoice',
                 title: 'What is the correct way to declare a variable in JavaScript?',
@@ -65,7 +61,6 @@ const mockFiveComponents: useCaseModels.TListAssessmentComponentsSuccessResponse
         components: [
             {
                 id: 'comp_101',
-                course_id: 202,
                 order: 1,
                 type: 'heading',
                 text: 'React Development Quiz',
@@ -73,7 +68,6 @@ const mockFiveComponents: useCaseModels.TListAssessmentComponentsSuccessResponse
             },
             {
                 id: 'comp_102',
-                course_id: 202,
                 order: 2,
                 type: 'richText',
                 text: JSON.stringify([
@@ -128,7 +122,6 @@ const mockFiveComponents: useCaseModels.TListAssessmentComponentsSuccessResponse
             },
             {
                 id: 'comp_103',
-                course_id: 202,
                 order: 3,
                 type: 'heading',
                 text: 'Component Lifecycle',
@@ -136,7 +129,6 @@ const mockFiveComponents: useCaseModels.TListAssessmentComponentsSuccessResponse
             },
             {
                 id: 'comp_104',
-                course_id: 202,
                 order: 4,
                 type: 'multipleChoice',
                 title: 'Which of the following are React lifecycle methods? (Select all that apply)',
@@ -151,7 +143,6 @@ const mockFiveComponents: useCaseModels.TListAssessmentComponentsSuccessResponse
             },
             {
                 id: 'comp_105',
-                course_id: 202,
                 order: 5,
                 type: 'textInput',
                 helperText: JSON.stringify([
@@ -174,7 +165,6 @@ const mockSevenComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
         components: [
             {
                 id: 'comp_201',
-                course_id: 303,
                 order: 1,
                 type: 'heading',
                 text: 'Advanced Web Development Assessment',
@@ -182,7 +172,6 @@ const mockSevenComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
             },
             {
                 id: 'comp_202',
-                course_id: 303,
                 order: 2,
                 type: 'richText',
                 text: JSON.stringify([
@@ -252,7 +241,6 @@ const mockSevenComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
             },
             {
                 id: 'comp_203',
-                course_id: 303,
                 order: 3,
                 type: 'heading',
                 text: 'Performance Optimization',
@@ -260,7 +248,6 @@ const mockSevenComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
             },
             {
                 id: 'comp_204',
-                course_id: 303,
                 order: 4,
                 type: 'oneOutOfThree',
                 title: 'Match the optimization technique with its primary benefit:',
@@ -278,7 +265,6 @@ const mockSevenComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
             },
             {
                 id: 'comp_205',
-                course_id: 303,
                 order: 5,
                 type: 'singleChoice',
                 title: 'Which HTTP status code indicates a successful response?',
@@ -292,7 +278,6 @@ const mockSevenComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
             },
             {
                 id: 'comp_206',
-                course_id: 303,
                 order: 6,
                 type: 'heading',
                 text: 'Security Considerations',
@@ -300,7 +285,6 @@ const mockSevenComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
             },
             {
                 id: 'comp_207',
-                course_id: 303,
                 order: 7,
                 type: 'multipleChoice',
                 title: 'Which security measures should be implemented in a web application?',

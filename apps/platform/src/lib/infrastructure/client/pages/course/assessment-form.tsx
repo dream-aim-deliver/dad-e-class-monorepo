@@ -5,7 +5,7 @@ import { useLocale } from 'next-intl';
 import { trpc } from '../../trpc/client';
 import { useMemo, useState } from 'react';
 import { useListAssessmentComponentsPresenter } from '../../hooks/use-assessment-components-presenter';
-import { viewModels } from '@maany_shr/e-class-models';
+import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import {
     DefaultError,
     DefaultLoading,
@@ -13,6 +13,7 @@ import {
     FormElementRenderer,
 } from '@maany_shr/e-class-ui-kit';
 import { transformLessonComponents } from '../../utils/transform-lesson-components';
+import { transformFormAnswers } from '../../utils/transform-answers';
 
 interface AssessmentFormProps {
     courseSlug: string;
@@ -43,6 +44,8 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         return transformLessonComponents(components);
     }, [componentsViewModel]);
 
+    const submitMutation = trpc.submitAssessmentProgress.useMutation({});
+
     if (!componentsViewModel) {
         return <DefaultLoading locale={locale} />;
     }
@@ -56,8 +59,14 @@ export default function AssessmentForm(props: AssessmentFormProps) {
             <FormElementRenderer
                 isError={false}
                 isLoading={false}
-                onSubmit={() => {
-                    console.log('Form submitted');
+                onSubmit={(formValues) => {
+                    console.log(formValues);
+                    const answers: useCaseModels.TAnswer[] =
+                        transformFormAnswers(formValues);
+                    submitMutation.mutate({
+                        answers,
+                        courseSlug: props.courseSlug,
+                    });
                 }}
                 elements={formElements}
                 locale={locale}

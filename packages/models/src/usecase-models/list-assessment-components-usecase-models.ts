@@ -14,7 +14,6 @@ export type TListAssessmentComponentsRequest = z.infer<typeof ListAssessmentComp
 
 const BaseComponent = z.object({
   id: z.string(),
-  course_id: z.number(),
   order: z.number(),
   type: z.string(),
 });
