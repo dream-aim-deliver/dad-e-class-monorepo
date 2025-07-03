@@ -20,9 +20,52 @@ const getCourseAccessErrorMock: useCaseModels.TGetCourseAccessUseCaseErrorRespon
 
 export const getCourseAccess = t.procedure
     .input(useCaseModels.GetCourseAccessRequestSchema)
-    .query(async (): Promise<useCaseModels.TGetCourseAccessUseCaseResponse> => {
-        return {
-            success: true,
-            data: getCourseAccessMock,
-        };
-    });
+    .query(
+        async (
+            opts,
+        ): Promise<useCaseModels.TGetCourseAccessUseCaseResponse> => {
+            const slug = opts.input.courseSlug;
+
+            if (slug === 'missing-course') {
+                return getCourseAccessErrorMock;
+            }
+
+            if (slug === 'private-course') {
+                return {
+                    success: false,
+                    data: {
+                        errorType: 'AuthenticationError',
+                        message:
+                            'Could not authenticate user for course access',
+                        operation: 'getCourseAccess',
+                        context: {},
+                    },
+                };
+            }
+
+            if (slug === 'student-course') {
+                return {
+                    success: true,
+                    data: {
+                        roles: ['visitor', 'student'],
+                        isAssessmentCompleted: false,
+                    },
+                };
+            }
+
+            if (slug === 'progress-course') {
+                return {
+                    success: true,
+                    data: {
+                        roles: ['visitor', 'student'],
+                        isAssessmentCompleted: true,
+                    },
+                };
+            }
+
+            return {
+                success: true,
+                data: getCourseAccessMock,
+            };
+        },
+    );
