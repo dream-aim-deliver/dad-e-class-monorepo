@@ -7,7 +7,7 @@ import { TextInput } from '../text-input';
 import { LanguageSelector } from '../language-selector';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { language } from '@maany_shr/e-class-models';
-import { UploadedFileType, Uploader } from '../drag-and-drop-uploader/uploader';
+import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { useState } from 'react';
 
 interface ProfileInfoProps extends isLocalAware {
@@ -72,7 +72,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           : {}),
       }) as profile.TPersonalProfile,
   );
-  const [file, setFile] = useState<UploadedFileType | null>(null);
+  const [file, setFile] = useState<fileMetadata.TFileMetadata | null>(null);
   const dictionary = getDictionary(locale);
 
   const handleChange = (
@@ -82,51 +82,50 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleUploadedFiles = async (newFiles: UploadedFileType[]): Promise<fileMetadata.TFileMetadata> => {
-    // Set the files immediately with loading state
-    const newFile = newFiles[0];
+   const handleUploadedFiles = async (
+    files: fileMetadata.TFileUploadRequest[],
+    abortSignal?: AbortSignal
+  ): Promise<fileMetadata.TFileMetadata> => {
+    if (files.length > 0) {
+      const newFile = files[0];
 
-    // TODO: handle upload properly
-    // Update our local state immediately to show loading
-    setFile(newFile);
-    try {
-      // Return a Promise that resolves to TFileMetadata for image
-      const response: fileMetadata.TFileMetadata = await new Promise((resolve) => {
-        setTimeout(() => {
-          // Create a proper TFileMetadata object for image
-          resolve({
-            id: Math.random(),
-            name: newFile.request.name,
-            url: URL.createObjectURL(newFile.request.file),
-            thumbnailUrl: URL.createObjectURL(newFile.request.file),
-            size: newFile.request.file.size,
-            mimeType: 'image/jpeg',
-            checksum: 'mock-checksum',
+      // Step 1: Create processing metadata immediately
+      const processingMetadata: fileMetadata.TFileMetadata = {
+        id: (newFile as any).id || crypto.randomUUID(),
+        name: newFile.name,
+        mimeType: newFile.file.type || 'application/octet-stream',
+        size: newFile.file.size,
+        checksum: 'processing',
+        status: 'processing' as const,
+        category: 'image' as const,
+        url: '',
+      };
+      setFile(processingMetadata);
+
+      // Step 2: Simulate upload process
+      return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          const finalMetadata = {
+            ...processingMetadata,
             status: 'available' as const,
-            category: 'image' as const
-          });
-        }, 100);
+            url: `https://example.com/files/${newFile.name}`,
+            thumbnailUrl: `https://picsum.photos/200/300?random=${Math.random()}`,
+          };
+          finalMetadata.id = processingMetadata.id;
+          setFile(finalMetadata);
+          resolve(finalMetadata);
+        }, 2000);
+
+        abortSignal?.addEventListener('abort', () => {
+          console.log('Upload aborted');
+          clearTimeout(timeout);
+          setFile(null);
+          reject(new DOMException('Upload aborted', 'AbortError'));
+        });
       });
-
-      setFile({
-        ...newFile,
-        responseData: response
-      });
-
-      // Update form data with the image URL
-      if (response.category === 'image') {
-        handleChange('profilePicture', response.url);
-      }
-
-      return response;
-    } catch (error) {
-      // Handle error properly by updating state
-      setFile({
-        ...newFile,
-        responseData: undefined
-      });
-
-      throw error;
+    } else {
+      setFile(null);
+      return Promise.resolve({} as fileMetadata.TFileMetadata);
     }
   };
   const handleSubmit = () => {
@@ -272,7 +271,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           </p>
           <Uploader
             type="single"
-            file={file as UploadedFileType}
+            file={file}
             onFilesChange={handleUploadedFiles}
             variant='image'
             onDownload={() => {
