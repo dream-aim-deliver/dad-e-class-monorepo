@@ -28,7 +28,10 @@ const MultipleChoiceAnswer = BaseAnswer.extend({
 
 const OneOutOfThreeAnswer = BaseAnswer.extend({
   type: z.literal('oneOutOfThree'),
-  answers: z.record(z.number(), z.number()),
+  answers: z.array(z.object({
+    rowId: z.number(),
+    columnId: z.number(),
+  }))
 });
 
 const AnswerSchema = z.discriminatedUnion('type', [
