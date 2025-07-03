@@ -10,7 +10,7 @@ import { IconPlus } from '../icons/icon-plus';
 import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { UploadedFileType, Uploader } from '../drag-and-drop-uploader/uploader';
+import {  Uploader } from '../drag-and-drop-uploader/uploader';
 import { useState } from 'react';
 
 interface ProfessionalInfoProps extends isLocalAware {
@@ -66,7 +66,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   );
 
   const [skillSearchQuery, setSkillSearchQuery] = React.useState('');
-  const [files, setFiles] = useState<UploadedFileType | null>(null);
+  const [file, setFile] = useState<fileMetadata.TFileMetadata | null>(null);
   const [allSkills, setAllSkills] = React.useState<string[]>(
     () => formData.skills ?? [],
   );
@@ -90,53 +90,53 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     e.preventDefault();
     onSave?.(formData);
   };
-  const handleUploadedFiles = async (newFiles: UploadedFileType[]): Promise<fileMetadata.TFileMetadata> => {
-    // Get the uploaded file
-    const newFile = newFiles[0];
+  const handleUploadedFiles = async (
+    files: fileMetadata.TFileUploadRequest[],
+    abortSignal?: AbortSignal
+  ): Promise<fileMetadata.TFileMetadata> => {
+    if (files.length > 0) {
+      const newFile = files[0];
 
-    // Set state immediately to show loading
-    setFiles(newFile);
+      // Step 1: Create processing metadata immediately
+      const processingMetadata: fileMetadata.TFileMetadata = {
+        id: (newFile as any).id,
+        name: newFile.name,
+        mimeType: newFile.file.type || 'application/octet-stream',
+        size: newFile.file.size,
+        checksum: 'processing',
+        status: 'processing' as const,
+        category: 'document' as const,
+        url: '',
+      };
+      setFile(processingMetadata);
 
-    try {
-      // TODO: remove this simulation and handle actual file upload logic
-      // Simulate API call - create a TFileMetadata response for document
-      const response: fileMetadata.TFileMetadata = await new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({
-            id: Math.random(),
-            name: newFile.request.name,
-            url: `/uploads/${newFile.request.name}`,
-            size: newFile.request.file.size,
-            mimeType: 'application/pdf',
-            checksum: 'mock-checksum',
+      // Step 2: Simulate upload process
+      return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          const finalMetadata = {
+            ...processingMetadata,
             status: 'available' as const,
-            category: 'document' as const
-          });
+            url: `https://example.com/files/${newFile.name}`, // Simulated URL
+          };
+          finalMetadata.id = processingMetadata.id;
+          setFile(finalMetadata);
+          resolve(finalMetadata);
         }, 2000);
+
+        abortSignal?.addEventListener('abort', () => {
+          clearTimeout(timeout);
+          setFile(null); // Or set a 'cancelled' state
+          reject(new DOMException('Upload aborted', 'AbortError'));
+        });
       });
-
-      // Update state after successful upload
-      setFiles({
-        ...newFile,
-        responseData: response
-      });
-
-      // Update form data with the file URL (safe access since we know it's a document)
-      if (response.category === 'document') {
-        handleChange('curriculumVitae', response.url);
-      }
-
-      return response;
-    } catch (error) {
-      // Handle errors by updating state
-      setFiles({
-        ...newFile,
-        responseData: undefined
-      });
-
-      throw error;
+    } else {
+      // Clear file when empty array is passed
+      setFile(null);
+      return Promise.resolve({} as fileMetadata.TFileMetadata);
     }
   };
+
+  
 
   const handleDiscard = () => {
     setFormData(
@@ -194,7 +194,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <Uploader
             type="single"
             variant="document"
-            file={files as UploadedFileType}
+            file={file}
             acceptedFileTypes={['application/pdf']}
             onFilesChange={handleUploadedFiles}
             onDelete={() => {
