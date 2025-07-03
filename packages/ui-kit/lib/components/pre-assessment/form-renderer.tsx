@@ -78,12 +78,10 @@ export function FormElementRenderer({
         for (const element of elements) {
             const formElement = formValues.current[element.id];
 
-            if (!element.required) {
-                continue;
-            }
-
             if (!formElement) {
-                newErrors[element.id] = true;
+                if (element.required) {
+                    newErrors[element.id] = true;
+                }
                 continue;
             }
 

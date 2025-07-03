@@ -154,8 +154,16 @@ const mockFiveComponents: useCaseModels.TListAssessmentComponentsSuccessResponse
                 course_id: 202,
                 order: 5,
                 type: 'textInput',
-                helperText:
-                    'Explain the difference between props and state in React (minimum 50 words)',
+                helperText: JSON.stringify([
+                    {
+                        type: 'paragraph',
+                        children: [
+                            {
+                                text: 'Explain the difference between props and state in React',
+                            },
+                        ],
+                    },
+                ]),
                 required: true,
             },
         ],
@@ -266,6 +274,7 @@ const mockSevenComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
                     { id: 2, name: 'Improves page load speed' },
                     { id: 3, name: 'Reduces server requests' },
                 ],
+                required: false,
             },
             {
                 id: 'comp_205',
@@ -314,7 +323,7 @@ export const listAssessmentComponents = t.procedure
         async (): Promise<useCaseModels.TListAssessmentComponentsUseCaseResponse> => {
             return {
                 success: true,
-                data: mockThreeComponents,
+                data: mockFiveComponents,
             };
         },
     );
