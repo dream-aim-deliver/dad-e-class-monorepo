@@ -597,6 +597,9 @@ export const DictionarySchema = z.object({
         description: z.string(),
       }),
     }),
+    assessmentForm: z.object({
+      defaultFormError: z.string(),
+    }),
     coaching: z.object({
       chooseCategory: z.string(),
       filterByTopic: z.string(),

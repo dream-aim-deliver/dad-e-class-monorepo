@@ -573,6 +573,9 @@ export const EN: TDictionary = {
     sso: SSO_EN,
     offers: Offers_EN,
     coaching: Coaching_EN,
+    assessmentForm: {
+      defaultFormError: 'A critical error occurred while submitting the form. Please try again.',
+    },
     auth: {
       errorPage: {
         title: 'Oops! There was a problem signing you in.',

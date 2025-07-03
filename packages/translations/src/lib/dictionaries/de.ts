@@ -578,6 +578,9 @@ export const DE: TDictionary = {
     sso: SSO_DE,
     offers: Offers_DE,
     coaching: Coaching_DE,
+    assessmentForm: {
+      defaultFormError: 'Fehler beim Laden des Formulars. Bitte versuche es später erneut.',
+    },
     auth: {
       errorPage: {
         title: 'Ups! Beim Anmelden ist ein Problem aufgetreten.',
