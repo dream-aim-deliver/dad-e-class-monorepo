@@ -82,7 +82,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-   const handleUploadedFiles = async (
+  const handleUploadedFiles = async (
     files: fileMetadata.TFileUploadRequest[],
     abortSignal?: AbortSignal
   ): Promise<fileMetadata.TFileMetadata> => {
@@ -99,6 +99,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
         status: 'processing' as const,
         category: 'image' as const,
         url: '',
+        thumbnailUrl: ""
       };
       setFile(processingMetadata);
 

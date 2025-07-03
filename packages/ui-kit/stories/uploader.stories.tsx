@@ -102,7 +102,7 @@ const SingleFileUploaderRender = (args: any) => {
 
   const handleFilesChange = async (
     files: fileMetadata.TFileUploadRequest[],
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<fileMetadata.TFileMetadata> => {
     if (files.length > 0) {
       const newFile = files[0];
@@ -172,7 +172,7 @@ const SingleImageUploaderRender = (args: any) => {
 
   const handleFilesChange = async (
     files: fileMetadata.TFileUploadRequest[],
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<fileMetadata.TFileMetadata> => {
     if (files.length > 0) {
       const newFile = files[0];
@@ -240,7 +240,7 @@ const SingleVideoUploaderRender = (args: any) => {
 
   const handleFilesChange = async (
     files: fileMetadata.TFileUploadRequest[],
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<fileMetadata.TFileMetadata> => {
     if (files.length > 0) {
       const newFile = files[0];
@@ -251,7 +251,7 @@ const SingleVideoUploaderRender = (args: any) => {
         size: newFile.file.size,
         checksum: 'processing',
         status: 'processing' as const,
-        category: 'video' as const
+        category: 'video' as const,
       };
       setFile(processingMetadata);
 
@@ -303,7 +303,7 @@ const MultipleFileUploaderRender = (args: any) => {
 
   const handleFilesChange = async (
     newFiles: fileMetadata.TFileUploadRequest[],
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<fileMetadata.TFileMetadata[]> => {
     if (newFiles.length === 0) {
       return Promise.resolve([]);
@@ -332,7 +332,7 @@ const MultipleFileUploaderRender = (args: any) => {
       url: '',
     };
 
-    setFiles(currentFiles => [...currentFiles, processingMetadata]);
+    setFiles((currentFiles) => [...currentFiles, processingMetadata]);
 
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
@@ -350,22 +350,28 @@ const MultipleFileUploaderRender = (args: any) => {
         }
 
         finalMetadata.id = processingMetadata.id;
-        setFiles(currentFiles =>
-          currentFiles.map(f => (f.id === finalMetadata.id ? finalMetadata : f))
+        setFiles((currentFiles) =>
+          currentFiles.map((f) =>
+            f.id === finalMetadata.id ? finalMetadata : f,
+          ),
         );
         resolve([finalMetadata]);
       }, 2000);
 
       abortSignal?.addEventListener('abort', () => {
         clearTimeout(timeout);
-        setFiles(currentFiles => currentFiles.filter(f => f.id !== processingMetadata.id));
+        setFiles((currentFiles) =>
+          currentFiles.filter((f) => f.id !== processingMetadata.id),
+        );
         reject(new DOMException('Upload aborted', 'AbortError'));
       });
     });
   };
 
   const handleDelete = (id: string) => {
-    setFiles((currentFiles) => currentFiles.filter((file) => String(file.id) !== id));
+    setFiles((currentFiles) =>
+      currentFiles.filter((file) => String(file.id) !== id),
+    );
   };
 
   const handleDownload = (id: string) => {
@@ -393,7 +399,7 @@ const MultipleImageUploaderRender = (args: any) => {
 
   const handleFilesChange = async (
     newFiles: fileMetadata.TFileUploadRequest[],
-    abortSignal?: AbortSignal
+    abortSignal?: AbortSignal,
   ): Promise<fileMetadata.TFileMetadata[]> => {
     if (newFiles.length === 0) {
       return Promise.resolve([]);
@@ -413,28 +419,34 @@ const MultipleImageUploaderRender = (args: any) => {
       thumbnailUrl: '',
     };
 
-    setFiles(currentFiles => [...currentFiles, processingMetadata]);
+    setFiles((currentFiles) => [...currentFiles, processingMetadata]);
 
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         const finalMetadata = mockImageResponse(uploadRequest.name);
         finalMetadata.id = processingMetadata.id;
-        setFiles(currentFiles =>
-          currentFiles.map(f => (f.id === finalMetadata.id ? finalMetadata : f))
+        setFiles((currentFiles) =>
+          currentFiles.map((f) =>
+            f.id === finalMetadata.id ? finalMetadata : f,
+          ),
         );
         resolve([finalMetadata]);
       }, 2000);
 
       abortSignal?.addEventListener('abort', () => {
         clearTimeout(timeout);
-        setFiles(currentFiles => currentFiles.filter(f => f.id !== processingMetadata.id));
+        setFiles((currentFiles) =>
+          currentFiles.filter((f) => f.id !== processingMetadata.id),
+        );
         reject(new DOMException('Upload aborted', 'AbortError'));
       });
     });
   };
 
   const handleDelete = (id: string) => {
-    setFiles((currentFiles) => currentFiles.filter((file) => String(file.id) !== id));
+    setFiles((currentFiles) =>
+      currentFiles.filter((file) => String(file.id) !== id),
+    );
   };
 
   const handleDownload = (id: string) => {
@@ -503,7 +515,7 @@ export const MultipleFileUploader: Story = {
 export const MultipleImageUploader: Story = {
   render: MultipleImageUploaderRender,
   args: {
-    maxSize: 10,
+    maxSize: 1,
     acceptedFileTypes: ['image/jpeg', 'image/png', 'image/gif'],
     locale: 'de',
   },
