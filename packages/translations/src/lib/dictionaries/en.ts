@@ -571,6 +571,12 @@ export const EN: TDictionary = {
       titleLesson: 'Delete lesson?',
       titleModule: 'Delete module?',
     },
+    buyCompletePackageBanner: {
+      purchaseButton: 'Purchase Package',
+      fromText: 'from',
+      saveText: 'save',
+      coachingIncluded: 'Coaching included',
+    }
   },
   pages: {
     home: Home_EN,
