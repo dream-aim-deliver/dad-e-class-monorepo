@@ -576,6 +576,13 @@ export const EN: TDictionary = {
       fromText: 'from',
       saveText: 'save',
       coachingIncluded: 'Coaching included',
+    },
+    packageGeneralInformation: {
+      coachingIncluded: 'Coaching included',
+      purchaseButton: 'Purchase Package',
+      fromText: 'from',
+      saveText: 'save',
+      errorImageText: 'Image not available.',
     }
   },
   pages: {
