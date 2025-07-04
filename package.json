@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "release": "nx release -d --skip-publish",
-    "release:github": "GH_TOKEN=$(gh auth token) nx release --skip-publish"
+    "release:github": "GH_TOKEN=$(gh auth token) nx release --skip-publish",
+    "create-manifest": "ts-node tools/create-manifests.ts"
   },
   "private": true,
   "dependencies": {
@@ -41,6 +42,8 @@
     "@nx/web": "20.3.1",
     "@nx/workspace": "20.1.4",
     "@playwright/test": "^1.49.0",
+    "@pnpm/exportable-manifest": "^1000.1.1",
+    "@pnpm/read-project-manifest": "^1000.0.11",
     "@storybook/addon-essentials": "^8.4.7",
     "@storybook/addon-interactions": "^8.4.7",
     "@storybook/addon-themes": "^8.4.7",
