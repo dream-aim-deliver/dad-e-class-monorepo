@@ -31,6 +31,7 @@ const meta: Meta<typeof CoachingSessionCard> = {
         'requested',
         'rescheduled',
         'canceled',
+        'to-be-defined',
       ],
       description: 'Status of the coaching session',
     },
@@ -168,5 +169,13 @@ export const Canceled: Story = {
   args: {
     ...baseArgs,
     status: 'canceled',
+  },
+};
+
+export const ToBeDefined: Story = {
+  args: {
+    ...baseArgs,
+    status: 'to-be-defined',
+    userType: 'student',
   },
 };

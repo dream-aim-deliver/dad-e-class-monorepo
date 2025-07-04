@@ -1,55 +1,81 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import {CoachingSessionList} from '../lib/components/coaching-sessions/coaching-session-list';
-import { CoachingSessionCard , CoachingSessionCardProps} from '../lib/components/coaching-sessions/coaching-session-card';
+import { CoachingSessionList } from '../lib/components/coaching-sessions/coaching-session-list';
+import { CoachingSessionCard } from '../lib/components/coaching-sessions/coaching-session-card';
+import {
+    CoachCoachingSessionCardProps,
+    StudentCoachingSessionCardProps,
+} from '../lib/components/coaching-sessions/coaching-session-card';
 
 describe('CoachingSessions', () => {
-  const mockDate = new Date('2025-03-20T12:00:00');
-  
-  // Helper function to create a mock CoachingSessionCard
-  const createMockSession = (props: Partial<CoachingSessionCardProps> = {}) => (
-    <CoachingSessionCard
-      locale="en"
-      userType="coach"
-      status="ongoing"
-      title="Test Coaching Session"
-      duration={60}
-      date={mockDate}
-      startTime="12:00 PM"
-      endTime="1:00 PM"
-      studentName="John Doe"
-      studentImageUrl="https://example.com/student.jpg"
-      onClickJoinMeeting={vi.fn()}
-      {...props}
-    />
-  );
+    const mockDate = new Date('2025-03-20T12:00:00');
 
-  // Create mock sessions
-  const mockSessions = Array(10).fill(0).map(() => createMockSession());
+    const createCoachMockSession = (
+        overrides: Partial<CoachCoachingSessionCardProps> = {},
+    ) => {
+        const base: CoachCoachingSessionCardProps = {
+            locale: 'en',
+            userType: 'coach',
+            status: 'ongoing',
+            title: 'Test Coaching Session',
+            duration: 60,
+            date: mockDate,
+            startTime: '12:00 PM',
+            endTime: '1:00 PM',
+            studentName: 'John Doe',
+            studentImageUrl: 'https://example.com/student.jpg',
+            creatorName: 'Jane Smith',
+            onClickJoinMeeting: vi.fn(),
+            ...overrides,
+        };
+        return <CoachingSessionCard {...base} />;
+    };
 
-  // Create mock sessions for student user type
-  const studentMockSessions = Array(10).fill(0).map(() => createMockSession({
-    userType: 'student',
-    creatorName: 'Jane Smith',
-    creatorImageUrl: 'https://example.com/creator.jpg',
-  }));
+    const createStudentMockSession = (
+        overrides: Partial<StudentCoachingSessionCardProps> = {},
+    ) => {
+        const base: StudentCoachingSessionCardProps = {
+            locale: 'en',
+            userType: 'student',
+            status: 'to-be-defined',
+            title: 'Test Student Session',
+            duration: 45,
+            date: mockDate,
+            startTime: '4:00 PM',
+            endTime: '4:45 PM',
+            creatorName: 'Jane Smith',
+            creatorImageUrl: 'https://example.com/creator.jpg',
+            studentName: 'John Doe',
+            studentImageUrl: 'https://example.com/student.jpg',
+            onClickReschedule: vi.fn(),
+            ...overrides,
+        };
+        return <CoachingSessionCard {...base} />;
+    };
 
-  it('renders the correct number of initial sessions', () => {
-    render(
-      <CoachingSessionList locale="en">
-        {mockSessions}
-      </CoachingSessionList>,
+    const mockCoachSessions = Array.from({ length: 10 }, () =>
+        createCoachMockSession(),
     );
-    const sessionCards = screen.getAllByText('Test Coaching Session');
-    expect(sessionCards).toHaveLength(10);
-  });
-
-  it('renders sessions for student user type', () => {
-    render(
-      <CoachingSessionList locale="en">
-        {studentMockSessions}
-      </CoachingSessionList>,
+    const mockStudentSessions = Array.from({ length: 10 }, () =>
+        createStudentMockSession(),
     );
-    expect(screen.getAllByText('Jane Smith')).toHaveLength(10);
-  });
+
+    it('renders the correct number of initial sessions', () => {
+        render(
+            <CoachingSessionList locale="en">
+                {mockCoachSessions}
+            </CoachingSessionList>,
+        );
+        const sessionCards = screen.getAllByText('Test Coaching Session');
+        expect(sessionCards).toHaveLength(10);
+    });
+
+    it('renders sessions for student user type', () => {
+        render(
+            <CoachingSessionList locale="en">
+                {mockStudentSessions}
+            </CoachingSessionList>,
+        );
+        expect(screen.getAllByText('Test Student Session')).toHaveLength(10);
+    });
 });
