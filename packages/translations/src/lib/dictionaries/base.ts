@@ -568,6 +568,13 @@ export const DictionarySchema = z.object({
       saveText: z.string(),
       coachingIncluded: z.string(),
     }),
+    packageGeneralInformation: z.object({
+      coachingIncluded: z.string(),
+      purchaseButton: z.string(),
+      fromText: z.string(),
+      saveText: z.string(),
+      errorImageText: z.string(),
+    }),
     link: z.object({
       titleLabel: z.string(),
       urlLabel: z.string(),

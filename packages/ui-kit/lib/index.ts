@@ -80,3 +80,4 @@ export { CoachingSessionItem } from './components/coaching-session-tracker/coach
 export { CourseIntroBanner } from './components/course-intro-banner';
 
 export { DefaultAccordion } from './components/accordion/default-accordion';
+export { PackageGeneralInformation } from './components/package-general-information-banner';
