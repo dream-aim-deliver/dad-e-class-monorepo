@@ -581,7 +581,14 @@ export const DE: TDictionary = {
       fromText: 'ab',
       saveText: 'spare',
       coachingIncluded: 'Coaching inbegriffen',
-},link:{
+    },
+    packageGeneralInformation: {
+      coachingIncluded: 'Coaching inklusive',
+      purchaseButton: 'Paket kaufen',
+      fromText: 'ab',
+      saveText: 'spare',
+      errorImageText: 'Bild nicht verfügbar.',
+    },link:{
   titleLabel: 'Titel',
   urlLabel: 'URL',
   customIcon: 'benutzerdefiniertes Symbol',
