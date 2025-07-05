@@ -7,6 +7,7 @@ import { IconTrashAlt } from "./icons/icon-trash-alt";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 
 export type optionsType = {
+    id?: number;
     name: string;
     isSelected: boolean;
 }

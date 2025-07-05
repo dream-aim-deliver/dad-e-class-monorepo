@@ -26,7 +26,7 @@ const textInputElement: FormElementTemplate = {
   validate: (elementInstance: FormElement, value: valueType) => {
     if (elementInstance.required) {
       if (Array.isArray(value)) {
-        const content = value.map(n => Node.string(n)).join('\n').trim();
+        const content = (value as Descendant[]).map(n => Node.string(n)).join('\n').trim();
         return content.length > 0;
       }
       return false;

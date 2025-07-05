@@ -4,12 +4,12 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../trpc/client';
 import { useGetCoachingPagePresenter } from '../../hooks/use-coaching-page-presenter';
 import { Suspense, useState } from 'react';
-import DefaultLoading from '../../wrappers/default-loading';
 import {
     CoachBanner,
     CoachCardListSkeleton,
     CoachesSkeleton,
     DefaultError,
+    DefaultLoading,
     Outline,
     SectionHeading,
 } from '@maany_shr/e-class-ui-kit';
@@ -46,16 +46,12 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
     const session = sessionDTO.data;
     const isLoggedIn = !!session;
 
-    // Loading state
     if (!coachingPageViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
-    // Error state
-    if (coachingPageViewModel.mode !== 'default') {
-        return (
-            <DefaultError errorMessage={coachingPageViewModel.data.message} />
-        );
+    if (coachingPageViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
     }
 
     const coachingPage = coachingPageViewModel.data;

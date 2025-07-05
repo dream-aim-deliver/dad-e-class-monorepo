@@ -1,5 +1,9 @@
 'use client';
 
+import { TLocale } from '@maany_shr/e-class-translations';
+import { DefaultError } from '@maany_shr/e-class-ui-kit';
+import { useLocale } from 'next-intl';
+
 // TODO: localize and style the error page
 export default function Page({
     error,
@@ -8,5 +12,6 @@ export default function Page({
     error: Error & { digest?: string };
     reset: () => void;
 }) {
-    return <div className="text-white">{error.message}</div>;
+    const locale = useLocale() as TLocale;
+    return <DefaultError locale={locale} onRetry={reset} />;
 }

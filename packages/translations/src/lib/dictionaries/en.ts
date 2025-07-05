@@ -12,6 +12,19 @@ export const EN: TDictionary = {
       loadMore: 'Load more...',
       viewAll: 'View all',
     },
+    defaultLoading: {
+      loading: 'Loading...',
+    },
+    defaultError: {
+      title: 'Something went wrong',
+      description: 'A critical error occurred. Please try reloading the page. If the issue persists, please contact us at {contactEmail}.',
+      retry: 'Retry',
+    },
+    defaultNotFound: {
+      title: 'Not Found',
+      description: 'Could not find the requested resource.',
+      retry: 'Retry',
+    },
     coachBanner: {
       buttonText: 'Become a Coach',
       placeHolderText: 'Image not available',
@@ -560,6 +573,9 @@ export const EN: TDictionary = {
     sso: SSO_EN,
     offers: Offers_EN,
     coaching: Coaching_EN,
+    assessmentForm: {
+      defaultFormError: 'A critical error occurred while submitting the form. Please try again.',
+    },
     auth: {
       errorPage: {
         title: 'Oops! There was a problem signing you in.',

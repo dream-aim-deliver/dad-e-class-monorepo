@@ -12,6 +12,19 @@ export const DE: TDictionary = {
       loadMore: 'Mehr laden...',
       viewAll: 'Alle ansehen',
     },
+    defaultLoading: {
+      loading: 'Laden...',
+    },
+    defaultError: {
+      title: 'Etwas ist schiefgelaufen',
+      description: 'Ein kritischer Fehler ist aufgetreten. Bitte versuchen Sie, die Seite neu zu laden. Falls das Problem weiterhin besteht, kontaktieren Sie uns bitte unter {contactEmail}.',
+      retry: 'Wiederholen',
+    },
+    defaultNotFound: {
+      title: 'Nicht gefunden',
+      description: 'Die angeforderte Ressource konnte nicht gefunden werden.',
+      retry: 'Wiederholen',
+    },
     coachBanner: {
       buttonText: 'Coach werden',
       placeHolderText: 'Bild nicht verfügbar',
@@ -565,6 +578,9 @@ export const DE: TDictionary = {
     sso: SSO_DE,
     offers: Offers_DE,
     coaching: Coaching_DE,
+    assessmentForm: {
+      defaultFormError: 'Fehler beim Laden des Formulars. Bitte versuche es später erneut.',
+    },
     auth: {
       errorPage: {
         title: 'Ups! Beim Anmelden ist ein Problem aufgetreten.',

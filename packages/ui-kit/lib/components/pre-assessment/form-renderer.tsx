@@ -5,7 +5,7 @@ import { Button } from "../button";
 import Banner from "../banner";
 import { IconLoaderSpinner } from "../icons/icon-loader-spinner";
 import { FormElement, FormElementType, valueType } from "./types";
-import { TextInputElement, SingleChoiceElement, RichTextElement, multiCheckElement, OneOutOfThreeElement } from "../lesson-components/types";
+import { TextInputElement, SingleChoiceElement, RichTextElement, MultiCheckElement, OneOutOfThreeElement } from "../lesson-components/types";
 import { deserialize } from "../rich-text-element/serializer";
 
 
@@ -78,12 +78,10 @@ export function FormElementRenderer({
         for (const element of elements) {
             const formElement = formValues.current[element.id];
 
-            if (!element.required) {
-                continue;
-            }
-
             if (!formElement) {
-                newErrors[element.id] = true;
+                if (element.required) {
+                    newErrors[element.id] = true;
+                }
                 continue;
             }
 
@@ -114,7 +112,7 @@ export function FormElementRenderer({
                     break;
                 }
                 case FormElementType.MultiCheck: {
-                    const multiCheck = formElement as multiCheckElement;
+                    const multiCheck = formElement as MultiCheckElement;
                     value = multiCheck?.options ?? [];
                     break;
                 }
