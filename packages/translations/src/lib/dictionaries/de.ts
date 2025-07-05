@@ -17,7 +17,7 @@ export const DE: TDictionary = {
     },
     defaultError: {
       title: 'Etwas ist schiefgelaufen',
-      description: 'Ein kritischer Fehler ist aufgetreten. Bitte versuchen Sie, die Seite neu zu laden. Falls das Problem weiterhin besteht, kontaktieren Sie uns bitte unter example@mail.com.',
+      description: 'Ein kritischer Fehler ist aufgetreten. Bitte versuchen Sie, die Seite neu zu laden. Falls das Problem weiterhin besteht, kontaktieren Sie uns bitte unter {contactEmail}.',
       retry: 'Wiederholen',
     },
     defaultNotFound: {
