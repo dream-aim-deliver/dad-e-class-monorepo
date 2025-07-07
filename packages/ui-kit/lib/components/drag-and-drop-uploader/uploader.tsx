@@ -94,6 +94,8 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
   const allFiles = [...passedInFiles, ...uploadingFiles];
 
   const dictionary = getDictionary(locale);
+  const abortControllers = useRef(new Map<string, AbortController>());
+
 
   const getAcceptedFileTypes = (): string[] => {
     if (props.acceptedFileTypes) return props.acceptedFileTypes;
@@ -106,6 +108,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
       case 'document':
         return getDocumentFileTypes();
       case 'generic':
+        return ['*/*']; // Generic accepts all file types
       default:
         return [];
     }
