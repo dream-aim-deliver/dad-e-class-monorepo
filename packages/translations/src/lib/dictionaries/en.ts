@@ -605,6 +605,18 @@ export const EN: TDictionary = {
     publishNotes: 'Publish notes',
     addLink: 'Add link',
   },
+  studentCard: {
+      coachingSessionsLeftText: 'coaching sessions with you',
+      coach: 'Coach',
+      course: 'Course',
+      waitingFeedbackBagde: 'Waiting for feedback',
+      longWaitBadge: 'Waited for more than 48h',
+      completedCourseBadge: 'Student completed course on',
+      you: 'You',
+      studentDetailsButton: 'Student Details',
+      viewAssignment: 'View assignment',
+      emptyState: 'No students yet',
+    }
   },
   pages: {
     home: Home_EN,

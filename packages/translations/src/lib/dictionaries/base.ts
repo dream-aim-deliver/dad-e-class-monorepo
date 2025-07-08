@@ -595,7 +595,19 @@ export const DictionarySchema = z.object({
       customIcon: z.string(),
       includeInMaterials: z.string(),
       addLink: z.string(),
-    })
+    }),
+    studentCard: z.object({
+      coachingSessionsLeftText: z.string(),
+      coach: z.string(),
+      course: z.string(),
+      waitingFeedbackBagde: z.string(),
+      longWaitBadge: z.string(),
+      completedCourseBadge: z.string(),
+      you: z.string(),
+      studentDetailsButton: z.string(),
+      viewAssignment: z.string(),
+      emptyState: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({
@@ -613,7 +625,7 @@ export const DictionarySchema = z.object({
       notSignedInText: z.string(),
       welcomeText: z.string(),
       signOutText: z.string(),
-        topicsTitle: z.string(),
+      topicsTitle: z.string(),
     }),
     offers: z.object({
       chooseCategory: z.string(),
