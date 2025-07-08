@@ -8,10 +8,12 @@ import { propagateServerField } from 'next/dist/server/lib/render-server';
 
 interface CourseServerComponentProps {
     slug: string;
+    role?: string;
 }
 
 export default async function CourseServerComponent({
     slug,
+    role,
 }: CourseServerComponentProps) {
     const queryOptions = trpc.getCourseAccess.queryOptions({
         courseSlug: slug,
@@ -52,7 +54,12 @@ export default async function CourseServerComponent({
         return <div>Visitor View</div>;
     }
 
-    if (highestRole === 'student') {
+    const currentRole = role ?? highestRole;
+    if (!(roles as string[]).includes(currentRole)) {
+        throw new Error();
+    }
+
+    if (currentRole === 'student') {
         if (isAssessmentCompleted !== null && !isAssessmentCompleted) {
             await prefetch(
                 trpc.listAssessmentComponents.queryOptions({
@@ -66,8 +73,8 @@ export default async function CourseServerComponent({
     return (
         <EnrolledCourse
             courseSlug={slug}
-            roles={roles}
-            currentRole={highestRole}
+            roles={roles.filter((role) => role !== 'visitor')}
+            currentRole={currentRole}
         />
     );
 }

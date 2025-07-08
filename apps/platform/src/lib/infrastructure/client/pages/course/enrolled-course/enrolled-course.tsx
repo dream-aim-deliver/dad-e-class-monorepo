@@ -83,6 +83,9 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
             <EnrolledCourseHeading
                 courseViewModel={courseViewModel}
                 studentProgressViewModel={props.studentProgressViewModel}
+                roles={props.roles}
+                currentRole={props.currentRole}
+                courseSlug={props.courseSlug}
             />
             <Tabs.Root defaultTab="introduction">
                 <CourseTabList />

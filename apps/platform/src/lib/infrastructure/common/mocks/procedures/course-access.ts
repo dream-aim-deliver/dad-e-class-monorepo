@@ -73,6 +73,16 @@ export const getCourseAccess = t.procedure
                 };
             }
 
+            if (slug === 'admin-course') {
+                return {
+                    success: true,
+                    data: {
+                        roles: ['visitor', 'student', 'coach', 'admin'],
+                        isAssessmentCompleted: null,
+                    },
+                };
+            }
+
             return {
                 success: true,
                 data: getCourseAccessMock,
