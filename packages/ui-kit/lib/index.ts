@@ -81,3 +81,5 @@ export { CourseIntroBanner } from './components/course-intro-banner';
 
 export { DefaultAccordion } from './components/accordion/default-accordion';
 export { PackageGeneralInformation } from './components/package-general-information-banner';
+
+export { StudentCard } from './components/student-card/student-card';
