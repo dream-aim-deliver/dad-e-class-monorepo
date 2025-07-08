@@ -9,7 +9,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                 title: 'Advanced React Patterns & Performance',
                 imageUrl:
                     'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop',
-                avatarRating: 4.8,
+                averageRating: 4.8,
                 reviewCount: 247,
                 description:
                     'Master advanced React patterns, hooks, and performance optimization techniques. Learn context patterns, custom hooks, and modern state management approaches.',
@@ -52,7 +52,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                 title: 'Machine Learning Fundamentals',
                 imageUrl:
                     'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=400&fit=crop',
-                avatarRating: 4.6,
+                averageRating: 4.6,
                 reviewCount: 189,
                 description:
                     'Dive into machine learning concepts, algorithms, and practical implementations. Perfect for beginners looking to understand ML from the ground up.',
@@ -95,7 +95,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                 title: 'UI/UX Design Mastery',
                 imageUrl:
                     'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=400&fit=crop',
-                avatarRating: 4.9,
+                averageRating: 4.9,
                 reviewCount: 324,
                 description:
                     'Learn modern UI/UX design principles, user research methods, and design thinking processes. Create beautiful and functional user interfaces.',
@@ -137,7 +137,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                 title: 'DevOps & Cloud Architecture',
                 imageUrl:
                     'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=400&fit=crop',
-                avatarRating: 4.7,
+                averageRating: 4.7,
                 reviewCount: 156,
                 description:
                     'Master DevOps practices, cloud infrastructure, and deployment strategies. Learn Docker, Kubernetes, CI/CD, and cloud platforms.',
@@ -179,7 +179,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
             data: {
                 title: 'Mobile App Development with Flutter',
                 imageUrl: null, // Testing nullable field
-                avatarRating: 4.5,
+                averageRating: 4.5,
                 reviewCount: 98,
                 description:
                     'Build cross-platform mobile applications using Flutter and Dart. Learn widgets, state management, and app deployment.',
@@ -221,7 +221,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                 title: 'Full-Stack JavaScript Development',
                 imageUrl:
                     'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=400&fit=crop',
-                avatarRating: 4.4,
+                averageRating: 4.4,
                 reviewCount: 312,
                 description:
                     'Master both frontend and backend development with JavaScript. Learn Node.js, Express, React, and database integration.',

@@ -1,16 +1,13 @@
 'use client';
 
-import {
-    DefaultError,
-    DefaultLoading,
-    SectionHeading,
-} from '@maany_shr/e-class-ui-kit';
+import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import { useState } from 'react';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useGetEnrolledCourseDetailsPresenter } from '../../hooks/use-enrolled-course-details-presenter';
+import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import EnrolledCourseHeading from './enrolled-course-heading';
 
 interface EnrolledCourseProps {
     roles: string[];
@@ -42,8 +39,7 @@ export default function EnrolledCourse(props: EnrolledCourseProps) {
 
     return (
         <div>
-            <SectionHeading text={courseViewModel.data.title} />
-            <p>{currentRole}</p>
+            <EnrolledCourseHeading courseViewModel={courseViewModel} />
             {/* Additional content can be added here */}
         </div>
     );
