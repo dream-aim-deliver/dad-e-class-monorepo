@@ -9,17 +9,10 @@ import {
     SectionHeading,
     StarRating,
 } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { StudentCourseTab } from '../../../utils/course-tabs';
-
-const roleNames: Record<string, string> = {
-    student: 'Student',
-    coach: 'Coach',
-    creator: 'Course Creator',
-    admin: 'Admin',
-};
 
 interface EnrolledCourseHeadingProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
@@ -53,7 +46,7 @@ export default function EnrolledCourseHeading({
                     <Badge
                         className="w-fit"
                         size="medium"
-                        text="Completed"
+                        text={courseTranslations('completedPanel.badgeText')}
                         variant="successprimary"
                     />
                     <Button
@@ -61,7 +54,9 @@ export default function EnrolledCourseHeading({
                         iconLeft={<IconCloudDownload />}
                         className="px-0 mb-0"
                         variant="text"
-                        text="Download Certificate"
+                        text={courseTranslations(
+                            'completedPanel.downloadCertificate',
+                        )}
                         onClick={() => {
                             // TODO: Implement certificate download functionality
                         }}
@@ -83,6 +78,8 @@ export default function EnrolledCourseHeading({
         return null;
     };
 
+    const courseTranslations = useTranslations('pages.course');
+
     const roleOptions = useMemo(() => {
         if (!roles || roles.length === 0) {
             return [];
@@ -90,15 +87,32 @@ export default function EnrolledCourseHeading({
 
         const options: { label: string; value: string }[] = [];
         for (const role of roles) {
-            if (role in roleNames) {
-                options.push({
-                    label: roleNames[role],
-                    value: role,
-                });
+            let label: string | undefined;
+
+            switch (role) {
+                case 'student':
+                    label = courseTranslations('roleDropdown.student');
+                    break;
+                case 'coach':
+                    label = courseTranslations('roleDropdown.coach');
+                    break;
+                case 'creator':
+                    label = courseTranslations('roleDropdown.creator');
+                    break;
+                case 'admin':
+                    label = courseTranslations('roleDropdown.admin');
+                    break;
             }
+
+            if (!label) continue;
+
+            options.push({
+                label,
+                value: role,
+            });
         }
         return options;
-    }, [roles]);
+    }, [roles, courseTranslations]);
 
     const onRoleChange = (role: string | string[] | null) => {
         if (!role && Array.isArray(role)) return;
@@ -127,7 +141,9 @@ export default function EnrolledCourseHeading({
                 {renderProgress()}
                 {roleOptions.length > 1 && (
                     <div className="flex space-x-3 items-center">
-                        <span className="text-text-secondary">View as</span>
+                        <span className="text-text-secondary">
+                            {courseTranslations('roleDropdown.viewAs')}
+                        </span>
                         <Dropdown
                             type="simple"
                             className="w-fit"

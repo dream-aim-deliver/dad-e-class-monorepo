@@ -620,6 +620,17 @@ export const DictionarySchema = z.object({
       }),
     }),
     course: z.object({
+      completedPanel: z.object({
+        badgeText: z.string(),
+        downloadCertificate: z.string(),
+      }),
+      roleDropdown: z.object({
+        viewAs: z.string(),
+        student: z.string(),
+        coach: z.string(),
+        creator: z.string(),
+        admin: z.string(),
+      }),
       tabs: z.object({
         introduction: z.string(),
         study: z.string(),
