@@ -119,10 +119,10 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
             if (students.length === 3) {
                 return `${students[0].name}, ${students[1].name} and ${students[2].name}`;
             }
-            // For more than 3 students, show first 2 and count
-            return `${students[0].name}, ${students[1].name} and ${students.length - 2} others`;
+            // For more than 3 students, show first 3 and count
+            return `${students[0].name}, ${students[1].name}, ${students[2].name} and ${students.length - 3} others`;
         } else {
-            return `${students[0].name}, ${students[1].name} and ${othersCount} others`;
+            return `${students[0].name}, ${students[1].name}, ${students[2].name} and ${othersCount} others`;
         }
     };
 
