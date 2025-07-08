@@ -80,7 +80,10 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
 
     return (
         <div className="flex flex-col space-y-4">
-            <EnrolledCourseHeading courseViewModel={courseViewModel} />
+            <EnrolledCourseHeading
+                courseViewModel={courseViewModel}
+                studentProgressViewModel={props.studentProgressViewModel}
+            />
             <Tabs.Root defaultTab="introduction">
                 <CourseTabList />
                 <Tabs.Content value="introduction" className={tabContentClass}>
