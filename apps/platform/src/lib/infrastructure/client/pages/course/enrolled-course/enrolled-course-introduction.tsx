@@ -5,6 +5,8 @@ import {
     DefaultError,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { useTabContext } from 'packages/ui-kit/lib/components/tabs/tab-context';
 
 interface EnrolledCourseIntroductionProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
@@ -16,6 +18,8 @@ export default function EnrolledCourseIntroduction(
 ) {
     const { courseViewModel, progressViewModel } = props;
     const locale = useLocale() as TLocale;
+    const tabContext = useTabContext();
+    const router = useRouter();
 
     if (courseViewModel.mode !== 'default') {
         return <DefaultError locale={locale} />;
@@ -57,6 +61,12 @@ export default function EnrolledCourseIntroduction(
                 avatarUrl: student.avatarUrl ?? '',
             }))}
             totalStudentCount={courseViewModel.data.studentCount}
+            onClickAuthor={() => {
+                router.push(`/coaches/${courseViewModel.data.author.username}`);
+            }}
+            onClickResume={() => {
+                tabContext.setActiveTab('study');
+            }}
         />
     );
 }
