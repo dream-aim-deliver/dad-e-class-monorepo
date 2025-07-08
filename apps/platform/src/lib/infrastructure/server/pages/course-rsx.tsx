@@ -9,11 +9,13 @@ import { propagateServerField } from 'next/dist/server/lib/render-server';
 interface CourseServerComponentProps {
     slug: string;
     role?: string;
+    tab?: string;
 }
 
 export default async function CourseServerComponent({
     slug,
     role,
+    tab,
 }: CourseServerComponentProps) {
     const queryOptions = trpc.getCourseAccess.queryOptions({
         courseSlug: slug,
@@ -75,6 +77,7 @@ export default async function CourseServerComponent({
             courseSlug={slug}
             roles={roles.filter((role) => role !== 'visitor')}
             currentRole={currentRole}
+            tab={tab}
         />
     );
 }

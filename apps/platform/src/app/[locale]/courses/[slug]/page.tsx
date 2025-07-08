@@ -12,10 +12,15 @@ export default async function Page({
 
     const slug = params.slug;
     let role = searchParams.role;
+    let tab = searchParams.tab;
 
     if (role && Array.isArray(role)) {
         role = undefined;
     }
 
-    return <CourseServerComponent slug={slug} role={role} />;
+    if (tab && Array.isArray(tab)) {
+        tab = undefined;
+    }
+
+    return <CourseServerComponent slug={slug} role={role} tab={tab} />;
 }
