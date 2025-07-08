@@ -90,26 +90,28 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
     // Helper function to format student names text
     const formatStudentNamesText = (students: Student[], totalCount: number): string => {
         if (students.length === 0) return '';
+        const and = dictionary.components.courseGeneralInformationView.and;
+        const others = dictionary.components.courseGeneralInformationView.others;
         
         if (students.length === 1) {
             const othersCount = totalCount - 1;
             if (othersCount === 0) {
                 return students[0].name;
             } else if (othersCount === 1) {
-                return `${students[0].name} and 1 other`;
+                return `${students[0].name} ${and} 1 other`;
             } else {
-                return `${students[0].name} and ${othersCount} others`;
+                return `${students[0].name} ${and} ${othersCount} ${others}`;
             }
         }
         
         if (students.length === 2) {
             const othersCount = totalCount - 2;
             if (othersCount === 0) {
-                return `${students[0].name} and ${students[1].name}`;
+                return `${students[0].name} ${and} ${students[1].name}`;
             } else if (othersCount === 1) {
-                return `${students[0].name}, ${students[1].name} and 1 other`;
+                return `${students[0].name}, ${students[1].name} ${and} 1 other`;
             } else {
-                return `${students[0].name}, ${students[1].name} and ${othersCount} others`;
+                return `${students[0].name}, ${students[1].name} ${and} ${othersCount} ${others}`;
             }
         }
         
@@ -117,14 +119,14 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
         const othersCount = totalCount - students.length;
         if (othersCount === 0) {
             if (students.length === 3) {
-                return `${students[0].name}, ${students[1].name} and ${students[2].name}`;
+                return `${students[0].name}, ${students[1].name} ${and} ${students[2].name}`;
             }
             // For more than 3 students, show first 3 and count
-            return `${students[0].name}, ${students[1].name}, ${students[2].name} and ${students.length - 3} others`;
+            return `${students[0].name}, ${students[1].name}, ${students[2].name} ${and} ${students.length - 3} ${others}`;
         } else {
-            return `${students[0].name}, ${students[1].name}, ${students[2].name} and ${othersCount} others`;
+            return `${students[0].name}, ${students[1].name}, ${students[2].name} ${and} ${othersCount} ${others}`;
         }
-    };
+    };    
 
     // Render student avatar reel
     const renderStudentAvatarReel = () => {

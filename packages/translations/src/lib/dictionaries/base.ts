@@ -377,6 +377,8 @@ export const DictionarySchema = z.object({
       yourProgressText: z.string(),
       resumeText: z.string(),
       viewProfileText: z.string(),
+      and: z.string(),
+      others: z.string(),
     }),
     uploadingSection: z.object({
       maxSizeText: z.string(),

@@ -376,6 +376,8 @@ export const DE: TDictionary = {
       yourProgressText: 'Ihr Fortschritt',
       resumeText: 'Wieder aufnehmen',
       viewProfileText: 'Profil anzeigen',
+      and: 'und',
+      others: 'andere',
     },
     uploadingSection: {
       maxSizeText: "maximale Größe",

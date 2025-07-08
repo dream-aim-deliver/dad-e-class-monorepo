@@ -373,6 +373,8 @@ export const EN: TDictionary = {
       yourProgressText: 'Your progress',
       resumeText: 'Resume',
       viewProfileText: 'View profile',
+      and: 'and',
+      others: 'others',
     },
     uploadingSection: {
       maxSizeText: 'Max size',
