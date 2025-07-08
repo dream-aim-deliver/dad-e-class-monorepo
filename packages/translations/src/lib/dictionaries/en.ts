@@ -583,5 +583,19 @@ export const EN: TDictionary = {
         tryAgain: 'Try Again',
       },
     },
+    course: {
+      tabs: {
+        introduction: "Introduction",
+        study: "Study",
+        assignments: "Assignments",
+        notes: "Your notes",
+        material: "Material",
+        assessment: "Pre-Course Form",
+        preview: "Preview course",
+        students: "Students",
+        coaches: "Coaches",
+        groups: "Groups",
+      },
+    },
   },
 };

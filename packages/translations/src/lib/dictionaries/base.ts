@@ -619,6 +619,20 @@ export const DictionarySchema = z.object({
         tryAgain: z.string(),
       }),
     }),
+    course: z.object({
+      tabs: z.object({
+        introduction: z.string(),
+        study: z.string(),
+        assignments: z.string(),
+        notes: z.string(),
+        material: z.string(),
+        assessment: z.string(),
+        preview: z.string(),
+        students: z.string(),
+        coaches: z.string(),
+        groups: z.string(),
+      }),
+    }),
   }),
 });
 
