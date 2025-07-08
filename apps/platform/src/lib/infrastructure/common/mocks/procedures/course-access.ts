@@ -63,6 +63,16 @@ export const getCourseAccess = t.procedure
                 };
             }
 
+            if (slug === 'coach-course') {
+                return {
+                    success: true,
+                    data: {
+                        roles: ['visitor', 'student', 'coach'],
+                        isAssessmentCompleted: null,
+                    },
+                };
+            }
+
             return {
                 success: true,
                 data: getCourseAccessMock,

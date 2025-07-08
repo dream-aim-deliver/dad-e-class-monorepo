@@ -18,3 +18,5 @@ export * from './assessment-component-list-view-model';
 export * from './assessment-progress-view-model';
 
 export * from './enrolled-course-details-view-model';
+
+export * from './student-progress-view-model';

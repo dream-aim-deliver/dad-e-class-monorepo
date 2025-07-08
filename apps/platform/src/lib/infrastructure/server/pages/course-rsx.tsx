@@ -41,32 +41,19 @@ export default async function CourseServerComponent({
         throw new Error(courseAccessViewModel.data.message);
     }
 
-    if (!courseAccessViewModel.data.highestRole) {
+    const { highestRole, roles, isAssessmentCompleted } =
+        courseAccessViewModel.data;
+
+    if (!highestRole) {
         throw new Error();
     }
 
-    if (courseAccessViewModel.data.highestRole === 'visitor') {
+    if (highestRole === 'visitor') {
         return <div>Visitor View</div>;
     }
 
-    if (courseAccessViewModel.data.highestRole === 'student') {
-        if (
-            courseAccessViewModel.data.isAssessmentCompleted ||
-            courseAccessViewModel.data.isAssessmentCompleted === null
-        ) {
-            await prefetch(
-                trpc.getEnrolledCourseDetails.queryOptions({
-                    courseSlug: slug,
-                }),
-            );
-            return (
-                <EnrolledCourse
-                    roles={courseAccessViewModel.data.roles}
-                    highestRole={courseAccessViewModel.data.highestRole}
-                    courseSlug={slug}
-                />
-            );
-        } else {
+    if (highestRole === 'student') {
+        if (isAssessmentCompleted !== null && !isAssessmentCompleted) {
             await prefetch(
                 trpc.listAssessmentComponents.queryOptions({
                     courseSlug: slug,
@@ -77,15 +64,10 @@ export default async function CourseServerComponent({
     }
 
     return (
-        <div>
-            <h1>Course Access</h1>
-            <p>Roles: {courseAccessViewModel.data.roles.join(', ')}</p>
-            <p>
-                Is Assessment Completed:{' '}
-                {courseAccessViewModel.data.isAssessmentCompleted
-                    ? 'Yes'
-                    : 'No'}
-            </p>
-        </div>
+        <EnrolledCourse
+            courseSlug={slug}
+            roles={roles}
+            currentRole={highestRole}
+        />
     );
 }
