@@ -544,6 +544,18 @@ export const DictionarySchema = z.object({
       titleLesson: z.string(),
       titleModule: z.string(),
     }),
+    studentCard: z.object({
+      coachingSessionsLeftText: z.string(),
+      coach: z.string(),
+      course: z.string(),
+      waitingFeedbackBagde: z.string(),
+      longWaitBadge: z.string(),
+      completedCourseBadge: z.string(),
+      you: z.string(),
+      studentDetailsButton: z.string(),
+      viewAssignment: z.string(),
+      emptyState: z.string(),
+    })
   }),
   pages: z.object({
     sso: z.object({
