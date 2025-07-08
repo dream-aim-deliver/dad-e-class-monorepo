@@ -70,3 +70,4 @@ export * from './components/pre-assessment/types';
 export * from './components/lesson-components/types';
 
 export * from './components/icons';
+export { CourseGeneralInformationView } from './components/course-general-information-view';
