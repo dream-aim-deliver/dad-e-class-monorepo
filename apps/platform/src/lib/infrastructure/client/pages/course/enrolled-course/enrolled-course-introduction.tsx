@@ -7,6 +7,7 @@ import {
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useTabContext } from 'packages/ui-kit/lib/components/tabs/tab-context';
+import { StudentCourseTab } from '../../../utils/course-tabs';
 
 interface EnrolledCourseIntroductionProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
@@ -65,7 +66,7 @@ export default function EnrolledCourseIntroduction(
                 router.push(`/coaches/${courseViewModel.data.author.username}`);
             }}
             onClickResume={() => {
-                tabContext.setActiveTab('study');
+                tabContext.setActiveTab(StudentCourseTab.STUDY);
             }}
         />
     );

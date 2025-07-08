@@ -11,7 +11,7 @@ import {
     IconNotes,
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { trpc } from '../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
@@ -21,32 +21,49 @@ import EnrolledCourseHeading from './enrolled-course-heading';
 import EnrolledCourseIntroduction from './enrolled-course-introduction';
 import { useGetStudentProgressPresenter } from '../../../hooks/use-student-progress-presenter';
 import { useRouter } from 'next/navigation';
+import { StudentCourseTab } from '../../../utils/course-tabs';
 
 interface EnrolledCourseProps {
     roles: string[];
     currentRole: string;
     courseSlug: string;
+    tab?: string;
 }
 
 function CourseTabList() {
     return (
         <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
-            <Tabs.Trigger icon={<IconInfoCircle />} value="introduction">
+            <Tabs.Trigger
+                icon={<IconInfoCircle />}
+                value={StudentCourseTab.INTRODUCTION}
+            >
                 Intro
             </Tabs.Trigger>
-            <Tabs.Trigger value="study" icon={<IconHourglass />}>
+            <Tabs.Trigger
+                value={StudentCourseTab.STUDY}
+                icon={<IconHourglass />}
+            >
                 Study
             </Tabs.Trigger>
-            <Tabs.Trigger value="assignments" icon={<IconAssignment />}>
+            <Tabs.Trigger
+                value={StudentCourseTab.ASSIGNMENTS}
+                icon={<IconAssignment />}
+            >
                 Assignments
             </Tabs.Trigger>
-            <Tabs.Trigger value="notes" icon={<IconNotes />}>
+            <Tabs.Trigger value={StudentCourseTab.NOTES} icon={<IconNotes />}>
                 Your notes
             </Tabs.Trigger>
-            <Tabs.Trigger value="material" icon={<IconLesson />}>
+            <Tabs.Trigger
+                value={StudentCourseTab.MATERIAL}
+                icon={<IconLesson />}
+            >
                 Material
             </Tabs.Trigger>
-            <Tabs.Trigger value="assessment" icon={<IconLesson />}>
+            <Tabs.Trigger
+                value={StudentCourseTab.ASSESSMENT}
+                icon={<IconLesson />}
+            >
                 Pre-Course Form
             </Tabs.Trigger>
         </Tabs.List>
@@ -76,6 +93,19 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
             router.push('/login');
         }
     }, [courseViewModel, router]);
+
+    const defaultTab: string = useMemo(() => {
+        if (props.tab) {
+            const studentTabs: string[] = Object.values(StudentCourseTab);
+            if (
+                props.currentRole === 'student' &&
+                studentTabs.includes(props.tab)
+            ) {
+                return props.tab;
+            }
+        }
+        return StudentCourseTab.INTRODUCTION;
+    }, [props.tab]);
 
     if (!courseViewModel) {
         return <DefaultLoading locale={locale} />;
@@ -109,7 +139,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 currentRole={props.currentRole}
                 courseSlug={props.courseSlug}
             />
-            <Tabs.Root defaultTab="introduction">
+            <Tabs.Root defaultTab={defaultTab}>
                 <CourseTabList />
                 <Tabs.Content value="introduction" className={tabContentClass}>
                     <EnrolledCourseIntroduction

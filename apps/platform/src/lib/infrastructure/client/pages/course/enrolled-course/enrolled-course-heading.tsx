@@ -12,6 +12,7 @@ import {
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+import { StudentCourseTab } from '../../../utils/course-tabs';
 
 const roleNames: Record<string, string> = {
     student: 'Student',
@@ -61,6 +62,9 @@ export default function EnrolledCourseHeading({
                         className="px-0"
                         variant="text"
                         text="Download Certificate"
+                        onClick={() => {
+                            // TODO: Implement certificate download functionality
+                        }}
                     />
                 </div>
             );
@@ -70,7 +74,9 @@ export default function EnrolledCourseHeading({
                 <CourseProgressBar
                     percentage={studentProgressViewModel.data.progressPercent}
                     locale={locale}
-                    onClickResume={() => {}}
+                    onClickResume={() => {
+                        window.location.href = `/courses/${courseSlug}?role=${currentRole}&tab=${StudentCourseTab.STUDY}`;
+                    }}
                 />
             );
         }
