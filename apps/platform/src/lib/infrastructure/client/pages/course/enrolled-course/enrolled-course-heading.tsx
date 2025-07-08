@@ -117,18 +117,21 @@ export default function EnrolledCourseHeading({
                     </span>
                 </div>
             </div>
-            <div className="flex flex-col space-y-4 items-start md:items-end">
-                {roleOptions.length > 1 && (
-                    <Dropdown
-                        type="simple"
-                        className="w-fit"
-                        options={roleOptions}
-                        defaultValue={currentRole}
-                        text={{}}
-                        onSelectionChange={onRoleChange}
-                    />
-                )}
+            <div className="flex flex-col space-y-1 items-start md:items-end">
                 {renderProgress()}
+                {roleOptions.length > 1 && (
+                    <div className="flex space-x-3 items-center">
+                        <span className="text-text-secondary">View as</span>
+                        <Dropdown
+                            type="simple"
+                            className="w-fit"
+                            options={roleOptions}
+                            defaultValue={currentRole}
+                            text={{}}
+                            onSelectionChange={onRoleChange}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );
