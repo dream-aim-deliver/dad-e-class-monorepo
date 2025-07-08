@@ -72,3 +72,6 @@ export * from './components/lesson-components/types';
 export * from './components/icons';
 export { CourseGeneralInformationView } from './components/course-general-information-view';
 export { CourseProgressBar } from './components/course-progress-bar';
+
+export { StarRating } from './components/star-rating';
+export { Dropdown } from './components/dropdown';

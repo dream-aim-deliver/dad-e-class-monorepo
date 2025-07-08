@@ -4,21 +4,36 @@ import {
     Badge,
     Button,
     CourseProgressBar,
-    IconAccountInformation,
+    Dropdown,
     IconCloudDownload,
     SectionHeading,
+    StarRating,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import { StarRating } from 'packages/ui-kit/lib/components/star-rating';
+import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
+
+const roleNames: Record<string, string> = {
+    student: 'Student',
+    coach: 'Coach',
+    creator: 'Course Creator',
+    admin: 'Admin',
+};
 
 interface EnrolledCourseHeadingProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
     studentProgressViewModel?: viewModels.TStudentProgressViewModel;
+    courseSlug: string;
+    roles: string[];
+    currentRole: string;
 }
 
 export default function EnrolledCourseHeading({
     courseViewModel,
     studentProgressViewModel,
+    roles,
+    currentRole,
+    courseSlug,
 }: EnrolledCourseHeadingProps) {
     const hasProgress =
         studentProgressViewModel?.mode === 'default' &&
@@ -26,7 +41,9 @@ export default function EnrolledCourseHeading({
     const isCompleted =
         studentProgressViewModel?.mode === 'default' &&
         studentProgressViewModel.data.isCompleted;
+
     const locale = useLocale() as TLocale;
+    const router = useRouter();
 
     const renderProgress = () => {
         if (isCompleted) {
@@ -60,6 +77,29 @@ export default function EnrolledCourseHeading({
         return null;
     };
 
+    const roleOptions = useMemo(() => {
+        if (!roles || roles.length === 0) {
+            return [];
+        }
+
+        const options: { label: string; value: string }[] = [];
+        for (const role of roles) {
+            if (role in roleNames) {
+                options.push({
+                    label: roleNames[role],
+                    value: role,
+                });
+            }
+        }
+        return options;
+    }, [roles]);
+
+    const onRoleChange = (role: string | string[] | null) => {
+        if (!role && Array.isArray(role)) return;
+        if (role === currentRole) return;
+        router.push(`/courses/${courseSlug}?role=${role}`);
+    };
+
     return (
         <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:justify-between md:items-center">
             <div className="flex flex-col space-y-3">
@@ -77,7 +117,19 @@ export default function EnrolledCourseHeading({
                     </span>
                 </div>
             </div>
-            {renderProgress()}
+            <div className="flex flex-col space-y-4 items-start md:items-end">
+                {roleOptions.length > 1 && (
+                    <Dropdown
+                        type="simple"
+                        className="w-fit"
+                        options={roleOptions}
+                        defaultValue={currentRole}
+                        text={{}}
+                        onSelectionChange={onRoleChange}
+                    />
+                )}
+                {renderProgress()}
+            </div>
         </div>
     );
 }
