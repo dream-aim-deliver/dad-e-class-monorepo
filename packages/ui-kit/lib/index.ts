@@ -68,3 +68,5 @@ export { AvailableCoachingSessions } from './components/available-coaching-sessi
 export { FormElementRenderer } from './components/pre-assessment/form-renderer';
 export * from './components/pre-assessment/types';
 export * from './components/lesson-components/types';
+
+export * from './components/icons';
