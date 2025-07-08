@@ -18,10 +18,11 @@ import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import EnrolledCourseHeading from './enrolled-course-heading';
 import EnrolledCourseIntroduction from './enrolled-course-introduction';
+import { useGetStudentProgressPresenter } from '../../../hooks/use-student-progress-presenter';
 
 interface EnrolledCourseProps {
     roles: string[];
-    highestRole: string;
+    currentRole: string;
     courseSlug: string;
 }
 
@@ -50,18 +51,20 @@ function CourseTabList() {
     );
 }
 
-export default function EnrolledCourse(props: EnrolledCourseProps) {
-    const [currentRole, setCurrentRole] = useState<string>(props.highestRole);
+interface EnrolledCourseContentProps extends EnrolledCourseProps {
+    studentProgressViewModel?: viewModels.TStudentProgressViewModel;
+}
 
+export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery({
         courseSlug: props.courseSlug,
     });
     const [courseViewModel, setCourseViewModel] = useState<
         viewModels.TEnrolledCourseDetailsViewModel | undefined
     >(undefined);
-    const { presenter } =
+    const { presenter: coursePresenter } =
         useGetEnrolledCourseDetailsPresenter(setCourseViewModel);
-    presenter.present(courseResponse, courseViewModel);
+    coursePresenter.present(courseResponse, courseViewModel);
 
     const locale = useLocale() as TLocale;
 
@@ -83,7 +86,7 @@ export default function EnrolledCourse(props: EnrolledCourseProps) {
                 <Tabs.Content value="introduction" className={tabContentClass}>
                     <EnrolledCourseIntroduction
                         courseViewModel={courseViewModel}
-                        role={currentRole}
+                        progressViewModel={props.studentProgressViewModel}
                     />
                 </Tabs.Content>
                 <Tabs.Content value="study" className={tabContentClass}>
@@ -104,4 +107,44 @@ export default function EnrolledCourse(props: EnrolledCourseProps) {
             </Tabs.Root>
         </div>
     );
+}
+
+export function ProgressEnrolledCourse(props: EnrolledCourseProps) {
+    const [studentProgressResponse] = trpc.getStudentProgress.useSuspenseQuery({
+        courseSlug: props.courseSlug,
+    });
+    const [studentProgressViewModel, setStudentProgressViewModel] = useState<
+        viewModels.TStudentProgressViewModel | undefined
+    >(undefined);
+    const { presenter: progressPresenter } = useGetStudentProgressPresenter(
+        setStudentProgressViewModel,
+    );
+    progressPresenter.present(
+        studentProgressResponse,
+        studentProgressViewModel,
+    );
+
+    const locale = useLocale() as TLocale;
+
+    if (!studentProgressViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (studentProgressViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
+
+    return (
+        <EnrolledCourseContent
+            {...props}
+            studentProgressViewModel={studentProgressViewModel}
+        />
+    );
+}
+
+export default function EnrolledCourse(props: EnrolledCourseProps) {
+    if (props.currentRole === 'student') {
+        return <ProgressEnrolledCourse {...props} />;
+    }
+    return <EnrolledCourseContent {...props} />;
 }

@@ -8,13 +8,13 @@ import { useLocale } from 'next-intl';
 
 interface EnrolledCourseIntroductionProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
-    role: string;
+    progressViewModel?: viewModels.TStudentProgressViewModel;
 }
 
 export default function EnrolledCourseIntroduction(
     props: EnrolledCourseIntroductionProps,
 ) {
-    const { courseViewModel, role } = props;
+    const { courseViewModel, progressViewModel } = props;
     const locale = useLocale() as TLocale;
 
     if (courseViewModel.mode !== 'default') {
@@ -50,7 +50,7 @@ export default function EnrolledCourseIntroduction(
                     courseViewModel.data.author.surname,
                 image: courseViewModel.data.author.avatarUrl ?? '',
             }}
-            studentProgress={50}
+            studentProgress={progressViewModel?.data.progressPercent}
             imageUrl={courseViewModel.data.imageUrl ?? ''}
             students={courseViewModel.data.students.map((student) => ({
                 name: student.name,

@@ -17,7 +17,7 @@ export interface CourseGeneralInformationViewProps extends TCourseMetadata, isLo
     longDescription: string;
     onClickAuthor?: () => void;
     children?: React.ReactNode;
-    studentProgress: number;
+    studentProgress?: number;
     onClickResume?: () => void;
     students?: Student[];
     totalStudentCount?: number;
@@ -226,7 +226,7 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
                 </div>
                 {renderStudentAvatarReel()}
                 {children}
-                <div className="flex flex-col gap-2 md:w-[488px] w-full">
+                {studentProgress !== undefined && <div className="flex flex-col gap-2 md:w-[488px] w-full">
                     <h6 className="text-md text-text-primary font-bold leading-[120%]">
                         {dictionary.components.courseGeneralInformationView.yourProgressText}
                     </h6>
@@ -244,7 +244,7 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
                         text={dictionary.components.courseGeneralInformationView.resumeText}
                         onClick={onClickResume}
                     />
-                </div>
+                </div>}
             </div>
             {/* Image section */}
             <div className="relative basis-1/2 h-full">
