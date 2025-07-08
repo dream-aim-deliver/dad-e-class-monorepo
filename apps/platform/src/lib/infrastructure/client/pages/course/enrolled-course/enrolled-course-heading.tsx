@@ -49,7 +49,7 @@ export default function EnrolledCourseHeading({
     const renderProgress = () => {
         if (isCompleted) {
             return (
-                <div className="flex flex-col space-y-2 items-start md:items-end">
+                <div className="flex flex-col space-y-4 items-start md:items-end">
                     <Badge
                         className="w-fit"
                         size="medium"
@@ -59,7 +59,7 @@ export default function EnrolledCourseHeading({
                     <Button
                         hasIconLeft
                         iconLeft={<IconCloudDownload />}
-                        className="px-0"
+                        className="px-0 mb-0"
                         variant="text"
                         text="Download Certificate"
                         onClick={() => {
@@ -123,7 +123,7 @@ export default function EnrolledCourseHeading({
                     </span>
                 </div>
             </div>
-            <div className="flex flex-col space-y-1 items-start md:items-end">
+            <div className="flex flex-col space-y-4 items-start md:items-end">
                 {renderProgress()}
                 {roleOptions.length > 1 && (
                     <div className="flex space-x-3 items-center">
