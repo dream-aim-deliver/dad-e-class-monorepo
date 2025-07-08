@@ -23,6 +23,7 @@ export const GetCourseAccessSuccessResponseSchema = BaseSuccessSchemaFactory(z.o
 export type TGetCourseAccessSuccessResponse = z.infer<typeof GetCourseAccessSuccessResponseSchema>;
 
 const GetCourseAccessUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({
+  // TODO: remove when this error is included in the SDK by default
   ForbiddenError: BaseDiscriminatedErrorTypeSchemaFactory({
     type: 'ForbiddenError',
     schema: z.object({

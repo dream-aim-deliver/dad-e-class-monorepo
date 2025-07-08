@@ -16,3 +16,5 @@ export * from './get-course-access-usecase-models';
 export * from './list-assessment-components-usecase-models';
 
 export * from './submit-assessment-progress-usecase-models';
+
+export * from './get-enrolled-course-details-usecase-models';
