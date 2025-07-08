@@ -3,6 +3,7 @@
 import {
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
     IconAssignment,
     IconHourglass,
     IconInfoCircle,
@@ -10,7 +11,7 @@ import {
     IconNotes,
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { trpc } from '../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
@@ -19,6 +20,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import EnrolledCourseHeading from './enrolled-course-heading';
 import EnrolledCourseIntroduction from './enrolled-course-introduction';
 import { useGetStudentProgressPresenter } from '../../../hooks/use-student-progress-presenter';
+import { useRouter } from 'next/navigation';
 
 interface EnrolledCourseProps {
     roles: string[];
@@ -67,12 +69,32 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     coursePresenter.present(courseResponse, courseViewModel);
 
     const locale = useLocale() as TLocale;
+    const router = useRouter();
+
+    useEffect(() => {
+        if (courseViewModel?.mode === 'unauthenticated') {
+            router.push('/login');
+        }
+    }, [courseViewModel, router]);
 
     if (!courseViewModel) {
         return <DefaultLoading locale={locale} />;
     }
 
-    if (courseViewModel.mode !== 'default') {
+    // Don't display anything, wait for the redirect from useEffect
+    if (courseViewModel.mode === 'unauthenticated') {
+        return;
+    }
+
+    // If the course is private, a regular user might as well assume that it doesn't exist
+    if (
+        courseViewModel.mode === 'not-found' ||
+        courseViewModel.mode === 'forbidden'
+    ) {
+        return <DefaultNotFound locale={locale} />;
+    }
+
+    if (courseViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
     }
 
