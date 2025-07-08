@@ -19,7 +19,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { trpc } from '../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import EnrolledCourseHeading from './enrolled-course-heading';
 import EnrolledCourseIntroduction from './enrolled-course-introduction';
@@ -35,6 +35,8 @@ interface EnrolledCourseProps {
 }
 
 function CourseTabList({ role }: { role: string }) {
+    const courseTranslations = useTranslations('pages.course');
+
     const getTabs = () => {
         if (role === 'student') {
             return (
@@ -43,37 +45,37 @@ function CourseTabList({ role }: { role: string }) {
                         icon={<IconInfoCircle />}
                         value={StudentCourseTab.INTRODUCTION}
                     >
-                        Intro
+                        {courseTranslations('tabs.introduction')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={StudentCourseTab.STUDY}
                         icon={<IconHourglass />}
                     >
-                        Study
+                        {courseTranslations('tabs.study')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={StudentCourseTab.ASSIGNMENTS}
                         icon={<IconAssignment />}
                     >
-                        Assignments
+                        {courseTranslations('tabs.assignments')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={StudentCourseTab.NOTES}
                         icon={<IconNotes />}
                     >
-                        Your notes
+                        {courseTranslations('tabs.notes')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={StudentCourseTab.MATERIAL}
                         icon={<IconLesson />}
                     >
-                        Material
+                        {courseTranslations('tabs.material')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={StudentCourseTab.ASSESSMENT}
                         icon={<IconLesson />}
                     >
-                        Pre-Course Form
+                        {courseTranslations('tabs.assessment')}
                     </Tabs.Trigger>
                 </>
             );
@@ -84,43 +86,43 @@ function CourseTabList({ role }: { role: string }) {
                         value={CoachCourseTab.INTRODUCTION}
                         icon={<IconInfoCircle />}
                     >
-                        Introduction
+                        {courseTranslations('tabs.introduction')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={CoachCourseTab.PREVIEW}
                         icon={<IconEyeShow />}
                     >
-                        Preview course
+                        {courseTranslations('tabs.preview')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={CoachCourseTab.STUDENTS}
                         icon={<IconStudent />}
                     >
-                        Students
+                        {courseTranslations('tabs.students')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={CoachCourseTab.ASSIGNMENTS}
                         icon={<IconAssignment />}
                     >
-                        Assignments
+                        {courseTranslations('tabs.assignments')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={CoachCourseTab.COACHES}
                         icon={<IconCoach />}
                     >
-                        Coaches
+                        {courseTranslations('tabs.coaches')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={CoachCourseTab.GROUPS}
                         icon={<IconGroup />}
                     >
-                        Groups
+                        {courseTranslations('tabs.groups')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={CoachCourseTab.MATERIAL}
                         icon={<IconLesson />}
                     >
-                        Material
+                        {courseTranslations('tabs.material')}
                     </Tabs.Trigger>
                 </>
             );
