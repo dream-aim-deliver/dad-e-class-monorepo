@@ -3,7 +3,7 @@ import { createGetCourseAccessPresenter } from '../presenter/get-course-access-p
 import { getQueryClient, prefetch, trpc } from '../config/trpc/server';
 import { notFound, redirect } from 'next/navigation';
 import AssessmentForm from '../../client/pages/course/assessment-form';
-import EnrolledCourse from '../../client/pages/course/enrolled-course';
+import EnrolledCourse from '../../client/pages/course/enrolled-course/enrolled-course';
 import { propagateServerField } from 'next/dist/server/lib/render-server';
 
 interface CourseServerComponentProps {
@@ -54,6 +54,11 @@ export default async function CourseServerComponent({
             courseAccessViewModel.data.isAssessmentCompleted ||
             courseAccessViewModel.data.isAssessmentCompleted === null
         ) {
+            await prefetch(
+                trpc.getEnrolledCourseDetails.queryOptions({
+                    courseSlug: slug,
+                }),
+            );
             return (
                 <EnrolledCourse
                     roles={courseAccessViewModel.data.roles}
@@ -62,7 +67,7 @@ export default async function CourseServerComponent({
                 />
             );
         } else {
-            prefetch(
+            await prefetch(
                 trpc.listAssessmentComponents.queryOptions({
                     courseSlug: slug,
                 }),
