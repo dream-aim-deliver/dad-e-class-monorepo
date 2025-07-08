@@ -584,6 +584,17 @@ export const EN: TDictionary = {
       },
     },
     course: {
+      completedPanel: {
+        badgeText: 'Completed',
+        downloadCertificate: 'Download Certificate',
+      },
+      roleDropdown: {
+        viewAs: "View as",
+        student: "Student",
+        coach: "Coach",
+        creator: "Course Creator",
+        admin: "Admin",
+      },
       tabs: {
         introduction: "Introduction",
         study: "Study",
