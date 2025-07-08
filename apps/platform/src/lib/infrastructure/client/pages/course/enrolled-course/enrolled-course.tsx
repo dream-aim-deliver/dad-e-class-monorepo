@@ -17,6 +17,7 @@ import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolle
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import EnrolledCourseHeading from './enrolled-course-heading';
+import EnrolledCourseIntroduction from './enrolled-course-introduction';
 
 interface EnrolledCourseProps {
     roles: string[];
@@ -72,7 +73,7 @@ export default function EnrolledCourse(props: EnrolledCourseProps) {
         return <DefaultError locale={locale} />;
     }
 
-    const tabContentClass = 'mt-4';
+    const tabContentClass = 'mt-10';
 
     return (
         <div className="flex flex-col space-y-4">
@@ -80,7 +81,10 @@ export default function EnrolledCourse(props: EnrolledCourseProps) {
             <Tabs.Root defaultTab="introduction">
                 <CourseTabList />
                 <Tabs.Content value="introduction" className={tabContentClass}>
-                    <DefaultError locale={locale} />
+                    <EnrolledCourseIntroduction
+                        courseViewModel={courseViewModel}
+                        role={currentRole}
+                    />
                 </Tabs.Content>
                 <Tabs.Content value="study" className={tabContentClass}>
                     <DefaultError locale={locale} />

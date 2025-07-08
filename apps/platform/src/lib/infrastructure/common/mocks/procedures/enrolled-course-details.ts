@@ -24,7 +24,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                     surname: 'Johnson',
                     averageRating: 4.9,
                     avatarUrl:
-                        'https://images.unsplash.com/photo-1494790108755-2616b2e38f17?w=150&h=150&fit=crop&crop=face',
+                        'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face',
                 },
                 students: [
                     {
@@ -35,7 +35,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                     {
                         name: 'Maria Rodriguez',
                         avatarUrl:
-                            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+                            'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
                     },
                     {
                         name: 'David Kim',
