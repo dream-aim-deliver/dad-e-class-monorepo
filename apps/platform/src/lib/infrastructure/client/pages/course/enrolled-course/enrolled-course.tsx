@@ -5,10 +5,14 @@ import {
     DefaultLoading,
     DefaultNotFound,
     IconAssignment,
+    IconCoach,
+    IconEyeShow,
+    IconGroup,
     IconHourglass,
     IconInfoCircle,
     IconLesson,
     IconNotes,
+    IconStudent,
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
 import { useEffect, useMemo, useState } from 'react';
@@ -21,7 +25,7 @@ import EnrolledCourseHeading from './enrolled-course-heading';
 import EnrolledCourseIntroduction from './enrolled-course-introduction';
 import { useGetStudentProgressPresenter } from '../../../hooks/use-student-progress-presenter';
 import { useRouter } from 'next/navigation';
-import { StudentCourseTab } from '../../../utils/course-tabs';
+import { CoachCourseTab, StudentCourseTab } from '../../../utils/course-tabs';
 
 interface EnrolledCourseProps {
     roles: string[];
@@ -30,42 +34,102 @@ interface EnrolledCourseProps {
     tab?: string;
 }
 
-function CourseTabList() {
+function CourseTabList({ role }: { role: string }) {
+    const getTabs = () => {
+        if (role === 'student') {
+            return (
+                <>
+                    <Tabs.Trigger
+                        icon={<IconInfoCircle />}
+                        value={StudentCourseTab.INTRODUCTION}
+                    >
+                        Intro
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={StudentCourseTab.STUDY}
+                        icon={<IconHourglass />}
+                    >
+                        Study
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={StudentCourseTab.ASSIGNMENTS}
+                        icon={<IconAssignment />}
+                    >
+                        Assignments
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={StudentCourseTab.NOTES}
+                        icon={<IconNotes />}
+                    >
+                        Your notes
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={StudentCourseTab.MATERIAL}
+                        icon={<IconLesson />}
+                    >
+                        Material
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={StudentCourseTab.ASSESSMENT}
+                        icon={<IconLesson />}
+                    >
+                        Pre-Course Form
+                    </Tabs.Trigger>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    <Tabs.Trigger
+                        value={CoachCourseTab.INTRODUCTION}
+                        icon={<IconInfoCircle />}
+                    >
+                        Introduction
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={CoachCourseTab.PREVIEW}
+                        icon={<IconEyeShow />}
+                    >
+                        Preview course
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={CoachCourseTab.STUDENTS}
+                        icon={<IconStudent />}
+                    >
+                        Students
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={CoachCourseTab.ASSIGNMENTS}
+                        icon={<IconAssignment />}
+                    >
+                        Assignments
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={CoachCourseTab.COACHES}
+                        icon={<IconCoach />}
+                    >
+                        Coaches
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={CoachCourseTab.GROUPS}
+                        icon={<IconGroup />}
+                    >
+                        Groups
+                    </Tabs.Trigger>
+                    <Tabs.Trigger
+                        value={CoachCourseTab.MATERIAL}
+                        icon={<IconLesson />}
+                    >
+                        Material
+                    </Tabs.Trigger>
+                </>
+            );
+        }
+    };
+
     return (
         <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
-            <Tabs.Trigger
-                icon={<IconInfoCircle />}
-                value={StudentCourseTab.INTRODUCTION}
-            >
-                Intro
-            </Tabs.Trigger>
-            <Tabs.Trigger
-                value={StudentCourseTab.STUDY}
-                icon={<IconHourglass />}
-            >
-                Study
-            </Tabs.Trigger>
-            <Tabs.Trigger
-                value={StudentCourseTab.ASSIGNMENTS}
-                icon={<IconAssignment />}
-            >
-                Assignments
-            </Tabs.Trigger>
-            <Tabs.Trigger value={StudentCourseTab.NOTES} icon={<IconNotes />}>
-                Your notes
-            </Tabs.Trigger>
-            <Tabs.Trigger
-                value={StudentCourseTab.MATERIAL}
-                icon={<IconLesson />}
-            >
-                Material
-            </Tabs.Trigger>
-            <Tabs.Trigger
-                value={StudentCourseTab.ASSESSMENT}
-                icon={<IconLesson />}
-            >
-                Pre-Course Form
-            </Tabs.Trigger>
+            {getTabs()}
         </Tabs.List>
     );
 }
@@ -140,7 +204,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 courseSlug={props.courseSlug}
             />
             <Tabs.Root defaultTab={defaultTab}>
-                <CourseTabList />
+                <CourseTabList role={props.currentRole} />
                 <Tabs.Content value="introduction" className={tabContentClass}>
                     <EnrolledCourseIntroduction
                         courseViewModel={courseViewModel}
