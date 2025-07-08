@@ -589,6 +589,18 @@ export const DE: TDictionary = {
       saveText: 'spare',
       errorImageText: 'Bild nicht verfügbar.',
     },
+    studentCard: {
+      coachingSessionsLeftText: 'Coaching-Sitzungen mit dir',
+      coach: 'Coach',
+      course: 'Kurs',
+      waitingFeedbackBagde: 'Wartet auf Rückmeldung',
+      longWaitBadge: 'Wartet seit über 48 Stunden',
+      completedCourseBadge: 'Kurs abgeschlossen am',
+      you: 'Du',
+      studentDetailsButton: 'Studentendetails',
+      viewAssignment: 'Aufgabe ansehen',
+      emptyState: 'Noch keine Lernenden',
+    },
 link:{
   titleLabel: 'Titel',
   urlLabel: 'URL',
