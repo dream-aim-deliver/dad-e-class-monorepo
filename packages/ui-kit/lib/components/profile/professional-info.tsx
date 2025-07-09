@@ -186,7 +186,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <Uploader
             type="single"
             variant="document"
-            file={curriculumVitaeFile}
+            file={curriculumVitaeFile ?? null}
             acceptedFileTypes={['application/pdf']}
             onFilesChange={handleUploadedFiles}
             onUploadComplete={handleUploadComplete}
