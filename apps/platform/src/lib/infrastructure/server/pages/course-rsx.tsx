@@ -78,8 +78,10 @@ function handleAccessModes(
     switch (courseAccessViewModel.mode) {
         case 'not-found':
             notFound();
+            break;
         case 'unauthenticated':
             redirect('/login');
+            break;
         case 'default':
             // Continue with normal flow
             break;
