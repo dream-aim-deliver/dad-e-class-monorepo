@@ -115,7 +115,12 @@ function IncludedCoachingSessions({ courseSlug }: { courseSlug: string }) {
     const offers = coachingSessionsViewModel.data.offers;
 
     return (
-        <CoachingSessionTracker locale={locale} onClickBuySessions={() => {}}>
+        <CoachingSessionTracker
+            locale={locale}
+            onClickBuySessions={() => {
+                // TODO: Implement navigation to a page where sessions can be bought
+            }}
+        >
             {offers.map((offer) => (
                 <CoachingSessionItem
                     key={offer.name}

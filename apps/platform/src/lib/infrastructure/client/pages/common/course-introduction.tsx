@@ -44,7 +44,9 @@ function IntroductionBanner({ courseSlug }: CourseIntroductionProps) {
             description={introduction.text}
             videoId={introduction.playbackId}
             locale={locale}
-            onErrorCallback={() => {}}
+            onErrorCallback={() => {
+                // TODO: Handle error case, e.g., show a toast or log the error
+            }}
             thumbnailUrl={introduction.thumbnailUrl ?? undefined}
         />
     );
