@@ -8,11 +8,16 @@ import { LanguageSelector } from '../language-selector';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { language } from '@maany_shr/e-class-models';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
-import { useState } from 'react';
 
 interface ProfileInfoProps extends isLocalAware {
   initialData?: profile.TPersonalProfile;
   onSave?: (profile: profile.TPersonalProfile) => void;
+  onFileUpload: (
+    fileRequest: fileMetadata.TFileUploadRequest,
+    abortSignal?: AbortSignal
+  ) => Promise<fileMetadata.TFileMetadata>;
+  profilePictureFile?: fileMetadata.TFileMetadata | null;
+  onUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
 }
 
 
@@ -21,6 +26,9 @@ interface ProfileInfoProps extends isLocalAware {
  *
  * @param initialData Optional initial data to prefill the form fields with user profile information.
  * @param onSave Callback function triggered when the form is submitted. Receives the updated `TPersonalProfile` object.
+ * @param onFileUpload Callback function to handle file uploads. This is required for the component to function properly.
+ * @param profilePictureFile The current profile picture file metadata to display in the uploader.
+ * @param onUploadComplete Callback function triggered when a file upload is completed. Receives the uploaded file metadata.
  * @param locale The locale used for translations and localization.
  *
  * @example
@@ -37,6 +45,15 @@ interface ProfileInfoProps extends isLocalAware {
  *     receiveNewsletter: true,
  *   }}
  *   onSave={(profile) => console.log("Saved profile:", profile)}
+ *   onFileUpload={async (fileRequest, abortSignal) => {
+ *     // Your API upload logic here
+ *     const formData = new FormData();
+ *     formData.append('file', fileRequest.file);
+ *     const response = await fetch('/api/upload', { method: 'POST', body: formData });
+ *     return await response.json();
+ *   }}
+ *   profilePictureFile={currentProfilePictureFile}
+ *   onUploadComplete={(fileMetadata) => console.log("Upload completed:", fileMetadata)}
  *   locale="en"
  * />
  */
@@ -44,6 +61,9 @@ interface ProfileInfoProps extends isLocalAware {
 export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   initialData,
   onSave,
+  onFileUpload,
+  profilePictureFile,
+  onUploadComplete,
   locale,
 }) => {
   const [formData, setFormData] = React.useState<profile.TPersonalProfile>(
@@ -72,63 +92,37 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           : {}),
       }) as profile.TPersonalProfile,
   );
-  const [file, setFile] = useState<fileMetadata.TFileMetadata | null>(null);
+
   const dictionary = getDictionary(locale);
 
   const handleChange = (
     field: keyof profile.TPersonalProfileRepresentingCompany,
-    value: any,
+    value: string | boolean | language.TLanguage | language.TLanguage[],
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleUploadedFiles = async (
-    files: fileMetadata.TFileUploadRequest[],
+    fileRequest: fileMetadata.TFileUploadRequest,
     abortSignal?: AbortSignal
   ): Promise<fileMetadata.TFileMetadata> => {
-    if (files.length > 0) {
-      const newFile = files[0];
-
-      // Step 1: Create processing metadata immediately
-      const processingMetadata: fileMetadata.TFileMetadata = {
-        id: (newFile as any).id || crypto.randomUUID(),
-        name: newFile.name,
-        mimeType: newFile.file.type || 'application/octet-stream',
-        size: newFile.file.size,
-        checksum: 'processing',
-        status: 'processing' as const,
-        category: 'image' as const,
-        url: '',
-        thumbnailUrl: ""
-      };
-      setFile(processingMetadata);
-
-      // Step 2: Simulate upload process
-      return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          const finalMetadata = {
-            ...processingMetadata,
-            status: 'available' as const,
-            url: `https://example.com/files/${newFile.name}`,
-            thumbnailUrl: `https://picsum.photos/200/300?random=${Math.random()}`,
-          };
-          finalMetadata.id = processingMetadata.id;
-          setFile(finalMetadata);
-          resolve(finalMetadata);
-        }, 2000);
-
-        abortSignal?.addEventListener('abort', () => {
-          console.log('Upload aborted');
-          clearTimeout(timeout);
-          setFile(null);
-          reject(new DOMException('Upload aborted', 'AbortError'));
-        });
-      });
-    } else {
-      setFile(null);
-      return Promise.resolve({} as fileMetadata.TFileMetadata);
-    }
+    return await onFileUpload(fileRequest, abortSignal);
   };
+
+  const handleUploadComplete = (fileMetadata: fileMetadata.TFileMetadata) => {
+    // Update form data with the uploaded file URL (if it exists)
+    if ('url' in fileMetadata && fileMetadata.url) {
+      handleChange('profilePicture', fileMetadata.url);
+    }
+
+    // Notify parent component that upload is complete
+    onUploadComplete?.(fileMetadata);
+  };
+
+  const handleFileDelete = (id: string) => {
+    handleChange('profilePicture', '');
+  };
+
   const handleSubmit = () => {
     onSave?.(formData);
   };
@@ -272,18 +266,17 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           </p>
           <Uploader
             type="single"
-            file={file}
+            file={profilePictureFile}
             onFilesChange={handleUploadedFiles}
+            onUploadComplete={handleUploadComplete}
             variant='image'
             onDownload={() => {
               // Handle download logic here
             }}
+            onDelete={handleFileDelete}
             locale={locale}
             className="w-full"
             maxSize={5}
-            onDelete={() => {
-              // Handle delete logic here
-            }}
           />
         </div>
 
