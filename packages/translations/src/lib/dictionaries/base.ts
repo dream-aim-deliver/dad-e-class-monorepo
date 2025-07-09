@@ -378,6 +378,7 @@ export const DictionarySchema = z.object({
       resumeText: z.string(),
       viewProfileText: z.string(),
       and: z.string(),
+      other: z.string(),
       others: z.string(),
     }),
     uploadingSection: z.object({

@@ -377,6 +377,7 @@ export const DE: TDictionary = {
       resumeText: 'Wieder aufnehmen',
       viewProfileText: 'Profil anzeigen',
       and: 'und',
+      other: 'andere',
       others: 'andere',
     },
     uploadingSection: {
