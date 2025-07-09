@@ -15,6 +15,7 @@ import { trpc } from '../../../trpc/client';
 import { Suspense, useState } from 'react';
 import { useListIncludedCoachingSessionsPresenter } from '../../../hooks/use-included-coaching-sessions-presenter';
 import CourseIntroduction from '../../common/course-introduction';
+import CourseOutline from '../../common/course-outline';
 
 interface EnrolledCourseIntroductionProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
@@ -81,9 +82,8 @@ function EnrolledCourseIntroductionContent(
                     tabContext.setActiveTab(StudentCourseTab.STUDY);
                 }}
             />
-            <Suspense fallback={<DefaultLoading locale={locale} />}>
-                <CourseIntroduction courseSlug={props.courseSlug} />
-            </Suspense>
+            <CourseIntroduction courseSlug={props.courseSlug} />
+            <CourseOutline courseSlug={props.courseSlug} />
         </div>
     );
 }

@@ -5,7 +5,9 @@ import {
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
 
-export const GetCourseIntroductionRequestSchema = z.object({});
+export const GetCourseIntroductionRequestSchema = z.object({
+  courseSlug: z.string(),
+});
 
 export type TGetCourseIntroductionRequest = z.infer<typeof GetCourseIntroductionRequestSchema>;
 
