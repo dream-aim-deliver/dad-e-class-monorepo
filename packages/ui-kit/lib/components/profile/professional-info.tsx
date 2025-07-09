@@ -10,12 +10,17 @@ import { IconPlus } from '../icons/icon-plus';
 import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import {  Uploader } from '../drag-and-drop-uploader/uploader';
-import { useState } from 'react';
+import { Uploader } from '../drag-and-drop-uploader/uploader';
 
 interface ProfessionalInfoProps extends isLocalAware {
   initialData?: profile.TProfessionalProfile;
   onSave?: (profile: profile.TProfessionalProfile) => void;
+  onFileUpload: (
+    fileRequest: fileMetadata.TFileUploadRequest,
+    abortSignal?: AbortSignal
+  ) => Promise<fileMetadata.TFileMetadata>;
+  curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
+  onUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
 }
 
 
@@ -24,6 +29,9 @@ interface ProfessionalInfoProps extends isLocalAware {
  *
  * @param initialData Optional initial data to prefill the form fields with professional profile information.
  * @param onSave Callback function triggered when the form is submitted. Receives the updated `TProfessionalProfile` object.
+ * @param onFileUpload Callback function to handle file uploads. This is required for the component to function properly.
+ * @param curriculumVitaeFile The current curriculum vitae file metadata to display in the uploader.
+ * @param onUploadComplete Callback function triggered when a file upload is completed. Receives the uploaded file metadata.
  * @param locale The locale used for translations and localization.
  *
  * @example
@@ -40,6 +48,15 @@ interface ProfessionalInfoProps extends isLocalAware {
  *     isPrivateProfile: false,
  *   }}
  *   onSave={(profile) => console.log("Saved professional profile:", profile)}
+ *   onFileUpload={async (fileRequest, abortSignal) => {
+ *     // Your API upload logic here
+ *     const formData = new FormData();
+ *     formData.append('file', fileRequest.file);
+ *     const response = await fetch('/api/upload-cv', { method: 'POST', body: formData });
+ *     return await response.json();
+ *   }}
+ *   curriculumVitaeFile={currentCurriculumVitaeFile}
+ *   onUploadComplete={(fileMetadata) => console.log("Upload completed:", fileMetadata)}
  *   locale="en"
  * />
  */
@@ -47,6 +64,9 @@ interface ProfessionalInfoProps extends isLocalAware {
 export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   initialData,
   onSave,
+  onFileUpload,
+  curriculumVitaeFile,
+  onUploadComplete,
   locale,
 }) => {
   const [showModal, setShowModal] = React.useState(false);
@@ -66,14 +86,13 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   );
 
   const [skillSearchQuery, setSkillSearchQuery] = React.useState('');
-  const [file, setFile] = useState<fileMetadata.TFileMetadata | null>(null);
   const [allSkills, setAllSkills] = React.useState<string[]>(
     () => formData.skills ?? [],
   );
 
   const handleChange = (
     field: keyof profile.TProfessionalProfile,
-    value: any,
+    value: string | boolean | string[],
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -91,52 +110,25 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     onSave?.(formData);
   };
   const handleUploadedFiles = async (
-    files: fileMetadata.TFileUploadRequest[],
+    fileRequest: fileMetadata.TFileUploadRequest,
     abortSignal?: AbortSignal
   ): Promise<fileMetadata.TFileMetadata> => {
-    if (files.length > 0) {
-      const newFile = files[0];
-
-      // Step 1: Create processing metadata immediately
-      const processingMetadata: fileMetadata.TFileMetadata = {
-        id: (newFile as any).id,
-        name: newFile.name,
-        mimeType: newFile.file.type || 'application/octet-stream',
-        size: newFile.file.size,
-        checksum: 'processing',
-        status: 'processing' as const,
-        category: 'document' as const,
-        url: '',
-      };
-      setFile(processingMetadata);
-
-      // Step 2: Simulate upload process
-      return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          const finalMetadata = {
-            ...processingMetadata,
-            status: 'available' as const,
-            url: `https://example.com/files/${newFile.name}`, // Simulated URL
-          };
-          finalMetadata.id = processingMetadata.id;
-          setFile(finalMetadata);
-          resolve(finalMetadata);
-        }, 2000);
-
-        abortSignal?.addEventListener('abort', () => {
-          clearTimeout(timeout);
-          setFile(null); // Or set a 'cancelled' state
-          reject(new DOMException('Upload aborted', 'AbortError'));
-        });
-      });
-    } else {
-      // Clear file when empty array is passed
-      setFile(null);
-      return Promise.resolve({} as fileMetadata.TFileMetadata);
-    }
+    return await onFileUpload(fileRequest, abortSignal);
   };
 
-  
+  const handleUploadComplete = (fileMetadata: fileMetadata.TFileMetadata) => {
+    // Update form data with the uploaded file URL (if it exists)
+    if ('url' in fileMetadata && fileMetadata.url) {
+      handleChange('curriculumVitae', fileMetadata.url);
+    }
+
+    // Notify parent component that upload is complete
+    onUploadComplete?.(fileMetadata);
+  };
+
+  const handleFileDelete = (id: string) => {
+    handleChange('curriculumVitae', '');
+  };
 
   const handleDiscard = () => {
     setFormData(
@@ -194,12 +186,11 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <Uploader
             type="single"
             variant="document"
-            file={file}
+            file={curriculumVitaeFile}
             acceptedFileTypes={['application/pdf']}
             onFilesChange={handleUploadedFiles}
-            onDelete={() => {
-              // Handle file deletion logic here
-            }}
+            onUploadComplete={handleUploadComplete}
+            onDelete={handleFileDelete}
             onDownload={() => {
               // Handle download logic here
             }}

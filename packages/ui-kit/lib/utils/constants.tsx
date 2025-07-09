@@ -87,3 +87,57 @@ export const HeadingOptions = [
   { label: "H4", value: "h4" },
   { label: "H5", value: "h5" },
   { label: "H6", value: "h6" }]
+
+
+
+  // File type constants for better readability and maintainability
+export const ACCEPTED_FILE_TYPES = {
+  IMAGE: ['image/*'],
+  VIDEO: ['video/*'],
+  DOCUMENT: {
+    // Office documents
+    PDF: 'application/pdf',
+    WORD: ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+    EXCEL: ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+    POWERPOINT: ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'],
+
+    // Text files
+    TEXT: 'text/*',
+    RTF: 'application/rtf',
+
+    // Archive files
+    ZIP: 'application/zip',
+    RAR: 'application/x-rar-compressed',
+    SEVEN_ZIP: 'application/x-7z-compressed',
+
+    // Data files
+    JSON: 'application/json',
+    XML: 'application/xml',
+
+    // File extensions (fallback for older browsers)
+    EXTENSIONS: ['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.rtf', '.csv', '.zip', '.rar', '.7z']
+  }
+} as const;
+
+// Helper function to get all document file types
+export const getDocumentFileTypes = (): string[] => {
+  const types: string[] = [];
+
+  // Add all document MIME types
+  types.push(ACCEPTED_FILE_TYPES.DOCUMENT.PDF);
+  types.push(...ACCEPTED_FILE_TYPES.DOCUMENT.WORD);
+  types.push(...ACCEPTED_FILE_TYPES.DOCUMENT.EXCEL);
+  types.push(...ACCEPTED_FILE_TYPES.DOCUMENT.POWERPOINT);
+  types.push(ACCEPTED_FILE_TYPES.DOCUMENT.TEXT);
+  types.push(ACCEPTED_FILE_TYPES.DOCUMENT.RTF);
+  types.push(ACCEPTED_FILE_TYPES.DOCUMENT.ZIP);
+  types.push(ACCEPTED_FILE_TYPES.DOCUMENT.RAR);
+  types.push(ACCEPTED_FILE_TYPES.DOCUMENT.SEVEN_ZIP);
+  types.push(ACCEPTED_FILE_TYPES.DOCUMENT.JSON);
+  types.push(ACCEPTED_FILE_TYPES.DOCUMENT.XML);
+
+  // Add file extensions
+  types.push(...ACCEPTED_FILE_TYPES.DOCUMENT.EXTENSIONS);
+
+  return types;
+};
