@@ -1,9 +1,9 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import { VideoPlayer } from "./video-player";
 import { FC } from "react";
+import RichTextRenderer from "./rich-text-element/renderer";
 
 export interface CourseIntroBannerProps extends isLocalAware {
-    title: string;
     description: string;
     videoId: string;
     thumbnailUrl?: string;
@@ -13,7 +13,6 @@ export interface CourseIntroBannerProps extends isLocalAware {
 /**
  * A responsive banner component that introduces a course with a title, description, and embedded video.
  * 
- * @param title The main heading or title of the course, displayed prominently.
  * @param description A short description providing context or summary about the course.
  * @param videoId The unique identifier for the course's intro video (used by the `VideoPlayer`).
  * @param thumbnailUrl (optional) URL of the video's thumbnail image to be shown before playback.
@@ -34,7 +33,6 @@ export interface CourseIntroBannerProps extends isLocalAware {
  */
 
 export const CourseIntroBanner: FC<CourseIntroBannerProps> = ({ 
-    title, 
     description, 
     videoId,
     thumbnailUrl,
@@ -54,14 +52,17 @@ export const CourseIntroBanner: FC<CourseIntroBannerProps> = ({
                 />
             </div>
             {/* Text Content and Description */}
-            <div className="flex flex-col gap-[1rem] w-full md:flex-1 md:basis-[40%]">
-                <h2 title={title} className="text-3xl text-text-primary font-bold line-clamp-2">
-                    {title}
-                </h2>
-                <p className="text-xl text-base-white ">
-                    {description}
-                </p>
-            </div>
+            <RichTextRenderer
+                content={description}
+                className="w-full md:flex-1 md:basis-[40%] lg:text-md text-normal leading-[150%] text-text-secondary"
+                onDeserializationError={(message, error) => {
+                    console.error(
+                        'Error deserializing content:',
+                        message,
+                        error,
+                    );
+                }}
+            />
         </div>
     );
 };

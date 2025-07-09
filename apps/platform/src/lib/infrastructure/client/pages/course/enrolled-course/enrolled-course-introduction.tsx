@@ -14,6 +14,7 @@ import { StudentCourseTab } from '../../../utils/course-tabs';
 import { trpc } from '../../../trpc/client';
 import { Suspense, useState } from 'react';
 import { useListIncludedCoachingSessionsPresenter } from '../../../hooks/use-included-coaching-sessions-presenter';
+import CourseIntroduction from '../../common/course-introduction';
 
 interface EnrolledCourseIntroductionProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
@@ -35,48 +36,55 @@ function EnrolledCourseIntroductionContent(
     }
 
     return (
-        <CourseGeneralInformationView
-            // These fields aren't utilized and are coming from a common model
-            title={''}
-            description={''}
-            language={{
-                name: '',
-                code: '',
-            }}
-            pricing={{
-                fullPrice: 0,
-                partialPrice: 0,
-                currency: '',
-            }}
-            locale={locale}
-            longDescription={courseViewModel.data.description}
-            duration={{
-                video: courseViewModel.data.duration.video,
-                coaching: courseViewModel.data.duration.coaching,
-                selfStudy: courseViewModel.data.duration.selfStudy,
-            }}
-            rating={courseViewModel.data.author.averageRating}
-            author={{
-                name:
-                    courseViewModel.data.author.name +
-                    ' ' +
-                    courseViewModel.data.author.surname,
-                image: courseViewModel.data.author.avatarUrl ?? '',
-            }}
-            studentProgress={progressViewModel?.data.progressPercent}
-            imageUrl={courseViewModel.data.imageUrl ?? ''}
-            students={courseViewModel.data.students.map((student) => ({
-                name: student.name,
-                avatarUrl: student.avatarUrl ?? '',
-            }))}
-            totalStudentCount={courseViewModel.data.studentCount}
-            onClickAuthor={() => {
-                router.push(`/coaches/${courseViewModel.data.author.username}`);
-            }}
-            onClickResume={() => {
-                tabContext.setActiveTab(StudentCourseTab.STUDY);
-            }}
-        />
+        <div className="flex flex-col space-y-10">
+            <CourseGeneralInformationView
+                // These fields aren't utilized and are coming from a common model
+                title={''}
+                description={''}
+                language={{
+                    name: '',
+                    code: '',
+                }}
+                pricing={{
+                    fullPrice: 0,
+                    partialPrice: 0,
+                    currency: '',
+                }}
+                locale={locale}
+                longDescription={courseViewModel.data.description}
+                duration={{
+                    video: courseViewModel.data.duration.video,
+                    coaching: courseViewModel.data.duration.coaching,
+                    selfStudy: courseViewModel.data.duration.selfStudy,
+                }}
+                rating={courseViewModel.data.author.averageRating}
+                author={{
+                    name:
+                        courseViewModel.data.author.name +
+                        ' ' +
+                        courseViewModel.data.author.surname,
+                    image: courseViewModel.data.author.avatarUrl ?? '',
+                }}
+                studentProgress={progressViewModel?.data.progressPercent}
+                imageUrl={courseViewModel.data.imageUrl ?? ''}
+                students={courseViewModel.data.students.map((student) => ({
+                    name: student.name,
+                    avatarUrl: student.avatarUrl ?? '',
+                }))}
+                totalStudentCount={courseViewModel.data.studentCount}
+                onClickAuthor={() => {
+                    router.push(
+                        `/coaches/${courseViewModel.data.author.username}`,
+                    );
+                }}
+                onClickResume={() => {
+                    tabContext.setActiveTab(StudentCourseTab.STUDY);
+                }}
+            />
+            <Suspense fallback={<DefaultLoading locale={locale} />}>
+                <CourseIntroduction courseSlug={props.courseSlug} />
+            </Suspense>
+        </div>
     );
 }
 
