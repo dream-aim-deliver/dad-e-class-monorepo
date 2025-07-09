@@ -86,9 +86,10 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
   const [uploadingFiles, setUploadingFiles] = useState<fileMetadata.TFileMetadata[]>([]);
   const abortControllers = useRef(new Map<string, AbortController>());
 
-  const passedInFiles = (props.type === 'multiple' ? props.files : [props.file]).filter(
-    (f) => f
-  ) as fileMetadata.TFileMetadata[];
+  const passedInFiles = (props.type === 'multiple'
+    ? (props.files ?? [])
+    : (props.file ? [props.file] : [])
+  ).filter((f) => f !== null) as fileMetadata.TFileMetadata[];
 
   const allFiles = [...passedInFiles, ...uploadingFiles];
 
@@ -151,7 +152,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
       const controller = new AbortController();
       abortControllers.current.set(tempId, controller);
 
-      return {
+      const baseMetadata = {
         id: tempId,
         name: file.name,
         mimeType: file.type || 'application/octet-stream',
@@ -159,8 +160,38 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
         checksum: 'processing',
         status: 'processing' as const,
         category: variant,
-        url: '',
       };
+
+      // Create category-specific metadata based on the variant
+      switch (variant) {
+        case 'video':
+          return {
+            ...baseMetadata,
+            category: 'video' as const,
+            videoId: 0, // Temporary placeholder
+            thumbnailUrl: '', // Temporary placeholder
+          };
+        case 'image':
+          return {
+            ...baseMetadata,
+            category: 'image' as const,
+            url: '', // Temporary placeholder
+            thumbnailUrl: '', // Temporary placeholder
+          };
+        case 'document':
+          return {
+            ...baseMetadata,
+            category: 'document' as const,
+            url: '', // Temporary placeholder
+          };
+        case 'generic':
+        default:
+          return {
+            ...baseMetadata,
+            category: 'generic' as const,
+            url: '', // Temporary placeholder
+          };
+      }
     });
 
     setUploadingFiles((prev) => [...prev, ...newUploads]);

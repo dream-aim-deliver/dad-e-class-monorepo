@@ -266,7 +266,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           </p>
           <Uploader
             type="single"
-            file={profilePictureFile}
+            file={profilePictureFile ?? null}
             onFilesChange={handleUploadedFiles}
             onUploadComplete={handleUploadComplete}
             variant='image'
