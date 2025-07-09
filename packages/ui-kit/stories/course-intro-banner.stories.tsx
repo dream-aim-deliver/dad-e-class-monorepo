@@ -9,7 +9,6 @@ const meta: Meta<typeof CourseIntroBanner> = {
     layout: 'centered',
   },
   argTypes: {
-    title: { control: 'text' },
     description: { control: 'text' },
     videoId: { control: 'text' },
     thumbnailUrl: { control: 'text' },
@@ -28,7 +27,6 @@ type Story = StoryObj<typeof CourseIntroBanner>;
 
 export const Default: Story = {
   args: {
-    title: 'Course Introduction',
     description: 'Discover the art of moving images in our practice-oriented course, led by industry professionals! You will learn how to develop an effective storyboard and a convincing concept. We offer you professional tips and support you in the implementation of your project. We will also show you the best tools to realize your ideas quickly and efficiently. Stand out from the crowd with a unique look and innovative ideas and win n.',
     videoId: 'TvV02y7Wpo1use1agD7fbqPob0101WKBOjYe02j01jVrgubw',
     thumbnailUrl: 'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
@@ -39,7 +37,6 @@ export const Default: Story = {
 
 export const LongTitle: Story = {
   args: {
-    title: 'Master the Art of Software Engineering Through Hands-On Full Stack Development Courses',
     description: 'Join thousands of learners in building scalable, efficient applications from scratch. Learn from industry experts and develop the skills you need to land a job as a software engineer. Start learning now!',
     videoId: 'TvV02y7Wpo1use1agD7fbqPob0101WKBOjYe02j01jVrgubw',
     thumbnailUrl: 'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
@@ -50,7 +47,6 @@ export const LongTitle: Story = {
 
 export const NoThumbnail: Story = {
   args: {
-    title: 'Course Introduction',
     description: 'Discover the art of moving images in our practice-oriented course, led by industry professionals! You will learn how to develop an effective storyboard and a convincing concept. We offer you professional tips and support you in the implementation of your project. We will also show you the best tools to realize your ideas quickly and efficiently. Stand out from the crowd with a unique look and innovative ideas and win n.',
     videoId: 'TvV02y7Wpo1use1agD7fbqPob0101WKBOjYe02j01jVrgubw',
     locale: 'en',
@@ -60,7 +56,6 @@ export const NoThumbnail: Story = {
 
 export const NoVideo: Story = {
   args: {
-    title: 'Static Course Introduction',
     description: 'Discover the art of moving images in our practice-oriented course, led by industry professionals! You will learn how to develop an effective storyboard and a convincing concept. We offer you professional tips and support you in the implementation of your project. We will also show you the best tools to realize your ideas quickly and efficiently. Stand out from the crowd with a unique look and innovative ideas and win n.',
     thumbnailUrl: 'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'en',

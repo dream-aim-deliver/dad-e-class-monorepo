@@ -17,3 +17,4 @@ export * from './submit-assessment-progress-usecase-models';
 export * from './get-enrolled-course-details-usecase-models';
 export * from './get-student-progress-usecase-models';
 export * from './list-included-coaching-sessions-usecase-models';
+export * from './get-course-introduction-usecase-models';

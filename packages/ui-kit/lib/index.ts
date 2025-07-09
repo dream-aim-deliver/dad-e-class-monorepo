@@ -77,3 +77,4 @@ export { StarRating } from './components/star-rating';
 export { Dropdown } from './components/dropdown';
 export { CoachingSessionTracker } from './components/coaching-session-tracker/coaching-session-tracker';
 export { CoachingSessionItem } from './components/coaching-session-tracker/coaching-session-item';
+export { CourseIntroBanner } from './components/course-intro-banner';
