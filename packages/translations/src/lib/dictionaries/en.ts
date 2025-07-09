@@ -374,6 +374,7 @@ export const EN: TDictionary = {
       resumeText: 'Resume',
       viewProfileText: 'View profile',
       and: 'and',
+      other: 'other',
       others: 'others',
     },
     uploadingSection: {

@@ -91,6 +91,7 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
     const formatStudentNamesText = (students: Student[], totalCount: number): string => {
         if (students.length === 0) return '';
         const and = dictionary.components.courseGeneralInformationView.and;
+        const other = dictionary.components.courseGeneralInformationView.other;
         const others = dictionary.components.courseGeneralInformationView.others;
         
         if (students.length === 1) {
@@ -98,7 +99,7 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
             if (othersCount === 0) {
                 return students[0].name;
             } else if (othersCount === 1) {
-                return `${students[0].name} ${and} 1 other`;
+                return `${students[0].name} ${and} 1 ${other}`;
             } else {
                 return `${students[0].name} ${and} ${othersCount} ${others}`;
             }
@@ -109,7 +110,7 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
             if (othersCount === 0) {
                 return `${students[0].name} ${and} ${students[1].name}`;
             } else if (othersCount === 1) {
-                return `${students[0].name}, ${students[1].name} ${and} 1 other`;
+                return `${students[0].name}, ${students[1].name} ${and} 1 ${other}`;
             } else {
                 return `${students[0].name}, ${students[1].name} ${and} ${othersCount} ${others}`;
             }
