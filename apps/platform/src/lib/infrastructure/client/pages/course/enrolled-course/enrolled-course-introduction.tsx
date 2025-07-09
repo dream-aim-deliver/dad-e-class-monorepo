@@ -1,20 +1,28 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
+    CoachingSessionItem,
+    CoachingSessionTracker,
     CourseGeneralInformationView,
     DefaultError,
+    DefaultLoading,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useTabContext } from 'packages/ui-kit/lib/components/tabs/tab-context';
 import { StudentCourseTab } from '../../../utils/course-tabs';
+import { trpc } from '../../../trpc/client';
+import { Suspense, useState } from 'react';
+import { useListIncludedCoachingSessionsPresenter } from '../../../hooks/use-included-coaching-sessions-presenter';
 
 interface EnrolledCourseIntroductionProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
     progressViewModel?: viewModels.TStudentProgressViewModel;
+    currentRole: string;
+    courseSlug: string;
 }
 
-export default function EnrolledCourseIntroduction(
+function EnrolledCourseIntroductionContent(
     props: EnrolledCourseIntroductionProps,
 ) {
     const { courseViewModel, progressViewModel } = props;
@@ -70,4 +78,75 @@ export default function EnrolledCourseIntroduction(
             }}
         />
     );
+}
+
+function IncludedCoachingSessions({ courseSlug }: { courseSlug: string }) {
+    const [coachingSessionsResponse] =
+        trpc.listIncludedCoachingSessions.useSuspenseQuery({
+            courseSlug: courseSlug,
+        });
+    const [coachingSessionsViewModel, setCoachingSessionsViewModel] = useState<
+        viewModels.TIncludedCoachingSessionListViewModel | undefined
+    >(undefined);
+    const { presenter } = useListIncludedCoachingSessionsPresenter(
+        setCoachingSessionsViewModel,
+    );
+    presenter.present(coachingSessionsResponse, coachingSessionsViewModel);
+
+    const locale = useLocale() as TLocale;
+
+    if (!coachingSessionsViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    // If there is an error, nothing is rendered
+    if (coachingSessionsViewModel.mode !== 'default') {
+        return;
+    }
+
+    const offers = coachingSessionsViewModel.data.offers;
+
+    return (
+        <CoachingSessionTracker locale={locale} onClickBuySessions={() => {}}>
+            {offers.map((offer) => (
+                <CoachingSessionItem
+                    key={offer.name}
+                    used={offer.usedCount}
+                    included={offer.usedCount + offer.availableIds.length}
+                    title={offer.name}
+                    duration={offer.duration}
+                    locale={locale}
+                    // Fields below are not used in the component, but required by the type
+                    description={''}
+                    currency={''}
+                    price={0}
+                />
+            ))}
+        </CoachingSessionTracker>
+    );
+}
+
+function StudentEnrolledCourseIntroduction(
+    props: EnrolledCourseIntroductionProps,
+) {
+    const locale = useLocale() as TLocale;
+
+    return (
+        <div className="flex flex-col space-y-10">
+            <Suspense fallback={<DefaultLoading locale={locale} />}>
+                <IncludedCoachingSessions courseSlug={props.courseSlug} />
+            </Suspense>
+            <EnrolledCourseIntroductionContent {...props} />
+        </div>
+    );
+}
+
+export default function EnrolledCourseIntroduction(
+    props: EnrolledCourseIntroductionProps,
+) {
+    if (props.currentRole === 'student') {
+        return <StudentEnrolledCourseIntroduction {...props} />;
+    }
+
+    return <EnrolledCourseIntroductionContent {...props} />;
 }

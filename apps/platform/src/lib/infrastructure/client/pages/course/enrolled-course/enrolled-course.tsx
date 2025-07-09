@@ -209,8 +209,10 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 <CourseTabList role={props.currentRole} />
                 <Tabs.Content value="introduction" className={tabContentClass}>
                     <EnrolledCourseIntroduction
+                        currentRole={props.currentRole}
                         courseViewModel={courseViewModel}
                         progressViewModel={props.studentProgressViewModel}
+                        courseSlug={props.courseSlug}
                     />
                 </Tabs.Content>
                 <Tabs.Content value="study" className={tabContentClass}>
