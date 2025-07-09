@@ -86,6 +86,7 @@ export default async function CourseServerComponent({
         }
     }
 
+    // TODO: prefetching might differ for an initial tab
     const promises = [
         prefetch(
             trpc.getEnrolledCourseDetails.queryOptions({
@@ -97,6 +98,11 @@ export default async function CourseServerComponent({
         promises.push(
             prefetch(
                 trpc.getStudentProgress.queryOptions({
+                    courseSlug: slug,
+                }),
+            ),
+            prefetch(
+                trpc.listIncludedCoachingSessions.queryOptions({
                     courseSlug: slug,
                 }),
             ),
