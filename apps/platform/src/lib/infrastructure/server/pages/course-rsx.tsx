@@ -23,6 +23,34 @@ export default async function CourseServerComponent({
     role,
     tab,
 }: CourseServerComponentProps) {
+    const courseAccessViewModel = await fetchCourseAccess(slug);
+
+    handleAccessModes(courseAccessViewModel);
+
+    const { highestRole, roles, isAssessmentCompleted } =
+        courseAccessViewModel.data;
+    validateUserRole(highestRole);
+
+    if (highestRole === 'visitor') {
+        return renderVisitorView(slug);
+    }
+
+    const currentRole = role ?? highestRole;
+    validateRoleAccess(currentRole, roles);
+
+    if (shouldShowAssessment(currentRole, isAssessmentCompleted)) {
+        return renderAssessmentForm(slug);
+    }
+
+    // TODO: might differ base on the tab
+    await prefetchIntroductionData(slug, currentRole);
+
+    return renderEnrolledCourse({ slug, roles, currentRole, tab });
+}
+
+async function fetchCourseAccess(
+    slug: string,
+): Promise<viewModels.TCourseAccessViewModel> {
     const queryOptions = trpc.getCourseAccess.queryOptions({
         courseSlug: slug,
     });
@@ -33,60 +61,76 @@ export default async function CourseServerComponent({
     const presenter = createGetCourseAccessPresenter((viewModel) => {
         courseAccessViewModel = viewModel;
     });
+
     await presenter.present(courseAccessResponse, courseAccessViewModel);
 
     if (!courseAccessViewModel) {
-        throw new Error();
+        // TODO: would we need to localize these error messages?
+        throw new Error('Failed to load course access data');
     }
 
-    if (courseAccessViewModel.mode === 'not-found') {
-        notFound();
+    return courseAccessViewModel;
+}
+
+function handleAccessModes(
+    courseAccessViewModel: viewModels.TCourseAccessViewModel,
+): void {
+    switch (courseAccessViewModel.mode) {
+        case 'not-found':
+            notFound();
+        case 'unauthenticated':
+            redirect('/login');
+        case 'default':
+            // Continue with normal flow
+            break;
+        default:
+            throw new Error(courseAccessViewModel.data.message);
     }
+}
 
-    if (courseAccessViewModel.mode === 'unauthenticated') {
-        redirect('/login');
-    }
-
-    if (courseAccessViewModel.mode !== 'default') {
-        throw new Error(courseAccessViewModel.data.message);
-    }
-
-    const { highestRole, roles, isAssessmentCompleted } =
-        courseAccessViewModel.data;
-
+function validateUserRole(highestRole: string | undefined): void {
     if (!highestRole) {
-        throw new Error();
+        throw new Error('No user role found');
     }
+}
 
-    if (highestRole === 'visitor') {
-        return <div>Visitor View</div>;
+function validateRoleAccess(currentRole: string, roles: string[]): void {
+    if (!roles.includes(currentRole)) {
+        throw new Error('Access denied for current role');
     }
+}
 
-    const currentRole = role ?? highestRole;
-    if (!(roles as string[]).includes(currentRole)) {
-        throw new Error();
-    }
+function shouldShowAssessment(
+    currentRole: string,
+    isAssessmentCompleted: boolean | null,
+): boolean {
+    return (
+        currentRole === 'student' &&
+        isAssessmentCompleted !== null &&
+        !isAssessmentCompleted
+    );
+}
 
-    if (currentRole === 'student') {
-        if (isAssessmentCompleted !== null && !isAssessmentCompleted) {
-            await prefetch(
-                trpc.listAssessmentComponents.queryOptions({
-                    courseSlug: slug,
-                }),
-            );
-            return (
-                <>
-                    <HydrateClient>
-                        <Suspense fallback={<DefaultLoadingWrapper />}>
-                            <AssessmentForm courseSlug={slug} />
-                        </Suspense>
-                    </HydrateClient>
-                </>
-            );
-        }
-    }
+async function renderAssessmentForm(slug: string) {
+    await prefetch(
+        trpc.listAssessmentComponents.queryOptions({
+            courseSlug: slug,
+        }),
+    );
 
-    // TODO: prefetching might differ for an initial tab
+    return (
+        <HydrateClient>
+            <Suspense fallback={<DefaultLoadingWrapper />}>
+                <AssessmentForm courseSlug={slug} />
+            </Suspense>
+        </HydrateClient>
+    );
+}
+
+async function prefetchIntroductionData(
+    slug: string,
+    currentRole: string,
+): Promise<void> {
     const promises = [
         prefetch(
             trpc.getEnrolledCourseDetails.queryOptions({
@@ -94,6 +138,7 @@ export default async function CourseServerComponent({
             }),
         ),
     ];
+
     if (currentRole === 'student') {
         promises.push(
             prefetch(
@@ -110,19 +155,33 @@ export default async function CourseServerComponent({
     }
 
     await Promise.all(promises);
+}
 
+function renderEnrolledCourse({
+    slug,
+    roles,
+    currentRole,
+    tab,
+}: {
+    slug: string;
+    roles: string[];
+    currentRole: string;
+    tab?: string;
+}) {
     return (
-        <>
-            <HydrateClient>
-                <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <EnrolledCourse
-                        courseSlug={slug}
-                        roles={roles.filter((role) => role !== 'visitor')}
-                        currentRole={currentRole}
-                        tab={tab}
-                    />
-                </Suspense>
-            </HydrateClient>
-        </>
+        <HydrateClient>
+            <Suspense fallback={<DefaultLoadingWrapper />}>
+                <EnrolledCourse
+                    courseSlug={slug}
+                    roles={roles.filter((role) => role !== 'visitor')}
+                    currentRole={currentRole}
+                    tab={tab}
+                />
+            </Suspense>
+        </HydrateClient>
     );
+}
+
+function renderVisitorView(slug: string) {
+    return <div>Visitor View</div>;
 }
