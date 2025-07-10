@@ -1,4 +1,4 @@
-import { ProfileTabs } from '../lib/components/profile-tabs'; // Adjust the import path
+import { ProfileTabs } from '../lib/components/profile-tabs';
 import { profile, fileMetadata } from '@maany_shr/e-class-models';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
@@ -79,7 +79,7 @@ const handleFileUpload = async (
 // Wrapper component that handles state
 const ProfileTabsWrapper = ({ initialProfiles, locale, preloadedFiles = false }) => {
   const [profiles, setProfiles] = useState(initialProfiles);
-  
+
   // Initialize file states based on preloadedFiles flag and existing URLs
   const [profilePictureFile, setProfilePictureFile] = useState<fileMetadata.TFileMetadata | null>(() => {
     if (!preloadedFiles) return null;

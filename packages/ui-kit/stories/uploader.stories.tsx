@@ -4,7 +4,7 @@ import {
   UploaderProps,
 } from '../lib/components/drag-and-drop-uploader/uploader';
 import { fileMetadata } from '@maany_shr/e-class-models';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const meta: Meta<typeof Uploader> = {
   title: 'Components/Uploader',
