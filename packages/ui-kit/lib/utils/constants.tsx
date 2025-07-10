@@ -90,7 +90,7 @@ export const HeadingOptions = [
 
 
 
-  // File type constants for better readability and maintainability
+// File type constants for better readability and maintainability
 export const ACCEPTED_FILE_TYPES = {
   IMAGE: ['image/*'],
   VIDEO: ['video/*'],
