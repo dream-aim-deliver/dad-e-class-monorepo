@@ -18,7 +18,7 @@ interface StoryProps {
 }
 
 const meta: Meta<StoryProps> = {
-    title: 'Lesson Components/Video Uploader',
+    title: 'Components/CourseBuilder/Video Uploader',
     component: DesignerComponent as unknown as React.ComponentType<StoryProps>,
     parameters: {
         layout: 'centered',
@@ -104,19 +104,15 @@ const VideoUploaderWrapper = (args: StoryProps) => {
         onUploadComplete: handleUploadComplete,
         onFileDelete: handleDelete,
         onFileDownload: () => console.log('Download file'),
-        onUpClick: () => {},
-        onDownClick: () => {},
-        onDeleteClick: () => {},
+        onUpClick: () => alert('Move up clicked'),
+        onDownClick: () => alert('Move down clicked'),
+        onDeleteClick: () => alert('Delete clicked')    ,
         locale: args.locale,
     };
 
     return (
         <div style={{ width: '800px' }}>
             <DesignerComponent {...componentProps} />
-            <div style={{ marginTop: '20px', padding: '10px', background: '#f5f5f5', borderRadius: '4px' }}>
-                <h4>Current File State:</h4>
-                <pre>{JSON.stringify(file, null, 2) || 'No file uploaded'}</pre>
-            </div>
         </div>
     );
 };
@@ -159,19 +155,15 @@ export const WithVideo: Story = {
             onUploadComplete: handleUploadComplete,
             onFileDelete: handleDelete,
             onFileDownload: () => console.log('Download file'),
-            onUpClick: () => {},
-            onDownClick: () => {},
-            onDeleteClick: () => {},
+            onUpClick: () => alert('Move up clicked'),
+            onDownClick: () => alert('Move down clicked'),
+            onDeleteClick: () => alert('Delete clicked'),
             locale: args.locale,
         };
 
         return (
             <div style={{ width: '800px' }}>
                 <DesignerComponent {...componentProps} />
-                <div style={{ marginTop: '20px', padding: '10px', background: '#f5f5f5', borderRadius: '4px' }}>
-                    <h4>Current File State:</h4>
-                    <pre>{JSON.stringify(file, null, 2) || 'No file uploaded'}</pre>
-                </div>
             </div>
         );
     },
