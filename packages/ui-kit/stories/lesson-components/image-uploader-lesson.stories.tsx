@@ -72,9 +72,9 @@ const ImageUploaderWithState = ({
     onFileUploadComplete,
     onFileDelete,
     onFileDownload,
-    onUpClick = () => {},
-    onDownClick = () => {},
-    onDeleteClick = () => {},
+    onUpClick = () => alert('Move up clicked'),
+    onDownClick = () => alert('Move down clicked'),
+    onDeleteClick = () => alert('Delete clicked'),
     locale,
 }: ImageUploaderWithStateProps) => {
     const [file, setFile] = useState<ImageFileWithMetadata | null>(null);
@@ -109,10 +109,6 @@ const ImageUploaderWithState = ({
                 onDeleteClick={() => onDeleteClick(elementInstance.id)}
                 locale={locale}
             />
-            <div style={{ marginTop: '20px', padding: '10px', background: '#f5f5f5', borderRadius: '4px' }}>
-                <h4>Current File State:</h4>
-                <pre>{JSON.stringify(file || elementInstance, null, 2)}</pre>
-            </div>
         </div>
     );
 };
@@ -134,7 +130,7 @@ const ImageUploaderWrapper = (args: StoryProps) => {
 
 
 const meta: Meta<typeof ImageUploaderWrapper> = {
-    title: 'Lesson Components/Image Uploader',
+    title: 'Components/CourseBuilder/Image Uploader',
     component: ImageUploaderWrapper,
     tags: ['autodocs'],
     parameters: {
