@@ -130,6 +130,8 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     handleChange('curriculumVitae', '');
   };
 
+
+
   const handleDiscard = () => {
     setFormData(
       initialData || {
