@@ -146,8 +146,7 @@ const applyTextInputProgress = (
     answer: TAnswer,
 ): void => {
     if (answer.type === 'textInput') {
-        // As TextInput might not have content, being a joint type, ignore typing to assign it
-        // @ts-ignore
+        // @ts-expect-error As TextInput might not have content, being a joint type, ignore typing to assign it
         element.content = answer.answer;
     }
 };
@@ -191,13 +190,16 @@ const applyOneOutOfThreeProgress = (
     }
 };
 
-const progressAppliers = {
+const progressAppliers: Record<
+    FormElementType,
+    ((element: any, answer: TAnswer) => void) | undefined
+> = {
     [FormElementType.TextInput]: applyTextInputProgress,
     [FormElementType.SingleChoice]: applySingleChoiceProgress,
     [FormElementType.MultiCheck]: applyMultiCheckProgress,
     [FormElementType.OneOutOfThree]: applyOneOutOfThreeProgress,
-    [FormElementType.RichText]: () => {}, // No progress to apply
-    [FormElementType.HeadingText]: () => {}, // No progress to apply
+    [FormElementType.RichText]: undefined,
+    [FormElementType.HeadingText]: undefined,
 } as const;
 
 export function applyProgressToElements(
@@ -213,7 +215,7 @@ export function applyProgressToElements(
         if (answer) {
             const applier = progressAppliers[element.type];
             if (applier) {
-                applier(element as any, answer);
+                applier(element, answer);
             }
         }
         return element;
