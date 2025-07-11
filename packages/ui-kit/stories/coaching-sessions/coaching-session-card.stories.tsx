@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { TRole } from 'packages/models/src/role';
-import { CoachingSessionCard } from '../../lib/components/coaching-sessions/coaching-session-card'
+import { CoachingSessionCard } from '../../lib/components/coaching-sessions/coaching-session-card';
 
 const meta: Meta<typeof CoachingSessionCard> = {
   title: 'Components/CoachingSessionComponents/CoachingSessionCard',
@@ -174,8 +174,11 @@ export const Canceled: Story = {
 
 export const ToBeDefined: Story = {
   args: {
-    ...baseArgs,
+    locale: 'en' as TLocale,
     status: 'to-be-defined',
     userType: 'student',
+    duration: 60,
+    title: 'Full immersion',
+    creatorName: 'Jane Smith',  // TODO: this whole component needs to be refactored to properly ask only for the props needed for the variant. For example, this prop is not needed for this variant, but if you don't pass it the component doesn't render at all
   },
 };
