@@ -22,7 +22,7 @@ interface StoryProps {
 }
 
 const meta: Meta<StoryProps> = {
-    title: 'Lesson Components/Image Gallery Uploader',
+    title: 'Components/CourseBuilder/Image Gallery Uploader',
     component: DesignerComponent as unknown as React.ComponentType<StoryProps>,
     parameters: {
         layout: 'centered',
