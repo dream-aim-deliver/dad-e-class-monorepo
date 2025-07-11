@@ -106,7 +106,7 @@ function transformOneOutOfThree(
             rows: component.rows.map((row) => ({
                 id: row.id,
                 rowTitle: row.name,
-                columns: columns.slice(),
+                columns: structuredClone(columns),
             })),
         },
         required: component.required,

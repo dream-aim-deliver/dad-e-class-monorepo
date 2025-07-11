@@ -66,6 +66,7 @@ export { default as CoachCard } from './components/coach/coach-card';
 export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';
 
 export { FormElementRenderer } from './components/pre-assessment/form-renderer';
+export { SubmissionElementsRenderer as SubmissionRenderer } from './components/pre-assessment/submission-renderer';
 export * from './components/pre-assessment/types';
 export * from './components/lesson-components/types';
 
