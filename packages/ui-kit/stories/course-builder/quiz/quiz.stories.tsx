@@ -346,7 +346,7 @@ interface LocaleArgs {
 
 const meta: Meta<LocaleArgs> = {
   title: "Components/CourseBuilder/QuizElement",
-  tags: ["docs"],
+  tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
   },

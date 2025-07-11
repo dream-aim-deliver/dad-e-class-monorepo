@@ -141,29 +141,8 @@ const QuizTypeOne: FC<QuizTypeOneElement> = ({
     );
   };
 
-  const handleFileUpload = async (files: fileMetadata.TFileUploadRequest[], abortSignal?: AbortSignal) => {
-    if (!files || files.length === 0) {
-      setFile(undefined);
-      return;
-    }
-
-    const file = files[0];
-    const processingFile: fileMetadata.TFileMetadata = {
-      id: (file as any).id || crypto.randomUUID(),
-      name: file.name,
-      mimeType: file.file.type || 'application/jpeg',
-      size: file.file.size,
-      checksum: 'processing',
-      status: 'processing',
-      category: 'image',
-      url: '',
-    };
-
-    setFile(processingFile);
-
-    const uploadedFile = await onFilesChange([file], abortSignal);
-    setFile(uploadedFile);
-    return uploadedFile;
+  const handleUpdateFile = async (file: fileMetadata.TFileUploadRequest) => {
+    setFile(file);
   };
 
   const handleFileDelete = (id: string) => {
@@ -200,9 +179,10 @@ const QuizTypeOne: FC<QuizTypeOneElement> = ({
           type="single"
           variant="generic"
           file={file}
-          onFilesChange={(file, abortSignal) => handleFileUpload(file, abortSignal)}
+          onFilesChange={(file, abortSignal) => onFilesChange([file], abortSignal)}
           onDelete={(id) => handleFileDelete(id)}
           onDownload={(id) => onFileDownload(id)}
+          onUploadComplete={(file) => handleUpdateFile(file)}
           locale={locale}
           className="w-full"
           maxSize={5}
