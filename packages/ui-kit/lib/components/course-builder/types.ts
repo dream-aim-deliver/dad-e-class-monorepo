@@ -1,6 +1,6 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import React from "react";
-import { CoachingElement} from "../course-builder-lesson-component/types";
+import { CoachingElement, ImageFile, VideoFile} from "../course-builder-lesson-component/types";
 
 /**
  * Enum defining the types of course elements available in the course builder.
@@ -9,6 +9,9 @@ import { CoachingElement} from "../course-builder-lesson-component/types";
 export enum CourseElementType {
     /** Represents a coaching session element */
     CoachingSession = "coachingSession",
+    ImageFile = "ImageFile",
+    VideoFile = "VideoFile",
+    ImageGallery = "ImageGallery"
 }
 
 
@@ -17,7 +20,7 @@ export enum CourseElementType {
  * Union type representing all possible course element types.
  * Currently includes CoachingElement, but can be extended for other element types.
  */
-export type courseElement = CoachingElement;
+export type courseElement = CoachingElement| ImageFile | VideoFile;
 
 /**
  * Function type for submitting form values in the course builder.

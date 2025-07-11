@@ -562,6 +562,14 @@ export const DictionarySchema = z.object({
       titleLesson: z.string(),
       titleModule: z.string(),
     }),
+    courseBuilder: z.object({
+      deleteText: z.string(),
+      moveUpText: z.string(),
+      moveDownText: z.string(),
+      ImageFileText: z.string(),
+      videoFileText: z.string(),
+      ImageGalleryText: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({
