@@ -664,12 +664,20 @@ export const DictionarySchema = z.object({
       customIcon: z.string(),
       includeInMaterials: z.string(),
       addLink: z.string(),
-      publishEditNotes:z.string(),
-      back:z.string(),
-      editCoachNotes:z.string(),
-      exploreCourses:z.string(),
+      publishEditNotes: z.string(),
+      back: z.string(),
+      editCoachNotes: z.string(),
+      exploreCourses: z.string(),
       description: z.string(),
-    })
+    }),
+    courseBuilder: z.object({
+      deleteText: z.string(),
+      moveUpText: z.string(),
+      moveDownText: z.string(),
+      ImageFileText: z.string(),
+      videoFileText: z.string(),
+      ImageGalleryText: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({

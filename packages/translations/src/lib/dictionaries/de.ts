@@ -623,7 +623,15 @@ export const DE: TDictionary = {
       addedLabel: 'Schon Coach',
       isYou: 'Du',
       noFoundLabel: 'Kei Coachs gfunde...',
-      closeButton: "Zuemache",
+      closeButton: "Zuemache"
+    },
+    courseBuilder: {
+      deleteText: 'Löschen',
+      moveUpText: 'Nach oben verschieben',
+      moveDownText: 'Nach unten verschieben',
+      ImageFileText: 'Hinzufügen',
+      videoFileText: 'Video hinzufügen',
+      ImageGalleryText: 'Bildergalerie hinzufügen'
     },
     quiz: {
       quizText: 'Quiz',
