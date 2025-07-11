@@ -64,3 +64,6 @@ export { default as CoachCard } from './components/coach/coach-card';
 export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';
 
 export { StudentCard } from './components/student-card/student-card';
+export { StudentCardList } from './components/student-card/student-card-list';
+export { YourStudentCard } from './components/student-card/your-student-card';
+export { YourStudentCardList } from './components/student-card/your-student-card-list';
