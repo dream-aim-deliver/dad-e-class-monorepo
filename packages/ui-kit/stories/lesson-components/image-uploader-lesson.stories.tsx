@@ -4,48 +4,32 @@ import { courseElements } from '../../lib/components/course-builder/course-build
 import { CourseElementType } from '../../lib/components/course-builder/types';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { ImageFile } from '../../lib/components/course-builder-lesson-component/types';
-import { TLocale } from '@maany_shr/e-class-translations';
 
 // Get components from courseElements
-const { designerComponent: DesignerComponent, formComponent: FormComponent } = courseElements.ImageFile;
+const { designerComponent: DesignerComponent, formComponent: FormComponent } = courseElements[CourseElementType.ImageFile];
 
-type ImageFileWithMetadata = ImageFile & { category: 'image' };
+type ImageFileWithMetadata = ImageFile & fileMetadata.TFileMetadata;
 
 // Define the props for our stories
 interface StoryProps {
-    locale: TLocale;
+    locale: 'en' | 'de';
     elementInstance: ImageFile;
-    onFileUpload: (file: fileMetadata.TFileUploadRequest) => Promise<ImageFileWithMetadata>;
-    onFileUploadComplete: (file: ImageFileWithMetadata) => void;
-    onFileDelete: () => void;
-    onFileDownload: () => void;
-}
-
-interface ImageUploaderWithStateProps {
-    elementInstance: ImageFile;
-    onFileUpload: (file: fileMetadata.TFileUploadRequest) => Promise<ImageFileWithMetadata>;
-    onFileUploadComplete: (file: ImageFileWithMetadata) => void;
-    onFileDelete: () => void;
-    onFileDownload: () => void;
-    onUpClick?: (id: string) => void;
-    onDownClick?: (id: string) => void;
-    onDeleteClick?: (id: string) => void;
-    locale: TLocale;
+    initialFile?: ImageFileWithMetadata | null;
 }
 
 // Default element instance
 const defaultElementInstance: ImageFile = {
     id: '1',
-    name: 'default-image',
     type: CourseElementType.ImageFile,
+    order: 1,
+    category: 'image',
+    name: 'default-image',
     url: '',
     thumbnailUrl: '',
     size: 0,
     mimeType: 'image/png',
     checksum: '',
     status: 'processing',
-    category: 'image',
-    order: 1,
 };
 
 // Mock file for testing
@@ -63,186 +47,171 @@ const mockFile: ImageFileWithMetadata = {
     order: 1,
 };
 
+// Mock upload function that simulates an API call
+const mockUpload = async (): Promise<ImageFileWithMetadata> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(mockFile);
+        }, 1000);
+    });
+};
+
 
 
 // Create a wrapper component that uses hooks
-const ImageUploaderWithState = ({
-    elementInstance,
-    onFileUpload,
-    onFileUploadComplete,
-    onFileDelete,
-    onFileDownload,
-    onUpClick = () => alert('Move up clicked'),
-    onDownClick = () => alert('Move down clicked'),
-    onDeleteClick = () => alert('Delete clicked'),
-    locale,
-}: ImageUploaderWithStateProps) => {
-    const [file, setFile] = useState<ImageFileWithMetadata | null>(null);
+const ImageUploaderWrapper = (args: StoryProps) => {
+    const [file, setFile] = useState<ImageFileWithMetadata | null>(args.initialFile || null);
 
     const handleUpload = async (fileRequest: fileMetadata.TFileUploadRequest) => {
-        const uploadedFile = await onFileUpload(fileRequest);
+        console.log('Uploading image...', fileRequest);
+        const uploadedFile = await mockUpload();
         return uploadedFile;
     };
 
     const handleUploadComplete = (uploadedFile: ImageFileWithMetadata) => {
+        console.log('Upload complete:', uploadedFile);
         setFile(uploadedFile);
-        onFileUploadComplete(uploadedFile);
     };
 
     const handleDelete = () => {
+        console.log('File deleted');
         setFile(null);
-        onFileDelete();
     };
 
-    const handleDownload = () => {
-        if (file) {
-            onFileDownload();
-        }
+    // Create props object that matches the DesignerComponent's expected props
+    const componentProps = {
+        elementInstance: args.elementInstance,
+        file: file,
+        onImageUpload: handleUpload,
+        onUploadComplete: handleUploadComplete,
+        onFileDelete: handleDelete,
+        onFileDownload: () => console.log('Download file'),
+        onUpClick: () => alert('Move up clicked'),
+        onDownClick: () => alert('Move down clicked'),
+        onDeleteClick: () => alert('Delete clicked'),
+        locale: args.locale,
     };
 
     return (
         <div style={{ width: '600px' }}>
-            <DesignerComponent
-                elementInstance={elementInstance}
-                onUpClick={() => onUpClick(elementInstance.id)}
-                onDownClick={() => onDownClick(elementInstance.id)}
-                onDeleteClick={() => onDeleteClick(elementInstance.id)}
-                locale={locale}
-            />
+            <DesignerComponent {...componentProps} />
         </div>
     );
 };
 
-// Create a wrapper component for the story
-const ImageUploaderWrapper = (args: StoryProps) => {
-    return (
-        <ImageUploaderWithState
-            elementInstance={args.elementInstance}
-            onFileUpload={args.onFileUpload}
-            onFileUploadComplete={args.onFileUploadComplete}
-            onFileDelete={args.onFileDelete}
-            onFileDownload={args.onFileDownload}
-            locale={args.locale}
-        />
-    );
-};
 
 
-
-const meta: Meta<typeof ImageUploaderWrapper> = {
+const meta: Meta<StoryProps> = {
     title: 'Components/CourseBuilder/Image Uploader',
-    component: ImageUploaderWrapper,
-    tags: ['autodocs'],
+    component: DesignerComponent as unknown as React.ComponentType<StoryProps>,
     parameters: {
-        docs: {
-            description: {
-                component: 'An image uploader component that allows users to upload, preview, and manage images.',
-            },
-        },
+        layout: 'centered',
     },
-    args: {
-        locale: 'en',
-        elementInstance: defaultElementInstance,
-        onFileUpload: async (fileRequest) => {
-            console.log('Uploading file...', fileRequest);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            return {
-                ...mockFile,
-                id: 'uploaded-' + Date.now(),
-                name: fileRequest.name,
-                size: fileRequest.file.size,
-                mimeType: fileRequest.file.type,
-                checksum: 'checksum-' + Date.now(),
-                url: URL.createObjectURL(fileRequest.file),
-                thumbnailUrl: URL.createObjectURL(fileRequest.file),
-                status: 'available' as const,
-                type: CourseElementType.ImageFile,
-                order: 1,
-                category: 'image' as const,
-            };
+    tags: ['autodocs'],
+    argTypes: {
+        locale: {
+            control: 'select',
+            options: ['en', 'de'],
+            description: 'Language locale (en/de)',
         },
-        onFileUploadComplete: (file) => console.log('File uploaded:', file),
-        onFileDelete: () => console.log('File deleted'),
-        onFileDownload: () => console.log('Download file'),
+        elementInstance: {
+            control: 'object',
+            description: 'Course element instance',
+        },
+        initialFile: {
+            control: 'object',
+            description: 'Initial file to display',
+        },
     },
 };
 
 export default meta;
 
-type Story = StoryObj<typeof ImageUploaderWrapper>;
+type Story = StoryObj<StoryProps>;
 
 export const Default: Story = {
     render: (args) => <ImageUploaderWrapper {...args} />,
-};
-
-export const WithImage: Story = {
     args: {
-        elementInstance: mockFile,
+        locale: 'en',
+        elementInstance: defaultElementInstance,
+        initialFile: null,
     },
 };
 
-export const German: Story = {
+// Story with a pre-uploaded image
+export const WithImage: Story = {
+    render: (args) => {
+        const [file, setFile] = useState<ImageFileWithMetadata | null>(mockFile);
+
+        const handleUpload = async (fileRequest: fileMetadata.TFileUploadRequest) => {
+            console.log('Uploading image...', fileRequest);
+            const uploadedFile = await mockUpload();
+            return uploadedFile;
+        };
+
+        const handleUploadComplete = (uploadedFile: ImageFileWithMetadata) => {
+            console.log('Upload complete:', uploadedFile);
+            setFile(uploadedFile);
+        };
+
+        const handleDelete = () => {
+            console.log('File deleted');
+            setFile(null);
+        };
+
+        // Create props object that matches the DesignerComponent's expected props
+        const componentProps = {
+            elementInstance: args.elementInstance,
+            file: file,
+            onImageUpload: handleUpload,
+            onUploadComplete: handleUploadComplete,
+            onFileDelete: handleDelete,
+            onFileDownload: () => console.log('Download file'),
+            onUpClick: () => alert('Move up clicked'),
+            onDownClick: () => alert('Move down clicked'),
+            onDeleteClick: () => alert('Delete clicked'),
+            locale: args.locale,
+        };
+
+        return (
+            <div style={{ width: '600px' }}>
+                <DesignerComponent {...componentProps} />
+            </div>
+        );
+    },
     args: {
+        ...Default.args,
+        initialFile: mockFile,
+    },
+};
+
+// Story with German locale
+export const GermanLocale: Story = {
+    render: (args) => <ImageUploaderWrapper {...args} />,
+    args: {
+        ...Default.args,
         locale: 'de',
     },
 };
 
-export const WithCustomImage: Story = {
-    args: {
-        elementInstance: {
-            ...defaultElementInstance,
-            ...mockFile,
-        },
-    },
-};
-
-// Form component story
+// Story for the form component
 export const FormView: Story = {
-    render: (args) => (
+    render: () => (
         <div style={{ width: '600px' }}>
             <FormComponent
                 elementInstance={{
                     ...defaultElementInstance,
                     ...mockFile,
                 }}
-                submitValue={(key, value) => console.log('Form submitted:', { key, value })}
-                locale={args.locale}
-            />
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Form view of the image uploader component.',
-            },
-        },
-    },
-};
-
-// Add a story for the designer component
-export const DesignerView: Story = {
-    render: (args) => (
-        <div style={{ width: '600px' }}>
-            <DesignerComponent
-                elementInstance={args.elementInstance}
-                onUpClick={() => console.log('Move up')}
-                onDownClick={() => console.log('Move down')}
-                onDeleteClick={() => console.log('Delete')}
-                locale={args.locale}
+                locale="en"
             />
         </div>
     ),
     args: {
+        locale: 'en',
         elementInstance: {
             ...defaultElementInstance,
             ...mockFile,
-        },
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Designer view of the image uploader component.',
-            },
         },
     },
 };
