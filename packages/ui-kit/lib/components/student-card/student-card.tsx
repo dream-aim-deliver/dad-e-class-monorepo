@@ -69,7 +69,7 @@ export const StudentCard = ({
     const dictionary = getDictionary(locale).components.studentCard;
 
     return (
-        <div className="flex flex-col md:p-4 p-2 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+        <div className="flex flex-col md:p-4 p-2 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:w-[22rem]">
             {/* Avatar, student name & Badge */}
             <div className="flex flex-row items-center gap-3 mb-2">
                 <UserAvatar
@@ -94,7 +94,7 @@ export const StudentCard = ({
             </div>
 
             {/* Coach details */}
-            <div className="flex flex-row items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
                 <IconCoachingOffer classNames="text-text-secondary" size="4" />
                 <p className="text-text-secondary text-sm">
                     {dictionary.coach}
@@ -110,7 +110,7 @@ export const StudentCard = ({
                     </div>
                 ) : (
                     <Button
-                        className="p-0 gap-1 text-sm"
+                        className="p-0 gap-1 text-sm truncate"
                         size="small"
                         variant="text"
                         hasIconLeft
@@ -128,7 +128,7 @@ export const StudentCard = ({
             </div>
 
             {/* Course details */}
-            <div className="flex flex-row items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
                 <IconCourse classNames="text-text-secondary" size="4" />
                 <p className="text-text-secondary text-sm">
                     {dictionary.course}
@@ -136,7 +136,7 @@ export const StudentCard = ({
                 <Button
                     size="small"
                     variant="text"
-                    className="p-0 gap-1 text-sm"
+                    className="p-0 gap-1 text-sm truncate"
                     text={courseName}
                     onClick={onClickCourse}
                     hasIconLeft
@@ -168,14 +168,14 @@ export const StudentCard = ({
                     {status === 'waiting-feedback' && (
                         <Badge
                             variant="warningprimary"
-                            size="medium"
+                            size="small"
                             text={dictionary.waitingFeedbackBagde}
                         />
                     )}
                     {status === 'long-wait' && (
                         <Badge
                             variant="errorprimary"
-                            size="medium"
+                            size="small"
                             text={dictionary.longWaitBadge}
                         />
                     )}
@@ -195,7 +195,7 @@ export const StudentCard = ({
                 {status === 'course-completed' && completedCourseDate && (
                     <Badge
                         variant="successprimary"
-                        size="medium"
+                        size="small"
                         text={`${dictionary.completedCourseBadge} ${new Date(completedCourseDate).toISOString().split('T')[0]}`}
                     />
                 )}
