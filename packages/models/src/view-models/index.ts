@@ -18,5 +18,5 @@ export * from './enrolled-course-details-view-model';
 export * from './student-progress-view-model';
 export * from './included-coaching-session-list-view-model';
 export * from './course-introduction-view-model';
-
 export * from './course-outline-view-model';
+export * from './assessment-progress-list-view-model';
