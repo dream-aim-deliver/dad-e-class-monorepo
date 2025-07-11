@@ -591,6 +591,7 @@ export const EN: TDictionary = {
       waitingFeedbackBagde: 'Waiting for feedback',
       longWaitBadge: 'Waited for more than 48h',
       completedCourseBadge: 'Student completed course on',
+      completedOnBadge: 'Completed on',
       you: 'You',
       studentDetailsButton: 'Student Details',
       viewAssignment: 'View assignment',
