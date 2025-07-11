@@ -1,6 +1,6 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import { CourseElementType } from "../course-builder/types";
-
+import { fileMetadata } from '@maany_shr/e-class-models';
 
 export interface CoachingSessionTypes extends isLocalAware {
     type: CourseElementType.CoachingSession;
@@ -28,3 +28,24 @@ export interface CoachingSessionStudentViewTypes extends isLocalAware {
 };
 
 export type CoachingElement = CoachingSessionTypes | CoachingSessionStudentViewTypes;
+
+
+type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
+export interface ImageFile extends ImageFileMetadata {
+    type: CourseElementType.ImageFile;
+    order: number;
+}
+type VideoFileMetadata = fileMetadata.TFileMetadata & { category: 'video' };
+export interface VideoFile extends VideoFileMetadata {
+    type: CourseElementType.VideoFile;
+    order: number;
+};
+
+export interface ImageGallery {
+    type: CourseElementType.ImageGallery;
+    id: number;
+    order: number;
+    imageUrls:ImageFileMetadata[];
+}
+
+
