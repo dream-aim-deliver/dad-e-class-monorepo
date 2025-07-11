@@ -96,7 +96,7 @@ export const listAssessmentProgresses = t.procedure
         async (): Promise<useCaseModels.TListAssessmentProgressesUseCaseResponse> => {
             return {
                 success: true,
-                data: mockThird,
+                data: mockSecond,
             };
         },
     );
