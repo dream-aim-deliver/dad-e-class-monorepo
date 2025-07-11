@@ -45,6 +45,7 @@ export type TAnswer = z.infer<typeof AnswerSchema>;
 export const SubmitAssessmentProgressRequestSchema = z.object({
   answers: z.array(AnswerSchema),
   courseSlug: z.string(),
+  studentId: z.string().optional(),
 });
 
 export type TSubmitAssessmentProgressRequest = z.infer<typeof SubmitAssessmentProgressRequestSchema>;
