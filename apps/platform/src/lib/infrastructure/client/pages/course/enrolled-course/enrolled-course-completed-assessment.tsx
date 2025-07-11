@@ -7,7 +7,7 @@ import {
     DefaultLoading,
     FormElement,
 } from '@maany_shr/e-class-ui-kit';
-import { transformLessonComponents } from '../../../utils/transform-lesson-components';
+import { transformLessonComponentsWithProgress } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useListAssessmentProgressesPresenter } from '../../../hooks/use-assessment-progresses-presenter';
@@ -53,59 +53,9 @@ export default function EnrolledCourseCompletedAssessment(
         }
 
         const components = componentsViewModel.data.components;
+        const progress = progressViewModel.data.progress;
 
-        const elements = transformLessonComponents(components);
-
-        const answers = progressViewModel.data.progress;
-
-        for (const element of elements) {
-            const answer = answers.find((a) => a.componentId === element.id);
-            if (answer) {
-                switch (element.type) {
-                    case 'textInput':
-                        if (answer.type === 'textInput') {
-                            element.content = answer.answer;
-                        }
-                        break;
-                    case 'singleChoice':
-                        if (answer.type === 'singleChoice') {
-                            element.options.forEach((option) => {
-                                option.isSelected =
-                                    answer.answerId === option.id;
-                            });
-                        }
-                        break;
-                    case 'multiCheck':
-                        if (answer.type === 'multipleChoice') {
-                            element.options.forEach((option) => {
-                                if (option.id === undefined) return;
-                                option.isSelected = answer.answerIds.includes(
-                                    option.id,
-                                );
-                            });
-                        }
-                        break;
-                    case 'oneOutOfThree':
-                        if (answer.type === 'oneOutOfThree') {
-                            for (const row of element.data.rows) {
-                                for (const column of row.columns) {
-                                    column.selected = answer.answers.some(
-                                        (a) =>
-                                            a.rowId === row.id &&
-                                            a.columnId === column.id,
-                                    );
-                                }
-                            }
-                        }
-                        break;
-                    default:
-                        // Handle other types if necessary
-                        break;
-                }
-            }
-        }
-
-        return elements;
+        return transformLessonComponentsWithProgress(components, progress);
     }, [componentsViewModel, progressViewModel]);
 
     if (!componentsViewModel || !progressViewModel) {
