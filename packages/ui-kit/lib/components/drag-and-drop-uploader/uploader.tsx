@@ -239,7 +239,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
   };
 
   return (
-    <div className={cn('flex flex-col gap-4 w-full', className)}>
+    <div className={cn('flex flex-col w-full', className, allFiles.length > 0 && 'gap-4')}>
       <div className="flex flex-col gap-2 w-full">
         {allFiles.map((file) => (
           <div key={file.id}>
