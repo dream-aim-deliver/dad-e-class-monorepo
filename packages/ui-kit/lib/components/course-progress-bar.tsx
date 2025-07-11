@@ -32,7 +32,7 @@ export const CourseProgressBar: FC<CourseProgressBarProps> = ({
 }) => {
     const dictionary = getDictionary(locale);
     return (
-        <div className="flex p-2 gap-4 items-center justify-between w-full bg-card-fill border-1 border-card-stroke rounded-medium">
+        <div className="flex p-2 gap-4 items-center justify-between w-fit h-fit bg-card-fill border-1 border-card-stroke rounded-medium">
             <div className="flex gap-2 items-center w-full">
                 <div className="flex flex-col gap-3 min-w-[97px] w-full">
                     <p className="text-xs text-text-secondary font-bold leading-[100%]">

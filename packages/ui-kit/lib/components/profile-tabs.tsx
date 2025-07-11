@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Tabs, TabList, TabTrigger, TabContent } from './tabs/tab';
 import { ProfileInfo } from './profile/profile-info';
 import { ProfessionalInfo } from './profile/professional-info';
-import { profile } from '@maany_shr/e-class-models';
+import { profile, fileMetadata } from '@maany_shr/e-class-models';
 
 import {
   TLocale,
@@ -13,6 +13,14 @@ import {
 export interface ProfileTabsProps extends isLocalAware {
   initialProfiles: profile.TProfiles;
   onSave?: (profiles: profile.TProfiles) => void;
+  onFileUpload: (
+    fileRequest: fileMetadata.TFileUploadRequest,
+    abortSignal?: AbortSignal
+  ) => Promise<fileMetadata.TFileMetadata>;
+  profilePictureFile?: fileMetadata.TFileMetadata | null;
+  curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
+  onProfilePictureUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
+  onCurriculumVitaeUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
 }
 
 /**
@@ -36,6 +44,11 @@ export interface ProfileTabsProps extends isLocalAware {
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   initialProfiles,
   onSave,
+  onFileUpload,
+  profilePictureFile,
+  curriculumVitaeFile,
+  onProfilePictureUploadComplete,
+  onCurriculumVitaeUploadComplete,
   locale,
 }) => {
   const [activeTab, setActiveTab] = useState('personal');
@@ -52,6 +65,9 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
         <ProfileInfo
           initialData={personalProfile}
           onSave={(profile) => onSave?.([profile])}
+          onFileUpload={onFileUpload}
+          profilePictureFile={profilePictureFile}
+          onUploadComplete={onProfilePictureUploadComplete}
           locale={locale as TLocale}
         />
       </div>
@@ -85,6 +101,9 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
                 onSave?.([profile]);
               }
             }}
+            onFileUpload={onFileUpload}
+            profilePictureFile={profilePictureFile}
+            onUploadComplete={onProfilePictureUploadComplete}
             locale={locale as TLocale}
           />
         </TabContent>
@@ -95,6 +114,9 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             onSave={(profile) => {
               onSave?.([personalProfile, profile]);
             }}
+            onFileUpload={onFileUpload}
+            curriculumVitaeFile={curriculumVitaeFile}
+            onUploadComplete={onCurriculumVitaeUploadComplete}
             locale={locale as TLocale}
           />
         </TabContent>

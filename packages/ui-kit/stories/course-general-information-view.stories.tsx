@@ -36,6 +36,21 @@ const AvatarReelExample = (
   </div>
 );
 
+const sampleStudents = [
+  {
+    name: "Alice Smith",
+    avatarUrl: "https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg"
+  },
+  {
+    name: "Bob Johnson",
+    avatarUrl: "https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg"
+  },
+  {
+    name: "Charlie Brown",
+    avatarUrl: "https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg"
+  }
+];
+
 // Test Case 1: Complete Course Details
 export const CompleteCourse: Story = {
   args: {
@@ -64,7 +79,6 @@ export const CourseWithoutImage: Story = {
   args: {
     ...CompleteCourse.args,
     imageUrl: '',
-    children: AvatarReelExample,
   }
 };
 
@@ -78,7 +92,6 @@ export const ShortDurationCourse: Story = {
       selfStudy: 30,
     },
     studentProgress: 15,
-    children: AvatarReelExample,
   }
 };
 
@@ -87,7 +100,6 @@ export const CourseWithBrokenImage: Story = {
   args: {
     ...CompleteCourse.args,
     imageUrl: 'https://invalid.url/image.jpg',
-    children: AvatarReelExample,
   }
 };
 
@@ -101,7 +113,6 @@ export const LongDurationCourse: Story = {
       selfStudy: 1200,
     },
     studentProgress: 10,
-    children: AvatarReelExample,
   }
 };
 
@@ -110,7 +121,6 @@ export const CompletedCourse: Story = {
   args: {
     ...CompleteCourse.args,
     studentProgress: 100,
-    children: AvatarReelExample,
   }
 };
 
@@ -119,7 +129,6 @@ export const NewCourse: Story = {
   args: {
     ...CompleteCourse.args,
     studentProgress: 0,
-    children: AvatarReelExample,
   }
 };
 
@@ -131,6 +140,72 @@ export const AnonymousAuthorCourse: Story = {
       name: 'Anonymous Instructor',
       image: '',
     },
-    children: AvatarReelExample,
+  }
+};
+
+// Test Case 9: Course with Single Student
+export const SingleStudentCourse: Story = {
+  args: {
+    ...CompleteCourse.args,
+    students: [sampleStudents[0]],
+    totalStudentCount: 1,
+  }
+};
+
+// Test Case 10: Course with Two Students
+export const TwoStudentsCourse: Story = {
+  args: {
+    ...CompleteCourse.args,
+    students: [sampleStudents[0], sampleStudents[1]],
+    totalStudentCount: 2,
+  }
+};
+
+// Test Case 11: Course with No Students
+export const NoStudentsCourse: Story = {
+  args: {
+    ...CompleteCourse.args,
+    students: [],
+    totalStudentCount: 0,
+  }
+};
+
+// Test Case 12: Course with Many Students
+export const ManyStudentsCourse: Story = {
+  args: {
+    ...CompleteCourse.args,
+    students: sampleStudents,
+    totalStudentCount: 15,
+  }
+};
+
+// Test Case 13: Course with Students Missing Avatar URLs
+export const StudentsWithoutAvatarsCourse: Story = {
+  args: {
+    ...CompleteCourse.args,
+    students: [
+      { name: "Alice Smith" },
+      { name: "Bob Johnson" },
+      { name: "Charlie Brown" }
+    ],
+    totalStudentCount: 8,
+  }
+};
+
+// Test Case 14: Course with Exactly Three Students (No +X indicator)
+export const ExactlyThreeStudentsCourse: Story = {
+  args: {
+    ...CompleteCourse.args,
+    students: sampleStudents,
+    totalStudentCount: 3,
+  }
+};
+
+// Test Case 15: Course with Two Students and Others
+export const TwoStudentsWithOthersCourse: Story = {
+  args: {
+    ...CompleteCourse.args,
+    students: [sampleStudents[0], sampleStudents[1]],
+    totalStudentCount: 7,
   }
 };

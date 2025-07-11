@@ -48,7 +48,7 @@ export function TabTrigger({
             className={cn(
               isActive
                 ? 'text-black'
-                : 'text-text-primary',
+                : 'text-base-brand-500',
             )}
           >
             {icon}

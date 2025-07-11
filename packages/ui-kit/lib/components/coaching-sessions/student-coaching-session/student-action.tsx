@@ -10,26 +10,27 @@ import { IconClose } from '../../icons/icon-close';
 import { IconCheck } from '../../icons/icon-check';
 
 export interface StudentActionProps extends isLocalAware {
-  status:
-  | 'ongoing'
-  | 'upcoming-editable'
-  | 'upcoming-locked'
-  | 'ended'
-  | 'requested'
-  | 'rescheduled'
-  | 'canceled';
-  hoursLeftToEdit?: number;
-  meetingLink?: string;
-  hasReview?: boolean;
-  isRecordingDownloading?: boolean;
-  onClickJoinMeeting?: () => void;
-  onClickReschedule?: () => void;
-  onClickCancel?: () => void;
-  onClickReviewCoachingSession?: () => void;
-  onClickDownloadRecording?: () => void;
-  onClickDecline?: () => void;
-  onClickAccept?: () => void;
-  onClickSuggestAnotherDate?: () => void;
+    status:
+        | 'ongoing'
+        | 'upcoming-editable'
+        | 'upcoming-locked'
+        | 'ended'
+        | 'requested'
+        | 'rescheduled'
+        | 'canceled'
+        | 'to-be-defined';
+    hoursLeftToEdit?: number;
+    meetingLink?: string;
+    hasReview?: boolean;
+    isRecordingDownloading?: boolean;
+    onClickJoinMeeting?: () => void;
+    onClickReschedule?: () => void;
+    onClickCancel?: () => void;
+    onClickReviewCoachingSession?: () => void;
+    onClickDownloadRecording?: () => void;
+    onClickDecline?: () => void;
+    onClickAccept?: () => void;
+    onClickSuggestAnotherDate?: () => void;
 }
 
 /**
@@ -71,215 +72,241 @@ export interface StudentActionProps extends isLocalAware {
  */
 
 export const StudentAction: React.FC<StudentActionProps> = ({
-  status,
-  hoursLeftToEdit,
-  meetingLink,
-  hasReview = false,
-  isRecordingDownloading = false,
-  onClickJoinMeeting,
-  onClickReschedule,
-  onClickCancel,
-  onClickReviewCoachingSession,
-  onClickDownloadRecording,
-  onClickDecline,
-  onClickAccept,
-  onClickSuggestAnotherDate,
-  locale,
+    status,
+    hoursLeftToEdit,
+    meetingLink,
+    hasReview = false,
+    isRecordingDownloading = false,
+    onClickJoinMeeting,
+    onClickReschedule,
+    onClickCancel,
+    onClickReviewCoachingSession,
+    onClickDownloadRecording,
+    onClickDecline,
+    onClickAccept,
+    onClickSuggestAnotherDate,
+    locale,
 }) => {
-  const dictionary = getDictionary(locale);
+    const dictionary = getDictionary(locale);
 
-  const actionComponents = {
-    ongoing: {
-      render: () => (
-        <div className="flex flex-col gap-1 items-start w-full">
-          <Button
-            onClick={onClickJoinMeeting}
-            variant="primary"
-            size="medium"
-            className="w-full"
-            text={dictionary.components.coachingSessionCard.joinMeetingText}
-          />
-          {meetingLink && (
-            <p className="text-xs text-text-secondary leading-tight break-all overflow-hidden">
-              {meetingLink}
-            </p>
-          )}
-        </div>
-      ),
-    },
+    const actionComponents = {
+        ongoing: {
+            render: () => (
+                <div className="flex flex-col gap-1 items-start w-full">
+                    <Button
+                        onClick={onClickJoinMeeting}
+                        variant="primary"
+                        size="medium"
+                        className="w-full"
+                        text={
+                            dictionary.components.coachingSessionCard
+                                .joinMeetingText
+                        }
+                    />
+                    {meetingLink && (
+                        <p className="text-xs text-text-secondary leading-tight break-all overflow-hidden">
+                            {meetingLink}
+                        </p>
+                    )}
+                </div>
+            ),
+        },
 
-    'upcoming-editable': {
-      render: () => (
-        <div className="flex flex-col gap-2 w-full">
-          <Badge
-            className="flex items-center gap-1 px-3 py-1 rounded-medium max-w-fit"
-            variant="info"
-            size="big"
-            text={`${hoursLeftToEdit} ${dictionary.components.coachingSessionCard.hoursLeftToEditText
-              }`}
-          />
-          <div className="flex gap-[9px] justify-between">
-            <Button
-              onClick={onClickReschedule}
-              variant="primary"
-              size="small"
-              hasIconLeft
-              className="w-full"
-              iconLeft={<IconCalendarAlt size="5" />}
-              text={
-                dictionary.components.coachingSessionCard.rescheduleText
-              }
-            />
-            <Button
-              onClick={onClickCancel}
-              variant="secondary"
-              size="small"
-              className="max-w-full"
-              hasIconLeft
-              iconLeft={<IconTrashAlt size="5" />}
-              text={dictionary.components.coachingSessionCard.cancelText}
-            />
-          </div>
-        </div>
-      ),
-    },
+        'upcoming-editable': {
+            render: () => (
+                <div className="flex flex-col gap-2 w-full">
+                    <Badge
+                        className="flex items-center gap-1 px-3 py-1 rounded-medium max-w-fit"
+                        variant="info"
+                        size="big"
+                        text={`${hoursLeftToEdit} ${
+                            dictionary.components.coachingSessionCard
+                                .hoursLeftToEditText
+                        }`}
+                    />
+                    <div className="flex gap-[9px] justify-between">
+                        <Button
+                            onClick={onClickReschedule}
+                            variant="primary"
+                            size="small"
+                            hasIconLeft
+                            className="w-full"
+                            iconLeft={<IconCalendarAlt size="5" />}
+                            text={
+                                dictionary.components.coachingSessionCard
+                                    .rescheduleText
+                            }
+                        />
+                        <Button
+                            onClick={onClickCancel}
+                            variant="secondary"
+                            size="small"
+                            className="max-w-full"
+                            hasIconLeft
+                            iconLeft={<IconTrashAlt size="5" />}
+                            text={
+                                dictionary.components.coachingSessionCard
+                                    .cancelText
+                            }
+                        />
+                    </div>
+                </div>
+            ),
+        },
 
-    'upcoming-locked': {
-      render: () => (
-        <div className="flex flex-col gap-1 items-start">
-          <Button
-            onClick={onClickJoinMeeting}
-            variant="primary"
-            size="medium"
-            className="w-full"
-            text={dictionary.components.coachingSessionCard.joinMeetingText}
-            disabled
-          />
-          <p className="text-xs text-text-secondary leading-[100%]">
-            {
-              dictionary.components.coachingSessionCard
-                .meetingLinkVisibilityInfo
-            }
-          </p>
-        </div>
-      ),
-    },
+        'upcoming-locked': {
+            render: () => (
+                <div className="flex flex-col gap-1 items-start">
+                    <Button
+                        onClick={onClickJoinMeeting}
+                        variant="primary"
+                        size="medium"
+                        className="w-full"
+                        text={
+                            dictionary.components.coachingSessionCard
+                                .joinMeetingText
+                        }
+                        disabled
+                    />
+                    <p className="text-xs text-text-secondary leading-[100%]">
+                        {
+                            dictionary.components.coachingSessionCard
+                                .meetingLinkVisibilityInfo
+                        }
+                    </p>
+                </div>
+            ),
+        },
 
-    ended: {
-      render: () => (
-        <div className="flex flex-col gap-2 w-full">
-          {!hasReview && (
-            <Button
-              variant="primary"
-              className="w-full"
-              size="medium"
-              text={
-                dictionary.components.coachingSessionCard
-                  .reviewCoachingSessionText
-              }
-              onClick={onClickReviewCoachingSession}
-            />
-          )}
-          <Button
-            variant="secondary"
-            className=""
-            size="medium"
-            hasIconLeft
-            iconLeft={<IconCloudDownload size="6" />}
-            text={
-              dictionary.components.coachingSessionCard
-                .downloadRecordingText
-            }
-            onClick={onClickDownloadRecording}
-            disabled={isRecordingDownloading}
-          />
-          {isRecordingDownloading && (
-            <p className="text-xs text-text-secondary leading-[100%]">
-              {
-                dictionary.components.coachingSessionCard
-                  .recordingAvailabilityInfo
-              }
-            </p>
-          )}
-        </div>
-      ),
-    },
+        ended: {
+            render: () => (
+                <div className="flex flex-col gap-2 w-full">
+                    {!hasReview && (
+                        <Button
+                            variant="primary"
+                            className="w-full"
+                            size="medium"
+                            text={
+                                dictionary.components.coachingSessionCard
+                                    .reviewCoachingSessionText
+                            }
+                            onClick={onClickReviewCoachingSession}
+                        />
+                    )}
+                    <Button
+                        variant="secondary"
+                        className=""
+                        size="medium"
+                        hasIconLeft
+                        iconLeft={<IconCloudDownload size="6" />}
+                        text={
+                            dictionary.components.coachingSessionCard
+                                .downloadRecordingText
+                        }
+                        onClick={onClickDownloadRecording}
+                        disabled={isRecordingDownloading}
+                    />
+                    {isRecordingDownloading && (
+                        <p className="text-xs text-text-secondary leading-[100%]">
+                            {
+                                dictionary.components.coachingSessionCard
+                                    .recordingAvailabilityInfo
+                            }
+                        </p>
+                    )}
+                </div>
+            ),
+        },
 
-    requested: {
-      render: () => (
-        <div className="flex flex-col gap-2">
-          <Badge
-            className="flex items-center gap-1 px-3 py-1 rounded-medium max-w-fit"
-            variant="info"
-            size="big"
-            text={dictionary.components.coachingSessionCard.requestSentText}
-            hasIconLeft
-            iconLeft={<IconHourglass size="5" />}
-          />
-          <Button
-            className="max-w-full"
-            onClick={onClickCancel}
-            variant="secondary"
-            size="medium"
-            hasIconLeft
-            iconLeft={<IconTrashAlt size="5" />}
-            text={
-              dictionary.components.coachingSessionCard.cancelRequestText
-            }
-          />
-        </div>
-      ),
-    },
+        requested: {
+            render: () => (
+                <div className="flex flex-col gap-2">
+                    <Badge
+                        className="flex items-center gap-1 px-3 py-1 rounded-medium max-w-fit"
+                        variant="info"
+                        size="big"
+                        text={
+                            dictionary.components.coachingSessionCard
+                                .requestSentText
+                        }
+                        hasIconLeft
+                        iconLeft={<IconHourglass size="5" />}
+                    />
+                    <Button
+                        className="max-w-full"
+                        onClick={onClickCancel}
+                        variant="secondary"
+                        size="medium"
+                        hasIconLeft
+                        iconLeft={<IconTrashAlt size="5" />}
+                        text={
+                            dictionary.components.coachingSessionCard
+                                .cancelRequestText
+                        }
+                    />
+                </div>
+            ),
+        },
 
-    rescheduled: {
-      render: () => (
-        <div className="flex flex-col gap-2 items-center w-full">
-          <div className="flex justify-between gap-3 w-full">
-            <Button
-              text={dictionary.components.coachingSessionCard.declineText}
-              variant="secondary"
-              hasIconLeft
-              className="w-full"
-              iconLeft={<IconClose size="6" />}
-              onClick={onClickDecline}
-            />
-            <Button
-              variant="primary"
-              text={dictionary.components.coachingSessionCard.acceptText}
-              hasIconLeft
-              className="w-full"
-              iconLeft={<IconCheck size="6" />}
-              onClick={onClickAccept}
-            />
-          </div>
-          <Button
-            variant="text"
-            text={
-              dictionary.components.coachingSessionCard
-                .suggestAnotherDateText
-            }
-            className="max-w-full"
-            hasIconLeft
-            iconLeft={<IconCalendarAlt size="6" />}
-            onClick={onClickSuggestAnotherDate}
-          />
-        </div>
-      ),
-    },
+        rescheduled: {
+            render: () => (
+                <div className="flex flex-col gap-2 items-center w-full">
+                    <div className="flex justify-between gap-3 w-full">
+                        <Button
+                            text={
+                                dictionary.components.coachingSessionCard
+                                    .declineText
+                            }
+                            variant="secondary"
+                            hasIconLeft
+                            className="w-full"
+                            iconLeft={<IconClose size="6" />}
+                            onClick={onClickDecline}
+                        />
+                        <Button
+                            variant="primary"
+                            text={
+                                dictionary.components.coachingSessionCard
+                                    .acceptText
+                            }
+                            hasIconLeft
+                            className="w-full"
+                            iconLeft={<IconCheck size="6" />}
+                            onClick={onClickAccept}
+                        />
+                    </div>
+                    <Button
+                        variant="text"
+                        text={
+                            dictionary.components.coachingSessionCard
+                                .suggestAnotherDateText
+                        }
+                        className="max-w-full"
+                        hasIconLeft
+                        iconLeft={<IconCalendarAlt size="6" />}
+                        onClick={onClickSuggestAnotherDate}
+                    />
+                </div>
+            ),
+        },
 
-    canceled: {
-      render: () => (
-        <Badge
-          variant="errorprimary"
-          className="text-sm max-w-fit"
-          text={
-            dictionary.components.coachingSessionCard.sessionCanceledText
-          }
-          hasIconLeft
-          iconLeft={<IconTrashAlt size="5" />}
-        />
-      ),
-    },
-  };
-  return actionComponents[status]?.render() || null;
+        canceled: {
+            render: () => (
+                <Badge
+                    variant="errorprimary"
+                    className="text-sm max-w-fit"
+                    text={
+                        dictionary.components.coachingSessionCard
+                            .sessionCanceledText
+                    }
+                    hasIconLeft
+                    iconLeft={<IconTrashAlt size="5" />}
+                />
+            ),
+        },
+        'to-be-defined': {
+            render: () => null,
+        },
+    };
+    return actionComponents[status]?.render() || null;
 };

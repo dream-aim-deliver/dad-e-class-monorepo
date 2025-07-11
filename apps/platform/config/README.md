@@ -34,6 +34,7 @@ docker run -d --name e-class-platform \
     -e E_CLASS_PLATFORM_ID=<1> \
     -e E_CLASS_DEV_MODE=<true> \
     -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
+    -e NEXT_PUBLIC_CONTACT_EMAIL=<example@mail.com> \
     -p 80:80 -p 443:443 \
     --mount type=bind,source=your/hostcert.pem,target=/etc/dad/hostcert.pem \
     --mount type=bind,source=your/hostkey.pem,target=/etc/dad/hostkey.pem \
@@ -56,6 +57,7 @@ docker run -d --name e-class-platform \
     -e E_CLASS_PLATFORM_ID=<1> \
     -e E_CLASS_DEV_MODE=<true> \
     -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
+    -e NEXT_PUBLIC_CONTACT_EMAIL=<example@mail.com> \
     -p 80:80 -p 443:443 \
     -p 3000:3000 \
     maany/e-class-platform
@@ -77,6 +79,7 @@ You must set the following environment variables to run the container:
 | E_CLASS_PLATFORM_ID                     | Identifier for the platform instance                   |
 | E_CLASS_DEV_MODE                        | Boolean flag to enable development mode                |
 | NEXT_PUBLIC_E_CLASS_PLATFORM_URL        | Public URL where the platform is accessible            |
+| NEXT_PUBLIC_CONTACT_EMAIL               | Contact email address displayed in error messages
 | HTTPD_ENABLE_SSL                        | Boolean flag to enable SSL in HTTP server              |
 | HTTPD_ENABLE_LOGS                       | Boolean flag to enable HTTP server logs                |
 | HOSTNAME                                | Hostname for the server                                |

@@ -71,5 +71,16 @@ export const FileUploadRequestSchema = z.object({
     file: z.instanceof(File),
 });
 
+/**
+ * TFileUploadRequest
+ * Represents the request for uploading a file.
+ * It includes the file ID, name, and the actual file object.
+ * The ID is meant to be used to identify the file in memory before it is stored, e.g., to handle cancellation or progress tracking.
+ * 
+ * @typedef {Object} TFileUploadRequest
+ * @property {string} id - The unique identifier for the file upload request.
+ * @property {string} name - The name of the file being uploaded.
+ * @property {File} file - The actual file object to be uploaded.
+ */
 export type TFileUploadRequest = z.infer<
     typeof FileUploadRequestSchema>;

@@ -12,6 +12,19 @@ export const EN: TDictionary = {
       loadMore: 'Load more...',
       viewAll: 'View all',
     },
+    defaultLoading: {
+      loading: 'Loading...',
+    },
+    defaultError: {
+      title: 'Something went wrong',
+      description: 'A critical error occurred. Please try reloading the page. If the issue persists, please contact us at {contactEmail}.',
+      retry: 'Retry',
+    },
+    defaultNotFound: {
+      title: 'Not Found',
+      description: 'Could not find the requested resource.',
+      retry: 'Retry',
+    },
     coachBanner: {
       buttonText: 'Become a Coach',
       placeHolderText: 'Image not available',
@@ -327,6 +340,8 @@ export const EN: TDictionary = {
       sessionCanceledText: 'Session Canceled',
       rateCallQualityText: 'Rate Call Quality',
       loadMoreText: 'Load more...',
+      toBeDefined: 'To be defined',
+      toBeDefinedMessage: 'Contact the coach with your availability. Use scheduling tools like Doodle to find a time that works for everyone.',
     },
     coachingSessionTracker: {
       minuteText: 'minutes',
@@ -360,6 +375,9 @@ export const EN: TDictionary = {
       yourProgressText: 'Your progress',
       resumeText: 'Resume',
       viewProfileText: 'View profile',
+      and: 'and',
+      other: 'other',
+      others: 'others',
     },
     uploadingSection: {
       maxSizeText: 'Max size',
@@ -603,11 +621,39 @@ export const EN: TDictionary = {
     sso: SSO_EN,
     offers: Offers_EN,
     coaching: Coaching_EN,
+    assessmentForm: {
+      defaultFormError: 'A critical error occurred while submitting the form. Please try again.',
+    },
     auth: {
       errorPage: {
         title: 'Oops! There was a problem signing you in.',
         description: 'Please check your username and password and try again.',
         tryAgain: 'Try Again',
+      },
+    },
+    course: {
+      completedPanel: {
+        badgeText: 'Completed',
+        downloadCertificate: 'Download Certificate',
+      },
+      roleDropdown: {
+        viewAs: "View as",
+        student: "Student",
+        coach: "Coach",
+        creator: "Course Creator",
+        admin: "Admin",
+      },
+      tabs: {
+        introduction: "Introduction",
+        study: "Study",
+        assignments: "Assignments",
+        notes: "Your notes",
+        material: "Material",
+        assessment: "Pre-Course Form",
+        preview: "Preview course",
+        students: "Students",
+        coaches: "Coaches",
+        groups: "Groups",
       },
     },
   },

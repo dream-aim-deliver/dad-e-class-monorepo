@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IconButton } from '../icon-button';
 import { IconCloudDownload } from '../icons/icon-cloud-download';
 import { IconTrashAlt } from '../icons/icon-trash-alt';
@@ -10,12 +10,13 @@ import { Button } from '../button';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { FeedBackMessage } from '../feedback-message';
+import { IconImage } from '../icons/icon-image';
 
 interface FilePreviewProps extends isLocalAware {
     uploadResponse: fileMetadata.TFileMetadata;
     onDelete: (id: string) => void;
     onDownload: (id: string) => void;
-    onCancelUpload: (id: string) => void;
+    onCancel: (id: string) => void;
 }
 /**
  *
@@ -43,9 +44,9 @@ const getFileTypeFromExtension = (fileName: string): 'image' | 'video' | 'docume
     return 'document';
 };
 
-export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDelete, onDownload, onCancelUpload, locale }) => {
+export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDelete, onDownload, onCancel, locale }) => {
     const dictionary = getDictionary(locale);
-
+    const [thumbnailError, setThumbnailError] = useState(false);
     if (uploadResponse?.status === 'unavailable') {
         return <FeedBackMessage type="error" message="File upload failed" />;
     }
@@ -70,11 +71,15 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDele
 
         // Return appropriate element based on category
         if (fileCategory === 'image') {
+            if (thumbnailError) {
+                return <IconImage classNames="w-6 h-6 text-text-primary" />;
+            }
             return (
                 <img
                     src={(uploadResponse as fileMetadata.TFileMetadata & { thumbnailUrl?: string }).thumbnailUrl || ''}
                     alt={uploadResponse.name}
                     className="w-10 h-10 object-cover rounded-small"
+                    onError={() => setThumbnailError(true)}
                 />
             );
         }
@@ -116,7 +121,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDele
                     <Button
                         variant="text"
                         className="px-0"
-                        onClick={() => onCancelUpload(uploadResponse.id as string)}
+                        onClick={() => onCancel(uploadResponse.id as string)}
                         text={dictionary.components.uploadingSection.cancelUpload}
                     />
                 ) : (

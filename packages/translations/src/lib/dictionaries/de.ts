@@ -12,6 +12,19 @@ export const DE: TDictionary = {
       loadMore: 'Mehr laden...',
       viewAll: 'Alle ansehen',
     },
+    defaultLoading: {
+      loading: 'Laden...',
+    },
+    defaultError: {
+      title: 'Etwas ist schiefgelaufen',
+      description: 'Ein kritischer Fehler ist aufgetreten. Bitte versuchen Sie, die Seite neu zu laden. Falls das Problem weiterhin besteht, kontaktieren Sie uns bitte unter {contactEmail}.',
+      retry: 'Wiederholen',
+    },
+    defaultNotFound: {
+      title: 'Nicht gefunden',
+      description: 'Die angeforderte Ressource konnte nicht gefunden werden.',
+      retry: 'Wiederholen',
+    },
     coachBanner: {
       buttonText: 'Coach werden',
       placeHolderText: 'Bild nicht verfügbar',
@@ -330,6 +343,8 @@ export const DE: TDictionary = {
       sessionCanceledText: 'Sitzung abgebrochen',
       rateCallQualityText: 'Bewerten Sie die Anrufqualität',
       loadMoreText: 'Mehr laden...',
+      toBeDefined: 'Wird noch festgelegt',
+      toBeDefinedMessage: 'Kontaktieren Sie den Coach mit Ihrer Verfügbarkeit. Verwenden Sie Planungstools wie Doodle, um einen passenden Termin für alle zu finden.',
     },
     coachingSessionTracker: {
       minuteText: 'Minuten',
@@ -363,6 +378,9 @@ export const DE: TDictionary = {
       yourProgressText: 'Ihr Fortschritt',
       resumeText: 'Wieder aufnehmen',
       viewProfileText: 'Profil anzeigen',
+      and: 'und',
+      other: 'andere',
+      others: 'andere',
     },
     uploadingSection: {
       maxSizeText: "maximale Größe",
@@ -608,11 +626,39 @@ export const DE: TDictionary = {
     sso: SSO_DE,
     offers: Offers_DE,
     coaching: Coaching_DE,
+    assessmentForm: {
+      defaultFormError: 'Fehler beim Laden des Formulars. Bitte versuche es später erneut.',
+    },
     auth: {
       errorPage: {
         title: 'Ups! Beim Anmelden ist ein Problem aufgetreten.',
         description: 'Bitte überprüfe deinen Benutzernamen und dein Passwort und versuch’s nochmals.',
         tryAgain: 'Nochmal versuchen',
+      },
+    },
+    course: {
+      completedPanel: {
+        badgeText: 'Abgeschlossen',
+        downloadCertificate: 'Zertifikat herunterladen',
+      },
+      roleDropdown: {
+        viewAs: "Ansehen als",
+        student: "Student",
+        coach: "Coach",
+        creator: "Kurs-Ersteller",
+        admin: "Admin",
+      },
+      tabs: {
+        introduction: "Einführung",
+        study: "Studium",
+        assignments: "Aufgaben",
+        notes: "Ihre Notizen",
+        material: "Material",
+        assessment: "Vorkurs-Formular",
+        preview: "Kurs-Vorschau",
+        students: "Studenten",
+        coaches: "Trainer",
+        groups: "Gruppen",
       },
     },
   },

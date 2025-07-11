@@ -1,4 +1,4 @@
-import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps } from "../pre-assessment/types";
+import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps, valueType } from "../pre-assessment/types";
 import DesignerLayout from "../designer-layout";
 import { IconHeading } from "../icons/icon-heading";
 import { HeadingLesson, HeadingLessonPreview } from "../heading-type";
@@ -17,7 +17,7 @@ const headingTextElement: FormElementTemplate = {
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: string) => true
+    validate: (elementInstance: FormElement, value: valueType) => true
 
 };
 /**
@@ -52,9 +52,9 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
             type={elementInstance.type}
             title="Heading"
             icon={<IconHeading classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(elementInstance.id)}
-            onDownClick={() => onDownClick(elementInstance.id)}
-            onDeleteClick={() => onDeleteClick(elementInstance.id)}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={false}
         >

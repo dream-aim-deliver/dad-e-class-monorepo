@@ -23,11 +23,6 @@ const OffersPagePackageListKaboomViewModelSchema =
         'kaboom',
         BaseErrorDataSchemaFactory(),
     );
-const OffersPagePackageListUnauthenticatedViewModelSchema =
-    BaseDiscriminatedViewModeSchemaFactory(
-        'unauthenticated',
-        BaseErrorDataSchemaFactory(),
-    );
 const OffersPagePackageListNotFoundViewModelSchema =
     BaseDiscriminatedViewModeSchemaFactory(
         'not-found',
@@ -37,7 +32,6 @@ const OffersPagePackageListNotFoundViewModelSchema =
 export const OffersPagePackageListViewModelSchemaMap = {
     default: OffersPagePackageListDefaultViewModelSchema,
     kaboom: OffersPagePackageListKaboomViewModelSchema,
-    unauthenticated: OffersPagePackageListUnauthenticatedViewModelSchema,
     notFound: OffersPagePackageListNotFoundViewModelSchema,
 };
 export type TOffersPagePackageListViewModelSchemaMap =

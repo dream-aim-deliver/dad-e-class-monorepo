@@ -4,6 +4,7 @@ import {
     CheckBox,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
     SectionHeading,
     VisitorCourseCard,
 } from '@maany_shr/e-class-ui-kit';
@@ -60,7 +61,10 @@ export function OffersCourseList({
     const { presenter } = useListCoursesPresenter(setCoursesViewModel);
     presenter.present(coursesResponse, coursesViewModel);
     const locale = useLocale() as TLocale;
-    const t = useTranslations('components.paginationButton');
+    const paginationTranslations = useTranslations(
+        'components.paginationButton',
+    );
+    const offersTranslations = useTranslations('pages.offers');
 
     const router = useRouter();
 
@@ -91,22 +95,25 @@ export function OffersCourseList({
         items: courses,
     });
 
-    // Validation and derived state
     if (!coursesViewModel) {
-        return <DefaultLoading />;
+        return <DefaultLoading locale={locale} />;
     }
 
-    // TODO: Improve not found state display
     if (
         coursesViewModel.mode === 'not-found' ||
         displayedCourses.length === 0
     ) {
-        // TODO: replace with a proper component
-        return <DefaultError errorMessage="No courses found" />;
+        return (
+            <DefaultNotFound
+                locale={locale}
+                title={offersTranslations('coursesNotFound.title')}
+                description={offersTranslations('coursesNotFound.description')}
+            />
+        );
     }
 
-    if (coursesViewModel.mode !== 'default') {
-        return <DefaultError errorMessage={coursesViewModel.data.message} />;
+    if (coursesViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
     }
 
     return (
@@ -164,7 +171,7 @@ export function OffersCourseList({
             {hasMoreCourses && (
                 <Button
                     variant="text"
-                    text={t('loadMore')}
+                    text={paginationTranslations('loadMore')}
                     onClick={handleLoadMore}
                 />
             )}

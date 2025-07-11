@@ -1,7 +1,7 @@
 import React from "react";
 import { Descendant } from "slate";
 import { isLocalAware } from "@maany_shr/e-class-translations";
-import { HeadingElement, multiCheckElement, OneOutOfThreeElement, RichTextElement, SingleChoiceElement, TextInputElement } from "../lesson-components/types";
+import { HeadingElement, MultiCheckElement, OneOutOfThreeElement, RichTextElement, SingleChoiceElement, TextInputElement } from "../lesson-components/types";
 import { HeadingType } from "../heading-type";
 import { OneOutOfThreeData } from "../out-of-three/one-out-of-three";
 import { optionsType } from "../single-choice";
@@ -58,7 +58,7 @@ export enum FormElementType {
 export type FormElement =
     | RichTextElement
     | TextInputElement
-    | SingleChoiceElement |multiCheckElement | HeadingElement | OneOutOfThreeElement;
+    | SingleChoiceElement |MultiCheckElement | HeadingElement | OneOutOfThreeElement;
 
 /**
  * Function type for handling form submissions.

@@ -7,13 +7,20 @@ import { ProgressBar } from "./progress-bar";
 import { FC, useState } from "react";
 import { IconClock } from "./icons/icon-clock";
 import { IconStar } from "./icons/icon-star";
+import { UserAvatarReel } from "./avatar/user-avatar-reel";
 
+interface Student {
+    name: string;
+    avatarUrl?: string;
+}
 export interface CourseGeneralInformationViewProps extends TCourseMetadata, isLocalAware {
     longDescription: string;
     onClickAuthor?: () => void;
     children?: React.ReactNode;
-    studentProgress: number;
+    studentProgress?: number;
     onClickResume?: () => void;
+    students?: Student[];
+    totalStudentCount?: number;
 };
 
 export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps> = ({
@@ -27,6 +34,8 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
     onClickResume,
     imageUrl,
     locale,
+    students,
+    totalStudentCount
 }) => {
     const dictionary = getDictionary(locale);
     const [isImageError, setIsImageError] = useState(false);
@@ -76,6 +85,75 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
         }
 
         return result;
+    };
+
+    // Helper function to format student names text
+    const formatStudentNamesText = (students: Student[], totalCount: number): string => {
+        if (students.length === 0) return '';
+        const and = dictionary.components.courseGeneralInformationView.and;
+        const other = dictionary.components.courseGeneralInformationView.other;
+        const others = dictionary.components.courseGeneralInformationView.others;
+        
+        if (students.length === 1) {
+            const othersCount = totalCount - 1;
+            if (othersCount === 0) {
+                return students[0].name;
+            } else if (othersCount === 1) {
+                return `${students[0].name} ${and} 1 ${other}`;
+            } else {
+                return `${students[0].name} ${and} ${othersCount} ${others}`;
+            }
+        }
+        
+        if (students.length === 2) {
+            const othersCount = totalCount - 2;
+            if (othersCount === 0) {
+                return `${students[0].name} ${and} ${students[1].name}`;
+            } else if (othersCount === 1) {
+                return `${students[0].name}, ${students[1].name} ${and} 1 ${other}`;
+            } else {
+                return `${students[0].name}, ${students[1].name} ${and} ${othersCount} ${others}`;
+            }
+        }
+        
+        // For 3 or more students shown
+        const othersCount = totalCount - students.length;
+        if (othersCount === 0) {
+            if (students.length === 3) {
+                return `${students[0].name}, ${students[1].name} ${and} ${students[2].name}`;
+            }
+            // For more than 3 students, show first 3 and count
+            return `${students[0].name}, ${students[1].name}, ${students[2].name} ${and} ${students.length - 3} ${others}`;
+        } else {
+            return `${students[0].name}, ${students[1].name}, ${students[2].name} ${and} ${othersCount} ${others}`;
+        }
+    };    
+
+    // Render student avatar reel
+    const renderStudentAvatarReel = () => {
+        if (!students || !totalStudentCount) return null;
+        if (students.length === 0) return null;
+
+        const visibleStudents = students.slice(0, 3);
+
+        return (
+            <div className='flex gap-7 items-start md:items-center md:flex-row flex-col'>
+                <UserAvatarReel>
+                    {visibleStudents.map((student, index) => (
+                        <UserAvatar
+                            key={index}
+                            size='large'
+                            fullName={student.name}
+                            imageUrl={student.avatarUrl}
+                            className='mr-[-12px]'
+                        />
+                    ))}
+                </UserAvatarReel>
+                <p className='text-base-white text-lg leading-[120%] font-bold'>
+                    {formatStudentNamesText(students, totalStudentCount)}
+                </p>
+            </div>
+        );
     };
 
     return (
@@ -149,8 +227,9 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
                         </div>
                     </div>
                 </div>
+                {renderStudentAvatarReel()}
                 {children}
-                <div className="flex flex-col gap-2 md:w-[488px] w-full">
+                {studentProgress !== undefined && <div className="flex flex-col gap-2 md:w-[488px] w-full">
                     <h6 className="text-md text-text-primary font-bold leading-[120%]">
                         {dictionary.components.courseGeneralInformationView.yourProgressText}
                     </h6>
@@ -168,7 +247,7 @@ export const CourseGeneralInformationView: FC<CourseGeneralInformationViewProps>
                         text={dictionary.components.courseGeneralInformationView.resumeText}
                         onClick={onClickResume}
                     />
-                </div>
+                </div>}
             </div>
             {/* Image section */}
             <div className="relative basis-1/2 h-full">

@@ -52,6 +52,8 @@ export { default as RichTextRenderer } from './components/rich-text-element/rend
 
 export { default as DefaultLoading } from './components/default-loading';
 export { default as DefaultError } from './components/default-error';
+export { default as DefaultNotFound } from './components/default-not-found';
+
 export { Outline } from './components/outline';
 export { default as FilterSwitch } from './components/filter-switch';
 export * from './components/text';
@@ -62,3 +64,19 @@ export { CoachCardListSkeleton } from './components/skeletons/coaches-skeleton';
 export { PackageCard } from './components/packages/package-card';
 export { default as CoachCard } from './components/coach/coach-card';
 export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';
+
+export { FormElementRenderer } from './components/pre-assessment/form-renderer';
+export * from './components/pre-assessment/types';
+export * from './components/lesson-components/types';
+
+export * from './components/icons';
+export { CourseGeneralInformationView } from './components/course-general-information-view';
+export { CourseProgressBar } from './components/course-progress-bar';
+
+export { StarRating } from './components/star-rating';
+export { Dropdown } from './components/dropdown';
+export { CoachingSessionTracker } from './components/coaching-session-tracker/coaching-session-tracker';
+export { CoachingSessionItem } from './components/coaching-session-tracker/coaching-session-item';
+export { CourseIntroBanner } from './components/course-intro-banner';
+
+export { DefaultAccordion } from './components/accordion/default-accordion';

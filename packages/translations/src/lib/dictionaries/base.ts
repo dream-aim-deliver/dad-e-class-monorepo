@@ -7,6 +7,19 @@ export const DictionarySchema = z.object({
       loadMore: z.string(),
       viewAll: z.string(),
     }),
+    defaultLoading: z.object({
+      loading: z.string(),
+    }),
+    defaultError: z.object({
+      title: z.string(),
+      description: z.string(),
+      retry: z.string(),
+    }),
+    defaultNotFound: z.object({
+      title: z.string(),
+      description: z.string(),
+      retry: z.string(),
+    }),
     coachBanner: z.object({
       buttonText: z.string(),
       placeHolderText: z.string(),
@@ -331,6 +344,8 @@ export const DictionarySchema = z.object({
       sessionCanceledText: z.string(),
       rateCallQualityText: z.string(),
       loadMoreText: z.string(),
+      toBeDefined: z.string(),
+      toBeDefinedMessage: z.string(),
     }),
     coachingSessionTracker: z.object({
       minuteText: z.string(),
@@ -364,6 +379,9 @@ export const DictionarySchema = z.object({
       yourProgressText: z.string(),
       resumeText: z.string(),
       viewProfileText: z.string(),
+      and: z.string(),
+      other: z.string(),
+      others: z.string(),
     }),
     uploadingSection: z.object({
       maxSizeText: z.string(),
@@ -614,6 +632,21 @@ export const DictionarySchema = z.object({
       coachingOnDemand: z.string(),
       coachingIncluded: z.string(),
       haveNotFound: z.string(),
+      coursesNotFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      packagesNotFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      coachesNotFound: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+    }),
+    assessmentForm: z.object({
+      defaultFormError: z.string(),
     }),
     coaching: z.object({
       chooseCategory: z.string(),
@@ -632,6 +665,31 @@ export const DictionarySchema = z.object({
         title: z.string(),
         description: z.string(),
         tryAgain: z.string(),
+      }),
+    }),
+    course: z.object({
+      completedPanel: z.object({
+        badgeText: z.string(),
+        downloadCertificate: z.string(),
+      }),
+      roleDropdown: z.object({
+        viewAs: z.string(),
+        student: z.string(),
+        coach: z.string(),
+        creator: z.string(),
+        admin: z.string(),
+      }),
+      tabs: z.object({
+        introduction: z.string(),
+        study: z.string(),
+        assignments: z.string(),
+        notes: z.string(),
+        material: z.string(),
+        assessment: z.string(),
+        preview: z.string(),
+        students: z.string(),
+        coaches: z.string(),
+        groups: z.string(),
       }),
     }),
   }),
