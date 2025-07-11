@@ -1,4 +1,5 @@
 import coachingSessionElement from "../course-builder-lesson-component/coaching-session";
+import imageGalleryElement from "../course-builder-lesson-component/image-gallery-uploader-lesson";
 import imageFilesElement from "../course-builder-lesson-component/image-uploader-lesson";
 import videoFileElement from "../course-builder-lesson-component/video-uploader-lesson";
 import { CourseElementRegistry, CourseElementType } from "./types";
@@ -12,5 +13,5 @@ export const courseElements: CourseElementRegistry = {
 [CourseElementType.CoachingSession]:coachingSessionElement,
 [CourseElementType.ImageFile]:imageFilesElement,
     [CourseElementType.VideoFile]:videoFileElement,
-    // [CourseElementType.ImageGallery]:imageGalleryElement
+    [CourseElementType.ImageGallery]:imageGalleryElement
 };
