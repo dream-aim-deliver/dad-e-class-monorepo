@@ -14,11 +14,6 @@ type LabelState = {
   description: string;
 };
 
-type ImageState = {
-  correctLetter: string;
-  fileData: fileMetadata.TFileMetadata;
-};
-
 /**
  * A component for creating and editing a "Label-Image Pair" quiz question (QuizTypeFour).
  *
@@ -221,43 +216,12 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
     setFiles(newFiles);
   };
 
-  const handleFileUpload = async (files: fileMetadata.TFileUploadRequest[], index: number, abortSignal?: AbortSignal) => {
-    if (!files || files.length === 0) {
-      setFiles((prevFiles) =>
-        prevFiles.map((file, i) =>
-          i === index ? undefined : file
-        )
-      );
-      return;
-    };
-
-    const file = files[0];
-    const processingFile: fileMetadata.TFileMetadata = {
-      id: (file as any).id || crypto.randomUUID(),
-      name: file.name,
-      mimeType: file.file.type || 'application/pdf',
-      size: file.file.size,
-      checksum: 'processing',
-      status: 'processing',
-      category: 'document',
-      url: '',
-    };
-
+  const handleUpdateFile = async (file: fileMetadata.TFileUploadRequest, index: number) => {
     setFiles((prevFiles) =>
-      prevFiles.map((file, i) =>
-        i === index ? processingFile : file
+      prevFiles.map((prevFile, i) =>
+        i === index ? file : prevFile
       )
     );
-
-    const uploadedFile = await onFilesChange([file], abortSignal);
-
-    setFiles((prevFiles) =>
-      prevFiles.map((file, i) =>
-        i === index ? uploadedFile : file
-      )
-    );
-
-    return uploadedFile;
   };
 
   const handleFileDelete = (id: string) => {
@@ -311,9 +275,10 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
                     type="single"
                     variant="image"
                     file={files[idx]}
-                    onFilesChange={(file, abortSignal) => handleFileUpload(file, idx, abortSignal)}
+                    onFilesChange={(file, abortSignal) => onFilesChange([file], abortSignal)}
                     onDelete={(id) => handleFileDelete(id)}
                     onDownload={(id) => onFileDownload(id)}
+                    onUploadComplete={(file) => handleUpdateFile(file, idx)}
                     locale={locale}
                     className="w-full"
                     maxSize={5}
