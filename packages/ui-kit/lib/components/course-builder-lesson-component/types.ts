@@ -1,7 +1,6 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import { CourseElementType } from "../course-builder/types";
-import { fileMetadata } from "@maany_shr/e-class-models";
-
+import { fileMetadata,FileMetadataVideoSchema, FileMetadataImageSchema } from "@maany_shr/e-class-models";
 
 export interface CoachingSessionTypes extends isLocalAware {
     type: CourseElementType.CoachingSession;
@@ -270,3 +269,18 @@ export type QuizElement =
     | QuizTypeTwoStudentViewElement
     | QuizTypeThreeStudentViewElement
     | QuizTypeFourStudentViewElement;
+
+
+
+export interface ImageFile extends FileMetadataImageSchema  {
+    type: CourseElementType.CoachingSession;
+    id: number;
+    order: number;
+};
+
+export interface VideoFile extends FileMetadataVideoSchema {
+    type: CourseElementType.CoachingSession;
+    id: number;
+    order: number;
+};
+
