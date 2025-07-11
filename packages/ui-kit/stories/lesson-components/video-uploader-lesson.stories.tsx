@@ -14,6 +14,7 @@ type VideoFileWithMetadata = VideoFileType & fileMetadata.TFileMetadata;
 interface StoryProps {
     locale: 'en' | 'de';
     elementInstance: VideoFileType;
+    initialFile?: VideoFileWithMetadata | null;
 }
 
 const meta: Meta<StoryProps> = {
@@ -33,37 +34,9 @@ const meta: Meta<StoryProps> = {
             control: 'object',
             description: 'Course element instance',
         },
-        file: {
+        initialFile: {
             control: 'object',
-            description: 'Current file being displayed',
-        },
-        onVideoUpload: {
-            action: 'onVideoUpload',
-            description: 'Callback when a video is uploaded',
-        },
-        onUploadComplete: {
-            action: 'onUploadComplete',
-            description: 'Callback when upload is complete',
-        },
-        onFileDownload: {
-            action: 'onFileDownload',
-            description: 'Callback when file download is requested',
-        },
-        onFileDelete: {
-            action: 'onFileDelete',
-            description: 'Callback when file is deleted',
-        },
-        onUpClick: {
-            action: 'onUpClick',
-            description: 'Callback for moving element up',
-        },
-        onDownClick: {
-            action: 'onDownClick',
-            description: 'Callback for moving element down',
-        },
-        onDeleteClick: {
-            action: 'onDeleteClick',
-            description: 'Callback for deleting the element',
+            description: 'Initial file to display',
         },
     },
 };
@@ -83,14 +56,13 @@ const defaultElementInstance: VideoFileType = {
 const mockFile: VideoFileWithMetadata = {
     id: 'file-123',
     name: 'sample-video.mp4',
-    url: 'https://example.com/sample-video.mp4',
-    thumbnailUrl: 'https://via.placeholder.com/600x400',
-    videoId: 12345,
-    size: 50 * 1024 * 1024, // 50MB
     mimeType: 'video/mp4',
-    category: 'video',
-    status: 'available',
+    size: 50 * 1024 * 1024, // 50MB
     checksum: 'mock-checksum',
+    status: 'available',
+    category: 'video',
+    videoId: 12345,
+    thumbnailUrl: 'https://via.placeholder.com/600x400',
     type: CourseElementType.VideoFile,
     order: 1,
 };
@@ -106,7 +78,7 @@ const mockUpload = async (): Promise<VideoFileWithMetadata> => {
 
 // Create a wrapper component that uses hooks
 const VideoUploaderWrapper = (args: StoryProps) => {
-    const [file, setFile] = useState<VideoFileWithMetadata | null>(null);
+    const [file, setFile] = useState<VideoFileWithMetadata | null>(args.initialFile || null);
 
     const handleUpload = async (fileRequest: fileMetadata.TFileUploadRequest) => {
         console.log('Uploading video...', fileRequest);
@@ -124,20 +96,23 @@ const VideoUploaderWrapper = (args: StoryProps) => {
         setFile(null);
     };
 
+    // Create props object that matches the DesignerComponent's expected props
+    const componentProps = {
+        elementInstance: args.elementInstance,
+        file: file,
+        onVideoUpload: handleUpload,
+        onUploadComplete: handleUploadComplete,
+        onFileDelete: handleDelete,
+        onFileDownload: () => console.log('Download file'),
+        onUpClick: () => {},
+        onDownClick: () => {},
+        onDeleteClick: () => {},
+        locale: args.locale,
+    };
+
     return (
         <div style={{ width: '800px' }}>
-            <DesignerComponent
-                elementInstance={args.elementInstance}
-                file={file}
-                onVideoUpload={handleUpload}
-                onUploadComplete={handleUploadComplete}
-                onFileDelete={handleDelete}
-                onFileDownload={() => console.log('Download file')}
-                onUpClick={() => { }}
-                onDownClick={() => { }}
-                onDeleteClick={() => { }}
-                locale={args.locale}
-            />
+            <DesignerComponent {...componentProps} />
             <div style={{ marginTop: '20px', padding: '10px', background: '#f5f5f5', borderRadius: '4px' }}>
                 <h4>Current File State:</h4>
                 <pre>{JSON.stringify(file, null, 2) || 'No file uploaded'}</pre>
@@ -151,6 +126,7 @@ export const Default: Story = {
     args: {
         locale: 'en',
         elementInstance: defaultElementInstance,
+        initialFile: null,
     },
 };
 
@@ -175,20 +151,23 @@ export const WithVideo: Story = {
             setFile(null);
         };
 
+        // Create props object that matches the DesignerComponent's expected props
+        const componentProps = {
+            elementInstance: args.elementInstance,
+            file: file,
+            onVideoUpload: handleUpload,
+            onUploadComplete: handleUploadComplete,
+            onFileDelete: handleDelete,
+            onFileDownload: () => console.log('Download file'),
+            onUpClick: () => {},
+            onDownClick: () => {},
+            onDeleteClick: () => {},
+            locale: args.locale,
+        };
+
         return (
             <div style={{ width: '800px' }}>
-                <DesignerComponent
-                    {...args}
-                    file={file}
-                    onVideoUpload={handleUpload}
-                    onUploadComplete={handleUploadComplete}
-                    onFileDelete={handleDelete}
-                    onFileDownload={() => console.log('Download file')}
-                    onUpClick={() => { }}
-                    onDownClick={() => { }}
-                    onDeleteClick={() => { }}
-                    locale={args.locale}
-                />
+                <DesignerComponent {...componentProps} />
                 <div style={{ marginTop: '20px', padding: '10px', background: '#f5f5f5', borderRadius: '4px' }}>
                     <h4>Current File State:</h4>
                     <pre>{JSON.stringify(file, null, 2) || 'No file uploaded'}</pre>
@@ -198,6 +177,7 @@ export const WithVideo: Story = {
     },
     args: {
         ...Default.args,
+        initialFile: mockFile,
     },
 };
 

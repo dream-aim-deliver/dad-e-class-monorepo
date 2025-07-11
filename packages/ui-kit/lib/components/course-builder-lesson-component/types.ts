@@ -272,3 +272,11 @@ export interface VideoFile extends VideoFileMetadata {
     order: number;
 };
 
+export interface ImageGallery {
+    type: CourseElementType.ImageGallery;
+    id: number;
+    order: number;
+    imageUrls:ImageFileMetadata[];
+}
+
+
