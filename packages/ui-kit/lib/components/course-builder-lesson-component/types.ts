@@ -35,9 +35,9 @@ export interface ImageFile extends ImageFileMetadata {
     type: CourseElementType.ImageFile;
     order: number;
 }
-// type VideoFileMetadata = fileMetadata.TFileMetadata & { category: 'video' };
-// export interface VideoFile extends VideoFileMetadata {
-//     type: CourseElementType.VideoFile;
-//     order: number;
-// };
+type VideoFileMetadata = fileMetadata.TFileMetadata & { category: 'video' };
+export interface VideoFile extends VideoFileMetadata {
+    type: CourseElementType.VideoFile;
+    order: number;
+};
 

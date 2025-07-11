@@ -1,11 +1,12 @@
-import { useState } from "react";
 import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
-import DesignerLayout from "./designer-layout";
+import type { VideoFile } from "./types";
 import { getDictionary } from "@maany_shr/e-class-translations";
-import { UploadedFileType, Uploader, UploadResponse } from "../drag-and-drop/uploader";
-import { VideoFilePreview } from "./types";
-import { VideoPlayer } from "../video-player";
 import { IconVideo } from "../icons/icon-video";
+import DesignerLayout from "../designer-layout";
+import { fileMetadata } from "@maany_shr/e-class-models";
+import { Uploader } from "../drag-and-drop-uploader/uploader";
+import { useState } from "react";
+import { VideoPlayer } from "../video-player";
 /**
  * @fileoverview Video file component for the course builder.
  * Provides functionality for uploading, displaying, and managing video content.
@@ -25,19 +26,25 @@ const videoFileElement: CourseElementTemplate = {
     formComponent: FormComponent
 };
 
+type TVideoFile = fileMetadata.TFileMetadata & { category: 'video' };
+
 /**
  * Props interface for the video file edit component.
  * Extends DesignerComponentProps with additional properties for file handling.
  */
-interface VideoFileEditProps extends DesignerComponentProps  {
-    /** Callback function triggered when files are changed */
-    onChange: (files: UploadedFileType[]) => Promise<UploadResponse>;
-    /** Callback function to handle file deletion */
+interface VideoFileEditProps extends DesignerComponentProps {
+    /** Callback function triggered when files are changed. Returns a Promise with upload response */
+    onVideoUpload: (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal
+    ) => Promise<TVideoFile | null>;
+
+    onUploadComplete?: (file: TVideoFile) => void;
     onFileDelete: () => void;
     /** Callback function to handle file download */
     onFileDownload: () => void;
     /** Currently selected file or null if no file is selected */
-    file: UploadedFileType | null;
+    file: TVideoFile | null;
 }
 
 /**
@@ -50,21 +57,45 @@ interface VideoFileEditProps extends DesignerComponentProps  {
  * @param onDownClick - Callback for moving the element down
  * @param onDeleteClick - Callback for deleting the element
  * @param file - The current video file
- * @param onChange - Callback for file changes
+ * @param onVideoUpload - Callback for file uploads
+ * @param onUploadComplete - Callback when upload is complete
  * @param onFileDelete - Callback for file deletion
  * @param onFileDownload - Callback for file download
  */
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, file, onChange, onFileDelete, onFileDownload}: VideoFileEditProps) {
+export function DesignerComponent({
+    elementInstance,
+    locale,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+    file,
+    onVideoUpload,
+    onUploadComplete,
+    onFileDelete,
+    onFileDownload
+}: VideoFileEditProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
     const dictionary = getDictionary(locale);
+
+    const handleVideoFile = async (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal
+    ): Promise<TVideoFile | null> => {
+        return await onVideoUpload(fileRequest, abortSignal);
+    };
+
+    const handleUploadComplete = (videoMetadata: TVideoFile) => {
+        onUploadComplete?.(videoMetadata);
+    };
+
     return (
         <DesignerLayout
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.videoFileText}
             icon={<IconVideo classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(elementInstance.id)}
-            onDownClick={() => onDownClick(elementInstance.id)}
-            onDeleteClick={() => onDeleteClick(elementInstance.id)}
+            onUpClick={() => onUpClick(Number(elementInstance.id))}
+            onDownClick={() => onDownClick(Number(elementInstance.id))}
+            onDeleteClick={() => onDeleteClick(Number(elementInstance.id))}
             locale={locale}
             courseBuilder={true}
         >
@@ -72,7 +103,8 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 type="single"
                 variant="video"
                 file={file}
-                onFilesChange={onChange}
+                onFilesChange={handleVideoFile}
+                onUploadComplete={handleUploadComplete}
                 onDelete={onFileDelete}
                 onDownload={onFileDownload}
                 locale={locale}
@@ -93,10 +125,13 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
     const [error, setError] = useState<string | null>(null);
 
+    // Type guard to ensure we're working with a VideoFile
+    const videoFile = elementInstance as VideoFile;
+
     return (
         <section className="w-full">
             <VideoPlayer
-                videoId={(elementInstance as VideoFilePreview).videoId}
+                videoId={String(videoFile.id)}
                 locale={locale}
                 onErrorCallback={(error) => {
                     setError(error);
