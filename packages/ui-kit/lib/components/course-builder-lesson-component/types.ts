@@ -1,6 +1,6 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import { CourseElementType } from "../course-builder/types";
-import { fileMetadata,FileMetadataVideoSchema, FileMetadataImageSchema } from "@maany_shr/e-class-models";
+import { fileMetadata } from "@maany_shr/e-class-models";
 
 export interface CoachingSessionTypes extends isLocalAware {
     type: CourseElementType.CoachingSession;
@@ -260,27 +260,15 @@ export interface QuizTypeFourStudentViewElement extends QuizElementBase {
 export type CoachingElement = CoachingSessionTypes | CoachingSessionStudentViewTypes;
 
 
-export type QuizElement =
-    | QuizTypeOneElement
-    | QuizTypeTwoElement
-    | QuizTypeThreeElement
-    | QuizTypeFourElement
-    | QuizTypeOneStudentViewElement
-    | QuizTypeTwoStudentViewElement
-    | QuizTypeThreeStudentViewElement
-    | QuizTypeFourStudentViewElement;
-
-
-
-export interface ImageFile extends FileMetadataImageSchema  {
-    type: CourseElementType.CoachingSession;
-    id: number;
+type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
+export interface ImageFile extends ImageFileMetadata {
+    type: CourseElementType.ImageFile;
     order: number;
-};
+}
 
-export interface VideoFile extends FileMetadataVideoSchema {
-    type: CourseElementType.CoachingSession;
-    id: number;
+type VideoFileMetadata = fileMetadata.TFileMetadata & { category: 'video' };
+export interface VideoFile extends VideoFileMetadata {
+    type: CourseElementType.VideoFile;
     order: number;
 };
 
