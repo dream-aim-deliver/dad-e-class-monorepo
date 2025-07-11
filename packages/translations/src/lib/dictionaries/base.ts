@@ -603,6 +603,7 @@ export const DictionarySchema = z.object({
       waitingFeedbackBagde: z.string(),
       longWaitBadge: z.string(),
       completedCourseBadge: z.string(),
+      completedOnBadge: z.string(),
       you: z.string(),
       studentDetailsButton: z.string(),
       viewAssignment: z.string(),
