@@ -581,7 +581,21 @@ export const DE: TDictionary = {
       fromText: 'ab',
       saveText: 'spare',
       coachingIncluded: 'Coaching inbegriffen',
-    },
+},
+courseBuilder: {
+      addLinkText:"Link hinzufügen",
+      downloadFilesText:"Dateien herunterladen",
+      uploadFilesText:"Dateien hochladen",
+      linkText:"Link",
+      includeInMaterialsText:"Links in die Registerkarte „Kursmaterial“ einschließen",
+      descriptionText:"Beschreibung",
+      titleText:"Titel",
+      urlText:"url",
+      iconLinkText:"Symbol-Link",
+      saveText:"Speichern",
+      discardText:"Verwerfen",
+
+        },
     packageGeneralInformation: {
       coachingIncluded: 'Coaching inklusive',
       purchaseButton: 'Paket kaufen',
