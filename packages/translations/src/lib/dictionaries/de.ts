@@ -581,6 +581,14 @@ export const DE: TDictionary = {
       fromText: 'ab',
       saveText: 'spare',
       coachingIncluded: 'Coaching inbegriffen',
+},
+link:{
+  titleLabel: 'Titel',
+  urlLabel: 'URL',
+  customIcon: 'benutzerdefiniertes Symbol',
+  LinkIcon: 'Linksymbol',
+  saveText: 'speichern',
+  discardText: 'verwerfen',
 }
   },
   pages: {
