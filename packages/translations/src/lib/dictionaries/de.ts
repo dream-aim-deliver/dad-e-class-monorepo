@@ -584,6 +584,12 @@ export const DE: TDictionary = {
       videoFileText: 'Video hinzufügen',
       ImageGalleryText: 'Bildergalerie hinzufügen',
     },
+    buyCompletePackageBanner: {
+      purchaseButton: 'Paket kaufen',
+      fromText: 'ab',
+      saveText: 'spare',
+      coachingIncluded: 'Coaching inbegriffen',
+}
   },
   pages: {
     home: Home_DE,

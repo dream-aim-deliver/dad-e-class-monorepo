@@ -570,6 +570,12 @@ export const DictionarySchema = z.object({
       videoFileText: z.string(),
       ImageGalleryText: z.string(),
     }),
+    buyCompletePackageBanner: z.object({
+      purchaseButton: z.string(),
+      fromText: z.string(),
+      saveText: z.string(),
+      coachingIncluded: z.string(),
+    })
   }),
   pages: z.object({
     sso: z.object({

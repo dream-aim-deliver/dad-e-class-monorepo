@@ -578,6 +578,12 @@ export const EN: TDictionary = {
        ImageFileText: "Image",
        videoFileText: "Video",
        ImageGalleryText: "Image Gallery",
+  },
+    buyCompletePackageBanner: {
+      purchaseButton: 'Purchase Package',
+      fromText: 'from',
+      saveText: 'save',
+      coachingIncluded: 'Coaching included',
     }
   },
   pages: {
