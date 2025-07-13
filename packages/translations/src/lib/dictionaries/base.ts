@@ -598,7 +598,7 @@ export const DictionarySchema = z.object({
       studentDetailsButton: z.string(),
       viewAssignment: z.string(),
       emptyState: z.string(),
-    }),
+    })
   }),
   pages: z.object({
     sso: z.object({
