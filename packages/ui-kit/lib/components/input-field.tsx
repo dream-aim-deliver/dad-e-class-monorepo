@@ -17,7 +17,7 @@ export interface InputFieldProps {
   value?: string;
   defaultValue?: string;
   setValue: (value: string) => void;
-  type?: 'text' | 'password'|'number';
+  type?: 'text' | 'password'|'number' |'url';
   id?: string;
   className?: string;
   inputClassName?: string;
