@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
-    BaseErrorDiscriminatedUnionSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
+    BaseErrorSchemaFactory,
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
@@ -22,7 +24,7 @@ export const GetCoachingPageSuccessResponseSchema = BaseSuccessSchemaFactory(z.o
 
 export type TGetCoachingPageSuccessResponse = z.infer<typeof GetCoachingPageSuccessResponseSchema>;
 
-const GetCoachingPageUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
+const GetCoachingPageUseCaseErrorResponseSchema = BaseErrorSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema);
 export type TGetCoachingPageUseCaseErrorResponse = z.infer<typeof GetCoachingPageUseCaseErrorResponseSchema>;
 export const GetCoachingPageUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
     GetCoachingPageSuccessResponseSchema,
