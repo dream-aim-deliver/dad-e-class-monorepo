@@ -575,6 +575,8 @@ export const DictionarySchema = z.object({
       LinkIcon: z.string(),
       saveText: z.string(),
       discardText: z.string(),
+      titleRequired: z.string(),
+      urlRequired: z.string(),
     }),
   }),
   pages: z.object({

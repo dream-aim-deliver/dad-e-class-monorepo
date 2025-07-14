@@ -584,6 +584,8 @@ export const EN: TDictionary = {
       LinkIcon: 'Link Icon',
       saveText: 'Save',
       discardText: 'Discard',
+      titleRequired: 'Title is required',
+      urlRequired: 'URL is required',
     }
   },
   pages: {

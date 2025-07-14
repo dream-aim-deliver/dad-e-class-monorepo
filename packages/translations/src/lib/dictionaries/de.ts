@@ -589,6 +589,8 @@ link:{
   LinkIcon: 'Linksymbol',
   saveText: 'speichern',
   discardText: 'verwerfen',
+  titleRequired: 'Titel ist erforderlich',
+  urlRequired: 'URL ist erforderlich',
 }
   },
   pages: {
