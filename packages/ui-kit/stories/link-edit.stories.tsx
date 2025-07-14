@@ -37,7 +37,7 @@ const mockFile = {
 // Wrapper component to manage state
 type LinkEditProps = Omit<
   React.ComponentProps<typeof LinkEdit>,
-  'onSave' | 'onDiscard' | 'onImageChange' | 'onCancelUpload'
+  'onSave' | 'onDiscard' | 'onImageChange' | 'onDeleteIcon'
 >;
 
 const LinkEditWithState = (props: LinkEditProps) => {
@@ -46,8 +46,6 @@ const LinkEditWithState = (props: LinkEditProps) => {
   const [customIcon, setCustomIcon] = useState<
     fileMetadata.TFileMetadata | undefined
   >(props.initialCustomIcon);
-  const [uploading, setUploading] = useState(false);
-  const [isEditing, setIsEditing] = useState(true);
 
   const handleSave = (
     newTitle: string,
@@ -62,18 +60,51 @@ const LinkEditWithState = (props: LinkEditProps) => {
     setTitle(newTitle);
     setUrl(newUrl);
     setCustomIcon(newCustomIcon);
-    setIsEditing(false);
   };
 
   const handleDiscard = () => {
     console.log('onDiscard');
-    setIsEditing(false);
   };
 
-  const handleImageChange = (file: fileMetadata.TFileMetadata) => {
-    setCustomIcon(file);
-    if (file.status === 'processing') setUploading(true);
-    else setUploading(false);
+  const handleImageChange = async (file: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => {
+    console.log('Starting upload for:', file.name);
+
+    // Set the file to processing state
+    const processingFile = { ...file, status: 'processing' as const };
+    setCustomIcon(processingFile);
+
+    try {
+      // Simulate upload with setTimeout that can be aborted
+      await new Promise<void>((resolve, reject) => {
+        const timeoutId = setTimeout(() => {
+          console.log('Upload completed successfully');
+          resolve();
+        }, 3000); // 3 second delay to see the spinner
+
+        // Handle abort signal
+        if (abortSignal) {
+          abortSignal.addEventListener('abort', () => {
+            clearTimeout(timeoutId);
+            console.log('Upload cancelled by user');
+            reject(new DOMException('Upload cancelled', 'AbortError'));
+          });
+        }
+      });
+
+      // Update to completed state
+      const completedFile = { ...file, status: 'available' as const };
+      setCustomIcon(completedFile);
+      console.log('File upload completed:', completedFile);
+
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.log('Upload was cancelled');
+        setCustomIcon(null); // Remove the file on cancellation
+      } else {
+        console.error('Upload failed:', error);
+        // Handle other errors - could set status to 'unavailable'
+      }
+    }
   };
 
   const handleDeleteIcon = (id: string) => {
@@ -146,5 +177,15 @@ export const GermanLocale: Story = {
   args: {
     ...Default.args,
     locale: 'de',
+  },
+};
+
+export const SpinnerTest: Story = {
+  render: (args) => <LinkEditWithState {...args} />,
+  args: {
+    ...Default.args,
+    initialTitle: 'Test Upload Spinner',
+    initialUrl: 'https://example.com',
+    locale: 'en',
   },
 };

@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { LinkPreview } from "../lib/components/links";
 
@@ -64,6 +63,25 @@ export const BrokenFavicon: Story = {
   args: {
     title: "Broken Favicon Link",
     url: "https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg",
+    preview: false,
+  },
+};
+
+export const ProcessingIcon: Story = {
+  args: {
+    title: "Processing Upload",
+    url: "https://example.com",
+    customIcon: {
+      id: "processing-1",
+      name: "uploading-image.png",
+      mimeType: "image/png",
+      size: 2048,
+      checksum: "processing123",
+      status: 'processing' as const,
+      category: 'image' as const,
+      url: "https://via.placeholder.com/48",
+      thumbnailUrl: "https://via.placeholder.com/48",
+    },
     preview: false,
   },
 };

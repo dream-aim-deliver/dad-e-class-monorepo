@@ -8,31 +8,16 @@ import { IconCloudDownload } from "./icons/icon-cloud-download";
 import { IconLink } from "./icons/icon-link"
 import { IconTrashAlt } from "./icons/icon-trash-alt";
 import { IconEdit } from "./icons/icon-edit";
+import { IconLoaderSpinner } from "./icons/icon-loader-spinner";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { getFaviconUrl } from "../utils/url-utils";
-/**
- * 
- * @param url The URL of the website to fetch the favicon from.
- * @description This function generates a favicon URL based on the provided website URL. It tries to fetch the favicon from common locations and falls back to a default favicon if it fails.
- * @example
- * ```tsx
- * const faviconUrl = getFaviconUrl("https://example.com");
- * ```
- * @example
- * ```tsx
- * const faviconUrl = getFaviconUrl("https://example.com");
- * @returns 
- */
-
-// Moved to utils/url-utils.ts
-
 
 interface LinkEditProps extends isLocalAware {
     initialTitle?: string;
     initialUrl?: string;
     initialCustomIcon?: fileMetadata.TFileMetadata;
-    onImageChange: (image: fileMetadata.TFileMetadata) => void;
+    onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
     onDeleteIcon?: (id: string) => void;
     onSave: (title: string, url: string, customIcon?: fileMetadata.TFileMetadata) => void;
     onDiscard: () => void;
@@ -67,11 +52,22 @@ const LinkEdit: React.FC<LinkEditProps> = ({
     const [favicon, setFavicon] = useState<string>("");
     const [errors, setErrors] = useState<{ title?: string; url?: string }>({});
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const abortControllerRef = useRef<AbortController | null>(null);
     const [customIcon, setCustomIcon] = useState<fileMetadata.TFileMetadata | null>(initialCustomIcon);
     const dictionary = getDictionary(locale);
     useEffect(() => {
         setCustomIcon(initialCustomIcon || null);
     }, [initialCustomIcon]);
+
+    // Cleanup abort controller on unmount
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, []);
+
     const validateFields = () => {
         const newErrors: { title?: string; url?: string } = {};
         if (!title.trim()) {
@@ -93,21 +89,43 @@ const LinkEdit: React.FC<LinkEditProps> = ({
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const newFile = e.target.files?.[0];
         if (newFile) {
+            // Create abort controller for this upload
+            const controller = new AbortController();
+            abortControllerRef.current = controller;
+
             const metadata: fileMetadata.TFileMetadata = {
                 id: new Date().toISOString(),
                 name: newFile.name,
                 mimeType: newFile.type,
                 size: newFile.size,
                 category: 'image',
-                status: 'available',
+                status: 'processing', // Set to processing initially
                 url: URL.createObjectURL(newFile),
                 thumbnailUrl: URL.createObjectURL(newFile),
                 checksum: "",
             };
             setCustomIcon(metadata);
-            onImageChange(metadata);
+
+            try {
+                await onImageChange(metadata, controller.signal);
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    // Upload was cancelled, clean up
+                    setCustomIcon(null);
+                }
+            } finally {
+                // Clear the abort controller reference
+                abortControllerRef.current = null;
+            }
+
             // Reset file input so the same file can be uploaded again
             if (fileInputRef.current) fileInputRef.current.value = "";
+        }
+    };
+
+    const handleCancelUpload = () => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
         }
     };
 
@@ -130,6 +148,16 @@ const LinkEdit: React.FC<LinkEditProps> = ({
             const iconUrl = customIcon.category === 'image' && customIcon.thumbnailUrl
                 ? customIcon.thumbnailUrl
                 : customIcon.url;
+
+            // Show spinner during processing
+            if (customIcon.status === 'processing') {
+                return (
+                    <div className="w-12 h-12 flex items-center justify-center bg-base-neutral-700 rounded">
+                        <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-primary" />
+                    </div>
+                );
+            }
+
             return <img
                 src={iconUrl}
                 alt={title}
@@ -165,11 +193,8 @@ const LinkEdit: React.FC<LinkEditProps> = ({
             />
         );
     };
-    function onCancelUpload(id: string) {
-        setCustomIcon(null);
-    }
     return (
-        <div className="p-4 flex flex-col border-1 rounded-md border-card-stroke w-full bg-card-fill gap-4 text-text-primary">
+        <div className="p-4 min-w-[420px] flex flex-col border-1 rounded-md border-card-stroke w-full bg-card-fill gap-4 text-text-primary">
             <div className="flex gap-2">
 
                 <div className="flex-1 flex flex-col gap-2 w-full">
@@ -210,14 +235,15 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                             className="bg-base-neutral-700 rounded-md text-text-primary"
                         />
                     }</>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-h-[40px]">
                     {customIcon?.status === "processing" ? (
                         <Button
                             text="Cancel"
-                            onClick={() => onCancelUpload?.(customIcon.id)}
+                            onClick={handleCancelUpload}
                             hasIconRight
                             iconRight={<IconTrashAlt classNames="w-4 h-4" />}
                             variant="secondary"
+                            className="min-w-[120px]"
                         />
                     ) : customIcon?.status === "available" ? (
                         <Button
@@ -226,6 +252,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                             hasIconRight
                             iconRight={<IconTrashAlt classNames="w-4 h-4" />}
                             variant="secondary"
+                            className="min-w-[120px]"
                         />
                     ) : (
                         <Button
@@ -234,7 +261,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                             hasIconLeft
                             iconLeft={<IconCloudDownload />}
                             variant="secondary"
-                            className="w-fit"
+                            className="min-w-[200px]"
                         />
                     )}
                     <input
@@ -282,6 +309,16 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ title, url, customIcon, onDel
             const iconUrl = customIcon.category === 'image' && customIcon.thumbnailUrl
                 ? customIcon.thumbnailUrl
                 : customIcon.url;
+
+            // Show spinner during processing
+            if (customIcon.status === 'processing') {
+                return (
+                    <div className="w-10 h-10 flex items-center justify-center bg-base-neutral-700 rounded-md">
+                        <IconLoaderSpinner classNames="w-5 h-5 animate-spin text-text-primary" />
+                    </div>
+                );
+            }
+
             return <img
                 src={iconUrl}
                 alt={title}
