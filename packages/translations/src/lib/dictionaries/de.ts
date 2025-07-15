@@ -591,6 +591,7 @@ link:{
   discardText: 'verwerfen',
   titleRequired: 'Titel ist erforderlich',
   urlRequired: 'URL ist erforderlich',
+  paste: 'einfügen'
 },
 courseBuilder: {
       addLinkText:"Link hinzufügen",
@@ -602,6 +603,7 @@ courseBuilder: {
       additionalCommentsPlaceholder:"Schreiben Sie hier weitere Kommentare",
       uploadFiles: "Dateien hochladen",
       studentComment: "Studentenkommentar",
+      additionalCommentsTooltip:"Machen Sie sich Notizen zu Ihrer Datei (optional)"
     }
   },
   pages: {

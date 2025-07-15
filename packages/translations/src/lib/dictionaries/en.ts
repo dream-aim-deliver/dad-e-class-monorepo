@@ -586,6 +586,7 @@ export const EN: TDictionary = {
       discardText: 'Discard',
       titleRequired: 'Title is required',
       urlRequired: 'URL is required',
+      paste: 'paste',
     },
      courseBuilder: {
       addLinkText:"Add Link",
@@ -597,6 +598,7 @@ export const EN: TDictionary = {
       additionalCommentsPlaceholder: "Write additional comments here",
       uploadFiles: "Upload files",
       studentComment:"Student Comment",
+      additionalCommentsTooltip:"Write some notes about your file (optional)"
     }
   },
   pages: {

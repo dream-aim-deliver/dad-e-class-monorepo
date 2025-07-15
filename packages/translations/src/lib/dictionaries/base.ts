@@ -577,6 +577,7 @@ export const DictionarySchema = z.object({
       discardText: z.string(),
       titleRequired: z.string(),
       urlRequired: z.string(),
+      paste:z.string(),
     }),
     courseBuilder: z.object({
       addLinkText: z.string(),
@@ -588,6 +589,7 @@ export const DictionarySchema = z.object({
       additionalCommentsPlaceholder: z.string(),
       uploadFiles: z.string(),
       studentComment: z.string(),
+      additionalCommentsTooltip: z.string()
     })
   }),
   pages: z.object({
