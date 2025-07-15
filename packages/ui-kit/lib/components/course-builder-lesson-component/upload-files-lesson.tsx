@@ -8,7 +8,7 @@ import DesignerLayout from "../designer-layout";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { Uploader } from "../drag-and-drop-uploader/uploader";
 import { uploadCoachingTypes } from "./types";
-import { IconInfoCircle } from "../icons/icon-infocircle";
+
 
 
 
@@ -199,9 +199,8 @@ export function FormComponent({
                 locale={locale}
             />
             <div className="w-full flex flex-col gap-2">
-                <p className="text-sm md:text-md text-text-secondary flex gap-1">
+                <p className="text-sm md:text-md text-text-secondary flex gap-1 items-center">
                     {dictionary.components.courseBuilder.additionalCommentsTooltip}
-                    <IconInfoCircle classNames="w-4 h-4"/>
                 </p>
                 <TextAreaInput
                     setValue={handleStudentComment}
