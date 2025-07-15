@@ -7,6 +7,7 @@ import { RadioButton } from "../../radio-button";
 import { FC, useEffect, useState } from "react";
 import { QuizTypeOneStudentViewElement } from "../../course-builder-lesson-component/types";
 import { getDictionary } from "@maany_shr/e-class-translations";
+import { IconError, IconSuccess } from "../../icons";
 
 export interface QuizOption {
   optionText: string;
@@ -67,7 +68,7 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewElement> = ({
 
   // State
   const [options, setOptions] = useState<QuizOption[]>([]);
-  const [correctIndex , setCorrectIndex] = useState<number | null>(null);
+  const [correctIndex, setCorrectIndex] = useState<number | null>(null);
   const [checked, setChecked] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [showingSolution, setShowingSolution] = useState<boolean>(false);
@@ -247,12 +248,14 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewElement> = ({
             <Banner
               style='success'
               icon={true}
+              customIcon={<IconSuccess />}
               title={dictionary.components.quiz.successBannerText}
             />
           ) : (
             <Banner
               style='error'
               icon={true}
+              customIcon={<IconError />}
               title={dictionary.components.quiz.errorBannerText}
             />
           )}

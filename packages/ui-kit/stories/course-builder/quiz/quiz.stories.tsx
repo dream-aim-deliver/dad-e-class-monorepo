@@ -14,50 +14,8 @@ import { TLocale } from "@maany_shr/e-class-translations";
 
 // --- MULTI-LANGUAGE MOCK DICTIONARIES ---
 const dictionaries = {
-  en: {
-    components: {
-      quiz: {
-        quizText: "Quiz",
-        typeOneText: "Type One",
-        typeTwoText: "Type Two",
-        typeThreeText: "Type Three",
-        typeFourText: "Type Four",
-      },
-    },
-  },
-  fr: {
-    components: {
-      quiz: {
-        quizText: "Quiz (FR)",
-        typeOneText: "Type Un",
-        typeTwoText: "Type Deux",
-        typeThreeText: "Type Trois",
-        typeFourText: "Type Quatre",
-      },
-    },
-  },
-  es: {
-    components: {
-      quiz: {
-        quizText: "Cuestionario",
-        typeOneText: "Tipo Uno",
-        typeTwoText: "Tipo Dos",
-        typeThreeText: "Tipo Tres",
-        typeFourText: "Tipo Cuatro",
-      },
-    },
-  },
-  hi: {
-    components: {
-      quiz: {
-        quizText: "प्रश्नोत्तरी",
-        typeOneText: "प्रकार एक",
-        typeTwoText: "प्रकार दो",
-        typeThreeText: "प्रकार तीन",
-        typeFourText: "प्रकार चार",
-      },
-    },
-  },
+  en: { components: { quiz: { quizText: "Quiz", typeOneText: "Type One", typeTwoText: "Type Two", typeThreeText: "Type Three", typeFourText: "Type Four" } } },
+  de: { components: { quiz: { quizText: "Quiz", typeOneText: "Type One", typeTwoText: "Type Two", typeThreeText: "Type Three", typeFourText: "Type Four" } } },
 };
 
 // --- MOCK IMAGE RESPONSE ---
@@ -89,9 +47,6 @@ const designerQuizTypeOne = {
     { optionText: "Rabbit", correct: false },
   ],
   locale: "en",
-  onChange: (updatedData) => {
-    console.log("Designer TypeOne changed:", updatedData);
-  },
 };
 
 const designerQuizTypeTwo = {
@@ -120,9 +75,6 @@ const designerQuizTypeTwo = {
     },
   ],
   locale: "en",
-  onChange: (updatedData) => {
-    console.log("Designer TypeTwo changed:", updatedData);
-  },
 };
 
 const designerQuizTypeThree = {
@@ -146,9 +98,6 @@ const designerQuizTypeThree = {
     },
   ],
   locale: "en",
-  onChange: (updatedData) => {
-    console.log("Designer TypeThree changed:", updatedData);
-  },
 };
 
 const designerQuizTypeFour = {
@@ -174,12 +123,9 @@ const designerQuizTypeFour = {
     },
   ],
   locale: "en",
-  onChange: (updatedData) => {
-    console.log("Designer TypeFour changed:", updatedData);
-  },
 };
 
-// --- PREVIEW (STUDENT VIEW) MOCK DATA ---
+// --- PREVIEW MOCK DATA ---
 const previewQuizTypeOne = {
   type: "quiz",
   id: 201,
@@ -332,13 +278,6 @@ const simulateFileUpload = async (
   });
 };
 
-const handleFileDelete = (fileId: string, type: 'file') => {
-  alert(`File deleted: ${fileId} (type: ${type})`);
-};
-const handleFileDownload = (id: string) => {
-  alert(`Download file with id: ${id}`);
-};
-
 // --- STORYBOOK META ---
 interface LocaleArgs {
   locale: TLocale;
@@ -374,6 +313,8 @@ const meta: Meta<LocaleArgs> = {
 export default meta;
 
 // --- DESIGNER (EDITING) STORY ---
+// ...above definitions remain unchanged
+
 export const InteractiveDesigner: StoryObj<LocaleArgs> = {
   name: "Designer – Interactive Quiz (All Types, File Handlers)",
   args: { locale: 'en' },
@@ -392,14 +333,87 @@ export const InteractiveDesigner: StoryObj<LocaleArgs> = {
       }
     };
 
+    const handleChange = (updatedData: any) => {
+      setDesignerData(prev => ({ ...prev, ...updatedData }));
+      console.log("Designer data updated:", updatedData);
+    };
+
+    const handleFilesChange = async (files: fileMetadata.TFileUploadRequest[], abortSignal?: AbortSignal) => {
+      // Only upload and return file meta. Do not update state here.
+      const uploadedFile = await simulateFileUpload(files, abortSignal);
+      return uploadedFile;
+    };
+
+    const handleUploadComplete = (file: fileMetadata.TFileMetadata, index: number) => {
+      // Update designerData with uploaded file, depending on quizType.
+      let updatedData = { ...designerData };
+
+      if (quizType === "quizTypeOne") {
+        updatedData = { ...designerData, fileData: file };
+      } else if (quizType === "quizTypeTwo") {
+        updatedData = { ...designerData, fileData: file };
+      } else if (quizType === "quizTypeThree") {
+        // Update fileData at the right option index
+        updatedData = {
+          ...designerData,
+          options: designerData.options.map((opt: any, idx: number) =>
+            idx === index ? { ...opt, fileData: file } : opt
+          ),
+        };
+      } else if (quizType === "quizTypeFour") {
+        // Update fileData in images array
+        updatedData = {
+          ...designerData,
+          images: designerData.images.map((img: any, idx: number) =>
+            idx === index ? { ...img, fileData: file } : img
+          ),
+        };
+      }
+
+      setDesignerData(updatedData);
+      console.log("Designer data updated:", updatedData);
+    };
+
+    const handleFileDelete = (fileId: string, index: number) => {
+      // Remove fileData depending on quizType.
+      let updatedData = { ...designerData };
+
+      if (quizType === "quizTypeOne" || quizType === "quizTypeTwo") {
+        updatedData = { ...designerData, fileData: undefined };
+      } else if (quizType === "quizTypeThree") {
+        updatedData = {
+          ...designerData,
+          options: designerData.options.map((opt: any, idx: number) =>
+            idx === index ? { ...opt, fileData: undefined } : opt
+          ),
+        };
+      } else if (quizType === "quizTypeFour") {
+        updatedData = {
+          ...designerData,
+          images: designerData.images.map((img: any, idx: number) =>
+            idx === index ? { ...img, fileData: undefined } : img
+          ),
+        };
+      }
+
+      setDesignerData(updatedData);
+      console.log("Designer data updated:", updatedData);
+    };
+
+    const handleFileDownload = (id: string) => {
+      alert(`Download file with id: ${id}`);
+    };
+
     const elementInstance = {
       ...designerData,
       quizType,
       locale: args.locale,
       onTypeChange: handleTypeChange,
-      onFilesChange: simulateFileUpload,
+      onChange: handleChange,
+      onFilesChange: handleFilesChange,
       onFileDelete: handleFileDelete,
       onFileDownload: handleFileDownload,
+      onUploadComplete: handleUploadComplete,
     };
 
     return (
@@ -414,7 +428,7 @@ export const InteractiveDesigner: StoryObj<LocaleArgs> = {
   },
 };
 
-// --- STUDENT VIEW / FORM COMPONENT STORIES ---
+// --- STUDENT VIEW / FORM COMPONENT STORIES (unchanged) ---
 export const QuizTypeOneStudentView: StoryObj<LocaleArgs> = {
   name: "Student View – Interactive Quiz (Type One, File Handlers)",
   args: { locale: 'en' },

@@ -81,6 +81,7 @@ function DesignerComponent({
           text={{ simpleText: "Select Quiz Type" }}
           defaultValue={quizType}
           className="w-fit"
+          buttonClassName="bg-base-neutral-700 border-base-neutral-600"
         />
         {quizType === "quizTypeOne" && (
           <QuizTypeOne {...({ ...elementInstance, quizType, locale } as QuizTypeOneElement)} />

@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC } from "react";
 import { Button } from "../../button";
 import { InputField } from "../../input-field";
 import { RadioButton } from "../../radio-button";
@@ -9,11 +9,7 @@ import { TextAreaInput } from "../../text-areaInput";
 import { TextInput } from "../../text-input";
 import { QuizTypeTwoElement } from "../../course-builder-lesson-component/types";
 import Banner from "../../banner";
-import { fileMetadata } from "@maany_shr/e-class-models";
 import { Uploader } from "../../drag-and-drop-uploader/uploader";
-
-type OptionType = { optionText: string; correct: boolean };
-type GroupType = { groupTitle: string; options: OptionType[] };
 
 /**
  * A component for creating and editing a matching-type quiz question.
@@ -38,6 +34,8 @@ type GroupType = { groupTitle: string; options: OptionType[] };
  * @param onFilesChange A callback function triggered when files are uploaded or changed.
  * @param onFileDelete A callback function triggered when a file is deleted. It receives the ID of the deleted file.
  * @param onFileDownload A callback function triggered when a file is downloaded. It receives the ID of the file to be downloaded.
+ * @param onUploadComplete A callback function triggered when a file upload is completed.
+ * 
  * It receives the updated `QuizTypeTwoElement` object.
  *
  * @example
@@ -81,146 +79,78 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
   onFilesChange,
   onFileDelete,
   onFileDownload,
+  onUploadComplete,
 }) => {
   const dictionary = getDictionary(locale);
 
-  // State
-  const [quizTitle, setQuizTitle] = useState<string>("");
-  const [quizDescription, setQuizDescription] = useState<string>("");
-  const [groupStates, setGroupStates] = useState<GroupType[]>([]);
-  const [file, setFile] = useState<fileMetadata.TFileMetadata>();
-
-  // Sync state with props (edit/create mode)
-  useEffect(() => {
-    setQuizTitle(title || "");
-    setQuizDescription(description || "");
-    setGroupStates(
-      groups && groups.length > 0
-        ? groups.map((grp) => ({
-          groupTitle: grp.groupTitle,
-          options:
-            grp.options && grp.options.length > 0
-              ? grp.options.map((opt) => ({
-                optionText: opt.optionText,
-                correct: !!opt.correct,
-              }))
-              : [{ optionText: "", correct: false }],
-        }))
-        : [
-          { groupTitle: "", options: [{ optionText: "", correct: false }] },
-          { groupTitle: "", options: [{ optionText: "", correct: false }] },
-        ]
-    );
-
-    setFile(fileData);
-    // eslint-disable-next-line
-  }, [title, description, groups, fileData]);
-
-
-  // Call onChange on any relevant state change
-  useEffect(() => {
+  // Call parent onChange with updated fields
+  const handleChange = (updated: Partial<QuizTypeTwoElement>) => {
     onChange({
       quizType: "quizTypeTwo",
       id,
       order,
-      title: quizTitle,
-      description: quizDescription,
-      fileData: file,
-      groups: groupStates.map((grp) => ({
-        title: grp.groupTitle,
-        options: grp.options,
-      })),
+      title: updated.title ?? title,
+      description: updated.description ?? description,
+      fileData: updated.fileData ?? fileData,
+      groups: updated.groups ?? groups,
     });
-  }, [quizTitle, quizDescription, groupStates, file, id, order]);
+  };
 
-  // Group and option handlers
+  const handleTitleChange = (value: string) => handleChange({ title: value });
+  const handleDescriptionChange = (value: string) => handleChange({ description: value });
+
   const handleGroupTitleChange = (groupIdx: number, value: string) => {
-    setGroupStates((prev) =>
-      prev.map((grp, i) =>
-        i === groupIdx ? { ...grp, groupTitle: value } : grp
-      )
+    const updatedGroups = groups.map((grp, i) =>
+      i === groupIdx ? { ...grp, groupTitle: value } : grp
     );
+    handleChange({ groups: updatedGroups });
   };
 
-  // Change option text in group
-  const handleOptionInputChange = (
-    groupIdx: number,
-    optionIdx: number,
-    value: string
-  ) => {
-    setGroupStates((prev) =>
-      prev.map((grp, i) =>
-        i === groupIdx
-          ? {
-            ...grp,
-            options: grp.options.map((opt, j) =>
-              j === optionIdx ? { ...opt, optionText: value } : opt
-            ),
-          }
-          : grp
-      )
-    );
+  const handleOptionTextChange = (groupIdx: number, optionIdx: number, value: string) => {
+    const updatedGroups = groups.map((grp, i) => {
+      if (i !== groupIdx) return grp;
+      const updatedOptions = grp.options.map((opt, j) =>
+        j === optionIdx ? { ...opt, optionText: value } : opt
+      );
+      return { ...grp, options: updatedOptions };
+    });
+    handleChange({ groups: updatedGroups });
   };
 
-  // Change correct answer in group
   const handleCorrectAnswerChange = (groupIdx: number, optionIdx: number) => {
-    setGroupStates((prev) =>
-      prev.map((grp, i) =>
-        i === groupIdx
-          ? {
-            ...grp,
-            options: grp.options.map((opt, j) => ({
-              ...opt,
-              correct: j === optionIdx,
-            })),
-          }
-          : grp
-      )
-    );
+    const updatedGroups = groups.map((grp, i) => {
+      if (i !== groupIdx) return grp;
+      const updatedOptions = grp.options.map((opt, j) => ({
+        ...opt,
+        correct: j === optionIdx,
+      }));
+      return { ...grp, options: updatedOptions };
+    });
+    handleChange({ groups: updatedGroups });
   };
 
-  // Add choice to group
   const handleAddChoice = (groupIdx: number) => {
-    setGroupStates((prev) =>
-      prev.map((grp, i) =>
-        i === groupIdx
-          ? {
-            ...grp,
-            options: [...grp.options, { optionText: "", correct: false }],
-          }
-          : grp
-      )
-    );
+    const updatedGroups = groups.map((grp, i) => {
+      if (i !== groupIdx) return grp;
+      return {
+        ...grp,
+        options: [...grp.options, { optionText: "", correct: false }],
+      };
+    });
+    handleChange({ groups: updatedGroups });
   };
 
-  // Delete choice from group
   const handleDeleteChoice = (groupIdx: number, optionIdx: number) => {
-    setGroupStates((prev) =>
-      prev.map((grp, i) => {
-        if (i !== groupIdx) return grp;
-        const newOptions = grp.options.filter((_, j) => j !== optionIdx);
-        // If deleted option was correct, make first one correct if any left
-        if (grp.options[optionIdx].correct && newOptions.length > 0) {
-          return {
-            ...grp,
-            options: newOptions.map((opt, idx) => ({
-              ...opt,
-              correct: idx === 0,
-            })),
-          };
-        }
-        return { ...grp, options: newOptions };
-      })
-    );
-  };
-
-  const handleUpdateFile = async (file: fileMetadata.TFileUploadRequest) => {
-    setFile(file);
-  };
-
-  const handleFileDelete = (id: string) => {
-    setFile(null);
-    onFileDelete(id, 'file');
+    const updatedGroups = groups.map((grp, i) => {
+      if (i !== groupIdx) return grp;
+      const remaining = grp.options.filter((_, j) => j !== optionIdx);
+      // Reassign correct if needed
+      if (grp.options[optionIdx].correct && remaining.length > 0) {
+        remaining[0].correct = true;
+      }
+      return { ...grp, options: remaining };
+    });
+    handleChange({ groups: updatedGroups });
   };
 
   return (
@@ -233,8 +163,8 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
         <TextInput
           inputField={{
             className: "w-full",
-            value: quizTitle,
-            setValue: setQuizTitle,
+            value: title,
+            setValue: handleTitleChange,
             inputText: dictionary.components.quiz.enterTitleText,
           }}
           label={dictionary.components.quiz.quizTitleText}
@@ -242,8 +172,8 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
         <TextAreaInput
           label={dictionary.components.quiz.descriptionText}
           placeholder={dictionary.components.quiz.enterDescriptionText}
-          value={quizDescription}
-          setValue={setQuizDescription}
+          value={description}
+          setValue={handleDescriptionChange}
         />
       </div>
       <div className="flex flex-col gap-[18px]">
@@ -251,11 +181,11 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
         <Uploader
           type="single"
           variant="image"
-          file={file}
+          file={fileData}
           onFilesChange={(file, abortSignal) => onFilesChange([file], abortSignal)}
-          onDelete={(id) => handleFileDelete(id)}
+          onDelete={(id) => onFileDelete(id, 0)}
           onDownload={(id) => onFileDownload(id)}
-          onUploadComplete={(file) => handleUpdateFile(file)}
+          onUploadComplete={(file) => onUploadComplete(file, 0)}
           locale={locale}
           className="w-full"
           maxSize={5}
@@ -270,7 +200,7 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
         )}
         {/* Groups Section */}
         <div className="flex flex-col md:flex-row w-full">
-          {groupStates.map((group, groupIdx) => (
+          {groups.map((group, groupIdx) => (
             <React.Fragment key={groupIdx}>
               <div key={groupIdx} className="flex flex-col gap-[18px] w-full">
                 <InputField
@@ -296,9 +226,7 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
                         className="w-full"
                         inputText={dictionary.components.quiz.quizTypeTwo.radioButtonText}
                         value={option.optionText}
-                        setValue={(value) =>
-                          handleOptionInputChange(groupIdx, optionIdx, value)
-                        }
+                        setValue={(val) => handleOptionTextChange(groupIdx, optionIdx, val)}
                       />
                       <IconButton
                         data-testid={`delete-choice-${groupIdx}-${optionIdx}`}
@@ -320,7 +248,7 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
                 />
               </div>
               {/* Divider between groups - not after last group */}
-              {groupIdx !== groupStates.length - 1 && (
+              {groupIdx !== groups.length - 1 && (
                 <>
                   <div className="hidden md:flex w-[1px] bg-divider mx-4" />
                   <div className="md:hidden flex h-[1px] bg-divider my-4" />

@@ -32,8 +32,9 @@ export type QuizType = "quizTypeOne" | "quizTypeTwo" | "quizTypeThree" | "quizTy
 
 export interface fileProps {
     onFilesChange: (files: fileMetadata.TFileUploadRequest[], abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
-    onFileDelete: (fileId: string, type: 'file') => void;
+    onFileDelete: (fileId: string, index: number) => void;
     onFileDownload: (id: string) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
 }
 
 export interface QuizElementBase extends isLocalAware {
@@ -88,7 +89,7 @@ export interface QuizTypeTwoElement extends QuizElementBase, fileProps {
         description: string;
         fileData: fileMetadata.TFileMetadata;
         groups: {
-            title: string,
+            groupTitle: string,
             options: {
                 optionText: string,
                 correct: boolean,

@@ -13,6 +13,7 @@ export interface DropdownProps {
   options: { label: React.ReactNode; value: string }[];
   onSelectionChange: (selected: string | string[] | null) => void;
   className?: string;
+  buttonClassName?: string;
   defaultValue?: string | string[];
   text: {
     simpleText?: string;
@@ -76,6 +77,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   options,
   onSelectionChange,
   className,
+  buttonClassName,
   defaultValue,
   text,
   position = 'bottom',
@@ -91,17 +93,17 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   const getInitialState = () => {
-      const isMultiple = type === 'multiple-choice-and-search';
-      const isValidSingleValue = !isMultiple && typeof defaultValue === 'string';
-      const isValidMultipleValue = isMultiple && Array.isArray(defaultValue);
+    const isMultiple = type === 'multiple-choice-and-search';
+    const isValidSingleValue = !isMultiple && typeof defaultValue === 'string';
+    const isValidMultipleValue = isMultiple && Array.isArray(defaultValue);
 
-      return {
-          selectedOption: isValidSingleValue ? defaultValue : null,
-          selectedLabel: isValidSingleValue
-              ? options.find(option => option.value === defaultValue)?.label || null
-              : null,
-          selectedOptions: isValidMultipleValue ? defaultValue : []
-      };
+    return {
+      selectedOption: isValidSingleValue ? defaultValue : null,
+      selectedLabel: isValidSingleValue
+        ? options.find(option => option.value === defaultValue)?.label || null
+        : null,
+      selectedOptions: isValidMultipleValue ? defaultValue : []
+    };
   };
 
   const initialState = getInitialState();
@@ -110,10 +112,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const [selectedOptions, setSelectedOptions] = useState<string[]>(initialState.selectedOptions);
 
   useEffect(() => {
-      const newState = getInitialState();
-      setSelectedOption(newState.selectedOption);
-      setSelectedLabel(newState.selectedLabel);
-      setSelectedOptions(newState.selectedOptions);
+    const newState = getInitialState();
+    setSelectedOption(newState.selectedOption);
+    setSelectedLabel(newState.selectedLabel);
+    setSelectedOptions(newState.selectedOptions);
   }, [defaultValue, type, options]);
 
   const buttonText =
@@ -187,7 +189,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <div ref={dropdownRef} className={clsx('relative', className)}>
       {/* Dropdown Button */}
       <button
-        className="flex cursor-pointer items-center justify-between p-2 pl-4 w-full bg-base-neutral-800 text-base-white rounded-medium border-[1px] border-base-neutral-700 group relative"
+        className={cn("flex cursor-pointer items-center justify-between p-2 pl-4 w-full bg-base-neutral-800 text-base-white rounded-medium border-[1px] border-base-neutral-700 group relative", buttonClassName)}
         onClick={toggleDropdown}
       >
         <div
