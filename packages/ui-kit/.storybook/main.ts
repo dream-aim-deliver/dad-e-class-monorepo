@@ -7,7 +7,7 @@ const config: StorybookConfig = {
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
     '@chromatic-com/storybook',
-    // '@storybook/addon-themes',
+    '@storybook/addon-themes',
   ],
   framework: {
     name: '@storybook/react-vite',
@@ -21,6 +21,10 @@ const config: StorybookConfig = {
   async viteFinal(config) {
     // Merge custom configuration into the default config
     return mergeConfig(config, {
+      // Add dependencies to pre-optimization
+      optimizeDeps: {
+        include: ['storybook-dark-mode'],
+      },
       resolve: {
         alias: [],
       },
