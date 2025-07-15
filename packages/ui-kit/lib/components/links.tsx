@@ -4,7 +4,6 @@ import { IconPaste } from "./icons/icon-paste";
 import { IconExternalLink } from "./icons/icon-external-link";
 import { InputField } from "./input-field"
 import { IconButton } from "./icon-button";
-import { IconCloudDownload } from "./icons/icon-cloud-download";
 import { IconLink } from "./icons/icon-link"
 import { IconTrashAlt } from "./icons/icon-trash-alt";
 import { IconEdit } from "./icons/icon-edit";
