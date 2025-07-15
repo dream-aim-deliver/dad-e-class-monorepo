@@ -586,6 +586,7 @@ export const EN: TDictionary = {
       discardText: 'Discard',
       titleRequired: 'Title is required',
       urlRequired: 'URL is required',
+      paste: 'paste',
     },
      courseBuilder: {
       addLinkText:"Add Link",
@@ -597,6 +598,7 @@ export const EN: TDictionary = {
       additionalCommentsPlaceholder: "Write additional comments here",
       uploadFiles: "Upload files",
       studentComment:"Student Comment",
+      additionalCommentsTooltip:"Write some notes about your file (optional)"
     },
     packageGeneralInformation: {
       coachingIncluded: 'Coaching included',
@@ -617,17 +619,6 @@ export const EN: TDictionary = {
       studentDetailsButton: 'Student Details',
       viewAssignment: 'View assignment',
       emptyState: 'No students yet',
-    },
-    link: {
-      titleLabel: 'Title',
-      urlLabel: 'URL',
-      customIcon: 'Custom Icon',
-      LinkIcon: 'Link Icon',
-      saveText: 'Confirm',
-      discardText: 'Discard',
-      titleRequired: 'Title is required',
-      urlRequired: 'URL is required',
-      paste: 'Paste',
     },
     addCoachModal: {
       title: 'Add a coach',

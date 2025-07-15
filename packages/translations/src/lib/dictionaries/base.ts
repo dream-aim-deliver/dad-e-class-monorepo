@@ -577,6 +577,7 @@ export const DictionarySchema = z.object({
       discardText: z.string(),
       titleRequired: z.string(),
       urlRequired: z.string(),
+      paste:z.string(),
     }),
     courseBuilder: z.object({
       addLinkText: z.string(),
@@ -588,6 +589,7 @@ export const DictionarySchema = z.object({
       additionalCommentsPlaceholder: z.string(),
       uploadFiles: z.string(),
       studentComment: z.string(),
+      additionalCommentsTooltip: z.string()
     }),
     packageGeneralInformation: z.object({
       coachingIncluded: z.string(),
@@ -596,19 +598,8 @@ export const DictionarySchema = z.object({
       saveText: z.string(),
       errorImageText: z.string(),
     }),
-    link: z.object({
-      titleLabel: z.string(),
-      urlLabel: z.string(),
-      customIcon: z.string(),
-      LinkIcon: z.string(),
-      saveText: z.string(),
-      discardText: z.string(),
-      titleRequired: z.string(),
-      urlRequired: z.string(),
-      paste: z.string()
-    }),
-
-    studentCard: z.object({
+    
+   studentCard: z.object({
       coachingSessionsLeftText: z.string(),
       coach: z.string(),
       course: z.string(),

@@ -32,15 +32,15 @@ const downloadFilesElement: CourseElementTemplate = {
  */
 export interface DownloadFilesDesignerProps extends BaseDesignerComponentProps {
     /** Callback function triggered when files are changed */
-    onFilesUpload:(
+    onFilesUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
     ) => Promise<fileMetadata.TFileMetadata | null>;
     onUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
     /** Callback function to handle file deletion */
-    onFileDelete: (id:string) => void;
+    onFileDelete: (id: string) => void;
     /** Callback function to handle file download */
-    onFileDownload: (id:string) => void;
+    onFileDownload: (id: string) => void;
     /** Currently selected files or null if no files are selected */
     files: fileMetadata.TFileMetadata[] | null;
 }
@@ -60,7 +60,7 @@ export interface DownloadFilesDesignerProps extends BaseDesignerComponentProps {
  * @param files - Array of currently uploaded files
  */
 
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick,onUploadComplete, onFilesUpload, onFileDelete, onFileDownload, files }: DownloadFilesDesignerProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onUploadComplete, onFilesUpload, onFileDelete, onFileDownload, files }: DownloadFilesDesignerProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
     const dictionary = getDictionary(locale);
     const handleDownloadFile = async (
@@ -117,22 +117,22 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
 interface DownloadFilesFormProps extends FormComponentProps {
     onDownload: (id: string) => void;
 }
-export function FormComponent({ elementInstance,locale,onDownload }: DownloadFilesFormProps) {
+export function FormComponent({ elementInstance, locale, onDownload }: DownloadFilesFormProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
     const handleDownload = (id: string) => {
         onDownload(id);
     }
-    return(
-    <div>
-        {elementInstance.files && elementInstance.files.length > 0 &&
-            elementInstance.files.map((file) => (<FilePreview 
-                 locale={locale}
-                 readOnly={true}
-                 onDownload={() => handleDownload(file.id)}
-                 uploadResponse={file}
-             />))}
+    return (
+        <div className="flex flex-col bg-card-fill p-4 rounded-md border-card-stroke gap-4">
+            {elementInstance.files && elementInstance.files.length > 0 &&
+                elementInstance.files.map((file) => (<FilePreview
+                    locale={locale}
+                    readOnly={true}
+                    onDownload={() => handleDownload(file.id)}
+                    uploadResponse={file}
+                />))}
 
-    </div>)
+        </div>)
 }
 
 export default downloadFilesElement;
