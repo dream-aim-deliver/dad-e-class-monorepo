@@ -12,6 +12,7 @@ import { IconLoaderSpinner } from "./icons/icon-loader-spinner";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { getFaviconUrl } from "../utils/url-utils";
+import { IconCloudUpload } from "./icons";
 
 interface LinkEditProps extends isLocalAware {
     initialTitle?: string;
@@ -211,7 +212,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                         <h6 className="text-sm md:text-md text-text-primary ">{dictionary.components.link.urlLabel}</h6>
                         <InputField
                             hasRightContent
-                            rightContent={<IconPaste classNames="text-button-text-primary cursor-pointer" />}
+                            rightContent={<div title={dictionary.components.link.paste}><IconPaste classNames="text-button-text-primary cursor-pointer" /></div>}
                             value={url}
                             setValue={setUrl}
                             type='url'
@@ -235,35 +236,54 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                             className="bg-base-neutral-700 rounded-md text-text-primary"
                         />
                     }</>
-                <div className="flex items-center gap-2 min-h-[40px]">
-                    {customIcon?.status === "processing" ? (
-                        <Button
-                            text="Cancel"
-                            onClick={handleCancelUpload}
-                            hasIconRight
-                            iconRight={<IconTrashAlt classNames="w-4 h-4" />}
-                            variant="secondary"
-                            className="min-w-[120px]"
-                        />
-                    ) : customIcon?.status === "available" ? (
-                        <Button
-                            text="Delete"
-                            onClick={() => onDeleteIcon?.(customIcon.id)}
-                            hasIconRight
-                            iconRight={<IconTrashAlt classNames="w-4 h-4" />}
-                            variant="secondary"
-                            className="min-w-[120px]"
-                        />
-                    ) : (
-                        <Button
-                            onClick={handleButtonClick}
-                            text={dictionary.components.link.customIcon}
-                            hasIconLeft
-                            iconLeft={<IconCloudDownload />}
-                            variant="secondary"
-                            className="min-w-[200px]"
-                        />
-                    )}
+                <div className="flex items-center gap-2 min-h-[40px] relative">
+                    {/* We use a wrapper div with fixed height to prevent layout shift */}
+                    <div className="min-h-[40px] flex items-center">
+                        {/* Processing state (Cancel button) */}
+                        <div 
+                            className={`absolute transition-all duration-300 ease-in-out transform ${customIcon?.status === "processing" 
+                                ? "opacity-100 translate-y-0 scale-100" 
+                                : "opacity-0 -translate-y-2 scale-95 pointer-events-none"}`}
+                        >
+                            <Button
+                                text="Cancel"
+                                onClick={handleCancelUpload}
+                                hasIconRight
+                                iconRight={<IconTrashAlt classNames="w-4 h-4" />}
+                                variant="secondary"
+                                className="min-w-[120px]"
+                                size="small"
+                            />
+                        </div>
+                        
+                        {/* Upload button state */}
+                        <div 
+                            className={`transition-all duration-300 ease-in-out transform ${customIcon?.status !== "processing" 
+                                ? "opacity-100 translate-y-0 scale-100" 
+                                : "opacity-0 translate-y-2 scale-95 pointer-events-none"}`}
+                        >
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    onClick={handleButtonClick}
+                                    text={dictionary.components.link.customIcon}
+                                    hasIconLeft
+                                    iconLeft={<IconCloudUpload />}
+                                    variant="secondary"
+                                    size="small"
+                                    className="min-w-[150px]"
+                                />
+                                {customIcon?.status === "available" && (
+                                    <IconButton
+                                        onClick={() => onDeleteIcon?.(customIcon.id)}
+                                        icon={<IconTrashAlt />}
+                                        styles="text"
+                                        size="small"
+                                        className="transition-opacity duration-300"
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    </div>
                     <input
                         ref={fileInputRef}
                         type="file"
@@ -276,8 +296,8 @@ const LinkEdit: React.FC<LinkEditProps> = ({
             </div>
 
             <div className="flex gap-2">
-                <Button onClick={handleSave} variant="secondary" className="w-full capitalize" text={dictionary.components.link.saveText} />
-                <Button onClick={onDiscard} variant="primary" className="w-full capitalize" text={dictionary.components.link.discardText} />
+            <Button size="medium" onClick={onDiscard} variant="secondary" className="w-full capitalize" text={dictionary.components.link.discardText} />
+                <Button size="medium" onClick={handleSave} variant="primary" className="w-full capitalize" text={dictionary.components.link.saveText} />
             </div>
         </div>
     )

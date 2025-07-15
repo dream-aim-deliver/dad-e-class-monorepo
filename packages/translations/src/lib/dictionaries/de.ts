@@ -587,10 +587,11 @@ link:{
   urlLabel: 'URL',
   customIcon: 'benutzerdefiniertes Symbol',
   LinkIcon: 'Linksymbol',
-  saveText: 'speichern',
+  saveText: 'bestätigen',
   discardText: 'verwerfen',
   titleRequired: 'Titel ist erforderlich',
   urlRequired: 'URL ist erforderlich',
+  paste: 'einfügen',
 }
   },
   pages: {

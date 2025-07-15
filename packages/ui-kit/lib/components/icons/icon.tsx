@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-export interface IconProps {
+export interface IconProps extends React.SVGProps<SVGSVGElement> {
   classNames?: string;
   fill?: string;
   size?: string;

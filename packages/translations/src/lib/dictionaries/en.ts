@@ -582,10 +582,11 @@ export const EN: TDictionary = {
       urlLabel: 'URL',
       customIcon: 'Custom Icon',
       LinkIcon: 'Link Icon',
-      saveText: 'Save',
+      saveText: 'confirm',
       discardText: 'Discard',
       titleRequired: 'Title is required',
       urlRequired: 'URL is required',
+      paste: 'paste',
     }
   },
   pages: {
