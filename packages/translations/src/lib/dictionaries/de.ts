@@ -582,17 +582,6 @@ export const DE: TDictionary = {
       saveText: 'spare',
       coachingIncluded: 'Coaching inbegriffen',
 },
-link:{
-  titleLabel: 'Titel',
-  urlLabel: 'URL',
-  customIcon: 'benutzerdefiniertes Symbol',
-  LinkIcon: 'Linksymbol',
-  saveText: 'speichern',
-  discardText: 'verwerfen',
-  titleRequired: 'Titel ist erforderlich',
-  urlRequired: 'URL ist erforderlich',
-  paste: 'einfügen'
-},
 courseBuilder: {
       addLinkText:"Link hinzufügen",
       downloadFilesText:"Dateien herunterladen",

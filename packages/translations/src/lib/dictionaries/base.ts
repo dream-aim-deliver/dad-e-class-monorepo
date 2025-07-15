@@ -568,17 +568,6 @@ export const DictionarySchema = z.object({
       saveText: z.string(),
       coachingIncluded: z.string(),
     }),
-    link: z.object({
-      titleLabel: z.string(),
-      urlLabel: z.string(),
-      customIcon: z.string(),
-      LinkIcon: z.string(),
-      saveText: z.string(),
-      discardText: z.string(),
-      titleRequired: z.string(),
-      urlRequired: z.string(),
-      paste:z.string(),
-    }),
     courseBuilder: z.object({
       addLinkText: z.string(),
       downloadFilesText: z.string(),
