@@ -8,6 +8,8 @@ import DesignerLayout from "../designer-layout";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { Uploader } from "../drag-and-drop-uploader/uploader";
 import { uploadCoachingTypes } from "./types";
+import { IconInfoCircle } from "../icons/icon-infocircle";
+
 
 
 /**
@@ -85,7 +87,7 @@ export function DesignerComponent({
             courseBuilder={true}
         >
             <div>
-                <label className="text-text-secondary">
+                <label className="text-text-secondary text-sm md:text-md">
                     {dictionary.components.courseBuilder.descriptionText}
                 </label>
                 <InputField
@@ -174,16 +176,16 @@ export function FormComponent({
     };
 
     return (
-        <div className="p-4 border rounded-md bg-base-neutral-800 flex flex-col gap-4">
+        <div className="p-4 border rounded-md bg-base-neutral-800 flex flex-col gap-4 border-base-neutral-700">
             <div className="flex items-center gap-2 flex-1 text-text-primary py-2 border-b border-divider">
                 <span className="min-w-0"><IconCloudUpload /></span>
-                <p className="text-md font-important leading-[24px] word-break">{dictionary.components.courseBuilder.uploadFilesText}</p>
+                <p className="text-md font-important leading-[24px] word-break ">{dictionary.components.courseBuilder.uploadFilesText}</p>
             </div>
 
             <p className="font-important text-text-primary leading-[24px]">
                 {(elementInstance.type === CourseElementType.UploadFiles && 'description' in elementInstance)
-                    ? (elementInstance as uploadCoachingTypes).description
-                    : "Upload your files here"}
+                    && (elementInstance as uploadCoachingTypes).description
+                    }
             </p>
             <Uploader
                 type="multiple"
@@ -196,7 +198,11 @@ export function FormComponent({
                 onDownload={handleFileDownload}
                 locale={locale}
             />
-            <div className="w-full">
+            <div className="w-full flex flex-col gap-2">
+                <p className="text-sm md:text-md text-text-secondary flex gap-1">
+                    {dictionary.components.courseBuilder.additionalCommentsTooltip}
+                    <IconInfoCircle classNames="w-4 h-4"/>
+                </p>
                 <TextAreaInput
                     setValue={handleStudentComment}
                     value={comment}

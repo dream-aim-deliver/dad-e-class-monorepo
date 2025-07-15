@@ -568,16 +568,6 @@ export const DictionarySchema = z.object({
       saveText: z.string(),
       coachingIncluded: z.string(),
     }),
-    link: z.object({
-      titleLabel: z.string(),
-      urlLabel: z.string(),
-      customIcon: z.string(),
-      LinkIcon: z.string(),
-      saveText: z.string(),
-      discardText: z.string(),
-      titleRequired: z.string(),
-      urlRequired: z.string(),
-    }),
     courseBuilder: z.object({
       addLinkText: z.string(),
       downloadFilesText: z.string(),
@@ -588,6 +578,13 @@ export const DictionarySchema = z.object({
       additionalCommentsPlaceholder: z.string(),
       uploadFiles: z.string(),
       studentComment: z.string(),
+      additionalCommentsTooltip: z.string(),
+      deleteText: z.string(),
+      moveUpText: z.string(),
+      moveDownText: z.string(),
+      ImageFileText: z.string(),
+      videoFileText: z.string(),
+      ImageGalleryText: z.string(),
     }),
     packageGeneralInformation: z.object({
       coachingIncluded: z.string(),
@@ -609,7 +606,6 @@ export const DictionarySchema = z.object({
       urlRequired: z.string(),
       paste: z.string()
     }),
-
     studentCard: z.object({
       coachingSessionsLeftText: z.string(),
       coach: z.string(),
@@ -690,14 +686,6 @@ export const DictionarySchema = z.object({
       editCoachNotes: z.string(),
       exploreCourses: z.string(),
       description: z.string(),
-    }),
-    courseBuilder: z.object({
-      deleteText: z.string(),
-      moveUpText: z.string(),
-      moveDownText: z.string(),
-      ImageFileText: z.string(),
-      videoFileText: z.string(),
-      ImageGalleryText: z.string(),
     }),
     bookSessionWithBanner: z.object({
       bookSessionButton: z.string(),
