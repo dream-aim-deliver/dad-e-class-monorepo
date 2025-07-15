@@ -577,17 +577,6 @@ export const EN: TDictionary = {
       saveText: 'save',
       coachingIncluded: 'Coaching included',
     },
-    link:{
-      titleLabel: 'Title',
-      urlLabel: 'URL',
-      customIcon: 'Custom Icon',
-      LinkIcon: 'Link Icon',
-      saveText: 'Save',
-      discardText: 'Discard',
-      titleRequired: 'Title is required',
-      urlRequired: 'URL is required',
-      paste: 'paste',
-    },
      courseBuilder: {
       addLinkText:"Add Link",
       downloadFilesText:"Download",
