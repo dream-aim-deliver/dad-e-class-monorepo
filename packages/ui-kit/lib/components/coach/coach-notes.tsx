@@ -44,68 +44,49 @@ function CoachNotesCreate({ noteDescription: initialNoteDescription, noteLinks: 
     const [noteLinks, setNoteLinks] = useState(initialNoteLinks);
     const [includeInMaterials, setIncludeInMaterials] = useState(initialIncludeInMaterials);
     const [editingLinkIndex, setEditingLinkIndex] = useState<number | null>(null);
-
-
-
+  
     useEffect(() => {
-        if (noteLinks.length === 0) {
+        const isDescriptionEmpty = !initialNoteDescription || (Array.isArray(noteDescription) && noteDescription.length === 1 && Node.string(noteDescription[0]).trim() === '');
+        if (isDescriptionEmpty && initialNoteLinks.length === 0) {
             handleAddLink();
         }
-    }, [noteLinks.length]);
+    }, []);
 
 
     const handleAddLink = () => {
-        if (editingLinkIndex === null) {
-            setEditingLinkIndex(noteLinks.length); // Use length to signify a new link
-        }
+        const newLinks = [
+            ...noteLinks,
+            {
+                title: "",
+                url: "",
+            }
+        ];
+        const newIndex = newLinks.length - 1;
+        setNoteLinks(newLinks);
+        setEditingLinkIndex(newIndex);
     };
 
     const handleSave = (index: number, title: string, url: string, customIcon?: fileMetadata.TFileMetadata) => {
-        if (index === noteLinks.length) {
-            // This is a new link being saved
-            if (!title.trim() && !url.trim()) {
-                setEditingLinkIndex(null); // Cancel if the new link is empty
-                return;
-            }
-            setNoteLinks([...noteLinks, { title, url, customIconMetadata: customIcon }]);
-        } else {
-            // This is an existing link being updated
-            const updatedLinks = [...noteLinks];
-            updatedLinks[index] = {
-                ...updatedLinks[index],
-                title,
-                url,
-                customIconMetadata: customIcon,
-            };
-            setNoteLinks(updatedLinks);
-        }
+        const updatedLinks = [...noteLinks];
+        updatedLinks[index] = {
+            ...updatedLinks[index],
+            title,
+            url,
+            customIconMetadata: customIcon,
+        };
+        setNoteLinks(updatedLinks);
         setEditingLinkIndex(null);
     }
-
-    const handleDiscard = (index: number) => {
-        // If it's a new link being discarded, do nothing to the array, just stop editing.
-        if (index === noteLinks.length) {
-            setEditingLinkIndex(null);
-            return;
-        }
-        // If it's an existing link, just cancel editing.
-        setEditingLinkIndex(null);
-    };
 
     const handleDelete = (index: number) => {
         const updatedLinks = noteLinks.filter((_, i) => i !== index);
         setNoteLinks(updatedLinks);
-        if (editingLinkIndex === noteLinks.length) {
-            setEditingLinkIndex(updatedLinks.length);
-        } else if (editingLinkIndex === index) {
+        if (editingLinkIndex === index) {
             setEditingLinkIndex(null);
         }
     }
 
     const handleEdit = (index: number) => {
-        if (editingLinkIndex !== null) {
-            return;
-        }
         setEditingLinkIndex(index);
     }
 
@@ -165,26 +146,25 @@ function CoachNotesCreate({ noteDescription: initialNoteDescription, noteLinks: 
                 />
 
                 <div className="flex flex-col gap-4 w-full">
-                    {noteLinks.map((link, index) => (
-                        <div key={index} className="w-full">
+                    {noteLinks.map((link, index) =>
+                        editingLinkIndex === index ? (
                             <div
-                                className={`w-full overflow-hidden transition-all duration-300 ease-in-out ${editingLinkIndex === index ? 'max-h-[500px]' : 'max-h-0'
-                                    }`}
+                                className="flex flex-col"
+                                key={index}
                             >
-                                {editingLinkIndex === index && (
-                                    <LinkEdit
-                                        locale={locale}
-                                        initialTitle={link.title}
-                                        initialUrl={link.url}
-                                        initialCustomIcon={link.customIconMetadata}
-                                        onSave={(title, url, customIcon) => handleSave(index, title, url, customIcon)}
-                                        onDiscard={() => handleDiscard(index)}
-                                        onImageChange={(image, abortSignal) => handleImageChange(index, image, abortSignal)}
-                                        onDeleteIcon={() => handleDeleteIcon(index)}
-                                    />
-                                )}
+                                <LinkEdit
+                                    locale={locale}
+                                    initialTitle={link.title}
+                                    initialUrl={link.url}
+                                    initialCustomIcon={link.customIconMetadata}
+                                    onSave={(title, url, customIcon) => handleSave(index, title, url, customIcon)}
+                                    onDiscard={() => handleDelete(index)}
+                                    onImageChange={(image, abortSignal) => handleImageChange(index, image, abortSignal)}
+                                    onDeleteIcon={() => handleDeleteIcon(index)}
+                                />
                             </div>
-                            {editingLinkIndex !== index && (
+                        ) : (
+                            <div className="flex flex-col" key={index}>
                                 <LinkPreview
                                     preview
                                     title={link.title}
@@ -193,25 +173,9 @@ function CoachNotesCreate({ noteDescription: initialNoteDescription, noteLinks: 
                                     onEdit={() => handleEdit(index)}
                                     onDelete={() => handleDelete(index)}
                                 />
-                            )}
-                        </div>
-                    ))}
-                    <div
-                        className={`w-full overflow-hidden transition-all duration-300 ease-in-out ${editingLinkIndex === noteLinks.length ? 'max-h-[500px]' : 'max-h-0'
-                            }`}
-                        key={noteLinks.length}
-                    >
-                        {editingLinkIndex === noteLinks.length && (
-                            <LinkEdit
-                                initialTitle=""
-                                initialUrl=""
-                                onSave={(title, url, customIcon) => handleSave(noteLinks.length, title, url, customIcon)}
-                                onDiscard={() => handleDiscard(noteLinks.length)}
-                                onImageChange={(image, abortSignal) => handleImageChange(noteLinks.length, image, abortSignal)}
-                                locale={locale}
-                            />
-                        )}
-                    </div>
+                            </div>
+                        )
+                    )}
                 </div>
                 <div className="flex items-center mt-4 gap-2" role="group" aria-label="Add link divider">
                     <hr className="flex-grow border-t border-divider" />
@@ -222,18 +186,14 @@ function CoachNotesCreate({ noteDescription: initialNoteDescription, noteLinks: 
                         onClick={handleAddLink}
                         aria-label="Add link"
                         variant="text"
-                        disabled={editingLinkIndex !== null}
                     />
                     <hr className="flex-grow border-t border-divider" />
                 </div>
-
-
 
             </div>
             <Button
                 text={dictionary.components.coachNotes.publishNotes}
                 onClick={() => onPublish(serialize(noteDescription), noteLinks, includeInMaterials)}
-                disabled={editingLinkIndex !== null}
             />
         </div>
     )

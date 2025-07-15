@@ -618,7 +618,7 @@ export const DictionarySchema = z.object({
       isYou: z.string(),
       noFoundLabel: z.string(),
       closeButton: z.string(),
-    }),
+    })
   }),
   pages: z.object({
     sso: z.object({

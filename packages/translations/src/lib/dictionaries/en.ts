@@ -639,6 +639,16 @@ export const EN: TDictionary = {
       noFoundLabel: 'No coaches found...',
       closeButton: "Close",
     },
+    coachNotes: {
+     usefulLinks: 'Useful links',
+     validateLink: 'url link required',
+     validateTitle: 'title required',
+    notesValidation:"This group has no coach yet. Choose your favourite coach and send her the coupon. She will become this group's coach.",
+    customIcon: "custom icon",
+    includeInMaterials: "Include links in course material tab",
+    publishNotes: 'Publish notes',
+    addLink: 'Add link',
+  },
   },
   pages: {
     home: Home_EN,
