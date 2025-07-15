@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./button"
 import { IconPaste } from "./icons/icon-paste";
-import { IconExternalLink } from "./icons/icon-external-link";
 import { InputField } from "./input-field"
 import { IconButton } from "./icon-button";
 import { IconLink } from "./icons/icon-link"

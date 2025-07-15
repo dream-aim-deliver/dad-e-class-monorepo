@@ -582,6 +582,16 @@ export const DE: TDictionary = {
       saveText: 'spare',
       coachingIncluded: 'Coaching inbegriffen',
 },
+link:{
+  titleLabel: 'Titel',
+  urlLabel: 'URL',
+  customIcon: 'benutzerdefiniertes Symbol',
+  LinkIcon: 'Linksymbol',
+  saveText: 'speichern',
+  discardText: 'verwerfen',
+  titleRequired: 'Titel ist erforderlich',
+  urlRequired: 'URL ist erforderlich',
+},
 courseBuilder: {
       addLinkText:"Link hinzufügen",
       downloadFilesText:"Dateien herunterladen",
@@ -589,12 +599,9 @@ courseBuilder: {
       linkText:"Link",
       includeInMaterialsText:"Links in die Registerkarte „Kursmaterial“ einschließen",
       descriptionText:"Beschreibung",
-      titleText:"Titel",
-      urlText:"url",
-      iconLinkText:"Symbol-Link",
-      saveText:"Speichern",
-      discardText:"Verwerfen",
-
+      additionalCommentsPlaceholder:"Schreiben Sie hier weitere Kommentare",
+      uploadFiles: "Dateien hochladen",
+      studentComment: "Studentenkommentar",
         },
     packageGeneralInformation: {
       coachingIncluded: 'Coaching inklusive',
