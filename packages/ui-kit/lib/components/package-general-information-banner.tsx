@@ -1,11 +1,13 @@
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { TEClassPackage } from 'packages/models/src/eclass-package';
-import { Badge, Button, CheckBox } from '..';
+import { eClassPackage } from '@maany_shr/e-class-models';
+import { Badge } from './badge';
+import { CheckBox } from './checkbox';
+import { Button } from './button';
 import { FC, useState } from 'react';
 import { IconClock } from './icons/icon-clock';
 
 export interface PackageGeneralInformationView
-    extends TEClassPackage,
+    extends eClassPackage.TEClassPackage,
         isLocalAware {
     onClickPurchase: () => void;
     subTitle: string;
