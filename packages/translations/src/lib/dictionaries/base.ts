@@ -567,6 +567,18 @@ export const DictionarySchema = z.object({
       fromText: z.string(),
       saveText: z.string(),
       coachingIncluded: z.string(),
+    }),
+    courseBuilder: z.object({
+      addLinkText: z.string(),
+      downloadFilesText: z.string(),
+      uploadFilesText: z.string(),
+      linkText: z.string(),
+      includeInMaterialsText: z.string(),
+      descriptionText: z.string(),
+      additionalCommentsPlaceholder: z.string(),
+      uploadFiles: z.string(),
+      studentComment: z.string(),
+      additionalCommentsTooltip: z.string()
     })
   }),
   pages: z.object({

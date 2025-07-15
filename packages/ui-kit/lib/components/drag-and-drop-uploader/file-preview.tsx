@@ -12,12 +12,23 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { FeedBackMessage } from '../feedback-message';
 import { IconImage } from '../icons/icon-image';
 
-interface FilePreviewProps extends isLocalAware {
+
+interface BaseFilePreviewProps extends isLocalAware {
     uploadResponse: fileMetadata.TFileMetadata;
-    onDelete: (id: string) => void;
     onDownload: (id: string) => void;
-    onCancel: (id: string) => void;
 }
+
+interface FilePreviewWithActionsProps extends BaseFilePreviewProps {
+    onDelete: (id: string) => void;
+    onCancel: (id: string) => void;
+    readOnly?: false;
+}
+
+interface FilePreviewReadOnlyProps extends BaseFilePreviewProps {
+    readOnly: true;
+}
+
+type FilePreviewProps = FilePreviewWithActionsProps | FilePreviewReadOnlyProps;
 /**
  *
  * A component that displays a preview of a file being uploaded, including its name, size, and options to delete or download it.
@@ -44,9 +55,11 @@ const getFileTypeFromExtension = (fileName: string): 'image' | 'video' | 'docume
     return 'document';
 };
 
-export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDelete, onDownload, onCancel, locale }) => {
+export const FilePreview: React.FC<FilePreviewProps> = (props) => {
+    const { uploadResponse, onDownload, locale } = props;
     const dictionary = getDictionary(locale);
     const [thumbnailError, setThumbnailError] = useState(false);
+
     if (uploadResponse?.status === 'unavailable') {
         return <FeedBackMessage type="error" message="File upload failed" />;
     }
@@ -93,7 +106,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDele
     };
 
     return (
-        <div className={cn('flex items-center justify-between gap-2 p-2 rounded-medium', 'bg-base-neutral-900')}>
+        <div className={cn('flex items-center justify-between gap-2  rounded-medium')}>
             <div className="flex items-center gap-2">
                 <div className="w-12 h-12 flex items-center justify-center rounded-medium bg-base-neutral-800 border border-base-neutral-700">
                     {getFilePreviewElement()}
@@ -118,12 +131,22 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDele
             </div>
             <div>
                 {uploadResponse?.status === 'processing' ? (
-                    <Button
-                        variant="text"
-                        className="px-0"
-                        onClick={() => onCancel(uploadResponse.id as string)}
-                        text={dictionary.components.uploadingSection.cancelUpload}
-                    />
+                    ('readOnly' in props && props.readOnly) ? (
+                        <span className="text-sm text-text-secondary">
+                            Processing...
+                        </span>
+                    ) : (
+                        <Button
+                            variant="text"
+                            className="px-0"
+                            onClick={() => {
+                                if ('onCancel' in props) {
+                                    props.onCancel(uploadResponse.id as string);
+                                }
+                            }}
+                            text={dictionary.components.uploadingSection.cancelUpload}
+                        />
+                    )
                 ) : (
                     <div className="font-bold flex items-center cursor-pointer">
                         <IconButton
@@ -133,13 +156,19 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDele
                             title={dictionary.components.uploadingSection.downloadText}
                             onClick={() => onDownload(uploadResponse.id as string)}
                         />
-                        <IconButton
-                            icon={<IconTrashAlt />}
-                            styles="text"
-                            size="small"
-                            title={dictionary.components.uploadingSection.deleteText}
-                            onClick={() => onDelete(uploadResponse.id as string)}
-                        />
+                        {!('readOnly' in props && props.readOnly) && (
+                            <IconButton
+                                icon={<IconTrashAlt />}
+                                styles="text"
+                                size="small"
+                                title={dictionary.components.uploadingSection.deleteText}
+                                onClick={() => {
+                                    if ('onDelete' in props) {
+                                        props.onDelete(uploadResponse.id as string);
+                                    }
+                                }}
+                            />
+                        )}
                     </div>
                 )}
             </div>

@@ -581,7 +581,19 @@ export const DE: TDictionary = {
       fromText: 'ab',
       saveText: 'spare',
       coachingIncluded: 'Coaching inbegriffen',
-}
+},
+courseBuilder: {
+      addLinkText:"Link hinzufügen",
+      downloadFilesText:"Dateien herunterladen",
+      uploadFilesText:"Dateien hochladen",
+      linkText:"Link",
+      includeInMaterialsText:"Links in die Registerkarte „Kursmaterial“ einschließen",
+      descriptionText:"Beschreibung",
+      additionalCommentsPlaceholder:"Schreiben Sie hier weitere Kommentare",
+      uploadFiles: "Dateien hochladen",
+      studentComment: "Studentenkommentar",
+      additionalCommentsTooltip:"Machen Sie sich Notizen zu Ihrer Datei (optional)"
+    }
   },
   pages: {
     home: Home_DE,
