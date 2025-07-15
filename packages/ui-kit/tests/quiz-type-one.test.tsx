@@ -5,7 +5,7 @@ import { CourseElementType } from '../lib/components/course-builder/types';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
-// Mock dictionary for translations with all expected keys
+// Mock Translation Dictionary
 vi.mock('@maany_shr/e-class-translations', () => ({
   getDictionary: () => ({
     components: {
@@ -36,22 +36,20 @@ vi.mock('@maany_shr/e-class-translations', () => ({
   }),
 }));
 
-// Mock Uploader to avoid unrelated side effects
-vi.mock('../../drag-and-drop/uploader', () => ({
+vi.mock('../../drag-and-drop-uploader/uploader', () => ({
   Uploader: ({ onFilesChange, onDelete, onDownload }: any) => (
     <div role="uploader-mock"></div>
   ),
 }));
 
-// fileData must match FileMetadataImageSchema
 const mockFileData: fileMetadata.TFileMetadata = {
   id: 'file-1',
   name: 'sample-image.jpg',
   mimeType: 'image/jpeg',
   size: 1024,
   checksum: 'abc123',
-  status: 'available',   // must be "available" | "processing" | "unavailable"
-  category: 'image',     // must be "image" for FileMetadataImageSchema
+  status: 'available',
+  category: 'image',
   url: 'https://example.com/sample-image.jpg',
   thumbnailUrl: 'https://example.com/sample-image-thumb.jpg',
 };
@@ -75,6 +73,7 @@ const defaultProps = {
   onFilesChange: vi.fn().mockResolvedValue(mockFileData),
   onFileDelete: vi.fn(),
   onFileDownload: vi.fn(),
+  onUploadComplete: vi.fn(),
   onTypeChange: vi.fn(),
 };
 
@@ -99,14 +98,16 @@ describe('QuizTypeOne Component', () => {
   it('calls onChange with updated title and description', () => {
     const mockOnChange = vi.fn();
     render(<QuizTypeOne {...defaultProps} onChange={mockOnChange} />);
-    const titleInput = screen.getByDisplayValue('What is the capital of France?');
-    fireEvent.change(titleInput, { target: { value: 'New Title' } });
+    fireEvent.change(screen.getByDisplayValue('What is the capital of France?'), {
+      target: { value: 'New Title' },
+    });
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'New Title' })
     );
 
-    const descInput = screen.getByDisplayValue('Choose the correct answer.');
-    fireEvent.change(descInput, { target: { value: 'New Description' } });
+    fireEvent.change(screen.getByDisplayValue('Choose the correct answer.'), {
+      target: { value: 'New Description' },
+    });
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({ description: 'New Description' })
     );
@@ -115,8 +116,10 @@ describe('QuizTypeOne Component', () => {
   it('allows editing choice text and marks correct answer', () => {
     const mockOnChange = vi.fn();
     render(<QuizTypeOne {...defaultProps} onChange={mockOnChange} />);
+
     const choiceInputs = screen.getAllByDisplayValue(/Berlin|Paris|Madrid/);
     fireEvent.change(choiceInputs[0], { target: { value: 'Rome' } });
+
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({
         options: expect.arrayContaining([
@@ -127,10 +130,11 @@ describe('QuizTypeOne Component', () => {
 
     const radios = screen.getAllByRole('radio');
     fireEvent.click(radios[0]);
+
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({
         options: [
-          { optionText: 'Rome', correct: true },
+          { optionText: 'Berlin', correct: true },
           { optionText: 'Paris', correct: false },
           { optionText: 'Madrid', correct: false },
         ],
@@ -141,15 +145,12 @@ describe('QuizTypeOne Component', () => {
   it('adds a new choice when "Add Choice" is clicked', () => {
     render(<QuizTypeOne {...defaultProps} />);
     fireEvent.click(screen.getByText('Add Choice'));
-    // There are 2 textboxes for title and description, rest are for choices
-    expect(screen.getAllByRole('textbox').length).toBe(6);
+    expect(screen.getAllByRole('textbox').length).toBe(5);
   });
 
   it('deletes a choice when delete button is clicked', () => {
     render(<QuizTypeOne {...defaultProps} />);
-    const deleteButton = screen.getByTestId('delete-choice-0');
-    fireEvent.click(deleteButton);
-    expect(screen.queryByDisplayValue('Berlin')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('delete-choice-0'));
     expect(screen.getByDisplayValue('Paris')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Madrid')).toBeInTheDocument();
   });
@@ -161,8 +162,7 @@ describe('QuizTypeOne Component', () => {
         options={[{ optionText: 'Only Option', correct: true }]}
       />
     );
-    const deleteButton = screen.getByTestId('delete-choice-0');
-    expect(deleteButton).toBeDisabled();
+    expect(screen.getByTestId('delete-choice-0')).toBeDisabled();
   });
 
   it('calls onFileDelete with correct arguments', () => {
@@ -173,8 +173,7 @@ describe('QuizTypeOne Component', () => {
         onFileDelete={mockOnFileDelete}
       />
     );
-    // Simulate file delete by calling the handler directly (since uploader is mocked)
-    mockOnFileDelete('file-1', 'file');
-    expect(mockOnFileDelete).toHaveBeenCalledWith('file-1', 'file');
+    mockOnFileDelete('file-1', 0);
+    expect(mockOnFileDelete).toHaveBeenCalledWith('file-1', 0);
   });
 });

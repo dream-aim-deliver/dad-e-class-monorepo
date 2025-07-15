@@ -1,18 +1,12 @@
 import { Button } from "../../button";
-import { FC, useState, useEffect } from "react";
+import { FC } from "react";
 import { IconButton } from "../../icon-button";
 import { IconTrashAlt } from "../../icons/icon-trash-alt";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { TextAreaInput } from "../../text-areaInput";
 import { TextInput } from "../../text-input";
 import { QuizTypeFourElement } from "../../course-builder-lesson-component/types";
-import { fileMetadata } from "@maany_shr/e-class-models";
 import { Uploader } from "../../drag-and-drop-uploader/uploader";
-
-type LabelState = {
-  letter: string;
-  description: string;
-};
 
 /**
  * A component for creating and editing a "Label-Image Pair" quiz question (QuizTypeFour).
@@ -40,6 +34,7 @@ type LabelState = {
  * @param onFilesChange Callback triggered when files are uploaded or changed.
  * @param onFileDelete Callback triggered when a file is deleted.
  * @param onFileDownload Callback triggered when a file is downloaded.
+ * @param onUploadComplete Callback triggered when a file upload is completed.
  *
  * @example
  * <QuizTypeFour
@@ -79,156 +74,62 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
   onFilesChange,
   onFileDelete,
   onFileDownload,
+  onUploadComplete,
 }) => {
   const dictionary = getDictionary(locale);
 
-  // State
-  const [quizTitle, setQuizTitle] = useState<string>("");
-  const [quizDescription, setQuizDescription] = useState<string>("");
-  const [labelStates, setLabelStates] = useState<LabelState[]>([]);
-  const [correctLetter, setCorrectLetter] = useState<string[]>([]);
-  const [files, setFiles] = useState<fileMetadata.TFileMetadata[]>([]);
-
-  // Sync state with props (edit/create mode)
-  useEffect(() => {
-    const hasProps =
-      (title && title.trim() !== "") ||
-      (description && description.trim() !== "") ||
-      (labels && labels.length > 0) ||
-      (images && images.length > 0);
-
-    if (hasProps) {
-      setQuizTitle(title || "");
-      setQuizDescription(description || "");
-      setLabelStates(
-        labels && labels.length > 0
-          ? labels.map((lbl) => ({
-            letter: lbl.letter,
-            description: lbl.description,
-          }))
-          : []
-      );
-      setCorrectLetter(
-        images && images.length > 0
-          ? images.map((img, idx) => labels?.[idx]?.letter || String.fromCharCode(65 + idx))
-          : []
-      );
-      setFiles(
-        images && images.length > 0
-          ? images.map((img) =>
-            img.fileData
-              ? img.fileData
-              : undefined
-          )
-          : []
-      );
-
-    } else {
-      // Create mode
-      setQuizTitle("");
-      setQuizDescription("");
-      setLabelStates([
-        { letter: "A", description: "" },
-        { letter: "B", description: "" },
-        { letter: "C", description: "" },
-      ]);
-      setCorrectLetter(["A", "B", "C"]);
-      setFiles([undefined, undefined, undefined]);
-    }
-    // eslint-disable-next-line
-  }, [title, description, labels, images]);
-
-
-  // Keep correctLetter in imageStates in sync with labelStates, but only update if needed
-  useEffect(() => {
-    setCorrectLetter((prev) => {
-      let changed = false;
-      const newState = prev.map((letter, idx) => {
-        const newLetter = labelStates[idx]?.letter || letter;
-        if (letter !== newLetter) {
-          changed = true;
-          return newLetter;
-        }
-        return letter;
-      });
-      return changed ? newState : prev;
+  // Triggers parent update with partial updates
+  const handleChange = (updated: Partial<QuizTypeFourElement>) => {
+    onChange({
+      quizType: "quizTypeFour",
+      id,
+      order,
+      title: updated.title ?? title,
+      description: updated.description ?? description,
+      labels: updated.labels ?? labels,
+      images: updated.images ?? images,
     });
-    // eslint-disable-next-line
-  }, [labelStates]);
+  };
 
-  // Propagate changes up
-  useEffect(() => {
-    if (onChange) {
-      onChange({
-        quizType,
-        id,
-        order,
-        title: quizTitle,
-        description: quizDescription,
-        labels: labelStates,
-        images: files.map((img, idx) => ({
-          correctLetter: correctLetter[idx],
-          fileData: files[idx]
-        })),
-      });
-    }
-    // eslint-disable-next-line
-  }, [quizTitle, quizDescription, labelStates, files, correctLetter]);
+  const handleTitleChange = (value: string) => handleChange({ title: value });
+  const handleDescriptionChange = (value: string) => handleChange({ description: value });
 
-
-  // Handlers
+  // Label description change
   const handleLabelDescriptionChange = (index: number, value: string) => {
-    setLabelStates((prev) =>
-      prev.map((lbl, i) =>
-        i === index ? { ...lbl, description: value } : lbl
-      )
+    const updatedLabels = labels.map((lbl, i) =>
+      i === index ? { ...lbl, description: value } : lbl
     );
+    handleChange({ labels: updatedLabels });
   };
 
-  // Add/delete a pair (label+image)
+  // Add new label-image pair
   const handleAddPair = () => {
-    const nextLetter = String.fromCharCode(65 + labelStates.length);
-    setLabelStates((prev) => [
-      ...prev,
-      { letter: nextLetter, description: "" },
-    ]);
-    setCorrectLetter((prev) => [...prev, nextLetter]);
-    setFiles((prev) => [...prev, undefined]);
+    const nextLetter = String.fromCharCode(65 + labels.length);
+    handleChange({
+      labels: [...labels, { letter: nextLetter, description: "" }],
+      images: [...images, { correctLetter: nextLetter, fileData: undefined }],
+    });
   };
 
+  // Delete a label-image pair (and reassign all letters)
   const handleDeletePair = (idx: number) => {
-    // Remove the selected label and image
-    const newLabels = labelStates.filter((_, i) => i !== idx);
-    const newCorrectLetters = correctLetter.filter((_, i) => i !== idx);
-    const newFiles = files.filter((_, i) => i !== idx);
+    // Remove pair and reassign letters (A, B, C, ...)
+    const filteredLabels = labels.filter((_, i) => i !== idx);
+    const filteredImages = images.filter((_, i) => i !== idx);
 
-    // Reassign letters to be sequential (A, B, C, ...)
-    const reassignedLabels = newLabels.map((lbl, i) => ({
+    const reassignedLabels = filteredLabels.map((lbl, i) => ({
       ...lbl,
       letter: String.fromCharCode(65 + i),
     }));
+    const reassignedImages = filteredImages.map((img, i) => ({
+      ...img,
+      correctLetter: String.fromCharCode(65 + i),
+    }));
 
-    // Update the correct letters to match the reassigned labels
-    const reassignedCorrectLetters = newCorrectLetters.map((_, i) => String.fromCharCode(65 + i));
-
-    setLabelStates(reassignedLabels);
-    setCorrectLetter(reassignedCorrectLetters);
-    setFiles(newFiles);
-  };
-
-  const handleUpdateFile = async (file: fileMetadata.TFileUploadRequest, index: number) => {
-    setFiles((prevFiles) =>
-      prevFiles.map((prevFile, i) =>
-        i === index ? file : prevFile
-      )
-    );
-  };
-
-  const handleFileDelete = (id: string) => {
-    setFiles((prevFiles) =>
-      prevFiles.map((file) => (file && file.id === id ? undefined : file))
-    );
-    onFileDelete(id, 'file');
+    handleChange({
+      labels: reassignedLabels,
+      images: reassignedImages,
+    });
   };
 
   return (
@@ -240,8 +141,8 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
         <TextInput
           inputField={{
             className: "w-full",
-            value: quizTitle,
-            setValue: setQuizTitle,
+            value: title,
+            setValue: handleTitleChange,
             inputText: dictionary.components.quiz.enterTitleText,
           }}
           label={dictionary.components.quiz.quizTitleText}
@@ -249,12 +150,12 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
         <TextAreaInput
           label={dictionary.components.quiz.descriptionText}
           placeholder={dictionary.components.quiz.enterDescriptionText}
-          value={quizDescription}
-          setValue={setQuizDescription}
+          value={description}
+          setValue={handleDescriptionChange}
         />
         {/* Label-Image Pair Section */}
         <div className="flex flex-col gap-3 w-full">
-          {labelStates.map((lbl, idx) => (
+          {labels.map((lbl, idx) => (
             <div key={idx} className="flex gap-2 md:flex-row flex-col items-stretch w-full">
               {/* Label and TextArea */}
               <div className="text-text-primary text-md leading-[120%] font-bold mt-2 flex items-center">
@@ -274,11 +175,11 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
                   <Uploader
                     type="single"
                     variant="image"
-                    file={files[idx]}
+                    file={images[idx]?.fileData}
                     onFilesChange={(file, abortSignal) => onFilesChange([file], abortSignal)}
-                    onDelete={(id) => handleFileDelete(id)}
+                    onDelete={(id) => onFileDelete(id, idx)}
                     onDownload={(id) => onFileDownload(id)}
-                    onUploadComplete={(file) => handleUpdateFile(file, idx)}
+                    onUploadComplete={(file) => onUploadComplete(file, idx)}
                     locale={locale}
                     className="w-full"
                     maxSize={5}
@@ -292,7 +193,7 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
                   icon={<IconTrashAlt />}
                   size="small"
                   onClick={() => handleDeletePair(idx)}
-                  disabled={labelStates.length <= 1}
+                  disabled={labels.length <= 1}
                 />
               </div>
             </div>
@@ -300,7 +201,6 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
           <Button
             variant="secondary"
             onClick={handleAddPair}
-            className="mb-4"
             text={dictionary.components.quiz.addChoiceText}
           />
         </div>

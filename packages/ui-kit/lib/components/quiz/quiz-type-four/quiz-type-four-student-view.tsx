@@ -7,6 +7,7 @@ import { InputField } from "../../input-field";
 import { FC, useEffect, useState } from "react";
 import { QuizTypeFourStudentViewElement } from "../../course-builder-lesson-component/types";
 import { getDictionary } from "@maany_shr/e-class-translations";
+import { IconError, IconSuccess } from "../../icons";
 
 /**
  * A student view component for a matching quiz question, allowing users to match images with corresponding labels.
@@ -208,7 +209,7 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewElement> = ({
 
             // Determine if placeholder should be shown
             const shouldShowPlaceholder =
-            !image.imageThumbnailUrl || imageErrors[index];
+              !image.imageThumbnailUrl || imageErrors[index];
 
             return (
               <div key={index} className="flex flex-col gap-2 items-center">
@@ -279,12 +280,14 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewElement> = ({
             <Banner
               style="success"
               icon={true}
+              customIcon={<IconSuccess />}
               title={dictionary.components.quiz.successBannerText}
             />
           ) : (
             <Banner
               style="error"
               icon={true}
+              customIcon={<IconError />}
               title={dictionary.components.quiz.errorBannerText}
             />
           )}

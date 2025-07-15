@@ -7,6 +7,7 @@ import { RadioButton } from "../../radio-button";
 import React, { FC, useEffect, useState } from "react";
 import { QuizTypeTwoStudentViewElement } from "../../course-builder-lesson-component/types";
 import { getDictionary } from "@maany_shr/e-class-translations";
+import { IconError, IconSuccess } from "../../icons";
 
 export interface GroupOption {
   optionText: string;
@@ -295,7 +296,7 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewElement> = ({
             )}
           </React.Fragment>
         ))}
-      </div>  
+      </div>
 
 
       {/* Feedback Section */}
@@ -305,12 +306,14 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewElement> = ({
             <Banner
               style='success'
               icon={true}
+              customIcon={<IconSuccess />}
               title={dictionary.components.quiz.successBannerText}
             />
           ) : (
             <Banner
               style='error'
               icon={true}
+              customIcon={<IconError />}
               title={dictionary.components.quiz.errorBannerText}
             />
           )}
