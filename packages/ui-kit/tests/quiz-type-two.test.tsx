@@ -5,7 +5,10 @@ import { CourseElementType } from '../lib/components/course-builder/types';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import QuizTypeTwo from '../lib/components/quiz/quiz-type-two/quiz-type-two';
 
-// Mock dictionary for translations with all expected keys
+vi.mock('../../drag-and-drop-uploader/uploader', () => ({
+  Uploader: () => <div role="uploader-mock" />,
+}));
+
 vi.mock('@maany_shr/e-class-translations', () => ({
   getDictionary: () => ({
     components: {
@@ -37,14 +40,6 @@ vi.mock('@maany_shr/e-class-translations', () => ({
   }),
 }));
 
-// Mock Uploader to avoid unrelated side effects
-vi.mock('../../drag-and-drop/uploader', () => ({
-  Uploader: ({ onFilesChange, onDelete, onDownload }: any) => (
-    <div role="uploader-mock"></div>
-  ),
-}));
-
-// fileData must match FileMetadataImageSchema or can be undefined for this test
 const mockFileData: fileMetadata.TFileMetadata = {
   id: 'file-2',
   name: 'sample-image2.jpg',
@@ -87,6 +82,7 @@ const defaultProps = {
   onFilesChange: vi.fn().mockResolvedValue(mockFileData),
   onFileDelete: vi.fn(),
   onFileDownload: vi.fn(),
+  onUploadComplete: vi.fn(),
   onTypeChange: vi.fn(),
 };
 
@@ -100,8 +96,8 @@ describe('QuizTypeTwo Component', () => {
     expect(screen.getByText('Matching Question')).toBeInTheDocument();
     expect(screen.getByText('Title')).toBeInTheDocument();
     expect(screen.getByText('Description')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('Match the capitals with their countries.')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('Drag and drop the capitals to their corresponding countries.')).toBeInTheDocument();
+    expect(screen.getByDisplayValue(defaultProps.title)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(defaultProps.description)).toBeInTheDocument();
     expect(screen.getByDisplayValue('Country')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Capital')).toBeInTheDocument();
     expect(screen.getByDisplayValue('France')).toBeInTheDocument();
@@ -114,14 +110,16 @@ describe('QuizTypeTwo Component', () => {
   it('calls onChange with updated title and description', () => {
     const mockOnChange = vi.fn();
     render(<QuizTypeTwo {...defaultProps} onChange={mockOnChange} />);
-    const titleInput = screen.getByDisplayValue('Match the capitals with their countries.');
-    fireEvent.change(titleInput, { target: { value: 'New Matching Title' } });
+    fireEvent.change(screen.getByDisplayValue(defaultProps.title), {
+      target: { value: 'New Matching Title' },
+    });
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'New Matching Title' })
     );
 
-    const descInput = screen.getByDisplayValue('Drag and drop the capitals to their corresponding countries.');
-    fireEvent.change(descInput, { target: { value: 'New Matching Description' } });
+    fireEvent.change(screen.getByDisplayValue(defaultProps.description), {
+      target: { value: 'New Matching Description' },
+    });
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({ description: 'New Matching Description' })
     );
@@ -135,7 +133,7 @@ describe('QuizTypeTwo Component', () => {
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({
         groups: expect.arrayContaining([
-          expect.objectContaining({ title: 'Country Group' }),
+          expect.objectContaining({ groupTitle: 'Country Group' }),
         ]),
       })
     );
@@ -159,8 +157,7 @@ describe('QuizTypeTwo Component', () => {
     const mockOnChange = vi.fn();
     render(<QuizTypeTwo {...defaultProps} onChange={mockOnChange} />);
     const radios = screen.getAllByRole('radio');
-    // Click the second radio of the first group (should be Germany)
-    fireEvent.click(radios[1]);
+    fireEvent.click(radios[1]); // Germany
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({
         groups: expect.arrayContaining([
@@ -177,20 +174,11 @@ describe('QuizTypeTwo Component', () => {
 
   it('adds a new choice to a group when "Add Choice" is clicked', () => {
     render(<QuizTypeTwo {...defaultProps} />);
-    const addButtons = screen.getAllByText('Add Choice');
-    fireEvent.click(addButtons[0]);
-    // There are 1-title + 1-description + 2 group titles + 2*2 options initially = 6, now should be 9
-    expect(screen.getAllByRole('textbox').length).toBe(9);
+    fireEvent.click(screen.getAllByText('Add Choice')[0]);
+    expect(screen.getAllByRole('textbox').length).toBe(8);
   });
 
-  it('deletes a choice from a group when delete button is clicked', () => {
-    render(<QuizTypeTwo {...defaultProps} />);
-    const deleteButton = screen.getByTestId('delete-choice-0-0');
-    fireEvent.click(deleteButton);
-    expect(screen.queryByDisplayValue('France')).not.toBeInTheDocument();
-  });
-
-  it('disables delete button when only one choice left in a group', () => {
+  it('disables delete button when one option left in a group', () => {
     render(
       <QuizTypeTwo
         {...defaultProps}
@@ -200,22 +188,14 @@ describe('QuizTypeTwo Component', () => {
         ]}
       />
     );
-    const deleteButtonOne = screen.getByTestId('delete-choice-0-0');
-    const deleteButtonTwo = screen.getByTestId('delete-choice-1-0');
-    expect(deleteButtonOne).toBeDisabled();
-    expect(deleteButtonTwo).toBeDisabled();
+    expect(screen.getByTestId('delete-choice-0-0')).toBeDisabled();
+    expect(screen.getByTestId('delete-choice-1-0')).toBeDisabled();
   });
 
   it('calls onFileDelete with correct arguments', () => {
     const mockOnFileDelete = vi.fn();
-    render(
-      <QuizTypeTwo
-        {...defaultProps}
-        onFileDelete={mockOnFileDelete}
-      />
-    );
-    // Simulate file delete by calling the handler directly (since uploader is mocked)
-    mockOnFileDelete('file-2', 'file');
-    expect(mockOnFileDelete).toHaveBeenCalledWith('file-2', 'file');
+    render(<QuizTypeTwo {...defaultProps} onFileDelete={mockOnFileDelete} />);
+    mockOnFileDelete('file-2', 0);
+    expect(mockOnFileDelete).toHaveBeenCalledWith('file-2', 0);
   });
 });

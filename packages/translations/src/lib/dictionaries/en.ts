@@ -653,7 +653,7 @@ export const EN: TDictionary = {
         choiceDescriptionText: 'Choice description',
       },
       quizTypeFour: {
-        headingText: 'The user picks one of the 2 videos',
+        headingText: 'Student must match all text with all images',
         choiceDescriptionText: 'Choice description',
         correctLetterText: 'Correct letter',
       },

@@ -7,6 +7,7 @@ import { RadioButton } from "../../radio-button";
 import { FC, useEffect, useState } from "react";
 import { QuizTypeThreeStudentViewElement } from "../../course-builder-lesson-component/types";
 import { getDictionary } from "@maany_shr/e-class-translations";
+import { IconError, IconSuccess } from "../../icons";
 
 export interface QuizTypeThreeStudentViewOption {
   imageId: string;
@@ -174,7 +175,7 @@ const QuizTypeThreeStudentView: FC<QuizTypeThreeStudentViewElement> = ({
 
           // Determine if placeholder should be shown
           const shouldShowPlaceholder =
-          !choice.imageThumbnailUrl || imageErrors[index];
+            !choice.imageThumbnailUrl || imageErrors[index];
 
           return (
             <div key={index} className="flex flex-col gap-3">
@@ -247,12 +248,14 @@ const QuizTypeThreeStudentView: FC<QuizTypeThreeStudentViewElement> = ({
             <Banner
               style='success'
               icon={true}
+              customIcon={<IconSuccess />}
               title={dictionary.components.quiz.successBannerText}
             />
           ) : (
             <Banner
               style='error'
               icon={true}
+              customIcon={<IconError />}
               title={dictionary.components.quiz.errorBannerText}
             />
           )}

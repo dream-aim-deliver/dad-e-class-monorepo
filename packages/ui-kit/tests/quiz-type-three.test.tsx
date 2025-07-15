@@ -5,7 +5,11 @@ import { CourseElementType } from '../lib/components/course-builder/types';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
-// Mock dictionary for translations with all expected keys
+vi.mock('../../drag-and-drop-uploader/uploader', () => ({
+  Uploader: () => <div role="uploader-mock" />,
+}));
+
+// Mock dictionary
 vi.mock('@maany_shr/e-class-translations', () => ({
   getDictionary: () => ({
     components: {
@@ -36,14 +40,6 @@ vi.mock('@maany_shr/e-class-translations', () => ({
   }),
 }));
 
-// Mock Uploader to avoid unrelated side effects
-vi.mock('../../drag-and-drop/uploader', () => ({
-  Uploader: ({ onFilesChange, onDelete, onDownload }: any) => (
-    <div role="uploader-mock"></div>
-  ),
-}));
-
-// fileData mocks for each choice (matching FileMetadataImageSchema)
 const catFileData: fileMetadata.TFileMetadata = {
   id: 'cat123',
   name: 'cat.jpg',
@@ -55,6 +51,7 @@ const catFileData: fileMetadata.TFileMetadata = {
   url: 'https://example.com/cat.jpg',
   thumbnailUrl: 'https://example.com/cat-thumb.jpg',
 };
+
 const dogFileData: fileMetadata.TFileMetadata = {
   id: 'dog456',
   name: 'dog.jpg',
@@ -92,6 +89,7 @@ const defaultProps = {
   onFilesChange: vi.fn().mockResolvedValue(catFileData),
   onFileDelete: vi.fn(),
   onFileDownload: vi.fn(),
+  onUploadComplete: vi.fn(),
 };
 
 describe('QuizTypeThree Component', () => {
@@ -113,14 +111,19 @@ describe('QuizTypeThree Component', () => {
   it('calls onChange with updated title and description', () => {
     const mockOnChange = vi.fn();
     render(<QuizTypeThree {...defaultProps} onChange={mockOnChange} />);
-    const titleInput = screen.getByDisplayValue('Which image shows a cat?');
-    fireEvent.change(titleInput, { target: { value: 'New Image Choice Title' } });
+
+    fireEvent.change(
+      screen.getByDisplayValue('Which image shows a cat?'),
+      { target: { value: 'New Image Choice Title' } }
+    );
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'New Image Choice Title' })
     );
 
-    const descInput = screen.getByDisplayValue('Select the image that depicts a cat.');
-    fireEvent.change(descInput, { target: { value: 'New Image Choice Description' } });
+    fireEvent.change(
+      screen.getByDisplayValue('Select the image that depicts a cat.'),
+      { target: { value: 'New Image Choice Description' } }
+    );
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({ description: 'New Image Choice Description' })
     );
@@ -129,8 +132,10 @@ describe('QuizTypeThree Component', () => {
   it('allows editing choice descriptions', () => {
     const mockOnChange = vi.fn();
     render(<QuizTypeThree {...defaultProps} onChange={mockOnChange} />);
+
     const choiceInputs = screen.getAllByDisplayValue(/A fluffy cat|A happy dog/);
     fireEvent.change(choiceInputs[0], { target: { value: 'A playful kitten' } });
+
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({
         options: expect.arrayContaining([
@@ -143,9 +148,10 @@ describe('QuizTypeThree Component', () => {
   it('marks correct answer among choices', () => {
     const mockOnChange = vi.fn();
     render(<QuizTypeThree {...defaultProps} onChange={mockOnChange} />);
+
     const radios = screen.getAllByRole('radio');
-    // Click the second radio (should be for the dog)
     fireEvent.click(radios[1]);
+
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({
         options: [
@@ -156,15 +162,10 @@ describe('QuizTypeThree Component', () => {
     );
   });
 
-  it('renders two empty choices when initialized with no options', () => {
-    render(
-      <QuizTypeThree
-        {...defaultProps}
-        options={[]}
-      />
-    );
-    // 1 for title, 1 for description, 2 for the choices
-    expect(screen.getAllByRole('textbox').length).toBe(4);
+  it('renders nothing for options if list is empty', () => {
+    render(<QuizTypeThree {...defaultProps} options={[]} />);
+    expect(screen.queryByDisplayValue('A fluffy cat')).not.toBeInTheDocument();
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument();
   });
 
   it('calls onFileDelete with correct arguments', () => {
@@ -175,8 +176,7 @@ describe('QuizTypeThree Component', () => {
         onFileDelete={mockOnFileDelete}
       />
     );
-    // Simulate file delete by calling the handler directly (since uploader is mocked)
-    mockOnFileDelete('cat123', 'file');
-    expect(mockOnFileDelete).toHaveBeenCalledWith('cat123', 'file');
+    mockOnFileDelete('cat123', 0);
+    expect(mockOnFileDelete).toHaveBeenCalledWith('cat123', 0);
   });
 });

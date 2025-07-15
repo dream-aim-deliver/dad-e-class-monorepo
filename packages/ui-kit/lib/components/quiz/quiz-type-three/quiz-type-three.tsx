@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC } from "react";
 import { InputField } from "../../input-field";
 import { RadioButton } from "../../radio-button";
 import { getDictionary } from "@maany_shr/e-class-translations";
@@ -8,12 +8,6 @@ import { QuizTypeThreeElement } from "../../course-builder-lesson-component/type
 import Banner from "../../banner";
 import { Uploader } from "../../drag-and-drop-uploader/uploader";
 import { fileMetadata } from "@maany_shr/e-class-models";
-
-type ChoiceType = {
-  fileData: fileMetadata.TFileMetadata;
-  description: string;
-  correct: boolean;
-};
 
 /**
  * A component for creating and editing a single-choice quiz question where each option
@@ -37,6 +31,8 @@ type ChoiceType = {
  * @param onFilesChange A callback function triggered when files are uploaded.
  * @param onFileDelete A callback function triggered when a file is deleted.
  * @param onFileDownload A callback function triggered when a file is downloaded.
+ * @param onUploadComplete A callback function triggered when a file upload is completed.
+ * 
  * It receives the updated `QuizTypeThreeElement` object.
  *
  * @example
@@ -66,90 +62,41 @@ const QuizTypeThree: FC<QuizTypeThreeElement> = ({
   onFilesChange,
   onFileDelete,
   onFileDownload,
+  onUploadComplete,
 }) => {
   const dictionary = getDictionary(locale);
 
-  // States
-  const [quizTitle, setQuizTitle] = useState<string>("");
-  const [quizDescription, setQuizDescription] = useState<string>("");
-  const [choices, setChoices] = useState<ChoiceType[]>([]);
-  const [files, setFiles] = useState<fileMetadata.TFileMetadata[]>([]);
-
-
-  // Initialize state from props (edit/create mode)
-  useEffect(() => {
-    setQuizTitle(title);
-    setQuizDescription(description);
-
-    if (options && options.length > 0) {
-      setChoices(options);
-      setFiles(
-        options.map((opt) =>
-          opt.fileData ? opt.fileData
-            : undefined
-        )
-      );
-    } else {
-      setChoices([
-        { fileData: undefined, description: "", correct: false },
-        { fileData: undefined, description: "", correct: false },
-      ]);
-      setFiles([undefined, undefined]);
-    }
-  }, [title, description, options]);
-
-
-  // Call onChange on any relevant state change
-  useEffect(() => {
+  // Triggers parent update with partial updates
+  const handleChange = (updated: Partial<QuizTypeThreeElement>) => {
     onChange({
       quizType: "quizTypeThree",
       id,
       order,
-      title: quizTitle,
-      description: quizDescription,
-      options: choices.map((choice, idx) => ({
-        fileData: files[idx],
-        description: choice.description,
-        correct: choice.correct,
-      })),
+      title: updated.title ?? title,
+      description: updated.description ?? description,
+      options: updated.options ?? options,
     });
-  }, [quizTitle, quizDescription, choices, files, id, order, onChange]);
-
-
-  // Handle description change per choice
-  const handleDescriptionChange = (index: number, value: string) => {
-    setChoices((prev) =>
-      prev.map((choice, i) =>
-        i === index ? { ...choice, description: value } : choice
-      )
-    );
   };
 
-  // Handle correct answer change
+  const handleTitleChange = (value: string) => handleChange({ title: value });
+
+  const handleDescriptionChange = (value: string) =>
+    handleChange({ description: value });
+
+  const handleChoiceDescriptionChange = (index: number, value: string) => {
+    const updatedOptions = options.map((opt, i) =>
+      i === index ? { ...opt, description: value } : opt
+    );
+    handleChange({ options: updatedOptions });
+  };
+
   const handleCorrectAnswerChange = (index: number) => {
-    setChoices((prev) =>
-      prev.map((choice, i) => ({
-        ...choice,
-        correct: i === index,
-      }))
-    );
+    const updatedOptions = options.map((opt, i) => ({
+      ...opt,
+      correct: i === index,
+    }));
+    handleChange({ options: updatedOptions });
   };
-
-  const handleUpdateFile = async (file: fileMetadata.TFileUploadRequest, index: number) => {
-    setFiles((prevFiles) =>
-      prevFiles.map((prevFile, i) =>
-        i === index ? file : prevFile
-      )
-    );
-  };
-
-  const handleFileDelete = (id: string) => {
-    setFiles((prevFiles) =>
-      prevFiles.map((file) => (file && file.id === id ? undefined : file))
-    );
-    onFileDelete(id, 'file');
-  };
-
 
   return (
     <div className="flex flex-col gap-[13px] w-full">
@@ -161,8 +108,8 @@ const QuizTypeThree: FC<QuizTypeThreeElement> = ({
         <TextInput
           inputField={{
             className: "w-full",
-            value: quizTitle,
-            setValue: setQuizTitle,
+            value: title,
+            setValue: handleTitleChange,
             inputText: dictionary.components.quiz.enterTitleText,
           }}
           label={dictionary.components.quiz.quizTitleText}
@@ -170,8 +117,8 @@ const QuizTypeThree: FC<QuizTypeThreeElement> = ({
         <TextAreaInput
           label={dictionary.components.quiz.descriptionText}
           placeholder={dictionary.components.quiz.enterDescriptionText}
-          value={quizDescription}
-          setValue={setQuizDescription}
+          value={description}
+          setValue={handleDescriptionChange}
         />
       </div>
       {/* error */}
@@ -184,37 +131,39 @@ const QuizTypeThree: FC<QuizTypeThreeElement> = ({
       )}
       {/* Choices Section */}
       <div className="flex flex-col md:flex-row w-full gap-4 md:gap-0">
-        {choices.map((choice, index) => (
+        {options.map((option, index) => (
           <React.Fragment key={index}>
             <div className="flex-1 min-w-0 flex flex-col gap-4 items-start">
               <RadioButton
                 name="single-choice"
                 value={`choice-${index}`}
-                checked={choice.correct}
+                checked={option.correct}
                 onChange={() => handleCorrectAnswerChange(index)}
               />
               <InputField
                 className="w-full"
                 inputText={dictionary.components.quiz.quizTypeThree.choiceDescriptionText}
-                value={choice.description}
-                setValue={(value) => handleDescriptionChange(index, value)}
+                value={option.description}
+                setValue={(value) =>
+                  handleChoiceDescriptionChange(index, value)
+                }
               />
               <div className="w-full flex items-center justify-center">
                 <Uploader
                   type="single"
                   variant="image"
-                  file={files[index]}
+                  file={option.fileData}
                   onFilesChange={(file, abortSignal) => onFilesChange([file], abortSignal)}
-                  onDelete={(id) => handleFileDelete(id)}
+                  onDelete={(id) => onFileDelete(id, index)}
                   onDownload={(id) => onFileDownload(id)}
-                  onUploadComplete={(file) => handleUpdateFile(file, index)}
+                  onUploadComplete={(file) => onUploadComplete(file, index)}
                   locale={locale}
                   className="w-full"
                   maxSize={5}
                 />
               </div>
             </div>
-            {index !== choices.length - 1 && (
+            {index !== options.length - 1 && (
               <>
                 <div className="hidden md:flex self-stretch w-[1px] bg-divider mx-4" />
                 <div className="flex md:hidden self-stretch h-[1px] bg-divider" />

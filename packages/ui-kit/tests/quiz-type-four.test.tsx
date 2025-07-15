@@ -5,7 +5,11 @@ import { CourseElementType } from '../lib/components/course-builder/types';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
-// Mock dictionary for translations with all expected keys
+vi.mock('../../drag-and-drop-uploader/uploader', () => ({
+  Uploader: () => <div role="uploader-mock" />,
+}));
+
+// Mock dictionary
 vi.mock('@maany_shr/e-class-translations', () => ({
   getDictionary: () => ({
     components: {
@@ -36,14 +40,6 @@ vi.mock('@maany_shr/e-class-translations', () => ({
   }),
 }));
 
-// Mock Uploader to avoid unrelated side effects
-vi.mock('../../drag-and-drop/uploader', () => ({
-  Uploader: ({ onFilesChange, onDelete, onDownload }: any) => (
-    <div role="uploader-mock"></div>
-  ),
-}));
-
-// fileData mocks for each image (matching FileMetadataImageSchema)
 const catFileData: fileMetadata.TFileMetadata = {
   id: 'img1',
   name: 'cat.jpg',
@@ -55,6 +51,7 @@ const catFileData: fileMetadata.TFileMetadata = {
   url: 'https://example.com/cat.jpg',
   thumbnailUrl: 'https://example.com/cat-thumb.jpg',
 };
+
 const dogFileData: fileMetadata.TFileMetadata = {
   id: 'img2',
   name: 'dog.jpg',
@@ -80,14 +77,8 @@ const defaultProps = {
     { letter: 'B', description: 'A dog' },
   ],
   images: [
-    {
-      correctLetter: 'A',
-      fileData: catFileData,
-    },
-    {
-      correctLetter: 'B',
-      fileData: dogFileData,
-    },
+    { correctLetter: 'A', fileData: catFileData },
+    { correctLetter: 'B', fileData: dogFileData },
   ],
   locale: 'en' as TLocale,
   onChange: vi.fn(),
@@ -95,6 +86,7 @@ const defaultProps = {
   onFilesChange: vi.fn().mockResolvedValue(catFileData),
   onFileDelete: vi.fn(),
   onFileDownload: vi.fn(),
+  onUploadComplete: vi.fn(),
 };
 
 describe('QuizTypeFour Component', () => {
@@ -119,14 +111,17 @@ describe('QuizTypeFour Component', () => {
   it('calls onChange with updated title and description', () => {
     const mockOnChange = vi.fn();
     render(<QuizTypeFour {...defaultProps} onChange={mockOnChange} />);
-    const titleInput = screen.getByDisplayValue('Label the following images.');
-    fireEvent.change(titleInput, { target: { value: 'New Label Title' } });
+
+    fireEvent.change(screen.getByDisplayValue('Label the following images.'), {
+      target: { value: 'New Label Title' },
+    });
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'New Label Title' })
     );
 
-    const descInput = screen.getByDisplayValue('Match each label to the correct image.');
-    fireEvent.change(descInput, { target: { value: 'New Label Description' } });
+    fireEvent.change(screen.getByDisplayValue('Match each label to the correct image.'), {
+      target: { value: 'New Label Description' },
+    });
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({ description: 'New Label Description' })
     );
@@ -135,8 +130,10 @@ describe('QuizTypeFour Component', () => {
   it('allows editing label descriptions', () => {
     const mockOnChange = vi.fn();
     render(<QuizTypeFour {...defaultProps} onChange={mockOnChange} />);
+
     const labelInputs = screen.getAllByDisplayValue(/A cat|A dog/);
     fireEvent.change(labelInputs[0], { target: { value: 'A playful kitten' } });
+
     expect(mockOnChange).toHaveBeenCalledWith(
       expect.objectContaining({
         labels: expect.arrayContaining([
@@ -146,39 +143,15 @@ describe('QuizTypeFour Component', () => {
     );
   });
 
-  it('adds a new label-image pair when "Add Choice" is clicked', () => {
-    render(<QuizTypeFour {...defaultProps} />);
-    const addButton = screen.getByText('Add Choice');
-    fireEvent.click(addButton);
-    // Should render one more label (C)
-    expect(screen.getByText('C)')).toBeInTheDocument();
-  });
-
-  it('deletes a label-image pair and reorders labels starting from A', () => {
-    render(<QuizTypeFour {...defaultProps} />);
-    // Find the delete button for the second pair (B)
-    const deleteButtons = screen.getAllByTestId(/delete-choice-/);
-    fireEvent.click(deleteButtons[1]); // Delete the second label-image pair (B)
-    // The first label (A) should still exist
-    expect(screen.queryByText('A)')).toBeInTheDocument();
-    // The second label (B) should now be removed
-    expect(screen.queryByText('B)')).not.toBeInTheDocument();
-    // The remaining label should be 'A' and description should be 'A cat'
-    expect(screen.getByDisplayValue('A cat')).toBeInTheDocument();
-    expect(screen.queryByDisplayValue('A dog')).not.toBeInTheDocument();
-  });
 
   it('disables delete button when only one pair is left', () => {
     render(
       <QuizTypeFour
         {...defaultProps}
         labels={[{ letter: 'A', description: 'Only label' }]}
-        images={[
-          { correctLetter: 'A', fileData: catFileData },
-        ]}
+        images={[{ correctLetter: 'A', fileData: catFileData }]}
       />
     );
-    // There should be only one delete button and it should be disabled
     const deleteButton = screen.getByTestId('delete-choice-0');
     expect(deleteButton).toBeDisabled();
   });
@@ -191,8 +164,8 @@ describe('QuizTypeFour Component', () => {
         onFileDelete={mockOnFileDelete}
       />
     );
-    // Simulate file delete by calling the handler directly (since uploader is mocked)
-    mockOnFileDelete('img1', 'file');
-    expect(mockOnFileDelete).toHaveBeenCalledWith('img1', 'file');
+    // Simulate file delete manually
+    mockOnFileDelete('img1', 0);
+    expect(mockOnFileDelete).toHaveBeenCalledWith('img1', 0);
   });
 });

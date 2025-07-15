@@ -656,7 +656,7 @@ export const DE: TDictionary = {
         choiceDescriptionText: 'Beschreibung der Option',
       },
       quizTypeFour: {
-        headingText: 'Der Student entscheidet sich selbst',
+        headingText: 'Der Student muss den gesamten Text allen Bildern zuordnen',
         choiceDescriptionText: 'Beschreibung der Option',
         correctLetterText: 'Richtiges Zeichen',
       },
