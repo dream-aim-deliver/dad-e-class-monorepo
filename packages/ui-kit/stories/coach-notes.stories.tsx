@@ -40,7 +40,7 @@ const emptyDescription: Descendant[] = [
 ];
 
 export default {
-  title: 'Coach/CoachNotes',
+  title: 'Components/CoachNotes',
   component: CoachNotesCreate,
   subcomponents: { CoachNotesView },
 };
