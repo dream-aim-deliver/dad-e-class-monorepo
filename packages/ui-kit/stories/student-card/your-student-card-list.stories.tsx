@@ -44,12 +44,12 @@ export const MixedCards: Story = {
                         assignmentTitle: 'Create a photo composition',
                         status: 'long-wait',
                         onClickCourse: () => alert('Clicked Photography 101'),
-                        onViewAssignment: () => alert('View assignment: Photography'),
+                        onViewAssignment: () =>
+                            alert('View assignment: Photography'),
                     },
                     {
                         courseName: 'Art History',
                         courseImageUrl: courseImg,
-                        assignmentTitle: 'Essay on Renaissance',
                         status: 'course-completed',
                         completedCourseDate: new Date('2024-09-20'),
                         onClickCourse: () => alert('Clicked Art History'),
@@ -67,14 +67,15 @@ export const MixedCards: Story = {
                     {
                         courseName: 'Math Basics',
                         courseImageUrl: courseImg,
-                        status: 'default',
+                        status: 'no-assignment',
                         onClickCourse: () => alert('Clicked Math Basics'),
                     },
                     {
                         courseName: 'Science Fundamentals',
                         courseImageUrl: courseImg,
-                        status: 'default',
-                        onClickCourse: () => alert('Clicked Science Fundamentals'),
+                        status: 'no-assignment',
+                        onClickCourse: () =>
+                            alert('Clicked Science Fundamentals'),
                     },
                 ]}
             />,
@@ -92,7 +93,8 @@ export const MixedCards: Story = {
                         assignmentTitle: 'Draw a comic character',
                         status: 'waiting-feedback',
                         onClickCourse: () => alert('Clicked Illustration'),
-                        onViewAssignment: () => alert('View Illustration assignment'),
+                        onViewAssignment: () =>
+                            alert('View Illustration assignment'),
                     },
                 ]}
             />,
@@ -110,12 +112,12 @@ export const MixedCards: Story = {
                         assignmentTitle: 'Write a short story',
                         status: 'waiting-feedback',
                         onClickCourse: () => alert('Clicked Creative Writing'),
-                        onViewAssignment: () => alert('View Writing assignment'),
+                        onViewAssignment: () =>
+                            alert('View Writing assignment'),
                     },
                     {
                         courseName: 'History of Art',
                         courseImageUrl: courseImg,
-                        assignmentTitle: 'Essay on Cubism',
                         status: 'course-completed',
                         completedCourseDate: new Date('2024-06-01'),
                         onClickCourse: () => alert('Clicked History of Art'),
@@ -133,20 +135,22 @@ export const MixedCards: Story = {
                     {
                         courseName: 'Public Speaking',
                         courseImageUrl: courseImg,
-                        status: 'default',
+                        status: 'no-assignment',
                         onClickCourse: () => alert('Clicked Public Speaking'),
                     },
                     {
                         courseName: 'Data Visualization',
                         courseImageUrl: courseImg,
-                        status: 'default',
-                        onClickCourse: () => alert('Clicked Data Visualization'),
+                        status: 'no-assignment',
+                        onClickCourse: () =>
+                            alert('Clicked Data Visualization'),
                     },
                     {
                         courseName: 'JavaScript Essentials',
                         courseImageUrl: courseImg,
-                        status: 'default',
-                        onClickCourse: () => alert('Clicked JavaScript Essentials'),
+                        status: 'no-assignment',
+                        onClickCourse: () =>
+                            alert('Clicked JavaScript Essentials'),
                     },
                 ]}
             />,
@@ -169,8 +173,11 @@ export const MixedCards: Story = {
                     {
                         courseName: 'React Basics',
                         courseImageUrl: courseImg,
+                        assignmentTitle: 'Build a todo app',
                         status: 'long-wait',
                         onClickCourse: () => alert('Clicked React Basics'),
+                        onViewAssignment: () =>
+                            alert('View React Basics assignment'),
                     },
                 ]}
             />,

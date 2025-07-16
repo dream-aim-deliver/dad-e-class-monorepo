@@ -4,15 +4,40 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Badge } from '../badge';
 import { IconAssignment } from '../icons/icon-assignment';
 
-export interface CourseAssignment {
+export interface DefaultCourseAssignment {
     courseName: string;
     courseImageUrl: string;
-    assignmentTitle?: string;
-    status: 'default' | 'long-wait' | 'waiting-feedback' | 'course-completed';
-    completedCourseDate?: Date;
     onClickCourse: () => void;
-    onViewAssignment?: () => void;
 }
+
+export interface NoAssignmentCourse extends DefaultCourseAssignment {
+    status: 'no-assignment';
+}
+
+export interface LongWaitCourseAssignment extends DefaultCourseAssignment {
+    status: 'long-wait';
+    assignmentTitle: string;
+    onViewAssignment: () => void;
+}
+
+export interface WaitingFeedbackCourseAssignment
+    extends DefaultCourseAssignment {
+    status: 'waiting-feedback';
+    assignmentTitle: string;
+    onViewAssignment: () => void;
+}
+
+export interface CourseCompletedCourseAssignment
+    extends DefaultCourseAssignment {
+    status: 'course-completed';
+    completedCourseDate: Date;
+}
+
+export type CourseAssignment =
+    | NoAssignmentCourse
+    | LongWaitCourseAssignment
+    | WaitingFeedbackCourseAssignment
+    | CourseCompletedCourseAssignment;
 
 export interface YourStudentCardProps extends isLocalAware {
     studentName: string;
@@ -23,36 +48,26 @@ export interface YourStudentCardProps extends isLocalAware {
 }
 
 /**
- * `YourStudentCard` displays a student's avatar, name, coaching sessions left, and a list of their courses with assignment statuses.
+ * `YourStudentCard` displays a student's profile with their assigned courses and related assignments.
  *
- * This component helps visualize a student's academic progress in a compact card layout. It supports localization, badge indicators,
- * and status-based UI elements for courses and assignments.
+ * It shows the student's avatar, name, number of coaching sessions left (if any), and a list of their courses.
+ * Each course can have different statuses which affect how the assignment information is presented:
+ * - 'no-assignment': course without any current assignment.
+ * - 'long-wait': assignment is pending for a long time, shows an alert badge and a button to view assignment.
+ * - 'waiting-feedback': assignment submitted and waiting for feedback, shows a warning badge and view button.
+ * - 'course-completed': course is finished, shows completion date badge.
+ *
+ * Courses are sorted by status priority: long-wait, waiting-feedback, no-assignment, course-completed.
  *
  * ### Props
- * @param {YourStudentCardProps} props - The props for `YourStudentCard`.
- * @param {string} props.studentName - The full name of the student.
- * @param {string} props.studentImageUrl - URL for the student's avatar image.
- * @param {number} [props.coachingSessionsLeft] - Optional number of remaining coaching sessions.
- * @param {() => void} props.onStudentDetails - Callback triggered when the "Student Details" button is clicked.
- * @param {CourseAssignment[]} props.courses - Array of courses associated with the student, with status and assignment details.
- * @param {string} props.locale - The locale string used for translation (from `isLocalAware`).
+ * @param {string} studentName - Full name of the student.
+ * @param {string} studentImageUrl - URL to the student's avatar image.
+ * @param {number} [coachingSessionsLeft] - Optional count of remaining coaching sessions.
+ * @param {() => void} onStudentDetails - Callback fired when clicking the button to view student details.
+ * @param {CourseAssignment[]} courses - Array of course assignments with various statuses and details.
+ * @param {string} locale - Locale string used for translations.
  *
- * ### CourseAssignment
- * Each course includes:
- * - `courseName` (string): Name of the course.
- * - `courseImageUrl` (string): Avatar or icon image URL for the course.
- * - `assignmentTitle?` (string): Title of the current assignment (optional).
- * - `status` ('default' | 'long-wait' | 'waiting-feedback' | 'course-completed'): The current status of the course.
- * - `completedCourseDate?` (Date): Date when the course was completed (used if status is `course-completed`).
- * - `onClickCourse` (() => void): Callback triggered when the course name is clicked.
- * - `onViewAssignment?` (() => void): Optional callback for viewing the assignment, triggered from the "View Assignment" button.
- *
- * ### Behavior
- * - Courses are sorted by priority of status.
- * - Renders badges based on course and assignment status.
- * - Displays a button for viewing student details.
- *
- * @returns {JSX.Element} A student card component showing avatar, sessions left, course list, and action buttons.
+ * @returns {JSX.Element} A styled card component displaying student and course information.
  */
 
 export const YourStudentCard = ({
@@ -69,7 +84,7 @@ export const YourStudentCard = ({
         const priority = {
             'long-wait': 1,
             'waiting-feedback': 2,
-            default: 3,
+            'no-assignment': 3,
             'course-completed': 4,
         };
         return priority[a.status] - priority[b.status];
@@ -150,7 +165,7 @@ export const YourStudentCard = ({
                                 <Badge
                                     variant="warningprimary"
                                     size="small"
-                                    text={dictionary.waitingFeedbackBagde}
+                                    text={dictionary.waitingFeedbackBadge}
                                 />
                             )}
                             {course.status === 'long-wait' && (
