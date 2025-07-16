@@ -1,4 +1,5 @@
 import { TLocale } from "@maany_shr/e-class-translations";
+import { useMemo } from "react";
 
 const isToday = (date) => {
     const today = new Date();
@@ -57,23 +58,25 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale }: WeeklyCa
         return dates;
     };
 
-    const generateTimeSlots = () => {
+    const timeSlots = useMemo(() => {
         const slots = [];
         for (let hour = 0; hour < 24; hour++) {
-            slots.push(`${hour}:00`);
+            const date = new Date();
+            date.setHours(hour, 0, 0, 0);
+
+            const formattedTime = date.toLocaleTimeString(locale, {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: undefined // Let the locale decide 12/24 hour format
+            });
+
+            slots.push(formattedTime);
         }
         return slots;
-    };
+    }, [locale]);
 
     const weekDates = getWeekDates();
-    const timeSlots = generateTimeSlots();
 
-    const navigateWeek = (direction) => {
-        const newDate = new Date(currentDate);
-        newDate.setDate(currentDate.getDate() + (direction * 7));
-        setCurrentDate(newDate);
-    };
-    
     const getTimezoneFormat = () => {
         const now = new Date();
 
@@ -84,20 +87,8 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale }: WeeklyCa
         return `GMT${offsetHours >= 0 ? '+' : ''}${offsetHours}`;
     }
 
-    const formatWeekRange = () => {
-        const start = weekDates[0];
-        const end = weekDates[6];
-        return `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
-    };
-
     return (
         <div className="flex flex-col h-full w-full bg-base-neutral-900">
-            <div>
-                <button onClick={() => navigateWeek(-1)}>← Previous Week</button>
-                <span>{formatWeekRange()}</span>
-                <button onClick={() => navigateWeek(1)}>Next Week →</button>
-            </div>
-
             <div className="overflow-auto h-full">
                 {/* Header row */}
                 <div className="grid grid-cols-[80px_repeat(7,1fr)] sticky top-0 z-10">
