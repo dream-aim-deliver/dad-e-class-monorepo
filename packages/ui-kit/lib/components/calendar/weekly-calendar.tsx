@@ -22,10 +22,24 @@ const getCellBackground = (date) => {
     return 'bg-card-fill';
 }
 
+interface CalendarEvent {
+    start: Date;
+    end: Date;
+    component: React.ReactNode;
+}
+
 interface WeeklyCalendarProps {
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
     locale: TLocale;
+    events?: CalendarEvent[];
+}
+
+interface ProcessedEvent extends CalendarEvent {
+    id: string;
+    dayIndex: number;
+    startMinutes: number;
+    durationMinutes: number;
 }
 
 function WeekdayHeader({ date, locale }: { date: Date; locale: TLocale }) {
@@ -38,7 +52,7 @@ function WeekdayHeader({ date, locale }: { date: Date; locale: TLocale }) {
     </div>
 }
 
-export function WeeklyCalendar({ currentDate, setCurrentDate, locale }: WeeklyCalendarProps) {
+export function WeeklyCalendar({ currentDate, setCurrentDate, locale, events }: WeeklyCalendarProps) {
     const getWeekStart = (date) => {
         const d = new Date(date);
         const day = d.getDay();
@@ -77,6 +91,82 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale }: WeeklyCa
 
     const weekDates = getWeekDates();
 
+    // Helper function to get day index for a date
+    const getDayIndex = (date: Date, weekDates: Date[]) => {
+        const dateStr = date.toDateString();
+        return weekDates.findIndex(weekDate => weekDate.toDateString() === dateStr);
+    };
+
+    // Helper function to convert time to minutes from midnight
+    const timeToMinutes = (date: Date) => {
+        return date.getHours() * 60 + date.getMinutes();
+    };
+
+    // Helper function to check if two events overlap
+    const eventsOverlap = (event1: ProcessedEvent, event2: ProcessedEvent) => {
+        if (event1.dayIndex !== event2.dayIndex) return false;
+
+        const end1 = event1.startMinutes + event1.durationMinutes;
+        const end2 = event2.startMinutes + event2.durationMinutes;
+
+        return event1.startMinutes < end2 && event2.startMinutes < end1;
+    };
+
+    // Process events to calculate positioning
+    const processedEvents = useMemo(() => {
+        const processed: ProcessedEvent[] = events
+            .filter(event => {
+                // Filter events that fall within the current week
+                const dayIndex = getDayIndex(event.start, weekDates);
+                return dayIndex !== -1;
+            })
+            .map((event, index) => ({
+                ...event,
+                id: `event-${index}`,
+                dayIndex: getDayIndex(event.start, weekDates),
+                startMinutes: timeToMinutes(event.start),
+                durationMinutes: Math.max(30, timeToMinutes(event.end) - timeToMinutes(event.start)), // Minimum 30 minutes
+            }));
+
+        return processed;
+    }, [events, weekDates]);
+
+    // Group processed events by day for easy lookup
+    const eventsByDayAndTime = useMemo(() => {
+        const grouped: { [key: string]: ProcessedEvent[] } = {};
+
+        processedEvents.forEach(event => {
+            const key = `${event.dayIndex}`;
+            if (!grouped[key]) {
+                grouped[key] = [];
+            }
+            grouped[key].push(event);
+        });
+
+        return grouped;
+    }, [processedEvents]);
+
+    // Component to render a single event
+    const EventComponent = ({ event }: { event: ProcessedEvent }) => {
+        const top = (event.startMinutes / 60) * 96; // 96px per hour (24px * 4 quarters)
+        const height = Math.max(20, (event.durationMinutes / 60) * 96);
+
+        return (
+            <div
+                className="absolute z-10 px-1"
+                style={{
+                    top: `${top}px`,
+                    height: `${height}px`,
+                    left: 0,
+                    right: 0,
+                    paddingRight: '2px'
+                }}
+            >
+                {event.component}
+            </div>
+        );
+    };
+
     const getTimezoneFormat = () => {
         const now = new Date();
 
@@ -90,7 +180,7 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale }: WeeklyCa
     return (
         <div className="flex flex-col h-full w-full bg-base-neutral-900">
             {/* Header row */}
-            <div className="grid grid-cols-[80px_repeat(7,1fr)] sticky top-0 z-10">
+            <div className="grid grid-cols-[80px_repeat(7,1fr)] sticky top-0 z-50">
                 <div className="p-2 text-sm text-base-neutral-500 bg-card-fill">
                     {getTimezoneFormat()}
                 </div>
@@ -101,23 +191,37 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale }: WeeklyCa
 
 
             {/* Time slots and calendar grid */}
-            <div
-                className="flex-1 overflow-auto"
-            >
-                {/* Time slots and calendar grid */}
-                {timeSlots.map((time, timeIndex) => (
-                    <div key={timeIndex} className="grid grid-cols-[80px_repeat(7,1fr)]">
-                        <div className="p-2 h-24 text-sm text-text-secondary border-r border-divider">
-                            {time}
-                        </div>
-                        {weekDates.map((date, dateIndex) => (
-                            <div key={dateIndex}
-                                className={`outline outline-1 outline-divider h-24 ${getCellBackground(date)}`}>
-                                {/* Empty cell for events/appointments */}
+            <div className="flex-1 overflow-auto">
+                <div className="relative">
+                    {/* Time slots and calendar grid */}
+                    {timeSlots.map((time, timeIndex) => (
+                        <div key={timeIndex} className="grid grid-cols-[80px_repeat(7,1fr)]">
+                            <div className="p-2 h-24 text-sm text-text-secondary border-r border-divider">
+                                {time}
                             </div>
-                        ))}
+                            {weekDates.map((date, dateIndex) => (
+                                <div key={dateIndex}
+                                    className={`outline outline-1 outline-divider h-24 ${getCellBackground(date)} relative`}>
+                                    {/* Events will be positioned absolutely within their day columns */}
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+
+                    {/* Event overlay - positioned absolutely over the entire calendar */}
+                    <div className="absolute inset-0 pointer-events-none">
+                        <div className="grid grid-cols-[80px_repeat(7,1fr)] h-full">
+                            <div className="h-full"></div>
+                            {weekDates.map((date, dateIndex) => (
+                                <div key={dateIndex} className="relative h-full pointer-events-auto">
+                                    {(eventsByDayAndTime[dateIndex] || []).map(event => (
+                                        <EventComponent key={event.id} event={event} />
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                ))}
+                </div>
             </div>
         </div>
     );
