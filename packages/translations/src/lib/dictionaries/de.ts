@@ -581,7 +581,26 @@ export const DE: TDictionary = {
       fromText: 'ab',
       saveText: 'spare',
       coachingIncluded: 'Coaching inbegriffen',
-}
+},link:{
+  titleLabel: 'Titel',
+  urlLabel: 'URL',
+  customIcon: 'benutzerdefiniertes Symbol',
+  LinkIcon: 'Linksymbol',
+  saveText: 'bestätigen',
+  discardText: 'verwerfen',
+  titleRequired: 'Titel ist erforderlich',
+  urlRequired: 'URL ist erforderlich',
+  paste: 'einfügen',
+},coachNotes: {
+      usefulLinks: 'Nützliche Links',
+      validateLink: 'Link validieren',
+      validateTitle: 'Titel validieren',
+      notesValidation: 'Diese Gruppe hat noch keinen Coach. Wählen Sie Ihren Lieblings-Coach aus und senden Sie ihr den Gutschein. Sie wird der Coach dieser Gruppe.',
+      publishNotes: 'Notizen veröffentlichen',
+      includeInMaterials: 'In Kursmaterialien einbeziehen',
+      customIcon: 'Benutzerdefiniertes Symbol',
+      addLink: 'Link hinzufügen',
+    },
   },
   pages: {
     home: Home_DE,
