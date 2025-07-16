@@ -102,16 +102,6 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale, events }: 
         return date.getHours() * 60 + date.getMinutes();
     };
 
-    // Helper function to check if two events overlap
-    const eventsOverlap = (event1: ProcessedEvent, event2: ProcessedEvent) => {
-        if (event1.dayIndex !== event2.dayIndex) return false;
-
-        const end1 = event1.startMinutes + event1.durationMinutes;
-        const end2 = event2.startMinutes + event2.durationMinutes;
-
-        return event1.startMinutes < end2 && event2.startMinutes < end1;
-    };
-
     // Process events to calculate positioning
     const processedEvents = useMemo(() => {
         const processed: ProcessedEvent[] = events
