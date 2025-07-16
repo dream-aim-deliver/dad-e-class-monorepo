@@ -207,12 +207,7 @@ function CoachNotesCreate({ noteDescription: initialNoteDescription, noteLinks: 
                                 initialUrl=""
                                 onSave={(title, url, customIcon) => handleSave(noteLinks.length, title, url, customIcon)}
                                 onDiscard={() => handleDiscard(noteLinks.length)}
-                                onImageChange={(image, abortSignal) => {
-                                    // No-op for new link until saved
-                                }}
-                                onDeleteIcon={() => {
-                                    // No-op for new link until saved
-                                }}
+                                onImageChange={(image, abortSignal) => handleImageChange(noteLinks.length, image, abortSignal)}
                                 locale={locale}
                             />
                         )}
