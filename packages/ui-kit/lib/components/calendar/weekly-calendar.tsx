@@ -1,5 +1,5 @@
 import { TLocale } from "@maany_shr/e-class-translations";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const isToday = (date) => {
     const today = new Date();
@@ -15,13 +15,6 @@ const getHeaderBackground = (date) => {
     return 'bg-base-neutral-800';
 }
 
-const getCellBackground = (date) => {
-    if (isToday(date)) {
-        return 'bg-base-neutral-800';
-    }
-    return 'bg-card-fill';
-}
-
 interface CalendarEvent {
     start: Date;
     end: Date;
@@ -33,6 +26,7 @@ interface WeeklyCalendarProps {
     setCurrentDate: (date: Date) => void;
     locale: TLocale;
     events?: CalendarEvent[];
+    onSessionDrop?: (sessionId: string, date: Date, startTime: string) => void;
 }
 
 interface ProcessedEvent extends CalendarEvent {
@@ -52,7 +46,7 @@ function WeekdayHeader({ date, locale }: { date: Date; locale: TLocale }) {
     </div>
 }
 
-export function WeeklyCalendar({ currentDate, setCurrentDate, locale, events }: WeeklyCalendarProps) {
+export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, locale, events }: WeeklyCalendarProps) {
     const getWeekStart = (date) => {
         const d = new Date(date);
         const day = d.getDay();
@@ -104,6 +98,10 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale, events }: 
 
     // Process events to calculate positioning
     const processedEvents = useMemo(() => {
+        if (!events || events.length === 0) {
+            return [];
+        }
+
         const processed: ProcessedEvent[] = events
             .filter(event => {
                 // Filter events that fall within the current week
@@ -167,6 +165,34 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale, events }: 
         return `GMT${offsetHours >= 0 ? '+' : ''}${offsetHours}`;
     }
 
+    const [draggedOverCell, setDraggedOverCell] = useState<{ date: Date; time: string } | null>(null);
+
+    const onDragOver = (event: React.DragEvent, time: string, date: Date) => {
+        event.preventDefault();
+        const hasSessionData = event.dataTransfer.types.includes('application/coaching-session');
+
+        if (hasSessionData) {
+            setDraggedOverCell({ time, date });
+        }
+    };
+
+    const onDrop = (event: React.DragEvent, time: string, date: Date) => {
+        event.preventDefault();
+        const sessionId = event.dataTransfer.getData('text/plain');
+        onSessionDrop?.(sessionId, date, time);
+        setDraggedOverCell(null);
+    }
+
+    const getCellBackground = (time: string, date: Date) => {
+        if (draggedOverCell && draggedOverCell.date.toDateString() === date.toDateString() && draggedOverCell.time === time) {
+            return 'bg-action-semi-transparent-medium';
+        }
+        if (isToday(date)) {
+            return 'bg-base-neutral-800';
+        }
+        return 'bg-card-fill';
+    }
+
     return (
         <div className="flex flex-col h-full w-full bg-base-neutral-900">
             {/* Header row */}
@@ -191,7 +217,8 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale, events }: 
                             </div>
                             {weekDates.map((date, dateIndex) => (
                                 <div key={dateIndex}
-                                    className={`outline outline-1 outline-divider h-24 ${getCellBackground(date)} relative`}>
+                                    className={`outline outline-1 outline-divider h-24 ${getCellBackground(time, date)} relative`}
+                                >
                                     {/* Events will be positioned absolutely within their day columns */}
                                 </div>
                             ))}
@@ -210,6 +237,27 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale, events }: 
                                 </div>
                             ))}
                         </div>
+                    </div>
+
+                    {/* Invisible drag detection overlay */}
+                    <div className="absolute inset-0 pointer-events-none">
+                        {timeSlots.map((time, timeIndex) => (
+                            <div key={timeIndex} className="grid grid-cols-[80px_repeat(7,1fr)] h-24">
+                                {/* Skip the time column */}
+                                <div className="w-20"></div>
+                                {weekDates.map((date, dateIndex) => (
+                                    <div
+                                        key={`${timeIndex}-${dateIndex}`}
+                                        className="h-24 pointer-events-auto"
+                                        onDragOver={(event) => onDragOver(event, time, date)}
+                                        onDragLeave={() => {
+                                            setDraggedOverCell(null);
+                                        }}
+                                        onDrop={(event) => onDrop(event, time, date)}
+                                    />
+                                ))}
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

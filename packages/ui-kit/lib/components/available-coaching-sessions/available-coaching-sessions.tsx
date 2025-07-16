@@ -1,8 +1,7 @@
 import { Button } from '../button';
-import { FC, useEffect, useRef, useState } from 'react';
-import { DragDropSession, DragDropSessionProps } from './drag-drop-session';
+import { FC, useRef, useState } from 'react';
+import { DragDropSession } from './drag-drop-session';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { Draggable } from '@fullcalendar/interaction';
 
 export interface CoachingSessionData {
   id: string;
@@ -17,7 +16,7 @@ export interface AvailableCoachingSessionsProps extends isLocalAware {
   onClickBuyMoreSessions: () => void;
   isLoading?: boolean;
   hideButton?: boolean;
-  onSessionDrag?: (sessionId: string) => void;
+  isDraggable?: boolean;
 }
 
 /**
@@ -57,95 +56,31 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
   onClickBuyMoreSessions,
   isLoading = false,
   hideButton = false,
-  onSessionDrag,
+  isDraggable = false,
 }) => {
   const dictionary = getDictionary(locale);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [sessionCounts, setSessionCounts] = useState<{ [key: string]: number }>({});
-  const draggableInstances = useRef<Map<string, { element: HTMLElement; draggable: Draggable }>>(
-    new Map()
-  );
-
-  useEffect(() => {
-    if (containerRef.current && availableCoachingSessionsData && !isLoading) {
-      const draggableElements = containerRef.current.querySelectorAll('.draggable-session');
-
-      draggableElements.forEach((el) => {
-        const sessionId = el.getAttribute('data-session-id') || '';
-        const title = el.getAttribute('data-title') || 'Coaching Session';
-        const numberOfSessions = parseInt(el.getAttribute('data-sessions') || '1', 10);
-        const remainingSessions = numberOfSessions - (sessionCounts[sessionId] || 0);
-
-        if (remainingSessions > 0 && !draggableInstances.current.has(sessionId)) {
-          const draggable = new Draggable(el as HTMLElement, {
-            eventData: {
-              title,
-              duration: el.getAttribute('data-duration') || '01:00',
-              extendedProps: {
-                numberOfSessions,
-                sessionId,
-              },
-            },
-          });
-
-          draggableInstances.current.set(sessionId, { element: el as HTMLElement, draggable });
-        }
-      });
-
-      return () => {
-        draggableInstances.current.forEach(({ element, draggable }, sessionId) => {
-          const numberOfSessions = parseInt(element.getAttribute('data-sessions') || '1', 10);
-          const remainingSessions = numberOfSessions - (sessionCounts[sessionId] || 0);
-          if (remainingSessions <= 0) {
-            // Destroy the Draggable instance to avoid memory leaks
-            draggable.destroy();
-            const newElement = document.createElement('div');
-            newElement.className = element.className;
-            newElement.setAttribute('data-session-id', sessionId);
-            newElement.setAttribute('data-title', element.getAttribute('data-title') || '');
-            newElement.setAttribute('data-duration', element.getAttribute('data-duration') || '');
-            newElement.setAttribute('data-sessions', element.getAttribute('data-sessions') || '');
-            element.replaceWith(newElement);
-            draggableInstances.current.delete(sessionId);
-          }
-        });
-      };
-    }
-  }, [availableCoachingSessionsData, isLoading, sessionCounts]);
 
   /**
    * Handle session drag event
    */
-  const handleSessionDrag = (sessionId: string) => {
-    setSessionCounts((prev) => ({
-      ...prev,
-      [sessionId]: (prev[sessionId] || 0) + 1,
-    }));
-    onSessionDrag?.(sessionId);
+  const handleSessionDrag = (event, sessionId: string) => {
+    event.dataTransfer.effectAllowed = 'copy';
+    event.dataTransfer.setData('text/plain', sessionId);
+    event.dataTransfer.setData('application/coaching-session', 'session');
   };
-
-  useEffect(() => {
-    const handleDrop = (event: CustomEvent) => {
-      const { sessionId } = event.detail;
-      handleSessionDrag(sessionId);
-    };
-
-    window.addEventListener('sessionDropped' as any, handleDrop);
-    return () => {
-      window.removeEventListener('sessionDropped' as any, handleDrop);
-    };
-  }, []);
 
   return (
     <div
-      ref={containerRef}
-      className="z-30 flex flex-col items-start p-4 gap-[0.875rem] bg-card-fill rounded-medium h-fit w-full shadow-lg"
+      className="z-30 select-none flex flex-col items-start p-4 gap-[0.875rem] bg-card-fill rounded-medium h-fit w-full shadow-lg"
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => e.preventDefault()}
     >
       <p className="text-lg text-text-primary font-bold leading-[120%]">
         {dictionary?.components?.availableCoachingSessions?.title}
       </p>
       {!isLoading && (!availableCoachingSessionsData ||
-      availableCoachingSessionsData?.length === 0) ? (
+        availableCoachingSessionsData?.length === 0) ? (
         <div className="flex items-center justify-center w-full">
           <p className="text-[1rem] text-text-secondary leading-[150%]">
             {dictionary?.components?.availableCoachingSessions?.noAvailableSessionText}
@@ -177,15 +112,12 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
                 return (
                   <div
                     key={sessionId}
-                    className={`draggable-session ${
-                      remainingSessions <= 0 ? 'opacity-50 cursor-not-allowed' : ''
-                    } w-full`}
-                    data-session-id={sessionId}
-                    data-title={session.title}
-                    data-duration={`${Math.floor(session.time / 60)}:${(session.time % 60)
-                      .toString()
-                      .padStart(2, '0')}`}
-                    data-sessions={session.numberOfSessions.toString()}
+                    className={`draggable-session ${remainingSessions <= 0 ? 'opacity-50 cursor-not-allowed' : ''
+                      } ${isDraggable ? 'cursor-grab' : 'cursor-auto'} w-full`}
+                    draggable={isDraggable && remainingSessions > 0}
+                    onDragStart={(event) => {
+                      handleSessionDrag(event, sessionId);
+                    }}
                   >
                     <DragDropSession
                       key={session.title}
