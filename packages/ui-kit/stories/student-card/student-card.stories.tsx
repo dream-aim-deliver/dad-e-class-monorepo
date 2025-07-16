@@ -19,7 +19,7 @@ const meta: Meta<typeof StudentCard> = {
         status: {
             control: 'select',
             options: [
-                'default',
+                'no-assignment',
                 'long-wait',
                 'waiting-feedback',
                 'course-completed',
@@ -59,7 +59,8 @@ const meta: Meta<typeof StudentCard> = {
         },
         assignmentTitle: {
             control: 'text',
-            description: 'Title of the assignment (optional)',
+            description:
+                'Title of the assignment (only for waiting-feedback and long-wait)',
         },
         isYou: {
             control: 'boolean',
@@ -71,9 +72,11 @@ const meta: Meta<typeof StudentCard> = {
 export default meta;
 type Story = StoryObj<typeof StudentCard>;
 
-const baseArgs: StudentCardProps = {
+const baseArgs: Omit<
+    StudentCardProps,
+    'status' | 'assignmentTitle' | 'completedCourseDate' | 'onViewAssignment'
+> = {
     locale: 'en',
-    status: 'default',
     studentName: 'Alice Smith',
     studentImageUrl:
         'https://s.abcnews.com/images/Lifestyle/AP_micro_pigs_1_sr_140319_14x11_1600.jpg?w=1600',
@@ -84,7 +87,6 @@ const baseArgs: StudentCardProps = {
     courseImageUrl:
         'https://img.lalr.co/cms/2018/08/16181927/Mini-pig.jpg?r=1_1',
     isYou: false,
-    assignmentTitle: 'Create a brand identity',
     onStudentDetails: () => {
         alert('Student details clicked');
     },
@@ -94,15 +96,12 @@ const baseArgs: StudentCardProps = {
     onClickCoach: () => {
         alert('Coach clicked');
     },
-    onViewAssignment: () => {
-        alert('View assignment clicked');
-    },
 };
 
 export const Default: Story = {
     args: {
         ...baseArgs,
-        status: 'default',
+        status: 'no-assignment',
     },
 };
 
@@ -110,6 +109,10 @@ export const WaitingFeedback: Story = {
     args: {
         ...baseArgs,
         status: 'waiting-feedback',
+        assignmentTitle: 'Create a brand identity',
+        onViewAssignment: () => {
+            alert('View assignment clicked');
+        },
     },
 };
 
@@ -117,6 +120,10 @@ export const LongWait: Story = {
     args: {
         ...baseArgs,
         status: 'long-wait',
+        assignmentTitle: 'Design a logo',
+        onViewAssignment: () => {
+            alert('View assignment clicked');
+        },
     },
 };
 
@@ -131,6 +138,7 @@ export const CourseCompleted: Story = {
 export const WithCoachingSessionsLeft: Story = {
     args: {
         ...baseArgs,
+        status: 'no-assignment',
         coachingSessionsLeft: 6,
     },
 };
@@ -138,6 +146,7 @@ export const WithCoachingSessionsLeft: Story = {
 export const IsYou: Story = {
     args: {
         ...baseArgs,
+        status: 'no-assignment',
         isYou: true,
     },
 };

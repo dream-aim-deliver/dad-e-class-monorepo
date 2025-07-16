@@ -593,7 +593,7 @@ export const DE: TDictionary = {
       coachingSessionsLeftText: 'Coaching-Sitzungen mit dir',
       coach: 'Coach',
       course: 'Kurs',
-      waitingFeedbackBagde: 'Wartet auf Rückmeldung',
+      waitingFeedbackBadge: 'Wartet auf Rückmeldung',
       longWaitBadge: 'Wartet seit über 48 Stunden',
       completedCourseBadge: 'Kurs abgeschlossen am',
       completedOnBadge: 'Abgeschlossen am',

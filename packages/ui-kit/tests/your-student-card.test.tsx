@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
@@ -55,14 +54,12 @@ describe('YourStudentCard', () => {
         {
             courseName: 'Angular Intro',
             courseImageUrl: 'https://example.com/angular.jpg',
-            assignmentTitle: 'Assignment 3',
-            status: 'default',
+            status: 'no-assignment',
             onClickCourse: onClickCourseMock,
         },
         {
             courseName: 'Svelte Pro',
             courseImageUrl: 'https://example.com/svelte.jpg',
-            assignmentTitle: 'Assignment 4',
             status: 'course-completed',
             completedCourseDate: new Date('2025-03-20'),
             onClickCourse: onClickCourseMock,
