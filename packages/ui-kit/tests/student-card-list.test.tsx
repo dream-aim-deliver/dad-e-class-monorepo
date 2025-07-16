@@ -1,67 +1,54 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { StudentCardList } from '../lib/components/student-card/student-card-list';
-import {
-    StudentCard,
-    StudentCardProps,
-} from '../lib/components/student-card/student-card';
-
-vi.mock('@maany_shr/e-class-translations', () => ({
-    getDictionary: () => ({
-        components: {
-            studentCard: {
-                emptyState: 'No students to show',
-            },
-        },
-    }),
-    isLocalAware: {},
-}));
+import * as translations from '@maany_shr/e-class-translations';
+import React from 'react';
 
 describe('StudentCardList', () => {
-    const mockDate = new Date('2025-03-20T12:00:00');
+    const mockDictionary = {
+        components: {
+            studentCard: {
+                emptyState: 'No students available',
+            },
+        },
+    };
 
-    const createMockStudentCard = (props: Partial<StudentCardProps> = {}) => (
-        <StudentCard
-            locale="en"
-            status="default"
-            studentName="John Doe"
-            studentImageUrl="https://example.com/student.jpg"
-            coachName="Jane Smith"
-            coachImageUrl="https://example.com/coach.jpg"
-            courseName="React Basics"
-            courseImageUrl="https://example.com/course.jpg"
-            assignmentTitle="Assignment 1"
-            isYou={false}
-            onClickCourse={vi.fn()}
-            onClickCoach={vi.fn()}
-            completedCourseDate={mockDate}
-            onStudentDetails={vi.fn()}
-            onViewAssignment={vi.fn()}
-            {...props}
-        />
-    );
-
-    const mockCards = Array(5)
-        .fill(0)
-        .map(() => createMockStudentCard());
-
-    it('renders correct number of student cards', () => {
-        render(<StudentCardList locale="en">{mockCards}</StudentCardList>);
-        const studentNames = screen.getAllByText('John Doe');
-        expect(studentNames).toHaveLength(5);
+    beforeEach(() => {
+        vi.spyOn(translations, 'getDictionary').mockReturnValue(mockDictionary);
     });
 
-    it('renders single student card correctly', () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    it('shows empty state when no children are provided', () => {
+        render(<StudentCardList locale="en" />);
+
+        expect(screen.getByText('No students available')).toBeInTheDocument();
+    });
+
+    it('renders a single child correctly', () => {
         render(
             <StudentCardList locale="en">
-                {createMockStudentCard()}
-            </StudentCardList>,
+                <div>Single Student</div>
+            </StudentCardList>
         );
-        expect(screen.getByText('John Doe')).toBeInTheDocument();
+
+        expect(screen.getByRole('list')).toBeInTheDocument();
+        expect(screen.getByRole('listitem')).toHaveTextContent('Single Student');
     });
 
-    it('renders empty state when no children provided', () => {
-        render(<StudentCardList locale="en" />);
-        expect(screen.getByText('No students to show')).toBeInTheDocument();
+    it('renders multiple children correctly', () => {
+        render(
+            <StudentCardList locale="en">
+                {[<div key="1">Student 1</div>, <div key="2">Student 2</div>]}
+            </StudentCardList>
+        );
+
+        expect(screen.getByRole('list')).toBeInTheDocument();
+        const items = screen.getAllByRole('listitem');
+        expect(items).toHaveLength(2);
+        expect(items[0]).toHaveTextContent('Student 1');
+        expect(items[1]).toHaveTextContent('Student 2');
     });
 });
