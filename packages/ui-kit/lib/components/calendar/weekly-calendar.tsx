@@ -1,5 +1,5 @@
 import { TLocale } from "@maany_shr/e-class-translations";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 const isToday = (date) => {
     const today = new Date();
@@ -89,21 +89,25 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale }: WeeklyCa
 
     return (
         <div className="flex flex-col h-full w-full bg-base-neutral-900">
-            <div className="overflow-auto h-full">
-                {/* Header row */}
-                <div className="grid grid-cols-[80px_repeat(7,1fr)] sticky top-0 z-10">
-                    <div className="p-2 text-sm text-base-neutral-500">
-                        {getTimezoneFormat()}
-                    </div>
-                    {weekDates.map((date, index) => (
-                        <WeekdayHeader key={index} date={date} locale={locale} />
-                    ))}
+            {/* Header row */}
+            <div className="grid grid-cols-[80px_repeat(7,1fr)] sticky top-0 z-10">
+                <div className="p-2 text-sm text-base-neutral-500 bg-card-fill">
+                    {getTimezoneFormat()}
                 </div>
+                {weekDates.map((date, index) => (
+                    <WeekdayHeader key={index} date={date} locale={locale} />
+                ))}
+            </div>
 
+
+            {/* Time slots and calendar grid */}
+            <div
+                className="flex-1 overflow-auto"
+            >
                 {/* Time slots and calendar grid */}
                 {timeSlots.map((time, timeIndex) => (
                     <div key={timeIndex} className="grid grid-cols-[80px_repeat(7,1fr)]">
-                        <div className="p-2 h-24 text-sm text-text-secondary">
+                        <div className="p-2 h-24 text-sm text-text-secondary border-r border-divider">
                             {time}
                         </div>
                         {weekDates.map((date, dateIndex) => (
@@ -116,6 +120,5 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, locale }: WeeklyCa
                 ))}
             </div>
         </div>
-
     );
 }
