@@ -50,7 +50,7 @@ const sessionTitles = {
 type Locale = 'en' | 'de';
 
 // Helper function to create a date with specific time
-function createDateTime(baseDate: Date, hours: number, minutes: number = 0): Date {
+function createDateTime(baseDate: Date, hours: number, minutes = 0): Date {
     const date = new Date(baseDate);
     date.setHours(hours, minutes, 0, 0);
     return date;
