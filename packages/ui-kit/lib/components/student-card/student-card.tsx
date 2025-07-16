@@ -6,88 +6,108 @@ import { IconCoachingOffer } from '../icons/icon-coaching-offer';
 import { IconCourse } from '../icons/icon-course';
 import { IconAssignment } from '../icons/icon-assignment';
 
-export interface StudentCardProps extends isLocalAware {
-    status: 'default' | 'long-wait' | 'waiting-feedback' | 'course-completed';
+export interface DefaultStudentCardProps extends isLocalAware {
     studentName: string;
     studentImageUrl: string;
     coachName: string;
     coachImageUrl: string;
     courseName: string;
     courseImageUrl: string;
-    assignmentTitle?: string;
     onStudentDetails: () => void;
-    onViewAssignment?: () => void;
     coachingSessionsLeft?: number;
-    completedCourseDate?: Date;
     isYou: boolean;
     onClickCourse: () => void;
     onClickCoach: () => void;
 }
 
+export interface NoAssignmentStudentCardProps extends DefaultStudentCardProps {
+    status: 'no-assignment';
+}
+
+export interface LongWaitStudentCardProps extends DefaultStudentCardProps {
+    status: 'long-wait';
+    assignmentTitle: string;
+    onViewAssignment: () => void;
+}
+
+export interface WaitingFeedbackStudentCardProps
+    extends DefaultStudentCardProps {
+    status: 'waiting-feedback';
+    assignmentTitle: string;
+    onViewAssignment: () => void;
+}
+
+export interface CompletedStudentCardProps extends DefaultStudentCardProps {
+    status: 'course-completed';
+    completedCourseDate: Date;
+}
+
+export type StudentCardProps =
+    | NoAssignmentStudentCardProps
+    | LongWaitStudentCardProps
+    | WaitingFeedbackStudentCardProps
+    | CompletedStudentCardProps;
+
 /**
- * Renders a card displaying student information, including their avatar, name, coaching sessions left,
- * coach details, course details, assignment status, and actions. The card adapts its content based on
- * the student's current status (e.g., waiting for feedback, long wait, course completed).
+ * `StudentCard` is a UI component that displays detailed information about a student,
+ * including their coach, course, remaining coaching sessions, and their current course or assignment status.
  *
- * @param status - The current status of the student (e.g., 'long-wait', 'waiting-feedback', 'course-completed').
- * @param studentName - The full name of the student.
- * @param studentImageUrl - The URL of the student's avatar image.
- * @param coachName - The full name of the coach.
- * @param coachImageUrl - The URL of the coach's avatar image.
- * @param courseName - The name of the course.
- * @param courseImageUrl - The URL of the course's image.
- * @param assignmentTitle - The title of the current assignment.
- * @param isYou - Indicates if the coach is the current user.
- * @param onClickCourse - Callback invoked when the course name is clicked.
- * @param onClickCoach - Callback invoked when the coach's name is clicked.
- * @param completedCourseDate - The date when the course was completed (if applicable).
- * @param onStudentDetails - Callback invoked when the "Student Details" button is clicked.
- * @param onViewAssignment - Callback invoked when the "View Assignment" button is clicked.
- * @param coachingSessionsLeft - The number of coaching sessions left for the student.
- * @param locale - The locale used for translations.
+ * The card adapts its content dynamically based on the student's `status`:
+ * - `'no-assignment'`: The student has no current assignment.
+ * - `'long-wait'`: The student has an assignment pending feedback for a long time.
+ * - `'waiting-feedback'`: The student is awaiting feedback on a recent assignment.
+ * - `'course-completed'`: The student has completed the course.
  *
- * @returns A styled card component displaying student, coach, course, and assignment details with relevant actions.
+ * It provides interactive buttons for viewing student details, course information, coach details,
+ * and the assignment (if applicable).
+ *
+ * @param {StudentCardProps} props - The properties used to render the component, which vary based on the student's status.
+ * @param {string} props.studentName - Full name of the student.
+ * @param {string} props.studentImageUrl - URL of the student's profile image.
+ * @param {string} props.coachName - Name of the coach assigned to the student.
+ * @param {string} props.coachImageUrl - URL of the coach's profile image.
+ * @param {string} props.courseName - Name of the course the student is enrolled in.
+ * @param {string} props.courseImageUrl - URL of the course image.
+ * @param {boolean} props.isYou - Indicates if the current user is the student's coach.
+ * @param {number} [props.coachingSessionsLeft] - Optional number of remaining coaching sessions.
+ * @param {() => void} props.onStudentDetails - Callback invoked when the "view student details" button is clicked.
+ * @param {() => void} props.onClickCoach - Callback triggered when clicking on the coach's name/avatar (if not you).
+ * @param {() => void} props.onClickCourse - Callback triggered when clicking on the course name/avatar.
+ *
+ * For status-specific props:
+ * @param {'no-assignment' | 'long-wait' | 'waiting-feedback' | 'course-completed'} props.status - Current status of the student.
+ *
+ * If status is `'long-wait'` or `'waiting-feedback'`:
+ * @param {string} props.assignmentTitle - Title of the pending assignment.
+ * @param {() => void} props.onViewAssignment - Callback invoked when clicking the "view assignment" button.
+ *
+ * If status is `'course-completed'`:
+ * @param {Date} props.completedCourseDate - The date when the course was completed.
  */
-export const StudentCard = ({
-    status,
-    studentName,
-    studentImageUrl,
-    coachName,
-    coachImageUrl,
-    courseName,
-    courseImageUrl,
-    assignmentTitle,
-    isYou,
-    onClickCourse,
-    onClickCoach,
-    completedCourseDate,
-    onStudentDetails,
-    onViewAssignment,
-    coachingSessionsLeft,
-    locale,
-}: StudentCardProps) => {
-    const dictionary = getDictionary(locale).components.studentCard;
+
+export const StudentCard = (props: StudentCardProps) => {
+    const dictionary = getDictionary(props.locale).components.studentCard;
 
     return (
         <div className="flex flex-col md:p-4 p-2 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:w-[22rem]">
             {/* Avatar, student name & Badge */}
             <div className="flex flex-row items-center gap-3 mb-2">
                 <UserAvatar
-                    fullName={studentName}
+                    fullName={props.studentName}
                     className="w-10 h-10 rounded-full flex-shrink-0"
-                    imageUrl={studentImageUrl}
+                    imageUrl={props.studentImageUrl}
                 />
                 <div className="flex flex-col gap-1">
                     <h6 className="text-md text-text-primary font-important">
-                        {studentName}
+                        {props.studentName}
                     </h6>
-                    {typeof coachingSessionsLeft === 'number' &&
-                        coachingSessionsLeft > 0 && (
+                    {typeof props.coachingSessionsLeft === 'number' &&
+                        props.coachingSessionsLeft > 0 && (
                             <Badge
                                 className="flex items-center"
                                 variant="info"
                                 size="small"
-                                text={`${coachingSessionsLeft} ${dictionary.coachingSessionsLeftText}`}
+                                text={`${props.coachingSessionsLeft} ${dictionary.coachingSessionsLeftText}`}
                             />
                         )}
                 </div>
@@ -99,12 +119,12 @@ export const StudentCard = ({
                 <p className="text-text-secondary text-sm">
                     {dictionary.coach}
                 </p>
-                {isYou ? (
+                {props.isYou ? (
                     <div className="flex items-center gap-1 text-sm text-text-primary font-important">
                         <UserAvatar
-                            fullName={coachName}
+                            fullName={props.coachName}
                             size="small"
-                            imageUrl={coachImageUrl}
+                            imageUrl={props.coachImageUrl}
                         />
                         <span>{dictionary.you}</span>
                     </div>
@@ -116,13 +136,13 @@ export const StudentCard = ({
                         hasIconLeft
                         iconLeft={
                             <UserAvatar
-                                fullName={coachName}
+                                fullName={props.coachName}
                                 size="small"
-                                imageUrl={coachImageUrl}
+                                imageUrl={props.coachImageUrl}
                             />
                         }
-                        text={coachName}
-                        onClick={onClickCoach}
+                        text={props.coachName}
+                        onClick={props.onClickCoach}
                     />
                 )}
             </div>
@@ -137,22 +157,23 @@ export const StudentCard = ({
                     size="small"
                     variant="text"
                     className="p-0 gap-1 text-sm truncate"
-                    text={courseName}
-                    onClick={onClickCourse}
+                    text={props.courseName}
+                    onClick={props.onClickCourse}
                     hasIconLeft
                     iconLeft={
                         <UserAvatar
                             className="rounded-small"
-                            fullName={courseName}
+                            fullName={props.courseName}
                             size="xSmall"
-                            imageUrl={courseImageUrl}
+                            imageUrl={props.courseImageUrl}
                         />
                     }
                 />
             </div>
 
             {/* Assignment details based on status */}
-            {(status === 'long-wait' || status === 'waiting-feedback') && (
+            {(props.status === 'long-wait' ||
+                props.status === 'waiting-feedback') && (
                 <div className="flex flex-col gap-2 items-start justify-between bg-neutral-800 p-2 rounded-small border border-neutral-700">
                     <div className="flex flex-row w-full items-center justify-between">
                         <div className="flex flex-row gap-2 items-center">
@@ -161,18 +182,18 @@ export const StudentCard = ({
                                 size="4"
                             />
                             <p className="text-md text-text-primary font-bold">
-                                {assignmentTitle}
+                                {props.assignmentTitle}
                             </p>
                         </div>
                     </div>
-                    {status === 'waiting-feedback' && (
+                    {props.status === 'waiting-feedback' && (
                         <Badge
                             variant="warningprimary"
                             size="small"
-                            text={dictionary.waitingFeedbackBagde}
+                            text={dictionary.waitingFeedbackBadge}
                         />
                     )}
-                    {status === 'long-wait' && (
+                    {props.status === 'long-wait' && (
                         <Badge
                             variant="errorprimary"
                             size="small"
@@ -185,25 +206,26 @@ export const StudentCard = ({
                         size="small"
                         className="w-full mt-2"
                         text={dictionary.viewAssignment}
-                        onClick={onViewAssignment}
+                        onClick={props.onViewAssignment}
                     />
                 </div>
             )}
 
             {/* Course completed badge */}
             <div className="flex flex-col mb-2 items-start justify-between">
-                {status === 'course-completed' && completedCourseDate && (
-                    <Badge
-                        variant="successprimary"
-                        size="small"
-                        text={`${dictionary.completedCourseBadge} ${new Date(completedCourseDate).toISOString().split('T')[0]}`}
-                    />
-                )}
+                {props.status === 'course-completed' &&
+                    props.completedCourseDate && (
+                        <Badge
+                            variant="successprimary"
+                            size="small"
+                            text={`${dictionary.completedCourseBadge} ${new Date(props.completedCourseDate).toISOString().split('T')[0]}`}
+                        />
+                    )}
             </div>
 
             {/* Student details button */}
             <Button
-                onClick={onStudentDetails}
+                onClick={props.onStudentDetails}
                 variant="secondary"
                 size="medium"
                 text={dictionary.studentDetailsButton}

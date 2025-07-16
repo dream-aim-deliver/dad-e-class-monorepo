@@ -579,7 +579,7 @@ export const DictionarySchema = z.object({
       coachingSessionsLeftText: z.string(),
       coach: z.string(),
       course: z.string(),
-      waitingFeedbackBagde: z.string(),
+      waitingFeedbackBadge: z.string(),
       longWaitBadge: z.string(),
       completedCourseBadge: z.string(),
       completedOnBadge: z.string(),
