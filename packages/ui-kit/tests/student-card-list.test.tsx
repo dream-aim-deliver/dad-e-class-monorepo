@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { StudentCardList } from '../lib/components/student-card/student-card-list';
 import * as translations from '@maany_shr/e-class-translations';
-import React from 'react';
 
 describe('StudentCardList', () => {
     const mockDictionary = {
