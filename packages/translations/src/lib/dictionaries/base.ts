@@ -567,7 +567,55 @@ export const DictionarySchema = z.object({
       fromText: z.string(),
       saveText: z.string(),
       coachingIncluded: z.string(),
-    })
+    }),
+    link: z.object({
+      titleLabel: z.string(),
+      urlLabel: z.string(),
+      customIcon: z.string(),
+      LinkIcon: z.string(),
+      saveText: z.string(),
+      discardText: z.string(),
+      titleRequired: z.string(),
+      urlRequired: z.string(),
+      paste: z.string(),
+    }),
+    assignment: z.object({
+      assignmentCard: z.object({
+        moduleText: z.string(),
+        lessonText: z.string(),
+        passedText: z.string(),
+        awaitingReviewText: z.string(),
+        longWaitText: z.string(),
+        courseText: z.string(),
+        studentText: z.string(),
+        groupText: z.string(),
+        lastActivityText: z.string(),
+        viewText: z.string(),
+      }),
+      assignmentModal: z.object({
+        assignmentText: z.string(),
+      }),
+      message: z.object({
+        youText: z.string(),
+        markAssignmentText: z.string(),
+      }),
+      replyPanel: z.object({
+        replyText: z.string(),
+        markAsPassedText: z.string(),
+        yourCommentsText: z.string(),
+        sendMessageText: z.string(),
+        replyPlaceholderText: z.string(),
+        addLinkText: z.string(),
+      }),
+      assignmentBuilder: z.object({
+        assignmentText: z.string(),
+        assignmentTitleText: z.string(),
+        titlePlaceholderText: z.string(),
+        assignmentDescriptionText: z.string(),
+        descriptionPlaceholderText: z.string(),
+        addResourcesText: z.string(),
+      }),
+    }),
   }),
   pages: z.object({
     sso: z.object({
@@ -585,7 +633,7 @@ export const DictionarySchema = z.object({
       notSignedInText: z.string(),
       welcomeText: z.string(),
       signOutText: z.string(),
-        topicsTitle: z.string(),
+      topicsTitle: z.string(),
     }),
     offers: z.object({
       chooseCategory: z.string(),
