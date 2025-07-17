@@ -221,7 +221,7 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
                             </div>
                             {weekDates.map((date, dateIndex) => (
                                 <div key={dateIndex}
-                                    className={`outline outline-1 outline-divider h-24 ${getCellBackground(time, date)} relative`}
+                                    className={`outline outline-1 outline-divider border-r border-b border-divider h-24 ${getCellBackground(time, date)} relative`}
                                 >
                                     {/* Events will be positioned absolutely within their day columns */}
                                 </div>
