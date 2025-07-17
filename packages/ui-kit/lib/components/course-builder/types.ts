@@ -1,25 +1,27 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import React from "react";
-import { CoachingElement, QuizElement } from "../course-builder-lesson-component/types";
+import { AssignmentElement, CoachingElement, QuizElement } from "../course-builder-lesson-component/types";
 
 /**
  * Enum defining the types of course elements available in the course builder.
  * Each type represents a different kind of interactive element that can be added to a course.
  */
 export enum CourseElementType {
-    /** Represents a coaching session element */
+    /** Represents a coaching session element*/
     CoachingSession = "coachingSession",
     /** Represents a quiz element */
-    Quiz = 'quiz'
+    Quiz = 'quiz',
+    /** Represents an assignment element*/
+    Assignment = "assignment"
 }
 
 
 
 /**
  * Union type representing all possible course element types.
- * Currently includes CoachingElement and QuizElement , but can be extended for other element types.
+ * Currently includes CoachingElement, QuizElement, and AssignmentElement, but can be extended for other element types.
  */
-export type courseElement = CoachingElement | QuizElement;
+export type courseElement = CoachingElement | QuizElement | AssignmentElement;
 
 /**
  * Function type for submitting form values in the course builder.

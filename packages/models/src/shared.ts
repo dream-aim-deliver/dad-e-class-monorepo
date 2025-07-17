@@ -6,5 +6,10 @@ export const LinkSchema = z.object({
     customIconUrl: z.string().optional(),  // URL to a custom icon, if any
 });
 
+export const LinkWithIdSchema = LinkSchema.extend({
+    linkId: z.number(),
+});
+
 export type TLink = z.infer<typeof LinkSchema>;
 
+export type TLinkWithId = z.infer<typeof LinkWithIdSchema>;

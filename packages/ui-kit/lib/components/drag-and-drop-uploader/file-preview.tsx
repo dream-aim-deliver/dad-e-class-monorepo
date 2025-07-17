@@ -17,6 +17,8 @@ interface FilePreviewProps extends isLocalAware {
     onDelete: (id: string) => void;
     onDownload: (id: string) => void;
     onCancel: (id: string) => void;
+    isDeleteAllowed?: boolean;
+    className?: string;
 }
 /**
  *
@@ -27,6 +29,8 @@ interface FilePreviewProps extends isLocalAware {
  * @param onDelete Callback function to handle file deletion.
  * @param onDownload Callback function to handle file download.
  * @param locale The locale for translations.
+ * @param isDeleteAllowed Optional boolean indicating whether file deletion is allowed.
+ * @param className Optional additional CSS classes for styling.
  **/
 
 /**
@@ -44,7 +48,7 @@ const getFileTypeFromExtension = (fileName: string): 'image' | 'video' | 'docume
     return 'document';
 };
 
-export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDelete, onDownload, onCancel, locale }) => {
+export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDelete, onDownload, onCancel, locale, isDeleteAllowed = true, className }) => {
     const dictionary = getDictionary(locale);
     const [thumbnailError, setThumbnailError] = useState(false);
     if (uploadResponse?.status === 'unavailable') {
@@ -93,7 +97,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDele
     };
 
     return (
-        <div className={cn('flex items-center justify-between gap-2 p-2 rounded-medium', 'bg-base-neutral-900')}>
+        <div className={cn('flex items-center justify-between gap-2 p-2 rounded-medium', 'bg-base-neutral-900', className)}>
             <div className="flex items-center gap-2">
                 <div className="w-12 h-12 flex items-center justify-center rounded-medium bg-base-neutral-800 border border-base-neutral-700">
                     {getFilePreviewElement()}
@@ -133,13 +137,15 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ uploadResponse, onDele
                             title={dictionary.components.uploadingSection.downloadText}
                             onClick={() => onDownload(uploadResponse.id as string)}
                         />
-                        <IconButton
-                            icon={<IconTrashAlt />}
-                            styles="text"
-                            size="small"
-                            title={dictionary.components.uploadingSection.deleteText}
-                            onClick={() => onDelete(uploadResponse.id as string)}
-                        />
+                        {isDeleteAllowed && (
+                            <IconButton
+                                icon={<IconTrashAlt />}
+                                styles="text"
+                                size="small"
+                                title={dictionary.components.uploadingSection.deleteText}
+                                onClick={() => onDelete(uploadResponse.id as string)}
+                            />
+                        )}
                     </div>
                 )}
             </div>
