@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { WeeklyCalendar } from '../lib/components/calendar/weekly-calendar';
-import { AvailabilityCalendarCard, SessionCalendarCard } from '../lib/components/calendar/calendar-cards';
+import { AnonymousCalendarCard, AvailabilityCalendarCard, SessionCalendarCard } from '../lib/components/calendar/calendar-cards';
 
 export default {
     title: 'Components/Calendar/CalendarWeekly',
@@ -340,6 +340,17 @@ const mockDataScenarios = {
                         start={createDateTime(baseDate, 14, 0)}
                         end={createDateTime(baseDate, 15, 0)}
                         title={titles[0]} // Team Meeting
+                    />
+                )
+            },
+            {
+                start: createDateTime(baseDate, 15, 15),
+                end: createDateTime(baseDate, 16, 45),
+                component: (
+                    <AnonymousCalendarCard
+                        locale={locale}
+                        start={createDateTime(baseDate, 15, 15)}
+                        end={createDateTime(baseDate, 16, 45)}
                     />
                 )
             }
