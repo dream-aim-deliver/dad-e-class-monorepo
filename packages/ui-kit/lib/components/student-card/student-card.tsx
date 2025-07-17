@@ -174,42 +174,42 @@ export const StudentCard = (props: StudentCardProps) => {
             {/* Assignment details based on status */}
             {(props.status === 'long-wait' ||
                 props.status === 'waiting-feedback') && (
-                <div className="flex flex-col gap-2 items-start justify-between bg-neutral-800 p-2 rounded-small border border-neutral-700">
-                    <div className="flex flex-row w-full items-center justify-between">
-                        <div className="flex flex-row gap-2 items-center">
-                            <IconAssignment
-                                classNames="text-text-primary"
-                                size="4"
-                            />
-                            <p className="text-md text-text-primary font-bold">
-                                {props.assignmentTitle}
-                            </p>
+                    <div className="flex flex-col gap-2 items-start justify-between bg-neutral-800 p-2 rounded-small border border-neutral-700">
+                        <div className="flex flex-row w-full items-center justify-between">
+                            <div className="flex flex-row gap-2 items-center">
+                                <IconAssignment
+                                    classNames="text-text-primary"
+                                    size="4"
+                                />
+                                <p className="text-md text-text-primary font-bold">
+                                    {props.assignmentTitle}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    {props.status === 'waiting-feedback' && (
-                        <Badge
-                            variant="warningprimary"
-                            size="small"
-                            text={dictionary.waitingFeedbackBadge}
-                        />
-                    )}
-                    {props.status === 'long-wait' && (
-                        <Badge
-                            variant="errorprimary"
-                            size="small"
-                            text={dictionary.longWaitBadge}
-                        />
-                    )}
+                        {props.status === 'waiting-feedback' && (
+                            <Badge
+                                variant="warningprimary"
+                                size="small"
+                                text={dictionary.waitingFeedbackBadge}
+                            />
+                        )}
+                        {props.status === 'long-wait' && (
+                            <Badge
+                                variant="errorprimary"
+                                size="small"
+                                text={dictionary.longWaitBadge}
+                            />
+                        )}
 
-                    <Button
-                        variant="primary"
-                        size="small"
-                        className="w-full mt-2"
-                        text={dictionary.viewAssignment}
-                        onClick={props.onViewAssignment}
-                    />
-                </div>
-            )}
+                        <Button
+                            variant="primary"
+                            size="small"
+                            className="w-full mt-2"
+                            text={dictionary.viewAssignment}
+                            onClick={props.onViewAssignment}
+                        />
+                    </div>
+                )}
 
             {/* Course completed badge */}
             <div className="flex flex-col mb-2 items-start justify-between">
