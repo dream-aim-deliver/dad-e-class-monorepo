@@ -15,6 +15,10 @@ type Story = StoryObj<typeof MonthlyCalendar>;
 export const English: Story = {
     args: {
         locale: 'en',
+        currentDate: new Date('2025-07-01'),
+        setCurrentDate: (date: Date) => {
+            console.log('Current date set to:', date.toLocaleDateString());
+        },
         selectedDate: new Date('2025-07-16'),
         onDateClick: (date: Date) => {
             alert('Selected date: ' + date.toLocaleDateString());
@@ -39,6 +43,10 @@ export const English: Story = {
 export const German: Story = {
     args: {
         locale: 'de',
+        currentDate: new Date('2025-07-01'),
+        setCurrentDate: (date: Date) => {
+            console.log('Current date set to:', date.toLocaleDateString());
+        },
         selectedDate: new Date('2025-07-16'),
         onDateClick: (date: Date) => {
             alert('Selected date: ' + date.toLocaleDateString());

@@ -5,6 +5,8 @@ import { TLocale, getDictionary } from "@maany_shr/e-class-translations";
 import { Button } from "../button";
 
 interface MonthlyCalendarProps {
+    currentDate?: Date;
+    setCurrentDate?: (date: Date) => void;
     selectedDate?: Date;
     onDateClick?: (date: Date) => void;
     dateEvents?: {
@@ -24,7 +26,7 @@ export function formatDateKey(date: Date): string {
 }
 
 export function MonthlyCalendar(props: MonthlyCalendarProps) {
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const { currentDate, setCurrentDate } = props;
     const dictionary = getDictionary(props.locale);
 
     const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
