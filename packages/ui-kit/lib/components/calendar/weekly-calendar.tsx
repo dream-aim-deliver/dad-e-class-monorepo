@@ -1,5 +1,6 @@
 import { TLocale } from "@maany_shr/e-class-translations";
 import { useEffect, useMemo, useRef, useState } from "react";
+import LoadingOverlay from "./loading-overlay";
 
 const isToday = (date) => {
     const today = new Date();
@@ -27,6 +28,7 @@ interface WeeklyCalendarProps {
     locale: TLocale;
     events?: CalendarEvent[];
     onSessionDrop?: (sessionId: string, date: Date, startTime: string) => void;
+    isLoading?: boolean;
 }
 
 interface ProcessedEvent extends CalendarEvent {
@@ -46,7 +48,7 @@ function WeekdayHeader({ date, locale }: { date: Date; locale: TLocale }) {
     </div>
 }
 
-export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, locale, events }: WeeklyCalendarProps) {
+export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, locale, events, isLoading }: WeeklyCalendarProps) {
     const getWeekStart = (date) => {
         const d = new Date(date);
         const day = d.getDay();
@@ -195,6 +197,8 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
 
     return (
         <div className="flex flex-col h-full w-full bg-base-neutral-900">
+            {isLoading && (<LoadingOverlay className="fixed z-60" />)}
+
             {/* Header row */}
             <div className="grid grid-cols-[80px_repeat(7,1fr)] sticky top-0 z-50">
                 <div className="p-2 text-sm text-base-neutral-500 bg-card-fill">

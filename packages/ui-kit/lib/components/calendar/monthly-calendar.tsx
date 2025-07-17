@@ -3,6 +3,7 @@ import { useState } from "react";
 import { cn } from "../../utils/style-utils";
 import { TLocale, getDictionary } from "@maany_shr/e-class-translations";
 import { Button } from "../button";
+import LoadingOverlay from "./loading-overlay";
 
 interface MonthlyCalendarProps {
     currentDate?: Date;
@@ -15,6 +16,7 @@ interface MonthlyCalendarProps {
             hasSessions: boolean;
         }
     };
+    isLoading?: boolean;
     locale: TLocale;
 }
 
@@ -64,7 +66,11 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
     }
 
     return (
-        <div className="bg-card-fill rounded-xl border border-card-stroke p-6 m-4 overflow-x-auto">
+        <div className="bg-card-fill rounded-xl border border-card-stroke p-6 overflow-x-auto relative">
+            {props.isLoading && (
+                <LoadingOverlay />
+            )}
+
             <div className="flex flex-row justify-between items-center space-x-3">
                 <div className="flex flex-row space-x-3">
                     <div className="text-lg font-semibold text-text-primary">
