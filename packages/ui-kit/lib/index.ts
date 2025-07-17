@@ -166,9 +166,9 @@ export { DesignerComponent as AssignmentDesignerComponent } from './components/c
 
 export { IntroductionForm, useCourseIntroductionForm, type CourseIntroductionForm } from './components/introduction-form';
 export { AccordionBuilder, type AccordionBuilderItem } from './components/accordion-builder';
-export {LessonNoteBuilderView , type LessonNoteBuilderViewType} from './components/lesson-note/lesson-note-builder-view';
-export {LessonNoteStudentView , type LessonNoteStudentViewType} from './components/lesson-note/lesson-note-student-view';
-export {LessonNoteView , type LessonNoteViewType} from './components/lesson-note/lesson-note-view';
+export { LessonNoteBuilderView, type LessonNoteBuilderViewType } from './components/lesson-note/lesson-note-builder-view';
+export { LessonNoteStudentView, type LessonNoteStudentViewType } from './components/lesson-note/lesson-note-student-view';
+export { LessonNoteView, type LessonNoteViewType } from './components/lesson-note/lesson-note-view';
 
 export { type OneOutOfThreeData } from './components/out-of-three/one-out-of-three';
 export { validatorPerType } from './components/lesson/validators';
@@ -184,3 +184,7 @@ export { CourseMaterialsAccordion } from "./components/accordion/course-material
 export { TeachCourseBanner } from './components/teach-course-banner';
 
 export { CourseCompletionModal } from './components/course-completion-modal';
+
+export { MonthlyCalendar } from './components/calendar/monthly-calendar';
+export { WeeklyCalendar } from './components/calendar/weekly-calendar';
+export * from './components/calendar/calendar-cards';
