@@ -23,6 +23,7 @@ export interface ReplyPanelProps extends isLocalAware {
     onLinkDelete: (linkId: number, type: 'link', index: number) => void;
     onFilesChange: (file: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+    onDeleteIcon?: (id: string) => void;
     onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
     onCreateLink?: (data: shared.TLink, index: number) => Promise<shared.TLink>;
     onClickEditLink?: (index: number) => void;
@@ -53,6 +54,7 @@ export interface ReplyPanelProps extends isLocalAware {
  * @param onCreateLink Callback to save a newly created or edited link.
  * @param onClickEditLink Callback when the user clicks to edit a specific link.
  * @param onImageChange Callback to update the Link image.
+ * @param onDeleteIcon Callback to delete the Link icon.
  * @param onClickAddLink Callback when the user clicks the "Add Link" button.
  * @param onClickSendMessage Callback when the user sends a reply (text, resources, or passed).
  * @param locale The locale string used for internationalization/localized text.
@@ -75,6 +77,7 @@ export interface ReplyPanelProps extends isLocalAware {
  *   onImageChange={handleImageChange}
  *   onClickAddLink={handleAddLink}
  *   onClickSendMessage={handleSend}
+ *   onDeleteIcon={handleDeleteIcon}
  *   locale="en"
  * />
  */
@@ -97,6 +100,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
     onClickEditLink,
     onClickAddLink,
     onImageChange,
+    onDeleteIcon,
     onClickSendMessage,
     locale
 }) => {
@@ -104,7 +108,6 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
 
     const handleSubmit = (type: 'text' | 'resources' | 'passed') => {
         const timestamp = new Date().toISOString(); // Zod expects ISO format
-        const replyId = Date.now(); // Replace with better id logic if needed
 
         if (type === 'passed') {
             onClickSendMessage({
@@ -175,9 +178,11 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                                         locale={locale}
                                         initialTitle={link.title}
                                         initialUrl={link.url}
-                                        onSave={(title, url) => onCreateLink({ title, url }, index)}
+                                        initialCustomIcon={link.customIcon}
+                                        onSave={(title, url, customIcon) => onCreateLink({ title, url, customIcon }, index)}
                                         onDiscard={() => onLinkDelete(link.linkId, 'link', index)}
                                         onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
+                                        onDeleteIcon={onDeleteIcon}
                                     />
                                 </div>
                             ) : (
@@ -186,6 +191,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                                         preview
                                         title={link.title}
                                         url={link.url}
+                                        customIcon={link.customIcon}
                                         onEdit={() => onClickEditLink(index)}
                                         onDelete={() => onLinkDelete(link.linkId, 'link', index)}
                                     />
