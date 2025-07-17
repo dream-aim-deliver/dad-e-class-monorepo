@@ -18,5 +18,5 @@ export * from './get-enrolled-course-details-usecase-models';
 export * from './get-student-progress-usecase-models';
 export * from './list-included-coaching-sessions-usecase-models';
 export * from './get-course-introduction-usecase-models';
-
 export * from './get-course-outline-usecase-models';
+export * from './get-coach-availability-usecase-models';
