@@ -61,3 +61,31 @@ export function SessionCalendarCard(props: SessionCalendarCardProps) {
         </div>
     );
 }
+
+interface AnonymousCalendarCardProps {
+    locale: string;
+    start: Date;
+    end: Date;
+}
+
+export function AnonymousCalendarCard(props: AnonymousCalendarCardProps) {
+    const formatTime = (date: Date) => {
+        return date.toLocaleTimeString(props.locale, {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: undefined,
+        });
+    };
+
+    const timeRange = `${formatTime(props.start)} - ${formatTime(props.end)}`;
+
+    return (
+        <div
+            className={`h-full w-full rounded-md bg-base-neutral-200 text-text-primary-inverted font-semibold p-2 text-sm overflow-hidden`}
+        >
+            <div className="truncate" title={timeRange}>
+                {timeRange}
+            </div>
+        </div>
+    );
+}
