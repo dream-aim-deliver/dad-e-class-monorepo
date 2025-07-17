@@ -11,10 +11,6 @@ export const LinkWithIdSchema = LinkSchema.extend({
     linkId: z.number(),
 });
 
-export const LinkWithIdSchema = LinkSchema.extend({
-    linkId: z.number(),
-});
-
 export type TLink = z.infer<typeof LinkSchema>;
 
 export type TLinkWithId = z.infer<typeof LinkWithIdSchema>;
