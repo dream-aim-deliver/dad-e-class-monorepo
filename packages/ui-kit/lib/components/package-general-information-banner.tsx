@@ -8,7 +8,7 @@ import { IconClock } from './icons/icon-clock';
 
 export interface PackageGeneralInformationView
     extends eClassPackage.TEClassPackage,
-        isLocalAware {
+    isLocalAware {
     onClickPurchase: () => void;
     subTitle: string;
 }

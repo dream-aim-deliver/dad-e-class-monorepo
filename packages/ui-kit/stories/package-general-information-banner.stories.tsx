@@ -28,7 +28,7 @@ export default {
             description: 'Description text of the package banner',
         },
         duration: {
-            control: 'text',
+            control: 'number',
             description: 'Duration of the package (e.g., "6 hours")',
         },
         pricing: {
