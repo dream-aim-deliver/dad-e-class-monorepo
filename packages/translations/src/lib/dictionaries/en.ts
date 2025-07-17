@@ -583,6 +583,7 @@ export const EN: TDictionary = {
       fromText: 'from',
       saveText: 'save',
       errorImageText: 'Image not available.',
+
     },
     link:{
       titleLabel: 'Title',
