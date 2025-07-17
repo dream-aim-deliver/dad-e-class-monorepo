@@ -576,6 +576,14 @@ export const DE: TDictionary = {
       titleLesson: 'Lektion löschen?',
       titleModule: 'Modul löschen?',
     },
+    courseBuilder:{
+      deleteText: 'Löschen',
+      moveUpText: 'Nach oben verschieben',
+      moveDownText: 'Nach unten verschieben',
+      ImageFileText: 'Hinzufügen',
+      videoFileText: 'Video hinzufügen',
+      ImageGalleryText: 'Bildergalerie hinzufügen',
+    },
     buyCompletePackageBanner: {
       purchaseButton: 'Paket kaufen',
       fromText: 'ab',
