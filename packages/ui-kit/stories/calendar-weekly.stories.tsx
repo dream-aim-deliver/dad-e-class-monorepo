@@ -502,3 +502,13 @@ export const GermanBusySchedule: Story = {
         events: mockDataScenarios.busy('de')
     },
 };
+
+export const Loading: Story = {
+    args: {
+        currentDate: new Date(),
+        setCurrentDate: (date: Date) => console.log('Current date set to:', date),
+        locale: 'en',
+        events: mockDataScenarios.busy('en'),
+        isLoading: true,
+    },
+}
