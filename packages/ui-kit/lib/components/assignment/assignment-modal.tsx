@@ -16,6 +16,7 @@ export interface AssignmentModalProps extends Omit<assignment.TAssignmentWithId,
     onLinkDelete: (id: number, linkId: number, type: 'link') => void;
     onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex?: number) => void;
     onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+    onDeleteIcon?: (id: string) => void;
     onClickCourse: () => void;
     onClickUser: () => void;
     onClickGroup: () => void;
@@ -56,6 +57,7 @@ export interface AssignmentModalProps extends Omit<assignment.TAssignmentWithId,
  * @param onClickGroup Callback when group name is clicked in header
  * @param onClose Callback to close the modal (fires from top-right close button)
  * @param onImageChange Callback to update the Link image.
+ * @param onDeleteIcon Callback to delete the Link icon.
  * @param locale Locale string for I18N
  * @param children Custom React content (messages, reply panels, additional details) rendered after assignment resources
  *
@@ -81,6 +83,7 @@ export interface AssignmentModalProps extends Omit<assignment.TAssignmentWithId,
  *   locale="en"
  *   onClickCourse={showCourse}
  *   onImageChange={handleImageChange}
+ *   onDeleteIcon={handleDeleteIcon}
  *   onClickUser={showUser}
  *   onClickGroup={showGroup}
  *   onClose={closeModal}
@@ -96,7 +99,8 @@ export interface AssignmentModalProps extends Omit<assignment.TAssignmentWithId,
  *         onFileDelete={handleMsgFileDelete}
  *         onLinkDelete={handleMsgLinkDelete}
  *         onChange={handleMsgChange}
- *        onImageChange={handleImageChange}
+ *         onImageChange={handleImageChange}
+ *         onDeleteIcon={handleDeleteIcon}
  *       />
  *     ))}
  *     <ReplyPanel
@@ -104,6 +108,7 @@ export interface AssignmentModalProps extends Omit<assignment.TAssignmentWithId,
  *        role="coach"
  *        comment={replyComment}
  *        onImageChange={handleImageChange}
+ *        onDeleteIcon={handleDeleteIcon}
  *        ...
  *      />
  *   </div>
@@ -133,6 +138,7 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
     onClickCourse,
     onClickUser,
     onImageChange,
+    onDeleteIcon,
     onClickGroup,
     onClose,
     locale
@@ -219,9 +225,11 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                                 locale={locale}
                                 initialTitle={link.title}
                                 initialUrl={link.url}
-                                onSave={(title, url) => handleSaveLink({ title, url }, index)}
+                                initialCustomIcon={link.customIcon}
+                                onSave={(title, url, customIcon) => handleSaveLink({ title, url, customIcon }, index)}
                                 onDiscard={() => onLinkDelete(assignmentId, link.linkId, "link")}
                                 onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
+                                onDeleteIcon={onDeleteIcon}
                             />
                         </div>
                     ) : (
@@ -230,6 +238,7 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                                 preview={role === "coach"}
                                 title={link.title}
                                 url={link.url}
+                                customIcon={link.customIcon}
                                 onEdit={() => handleOnClickLinkEdit(index)}
                                 onDelete={() => onLinkDelete(assignmentId, link.linkId, "link")}
                             />

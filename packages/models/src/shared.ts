@@ -1,9 +1,10 @@
 import { z } from "zod";
+import { FileMetadataSchema } from "./file-metadata";
 
 export const LinkSchema = z.object({
     url: z.string().url(),
     title: z.string(),  // plain text
-    customIconUrl: z.string().optional(),  // URL to a custom icon, if any
+    customIcon: FileMetadataSchema.optional(),  // custom icon, if any
 });
 
 export const LinkWithIdSchema = LinkSchema.extend({

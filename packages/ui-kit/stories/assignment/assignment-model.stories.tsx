@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { AssignmentModal } from '../../lib/components/assignment/assignment-modal';
 import { Message } from '../../lib/components/assignment/message';
@@ -125,6 +125,40 @@ const ModalTemplate: FC<{
     const [replyLinkEditIndex, setReplyLinkEditIndex] = useState<number | undefined>();
     const [replyDraftLink, setReplyDraftLink] = useState<shared.TLinkWithId | null>(null);
 
+    useEffect(() => {
+        // Compose the current "complete data" snapshot
+        const data = {
+            modal: {
+                files,
+                links,
+                linkEditIndex,
+                description,
+                // Assignment-level...
+            },
+            messages,
+            messagesLinkEditIndexes: messageLinkEditIndexes,
+            replyPanel: {
+                replyComment,
+                replyFiles,
+                replyLinks,
+                replyDraftLink,
+                replyLinkEditIndex
+            },
+        };
+        console.log('[AssignmentModal Data Snapshot]', data);
+    }, [
+        files,
+        links,
+        linkEditIndex,
+        messages,
+        messageLinkEditIndexes,
+        replyComment,
+        replyFiles,
+        replyLinks,
+        replyDraftLink,
+        replyLinkEditIndex
+    ]);
+
     const handleFileDownload = (id: string) => alert(`Download file ${id}`);
 
     const handleFileDelete = (assignmentId: number, fileId: string) => {
@@ -135,6 +169,132 @@ const ModalTemplate: FC<{
         setLinks(prev => prev.filter(link => link.linkId !== linkId));
         if (linkEditIndex !== null && links[linkEditIndex]?.linkId === linkId) {
             setLinkEditIndex(null);
+        }
+    };
+
+    const handleImageChange = async (
+        image: fileMetadata.TFileMetadata,
+        abortSignal?: AbortSignal
+    ) => {
+        if (linkEditIndex === null) return;
+        setLinks(links =>
+            links.map((link, idx) =>
+                idx === linkEditIndex
+                    ? { ...link, customIcon: { ...image, status: 'processing' as const } }
+                    : link
+            )
+        );
+        try {
+            await new Promise<void>((resolve, reject) => {
+                const timeout = setTimeout(resolve, 2000);
+                if (abortSignal) {
+                    abortSignal.addEventListener('abort', () => {
+                        clearTimeout(timeout);
+                        reject(new DOMException('Cancelled', 'AbortError'));
+                    });
+                }
+            });
+            setLinks(links =>
+                links.map((link, idx) =>
+                    idx === linkEditIndex
+                        ? { ...link, customIcon: { ...image, status: 'available' as const } }
+                        : link
+                )
+            );
+        } catch {
+            setLinks(links =>
+                links.map((link, idx) =>
+                    idx === linkEditIndex
+                        ? { ...link, customIcon: undefined }
+                        : link
+                )
+            );
+        }
+    };
+
+    const handleDeleteIcon = (id: string) => {
+        if (linkEditIndex === null) return;
+        setLinks(links =>
+            links.map((link, idx) =>
+                idx === linkEditIndex && link.customIcon?.id === id
+                    ? { ...link, customIcon: undefined }
+                    : link
+            )
+        );
+    };
+
+    const handleReplyImageChange = async (
+        image: fileMetadata.TFileMetadata,
+        abortSignal?: AbortSignal
+    ) => {
+        // Use the index logic as in your robust reply story
+        const editIdx = replyDraftLink ? replyLinks.length : replyLinkEditIndex;
+        if (typeof editIdx !== "number") return;
+
+        const linksList = replyDraftLink ? [...replyLinks, replyDraftLink] : replyLinks;
+
+        // "processing" state
+        const updated = linksList.map((link, idx) =>
+            idx === editIdx
+                ? { ...link, customIcon: { ...image, status: 'processing' as const } }
+                : link
+        );
+        if (replyDraftLink) {
+            setReplyDraftLink(updated.pop()!);
+            setReplyLinks(updated);
+        } else {
+            setReplyLinks(updated);
+        }
+        try {
+            await new Promise<void>((resolve, reject) => {
+                const timeout = setTimeout(resolve, 2000);
+                if (abortSignal) {
+                    abortSignal.addEventListener('abort', () => {
+                        clearTimeout(timeout);
+                        reject(new DOMException('Cancelled', 'AbortError'));
+                    });
+                }
+            });
+            const available = (replyDraftLink ? [...replyLinks, replyDraftLink] : replyLinks).map((link, idx) =>
+                idx === editIdx
+                    ? { ...link, customIcon: { ...image, status: 'available' as const } }
+                    : link
+            );
+            if (replyDraftLink) {
+                setReplyDraftLink(available.pop()!);
+                setReplyLinks(available);
+            } else {
+                setReplyLinks(available);
+            }
+        } catch {
+            const removed = (replyDraftLink ? [...replyLinks, replyDraftLink] : replyLinks).map((link, idx) =>
+                idx === editIdx
+                    ? { ...link, customIcon: undefined }
+                    : link
+            );
+            if (replyDraftLink) {
+                setReplyDraftLink(removed.pop()!);
+                setReplyLinks(removed);
+            } else {
+                setReplyLinks(removed);
+            }
+        }
+    };
+
+    const handleReplyDeleteIcon = (id: string) => {
+        const editIdx = replyDraftLink ? replyLinks.length : replyLinkEditIndex;
+        if (typeof editIdx !== "number") return;
+        const linksList = replyDraftLink ? [...replyLinks, replyDraftLink] : replyLinks;
+        const updated = linksList.map((link, idx) =>
+            idx === editIdx && link.customIcon?.id === id
+                ? { ...link, customIcon: undefined }
+                : link
+        );
+        if (replyDraftLink) {
+            setReplyDraftLink(updated.pop()!);
+            setReplyLinks(updated);
+        } else {
+            setReplyLinks(updated);
         }
     };
 
@@ -267,7 +427,8 @@ const ModalTemplate: FC<{
             onLinkDelete={handleLinkDelete}
             onChange={handleChange}
             locale={locale}
-            onImageChange={() => { console.log("Image changed") }}
+            onImageChange={handleImageChange}
+            onDeleteIcon={handleDeleteIcon}
             onClickCourse={() => alert("Course clicked")}
             onClickUser={() => alert("User clicked")}
             onClickGroup={() => alert("Group clicked")}
@@ -280,6 +441,70 @@ const ModalTemplate: FC<{
                     // narrow the type to include `files` and `links`.
                     const files = isResourcesType ? msg.files ?? [] : [];
                     const links = isResourcesType ? msg.links ?? [] : [];
+
+                    const msgLinkEditIndex = messageLinkEditIndexes[msg.replyId] ?? null;
+
+                    const handleMessageImageChange = async (
+                        image: fileMetadata.TFileMetadata,
+                        abortSignal?: AbortSignal
+                    ) => {
+                        if (msgLinkEditIndex === null) return;
+
+                        const isResourcesType = msg.type === "resources";
+                        const files = isResourcesType ? msg.files ?? [] : [];
+                        const links = isResourcesType ? msg.links ?? [] : [];
+
+                        // Set status to processing for customIcon of editing link
+                        const updatedLinks = links.map((link, idx) =>
+                            idx === msgLinkEditIndex
+                                ? { ...link, customIcon: { ...image, status: 'processing' as const } }
+                                : link
+                        );
+                        handleMessageChange(files, updatedLinks, msgLinkEditIndex, msg.replyId);
+
+                        try {
+                            await new Promise<void>((resolve, reject) => {
+                                const timeout = setTimeout(resolve, 2000);
+                                if (abortSignal) {
+                                    abortSignal.addEventListener('abort', () => {
+                                        clearTimeout(timeout);
+                                        reject(new DOMException('Cancelled', 'AbortError'));
+                                    });
+                                }
+                            });
+
+                            // set status to available
+                            const readyLinks = links.map((link, idx) =>
+                                idx === msgLinkEditIndex
+                                    ? { ...link, customIcon: { ...image, status: 'available' as const } }
+                                    : link
+                            );
+                            handleMessageChange(files, readyLinks, msgLinkEditIndex, msg.replyId);
+                        } catch {
+                            // remove icon if aborted
+                            const removedLinks = links.map((link, idx) =>
+                                idx === msgLinkEditIndex
+                                    ? { ...link, customIcon: undefined }
+                                    : link
+                            );
+                            handleMessageChange(files, removedLinks, msgLinkEditIndex, msg.replyId);
+                        }
+                    };
+
+                    const handleMessageDeleteIcon = (id: string) => {
+                        if (msgLinkEditIndex === null) return;
+
+                        const isResourcesType = msg.type === "resources";
+                        const files = isResourcesType ? msg.files ?? [] : [];
+                        const links = isResourcesType ? msg.links ?? [] : [];
+
+                        const updatedLinks = links.map((link, idx) =>
+                            idx === msgLinkEditIndex && link.customIcon?.id === id
+                                ? { ...link, customIcon: undefined }
+                                : link
+                        );
+                        handleMessageChange(files, updatedLinks, msgLinkEditIndex, msg.replyId);
+                    };
 
                     return (
                         <Message
@@ -315,7 +540,8 @@ const ModalTemplate: FC<{
                                     msg.replyId
                                 )
                             }
-                            onImageChange={() => { console.log("Image changed") }}
+                            onImageChange={handleMessageImageChange}
+                            onDeleteIcon={handleMessageDeleteIcon}
                         />
                     );
                 })}
@@ -377,7 +603,8 @@ const ModalTemplate: FC<{
                         }
                         return data;
                     }}
-                    onImageChange={() => { console.log("Image changed") }}
+                    onImageChange={handleReplyImageChange}
+                    onDeleteIcon={handleReplyDeleteIcon}
                 />
             </div>
         </AssignmentModal>

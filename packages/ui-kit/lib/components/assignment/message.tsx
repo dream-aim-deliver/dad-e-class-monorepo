@@ -15,6 +15,7 @@ export interface MessageProps extends isLocalAware {
     onLinkDelete: (id: number, linkId: number, type: 'link') => void;
     onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
     onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLink[], linkEditIndex?: number) => void;
+    onDeleteIcon?: (id: string) => void;
 };
 
 /**
@@ -31,6 +32,7 @@ export interface MessageProps extends isLocalAware {
  * @param onLinkDelete Callback to delete a resource link.
  * @param onChange Callback to update files, links or change link editing mode.
  * @param onImageChange Callback to update the Link image.
+ * @param onDeleteIcon Callback to delete the Link icon.
  * @param locale The locale string for i18n/localization.
  *
  * @example
@@ -50,6 +52,7 @@ export interface MessageProps extends isLocalAware {
  *   onLinkDelete={handleLinkDelete}
  *   onChange={handleMessageChange}
  *   onImageChange={handleImageChange}
+ *   onDeleteIcon={handleDeleteIcon}
  *   locale="en"
  * />
  */
@@ -62,6 +65,7 @@ export const Message: FC<MessageProps> = ({
     onLinkDelete,
     onChange,
     onImageChange,
+    onDeleteIcon,
     locale
 }) => {
     const dictionary = getDictionary(locale);
@@ -133,9 +137,11 @@ export const Message: FC<MessageProps> = ({
                                         locale={locale}
                                         initialTitle={link.title}
                                         initialUrl={link.url}
-                                        onSave={(title, url) => handleSaveLink({ title, url }, index)}
+                                        initialCustomIcon={link.customIcon}
+                                        onSave={(title, url, customIcon) => handleSaveLink({ title, url, customIcon }, index)}
                                         onDiscard={() => onLinkDelete(reply.replyId, link.linkId, 'link')}
                                         onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
+                                        onDeleteIcon={onDeleteIcon}
                                     />
                                 </div>
                             ) : (
@@ -144,6 +150,7 @@ export const Message: FC<MessageProps> = ({
                                         preview={reply.sender.isCurrentUser}
                                         title={link.title}
                                         url={link.url}
+                                        customIcon={link.customIcon}
                                         onEdit={() => handleOnClickLinkEdit(index)}
                                         onDelete={() => onLinkDelete(reply.replyId, link.linkId, 'link')}
                                     />

@@ -272,6 +272,7 @@ export interface CreateAssignmentBuilderViewTypes extends isLocalAware {
     }) => void;
     onFilesChange: (file: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+    onDeleteIcon?: (id: string) => void;
     onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
     onFileDelete?: (id: string) => void;
     onFileDownload?: (id: string) => void;
