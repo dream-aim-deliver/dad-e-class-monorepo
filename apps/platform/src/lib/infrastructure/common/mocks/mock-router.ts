@@ -22,6 +22,7 @@ import { getStudentProgress } from './procedures/student-progress';
 import { listIncludedCoachingSessions } from './procedures/included-coaching-sessions';
 import { getCourseIntroduction } from './procedures/course-introduction';
 import { getCourseOutline } from './procedures/course-outline';
+import { listAssessmentProgresses } from './procedures/assessment-progresses';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -45,6 +46,7 @@ export const mockRouter = t.router({
     listIncludedCoachingSessions,
     getCourseIntroduction,
     getCourseOutline,
+    listAssessmentProgresses,
 });
 
 export type MockRouter = typeof mockRouter;
