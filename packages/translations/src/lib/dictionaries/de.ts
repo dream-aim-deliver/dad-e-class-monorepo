@@ -613,6 +613,7 @@ link:{
   urlRequired: 'URL ist erforderlich',
   paste: 'einfügen',
 }
+
   },
   pages: {
     home: Home_DE,
