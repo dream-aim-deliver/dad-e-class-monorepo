@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Button } from '../button';
-import { DateInput } from '../date-input';
 import { CheckBox } from '../checkbox';
 import { TextInput } from '../text-input';
 import { IconClose } from '../icons/icon-close';
@@ -15,11 +14,6 @@ export interface AssignmentFilterModel {
     lesson?: string;
     student?: string;
     groupName?: string;
-    dateFrom?: Date;
-    dateTo?: Date;
-    hasFiles?: boolean;
-    hasLinks?: boolean;
-    hasReplies?: boolean;
 }
 
 interface AssignmentCardFilterModalProps extends isLocalAware {
@@ -52,11 +46,6 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
         lesson: initialFilters.lesson,
         student: initialFilters.student,
         groupName: initialFilters.groupName,
-        dateFrom: initialFilters.dateFrom,
-        dateTo: initialFilters.dateTo,
-        hasFiles: initialFilters.hasFiles,
-        hasLinks: initialFilters.hasLinks,
-        hasReplies: initialFilters.hasReplies,
     });
 
     const handleChange = (field: string, value: any) => {
@@ -85,11 +74,6 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
             lesson: undefined,
             student: undefined,
             groupName: undefined,
-            dateFrom: undefined,
-            dateTo: undefined,
-            hasFiles: undefined,
-            hasLinks: undefined,
-            hasReplies: undefined,
         });
         setResetKey(prev => prev + 1);
     };
@@ -236,63 +220,6 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
                             inputText: dictionary.groupPlaceholder,
                         }}
                     />
-                </div>
-                <div className="h-px w-full bg-divider"></div>
-
-                {/* Date Range Section */}
-                <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">{dictionary.dateRangeSection}</h3>
-                    <div className="flex gap-2">
-                        <DateInput
-                            label={dictionary.dateFromLabel}
-                            key={`dateFrom-${resetKey}`}
-                            value={filters.dateFrom ? filters.dateFrom.toISOString().split('T')[0] : ''}
-                            onChange={(dateString) => handleChange('dateFrom', dateString ? new Date(dateString) : undefined)}
-                            locale={locale}
-                        />
-                        <DateInput
-                            label={dictionary.dateToLabel}
-                            key={`dateTo-${resetKey}`}
-                            value={filters.dateTo ? filters.dateTo.toISOString().split('T')[0] : ''}
-                            onChange={(dateString) => handleChange('dateTo', dateString ? new Date(dateString) : undefined)}
-                            locale={locale}
-                        />
-                    </div>
-                </div>
-                <div className="h-px w-full bg-divider"></div>
-
-                {/* Content Filters Section */}
-                <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">{dictionary.contentSection}</h3>
-                    <div className="flex flex-col gap-3">
-                        <CheckBox
-                            name="hasFiles"
-                            value="hasFiles"
-                            label={dictionary.hasFilesLabel}
-                            labelClass="text-white text-sm"
-                            checked={filters.hasFiles || false}
-                            withText
-                            onChange={(checked) => handleChange('hasFiles', checked)}
-                        />
-                        <CheckBox
-                            name="hasLinks"
-                            value="hasLinks"
-                            label={dictionary.hasLinksLabel}
-                            labelClass="text-white text-sm"
-                            checked={filters.hasLinks || false}
-                            withText
-                            onChange={(checked) => handleChange('hasLinks', checked)}
-                        />
-                        <CheckBox
-                            name="hasReplies"
-                            value="hasReplies"
-                            label={dictionary.hasRepliesLabel}
-                            labelClass="text-white text-sm"
-                            checked={filters.hasReplies || false}
-                            withText
-                            onChange={(checked) => handleChange('hasReplies', checked)}
-                        />
-                    </div>
                 </div>
                 <div className="h-px w-full bg-divider"></div>
 
