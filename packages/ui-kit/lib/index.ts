@@ -80,3 +80,8 @@ export { CoachingSessionItem } from './components/coaching-session-tracker/coach
 export { CourseIntroBanner } from './components/course-intro-banner';
 
 export { DefaultAccordion } from './components/accordion/default-accordion';
+
+// Assignment components
+export { AssignmentCard, type AssignmentCardProps } from './components/assignment/assignment-card';
+export { AssignmentCardList } from './components/assignment/assignment-card-list';
+export { AssignmentCardFilterModal, type AssignmentFilterModel } from './components/assignment/assignment-card-filter-modal';
