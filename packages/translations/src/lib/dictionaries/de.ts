@@ -602,6 +602,16 @@ export const DE: TDictionary = {
       viewAssignment: 'Aufgabe ansehen',
       emptyState: 'Noch keine Lernenden',
     },
+    addCoachModal: {
+      title: 'Coach hinzuefüege',
+      description: 'Wötsch Coachs zu dim Kurs hinzuefüege?',
+      searchLabel: 'Coachs sueche',
+      addButton: 'Hinzuefüege',
+      addedLabel: 'Schon Coach',
+      isYou: 'Du',
+      noFoundLabel: 'Kei Coachs gfunde...',
+      closeButton: "Zuemache",
+    },
   },
   pages: {
     home: Home_DE,
