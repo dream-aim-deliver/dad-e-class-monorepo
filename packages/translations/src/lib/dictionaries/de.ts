@@ -612,7 +612,17 @@ export const DE: TDictionary = {
       titleRequired: 'Titel ist erforderlich',
       urlRequired: 'URL ist erforderlich',
       paste: 'Einfügen',
-    }
+    },
+    addCoachModal: {
+      title: 'Coach hinzuefüege',
+      description: 'Wötsch Coachs zu dim Kurs hinzuefüege?',
+      searchLabel: 'Coachs sueche',
+      addButton: 'Hinzuefüege',
+      addedLabel: 'Schon Coach',
+      isYou: 'Du',
+      noFoundLabel: 'Kei Coachs gfunde...',
+      closeButton: "Zuemache",
+    },
   },
   pages: {
     home: Home_DE,
