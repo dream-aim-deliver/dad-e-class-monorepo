@@ -53,7 +53,7 @@ export const AssignmentCardList: React.FC<AssignmentCardListProps> = ({
   const [search, setSearch] = useState('');
   const [showFilter, setShowFilter] = useState(false);
   const [filters, setFilters] = useState<Partial<AssignmentFilterModel>>({});
-  const [sortBy, setSortBy] = useState<'title' | 'status' | 'course' | 'date'>(dictionary.defaultSortBy as 'title' | 'status' | 'course' | 'date');
+  const [sortBy, setSortBy] = useState<'title' | 'status' | 'course'>(dictionary.defaultSortBy as 'title' | 'status' | 'course');
 
   // Filter and sort logic
   const filteredAssignments = assignments
@@ -95,22 +95,7 @@ export const AssignmentCardList: React.FC<AssignmentCardListProps> = ({
       if (filters.groupName && !assignment.groupName?.toLowerCase().includes(filters.groupName.toLowerCase())) {
         matches = false;
       }
-      
-      if (filters.hasFiles !== undefined && (assignment.files.length > 0) !== filters.hasFiles) {
-        matches = false;
-      }
-      
-      if (filters.hasLinks !== undefined && (assignment.links.length > 0) !== filters.hasLinks) {
-        matches = false;
-      }
-      
-      if (filters.hasReplies !== undefined && (assignment.replies.length > 0) !== filters.hasReplies) {
-        matches = false;
-      }
 
-      // Date range filtering would require timestamp/date fields in the assignment object
-      // This would need to be implemented based on the actual assignment data structure
-      
       return matchesSearch && matches;
     })
     .sort((a, b) => {
@@ -124,7 +109,7 @@ export const AssignmentCardList: React.FC<AssignmentCardListProps> = ({
   const handleClear = () => {
     setSearch('');
     setFilters({});
-    setSortBy(dictionary.defaultSortBy as 'title' | 'status' | 'course' | 'date');
+    setSortBy(dictionary.defaultSortBy as 'title' | 'status' | 'course');
   };
 
   return (
@@ -141,9 +126,8 @@ export const AssignmentCardList: React.FC<AssignmentCardListProps> = ({
                 { label: dictionary.sortOptions.title, value: 'title' },
                 { label: dictionary.sortOptions.status, value: 'status' },
                 { label: dictionary.sortOptions.course, value: 'course' },
-                { label: dictionary.sortOptions.date, value: 'date' },
               ]}
-              onSelectionChange={(val) => setSortBy(val as 'title' | 'status' | 'course' | 'date')}
+              onSelectionChange={(val) => setSortBy(val as 'title' | 'status' | 'course')}
               defaultValue={sortBy}
               text={{ simpleText: dictionary.sortOptions.title }}
               className="min-w-[120px]"

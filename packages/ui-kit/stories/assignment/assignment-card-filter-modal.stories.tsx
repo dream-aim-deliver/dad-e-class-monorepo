@@ -59,8 +59,6 @@ WithInitialFilters.args = {
     title: 'Photography',
     status: ['AwaitingReview'],
     course: 'Photography',
-    hasFiles: true,
-    hasReplies: false,
   },
 };
 
