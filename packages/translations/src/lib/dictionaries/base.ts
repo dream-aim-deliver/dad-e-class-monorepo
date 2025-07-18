@@ -599,9 +599,17 @@ export const DictionarySchema = z.object({
       studentDetailsButton: z.string(),
       viewAssignment: z.string(),
       emptyState: z.string(),
-
-    })
-
+    }),
+    addCoachModal: z.object({
+      title: z.string(),
+      description: z.string(),
+      searchLabel: z.string(),
+      addButton: z.string(),
+      addedLabel: z.string(),
+      isYou: z.string(),
+      noFoundLabel: z.string(),
+      closeButton: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({
