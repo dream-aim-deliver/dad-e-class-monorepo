@@ -597,6 +597,16 @@ export const EN: TDictionary = {
       viewAssignment: 'View assignment',
       emptyState: 'No students yet',
     },
+    addCoachModal: {
+    title: 'Add a coach',
+    description: 'Would you like to add coaches to your course?',
+    searchLabel: 'Search coaches',
+    addButton: 'Add',
+    addedLabel: 'Already a coach',
+    isYou: 'You',
+    noFoundLabel: 'No coaches found...',
+    closeButton: "Close",
+    },
   },
   pages: {
     home: Home_EN,
