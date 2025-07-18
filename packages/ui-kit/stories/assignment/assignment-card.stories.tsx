@@ -111,6 +111,61 @@ const WithStateTemplate: FC<{
 
     const [linkEditIndex, setLinkEditIndex] = useState<number | null>(null);
 
+    const handleImageChange = async (
+        image: fileMetadata.TFileMetadata,
+        abortSignal?: AbortSignal
+    ) => {
+        if (linkEditIndex === null) return;
+        // Set status to "processing"
+        setLinks(links =>
+            links.map((link, idx) =>
+                idx === linkEditIndex
+                    ? { ...link, customIcon: { ...image, status: 'processing' as const } }
+                    : link
+            )
+        );
+        try {
+            // Simulate async upload
+            await new Promise<void>((resolve, reject) => {
+                const timeout = setTimeout(resolve, 2000);
+                if (abortSignal) {
+                    abortSignal.addEventListener('abort', () => {
+                        clearTimeout(timeout);
+                        reject(new DOMException('Cancelled', 'AbortError'));
+                    });
+                }
+            });
+            // Set status to "available"
+            setLinks(links =>
+                links.map((link, idx) =>
+                    idx === linkEditIndex
+                        ? { ...link, customIcon: { ...image, status: 'available' as const } }
+                        : link
+                )
+            );
+        } catch {
+            // Remove if aborted/error
+            setLinks(links =>
+                links.map((link, idx) =>
+                    idx === linkEditIndex
+                        ? { ...link, customIcon: undefined }
+                        : link
+                )
+            );
+        }
+    };
+
+    const handleDeleteIcon = (iconId: string) => {
+        if (linkEditIndex === null) return;
+        setLinks(links =>
+            links.map((link, idx) =>
+                idx === linkEditIndex && link.customIcon?.id === iconId
+                    ? { ...link, customIcon: undefined }
+                    : link
+            )
+        );
+    };
+
     const handleFileDownload = (id: string) => {
         alert(`Download file ${id}`);
     };
@@ -156,7 +211,8 @@ const WithStateTemplate: FC<{
             linkEditIndex={linkEditIndex}
             onFileDownload={handleFileDownload}
             onFileDelete={handleFileDelete}
-            onImageChange={() => { console.log('Image changed'); }}
+            onImageChange={handleImageChange}
+            onDeleteIcon={handleDeleteIcon}
             onLinkDelete={handleLinkDelete}
             onChange={handleChange}
         />
@@ -246,6 +302,57 @@ export const AllCombined: Story = {
             }
         ];
 
+        const handleImageChange = async (
+            image: fileMetadata.TFileMetadata,
+            abortSignal?: AbortSignal
+        ) => {
+            if (linkEditIndex === null) return;
+            setLinks(links =>
+                links.map((link, idx) =>
+                    idx === linkEditIndex
+                        ? { ...link, customIcon: { ...image, status: 'processing' as const } }
+                        : link
+                )
+            );
+            try {
+                await new Promise<void>((resolve, reject) => {
+                    const timeout = setTimeout(resolve, 2000);
+                    if (abortSignal) {
+                        abortSignal.addEventListener('abort', () => {
+                            clearTimeout(timeout);
+                            reject(new DOMException('Cancelled', 'AbortError'));
+                        });
+                    }
+                });
+                setLinks(links =>
+                    links.map((link, idx) =>
+                        idx === linkEditIndex
+                            ? { ...link, customIcon: { ...image, status: 'available' as const } }
+                            : link
+                    )
+                );
+            } catch {
+                setLinks(links =>
+                    links.map((link, idx) =>
+                        idx === linkEditIndex
+                            ? { ...link, customIcon: undefined }
+                            : link
+                    )
+                );
+            }
+        };
+
+        const handleDeleteIcon = (id: string) => {
+            if (linkEditIndex === null) return;
+            setLinks(links =>
+                links.map((link, idx) =>
+                    idx === linkEditIndex && link.customIcon?.id === id
+                        ? { ...link, customIcon: undefined }
+                        : link
+                )
+            );
+        };
+
         return (
             <AssignmentCard
                 {...baseAssignmentProps}
@@ -261,7 +368,8 @@ export const AllCombined: Story = {
                 onFileDownload={(id) => alert(`Download: ${id}`)}
                 onFileDelete={(assignId, fileId) => setFiles(fs => fs.filter(f => f.id !== fileId))}
                 onLinkDelete={(assignId, linkId) => setLinks(ls => ls.filter(l => l.linkId !== linkId))}
-                onImageChange={() => { console.log('Image changed'); }}
+                onImageChange={handleImageChange}
+                onDeleteIcon={handleDeleteIcon}
             />
         );
     },

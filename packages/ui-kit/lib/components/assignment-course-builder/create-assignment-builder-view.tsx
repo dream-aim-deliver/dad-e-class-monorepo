@@ -35,6 +35,7 @@ import { IconPlus } from "../icons/icon-plus";
  * @param linkEditIndex The index in the links array that is currently being edited. If null, links are in preview mode.
  * @param onClickEditLink Callback to enter edit mode for a link by its index in the array.
  * @param onImageChange Callback to update the Link image.
+ * @param onDeleteIcon Callback to delete the Link icon.
  *
  * @example
  * <CreateAssignmentBuilderView
@@ -57,6 +58,7 @@ import { IconPlus } from "../icons/icon-plus";
  *   onLinkEdit={handleLinkEdit}
  *   onClickAddLink={handleAddLink}
  *   onImageChange={handleImageChange}
+ *   onDeleteIcon={handleDeleteIcon}
  *   locale="en"
  *   linkEditIndex={editingLinkIndex}
  *   onClickEditLink={setEditingLinkIndex}
@@ -78,6 +80,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
     onLinkEdit,
     onClickAddLink,
     onImageChange,
+    onDeleteIcon,
     locale,
     linkEditIndex,
     onClickEditLink,
@@ -155,9 +158,11 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                                     locale={locale}
                                     initialTitle={link.title}
                                     initialUrl={link.url}
-                                    onSave={(title, url) => onLinkEdit({ title, url }, index)}
+                                    initialCustomIcon={link.customIcon}
+                                    onSave={(title, url, customIcon) => onLinkEdit({ title, url, customIcon }, index)}
                                     onDiscard={() => onLinkDelete(assignmentId, link.linkId, 'link')}
                                     onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
+                                    onDeleteIcon={onDeleteIcon}
                                 />
                             </div>
                         ) : (
@@ -166,6 +171,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                                     preview
                                     title={link.title}
                                     url={link.url}
+                                    customIcon={link.customIcon}
                                     onEdit={() => onClickEditLink(index)}
                                     onDelete={() => onLinkDelete(assignmentId, link.linkId, 'link')}
                                 />

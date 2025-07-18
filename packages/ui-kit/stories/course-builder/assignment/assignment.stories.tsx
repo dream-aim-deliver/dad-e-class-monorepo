@@ -190,6 +190,79 @@ function DesignerAssignmentStory({ locale }: { locale: TLocale }) {
         }));
     };
 
+    const handleImageChange = async (
+        image: fileMetadata.TFileMetadata,
+        abortSignal?: AbortSignal,
+    ) => {
+        if (typeof linkEditIndex !== 'number') return;
+
+        // Set status to "processing"
+        setAssignmentData(ad => {
+            const links = ad.links || [];
+            return {
+                ...ad,
+                links: links.map((link, idx) =>
+                    idx === linkEditIndex
+                        ? { ...link, customIcon: { ...image, status: 'processing' as const } }
+                        : link
+                ),
+            };
+        });
+
+        try {
+            await new Promise<void>((resolve, reject) => {
+                const timeout = setTimeout(resolve, 2000);
+                if (abortSignal) {
+                    abortSignal.addEventListener('abort', () => {
+                        clearTimeout(timeout);
+                        reject(new DOMException('Cancelled', 'AbortError'));
+                    });
+                }
+            });
+
+            // Set status to "available"
+            setAssignmentData(ad => {
+                const links = ad.links || [];
+                return {
+                    ...ad,
+                    links: links.map((link, idx) =>
+                        idx === linkEditIndex
+                            ? { ...link, customIcon: { ...image, status: 'available' as const } }
+                            : link
+                    ),
+                };
+            });
+        } catch {
+            // Remove icon if aborted/failed
+            setAssignmentData(ad => {
+                const links = ad.links || [];
+                return {
+                    ...ad,
+                    links: links.map((link, idx) =>
+                        idx === linkEditIndex
+                            ? { ...link, customIcon: undefined }
+                            : link
+                    ),
+                };
+            });
+        }
+    };
+
+    const handleDeleteIcon = (id: string) => {
+        if (typeof linkEditIndex !== 'number') return;
+        setAssignmentData(ad => {
+            const links = ad.links || [];
+            return {
+                ...ad,
+                links: links.map((link, idx) =>
+                    idx === linkEditIndex && link.customIcon?.id === id
+                        ? { ...link, customIcon: undefined }
+                        : link
+                ),
+            };
+        });
+    };
+
     // Link actions
     const handleLinkDelete = (_assignmentId: number, linkId: number, _type: "link") => {
         setAssignmentData((ad) => ({
@@ -209,19 +282,34 @@ function DesignerAssignmentStory({ locale }: { locale: TLocale }) {
     };
 
     const handleClickAddLink = () => {
+        // Prevent creating a draft if already editing one
+        if (typeof linkEditIndex === 'number') return;
         setAssignmentData((ad) => {
-            const newLink: shared.TLinkWithId = {
-                linkId: Date.now(),
-                title: "",
-                url: "",
-            };
             const links = ad.links || [];
-            return { ...ad, links: [...links, newLink] };
+            return { ...ad, links: [...links, { linkId: Date.now(), title: "", url: "" }] };
         });
-        setLinkEditIndex((assignmentData.links?.length ?? 0));
+        setLinkEditIndex(assignmentData.links?.length ?? 0);
     };
 
-    const handleClickEditLink = (idx: number) => setLinkEditIndex(idx);
+    const handleClickEditLink = (idx: number) => {
+        setAssignmentData(ad => {
+            const links = ad.links || [];
+            // If the last link is a draft (empty), remove it before editing another
+            if (
+                links.length > 0 &&
+                links[links.length - 1].linkId !== undefined &&
+                links[links.length - 1].title === '' &&
+                links[links.length - 1].url === ''
+            ) {
+                return {
+                    ...ad,
+                    links: links.slice(0, -1)
+                };
+            }
+            return ad;
+        });
+        setLinkEditIndex(idx);
+    };
 
     // Main change handler for title/description
     const handleChange = (data: {
@@ -246,6 +334,8 @@ function DesignerAssignmentStory({ locale }: { locale: TLocale }) {
                     onFileDelete: handleFileDelete,
                     onLinkDelete: handleLinkDelete,
                     onLinkEdit: handleLinkEdit,
+                    onImageChange: handleImageChange,
+                    onDeleteIcon: handleDeleteIcon,
                     onClickAddLink: handleClickAddLink,
                     onClickEditLink: handleClickEditLink,
                     locale,

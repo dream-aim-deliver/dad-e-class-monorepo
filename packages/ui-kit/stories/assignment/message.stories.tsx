@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Message } from '../../lib/components/assignment/message';
 import { fileMetadata, shared } from '@maany_shr/e-class-models';
@@ -116,6 +116,60 @@ const ResourcesReplyRender: FC<{ locale: 'en' | 'de' }> = ({ locale }) => {
         alert(`Download clicked for file with id: ${fileId}`);
     };
 
+    const handleImageChange = async (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => {
+        if (linkEditIndex === null) return;  // not editing
+
+        // Set status to 'processing' immediately
+        const updatedLinks = links.map((link, idx) =>
+            idx === linkEditIndex
+                ? { ...link, customIcon: { ...image, status: 'processing' as const } }
+                : link
+        );
+        setLinks(updatedLinks);
+
+        try {
+            // Simulate async upload with abort
+            await new Promise<void>((resolve, reject) => {
+                const timeout = setTimeout(() => resolve(), 2000);
+                if (abortSignal) {
+                    abortSignal.addEventListener('abort', () => {
+                        clearTimeout(timeout);
+                        reject(new DOMException('Cancelled', 'AbortError'));
+                    });
+                }
+            });
+
+            // Finished upload, mark as 'available'
+            setLinks(currentLinks =>
+                currentLinks.map((link, idx) =>
+                    idx === linkEditIndex
+                        ? { ...link, customIcon: { ...image, status: 'available' as const } }
+                        : link
+                )
+            );
+        } catch (error) {
+            // Remove if aborted or error
+            setLinks(currentLinks =>
+                currentLinks.map((link, idx) =>
+                    idx === linkEditIndex
+                        ? { ...link, customIcon: undefined }
+                        : link
+                )
+            );
+        }
+    };
+
+    const handleDeleteIcon = (id: string) => {
+        if (linkEditIndex === null) return;
+        setLinks(links =>
+            links.map((link, idx) =>
+                idx === linkEditIndex && link.customIcon?.id === id
+                    ? { ...link, customIcon: undefined }
+                    : link
+            )
+        );
+    };
+
     const handleFileDelete = (replyId: number, fileId: string, type: 'file') => {
         const updatedFiles = files.filter((f) => f.id !== fileId);
         setFiles(updatedFiles);
@@ -157,7 +211,8 @@ const ResourcesReplyRender: FC<{ locale: 'en' | 'de' }> = ({ locale }) => {
             onFileDownload={handleFileDownload}
             onFileDelete={handleFileDelete}
             onLinkDelete={handleLinkDelete}
-            onImageChange={() => { console.log('onImageChange') }}
+            onImageChange={handleImageChange}
+            onDeleteIcon={handleDeleteIcon}
             onChange={handleChange}
             locale={locale}
         />

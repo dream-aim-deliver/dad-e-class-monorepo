@@ -16,6 +16,7 @@ export interface AssignmentCardProps extends assignment.TAssignmentWithId, isLoc
     onLinkDelete: (assignmentId: number, linkId: number, type: 'link') => void;
     onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex?: number) => void;
     onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+    onDeleteIcon?: (id: string) => void;
     onClickCourse: () => void;
     onClickUser: () => void;
     onClickGroup: () => void;
@@ -58,6 +59,7 @@ export interface AssignmentCardProps extends assignment.TAssignmentWithId, isLoc
  * @param onClickGroup Callback to view the group (in header)
  * @param onClickView Callback for the "View" button at the bottom of the card
  * @param onImageChange Callback to update the Link image.
+ * @param onDeleteIcon Callback to delete the Link icon.
  * @param locale Locale string for i18n/localization (passed to child components too)
  *
  * @example
@@ -81,6 +83,7 @@ export interface AssignmentCardProps extends assignment.TAssignmentWithId, isLoc
  *   onChange={handleAssignmentChange}
  *   onClickCourse={goToCourse}
  *   onImageChange={handleImageChange}
+ *   onDeleteIcon={handleDeleteIcon}
  *   onClickUser={goToUser}
  *   onClickGroup={goToGroup}
  *   onClickView={goToAssignment}
@@ -107,6 +110,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
     onFileDownload,
     onLinkDelete,
     onImageChange,
+    onDeleteIcon,
     onChange,
     onClickCourse,
     onClickUser,
@@ -178,9 +182,11 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                                             locale={locale}
                                             initialTitle={link.title}
                                             initialUrl={link.url}
-                                            onSave={(title, url) => handleSaveLink({ title, url }, index)}
+                                            initialCustomIcon={link.customIcon}
+                                            onSave={(title, url, customIcon) => handleSaveLink({ title, url, customIcon }, index)}
                                             onDiscard={() => onLinkDelete(assignmentId, link.linkId, 'link')}
                                             onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
+                                            onDeleteIcon={onDeleteIcon}
                                         />
                                     </div>
                                 ) : (
@@ -189,6 +195,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                                             preview={role === 'coach'}
                                             title={link.title}
                                             url={link.url}
+                                            customIcon={link.customIcon}
                                             onEdit={() => handleOnClickLinkEdit(index)}
                                             onDelete={() => onLinkDelete(assignmentId, link.linkId, 'link')}
                                         />
