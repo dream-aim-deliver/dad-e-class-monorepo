@@ -628,7 +628,17 @@ export const EN: TDictionary = {
       titleRequired: 'Title is required',
       urlRequired: 'URL is required',
       paste: 'Paste',
-    }
+    },
+    addCoachModal: {
+      title: 'Add a coach',
+      description: 'Would you like to add coaches to your course?',
+      searchLabel: 'Search coaches',
+      addButton: 'Add',
+      addedLabel: 'Already a coach',
+      isYou: 'You',
+      noFoundLabel: 'No coaches found...',
+      closeButton: "Close",
+    },
   },
   pages: {
     home: Home_EN,
