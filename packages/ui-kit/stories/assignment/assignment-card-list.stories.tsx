@@ -104,7 +104,20 @@ const sampleAssignments: AssignmentCardProps[] = [
     module: 1,
     lesson: 3,
     status: 'Passed',
-    replies: [],
+    replies: [
+      {
+        type: 'passed',
+        replyId: 1,
+        timestamp: '2024-09-19T19:52:00Z',
+        sender: {
+          id: '1',
+          name: 'Alice Student',
+          image: 'https://randomuser.me/api/portraits/women/1.jpg',
+          isCurrentUser: false,
+          role: 'student',
+        }
+      }
+    ],
     student: {
       id: '2',
       name: 'John Doe',
@@ -193,13 +206,13 @@ export const Default: Story = {
     assignments: sampleAssignments,
     locale: 'en',
     onFileDownload: (id: string) => alert(`Download file: ${id}`),
-    onFileDelete: (assignmentId: number, fileId: string, type: 'file') => 
+    onFileDelete: (assignmentId: number, fileId: string, type: 'file') =>
       alert(`Delete file: ${fileId} from assignment ${assignmentId}`),
-    onLinkDelete: (assignmentId: number, linkId: number, type: 'link') => 
+    onLinkDelete: (assignmentId: number, linkId: number, type: 'link') =>
       alert(`Delete link: ${linkId} from assignment ${assignmentId}`),
-    onChange: (files, links, linkEditIndex) => 
+    onChange: (files, links, linkEditIndex) =>
       alert(`Files changed: ${files.length}, Links: ${links.length}, Edit index: ${linkEditIndex}`),
-    onImageChange: (image, abortSignal) => 
+    onImageChange: (image, abortSignal) =>
       alert(`Image change: ${image.name}`),
     onClickCourse: () => alert('Course clicked from list'),
     onClickUser: () => alert('User clicked from list'),
@@ -218,13 +231,13 @@ export const EmptyState: Story = {
     assignments: [],
     locale: 'en',
     onFileDownload: (id: string) => alert(`Download file: ${id}`),
-    onFileDelete: (assignmentId: number, fileId: string, type: 'file') => 
+    onFileDelete: (assignmentId: number, fileId: string, type: 'file') =>
       alert(`Delete file: ${fileId} from assignment ${assignmentId}`),
-    onLinkDelete: (assignmentId: number, linkId: number, type: 'link') => 
+    onLinkDelete: (assignmentId: number, linkId: number, type: 'link') =>
       alert(`Delete link: ${linkId} from assignment ${assignmentId}`),
-    onChange: (files, links, linkEditIndex) => 
+    onChange: (files, links, linkEditIndex) =>
       alert(`Files changed: ${files.length}, Links: ${links.length}, Edit index: ${linkEditIndex}`),
-    onImageChange: (image, abortSignal) => 
+    onImageChange: (image, abortSignal) =>
       alert(`Image change: ${image.name}`),
     onClickCourse: () => alert('Course clicked from empty list'),
     onClickUser: () => alert('User clicked from empty list'),
@@ -239,13 +252,13 @@ export const WithoutDownload: Story = {
     assignments: sampleAssignments.slice(0, 1),
     locale: 'en',
     onFileDownload: (id: string) => alert(`Download file: ${id}`),
-    onFileDelete: (assignmentId: number, fileId: string, type: 'file') => 
+    onFileDelete: (assignmentId: number, fileId: string, type: 'file') =>
       alert(`Delete file: ${fileId} from assignment ${assignmentId}`),
-    onLinkDelete: (assignmentId: number, linkId: number, type: 'link') => 
+    onLinkDelete: (assignmentId: number, linkId: number, type: 'link') =>
       alert(`Delete link: ${linkId} from assignment ${assignmentId}`),
-    onChange: (files, links, linkEditIndex) => 
+    onChange: (files, links, linkEditIndex) =>
       alert(`Files changed: ${files.length}, Links: ${links.length}, Edit index: ${linkEditIndex}`),
-    onImageChange: (image, abortSignal) => 
+    onImageChange: (image, abortSignal) =>
       alert(`Image change: ${image.name}`),
     onClickCourse: () => alert('Course clicked without download'),
     onClickUser: () => alert('User clicked without download'),
