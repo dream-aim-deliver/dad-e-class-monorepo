@@ -94,8 +94,6 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
   const allFiles = [...passedInFiles, ...uploadingFiles];
 
   const dictionary = getDictionary(locale);
-  const abortControllers = useRef(new Map<string, AbortController>());
-
 
   const getAcceptedFileTypes = (): string[] => {
     if (props.acceptedFileTypes) return props.acceptedFileTypes;
@@ -108,7 +106,6 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
       case 'document':
         return getDocumentFileTypes();
       case 'generic':
-        return ['*/*']; // Generic accepts all file types
       default:
         return [];
     }
@@ -239,7 +236,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
   };
 
   return (
-    <div className={cn('flex flex-col w-full', className, allFiles.length > 0 && 'gap-4')}>
+    <div className={cn('flex flex-col gap-4 w-full', className)}>
       <div className="flex flex-col gap-2 w-full">
         {allFiles.map((file) => (
           <div key={file.id}>
