@@ -234,6 +234,8 @@ export const DictionarySchema = z.object({
       packageCourseSelectorDescription: z.string(),
       packageCourseSelectorButton: z.string(),
       saveText: z.string(),
+      addToPackageButton: z.string(),
+      removeButton: z.string(),
     }),
     availableCoachingSessions: z.object({
       title: z.string(),

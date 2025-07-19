@@ -129,6 +129,8 @@ export const EN: TDictionary = {
       packageCourseSelectorDescription: 'With this package, you can select only specific courses or purchase the entire package for maximum savings.',
       packageCourseSelectorButton: 'Purchase Selected Courses',
       saveText: 'save',
+      addToPackageButton: 'Add to package',
+      removeButton: 'Remove',
     },
     reviewModal: {
       coachingTitle: 'How would you rate this coach?',
