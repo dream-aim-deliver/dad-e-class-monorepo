@@ -575,6 +575,18 @@ export const DictionarySchema = z.object({
       saveText: z.string(),
       errorImageText: z.string(),
     }),
+    link: z.object({
+      titleLabel: z.string(),
+      urlLabel: z.string(),
+      customIcon: z.string(),
+      LinkIcon: z.string(),
+      saveText: z.string(),
+      discardText: z.string(),
+      titleRequired: z.string(),
+      urlRequired: z.string(),
+      paste:z.string()
+    }),
+
     studentCard: z.object({
       coachingSessionsLeftText: z.string(),
       coach: z.string(),
@@ -587,7 +599,9 @@ export const DictionarySchema = z.object({
       studentDetailsButton: z.string(),
       viewAssignment: z.string(),
       emptyState: z.string(),
-    }),
+
+    })
+
   }),
   pages: z.object({
     sso: z.object({

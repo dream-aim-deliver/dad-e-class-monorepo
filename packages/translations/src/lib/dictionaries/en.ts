@@ -597,6 +597,17 @@ export const EN: TDictionary = {
       viewAssignment: 'View assignment',
       emptyState: 'No students yet',
     },
+    link:{
+      titleLabel: 'Title',
+      urlLabel: 'URL',
+      customIcon: 'Custom Icon',
+      LinkIcon: 'Link Icon',
+      saveText: 'Confirm',
+      discardText: 'Discard',
+      titleRequired: 'Title is required',
+      urlRequired: 'URL is required',
+      paste: 'Paste',
+    }
   },
   pages: {
     home: Home_EN,

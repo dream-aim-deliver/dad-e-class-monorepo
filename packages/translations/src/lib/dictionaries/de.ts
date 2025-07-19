@@ -602,6 +602,18 @@ export const DE: TDictionary = {
       viewAssignment: 'Aufgabe ansehen',
       emptyState: 'Noch keine Lernenden',
     },
+link:{
+  titleLabel: 'Titel',
+  urlLabel: 'URL',
+  customIcon: 'Benutzerdefiniertes Symbol',
+  LinkIcon: 'Linksymbol',
+  saveText: 'Bestätigen',
+  discardText: 'Verwerfen',
+  titleRequired: 'Titel ist erforderlich',
+  urlRequired: 'URL ist erforderlich',
+  paste: 'Einfügen',
+}
+
   },
   pages: {
     home: Home_DE,
