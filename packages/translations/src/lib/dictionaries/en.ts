@@ -602,11 +602,11 @@ export const EN: TDictionary = {
       urlLabel: 'URL',
       customIcon: 'Custom Icon',
       LinkIcon: 'Link Icon',
-      saveText: 'confirm',
+      saveText: 'Confirm',
       discardText: 'Discard',
       titleRequired: 'Title is required',
       urlRequired: 'URL is required',
-      paste: 'paste',
+      paste: 'Paste',
     }
   },
   pages: {

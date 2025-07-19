@@ -605,13 +605,13 @@ export const DE: TDictionary = {
 link:{
   titleLabel: 'Titel',
   urlLabel: 'URL',
-  customIcon: 'benutzerdefiniertes Symbol',
+  customIcon: 'Benutzerdefiniertes Symbol',
   LinkIcon: 'Linksymbol',
-  saveText: 'bestätigen',
-  discardText: 'verwerfen',
+  saveText: 'Bestätigen',
+  discardText: 'Verwerfen',
   titleRequired: 'Titel ist erforderlich',
   urlRequired: 'URL ist erforderlich',
-  paste: 'einfügen',
+  paste: 'Einfügen',
 }
 
   },
