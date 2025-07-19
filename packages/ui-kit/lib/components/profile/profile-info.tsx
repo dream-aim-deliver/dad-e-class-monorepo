@@ -92,6 +92,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           : {}),
       }) as profile.TPersonalProfile,
   );
+
   const dictionary = getDictionary(locale);
 
   const handleChange = (
