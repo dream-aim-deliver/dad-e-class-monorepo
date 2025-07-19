@@ -12,6 +12,8 @@ import {
     AvailabilityCalendarCard,
     DefaultError,
     DefaultLoading,
+    MonthlyCalendar,
+    SectionHeading,
     SessionCalendarCard,
     WeeklyCalendar,
 } from '@maany_shr/e-class-ui-kit';
@@ -70,7 +72,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                         start={new Date(session.startTime)}
                         end={new Date(session.endTime)}
                         title={session.coachingOfferingName}
-                        onClick={() => {}}
+                        onClick={() => { }}
                     />
                 ),
             });
@@ -115,14 +117,28 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
 
     const coachAvailability = coachAvailabilityViewModel.data;
 
+    const changeMonth = (difference: 1 | -1) => {
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + difference, 1));
+    }
+
     return (
-        <div className="h-full">
-            <WeeklyCalendar
-                locale={locale}
-                currentDate={currentDate}
-                setCurrentDate={setCurrentDate}
-                events={events}
-            />
+        <div>
+            <div className="flex-row hidden md:flex">
+                <div className="w-full rounded-lg bg-card-fill p-4 max-h-100%">
+                    <div className="flex flex-row mb-4">
+                        <SectionHeading text={currentDate.toLocaleDateString(locale, { month: 'long', year: 'numeric' })} />
+                    </div>
+                    <WeeklyCalendar
+                        locale={locale}
+                        currentDate={currentDate}
+                        setCurrentDate={setCurrentDate}
+                        events={events}
+                    />
+                </div>
+            </div>
+            <div className="flex flex-col md:hidden">
+                <MonthlyCalendar locale={locale} currentDate={currentDate} setCurrentDate={setCurrentDate} />
+            </div>
         </div>
     );
 }
