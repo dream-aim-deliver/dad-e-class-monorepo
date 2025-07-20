@@ -87,3 +87,7 @@ export { StudentCardList } from './components/student-card/student-card-list';
 export { YourStudentCard } from './components/student-card/your-student-card';
 export { YourStudentCardList } from './components/student-card/your-student-card-list';
 
+// Assignment components
+export { AssignmentCard, type AssignmentCardProps } from './components/assignment/assignment-card';
+export { AssignmentCardList } from './components/assignment/assignment-card-list';
+export { AssignmentCardFilterModal, type AssignmentFilterModel } from './components/assignment/assignment-card-filter-modal';

@@ -47,6 +47,7 @@ interface CommonUploaderProps extends isLocalAware {
     abortSignal?: AbortSignal
   ) => Promise<fileMetadata.TFileMetadata>;
   onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
+  filePreviewClassName?: string;
 }
 
 /**
@@ -80,6 +81,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
     variant,
     onFilesChange,
     onUploadComplete,
+    filePreviewClassName,
     locale,
   } = props;
 
@@ -246,6 +248,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
               onDownload={onDownload}
               onCancel={handleCancelUpload}
               locale={locale}
+              className={filePreviewClassName}
             />
           </div>
         ))}
