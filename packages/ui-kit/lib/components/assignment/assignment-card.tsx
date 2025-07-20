@@ -127,13 +127,13 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
     };
 
     const handleSaveLink = (data: shared.TLink, index: number) => {
-        const updatedLinks = [...links];
+        const updatedLinks = [...(links || [])];
         updatedLinks[index] = data;
         onChange(files || [], updatedLinks, undefined);
     };
 
     const handleOnClickLinkEdit = (index: number) => {
-        onChange(files || [], links, index);
+        onChange(files || [], links || [], index);
     };
 
     return (
@@ -156,7 +156,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                 locale={locale}
                 role={role}
             />
-            {(!!description || (files && files.length > 0) || links.length > 0) && (
+            {(!!description || (files && files.length > 0) || (links && links.length > 0)) && (
                 <div className="flex flex-col gap-4 items-start w-full">
                     <p className="text-md text-text-primary leading-[150%]">
                         {description}
@@ -174,7 +174,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                                 isDeleteAllowed={role === 'coach'}
                             />
                         ))}
-                        {links.map((link, index) =>
+                        {(links || []).map((link, index) =>
                             linkEditIndex === index ?
                                 (
                                     <div className="flex flex-col w-full" key={index}>
