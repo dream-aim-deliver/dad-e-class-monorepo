@@ -140,7 +140,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
         <div
             className={cn(
                 "flex flex-col p-4 bg-card-fill border-1 border-card-stroke rounded-medium",
-                replies.length > 0 ? 'gap-2' : 'gap-4'
+                replies && replies.length > 0 ? 'gap-2' : 'gap-4'
             )}>
             <AssignmentHeader
                 title={title}
@@ -205,7 +205,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                     </div>
                 </div>
             )}
-            {replies.length > 0 &&
+            {replies && replies.length > 0 &&
                 (() => {
                     const latestReply = getLatestReply(replies);
                     return latestReply ? (
