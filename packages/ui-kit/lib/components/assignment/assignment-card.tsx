@@ -129,7 +129,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
     const handleSaveLink = (data: shared.TLink, index: number) => {
         const updatedLinks = [...links];
         updatedLinks[index] = data;
-        onChange(files || [], updatedLinks, null);
+        onChange(files || [], updatedLinks, undefined);
     };
 
     const handleOnClickLinkEdit = (index: number) => {
