@@ -639,7 +639,7 @@ export const EN: TDictionary = {
       addChoiceText: 'Add Choice',
       enterDescriptionText: 'Enter description',
       successBannerText: 'Great job! You got it right!',
-      errorBannerText: 'Oops! That's not correct. Give it another try!',
+      errorBannerText: 'Oops! That\'s not correct. Give it another try!',
       showSolutionText: 'Show solution',
       tryAgainText: 'Try again',
       hideSolutionText: 'Hide solution',
