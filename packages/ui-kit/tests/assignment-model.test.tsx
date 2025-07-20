@@ -54,13 +54,13 @@ vi.mock('../lib/components/links', () => ({
     ),
 }));
 
-vi.mock('@maany_shr/e-class-ui-kit', () => ({
-    IconButton: (props: any) => (
-        <button data-testid={props['data-testid']} onClick={props.onClick}>
-            {props.icon ? 'X' : null}
-        </button>
-    ),
-}));
+// vi.mock('@maany_shr/e-class-ui-kit', () => ({
+//     IconButton: (props: any) => (
+//         <button data-testid={props['data-testid']} onClick={props.onClick}>
+//             {props.icon ? 'X' : null}
+//         </button>
+//     ),
+// }));
 
 vi.mock('../lib/components/icons', () => ({
     IconAssignment: ({ classNames }: any) => <span data-testid="icon-assignment" className={classNames}>[Icon]</span>,

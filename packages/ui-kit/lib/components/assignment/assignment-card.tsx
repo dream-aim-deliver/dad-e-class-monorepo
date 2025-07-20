@@ -129,11 +129,11 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
     const handleSaveLink = (data: shared.TLink, index: number) => {
         const updatedLinks = [...links];
         updatedLinks[index] = data;
-        onChange(files, updatedLinks, null);
+        onChange(files || [], updatedLinks, null);
     };
 
     const handleOnClickLinkEdit = (index: number) => {
-        onChange(files, links, index);
+        onChange(files || [], links, index);
     };
 
     return (
@@ -156,13 +156,13 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                 locale={locale}
                 role={role}
             />
-            {(!!description || files.length > 0 || links.length > 0) && (
+            {(!!description || (files && files.length > 0) || links.length > 0) && (
                 <div className="flex flex-col gap-4 items-start w-full">
                     <p className="text-md text-text-primary leading-[150%]">
                         {description}
                     </p>
                     <div className="flex flex-col gap-2 w-full">
-                        {files.map((file, index) => (
+                        {(files || []).map((file, index) => (
                             <FilePreview
                                 key={index}
                                 uploadResponse={file}
