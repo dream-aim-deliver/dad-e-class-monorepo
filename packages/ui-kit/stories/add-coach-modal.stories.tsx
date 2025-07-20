@@ -33,7 +33,7 @@ type Story = StoryObj<typeof AddCoachModal>;
 const mockCoaches = [
     {
         id: 'coach-1',
-        coachName: 'Jhon Doe',
+        coachName: 'John Doe',
         coachAvatarUrl:
             'https://img.lalr.co/cms/2018/08/16181927/Mini-pig.jpg?r=1_1',
         totalRating: 15,
