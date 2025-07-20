@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-export interface IconProps {
+export interface IconProps extends React.SVGProps<SVGSVGElement> {
   classNames?: string;
   fill?: string;
   size?: string;
@@ -19,7 +19,7 @@ const sizeMap: Record<string, string> = {
 export const generateClassesForIcon = ({
   classNames,
   fill,
-  size='6',
+  size = '6',
 }: IconProps) => {
   const sizeClass = sizeMap[size];
 

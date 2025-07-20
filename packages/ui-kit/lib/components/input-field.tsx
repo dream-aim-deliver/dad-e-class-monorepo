@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 import { cn } from '../utils/style-utils';
 
 export interface InputFieldProps {
@@ -8,12 +8,12 @@ export interface InputFieldProps {
   rightContent?: ReactNode;
   inputText?: string;
   state?:
-    | 'placeholder'
-    | 'disabled'
-    | 'filled'
-    | 'filling'
-    | 'warning'
-    | 'error';
+  | 'placeholder'
+  | 'disabled'
+  | 'filled'
+  | 'filling'
+  | 'warning'
+  | 'error';
   value?: string;
   defaultValue?: string;
   setValue: (value: string) => void;
@@ -112,7 +112,7 @@ export const InputField: FC<InputFieldProps> = ({
           onBlur={() => setBorderColor(false)}
           min={min}
           max={max}
-          className={cn("bg-transparent outline-none [-moz-appearance:textfield] flex-1 placeholder-text-secondary h-full w-full appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",inputClassName)}
+          className={cn("bg-transparent outline-none [-moz-appearance:textfield] flex-1 placeholder-text-secondary h-full w-full appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none", inputClassName)}
         />
         {hasRightContent && rightContent}
       </div>
