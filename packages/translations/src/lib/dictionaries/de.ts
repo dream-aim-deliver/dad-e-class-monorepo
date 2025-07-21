@@ -648,7 +648,7 @@ export const DE: TDictionary = {
       },
       quizTypeTwo: {
         headingText: 'Der Student muss für jede Gruppe die richtige Wahl treffen',
-        UploadImageText: 'Bild hochladen (erforderlich)',
+        uploadImageText: 'Bild hochladen (erforderlich)',
         errorText: 'Sie sollten wissen, was die richtige Antwort ist',
         groupTitleText: 'Titel der Gruppe',
         radioButtonText: 'Text der Optionsschaltfläche',

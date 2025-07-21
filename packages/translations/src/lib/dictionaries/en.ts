@@ -643,7 +643,7 @@ export const EN: TDictionary = {
       },
       quizTypeTwo: {
         headingText: 'Student has to choose the right choice for each group',
-        UploadImageText: 'Upload Image (Required)',
+        uploadImageText: 'Upload Image (Required)',
         errorText: "You need to define what's the correct answer",
         groupTitleText: 'Group title',
         radioButtonText: 'Radio button text',
