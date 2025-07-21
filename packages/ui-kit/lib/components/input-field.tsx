@@ -6,7 +6,7 @@ export interface InputFieldProps {
   hasRightContent?: boolean;
   leftContent?: ReactNode;
   rightContent?: ReactNode;
-  inputText?: string;
+  inputPlaceholder: string;
   state?:
   | 'placeholder'
   | 'disabled'
@@ -68,7 +68,7 @@ export const InputField: FC<InputFieldProps> = ({
   hasRightContent = false,
   leftContent,
   rightContent,
-  inputText = 'Placeholder',
+  inputPlaceholder,
   state = 'placeholder',
   value,
   setValue,
@@ -104,7 +104,7 @@ export const InputField: FC<InputFieldProps> = ({
           defaultValue={defaultValue}
           data-testid={id}
           type={type}
-          placeholder={inputText}
+          placeholder={inputPlaceholder}
           disabled={state === 'disabled'}
           value={value}
           onChange={(e) => setValue(e.target.value)}

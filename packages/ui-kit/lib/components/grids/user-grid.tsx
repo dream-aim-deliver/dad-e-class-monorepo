@@ -491,7 +491,7 @@ export const UserGrid = (props: UserGridProps) => {
                 <InputField
                     className="flex-grow relative m-0 md:mr-2 h-10"
                     setValue={setSearchTerm} value={searchTerm}
-                    inputText={dictionary.searchPlaceholder}
+                    inputPlaceholder={dictionary.searchPlaceholder}
                     hasLeftContent
                     leftContent={<IconSearch />}
                 />

@@ -135,7 +135,7 @@ export const NotificationGridFilterModal: React.FC<NotificationGridFilterModalPr
               className: 'w-full text-white border-input-stroke',
               defaultValue: filters.search,
               setValue: (value: string) => handleChange('search', value),
-              inputText: dictionary.searchPlaceholder,
+              inputPlaceholder: dictionary.searchPlaceholder,
             }}
           />
         </div>
