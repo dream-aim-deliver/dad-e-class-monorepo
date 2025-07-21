@@ -635,7 +635,7 @@ export const DictionarySchema = z.object({
       }),
       quizTypeTwo: z.object({
         headingText: z.string(),
-        UploadImageText: z.string(),
+        uploadImageText: z.string(),
         errorText: z.string(),
         groupTitleText: z.string(),
         radioButtonText: z.string(),
