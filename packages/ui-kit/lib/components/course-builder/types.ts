@@ -10,8 +10,7 @@ export enum CourseElementType {
     /** Represents a coaching session element */
     CoachingSession = "coachingSession",
     /** Represents a quiz element */
-    Quiz = 'quiz'
-    /** Represents downloadable files element */
+    Quiz = "quiz",
     DownloadFiles = "downloadFiles",
     UploadFiles = "uploadFiles",
 
