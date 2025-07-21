@@ -10,8 +10,8 @@ import { IconEdit } from "./icons/icon-edit";
 import { IconLoaderSpinner } from "./icons/icon-loader-spinner";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { fileMetadata } from "@maany_shr/e-class-models";
-import { getFaviconUrl } from "../utils/url-utils";
 import { IconCloudUpload } from "./icons";
+import { getFaviconUrl } from "../utils/url-utils";
 
 interface LinkEditProps extends isLocalAware {
     initialTitle?: string;
@@ -126,6 +126,8 @@ const LinkEdit: React.FC<LinkEditProps> = ({
     const handleCancelUpload = () => {
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
+            // Immediately clear the custom icon state to stop showing the spinner
+            setCustomIcon(null);
         }
     };
 
