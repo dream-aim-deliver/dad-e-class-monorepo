@@ -121,6 +121,7 @@ function BuyCoachingSession({ offerings, onBuy, locale, currencyType }: BuyCoach
                                 inputClassName='text-center'
                                 value={sessionsPerOffering[offering.id]?.toString() ?? '0'}
                                 setValue={(value) => handleInputChange(offering.id, value)}
+                                inputPlaceholder=''
                             />
                             <button onClick={() => handleIncrement(offering.id)} className='cursor-pointer' aria-label="increase">
                                 <IconPlus classNames='text-button-text-text' size="6" />

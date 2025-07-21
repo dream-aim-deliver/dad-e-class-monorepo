@@ -599,7 +599,9 @@ export const EN: TDictionary = {
     },
     link: {
       titleLabel: 'Title',
+      titlePlaceholder: 'E.g., My new video assignment',
       urlLabel: 'URL',
+      urlPlaceholder: 'E.g., https://website.com/this/is/the/url',
       customIcon: 'Custom Icon',
       LinkIcon: 'Link Icon',
       saveText: 'Confirm',

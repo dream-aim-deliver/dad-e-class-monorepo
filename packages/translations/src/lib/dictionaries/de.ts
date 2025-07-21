@@ -604,7 +604,9 @@ export const DE: TDictionary = {
     },
     link: {
       titleLabel: 'Titel',
+      titlePlaceholder: 'Z.B. Mein neues Video-Projekt',
       urlLabel: 'URL',
+      urlPlaceholder: 'Z.B. https://website.com/dies/ist/die/url',
       customIcon: 'Benutzerdefiniertes Symbol',
       LinkIcon: 'Linksymbol',
       saveText: 'Bestätigen',
@@ -667,7 +669,7 @@ export const DE: TDictionary = {
       },
     },
 
-     coachNotes: {
+    coachNotes: {
       usefulLinks: 'Nützliche Links',
       validateLink: 'Link validieren',
       validateTitle: 'Titel validieren',

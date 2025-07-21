@@ -206,6 +206,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                             value={title}
                             setValue={setTitle}
                             state={errors.title ? 'error' : 'filled'}
+                            inputPlaceholder={dictionary.components.link.titlePlaceholder}
                         />
                         {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
                     </div>
@@ -218,6 +219,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                             setValue={setUrl}
                             type='url'
                             state={errors.url ? 'error' : 'filled'}
+                            inputPlaceholder={dictionary.components.link.urlPlaceholder}
                         />
                         {errors.url && <p className="text-sm text-red-500">{errors.url}</p>}
                     </div>

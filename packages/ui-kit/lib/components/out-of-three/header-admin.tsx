@@ -18,7 +18,7 @@ const HeaderAdmin: FC<HeaderAdminProps> = ({ headers, onHeaderChange }) => {
       {columns.map((header, index) => (
         <div className="flex-1" key={index}>
           <InputField
-            inputText="Column Title"
+            inputPlaceholder="Column Title"
             value={header.columnTitle}
             setValue={(value) => onHeaderChange(index, value)}
           />
