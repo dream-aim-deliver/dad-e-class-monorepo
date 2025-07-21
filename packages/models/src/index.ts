@@ -15,7 +15,7 @@ export * as topic from './topic';
 export * as homePage from './home-page';
 export * as fileMetadata from './file-metadata';
 export * as assignment from './assignment';
-
+export * as shared from './shared';
 
 export * as viewModels from './view-models/index';
 export * as useCaseModels from './usecase-models/index';

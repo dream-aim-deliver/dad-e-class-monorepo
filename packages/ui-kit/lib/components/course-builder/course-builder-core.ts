@@ -1,4 +1,6 @@
+import assignmentElement from "../course-builder-lesson-component/assignment";
 import coachingSessionElement from "../course-builder-lesson-component/coaching-session";
+import quizElement from "../course-builder-lesson-component/quiz";
 import { CourseElementRegistry, CourseElementType } from "./types";
 
 
@@ -7,5 +9,7 @@ import { CourseElementRegistry, CourseElementType } from "./types";
  * @public
  */
 export const courseElements: CourseElementRegistry = {
-[CourseElementType.CoachingSession]:coachingSessionElement
+    [CourseElementType.CoachingSession]: coachingSessionElement,
+    [CourseElementType.Quiz]: quizElement,
+    [CourseElementType.Assignment]: assignmentElement,
 };
