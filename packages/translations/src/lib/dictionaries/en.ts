@@ -661,6 +661,16 @@ export const EN: TDictionary = {
         descriptionText: 'Enter the letter that corresponds to the correct description below each image. Only one letter (uppercase or lowercase) is allowed-no other characters, or it will result in an error.',
       },
     },
+     coachNotes: {
+     usefulLinks: 'Useful links',
+     validateLink: 'url link required',
+     validateTitle: 'title required',
+    notesValidation:"This group has no coach yet. Choose your favourite coach and send her the coupon. She will become this group's coach.",
+    customIcon: "custom icon",
+    includeInMaterials: "Include links in course material tab",
+    publishNotes: 'Publish notes',
+    addLink: 'Add link',
+  },
   },
   pages: {
     home: Home_EN,
