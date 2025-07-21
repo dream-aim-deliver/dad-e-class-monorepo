@@ -1,3 +1,4 @@
+import assignmentElement from "../course-builder-lesson-component/assignment";
 import coachingSessionElement from "../course-builder-lesson-component/coaching-session";
 import quizElement from "../course-builder-lesson-component/quiz";
 import imageGalleryElement from "../course-builder-lesson-component/image-gallery";
@@ -19,5 +20,6 @@ export const courseElements: CourseElementRegistry = {
     [CourseElementType.VideoFile]: videoFileElement,
     [CourseElementType.ImageGallery]: imageGalleryElement,
     [CourseElementType.UploadFiles]: uploadFilesElement,
-    [CourseElementType.DownloadFiles]: downloadFilesElement
+    [CourseElementType.DownloadFiles]: downloadFilesElement,
+    [CourseElementType.Assignment]: assignmentElement,
 };
