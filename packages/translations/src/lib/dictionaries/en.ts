@@ -708,6 +708,43 @@ export const EN: TDictionary = {
       skillsLabel: 'Skills',
       buyButton: 'Buy coaching sessions',
     },
+    assignment: {
+      assignmentCard: {
+        moduleText: 'Module',
+        lessonText: 'Lesson',
+        passedText: 'Passed',
+        awaitingReviewText: 'Awaiting review...',
+        longWaitText: 'Waiting for more than 48h',
+        courseText: 'Course',
+        studentText: 'Student',
+        groupText: 'Group',
+        lastActivityText: 'Last activity',
+        viewText: 'View',
+      },
+      assignmentModal: {
+        assignmentText: 'Assignment',
+      },
+      message: {
+        youText: 'You',
+        markAssignmentText: 'Marked assignment as passed',
+      },
+      replyPanel: {
+        replyText: 'Reply',
+        markAsPassedText: 'Mark as passed',
+        yourCommentsText: 'Your comments',
+        sendMessageText: 'Send message',
+        replyPlaceholderText: 'Write any additional comment here',
+        addLinkText: 'Add link',
+      },
+      assignmentBuilder: {
+        assignmentText: 'Assignment',
+        assignmentTitleText: 'Assignment Title',
+        titlePlaceholderText: 'Create a photo composition',
+        assignmentDescriptionText: 'Enter assignment description',
+        descriptionPlaceholderText: "Please download the file, follow the tasks and upload your work when you're done.",
+        addResourcesText: 'Add resources',
+      },
+    },
   },
   pages: {
     home: Home_EN,

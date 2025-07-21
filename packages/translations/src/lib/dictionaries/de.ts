@@ -713,6 +713,43 @@ export const DE: TDictionary = {
       skillsLabel: 'Fähigkeiten',
       buyButton: 'Coaching-Sitzungen kaufen',
     },
+    assignment: {
+      assignmentCard: {
+        moduleText: 'Modul',
+        lessonText: 'Lektion',
+        passedText: 'Bestanden',
+        awaitingReviewText: 'Warte auf Überprüfung ...',
+        longWaitText: 'Warte auf mehr als 48h',
+        courseText: 'Kurs',
+        studentText: 'Student',
+        groupText: 'Gruppe',
+        lastActivityText: 'Letzte Aktivität',
+        viewText: 'Sicht',
+      },
+      assignmentModal: {
+        assignmentText: 'Abtretung',
+      },
+      message: {
+        youText: 'Du',
+        markAssignmentText: 'Aufgabe als bestanden markiert',
+      },
+      replyPanel: {
+        replyText: 'Antwort',
+        markAsPassedText: 'Als bestanden markieren',
+        yourCommentsText: 'Ihre Kommentare',
+        sendMessageText: 'Nachricht senden',
+        replyPlaceholderText: 'Geben Sie hier weitere Kommentare ein.',
+        addLinkText: 'Link hinzufügen',
+      },
+      assignmentBuilder: {
+        assignmentText: 'Aufgabe',
+        assignmentTitleText: 'Titel der Aufgabe',
+        titlePlaceholderText: 'Erstellen Sie eine Fotokomposition',
+        assignmentDescriptionText: 'Geben Sie eine Aufgabenbeschreibung ein',
+        descriptionPlaceholderText: "Bitte laden Sie die Datei herunter, befolgen Sie die Aufgaben und laden Sie Ihre Arbeit hoch, wenn Sie fertig sind.",
+        addResourcesText: 'Ressourcen hinzufügen',
+      },
+    },
   },
   pages: {
     home: Home_DE,

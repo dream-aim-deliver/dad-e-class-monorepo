@@ -13,22 +13,16 @@ import { FeedBackMessage } from '../feedback-message';
 import { IconImage } from '../icons/icon-image';
 
 
-interface BaseFilePreviewProps extends isLocalAware {
+interface FilePreviewProps extends isLocalAware {
     uploadResponse: fileMetadata.TFileMetadata;
     onDownload: (id: string) => void;
-}
-
-interface FilePreviewWithActionsProps extends BaseFilePreviewProps {
-    onDelete: (id: string) => void;
     onCancel: (id: string) => void;
+    isDeletionAllowed?: boolean;
+    className?: string;
+    onDelete?: (id: string) => void;
     readOnly?: false;
 }
 
-interface FilePreviewReadOnlyProps extends BaseFilePreviewProps {
-    readOnly: true;
-}
-
-type FilePreviewProps = FilePreviewWithActionsProps | FilePreviewReadOnlyProps;
 /**
  *
  * A component that displays a preview of a file being uploaded, including its name, size, and options to delete or download it.
@@ -37,6 +31,8 @@ type FilePreviewProps = FilePreviewWithActionsProps | FilePreviewReadOnlyProps;
  * @param index The index of the file in the list of uploaded files.
  * @param onDelete Callback function to handle file deletion.
  * @param onDownload Callback function to handle file download.
+ * @param isDeletionAllowed Flag indicating if file deletion is allowed.
+ * @param className Optional CSS class for styling the component.
  * @param locale The locale for translations.
  **/
 
@@ -126,7 +122,7 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
     };
 
     return (
-        <div className={cn('flex items-center justify-between gap-2  rounded-medium')}>
+        <div className={cn('flex items-center justify-between gap-2 p-2 rounded-medium', 'bg-base-neutral-900', props.className)}>
             <div className="flex items-center gap-2">
                 <div className="w-12 h-12 flex items-center justify-center rounded-medium bg-base-neutral-800 border border-base-neutral-700">
                     {getFilePreviewElement()}
@@ -176,19 +172,15 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
                             title={dictionary.components.uploadingSection.downloadText}
                             onClick={() => onDownload(uploadResponse.id as string)}
                         />
-                        {!('readOnly' in props && props.readOnly) && (
+                        {props.isDeletionAllowed &&
                             <IconButton
                                 icon={<IconTrashAlt />}
                                 styles="text"
                                 size="small"
                                 title={dictionary.components.uploadingSection.deleteText}
-                                onClick={() => {
-                                    if ('onDelete' in props) {
-                                        props.onDelete(uploadResponse.id as string);
-                                    }
-                                }}
+                                onClick={() => props.onDelete(uploadResponse.id as string)}
                             />
-                        )}
+                        }
                     </div>
                 )}
             </div>

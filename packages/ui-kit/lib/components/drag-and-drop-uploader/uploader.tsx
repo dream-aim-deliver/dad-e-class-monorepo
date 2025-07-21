@@ -47,6 +47,7 @@ interface CommonUploaderProps extends isLocalAware {
     abortSignal?: AbortSignal
   ) => Promise<fileMetadata.TFileMetadata>;
   onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
+  filePreviewClassName?: string;
 }
 
 /**
@@ -80,6 +81,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
     variant,
     onFilesChange,
     onUploadComplete,
+    filePreviewClassName,
     locale,
   } = props;
 
@@ -236,22 +238,21 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
   };
 
   return (
-    <div className={cn('flex flex-col w-full gap-4', className)}>
-      {allFiles.length > 0 && (
-        <div className="flex flex-col gap-4 w-full">
-          {allFiles.map((file) => (
-            <div key={file.id}>
-              <FilePreview
-                uploadResponse={file}
-                onDelete={onDelete}
-                onDownload={onDownload}
-                onCancel={handleCancelUpload}
-                locale={locale}
-              />
-            </div>
-          ))}
-        </div>
-      )}
+    <div className={cn('flex flex-col gap-4 w-full', className)}>
+      <div className="flex flex-col gap-2 w-full">
+        {allFiles.map((file) => (
+          <div key={file.id}>
+            <FilePreview
+              uploadResponse={file}
+              onDelete={onDelete}
+              onDownload={onDownload}
+              onCancel={handleCancelUpload}
+              locale={locale}
+              className={filePreviewClassName}
+            />
+          </div>
+        ))}
+      </div>
 
       {((props.type === 'single' && allFiles.length === 0) ||
         (props.type === 'multiple' && allFiles.length < props.maxFile)) && (

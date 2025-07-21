@@ -1,6 +1,6 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import { CourseElementType } from "../course-builder/types";
-import { fileMetadata } from "@maany_shr/e-class-models";
+import { assignment, fileMetadata, shared } from "@maany_shr/e-class-models";
 
 export interface CoachingSessionTypes extends isLocalAware {
     type: CourseElementType.CoachingSession;
@@ -280,6 +280,43 @@ export interface uploadStudentTypes{
 }
 export type uploadsFilesTypes = uploadCoachingTypes | uploadStudentTypes;
 
+export interface CreateAssignmentBuilderViewTypes extends isLocalAware {
+    type: CourseElementType.Assignment;
+    id: number;
+    order: number;
+    assignmentData: assignment.TAssignmentBaseWithId;
+    onChange: (updatedData: {
+        type: CourseElementType.Assignment;
+        id: number;
+        order: number;
+        assignmentData: assignment.TAssignmentBaseWithId;
+    }) => void;
+    onFilesChange: (file: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
+    onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+    onDeleteIcon?: (id: string) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
+    onFileDelete?: (id: string) => void;
+    onFileDownload?: (id: string) => void;
+    onLinkDelete: (linkId: number, type: 'link') => void;
+    onLinkEdit?: (data: shared.TLink, id: number) => void;
+    linkEditIndex: number | null;
+    onClickEditLink: (index: number) => void;
+    onClickAddLink: () => void;
+};
+
+export interface AssignmentBuilderViewTypes extends isLocalAware {
+    type: CourseElementType.Assignment;
+    id: number;
+    order: number;
+    assignmentData: assignment.TAssignmentBaseWithId;
+    onFileDelete?: (id: string) => void;
+    onFileDownload?: (id: string) => void;
+    onCancel?: () => void;
+};
+
+
+export type CoachingElement = CoachingSessionTypes | CoachingSessionStudentViewTypes;
+
 export type QuizElement =
     | QuizTypeOneElement
     | QuizTypeTwoElement
@@ -289,8 +326,6 @@ export type QuizElement =
     | QuizTypeTwoStudentViewElement
     | QuizTypeThreeStudentViewElement
     | QuizTypeFourStudentViewElement;
-
-export type CoachingElement = CoachingSessionTypes | CoachingSessionStudentViewTypes;
 
 
 type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
@@ -313,3 +348,4 @@ export interface ImageGallery {
 }
 
 
+export type AssignmentElement = CreateAssignmentBuilderViewTypes | AssignmentBuilderViewTypes;
