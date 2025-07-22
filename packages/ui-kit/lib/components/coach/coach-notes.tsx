@@ -268,11 +268,20 @@ function CoachNotesCreate({
 function CoachNotesView({ noteDescription, noteLinks, includeInMaterials, locale, onExploreCourses }: coachNotesViewProps) {
     const dictionary = getDictionary(locale);
     const hasDescription = () => {
-        if (Array.isArray(noteDescription)) {
-            const content = noteDescription.map(n => Node.string(n)).join('\n').trim();
-            return content.length > 0;
+        try {
+            // Parse the JSON string to get the Descendant array
+            const parsedDescription =JSON.parse(noteDescription) 
+                
+            
+            if (Array.isArray(parsedDescription)) {
+                const content = parsedDescription.map(n => Node.string(n)).join('\n').trim();
+                return content.length > 0;
+            }
+            return false;
+        } catch (error) {
+            // If parsing fails, assume no valid description
+            return false;
         }
-        return false;
     };
 
     // Check if there are any valid links
