@@ -196,7 +196,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
         );
     };
     return (
-        <div className="p-4 min-w-[420px] flex flex-col border-1 rounded-md border-card-stroke w-full bg-card-fill gap-4 text-text-primary">
+        <div className="p-4 flex flex-col border-1 rounded-md border-card-stroke w-full bg-card-fill gap-4 text-text-primary">
             <div className="flex gap-2">
 
                 <div className="flex-1 flex flex-col gap-2 w-full">

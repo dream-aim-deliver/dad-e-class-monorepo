@@ -672,6 +672,10 @@ export const EN: TDictionary = {
     includeInMaterials: "Include links in course material tab",
     publishNotes: 'Publish notes',
     addLink: 'Add link',
+    editNotes:"Edit notes",
+    back:"Back",
+    editCoachNotes:"Edit Coach Notes",
+    exploreCourses:"Explore Courses"
   },
   },
   pages: {
