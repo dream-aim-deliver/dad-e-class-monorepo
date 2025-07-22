@@ -131,6 +131,9 @@ export const EN: TDictionary = {
       saveText: 'save',
       addToPackageButton: 'Add to package',
       removeButton: 'Remove',
+      searchCourse: 'Search course',
+      emptyState: 'No courses found',
+      searchButton: 'Search',
     },
     reviewModal: {
       coachingTitle: 'How would you rate this coach?',

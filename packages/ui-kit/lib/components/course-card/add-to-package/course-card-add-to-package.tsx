@@ -11,9 +11,7 @@ export interface CourseCardAddToPackageProps extends course.TCourseMetadata {
     reviewCount: number;
     sessions: number;
     sales: number;
-    groupName?: string;
-    onManage?: () => void;
-    onClickUser?: () => void;
+    onClickUser: () => void;
     locale: TLocale;
     courseAdded: boolean;
     onAddOrRemove: () => void;
@@ -29,7 +27,6 @@ export const CourseCardAddToPackage: React.FC<CourseCardAddToPackageProps> = ({
     duration,
     sales,
     imageUrl,
-    onManage,
     onClickUser,
     courseAdded,
     onAddOrRemove,
@@ -57,75 +54,71 @@ export const CourseCardAddToPackage: React.FC<CourseCardAddToPackageProps> = ({
         : totalDurationInHours.toFixed(2);
 
     return (
-        <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
-                <div className="relative">
-                    {shouldShowPlaceholder ? (
-                        <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
-                            <span className="text-text-secondary text-md">
-                                {
-                                    dictionary.components.coachBanner
-                                        .placeHolderText
-                                }
-                            </span>
-                        </div>
-                    ) : (
-                        <img
-                            loading="lazy"
-                            src={imageUrl}
-                            alt={title}
-                            className="w-full aspect-[2.15] object-cover"
-                            onError={handleImageError}
-                        />
-                    )}
-                </div>
-
-                <div className="flex flex-col p-4 gap-4">
-                    <div className="flex flex-col gap-2">
-                        <div className="group relative">
-                            <h6
-                                title={title}
-                                className="text-md font-bold text-text-primary line-clamp-2 text-start"
-                            >
-                                {title}
-                            </h6>
-                        </div>
-
-                        <div className="flex gap-1 items-end">
-                            <StarRating totalStars={5} rating={rating} />
-                            <span className="text-xs text-text-primary leading-[100%]">
-                                {rating}
-                            </span>
-                            <span className="text-xs text-text-secondary leading-[100%]">
-                                ({reviewCount})
-                            </span>
-                        </div>
-
-                        <CourseCreator
-                            creatorName={author.name}
-                            imageUrl={author.image}
-                            you={false}
-                            locale={locale as TLocale}
-                            onClickUser={onClickUser}
-                        />
-
-                        <CourseStats
-                            locale={locale as TLocale}
-                            language={language.name}
-                            sessions={sessions}
-                            duration={`${formattedDuration} ${dictionary.components.courseCard.hours}`}
-                            sales={sales}
-                        />
+        <div className="flex flex-col gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:w-[21rem]">
+            {/* If image is broken */}
+            <div className="relative">
+                {shouldShowPlaceholder ? (
+                    <div className="w-full h-[200px] rounded-t-medium bg-base-neutral-700 flex items-center justify-center">
+                        <span className="text-text-secondary text-md">
+                            {dictionary.components.coachBanner.placeHolderText}
+                        </span>
+                    </div>
+                ) : (
+                    // Card with image
+                    <img
+                        loading="lazy"
+                        src={imageUrl}
+                        alt={title}
+                        className="w-full rounded-t-medium aspect-[2.15] object-cover"
+                        onError={handleImageError}
+                    />
+                )}
+            </div>
+            <div className="flex flex-col p-4 gap-4">
+                <div className="flex flex-col gap-2">
+                    <div className="group relative">
+                        <h6
+                            title={title}
+                            className="text-md font-bold text-text-primary line-clamp-2 text-start"
+                        >
+                            {title}
+                        </h6>
                     </div>
 
-                    <Button
-                        onClick={onAddOrRemove}
-                        className="w-full"
-                        variant={courseAdded ? 'primary' : 'secondary'}
-                        size="medium"
-                        text={addOrRemoveButtonText}
+                    <div className="flex gap-1 items-end">
+                        <StarRating totalStars={5} rating={rating} />
+                        <span className="text-xs text-text-primary leading-[100%]">
+                            {rating}
+                        </span>
+                        <span className="text-xs text-text-secondary leading-[100%]">
+                            ({reviewCount})
+                        </span>
+                    </div>
+
+                    <CourseCreator
+                        creatorName={author.name}
+                        imageUrl={author.image}
+                        you={false}
+                        locale={locale as TLocale}
+                        onClickUser={onClickUser}
+                    />
+
+                    <CourseStats
+                        locale={locale as TLocale}
+                        language={language.name}
+                        sessions={sessions}
+                        duration={`${formattedDuration} ${dictionary.components.courseCard.hours}`}
+                        sales={sales}
                     />
                 </div>
+
+                <Button
+                    onClick={onAddOrRemove}
+                    className="w-full"
+                    variant={courseAdded ? 'primary' : 'secondary'}
+                    size="medium"
+                    text={addOrRemoveButtonText}
+                />
             </div>
         </div>
     );

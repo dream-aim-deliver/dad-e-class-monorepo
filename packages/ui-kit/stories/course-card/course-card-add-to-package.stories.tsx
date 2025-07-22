@@ -1,109 +1,101 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
 import { CourseCardAddToPackage } from '../../lib/components/course-card/add-to-package/course-card-add-to-package';
-import type { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale } from '@maany_shr/e-class-translations';
+import { course } from '@maany_shr/e-class-models';
 
-const sampleCourseData = {
-  id: 'course-456',
-  title: 'Mastering UI Design with Figma',
-  duration: {
-    video: 180,
-    coaching: 90,
-    selfStudy: 150,
-  },
-  imageUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-  author: {
-    name: 'Jordan Rivera',
-    image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-  },
-  language: {
-    code: 'ENG' as const,
-    name: 'English' as const,
-  },
-  rating: 4.6,
+const sampleCourseData: course.TCourseMetadata & {
+    reviewCount: number;
+    sessions: number;
+    sales: number;
+} = {
+    title: 'Advanced Brand Identity Design',
+    description:
+        'This course teaches you how to create powerful, cohesive brand identities that resonate with audiences and stand out in the marketplace.',
+    duration: {
+        video: 140,
+        coaching: 120,
+        selfStudy: 160,
+    },
+    pricing: {
+        fullPrice: 299,
+        partialPrice: 149,
+        currency: 'USD',
+    },
+    imageUrl:
+        'https://s.abcnews.com/images/Lifestyle/AP_micro_pigs_1_sr_140319_14x11_1600.jpg?w=1600',
+    author: {
+        name: 'Emily Chen',
+        image: 'https://kessenvetclinic.com/wp-content/uploads/2019/02/Mini-pig.png',
+    },
+    language: {
+        code: 'ENG',
+        name: 'English',
+    },
+    rating: 4.7,
+    reviewCount: 275,
+    sessions: 18,
+    sales: 950,
 };
 
-const meta: Meta<typeof CourseCardAddToPackage> = {
-  title: 'Components/CourseCardComponents/AddToPackage',
-  component: CourseCardAddToPackage,
-  tags: ['autodocs'],
-  parameters: {
-    layout: 'centered',
-  },
-  argTypes: {
-    title: {
-      control: 'text',
+function CourseCardAddToPackageStory({
+    locale = 'en' as TLocale,
+    initialAdded = false,
+    overrideImageUrl,
+}: {
+    locale?: TLocale;
+    initialAdded?: boolean;
+    overrideImageUrl?: string;
+}) {
+    const [added, setAdded] = useState(initialAdded);
+
+    const handleAddOrRemove = () => {
+        setAdded((prev) => !prev);
+    };
+
+    return (
+        <CourseCardAddToPackage
+            {...sampleCourseData}
+            imageUrl={overrideImageUrl ?? sampleCourseData.imageUrl}
+            courseAdded={added}
+            onAddOrRemove={handleAddOrRemove}
+            onClickUser={() =>
+                alert(`Clicked user: ${sampleCourseData.author.name}`)
+            }
+            locale={locale}
+        />
+    );
+}
+
+const meta: Meta<typeof CourseCardAddToPackageStory> = {
+    title: 'Components/CourseCardComponents/CourseCardAddToPackage',
+    component: CourseCardAddToPackageStory,
+    parameters: {
+        layout: 'centered',
     },
-    rating: {
-      control: { type: 'number', min: 0, max: 5, step: 0.1 },
+    argTypes: {
+        locale: {
+            control: 'select',
+            options: ['en', 'de'],
+            defaultValue: 'en',
+        },
+        initialAdded: { control: 'boolean', defaultValue: false },
     },
-    reviewCount: {
-      control: 'number',
-    },
-    sessions: {
-      control: 'number',
-    },
-    sales: {
-      control: 'number',
-    },
-    locale: {
-      control: 'select',
-      options: ['en', 'de'],
-    },
-    groupName: {
-      control: 'text',
-    },
-    imageUrl: {
-      control: 'text',
-    },
-    onManage: {
-      action: 'manage-clicked',
-    },
-    onClickUser: {
-      action: 'user-clicked',
-    },
-  },
 };
 
 export default meta;
-
-type Story = StoryObj<typeof CourseCardAddToPackage>;
-
-const baseArgs: Partial<typeof sampleCourseData> & {
-  reviewCount: number;
-  sessions: number;
-  sales: number;
-  locale: TLocale;
-} = {
-  ...sampleCourseData,
-  reviewCount: 140,
-  sessions: 12,
-  sales: 450,
-  locale: 'en',
-};
+type Story = StoryObj<typeof CourseCardAddToPackageStory>;
 
 export const Default: Story = {
-  args: {
-    ...baseArgs,
-  },
+    args: {},
 };
 
-export const WithGroupName: Story = {
-  args: {
-    ...baseArgs,
-    groupName: 'UX/UI Bootcamp',
-  },
+export const InitiallyAdded: Story = {
+    args: { initialAdded: true },
 };
 
-export const GermanLocale: Story = {
-  args: {
-    ...baseArgs,
-    locale: 'de',
-  },
-};
-
-export const BrokenImage: Story = {
-  args: {
-    ...baseArgs,
-    imageUrl: 'https://example.com/invalid-image.jpg',
-  },
+export const NoImage: Story = {
+    args: {
+        overrideImageUrl: '',
+    },
 };

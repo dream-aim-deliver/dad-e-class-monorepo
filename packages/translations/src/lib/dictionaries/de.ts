@@ -131,6 +131,10 @@ export const DE: TDictionary = {
       saveText: 'speichern',
       addToPackageButton: 'Zum Paket hinzufügen',
       removeButton: 'Entfernen',
+      searchCourse: 'Kurs suchen',
+      emptyState: 'Keine Kurse gefunden',
+      searchButton: 'Suchen',
+
     },
     reviewModal: {
       coachingTitle: 'Wie würden Sie diesen Trainer bewerten?',
