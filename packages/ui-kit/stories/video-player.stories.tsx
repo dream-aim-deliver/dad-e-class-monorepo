@@ -22,7 +22,7 @@ const meta: Meta<typeof VideoPlayer> = {
     className: {
       control: 'text',
       description: 'Custom class name for styling',
-    }
+    },
   },
 };
 
@@ -31,7 +31,7 @@ type Story = StoryObj<typeof VideoPlayer>;
 
 export const Default: Story = {
   args: {
-    videoId: 'cQ800mkpB7VwoUjUUgtxXs4j5P6iEuafZkkjnAahuRek',
+    videoId: 'uNbxnGLKJ00yfbijDO8COxTOyVKT01xpxW',
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'en',
