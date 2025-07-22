@@ -59,11 +59,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [autoPlay, setAutoPlay] = useState(false);
   const [videoError, setVideoError] = useState(!videoId);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
+ const [thumbnailLoaded, setThumbnailLoaded] = useState(!thumbnailUrl);
 
   useEffect(() => {
     setVideoError(!videoId);
     setIsPlayerReady(false);
     setAutoPlay(false);
+    setThumbnailLoaded(false);
     if (!thumbnailUrl) setShowPlayer(true);
   }, [videoId, thumbnailUrl]);
 
@@ -75,6 +77,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const handleThumbnailError = () => {
     setShowPlayer(true);
     setAutoPlay(false);
+  };
+
+  const handleThumbnailLoad = () => {
+    setThumbnailLoaded(true);
   };
 
   const handleVideoError = (event: Event) => {
@@ -95,9 +101,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           <img
             src={thumbnailUrl}
             alt="Thumbnail"
-            className="w-full h-full object-contain cursor-pointer"
+            className={`w-full h-full object-contain cursor-pointer transition-opacity duration-200 ${thumbnailLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
             onClick={handleThumbnailClick}
             onError={handleThumbnailError}
+            onLoad={handleThumbnailLoad}
           />
         </div>
       )}
@@ -112,7 +120,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       )}
 
       {/* Loading state - only shown when player is loading and no error */}
-      {showPlayer && !isPlayerReady && !videoError && (
+      {!thumbnailLoaded || (showPlayer && !isPlayerReady && !videoError) && (
 
         <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
           <IconLoaderSpinner
