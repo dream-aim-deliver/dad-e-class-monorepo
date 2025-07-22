@@ -65,6 +65,7 @@ vitest.mock('@maany_shr/e-class-translations', () => ({
                 addLink: 'Add Link',
                 publishNotes: 'Publish Notes',
                 notesValidation: 'No notes available yet',
+                exploreCourses: 'Explore Courses',
             },
             link: {
                 titleLabel: 'Title',
