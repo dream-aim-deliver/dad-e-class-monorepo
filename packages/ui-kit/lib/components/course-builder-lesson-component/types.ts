@@ -257,6 +257,17 @@ export interface QuizTypeFourStudentViewElement extends QuizElementBase {
         }[]
     }) => void;
 }
+
+export type QuizElement =
+    | QuizTypeOneElement
+    | QuizTypeTwoElement
+    | QuizTypeThreeElement
+    | QuizTypeFourElement
+    | QuizTypeOneStudentViewElement
+    | QuizTypeTwoStudentViewElement
+    | QuizTypeThreeStudentViewElement
+    | QuizTypeFourStudentViewElement;
+
 export type CoachingElement = CoachingSessionTypes | CoachingSessionStudentViewTypes;
 
 
@@ -276,7 +287,7 @@ export interface ImageGallery {
     type: CourseElementType.ImageGallery;
     id: number;
     order: number;
-    imageUrls:ImageFileMetadata[];
+    imageUrls: ImageFileMetadata[];
 }
 
 
