@@ -581,7 +581,19 @@ export const DE: TDictionary = {
       fromText: 'ab',
       saveText: 'spare',
       coachingIncluded: 'Coaching inbegriffen',
-    },
+},
+courseBuilder: {
+      addLinkText:"Link hinzufügen",
+      downloadFilesText:"Dateien herunterladen",
+      uploadFilesText:"Dateien hochladen",
+      linkText:"Link",
+      includeInMaterialsText:"Links in die Registerkarte „Kursmaterial“ einschließen",
+      descriptionText:"Beschreibung",
+      additionalCommentsPlaceholder:"Schreiben Sie hier weitere Kommentare",
+      uploadFiles: "Dateien hochladen",
+      studentComment: "Studentenkommentar",
+      additionalCommentsTooltip:"Machen Sie sich Notizen zu Ihrer Datei (optional)"
+        },
     packageGeneralInformation: {
       coachingIncluded: 'Coaching inklusive',
       purchaseButton: 'Paket kaufen',
@@ -601,17 +613,6 @@ export const DE: TDictionary = {
       studentDetailsButton: 'Studentendetails',
       viewAssignment: 'Aufgabe ansehen',
       emptyState: 'Noch keine Lernenden',
-    },
-    link: {
-      titleLabel: 'Titel',
-      urlLabel: 'URL',
-      customIcon: 'Benutzerdefiniertes Symbol',
-      LinkIcon: 'Linksymbol',
-      saveText: 'Bestätigen',
-      discardText: 'Verwerfen',
-      titleRequired: 'Titel ist erforderlich',
-      urlRequired: 'URL ist erforderlich',
-      paste: 'Einfügen',
     },
     addCoachModal: {
       title: 'Coach hinzuefüege',
