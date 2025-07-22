@@ -1,8 +1,8 @@
 import coachingSessionElement from "../course-builder-lesson-component/coaching-session";
 import quizElement from "../course-builder-lesson-component/quiz";
-import imageGalleryElement from "../course-builder-lesson-component/image-gallery-uploader-lesson";
-import imageFilesElement from "../course-builder-lesson-component/image-uploader-lesson";
-import videoFileElement from "../course-builder-lesson-component/video-uploader-lesson";
+import imageGalleryElement from "../course-builder-lesson-component/image-gallery";
+import imageFilesElement from "../course-builder-lesson-component/image";
+import videoFileElement from "../course-builder-lesson-component/video";
 import { CourseElementRegistry, CourseElementType } from "./types";
 
 

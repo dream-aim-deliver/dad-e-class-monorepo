@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { CourseElementType } from '../../lib/components/course-builder/types';
 import { ImageGallery, ImageFile } from '../../lib/components/course-builder-lesson-component/types';
-import { DesignerComponent, FormComponent } from '../../lib/components/course-builder-lesson-component/image-gallery-uploader-lesson';
+import { DesignerComponent, FormComponent } from '../../lib/components/course-builder-lesson-component/image-gallery';
 
 // Using the ImageFile type from the component's types
 
