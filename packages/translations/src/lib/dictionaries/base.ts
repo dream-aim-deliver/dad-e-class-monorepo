@@ -239,6 +239,10 @@ export const DictionarySchema = z.object({
       searchCourse: z.string(),
       emptyState: z.string(),
       searchButton: z.string(),
+      noFoundLabel: z.string(),
+      includeCoursesTitle: z.string(),
+      includedCoursesCount: z.string(),
+      allCoursesTitle: z.string(),
     }),
     availableCoachingSessions: z.object({
       title: z.string(),

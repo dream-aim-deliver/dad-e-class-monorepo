@@ -132,8 +132,12 @@ export const DE: TDictionary = {
       addToPackageButton: 'Zum Paket hinzufügen',
       removeButton: 'Entfernen',
       searchCourse: 'Kurs suchen',
-      emptyState: 'Keine Kurse gefunden',
+      emptyState: 'Es isch no kei Kurs ufgführt worde.',
       searchButton: 'Suchen',
+      noFoundLabel: 'Keine Kurse gefunden...',
+      includeCoursesTitle: 'Kurse hinzufügen',
+      includedCoursesCount: 'Hinzugefügte Kurse',
+      allCoursesTitle: 'Alle Kurse',
 
     },
     reviewModal: {

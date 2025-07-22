@@ -132,8 +132,12 @@ export const EN: TDictionary = {
       addToPackageButton: 'Add to package',
       removeButton: 'Remove',
       searchCourse: 'Search course',
-      emptyState: 'No courses found',
+      emptyState: 'No course has been included yet.',
       searchButton: 'Search',
+      noFoundLabel: 'No courses found...',
+      includeCoursesTitle: 'Include courses',
+      includedCoursesCount: 'Included courses',
+      allCoursesTitle: 'All courses',
     },
     reviewModal: {
       coachingTitle: 'How would you rate this coach?',
