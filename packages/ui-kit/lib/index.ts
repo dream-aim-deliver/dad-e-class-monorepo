@@ -87,3 +87,5 @@ export { StudentCardList } from './components/student-card/student-card-list';
 export { YourStudentCard } from './components/student-card/your-student-card';
 export { YourStudentCardList } from './components/student-card/your-student-card-list';
 
+export { CourseCardAddToPackage } from './components/course-card/add-to-package/course-card-add-to-package';
+export { CourseCardAddToPackageList } from './components/course-card/add-to-package/course-card-add-to-package-list';
