@@ -129,6 +129,16 @@ export const DE: TDictionary = {
       packageCourseSelectorDescription: 'Mit diesem Paket können Sie nur bestimmte Kurse auswählen oder das gesamte Paket erwerben, um maximal zu sparen.',
       packageCourseSelectorButton: 'Ausgewählte Kurse kaufen',
       saveText: 'speichern',
+      addToPackageButton: 'Zum Paket hinzufügen',
+      removeButton: 'Entfernen',
+      searchCourse: 'Kurs suchen',
+      emptyState: 'Es isch no kei Kurs ufgführt worde.',
+      searchButton: 'Suchen',
+      noFoundLabel: 'Keine Kurse gefunden...',
+      includeCoursesTitle: 'Kurse hinzufügen',
+      includedCoursesCount: 'Hinzugefügte Kurse',
+      allCoursesTitle: 'Alle Kurse',
+
     },
     reviewModal: {
       coachingTitle: 'Wie würden Sie diesen Trainer bewerten?',
