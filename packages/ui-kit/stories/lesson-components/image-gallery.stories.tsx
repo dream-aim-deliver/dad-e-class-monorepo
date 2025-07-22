@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { CourseElementType } from '../../lib/components/course-builder/types';
 import { ImageGallery, ImageFile } from '../../lib/components/course-builder-lesson-component/types';
@@ -81,9 +81,9 @@ const defaultElementInstance: ImageGallery = {
     imageUrls: [],
 };
 
-type imageGalleryMetadata=fileMetadata.TFileMetadata & {category:"image"};
+type imageGalleryMetadata = fileMetadata.TFileMetadata & { category: "image" };
 // Mock file data
-const mockFiles:imageGalleryMetadata[] = [
+const mockFiles: imageGalleryMetadata[] = [
     {
         id: 'file-1',
         name: 'sample-image-1.jpg',
@@ -150,28 +150,28 @@ const mockFiles:imageGalleryMetadata[] = [
         status: 'available',
         checksum: 'mock-checksum-4',
     },
-    {
-        id: 'file-7',
-        name: 'sample-image-4.jpg',
-        url: 'https://picsum.photos/id/13/800/600',
-        thumbnailUrl: 'https://picsum.photos/id/13/200/150',
-        size: 1024 * 1024 * 2.5,
-        mimeType: 'image/jpeg',
-        category: 'image',
-        status: 'available',
-        checksum: 'mock-checksum-4',
-    },
-    {
-        id: 'file-7',
-        name: 'sample-image-4.jpg',
-        url: 'https://picsum.photos/id/13/800/600',
-        thumbnailUrl: 'https://picsum.photos/id/13/200/150',
-        size: 1024 * 1024 * 2.5,
-        mimeType: 'image/jpeg',
-        category: 'image',
-        status: 'available',
-        checksum: 'mock-checksum-4'
-    },
+    // {
+    //     id: 'file-7',
+    //     name: 'sample-image-4.jpg',
+    //     url: 'https://picsum.photos/id/13/800/600',
+    //     thumbnailUrl: 'https://picsum.photos/id/13/200/150',
+    //     size: 1024 * 1024 * 2.5,
+    //     mimeType: 'image/jpeg',
+    //     category: 'image',
+    //     status: 'available',
+    //     checksum: 'mock-checksum-4',
+    // },
+    // {
+    //     id: 'file-7',
+    //     name: 'sample-image-4.jpg',
+    //     url: 'https://picsum.photos/id/13/800/600',
+    //     thumbnailUrl: 'https://picsum.photos/id/13/200/150',
+    //     size: 1024 * 1024 * 2.5,
+    //     mimeType: 'image/jpeg',
+    //     category: 'image',
+    //     status: 'available',
+    //     checksum: 'mock-checksum-4'
+    // },
 ];
 
 
@@ -222,7 +222,27 @@ const ImageGalleryWithState = ({
     onDeleteClick,
     locale = 'en',
 }: ImageGalleryWithStateProps) => {
-    const [files, setFiles] = useState<ImageFile[]>(initialFiles || []);
+    // Initialize with files from elementInstance.imageUrls if available, otherwise use initialFiles
+    const getInitialFiles = () => {
+        if (elementInstance.type === CourseElementType.ImageGallery && elementInstance.imageUrls?.length > 0) {
+            return elementInstance.imageUrls.map((image, index) => ({
+                ...image,
+                type: CourseElementType.ImageFile,
+                order: index,
+            } as ImageFile));
+        }
+        return initialFiles || [];
+    };
+
+    const [files, setFiles] = useState<ImageFile[]>(getInitialFiles());
+
+    // Update files when elementInstance changes
+    useEffect(() => {
+        const newFiles = getInitialFiles();
+        if (newFiles.length > 0) {
+            setFiles(newFiles);
+        }
+    }, [elementInstance]);
 
     const handleImageUpload = async (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => {
         if (!onImageUpload) return null;
@@ -261,7 +281,25 @@ const ImageGalleryWithState = ({
 
 // Create a wrapper component that uses hooks
 const ImageGalleryWrapper = (args: StoryProps) => {
-    const [files, setFiles] = useState<ImageFile[]>([]);
+    // Initialize with files from elementInstance.imageUrls if available
+    const getInitialFiles = () => {
+        if (args.elementInstance.type === CourseElementType.ImageGallery && args.elementInstance.imageUrls?.length > 0) {
+            return args.elementInstance.imageUrls.map((image, index) => ({
+                ...image,
+                type: CourseElementType.ImageFile,
+                order: index,
+            } as ImageFile));
+        }
+        return [];
+    };
+
+    const [files, setFiles] = useState<ImageFile[]>(getInitialFiles());
+
+    // Update files when args.elementInstance changes
+    useEffect(() => {
+        const newFiles = getInitialFiles();
+        setFiles(newFiles);
+    }, [args.elementInstance]);
 
     const handleImageUpload = async (fileRequest: fileMetadata.TFileUploadRequest) => {
         // In a real app, you would upload the file to your server here
@@ -349,7 +387,7 @@ export const GermanLocale: Story = {
 export const FormView: Story = {
     render: () => (
         <div className="w-[800px] max-w-full">
-            <FormComponent 
+            <FormComponent
                 elementInstance={{
                     ...defaultElementInstance,
                     type: CourseElementType.ImageGallery,
