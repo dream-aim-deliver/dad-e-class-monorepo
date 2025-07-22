@@ -6,7 +6,7 @@ import { IconLoaderSpinner } from './icons/icon-loader-spinner';
 export interface VideoPlayerProps extends isLocalAware {
   videoId?: string;
   thumbnailUrl?: string;
-  onErrorCallback: (message: string, error: any) => void;
+  onErrorCallback: (message: string, error: Event | Error) => void;
   className?: string;
 }
 /**
@@ -18,7 +18,7 @@ export interface VideoPlayerProps extends isLocalAware {
  * @component
  * @param {string} [videoId] - Mux playback ID used to load the video stream.
  * @param {string} [thumbnailUrl] - Optional preview image displayed before the video is played.
- * @param {(message: string, error: any) => void} onErrorCallback - Callback invoked when the video fails to load or play.
+ * @param {(message: string, error: Event | Error) => void} onErrorCallback - Callback invoked when the video fails to load or play.
  * @param {string} locale - Current user locale used for fetching localized text.
  * @param {string} [className="w-full"] - Optional CSS class for customizing the outer container.
  *
@@ -77,7 +77,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setAutoPlay(false);
   };
 
-  const handleVideoError = (event: any) => {
+  const handleVideoError = (event: Event) => {
     setVideoError(true);
     onErrorCallback(dictionary.components.videoPlayer.videoErrorText, event);
   };

@@ -5,7 +5,6 @@ import { IconVideo } from "../icons/icon-video";
 import DesignerLayout from "../designer-layout";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { Uploader } from "../drag-and-drop-uploader/uploader";
-import { useState } from "react";
 import { VideoPlayer } from "../video-player";
 
 
@@ -125,7 +124,6 @@ export function DesignerComponent({
  */
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
-    const [error, setError] = useState<string | null>(null);
 
     // Type guard to ensure we're working with a VideoFile
     const videoFile = elementInstance as VideoFile;
@@ -134,10 +132,10 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
         <section className="w-full">
             <VideoPlayer
                 videoId={videoFile.videoId}
+                thumbnailUrl={videoFile.thumbnailUrl}
                 locale={locale}
-                onErrorCallback={(error) => {
-                    setError(error);
-                }}
+                className="aspect-video w-full"
+                onErrorCallback={(error, event) => console.error('Video error:', error, event)}
             />
         </section>
     );

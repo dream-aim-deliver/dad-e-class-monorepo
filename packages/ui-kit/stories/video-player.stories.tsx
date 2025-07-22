@@ -35,7 +35,7 @@ export const Default: Story = {
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'en',
-    onErrorCallback: (message: string, event: any) => console.log(message),
+    onErrorCallback: (message: string, event: Event | Error) => console.log(message),
     className: 'aspect-video w-[300px] h-[300px]',
   },
 };
@@ -44,7 +44,7 @@ export const WithoutThumbnail: Story = {
   args: {
     videoId: 'cQ800mkpB7VwoUjUUgtxXs4j5P6iEuafZkkjnAahuRek',
     locale: 'en',
-    onErrorCallback: (message: string, event: any) => console.log(message),
+    onErrorCallback: (message: string, event: Event | Error) => console.log(message),
     className: 'aspect-video w-[300px] h-[300px]',
   },
 };
@@ -53,9 +53,9 @@ export const WithBrokenThumbnail: Story = {
   args: {
     videoId: 'cQ800mkpB7VwoUjUUgtxXs4j5P6iEuafZkkjnAahuRek',
     thumbnailUrl:
-      'https://res.cloudinary.com/dryynqhao/image/upload/v/lrpuzzgdayhoirs4gqgj.png', // Invalid URL
+      'https://invalid-url-that-will-fail.com/broken-image.png', // Invalid URL for testing error handling
     locale: 'en',
-    onErrorCallback: (message: string, event: any) => console.log(message),
+    onErrorCallback: (message: string, event: Event | Error) => console.log(message),
     className: 'aspect-video w-[300px] h-[300px]',
   },
 };
@@ -65,7 +65,7 @@ export const WithoutVideoId: Story = {
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'en',
-    onErrorCallback: (message: string, event: any) => console.log(message),
+    onErrorCallback: (message: string, event: Event | Error) => console.log(message),
     className: 'aspect-video w-[300px] h-[300px]',
   },
 };
@@ -76,7 +76,7 @@ export const WrongVideoId: Story = {
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
     locale: 'de',
-    onErrorCallback: (message: string, event: any) => console.log(message),
+    onErrorCallback: (message: string, event: Event | Error) => console.log(message),
     className: 'aspect-video w-[300px] h-[300px]',
   },
 };
