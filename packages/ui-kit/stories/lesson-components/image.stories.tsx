@@ -140,45 +140,7 @@ export const Default: Story = {
 
 // Story with a pre-uploaded image
 export const WithImage: Story = {
-    render: (args) => {
-        const [file, setFile] = useState<ImageFileWithMetadata | null>(mockFile);
-
-        const handleUpload = async (fileRequest: fileMetadata.TFileUploadRequest) => {
-            console.log('Uploading image...', fileRequest);
-            const uploadedFile = await mockUpload();
-            return uploadedFile;
-        };
-
-        const handleUploadComplete = (uploadedFile: ImageFileWithMetadata) => {
-            console.log('Upload complete:', uploadedFile);
-            setFile(uploadedFile);
-        };
-
-        const handleDelete = () => {
-            console.log('File deleted');
-            setFile(null);
-        };
-
-        // Create props object that matches the DesignerComponent's expected props
-        const componentProps = {
-            elementInstance: args.elementInstance,
-            file: file,
-            onImageUpload: handleUpload,
-            onUploadComplete: handleUploadComplete,
-            onFileDelete: handleDelete,
-            onFileDownload: () => console.log('Download file'),
-            onUpClick: () => alert('Move up clicked'),
-            onDownClick: () => alert('Move down clicked'),
-            onDeleteClick: () => alert('Delete clicked'),
-            locale: args.locale,
-        };
-
-        return (
-            <div style={{ width: '600px' }}>
-                <DesignerComponent {...componentProps} />
-            </div>
-        );
-    },
+    render: (args) => <ImageUploaderWrapper {...args} />, // Use the wrapper for hooks
     args: {
         ...Default.args,
         initialFile: mockFile,
