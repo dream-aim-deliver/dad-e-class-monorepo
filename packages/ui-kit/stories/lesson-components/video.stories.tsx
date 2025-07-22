@@ -106,7 +106,7 @@ const VideoUploaderWrapper = (args: StoryProps) => {
         onVideoUpload: handleUpload,
         onUploadComplete: handleUploadComplete,
         onFileDelete: handleDelete,
-        onFileDownload: () => console.log('Download file'),
+        onFileDownload: () => alert('Download file'),
         onUpClick: () => alert('Move up clicked'),
         onDownClick: () => alert('Move down clicked'),
         onDeleteClick: () => alert('Delete clicked'),
