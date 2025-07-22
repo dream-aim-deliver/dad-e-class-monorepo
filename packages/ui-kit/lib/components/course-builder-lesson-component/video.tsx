@@ -7,6 +7,8 @@ import { fileMetadata } from "@maany_shr/e-class-models";
 import { Uploader } from "../drag-and-drop-uploader/uploader";
 import { useState } from "react";
 import { VideoPlayer } from "../video-player";
+
+
 /**
  * @fileoverview Video file component for the course builder.
  * Provides functionality for uploading, displaying, and managing video content.
@@ -131,7 +133,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     return (
         <section className="w-full">
             <VideoPlayer
-                videoId={String(videoFile.id)}
+                videoId={videoFile.videoId}
                 locale={locale}
                 onErrorCallback={(error) => {
                     setError(error);

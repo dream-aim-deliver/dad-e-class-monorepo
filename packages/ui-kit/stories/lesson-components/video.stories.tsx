@@ -6,7 +6,8 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { VideoFile as VideoFileType } from '../../lib/components/course-builder-lesson-component/types';
 
 // Get components from courseElements
-const { designerComponent: DesignerComponent, formComponent: FormComponent } = courseElements[CourseElementType.VideoFile];
+const { designerComponent: DesignerComponent, formComponent: FormComponent } =
+    courseElements[CourseElementType.VideoFile];
 
 type VideoFileWithMetadata = VideoFileType & fileMetadata.TFileMetadata;
 
@@ -61,7 +62,7 @@ const mockFile: VideoFileWithMetadata = {
     checksum: 'mock-checksum',
     status: 'available',
     category: 'video',
-    videoId: 12345,
+    videoId: "uNbxnGLKJ00yfbijDO8COxTOyVKT01xpxW",
     thumbnailUrl: 'https://via.placeholder.com/600x400',
     type: CourseElementType.VideoFile,
     order: 1,
@@ -78,7 +79,9 @@ const mockUpload = async (): Promise<VideoFileWithMetadata> => {
 
 // Create a wrapper component that uses hooks
 const VideoUploaderWrapper = (args: StoryProps) => {
-    const [file, setFile] = useState<VideoFileWithMetadata | null>(args.initialFile || null);
+    const [file, setFile] = useState<VideoFileWithMetadata | null>(
+        args.initialFile || null,
+    );
 
     const handleUpload = async (fileRequest: fileMetadata.TFileUploadRequest) => {
         console.log('Uploading video...', fileRequest);
@@ -106,7 +109,7 @@ const VideoUploaderWrapper = (args: StoryProps) => {
         onFileDownload: () => console.log('Download file'),
         onUpClick: () => alert('Move up clicked'),
         onDownClick: () => alert('Move down clicked'),
-        onDeleteClick: () => alert('Delete clicked')    ,
+        onDeleteClick: () => alert('Delete clicked'),
         locale: args.locale,
     };
 
@@ -131,7 +134,9 @@ export const WithVideo: Story = {
     render: (args) => {
         const [file, setFile] = useState<VideoFileWithMetadata | null>(mockFile);
 
-        const handleUpload = async (fileRequest: fileMetadata.TFileUploadRequest) => {
+        const handleUpload = async (
+            fileRequest: fileMetadata.TFileUploadRequest,
+        ) => {
             console.log('Uploading video...', fileRequest);
             const uploadedFile = await mockUpload();
             return uploadedFile;
@@ -198,8 +203,17 @@ export const FormView: Story = {
     args: {
         locale: 'en',
         elementInstance: {
-            ...defaultElementInstance,
-            ...mockFile,
+            id: '123',
+            type: CourseElementType.VideoFile,
+            order: 1,
+            category: 'video',
+            name: 'sample-video.mp4',
+            mimeType: 'video/mp4',
+            size: 52428800,
+            checksum: 'mock-checksum',
+            status: 'available',
+            videoId: 'uNbxnGLKJ00yfbijDO8COxTOyVKT01xpxW',
+            thumbnailUrl: 'https://via.placeholder.com/600x400',
         },
     },
 };
