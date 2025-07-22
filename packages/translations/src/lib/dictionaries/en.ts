@@ -593,7 +593,7 @@ export const EN: TDictionary = {
      courseBuilder: {
       addLinkText:"Add Link",
       downloadFilesText:"Download",
-      uploadFilesText:"Upload",
+      uploadFilesText:"Upload Files",
       linkText:"Link",
       includeInMaterialsText:"Include links in course material tab",
       descriptionText:"Description",
