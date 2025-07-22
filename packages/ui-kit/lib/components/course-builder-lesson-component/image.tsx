@@ -6,6 +6,8 @@ import DesignerLayout from "../designer-layout";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { Uploader } from "../drag-and-drop-uploader/uploader";
 import { useState } from "react";
+
+
 /**
  * @fileoverview Image file component for the course builder.
  * This file contains components and types for handling image uploads and display
@@ -35,10 +37,10 @@ type TImageFile = fileMetadata.TFileMetadata & { category: 'image' };
 
 interface ImageFileEditProps extends DesignerComponentProps {
     /** Callback function triggered when files are changed. Returns a Promise with upload response */
-   onImageUpload: (
-       fileRequest: fileMetadata.TFileUploadRequest,
-       abortSignal?: AbortSignal
-     ) => Promise<TImageFile | null>;
+    onImageUpload: (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal
+    ) => Promise<TImageFile | null>;
 
     onUploadComplete?: (file: TImageFile) => void;
     onFileDelete: () => void;
@@ -63,22 +65,22 @@ interface ImageFileEditProps extends DesignerComponentProps {
  * @param onFileDelete - Callback for file deletion
  * @returns JSX.Element | null
  */
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, file, onImageUpload,onUploadComplete, onFileDownload, onFileDelete }: ImageFileEditProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, file, onImageUpload, onUploadComplete, onFileDownload, onFileDelete }: ImageFileEditProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
     const dictionary = getDictionary(locale);
     const handleImageFile = async (
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
-      ): Promise<TImageFile | null> => {
+    ): Promise<TImageFile | null> => {
         return await onImageUpload(fileRequest, abortSignal);
-      };
+    };
 
-      const handleUploadComplete = (ImageMetadata:TImageFile) => {
+    const handleUploadComplete = (ImageMetadata: TImageFile) => {
         // Update form data with the uploaded file URL (if it exists)
         // Notify parent component that upload is complete
         onUploadComplete?.(ImageMetadata);
-      };
-    
+    };
+
     return (
         <DesignerLayout
             type={elementInstance.type}
@@ -113,17 +115,17 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
  */
 export function FormComponent({ elementInstance }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
-    
+
     // Type guard to ensure we're working with an ImageFile
     const imageFile = elementInstance as ImageFile;
     const [imageError, setImageError] = useState<boolean>(false);
     return (
         <section className="w-full">
-            <img 
+            <img
                 src={imageFile.url}
                 alt="Uploaded image content"
                 className="w-full h-auto object-cover"
-                onError={() => setImageError(true)} 
+                onError={() => setImageError(true)}
             />
         </section>
     )

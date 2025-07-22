@@ -9,6 +9,8 @@ import { IconButton } from "../icon-button";
 import { IconChevronLeft } from "../icons/icon-chevron-left";
 import { IconChevronRight } from "../icons/icon-chevron-right";
 import { cn } from "../../utils/style-utils";
+
+
 /**
  * @fileoverview Image gallery component for the course builder.
  * Provides functionality for uploading, displaying, and managing multiple images in a carousel layout.
@@ -134,7 +136,7 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
     };
 
     const [visibleItems, setVisibleItems] = useState(getVisibleItemCount());
-    const imageElements = 
+    const imageElements =
         "imageUrls" in elementInstance ? elementInstance.imageUrls : [];
 
     const totalSlides = imageElements.length;
@@ -188,7 +190,7 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
 
                 {/* Carousel */}
                 <div className="relative overflow-hidden">
-                    <div 
+                    <div
                         className="flex gap-2 transition-transform duration-500 ease-out"
                         style={{
                             transform: `translateX(${translateXPercent}%)`
@@ -197,7 +199,7 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
                         {imageElements.map((image, index) => (
                             <div
                                 key={index}
-                                className={cn("flex-shrink-0",index === currentIndex && "border-2 border-button-primary-fill rounded-md")}
+                                className={cn("flex-shrink-0", index === currentIndex && "border-2 border-button-primary-fill rounded-md")}
                                 style={{ width: `${thumbWidthPercent}%` }}
                             >
                                 <img
