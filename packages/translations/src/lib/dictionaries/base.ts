@@ -664,6 +664,10 @@ export const DictionarySchema = z.object({
       customIcon: z.string(),
       includeInMaterials: z.string(),
       addLink: z.string(),
+      editNotes:z.string(),
+      back:z.string(),
+      editCoachNotes:z.string(),
+      exploreCourses:z.string()
     })
   }),
   pages: z.object({

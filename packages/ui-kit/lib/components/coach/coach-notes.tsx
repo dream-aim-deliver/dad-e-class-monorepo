@@ -10,6 +10,7 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import RichTextRenderer from '../rich-text-element/renderer';
 import { deserialize, serialize } from '../rich-text-element/serializer';
+import { cn } from '../../utils/style-utils';
 
 /**
  * * Interface for note links used in coach notes
@@ -32,6 +33,8 @@ export interface coachNotesProps extends isLocalAware {
     onNoteLinksChange: (noteLinks: noteLink[]) => void;
     onIncludeInMaterialsChange: (includeInMaterials: boolean) => void;
     onNoteDescriptionChange: (noteDescription: string) => void;
+    isEditMode?: boolean;
+    onBack?: () => void;
 }
 
 export interface coachNotesViewProps extends isLocalAware {
@@ -50,7 +53,9 @@ function CoachNotesCreate({
     onDeleteIcon,
     onNoteLinksChange,
     onIncludeInMaterialsChange,
-    onNoteDescriptionChange
+    onNoteDescriptionChange,
+    isEditMode = false,
+    onBack
 }: coachNotesProps) {
     const dictionary = getDictionary(locale);
 
@@ -132,7 +137,7 @@ function CoachNotesCreate({
 
 
     return (
-        <div className="w-full p-6 border border-card-stroke bg-card-fill rounded-md shadow-[0_4px_12px_0_base-neutral-800] flex flex-col gap-6">
+        <div className={cn("w-full p-6 border border-card-stroke bg-card-fill rounded-md shadow-[0_4px_12px_0_base-neutral-800] flex flex-col gap-6", isEditMode ? "p-0 border-0" : "")}>
             <div className="w-full">
                 <RichTextEditor
                     name="coachNotes"
@@ -222,11 +227,25 @@ function CoachNotesCreate({
                 </div>
 
             </div>
-            <Button
-                text={dictionary.components.coachNotes.publishNotes}
-                onClick={() => onPublish(serialize(noteDescription), initialNoteLinks, initialIncludeInMaterials)}
-                disabled={editingLinkIndex !== null}
-            />
+            
+                <div className="flex w-full  items-center gap-4">
+                {isEditMode && <Button
+                        text={dictionary.components.coachNotes.back}
+                        onClick={onBack}
+                        variant="secondary"
+                        size={"big"}
+                        className="w-full"
+                        disabled={editingLinkIndex !== null}
+                    />}
+                 <Button
+                        text={isEditMode ? dictionary.components.coachNotes.editNotes : dictionary.components.coachNotes.publishNotes}
+                        onClick={() => onPublish(serialize(noteDescription), initialNoteLinks, initialIncludeInMaterials)}
+                        disabled={editingLinkIndex !== null}
+                        size={"big"}
+                        className="w-full"
+                        variant="primary"
+                    />
+                </div>
         </div>
     )
 }
@@ -268,7 +287,7 @@ function CoachNotesView({ noteDescription, noteLinks, includeInMaterials, locale
             <div className="p-6 bg-[#211F1E] rounded-xl flex flex-col items-start justify-center gap-4 text-text-primary">
                 <p className="text-lg md:text[24px]">{dictionary.components.coachNotes.notesValidation}</p>
                 <Button
-                    text="Explore Courses"
+                    text={dictionary.components.coachNotes.exploreCourses}
                     onClick={onExploreCourses}
                 />
             </div>

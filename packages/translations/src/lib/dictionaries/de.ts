@@ -678,6 +678,10 @@ export const DE: TDictionary = {
       includeInMaterials: 'In Kursmaterialien einbeziehen',
       customIcon: 'Benutzerdefiniertes Symbol',
       addLink: 'Link hinzufügen',
+      editNotes:"Notizen bearbeiten",
+      back:"Zurück",
+      editCoachNotes:"Coach Notizen bearbeiten",
+      exploreCourses:"Kurse erkunden"
     },
   },
   pages: {
