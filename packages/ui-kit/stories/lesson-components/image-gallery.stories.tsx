@@ -4,6 +4,7 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { CourseElementType } from '../../lib/components/course-builder/types';
 import { ImageGallery, ImageFile } from '../../lib/components/course-builder-lesson-component/types';
 import { DesignerComponent, FormComponent } from '../../lib/components/course-builder-lesson-component/image-gallery';
+import { ImageGallerySkeleton } from '../../lib/components/skeletons/image-gallery-skeleton';
 
 // Using the ImageFile type from the component's types
 
@@ -403,6 +404,26 @@ export const FormView: Story = {
             ...defaultElementInstance,
             type: CourseElementType.ImageGallery,
             imageUrls: mockFiles,
+        },
+    },
+};
+
+// Skeleton Story
+export const LoadingSkeleton: Story = {
+    render: () => (
+        <div className="w-[800px] max-w-full">
+            <ImageGallerySkeleton />
+        </div>
+    ),
+    args: {
+        locale: 'en',
+        elementInstance: defaultElementInstance,
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Loading skeleton state for the image gallery component. Shows animated placeholders for the featured image and thumbnail carousel with responsive design.',
+            },
         },
     },
 };

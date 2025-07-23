@@ -6,7 +6,7 @@ import { IconLoaderSpinner } from './icons/icon-loader-spinner';
 export interface VideoPlayerProps extends isLocalAware {
   videoId?: string;
   thumbnailUrl?: string;
-  onErrorCallback: (message: string, error: Event | Error) => void;
+  onErrorCallback?: (message: string, error: Event | Error) => void;
   className?: string;
 }
 /**
@@ -65,7 +65,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setVideoError(!videoId);
     setIsPlayerReady(false);
     setAutoPlay(false);
-    setThumbnailLoaded(false);
+    setThumbnailLoaded(!thumbnailUrl); // Only set to false if there's actually a thumbnail to load
     if (!thumbnailUrl) setShowPlayer(true);
   }, [videoId, thumbnailUrl]);
 
@@ -77,6 +77,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const handleThumbnailError = () => {
     setShowPlayer(true);
     setAutoPlay(false);
+    setThumbnailLoaded(true);
   };
 
   const handleThumbnailLoad = () => {
@@ -120,7 +121,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       )}
 
       {/* Loading state - only shown when player is loading and no error */}
-      {!thumbnailLoaded || (showPlayer && !isPlayerReady && !videoError) && (
+      {((thumbnailUrl && !thumbnailLoaded) || (showPlayer && !isPlayerReady && !videoError)) && (
 
         <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
           <IconLoaderSpinner
