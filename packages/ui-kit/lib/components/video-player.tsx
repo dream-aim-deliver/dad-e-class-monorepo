@@ -86,7 +86,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const handleVideoError = (event: Event) => {
     setVideoError(true);
-    onErrorCallback(dictionary.components.videoPlayer.videoErrorText, event);
+   onErrorCallback?.(dictionary.components.videoPlayer.videoErrorText, event);
   };
 
   const handlePlayerReady = () => {
