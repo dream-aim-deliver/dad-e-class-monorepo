@@ -33,8 +33,8 @@ export interface coachNotesProps extends isLocalAware {
     onNoteLinksChange: (noteLinks: noteLink[]) => void;
     onIncludeInMaterialsChange: (includeInMaterials: boolean) => void;
     onNoteDescriptionChange: (noteDescription: string) => void;
-    isEditMode?: boolean;
-    onBack?: () => void;
+    isEditMode: boolean;
+    onBack: () => void;
 }
 
 export interface coachNotesViewProps extends isLocalAware {
@@ -54,7 +54,7 @@ function CoachNotesCreate({
     onNoteLinksChange,
     onIncludeInMaterialsChange,
     onNoteDescriptionChange,
-    isEditMode = false,
+    isEditMode,
     onBack
 }: coachNotesProps) {
     const dictionary = getDictionary(locale);
@@ -227,25 +227,25 @@ function CoachNotesCreate({
                 </div>
 
             </div>
-            
-                <div className="flex w-full  items-center gap-4">
+
+            <div className="flex w-full  items-center gap-4">
                 {isEditMode && <Button
-                        text={dictionary.components.coachNotes.back}
-                        onClick={onBack}
-                        variant="secondary"
-                        size={"big"}
-                        className="w-full"
-                        disabled={editingLinkIndex !== null}
-                    />}
-                 <Button
-                        text={isEditMode ? dictionary.components.coachNotes.editNotes : dictionary.components.coachNotes.publishNotes}
-                        onClick={() => onPublish(serialize(noteDescription), initialNoteLinks, initialIncludeInMaterials)}
-                        disabled={editingLinkIndex !== null}
-                        size={"big"}
-                        className="w-full"
-                        variant="primary"
-                    />
-                </div>
+                    text={dictionary.components.coachNotes.back}
+                    onClick={onBack}
+                    variant="secondary"
+                    size={"big"}
+                    className="w-full"
+                    disabled={editingLinkIndex !== null}
+                />}
+                <Button
+                    text={isEditMode ? dictionary.components.coachNotes.editNotes : dictionary.components.coachNotes.publishNotes}
+                    onClick={() => onPublish(serialize(noteDescription), initialNoteLinks, initialIncludeInMaterials)}
+                    disabled={editingLinkIndex !== null}
+                    size={"big"}
+                    className="w-full"
+                    variant="primary"
+                />
+            </div>
         </div>
     )
 }
@@ -270,9 +270,9 @@ function CoachNotesView({ noteDescription, noteLinks, includeInMaterials, locale
     const hasDescription = () => {
         try {
             // Parse the JSON string to get the Descendant array
-            const parsedDescription =JSON.parse(noteDescription) 
-                
-            
+            const parsedDescription = JSON.parse(noteDescription)
+
+
             if (Array.isArray(parsedDescription)) {
                 const content = parsedDescription.map(n => Node.string(n)).join('\n').trim();
                 return content.length > 0;
