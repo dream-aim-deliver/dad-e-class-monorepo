@@ -33,7 +33,7 @@ export const FileMetadataBaseSchema = z.object({
 
 export const FileMetadataVideoSchema = FileMetadataBaseSchema.extend({
     category: z.literal('video'),
-    videoId: z.number(),
+    videoId: z.string(),
     thumbnailUrl: z.string().url(),
 });
 

@@ -168,7 +168,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
           return {
             ...baseMetadata,
             category: 'video' as const,
-            videoId: 0, // Temporary placeholder
+            videoId: "0", // Temporary placeholder
             thumbnailUrl: '', // Temporary placeholder
           };
         case 'image':

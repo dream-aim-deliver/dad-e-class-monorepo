@@ -6,7 +6,7 @@ import { IconLoaderSpinner } from './icons/icon-loader-spinner';
 export interface VideoPlayerProps extends isLocalAware {
   videoId?: string;
   thumbnailUrl?: string;
-  onErrorCallback: (message: string, error: any) => void;
+  onErrorCallback?: (message: string, error: Event | Error) => void;
   className?: string;
 }
 /**
@@ -18,7 +18,7 @@ export interface VideoPlayerProps extends isLocalAware {
  * @component
  * @param {string} [videoId] - Mux playback ID used to load the video stream.
  * @param {string} [thumbnailUrl] - Optional preview image displayed before the video is played.
- * @param {(message: string, error: any) => void} onErrorCallback - Callback invoked when the video fails to load or play.
+ * @param {(message: string, error: Event | Error) => void} onErrorCallback - Callback invoked when the video fails to load or play.
  * @param {string} locale - Current user locale used for fetching localized text.
  * @param {string} [className="w-full"] - Optional CSS class for customizing the outer container.
  *
@@ -59,11 +59,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [autoPlay, setAutoPlay] = useState(false);
   const [videoError, setVideoError] = useState(!videoId);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
+ const [thumbnailLoaded, setThumbnailLoaded] = useState(!thumbnailUrl);
 
   useEffect(() => {
     setVideoError(!videoId);
     setIsPlayerReady(false);
     setAutoPlay(false);
+    setThumbnailLoaded(!thumbnailUrl); // Only set to false if there's actually a thumbnail to load
     if (!thumbnailUrl) setShowPlayer(true);
   }, [videoId, thumbnailUrl]);
 
@@ -75,11 +77,16 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const handleThumbnailError = () => {
     setShowPlayer(true);
     setAutoPlay(false);
+    setThumbnailLoaded(true);
   };
 
-  const handleVideoError = (event: any) => {
+  const handleThumbnailLoad = () => {
+    setThumbnailLoaded(true);
+  };
+
+  const handleVideoError = (event: Event) => {
     setVideoError(true);
-    onErrorCallback(dictionary.components.videoPlayer.videoErrorText, event);
+   onErrorCallback?.(dictionary.components.videoPlayer.videoErrorText, event);
   };
 
   const handlePlayerReady = () => {
@@ -95,9 +102,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           <img
             src={thumbnailUrl}
             alt="Thumbnail"
-            className="w-full h-full object-contain cursor-pointer"
+            className={`w-full h-full object-contain cursor-pointer transition-opacity duration-200 ${thumbnailLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
             onClick={handleThumbnailClick}
             onError={handleThumbnailError}
+            onLoad={handleThumbnailLoad}
           />
         </div>
       )}
@@ -112,7 +121,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       )}
 
       {/* Loading state - only shown when player is loading and no error */}
-      {showPlayer && !isPlayerReady && !videoError && (
+      {((thumbnailUrl && !thumbnailLoaded) || (showPlayer && !isPlayerReady && !videoError)) && (
 
         <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
           <IconLoaderSpinner
