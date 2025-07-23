@@ -135,7 +135,6 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                 thumbnailUrl={videoFile.thumbnailUrl}
                 locale={locale}
                 className="aspect-video w-full"
-                onErrorCallback={(error, event) => console.error('Video error:', error, event)}
             />
         </section>
     );
