@@ -113,6 +113,7 @@ const CoachNotesEditDialogWrapper = ({
         onNoteLinksChange={setNoteLinks}
         onIncludeInMaterialsChange={setIncludeInMaterials}
         onNoteDescriptionChange={setNoteDescription}
+        isEditMode={true}
       />
     </div>
   );
