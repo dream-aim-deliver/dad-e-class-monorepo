@@ -233,7 +233,7 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewElement> = ({
                 <div className="flex gap-2 items-center justify-center">
                   <div className="w-[80px]">
                     <InputField
-                      inputText="e.g. A"
+                      inputPlaceholder="e.g. A"
                       className="w-[80px] border-[1px] border-card-stroke text-text-primary"
                       value={inputValue}
                       setValue={(value) => handleInputChange(index, value)}

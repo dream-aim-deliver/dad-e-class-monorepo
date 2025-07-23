@@ -29,7 +29,7 @@ const RowHeader: FC<RowHeaderProps> = ({
     <div className="flex gap-2 items-center w-full">
       <div className="flex-1">
         <InputField
-          inputText="Row Title"
+          inputPlaceholder="Row Title"
           value={row.rowTitle}
           setValue={(value) => onRowTitleChange(rowIndex, value)}
         />

@@ -10,8 +10,8 @@ import { IconEdit } from "./icons/icon-edit";
 import { IconLoaderSpinner } from "./icons/icon-loader-spinner";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { fileMetadata } from "@maany_shr/e-class-models";
-import { getFaviconUrl } from "../utils/url-utils";
 import { IconCloudUpload } from "./icons";
+import { getFaviconUrl } from "../utils/url-utils";
 
 interface LinkEditProps extends isLocalAware {
     initialTitle?: string;
@@ -126,6 +126,8 @@ const LinkEdit: React.FC<LinkEditProps> = ({
     const handleCancelUpload = () => {
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
+            // Immediately clear the custom icon state to stop showing the spinner
+            setCustomIcon(null);
         }
     };
 
@@ -194,7 +196,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
         );
     };
     return (
-        <div className="p-4 min-w-[420px] flex flex-col border-1 rounded-md border-card-stroke w-full bg-card-fill gap-4 text-text-primary">
+        <div className="p-4 flex flex-col border-1 rounded-md border-card-stroke w-full bg-card-fill gap-4 text-text-primary">
             <div className="flex gap-2">
 
                 <div className="flex-1 flex flex-col gap-2 w-full">
@@ -204,6 +206,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                             value={title}
                             setValue={setTitle}
                             state={errors.title ? 'error' : 'filled'}
+                            inputPlaceholder={dictionary.components.link.titlePlaceholder}
                         />
                         {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
                     </div>
@@ -216,6 +219,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                             setValue={setUrl}
                             type='url'
                             state={errors.url ? 'error' : 'filled'}
+                            inputPlaceholder={dictionary.components.link.urlPlaceholder}
                         />
                         {errors.url && <p className="text-sm text-red-500">{errors.url}</p>}
                     </div>

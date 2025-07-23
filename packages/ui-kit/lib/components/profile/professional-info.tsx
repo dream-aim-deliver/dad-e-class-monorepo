@@ -173,7 +173,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               className: "w-full",
               value: formData.linkedinUrl ? formData.linkedinUrl : '',
               setValue: (value) => handleChange('linkedinUrl', value),
-              inputText:
+              inputPlaceholder:
                 dictionary.components.professionalInfo.linkedinPlaceholder,
             }}
           />
@@ -205,7 +205,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               value: formData.portfolioWebsite ? formData.portfolioWebsite : '',
               setValue: (value) => handleChange('portfolioWebsite', value),
               className: "w-full",
-              inputText:
+              inputPlaceholder:
                 dictionary.components.professionalInfo
                   .portfolioWebsitePlaceholder,
             }}
@@ -221,7 +221,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 : '',
               setValue: (value) => handleChange('associatedCompanyName', value),
               className: "w-full",
-              inputText:
+              inputPlaceholder:
                 dictionary.components.professionalInfo
                   .associatedCompanyPlaceholder,
             }}
@@ -237,7 +237,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 : '',
               setValue: (value) => handleChange('associatedCompanyRole', value),
               className: "w-full",
-              inputText:
+              inputPlaceholder:
                 dictionary.components.professionalInfo
                   .associatedCompanyIndustryPlaceholder,
             }}
@@ -256,7 +256,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               setValue: (value) =>
                 handleChange('associatedCompanyIndustry', value),
               className: "w-full",
-              inputText:
+              inputPlaceholder:
                 dictionary.components.professionalInfo
                   .associatedCompanyPlaceholder,
             }}
@@ -319,7 +319,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 value={skillSearchQuery}
                 setValue={(value: string) => setSkillSearchQuery(value)}
                 hasLeftContent={true}
-                inputText="Search Skills"
+                inputPlaceholder="Search Skills"
                 leftContent={<IconSearch />}
               />
               <div className=" space-y-2 max-h-60 overflow-y-auto gap-2">

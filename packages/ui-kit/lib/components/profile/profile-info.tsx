@@ -151,7 +151,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             className: "w-full",
             value: formData.name,
             setValue: (value) => handleChange('name', value),
-            inputText: dictionary.components.profileInfo.namePlaceholder,
+            inputPlaceholder: dictionary.components.profileInfo.namePlaceholder,
           }}
         />
         <TextInput
@@ -161,7 +161,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             className: "w-full",
             value: formData.surname,
             setValue: (value) => handleChange('surname', value),
-            inputText: dictionary.components.profileInfo.surnamePlaceholder,
+            inputPlaceholder: dictionary.components.profileInfo.surnamePlaceholder,
           }}
         />
         <TextInput
@@ -171,7 +171,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             className: "w-full",
             value: formData.email,
             setValue: (value) => handleChange('email', value),
-            inputText: dictionary.components.profileInfo.emailPlaceholder,
+            inputPlaceholder: dictionary.components.profileInfo.emailPlaceholder,
           }}
         />
         <TextInput
@@ -181,7 +181,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             className: "w-full",
             value: formData.phoneNumber || '',
             setValue: (value) => handleChange('phoneNumber', value),
-            inputText: dictionary.components.profileInfo.phoneNumberPlaceholder,
+            inputPlaceholder: dictionary.components.profileInfo.phoneNumberPlaceholder,
           }}
         />
         <TextInput
@@ -191,7 +191,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             className: "w-full",
             value: formData.phoneNumber || '',
             setValue: (value) => handleChange('phoneNumber', value),
-            inputText: dictionary.components.profileInfo.password,
+            inputPlaceholder: dictionary.components.profileInfo.password,
             type: 'password',
             hasRightContent: true,
             rightContent: (
@@ -230,7 +230,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
               label={dictionary.components.profileInfo.companyName}
               inputField={{
                 id: 'companyName',
-                inputText: dictionary.components.profileInfo.companyNamePlaceholder,
+                inputPlaceholder: dictionary.components.profileInfo.companyNamePlaceholder,
                 value: formData.representingCompanyName || '',
                 setValue: (value) =>
                   handleChange('representingCompanyName', value),
@@ -241,7 +241,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
               inputField={{
                 id: 'companyUID',
                 value: formData.representedCompanyUID || '',
-                inputText: dictionary.components.profileInfo.companyUIDPlaceholder,
+                inputPlaceholder: dictionary.components.profileInfo.companyUIDPlaceholder,
                 setValue: (value) =>
                   handleChange('representedCompanyUID', value),
               }}
@@ -251,7 +251,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
               inputField={{
                 id: 'companyAddress',
                 value: formData.representedCompanyAddress || '',
-                inputText: dictionary.components.profileInfo.addressPlaceholder,
+                inputPlaceholder: dictionary.components.profileInfo.addressPlaceholder,
                 setValue: (value) =>
                   handleChange('representedCompanyAddress', value),
               }}

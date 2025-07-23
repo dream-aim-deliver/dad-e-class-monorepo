@@ -604,7 +604,9 @@ export const DE: TDictionary = {
     },
     link: {
       titleLabel: 'Titel',
+      titlePlaceholder: 'Z.B. Mein neues Video-Projekt',
       urlLabel: 'URL',
+      urlPlaceholder: 'Z.B. https://website.com/dies/ist/die/url',
       customIcon: 'Benutzerdefiniertes Symbol',
       LinkIcon: 'Linksymbol',
       saveText: 'Bestätigen',
@@ -667,6 +669,20 @@ export const DE: TDictionary = {
       },
     },
 
+    coachNotes: {
+      usefulLinks: 'Nützliche Links',
+      validateLink: 'Link validieren',
+      validateTitle: 'Titel validieren',
+      notesValidation: 'Diese Gruppe hat noch keinen Coach. Wählen Sie Ihren Lieblings-Coach aus und senden Sie ihr den Gutschein. Sie wird der Coach dieser Gruppe.',
+      publishNotes: 'Notizen veröffentlichen',
+      includeInMaterials: 'In Kursmaterialien einbeziehen',
+      customIcon: 'Benutzerdefiniertes Symbol',
+      addLink: 'Link hinzufügen',
+      editNotes:"Notizen bearbeiten",
+      back:"Zurück",
+      editCoachNotes:"Coach Notizen bearbeiten",
+      exploreCourses:"Kurse erkunden"
+    },
   },
   pages: {
     home: Home_DE,

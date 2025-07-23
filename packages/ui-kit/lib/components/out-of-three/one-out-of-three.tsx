@@ -112,7 +112,7 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
       <div className="flex flex-col gap-4 w-full">
         <div className="flex flex-col gap-[15px] mt-4">
           <InputField
-            inputText="Table Title"
+            inputPlaceholder="Table Title"
             value={data?.tableTitle || " "}
             setValue={(value) => handleTableTitleChange(value)}
           />

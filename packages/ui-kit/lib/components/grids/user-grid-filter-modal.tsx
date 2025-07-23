@@ -119,7 +119,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 // TODO: possibly check if the value is in range of 0-5
                                 setValue: (value: string) =>
                                     handleChange('minRating', parseFloat(value) || undefined),
-                                inputText: dictionary.minimumRatingPlaceholder,
+                                inputPlaceholder: dictionary.minimumRatingPlaceholder,
                             }}
                         />
                         <TextInput
@@ -131,7 +131,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 defaultValue: filters.maxRating?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('maxRating', parseFloat(value) || undefined),
-                                inputText: dictionary.maximumRatingPlaceholder,
+                                inputPlaceholder: dictionary.maximumRatingPlaceholder,
                             }}
                         />
                     </div>
@@ -178,7 +178,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 defaultValue: filters.minCoachingSessions?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('minCoachingSessions', parseInt(value) || undefined),
-                                inputText: dictionary.minimumCoachingSessionsPlaceholder,
+                                inputPlaceholder: dictionary.minimumCoachingSessionsPlaceholder,
                             }}
                         />
                         <TextInput
@@ -190,7 +190,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 value: filters.maxCoachingSessions?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('maxCoachingSessions', parseInt(value) || undefined),
-                                inputText: dictionary.maximumCoachingSessionsPlaceholder,
+                                inputPlaceholder: dictionary.maximumCoachingSessionsPlaceholder,
                             }}
                         />
                     </div>
@@ -210,7 +210,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 defaultValue: filters.minCoursesBought?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('minCoursesBought', parseInt(value) || undefined),
-                                inputText: dictionary.minimumCoursesBoughtPlaceholder,
+                                inputPlaceholder: dictionary.minimumCoursesBoughtPlaceholder,
                             }}
                         />
                         <TextInput
@@ -222,7 +222,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 defaultValue: filters.maxCoursesBought?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('maxCoursesBought', parseInt(value) || undefined),
-                                inputText: dictionary.maximumCoursesBoughtPlaceholder,
+                                inputPlaceholder: dictionary.maximumCoursesBoughtPlaceholder,
                             }}
                         />
                     </div>
@@ -242,7 +242,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 defaultValue: filters.minCoursesCreated?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('minCoursesCreated', parseInt(value) || undefined),
-                                inputText: dictionary.minimumCoursesCreatedPlaceholder,
+                                inputPlaceholder: dictionary.minimumCoursesCreatedPlaceholder,
                             }}
                         />
                         <TextInput
@@ -254,7 +254,7 @@ export const UserGridFilterModal: React.FC<UserGridFilterModalProps> = ({
                                 defaultValue: filters.maxCoursesCreated?.toString(),
                                 setValue: (value: string) =>
                                     handleChange('maxCoursesCreated', parseInt(value) || undefined),
-                                inputText: dictionary.maximumCoursesCreatedPlaceholder,
+                                inputPlaceholder: dictionary.maximumCoursesCreatedPlaceholder,
                             }}
                         />
                     </div>
