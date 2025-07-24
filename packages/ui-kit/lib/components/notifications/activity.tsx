@@ -127,89 +127,51 @@ export const Activity: FC<ActivityProps> = ({
       data-testid="activity"
       onClick={onClickActivity?.(action?.url ?? '')}
       className={clsx(
-        `flex p-2 my-[0.125rem] flex-col items-center w-full border-b border-divider cursor-pointer ${
+        `flex p-2 my-[0.125rem] w-full border-b border-divider cursor-pointer overflow-hidden ${
           isRead ? 'bg-transparent' : 'bg-base-neutral-800 rounded-small'
         }`,
-        layout === 'horizontal' ? 'flex-row items-center gap-4' : 'flex-col items-start',
+        // Responsive layout: vertical on mobile, horizontal on larger screens  
+        'flex-col items-start space-y-2 md:flex-row md:items-center md:justify-between md:space-y-0',
         className,
       )}
     >
-      {/* Horizontal layout */}
-      {layout === 'horizontal' && (
-        <div className="flex gap-4 items-center w-full justify-between">
-          <div className="flex flex-col items-start gap-1">
-            <p className="text-sm text-text-primary leading-[150%] text-left">{message}</p>
-            {children}
-            <div className="flex gap-2">
-              {platformName && (
-                <p className="text-xs text-text-secondary leading-[100%]">{platformName}</p>
-              )}
-              {recipients > 0 && (
-                <p className="text-xs text-text-secondary leading-[100%]">
-                  {recipientsText} {recipients}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="flex gap-4 items-baseline">
-              {action?.title && (
-                <Button
-                  variant="text"
-                  size="small"
-                  text={action.title}
-                  className="whitespace-nowrap p-0 max-w-[15rem]"
-                />
-              )}
-              {formattedDateTime && (
-                <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap">
-                  {formattedDateTime.formattedDate} {atText} {formattedDateTime.formattedTime}
-                </p>
-              )}
-            </div>
-            {!isRead && (
-              <span className="w-2 h-2 rounded-full bg-button-primary-fill flex-shrink-0" />
-            )}
-          </div>
+      {/* Content section */}
+      <div className="flex flex-col items-start gap-1 min-w-0 flex-1">
+        <p className="text-sm text-text-primary leading-[150%] text-left text-wrap break-words">{message}</p>
+        {children}
+        <div className="flex flex-wrap gap-2 text-xs text-text-secondary">
+          {platformName && (
+            <p className="leading-[100%]">{platformName}</p>
+          )}
+          {recipients > 0 && (
+            <p className="leading-[100%]">
+              {recipientsText} {recipients}
+            </p>
+          )}
         </div>
-      )}
-      {/* Vertical layout */}
-      {layout === 'vertical' && (
-        <>
-          <div className="flex justify-between items-start w-full gap-4">
-            <p className="text-sm text-text-primary leading-[150%] text-left">{message}</p>
-            {!isRead && (
-              <span className="w-2 h-2 rounded-full bg-button-primary-fill flex-shrink-0" />
-            )}
-          </div>
-          {children}
-          <div className="flex justify-between items-center w-full">
-            {action?.title && (
-              <Button
-                variant="text"
-                size="small"
-                text={action.title}
-                className="whitespace-nowrap p-0 max-w-[20rem]"
-              />
-            )}
-            <div className="flex gap-2 items-center">
-              {recipients > 0 && (
-                <p className="text-xs text-text-secondary leading-[100%]">
-                  {recipientsText} {recipients}
-                </p>
-              )}
-              {platformName && (
-                <p className="text-xs text-text-secondary leading-[100%]">{platformName}</p>
-              )}
-              {formattedDateTime && (
-                <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap">
-                  {formattedDateTime.formattedDate} {atText} {formattedDateTime.formattedTime}
-                </p>
-              )}
-            </div>
-          </div>
-        </>
-      )}
+      </div>
+      
+      {/* Action and metadata section */}
+      <div className="flex items-center gap-2 flex-shrink-0 w-full md:w-auto md:justify-end">
+        <div className="flex flex-col md:flex-row md:items-center gap-2 flex-1 md:flex-initial">
+          {action?.title && (
+            <Button
+              variant="text"
+              size="small"
+              text={action.title}
+              className="p-0 truncate max-w-xs md:max-w-sm text-left"
+            />
+          )}
+          {formattedDateTime && (
+            <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap">
+              {formattedDateTime.formattedDate} {atText} {formattedDateTime.formattedTime}
+            </p>
+          )}
+        </div>
+        {!isRead && (
+          <span className="w-2 h-2 rounded-full bg-button-primary-fill flex-shrink-0" />
+        )}
+      </div>
     </div>
   );
 };
