@@ -666,7 +666,11 @@ export const DE: TDictionary = {
         descriptionText: 'Geben Sie unter jedem Bild den Buchstaben ein, der der korrekten Beschreibung entspricht. Es ist nur ein Buchstabe (Groß- oder Kleinbuchstabe) zulässig – keine anderen Zeichen, da sonst ein Fehler auftritt.',
       },
     },
-
+    bookSessionWithBanner: {
+      bookSessionButton: 'Buche eine Sitzung mit',
+      coachBadge: 'Coach',
+      courseCreatorBadge: 'Kursleiter:in',
+    },
   },
   pages: {
     home: Home_DE,
