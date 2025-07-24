@@ -81,7 +81,7 @@ export const RecentActivity: FC<RecentActivityProps> = ({
           <Button
             text={dictionary?.components?.recentActivity?.viewAll}
             variant="text"
-            className="p-0 mt-2 self-start"
+            className="p-0 mt-2"
             onClick={onClickViewAll}
           />
         )}

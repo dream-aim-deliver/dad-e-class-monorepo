@@ -127,49 +127,48 @@ export const Activity: FC<ActivityProps> = ({
       data-testid="activity"
       onClick={onClickActivity?.(action?.url ?? '')}
       className={clsx(
-        `flex p-2 my-[0.125rem] w-full border-b border-divider cursor-pointer overflow-hidden ${
-          isRead ? 'bg-transparent' : 'bg-base-neutral-800 rounded-small'
+        `flex p-2 my-[0.125rem] w-full border-b border-divider cursor-pointer overflow-hidden relative ${isRead ? 'bg-transparent' : 'bg-base-neutral-800 rounded-small'
         }`,
         // Responsive layout: vertical on mobile, horizontal on larger screens  
-        'flex-col items-start space-y-2 md:flex-row md:items-center md:justify-between md:space-y-0',
+        'flex-col items-start md:flex-row md:items-center md:justify-between',
         className,
       )}
     >
+      <div className="absolute top-2 right-2 z-50">
+        {!isRead && (
+          <span className="w-2 h-2 rounded-full bg-button-primary-fill flex-shrink-0 block" />
+        )}
+      </div>
       {/* Content section */}
       <div className="flex flex-col items-start gap-1 min-w-0 flex-1">
-        <p className="text-sm text-text-primary leading-[150%] text-left text-wrap break-words">{message}</p>
+        <p className="text-sm text-text-primary leading-[150%] text-left text-wrap break-words w-[96%]">{message}</p>
         {children}
-        <div className="flex flex-wrap gap-2 text-xs text-text-secondary">
+        <div className="flex flex-wrap gap-2 text-xs text-text-secondary md:justify-start justify-end w-full">
           {platformName && (
             <p className="leading-[100%]">{platformName}</p>
           )}
           {recipients > 0 && (
             <p className="leading-[100%]">
-              {recipientsText} {recipients}
+              {recipients} {recipientsText}
             </p>
           )}
         </div>
       </div>
-      
+
       {/* Action and metadata section */}
-      <div className="flex items-center gap-2 flex-shrink-0 w-full md:w-auto md:justify-end">
-        <div className="flex flex-col md:flex-row md:items-center gap-2 flex-1 md:flex-initial">
-          {action?.title && (
-            <Button
-              variant="text"
-              size="small"
-              text={action.title}
-              className="p-0 truncate max-w-xs md:max-w-sm text-left"
-            />
-          )}
-          {formattedDateTime && (
-            <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap">
-              {formattedDateTime.formattedDate} {atText} {formattedDateTime.formattedTime}
-            </p>
-          )}
-        </div>
-        {!isRead && (
-          <span className="w-2 h-2 rounded-full bg-button-primary-fill flex-shrink-0" />
+      <div className="flex flex-row items-center justify-between gap-2 flex-shrink-0 w-full md:w-auto">
+        {action?.title && (
+          <Button
+            variant="text"
+            size="small"
+            text={action.title}
+            className="p-0 truncate"
+          />
+        )}
+        {formattedDateTime && (
+          <p className="text-xs text-text-secondary leading-[100%] whitespace-nowrap">
+            {formattedDateTime.formattedDate} {atText} {formattedDateTime.formattedTime}
+          </p>
         )}
       </div>
     </div>
