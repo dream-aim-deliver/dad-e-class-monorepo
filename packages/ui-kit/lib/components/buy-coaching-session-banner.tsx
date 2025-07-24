@@ -16,6 +16,29 @@ export interface BuyCoachingSessionBannerProps extends isLocalAware {
     skills: string[];
 }
 
+/**
+ * `BuyCoachingSessionBanner` is a UI component that displays key information about a coach
+ * and provides an option for users to buy coaching sessions.
+ *
+ * It shows the coach’s avatar, name, description, rating, total number of reviews,
+ * one badge for "Coach", and optionally a second badge for "Course Creator".
+ * It also displays a list of the coach’s skills.
+ *
+ * A call-to-action button is included to trigger the booking flow.
+ *
+ * @param coachName - Full name of the coach.
+ * @param coachAvatarUrl - URL of the coach’s avatar image.
+ * @param description - Short biography or description of the coach.
+ * @param coachRating - Average rating of the coach (0 to 5).
+ * @param totalRatings - Total number of ratings the coach has received.
+ * @param onBookSessionWith - Callback triggered when the booking button is clicked.
+ * @param locale - Current locale used for translations (e.g., 'en', 'de').
+ * @param isCourseCreator - If `true`, shows an additional badge indicating the coach is also a course creator.
+ * @param skills - List of skills associated with the coach.
+ *
+ * @returns A JSX element displaying coach information, badges, skills, and a purchase CTA.
+ */
+
 export const BuyCoachingSessionBanner = ({
     coachName,
     coachAvatarUrl,
@@ -68,13 +91,13 @@ export const BuyCoachingSessionBanner = ({
                         )}
                     </div>
                 </div>
-                    <Button
-                        variant="primary"
-                        size="medium"
-                        onClick={onBookSessionWith}
-                        text={`${dictionary.buyButton}`}
-                        className='sm:w-fit w-full'
-                    />
+                <Button
+                    variant="primary"
+                    size="medium"
+                    onClick={onBookSessionWith}
+                    text={`${dictionary.buyButton}`}
+                    className="sm:w-fit w-full"
+                />
             </div>
             <p className="text-text-secondary"> {description} </p>
 

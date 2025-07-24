@@ -58,6 +58,7 @@ export const Default: Story = {
         locale: 'en',
         isCourseCreator: false,
         skills: ['Career Coaching', 'Resume Building'],
+        onBookSessionWith: () => alert('Buy coaching session clicked'),
     },
 };
 
@@ -69,5 +70,6 @@ export const CourseCreatorCoach: Story = {
             'https://img.lalr.co/cms/2018/08/16181927/Mini-pig.jpg?r=1_1',
         isCourseCreator: true,
         skills: ['Career Coaching', 'Resume Building'],
+        onBookSessionWith: () => alert('Buy coaching session clicked'),
     },
 };
