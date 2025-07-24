@@ -691,6 +691,12 @@ export const EN: TDictionary = {
       coachBadge: 'Coach',
       courseCreatorBadge: 'Course Creator',
     },
+    buyCoachingSessionBanner: {
+      coachBadge: 'Coach',
+      courseCreatorBadge: 'Course Creator',
+      skillsLabel: 'Skills',
+      buyButton: 'Buy coaching sessions',
+    },
   },
   pages: {
     home: Home_EN,

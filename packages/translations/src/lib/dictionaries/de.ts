@@ -696,6 +696,12 @@ export const DE: TDictionary = {
       exploreCourses: "Kurse erkunden",
       description: "Wichtig: Jedi Änderig, wo du machsch, schickt e Notifikazion a alli Studäntä i dere Gruppe. Bitte prüef sorgfälteg, bevor du’s veröffentlechsch.",
     },
+    buyCoachingSessionBanner: {
+      coachBadge: 'Coach',
+      courseCreatorBadge: 'Kursleiter',
+      skillsLabel: 'Fähigkeiten',
+      buyButton: 'Coaching-Sitzungen kaufen',
+    },
   },
   pages: {
     home: Home_DE,
