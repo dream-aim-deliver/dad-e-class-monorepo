@@ -653,6 +653,12 @@ export const DictionarySchema = z.object({
         descriptionText: z.string(),
       }),
     }),
+    buyCoachingSessionBanner: z.object({
+      coachBadge: z.string(),
+      courseCreatorBadge: z.string(),
+      skillsLabel: z.string(),
+      buyButton: z.string(),
+    })
   }),
   pages: z.object({
     sso: z.object({
