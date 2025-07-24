@@ -686,6 +686,11 @@ export const EN: TDictionary = {
       videoFileText: "Video",
       ImageGalleryText: "Image Gallery",
     },
+    bookSessionWithBanner: {
+      bookSessionButton: 'Book a session with',
+      coachBadge: 'Coach',
+      courseCreatorBadge: 'Course Creator',
+    },
   },
   pages: {
     home: Home_EN,
