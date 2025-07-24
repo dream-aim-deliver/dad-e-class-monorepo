@@ -676,7 +676,11 @@ export const DE: TDictionary = {
         descriptionText: 'Geben Sie unter jedem Bild den Buchstaben ein, der der korrekten Beschreibung entspricht. Es ist nur ein Buchstabe (Groß- oder Kleinbuchstabe) zulässig – keine anderen Zeichen, da sonst ein Fehler auftritt.',
       },
     },
-
+    bookSessionWithBanner: {
+      bookSessionButton: 'Buche eine Sitzung mit',
+      coachBadge: 'Coach',
+      courseCreatorBadge: 'Kursleiter:in',
+    },
     coachNotes: {
       usefulLinks: 'Nützliche Links',
       validateLink: 'Link validieren',
@@ -686,10 +690,10 @@ export const DE: TDictionary = {
       includeInMaterials: 'In Kursmaterialien einbeziehen',
       customIcon: 'Benutzerdefiniertes Symbol',
       addLink: 'Link hinzufügen',
-      publishEditNotes:"Änderige veröffentle",
-      back:"Zurück",
-      editCoachNotes:"Coach Notizen bearbeiten",
-      exploreCourses:"Kurse erkunden",
+      publishEditNotes: "Änderige veröffentle",
+      back: "Zurück",
+      editCoachNotes: "Coach Notizen bearbeiten",
+      exploreCourses: "Kurse erkunden",
       description: "Wichtig: Jedi Änderig, wo du machsch, schickt e Notifikazion a alli Studäntä i dere Gruppe. Bitte prüef sorgfälteg, bevor du’s veröffentlechsch.",
     },
   },

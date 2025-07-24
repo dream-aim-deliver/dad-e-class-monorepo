@@ -678,6 +678,11 @@ export const DictionarySchema = z.object({
       videoFileText: z.string(),
       ImageGalleryText: z.string(),
     }),
+    bookSessionWithBanner: z.object({
+      bookSessionButton: z.string(),
+      coachBadge: z.string(),
+      courseCreatorBadge: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({
