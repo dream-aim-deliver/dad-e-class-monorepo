@@ -661,6 +661,12 @@ export const EN: TDictionary = {
         descriptionText: 'Enter the letter that corresponds to the correct description below each image. Only one letter (uppercase or lowercase) is allowed-no other characters, or it will result in an error.',
       },
     },
+    buyCoachingSessionBanner: {
+      coachBadge: 'Coach',
+      courseCreatorBadge: 'Course Creator',
+      skillsLabel: 'Skills',
+      buyButton: 'Buy coaching sessions',
+    },
   },
   pages: {
     home: Home_EN,

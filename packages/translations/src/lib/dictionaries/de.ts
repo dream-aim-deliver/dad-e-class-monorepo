@@ -666,7 +666,12 @@ export const DE: TDictionary = {
         descriptionText: 'Geben Sie unter jedem Bild den Buchstaben ein, der der korrekten Beschreibung entspricht. Es ist nur ein Buchstabe (Groß- oder Kleinbuchstabe) zulässig – keine anderen Zeichen, da sonst ein Fehler auftritt.',
       },
     },
-
+    buyCoachingSessionBanner: {
+      coachBadge: 'Coach',
+      courseCreatorBadge: 'Kursleiter',
+      skillsLabel: 'Fähigkeiten',
+      buyButton: 'Coaching-Sitzungen kaufen',
+    },
   },
   pages: {
     home: Home_DE,
