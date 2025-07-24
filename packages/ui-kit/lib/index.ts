@@ -89,3 +89,5 @@ export { YourStudentCardList } from './components/student-card/your-student-card
 
 export { AddCoachModal } from './components/add-coach-modal';
 export { BookSessionWith } from './components/book-session-with-banner';
+
+export { BuyCoachingSessionBanner } from './components/buy-coaching-session-banner';
