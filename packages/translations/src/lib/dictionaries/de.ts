@@ -666,7 +666,12 @@ export const DE: TDictionary = {
         descriptionText: 'Geben Sie unter jedem Bild den Buchstaben ein, der der korrekten Beschreibung entspricht. Es ist nur ein Buchstabe (Groß- oder Kleinbuchstabe) zulässig – keine anderen Zeichen, da sonst ein Fehler auftritt.',
       },
     },
-
+    stepper: {
+      nextButton: 'Nächsti:',
+      backButton: 'Zurück',
+      publishButton: 'Ja, Päckli veröffentliche',
+      noPublishButton: 'Nei, zrugg gah',
+    }
   },
   pages: {
     home: Home_DE,
