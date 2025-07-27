@@ -88,3 +88,5 @@ export { YourStudentCard } from './components/student-card/your-student-card';
 export { YourStudentCardList } from './components/student-card/your-student-card-list';
 
 export { AddCoachModal } from './components/add-coach-modal';
+
+export { Stepper } from './components/stepper/stepper';

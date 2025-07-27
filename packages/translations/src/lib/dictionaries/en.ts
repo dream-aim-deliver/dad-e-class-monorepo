@@ -661,6 +661,12 @@ export const EN: TDictionary = {
         descriptionText: 'Enter the letter that corresponds to the correct description below each image. Only one letter (uppercase or lowercase) is allowed-no other characters, or it will result in an error.',
       },
     },
+    stepper: {
+      nextButton: 'Next:',
+      backButton: 'Back',
+      publishButton: 'Yes, publish package',
+      noPublishButton: 'No, go back',
+    }
   },
   pages: {
     home: Home_EN,
