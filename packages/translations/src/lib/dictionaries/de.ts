@@ -678,10 +678,11 @@ export const DE: TDictionary = {
       includeInMaterials: 'In Kursmaterialien einbeziehen',
       customIcon: 'Benutzerdefiniertes Symbol',
       addLink: 'Link hinzufügen',
-      editNotes:"Notizen bearbeiten",
+      publishEditNotes:"Änderige veröffentle",
       back:"Zurück",
       editCoachNotes:"Coach Notizen bearbeiten",
-      exploreCourses:"Kurse erkunden"
+      exploreCourses:"Kurse erkunden",
+      description: "Wichtig: Jedi Änderig, wo du machsch, schickt e Notifikazion a alli Studäntä i dere Gruppe. Bitte prüef sorgfälteg, bevor du’s veröffentlechsch.",
     },
   },
   pages: {
