@@ -2,59 +2,81 @@ import { cn } from '../../utils/style-utils';
 import { IconCalendarAlt } from '../icons/icon-calendar-alt';
 import { IconClock } from '../icons/icon-clock';
 
-export interface DateAndTimeProps {
+/**
+ * Base props shared by all DateAndTime variants
+ */
+interface BaseDateAndTimeProps {
   date: Date;
-  previousDate?: Date;
   startTime: string;
   endTime: string;
-  previousStartTime?: string;
-  previousEndTime?: string;
   hasReview?: boolean;
 }
 
 /**
+ * DateAndTime props for regular sessions (no reschedule info)
+ */
+interface RegularDateAndTimeProps extends BaseDateAndTimeProps {
+  type: 'regular';
+}
+
+/**
+ * DateAndTime props for rescheduled sessions (includes previous date/time info)
+ */
+interface RescheduledDateAndTimeProps extends BaseDateAndTimeProps {
+  type: 'rescheduled';
+  previousDate: Date;
+  previousStartTime: string;
+  previousEndTime: string;
+}
+
+/**
+ * Discriminated union for DateAndTime props
+ */
+export type DateAndTimeProps = RegularDateAndTimeProps | RescheduledDateAndTimeProps;
+
+/**
  * DateAndTime component for displaying date and time information.
+ * Uses discriminated union to handle regular vs rescheduled sessions.
  *
+ * @param type - 'regular' for normal sessions, 'rescheduled' for sessions that were rescheduled
  * @param date The date to be displayed in YYYY-MM-DD format.
- * @param previousDate The previous date to be displayed in YYYY-MM-DD format.
  * @param startTime The start time string to be displayed.
  * @param endTime The end time string to be displayed.
- * @param previousStartTime The previous start time string to be displayed.
- * @param previousEndTime The previous end time string to be displayed.
+ * @param previousDate (rescheduled only) The previous date to be displayed in YYYY-MM-DD format.
+ * @param previousStartTime (rescheduled only) The previous start time string to be displayed.
+ * @param previousEndTime (rescheduled only) The previous end time string to be displayed.
  * @param hasReview If true, adjusts the layout to fit within a review section.
  *
  * @example
+ * // Regular session
  * <DateAndTime
+ *   type="regular"
  *   date={new Date('2024-03-19')}
  *   startTime='10.00'
  *   endTime='11.00'
  * />
  *
  * @example
+ * // Rescheduled session
  * <DateAndTime
- *   date={new Date()}
+ *   type="rescheduled"
+ *   date={new Date('2024-03-19')}
  *   startTime='10.00'
  *   endTime='11.00'
+ *   previousDate={new Date('2024-03-18')}
+ *   previousStartTime='09.00'
+ *   previousEndTime='10.00'
  *   hasReview={true}
  * />
  */
-
-export const DateAndTime: React.FC<DateAndTimeProps> = ({
-  date,
-  previousDate,
-  startTime,
-  endTime,
-  previousStartTime,
-  previousEndTime,
-  hasReview = false,
-}) => {
-  const dateString = new Date(date).toISOString().split('T')[0];
+export const DateAndTime: React.FC<DateAndTimeProps> = (props) => {
+  const dateString = new Date(props.date).toISOString().split('T')[0];
 
   return (
     <div
       className={cn(
         'flex text-text-primary',
-        hasReview
+        props.hasReview
           ? 'flex-wrap gap-4'
           : 'p-3 items-start flex-col gap-3 bg-base-neutral-800 rounded-small border border-base-neutral-700',
       )}
@@ -62,9 +84,9 @@ export const DateAndTime: React.FC<DateAndTimeProps> = ({
       <div className="flex items-center gap-2">
         <IconCalendarAlt size="4" />
         <div className='flex gap-2'>
-          {previousDate && (
+          {props.type === 'rescheduled' && (
             <p className="text-xs text-text-secondary leading-[100%] line-through">
-              {previousDate.toISOString().split('T')[0]}
+              {props.previousDate.toISOString().split('T')[0]}
             </p>
           )}
           <p className="text-sm text-text-primary leading-[100%]">{dateString}</p>
@@ -73,12 +95,12 @@ export const DateAndTime: React.FC<DateAndTimeProps> = ({
       <div className="flex items-center gap-2">
         <IconClock size="4" />
         <div className='flex gap-2'>
-          {previousStartTime && previousEndTime && (
+          {props.type === 'rescheduled' && (
             <p className="text-xs text-text-secondary leading-[100%] line-through">
-              {previousStartTime} - {previousEndTime}
+              {props.previousStartTime} - {props.previousEndTime}
             </p>
           )}
-          <p className="text-sm text-text-primary leading-[100%]">{startTime} - {endTime}</p>
+          <p className="text-sm text-text-primary leading-[100%]">{props.startTime} - {props.endTime}</p>
         </div>
       </div>
     </div>
