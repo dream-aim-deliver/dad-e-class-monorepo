@@ -1,178 +1,351 @@
 import { TLocale } from '@maany_shr/e-class-translations';
-import { TRole } from 'packages/models/src/role';
 import { CoachCoachingSessionCard } from './coach-coaching-session/coach-coaching-session-card';
 import { StudentCoachingSessionCard } from './student-coaching-session/student-coaching-session-card';
 
-interface SharedCoachingSessionCardProps {
+/**
+ * Base properties shared across all coaching session card variants.
+ * Contains common fields like locale, session details, and optional course/group information.
+ */
+interface BaseCardSharedProps {
     locale: TLocale;
-    userType: Exclude<TRole, 'admin' | 'visitor'>;
     title: string;
     duration: number;
     date: Date;
-    previousDate?: Date;
     startTime: string;
     endTime: string;
-    previousStartTime?: string;
-    previousEndTime?: string;
     courseName?: string;
     courseImageUrl?: string;
     groupName?: string;
-    reviewText?: string;
-    rating?: number;
-    callQualityRating?: number;
-    meetingLink?: string;
-    isRecordingDownloading?: boolean;
-    hoursLeftToEdit?: number;
-    creatorName: string;
-    creatorImageUrl?: string;
-    studentName: string;
-    studentImageUrl?: string;
-    onClickStudent?: () => void;
-    onClickCreator?: () => void;
     onClickCourse?: () => void;
     onClickGroup?: () => void;
-    onClickJoinMeeting?: () => void;
-    onClickReschedule?: () => void;
-    onClickCancel?: () => void;
-    onClickDownloadRecording?: () => void;
-    onClickDecline?: () => void;
-    onClickAccept?: () => void;
-    onClickSuggestAnotherDate?: () => void;
-    onClickReviewCoachingSession?: () => void;
-    onClickRateCallQuality?: () => void;
 }
-
-export interface CoachCoachingSessionCardProps
-    extends SharedCoachingSessionCardProps {
-    userType: 'coach';
-    status:
-        | 'ongoing'
-        | 'upcoming-editable'
-        | 'upcoming-locked'
-        | 'ended'
-        | 'requested'
-        | 'rescheduled'
-        | 'canceled';
-}
-
-export interface StudentCoachingSessionCardProps
-    extends SharedCoachingSessionCardProps {
-    userType: 'student';
-    status:
-        | 'ongoing'
-        | 'upcoming-editable'
-        | 'upcoming-locked'
-        | 'ended'
-        | 'requested'
-        | 'rescheduled'
-        | 'canceled'
-        | 'to-be-defined';
-}
-
-export type CoachingSessionCardProps =
-    | CoachCoachingSessionCardProps
-    | StudentCoachingSessionCardProps;
 
 /**
- * CoachingSessionCard component for displaying coaching session details.
+ * Student coaching session card for ongoing sessions.
+ * Displays session currently in progress with join meeting functionality.
+ */
+type StudentOngoingCard = BaseCardSharedProps & {
+    userType: 'student';
+    status: 'ongoing';
+    creatorName: string;
+    creatorImageUrl: string;
+    meetingLink: string;
+    onClickCreator: () => void;
+    onClickJoinMeeting: () => void;
+};
+
+/**
+ * Student coaching session card for upcoming sessions that can still be modified.
+ * Shows remaining time to edit and provides reschedule/cancel options.
+ */
+type StudentUpcomingEditableCard = BaseCardSharedProps & {
+    userType: 'student';
+    status: 'upcoming-editable';
+    hoursLeftToEdit: number;
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
+    onClickReschedule: () => void;
+    onClickCancel: () => void;
+};
+
+/**
+ * Student coaching session card for upcoming sessions that cannot be modified.
+ * Session is locked from editing but allows joining when time comes.
+ */
+type StudentUpcomingLockedCard = BaseCardSharedProps & {
+    userType: 'student';
+    status: 'upcoming-locked';
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
+    onClickJoinMeeting: () => void;
+};
+
+/**
+ * Student coaching session card for completed sessions without a review.
+ * Provides options to review the session and download recording.
+ */
+type StudentEndedWithoutReviewCard = BaseCardSharedProps & {
+    userType: 'student';
+    status: 'ended';
+    hasReview: false;
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
+    onClickReviewCoachingSession: () => void;
+    onClickDownloadRecording: () => void;
+    isRecordingDownloading: boolean;
+};
+
+/**
+ * Student coaching session card for completed sessions with an existing review.
+ * Displays the review content and rating, with recording download option.
+ */
+type StudentEndedWithReviewCard = BaseCardSharedProps & {
+    userType: 'student';
+    status: 'ended';
+    hasReview: true;
+    reviewText: string;
+    rating: number;
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
+    onClickDownloadRecording: () => void;
+    isRecordingDownloading: boolean;
+};
+
+/**
+ * Student coaching session card for sessions with pending approval.
+ * Shows session request awaiting coach confirmation with cancel option.
+ */
+type StudentRequestedCard = BaseCardSharedProps & {
+    userType: 'student';
+    status: 'requested';
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
+    onClickCancel: () => void;
+};
+
+/**
+ * Student coaching session card for sessions that have been rescheduled by the coach.
+ * Shows original and new times with options to accept, decline, or suggest alternative.
+ */
+type StudentRescheduledCard = BaseCardSharedProps & {
+    userType: 'student';
+    status: 'rescheduled';
+    previousDate: Date;
+    previousStartTime: string;
+    previousEndTime: string;
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
+    onClickAccept: () => void;
+    onClickDecline: () => void;
+    onClickSuggestAnotherDate: () => void;
+};
+
+/**
+ * Student coaching session card for canceled sessions.
+ * Displays session that has been canceled by either party.
+ */
+type StudentCanceledCard = BaseCardSharedProps & {
+    userType: 'student';
+    status: 'canceled';
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
+};
+
+/**
+ * Student coaching session card for sessions with undefined scheduling.
+ * Used when session details are not yet finalized or confirmed.
+ */
+type StudentToBeDefinedCard = {
+    userType: 'student';
+    status: 'to-be-defined';
+    locale: TLocale;
+    title: string;
+    duration: number;
+};
+
+/**
+ * Coach coaching session card for ongoing sessions.
+ * Displays session currently in progress from coach perspective with join meeting functionality.
+ */
+type CoachOngoingCard = BaseCardSharedProps & {
+    userType: 'coach';
+    status: 'ongoing';
+    studentName: string;
+    studentImageUrl: string;
+    meetingLink: string;
+    onClickStudent: () => void;
+    onClickJoinMeeting: () => void;
+};
+
+/**
+ * Coach coaching session card for upcoming sessions that can still be modified.
+ * Shows remaining time to edit and provides reschedule/cancel options from coach perspective.
+ */
+type CoachUpcomingEditableCard = BaseCardSharedProps & {
+    userType: 'coach';
+    status: 'upcoming-editable';
+    hoursLeftToEdit: number;
+    studentName: string;
+    studentImageUrl: string;
+    onClickStudent: () => void;
+    onClickReschedule: () => void;
+    onClickCancel: () => void;
+};
+
+/**
+ * Coach coaching session card for upcoming sessions that cannot be modified.
+ * Session is locked from editing but allows joining when time comes from coach perspective.
+ */
+type CoachUpcomingLockedCard = BaseCardSharedProps & {
+    userType: 'coach';
+    status: 'upcoming-locked';
+    studentName: string;
+    studentImageUrl: string;
+    onClickStudent: () => void;
+    onClickJoinMeeting: () => void;
+};
+
+/**
+ * Coach coaching session card for completed sessions with student review.
+ * Displays the session review from student with rating functionality for coach.
+ */
+type CoachEndedSessionReviewCard = BaseCardSharedProps & {
+    userType: 'coach';
+    status: 'ended';
+    reviewType: 'session-review';
+    reviewText: string;
+    rating: number;
+    studentName: string;
+    studentImageUrl: string;
+    onClickStudent: () => void;
+    onClickRateCallQuality: () => void;
+    onClickDownloadRecording: () => void;
+};
+
+/**
+ * Coach coaching session card for completed sessions with call quality rating.
+ * Shows the call quality rating with recording download functionality.
+ */
+type CoachEndedCallQualityCard = BaseCardSharedProps & {
+    userType: 'coach';
+    status: 'ended';
+    reviewType: 'call-quality';
+    callQualityRating: number;
+    studentName: string;
+    studentImageUrl: string;
+    onClickStudent: () => void;
+    onClickDownloadRecording: () => void;
+    isRecordingDownloading: boolean;
+};
+
+/**
+ * Coach coaching session card for sessions with pending approval from coach.
+ * Shows student request awaiting coach's decision with accept/decline/reschedule options.
+ */
+type CoachRequestedCard = BaseCardSharedProps & {
+    userType: 'coach';
+    status: 'requested';
+    studentName: string;
+    studentImageUrl: string;
+    onClickStudent: () => void;
+    onClickAccept: () => void;
+    onClickDecline: () => void;
+    onClickSuggestAnotherDate: () => void;
+};
+
+/**
+ * Coach coaching session card for sessions that have been rescheduled by the student.
+ * Shows original and new times with options to accept, decline, or suggest alternative from coach perspective.
+ */
+type CoachRescheduledCard = BaseCardSharedProps & {
+    userType: 'coach';
+    status: 'rescheduled';
+    previousDate: Date;
+    previousStartTime: string;
+    previousEndTime: string;
+    studentName: string;
+    studentImageUrl: string;
+    onClickStudent: () => void;
+    onClickAccept: () => void;
+    onClickDecline: () => void;
+    onClickSuggestAnotherDate: () => void;
+};
+
+/**
+ * Coach coaching session card for canceled sessions.
+ * Displays session that has been canceled by either party from coach perspective.
+ */
+type CoachCanceledCard = BaseCardSharedProps & {
+    userType: 'coach';
+    status: 'canceled';
+    studentName: string;
+    studentImageUrl: string;
+    onClickStudent: () => void;
+};
+
+/**
+ * Discriminated union type representing all possible coaching session card configurations.
+ * This serves as the single source of truth for all card-related component props,
+ * ensuring type safety across student and coach variants with different statuses.
+ */
+export type CoachingSessionCardProps =
+    | StudentOngoingCard
+    | StudentUpcomingEditableCard
+    | StudentUpcomingLockedCard
+    | StudentEndedWithoutReviewCard
+    | StudentEndedWithReviewCard
+    | StudentRequestedCard
+    | StudentRescheduledCard
+    | StudentCanceledCard
+    | StudentToBeDefinedCard
+    | CoachOngoingCard
+    | CoachUpcomingEditableCard
+    | CoachUpcomingLockedCard
+    | CoachEndedSessionReviewCard
+    | CoachEndedCallQualityCard
+    | CoachRequestedCard
+    | CoachRescheduledCard
+    | CoachCanceledCard;
+
+/**
+ * Central coaching session card component that routes props to appropriate sub-components.
+ * Uses discriminated union pattern to determine whether to render student or coach variant
+ * based on the userType property, ensuring type safety and proper component delegation.
  *
- * This component dynamically renders a session card depending on the user's role (`coach` or `student`),
- * adapting its display and required fields accordingly.
- *
- * @param locale - The locale for translation and localization (e.g., 'en', 'de').
- * @param userType - Role of the user viewing the card. Can be 'coach' or 'student'.
- * @param status - The current status of the session.
- *  - For **coach**: 'ongoing' | 'upcoming-editable' | 'upcoming-locked' | 'ended' | 'requested' | 'rescheduled' | 'canceled'
- *  - For **student**: Same as above, plus 'to-be-defined'
- * @param title - Title of the coaching session.
- * @param duration - Duration of the session in minutes.
- * @param date - Scheduled date of the session.
- * @param previousDate - (Optional) Previous date if the session was rescheduled.
- * @param startTime - Start time of the session (formatted string).
- * @param endTime - End time of the session (formatted string).
- * @param previousStartTime - (Optional) Previous start time if the session was rescheduled.
- * @param previousEndTime - (Optional) Previous end time if the session was rescheduled.
- * @param courseName - (Optional) Name of the associated course.
- * @param courseImageUrl - (Optional) Image URL for the course.
- * @param groupName - (Optional) Name of the group associated with the session.
- * @param reviewText - (Optional) Review message provided by the student or coach.
- * @param rating - (Optional) Session rating (0 to 5 stars).
- * @param callQualityRating - (Optional) Call quality rating (0 to 5 stars).
- * @param meetingLink - (Optional) Link to join the session.
- * @param isRecordingDownloading - (Optional) Indicates whether the recording is currently downloading.
- * @param hoursLeftToEdit - (Optional) Number of hours remaining to edit the session.
- *
- * @param creatorName - Required if userType is 'student'. Name of the session creator (usually the coach).
- * @param creatorImageUrl - (Optional) Image URL for the creator.
- * @param studentName - Required if userType is 'coach'. Name of the student attending the session.
- * @param studentImageUrl - (Optional) Image URL for the student.
- *
- * @param onClickStudent - (Optional) Callback for when the student name/image is clicked.
- * @param onClickCreator - (Optional) Callback for when the creator name/image is clicked.
- * @param onClickCourse - (Optional) Callback for when the course is clicked.
- * @param onClickGroup - (Optional) Callback for when the group is clicked.
- * @param onClickJoinMeeting - (Optional) Callback for joining the meeting.
- * @param onClickReschedule - (Optional) Callback for rescheduling the session.
- * @param onClickCancel - (Optional) Callback for canceling the session.
- * @param onClickDownloadRecording - (Optional) Callback for downloading the session recording.
- * @param onClickDecline - (Optional) Callback for declining a rescheduled session.
- * @param onClickAccept - (Optional) Callback for accepting a rescheduled session.
- * @param onClickSuggestAnotherDate - (Optional) Callback to suggest another session date.
- * @param onClickReviewCoachingSession - (Optional) Callback for reviewing the session.
- * @param onClickRateCallQuality - (Optional) Callback for rating the call quality.
+ * @param props Discriminated union props that determine the specific card variant to render
  *
  * @example
+ * // Student ongoing session
  * <CoachingSessionCard
- *   locale="en"
- *   userType="coach"
+ *   userType="student"
  *   status="ongoing"
- *   title="Advanced JavaScript"
+ *   title="Advanced React Patterns"
  *   duration={60}
  *   date={new Date()}
- *   startTime="10:00 AM"
- *   endTime="11:00 AM"
- *   studentName="John Doe"
- *   studentImageUrl="https://example.com/john.jpg"
- *   onClickJoinMeeting={() => console.log('Joining session')}
+ *   startTime="10:00"
+ *   endTime="11:00"
+ *   creatorName="John Doe"
+ *   creatorImageUrl="profile.jpg"
+ *   meetingLink="https://meet.example.com"
+ *   onClickCreator={() => console.log("Creator clicked")}
+ *   onClickJoinMeeting={() => console.log("Join meeting")}
+ *   locale="en"
  * />
  *
  * @example
+ * // Coach requested session
  * <CoachingSessionCard
- *   locale="es"
- *   userType="student"
- *   status="to-be-defined"
- *   title="React Basics"
+ *   userType="coach"
+ *   status="requested"
+ *   title="JavaScript Fundamentals"
  *   duration={45}
  *   date={new Date()}
- *   startTime="4:00 PM"
- *   endTime="4:45 PM"
- *   creatorName="Jane Smith"
- *   creatorImageUrl="https://example.com/jane.jpg"
- *   onClickReschedule={() => console.log('Rescheduling...')}
+ *   startTime="14:00"
+ *   endTime="14:45"
+ *   studentName="Jane Smith"
+ *   studentImageUrl="student.jpg"
+ *   onClickStudent={() => console.log("Student clicked")}
+ *   onClickAccept={() => console.log("Accept request")}
+ *   onClickDecline={() => console.log("Decline request")}
+ *   onClickSuggestAnotherDate={() => console.log("Suggest new date")}
+ *   locale="en"
  * />
  */
-
-export const CoachingSessionCard: React.FC<CoachingSessionCardProps> = (
-    props,
-) => {
-    if (props.userType === 'coach') {
-        if (!props.studentName) {
-            console.error('Student Name is required for coach view');
-            return null;
-        }
-        return <CoachCoachingSessionCard {...props} />;
-    }
-
+export const CoachingSessionCard: React.FC<CoachingSessionCardProps> = (props) => {
     if (props.userType === 'student') {
-        if (!props.creatorName) {
-            console.error('Creator Name is required for student view');
-            return null;
-        }
         return <StudentCoachingSessionCard {...props} />;
     }
-
-    console.error(
-        `Invalid userType: ${(props as CoachingSessionCardProps & { userType?: string }).userType}`,
-    );
+    if (props.userType === 'coach') {
+        return <CoachCoachingSessionCard {...props} />;
+    }
+    // Should never happen if types are correct
+    console.error(`Invalid userType: ${(props as { userType?: string }).userType}`);
     return null;
 };
