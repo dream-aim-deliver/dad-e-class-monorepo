@@ -1,195 +1,183 @@
-import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import React from 'react';
+import { getDictionary } from '@maany_shr/e-class-translations';
 import { DateAndTime } from '../date-and-time';
 import { CourseCreator } from '../course-creator';
 import { ReviewCard } from '../review-card';
 import { CoachAction } from './coach-action';
-
-export interface CoachCoachingSessionCardProps extends isLocalAware {
-  status:
-  | 'ongoing'
-  | 'upcoming-editable'
-  | 'upcoming-locked'
-  | 'ended'
-  | 'requested'
-  | 'rescheduled'
-  | 'canceled';
-  title: string;
-  duration: number;
-  date: Date;
-  previousDate?: Date;
-  startTime: string;
-  endTime: string;
-  previousStartTime?: string;
-  previousEndTime?: string;
-  studentName: string;
-  studentImageUrl?: string;
-  courseName?: string;
-  courseImageUrl?: string;
-  groupName?: string;
-  reviewText?: string;
-  rating?: number;
-  callQualityRating?: number;
-  meetingLink?: string;
-  isRecordingDownloading?: boolean;
-  hoursLeftToEdit?: number;
-  onClickStudent?: () => void;
-  onClickCourse?: () => void;
-  onClickGroup?: () => void;
-  onClickJoinMeeting?: () => void;
-  onClickReschedule?: () => void;
-  onClickCancel?: () => void;
-  onClickRateCallQuality?: () => void;
-  onClickDownloadRecording?: () => void;
-  onClickDecline?: () => void;
-  onClickAccept?: () => void;
-  onClickSuggestAnotherDate?: () => void;
-}
+import { CoachingSessionCardProps } from '../coaching-session-card';
 
 /**
- * CoachCoachingSessionCard component for displaying a coaching session Card for coaches.
+ * Type definition for coach coaching session card props extracted from the central discriminated union.
+ * This ensures only coach-specific props are available for this component, providing type safety
+ * and preventing invalid prop combinations from student-specific sessions.
+ */
+export type CoachCoachingSessionCardProps = Extract<CoachingSessionCardProps, { userType: 'coach' }>;
+
+/**
+ * Coach coaching session card component that displays coaching session details from a coach's perspective.
+ * This component handles all possible coach session states including ongoing, upcoming, ended, requested,
+ * rescheduled, and canceled sessions. Each state displays relevant information and actions based on the
+ * session status and review type.
  *
- * @param status The current status of the coaching session (e.g., 'ongoing', 'upcoming-editable', 'ended', etc.).
- * @param title The title of the coaching session.
- * @param duration The duration of the session in minutes.
- * @param date The date of the session.
- * @param previousDate (Optional) The previous date of the session.
- * @param startTime The start time of the session.
- * @param endTime The end time of the session.
- * @param previousStartTime (Optional) The previous start time of the session.
- * @param previousEndTime (Optional) The previous end time of the session.
- * @param studentName The name of the student attending the session.
- * @param studentImageUrl (Optional) The image URL of the student.
- * @param courseName (Optional) The name of the related course.
- * @param courseImageUrl (Optional) The image URL of the course.
- * @param groupName (Optional) The group name associated with the session.
- * @param reviewText (Optional) The review text provided for the session.
- * @param rating (Optional) The rating given to the session (out of 5 stars).
- * @param callQualityRating (Optional) The rating given for call quality (out of 5 stars).
- * @param meetingLink (Optional) The link to join the coaching session.
- * @param isRecordingDownloading (Optional) Boolean flag indicating whether a session recording is downloading.
- * @param hoursLeftToEdit (Optional) Hours left to edit session details.
- * @param onClickStudent (Optional) Function to handle clicking the student's profile.
- * @param onClickCourse (Optional) Function to handle clicking the course.
- * @param onClickGroup (Optional) Function to handle clicking the group.
- * @param onClickJoinMeeting (Optional) Function to handle joining the session.
- * @param onClickReschedule (Optional) Function to handle rescheduling the session.
- * @param onClickCancel (Optional) Function to handle canceling the session.
- * @param onClickRateCallQuality (Optional) Function to handle rating the call quality.
- * @param onClickDownloadRecording (Optional) Function to handle downloading session recordings.
- * @param onClickDecline (Optional) Function to handle declining a session request.
- * @param onClickAccept (Optional) Function to handle accepting a session request.
- * @param onClickSuggestAnotherDate (Optional) Function to handle suggesting another date for the session.
- * @param locale The locale for translation and localization purposes.
+ * The component uses TypeScript's discriminated union pattern to ensure type safety - props are automatically
+ * validated based on the session status and review type, preventing invalid prop combinations and ensuring
+ * required fields are present for each state.
+ *
+ * Key features:
+ * - Responsive design with mobile and desktop layouts
+ * - Conditional rendering based on session status and review type
+ * - Integration with translation system for internationalization
+ * - Dynamic action buttons based on session state through CoachAction component
+ * - Dual review display types (session-review and call-quality) for ended sessions
+ * - Special handling for rescheduled sessions showing previous and new times
+ * - Student and course information display with interactive elements
+ *
+ * Layout structure:
+ * 1. Header section with session title and duration
+ * 2. Date/time display (regular or rescheduled format)
+ * 3. Review card (conditional based on ended status and review type)
+ * 4. Course creator section with student and course details
+ * 5. Action buttons section handled by CoachAction component
+ *
+ * Review handling:
+ * - `session-review`: Displays student's review text and rating
+ * - `call-quality`: Shows only rating for technical call quality assessment
+ * - Reviews only appear for ended sessions with valid ratings
+ *
+ * @param props Discriminated union props specific to coach session cards, automatically typed based on status and review type
  *
  * @example
+ * // Ongoing session
  * <CoachCoachingSessionCard
+ *   userType="coach"
  *   status="ongoing"
- *   title="Advanced React Workshop"
+ *   title="React Advanced Patterns"
  *   duration={60}
  *   date={new Date()}
- *   startTime="10.00"
- *   endTime="11.00"
- *   studentName="Jane Doe"
- *   studentImageUrl="https://example.com/avatar.jpg"
+ *   startTime="10:00"
+ *   endTime="11:00"
+ *   studentName="John Doe"
+ *   studentImageUrl="student.jpg"
+ *   meetingLink="https://meet.example.com"
+ *   onClickStudent={() => console.log("Student clicked")}
+ *   onClickJoinMeeting={() => console.log("Join meeting")}
+ *   locale="en"
+ * />
+ *
+ * @example
+ * // Ended session with session review
+ * <CoachCoachingSessionCard
+ *   userType="coach"
+ *   status="ended"
+ *   reviewType="session-review"
+ *   reviewText="Great learning session!"
+ *   rating={5}
+ *   title="JavaScript Fundamentals"
+ *   duration={45}
+ *   date={new Date()}
+ *   startTime="14:00"
+ *   endTime="14:45"
+ *   studentName="Jane Smith"
+ *   studentImageUrl="student.jpg"
+ *   onClickStudent={() => console.log("Student clicked")}
+ *   onClickDownloadRecording={() => console.log("Download recording")}
+ *   isRecordingDownloading={false}
+ *   locale="en"
+ * />
+ *
+ * @example
+ * // Rescheduled session
+ * <CoachCoachingSessionCard
+ *   userType="coach"
+ *   status="rescheduled"
+ *   title="Python Basics"
+ *   duration={30}
+ *   date={new Date('2024-03-20')}
+ *   startTime="16:00"
+ *   endTime="16:30"
+ *   previousDate={new Date('2024-03-18')}
+ *   previousStartTime="14:00"
+ *   previousEndTime="14:30"
+ *   studentName="Mike Johnson"
+ *   studentImageUrl="student.jpg"
+ *   onClickStudent={() => console.log("Student clicked")}
+ *   onClickAccept={() => console.log("Accept reschedule")}
+ *   onClickDecline={() => console.log("Decline reschedule")}
+ *   onClickSuggestAnotherDate={() => console.log("Suggest new date")}
  *   locale="en"
  * />
  */
+export const CoachCoachingSessionCard: React.FC<CoachCoachingSessionCardProps> = (props) => {
+  const dictionary = getDictionary(props.locale);
 
-export const CoachCoachingSessionCard: React.FC<
-  CoachCoachingSessionCardProps
-> = ({
-  status,
-  title,
-  duration,
-  date,
-  previousDate,
-  startTime,
-  endTime,
-  previousStartTime,
-  previousEndTime,
-  studentName,
-  studentImageUrl,
-  courseName,
-  courseImageUrl,
-  groupName,
-  reviewText,
-  rating,
-  callQualityRating,
-  meetingLink,
-  isRecordingDownloading,
-  hoursLeftToEdit,
-  onClickStudent,
-  onClickCourse,
-  onClickGroup,
-  onClickJoinMeeting,
-  onClickReschedule,
-  onClickCancel,
-  onClickRateCallQuality,
-  onClickDownloadRecording,
-  onClickDecline,
-  onClickAccept,
-  onClickSuggestAnotherDate,
-  locale,
-}) => {
-    const dictionary = getDictionary(locale);
-    return (
-      <div
-        className={`flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-auto max-w-[24rem]`}
-      >
-        <div className="flex gap-4 items-center justify-between">
-          <p title={title} className="text-md text-text-primary font-bold leading-[120%] line-clamp-2">
-            {title}
-          </p>
-          <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
-            {duration}
-            {dictionary.components.coachingSessionCard.durationText}
-          </p>
-        </div>
-        <DateAndTime
-          date={date}
-          previousDate={previousDate}
-          startTime={startTime}
-          endTime={endTime}
-          previousStartTime={previousStartTime}
-          previousEndTime={previousEndTime}
-          hasReview={rating > 0 ? true : false}
-        />
-        {rating > 0 && (
-          <ReviewCard
-            reviewText={reviewText}
-            rating={rating}
-            callQualityRating={callQualityRating}
-            locale={locale}
-          />
-        )}
-        <CourseCreator
-          studentName={studentName}
-          studentImageUrl={studentImageUrl}
-          courseName={courseName}
-          courseImageUrl={courseImageUrl}
-          groupName={groupName}
-          userRole="coach"
-          onClickStudent={onClickStudent}
-          onClickCourse={onClickCourse}
-          onClickGroup={onClickGroup}
-          locale={locale}
-        />
-        <CoachAction
-          status={status}
-          hoursLeftToEdit={hoursLeftToEdit}
-          meetingLink={meetingLink}
-          callQualityRating={callQualityRating}
-          isRecordingDownloading={isRecordingDownloading}
-          onClickJoinMeeting={onClickJoinMeeting}
-          onClickReschedule={onClickReschedule}
-          onClickCancel={onClickCancel}
-          onClickRateCallQuality={onClickRateCallQuality}
-          onClickDownloadRecording={onClickDownloadRecording}
-          onClickAccept={onClickAccept}
-          onClickDecline={onClickDecline}
-          onClickSuggestAnotherDate={onClickSuggestAnotherDate}
-          locale={locale}
-        />
+  return (
+    <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-auto max-w-[24rem]">
+      <div className="flex gap-4 items-center justify-between">
+        <p
+          title={props.title}
+          className="text-md text-text-primary font-bold leading-[120%] line-clamp-2"
+        >
+          {props.title}
+        </p>
+        <p className="text-xs text-text-primary font-bold leading-[120%] whitespace-nowrap">
+          {props.duration}
+          {dictionary.components.coachingSessionCard.durationText}
+        </p>
       </div>
-    );
-  };
+      {props.status === 'rescheduled' ? (
+        <DateAndTime
+          type="rescheduled"
+          date={props.date}
+          startTime={props.startTime}
+          endTime={props.endTime}
+          previousDate={props.previousDate}
+          previousStartTime={props.previousStartTime}
+          previousEndTime={props.previousEndTime}
+          hasReview={false}
+        />
+      ) : (
+        <DateAndTime
+          type="regular"
+          date={props.date}
+          startTime={props.startTime}
+          endTime={props.endTime}
+          hasReview={props.status === 'ended'}
+        />
+      )}
+      {props.status === 'ended' && (
+        (props.reviewType === 'session-review' && props.rating && props.rating > 0) ||
+        (props.reviewType === 'call-quality' && props.callQualityRating && props.callQualityRating > 0)
+      ) && (
+          <>
+            {props.reviewType === 'session-review' ? (
+              <ReviewCard
+                type="coach-session-review"
+                reviewText={props.reviewText}
+                rating={props.rating}
+                locale={props.locale}
+              />
+            ) : (
+              <ReviewCard
+                type="coach-call-quality"
+                rating={props.callQualityRating}
+                locale={props.locale}
+              />
+            )}
+          </>
+        )}
+      <CourseCreator
+        studentName={props.studentName}
+        studentImageUrl={props.studentImageUrl}
+        courseName={props.courseName}
+        courseImageUrl={props.courseImageUrl}
+        groupName={props.groupName}
+        userRole="coach"
+        onClickStudent={props.onClickStudent}
+        onClickCourse={props.onClickCourse}
+        onClickGroup={props.onClickGroup}
+        locale={props.locale}
+      />
+      <CoachAction {...props} />
+    </div>
+  );
+};

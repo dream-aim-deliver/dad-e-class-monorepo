@@ -5,82 +5,131 @@ import {
   CoachingSessionCardProps,
 } from '../lib/components/coaching-sessions/coaching-session-card';
 
+
+const mockDate = new Date('2025-03-20T12:00:00');
+
+const coachBase: Extract<
+  CoachingSessionCardProps,
+  { userType: 'coach'; status: 'ongoing' }
+> = {
+  locale: 'en',
+  userType: 'coach',
+  status: 'ongoing',
+  title: 'Test Coaching Session',
+  duration: 60,
+  date: mockDate,
+  startTime: '12:00 PM',
+  endTime: '1:00 PM',
+  /* coach-specific */
+  studentName: 'John Doe',
+  studentImageUrl: 'https://example.com/student.jpg',
+  meetingLink: 'https://meet.example.com/abc',
+  onClickStudent: vi.fn(),
+  onClickJoinMeeting: vi.fn(),
+};
+
+const studentBase: Extract<
+  CoachingSessionCardProps,
+  { userType: 'student'; status: 'ongoing' }
+> = {
+  locale: 'en',
+  userType: 'student',
+  status: 'ongoing',
+  title: 'Test Coaching Session',
+  duration: 60,
+  date: mockDate,
+  startTime: '12:00 PM',
+  endTime: '1:00 PM',
+  /* student-specific */
+  creatorName: 'Jane Smith',
+  creatorImageUrl: 'https://example.com/creator.jpg',
+  meetingLink: 'https://meet.example.com/abc',
+  onClickCreator: vi.fn(),
+  onClickJoinMeeting: vi.fn(),
+};
+
+
 describe('CoachingSessionCard', () => {
-  const mockDate = new Date('2025-03-20T12:00:00');
-
-  // Helper function to create a mock CoachingSessionCard
-  const baseProps: CoachingSessionCardProps = {
-    locale: 'en',
-    userType: 'coach',
-    status: 'ongoing',
-    title: 'Test Coaching Session',
-    duration: 60,
-    date: mockDate,
-    startTime: '12:00 PM',
-    endTime: '1:00 PM',
-    studentName: 'John Doe',
-    studentImageUrl: 'https://example.com/student.jpg',
-    creatorName: 'Jane Smith',
-    creatorImageUrl: 'https://example.com/creator.jpg',
-    onClickJoinMeeting: vi.fn(),
-  };
-
-  it('renders CoachingSessionCardCoach for coach user type', () => {
-    render(<CoachingSessionCard {...baseProps} />);
+  it('renders CoachCoachingSessionCard for coach user type', () => {
+    render(<CoachingSessionCard {...coachBase} />);
     expect(screen.getByText('Test Coaching Session')).toBeInTheDocument();
     expect(screen.getByText('John Doe')).toBeInTheDocument();
   });
 
-  it('renders CoachingSessionCardStudent for student user type', () => {
-    render(<CoachingSessionCard {...baseProps} userType="student" />);
+  it('renders StudentCoachingSessionCard for student user type', () => {
+    render(<CoachingSessionCard {...studentBase} />);
     expect(screen.getByText('Test Coaching Session')).toBeInTheDocument();
     expect(screen.getByText('Jane Smith')).toBeInTheDocument();
   });
 
-  it('calls onClickJoinMeeting when join meeting button is clicked', () => {
-    render(<CoachingSessionCard {...baseProps} />);
-    fireEvent.click(screen.getByText('Join Meeting'));
-    expect(baseProps.onClickJoinMeeting).toHaveBeenCalled();
+  it('calls onClickJoinMeeting when Join Meeting button is clicked (coach)', () => {
+    render(<CoachingSessionCard {...coachBase} />);
+    fireEvent.click(screen.getByRole('button', { name: /join meeting/i }));
+    expect(coachBase.onClickJoinMeeting).toHaveBeenCalled();
   });
 
-  it('renders correct status for upcoming-editable session', () => {
-    render(
-      <CoachingSessionCard
-        {...baseProps}
-        status="upcoming-editable"
-        hoursLeftToEdit={24}
-      />,
-    );
-    expect(screen.getByText('24 hours left to edit event')).toBeInTheDocument();
+  it('renders correct badge for upcoming-editable session', () => {
+    const props: Extract<
+      CoachingSessionCardProps,
+      { userType: 'coach'; status: 'upcoming-editable' }
+    > = {
+      ...coachBase,
+      status: 'upcoming-editable',
+      hoursLeftToEdit: 24,
+      onClickReschedule: vi.fn(),
+      onClickCancel: vi.fn(),
+    };
+
+    render(<CoachingSessionCard {...props} />);
+    expect(
+      screen.getByText(/24 .*hours.*left.*edit/i),
+    ).toBeInTheDocument();
   });
 
-  it('renders correct components for ended session', () => {
-    render(
-      <CoachingSessionCard
-        {...baseProps}
-        status="ended"
-        rating={4.5}
-        reviewText="Great session"
-      />,
-    );
-    expect(screen.getByText('"Great session"')).toBeInTheDocument();
-    expect(screen.getByText('Download Recording')).toBeInTheDocument();
+  it('renders review and recording button for ended session (coach, session-review)', () => {
+    const props: Extract<
+      CoachingSessionCardProps,
+      { userType: 'coach'; status: 'ended'; reviewType: 'session-review' }
+    > = {
+      ...coachBase,
+      status: 'ended',
+      reviewType: 'session-review',
+      reviewText: 'Great session',
+      rating: 4.5,
+      onClickRateCallQuality: vi.fn(),
+      onClickDownloadRecording: vi.fn(),
+    };
+
+    render(<CoachingSessionCard {...props} />);
+    expect(screen.getByText(/Great session/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /download recording/i }),
+    ).toBeInTheDocument();
   });
 
-  it('handles rescheduled session correctly', () => {
+  it('handles rescheduled session actions (coach)', () => {
     const onClickAccept = vi.fn();
     const onClickDecline = vi.fn();
-    render(
-      <CoachingSessionCard
-        {...baseProps}
-        status="rescheduled"
-        onClickAccept={onClickAccept}
-        onClickDecline={onClickDecline}
-      />,
-    );
-    fireEvent.click(screen.getByText('Accept'));
+
+    const props: Extract<
+      CoachingSessionCardProps,
+      { userType: 'coach'; status: 'rescheduled' }
+    > = {
+      ...coachBase,
+      status: 'rescheduled',
+      previousDate: new Date('2025-03-18T12:00:00'),
+      previousStartTime: '11:00 AM',
+      previousEndTime: '12:00 PM',
+      onClickAccept,
+      onClickDecline,
+      onClickSuggestAnotherDate: vi.fn(),
+    };
+
+    render(<CoachingSessionCard {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: /accept/i }));
     expect(onClickAccept).toHaveBeenCalled();
-    fireEvent.click(screen.getByText('Decline'));
+
+    fireEvent.click(screen.getByRole('button', { name: /decline/i }));
     expect(onClickDecline).toHaveBeenCalled();
   });
 });

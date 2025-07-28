@@ -1,136 +1,148 @@
 import React from 'react';
 import { Button } from '../../button';
-import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { getDictionary } from '@maany_shr/e-class-translations';
 import { IconCalendarAlt } from '../../icons/icon-calendar-alt';
 import { IconTrashAlt } from '../../icons/icon-trash-alt';
 import { Badge } from '../../badge';
 import { IconCloudDownload } from '../../icons/icon-cloud-download';
 import { IconClose } from '../../icons/icon-close';
 import { IconCheck } from '../../icons/icon-check';
-
-export interface CoachActionProps extends isLocalAware {
-  status:
-  | 'ongoing'
-  | 'upcoming-editable'
-  | 'upcoming-locked'
-  | 'ended'
-  | 'requested'
-  | 'rescheduled'
-  | 'canceled';
-  hoursLeftToEdit?: number;
-  meetingLink?: string;
-  callQualityRating?: number;
-  isRecordingDownloading?: boolean;
-  onClickJoinMeeting?: () => void;
-  onClickReschedule?: () => void;
-  onClickCancel?: () => void;
-  onClickRateCallQuality?: () => void;
-  onClickDownloadRecording?: () => void;
-  onClickDecline?: () => void;
-  onClickAccept?: () => void;
-  onClickSuggestAnotherDate?: () => void;
-}
+import { CoachingSessionCardProps } from '../coaching-session-card';
 
 /**
- * CoachAction Component
- *
- * This component renders action buttons based on the status of a coaching session.
- * It provides different UI elements for various session states like 'ongoing', 'upcoming', 'ended', etc.
- *
- * Props:
- * - status: Current state of the session ('ongoing', 'upcoming-editable', 'upcoming-locked', 'ended', 'requested', 'rescheduled', 'canceled').
- * - hoursLeftToEdit?: Number of hours left to modify the session (for 'upcoming-editable').
- * - meetingLink?: URL for the meeting session.
- * - callQualityRating?: Rating given to the session call quality.
- * - isRecordingDownloading?: Boolean indicating if the session recording is being downloaded.
- * - onClickJoinMeeting?: Callback for joining the meeting.
- * - onClickReschedule?: Callback for rescheduling the session.
- * - onClickCancel?: Callback for canceling the session.
- * - onClickRateCallQuality?: Callback for rating the call quality.
- * - onClickDownloadRecording?: Callback for downloading the session recording.
- * - onClickDecline?: Callback for declining a rescheduled session.
- * - onClickAccept?: Callback for accepting a rescheduled session.
- * - onClickSuggestAnotherDate?: Callback for suggesting another date.
- * - locale: Localization string for language support.
- *
- * The component dynamically renders UI based on the `status` prop.
- * It utilizes `getDictionary(locale)` to fetch translated text for buttons and labels.
- *
- * Status-based Rendering:
- * - 'ongoing': Displays a 'Join Meeting' button with an optional meeting link.
- * - 'upcoming-editable': Shows hours left with options to reschedule or cancel.
- * - 'upcoming-locked': Displays a disabled 'Join Meeting' button with an info message.
- * - 'ended': Provides options to rate the call and download the session recording.
- * - 'requested': Offers options to accept, decline, or suggest another date.
- * - 'rescheduled': Similar to 'requested' with reschedule acceptance options.
- * - 'canceled': Displays a badge indicating session cancellation.
- *
- * Icons are used for better UI clarity, including calendar, trash, hourglass, check, and close icons.
- *
+ * Type definition for coach action props extracted from the central discriminated union.
+ * This ensures only coach-specific session variants are available, maintaining type safety
+ * and preventing invalid prop combinations from student-specific sessions.
  */
+type CoachActionProps = Extract<CoachingSessionCardProps, { userType: 'coach' }>;
 
-export const CoachAction: React.FC<CoachActionProps> = ({
-  status,
-  hoursLeftToEdit,
-  meetingLink,
-  callQualityRating,
-  isRecordingDownloading = false,
-  onClickJoinMeeting,
-  onClickReschedule,
-  onClickCancel,
-  onClickRateCallQuality,
-  onClickDownloadRecording,
-  onClickDecline,
-  onClickAccept,
-  onClickSuggestAnotherDate,
-  locale,
-}) => {
-  const dictionary = getDictionary(locale);
+/**
+ * Coach action component that renders appropriate action buttons and UI elements based on session status.
+ * This component handles all interactive elements for coach coaching sessions, including join meeting buttons,
+ * reschedule/cancel options, call quality rating, download functionality, and status indicators.
+ *
+ * The component uses a switch statement with TypeScript's discriminated union pattern to ensure type safety
+ * across different session states. Each case handles specific actions relevant to that session status,
+ * with proper type narrowing to access status-specific properties and callbacks.
+ *
+ * Key features:
+ * - Status-specific action rendering (ongoing, upcoming, ended, requested, rescheduled, canceled)
+ * - Type-safe prop access based on session status and review type
+ * - Conditional UI elements based on session state and review requirements
+ * - Internationalization support through translation dictionary
+ * - Responsive button layouts and badge indicators
+ * - Proper handling of loading states and disabled buttons
+ * - Combined handling for similar statuses (requested/rescheduled)
+ *
+ * Session status behaviors:
+ * - `ongoing`: Shows join meeting button with meeting link display
+ * - `upcoming-editable`: Displays time remaining badge with reschedule/cancel options
+ * - `upcoming-locked`: Shows disabled join button with informational text
+ * - `ended`: Conditional rendering based on review type - call quality rating and/or download options
+ * - `requested`/`rescheduled`: Shows accept/decline buttons with suggest alternative option
+ * - `canceled`: Shows cancellation status badge
+ *
+ * Review type handling for ended sessions:
+ * - `session-review`: Only shows download recording button
+ * - `call-quality`: Shows rate call quality button plus download recording (disabled until rated)
+ *
+ * @param props Coach-specific coaching session props with discriminated union typing
+ *
+ * @example
+ * // Ongoing session with meeting link
+ * <CoachAction
+ *   userType="coach"
+ *   status="ongoing"
+ *   meetingLink="https://meet.example.com/abc123"
+ *   onClickJoinMeeting={() => window.open(meetingLink)}
+ *   locale="en"
+ *   // ... other required props
+ * />
+ *
+ * @example
+ * // Upcoming editable session
+ * <CoachAction
+ *   userType="coach"
+ *   status="upcoming-editable"
+ *   hoursLeftToEdit={24}
+ *   onClickReschedule={() => openRescheduleModal()}
+ *   onClickCancel={() => confirmCancellation()}
+ *   locale="en"
+ *   // ... other required props
+ * />
+ *
+ * @example
+ * // Ended session requiring call quality rating
+ * <CoachAction
+ *   userType="coach"
+ *   status="ended"
+ *   reviewType="call-quality"
+ *   onClickRateCallQuality={() => openRatingModal()}
+ *   onClickDownloadRecording={() => downloadRecording()}
+ *   isRecordingDownloading={false}
+ *   locale="en"
+ *   // ... other required props
+ * />
+ *
+ * @example
+ * // Requested session requiring coach response
+ * <CoachAction
+ *   userType="coach"
+ *   status="requested"
+ *   onClickAccept={() => acceptRequest()}
+ *   onClickDecline={() => declineRequest()}
+ *   onClickSuggestAnotherDate={() => suggestNewTime()}
+ *   locale="en"
+ *   // ... other required props
+ * />
+ */
+export const CoachAction: React.FC<CoachActionProps> = (props) => {
+  const dictionary = getDictionary(props.locale);
 
-  const actionComponents = {
-    ongoing: {
-      render: () => (
+  switch (props.status) {
+    case 'ongoing':
+      return (
         <div className="flex flex-col gap-1 items-start">
           <Button
-            onClick={onClickJoinMeeting}
+            onClick={props.onClickJoinMeeting}
             variant="primary"
             size="medium"
             className="w-full"
             text={dictionary.components.coachingSessionCard.joinMeetingText}
           />
-          {meetingLink && (
+          {props.meetingLink && (
             <p className="text-xs text-text-secondary leading-tight break-all overflow-hidden">
-              {meetingLink}
+              {props.meetingLink}
             </p>
           )}
         </div>
-      ),
-    },
+      );
 
-    'upcoming-editable': {
-      render: () => (
+    case 'upcoming-editable':
+      return (
         <div className="flex flex-col gap-2 w-full">
           <Badge
             className="flex items-center gap-1 px-3 py-1 rounded-medium max-w-fit"
             variant="info"
             size="big"
-            text={`${hoursLeftToEdit} ${dictionary.components.coachingSessionCard.hoursLeftToEditText
-              }`}
+            text={
+              (props.hoursLeftToEdit ?? '') +
+              ' ' +
+              dictionary.components.coachingSessionCard.hoursLeftToEditText
+            }
           />
           <div className="flex gap-[9px] justify-between">
             <Button
-              onClick={onClickReschedule}
+              onClick={props.onClickReschedule}
               variant="primary"
               size="small"
               hasIconLeft
               className="w-full"
               iconLeft={<IconCalendarAlt size="5" />}
-              text={
-                dictionary.components.coachingSessionCard.rescheduleText
-              }
+              text={dictionary.components.coachingSessionCard.rescheduleText}
             />
             <Button
-              onClick={onClickCancel}
+              onClick={props.onClickCancel}
               variant="secondary"
               size="small"
               className="max-w-full"
@@ -140,14 +152,13 @@ export const CoachAction: React.FC<CoachActionProps> = ({
             />
           </div>
         </div>
-      ),
-    },
+      );
 
-    'upcoming-locked': {
-      render: () => (
+    case 'upcoming-locked':
+      return (
         <div className="flex flex-col gap-1 items-start">
           <Button
-            onClick={onClickJoinMeeting}
+            onClick={props.onClickJoinMeeting}
             variant="primary"
             size="medium"
             className="w-full"
@@ -155,28 +166,21 @@ export const CoachAction: React.FC<CoachActionProps> = ({
             disabled
           />
           <p className="text-xs text-text-secondary leading-[100%]">
-            {
-              dictionary.components.coachingSessionCard
-                .meetingLinkVisibilityInfo
-            }
+            {dictionary.components.coachingSessionCard.meetingLinkVisibilityInfo}
           </p>
         </div>
-      ),
-    },
+      );
 
-    ended: {
-      render: () => (
+    case 'ended':
+      return (
         <div className="flex flex-col gap-2 w-full">
-          {!callQualityRating && (
+          {props.reviewType === 'session-review' && (
             <Button
               variant="primary"
               className="w-full"
               size="medium"
-              text={
-                dictionary.components.coachingSessionCard
-                  .rateCallQualityText
-              }
-              onClick={onClickRateCallQuality}
+              text={dictionary.components.coachingSessionCard.rateCallQualityText}
+              onClick={props.onClickRateCallQuality}
             />
           )}
           <Button
@@ -185,27 +189,21 @@ export const CoachAction: React.FC<CoachActionProps> = ({
             size="medium"
             hasIconLeft
             iconLeft={<IconCloudDownload size="6" />}
-            text={
-              dictionary.components.coachingSessionCard
-                .downloadRecordingText
-            }
-            onClick={onClickDownloadRecording}
-            disabled={isRecordingDownloading}
+            text={dictionary.components.coachingSessionCard.downloadRecordingText}
+            onClick={props.onClickDownloadRecording}
+            disabled={props.reviewType === 'session-review' || (props.reviewType === 'call-quality' && props.isRecordingDownloading)}
           />
-          {isRecordingDownloading && (
+          {props.reviewType === 'call-quality' && props.isRecordingDownloading && (
             <p className="text-xs text-text-secondary leading-[100%]">
-              {
-                dictionary.components.coachingSessionCard
-                  .recordingAvailabilityInfo
-              }
+              {dictionary.components.coachingSessionCard.recordingAvailabilityInfo}
             </p>
           )}
         </div>
-      ),
-    },
+      );
 
-    requested: {
-      render: () => (
+    case 'requested':
+    case 'rescheduled':
+      return (
         <div className="flex flex-col gap-2 items-center w-full">
           <div className="flex justify-between gap-3 w-full">
             <Button
@@ -214,7 +212,7 @@ export const CoachAction: React.FC<CoachActionProps> = ({
               hasIconLeft
               className="w-full"
               iconLeft={<IconClose size="6" />}
-              onClick={onClickDecline}
+              onClick={props.onClickDecline}
             />
             <Button
               variant="primary"
@@ -222,73 +220,32 @@ export const CoachAction: React.FC<CoachActionProps> = ({
               hasIconLeft
               className="w-full"
               iconLeft={<IconCheck size="6" />}
-              onClick={onClickAccept}
+              onClick={props.onClickAccept}
             />
           </div>
           <Button
             variant="text"
-            text={
-              dictionary.components.coachingSessionCard
-                .suggestAnotherDateText
-            }
+            text={dictionary.components.coachingSessionCard.suggestAnotherDateText}
             className="max-w-full"
             hasIconLeft
             iconLeft={<IconCalendarAlt size="6" />}
-            onClick={onClickSuggestAnotherDate}
+            onClick={props.onClickSuggestAnotherDate}
           />
         </div>
-      ),
-    },
+      );
 
-    rescheduled: {
-      render: () => (
-        <div className="flex flex-col gap-2 items-center w-full">
-          <div className="flex justify-between gap-3 w-full">
-            <Button
-              text={dictionary.components.coachingSessionCard.declineText}
-              variant="secondary"
-              hasIconLeft
-              className="w-full"
-              iconLeft={<IconClose size="6" />}
-              onClick={onClickDecline}
-            />
-            <Button
-              variant="primary"
-              text={dictionary.components.coachingSessionCard.acceptText}
-              hasIconLeft
-              className="w-full"
-              iconLeft={<IconCheck size="6" />}
-              onClick={onClickAccept}
-            />
-          </div>
-          <Button
-            variant="text"
-            text={
-              dictionary.components.coachingSessionCard
-                .suggestAnotherDateText
-            }
-            className="max-w-full"
-            hasIconLeft
-            iconLeft={<IconCalendarAlt size="6" />}
-            onClick={onClickSuggestAnotherDate}
-          />
-        </div>
-      ),
-    },
-
-    canceled: {
-      render: () => (
+    case 'canceled':
+      return (
         <Badge
           variant="errorprimary"
           className="text-sm max-w-fit"
-          text={
-            dictionary.components.coachingSessionCard.sessionCanceledText
-          }
+          text={dictionary.components.coachingSessionCard.sessionCanceledText}
           hasIconLeft
           iconLeft={<IconTrashAlt size="5" />}
         />
-      ),
-    },
-  };
-  return actionComponents[status]?.render() || null;
+      );
+
+    default:
+      return null;
+  }
 };
