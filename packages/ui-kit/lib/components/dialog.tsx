@@ -15,23 +15,23 @@ interface DialogContextType {
 
 interface DialogProps {
     children: React.ReactNode;
-    open?: boolean;
-    onOpenChange?: (open: boolean) => void;
-    defaultOpen?: boolean;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    defaultOpen: boolean;
 }
 
 interface DialogTriggerProps {
     children: React.ReactNode;
-    asChild?: boolean;
+    asChild: boolean;
     className?: string;
 }
 
 interface DialogContentProps {
     children: React.ReactNode;
+    showCloseButton: boolean;
+    closeOnOverlayClick: boolean;
+    closeOnEscape: boolean;
     className?: string;
-    showCloseButton?: boolean;
-    closeOnOverlayClick?: boolean;
-    closeOnEscape?: boolean;
 }
 
 interface DialogBodyProps {
@@ -41,7 +41,7 @@ interface DialogBodyProps {
 
 interface DialogCloseProps {
     children: React.ReactNode;
-    asChild?: boolean;
+    asChild: boolean;
     className?: string;
 }
 const DialogContext = createContext<DialogContextType | null>(null);
@@ -61,14 +61,14 @@ export const Dialog: React.FC<DialogProps> = ({
     children,
     open,
     onOpenChange,
-    defaultOpen = false,
+    defaultOpen,
 }) => {
     const [internalOpen, setInternalOpen] = useState(defaultOpen);
 
     const isControlled = open !== undefined;
     const isOpen = isControlled ? open : internalOpen;
 
-    const setIsOpen = (newOpen) => {
+    const setIsOpen = (newOpen: boolean) => {
         if (!isControlled) {
             setInternalOpen(newOpen);
         }
@@ -85,7 +85,7 @@ export const Dialog: React.FC<DialogProps> = ({
 // Dialog Trigger Component
 export const DialogTrigger: React.FC<DialogTriggerProps> = ({
     children,
-    asChild = false,
+    asChild,
     className = '',
 }) => {
     const { setIsOpen } = useDialog();
@@ -117,9 +117,9 @@ export const DialogTrigger: React.FC<DialogTriggerProps> = ({
 export const DialogContent: React.FC<DialogContentProps> = ({
     children,
     className = '',
-    showCloseButton = true,
-    closeOnOverlayClick = true,
-    closeOnEscape = true,
+    showCloseButton,
+    closeOnOverlayClick,
+    closeOnEscape,
 }) => {
     const { isOpen, setIsOpen } = useDialog();
     const contentRef = useRef(null);
@@ -196,7 +196,7 @@ export const DialogBody: React.FC<DialogBodyProps> = ({
 // Dialog Close Component
 export const DialogClose: React.FC<DialogCloseProps> = ({
     children,
-    asChild = false,
+    asChild,
     className = '',
 }) => {
     const { setIsOpen } = useDialog();

@@ -62,7 +62,7 @@ function CoachNotesCreate({
     onNoteLinksChange,
     onIncludeInMaterialsChange,
     onNoteDescriptionChange,
-    isEditMode = false,
+    isEditMode,
     onBack,
 }: coachNotesProps) {
     const dictionary = getDictionary(locale);
@@ -198,11 +198,10 @@ function CoachNotesCreate({
                     {initialNoteLinks.map((link, index) => (
                         <div key={index} className="w-full">
                             <div
-                                className={`w-full overflow-hidden transition-all duration-300 ease-in-out ${
-                                    editingLinkIndex === index
+                                className={`w-full overflow-hidden transition-all duration-300 ease-in-out ${editingLinkIndex === index
                                         ? 'max-h-[500px]'
                                         : 'max-h-0'
-                                }`}
+                                    }`}
                             >
                                 {editingLinkIndex === index && (
                                     <LinkEdit
@@ -245,11 +244,10 @@ function CoachNotesCreate({
                         </div>
                     ))}
                     <div
-                        className={`w-full overflow-hidden transition-all duration-300 ease-in-out ${
-                            editingLinkIndex === initialNoteLinks.length
+                        className={`w-full overflow-hidden transition-all duration-300 ease-in-out ${editingLinkIndex === initialNoteLinks.length
                                 ? 'max-h-[500px]'
                                 : 'max-h-0'
-                        }`}
+                            }`}
                         key={initialNoteLinks.length}
                     >
                         {editingLinkIndex === initialNoteLinks.length && (
