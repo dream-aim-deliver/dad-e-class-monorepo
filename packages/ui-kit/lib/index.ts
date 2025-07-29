@@ -91,3 +91,5 @@ export { AddCoachModal } from './components/add-coach-modal';
 export { BookSessionWith } from './components/book-session-with-banner';
 
 export { BuyCoachingSessionBanner } from './components/buy-coaching-session-banner';
+
+export { Breadcrumbs } from './components/breadcrumbs';
