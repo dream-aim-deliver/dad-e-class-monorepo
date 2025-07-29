@@ -171,6 +171,8 @@ const CoachNotesWrapper = ({
       onNoteLinksChange={setNoteLinks}
       onIncludeInMaterialsChange={setIncludeInMaterials}
       onNoteDescriptionChange={setNoteDescription}
+      isEditMode={false}
+      onBack={() => console.log('onBack clicked')}
     />
   );
 };

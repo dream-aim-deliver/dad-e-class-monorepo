@@ -89,10 +89,10 @@ type Story = StoryObj<typeof Dialog>;
 export const Basic: Story = {
   render: (args) => (
     <Dialog {...args}>
-      <DialogTrigger>
+      <DialogTrigger asChild={false}>
         <Button variant="primary" text="Open Dialog" />
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent showCloseButton={true} closeOnOverlayClick={true} closeOnEscape={true}>
         <DialogBody>
           <h2 className="text-xl font-semibold mb-4">Basic Dialog</h2>
           <p className="text-text-secondary mb-6">
@@ -100,7 +100,7 @@ export const Basic: Story = {
             pressing ESC, or clicking outside the dialog.
           </p>
           <div className="flex justify-end gap-3">
-            <DialogClose>
+            <DialogClose asChild={false}>
               <Button variant="secondary" text="Close" />
             </DialogClose>
           </div>
@@ -126,10 +126,10 @@ export const Basic: Story = {
 export const ConfirmationDialog: Story = {
   render: (args) => (
     <Dialog {...args}>
-      <DialogTrigger>
+      <DialogTrigger asChild={false}>
         <Button variant="primary" text="Delete Item" iconLeft={<IconTrashAlt />} hasIconLeft />
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent showCloseButton={true} closeOnOverlayClick={true} closeOnEscape={true}>
         <DialogBody>
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
@@ -141,10 +141,10 @@ export const ConfirmationDialog: Story = {
                 Are you sure you want to delete this item? This action cannot be undone.
               </p>
               <div className="flex justify-end gap-3">
-                <DialogClose>
+                <DialogClose asChild={false}>
                   <Button variant="secondary" text="Cancel" />
                 </DialogClose>
-                <DialogClose>
+                <DialogClose asChild={false}>
                   <Button 
                     variant="primary" 
                     text="Delete" 
@@ -173,10 +173,10 @@ export const ConfirmationDialog: Story = {
 export const SuccessDialog: Story = {
   render: (args) => (
     <Dialog {...args}>
-      <DialogTrigger>
+      <DialogTrigger asChild={false}>
         <Button variant="primary" text="Complete Action" />
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent showCloseButton={true} closeOnOverlayClick={true} closeOnEscape={true}>
         <DialogBody>
           <div className="text-center">
             <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
@@ -186,7 +186,7 @@ export const SuccessDialog: Story = {
             <p className="text-text-secondary mb-6">
               Your action has been completed successfully. You can now continue with your workflow.
             </p>
-            <DialogClose>
+            <DialogClose asChild={false}>
               <Button variant="primary" text="Continue" />
             </DialogClose>
           </div>
@@ -209,10 +209,10 @@ export const SuccessDialog: Story = {
 export const InformationDialog: Story = {
   render: (args) => (
     <Dialog {...args}>
-      <DialogTrigger>
+      <DialogTrigger asChild={false}>
         <Button variant="secondary" text="View Information" iconLeft={<IconInfoCircle />} hasIconLeft />
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg" showCloseButton={true} closeOnOverlayClick={true} closeOnEscape={true}>
         <DialogBody>
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
@@ -234,10 +234,10 @@ export const InformationDialog: Story = {
                 </p>
               </div>
               <div className="flex justify-end gap-3">
-                <DialogClose>
+                <DialogClose asChild={false}>
                   <Button variant="secondary" text="Later" />
                 </DialogClose>
-                <DialogClose>
+                <DialogClose asChild={false}>
                   <Button variant="primary" text="Got it" />
                 </DialogClose>
               </div>
@@ -269,7 +269,7 @@ export const CustomTrigger: Story = {
           </p>
         </div>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent showCloseButton={true} closeOnOverlayClick={true} closeOnEscape={true}>
         <DialogBody>
           <h2 className="text-xl font-semibold mb-4">Custom Trigger</h2>
           <p className="text-text-secondary mb-6">
@@ -277,7 +277,7 @@ export const CustomTrigger: Story = {
             The trigger can be any clickable element, not just a button.
           </p>
           <div className="flex justify-end">
-            <DialogClose>
+            <DialogClose asChild={false}>
               <Button variant="primary" text="Close" />
             </DialogClose>
           </div>
@@ -300,10 +300,10 @@ export const CustomTrigger: Story = {
 export const CustomCloseButton: Story = {
   render: (args) => (
     <Dialog {...args}>
-      <DialogTrigger>
+      <DialogTrigger asChild={false}>
         <Button variant="primary" text="Open Dialog" />
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent showCloseButton={true} closeOnOverlayClick={true} closeOnEscape={true}>
         <DialogBody>
           <h2 className="text-xl font-semibold mb-4">Custom Close Button</h2>
           <p className="text-text-secondary mb-6">
@@ -316,7 +316,7 @@ export const CustomCloseButton: Story = {
                 Cancel and go back
               </button>
             </DialogClose>
-            <DialogClose>
+            <DialogClose asChild={false}>
               <Button variant="primary" text="Save & Close" />
             </DialogClose>
           </div>
@@ -354,10 +354,10 @@ export const ControlledDialog: Story = {
         </div>
         
         <Dialog {...args} open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger>
+          <DialogTrigger asChild={false}>
             <Button variant="primary" text="Alternative Trigger" />
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent showCloseButton={true} closeOnOverlayClick={true} closeOnEscape={true}>
             <DialogBody>
               <h2 className="text-xl font-semibold mb-4">Controlled Dialog</h2>
               <p className="text-text-secondary mb-6">
@@ -370,7 +370,7 @@ export const ControlledDialog: Story = {
                   text="External Close"
                   onClick={() => setIsOpen(false)}
                 />
-                <DialogClose>
+                <DialogClose asChild={false}>
                   <Button variant="primary" text="Dialog Close" />
                 </DialogClose>
               </div>
@@ -395,7 +395,7 @@ export const ControlledDialog: Story = {
 export const CustomBehavior: Story = {
   render: (args) => (
     <Dialog {...args}>
-      <DialogTrigger>
+      <DialogTrigger asChild={false}>
         <Button variant="primary" text="Open Custom Dialog" />
       </DialogTrigger>
       <DialogContent 
@@ -415,7 +415,7 @@ export const CustomBehavior: Story = {
             <li>Must use the close button below</li>
           </ul>
           <div className="flex justify-end">
-            <DialogClose>
+            <DialogClose asChild={false}>
               <Button variant="primary" text="Close Dialog" />
             </DialogClose>
           </div>

@@ -2,12 +2,21 @@ import { Dialog, DialogContent, DialogBody } from '../dialog';
 import { CoachNotesCreate, coachNotesProps } from './coach-notes';
 import { getDictionary } from '@maany_shr/e-class-translations';
 
+
 export interface coachNotesEditDialogProps extends coachNotesProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     onBack: () => void;
 }
 
+/**
+ * 
+ * @param param0 Props for the CoachNotesEditDialog component
+ * @param param0.isOpen Whether the dialog is open
+ * @param param0.onOpenChange Function to change the open state of the dialog
+ * @param param0.onBack Function to handle back navigation
+ * @returns CoachNotesEditDialog component
+ */
 function CoachNotesEditDialog({
     isOpen,
     onOpenChange,
@@ -18,7 +27,7 @@ function CoachNotesEditDialog({
     const dictionary = getDictionary(locale);
 
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={onOpenChange} defaultOpen={false}>
             <DialogContent
                 className="max-w-xl max-h-[95vh] overflow-hidden"
                 showCloseButton={true}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { CoachNotesCreate, CoachNotesView } from '../lib/components/coach/coach-notes';
@@ -96,6 +95,8 @@ describe('CoachNotesCreate', () => {
         onNoteLinksChange: vitest.fn(),
         onIncludeInMaterialsChange: vitest.fn(),
         onNoteDescriptionChange: vitest.fn(),
+        isEditMode: false,
+        onBack: vitest.fn(),
     };
 
     beforeEach(() => {
