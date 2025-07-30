@@ -293,12 +293,12 @@ export interface CreateAssignmentBuilderViewTypes extends isLocalAware {
     }) => void;
     onFilesChange: (file: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
-    onDeleteIcon?: (id: string) => void;
+    onDeleteIcon: (id: string) => void;
     onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
-    onFileDelete?: (id: string) => void;
-    onFileDownload?: (id: string) => void;
-    onLinkDelete: (linkId: number, type: 'link') => void;
-    onLinkEdit?: (data: shared.TLink, id: number) => void;
+    onFileDelete: (id: string) => void;
+    onFileDownload: (id: string) => void;
+    onLinkDelete: (linkId: number) => void;
+    onLinkEdit: (data: shared.TLink, id: number) => void;
     linkEditIndex: number | null;
     onClickEditLink: (index: number) => void;
     onClickAddLink: () => void;
@@ -309,9 +309,7 @@ export interface AssignmentBuilderViewTypes extends isLocalAware {
     id: number;
     order: number;
     assignmentData: assignment.TAssignmentBaseWithId;
-    onFileDelete?: (id: string) => void;
-    onFileDownload?: (id: string) => void;
-    onCancel?: () => void;
+    onFileDownload: (id: string) => void;
 };
 
 

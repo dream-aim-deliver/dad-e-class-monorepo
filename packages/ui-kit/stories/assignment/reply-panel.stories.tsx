@@ -128,7 +128,7 @@ const ReplyPanelRender: React.FC<{
         });
     };
 
-    const handleFileDelete = (fileId: string, type: 'file') => {
+    const handleFileDelete = (fileId: string) => {
         setFiles((f) => f.filter((file) => file.id !== fileId));
     };
 
@@ -236,7 +236,7 @@ const ReplyPanelRender: React.FC<{
         setLinkEditIndex(undefined);
     };
 
-    const handleLinkDelete = (linkId: number, type: 'link', index: number) => {
+    const handleLinkDelete = (linkId: number, index: number) => {
         // If the currently edited link has linkId === 0, this is a new/draft link
         setLinks((prev) => prev.filter((_, i) => i !== index));
         if (index === linkEditIndex) setLinkEditIndex(undefined);

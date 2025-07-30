@@ -83,6 +83,7 @@ const TextReplyRender: FC<{ locale: 'en' | 'de' }> = ({ locale }) => (
         onLinkDelete={() => alert('Link delete clicked')}
         onImageChange={() => alert('Image change')}
         onChange={() => alert('Change triggered')}
+        onDeleteIcon={() => alert('Delete icon clicked')}
         locale={locale}
     />
 );
@@ -170,13 +171,13 @@ const ResourcesReplyRender: FC<{ locale: 'en' | 'de' }> = ({ locale }) => {
         );
     };
 
-    const handleFileDelete = (replyId: number, fileId: string, type: 'file') => {
+    const handleFileDelete = (replyId: number, fileId: string) => {
         const updatedFiles = files.filter((f) => f.id !== fileId);
         setFiles(updatedFiles);
         logReply(updatedFiles, links);
     };
 
-    const handleLinkDelete = (replyId: number, linkId: number, type: 'link') => {
+    const handleLinkDelete = (replyId: number, linkId: number) => {
         const updatedLinks = links.filter((l) => l.linkId !== linkId);
         setLinks(updatedLinks);
         if (linkEditIndex !== null && links[linkEditIndex]?.linkId === linkId) {
@@ -188,7 +189,7 @@ const ResourcesReplyRender: FC<{ locale: 'en' | 'de' }> = ({ locale }) => {
     const handleChange = (
         newFiles: fileMetadata.TFileMetadata[],
         newLinks: shared.TLinkWithId[],
-        newLinkEditIndex?: number | null
+        newLinkEditIndex: number | null
     ) => {
         setFiles(newFiles);
         setLinks(newLinks);
@@ -250,13 +251,13 @@ const ResourcesReplyFromOtherUserRender: FC<{ locale: 'en' | 'de' }> = ({
         alert(`Download clicked for file with id: ${fileId}`);
     };
 
-    const handleFileDelete = (replyId: number, fileId: string, type: 'file') => {
+    const handleFileDelete = (replyId: number, fileId: string) => {
         const updatedFiles = files.filter((f) => f.id !== fileId);
         setFiles(updatedFiles);
         logReply(updatedFiles, links);
     };
 
-    const handleLinkDelete = (replyId: number, linkId: number, type: 'link') => {
+    const handleLinkDelete = (replyId: number, linkId: number) => {
         const updatedLinks = links.filter((l) => l.linkId !== linkId);
         setLinks(updatedLinks);
         if (linkEditIndex !== null && links[linkEditIndex]?.linkId === linkId) {
@@ -268,7 +269,7 @@ const ResourcesReplyFromOtherUserRender: FC<{ locale: 'en' | 'de' }> = ({
     const handleChange = (
         newFiles: fileMetadata.TFileMetadata[],
         newLinks: shared.TLinkWithId[],
-        newLinkEditIndex?: number | null
+        newLinkEditIndex: number | null
     ) => {
         setFiles(newFiles);
         setLinks(newLinks);
@@ -291,7 +292,8 @@ const ResourcesReplyFromOtherUserRender: FC<{ locale: 'en' | 'de' }> = ({
             onFileDownload={handleFileDownload}
             onFileDelete={handleFileDelete}
             onLinkDelete={handleLinkDelete}
-            onImageChange={() => { console.log('onImageChange') }}
+            onImageChange={() => alert('Image change')}
+            onDeleteIcon={() => alert('Delete icon clicked')}
             onChange={handleChange}
             locale={locale}
         />
@@ -313,6 +315,7 @@ const PassedReplyRender: FC<{ locale: 'en' | 'de' }> = ({ locale }) => (
         onLinkDelete={() => alert('Link delete clicked')}
         onImageChange={() => alert('Image change')}
         onChange={() => alert('Change triggered')}
+        onDeleteIcon={() => alert('Delete icon clicked')}
         locale={locale}
     />
 );

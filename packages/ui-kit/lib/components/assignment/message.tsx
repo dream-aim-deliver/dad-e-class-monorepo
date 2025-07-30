@@ -11,11 +11,11 @@ export interface MessageProps extends isLocalAware {
     reply: assignment.TAssignmentReplyWithId;
     linkEditIndex: number;
     onFileDownload: (id: string) => void;
-    onFileDelete: (id: number, fileId: string, type: 'file') => void;
-    onLinkDelete: (id: number, linkId: number, type: 'link') => void;
+    onFileDelete: (id: number, fileId: string) => void;
+    onLinkDelete: (id: number, linkId: number) => void;
     onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
-    onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex?: number) => void;
-    onDeleteIcon?: (id: string) => void;
+    onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex: number) => void;
+    onDeleteIcon: (id: string) => void;
 };
 
 /**
@@ -121,12 +121,11 @@ export const Message: FC<MessageProps> = ({
                         <FilePreview
                             key={index}
                             uploadResponse={file}
-                            onDelete={() => onFileDelete(reply.replyId, file.id, 'file')}
+                            onDelete={() => onFileDelete(reply.replyId, file.id)}
                             onDownload={() => onFileDownload(file.id)}
                             locale={locale}
-                            onCancel={() => onFileDelete(reply.replyId, file.id, 'file')}
-                            className="bg-transparent p-0"
-                            isDeletionAllowed={reply.sender.isCurrentUser}
+                            onCancel={() => onFileDelete(reply.replyId, file.id)}
+                            readOnly={!reply.sender.isCurrentUser}
                         />
                     ))}
                     {reply.links.map((link, index) =>
@@ -139,7 +138,7 @@ export const Message: FC<MessageProps> = ({
                                         initialUrl={link.url}
                                         initialCustomIcon={link.customIcon}
                                         onSave={(title, url, customIcon) => handleSaveLink({ title, url, customIcon }, index)}
-                                        onDiscard={() => onLinkDelete(reply.replyId, link.linkId, 'link')}
+                                        onDiscard={() => onLinkDelete(reply.replyId, link.linkId)}
                                         onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
                                         onDeleteIcon={onDeleteIcon}
                                     />
@@ -152,7 +151,7 @@ export const Message: FC<MessageProps> = ({
                                         url={link.url}
                                         customIcon={link.customIcon}
                                         onEdit={() => handleOnClickLinkEdit(index)}
-                                        onDelete={() => onLinkDelete(reply.replyId, link.linkId, 'link')}
+                                        onDelete={() => onLinkDelete(reply.replyId, link.linkId)}
                                     />
                                 </div>
                             )

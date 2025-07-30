@@ -46,6 +46,15 @@ const fakeReply = (overrides = {}): assignment.TAssignmentReplyWithId => ({
     ...overrides,
 });
 
+// Add a mock coach sender
+const mockSenderCoach = {
+    id: "coach1",
+    name: "Coach Smith",
+    image: "https://randomuser.me/api/portraits/men/32.jpg",
+    isCurrentUser: false,
+    role: "coach" as const,
+};
+
 // --- Meta ---
 const meta: Meta<typeof AssignmentCard> = {
     title: "Components/Assignment/AssignmentCard",
@@ -84,7 +93,16 @@ const CardTemplate = ({
 
     // Latest Reply state (independent)
     const [replies, setReplies] = useState<assignment.TAssignmentReplyWithId[]>(
-        hasReply ? [fakeReply()] : []
+        hasReply
+            ? status === "Passed"
+                ? [{
+                    replyId: 1,
+                    timestamp: new Date().toISOString(),
+                    sender: mockSenderCoach,
+                    type: 'passed',
+                }]
+                : [fakeReply()]
+            : []
     );
     const [replyLinkEditIndex, setReplyLinkEditIndex] = useState<number>(-1);
     // For Message reply edit operations, grab files/links from latest reply
@@ -104,11 +122,11 @@ const CardTemplate = ({
     // Assignment-level handlers
     const onFileDownload = (id: string) => alert("Download file " + id);
 
-    const onFileDelete = (assignmentId: number, fileId: string, type: 'file') => {
+    const onFileDelete = (assignmentId: number, fileId: string) => {
         setFiles(prev => prev.filter(f => f.id !== fileId));
     };
 
-    const onLinkDelete = (assignmentId: number, linkId: number, type: 'link') => {
+    const onLinkDelete = (assignmentId: number, linkId: number) => {
         setLinks(prev => {
             const upd = prev.filter(l => l.linkId !== linkId);
             if (linkEditIndex !== -1 && prev[linkEditIndex]?.linkId === linkId) setLinkEditIndex(-1);
@@ -117,7 +135,7 @@ const CardTemplate = ({
     };
 
     // Reply file delete handler
-    const onReplyFileDelete = (replyId: number, fileId: string, type: 'file') => {
+    const onReplyFileDelete = (replyId: number, fileId: string) => {
         setReplies(prev =>
             prev.map(reply =>
                 reply.replyId === replyId && reply.type === 'resources'
@@ -131,7 +149,7 @@ const CardTemplate = ({
     };
 
     // Reply link delete handler
-    const onReplyLinkDelete = (replyId: number, linkId: number, type: 'link') => {
+    const onReplyLinkDelete = (replyId: number, linkId: number) => {
         setReplies(prev =>
             prev.map(reply =>
                 reply.replyId === replyId && reply.type === 'resources'
@@ -147,7 +165,7 @@ const CardTemplate = ({
     const onChange = (
         newFiles: fileMetadata.TFileMetadata[],
         newLinks: shared.TLinkWithId[],
-        newEditIndex?: number
+        newEditIndex: number
     ) => {
         setFiles(newFiles);
         setLinks(newLinks);
@@ -212,7 +230,7 @@ const CardTemplate = ({
     const onReplyChange = (
         newFiles: fileMetadata.TFileMetadata[],
         newLinks: shared.TLinkWithId[],
-        newEditIndex?: number
+        newEditIndex: number
     ) => {
         setReplies(prev => [
             {

@@ -82,6 +82,7 @@ const defaultProps = {
     onLinkDelete: vi.fn(),
     onChange: vi.fn(),
     onImageChange: vi.fn(),
+    onDeleteIcon: vi.fn(),
     locale: 'en' as TLocale,
 };
 
@@ -113,7 +114,7 @@ describe('Message Component', () => {
     it('calls onFileDelete when delete clicked', () => {
         render(<Message {...defaultProps} />);
         fireEvent.click(screen.getByTestId('delete-btn-f1'));
-        expect(defaultProps.onFileDelete).toHaveBeenCalledWith(123, 'f1', 'file');
+        expect(defaultProps.onFileDelete).toHaveBeenCalledWith(123, 'f1');
     });
 
     it('renders link previews and calls edit/delete', () => {
@@ -131,7 +132,7 @@ describe('Message Component', () => {
         fireEvent.click(screen.getByTestId('save-link'));
         expect(props.onChange).toHaveBeenCalled();
         fireEvent.click(screen.getByTestId('discard-link'));
-        expect(props.onLinkDelete).toHaveBeenCalledWith(123, 1, 'link');
+        expect(props.onLinkDelete).toHaveBeenCalledWith(123, 1);
     });
 
     it('displays as a passed banner if reply.type="passed"', () => {
