@@ -9,7 +9,7 @@ const mockMessages = {};
 const mockActivities = [
   {
     message:
-      'Coach Jane Smith accepted your request to reschedule the coaching session.',
+      'Coach Jane Smith accepted your request to reschedule the coaching session.Coach Jane Smith accepted your request to reschedule the coaching session.',
     action: { title: 'Session details', url: 'https://google.com' },
     timestamp: '2024-08-07T21:17:00Z',
     isRead: false,
@@ -72,7 +72,7 @@ const meta: Meta<typeof RecentActivity> = {
   decorators: [
     (Story) => (
       <NextIntlClientProvider locale="en" messages={mockMessages}>
-        <div className="w-full max-w-3xl">
+        <div className="w-full max-w-4xl">
           <Story />
         </div>
       </NextIntlClientProvider>
