@@ -126,6 +126,7 @@ const baseProps = {
     onClickEditLink: vi.fn(),
     onClickAddLink: vi.fn(),
     onImageChange: vi.fn(),
+    onDeleteIcon: vi.fn(),
     locale: "en" as const
 };
 
@@ -191,7 +192,7 @@ describe("CreateAssignmentBuilderView", () => {
         fireEvent.click(screen.getByTestId("save-link"));
         expect(baseProps.onLinkEdit).toHaveBeenCalledWith({ title: "Edited", url: "https://edit.link" }, 1);
         fireEvent.click(screen.getByTestId("discard-link"));
-        expect(baseProps.onLinkDelete).toHaveBeenCalledWith(2, "link");
+        expect(baseProps.onLinkDelete).toHaveBeenCalledWith(2);
     });
 
     it("calls onClickEditLink and onLinkDelete from LinkPreview", () => {
@@ -202,6 +203,6 @@ describe("CreateAssignmentBuilderView", () => {
 
         const delBtns = screen.getAllByTestId("delete-link");
         fireEvent.click(delBtns[0]);
-        expect(baseProps.onLinkDelete).toHaveBeenCalledWith(1, "link");
+        expect(baseProps.onLinkDelete).toHaveBeenCalledWith(1);
     });
 });

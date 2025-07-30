@@ -50,6 +50,7 @@ const initialDesignerAssignment: CreateAssignmentBuilderViewTypes = {
     linkEditIndex: null,
     onClickEditLink: () => alert("Edit link clicked"),
     onImageChange: () => alert("Image changed"),
+    onDeleteIcon: () => alert("Delete icon clicked"),
     onClickAddLink: () => alert("Add link clicked"),
     locale: "en",
 };
@@ -60,9 +61,7 @@ const initialPreviewAssignment: AssignmentBuilderViewTypes = {
     order: 1,
     assignmentData: BASE_ASSIGNMENT,
     locale: "en",
-    onFileDelete: () => alert("onFileDelete"),
     onFileDownload: () => alert("onFileDownload"),
-    onCancel: () => alert("onCancel"),
 };
 
 
@@ -263,7 +262,7 @@ function DesignerAssignmentStory({ locale }: { locale: TLocale }) {
     };
 
     // Link actions
-    const handleLinkDelete = (linkId: number, _type: "link") => {
+    const handleLinkDelete = (linkId: number) => {
         setAssignmentData((ad) => ({
             ...ad,
             links: (ad.links || []).filter((l) => l.linkId !== linkId),

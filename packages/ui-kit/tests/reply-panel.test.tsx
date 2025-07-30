@@ -101,6 +101,7 @@ const defaultProps = {
     onClickAddLink: vi.fn(),
     onImageChange: vi.fn(),
     onClickSendMessage: vi.fn(),
+    onDeleteIcon: vi.fn(),
     locale: 'en' as TLocale,
 };
 
@@ -131,7 +132,7 @@ describe('ReplyPanel Component', () => {
     it('calls onFileDelete and onFileDownload', () => {
         render(<ReplyPanel {...defaultProps} />);
         fireEvent.click(screen.getByTestId('delete-file-1'));
-        expect(defaultProps.onFileDelete).toHaveBeenCalledWith('1', 'file');
+        expect(defaultProps.onFileDelete).toHaveBeenCalledWith('1');
         fireEvent.click(screen.getByTestId('download-file-2'));
         expect(defaultProps.onFileDownload).toHaveBeenCalledWith('2');
     });
@@ -193,7 +194,7 @@ describe('ReplyPanel Component', () => {
         expect(props.onCreateLink).toHaveBeenCalledWith({ title: 'Edited Link', url: 'https://edited.com' }, 1);
 
         fireEvent.click(screen.getByTestId('discard-link'));
-        expect(props.onLinkDelete).toHaveBeenCalledWith(2, 'link', 1);
+        expect(props.onLinkDelete).toHaveBeenCalledWith(2, 1);
     });
 
     it('calls onClickEditLink when Edit button of LinkPreview is clicked', () => {
@@ -207,6 +208,6 @@ describe('ReplyPanel Component', () => {
         render(<ReplyPanel {...defaultProps} />);
         const deleteButtons = screen.getAllByTestId('delete-link');
         fireEvent.click(deleteButtons[0]);
-        expect(defaultProps.onLinkDelete).toHaveBeenCalledWith(1, 'link', 0);
+        expect(defaultProps.onLinkDelete).toHaveBeenCalledWith(1, 0);
     });
 });

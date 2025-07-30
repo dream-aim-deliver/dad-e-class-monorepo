@@ -109,6 +109,7 @@ const defaultProps = {
     onClickGroup: vi.fn(),
     onImageChange: vi.fn(),
     onClose: vi.fn(),
+    onDeleteIcon: vi.fn(),
     locale: 'en' as TLocale,
     children: <div data-testid="modal-children">Children Here</div>,
 };
@@ -139,7 +140,7 @@ describe('AssignmentModal Component', () => {
     it('calls onFileDelete and onFileDownload from FilePreview', () => {
         render(<AssignmentModal {...defaultProps} />);
         fireEvent.click(screen.getByTestId('delete-btn-f1'));
-        expect(defaultProps.onFileDelete).toHaveBeenCalledWith(12, 'f1', 'file');
+        expect(defaultProps.onFileDelete).toHaveBeenCalledWith(12, 'f1');
         fireEvent.click(screen.getByTestId('download-btn-f1'));
         expect(defaultProps.onFileDownload).toHaveBeenCalledWith('f1');
     });
@@ -156,7 +157,7 @@ describe('AssignmentModal Component', () => {
         fireEvent.click(screen.getByTestId('save-link'));
         expect(defaultProps.onChange).toHaveBeenCalled();
         fireEvent.click(screen.getByTestId('discard-link'));
-        expect(defaultProps.onLinkDelete).toHaveBeenCalledWith(12, 4, 'link');
+        expect(defaultProps.onLinkDelete).toHaveBeenCalledWith(12, 4);
     });
 
     it('calls onChange for Edit button, and onLinkDelete for Delete (LinkPreview)', () => {
@@ -170,7 +171,7 @@ describe('AssignmentModal Component', () => {
         );
         const delBtns = screen.getAllByTestId('delete-link');
         fireEvent.click(delBtns[1]);
-        expect(defaultProps.onLinkDelete).toHaveBeenCalledWith(12, 4, 'link');
+        expect(defaultProps.onLinkDelete).toHaveBeenCalledWith(12, 4);
     });
 
     it('renders multiple files/links', () => {

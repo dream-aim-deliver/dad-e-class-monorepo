@@ -13,21 +13,21 @@ import { IconPlus } from "../icons/icon-plus";
 export interface ReplyPanelProps extends isLocalAware {
     role: Omit<role.TRole, 'visitor' | 'admin'>;
     comment: string;
-    linkEditIndex?: number;
+    linkEditIndex: number;
     files: fileMetadata.TFileMetadata[];
     links: shared.TLinkWithId[];
     sender: assignment.TAssignmentReplySender;
     onChangeComment: (comment: string) => void;
     onFileDownload: (id: string) => void;
-    onFileDelete: (fileId: string, type: 'file') => void;
-    onLinkDelete: (linkId: number, type: 'link', index: number) => void;
+    onFileDelete: (fileId: string) => void;
+    onLinkDelete: (linkId: number, index: number) => void;
     onFilesChange: (file: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
-    onDeleteIcon?: (id: string) => void;
+    onDeleteIcon: (id: string) => void;
     onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
-    onCreateLink?: (data: shared.TLinkWithId, index: number) => void;
-    onClickEditLink?: (index: number) => void;
-    onClickAddLink?: () => void;
+    onCreateLink: (data: shared.TLinkWithId, index: number) => void;
+    onClickEditLink: (index: number) => void;
+    onClickAddLink: () => void;
     onClickSendMessage: (reply: assignment.TAssignmentReply) => void;
 };
 
@@ -161,13 +161,12 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                     files={files}
                     maxFile={5}
                     onFilesChange={(file, abortSignal) => onFilesChange(file, abortSignal)}
-                    onDelete={(id) => onFileDelete(id, 'file')}
+                    onDelete={(id) => onFileDelete(id)}
                     onDownload={(id) => onFileDownload(id)}
                     onUploadComplete={(file) => onUploadComplete(file)}
                     locale={locale}
                     className="w-full"
                     maxSize={5}
-                    filePreviewClassName="bg-transparent p-0"
                 />
                 <div className="flex flex-col items-center justify-center gap-[10px] w-full">
                     {links.map((link, index) =>
@@ -180,7 +179,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                                         initialUrl={link.url}
                                         initialCustomIcon={link.customIcon}
                                         onSave={(title, url, customIcon) => onCreateLink({ title, url, customIcon }, index)}
-                                        onDiscard={() => onLinkDelete(link.linkId, 'link', index)}
+                                        onDiscard={() => onLinkDelete(link.linkId, index)}
                                         onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
                                         onDeleteIcon={onDeleteIcon}
                                     />
@@ -193,7 +192,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                                         url={link.url}
                                         customIcon={link.customIcon}
                                         onEdit={() => onClickEditLink(index)}
-                                        onDelete={() => onLinkDelete(link.linkId, 'link', index)}
+                                        onDelete={() => onLinkDelete(link.linkId, index)}
                                     />
                                 </div>
                             )

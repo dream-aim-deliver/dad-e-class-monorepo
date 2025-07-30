@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AssignmentCardList } from '../../lib/components/assignment/assignment-card-list';
 import { AssignmentCardProps } from '../../lib/components/assignment/assignment-card';
+import { NumberFilter } from 'ag-grid-community';
 
 const meta: Meta<typeof AssignmentCardList> = {
   title: 'Components/Assignment/AssignmentCardList',
@@ -88,6 +89,13 @@ const sampleAssignments: AssignmentCardProps[] = [
     onClickUser: () => alert('User clicked: Alice Student'),
     onClickGroup: () => alert('Group clicked: Group Alpha'),
     onClickView: () => alert('View assignment 1'),
+    onReplyFileDelete: () => alert('Reply file deleted'),
+    onReplyLinkDelete: () => alert('Reply link deleted'),
+    onDeleteIcon: () => alert('Delete icon clicked'),
+    onReplyImageChange: () => alert('Reply image changed'),
+    onReplyDeleteIcon: () => alert('Reply delete icon clicked'),
+    onReplyChange: () => alert('Reply changed'),
+    replyLinkEditIndex: -1,
     locale: 'en',
   },
   {
@@ -104,7 +112,20 @@ const sampleAssignments: AssignmentCardProps[] = [
     module: 1,
     lesson: 3,
     status: 'Passed',
-    replies: [],
+    replies: [
+      {
+        type: 'passed',
+        replyId: 1,
+        timestamp: '2024-09-20T10:00:00Z',
+        sender: {
+          id: '2',
+          name: 'John Doe',
+          image: 'https://randomuser.me/api/portraits/men/2.jpg',
+          isCurrentUser: false,
+          role: 'student',
+        }
+      }
+    ],
     student: {
       id: '2',
       name: 'John Doe',
@@ -123,6 +144,13 @@ const sampleAssignments: AssignmentCardProps[] = [
     onClickUser: () => alert('User clicked: John Doe'),
     onClickGroup: () => alert('Group clicked: (no group)'),
     onClickView: () => alert('View assignment 2'),
+    onReplyFileDelete: () => alert('Reply file deleted'),
+    onReplyLinkDelete: () => alert('Reply link deleted'),
+    onDeleteIcon: () => alert('Delete icon clicked'),
+    onReplyImageChange: () => alert('Reply image changed'),
+    onReplyDeleteIcon: () => alert('Reply delete icon clicked'),
+    onReplyChange: () => alert('Reply changed'),
+    replyLinkEditIndex: -1,
     locale: 'en',
   },
   {
@@ -184,6 +212,13 @@ const sampleAssignments: AssignmentCardProps[] = [
     onClickUser: () => alert('User clicked: Jane Smith'),
     onClickGroup: () => alert('Group clicked: Photography Group A'),
     onClickView: () => alert('View assignment 3'),
+    onReplyFileDelete: () => alert('Reply file deleted'),
+    onReplyLinkDelete: () => alert('Reply link deleted'),
+    onDeleteIcon: () => alert('Delete icon clicked'),
+    onReplyImageChange: () => alert('Reply image changed'),
+    onReplyDeleteIcon: () => alert('Reply delete icon clicked'),
+    onReplyChange: () => alert('Reply changed'),
+    replyLinkEditIndex: -1,
     locale: 'en',
   }
 ];
@@ -193,13 +228,13 @@ export const Default: Story = {
     assignments: sampleAssignments,
     locale: 'en',
     onFileDownload: (id: string) => alert(`Download file: ${id}`),
-    onFileDelete: (assignmentId: number, fileId: string, type: 'file') => 
+    onFileDelete: (assignmentId: number, fileId: string) =>
       alert(`Delete file: ${fileId} from assignment ${assignmentId}`),
-    onLinkDelete: (assignmentId: number, linkId: number, type: 'link') => 
+    onLinkDelete: (assignmentId: number, linkId: number) =>
       alert(`Delete link: ${linkId} from assignment ${assignmentId}`),
-    onChange: (files, links, linkEditIndex) => 
+    onChange: (files, links, linkEditIndex) =>
       alert(`Files changed: ${files.length}, Links: ${links.length}, Edit index: ${linkEditIndex}`),
-    onImageChange: (image, abortSignal) => 
+    onImageChange: (image, abortSignal) =>
       alert(`Image change: ${image.name}`),
     onClickCourse: () => alert('Course clicked from list'),
     onClickUser: () => alert('User clicked from list'),
@@ -218,13 +253,13 @@ export const EmptyState: Story = {
     assignments: [],
     locale: 'en',
     onFileDownload: (id: string) => alert(`Download file: ${id}`),
-    onFileDelete: (assignmentId: number, fileId: string, type: 'file') => 
+    onFileDelete: (assignmentId: number, fileId: string) =>
       alert(`Delete file: ${fileId} from assignment ${assignmentId}`),
-    onLinkDelete: (assignmentId: number, linkId: number, type: 'link') => 
+    onLinkDelete: (assignmentId: number, linkId: number) =>
       alert(`Delete link: ${linkId} from assignment ${assignmentId}`),
-    onChange: (files, links, linkEditIndex) => 
+    onChange: (files, links, linkEditIndex) =>
       alert(`Files changed: ${files.length}, Links: ${links.length}, Edit index: ${linkEditIndex}`),
-    onImageChange: (image, abortSignal) => 
+    onImageChange: (image, abortSignal) =>
       alert(`Image change: ${image.name}`),
     onClickCourse: () => alert('Course clicked from empty list'),
     onClickUser: () => alert('User clicked from empty list'),

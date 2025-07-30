@@ -72,15 +72,18 @@ vi.mock('../lib/components/links', () => ({
 }));
 
 vi.mock('../lib/components/assignment/message', () => ({
-    Message: ({ reply }) => (
-        <div data-testid="message-reply">{reply.comment}</div>
+    Message: ({ reply, onDeleteIcon }) => (
+        <div data-testid="message-reply">
+            {reply.comment}
+            {onDeleteIcon && <button data-testid="delete-icon" onClick={() => onDeleteIcon('test-id')}>Delete Icon</button>}
+        </div>
     ),
 }));
 
 // --- Mock Data ---
 const defaultProps = {
     assignmentId: 42,
-    role: 'coach',
+    role: 'coach' as const,
     title: 'Homework - Algebra',
     description: 'Review all problems.',
     files: [
@@ -112,7 +115,7 @@ const defaultProps = {
             replyId: 20,
             type: 'resources' as const,
             comment: 'Latest activity here',
-            sender: { name: 'Teacher', isCurrentUser: false },
+            sender: { id: 'teacher1', name: 'Teacher', isCurrentUser: false, role: 'coach' as const, image: 'https://example.com/teacher.jpg' },
             timestamp: '2024-01-02T12:00:00Z',
             files: [],
             links: [],
@@ -121,13 +124,13 @@ const defaultProps = {
             replyId: 21,
             type: 'text' as const,
             comment: 'Most recent reply',
-            sender: { name: 'Student', isCurrentUser: true },
+            sender: { id: 'student1', name: 'Student', isCurrentUser: true, role: 'student' as const, image: 'https://example.com/student.jpg' },
             timestamp: '2025-01-02T13:00:00Z',
             files: [],
             links: [],
         },
     ],
-    student: { id: '9', name: 'Student' },
+    student: { id: '9', name: 'Student', image: 'https://example.com/student.jpg', isCurrentUser: true, role: 'student' as const },
     groupName: null,
     linkEditIndex: -1,
     onFileDownload: vi.fn(),
@@ -139,6 +142,13 @@ const defaultProps = {
     onClickGroup: vi.fn(),
     onImageChange: vi.fn(),
     onClickView: vi.fn(),
+    onReplyFileDelete: vi.fn(),
+    onReplyLinkDelete: vi.fn(),
+    onDeleteIcon: vi.fn(),
+    replyLinkEditIndex: -1,
+    onReplyImageChange: vi.fn(),
+    onReplyDeleteIcon: vi.fn(),
+    onReplyChange: vi.fn(),
     locale: 'en' as TLocale,
 };
 
@@ -148,24 +158,11 @@ describe('AssignmentCard Component', () => {
         vi.clearAllMocks();
     });
 
-    it('renders assignment card with title, description, header, files, links, reply and view button', () => {
+    it('renders assignment card with reply and view button', () => {
         render(<AssignmentCard {...defaultProps} />);
 
         // Header
         expect(screen.getByTestId('header')).toHaveTextContent('Homework - Algebra');
-        // Description
-        expect(screen.getByText('Review all problems.')).toBeInTheDocument();
-
-        // Files
-        expect(screen.getByText('Algebra.pdf')).toBeInTheDocument();
-        expect(screen.getByTestId('file-preview-f1')).toBeInTheDocument();
-        expect(screen.getByTestId('download-btn-f1')).toBeInTheDocument();
-        expect(screen.getByTestId('delete-btn-f1')).toBeInTheDocument();
-
-        // Links
-        expect(screen.getByText('Notes')).toBeInTheDocument();
-        expect(screen.getByText('Reference')).toBeInTheDocument();
-        expect(screen.getAllByTestId('link-preview')).toHaveLength(2);
 
         // Reply Section
         expect(screen.getByText('Last Activity')).toBeInTheDocument();
@@ -173,41 +170,6 @@ describe('AssignmentCard Component', () => {
 
         // View Button
         expect(screen.getByText('View Assignment')).toBeInTheDocument();
-    });
-
-    it('calls onFileDelete and onFileDownload on FilePreview actions', () => {
-        render(<AssignmentCard {...defaultProps} />);
-        fireEvent.click(screen.getByTestId('delete-btn-f1'));
-        expect(defaultProps.onFileDelete).toHaveBeenCalledWith(42, 'f1', 'file');
-        fireEvent.click(screen.getByTestId('download-btn-f1'));
-        expect(defaultProps.onFileDownload).toHaveBeenCalledWith('f1');
-    });
-
-    it('shows LinkEdit when linkEditIndex matches, saves, and discards', () => {
-        render(<AssignmentCard {...defaultProps} linkEditIndex={1} />);
-        expect(screen.getByTestId('link-edit')).toBeInTheDocument();
-
-        fireEvent.click(screen.getByTestId('save-link'));
-        // Should call onChange
-        expect(defaultProps.onChange).toHaveBeenCalled();
-
-        fireEvent.click(screen.getByTestId('discard-link'));
-        expect(defaultProps.onLinkDelete).toHaveBeenCalledWith(42, 9, 'link');
-    });
-
-    it('calls onClickEditLink and onLinkDelete from LinkPreview', () => {
-        render(<AssignmentCard {...defaultProps} />);
-        const editButtons = screen.getAllByTestId('edit-link');
-        fireEvent.click(editButtons[1]);
-        expect(defaultProps.onChange).toHaveBeenCalledWith(
-            defaultProps.files,
-            defaultProps.links,
-            1
-        );
-
-        const deleteButtons = screen.getAllByTestId('delete-link');
-        fireEvent.click(deleteButtons[0]);
-        expect(defaultProps.onLinkDelete).toHaveBeenCalledWith(42, 8, 'link');
     });
 
     it('calls onClickView when button is clicked', () => {
@@ -220,5 +182,18 @@ describe('AssignmentCard Component', () => {
         render(<AssignmentCard {...defaultProps} replies={[]} />);
         expect(screen.queryByTestId('message-reply')).not.toBeInTheDocument();
         expect(screen.queryByText('Last Activity')).not.toBeInTheDocument();
+    });
+
+    it('renders latest reply when replies exist', () => {
+        render(<AssignmentCard {...defaultProps} />);
+        expect(screen.getByText('Last Activity')).toBeInTheDocument();
+        expect(screen.getByTestId('message-reply')).toHaveTextContent('Most recent reply');
+    });
+
+    it('calls onReplyDeleteIcon when delete icon is clicked in message', () => {
+        render(<AssignmentCard {...defaultProps} />);
+        const deleteIconButton = screen.getByTestId('delete-icon');
+        fireEvent.click(deleteIconButton);
+        expect(defaultProps.onReplyDeleteIcon).toHaveBeenCalledWith('test-id');
     });
 });

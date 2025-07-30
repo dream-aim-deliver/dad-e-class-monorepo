@@ -10,13 +10,13 @@ import { LinkEdit, LinkPreview } from "../links";
 export interface AssignmentModalProps extends Omit<assignment.TAssignmentWithId, 'replies'>, isLocalAware {
     role: Omit<role.TRole, 'visitor' | 'admin'>;
     linkEditIndex: number;
-    children?: React.ReactNode;
+    children: React.ReactNode;
     onFileDownload: (id: string) => void;
-    onFileDelete: (id: number, fileId: string, type: 'file') => void;
-    onLinkDelete: (id: number, linkId: number, type: 'link') => void;
-    onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex?: number) => void;
+    onFileDelete: (id: number, fileId: string) => void;
+    onLinkDelete: (id: number, linkId: number) => void;
+    onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex: number) => void;
     onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
-    onDeleteIcon?: (id: string) => void;
+    onDeleteIcon: (id: string) => void;
     onClickCourse: () => void;
     onClickUser: () => void;
     onClickGroup: () => void;
@@ -209,11 +209,10 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                         key={index}
                         uploadResponse={file}
                         locale={locale}
-                        onDelete={() => onFileDelete(assignmentId, file.id, "file")}
+                        onDelete={() => onFileDelete(assignmentId, file.id)}
                         onDownload={() => onFileDownload(file.id)}
-                        onCancel={() => onFileDelete(assignmentId, file.id, "file")}
-                        isDeletionAllowed={role === "coach"}
-                        className="bg-transparent p-0 w-full"
+                        onCancel={() => onFileDelete(assignmentId, file.id)}
+                        readOnly={role !== "coach"}
                     />
                 ))}
 
@@ -227,7 +226,7 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                                 initialUrl={link.url}
                                 initialCustomIcon={link.customIcon}
                                 onSave={(title, url, customIcon) => handleSaveLink({ title, url, customIcon }, index)}
-                                onDiscard={() => onLinkDelete(assignmentId, link.linkId, "link")}
+                                onDiscard={() => onLinkDelete(assignmentId, link.linkId)}
                                 onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
                                 onDeleteIcon={onDeleteIcon}
                             />
@@ -240,7 +239,7 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                                 url={link.url}
                                 customIcon={link.customIcon}
                                 onEdit={() => handleOnClickLinkEdit(index)}
-                                onDelete={() => onLinkDelete(assignmentId, link.linkId, "link")}
+                                onDelete={() => onLinkDelete(assignmentId, link.linkId)}
                             />
                         </div>
                     )

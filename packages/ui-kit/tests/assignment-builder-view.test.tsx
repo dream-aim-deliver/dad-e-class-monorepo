@@ -27,9 +27,7 @@ vi.mock("../lib/components/drag-and-drop-uploader/file-preview", () => ({
     FilePreview: ({ uploadResponse, onDelete, onDownload, onCancel }: any) => (
         <div data-testid={`file-preview-${uploadResponse.id}`}>
             <span>{uploadResponse.name}</span>
-            <button data-testid={`del-btn-${uploadResponse.id}`} onClick={onDelete}>Delete</button>
             <button data-testid={`dl-btn-${uploadResponse.id}`} onClick={onDownload}>Download</button>
-            <button data-testid="cancel-btn" onClick={onCancel}>Cancel</button>
         </div>
     )
 }));
@@ -106,36 +104,17 @@ describe("AssignmentBuilderView", () => {
         expect(screen.getAllByTestId("link-preview").length).toBe(2);
     });
 
-    it("calls onFileDelete, onFileDownload, onCancle when buttons pressed", () => {
-        const onFileDelete = vi.fn();
+    it("calls onFileDownload when buttons pressed", () => {
         const onFileDownload = vi.fn();
-        const onCancel = vi.fn();
         render(
             <AssignmentBuilderView
                 {...baseProps}
-                onFileDelete={onFileDelete}
                 onFileDownload={onFileDownload}
-                onCancel={onCancel}
             />
         );
-        // Delete
-        fireEvent.click(screen.getByTestId("del-btn-f1"));
-        expect(onFileDelete).toHaveBeenCalledWith("f1");
         // Download
         fireEvent.click(screen.getByTestId("dl-btn-f2"));
         expect(onFileDownload).toHaveBeenCalledWith("f2");
-        // Cancel
-        fireEvent.click(screen.getAllByTestId("cancel-btn")[0]);
-        expect(onCancel).toHaveBeenCalled();
-    });
-
-    it("does not throw if optional callbacks are not provided", () => {
-        render(<AssignmentBuilderView {...baseProps} />);
-        // Should render and allow clicks without error
-        fireEvent.click(screen.getByTestId("del-btn-f1"));
-        fireEvent.click(screen.getByTestId("dl-btn-f1"));
-        fireEvent.click(screen.getAllByTestId("cancel-btn")[0]);
-        // Nothing to assert - just ensures no crash
     });
 
     it("renders with empty files and links", () => {
