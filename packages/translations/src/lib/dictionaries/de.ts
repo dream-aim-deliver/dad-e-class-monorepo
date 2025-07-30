@@ -381,6 +381,13 @@ export const DE: TDictionary = {
       and: 'und',
       other: 'andere',
       others: 'andere',
+      buyButton: 'Chauf Kurs',
+      coachingIncluded: 'Coaching isch inklusiv',
+      saveLabel: 'spaar',
+      reviewLabel: 'bewärtige',
+      bookLabel: 'Bueche',
+      taughtBy: 'Usgbildet vo',
+      requirementsTitle: 'Voraussetzigä',
     },
     uploadingSection: {
       maxSizeText: "maximale Größe",

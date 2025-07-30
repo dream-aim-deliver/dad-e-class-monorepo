@@ -378,6 +378,13 @@ export const EN: TDictionary = {
       and: 'and',
       other: 'other',
       others: 'others',
+      buyButton: 'Buy Course',
+      coachingIncluded: 'Coaching Included',
+      saveLabel: 'save',
+      reviewLabel: 'reviews',
+      bookLabel: 'Book',
+      taughtBy: 'Taught by',
+      requirementsTitle: 'Requirements',
     },
     uploadingSection: {
       maxSizeText: 'Max size',

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
-import { CourseGeneralInformationView } from '../lib/components/course-general-information-view';
+import { CourseGeneralInformationView } from '../lib/components/course-general-information/course-general-information-view';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 // Mock translation dictionary

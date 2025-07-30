@@ -1,13 +1,13 @@
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { TCourseMetadata } from "packages/models/src/course";
-import { UserAvatar } from "./avatar/user-avatar";
-import { Button } from "./button";
-import { Badge } from './badge';
-import { ProgressBar } from "./progress-bar";
+import { UserAvatar } from "../avatar/user-avatar";
+import { Button } from "../button";
+import { Badge } from '../badge';
+import { ProgressBar } from "../progress-bar";
 import { FC, useState } from "react";
-import { IconClock } from "./icons/icon-clock";
-import { IconStar } from "./icons/icon-star";
-import { UserAvatarReel } from "./avatar/user-avatar-reel";
+import { IconClock } from "../icons/icon-clock";
+import { IconStar } from "../icons/icon-star";
+import { UserAvatarReel } from "../avatar/user-avatar-reel";
 
 interface Student {
     name: string;
