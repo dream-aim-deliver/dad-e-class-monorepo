@@ -301,7 +301,7 @@ const ModalTemplate: FC<{
     const handleChange = (
         newFiles: fileMetadata.TFileMetadata[],
         newLinks: shared.TLinkWithId[],
-        newLinkEditIndex?: number | null
+        newLinkEditIndex: number | null
     ) => {
         setFiles(newFiles);
         setLinks(newLinks);
@@ -513,7 +513,7 @@ const ModalTemplate: FC<{
                             linkEditIndex={messageLinkEditIndexes[msg.replyId] ?? null}
                             locale={locale}
                             onFileDownload={handleFileDownload}
-                            onFileDelete={(_id, fileId, _type) => {
+                            onFileDelete={(_id, fileId) => {
                                 // only handle if resource type
                                 isResourcesType &&
                                     handleMessageChange(
@@ -523,7 +523,7 @@ const ModalTemplate: FC<{
                                         msg.replyId
                                     );
                             }}
-                            onLinkDelete={(_id, linkId, _type) => {
+                            onLinkDelete={(_id, linkId) => {
                                 isResourcesType &&
                                     handleMessageChange(
                                         files,
@@ -573,7 +573,7 @@ const ModalTemplate: FC<{
                         if (replyDraftLink) setReplyDraftLink(null);
                         setReplyLinkEditIndex(index);
                     }}
-                    onLinkDelete={(linkId, _type, index) => {
+                    onLinkDelete={(linkId, index) => {
                         if (replyDraftLink && index === replyLinks.length) {
                             setReplyDraftLink(null);
                         } else {

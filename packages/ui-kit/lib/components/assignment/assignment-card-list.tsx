@@ -16,9 +16,9 @@ interface AssignmentCardListProps extends isLocalAware {
   onClickViewProfile?: (assignment: AssignmentCardProps) => void;
   onClickBookSession?: (assignment: AssignmentCardProps) => void;
   onFileDownload: (id: string) => void;
-  onFileDelete: (assignmentId: number, fileId: string, type: 'file') => void;
-  onLinkDelete: (assignmentId: number, linkId: number, type: 'link') => void;
-  onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex?: number) => void;
+  onFileDelete: (assignmentId: number, fileId: string) => void;
+  onLinkDelete: (assignmentId: number, linkId: number) => void;
+  onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex: number) => void;
   onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
   onClickCourse: () => void;
   onClickUser: () => void;
@@ -108,31 +108,31 @@ export const AssignmentCardList: React.FC<AssignmentCardListProps> = ({
 
       // Apply filter modal filters
       let matches = true;
-      
+
       if (filters.title && !assignment.title.toLowerCase().includes(filters.title.toLowerCase())) {
         matches = false;
       }
-      
+
       if (filters.status && filters.status.length > 0 && !filters.status.includes(assignment.status)) {
         matches = false;
       }
-      
+
       if (filters.course && !assignment.course?.title?.toLowerCase().includes(filters.course.toLowerCase())) {
         matches = false;
       }
-      
+
       if (filters.module && assignment.module.toString() !== filters.module) {
         matches = false;
       }
-      
+
       if (filters.lesson && assignment.lesson.toString() !== filters.lesson) {
         matches = false;
       }
-      
+
       if (filters.student && !assignment.student?.name?.toLowerCase().includes(filters.student.toLowerCase())) {
         matches = false;
       }
-      
+
       if (filters.groupName && !assignment.groupName?.toLowerCase().includes(filters.groupName.toLowerCase())) {
         matches = false;
       }
@@ -195,7 +195,7 @@ export const AssignmentCardList: React.FC<AssignmentCardListProps> = ({
             )}
           </div>
         </div>
-        
+
         <div className="flex w-full items-center gap-2">
           <div className="flex-1">
             <TextInput
@@ -211,7 +211,7 @@ export const AssignmentCardList: React.FC<AssignmentCardListProps> = ({
             />
           </div>
         </div>
-        
+
         <div className="flex w-full">
           <Button
             variant="text"

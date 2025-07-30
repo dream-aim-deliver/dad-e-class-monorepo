@@ -30,9 +30,7 @@ import { LinkPreview } from "../links";
 
 export const AssignmentBuilderView: FC<AssignmentBuilderViewTypes> = ({
     assignmentData,
-    onFileDelete,
     onFileDownload,
-    onCancel,
     locale
 }) => {
     const dictionary = getDictionary(locale);
@@ -58,12 +56,9 @@ export const AssignmentBuilderView: FC<AssignmentBuilderViewTypes> = ({
                         <FilePreview
                             key={index}
                             uploadResponse={file}
-                            onDelete={() => onFileDelete(file.id)}
                             onDownload={() => onFileDownload(file.id)}
-                            onCancel={() => onCancel()}
                             locale={locale}
-                            className="bg-transparent p-0 w-full"
-                            isDeletionAllowed={false}
+                            readOnly={true}
                         />
                     ))}
                     {assignmentData.links.map((link, index) => (

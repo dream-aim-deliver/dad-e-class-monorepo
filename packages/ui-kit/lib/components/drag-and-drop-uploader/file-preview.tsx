@@ -31,8 +31,6 @@ interface FilePreviewProps extends isLocalAware {
  * @param index The index of the file in the list of uploaded files.
  * @param onDelete Callback function to handle file deletion.
  * @param onDownload Callback function to handle file download.
- * @param isDeletionAllowed Flag indicating if file deletion is allowed.
- * @param className Optional CSS class for styling the component.
  * @param locale The locale for translations.
  **/
 

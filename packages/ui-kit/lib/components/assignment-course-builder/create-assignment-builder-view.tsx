@@ -144,7 +144,6 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                     locale={locale}
                     className="w-full"
                     maxSize={5}
-                    filePreviewClassName="bg-transparent p-0"
                 />
 
                 <div className="flex flex-col items-center justify-center gap-[10px] w-full">
@@ -157,7 +156,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                                     initialUrl={link.url}
                                     initialCustomIcon={link.customIcon}
                                     onSave={(title, url, customIcon) => onLinkEdit({ title, url, customIcon }, index)}
-                                    onDiscard={() => onLinkDelete(link.linkId, 'link')}
+                                    onDiscard={() => onLinkDelete(link.linkId)}
                                     onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
                                     onDeleteIcon={onDeleteIcon}
                                 />
@@ -170,7 +169,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                                     url={link.url}
                                     customIcon={link.customIcon}
                                     onEdit={() => onClickEditLink(index)}
-                                    onDelete={() => onLinkDelete(link.linkId, 'link')}
+                                    onDelete={() => onLinkDelete(link.linkId)}
                                 />
                             </div>
                         )
