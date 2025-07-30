@@ -382,6 +382,13 @@ export const DictionarySchema = z.object({
       and: z.string(),
       other: z.string(),
       others: z.string(),
+      buyButton: z.string(),
+      coachingIncluded: z.string(),
+      saveLabel: z.string(),
+      reviewLabel: z.string(),
+      bookLabel: z.string(),
+      taughtBy:z.string(),
+      requirementsTitle: z.string(),
     }),
     uploadingSection: z.object({
       maxSizeText: z.string(),

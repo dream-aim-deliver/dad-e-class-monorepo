@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CourseGeneralInformationView } from '../lib/components/course-general-information-view';
-import { UserAvatarReel } from '../lib/components/avatar/user-avatar-reel';
-import { UserAvatar } from '../lib/components/avatar/user-avatar';
+import { CourseGeneralInformationView } from '../../lib/components/course-general-information/course-general-information-view';
+import { UserAvatarReel } from '../../lib/components/avatar/user-avatar-reel';
+import { UserAvatar } from '../../lib/components/avatar/user-avatar';
 
 const meta: Meta<typeof CourseGeneralInformationView> = {
-  title: 'Components/CourseGeneralInformationView',
+  title: 'Components/CourseGeneralInformation/Student',
   component: CourseGeneralInformationView,
   tags: ['autodocs'],
   parameters: {
