@@ -40,6 +40,87 @@ export interface CourseGeneralInformationVisitorProps
     onClickCourse?: (slug: string) => void;
 }
 
+/**
+ * CourseGeneralInformationVisitor component displays detailed information about a course
+ * tailored for visitors (non-enrolled users). It includes the course title, description,
+ * duration breakdown (video, coaching, self-study), author and coach information, ratings,
+ * pricing details, and required courses.
+ *
+ * The component supports localization via the provided `locale` prop and uses
+ * translations from the `getDictionary` function.
+ *
+ * Features:
+ * - Displays course title, long description, and author info with avatar and rating.
+ * - Shows total and segmented course duration with localized time units.
+ * - Renders a coach avatar reel with names and total count.
+ * - Handles image loading errors gracefully, showing a placeholder if needed.
+ * - Allows toggling coaching inclusion with a checkbox, affecting the purchase price.
+ * - Provides buttons to book a course, buy the course with/without coaching, and navigate required courses.
+ *
+ * Props:
+ * - longDescription: Detailed course description.
+ * - duration: Object with video, coaching, and selfStudy durations in minutes.
+ * - author: Course author info including name and avatar URL.
+ * - title: Course title string.
+ * - pricing: Object with currency, partialPrice, and fullPrice.
+ * - rating: Average rating of the course.
+ * - onClickBook: Callback when "Book" button is clicked.
+ * - onClickBuyCourse: Callback when "Buy" button is clicked, receives coachingIncluded boolean.
+ * - onCoachingIncludedChange: Callback when coachingIncluded checkbox toggles.
+ * - imageUrl: URL of the course image.
+ * - locale: Locale code string for translations.
+ * - coaches: Array of coaches (name and avatarUrl).
+ * - totalCoachesCount: Total number of coaches available.
+ * - coachingIncluded: Initial boolean state whether coaching is included.
+ * - rating, totalRating, ownerRating, ownerTotalRating: Ratings data.
+ * - requirementsDetails: String listing course requirements.
+ * - requiredCourses: Optional array of prerequisite courses (image, title, slug).
+ * - onClickCourse: Optional callback when a required course button is clicked, receives slug.
+ * - children: Optional React nodes rendered inside "Taught by" section.
+ *
+ * This component is designed to be responsive and accessible, with proper labels on controls.
+ *
+ * @example
+ * ```tsx
+ * const courseMetadata = {
+ *   title: "React for Beginners",
+ *   longDescription: "Learn React from scratch with hands-on examples.",
+ *   duration: { video: 120, coaching: 60, selfStudy: 90 },
+ *   author: { name: "Jane Doe", image: "https://example.com/jane.jpg" },
+ *   pricing: { currency: "USD", partialPrice: 49, fullPrice: 99 },
+ *   rating: 4.5,
+ *   totalRating: 120,
+ *   ownerRating: 4.8,
+ *   ownerTotalRating: 50,
+ *   totalCoachesCount: 4,
+ *   requirementsDetails: "Basic JavaScript knowledge required.",
+ *   coachingIncluded: true,
+ *   locale: "en-US"
+ * };
+ *
+ * const coaches = [
+ *   { name: "John Smith", avatarUrl: "https://example.com/john.jpg" },
+ *   { name: "Alice Johnson", avatarUrl: "https://example.com/alice.jpg" },
+ *   { name: "Bob Lee", avatarUrl: "https://example.com/bob.jpg" },
+ * ];
+ *
+ * const requiredCourses = [
+ *   { image: "https://example.com/course1.jpg", courseTitle: "JS Basics", slug: "js-basics" },
+ *   { image: "https://example.com/course2.jpg", courseTitle: "HTML & CSS", slug: "html-css" }
+ * ];
+ *
+ * <CourseGeneralInformationVisitor
+ *   {...courseMetadata}
+ *   coaches={coaches}
+ *   requiredCourses={requiredCourses}
+ *   onClickBook={() => alert("Booking clicked")}
+ *   onClickBuyCourse={(coaching) => alert(`Buy course with coaching: ${coaching}`)}
+ *   onCoachingIncludedChange={(included) => console.log("Coaching toggled:", included)}
+ *   onClickCourse={(slug) => console.log("Navigate to course:", slug)}
+ * />
+ * ```
+ */
+
 export const CourseGeneralInformationVisitor: FC<
     CourseGeneralInformationVisitorProps
 > = ({
