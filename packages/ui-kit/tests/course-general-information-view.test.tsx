@@ -45,6 +45,8 @@ const mockProps = {
   studentProgress: 65,
   imageUrl: 'https://example.com/course.jpg',
   locale: 'en' as TLocale,
+  onClickResume: vi.fn(),
+  onClickAuthor: vi.fn(),
 };
 
 describe('CourseGeneralInformationView', () => {

@@ -4,9 +4,8 @@ import { UserAvatarReel } from '../../lib/components/avatar/user-avatar-reel';
 import { UserAvatar } from '../../lib/components/avatar/user-avatar';
 
 const meta: Meta<typeof CourseGeneralInformationView> = {
-  title: 'Components/CourseGeneralInformation/Student',
+  title: 'Components/CourseGeneralInformation/Student&Coach',
   component: CourseGeneralInformationView,
-  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
   },
@@ -21,18 +20,17 @@ const meta: Meta<typeof CourseGeneralInformationView> = {
 export default meta;
 type Story = StoryObj<typeof CourseGeneralInformationView>;
 
-// Reusable Avatar Reel Example
 const AvatarReelExample = (
-  <div className='flex gap-[15px] items-start md:flex-row flex-col'>
+  <div className="flex gap-[15px] items-center md:flex-row flex-col">
     <UserAvatarReel>
-      <UserAvatar size='large' fullName="Alice Smith" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
-      <UserAvatar size='large' fullName="Bob Johnson" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
-      <UserAvatar size='large' fullName="Charlie Brown" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className='mr-[-12px]' />
-      <UserAvatar size='large' fullName="+3" />
+      <UserAvatar size="large" fullName="Alice Smith" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className="mr-[-12px]" />
+      <UserAvatar size="large" fullName="Bob Johnson" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className="mr-[-12px]" />
+      <UserAvatar size="large" fullName="Charlie Brown" imageUrl="https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg" className="mr-[-12px]" />
+      <UserAvatar size="large" fullName="+3" />
     </UserAvatarReel>
-    <p className='text-base-white text-lg leading-[120%] font-bold'>
+    <h5 className="text-text-primary">
       Alice Smith, Bob Johnson and 4 others
-    </p>
+    </h5>
   </div>
 );
 
@@ -51,11 +49,10 @@ const sampleStudents = [
   }
 ];
 
-// Test Case 1: Complete Course Details
 export const CompleteCourse: Story = {
   args: {
     locale: 'en',
-    longDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.',
+    longDescription: 'This is a long description of the course.',
     duration: {
       video: 100,
       coaching: 60,
@@ -67,14 +64,21 @@ export const CompleteCourse: Story = {
     },
     rating: 4.7,
     studentProgress: 65,
+    onClickResume: () => alert('Resume course clicked'),
     imageUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
     onClickAuthor: () => alert('Author profile clicked'),
-    onClickResume: () => alert('Resume course clicked'),
     children: AvatarReelExample,
   },
 };
 
-// Test Case 2: Course Without Image
+export const CoachView: Story = {
+  args: {
+    ...CompleteCourse.args,
+    studentProgress: undefined,
+    onClickResume: undefined,
+  },
+};
+
 export const CourseWithoutImage: Story = {
   args: {
     ...CompleteCourse.args,
@@ -82,7 +86,6 @@ export const CourseWithoutImage: Story = {
   }
 };
 
-// Test Case 3: Course with Short Duration
 export const ShortDurationCourse: Story = {
   args: {
     ...CompleteCourse.args,
@@ -95,7 +98,6 @@ export const ShortDurationCourse: Story = {
   }
 };
 
-// Test Case 4: Course with Broken Image
 export const CourseWithBrokenImage: Story = {
   args: {
     ...CompleteCourse.args,
@@ -103,20 +105,6 @@ export const CourseWithBrokenImage: Story = {
   }
 };
 
-// Test Case 5: Course with Long Duration
-export const LongDurationCourse: Story = {
-  args: {
-    ...CompleteCourse.args,
-    duration: {
-      video: 600,
-      coaching: 300,
-      selfStudy: 1200,
-    },
-    studentProgress: 10,
-  }
-};
-
-// Test Case 6: Course with Full Progress
 export const CompletedCourse: Story = {
   args: {
     ...CompleteCourse.args,
@@ -124,7 +112,6 @@ export const CompletedCourse: Story = {
   }
 };
 
-// Test Case 7: Course with No Progress
 export const NewCourse: Story = {
   args: {
     ...CompleteCourse.args,
@@ -132,7 +119,6 @@ export const NewCourse: Story = {
   }
 };
 
-// Test Case 8: Course with Anonymous Author
 export const AnonymousAuthorCourse: Story = {
   args: {
     ...CompleteCourse.args,
@@ -143,7 +129,6 @@ export const AnonymousAuthorCourse: Story = {
   }
 };
 
-// Test Case 9: Course with Single Student
 export const SingleStudentCourse: Story = {
   args: {
     ...CompleteCourse.args,
@@ -152,7 +137,6 @@ export const SingleStudentCourse: Story = {
   }
 };
 
-// Test Case 10: Course with Two Students
 export const TwoStudentsCourse: Story = {
   args: {
     ...CompleteCourse.args,
@@ -161,7 +145,6 @@ export const TwoStudentsCourse: Story = {
   }
 };
 
-// Test Case 11: Course with No Students
 export const NoStudentsCourse: Story = {
   args: {
     ...CompleteCourse.args,
@@ -170,7 +153,6 @@ export const NoStudentsCourse: Story = {
   }
 };
 
-// Test Case 12: Course with Many Students
 export const ManyStudentsCourse: Story = {
   args: {
     ...CompleteCourse.args,
@@ -179,7 +161,6 @@ export const ManyStudentsCourse: Story = {
   }
 };
 
-// Test Case 13: Course with Students Missing Avatar URLs
 export const StudentsWithoutAvatarsCourse: Story = {
   args: {
     ...CompleteCourse.args,
@@ -192,7 +173,6 @@ export const StudentsWithoutAvatarsCourse: Story = {
   }
 };
 
-// Test Case 14: Course with Exactly Three Students (No +X indicator)
 export const ExactlyThreeStudentsCourse: Story = {
   args: {
     ...CompleteCourse.args,
@@ -201,7 +181,6 @@ export const ExactlyThreeStudentsCourse: Story = {
   }
 };
 
-// Test Case 15: Course with Two Students and Others
 export const TwoStudentsWithOthersCourse: Story = {
   args: {
     ...CompleteCourse.args,
