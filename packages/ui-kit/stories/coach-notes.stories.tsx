@@ -67,7 +67,7 @@ const CoachNotesWrapper = ({
   const handleImageChange = async (index: number, fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal): Promise<fileMetadata.TFileMetadata> => {
     console.log('Starting upload for link at index:', index, 'file:', fileRequest.name);
 
-    // // Create temporary metadata for UI state
+
     const processingFile: fileMetadata.TFileMetadata = {
       id: fileRequest.id,
       name: fileRequest.name,
@@ -78,22 +78,7 @@ const CoachNotesWrapper = ({
       url: URL.createObjectURL(fileRequest.file),
       thumbnailUrl: URL.createObjectURL(fileRequest.file),
       checksum: '',
-    };
-
-    // // Use functional update to ensure we get the latest state
-    // setNoteLinks(currentLinks => {
-    //   const updatedLinks = [...currentLinks];
-    //   // Handle new link case - extend array if index equals length
-    //   if (index >= currentLinks.length) {
-    //     updatedLinks.push({ title: '', url: '', customIconMetadata: processingFile });
-    //   } else {
-    //     updatedLinks[index] = {
-    //       ...updatedLinks[index],
-    //       customIconMetadata: processingFile,
-    //     };
-    //   }
-    //   return updatedLinks;
-    // });
+    }
 
     try {
       // Simulate upload with setTimeout that can be aborted
@@ -122,14 +107,15 @@ const CoachNotesWrapper = ({
       setNoteLinks(currentLinks => {
         const finalLinks = [...currentLinks];
 
-        if (index >= currentLinks.length) {
-          finalLinks.push({ title: '', url: '', customIconMetadata: completedFile });
-        } else {
+        // Only update existing links, don't create new ones automatically
+        if (index < currentLinks.length) {
           finalLinks[index] = {
             ...finalLinks[index],
             customIconMetadata: completedFile,
           };
         }
+        // Note: We don't automatically add new links here anymore
+        // Links should only be added when user clicks "Save" with valid data
         return finalLinks;
       });
       console.log('File upload completed for link at index:', index, completedFile);

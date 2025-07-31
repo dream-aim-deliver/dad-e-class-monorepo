@@ -81,7 +81,7 @@ const LinkEditWithState = (props: LinkEditProps) => {
             thumbnailUrl: URL.createObjectURL(fileRequest.file),
             checksum: '',
         };
-        setCustomIcon(processingFile);
+
 
         try {
             // Simulate upload with setTimeout that can be aborted
@@ -134,7 +134,6 @@ const LinkEditWithState = (props: LinkEditProps) => {
         console.log('onDeleteIcon', id);
         if (customIcon && customIcon.id === id) setCustomIcon(null);
     };
-    console.log(customIcon, 'customIcon');
 
     return (
         <LinkEdit
