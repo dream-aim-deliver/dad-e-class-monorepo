@@ -1,6 +1,8 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import { CourseElementType } from "../course-builder/types";
 import { fileMetadata } from "@maany_shr/e-class-models";
+import { AccordionDataProps } from "../accordion-builder";
+
 
 export interface CoachingSessionTypes extends isLocalAware {
     type: CourseElementType.CoachingSession;
@@ -290,4 +292,13 @@ export interface ImageGallery {
     images: ImageFileMetadata[];
 }
 
+export interface  AccordianElementViewProps{
+    type: CourseElementType.Accordion;
+    id: number;
+    order: number;
+    accordionData: AccordionDataProps[];
+};
+
+
+export type AccordionElement = AccordianElementViewProps;
 

@@ -23,6 +23,7 @@ export interface InputFieldProps {
   inputClassName?: string;
   min?: number;
   max?: number;
+  onBlur?:()=>void
 }
 
 /**
@@ -78,7 +79,8 @@ export const InputField: FC<InputFieldProps> = ({
   inputClassName,
   defaultValue,
   min,
-  max
+  max,
+  onBlur
 }) => {
   const [borderColor, setBorderColor] = useState(false);
 
@@ -109,10 +111,12 @@ export const InputField: FC<InputFieldProps> = ({
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onFocus={() => setBorderColor(true)}
-          onBlur={() => setBorderColor(false)}
+          onBlur={() => {setBorderColor(false);
+             onBlur?.() }}
           min={min}
           max={max}
           className={cn("bg-transparent outline-none [-moz-appearance:textfield] flex-1 placeholder-text-secondary h-full w-full appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none", inputClassName)}
+          
         />
         {hasRightContent && rightContent}
       </div>

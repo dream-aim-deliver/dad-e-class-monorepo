@@ -5,6 +5,7 @@ import { IconButton } from "./icon-button"
 import { IconChevronUp } from "./icons/icon-chevron-up"
 import { IconChevronDown } from "./icons/icon-chevron-down"
 import { AnimatedRadioButton } from "./animated-radio-button";
+import { cn } from "../utils/style-utils";
 
 /**
  * Designer Layout Component
@@ -36,7 +37,7 @@ interface DesignerLayoutProps extends isLocalAware {
     onChange?: (value: string) => void,
     courseBuilder: boolean,
     children: React.ReactNode,
-
+    className?: string | undefined,
 }
 
 /**
@@ -64,11 +65,12 @@ const DesignerLayout = ({
     onDeleteClick,
     locale,
     children,
+    className,
     courseBuilder = false,
 }: DesignerLayoutProps) => {
     const dictionary = getDictionary(locale);
     return (
-        <div className="p-4 w-full flex flex-col gap-2 bg-base-neutral-800 rounded-md border-1 border-base-neutral-700">
+        <div className={cn("p-4 w-full flex flex-col gap-2 bg-base-neutral-800 rounded-md border-1 border-base-neutral-700", className)}>
             {/* Header Row */}
             <div className="flex items-center justify-between gap-4 overflow-x-auto">
                 {/* Title and Icon */}
