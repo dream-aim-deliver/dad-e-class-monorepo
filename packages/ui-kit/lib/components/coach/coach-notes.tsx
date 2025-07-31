@@ -280,7 +280,7 @@ function CoachNotesCreate({
                         )}
                     </div>
                 </div>
-                <div
+                {editingLinkIndex === null && <div
                     className="flex items-center mt-4 gap-2"
                     role="group"
                     aria-label="Add link divider"
@@ -296,7 +296,7 @@ function CoachNotesCreate({
                         disabled={editingLinkIndex !== null}
                     />
                     <hr className="flex-grow border-t border-divider" />
-                </div>
+                </div>}
             </div>
 
             <div className="flex w-full  items-center gap-4">
