@@ -17,7 +17,7 @@ interface LinkEditProps extends isLocalAware {
     initialTitle?: string;
     initialUrl?: string;
     initialCustomIcon?: fileMetadata.TFileMetadata;
-    onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+    onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onDeleteIcon?: (id: string) => void;
     onSave: (title: string, url: string, customIcon?: fileMetadata.TFileMetadata) => void;
     onDiscard: () => void;
@@ -93,23 +93,31 @@ const LinkEdit: React.FC<LinkEditProps> = ({
             const controller = new AbortController();
             abortControllerRef.current = controller;
 
-            const metadata: fileMetadata.TFileMetadata = {
+            const fileRequest: fileMetadata.TFileUploadRequest = {
                 id: new Date().toISOString(),
                 name: newFile.name,
+                file: newFile,
+            };
+
+            // Create temporary metadata for UI state
+            const tempMetadata: fileMetadata.TFileMetadata = {
+                id: fileRequest.id,
+                name: fileRequest.name,
                 mimeType: newFile.type,
                 size: newFile.size,
                 category: 'image',
-                status: 'processing', // Set to processing initially
+                status: 'processing',
                 url: URL.createObjectURL(newFile),
                 thumbnailUrl: URL.createObjectURL(newFile),
                 checksum: "",
             };
-            setCustomIcon(metadata);
+            setCustomIcon(tempMetadata);
 
             try {
-                await onImageChange(metadata, controller.signal);
+                const uploadedFile = await onImageChange(fileRequest, controller.signal);
+                setCustomIcon(uploadedFile);
             } catch (error) {
-                if (error.name === 'AbortError') {
+                if (error instanceof Error && error.name === 'AbortError') {
                     // Upload was cancelled, clean up
                     setCustomIcon(null);
                 }

@@ -77,9 +77,25 @@ const CoachNotesEditDialogWrapper = ({
 
     const handleImageChange = async (
         index: number,
-        image: fileMetadata.TFileMetadata,
-    ) => {
-        console.log('Image change:', index, image.name);
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ): Promise<fileMetadata.TFileMetadata> => {
+        console.log('Image change:', index, fileRequest.name);
+
+        // Create a mock response for the upload
+        const uploadedFile: fileMetadata.TFileMetadata = {
+            id: fileRequest.id,
+            name: fileRequest.name,
+            mimeType: fileRequest.file.type,
+            size: fileRequest.file.size,
+            category: 'image',
+            status: 'available',
+            url: URL.createObjectURL(fileRequest.file),
+            thumbnailUrl: URL.createObjectURL(fileRequest.file),
+            checksum: 'mock-checksum',
+        };
+
+        return uploadedFile;
     };
 
     const handleDeleteIcon = (index: number) => {
@@ -88,7 +104,11 @@ const CoachNotesEditDialogWrapper = ({
 
     const handlePublish = (
         description: string,
-        links: any[],
+        links: Array<{
+            title: string;
+            url: string;
+            customIconMetadata?: fileMetadata.TFileMetadata;
+        }>,
         includeInMaterials: boolean,
     ) => {
         console.log('Published:', { description, links, includeInMaterials });
@@ -111,24 +131,24 @@ const CoachNotesEditDialogWrapper = ({
                 onClick={() => setIsOpen(true)}
             />
 
-      <CoachNotesEditDialog
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        noteDescription={noteDescription}
-        noteLinks={noteLinks}
-        includeInMaterials={includeInMaterials}
-        locale="en"
-        onPublish={handlePublish}
-        onBack={handleBack}
-        onImageChange={handleImageChange}
-        onDeleteIcon={handleDeleteIcon}
-        onNoteLinksChange={setNoteLinks}
-        onIncludeInMaterialsChange={setIncludeInMaterials}
-        onNoteDescriptionChange={setNoteDescription}
-        isEditMode={true}
-      />
-    </div>
-  );
+            <CoachNotesEditDialog
+                isOpen={isOpen}
+                onOpenChange={setIsOpen}
+                noteDescription={noteDescription}
+                noteLinks={noteLinks}
+                includeInMaterials={includeInMaterials}
+                locale="en"
+                onPublish={handlePublish}
+                onBack={handleBack}
+                onImageChange={handleImageChange}
+                onDeleteIcon={handleDeleteIcon}
+                onNoteLinksChange={setNoteLinks}
+                onIncludeInMaterialsChange={setIncludeInMaterials}
+                onNoteDescriptionChange={setNoteDescription}
+                isEditMode={true}
+            />
+        </div>
+    );
 };
 
 const meta: Meta<typeof CoachNotesEditDialog> = {
