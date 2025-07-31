@@ -151,7 +151,7 @@ function CoachNotesCreate({
 
     const handleDescriptionChange = (values: Descendant[]) => {
         setNoteDescription(values);
-        onNoteDescriptionChange(serialize(values));
+       
     };
 
     return (
@@ -170,9 +170,7 @@ function CoachNotesCreate({
                     onDeserializationError={(error) =>
                         console.error('Deserialization error:', error)
                     }
-                    onLoseFocus={() => {
-                        /* lose focus returns serialized string; nothing needed here */
-                    }}
+                    onLoseFocus={(values) =>  onNoteDescriptionChange(values)}
                     onChange={handleDescriptionChange}
                 />
             </div>
