@@ -66,11 +66,21 @@ const LinkEditWithState = (props: LinkEditProps) => {
         console.log('onDiscard');
     };
 
-    const handleImageChange = async (file: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => {
-        console.log('Starting upload for:', file.name);
+    const handleImageChange = async (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal): Promise<fileMetadata.TFileMetadata> => {
+        console.log('Starting upload for:', fileRequest.name);
 
-        // Set the file to processing state
-        const processingFile = { ...file, status: 'processing' as const };
+        // Create temporary metadata for UI state
+        const processingFile: fileMetadata.TFileMetadata = {
+            id: fileRequest.id,
+            name: fileRequest.name,
+            mimeType: fileRequest.file.type,
+            size: fileRequest.file.size,
+            category: 'image',
+            status: 'processing',
+            url: URL.createObjectURL(fileRequest.file),
+            thumbnailUrl: URL.createObjectURL(fileRequest.file),
+            checksum: '',
+        };
         setCustomIcon(processingFile);
 
         try {
@@ -92,17 +102,29 @@ const LinkEditWithState = (props: LinkEditProps) => {
             });
 
             // Update to completed state
-            const completedFile = { ...file, status: 'available' as const };
+            const completedFile: fileMetadata.TFileMetadata = {
+                ...processingFile,
+                status: 'available' as const,
+                checksum: 'uploaded-checksum',
+            };
             setCustomIcon(completedFile);
             console.log('File upload completed:', completedFile);
+            return completedFile;
 
         } catch (error) {
-            if (error.name === 'AbortError') {
+            if (error instanceof Error && error.name === 'AbortError') {
                 console.log('Upload was cancelled');
                 setCustomIcon(null); // Remove the file on cancellation
+                throw error; // Re-throw abort error
             } else {
                 console.error('Upload failed:', error);
                 // Handle other errors - could set status to 'unavailable'
+                const failedFile: fileMetadata.TFileMetadata = {
+                    ...processingFile,
+                    status: 'unavailable' as const,
+                };
+                setCustomIcon(failedFile);
+                return failedFile;
             }
         }
     };
