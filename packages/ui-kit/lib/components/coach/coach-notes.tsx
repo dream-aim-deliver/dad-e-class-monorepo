@@ -34,9 +34,9 @@ export interface coachNotesProps extends isLocalAware {
     ) => void;
     onImageChange: (
         index: number,
-        image: fileMetadata.TFileMetadata,
+        fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
-    ) => void;
+    ) => Promise<fileMetadata.TFileMetadata>;
     onDeleteIcon: (index: number) => void;
     onNoteLinksChange: (noteLinks: noteLink[]) => void;
     onIncludeInMaterialsChange: (includeInMaterials: boolean) => void;
@@ -199,8 +199,8 @@ function CoachNotesCreate({
                         <div key={index} className="w-full">
                             <div
                                 className={`w-full overflow-hidden transition-all duration-300 ease-in-out ${editingLinkIndex === index
-                                        ? 'max-h-[500px]'
-                                        : 'max-h-0'
+                                    ? 'max-h-[500px]'
+                                    : 'max-h-0'
                                     }`}
                             >
                                 {editingLinkIndex === index && (
@@ -220,11 +220,11 @@ function CoachNotesCreate({
                                             )
                                         }
                                         onDiscard={() => handleDiscard(index)}
-                                        onImageChange={(image, abortSignal) =>
-                                            onImageChange(
+                                        onImageChange={async (fileRequest, abortSignal) =>
+                                            await onImageChange(
                                                 index,
-                                                image,
-                                                abortSignal,
+                                                fileRequest,
+                                                abortSignal
                                             )
                                         }
                                         onDeleteIcon={() => onDeleteIcon(index)}
@@ -245,8 +245,8 @@ function CoachNotesCreate({
                     ))}
                     <div
                         className={`w-full overflow-hidden transition-all duration-300 ease-in-out ${editingLinkIndex === initialNoteLinks.length
-                                ? 'max-h-[500px]'
-                                : 'max-h-0'
+                            ? 'max-h-[500px]'
+                            : 'max-h-0'
                             }`}
                         key={initialNoteLinks.length}
                     >
@@ -265,10 +265,10 @@ function CoachNotesCreate({
                                 onDiscard={() =>
                                     handleDiscard(initialNoteLinks.length)
                                 }
-                                onImageChange={(image, abortSignal) =>
-                                    onImageChange(
+                                onImageChange={async (fileRequest, abortSignal) =>
+                                    await onImageChange(
                                         initialNoteLinks.length,
-                                        image,
+                                        fileRequest,
                                         abortSignal,
                                     )
                                 }
@@ -369,7 +369,7 @@ function CoachNotesView({
                 return content.length > 0;
             }
             return false;
-        } catch (error) {
+        } catch {
             // If parsing fails, assume no valid description
             return false;
         }

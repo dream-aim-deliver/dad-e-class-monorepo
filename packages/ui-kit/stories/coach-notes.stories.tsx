@@ -64,26 +64,36 @@ const CoachNotesWrapper = ({
   const [includeInMaterials, setIncludeInMaterials] = useState(initialIncludeInMaterials);
   const [noteDescription, setNoteDescription] = useState(initialDescription);
 
-  const handleImageChange = async (index: number, image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => {
-    console.log('Starting upload for link at index:', index, 'file:', image.name);
+  const handleImageChange = async (index: number, fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal): Promise<fileMetadata.TFileMetadata> => {
+    console.log('Starting upload for link at index:', index, 'file:', fileRequest.name);
 
-    // Set the file to processing state
-    const processingFile = { ...image, status: 'processing' as const };
+    // // Create temporary metadata for UI state
+    const processingFile: fileMetadata.TFileMetadata = {
+      id: fileRequest.id,
+      name: fileRequest.name,
+      mimeType: fileRequest.file.type,
+      size: fileRequest.file.size,
+      category: 'image',
+      status: 'processing',
+      url: URL.createObjectURL(fileRequest.file),
+      thumbnailUrl: URL.createObjectURL(fileRequest.file),
+      checksum: '',
+    };
 
-    // Use functional update to ensure we get the latest state
-    setNoteLinks(currentLinks => {
-      const updatedLinks = [...currentLinks];
-      // Handle new link case - extend array if index equals length
-      if (index >= currentLinks.length) {
-        updatedLinks.push({ title: '', url: '', customIconMetadata: processingFile });
-      } else {
-        updatedLinks[index] = {
-          ...updatedLinks[index],
-          customIconMetadata: processingFile,
-        };
-      }
-      return updatedLinks;
-    });
+    // // Use functional update to ensure we get the latest state
+    // setNoteLinks(currentLinks => {
+    //   const updatedLinks = [...currentLinks];
+    //   // Handle new link case - extend array if index equals length
+    //   if (index >= currentLinks.length) {
+    //     updatedLinks.push({ title: '', url: '', customIconMetadata: processingFile });
+    //   } else {
+    //     updatedLinks[index] = {
+    //       ...updatedLinks[index],
+    //       customIconMetadata: processingFile,
+    //     };
+    //   }
+    //   return updatedLinks;
+    // });
 
     try {
       // Simulate upload with setTimeout that can be aborted
@@ -104,7 +114,11 @@ const CoachNotesWrapper = ({
       });
 
       // Update to completed state using functional update
-      const completedFile = { ...mockFile, status: 'available' as const };
+      const completedFile: fileMetadata.TFileMetadata = {
+        ...processingFile,
+        status: 'available' as const,
+        checksum: 'uploaded-checksum',
+      };
       setNoteLinks(currentLinks => {
         const finalLinks = [...currentLinks];
 
@@ -119,9 +133,10 @@ const CoachNotesWrapper = ({
         return finalLinks;
       });
       console.log('File upload completed for link at index:', index, completedFile);
+      return completedFile;
 
     } catch (error) {
-      if (error.name === 'AbortError') {
+      if (error instanceof Error && error.name === 'AbortError') {
         console.log('Upload was cancelled for link at index:', index);
         // Remove the file on cancellation using functional update
         setNoteLinks(currentLinks => {
@@ -134,9 +149,15 @@ const CoachNotesWrapper = ({
           }
           return cancelledLinks;
         });
+        throw error; // Re-throw abort error
       } else {
         console.error('Upload failed for link at index:', index, error);
         // Handle other errors - could set status to 'unavailable'
+        const failedFile: fileMetadata.TFileMetadata = {
+          ...processingFile,
+          status: 'unavailable' as const,
+        };
+        return failedFile;
       }
     }
   };
