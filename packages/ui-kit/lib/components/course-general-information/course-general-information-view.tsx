@@ -11,23 +11,96 @@ import { UserAvatarReel } from '../avatar/user-avatar-reel';
 
 interface Student {
     name: string;
-    avatarUrl?: string;
+    avatarUrl: string;
 }
-
 export interface CourseGeneralInformationViewBaseProps
     extends TCourseMetadata,
         isLocalAware {
     longDescription: string;
     onClickAuthor: () => void;
-    children?: React.ReactNode;
-    students?: Student[];
+    students: Student[];
     totalStudentCount?: number;
-    studentProgress?: number;
-    onClickResume?: () => void;
 }
 
+export interface WithProgressViewProps
+    extends CourseGeneralInformationViewBaseProps {
+    progress: number;
+    onClickResume: () => void;
+    showProgress: true;
+}
+
+export interface WithoutProgressViewProps
+    extends CourseGeneralInformationViewBaseProps {
+    showProgress: false;
+}
+
+export type CourseGeneralInformationViewProps =
+    | WithProgressViewProps
+    | WithoutProgressViewProps;
+
+/**
+ * CourseGeneralInformationView
+ *
+ * A responsive and localized component for displaying detailed course metadata.
+ * It supports two modes:
+ * - With progress tracking and resume button (for enrolled users),
+ * - Without progress display (for public or unauthenticated users).
+ *
+ * @component
+ *
+ * @param {CourseGeneralInformationViewProps} props - The props for the component.
+ * @param {string} props.longDescription - A detailed description of the course.
+ * @param {object} props.duration - Duration details including video, coaching, and self-study (in minutes).
+ * @param {object} props.author - Author information containing name and image.
+ * @param {string} [props.imageUrl] - URL for the course image. If missing or broken, a placeholder is shown.
+ * @param {boolean} props.showProgress - Whether to show progress bar and resume button.
+ * @param {number} [props.progress] - Current progress percentage (required when `showProgress` is true).
+ * @param {Function} [props.onClickResume] - Callback when the resume button is clicked (required when `showProgress` is true).
+ * @param {Function} props.onClickAuthor - Callback when the author's profile is clicked.
+ * @param {Student[]} props.students - Array of enrolled students with name and avatar.
+ * @param {number} [props.totalStudentCount] - Optional total student count (used when more students exist than avatars shown).
+ * @param {string} props.locale - Current language/locale code for translations.
+ *
+ * @example
+ * ```tsx
+ * import { CourseGeneralInformationView } from './components/course/course-general-information-view';
+ *
+ * const courseData = {
+ *   title: 'Intro to Design Systems',
+ *   longDescription: 'Learn how to create consistent and scalable UI systems...',
+ *   duration: {
+ *     video: 90,
+ *     coaching: 60,
+ *     selfStudy: 45,
+ *   },
+ *   author: {
+ *     name: 'Jane Doe',
+ *     image: 'https://example.com/avatars/jane.jpg',
+ *   },
+ *   imageUrl: 'https://example.com/images/course-banner.jpg',
+ *   students: [
+ *     { name: 'Alice', avatarUrl: '/avatars/alice.png' },
+ *     { name: 'Bob', avatarUrl: '/avatars/bob.png' },
+ *   ],
+ *   totalStudentCount: 128,
+ *   rating: 4.8,
+ *   locale: 'en',
+ *   onClickAuthor: () => alert('Author clicked!'),
+ * };
+ *
+ * const App = () => (
+ *   <CourseGeneralInformationView
+ *     {...courseData}
+ *     showProgress={true}
+ *     progress={65}
+ *     onClickResume={() => alert('Resume course!')}
+ *   />
+ * );
+ * ```
+ */
+
 export const CourseGeneralInformationView: FC<
-    CourseGeneralInformationViewBaseProps
+    CourseGeneralInformationViewProps
 > = (props) => {
     const {
         longDescription,
@@ -35,102 +108,67 @@ export const CourseGeneralInformationView: FC<
         author,
         rating,
         onClickAuthor,
-        children,
         imageUrl,
+        showProgress,
         students,
         totalStudentCount,
-        studentProgress,
-        onClickResume,
     } = props;
 
     const dictionary = getDictionary(props.locale);
     const [isImageError, setIsImageError] = useState(false);
+
+    // Handle image loading errors
+    const handleImageError = () => {
+        setIsImageError(true);
+    };
+
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
-    const handleImageError = () => setIsImageError(true);
-
-    const formatDuration = (minutes?: number) => {
-        if (!minutes || minutes <= 0) return '0m';
-        if (minutes > 59) {
-            const h = Math.floor(minutes / 60);
-            const m = minutes % 60;
-            return `${h}h ${m}m`;
+    // Helper function to format duration in hours and minutes
+    const formatDuration = (durationInMinutes?: number): string => {
+        if (!durationInMinutes || durationInMinutes <= 0) return '0m';
+        if (durationInMinutes > 59) {
+            const hours = Math.floor(durationInMinutes / 60);
+            const minutes = durationInMinutes % 60;
+            return `${hours}h ${minutes}m`;
         }
-        return `${minutes}m`;
+        return `${durationInMinutes}m`;
     };
 
-    const formatSegment = (min: number) => {
-        if (min < 60) {
-            return `${min} ${dictionary.components.courseGeneralInformationView.minutesText}`;
-        }
-        const h = Math.floor(min / 60);
-        const m = min % 60;
-        return (
-            `${h} ${h === 1 ? dictionary.components.courseGeneralInformationView.hourText : dictionary.components.courseGeneralInformationView.hoursText}` +
-            (m > 0
-                ? ` ${m} ${dictionary.components.courseGeneralInformationView.minutesText}`
-                : '')
-        );
-    };
-
-    const totalDuration =
+    // Calculate total duration
+    const totalDurationInMinutes =
         (duration?.video || 0) +
         (duration?.coaching || 0) +
         (duration?.selfStudy || 0);
+    const formattedTotalDuration = formatDuration(totalDurationInMinutes);
 
-    const renderStudentAvatarReel = () => {
-        if (!students || !totalStudentCount || students.length === 0)
-            return null;
-        const visible = students.slice(0, 3);
-        const and = dictionary.components.courseGeneralInformationView.and;
-        const other = dictionary.components.courseGeneralInformationView.other;
-        const others =
-            dictionary.components.courseGeneralInformationView.others;
-        const remaining = totalStudentCount - visible.length;
-
-        let label = '';
-        if (visible.length === 1) {
-            label =
-                remaining === 0
-                    ? visible[0].name
-                    : `${visible[0].name} ${and} ${remaining} ${remaining === 1 ? other : others}`;
-        } else if (visible.length === 2) {
-            label =
-                remaining === 0
-                    ? `${visible[0].name} ${and} ${visible[1].name}`
-                    : `${visible[0].name}, ${visible[1].name} ${and} ${remaining} ${remaining === 1 ? other : others}`;
-        } else {
-            label =
-                `${visible[0].name}, ${visible[1].name}, ${visible[2].name}` +
-                (remaining > 0 ? ` ${and} ${remaining} ${others}` : '');
+    // Helper function to format single duration segment
+    const formatSingleDurationSegment = (
+        durationInMinutes: number,
+        dictionary: ReturnType<typeof getDictionary>,
+    ): string => {
+        if (durationInMinutes < 60) {
+            return `${durationInMinutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
         }
 
-        return (
-            <div className="flex gap-7 items-start md:items-center md:flex-row flex-col">
-                <UserAvatarReel>
-                    {visible.map((student, i) => (
-                        <UserAvatar
-                            key={i}
-                            size="large"
-                            fullName={student.name}
-                            imageUrl={student.avatarUrl}
-                            className="mr-[-12px]"
-                        />
-                    ))}
-                </UserAvatarReel>
-                <p className="text-base-white text-lg leading-[120%] font-bold">
-                    {label}
-                </p>
-            </div>
-        );
+        const hours = Math.floor(durationInMinutes / 60);
+        const minutes = durationInMinutes % 60;
+
+        let result = `${hours} ${
+            hours === 1
+                ? dictionary.components.courseGeneralInformationView.hourText
+                : dictionary.components.courseGeneralInformationView.hoursText
+        }`;
+
+        if (minutes > 0) {
+            result += ` ${minutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
+        }
+
+        return result;
     };
 
-    const isStudent =
-        typeof studentProgress === 'number' &&
-        typeof onClickResume === 'function';
-
     return (
-        <div className="flex md:gap-20 gap-10 w-full md:flex-row flex-col-reverse">
+        <div className="flex md:gap-20  gap-10 w-full md:flex-row flex-col-reverse">
             <div className="flex gap-[42px] flex-col basis-1/2">
                 {/* Description */}
                 <p className="text-md text-text-secondary">{longDescription}</p>
@@ -147,32 +185,43 @@ export const CourseGeneralInformationView: FC<
                         <Badge
                             hasIconLeft
                             iconLeft={<IconClock size="4" />}
-                            key={totalDuration}
-                            text={formatDuration(totalDuration)}
+                            key={formattedTotalDuration}
+                            text={formattedTotalDuration}
                             className="h-5 text-sm py-1 max-w-full"
                         />
                     </div>
 
                     {/* Duration details */}
-                    <div className="flex flex-col text-sm text-text-secondary">
-                        <p>
-                            {formatSegment(duration.video)}{' '}
+                    <div className="flex flex-col">
+                        <p className="text-text-secondary text-sm">
+                            {formatSingleDurationSegment(
+                                duration.video,
+                                dictionary,
+                            )}{' '}
                             {
                                 dictionary.components
                                     .courseGeneralInformationView
                                     .filmMaterialText
                             }
                         </p>
-                        <p>
-                            {formatSegment(duration.coaching)}{' '}
+
+                        <p className="text-text-secondary text-sm">
+                            {formatSingleDurationSegment(
+                                duration.coaching,
+                                dictionary,
+                            )}{' '}
                             {
                                 dictionary.components
                                     .courseGeneralInformationView
                                     .coachingWithAProfessionalText
                             }
                         </p>
-                        <p>
-                            {formatSegment(duration.selfStudy)}{' '}
+
+                        <p className="text-text-secondary text-sm">
+                            {formatSingleDurationSegment(
+                                duration.selfStudy,
+                                dictionary,
+                            )}{' '}
                             {
                                 dictionary.components
                                     .courseGeneralInformationView
@@ -197,7 +246,7 @@ export const CourseGeneralInformationView: FC<
                             imageUrl={author.image}
                         />
                         <div className="flex flex-col justify-center items-start">
-                            <p className="text-text-primary font-important">
+                            <p className="text-md text-text-primary font-bold leading-[120%]">
                                 {author.name}
                             </p>
                             <div className="flex gap-2 items-center">
@@ -223,12 +272,17 @@ export const CourseGeneralInformationView: FC<
                     </div>
                 </div>
 
-                {/* Students Reel Avatar */}
-                {renderStudentAvatarReel()}
-                {children}
+                {/* Enrolled Students */}
+                <div className="flex items-center">
+                    <UserAvatarReel
+                        users={students}
+                        totalUsersCount={totalStudentCount ?? students.length}
+                        locale={props.locale}
+                    />
+                </div>
 
-                {/* Progress Bar & Resume Button (just for student) */}
-                {isStudent && (
+                {/* Show Progress Bar & Resume Button JUST if the user is a student */}
+                {showProgress === true && (
                     <div className="flex flex-col gap-2 md:w-[488px] w-full">
                         <h6 className="text-text-primary">
                             {
@@ -239,11 +293,11 @@ export const CourseGeneralInformationView: FC<
                         </h6>
                         <div className="flex gap-4">
                             <ProgressBar
-                                progress={studentProgress}
+                                progress={props.progress}
                                 type="progress"
                             />
-                            <p className="text-md text-text-secondary font-important">
-                                {studentProgress}%
+                            <p className="text-md text-text-secondary font-bold leading-[150%]">
+                                {props.progress}%
                             </p>
                         </div>
                         <Button
@@ -252,7 +306,7 @@ export const CourseGeneralInformationView: FC<
                                 dictionary.components
                                     .courseGeneralInformationView.resumeText
                             }
-                            onClick={onClickResume}
+                            onClick={props.onClickResume}
                         />
                     </div>
                 )}
