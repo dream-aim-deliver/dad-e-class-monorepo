@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
-import { CourseGeneralInformationView } from '../lib/components/course-general-information-view';
+import { CourseGeneralInformationView } from '../lib/components/course-general-information/course-general-information-view';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 // Mock translation dictionary
@@ -45,6 +45,8 @@ const mockProps = {
   studentProgress: 65,
   imageUrl: 'https://example.com/course.jpg',
   locale: 'en' as TLocale,
+  onClickResume: vi.fn(),
+  onClickAuthor: vi.fn(),
 };
 
 describe('CourseGeneralInformationView', () => {
