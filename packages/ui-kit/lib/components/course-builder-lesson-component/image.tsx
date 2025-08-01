@@ -36,13 +36,15 @@ const imageFilesElement: CourseElementTemplate = {
 type TImageFile = fileMetadata.TFileMetadata & { category: 'image' };
 
 interface ImageFileEditProps extends DesignerComponentProps {
+    /** Maximum file size allowed for upload in MB */
+    maxSize: number;
     /** Callback function triggered when files are changed. Returns a Promise with upload response */
     onImageUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
     ) => Promise<TImageFile | null>;
 
-    onUploadComplete?: (file: TImageFile) => void;
+    onUploadComplete: (file: TImageFile) => void;
     onFileDelete: () => void;
     /** Callback function to handle file download */
     onFileDownload: () => void;
@@ -63,9 +65,12 @@ interface ImageFileEditProps extends DesignerComponentProps {
  * @param onChange - Callback for file changes
  * @param onFileDownload - Callback for file downloads
  * @param onFileDelete - Callback for file deletion
+ * @param onImageUpload - Callback for image uploads
+ * @param onUploadComplete - Callback when upload is complete
+ * @param maxSize - Maximum file size allowed for upload, in MB
  * @returns JSX.Element | null
  */
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, file, onImageUpload, onUploadComplete, onFileDownload, onFileDelete }: ImageFileEditProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, file, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize }: ImageFileEditProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
     const dictionary = getDictionary(locale);
     const handleImageFile = async (
@@ -101,6 +106,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 onDelete={onFileDelete}
                 onDownload={onFileDownload}
                 locale={locale}
+                maxSize={maxSize}
             />
         </DesignerLayout>
     );

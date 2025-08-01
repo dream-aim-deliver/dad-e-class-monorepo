@@ -12,13 +12,13 @@ import { ImageGallerySkeleton } from '../../lib/components/skeletons/image-galle
 interface StoryProps {
     locale: 'en' | 'de';
     elementInstance: ImageGallery;
-    onImageUpload?: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<ImageFile | null>;
-    onUploadComplete?: (file: ImageFile) => void;
-    onFileDownload?: () => void;
-    onFileDelete?: () => void;
-    onUpClick?: (id: number) => void;
-    onDownClick?: (id: number) => void;
-    onDeleteClick?: (id: number) => void;
+    onImageUpload: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<ImageFile | null>;
+    onUploadComplete: (file: ImageFile) => void;
+    onFileDownload: () => void;
+    onFileDelete: () => void;
+    onUpClick: (id: number) => void;
+    onDownClick: (id: number) => void;
+    onDeleteClick: (id: number) => void;
     files?: ImageFile[] | null;
 }
 
@@ -79,7 +79,7 @@ const defaultElementInstance: ImageGallery = {
     id: 1,
     type: CourseElementType.ImageGallery,
     order: 1,
-    imageUrls: [],
+    images: [],
 };
 
 type imageGalleryMetadata = fileMetadata.TFileMetadata & { category: "image" };
@@ -151,28 +151,6 @@ const mockFiles: imageGalleryMetadata[] = [
         status: 'available',
         checksum: 'mock-checksum-4',
     },
-    // {
-    //     id: 'file-7',
-    //     name: 'sample-image-4.jpg',
-    //     url: 'https://picsum.photos/id/13/800/600',
-    //     thumbnailUrl: 'https://picsum.photos/id/13/200/150',
-    //     size: 1024 * 1024 * 2.5,
-    //     mimeType: 'image/jpeg',
-    //     category: 'image',
-    //     status: 'available',
-    //     checksum: 'mock-checksum-4',
-    // },
-    // {
-    //     id: 'file-7',
-    //     name: 'sample-image-4.jpg',
-    //     url: 'https://picsum.photos/id/13/800/600',
-    //     thumbnailUrl: 'https://picsum.photos/id/13/200/150',
-    //     size: 1024 * 1024 * 2.5,
-    //     mimeType: 'image/jpeg',
-    //     category: 'image',
-    //     status: 'available',
-    //     checksum: 'mock-checksum-4'
-    // },
 ];
 
 
@@ -223,10 +201,10 @@ const ImageGalleryWithState = ({
     onDeleteClick,
     locale = 'en',
 }: ImageGalleryWithStateProps) => {
-    // Initialize with files from elementInstance.imageUrls if available, otherwise use initialFiles
+    // Initialize with files from elementInstance.images if available, otherwise use initialFiles
     const getInitialFiles = () => {
-        if (elementInstance.type === CourseElementType.ImageGallery && elementInstance.imageUrls?.length > 0) {
-            return elementInstance.imageUrls.map((image, index) => ({
+        if (elementInstance.type === CourseElementType.ImageGallery && elementInstance.images?.length > 0) {
+            return elementInstance.images.map((image, index) => ({
                 ...image,
                 type: CourseElementType.ImageFile,
                 order: index,
@@ -258,7 +236,6 @@ const ImageGalleryWithState = ({
 
     const handleFileDelete = () => {
         // In a real implementation, you would handle file deletion here
-        console.log('File delete requested');
         onFileDelete?.();
     };
 
@@ -275,6 +252,7 @@ const ImageGalleryWithState = ({
                 onUpClick={onUpClick}
                 onDownClick={onDownClick}
                 onDeleteClick={onDeleteClick}
+                maxSize={5}
             />
         </div>
     );
@@ -282,10 +260,10 @@ const ImageGalleryWithState = ({
 
 // Create a wrapper component that uses hooks
 const ImageGalleryWrapper = (args: StoryProps) => {
-    // Initialize with files from elementInstance.imageUrls if available
+    // Initialize with files from elementInstance.images if available
     const getInitialFiles = () => {
-        if (args.elementInstance.type === CourseElementType.ImageGallery && args.elementInstance.imageUrls?.length > 0) {
-            return args.elementInstance.imageUrls.map((image, index) => ({
+        if (args.elementInstance.type === CourseElementType.ImageGallery && args.elementInstance.images?.length > 0) {
+            return args.elementInstance.images.map((image, index) => ({
                 ...image,
                 type: CourseElementType.ImageFile,
                 order: index,
@@ -371,7 +349,7 @@ export const WithImages: Story = {
         ...Default.args,
         elementInstance: {
             ...defaultElementInstance,
-            imageUrls: mockFiles,
+            images: mockFiles,
         },
     },
 };
@@ -392,7 +370,7 @@ export const FormView: Story = {
                 elementInstance={{
                     ...defaultElementInstance,
                     type: CourseElementType.ImageGallery,
-                    imageUrls: mockFiles,
+                    images: mockFiles,
                 }}
                 locale="en"
             />
@@ -403,7 +381,7 @@ export const FormView: Story = {
         elementInstance: {
             ...defaultElementInstance,
             type: CourseElementType.ImageGallery,
-            imageUrls: mockFiles,
+            images: mockFiles,
         },
     },
 };

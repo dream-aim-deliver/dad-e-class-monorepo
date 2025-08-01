@@ -6,7 +6,8 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { ImageFile } from '../../lib/components/course-builder-lesson-component/types';
 
 // Get components from courseElements
-const { designerComponent: DesignerComponent, formComponent: FormComponent } = courseElements[CourseElementType.ImageFile];
+const { designerComponent: DesignerComponent, formComponent: FormComponent } =
+    courseElements[CourseElementType.ImageFile];
 
 type ImageFileWithMetadata = ImageFile & fileMetadata.TFileMetadata;
 
@@ -56,11 +57,11 @@ const mockUpload = async (): Promise<ImageFileWithMetadata> => {
     });
 };
 
-
-
 // Create a wrapper component that uses hooks
 const ImageUploaderWrapper = (args: StoryProps) => {
-    const [file, setFile] = useState<ImageFileWithMetadata | null>(args.initialFile || null);
+    const [file, setFile] = useState<ImageFileWithMetadata | null>(
+        args.initialFile || null,
+    );
 
     const handleUpload = async (fileRequest: fileMetadata.TFileUploadRequest) => {
         console.log('Uploading image...', fileRequest);
@@ -90,6 +91,7 @@ const ImageUploaderWrapper = (args: StoryProps) => {
         onDownClick: () => alert('Move down clicked'),
         onDeleteClick: () => alert('Delete clicked'),
         locale: args.locale,
+        maxSize: 5,
     };
 
     return (
@@ -98,8 +100,6 @@ const ImageUploaderWrapper = (args: StoryProps) => {
         </div>
     );
 };
-
-
 
 const meta: Meta<StoryProps> = {
     title: 'Components/CourseBuilder/Image Uploader',
@@ -158,22 +158,18 @@ export const GermanLocale: Story = {
 
 // Story for the form component
 export const FormView: Story = {
-    render: () => (
+    render: (args) => (
         <div style={{ width: '600px' }}>
             <FormComponent
                 elementInstance={{
-                    ...defaultElementInstance,
-                    ...mockFile,
+                    ...args.initialFile,
                 }}
-                locale="en"
+                locale={args.locale}
             />
         </div>
     ),
     args: {
         locale: 'en',
-        elementInstance: {
-            ...defaultElementInstance,
-            ...mockFile,
-        },
+        initialFile: mockFile,
     },
 };

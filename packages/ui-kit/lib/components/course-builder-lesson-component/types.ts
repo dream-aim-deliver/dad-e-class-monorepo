@@ -287,7 +287,7 @@ export interface ImageGallery {
     type: CourseElementType.ImageGallery;
     id: number;
     order: number;
-    imageUrls: ImageFileMetadata[];
+    images: ImageFileMetadata[];
 }
 
 

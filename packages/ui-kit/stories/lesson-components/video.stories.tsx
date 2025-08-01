@@ -111,6 +111,7 @@ const VideoUploaderWrapper = (args: StoryProps) => {
     onDownClick: () => alert('Move down clicked'),
     onDeleteClick: () => alert('Delete clicked'),
     locale: args.locale,
+    maxSize: 100, // Set a maximum size for the video upload
   };
 
   return (
