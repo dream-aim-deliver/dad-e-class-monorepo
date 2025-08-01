@@ -5,6 +5,37 @@ import {
     CourseGeneralInformationVisitorProps,
 } from '../lib/components/course-general-information/course-general-information-visitor';
 
+// Mock translations dictionary and helpers
+vi.mock('@maany_shr/e-class-translations', () => ({
+    getDictionary: (locale: string) => ({
+        components: {
+            courseGeneralInformationView: {
+                requirementsDetails: 'Requirements details text',
+                noRequirements: 'No requirements',
+                durationText: 'Duration',
+                minutesText: 'minutes',
+                hourText: 'hour',
+                hoursText: 'hours',
+                filmMaterialText: 'Video material',
+                coachingWithAProfessionalText: 'Coaching sessions',
+                selfStudyMaterialText: 'Self-study material',
+                createdByText: 'Created by',
+                bookLabel: 'Book',
+                taughtBy: 'Taught by',
+                requirementsTitle: 'Requirements',
+                coachingIncluded: 'Coaching included',
+                saveLabel: 'Save',
+                buyButton: 'Buy Course',
+                reviewLabel: 'reviews',
+            },
+            coachBanner: {
+                placeHolderText: 'No image available',
+            },
+        },
+    }),
+    isLocalAware: () => true,
+}));
+
 const mockLocale = 'en';
 const mockAuthor = {
     name: 'John Doe',
@@ -35,7 +66,9 @@ describe('CourseGeneralInformationVisitor', () => {
         onCoachingIncludedChange: mockOnCoachingIncludedChange,
         totalCoachesCount: 3,
         coachingIncluded: false,
-        language: { code: 'ENG', name: 'English' },
+        requiredCourses: [],
+        coaches: [],
+        onClickRequiredCourse: vi.fn(),
     };
 
     beforeEach(() => {
@@ -108,7 +141,7 @@ describe('CourseGeneralInformationVisitor', () => {
             <CourseGeneralInformationVisitor
                 {...baseProps}
                 requiredCourses={requiredCourses}
-                onClickCourse={mockOnClickCourse}
+                onClickRequiredCourse={mockOnClickCourse}
             />,
         );
 
