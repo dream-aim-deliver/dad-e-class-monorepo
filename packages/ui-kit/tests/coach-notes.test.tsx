@@ -23,12 +23,13 @@ interface ContentNode {
 
 // Mock the rich text editor components
 vitest.mock('../lib/components/rich-text-element/editor', () => ({
-    default: function MockRichTextEditor({ onChange, placeholder }: MockRichTextEditorProps) {
+    default: function MockRichTextEditor({ onChange, onLoseFocus, placeholder }: MockRichTextEditorProps & { onLoseFocus?: (value: unknown) => void }) {
         return (
             <textarea
                 data-testid="rich-text-editor"
                 placeholder={placeholder}
                 onChange={(e) => onChange([{ type: 'paragraph', children: [{ text: e.target.value }] }])}
+                onBlur={(e) => onLoseFocus && onLoseFocus([{ type: 'paragraph', children: [{ text: e.target.value }] }])}
             />
         );
     }
@@ -122,12 +123,16 @@ describe('CoachNotesCreate', () => {
         expect(defaultProps.onIncludeInMaterialsChange).toHaveBeenCalledWith(true);
     });
 
-    it('handles description change', () => {
+    it('calls onNoteDescriptionChange only on blur (lose focus)', () => {
         render(<CoachNotesCreate {...defaultProps} />);
 
         const editor = screen.getByTestId('rich-text-editor');
+        // Simulate user typing (should NOT call onNoteDescriptionChange)
         fireEvent.change(editor, { target: { value: 'New content' } });
+        expect(defaultProps.onNoteDescriptionChange).not.toHaveBeenCalled();
 
+        // Simulate blur (lose focus) event
+        fireEvent.blur(editor, { target: { value: 'New content' } });
         expect(defaultProps.onNoteDescriptionChange).toHaveBeenCalled();
     });
 
