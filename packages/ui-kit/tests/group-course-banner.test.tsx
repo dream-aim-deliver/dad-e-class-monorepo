@@ -5,7 +5,7 @@ import {
     GroupCourseBannerProps,
 } from '../lib/components/group-course-banner';
 
-// Mock dependencies
+// Mock translations
 vi.mock('@maany_shr/e-class-translations', () => ({
     getDictionary: (locale: string) => ({
         components: {
@@ -18,6 +18,7 @@ vi.mock('@maany_shr/e-class-translations', () => ({
     isLocalAware: vi.fn(),
 }));
 
+// Mock Button
 vi.mock('../lib/components/button', () => ({
     Button: ({
         text,
@@ -40,22 +41,41 @@ vi.mock('../lib/components/button', () => ({
     ),
 }));
 
+// Mock UserAvatarReel
+vi.mock('../lib/components/avatar/user-avatar-reel', () => ({
+    UserAvatarReel: ({
+        users,
+        totalUsersCount,
+        locale,
+    }: {
+        users: { name: string; avatarUrl: string }[];
+        totalUsersCount: number;
+        locale: string;
+    }) => (
+        <div data-testid="avatar-reel">
+            Mocked Avatar Reel for {users.length} users, locale: {locale}
+        </div>
+    ),
+}));
+
 describe('GroupCourseBanner', () => {
+    const mockOnClick = vi.fn();
+
     const baseProps: GroupCourseBannerProps = {
         locale: 'en',
-        studentNames: 'Alice Smith, Bob Johnson and 22 others',
-        onClickGroupWorkspace: vi.fn(),
-        children: <div data-testid="avatar-reel">Avatar Reel</div>,
+        studentNames: [
+            { name: 'Alice Smith', avatarUrl: '/avatars/alice.png' },
+            { name: 'Bob Johnson', avatarUrl: '/avatars/bob.png' },
+        ],
+        totalStudentCount: 24,
+        onClickGroupWorkspace: mockOnClick,
     };
 
-    it('renders with students name and avatar reel', () => {
+    it('renders with localized text and avatar reel', () => {
         render(<GroupCourseBanner {...baseProps} />);
 
         expect(screen.getByText('Taken also by')).toBeInTheDocument();
         expect(screen.getByTestId('avatar-reel')).toBeInTheDocument();
-        expect(
-            screen.getByText('Alice Smith, Bob Johnson and 22 others'),
-        ).toBeInTheDocument();
     });
 
     it('renders the group workspace button', () => {
@@ -72,6 +92,6 @@ describe('GroupCourseBanner', () => {
         const button = screen.getByTestId('group-workspace-button');
         fireEvent.click(button);
 
-        expect(baseProps.onClickGroupWorkspace).toHaveBeenCalledTimes(1);
+        expect(mockOnClick).toHaveBeenCalledTimes(1);
     });
 });
