@@ -19,7 +19,7 @@ export interface CourseGeneralInformationViewBaseProps
     longDescription: string;
     onClickAuthor: () => void;
     students: Student[];
-    totalStudentCount?: number;
+    totalStudentCount: number;
 }
 
 export interface WithProgressViewProps
