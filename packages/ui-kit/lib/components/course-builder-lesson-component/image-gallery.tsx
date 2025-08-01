@@ -36,13 +36,15 @@ type TImageFile = fileMetadata.TFileMetadata & { category: 'image' };
  * Extends DesignerComponentProps with additional properties for file handling.
  */
 interface ImageGalleryEditProps extends DesignerComponentProps {
+    /** Maximum file size allowed for upload in MB */
+    maxSize: number;
     /** Callback function triggered when files are changed. Returns a Promise with upload response */
     onImageUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
     ) => Promise<TImageFile | null>;
 
-    onUploadComplete?: (file: TImageFile) => void;
+    onUploadComplete: (file: TImageFile) => void;
     onFileDelete: () => void;
     /** Callback function to handle file download */
     onFileDownload: () => void;
@@ -64,7 +66,7 @@ interface ImageGalleryEditProps extends DesignerComponentProps {
  * @param onFileDownload - Callback for file downloads
  * @param onFileDelete - Callback for file deletion
  */
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, files, onImageUpload, onUploadComplete, onFileDownload, onFileDelete }: ImageGalleryEditProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, files, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize }: ImageGalleryEditProps) {
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
     const dictionary = getDictionary(locale);
 
@@ -100,6 +102,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 onDelete={onFileDelete}
                 onDownload={onFileDownload}
                 locale={locale}
+                maxSize={maxSize}
             />
         </DesignerLayout>
     );
@@ -137,7 +140,7 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
 
     const [visibleItems, setVisibleItems] = useState(getVisibleItemCount());
     const imageElements =
-        "imageUrls" in elementInstance ? elementInstance.imageUrls : [];
+        "images" in elementInstance ? elementInstance.images : [];
 
     const totalSlides = imageElements.length;
 

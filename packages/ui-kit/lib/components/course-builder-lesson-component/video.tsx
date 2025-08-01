@@ -34,13 +34,15 @@ type TVideoFile = fileMetadata.TFileMetadata & { category: 'video' };
  * Extends DesignerComponentProps with additional properties for file handling.
  */
 interface VideoFileEditProps extends DesignerComponentProps {
+    /** Maximum file size allowed for upload in MB */
+    maxSize: number;
     /** Callback function triggered when files are changed. Returns a Promise with upload response */
     onVideoUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
     ) => Promise<TVideoFile | null>;
 
-    onUploadComplete?: (file: TVideoFile) => void;
+    onUploadComplete: (file: TVideoFile) => void;
     onFileDelete: () => void;
     /** Callback function to handle file download */
     onFileDownload: () => void;
@@ -62,6 +64,7 @@ interface VideoFileEditProps extends DesignerComponentProps {
  * @param onUploadComplete - Callback when upload is complete
  * @param onFileDelete - Callback for file deletion
  * @param onFileDownload - Callback for file download
+ * @param maxSize - Maximum file size allowed for upload, in MB
  */
 export function DesignerComponent({
     elementInstance,
@@ -73,7 +76,8 @@ export function DesignerComponent({
     onVideoUpload,
     onUploadComplete,
     onFileDelete,
-    onFileDownload
+    onFileDownload,
+    maxSize
 }: VideoFileEditProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
     const dictionary = getDictionary(locale);
@@ -109,6 +113,7 @@ export function DesignerComponent({
                 onDelete={onFileDelete}
                 onDownload={onFileDownload}
                 locale={locale}
+                maxSize={maxSize}
             />
         </DesignerLayout>
     );
