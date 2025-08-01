@@ -42,6 +42,7 @@ function EnrolledCourseIntroductionContent(
                 // These fields aren't utilized and are coming from a common model
                 title={''}
                 description={''}
+                showProgress={true}
                 language={{
                     name: '',
                     code: '',
@@ -66,7 +67,7 @@ function EnrolledCourseIntroductionContent(
                         courseViewModel.data.author.surname,
                     image: courseViewModel.data.author.avatarUrl ?? '',
                 }}
-                studentProgress={progressViewModel?.data.progressPercent}
+                progress={progressViewModel?.data.progressPercent}
                 imageUrl={courseViewModel.data.imageUrl ?? ''}
                 students={courseViewModel.data.students.map((student) => ({
                     name: student.name,

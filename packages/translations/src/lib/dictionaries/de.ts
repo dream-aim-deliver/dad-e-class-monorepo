@@ -378,9 +378,6 @@ export const DE: TDictionary = {
       yourProgressText: 'Ihr Fortschritt',
       resumeText: 'Wieder aufnehmen',
       viewProfileText: 'Profil anzeigen',
-      and: 'und',
-      other: 'andere',
-      others: 'andere',
       buyButton: 'Chauf Kurs',
       coachingIncluded: 'Coaching isch inklusiv',
       saveLabel: 'spaar',
@@ -388,6 +385,8 @@ export const DE: TDictionary = {
       bookLabel: 'Bueche',
       taughtBy: 'Usgbildet vo',
       requirementsTitle: 'Voraussetzigä',
+      requirementsDetails: 'Bevor Sie mit dem Kurs beginnen, empfehlen wir dringend, diese Kurse abzuschließen:',
+      noRequirements: 'Für diesen Kurs sind keine Voraussetzungen erforderlich.',
     },
     uploadingSection: {
       maxSizeText: "maximale Größe",
@@ -691,6 +690,12 @@ export const DE: TDictionary = {
       exploreCourses:"Kurse erkunden",
       description: "Wichtig: Jedi Änderig, wo du machsch, schickt e Notifikazion a alli Studäntä i dere Gruppe. Bitte prüef sorgfälteg, bevor du’s veröffentlechsch.",
     },
+    userAvatarReel: {
+      andLabel: 'und',
+      othersLabel: 'andere',
+      otherLabel: 'anderes',
+
+    }
   },
   pages: {
     home: Home_DE,

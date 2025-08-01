@@ -379,9 +379,6 @@ export const DictionarySchema = z.object({
       yourProgressText: z.string(),
       resumeText: z.string(),
       viewProfileText: z.string(),
-      and: z.string(),
-      other: z.string(),
-      others: z.string(),
       buyButton: z.string(),
       coachingIncluded: z.string(),
       saveLabel: z.string(),
@@ -389,6 +386,8 @@ export const DictionarySchema = z.object({
       bookLabel: z.string(),
       taughtBy:z.string(),
       requirementsTitle: z.string(),
+      requirementsDetails: z.string(),
+      noRequirements: z.string(),
     }),
     uploadingSection: z.object({
       maxSizeText: z.string(),
@@ -676,6 +675,11 @@ export const DictionarySchema = z.object({
       editCoachNotes:z.string(),
       exploreCourses:z.string(),
       description: z.string(),
+    }),
+    userAvatarReel: z.object({
+      andLabel: z.string(),
+      othersLabel: z.string(),
+      otherLabel: z.string(),
     })
   }),
   pages: z.object({

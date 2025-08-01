@@ -14,7 +14,7 @@ interface Coach {
     avatarUrl: string;
 }
 
-interface RequiredCourses {
+interface RequiredCourse {
     image: string;
     courseTitle: string;
     slug: string;
@@ -25,9 +25,8 @@ export interface CourseGeneralInformationVisitorProps
         isLocalAware {
     longDescription: string;
     onClickBook: () => void;
-    children?: React.ReactNode;
     onClickBuyCourse: (coachingIncluded: boolean) => void;
-    coaches?: Coach[];
+    coaches: Coach[];
     totalCoachesCount: number;
     coachingIncluded: boolean;
     onCoachingIncludedChange: (coachingIncluded: boolean) => void;
@@ -36,89 +35,82 @@ export interface CourseGeneralInformationVisitorProps
     ownerRating: number;
     ownerTotalRating: number;
     requirementsDetails: string;
-    requiredCourses?: RequiredCourses[];
-    onClickCourse?: (slug: string) => void;
+    requiredCourses: RequiredCourse[];
+    onClickRequiredCourse: (slug: string) => void;
 }
 
 /**
- * CourseGeneralInformationVisitor component displays detailed information about a course
- * tailored for visitors (non-enrolled users). It includes the course title, description,
- * duration breakdown (video, coaching, self-study), author and coach information, ratings,
- * pricing details, and required courses.
+ * `CourseGeneralInformationVisitor` displays comprehensive information about a course
+ * for unauthenticated users or visitors. It includes the title, description, author,
+ * durations, ratings, coach avatars, pricing options (with or without coaching),
+ * required prerequisite courses, and call-to-action buttons.
  *
- * The component supports localization via the provided `locale` prop and uses
- * translations from the `getDictionary` function.
+ * This component is fully responsive, localized using a dictionary based on `locale`,
+ * and includes robust UI elements like avatar reels, rating stars, and checkboxes.
  *
- * Features:
- * - Displays course title, long description, and author info with avatar and rating.
- * - Shows total and segmented course duration with localized time units.
- * - Renders a coach avatar reel with names and total count.
- * - Handles image loading errors gracefully, showing a placeholder if needed.
- * - Allows toggling coaching inclusion with a checkbox, affecting the purchase price.
- * - Provides buttons to book a course, buy the course with/without coaching, and navigate required courses.
+ * ### Example usage:
  *
- * Props:
- * - longDescription: Detailed course description.
- * - duration: Object with video, coaching, and selfStudy durations in minutes.
- * - author: Course author info including name and avatar URL.
- * - title: Course title string.
- * - pricing: Object with currency, partialPrice, and fullPrice.
- * - rating: Average rating of the course.
- * - onClickBook: Callback when "Book" button is clicked.
- * - onClickBuyCourse: Callback when "Buy" button is clicked, receives coachingIncluded boolean.
- * - onCoachingIncludedChange: Callback when coachingIncluded checkbox toggles.
- * - imageUrl: URL of the course image.
- * - locale: Locale code string for translations.
- * - coaches: Array of coaches (name and avatarUrl).
- * - totalCoachesCount: Total number of coaches available.
- * - coachingIncluded: Initial boolean state whether coaching is included.
- * - rating, totalRating, ownerRating, ownerTotalRating: Ratings data.
- * - requirementsDetails: String listing course requirements.
- * - requiredCourses: Optional array of prerequisite courses (image, title, slug).
- * - onClickCourse: Optional callback when a required course button is clicked, receives slug.
- * - children: Optional React nodes rendered inside "Taught by" section.
- *
- * This component is designed to be responsive and accessible, with proper labels on controls.
- *
- * @example
  * ```tsx
- * const courseMetadata = {
- *   title: "React for Beginners",
- *   longDescription: "Learn React from scratch with hands-on examples.",
- *   duration: { video: 120, coaching: 60, selfStudy: 90 },
- *   author: { name: "Jane Doe", image: "https://example.com/jane.jpg" },
- *   pricing: { currency: "USD", partialPrice: 49, fullPrice: 99 },
- *   rating: 4.5,
- *   totalRating: 120,
- *   ownerRating: 4.8,
- *   ownerTotalRating: 50,
- *   totalCoachesCount: 4,
- *   requirementsDetails: "Basic JavaScript knowledge required.",
- *   coachingIncluded: true,
- *   locale: "en-US"
- * };
- *
- * const coaches = [
- *   { name: "John Smith", avatarUrl: "https://example.com/john.jpg" },
- *   { name: "Alice Johnson", avatarUrl: "https://example.com/alice.jpg" },
- *   { name: "Bob Lee", avatarUrl: "https://example.com/bob.jpg" },
- * ];
- *
- * const requiredCourses = [
- *   { image: "https://example.com/course1.jpg", courseTitle: "JS Basics", slug: "js-basics" },
- *   { image: "https://example.com/course2.jpg", courseTitle: "HTML & CSS", slug: "html-css" }
- * ];
- *
  * <CourseGeneralInformationVisitor
- *   {...courseMetadata}
- *   coaches={coaches}
- *   requiredCourses={requiredCourses}
- *   onClickBook={() => alert("Booking clicked")}
- *   onClickBuyCourse={(coaching) => alert(`Buy course with coaching: ${coaching}`)}
- *   onCoachingIncludedChange={(included) => console.log("Coaching toggled:", included)}
- *   onClickCourse={(slug) => console.log("Navigate to course:", slug)}
+ *   title="React for Beginners"
+ *   longDescription="Learn React from scratch with hands-on examples and projects."
+ *   duration={{ video: 120, coaching: 60, selfStudy: 90 }}
+ *   author={{
+ *     name: "Jane Doe",
+ *     image: "https://example.com/jane.jpg"
+ *   }}
+ *   pricing={{ currency: 'USD', fullPrice: 99, partialPrice: 49 }}
+ *   rating={4.5}
+ *   totalRating={120}
+ *   ownerRating={4.8}
+ *   ownerTotalRating={50}
+ *   imageUrl="https://example.com/course-image.jpg"
+ *   coaches={[
+ *     { name: "Coach A", avatarUrl: "https://example.com/coach-a.jpg" },
+ *     { name: "Coach B", avatarUrl: "https://example.com/coach-b.jpg" }
+ *   ]}
+ *   totalCoachesCount={2}
+ *   coachingIncluded={true}
+ *   onCoachingIncludedChange={(value) => console.log("Coaching included:", value)}
+ *   onClickBook={() => alert("Book button clicked")}
+ *   onClickBuyCourse={(included) => alert(`Buy clicked, coaching: ${included}`)}
+ *   requiredCourses={[
+ *     {
+ *       image: "https://example.com/js-basics.jpg",
+ *       courseTitle: "JS Basics",
+ *       slug: "js-basics"
+ *     }
+ *   ]}
+ *   onClickRequiredCourse={(slug) => console.log("Go to course:", slug)}
+ *   requirementsDetails="Basic JS knowledge recommended."
+ *   locale="en"
  * />
  * ```
+ *
+ * @component
+ * @param {CourseGeneralInformationVisitorProps} props - Props for the component.
+ * @param {string} props.title - Course title.
+ * @param {string} props.longDescription - Course description.
+ * @param {object} props.duration - Durations of content (video, coaching, selfStudy).
+ * @param {object} props.author - Course author info (name and avatar).
+ * @param {object} props.pricing - Pricing info (currency, full/partial price).
+ * @param {number} props.rating - Average rating of the course.
+ * @param {number} props.totalRating - Total number of ratings for the course.
+ * @param {number} props.ownerRating - Author's average rating.
+ * @param {number} props.ownerTotalRating - Number of ratings for the author.
+ * @param {string} props.imageUrl - URL for the main course image.
+ * @param {Coach[]} props.coaches - List of coaches with names and avatars.
+ * @param {number} props.totalCoachesCount - Total number of coaches available.
+ * @param {boolean} props.coachingIncluded - Whether coaching is included in the purchase.
+ * @param {Function} props.onCoachingIncludedChange - Callback when coaching is toggled.
+ * @param {Function} props.onClickBook - Callback when book button is clicked.
+ * @param {Function} props.onClickBuyCourse - Callback when main CTA button is clicked.
+ * @param {RequiredCourse[]} props.requiredCourses - List of required prerequisite courses.
+ * @param {Function} props.onClickRequiredCourse - Callback when a required course is clicked.
+ * @param {string} props.requirementsDetails - Message displayed above required courses.
+ * @param {string} props.locale - Locale for translations.
+ *
+ * @returns {JSX.Element} A visual block with full course information for public view.
  */
 
 export const CourseGeneralInformationVisitor: FC<
@@ -131,9 +123,9 @@ export const CourseGeneralInformationVisitor: FC<
     pricing,
     rating,
     onClickBook,
-    children,
     onClickBuyCourse,
     onCoachingIncludedChange,
+    onClickRequiredCourse,
     imageUrl,
     locale,
     coaches,
@@ -141,9 +133,7 @@ export const CourseGeneralInformationVisitor: FC<
     ownerRating,
     ownerTotalRating,
     totalCoachesCount,
-    requirementsDetails,
     requiredCourses,
-    onClickCourse,
     coachingIncluded: initialCoachingIncluded,
 }) => {
     const dictionary = getDictionary(locale);
@@ -151,6 +141,12 @@ export const CourseGeneralInformationVisitor: FC<
     const [coachingIncluded, setCoachingIncluded] = useState(
         initialCoachingIncluded,
     );
+
+    const requirementsDetails =
+        requiredCourses.length > 0
+            ? dictionary.components.courseGeneralInformationView
+                  .requirementsDetails
+            : dictionary.components.courseGeneralInformationView.noRequirements;
 
     useEffect(() => {
         setCoachingIncluded(initialCoachingIncluded);
@@ -206,74 +202,6 @@ export const CourseGeneralInformationVisitor: FC<
         const newValue = !coachingIncluded;
         setCoachingIncluded(newValue);
         onCoachingIncludedChange(newValue);
-    };
-
-    const formatCoachNamesText = (
-        coaches: Coach[],
-        totalCount: number,
-    ): string => {
-        if (coaches.length === 0) return '';
-        const and = dictionary.components.courseGeneralInformationView.and;
-        const other = dictionary.components.courseGeneralInformationView.other;
-        const others =
-            dictionary.components.courseGeneralInformationView.others;
-
-        if (coaches.length === 1) {
-            const othersCount = totalCount - 1;
-            if (othersCount === 0) {
-                return coaches[0].name;
-            } else if (othersCount === 1) {
-                return `${coaches[0].name} ${and} 1 ${other}`;
-            } else {
-                return `${coaches[0].name} ${and} ${othersCount} ${others}`;
-            }
-        }
-
-        if (coaches.length === 2) {
-            const othersCount = totalCount - 2;
-            if (othersCount === 0) {
-                return `${coaches[0].name} ${and} ${coaches[1].name}`;
-            } else if (othersCount === 1) {
-                return `${coaches[0].name}, ${coaches[1].name} ${and} 1 ${other}`;
-            } else {
-                return `${coaches[0].name}, ${coaches[1].name} ${and} ${othersCount} ${others}`;
-            }
-        }
-
-        const othersCount = totalCount - coaches.length;
-        if (othersCount === 0) {
-            if (coaches.length === 3) {
-                return `${coaches[0].name}, ${coaches[1].name} ${and} ${coaches[2].name}`;
-            }
-            return `${coaches[0].name}, ${coaches[1].name}, ${coaches[2].name} ${and} ${coaches.length - 3} ${others}`;
-        } else {
-            return `${coaches[0].name}, ${coaches[1].name}, ${coaches[2].name} ${and} ${othersCount} ${others}`;
-        }
-    };
-
-    const renderCoachAvatarReel = () => {
-        if (!coaches || !totalCoachesCount) return null;
-        if (coaches.length === 0) return null;
-
-        const visibleCoaches = coaches.slice(0, 3);
-
-        return (
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <UserAvatarReel>
-                    {visibleCoaches.map((coach, index) => (
-                        <UserAvatar
-                            key={index}
-                            size="medium"
-                            fullName={coach.name}
-                            imageUrl={coach.avatarUrl}
-                        />
-                    ))}
-                </UserAvatarReel>
-                <p className="text-base-white text-lg font-bold">
-                    {formatCoachNamesText(coaches, totalCoachesCount)}
-                </p>
-            </div>
-        );
     };
 
     return (
@@ -388,7 +316,7 @@ export const CourseGeneralInformationVisitor: FC<
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+                <div className="grid grid-cols-1 items-center lg:grid-cols-2 gap-6 w-full">
                     {/* Created by */}
                     <div className="flex flex-col gap-2 items-start">
                         <h6 className="text-text-primary text-lg">
@@ -397,9 +325,9 @@ export const CourseGeneralInformationVisitor: FC<
                                     .courseGeneralInformationView.createdByText
                             }
                         </h6>
-                        <div className="flex items-start gap-3 min-w-0">
+                        <div className="flex items-center gap-3 min-w-0">
                             <UserAvatar
-                                size="large"
+                                size="medium"
                                 fullName={author.name}
                                 imageUrl={author.image}
                             />
@@ -442,8 +370,13 @@ export const CourseGeneralInformationVisitor: FC<
                                     .courseGeneralInformationView.taughtBy
                             }
                         </h6>
-                        {renderCoachAvatarReel()}
-                        {children}
+                        <UserAvatarReel
+                            users={coaches}
+                            totalUsersCount={
+                                totalCoachesCount ?? coaches.length
+                            }
+                            locale={locale}
+                        />
                     </div>
                 </div>
 
@@ -456,16 +389,17 @@ export const CourseGeneralInformationVisitor: FC<
                         }
                     </h6>
                     <p className="text-text-secondary">{requirementsDetails}</p>
-                    {requiredCourses
-                        ?.slice(0, 3)
-                        .map((course) => (
+                    <div className="flex flex-wrap gap-3">
+                        {requiredCourses.map((course) => (
                             <Button
                                 key={course.courseTitle}
                                 className="p-0 gap-1 text-sm sm:w-auto truncate"
                                 size="small"
                                 title={course.courseTitle}
                                 variant="text"
-                                onClick={() => onClickCourse?.(course.slug)}
+                                onClick={() =>
+                                    onClickRequiredCourse(course.slug)
+                                }
                                 hasIconLeft
                                 iconLeft={
                                     <UserAvatar
@@ -478,6 +412,7 @@ export const CourseGeneralInformationVisitor: FC<
                                 text={course.courseTitle}
                             />
                         ))}
+                    </div>
                 </div>
 
                 {/* Checkbox coaching included */}

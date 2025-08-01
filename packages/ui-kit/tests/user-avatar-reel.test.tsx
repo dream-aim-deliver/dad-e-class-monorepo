@@ -1,88 +1,65 @@
 import { render, screen } from '@testing-library/react';
 import { UserAvatarReel } from '../lib/components/avatar/user-avatar-reel';
-import { UserAvatar } from '../lib/components/avatar/user-avatar';
 
 describe('UserAvatarReel Component', () => {
-  // Mock avatars data
-  const mockAvatars = (
-    <>
-      <UserAvatar
-        fullName="Alice Smith"
-        imageUrl="https://example.com/alice.jpg"
-        className="mr-[-12px]"
-      />
-      <UserAvatar
-        fullName="Bob Johnson"
-        imageUrl="https://example.com/bob.jpg"
-        className="mr-[-12px]"
-      />
-      <UserAvatar
-        fullName="Charlie Brown"
-        imageUrl="https://example.com/charlie.jpg"
-        className="mr-[-12px]"
-      />
-      <UserAvatar
-        fullName="+3"
-        className="mr-[-12px]"
-      />
-    </>
-  );
+    const users = [
+        { name: 'Alice Smith', avatarUrl: 'https://example.com/alice.jpg' },
+        { name: 'Bob Johnson', avatarUrl: 'https://example.com/bob.jpg' },
+        { name: 'Charlie Brown', avatarUrl: 'https://example.com/charlie.jpg' },
+        { name: 'Diana Prince', avatarUrl: 'https://example.com/diana.jpg' },
+    ];
 
-  it('renders multiple avatars', () => {
-    render(<UserAvatarReel>{mockAvatars}</UserAvatarReel>);
+    it('renders multiple avatars', () => {
+        render(
+            <UserAvatarReel users={users} totalUsersCount={4} locale="en" />,
+        );
 
-    const avatarContainer = screen.getByRole('group');
-    expect(avatarContainer).toBeInTheDocument();
+        const avatars = screen.getAllByRole('img');
+        expect(avatars.length).toBeLessThanOrEqual(3); // max 3 visible
+        expect(screen.getByText('+1')).toBeInTheDocument();
+    });
 
-    const avatars = screen.getAllByTestId('user-avatar');
-    expect(avatars.length).toBe(4);
-  });
+    it('renders a single avatar correctly', () => {
+        const oneUser = [users[0]];
+        render(
+            <UserAvatarReel users={oneUser} totalUsersCount={1} locale="en" />,
+        );
 
-  it('renders single avatar correctly', () => {
-    render(
-      <UserAvatarReel>
-        <UserAvatar fullName="Solo User" />
-      </UserAvatarReel>
-    );
+        const avatar = screen.getByRole('img');
+        expect(avatar).toBeInTheDocument();
+        expect(screen.queryByText('+')).not.toBeInTheDocument();
+    });
 
-    const avatars = screen.getAllByTestId('user-avatar');
-    expect(avatars.length).toBe(1);
-    expect(avatars[0]).toHaveTextContent('SU');
-  });
+    it('renders nothing if users are empty', () => {
+        const { container } = render(
+            <UserAvatarReel users={[]} totalUsersCount={0} locale="en" />,
+        );
+        expect(container).toBeEmptyDOMElement();
+    });
 
-  it('applies custom className correctly', () => {
-    render(
-      <UserAvatarReel className="custom-class">
-        {mockAvatars}
-      </UserAvatarReel>
-    );
+    it('renders mixed avatar types (image + initials fallback)', () => {
+        const mixedUsers = [
+            { name: 'Anna A.', avatarUrl: 'https://example.com/aa.jpg' },
+            { name: 'Ben B.', avatarUrl: '' }, // should fallback to initials
+            { name: 'Cecilia C.', avatarUrl: 'https://example.com/cc.jpg' },
+        ];
 
-    expect(screen.getByRole('group')).toHaveClass('custom-class');
-  });
+        render(
+            <UserAvatarReel
+                users={mixedUsers}
+                totalUsersCount={3}
+                locale="en"
+            />,
+        );
 
-  it('renders mixed avatar types (image + initials)', () => {
-    const mixedAvatars = (
-      <>
-        <UserAvatar fullName="AA" imageUrl="https://example.com/aa.jpg" />
-        <UserAvatar fullName="BB" />
-        <UserAvatar fullName="CC" imageUrl="https://example.com/cc.jpg" />
-      </>
-    );
+        expect(screen.getAllByRole('img').length).toBe(2);
+        expect(screen.getByText('BB')).toBeInTheDocument();
+    });
 
-    render(<UserAvatarReel>{mixedAvatars}</UserAvatarReel>);
-
-    const images = screen.getAllByRole('img');
-    const initials = screen.getAllByText('BB');
-
-    expect(images.length).toBe(2);
-    expect(initials.length).toBe(1);
-  });
-
-  it('renders overflow indicator correctly', () => {
-    render(<UserAvatarReel>{mockAvatars}</UserAvatarReel>);
-
-    const overflowAvatar = screen.getByText('+3');
-    expect(overflowAvatar).toBeInTheDocument();
-    expect(overflowAvatar.closest('div')).toHaveClass('bg-base-neutral-700');
-  });
+    it('renders overflow indicator correctly', () => {
+        render(
+            <UserAvatarReel users={users} totalUsersCount={10} locale="en" />,
+        );
+        expect(screen.getByText('+7')).toBeInTheDocument();
+    });
 });

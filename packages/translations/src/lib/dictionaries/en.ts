@@ -375,9 +375,6 @@ export const EN: TDictionary = {
       yourProgressText: 'Your progress',
       resumeText: 'Resume',
       viewProfileText: 'View profile',
-      and: 'and',
-      other: 'other',
-      others: 'others',
       buyButton: 'Buy Course',
       coachingIncluded: 'Coaching Included',
       saveLabel: 'save',
@@ -385,6 +382,8 @@ export const EN: TDictionary = {
       bookLabel: 'Book',
       taughtBy: 'Taught by',
       requirementsTitle: 'Requirements',
+      requirementsDetails: 'Before starting the course, we highly recommend completing these courses:',
+      noRequirements: 'There are no requirements to take this course.',
     },
     uploadingSection: {
       maxSizeText: 'Max size',
@@ -685,6 +684,11 @@ export const EN: TDictionary = {
       exploreCourses:"Explore Courses",
       description: "Note: Every edit you make will send a notification to all students in this group. Please review carefully before publishing.",
   },
+    userAvatarReel: {
+      andLabel: 'and',
+      othersLabel: 'others',
+      otherLabel: 'other',
+    }
   },
   pages: {
     home: Home_EN,
