@@ -140,14 +140,14 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                 <div className="flex items-center justify-between pb-2 border-b-1 border-divider">
                     <div className="flex gap-1 items-center justify-center">
                         <IconCoachingSession fill='text-primary' />
-                        <p className="text-sm text-text-primary font-bold leading-[150%]">
+                        <p className="md:text-sm text-xs text-text-primary font-bold leading-[150%]">
                             {dictionary.components.assignment.replyPanel.replyText}
                         </p>
                     </div>
                     {role === 'coach' && (
                         <Button
                             variant="text"
-                            size="medium"
+                            size="small"
                             iconLeft={<IconAssignmentPassed />}
                             hasIconLeft
                             text={dictionary.components.assignment.replyPanel.markAsPassedText}
