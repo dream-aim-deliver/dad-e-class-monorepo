@@ -204,18 +204,19 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                 <p className="text-md text-text-primary leading-[150%]">{description}</p>
 
                 {/* Files */}
-                {files.map((file, index) => (
-                    <FilePreview
-                        key={index}
-                        uploadResponse={file}
-                        locale={locale}
-                        onDelete={() => onFileDelete(assignmentId, file.id)}
-                        onDownload={() => onFileDownload(file.id)}
-                        onCancel={() => onFileDelete(assignmentId, file.id)}
-                        readOnly={role !== "coach"}
-                    />
-                ))}
-
+                <div className="flex flex-col gap-2 w-full">
+                    {files.map((file, index) => (
+                        <FilePreview
+                            key={index}
+                            uploadResponse={file}
+                            locale={locale}
+                            onDelete={() => onFileDelete(assignmentId, file.id)}
+                            onDownload={() => onFileDownload(file.id)}
+                            onCancel={() => onFileDelete(assignmentId, file.id)}
+                            readOnly={role !== "coach"}
+                        />
+                    ))}
+                </div>
                 {/* Links */}
                 {links.map((link, index) =>
                     linkEditIndex === index ? (
