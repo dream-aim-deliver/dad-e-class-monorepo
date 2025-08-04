@@ -15,7 +15,7 @@ import {
     IconStudent,
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { trpc } from '../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
@@ -26,6 +26,7 @@ import EnrolledCourseIntroduction from './enrolled-course-introduction';
 import { useGetStudentProgressPresenter } from '../../../hooks/use-student-progress-presenter';
 import { useRouter } from 'next/navigation';
 import { CoachCourseTab, StudentCourseTab } from '../../../utils/course-tabs';
+import EnrolledCourseCompletedAssessment from './enrolled-course-completed-assessment';
 
 interface EnrolledCourseProps {
     roles: string[];
@@ -228,7 +229,11 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                     <DefaultError locale={locale} />
                 </Tabs.Content>
                 <Tabs.Content value="assessment" className={tabContentClass}>
-                    <DefaultError locale={locale} />
+                    <Suspense fallback={<DefaultLoading locale={locale} />}>
+                        <EnrolledCourseCompletedAssessment
+                            courseSlug={props.courseSlug}
+                        />
+                    </Suspense>
                 </Tabs.Content>
             </Tabs.Root>
         </div>

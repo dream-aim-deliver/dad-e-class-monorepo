@@ -9,6 +9,7 @@ import {
     SingleChoiceElement,
     TextInputElement,
 } from '@maany_shr/e-class-ui-kit';
+import { TAnswer } from 'packages/models/src/usecase-models';
 
 function transformRichText(
     component: Extract<useCaseModels.TLessonComponent, { type: 'richText' }>,
@@ -106,7 +107,7 @@ function transformOneOutOfThree(
             rows: component.rows.map((row) => ({
                 id: row.id,
                 rowTitle: row.name,
-                columns: columns.slice(),
+                columns: structuredClone(columns),
             })),
         },
         required: component.required,
@@ -137,5 +138,95 @@ export function transformLessonComponents(
         }
     }
 
+    return elements;
+}
+
+const applyTextInputProgress = (
+    element: TextInputElement,
+    answer: TAnswer,
+): void => {
+    if (answer.type === 'textInput') {
+        // @ts-expect-error As TextInput might not have content, being a joint type, ignore typing to assign it
+        element.content = answer.answer;
+    }
+};
+
+const applySingleChoiceProgress = (
+    element: SingleChoiceElement,
+    answer: TAnswer,
+): void => {
+    if (answer.type === 'singleChoice') {
+        element.options.forEach((option) => {
+            option.isSelected = answer.answerId === option.id;
+        });
+    }
+};
+
+const applyMultiCheckProgress = (
+    element: MultiCheckElement,
+    answer: TAnswer,
+): void => {
+    if (answer.type === 'multipleChoice') {
+        element.options.forEach((option) => {
+            if (option.id !== undefined) {
+                option.isSelected = answer.answerIds.includes(option.id);
+            }
+        });
+    }
+};
+
+const applyOneOutOfThreeProgress = (
+    element: OneOutOfThreeElement,
+    answer: TAnswer,
+): void => {
+    if (answer.type === 'oneOutOfThree') {
+        for (const row of element.data.rows) {
+            for (const column of row.columns) {
+                column.selected = answer.answers.some(
+                    (a) => a.rowId === row.id && a.columnId === column.id,
+                );
+            }
+        }
+    }
+};
+
+const progressAppliers: Record<
+    FormElementType,
+    ((element: any, answer: TAnswer) => void) | undefined
+> = {
+    [FormElementType.TextInput]: applyTextInputProgress,
+    [FormElementType.SingleChoice]: applySingleChoiceProgress,
+    [FormElementType.MultiCheck]: applyMultiCheckProgress,
+    [FormElementType.OneOutOfThree]: applyOneOutOfThreeProgress,
+    [FormElementType.RichText]: undefined,
+    [FormElementType.HeadingText]: undefined,
+} as const;
+
+export function applyProgressToElements(
+    elements: FormElement[],
+    answers: TAnswer[],
+): void {
+    const answersMap = new Map(
+        answers.map((answer) => [answer.componentId, answer]),
+    );
+
+    elements.forEach((element) => {
+        const answer = answersMap.get(element.id);
+        if (answer) {
+            const applier = progressAppliers[element.type];
+            if (applier) {
+                applier(element, answer);
+            }
+        }
+        return element;
+    });
+}
+
+export function transformLessonComponentsWithProgress(
+    components: useCaseModels.TLessonComponent[],
+    answers: TAnswer[],
+): FormElement[] {
+    const elements = transformLessonComponents(components);
+    applyProgressToElements(elements, answers);
     return elements;
 }
