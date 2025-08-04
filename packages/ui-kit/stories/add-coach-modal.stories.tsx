@@ -1,5 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { AddCoachModal } from '../lib/components/add-coach-modal';
+import {
+    AddCoachModal,
+    AddCoachModalProps,
+} from '../lib/components/add-coach-modal';
+import { useState } from 'react';
 
 export default {
     title: 'Components/AddCoachModal',
@@ -57,11 +61,35 @@ const mockCoaches = [
     },
 ];
 
+const StatefulAddCoachModal = (args: AddCoachModalProps) => {
+    const [addedCoachIds, setAddedCoachIds] = useState<string[]>(
+        args.addedCoachIds ?? [],
+    );
+
+    const handleAddCoach = (id: string) => {
+        if (!addedCoachIds.includes(id)) {
+            const updatedIds = [...addedCoachIds, id];
+            setAddedCoachIds(updatedIds);
+            alert(`Added coach with ID: ${id}`);
+        } else {
+            alert(`Coach with ID: ${id} is already added.`);
+        }
+    };
+
+    return (
+        <AddCoachModal
+            {...args}
+            addedCoachIds={addedCoachIds}
+            onAdd={handleAddCoach}
+        />
+    );
+};
+
 export const Default: Story = {
+    render: (args) => <StatefulAddCoachModal {...args} />,
     args: {
         locale: 'en',
         onClose: () => alert('Modal closed'),
-        onAdd: (id: string) => alert(`Added coach with ID: ${id}`),
         content: mockCoaches,
         addedCoachIds: ['coach-2'],
     },

@@ -24,6 +24,20 @@ export interface AddCoachModalProps extends isLocalAware {
     addedCoachIds?: string[];
 }
 
+
+const SkeletonCoachItem = () => (
+    <div className="flex justify-between items-center rounded-lg gap-2 p-4">
+        {/* Skeleton avatar */}
+        <div className="w-18 h-15 items-end rounded-full bg-base-neutral-700 animate-pulse" />
+        {/* Skeleton title and rating*/}
+        <div className="flex flex-col items-start gap-3 w-full animate-pulse">
+            <div className="w-50 h-6 bg-base-neutral-700 rounded-lg" />
+            <div className="w-30 h-4 bg-base-neutral-700 rounded-lg" />
+        </div>
+    </div>
+
+);
+
 /**
  * A modal component for searching and adding coaches to a selection list.
  *
@@ -124,24 +138,8 @@ export const AddCoachModal = ({
                                 <h6 className="text-text-primary mb-4">
                                     {dictionary.noFoundLabel}
                                 </h6>
-                                <div className="flex justify-between items-center rounded-lg gap-2 p-4">
-                                    {/* Skeleton avatar */}
-                                    <div className="w-18 h-15 items-end rounded-full bg-base-neutral-700 animate-pulse" />
-                                    {/* Skeleton title and rating*/}
-                                    <div className="flex flex-col items-start gap-3 w-full animate-pulse">
-                                        <div className="w-50 h-6 bg-base-neutral-700 rounded-lg" />
-                                        <div className="w-30 h-4 bg-base-neutral-700 rounded-lg" />
-                                    </div>
-                                </div>
-                                <div className="flex justify-between items-center rounded-lg gap-2 p-4">
-                                    {/* Skeleton avatar */}
-                                    <div className="w-18 h-15 items-end rounded-full bg-base-neutral-700 animate-pulse" />
-                                    {/* Skeleton title and rating*/}
-                                    <div className="flex flex-col items-start gap-3 w-full animate-pulse">
-                                        <div className="w-50 h-6 bg-base-neutral-700 rounded-lg" />
-                                        <div className="w-30 h-4 bg-base-neutral-700 rounded-lg" />
-                                    </div>
-                                </div>
+                                <SkeletonCoachItem />
+                                <SkeletonCoachItem />
                             </li>
                         ) : (
                             filteredCoaches.map((coach) => {
