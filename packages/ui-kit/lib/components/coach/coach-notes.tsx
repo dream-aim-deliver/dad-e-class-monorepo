@@ -48,8 +48,7 @@ export interface coachNotesProps extends isLocalAware {
 export interface coachNotesViewProps extends isLocalAware {
     noteDescription: string;
     noteLinks: noteLink[];
-    includeInMaterials: boolean;
-    onExploreCourses?: () => void; // Optional callback for explore courses button
+    onExploreCourses: () => void;
 }
 function CoachNotesCreate({
     noteDescription: initialNoteDescription,
@@ -151,7 +150,6 @@ function CoachNotesCreate({
 
     const handleDescriptionChange = (values: Descendant[]) => {
         setNoteDescription(values);
-       
     };
 
     return (
@@ -170,7 +168,7 @@ function CoachNotesCreate({
                     onDeserializationError={(error) =>
                         console.error('Deserialization error:', error)
                     }
-                    onLoseFocus={(values) =>  onNoteDescriptionChange(values)}
+                    onLoseFocus={(values) => onNoteDescriptionChange(values)}
                     onChange={handleDescriptionChange}
                 />
             </div>
@@ -349,7 +347,6 @@ function CoachNotesCreate({
 function CoachNotesView({
     noteDescription,
     noteLinks,
-    includeInMaterials,
     locale,
     onExploreCourses,
 }: coachNotesViewProps) {
@@ -367,8 +364,8 @@ function CoachNotesView({
                 return content.length > 0;
             }
             return false;
-        } catch {
-            // If parsing fails, assume no valid description
+        } catch (_error) {
+            // Parsing failed, likely due to invalid JSON. Returning false as a fallback. 
             return false;
         }
     };
