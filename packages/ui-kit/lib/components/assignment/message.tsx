@@ -93,7 +93,7 @@ export const Message: FC<MessageProps> = ({
     };
 
     const messageBubble = (
-        <div className={cn('flex flex-col gap-2 p-2 border-1 rounded-tl-medium rounded-tr-medium w-full', reply.sender.isCurrentUser ? ' rounded-br-none rounded-bl-medium bg-base-neutral-700 border-base-neutral-600' : 'rounded-br-medium rounded-bl-none bg-base-neutral-800 border-base-neutral-700')}>
+        <div className={cn('flex flex-col gap-2 p-2 border-1 rounded-tl-medium rounded-tr-medium min-w-0 flex-1', reply.sender.isCurrentUser ? ' rounded-br-none rounded-bl-medium bg-base-neutral-700 border-base-neutral-600' : 'rounded-br-medium rounded-bl-none bg-base-neutral-800 border-base-neutral-700')}>
             <div className="flex justify-between">
                 <p className="text-xs text-text-primary font-bold leading-[100%]">
                     {reply.sender.isCurrentUser ? dictionary.components.assignment.message.youText : reply.sender.name}
@@ -166,19 +166,23 @@ export const Message: FC<MessageProps> = ({
             {reply.sender.isCurrentUser ? (
                 <div className="flex gap-2 items-end">
                     {messageBubble}
-                    <UserAvatar
-                        imageUrl={reply.sender.image}
-                        size="xSmall"
-                        fullName={reply.sender.name}
-                    />
+                    <div className="flex-shrink-0">
+                        <UserAvatar
+                            imageUrl={reply.sender.image}
+                            size="xSmall"
+                            fullName={reply.sender.name}
+                        />
+                    </div>
                 </div>
             ) : (
                 <div className="flex gap-2 items-end">
-                    <UserAvatar
-                        imageUrl={reply.sender.image}
-                        size="xSmall"
-                        fullName={reply.sender.name}
-                    />
+                    <div className="flex-shrink-0">
+                        <UserAvatar
+                            imageUrl={reply.sender.image}
+                            size="xSmall"
+                            fullName={reply.sender.name}
+                        />
+                    </div>
                     {messageBubble}
                 </div>
             )}

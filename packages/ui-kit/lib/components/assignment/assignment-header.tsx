@@ -65,16 +65,17 @@ export const AssignmentHeader: FC<AssignmentHeaderProps> = ({
             )}
             <div className="flex flex-wrap gap-x-6 items-center">
                 {course && (
-                    <div className="flex gap-[13px] items-center">
+                    <div className="flex gap-[13px] items-center w-full">
                         <p className="text-sm text-text-secondary leading-[100%]">
                             {dictionary.components.assignment.assignmentCard.courseText}:
                         </p>
                         <Button
                             size="small"
                             variant="text"
-                            className="flex gap-1 p-0 h-8 max-w-full"
+                            className="p-0 gap-1 text-sm truncate"
                             text={course.title}
                             onClick={onClickCourse}
+                            title={course.title}
                             hasIconLeft
                             iconLeft={
                                 <UserAvatar
@@ -87,16 +88,17 @@ export const AssignmentHeader: FC<AssignmentHeaderProps> = ({
                     </div>
                 )}
                 {role === 'coach' && student && (
-                    <div className="flex gap-[13px] items-center">
+                    <div className="flex gap-[13px] items-center w-full">
                         <p className="text-sm text-text-secondary leading-[100%]">
                             {dictionary.components.assignment.assignmentCard.studentText}:
                         </p>
                         <Button
                             size="small"
                             variant="text"
-                            className="flex gap-1 p-0 h-8 max-w-full"
+                            className="p-0 gap-1 text-sm truncate"
                             text={student.name}
                             onClick={onClickUser}
+                            title={student.name}
                             hasIconLeft
                             iconLeft={
                                 <UserAvatar
@@ -108,7 +110,7 @@ export const AssignmentHeader: FC<AssignmentHeaderProps> = ({
                     </div>
                 )}
                 {groupName && (
-                    <div className="flex flex-wrap items-center gap-1">
+                    <div className="flex items-center gap-1 w-full">
                         <div className="flex items-center gap-1 text-sm text-text-secondary">
                             <IconGroup size="4" data-testid="briefcase-icon" />
                             <p className="text-sm text-text-secondary">{dictionary.components.assignment.assignmentCard.groupText}</p>
@@ -116,7 +118,8 @@ export const AssignmentHeader: FC<AssignmentHeaderProps> = ({
                         <Button
                             size="small"
                             variant="text"
-                            className="p-0 max-w-full"
+                            className="p-0 max-w-full truncate"
+                            title={groupName}
                             text={groupName}
                             onClick={onClickGroup}
                         />

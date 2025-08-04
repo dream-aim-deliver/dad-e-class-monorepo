@@ -107,19 +107,19 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
     };
 
     return (
-        <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50" onClick={onClose}>
-            <div className="relative flex flex-col gap-2 p-6 bg-card-fill text-text-primary w-full max-w-[450px] h-full max-h-[90vh] overflow-y-auto rounded-md" onClick={(e) => e.stopPropagation()}>
-                <div className="absolute top-0 right-0">
+        <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center z-50 px-2 sm:px-0" onClick={onClose}>
+            <div className="relative flex flex-col gap-2 p-3 sm:p-6 bg-card-fill text-text-primary w-full max-w-full sm:max-w-[450px] h-full max-h-[100vh] sm:max-h-[90vh] overflow-y-auto rounded-none sm:rounded-md" onClick={(e) => e.stopPropagation()}>
+                <div className="absolute top-2 right-2 sm:top-0 sm:right-0">
                     <Button variant="text" size="medium" hasIconLeft iconLeft={<IconClose size="8" />} onClick={onClose} />
                 </div>
-                <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-bold">{dictionary.title}</h2>
+                <div className="flex justify-between items-center mt-6 sm:mt-0">
+                    <h2 className="text-xl sm:text-2xl font-bold">{dictionary.title}</h2>
                 </div>
                 <div className="h-px w-full bg-divider"></div>
 
                 {/* Title Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">{dictionary.titleSection}</h3>
+                    <h3 className="text-lg sm:text-xl font-semibold">{dictionary.titleSection}</h3>
                     <TextInput
                         label=""
                         key={`title-${resetKey}`}
@@ -136,8 +136,8 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
 
                 {/* Status Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">{dictionary.statusSection}</h3>
-                    <div className="grid grid-cols-2 gap-3">
+                    <h3 className="text-lg sm:text-xl font-semibold">{dictionary.statusSection}</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                         {availableStatuses.map((status) => (
                             <CheckBox
                                 key={status}
@@ -163,7 +163,7 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
 
                 {/* Course Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">{dictionary.courseSection}</h3>
+                    <h3 className="text-lg sm:text-xl font-semibold">{dictionary.courseSection}</h3>
                     <TextInput
                         label=""
                         key={`course-${resetKey}`}
@@ -180,7 +180,7 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
 
                 {/* Module Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">{dictionary.moduleSection}</h3>
+                    <h3 className="text-lg sm:text-xl font-semibold">{dictionary.moduleSection}</h3>
                     <TextInput
                         label=""
                         key={`module-${resetKey}`}
@@ -197,7 +197,7 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
 
                 {/* Lesson Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">{dictionary.lessonSection}</h3>
+                    <h3 className="text-lg sm:text-xl font-semibold">{dictionary.lessonSection}</h3>
                     <TextInput
                         label=""
                         key={`lesson-${resetKey}`}
@@ -214,7 +214,7 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
 
                 {/* Student Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">{dictionary.studentSection}</h3>
+                    <h3 className="text-lg sm:text-xl font-semibold">{dictionary.studentSection}</h3>
                     <TextInput
                         label=""
                         key={`student-${resetKey}`}
@@ -231,7 +231,7 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
 
                 {/* Group Section */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-semibold">{dictionary.groupSection}</h3>
+                    <h3 className="text-lg sm:text-xl font-semibold">{dictionary.groupSection}</h3>
                     <TextInput
                         label=""
                         key={`group-${resetKey}`}
@@ -247,7 +247,7 @@ export const AssignmentCardFilterModal: React.FC<AssignmentCardFilterModalProps>
                 <div className="h-px w-full bg-divider"></div>
 
                 {/* Buttons */}
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2 mt-2">
                     <Button
                         variant="secondary"
                         size="medium"
