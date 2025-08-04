@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { CoachNotesCreate, CoachNotesView } from '../lib/components/coach/coach-notes';
 import type { Descendant } from 'slate';
@@ -201,7 +201,6 @@ export const ViewOnly = () => (
   <CoachNotesView
     noteDescription={JSON.stringify(sampleDescription)}
     noteLinks={sampleLinks}
-    includeInMaterials={true}
     locale="en"
     onExploreCourses={() => alert('onExploreCourses')}
   />
@@ -211,7 +210,6 @@ export const EmptyState = () => (
   <CoachNotesView
     noteDescription={JSON.stringify(emptyDescription)}
     noteLinks={[]}
-    includeInMaterials={false}
     locale="en"
     onExploreCourses={() => alert('onExploreCourses')}
   />
