@@ -4,6 +4,19 @@ import { IconSearch } from './icons';
 import { useDebounce } from '../hooks/use-debounce';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
+
+/**
+ * SearchableDropdown Component
+ * 
+ * A dropdown component that allows users to search through a list of options.
+ * 
+ * @param {SearchableDropdownProps<T>} props - The props for the component.
+ * @param options - The type of the options in the dropdown.
+ * @param optionKey - The key in the option object that represents the unique identifier.
+ * @param optionValue - The key in the option object that represents the value to be displayed.
+ * @returns {JSX.Element} The rendered component.
+ * 
+ */
 interface SearchableDropdownProps<T> extends isLocalAware {
     options: T[];
     optionKey: keyof T;
