@@ -702,6 +702,21 @@ export const DE: TDictionary = {
       skillsLabel: 'Fähigkeiten',
       buyButton: 'Coaching-Sitzungen kaufen',
     },
+    courseIntroInformation: {
+  generalInformation: 'Allgemeine Informationen',
+  courseTitle: 'Kurstitel',
+  briefDescription: 'Kurze Beschreibung',
+  briefDescriptionPlaceholder: 'Fügen Sie eine kurze Beschreibung des Kurses hinzu...',
+  estimatedDuration: 'Geschätzte Dauer in Stunden',
+  requirements: 'Anforderungen',
+  requirementsDescription: 'Was wird von den Studierenden erwartet, um diesen Kurs zu beginnen? Fügen Sie unten die erforderlichen Kurse hinzu.',
+  searchCoursesPlaceholder: 'Kurse suchen',
+  featuredImage: 'Vorschaubild',
+  removeCourse: 'Kurs entfernen'
+},
+searchableDropdown:{
+  noResultsFound:'Keine Ergebnisse gefunden'
+    },
   },
   pages: {
     home: Home_DE,

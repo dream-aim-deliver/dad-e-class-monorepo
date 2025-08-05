@@ -689,6 +689,21 @@ export const DictionarySchema = z.object({
       skillsLabel: z.string(),
       buyButton: z.string(),
     }),
+    courseIntroInformation: z.object({
+      generalInformation: z.string(),
+      courseTitle: z.string(),
+      briefDescription: z.string(),
+      briefDescriptionPlaceholder: z.string(),
+      estimatedDuration: z.string(),
+      requirements: z.string(),
+      requirementsDescription: z.string(),
+      searchCoursesPlaceholder: z.string(),
+      featuredImage: z.string(),
+      removeCourse:z.string()
+    }),
+    searchableDropdown:z.object({
+      noResultsFound:z.string()
+    })
   }),
   pages: z.object({
     sso: z.object({
