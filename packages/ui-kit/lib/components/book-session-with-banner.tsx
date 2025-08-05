@@ -43,7 +43,7 @@ export const BookSessionWith = ({
     totalRatings,
     onBookSessionWith,
     locale,
-    isCourseCreator,
+    isCourseCreator = false,
 }: BookSessionWithProps) => {
     const dictionary = getDictionary(locale).components.bookSessionWithBanner;
 

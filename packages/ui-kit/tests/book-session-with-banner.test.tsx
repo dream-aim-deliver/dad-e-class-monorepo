@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { BookSessionWith } from '../lib/components/book-session-with-banner';
+import { BookSessionWith, BookSessionWithProps } from '../lib/components/book-session-with-banner';
 
 // Mocks dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -39,7 +39,7 @@ vi.mock('../lib/components/star-rating', () => ({
 }));
 
 describe('BookSessionWith', () => {
-    const defaultProps = {
+    const defaultProps: BookSessionWithProps = {
         coachName: 'Anna Keller',
         coachAvatarUrl: 'https://example.com/avatar.jpg',
         description: 'Experienced career coach with 10+ years of experience.',
