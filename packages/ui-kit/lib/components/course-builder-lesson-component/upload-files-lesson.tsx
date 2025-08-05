@@ -91,7 +91,7 @@ export function DesignerComponent({
                     {dictionary.components.courseBuilder.descriptionText}
                 </label>
                 <InputField
-                    inputText="e.g. Upload your resume"
+                    inputText={dictionary.components.courseBuilder.uploadResumeText}
                     value={description}
                     setValue={handleValue}
                 />

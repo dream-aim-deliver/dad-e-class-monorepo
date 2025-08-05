@@ -611,7 +611,8 @@ export const DE: TDictionary = {
       moveDownText: 'Nach unten verschieben',
       ImageFileText: 'Hinzufügen',
       videoFileText: 'Video hinzufügen',
-      ImageGalleryText: 'Bildergalerie hinzufügen'
+      ImageGalleryText: 'Bildergalerie hinzufügen',
+      uploadResumeText: "zB. Lebenslauf hochladen"
     },
     packageGeneralInformation: {
       coachingIncluded: 'Coaching inklusive',
