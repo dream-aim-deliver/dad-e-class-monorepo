@@ -12,10 +12,15 @@ import {
 } from '@trpc/tanstack-react-query';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import superjson from 'superjson';
+import { TAppRouter } from '@dream-aim-deliver/e-class-cms-rest'
+
+
+// use router from package
 
 export const getQueryClient = cache(makeQueryClient);
 
-const client = createTRPCClient<MockRouter>({
+//const client = createTRPCClient<MockRouter>({
+const client = createTRPCClient<TAppRouter>({
     links: [
         httpBatchLink({
             transformer: superjson,

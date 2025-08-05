@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-
 const FileCategoryEnumSchema = z.enum([
     'image',
     'video',
