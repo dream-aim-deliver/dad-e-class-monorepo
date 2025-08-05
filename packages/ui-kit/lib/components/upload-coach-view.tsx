@@ -8,10 +8,12 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 /**
  * Props interface for the Upload Coach View component
  * Extends UploadFileStudent to add file download capability
+ * 
+ *  callback function triggered when a file download is requested 
  */
 export interface UploadCoachViewProps extends uploadStudentTypes, isLocalAware {
-    /** Optional callback function triggered when a file download is requested */
     onDownload: (fileId: string) => void;
+    createdAt: string;
 }
 
 /**
@@ -23,9 +25,29 @@ export interface UploadCoachViewProps extends uploadStudentTypes, isLocalAware {
  * @param param0.studentComment - Comment provided by the student
  * @param param0.onDownload - Optional callback for handling file downloads
  */
-const UploadCoachView: React.FC<UploadCoachViewProps> = ({ files, comment, onDownload,locale }) => {
-    const dictionary = getDictionary(locale); 
-   
+const UploadCoachView: React.FC<UploadCoachViewProps> = ({ files, comment, onDownload, locale, createdAt }) => {
+    const dictionary = getDictionary(locale);
+
+    // Format the createdAt date to match the required format: 2024-07-23 23:31
+    const formatDate = (dateString: string) => {
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return dateString; // Return original if invalid date
+            }
+
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        } catch {
+            return dateString; // Return original if formatting fails
+        }
+    };
+
     return (
         <div className="bg-base-neutral-800 p-4 rounded-md">
             <div className="flex items-center gap-2 flex-1 text-text-primary py-2 border-b border-divider">
@@ -44,8 +66,8 @@ const UploadCoachView: React.FC<UploadCoachViewProps> = ({ files, comment, onDow
                                 {file.name}
                             </span>
                         </div>
-                        <span className="flex-shrink-0 text-text-secondary text-sm">
-                           24-13-11
+                        <span className="flex-shrink-0 text-text-secondary text-sm md:text-md">
+                            {formatDate(createdAt)}
                         </span>
                         <Button
                             variant="text"
@@ -57,8 +79,10 @@ const UploadCoachView: React.FC<UploadCoachViewProps> = ({ files, comment, onDow
                 ))}
             </main>
             <div className="flex flex-col gap-2 mt-4">
-                <p className="leading-[150%] font-important text-text-primary">{dictionary.components.courseBuilder.studentComment}</p>
-                <p className="text-text-secondary leading-[150%] text-xl">{comment}</p>
+                <p className="leading-[150%] font-important text-text-primary text-sm md:text-md">{dictionary.components.courseBuilder.studentComment}</p>
+                <p className="text-text-secondary leading-[150%] md:text-xl">
+                    {comment?.trim() ? comment : 'No student comment'}
+                </p>
             </div>
         </div>
     );

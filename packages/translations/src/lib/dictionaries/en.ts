@@ -607,6 +607,7 @@ export const EN: TDictionary = {
       ImageFileText: "Image",
       videoFileText: "Video",
       ImageGalleryText: "Image Gallery",
+      uploadResumeText:"e.g. Upload your resume",
     },
     packageGeneralInformation: {
       coachingIncluded: 'Coaching included',

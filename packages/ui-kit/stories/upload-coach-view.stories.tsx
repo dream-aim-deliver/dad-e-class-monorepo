@@ -74,6 +74,7 @@ export const Default: Story = {
     files: mockFiles,
     comment: 'Here are my files for the assignment. Please let me know if you have any feedback.',
     locale: 'en',
+    createdAt: '2024-07-23T23:31:00Z',
     onDownload: (fileId) => alert(`Downloading file with ID: ${fileId}`),
   },
 };
@@ -83,6 +84,7 @@ export const MultipleFileTypes: Story = {
     files: mockDiverseFiles,
     comment: "I have included various file types for my submission, including the research paper, data analysis spreadsheet, project video demonstration, and source code archive.",
     locale: 'en',
+    createdAt: '2024-08-01T14:25:00Z',
     onDownload: (fileId) => alert(`Downloading file with ID: ${fileId}`),
   },
 };
@@ -92,6 +94,7 @@ export const NoFiles: Story = {
     files: [],
     comment: 'I have not uploaded any files yet.',
     locale: 'en',
+    createdAt: '2024-07-15T09:45:00Z',
     onDownload: (fileId) => alert(`Downloading file with ID: ${fileId}`),
   },
 };
@@ -101,8 +104,16 @@ export const NoComment: Story = {
     files: mockFiles,
     comment: '',
     locale: 'en',
+    createdAt: '2024-06-30T16:20:00Z',
     onDownload: (fileId) => alert(`Downloading file with ID: ${fileId}`),
   },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows "No student comment" when no comment is provided.'
+      }
+    }
+  }
 };
 
 export const GermanLocale: Story = {
@@ -110,6 +121,7 @@ export const GermanLocale: Story = {
     files: mockFiles,
     comment: 'Hier sind meine Dateien für die Aufgabe. Bitte lassen Sie mich wissen, wenn Sie Feedback haben.',
     locale: 'de',
+    createdAt: '2024-08-05T11:15:00Z',
     onDownload: (fileId) => alert(`Downloading file with ID: ${fileId}`),
   },
 };

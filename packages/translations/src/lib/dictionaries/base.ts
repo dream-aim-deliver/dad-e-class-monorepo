@@ -585,6 +585,7 @@ export const DictionarySchema = z.object({
       ImageFileText: z.string(),
       videoFileText: z.string(),
       ImageGalleryText: z.string(),
+      uploadResumeText: z.string(),
     }),
     packageGeneralInformation: z.object({
       coachingIncluded: z.string(),

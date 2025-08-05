@@ -43,6 +43,8 @@ export interface DownloadFilesDesignerProps extends BaseDesignerComponentProps {
     onFileDownload: (id: string) => void;
     /** Currently selected files or null if no files are selected */
     files: fileMetadata.TFileMetadata[] | null;
+    /** Maximum number of files allowed (default: 5) */
+    maxFiles?: number;
 }
 
 /**
@@ -60,7 +62,7 @@ export interface DownloadFilesDesignerProps extends BaseDesignerComponentProps {
  * @param files - Array of currently uploaded files
  */
 
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onUploadComplete, onFilesUpload, onFileDelete, onFileDownload, files }: DownloadFilesDesignerProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onUploadComplete, onFilesUpload, onFileDelete, onFileDownload, files, maxFiles = 5 }: DownloadFilesDesignerProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
     const dictionary = getDictionary(locale);
     const handleDownloadFile = async (
@@ -95,7 +97,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 type="multiple"
                 variant="generic"
                 files={files}
-                maxFile={5}
+                maxFile={maxFiles}
                 onFilesChange={handleDownloadFile}
                 onUploadComplete={handleUploadComplete}
                 onDelete={handleFileDelete}
