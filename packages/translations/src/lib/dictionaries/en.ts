@@ -697,6 +697,21 @@ export const EN: TDictionary = {
       skillsLabel: 'Skills',
       buyButton: 'Buy coaching sessions',
     },
+    courseIntroInformation: {
+      generalInformation: 'General Information',
+      courseTitle: 'Course Title',
+      briefDescription: 'Brief Description',
+      briefDescriptionPlaceholder: 'Add a brief description of the course...',
+      estimatedDuration: 'Estimated Duration in Hours',
+      requirements: 'Requirements',
+      requirementsDescription: 'What is expected of the students to begin this course? Add the required courses below.',
+      searchCoursesPlaceholder: 'Search Courses',
+      featuredImage: 'Featured Image',
+      removeCourse:'Remove Course'
+    },
+    searchableDropdown:{
+      noResultsFound:'No results found'
+    },
   },
   pages: {
     home: Home_EN,
