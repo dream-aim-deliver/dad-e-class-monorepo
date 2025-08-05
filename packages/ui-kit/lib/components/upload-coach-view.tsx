@@ -56,8 +56,8 @@ const UploadCoachView: React.FC<UploadCoachViewProps> = ({ files, comment, onDow
             </div>
             <main>
                 {files.map((file, index) => (
-                    <div key={index} className="flex items-center gap-4 justify-between border-b border-divider py-4 text-text-primary w-full">
-                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <div key={index} className="grid grid-cols-3 items-center gap-4 border-b border-divider py-4 text-text-primary w-full">
+                        <div className="flex items-center gap-2 min-w-0">
                             <IconFile classNames="flex-shrink-0" />
                             <span
                                 className="text-text-primary truncate"
@@ -66,15 +66,17 @@ const UploadCoachView: React.FC<UploadCoachViewProps> = ({ files, comment, onDow
                                 {file.name}
                             </span>
                         </div>
-                        <span className="flex-shrink-0 text-text-secondary text-sm md:text-md">
+                        <span title={formatDate(createdAt)} className="text-text-secondary text-sm md:text-md text-end truncate">
                             {formatDate(createdAt)}
                         </span>
-                        <Button
-                            variant="text"
-                            text={dictionary.components.courseBuilder.downloadFilesText}
-                            onClick={() => onDownload?.(file.id)}
-                            className="flex-shrink-0"
-                        />
+                        <div className="flex justify-end">
+                            <Button
+                                variant="text"
+                                text={dictionary.components.courseBuilder.downloadFilesText}
+                                onClick={() => onDownload?.(file.id)}
+                                className="flex-shrink-0"
+                            />
+                        </div>
                     </div>
                 ))}
             </main>
