@@ -33,7 +33,7 @@ export interface BuyCoachingSessionBannerProps extends isLocalAware {
  * @param totalRatings - Total number of ratings the coach has received.
  * @param onBookSessionWith - Callback triggered when the booking button is clicked.
  * @param locale - Current locale used for translations (e.g., 'en', 'de').
- * @param isCourseCreator - If `true`, shows an additional badge indicating the coach is also a course creator.
+ * @param isCourseCreator - Optional. If `true`, shows an additional badge indicating the coach is also a course creator.
  * @param skills - List of skills associated with the coach.
  *
  * @returns A JSX element displaying coach information, badges, skills, and a purchase CTA.
@@ -48,7 +48,7 @@ export const BuyCoachingSessionBanner = ({
     onBookSessionWith,
     locale,
     skills,
-    isCourseCreator,
+    isCourseCreator = false,
 }: BuyCoachingSessionBannerProps) => {
     const dictionary =
         getDictionary(locale).components.buyCoachingSessionBanner;
