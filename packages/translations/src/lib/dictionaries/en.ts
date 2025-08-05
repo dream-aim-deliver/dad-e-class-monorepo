@@ -587,7 +587,8 @@ export const EN: TDictionary = {
       additionalCommentsPlaceholder: "Write additional comments here",
       uploadFiles: "Upload files",
       studentComment:"Student Comment",
-      additionalCommentsTooltip:"Write some notes about your file (optional)"
+      additionalCommentsTooltip:"Write some notes about your file (optional)",
+      uploadResumeText:"e.g. Upload your resume",
     },
     packageGeneralInformation: {
       coachingIncluded: 'Coaching included',

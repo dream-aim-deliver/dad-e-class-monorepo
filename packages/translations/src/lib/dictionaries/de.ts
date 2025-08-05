@@ -592,7 +592,8 @@ courseBuilder: {
       additionalCommentsPlaceholder:"Schreiben Sie hier weitere Kommentare",
       uploadFiles: "Dateien hochladen",
       studentComment: "Studentenkommentar",
-      additionalCommentsTooltip:"Machen Sie sich Notizen zu Ihrer Datei (optional)"
+      additionalCommentsTooltip:"Machen Sie sich Notizen zu Ihrer Datei (optional)",
+      uploadResumeText:"zB. Lebenslauf hochladen"
         },
     packageGeneralInformation: {
       coachingIncluded: 'Coaching inklusive',

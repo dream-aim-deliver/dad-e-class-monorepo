@@ -578,7 +578,8 @@ export const DictionarySchema = z.object({
       additionalCommentsPlaceholder: z.string(),
       uploadFiles: z.string(),
       studentComment: z.string(),
-      additionalCommentsTooltip: z.string()
+      additionalCommentsTooltip: z.string(),
+      uploadResumeText: z.string(),
     }),
     packageGeneralInformation: z.object({
       coachingIncluded: z.string(),

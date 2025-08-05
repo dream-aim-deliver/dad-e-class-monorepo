@@ -59,7 +59,7 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
     const { uploadResponse, onDownload, locale } = props;
     const dictionary = getDictionary(locale);
     const [thumbnailError, setThumbnailError] = useState(false);
-
+    const [thumbnailLoading, setThumbnailLoading] = useState(true);
     if (uploadResponse?.status === 'unavailable') {
         return <FeedBackMessage type="error" message="File upload failed" />;
     }
@@ -87,6 +87,26 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
             if (thumbnailError) {
                 return <IconImage classNames="w-6 h-6 text-text-primary" />;
             }
+
+            // Show loader while thumbnail is loading
+            if (thumbnailLoading) {
+                return (
+                    <div className="relative  flex items-center justify-center">
+                        <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-secondary" />
+                        <img
+                            src={(uploadResponse as fileMetadata.TFileMetadata & { thumbnailUrl?: string }).thumbnailUrl || ''}
+                            alt={uploadResponse.name}
+                            className="absolute inset-0 w-full h-full object-cover rounded-small opacity-0"
+                            onLoad={() => setThumbnailLoading(false)}
+                            onError={() => {
+                                setThumbnailError(true);
+                                setThumbnailLoading(false);
+                            }}
+                        />
+                    </div>
+                );
+            }
+
             return (
                 <img
                     src={(uploadResponse as fileMetadata.TFileMetadata & { thumbnailUrl?: string }).thumbnailUrl || ''}

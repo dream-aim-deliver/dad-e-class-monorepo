@@ -20,6 +20,11 @@ const meta: Meta<typeof DesignerComponent> = {
     elementInstance: {
       description: 'The instance of the download files element',
     },
+    maxFiles: {
+      control: 'number',
+      description: 'Maximum number of files allowed (default: 5)',
+      defaultValue: 5,
+    },
   },
 };
 
@@ -179,12 +184,12 @@ const DesignerWithState = (args: Partial<DownloadFilesDesignerProps>) => {
 
   const handleFileDownload = (id: string) => {
     console.log('Download file:', id);
-   alert(`Downloading file with ID: ${id}`);
+    alert(`Downloading file with ID: ${id}`);
   };
 
   return (
     <DesignerComponent
-    locale={args.locale || 'en'}
+      locale={args.locale || 'en'}
       {...args}
       files={files}
       elementInstance={elementInstance}
@@ -192,6 +197,7 @@ const DesignerWithState = (args: Partial<DownloadFilesDesignerProps>) => {
       onFileDelete={handleFileDelete}
       onUploadComplete={handleUploadComplete}
       onFileDownload={handleFileDownload}
+      maxFiles={args.maxFiles}
     />
   );
 };
@@ -287,12 +293,38 @@ export const MaxFilesDesigner: Story = {
       id: 'sample-pdf-2',
       name: 'another-document.pdf'
     }],
+    maxFiles: 5,
   },
   render: (args) => <DesignerWithState {...args} />,
   parameters: {
     docs: {
       description: {
         story: 'Designer with maximum number of files (5) uploaded',
+      },
+    },
+  },
+};
+
+export const CustomMaxFilesDesigner: Story = {
+  args: {
+    elementInstance: {
+      id: 1,
+      type: CourseElementType.DownloadFiles,
+      files: [],
+      order: 1,
+    },
+    locale: 'en',
+    onUpClick: () => console.log('Up clicked'),
+    onDownClick: () => console.log('Down clicked'),
+    onDeleteClick: () => console.log('Delete clicked'),
+    files: [samplePDFFile, sampleImageFile],
+    maxFiles: 3,
+  },
+  render: (args) => <DesignerWithState {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Designer with custom maximum number of files (3) - demonstrates flexibility',
       },
     },
   },
