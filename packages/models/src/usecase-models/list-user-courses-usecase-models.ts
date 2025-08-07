@@ -17,6 +17,7 @@ export type TCourseState = z.infer<typeof CourseStateSchema>;
 const BaseCourseSchema = z.object({
   id: z.number(),
   slug: z.string(),
+  title: z.string(),
   description: z.string(),
   imageUrl: z.string().nullable(),
   averageRating: z.number(),
@@ -27,7 +28,7 @@ const BaseCourseSchema = z.object({
     username: z.string(),
     avatarUrl: z.string().nullable(),
   }),
-  languages: z.array(z.string()),
+  language: z.string(),
   coachingSessionCount: z.number().optional(),
   salesCount: z.number(),
   fullDuration: z.number(),
