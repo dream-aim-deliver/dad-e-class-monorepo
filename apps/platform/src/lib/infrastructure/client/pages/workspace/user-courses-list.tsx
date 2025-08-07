@@ -18,9 +18,12 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
+import { useRouter } from 'next/navigation';
 
 export default function UserCoursesList() {
     const locale = useLocale() as TLocale;
+    const router = useRouter();
+
     const paginationTranslations = useTranslations(
         'components.paginationButton',
     );
@@ -63,6 +66,18 @@ export default function UserCoursesList() {
         return <DefaultNotFound locale={locale} />;
     }
 
+    const onCourseVisit = (courseSlug: string) => {
+        router.push(`/courses/${courseSlug}`);
+    };
+
+    const onCourseEdit = (courseSlug: string) => {
+        router.push(`/courses/edit/${courseSlug}`);
+    };
+
+    const onClickUser = (username: string) => {
+        router.push(`/coaches/${username}`);
+    };
+
     return (
         <div className="flex flex-col space-y-2 mt-3">
             <CardListLayout>
@@ -102,6 +117,10 @@ export default function UserCoursesList() {
                                 author={author}
                                 duration={duration}
                                 rating={course.averageRating}
+                                onManage={() => onCourseVisit(course.slug)}
+                                onClickUser={() =>
+                                    onClickUser(course.author.username)
+                                }
                             />
                         );
                     }
@@ -121,6 +140,11 @@ export default function UserCoursesList() {
                                 duration={duration}
                                 rating={course.averageRating}
                                 progress={course.progress}
+                                onBegin={() => onCourseVisit(course.slug)}
+                                onResume={() => onCourseVisit(course.slug)}
+                                onClickUser={() =>
+                                    onClickUser(course.author.username)
+                                }
                             />
                         );
                     }
@@ -146,6 +170,11 @@ export default function UserCoursesList() {
                                 language={language}
                                 duration={duration}
                                 pricing={pricing}
+                                onClickUser={() =>
+                                    onClickUser(course.author.username)
+                                }
+                                onManage={() => onCourseVisit(course.slug)}
+                                onEdit={() => onCourseEdit(course.slug)}
                             />
                         );
                     }
