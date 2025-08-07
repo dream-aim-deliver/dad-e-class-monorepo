@@ -794,7 +794,11 @@ export const DE: TDictionary = {
       andLabel: 'und',
       othersLabel: 'andere',
       otherLabel: 'anderes',
-
+    },
+    breadcrumbs: {
+      home: 'Startseite',
+      workspace: 'Arbeitsbereich',
+      courses: 'Kurse',
     },
   },
   pages: {
@@ -838,5 +842,10 @@ export const DE: TDictionary = {
         groups: "Gruppen",
       },
     },
+    userCourses: {
+      yourCourses: 'Ihre Kurse',
+      createCourse: 'Einen Kurs erstellen',
+      becomeCourseCreator: 'Kursersteller werden',
+    }
   },
 };
