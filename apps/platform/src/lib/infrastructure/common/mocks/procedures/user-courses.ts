@@ -7,7 +7,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
         courses: [
             {
                 id: 1,
-                slug: 'advanced-javascript-mastery',
+                slug: 'coach-course',
                 title: 'Advanced JavaScript Mastery',
                 description:
                     'Master advanced JavaScript concepts including closures, prototypes, async programming, and modern ES6+ features.',
@@ -30,7 +30,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             },
             {
                 id: 2,
-                slug: 'digital-photography-fundamentals',
+                slug: 'progress-course',
                 title: 'Digital Photography Fundamentals',
                 description:
                     'Learn the art and science of digital photography from composition to post-processing techniques.',
@@ -54,7 +54,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             },
             {
                 id: 3,
-                slug: 'react-native-mobile-development',
+                slug: 'admin-course',
                 title: 'React Native Mobile Development',
                 description:
                     'Build cross-platform mobile applications using React Native, from basics to advanced deployment strategies.',
