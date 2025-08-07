@@ -20,3 +20,4 @@ export * from './included-coaching-session-list-view-model';
 export * from './course-introduction-view-model';
 export * from './course-outline-view-model';
 export * from './assessment-progress-list-view-model';
+export * from './user-course-list-view-model';
