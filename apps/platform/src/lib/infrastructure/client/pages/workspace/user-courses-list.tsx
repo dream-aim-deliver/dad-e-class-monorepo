@@ -8,9 +8,12 @@ import {
     Button,
     CardListLayout,
     CoachCourseCard,
+    CourseCreatorCard,
+    CourseStatus,
     DefaultError,
     DefaultLoading,
     DefaultNotFound,
+    StudentCourseCard,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -61,9 +64,30 @@ export default function UserCoursesList() {
     }
 
     return (
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-2 mt-3">
             <CardListLayout>
                 {displayedCourses.map((course) => {
+                    // Leaving some fields empty as neither response provides them, nor the view uses them
+
+                    const language = {
+                        code: '',
+                        name: course.language,
+                    };
+                    const author = {
+                        name: course.author.name + ' ' + course.author.surname,
+                        image: course.author.avatarUrl ?? '',
+                    };
+                    const duration = {
+                        selfStudy: course.fullDuration,
+                        video: 0,
+                        coaching: 0,
+                    };
+                    const pricing = {
+                        partialPrice: 0,
+                        currency: '',
+                        fullPrice: 0,
+                    };
+
                     if (course.role === 'coach') {
                         return (
                             <CoachCourseCard
@@ -73,28 +97,57 @@ export default function UserCoursesList() {
                                 sessions={course.coachingSessionCount ?? 0}
                                 sales={course.salesCount}
                                 locale={locale}
-                                language={{
-                                    code: '',
-                                    name: course.language,
-                                }}
+                                language={language}
                                 imageUrl={course.imageUrl ?? ''}
-                                author={{
-                                    name:
-                                        course.author.name +
-                                        ' ' +
-                                        course.author.surname,
-                                    image: course.author.avatarUrl ?? '',
-                                }}
-                                duration={{
-                                    selfStudy: course.fullDuration,
-                                    video: 0,
-                                    coaching: 0,
-                                }}
+                                author={author}
+                                duration={duration}
                                 rating={course.averageRating}
                             />
                         );
                     }
-                    return <div key={course.id}>Mock</div>;
+                    if (course.role === 'student') {
+                        return (
+                            <StudentCourseCard
+                                key={course.id}
+                                locale={locale}
+                                sales={course.salesCount}
+                                reviewCount={course.reviewCount}
+                                title={course.title}
+                                description={course.description}
+                                language={language}
+                                imageUrl={course.imageUrl ?? ''}
+                                author={author}
+                                pricing={pricing}
+                                duration={duration}
+                                rating={course.averageRating}
+                            />
+                        );
+                    }
+                    if (course.role === 'owner' || course.role === 'admin') {
+                        const stateToStatus: Record<string, CourseStatus> = {
+                            draft: 'draft',
+                            review: 'under-review',
+                            live: 'published',
+                        };
+                        return (
+                            <CourseCreatorCard
+                                key={course.id}
+                                rating={course.averageRating}
+                                reviewCount={course.reviewCount}
+                                sessions={course.coachingSessionCount ?? 0}
+                                sales={course.salesCount}
+                                status={stateToStatus[course.state] || 'draft'}
+                                locale={locale}
+                                title={course.title}
+                                description={course.description}
+                                imageUrl={course.imageUrl ?? ''}
+                                author={author}
+                                language={language}
+                                duration={duration}
+                                pricing={pricing}
+                            />
+                        );
+                    }
                 })}
             </CardListLayout>
             {hasMoreCourses && (
