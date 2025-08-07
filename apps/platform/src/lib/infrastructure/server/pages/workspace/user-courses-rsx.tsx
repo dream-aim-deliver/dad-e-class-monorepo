@@ -16,13 +16,21 @@ export default async function UserCoursesServerComponent(
         redirect('/auth/login');
     }
 
+    const roles = session.user.roles;
+    const isVisitor = !roles || (roles.length === 1 && roles[0] === 'visitor');
+
+    if (isVisitor) {
+        // TODO: fill in localized error message
+        throw new Error();
+    }
+
     await Promise.all([prefetch(trpc.listUserCourses.queryOptions({}))]);
 
     return (
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <UserCourses />
+                    <UserCourses roles={roles} />
                 </Suspense>
             </HydrateClient>
         </>
