@@ -779,6 +779,11 @@ export const EN: TDictionary = {
       },
       defaultSortBy: 'title',
     },
+    breadcrumbs: {
+      home: 'Home',
+      workspace: 'Workspace',
+      courses: 'Courses',
+    },
   },
   pages: {
     home: Home_EN,
@@ -821,5 +826,10 @@ export const EN: TDictionary = {
         groups: "Groups",
       },
     },
+    userCourses: {
+      yourCourses: 'Your Courses',
+      createCourse: 'Create a course',
+      becomeCourseCreator: 'Become a course creator',
+    }
   },
 };
