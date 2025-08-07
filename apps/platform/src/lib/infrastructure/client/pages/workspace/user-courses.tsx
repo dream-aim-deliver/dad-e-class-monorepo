@@ -7,8 +7,6 @@ import { useListUserCoursesPresenter } from '../../hooks/use-user-courses-presen
 import {
     Breadcrumbs,
     Button,
-    CardListLayout,
-    CoachCourseCard,
     DefaultError,
     DefaultLoading,
     DefaultNotFound,
@@ -16,6 +14,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import UserCoursesList from './user-courses-list';
 
 export default function UserCourses() {
     const locale = useLocale() as TLocale;
@@ -63,41 +62,7 @@ export default function UserCourses() {
                 <PageTitle text="Your Courses" />
                 <Button text="Create a course" />
             </div>
-            <CardListLayout>
-                {courses.map((course) => {
-                    if (course.role === 'coach') {
-                        return (
-                            <CoachCourseCard
-                                key={course.id}
-                                reviewCount={course.reviewCount}
-                                sessions={course.coachingSessionCount ?? 0}
-                                sales={course.salesCount}
-                                locale={locale}
-                                language={{
-                                    code: '',
-                                    name: course.languages[0],
-                                }}
-                                title={''}
-                                imageUrl={course.imageUrl ?? ''}
-                                author={{
-                                    name:
-                                        course.author.name +
-                                        ' ' +
-                                        course.author.surname,
-                                    image: course.author.avatarUrl ?? '',
-                                }}
-                                duration={{
-                                    selfStudy: course.fullDuration,
-                                    video: 0,
-                                    coaching: 0,
-                                }}
-                                rating={course.averageRating}
-                            />
-                        );
-                    }
-                    return <div key={course.id}>Mock</div>;
-                })}
-            </CardListLayout>
+            <UserCoursesList />
         </div>
     );
 }
