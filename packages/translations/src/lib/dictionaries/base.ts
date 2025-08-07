@@ -689,6 +689,11 @@ export const DictionarySchema = z.object({
       skillsLabel: z.string(),
       buyButton: z.string(),
     }),
+    breadcrumbs: z.object({
+      home: z.string(),
+      workspace: z.string(),
+      courses: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({
@@ -775,6 +780,11 @@ export const DictionarySchema = z.object({
         coaches: z.string(),
         groups: z.string(),
       }),
+    }),
+    userCourses: z.object({
+      yourCourses: z.string(),
+      createCourse: z.string(),
+      becomeCourseCreator: z.string(),
     }),
   }),
 });
