@@ -59,7 +59,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({
           onClick={onClickUser}
         />
       ) : (
-        <div className="flex gap-1">
+        <div className="flex gap-1 items-center">
           <UserAvatar
             size="xSmall"
             imageUrl={imageUrl}

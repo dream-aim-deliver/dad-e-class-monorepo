@@ -88,7 +88,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex flex-col flex-1 w-auto h-auto rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
+      <div className="flex flex-col flex-1 w-auto h-[550px] rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
         <div className="relative">
           {shouldShowPlaceholder ? (
             <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
