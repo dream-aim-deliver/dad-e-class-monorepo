@@ -34,8 +34,13 @@ const BaseCourseSchema = z.object({
   fullDuration: z.number(),
 });
 
-const StudentCoachCourseSchema = BaseCourseSchema.extend({
-  role: z.enum(['student', 'coach']),
+const StudentCourseSchema = BaseCourseSchema.extend({
+  role: z.literal('student'),
+  progress: z.number(),
+});
+
+const CoachCourseSchema = BaseCourseSchema.extend({
+  role: z.enum(['coach']),
 });
 
 const OwnerAdminCourseSchema = BaseCourseSchema.extend({
@@ -44,7 +49,8 @@ const OwnerAdminCourseSchema = BaseCourseSchema.extend({
 });
 
 const CourseSchema = z.discriminatedUnion('role', [
-  StudentCoachCourseSchema,
+  StudentCourseSchema,
+  CoachCourseSchema,
   OwnerAdminCourseSchema,
 ]);
 
