@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
+import UserCourses from '../../../client/pages/workspace/user-courses';
 
 interface UserCoursesProps {}
 
@@ -31,7 +32,7 @@ export default async function UserCoursesServerComponent(
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <div>Courses</div>
+                    <UserCourses />
                 </Suspense>
             </HydrateClient>
         </>
