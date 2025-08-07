@@ -16,17 +16,7 @@ export default async function UserCoursesServerComponent(
         redirect('/auth/login');
     }
 
-    await Promise.all([
-        prefetch(
-            trpc.listUserCourses.queryOptions({
-                pagination: {
-                    page: 1,
-                    // TODO: Configure with environment variable
-                    pageSize: 6,
-                },
-            }),
-        ),
-    ]);
+    await Promise.all([prefetch(trpc.listUserCourses.queryOptions({}))]);
 
     return (
         <>
