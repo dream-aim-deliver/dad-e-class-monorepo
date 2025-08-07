@@ -50,6 +50,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 923,
                 fullDuration: 1800, // 30 hours
                 role: 'student' as const,
+                progress: 25,
             },
             {
                 id: 3,
@@ -142,6 +143,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 345,
                 fullDuration: 1440, // 24 hours
                 role: 'student' as const,
+                progress: 50,
             },
             {
                 id: 7,
@@ -234,6 +236,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 567,
                 fullDuration: 2160, // 36 hours
                 role: 'student' as const,
+                progress: 0,
             },
             {
                 id: 11,
@@ -326,6 +329,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 1234,
                 fullDuration: 4800, // 80 hours
                 role: 'student' as const,
+                progress: 25,
             },
             {
                 id: 15,
@@ -418,6 +422,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 543,
                 fullDuration: 1800, // 30 hours
                 role: 'student' as const,
+                progress: 75,
             },
         ],
     };
