@@ -8,6 +8,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 1,
                 slug: 'advanced-javascript-mastery',
+                title: 'Advanced JavaScript Mastery',
                 description:
                     'Master advanced JavaScript concepts including closures, prototypes, async programming, and modern ES6+ features.',
                 imageUrl:
@@ -21,7 +22,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'Spanish'],
+                language: 'English',
                 coachingSessionCount: 12,
                 salesCount: 1856,
                 fullDuration: 2400, // 40 hours in minutes
@@ -30,6 +31,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 2,
                 slug: 'digital-photography-fundamentals',
+                title: 'Digital Photography Fundamentals',
                 description:
                     'Learn the art and science of digital photography from composition to post-processing techniques.',
                 imageUrl:
@@ -43,7 +45,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English'],
+                language: 'English',
                 coachingSessionCount: 8,
                 salesCount: 923,
                 fullDuration: 1800, // 30 hours
@@ -52,6 +54,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 3,
                 slug: 'react-native-mobile-development',
+                title: 'React Native Mobile Development',
                 description:
                     'Build cross-platform mobile applications using React Native, from basics to advanced deployment strategies.',
                 imageUrl:
@@ -65,7 +68,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'French'],
+                language: 'English',
                 salesCount: 2134,
                 fullDuration: 3600, // 60 hours
                 role: 'owner' as const,
@@ -74,6 +77,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 4,
                 slug: 'culinary-arts-italian-cuisine',
+                title: 'Italian Culinary Arts Masterclass',
                 description:
                     'Discover the secrets of authentic Italian cooking with traditional recipes and modern techniques.',
                 imageUrl:
@@ -87,7 +91,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'Italian'],
+                language: 'Italian',
                 coachingSessionCount: 15,
                 salesCount: 678,
                 fullDuration: 2160, // 36 hours
@@ -96,6 +100,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 5,
                 slug: 'data-science-python-analytics',
+                title: 'Data Science with Python & Analytics',
                 description:
                     'Comprehensive data science course covering Python, pandas, machine learning, and statistical analysis.',
                 imageUrl:
@@ -109,7 +114,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'Hindi'],
+                language: 'English',
                 salesCount: 1567,
                 fullDuration: 4320, // 72 hours
                 role: 'admin' as const,
@@ -118,6 +123,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 6,
                 slug: 'watercolor-painting-techniques',
+                title: 'Watercolor Painting Techniques',
                 description:
                     'Explore the beautiful world of watercolor painting with step-by-step tutorials and artistic guidance.',
                 imageUrl:
@@ -131,7 +137,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'Korean'],
+                language: 'Korean',
                 coachingSessionCount: 6,
                 salesCount: 345,
                 fullDuration: 1440, // 24 hours
@@ -140,6 +146,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 7,
                 slug: 'blockchain-cryptocurrency-fundamentals',
+                title: 'Blockchain & Cryptocurrency Fundamentals',
                 description:
                     'Understanding blockchain technology, cryptocurrency markets, and decentralized finance (DeFi) applications.',
                 imageUrl:
@@ -153,7 +160,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English'],
+                language: 'English',
                 salesCount: 1289,
                 fullDuration: 2880, // 48 hours
                 role: 'owner' as const,
@@ -162,6 +169,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 8,
                 slug: 'yoga-meditation-wellness',
+                title: 'Yoga, Meditation & Wellness',
                 description:
                     'Complete wellness program combining yoga practices, meditation techniques, and mindfulness training.',
                 imageUrl:
@@ -175,7 +183,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'Sanskrit'],
+                language: 'English',
                 coachingSessionCount: 20,
                 salesCount: 892,
                 fullDuration: 1800, // 30 hours
@@ -184,6 +192,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 9,
                 slug: 'digital-marketing-social-media',
+                title: 'Digital Marketing & Social Media Strategy',
                 description:
                     'Master digital marketing strategies including SEO, social media marketing, and content creation.',
                 imageUrl:
@@ -197,7 +206,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'German'],
+                language: 'German',
                 salesCount: 1743,
                 fullDuration: 2700, // 45 hours
                 role: 'admin' as const,
@@ -206,6 +215,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 10,
                 slug: 'guitar-masterclass-acoustic',
+                title: 'Acoustic Guitar Masterclass',
                 description:
                     'Comprehensive acoustic guitar course from beginner chords to advanced fingerstyle techniques.',
                 imageUrl:
@@ -219,7 +229,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'Spanish', 'Portuguese'],
+                language: 'Spanish',
                 coachingSessionCount: 10,
                 salesCount: 567,
                 fullDuration: 2160, // 36 hours
@@ -228,6 +238,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 11,
                 slug: 'ux-ui-design-principles',
+                title: 'UX/UI Design Principles',
                 description:
                     'Learn user experience and interface design principles with hands-on projects and industry best practices.',
                 imageUrl:
@@ -241,7 +252,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'Japanese'],
+                language: 'Japanese',
                 salesCount: 2089,
                 fullDuration: 3240, // 54 hours
                 role: 'owner' as const,
@@ -250,6 +261,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 12,
                 slug: 'entrepreneurship-startup-bootcamp',
+                title: 'Entrepreneurship & Startup Bootcamp',
                 description:
                     'From idea to launch: complete guide to building a successful startup with real-world case studies.',
                 imageUrl:
@@ -263,7 +275,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English'],
+                language: 'English',
                 coachingSessionCount: 25,
                 salesCount: 1456,
                 fullDuration: 3600, // 60 hours
@@ -272,6 +284,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 13,
                 slug: 'landscape-photography-workshop',
+                title: 'Landscape Photography Workshop',
                 description:
                     'Capture stunning landscapes with advanced techniques in composition, lighting, and post-processing.',
                 imageUrl:
@@ -285,7 +298,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'Spanish'],
+                language: 'Spanish',
                 salesCount: 678,
                 fullDuration: 1920, // 32 hours
                 role: 'admin' as const,
@@ -294,6 +307,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 14,
                 slug: 'machine-learning-tensorflow',
+                title: 'Machine Learning with TensorFlow',
                 description:
                     'Deep dive into machine learning using TensorFlow, covering neural networks and deep learning applications.',
                 imageUrl:
@@ -307,7 +321,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'Mandarin'],
+                language: 'Mandarin',
                 coachingSessionCount: 18,
                 salesCount: 1234,
                 fullDuration: 4800, // 80 hours
@@ -316,6 +330,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 15,
                 slug: 'french-language-immersion',
+                title: 'French Language Immersion',
                 description:
                     'Complete French language course with immersive techniques, cultural context, and conversation practice.',
                 imageUrl:
@@ -329,7 +344,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'French'],
+                language: 'French',
                 salesCount: 987,
                 fullDuration: 3000, // 50 hours
                 role: 'owner' as const,
@@ -338,6 +353,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 16,
                 slug: 'woodworking-furniture-crafting',
+                title: 'Woodworking & Furniture Crafting',
                 description:
                     'Traditional woodworking techniques for creating beautiful, functional furniture pieces from scratch.',
                 imageUrl:
@@ -351,7 +367,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1463453091185-61582044d556?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English'],
+                language: 'English',
                 coachingSessionCount: 12,
                 salesCount: 432,
                 fullDuration: 2640, // 44 hours
@@ -360,6 +376,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 17,
                 slug: 'personal-finance-investment',
+                title: 'Personal Finance & Investment Strategy',
                 description:
                     'Comprehensive guide to personal finance management, investment strategies, and wealth building.',
                 imageUrl:
@@ -373,7 +390,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English'],
+                language: 'English',
                 salesCount: 1678,
                 fullDuration: 2400, // 40 hours
                 role: 'admin' as const,
@@ -382,6 +399,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
             {
                 id: 18,
                 slug: 'sustainable-gardening-permaculture',
+                title: 'Sustainable Gardening & Permaculture',
                 description:
                     'Learn sustainable gardening and permaculture principles to create eco-friendly, productive gardens.',
                 imageUrl:
@@ -395,7 +413,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                     avatarUrl:
                         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face',
                 },
-                languages: ['English', 'Dutch'],
+                language: 'Dutch',
                 coachingSessionCount: 8,
                 salesCount: 543,
                 fullDuration: 1800, // 30 hours
