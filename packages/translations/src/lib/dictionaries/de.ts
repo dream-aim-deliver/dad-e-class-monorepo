@@ -702,6 +702,16 @@ export const DE: TDictionary = {
       skillsLabel: 'Fähigkeiten',
       buyButton: 'Coaching-Sitzungen kaufen',
     },
+    accordion: {
+      accordionTitleText: 'Akkordeon-Titel',
+      accordionText: 'Akkordeon',
+      addItemText: 'Artikel hinzufügen',
+      visibleText: 'Sichtbarer Text',
+      visiblePlaceholderText: 'Artikeltitel (sichtbar, wenn reduziert)',
+      collapsedText: 'Reduzierter Text',
+      collapsedPlaceholderText: 'Erweiterten Text eingeben (nur sichtbar, wenn erweitert)',
+      checkboxText: 'Listenelementnummern in der öffentlichen Ansicht anzeigen',
+    },
   },
   pages: {
     home: Home_DE,

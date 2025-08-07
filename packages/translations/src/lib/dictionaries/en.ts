@@ -677,7 +677,7 @@ export const EN: TDictionary = {
       editCoachNotes: "Edit Coach Notes",
       exploreCourses: "Explore Courses",
       description: "Note: Every edit you make will send a notification to all students in this group. Please review carefully before publishing.",
-    },
+      },
     courseBuilder: {
       deleteText: 'Delete',
       moveUpText: "Move Up",
@@ -696,6 +696,16 @@ export const EN: TDictionary = {
       courseCreatorBadge: 'Course Creator',
       skillsLabel: 'Skills',
       buyButton: 'Buy coaching sessions',
+    },
+    accordion: {
+      accordionTitleText: 'accordion-title',
+      accordionText: 'Accordion',
+      addItemText: 'Add Item',
+      visibleText: 'Visible Text',
+      visiblePlaceholderText: 'Item Title (visible when collapsed)',
+      collapsedText: 'Collapsed Text',
+      collapsedPlaceholderText: 'Enter expanded text (visible only when expanded)',
+      checkboxText: 'Show list item numbers in public view',
     },
   },
   pages: {

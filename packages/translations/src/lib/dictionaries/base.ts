@@ -689,6 +689,16 @@ export const DictionarySchema = z.object({
       skillsLabel: z.string(),
       buyButton: z.string(),
     }),
+    accordion: z.object({
+      accordionTitleText: z.string(),
+      accordionText: z.string(),
+      addItemText: z.string(),
+      visibleText: z.string(),
+      visiblePlaceholderText: z.string(),
+      collapsedText: z.string(),
+      collapsedPlaceholderText: z.string(),
+      checkboxText: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({

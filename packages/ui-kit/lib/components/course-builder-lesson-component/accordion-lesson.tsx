@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { IconPlus } from "../icons/icon-plus";
 import { Button } from "../button";
 import { fileMetadata } from "@maany_shr/e-class-models";
+import { InputField } from "../input-field";
+import { CheckBox } from "../checkbox";
 
 /**
  * Course element template definition for a Coaching Session.
@@ -78,7 +80,7 @@ function DesignerComponent({
 
     const dictionary = getDictionary(locale);
     const [accordionData, setAccordionData] = useState<AccordionDataProps[]>([
-        
+
     ]);
     useEffect(() => {
         if (accordionData.length === 0) {
@@ -86,11 +88,11 @@ function DesignerComponent({
         }
     }, [accordionData.length]);
     const handleAddAccordion = () => {
-         const newAccordion = { title: "", content: "" }; // or your default AccordionDataProps
-    setAccordionData([...accordionData, newAccordion]);
+        const newAccordion = { title: "", content: "" }; // or your default AccordionDataProps
+        setAccordionData([...accordionData, newAccordion]);
     }
     const handleUpClick = (index: number) => {
-         if (index === 0) return;
+        if (index === 0) return;
         const newData = [...accordionData];
         const [movedItem] = newData.splice(index, 1);
         console.log("Moved Item:", movedItem);
@@ -102,7 +104,7 @@ function DesignerComponent({
     };
     const handleDownClick = (index: number) => {
         console.log("Down Clicked at index:", index);
-          if (index === accordionData.length - 1) return;
+        if (index === accordionData.length - 1) return;
         const newData = [...accordionData];
         const [movedItem] = newData.splice(index, 1);
         newData.splice(index + 1, 0, movedItem);
@@ -121,17 +123,17 @@ function DesignerComponent({
         }
     };
 
-   const handleIconUpload = async (
-      metadata: { id?: string; name?: string; file?: File; },
-      signal: AbortSignal
+    const handleIconUpload = async (
+        metadata: { id?: string; name?: string; file?: File; },
+        signal: AbortSignal
     ): Promise<void> => {
-      await onImageChange(metadata as fileMetadata.TFileUploadRequest, signal);
+        await onImageChange(metadata as fileMetadata.TFileUploadRequest, signal);
     };
     return (
         <DesignerLayout
             data-testid="designer-layout"
             type={elementInstance.type}
-            title="Accordion"
+            title={dictionary.components.accordion.accordionText}
             icon={<IconAccordion classNames="w-6 h-6" />}
             onUpClick={() => onUpClick?.(elementInstance.id)}
             onDownClick={() => onDownClick?.(elementInstance.id)}
@@ -140,51 +142,73 @@ function DesignerComponent({
             courseBuilder={true}
             className="bg-card-fill"
         >
-            <div className="w-full flex flex-col gap-4 transition-all duration-300">
-                {
-                    accordionData.map((item, index) => (
-                        <AccordionBuilderEdit
-                            orderNo={index + 1}
-                            key={index}
-                            initialData={{ title: item.title, content: item.content }}
-                            onItemDelete={() => handleDeleteClick(index)}
-                            onItemUp={() => handleUpClick(index)}
-                            onItemDown={() => handleDownClick(index)}
-                            onChange={(newData) => {
-                                const updatedData = [...accordionData];
-                                updatedData[index] = newData;
-                                setAccordionData(updatedData);
-                                onChange(updatedData);
-                            }}
-                            onImageChange={handleIconUpload}
-                            onIconDelete={() => {
-                                onIconDelete(index);
-                            }}
-                            onIconDownload={() => {
-                                onIconDownload(index);
-                            }}
-                            locale={locale}
-                        />
-                    ))
-                }
-
-            </div>
             <div
-                className="flex items-center mt-4 gap-2"
-                role="group"
-                aria-label="Add link divider"
+                className="flex flex-col gap-4 w-full"
             >
-                <hr className="flex-grow border-t border-divider" />
-                <Button
-                    text={"add accordion"}
-                    hasIconRight
-                    iconRight={<IconPlus />}
-                    onClick={handleAddAccordion}
-                    aria-label="Add link"
-                    variant="text"
-                    
+                <InputField
+                    type='text'
+                    inputPlaceholder={dictionary.components.accordion.accordionTitleText}
+                    value={''}
+                    setValue={(value) => { }}
                 />
-                <hr className="flex-grow border-t border-divider" />
+                <CheckBox
+                    name="isPublicView"
+                    value="isPublicView"
+                    label={
+                        <span className="text-text-primary text-md leading-[150%]">
+                            {dictionary.components.accordion.checkboxText}
+                        </span>
+                    }
+                    labelClass="text-text-primary text-sm leading-[100%]"
+                    checked={true}
+                    withText
+                    onChange={() => { }}
+                />
+                <div className="w-full flex flex-col gap-4 transition-all duration-300">
+                    {
+                        accordionData.map((item, index) => (
+                            <AccordionBuilderEdit
+                                orderNo={index + 1}
+                                key={index}
+                                initialData={{ title: item.title, content: item.content }}
+                                onItemDelete={() => handleDeleteClick(index)}
+                                onItemUp={() => handleUpClick(index)}
+                                onItemDown={() => handleDownClick(index)}
+                                onChange={(newData) => {
+                                    const updatedData = [...accordionData];
+                                    updatedData[index] = newData;
+                                    setAccordionData(updatedData);
+                                    onChange(updatedData);
+                                }}
+                                onImageChange={handleIconUpload}
+                                onIconDelete={() => {
+                                    onIconDelete(index);
+                                }}
+                                onIconDownload={() => {
+                                    onIconDownload(index);
+                                }}
+                                locale={locale}
+                            />
+                        ))
+                    }
+
+                </div>
+                <div
+                    className="flex items-center gap-2"
+                    role="group"
+                    aria-label="Add link divider"
+                >
+                    <hr className="flex-grow border-t border-divider" />
+                    <Button
+                        text={dictionary.components.accordion.addItemText}
+                        hasIconLeft
+                        iconLeft={<IconPlus />}
+                        onClick={handleAddAccordion}
+                        aria-label="Add link"
+                        variant="text"
+                    />
+                    <hr className="flex-grow border-t border-divider" />
+                </div>
             </div>
         </DesignerLayout>
     );

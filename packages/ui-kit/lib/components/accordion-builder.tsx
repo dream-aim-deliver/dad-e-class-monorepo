@@ -13,7 +13,7 @@ import { IconButton } from './icon-button';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { FilePreview } from './drag-and-drop-uploader/file-preview';
 import { IconChevronDown, IconChevronUp, IconCloudUpload, IconTrashAlt } from './icons';
-import { isLocalAware } from '@maany_shr/e-class-translations';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Descendant } from 'slate';
 import { z } from 'zod';
 import { deserialize, serialize } from './rich-text-element/serializer';
@@ -38,6 +38,7 @@ export interface AccordionBuilderProps extends isLocalAware {
 }
 
 export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onItemDown, onItemUp, orderNo, onImageChange, onIconDelete, onIconDownload, locale }: AccordionBuilderProps) {
+  const dictionary = getDictionary(locale);
   // Separate state variables for each field to prevent state synchronization issues
   const [title, setTitle] = useState<string>(initialData?.title || '');
   const [content, setContent] = useState<Descendant[]>(
@@ -109,7 +110,7 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
         {/* Title and Icon */}
         <div className="flex items-center gap-4 flex-1 text-button-text-text">
           <span className="min-w-0 flex-shrink-0">
-            <h4 className="text-3xl font-semibold">{orderNo}.</h4>
+            <h4 className="md:text-3xl text-lg font-semibold">{orderNo}.</h4>
           </span>
 
           {!iconUrl && <><Button
@@ -162,9 +163,11 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
           onCancel={handleCancelUpload}
           locale={locale}
         />}
-        <label className='text-text-secondary md:text-xl leading-[150%] capitalize'>visible text</label>
+        <label className='text-text-secondary md:text-xl leading-[150%] capitalize'>
+          {dictionary.components.accordion.visibleText}
+        </label>
         <InputField
-          inputPlaceholder="Enter visible text"
+          inputPlaceholder={dictionary.components.accordion.visiblePlaceholderText}
           className="w-full"
           value={title}
           setValue={(newValue) => {
@@ -181,7 +184,9 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
         />
       </div>
       <div className='w-full flex flex-col '>
-        <label className='text-text-secondary md:text-xl leading-[150%] capitalize'>collapse text</label>
+        <label className='text-text-secondary md:text-xl leading-[150%] capitalize'>
+          {dictionary.components.accordion.collapsedText}
+        </label>
         <div className='w-full'>
           <RichTextEditor
             initialValue={content}
@@ -193,9 +198,8 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
               // Update parent with current state using the serialized content value
               onChange(createAccordionData(undefined, value));
             }}
-            placeholder="Enter expanded text (visible only when expanded)."
+            placeholder={dictionary.components.accordion.collapsedPlaceholderText}
             onDeserializationError={(message, error) => console.error('Deserialization error:', message)}
-
           />
         </div>
       </div>

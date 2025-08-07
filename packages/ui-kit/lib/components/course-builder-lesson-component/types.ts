@@ -296,6 +296,10 @@ export interface  AccordianElementViewProps{
     type: CourseElementType.Accordion;
     id: number;
     order: number;
+    accordionTitle: string;
+    setAccordionTitle: (title: string) => void;
+    isChecked: boolean;
+    setIsChecked: (checked: boolean) => void;
     accordionData: AccordionDataProps[];
 };
 
