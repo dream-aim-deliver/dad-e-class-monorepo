@@ -22,7 +22,7 @@ export { ThemeProvider, useTheme } from './contexts';
 export { VisitorCourseCard } from './components/course-card/visitor-course-card/visitor-course-card';
 export { CoachCourseCard } from './components/course-card/coach-course-card/coach-course-card';
 export { StudentCourseCard } from './components/course-card/student-course-card/student-course-card';
-export { CourseCreatorCard } from './components/course-card/course-creator-course-card/course-creator-card';
+export { CourseCreatorCard, CourseStatus } from './components/course-card/course-creator-course-card/course-creator-card';
 export { ProfileTabs, DragAndDrop, Badge };
 export { CoachBanner } from './components/coach-banner';
 export { CourseCard } from './components/course-card/course-card';

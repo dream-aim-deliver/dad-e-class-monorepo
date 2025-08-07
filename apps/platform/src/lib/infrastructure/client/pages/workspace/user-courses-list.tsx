@@ -120,6 +120,7 @@ export default function UserCoursesList() {
                                 pricing={pricing}
                                 duration={duration}
                                 rating={course.averageRating}
+                                progress={course.progress}
                             />
                         );
                     }
