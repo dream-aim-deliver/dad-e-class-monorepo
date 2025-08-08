@@ -1,9 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { PackageCard } from '../../lib/components/packages/package-card';
+import { PackageCmsCard } from '../../lib/components/packages/package-cms-card';
+import type {
+  PackageCmsPublishedCardProps,
+  PackageCmsArchivedCardProps,
+} from '../../lib/components/packages/package-cms-card';
 
-const meta: Meta<typeof PackageCard> = {
-  title: 'Components/PackageCard/VisitorVariant',
-  component: PackageCard,
+const meta: Meta<typeof PackageCmsCard> = {
+  title: 'Components/PackageCard/CMSVariant',
+  component: PackageCmsCard,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
@@ -15,40 +19,24 @@ const meta: Meta<typeof PackageCard> = {
       defaultValue: 'en',
       description: 'The language locale for translations',
     },
-    imageUrl: {
-      control: 'text',
-      description: 'URL of the card image',
+    status: {
+      control: 'radio',
+      options: ['published', 'archived'],
+      description: 'State of the package card',
     },
-    title: {
-      control: 'text',
-      description: 'Title of the package card',
-    },
-    description: {
-      control: 'text',
-      description: 'Description text of the package card',
-    },
-    duration: {
-      control: 'text',
-      description: 'Duration of the package (e.g., "6 weeks")',
-    },
-    courseCount: {
-      control: 'number',
-      description: 'Number of courses included in the package',
-    },
-    pricing: {
-      control: 'object',
-      description: 'Object containing price and saved price information',
-    },
+    onClickEdit: { action: 'clicked edit' },
+    onClickArchive: { action: 'clicked archive' },
+    onClickPublished: { action: 'clicked publish' },
   },
 };
 
 export default meta;
 
-type Story = StoryObj<typeof PackageCard>;
+type Story = StoryObj<typeof PackageCmsCard>;
 
-const mockData = {
+const basePublishedData: PackageCmsPublishedCardProps = {
   imageUrl:
-    'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+    'https://img.lalr.co/cms/2018/08/16181927/Mini-pig.jpg?r=1_1',
   title: 'Package Title, Firmen und Einzelpersonen',
   description:
     'Das Angebot "Visualisierung" richtet sich an Firmen und Einzelpersonen, die bereits über eine Idee, ein Konzept und ein Briefing verfügen.',
@@ -59,24 +47,33 @@ const mockData = {
     partialPrice: 199,
     currency: 'CHF',
   },
-  onClickPurchase: () => alert('Purchased'),
-  onClickDetails: () => alert('Details'),
+  locale: 'en',
+  onClickEdit: () => alert('Edit clicked'),
+  onClickArchive: () => alert('Archive clicked'),
+  status: 'published',
 };
 
-export const Default: Story = {
+const baseArchivedData: PackageCmsArchivedCardProps = {
+  ...basePublishedData,
+  status: 'archived',
+  onClickPublished: () => alert('Publish clicked'),
+};
+
+export const Published: Story = {
   args: {
-    ...mockData,
-    locale: 'en',
-    courseCount: 0,
-    imageUrl:
-      'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-    duration: 0,
+    ...basePublishedData,
+  },
+};
+
+export const Archived: Story = {
+  args: {
+    ...baseArchivedData,
   },
 };
 
 export const WithGermanLocale: Story = {
   args: {
-    ...mockData,
+    ...basePublishedData,
     locale: 'de',
     title: 'Komplettes Paket für digitales Marketing',
     description:
@@ -91,27 +88,24 @@ export const WithGermanLocale: Story = {
 
 export const BrokenImage: Story = {
   args: {
-    ...mockData,
+    ...basePublishedData,
     imageUrl: 'https://example.com/nonexistent-image.jpg',
-    locale: 'en',
   },
 };
 
 export const NoImage: Story = {
   args: {
-    ...mockData,
+    ...basePublishedData,
     imageUrl: '',
-    locale: 'en',
   },
 };
 
 export const LongContentTitleAndDescription: Story = {
   args: {
-    ...mockData,
+    ...basePublishedData,
     title:
       'Complete Digital Marketing Package - Extended Title for Testing Overflow Handling and Truncation Behavior in UI Components',
     description:
       'Gain comprehensive knowledge in digital marketing with this all-inclusive package. This extended description is designed to test how the component handles longer text. It should properly truncate or wrap text based on the available space.',
-    locale: 'en',
   },
 };
