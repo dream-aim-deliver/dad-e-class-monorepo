@@ -63,7 +63,7 @@ interface DesignerComponentProp extends DesignerComponentProps {
     onImageChange?: (
         image: fileMetadata.TFileUploadRequest,
         signal: AbortSignal
-    ) => Promise<void>;
+    ) => Promise<fileMetadata.TFileMetadata & { category: 'image' }>;
     onIconDelete?: (id: string) => void;
     onIconDownload?: (id: string) => void;
 }
@@ -81,60 +81,47 @@ function DesignerComponent({
 }: DesignerComponentProp) {
     if (elementInstance.type !== CourseElementType.Accordion) return null;
     const dictionary = getDictionary(locale);
-    const [accordionData, setAccordionData] = useState<AccordionDataProps[]>(
-        (elementInstance as AccordionElement)?.accordionData ?? []
-    );
-    // Use stable per-item keys to ensure correct reordering behavior with React/Framer Motion
-    const genKey = () => (typeof crypto !== 'undefined' && (crypto as any).randomUUID ? (crypto as any).randomUUID() : `${Date.now()}-${Math.random()}`);
-    const [itemKeys, setItemKeys] = useState<string[]>(
-        ((elementInstance as AccordionElement)?.accordionData ?? []).map(() => genKey())
+    const initialAccordionData = (elementInstance as AccordionElement)?.accordionData ?? [];
+    const [items, setItems] = useState<{ clientId: string; data: AccordionDataProps }[]>(
+        initialAccordionData.map((data, i) => ({ clientId: `acc-${i}-${Date.now()}-${Math.random()}`, data }))
     );
     const [accordionTitle, setAccordionTitle] = useState<string>(elementInstance.accordionTitle || "");
     const [isIncluded, setIsIncluded] = useState<boolean>(elementInstance.isChecked || false);
     const handleAddAccordion = () => {
         const newAccordion: AccordionDataProps = { title: "", content: "" };
-        setAccordionData([...accordionData, newAccordion]);
-        setItemKeys([...itemKeys, genKey()]);
+        setItems([...items, { clientId: `acc-${Date.now()}-${Math.random()}`, data: newAccordion }]);
     }
     const handleUpClick = (index: number) => {
         if (index === 0) return;
-        const newData = [...accordionData];
-        const [movedItem] = newData.splice(index, 1);
-        newData.splice(index - 1, 0, movedItem);
-        setAccordionData(newData);
-        const newKeys = [...itemKeys];
-        const [movedKey] = newKeys.splice(index, 1);
-        newKeys.splice(index - 1, 0, movedKey);
-        setItemKeys(newKeys);
-        onChange?.({ title: accordionTitle, isChecked: isIncluded, data: newData });
+        const newItems = [...items];
+        const [movedItem] = newItems.splice(index, 1);
+        newItems.splice(index - 1, 0, movedItem);
+        setItems(newItems);
+        onChange?.({ title: accordionTitle, isChecked: isIncluded, data: newItems.map(i => i.data) });
     };
     const handleDownClick = (index: number) => {
-        if (index === accordionData.length - 1) return;
-        const newData = [...accordionData];
-        const [movedItem] = newData.splice(index, 1);
-        newData.splice(index + 1, 0, movedItem);
-        setAccordionData(newData);
-        const newKeys = [...itemKeys];
-        const [movedKey] = newKeys.splice(index, 1);
-        newKeys.splice(index + 1, 0, movedKey);
-        setItemKeys(newKeys);
-        onChange?.({ title: accordionTitle, isChecked: isIncluded, data: newData });
+        if (index === items.length - 1) return;
+        const newItems = [...items];
+        const [movedItem] = newItems.splice(index, 1);
+        newItems.splice(index + 1, 0, movedItem);
+        setItems(newItems);
+        onChange?.({ title: accordionTitle, isChecked: isIncluded, data: newItems.map(i => i.data) });
     };
     const handleDeleteClick = (index: number) => {
-        const newData = accordionData.filter((_, i) => i != index);
-        setAccordionData(newData);
-        const newKeys = itemKeys.filter((_, i) => i != index);
-        setItemKeys(newKeys);
-        onChange?.({ title: accordionTitle, isChecked: isIncluded, data: newData });
+        const newItems = items.filter((_, i) => i != index);
+        setItems(newItems);
+        onChange?.({ title: accordionTitle, isChecked: isIncluded, data: newItems.map(i => i.data) });
     };
 
     const handleIconUpload = async (
         metadata: fileMetadata.TFileUploadRequest,
         signal: AbortSignal
-    ): Promise<void> => {
+    ): Promise<fileMetadata.TFileMetadata & { category: 'image' }> => {
         if (onImageChange) {
-            await onImageChange(metadata, signal);
+            const response = await onImageChange(metadata, signal);
+            return response;
         }
+        throw new Error("onImageChange handler not provided");
     };
     return (
         <DesignerLayout
@@ -158,7 +145,7 @@ function DesignerComponent({
                     value={accordionTitle}
                     setValue={(value) => {
                         setAccordionTitle(value);
-                        onChange?.({ title: value, isChecked: isIncluded, data: accordionData });
+                        onChange?.({ title: value, isChecked: isIncluded, data: items.map(i => i.data) });
                     }}
                 />
                 <CheckBox
@@ -172,16 +159,17 @@ function DesignerComponent({
                     labelClass="text-text-primary text-sm leading-[100%]"
                     checked={isIncluded}
                     withText
-                    onChange={(checked: boolean) => {
-                        setIsIncluded(checked);
-                        onChange?.({ title: accordionTitle, isChecked: checked, data: accordionData });
+                    onChange={() => {
+                        const next = !isIncluded;
+                        setIsIncluded(next);
+                        onChange?.({ title: accordionTitle, isChecked: next, data: items.map(i => i.data) });
                     }}
                 />
                 <div className="w-full flex flex-col gap-4 transition-all duration-300">
                     <AnimatePresence>
                         {
-                            accordionData.map((item, index) => (
-                                <motion.div key={itemKeys[index] ?? index}
+                            items.map((item, index) => (
+                                <motion.div key={item.clientId}
                                     layout
                                     initial={{ opacity: 0, y: -20 }}
                                     animate={{ opacity: 1, y: 0 }}
@@ -190,27 +178,27 @@ function DesignerComponent({
                                 >
                                     <AccordionBuilderEdit
                                         orderNo={index + 1}
-                                        totalItems={accordionData.length}
-                                        initialData={{ title: item.title, content: item.content, iconUrl: item.iconUrl }}
-                                        onItemDelete={() => handleDeleteClick(index)}
-                                        onItemUp={() => handleUpClick(index)}
-                                        onItemDown={() => handleDownClick(index)}
+                                        totalItems={items.length}
+                                        initialData={{ title: item.data.title, content: item.data.content, iconUrl: item.data.iconUrl }}
+                                        onItemDelete={(orderNo) => handleDeleteClick(orderNo - 1)}
+                                        onItemUp={(orderNo) => handleUpClick(orderNo - 1)}
+                                        onItemDown={(orderNo) => handleDownClick(orderNo - 1)}
                                         onChange={(newData) => {
-                                            const updatedData = [...accordionData];
-                                            const currentItem = updatedData[index];
+                                            const updatedItems = [...items];
+                                            const currentItem = updatedItems[index];
                                             if (currentItem) {
-                                                updatedData[index] = { ...currentItem, ...newData };
-                                                setAccordionData(updatedData);
-                                                onChange?.({ title: accordionTitle, isChecked: isIncluded, data: updatedData });
+                                                updatedItems[index] = { ...currentItem, data: { ...currentItem.data, ...newData } };
+                                                setItems(updatedItems);
+                                                onChange?.({ title: accordionTitle, isChecked: isIncluded, data: updatedItems.map(i => i.data) });
                                             }
                                         }}
                                         onImageChange={handleIconUpload}
                                         onIconDelete={() => {
-                                            const fileId = accordionData[index]?.iconUrl?.id;
+                                            const fileId = items[index]?.data?.iconUrl?.id;
                                             if (fileId) onIconDelete?.(fileId);
                                         }}
                                         onIconDownload={() => {
-                                            const fileId = accordionData[index]?.iconUrl?.id;
+                                            const fileId = items[index]?.data?.iconUrl?.id;
                                             if (fileId) onIconDownload?.(fileId);
                                         }}
 
