@@ -131,7 +131,9 @@ export const InDialog: StoryObj<typeof CreateCourseModal> = {
         onClose: () => console.log('Modal Closed'),
     },
     render: (args) => (
-        <Dialog open={undefined} onOpenChange={() => {}} defaultOpen={false}>
+        <Dialog open={undefined} onOpenChange={() => {
+            console.log('Dialog Opened/Closed');
+        }} defaultOpen={false}>
             <DialogTrigger asChild><span>Open a course</span></DialogTrigger>
             <DialogContent showCloseButton={true} closeOnOverlayClick closeOnEscape>
                 <div className="p-6">
