@@ -2,7 +2,7 @@
 
 import { TLocale } from "@maany_shr/e-class-translations";
 import { useLocale } from "next-intl";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { trpc } from "../trpc/cms-client";
 
 // This is a simple example component that uses the CMS client
@@ -21,7 +21,6 @@ export default function CMSExample() {
         <div>
             <h1>CMS Example</h1>
             <p>Current locale: {locale}</p>
-            <p>Current route: {router.asPath}</p>
             <h2>CMS Version</h2>
             <pre>{JSON.stringify(cmsVersion, null, 2)}</pre>
             <h2>Skills</h2>
