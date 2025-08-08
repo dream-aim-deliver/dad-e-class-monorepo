@@ -1,15 +1,15 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
-import CoursesPresenter, {
+import ListCoursesPresenter, {
     TCoursesPresenterUtilities,
-} from '../../common/presenters/courses-presenter';
+} from '../../common/presenters/list-courses-presenter';
 
 export function useListCoursesPresenter(
     setViewModel: (viewModel: viewModels.TCourseListViewModel) => void,
 ) {
     const presenterUtilities: TCoursesPresenterUtilities = {};
     const presenter = useMemo(
-        () => new CoursesPresenter(setViewModel, presenterUtilities),
+        () => new ListCoursesPresenter(setViewModel, presenterUtilities),
         [setViewModel],
     );
     return { presenter };

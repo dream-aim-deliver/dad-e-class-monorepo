@@ -22,7 +22,7 @@ export { ThemeProvider, useTheme } from './contexts';
 export { VisitorCourseCard } from './components/course-card/visitor-course-card/visitor-course-card';
 export { CoachCourseCard } from './components/course-card/coach-course-card/coach-course-card';
 export { StudentCourseCard } from './components/course-card/student-course-card/student-course-card';
-export { CourseCreatorCard } from './components/course-card/course-creator-course-card/course-creator-card';
+export { CourseCreatorCard, type CourseStatus } from './components/course-card/course-creator-course-card/course-creator-card';
 export { ProfileTabs, DragAndDrop, Badge };
 export { CoachBanner } from './components/coach-banner';
 export { CourseCard } from './components/course-card/course-card';
@@ -41,7 +41,7 @@ export { Divider } from './components/divider';
 export { CarouselSkeleton } from './components/skeletons/carousel-skeleton'
 
 export { ReviewSnippet } from './components/review/review-snippet';
-export { CreateContentModal } from './components/create-content-modal';
+export { default as CreateCourseModal } from './components/create-modal/create-course-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
 export { RemoveModal } from './components/remove-modal';
@@ -93,3 +93,4 @@ export { BookSessionWith } from './components/book-session-with-banner';
 export { BuyCoachingSessionBanner } from './components/buy-coaching-session-banner';
 
 export { Breadcrumbs } from './components/breadcrumbs';
+export * from './components/dialog';
