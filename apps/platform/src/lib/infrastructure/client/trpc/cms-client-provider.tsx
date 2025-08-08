@@ -6,7 +6,7 @@ import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
 import {
     getQueryClient,
     getTRPCUrl,
-} from '../../common/utils/get-query-client';
+} from '../../common/utils/get-cms-query-client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { trpc } from '../trpc/client';
 import { httpBatchLink } from '@trpc/client';
@@ -16,7 +16,7 @@ interface ClientProvidersProps {
     children: ReactNode;
 }
 
-export default function ClientProviders({ children }: ClientProvidersProps) {
+export default function CMSTRPCClientProviders({ children }: ClientProvidersProps) {
     const queryClient = getQueryClient();
     const [trpcClient] = useState(() =>
         trpc.createClient({
