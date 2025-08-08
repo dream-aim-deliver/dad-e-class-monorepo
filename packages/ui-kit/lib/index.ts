@@ -103,3 +103,5 @@ export * from './utils/file-utils';
 export { CourseGeneralInformationVisitor } from './components/course-general-information/course-general-information-visitor';
 
 export * from './components/sidemenu';
+
+export { CourseOutlineAccordion } from './components/course-outline-accordion';
