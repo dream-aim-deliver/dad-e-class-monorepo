@@ -21,3 +21,4 @@ export * from './course-introduction-view-model';
 export * from './course-outline-view-model';
 export * from './assessment-progress-list-view-model';
 export * from './user-course-list-view-model';
+export * from './course-structure-view-model';
