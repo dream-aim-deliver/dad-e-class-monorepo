@@ -34,6 +34,7 @@ docker run -d --name e-class-platform \
     -e E_CLASS_PLATFORM_ID=<1> \
     -e E_CLASS_DEV_MODE=<true> \
     -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
+    -e NEXT_PUBLIC_E_CLASS_CMS_REST_URL=<http://localhost:5173> \
     -e NEXT_PUBLIC_CONTACT_EMAIL=<example@mail.com> \
     -p 80:80 -p 443:443 \
     --mount type=bind,source=your/hostcert.pem,target=/etc/dad/hostcert.pem \
