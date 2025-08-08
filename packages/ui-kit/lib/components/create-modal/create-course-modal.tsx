@@ -180,13 +180,13 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                             leftContent={<IconSearch />}
                         />
                         {props.isLoading && <CourseSearchSkeleton />}
-                        {isQuerySuccessful && props.courses?.length === 0 && (
+                        {isQuerySuccessful && props.courses && props.courses.length === 0 && (
                             <h6 className="text-text-primary">
                                 {dictionary.noCourseFound}
                             </h6>
                         )}
                         {!props.isLoading && props.hasSearchError && <DefaultError locale={props.locale} />}
-                        {isQuerySuccessful && props.courses?.length > 0 && (
+                        {isQuerySuccessful && props.courses && props.courses.length > 0 && (
                             <ul className="flex flex-col gap-4 max-h-70 overflow-y-auto">
                                 {props.courses.map((course) => (
                                     <DuplicationCourseCard
