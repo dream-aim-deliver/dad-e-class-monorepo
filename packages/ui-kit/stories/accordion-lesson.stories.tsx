@@ -9,7 +9,7 @@ import type { AccordionElement } from '../lib/components/course-builder-lesson-c
 import type { DesignerComponentProps } from '../lib/components/course-builder/types';
 
 const meta = {
-  title: 'Components/AccordionLesson',
+  title: 'Components/CourseBuilder/AccordionLesson',
   component: accordionElement.designerComponent,
   parameters: {
     layout: 'centered',
@@ -37,8 +37,8 @@ const demoIcon = (id: string): TFileMetadataImage => ({
   size: 1234,
   category: 'image',
   status: 'available',
-  url: 'https://via.placeholder.com/40',
-  thumbnailUrl: 'https://via.placeholder.com/40',
+  url: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1749031184/icon_btkez8.png',
+  thumbnailUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1749031184/icon_btkez8.png',
   checksum: ''
 });
 
@@ -108,4 +108,20 @@ export const Empty: Story = {
   } as unknown as DesignerComponentProps
 };
 
-// That's all we need for now!
+// Form view stories (renders the student-facing component)
+export const FormPrimary: Story = {
+  render: (args) => {
+    const FormComponent = accordionElement.formComponent as any;
+    return (
+      <FormComponent
+        elementInstance={args.elementInstance as any}
+        locale={args.locale as any}
+      />
+    );
+  },
+  args: {
+    elementInstance: mockAccordionData,
+    locale: 'en'
+  } as unknown as DesignerComponentProps
+};
+

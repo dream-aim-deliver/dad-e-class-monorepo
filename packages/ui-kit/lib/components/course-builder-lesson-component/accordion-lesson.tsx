@@ -233,7 +233,7 @@ function DesignerComponent({
 
 function formComponent({ elementInstance, locale }: FormComponentProps) {
     return (
-        <div className="py-4 px-6 bg-card-fill border border-card-stroke radius-md ">
+        <div className="py-4 px-6 bg-card-fill border border-card-stroke rounded-md ">
             <AccordionBuilderView data={(elementInstance as AccordionElement).accordionData} />
         </div>
     );

@@ -140,7 +140,7 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
             onClick={() => onItemDelete(orderNo)}
             size="medium"
             styles="text"
-            title= {dictionary.components.accordion.deleteText}
+            title={dictionary.components.accordion.deleteText}
           />
           <IconButton
             icon={<IconChevronUp />}
@@ -215,14 +215,23 @@ function AccordionBuilderView({ data }: { data: AccordionDataProps[] }) {
             'py-6',
             data.length - 1 !== index && 'border-b border-divider',
           )}>
-            <div className='flex gap-6'>
-              <AccordionTrigger value={item.title ?? String(index)} className="text-lg font-semibold flex items-center gap-1">
-                {item.iconUrl && <img src={item.iconUrl.url} alt="Accordion Icon" className="w-6 h-6 mr-2" />}
-                <span>{item.title}</span>
+            <div className='flex gap-6 items-center'>
+            <h4 className="min-w-0 flex-shrink-0 text-button-text-text text-xl md:text-[32px]">{index + 1}.</h4>
+              <AccordionTrigger value={item.title ?? String(index)} className="text-lg font-semibold flex items-center gap-6">
+              
+                <span className="flex items-center gap-3">
+                  {item.iconUrl && (
+                    <span className="flex items-center justify-center">
+                      <img src={item.iconUrl.url} alt="Accordion Icon" className="w-6 h-6" />
+                    </span>
+                  )}
+                  <h5 className='text-text-primary md:text-[24px] text-lg '>{item.title}</h5>
+                </span>
               </AccordionTrigger>
             </div>
-            <AccordionContent value={item.title ?? String(index)}>
+            <AccordionContent className='ml-12' value={item.title ?? String(index)}>
               <RichTextRenderer
+                className='text-text-secondary'
                 onDeserializationError={(message, error) => console.error('Deserialization error:', message, error)}
                 content={item.content}
               />
