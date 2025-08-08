@@ -8,7 +8,6 @@ import { SessionProvider } from 'next-auth/react';
 import { auth, viewModels } from '@maany_shr/e-class-models';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
 import nextAuth from '../../lib/infrastructure/server/config/auth/next-auth.config';
-import ClientProviders from '../../lib/infrastructure/client/utils/client-providers';
 import {
     getQueryClient,
     trpc,
@@ -20,6 +19,7 @@ import {
 } from '../../lib/infrastructure/server/utils/language-mapping';
 import Layout from '../../lib/infrastructure/client/pages/layout';
 import { createGetLanguagesPresenter } from '../../lib/infrastructure/server/presenter/get-languages-presenter';
+import MockTRPCClientProviders from '../../lib/infrastructure/client/trpc/mock-client-providers';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -111,11 +111,11 @@ export default async function RootLayout({
             >
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
-                        <ClientProviders>
+                        <MockTRPCClientProviders>
                             <Layout availableLocales={availableLocales}>
                                 {children}
                             </Layout>
-                        </ClientProviders>
+                        </MockTRPCClientProviders>
                     </NextIntlClientProvider>
                 </SessionProvider>
             </body>
