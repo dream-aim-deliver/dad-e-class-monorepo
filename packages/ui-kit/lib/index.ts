@@ -93,3 +93,4 @@ export { BookSessionWith } from './components/book-session-with-banner';
 export { BuyCoachingSessionBanner } from './components/buy-coaching-session-banner';
 
 export { Breadcrumbs } from './components/breadcrumbs';
+export * from './components/dialog';
