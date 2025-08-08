@@ -112,7 +112,7 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
     <div className=' w-full p-4 text-text-secondary bg-base-neutral-800 border border-base-neutral-700 flex flex-col gap-4 rounded-md'>
       <div className="flex items-center justify-between  overflow-x-auto text-button-primary-text ">
         {/* Title and Icon */}
-        <div className="flex items-center gap-4 flex-1 text-button-text-text">
+        <div className="flex items-center md:gap-4 gap-2 flex-1 text-button-text-text">
           <span className="min-w-0 flex-shrink-0">
             <h4 className="md:text-3xl text-lg font-semibold">{orderNo}.</h4>
           </span>
