@@ -129,3 +129,18 @@ export const GermanLocale: Story = {
     lessonTitle: 'Was ist Führung?',
   },
 };
+
+export const NoNotes: Story = {
+  render: (args) => <LessonHeaderStateful args={args} />,
+  args: {
+    currentModule: 1,
+    totalModules: 5,
+    moduleTitle: 'Introduction to Leadership',
+    currentLesson: 1,
+    totalLessons: 10,
+    lessonTitle: 'What is Leadership?',
+    areNotesAvailable: false,
+    className: 'w-full',
+    locale: 'en',
+  },
+};
