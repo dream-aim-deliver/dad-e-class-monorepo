@@ -17,6 +17,7 @@ import { trpc } from '../../trpc/client';
 import { useEffect, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useSearchCoursesPresenter } from '../../hooks/use-courses-presenter';
+import { useRouter } from 'next/navigation';
 
 interface UserCoursesProps {
     roles: string[];
@@ -40,6 +41,8 @@ function useDebounce(value: any, delay: number): any {
 
 function CreateCourseDialogContent() {
     const locale = useLocale() as TLocale;
+    const router = useRouter();
+
     const { setIsOpen } = useDialog();
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -77,10 +80,14 @@ function CreateCourseDialogContent() {
             <CreateCourseModal
                 locale={locale}
                 isLoading={isFetching}
-                onCreateNew={() => console.log('Create New Course')}
-                onDuplicate={(course) =>
-                    console.log('Duplicate Course', course)
-                }
+                onCreateNew={() => {
+                    router.push('/create/course');
+                    setIsOpen(false);
+                }}
+                onDuplicate={(course) => {
+                    router.push(`/create/course?duplicate=${course.slug}`);
+                    setIsOpen(false);
+                }}
                 onQueryChange={(query) => setSearchQuery(query)}
                 courses={courses.map((course) => ({
                     ...course,
