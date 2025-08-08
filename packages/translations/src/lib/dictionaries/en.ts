@@ -598,6 +598,7 @@ export const EN: TDictionary = {
       emptyState: 'No students yet',
     },
     link: {
+      linksText: 'Links',
       titleLabel: 'Title',
       titlePlaceholder: 'E.g., My new video assignment',
       urlLabel: 'URL',
@@ -671,7 +672,7 @@ export const EN: TDictionary = {
       customIcon: "custom icon",
       includeInMaterials: "Include links in course material tab",
       publishNotes: 'Publish notes',
-      addLink: 'Add link',
+      addLink: 'Add Link',
       publishEditNotes: "Publish edits",
       back: "Back",
       editCoachNotes: "Edit Coach Notes",

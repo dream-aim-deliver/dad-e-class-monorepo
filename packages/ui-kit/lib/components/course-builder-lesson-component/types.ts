@@ -290,4 +290,42 @@ export interface ImageGallery {
     images: ImageFileMetadata[];
 }
 
+export interface Links extends isLocalAware {
+    type: CourseElementType.Links;
+    id: number;
+    order: number;
+    editingLinkIndex: number | null;
+    links: {
+        title: string;
+        url: string;
+        customIconMetadata?: fileMetadata.TFileMetadata;
+    }[];
+    include_in_materials: boolean;
+    onChange: (updatedData: {
+        type: CourseElementType.Links;
+        id: number;
+        order: number;
+        editingLinkIndex: number | null;
+        links: {
+            title: string;
+            url: string;
+            customIconMetadata?: fileMetadata.TFileMetadata;
+        }[];
+        include_in_materials: boolean;
+    }) => void;
+    onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, index: number, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
+    onDeleteIcon: (id: string) => void;
+};
 
+export interface LinksView extends isLocalAware {
+    type: CourseElementType.Links;
+    id: number;
+    order: number;
+    links: {
+        title: string;
+        url: string;
+        customIconMetadata?: fileMetadata.TFileMetadata;
+    }[];
+}
+
+export type LinksElement = Links | LinksView;
