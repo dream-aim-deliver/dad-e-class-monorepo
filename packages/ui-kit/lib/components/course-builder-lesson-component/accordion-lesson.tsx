@@ -58,14 +58,14 @@ const accordionElement: CourseElementTemplate = {
  *   locale="en"
  * />
  */
-interface DesignerComponentProp extends DesignerComponentProps {
-    onChange?: (value: { title: string; isChecked: boolean; data: AccordionDataProps[] }) => void;
-    onImageChange?: (
+interface AccordionDesignerComponentProps extends DesignerComponentProps {
+    onChange: (value: { title: string; isChecked: boolean; data: AccordionDataProps[] }) => void;
+    onImageChange: (
         image: fileMetadata.TFileUploadRequest,
         signal: AbortSignal
     ) => Promise<fileMetadata.TFileMetadata & { category: 'image' }>;
-    onIconDelete?: (id: string) => void;
-    onIconDownload?: (id: string) => void;
+    onIconDelete: (id: string) => void;
+    onIconDownload: (id: string) => void;
 }
 
 function DesignerComponent({
@@ -78,7 +78,7 @@ function DesignerComponent({
     onImageChange,
     onIconDelete,
     onIconDownload,
-}: DesignerComponentProp) {
+}: AccordionDesignerComponentProps) {
     if (elementInstance.type !== CourseElementType.Accordion) return null;
     const dictionary = getDictionary(locale);
     const initialAccordionData = (elementInstance as AccordionElement)?.accordionData ?? [];
