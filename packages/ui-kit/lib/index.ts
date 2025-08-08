@@ -98,3 +98,4 @@ export { SubmissionElementsRenderer } from './components/pre-assessment/submissi
 export * from './components/dialog';
 export { CreateCourseForm, useCreateCourseForm } from './components/create-course-form';
 export * from './utils/file-utils';
+export { CourseOutlineAccordion } from './components/course-outline-accordion';
