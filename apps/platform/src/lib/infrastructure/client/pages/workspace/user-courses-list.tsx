@@ -71,7 +71,7 @@ export default function UserCoursesList() {
     };
 
     const onCourseEdit = (courseSlug: string) => {
-        router.push(`/courses/edit/${courseSlug}`);
+        router.push(`/edit/course/${courseSlug}`);
     };
 
     const onClickUser = (username: string) => {
