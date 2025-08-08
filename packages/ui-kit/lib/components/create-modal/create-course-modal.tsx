@@ -145,7 +145,7 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                 }
                 className="w-full"
             >
-                <TabList className="grid w-full grid-cols-2 mb-4">
+                <TabList className="mb-4">
                     <TabTrigger value={CreateCourseModalTab.CREATE_NEW}>
                         {dictionary.startFromScratch}
                     </TabTrigger>
