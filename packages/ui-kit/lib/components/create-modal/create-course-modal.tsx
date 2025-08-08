@@ -7,6 +7,7 @@ import { IconSearch } from '../icons/icon-search';
 import { InputField } from '../input-field';
 import { StarRating } from '../star-rating';
 import { UserAvatar } from '../avatar/user-avatar';
+import DefaultError from '../default-error';
 
 interface DuplicationCourse {
     id: number;
@@ -30,6 +31,7 @@ interface CreateCourseModalProps extends isLocalAware {
     onDuplicate: (course: DuplicationCourse) => void;
     onQueryChange: (query: string) => void;
     onClose: () => void;
+    hasSearchError?: boolean;
 }
 
 enum CreateCourseModalTab {
@@ -38,26 +40,23 @@ enum CreateCourseModalTab {
 }
 
 function CourseSearchSkeleton() {
+    const getSingleSkeleton = () => (
+        <div className="flex justify-between items-center mt-2 mb-2 bg-base-neutral-800 rounded-lg border border-base-neutral-700 p-4">
+                {/* Skeleton title and rating*/}
+                <div className="flex flex-col items-start gap-3 w-full animate-pulse">
+                    <div className="w-80 h-6 bg-base-neutral-700 rounded-lg" />
+                    <div className="w-40 h-4 bg-base-neutral-700 rounded-lg" />
+                </div>
+                {/* Skeleton avatar */}
+                <div className="w-10 h-10 items-end rounded-full bg-base-neutral-700 animate-pulse" />
+            </div>
+    );
+            
+
     return (
         <div className="flex flex-col">
-            <div className="flex justify-between items-center mt-2 mb-2 bg-base-neutral-800 rounded-lg border border-base-neutral-700 p-4">
-                {/* Skeleton title and rating*/}
-                <div className="flex flex-col items-start gap-3 w-full animate-pulse">
-                    <div className="w-100 h-6 bg-base-neutral-700 rounded-lg" />
-                    <div className="w-70 h-4 bg-base-neutral-700 rounded-lg" />
-                </div>
-                {/* Skeleton avatar */}
-                <div className="w-10 h-10 items-end rounded-full bg-base-neutral-700 animate-pulse" />
-            </div>
-            <div className="flex justify-between items-center bg-base-neutral-800 rounded-lg border border-base-neutral-700 p-4">
-                {/* Skeleton title and rating*/}
-                <div className="flex flex-col items-start gap-3 w-full animate-pulse">
-                    <div className="w-100 h-6 bg-base-neutral-700 rounded-lg" />
-                    <div className="w-70 h-4 bg-base-neutral-700 rounded-lg" />
-                </div>
-                {/* Skeleton avatar */}
-                <div className="w-10 h-10 items-end rounded-full bg-base-neutral-700 animate-pulse" />
-            </div>
+            {getSingleSkeleton()}
+            {getSingleSkeleton()}
         </div>
     );
 }
@@ -125,6 +124,8 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
     );
     const [searchQuery, setSearchQuery] = useState<string>('');
 
+    const isQuerySuccessful = !props.isLoading && !props.hasSearchError;
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex flex-col items-start gap-4 w-full">
@@ -167,7 +168,7 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                 </TabContent>
 
                 <TabContent value={CreateCourseModalTab.DUPLICATE}>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col gap-4">
                         <InputField
                             value={searchQuery}
                             setValue={(value: string) => {
@@ -179,13 +180,14 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                             leftContent={<IconSearch />}
                         />
                         {props.isLoading && <CourseSearchSkeleton />}
-                        {!props.isLoading && props.courses?.length === 0 && (
-                            <h6 className="text-text-primary mt-4">
+                        {isQuerySuccessful && props.courses?.length === 0 && (
+                            <h6 className="text-text-primary">
                                 {dictionary.noCourseFound}
                             </h6>
                         )}
-                        {!props.isLoading && props.courses?.length > 0 && (
-                            <ul className="flex flex-col gap-4 mt-4 max-h-70 overflow-y-auto">
+                        {!props.isLoading && props.hasSearchError && <DefaultError locale={props.locale} />}
+                        {isQuerySuccessful && props.courses?.length > 0 && (
+                            <ul className="flex flex-col gap-4 max-h-70 overflow-y-auto">
                                 {props.courses.map((course) => (
                                     <DuplicationCourseCard
                                         key={course.id}
