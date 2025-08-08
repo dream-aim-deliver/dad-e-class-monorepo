@@ -76,7 +76,7 @@ export function CourseOutlineAccordion({
         <Accordion
             className="flex flex-col gap-7 md:w-[343px] w-[280px]"
             type="single"
-            defaultValue={[modules[0].title]}
+            defaultValue={[sortedModules[0].title]}
         >
             <div className="w-full bg-card-fill rounded-medium border border-card-stroke p-4">
                 <p className="text-md text-text-primary font-bold border-b border-divider pb-4">
