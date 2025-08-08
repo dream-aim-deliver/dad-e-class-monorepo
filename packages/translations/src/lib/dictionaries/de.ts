@@ -711,6 +711,10 @@ export const DE: TDictionary = {
       collapsedText: 'Reduzierter Text',
       collapsedPlaceholderText: 'Erweiterten Text eingeben (nur sichtbar, wenn erweitert)',
       checkboxText: 'Listenelementnummern in der öffentlichen Ansicht anzeigen',
+      uploadIconText:"Upload Symbol",
+      moveUpText: "Nach oben verschieben",
+      moveDownText: "Nach unten verschieben",
+      deleteText: "Löschen",
     },
   },
   pages: {

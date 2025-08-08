@@ -119,7 +119,7 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
 
           {!iconUrl && <><Button
 
-            text='upload icon'
+            text={dictionary.components.accordion.uploadIconText}
 
             variant='text'
             size='small'
@@ -140,13 +140,14 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
             onClick={() => onItemDelete(orderNo)}
             size="medium"
             styles="text"
-
+            title= {dictionary.components.accordion.deleteText}
           />
           <IconButton
             icon={<IconChevronUp />}
             onClick={() => onItemUp(orderNo)}
             size="medium"
             styles="text"
+            title={dictionary.components.accordion.moveUpText}
             disabled={orderNo === 1}
           />
           <IconButton
@@ -154,6 +155,7 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
             onClick={() => onItemDown(orderNo)}
             size="medium"
             styles="text"
+            title={dictionary.components.accordion.moveDownText}
             disabled={typeof totalItems === 'number' ? orderNo === totalItems : false}
 
           />

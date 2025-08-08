@@ -706,6 +706,10 @@ export const EN: TDictionary = {
       collapsedText: 'Collapsed Text',
       collapsedPlaceholderText: 'Enter expanded text (visible only when expanded)',
       checkboxText: 'Show list item numbers in public view',
+      uploadIconText: 'Upload Icon',
+      moveUpText: 'Move Up',
+      moveDownText: 'Move Down',
+      deleteText: 'Delete'
     },
   },
   pages: {

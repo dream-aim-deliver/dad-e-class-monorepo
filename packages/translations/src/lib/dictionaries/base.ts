@@ -698,6 +698,10 @@ export const DictionarySchema = z.object({
       collapsedText: z.string(),
       collapsedPlaceholderText: z.string(),
       checkboxText: z.string(),
+      uploadIconText: z.string(),
+      moveUpText: z.string(),
+      moveDownText: z.string(),
+      deleteText: z.string(),
     }),
   }),
   pages: z.object({
