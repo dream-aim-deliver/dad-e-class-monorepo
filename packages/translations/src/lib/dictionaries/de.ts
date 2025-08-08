@@ -363,6 +363,7 @@ export const DE: TDictionary = {
       milestoneText: 'Meilenstein',
     },
     courseOutline: {
+      title: 'Kursübersicht',
       optionalText: 'Optional',
       updatedText: 'Aktualisiert',
       moduleText: 'Modul',
