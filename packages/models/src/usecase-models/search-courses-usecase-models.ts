@@ -6,7 +6,9 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 import { DefaultPaginationSchema } from '../utils/pagination';
 
-export const SearchCoursesRequestSchema = DefaultPaginationSchema.extend({});;
+export const SearchCoursesRequestSchema = DefaultPaginationSchema.extend({
+  titleContains: z.string().optional(),
+});
 
 export type TSearchCoursesRequest = z.infer<typeof SearchCoursesRequestSchema>;
 
