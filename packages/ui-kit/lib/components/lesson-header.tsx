@@ -13,7 +13,8 @@ export interface LessonHeaderProps extends isLocalAware {
     currentLesson: number;
     totalLessons: number;
     lessonTitle: string;
-    showNotes: boolean;
+    areNotesAvailable?: boolean;
+    showNotes?: boolean;
     className?: string;
     onClickPrevious: () => void;
     onClickNext: () => void;
@@ -31,6 +32,8 @@ export interface LessonHeaderProps extends isLocalAware {
  * @param currentLesson The current lesson number within the module.
  * @param totalLessons The total number of lessons in the module.
  * @param lessonTitle The title of the current lesson.
+ * @param areNotesAvailable Indicates if notes are available for the lesson.
+ *                       If true, the "Show/Hide Notes" button will be displayed.
  * @param showNotes Whether the notes are currently visible.
  * @param className Optional additional CSS classes for custom styling.
  * @param onClickPrevious Callback triggered when the user clicks the "Previous" button.
@@ -62,6 +65,7 @@ export const LessonHeader: FC<LessonHeaderProps> = ({
     totalModules,
     lessonTitle,
     className,
+    areNotesAvailable = true,
     showNotes,
     onClickPrevious,
     onClickNext,
@@ -104,7 +108,7 @@ export const LessonHeader: FC<LessonHeaderProps> = ({
                     locale={locale}
                     className="p-0 w-full"
                 />
-                <Button
+                {areNotesAvailable && <Button
                     variant="secondary"
                     size="small"
                     text={showNotes ? dictionary.components.lessonHeader.showNotesText : dictionary.components.lessonHeader.hideNotesText}
@@ -112,7 +116,7 @@ export const LessonHeader: FC<LessonHeaderProps> = ({
                     iconLeft={showNotes ? <IconEyeShow /> : <IconEyeHide />}
                     onClick={onClick}
                     className="p-0 w-full"
-                />
+                />}
             </div>
         </div>
     )
