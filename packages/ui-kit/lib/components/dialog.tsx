@@ -170,7 +170,7 @@ export const DialogContent: React.FC<DialogContentProps> = ({
                 aria-modal="true"
             >
                 {showCloseButton && (
-                    <div className="absolute right-3 top-0">
+                    <div className="absolute right-3 top-3">
                         <IconButton
                             aria-label="Close dialog"
                             styles="text"
