@@ -91,6 +91,7 @@ function CreateCourseDialogContent() {
                     },
                 }))}
                 onClose={() => setIsOpen(false)}
+                hasSearchError={!!error || searchViewModel?.mode === 'kaboom'}
             />
         </div>
     );
