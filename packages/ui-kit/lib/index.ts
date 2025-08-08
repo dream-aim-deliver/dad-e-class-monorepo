@@ -95,3 +95,4 @@ export { BuyCoachingSessionBanner } from './components/buy-coaching-session-bann
 
 export { Breadcrumbs } from './components/breadcrumbs';
 export { SubmissionElementsRenderer } from './components/pre-assessment/submission-renderer';
+export { CourseOutlineAccordion } from './components/course-outline-accordion';
