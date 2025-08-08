@@ -60,9 +60,6 @@ export const ModuleHeader: FC<ModuleHeaderProps> = ({
                 <p className="text-sm text-text-primary font-bold">
                     {moduleTitle}
                 </p>
-                <IconCheck
-                    classNames="text-feedback-success-primary"
-                />
             </div>
         </div>
     );
