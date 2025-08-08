@@ -611,6 +611,7 @@ export const Unordered: StoryObj<typeof CourseOutlineAccordion> = {
     args: {
         locale: 'en',
         modules: unorderedCourseModules,
+        activeLessonId: 301,
         onLessonClick: (lessonId) => console.log('Lesson clicked:', lessonId),
     },
 };
