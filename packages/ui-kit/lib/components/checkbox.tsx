@@ -10,7 +10,7 @@ export interface CheckBoxProps {
   disabled?: boolean;
   withText?: boolean;
   size?: 'small' | 'medium' | 'large';
-  onChange?: (value: string) => void;
+  onChange?: (checked: boolean) => void; // Change onChange to emit checked state
   className?: string;
   labelClass?: string;
 }
@@ -93,7 +93,7 @@ export const CheckBox: FC<CheckBoxProps> = ({
           value={value}
           checked={checked}
           disabled={disabled}
-          onChange={() => !disabled && onChange?.(value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => !disabled && onChange?.(e.target.checked)}
           className="sr-only"
         />
         <div className={containerClasses}>

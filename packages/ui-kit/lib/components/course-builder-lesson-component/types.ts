@@ -297,9 +297,7 @@ export interface  AccordianElementViewProps{
     id: number;
     order: number;
     accordionTitle: string;
-    setAccordionTitle: (title: string) => void;
     isChecked: boolean;
-    setIsChecked: (checked: boolean) => void;
     accordionData: AccordionDataProps[];
 };
 

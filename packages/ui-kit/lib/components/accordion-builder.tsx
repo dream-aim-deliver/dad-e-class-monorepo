@@ -9,7 +9,6 @@ import AccordionContent from './accordion/accordion-content';
 import { Button } from './button';
 import { cn } from '../utils/style-utils';
 import { IconButton } from './icon-button';
-
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { FilePreview } from './drag-and-drop-uploader/file-preview';
 import { IconChevronDown, IconChevronUp, IconCloudUpload, IconTrashAlt } from './icons';
@@ -18,10 +17,11 @@ import { Descendant } from 'slate';
 import { z } from 'zod';
 import { deserialize, serialize } from './rich-text-element/serializer';
 
+type iconUrl = z.infer<typeof fileMetadata.FileMetadataImageSchema>;
 export interface AccordionDataProps {
   title: string;
   content: string;
-  iconUrl?: z.infer<typeof fileMetadata.FileMetadataImageSchema>;
+  iconUrl?: iconUrl;
 }
 
 export interface AccordionBuilderProps extends isLocalAware {
@@ -31,15 +31,15 @@ export interface AccordionBuilderProps extends isLocalAware {
   onItemDown: (orderNo: number) => void;
   onItemUp: (orderNo: number) => void;
   orderNo: number;
-  onImageChange: (metadata: fileMetadata.TFileUploadRequest, signal: AbortSignal) => Promise<void>;
+  totalItems: number;
+  onImageChange: (metadata: fileMetadata.TFileUploadRequest, signal: AbortSignal) => Promise<iconUrl>;
   onIconDelete: (id: string) => void;
   onIconDownload: (id: string) => void;
 
 }
 
-export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onItemDown, onItemUp, orderNo, onImageChange, onIconDelete, onIconDownload, locale }: AccordionBuilderProps) {
+export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onItemDown, onItemUp, orderNo, totalItems, onImageChange, onIconDelete, onIconDownload, locale }: AccordionBuilderProps) {
   const dictionary = getDictionary(locale);
-  // Separate state variables for each field to prevent state synchronization issues
   const [title, setTitle] = useState<string>(initialData?.title || '');
   const [content, setContent] = useState<Descendant[]>(
     deserialize({
@@ -47,7 +47,7 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
       onError: (msg, err) => console.error(msg, err),
     })
   );
-  const [iconUrl, setIconUrl] = useState<fileMetadata.TFileMetadata | null>(initialData?.iconUrl || null);
+  const [iconUrl, setIconUrl] = useState<iconUrl | null>(initialData?.iconUrl || null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -81,7 +81,11 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
       setIconUrl(metadata);
 
       try {
-        await onImageChange(metadata, controller.signal);
+        const imageMetadata = await onImageChange(metadata, controller.signal);
+        // Mark upload as available so preview shows image instead of loader
+        setIconUrl(imageMetadata);
+        // Notify parent about updated icon
+        onChange(createAccordionData());
       } catch (error) {
         if (error.name === 'AbortError') {
           // Upload was cancelled, clean up
@@ -106,7 +110,7 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
 
   return (
     <div className=' w-full p-4 text-text-secondary bg-base-neutral-800 border border-base-neutral-700 flex flex-col gap-4 rounded-md'>
-      <div className="flex items-center justify-between gap-4 overflow-x-auto text-button-primary-text ">
+      <div className="flex items-center justify-between  overflow-x-auto text-button-primary-text ">
         {/* Title and Icon */}
         <div className="flex items-center gap-4 flex-1 text-button-text-text">
           <span className="min-w-0 flex-shrink-0">
@@ -124,7 +128,7 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
             className='capitalize px-0'
             onClick={() => fileInputRef.current?.click()}
           />
-            <input type="file" onChange={handleFileChange} ref={fileInputRef} className='hidden' /></>
+            <input type="file" accept="image/*" onChange={handleFileChange} ref={fileInputRef} className='hidden' /></>
           }
 
         </div>
@@ -140,29 +144,34 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
           />
           <IconButton
             icon={<IconChevronUp />}
-            onClick={() => onItemUp(orderNo - 1)}
+            onClick={() => onItemUp(orderNo)}
             size="medium"
             styles="text"
+            disabled={orderNo === 1}
           />
           <IconButton
             icon={<IconChevronDown />}
-            onClick={() => onItemDown(orderNo - 1)}
+            onClick={() => onItemDown(orderNo)}
             size="medium"
             styles="text"
+            disabled={typeof totalItems === 'number' ? orderNo === totalItems : false}
+
           />
         </div>
       </div>
-
+      {iconUrl && (
+        <FilePreview
+          uploadResponse={iconUrl}
+          onDelete={() => iconUrl?.id && onIconDelete(iconUrl.id)}
+          onDownload={() => iconUrl?.id && onIconDownload(iconUrl.id)}
+          onCancel={handleCancelUpload}
+          locale={locale}
+        />
+      )}
 
 
       <div className='flex flex-col transition-all duration-300 ease-in-out'>
-        {iconUrl && <FilePreview
-          uploadResponse={iconUrl}
-          onDelete={() => onIconDelete(iconUrl?.id)}
-          onDownload={() => onIconDownload(iconUrl?.id)}
-          onCancel={handleCancelUpload}
-          locale={locale}
-        />}
+
         <label className='text-text-secondary md:text-xl leading-[150%] capitalize'>
           {dictionary.components.accordion.visibleText}
         </label>
@@ -170,15 +179,8 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
           inputPlaceholder={dictionary.components.accordion.visiblePlaceholderText}
           className="w-full"
           value={title}
-          setValue={(newValue) => {
-            // Only update local state, don't trigger parent onChange on every keystroke
-            const newData = { ...accordionData, title: newValue };
-            setAccordionData(newData);
-          }}
-          onBlur={() => {
-            // Update parent only on blur to match RichTextEditor behavior
-            onChange(accordionData);
-          }}
+          setValue={(newValue) => setTitle(newValue)}
+          onBlur={() => onChange(createAccordionData())}
           type="text"
           id="visibleText"
         />
@@ -190,14 +192,10 @@ export function AccordionBuilderEdit({ onChange, initialData, onItemDelete, onIt
         <div className='w-full'>
           <RichTextEditor
             initialValue={content}
-
-            locale="de"
+            locale={locale}
             name="content"
-            onChange={(newValue) => { setContent(newValue) }}
-            onLoseFocus={(value) => {
-              // Update parent with current state using the serialized content value
-              onChange(createAccordionData(undefined, value));
-            }}
+            onChange={(newValue) => setContent(newValue)}
+            onLoseFocus={(value) => onChange(createAccordionData(undefined, value))}
             placeholder={dictionary.components.accordion.collapsedPlaceholderText}
             onDeserializationError={(message, error) => console.error('Deserialization error:', message)}
           />
@@ -211,17 +209,17 @@ function AccordionBuilderView({ data }: { data: AccordionDataProps[] }) {
     <Accordion type='single'>
       {
         data.map((item, index) => (
-          <AccordionItem value={item.title} className={cn(
+          <AccordionItem key={item.title ?? `item-${index}`} value={item.title ?? String(index)} className={cn(
             'py-6',
             data.length - 1 !== index && 'border-b border-divider',
           )}>
             <div className='flex gap-6'>
-              <AccordionTrigger value={item.title} className="text-lg font-semibold flex items-center gap-1">
+              <AccordionTrigger value={item.title ?? String(index)} className="text-lg font-semibold flex items-center gap-1">
                 {item.iconUrl && <img src={item.iconUrl.url} alt="Accordion Icon" className="w-6 h-6 mr-2" />}
                 <span>{item.title}</span>
               </AccordionTrigger>
             </div>
-            <AccordionContent value={item.title}>
+            <AccordionContent value={item.title ?? String(index)}>
               <RichTextRenderer
                 onDeserializationError={(message, error) => console.error('Deserialization error:', message, error)}
                 content={item.content}
