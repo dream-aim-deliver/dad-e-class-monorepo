@@ -17,7 +17,7 @@ export const SearchCoursesResponseMiddleware =
 
 type TSearchCoursesResponseMiddleware = typeof SearchCoursesResponseMiddleware;
 
-export default class CoursesPresenter extends BasePresenter<
+export default class SearchCoursesPresenter extends BasePresenter<
     useCaseModels.TSearchCoursesUseCaseResponse,
     viewModels.TCourseSearchViewModel,
     TCoursesPresenterUtilities,

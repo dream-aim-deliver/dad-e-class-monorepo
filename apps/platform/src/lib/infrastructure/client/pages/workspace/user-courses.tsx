@@ -16,7 +16,7 @@ import UserCoursesList from './user-courses-list';
 import { trpc } from '../../trpc/client';
 import { useEffect, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useSearchCoursesPresenter } from '../../hooks/use-courses-presenter';
+import { useSearchCoursesPresenter } from '../../hooks/use-search-courses-presenter';
 import { useRouter } from 'next/navigation';
 
 interface UserCoursesProps {
@@ -108,7 +108,9 @@ function CreateCourseDialog() {
     const pageTranslations = useTranslations('pages.userCourses');
 
     return (
-        <Dialog open={undefined} onOpenChange={() => {}} defaultOpen={false}>
+        <Dialog open={undefined} onOpenChange={() => {
+            // This function is called when the dialog is opened or closed
+        }} defaultOpen={false}>
             <DialogTrigger asChild>
                 <Button text={pageTranslations('createCourse')} />
             </DialogTrigger>
@@ -120,7 +122,6 @@ function CreateCourseDialog() {
 }
 
 export default function UserCourses(props: UserCoursesProps) {
-    const locale = useLocale() as TLocale;
     const isAdmin = props.roles.includes('admin');
 
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
@@ -132,15 +133,21 @@ export default function UserCourses(props: UserCoursesProps) {
                 items={[
                     {
                         label: breadcrumbsTranslations('home'),
-                        onClick: () => {},
+                        onClick: () => {
+                            // TODO: Implement navigation to home
+                        },
                     },
                     {
                         label: breadcrumbsTranslations('workspace'),
-                        onClick: () => {},
+                        onClick: () => {
+                            // TODO: Implement navigation to workspace
+                        },
                     },
                     {
                         label: breadcrumbsTranslations('courses'),
-                        onClick: () => {},
+                        onClick: () => {
+                            // Nothing should happen on clicking the current page
+                        },
                     },
                 ]}
             />
