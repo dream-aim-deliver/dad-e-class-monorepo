@@ -93,3 +93,5 @@ export { BookSessionWith } from './components/book-session-with-banner';
 export { BuyCoachingSessionBanner } from './components/buy-coaching-session-banner';
 
 export { Breadcrumbs } from './components/breadcrumbs';
+export { PackageCmsCard } from './components/packages/package-cms-card'
+export { PackageCmsCardList } from './components/packages/package-cms-card-list'
