@@ -11,9 +11,6 @@ import type { DesignerComponentProps } from '../lib/components/course-builder/ty
 const meta = {
   title: 'Components/CourseBuilder/AccordionLesson',
   component: accordionElement.designerComponent,
-  parameters: {
-    layout: 'centered',
-  },
   argTypes: {
     locale: {
       control: 'select',

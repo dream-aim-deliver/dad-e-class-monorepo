@@ -117,11 +117,7 @@ function DesignerComponent({
         metadata: fileMetadata.TFileUploadRequest,
         signal: AbortSignal
     ): Promise<fileMetadata.TFileMetadata & { category: 'image' }> => {
-        if (onImageChange) {
-            const response = await onImageChange(metadata, signal);
-            return response;
-        }
-        throw new Error("onImageChange handler not provided");
+            return await onImageChange(metadata, signal);
     };
     return (
         <DesignerLayout
