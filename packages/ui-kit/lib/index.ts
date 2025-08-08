@@ -41,7 +41,7 @@ export { Divider } from './components/divider';
 export { CarouselSkeleton } from './components/skeletons/carousel-skeleton'
 
 export { ReviewSnippet } from './components/review/review-snippet';
-export { CreateContentModal } from './components/create-content-modal';
+export { default as CreateCourseModal } from './components/create-modal/create-course-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
 export { RemoveModal } from './components/remove-modal';
