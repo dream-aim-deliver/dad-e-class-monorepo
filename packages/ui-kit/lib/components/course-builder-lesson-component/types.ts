@@ -290,42 +290,33 @@ export interface ImageGallery {
     images: ImageFileMetadata[];
 }
 
+type noteLink = {
+    url: string;
+    title: string;
+    customIconMetadata?: fileMetadata.TFileMetadata; // Add metadata for file upload status
+};
+
 export interface Links extends isLocalAware {
     type: CourseElementType.Links;
     id: number;
     order: number;
-    editingLinkIndex: number | null;
-    links: {
-        title: string;
-        url: string;
-        customIconMetadata?: fileMetadata.TFileMetadata;
-    }[];
-    include_in_materials: boolean;
-    onChange: (updatedData: {
-        type: CourseElementType.Links;
-        id: number;
-        order: number;
-        editingLinkIndex: number | null;
-        links: {
-            title: string;
-            url: string;
-            customIconMetadata?: fileMetadata.TFileMetadata;
-        }[];
-        include_in_materials: boolean;
-    }) => void;
-    onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, index: number, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
-    onDeleteIcon: (id: string) => void;
+    onNoteLinksChange: (noteLinks: noteLink[]) => void;
+    includeInMaterials: boolean;
+    onIncludeInMaterialsChange: (includeInMaterials: boolean) => void;
+    onImageChange: (
+        index: number,
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    links: noteLink[];
+    onDeleteIcon: (index: number) => void;
 };
 
 export interface LinksView extends isLocalAware {
     type: CourseElementType.Links;
     id: number;
     order: number;
-    links: {
-        title: string;
-        url: string;
-        customIconMetadata?: fileMetadata.TFileMetadata;
-    }[];
+    links: noteLink[];
 }
 
 export type LinksElement = Links | LinksView;

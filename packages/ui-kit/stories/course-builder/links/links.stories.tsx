@@ -29,68 +29,31 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-// Base Links data template
-const createLinksData = (
-    id: number,
-    links: Array<{
-        title: string;
-        url: string;
-        customIconMetadata?: fileMetadata.TFileMetadata;
-    }>,
-    editingLinkIndex: number | null = null,
-    include_in_materials = true
-) => ({
-    id,
-    type: CourseElementType.Links as CourseElementType.Links,
-    order: 0,
-    editingLinkIndex,
-    links,
-    include_in_materials,
-    locale: 'en' as TLocale,
-});
-
-// Working Designer Template with full state management
+// Working Designer Template with full state management (coach-notes aligned)
 const WorkingDesignerTemplate = ({ locale = 'en' }: { locale?: TLocale }) => {
-    const [linksData, setLinksData] = useState(() => createLinksData(
-        1,
-        [
-            {
-                title: 'Example Resource',
-                url: 'https://example.com',
-                // Start without custom icon to demonstrate upload functionality
-            }
+    const [linksData, setLinksData] = useState(() => ({
+        id: 1,
+        type: CourseElementType.Links as const,
+        order: 0,
+        links: [
+            { title: 'Example Resource', url: 'https://example.com' }
         ],
-        0  // Start with first link in edit mode
-    ));
+        includeInMaterials: true,
+    }));
 
-    // Create the full Links object with handlers
     const linksElementData: Links = {
         ...linksData,
         locale,
-        onChange: (updatedData: {
-            type: CourseElementType.Links;
-            id: number;
-            order: number;
-            editingLinkIndex: number | null;
-            links: {
-                title: string;
-                url: string;
-                customIconMetadata?: fileMetadata.TFileMetadata;
-            }[];
-            include_in_materials: boolean;
-        }) => {
-            console.log('onChange called:', updatedData);
-            setLinksData(prev => ({
-                ...prev,
-                ...updatedData,
-            }));
+        onNoteLinksChange: (updatedLinks) => {
+            setLinksData(prev => ({ ...prev, links: updatedLinks }));
+            console.log("Updated Links:", updatedLinks);
         },
-        onImageChange: async (
-            fileRequest: fileMetadata.TFileUploadRequest,
-            index: number,
-            abortSignal?: AbortSignal
-        ): Promise<fileMetadata.TFileMetadata> => {
-            // Create temporary metadata for UI state
+        includeInMaterials: linksData.includeInMaterials,
+        onIncludeInMaterialsChange: (next) => {
+            setLinksData(prev => ({ ...prev, includeInMaterials: next }));
+        },
+        onImageChange: async (index: number, fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal): Promise<fileMetadata.TFileMetadata> => {
+            // temp processing metadata (coach-notes style)
             const processingFile: fileMetadata.TFileMetadata = {
                 id: fileRequest.id || `temp-${Date.now()}`,
                 name: fileRequest.name || 'uploading-icon.png',
@@ -103,85 +66,46 @@ const WorkingDesignerTemplate = ({ locale = 'en' }: { locale?: TLocale }) => {
                 checksum: '',
             };
 
-            // Update with processing state first
             setLinksData(prev => ({
                 ...prev,
-                links: prev.links.map((link, i) =>
-                    i === index ? { ...link, customIconMetadata: processingFile } : link
-                )
+                links: prev.links.map((l, i) => i === index ? { ...l, customIconMetadata: processingFile } : l)
             }));
 
             try {
-                // Simulate upload with setTimeout that can be aborted
                 await new Promise<void>((resolve, reject) => {
-                    const timeoutId = setTimeout(() => {
-                        resolve();
-                    }, 3000); // 3 second delay to see the spinner
-
-                    // Handle abort signal
-                    if (abortSignal) {
-                        abortSignal.addEventListener('abort', () => {
-                            clearTimeout(timeoutId);
-                            reject(new DOMException('Upload cancelled', 'AbortError'));
-                        });
-                    }
+                    const tid = setTimeout(resolve, 800);
+                    abortSignal?.addEventListener('abort', () => { clearTimeout(tid); reject(new DOMException('Upload cancelled', 'AbortError')); });
                 });
 
-                // Update to completed state
-                const completedFile: fileMetadata.TFileMetadata = {
-                    ...processingFile,
-                    status: 'available',
-                    checksum: 'uploaded-checksum',
-                };
-
-                // Update the link with the completed file
+                const completed: fileMetadata.TFileMetadata = { ...processingFile, status: 'available', checksum: 'uploaded-checksum' };
                 setLinksData(prev => ({
                     ...prev,
-                    links: prev.links.map((link, i) =>
-                        i === index ? { ...link, customIconMetadata: completedFile } : link
-                    )
+                    links: prev.links.map((l, i) => i === index ? { ...l, customIconMetadata: completed } : l)
                 }));
-
-                return completedFile;
-
-            } catch (error) {
-                if (error instanceof Error && error.name === 'AbortError') {
-                    // Remove the file on cancellation
+                return completed;
+            } catch (e) {
+                if (e instanceof Error && e.name === 'AbortError') {
                     setLinksData(prev => ({
                         ...prev,
-                        links: prev.links.map((link, i) =>
-                            i === index ? { ...link, customIconMetadata: undefined } : link
-                        )
+                        links: prev.links.map((l, i) => i === index ? { ...l, customIconMetadata: undefined } : l)
                     }));
-                    throw error; // Re-throw abort error
-                } else {
-                    // Handle other errors - set status to 'unavailable'
-                    const failedFile: fileMetadata.TFileMetadata = {
-                        ...processingFile,
-                        status: 'unavailable',
-                    };
-                    setLinksData(prev => ({
-                        ...prev,
-                        links: prev.links.map((link, i) =>
-                            i === index ? { ...link, customIconMetadata: failedFile } : link
-                        )
-                    }));
-                    return failedFile;
+                    throw e;
                 }
+                const failed: fileMetadata.TFileMetadata = { ...processingFile, status: 'unavailable' };
+                setLinksData(prev => ({
+                    ...prev,
+                    links: prev.links.map((l, i) => i === index ? { ...l, customIconMetadata: failed } : l)
+                }));
+                return failed;
             }
         },
-
-        onDeleteIcon: (id: string) => {
+        onDeleteIcon: (index: number) => {
             setLinksData(prev => ({
                 ...prev,
-                links: prev.links.map((link, idx) =>
-                    idx === prev.editingLinkIndex && link.customIconMetadata?.id === id
-                        ? { ...link, customIconMetadata: undefined }
-                        : link
-                )
+                links: prev.links.map((l, i) => i === index ? { ...l, customIconMetadata: undefined } : l)
             }));
         }
-    };
+    } as unknown as Links;
 
     const DesignerComponent = linksElement.designerComponent;
 
@@ -204,9 +128,11 @@ const StudentFormTemplate = ({
     locale?: TLocale;
     linksCount?: number;
 }) => {
-    const studentData = createLinksData(
-        3,
-        Array.from({ length: linksCount }, (_, i) => ({
+    const studentData = {
+        id: 3,
+        type: CourseElementType.Links as const,
+        order: 0,
+        links: Array.from({ length: linksCount }, (_, i) => ({
             title: `Student Resource ${i + 1}`,
             url: `https://resource${i + 1}.com`,
             ...(i % 2 === 0 && {
@@ -218,20 +144,18 @@ const StudentFormTemplate = ({
                     checksum: `checksum-${i}`,
                     status: 'available' as const,
                     category: 'image' as const,
-                    url: "https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg",
-                    thumbnailUrl: "https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg"
+                    url: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+                    thumbnailUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg'
                 }
             })
-        })),
-        null, // No editing in student view
-        true
-    );
+        }))
+    };
 
     const FormComponent = linksElement.formComponent;
 
     return (
         <FormComponent
-            elementInstance={studentData}
+            elementInstance={studentData as any}
             locale={locale}
         />
     );
@@ -246,7 +170,7 @@ export const Designer: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Designer view with working functionality - starts with one example link in edit mode. You can upload custom icons, delete icons, edit links, add new links, and toggle the checkbox.',
+                story: 'Designer view with working functionality — add, edit, delete links, upload/delete custom icons, and toggle include in materials.',
             },
         },
     },

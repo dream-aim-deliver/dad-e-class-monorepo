@@ -1,7 +1,6 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Button } from "../button";
 import { CheckBox } from "../checkbox";
-import { IconLink } from "../icons/icon-link";
 import { LinkEdit, LinkPreview } from "../links";
 import { Links } from "../course-builder-lesson-component/types";
 import { getDictionary } from "@maany_shr/e-class-translations";
@@ -15,173 +14,123 @@ import { fileMetadata } from "@maany_shr/e-class-models";
  *
  * This component handles all link management operations including:
  * - Adding new links with title, URL, and optional custom icons
- * - Editing existing links with seamless state management
+ * - Editing existing links with seamless local editing state (index tracked internally)
  * - Deleting links with proper cleanup
  * - Custom icon upload and deletion for links
  * - Toggle for including links in course materials
- * - Automatic cleanup of empty links when switching edit modes
  *
- * @param type The course element type (CourseElementType.Links).
- * @param id The unique identifier for this links element.
- * @param order The order/position of this element in the course.
- * @param editingLinkIndex The index of the link currently being edited, null if none.
- * @param links Array of link objects containing title, url, and optional customIconMetadata.
- * @param include_in_materials Boolean flag indicating whether links should be included in downloadable materials.
- * @param onChange Callback triggered when any aspect of the links data changes (links array, editing state, materials flag).
- * @param onImageChange Callback for handling custom icon uploads, receives index, file request, and abort signal.
- * @param onDeleteIcon Callback for deleting custom icons from links, receives the icon ID.
- * @param locale The locale string used for internationalization/localized text.
+ * Props (coach-notes aligned):
+ * - type: CourseElementType.Links — the course element type
+ * - id: number — unique identifier for this links element
+ * - order: number — position of this element in the course
+ * - links: { title: string; url: string; customIconMetadata?: TFileMetadata }[] — list of links
+ * - onNoteLinksChange: (noteLinks: shared.TLink[]) => void — called whenever links array should be updated
+ * - includeInMaterials: boolean — whether links are included in downloadable materials
+ * - onIncludeInMaterialsChange: (includeInMaterials: boolean) => void — toggles includeInMaterials
+ * - onImageChange: (index: number, fileRequest: TFileUploadRequest, abortSignal?: AbortSignal) => Promise<TFileMetadata>
+ *   Handles upload for a given link index and returns uploaded file metadata
+ * - onDeleteIcon: (index: number) => void — removes the custom icon for a given link index
+ * - locale: TLocale — locale for translations
  *
- * @example
+ * Example:
  * <LinkBuilderView
  *   type={CourseElementType.Links}
  *   id={1}
  *   order={0}
- *   editingLinkIndex={null}
  *   links={[
- *     { title: 'Resource 1', url: 'https://example.com', customIconMetadata: undefined },
- *     { title: 'Resource 2', url: 'https://docs.example.com', customIconMetadata: iconFile }
+ *     { title: 'Resource 1', url: 'https://example.com' },
+ *     { title: 'Resource 2', url: 'https://docs.example.com' }
  *   ]}
- *   include_in_materials={true}
- *   onChange={handleLinksChange}
- *   onImageChange={handleImageUpload}
- *   onDeleteIcon={handleIconDelete}
+ *   includeInMaterials={true}
+ *   onNoteLinksChange={(updated) => console.log(updated)}
+ *   onIncludeInMaterialsChange={(v) => console.log(v)}
+ *   onImageChange={async (index, fileReq, abort) => {
+ *     // return uploaded metadata
+ *     return { ... } as any;
+ *   }}
+ *   onDeleteIcon={(index) => console.log(index)}
  *   locale="en"
  * />
  */
 
 export const LinkBuilderView: FC<Links> = ({
-    type,
-    id,
-    order,
-    editingLinkIndex,
+    onNoteLinksChange,
     links,
-    include_in_materials,
-    onChange,
+    includeInMaterials,
+    onIncludeInMaterialsChange,
     onImageChange,
     onDeleteIcon,
     locale,
 }) => {
     const dictionary = getDictionary(locale);
+    const [editingLinkIndex, setEditingLinkIndex] = useState<number | null>(
+        null,
+    );
 
-    const handleChange = (updated: Partial<Links>) => {
-        onChange({
-            type,
-            id,
-            order,
-            editingLinkIndex,
-            links,
-            include_in_materials,
-            ...updated,
-        });
-    };
-
-    const handleCheckboxChange = (value: string) => {
-        // The checkbox onChange is called on every click, so we toggle the state
-        const newValue = !include_in_materials;
-        handleChange({ include_in_materials: newValue });
+    const handleCheckboxChange = () => {
+        onIncludeInMaterialsChange(!includeInMaterials);
     };
 
     const handleSave = (
         index: number,
         title: string,
         url: string,
-        customIcon?: fileMetadata.TFileMetadata
+        customIcon?: fileMetadata.TFileMetadata,
     ) => {
-        const updatedLinks = [...links];
-
-        if (index >= links.length) {
-            // Adding new link
-            updatedLinks.push({
-                title,
-                url,
-                customIconMetadata: customIcon,
-            });
+        if (index === links.length) {
+            // This is a new link being saved
+            if (!title.trim() && !url.trim()) {
+                setEditingLinkIndex(null); // Cancel if the new link is empty
+                return;
+            }
+            onNoteLinksChange([
+                ...links,
+                { title, url, customIconMetadata: customIcon },
+            ]);
         } else {
-            // Updating existing link
+            // This is an existing link being updated
+            const updatedLinks = [...links];
             updatedLinks[index] = {
                 ...updatedLinks[index],
                 title,
                 url,
                 customIconMetadata: customIcon,
             };
+            onNoteLinksChange(updatedLinks);
         }
+        setEditingLinkIndex(null);
+    };
 
-        handleChange({
-            links: updatedLinks,
-            editingLinkIndex: null
-        });
+    const handleDiscard = (index: number) => {
+        // If it's a new link being discarded, do nothing to the array, just stop editing.
+        if (index === links.length) {
+            setEditingLinkIndex(null);
+            return;
+        }
+        // If it's an existing link, just cancel editing.
+        setEditingLinkIndex(null);
     };
 
     const handleEdit = (index: number) => {
-        // Before switching to edit another link, clean up any empty links
-        let updatedLinks = [...links];
-
-        // If there's currently a link being edited and it's empty, remove it
         if (editingLinkIndex !== null) {
-            const currentEditingLink = links[editingLinkIndex];
-            if (currentEditingLink) {
-                const isEmpty = (!currentEditingLink.title || currentEditingLink.title.trim() === "") &&
-                    (!currentEditingLink.url || currentEditingLink.url.trim() === "");
-
-                if (isEmpty) {
-                    // Remove the empty link
-                    updatedLinks = links.filter((_, i) => i !== editingLinkIndex);
-
-                    // Adjust the target index if it's after the removed link
-                    if (index > editingLinkIndex) {
-                        index = index - 1;
-                    }
-                }
-            }
-        };
-
-        handleChange({
-            links: updatedLinks,
-            editingLinkIndex: index
-        });
-    };
-
-    const handleAddLink = () => {
-        const updatedLinks = [...links, { title: "", url: "" }];
-        handleChange({
-            links: updatedLinks,
-            editingLinkIndex: updatedLinks.length - 1  // index of new empty link
-        });
+            return;
+        }
+        setEditingLinkIndex(index);
     };
 
     const handleDelete = (index: number) => {
         const updatedLinks = links.filter((_, i) => i !== index);
-        handleChange({
-            links: updatedLinks,
-            editingLinkIndex: null,
-        });
+        onNoteLinksChange(updatedLinks);
+        if (editingLinkIndex === links.length) {
+            setEditingLinkIndex(updatedLinks.length);
+        } else if (editingLinkIndex === index) {
+            setEditingLinkIndex(null); // Stop editing if the deleted link was being edited
+        }
     };
 
-    const handleDiscard = (index: number) => {
-        if (index >= links.length) {
-            // Discarding new link creation
-            handleChange({
-                editingLinkIndex: null,
-            });
-        } else {
-            // Discarding edit of existing link
-            const link = links[index];
-            const isEmpty = (!link.title || link.title.trim() === "") && (!link.url || link.url.trim() === "");
-
-            if (isEmpty) {
-                // Remove the link if it's empty
-                const updatedLinks = links.filter((_, i) => i !== index);
-                handleChange({
-                    links: updatedLinks,
-                    editingLinkIndex: null,
-                });
-            } else {
-                // If it has data, just exit editing mode
-                handleChange({
-                    editingLinkIndex: null,
-                });
-            }
+    const handleAddLink = () => {
+        if (editingLinkIndex === null) {
+            setEditingLinkIndex(links.length); // Use length to signify a new link
         }
     };
 
@@ -192,7 +141,7 @@ export const LinkBuilderView: FC<Links> = ({
                 name="includeLinks"
                 label={dictionary.components.coachNotes.includeInMaterials}
                 value="include"
-                checked={include_in_materials}
+                checked={includeInMaterials}
                 onChange={handleCheckboxChange}
             />
 
@@ -209,17 +158,29 @@ export const LinkBuilderView: FC<Links> = ({
                                 locale={locale}
                                 initialTitle={link.title}
                                 initialUrl={link.url}
-                                initialCustomIcon={link.customIconMetadata}
+                                initialCustomIcon={
+                                    link.customIconMetadata
+                                }
                                 onSave={(title, url, customIcon) =>
-                                    handleSave(index, title, url, customIcon)
+                                    handleSave(
+                                        index,
+                                        title,
+                                        url,
+                                        customIcon,
+                                    )
                                 }
                                 onDiscard={() => handleDiscard(index)}
-                                onImageChange={(fileRequest, abortSignal) => onImageChange(fileRequest, index, abortSignal)}
-                                onDeleteIcon={onDeleteIcon}
+                                onImageChange={async (fileRequest, abortSignal) =>
+                                    await onImageChange(
+                                        index,
+                                        fileRequest,
+                                        abortSignal
+                                    )
+                                }
+                                onDeleteIcon={() => onDeleteIcon(index)}
                             />
                         )}
                     </div>
-
                     {editingLinkIndex !== index && (
                         <LinkPreview
                             preview
@@ -232,29 +193,51 @@ export const LinkBuilderView: FC<Links> = ({
                     )}
                 </div>
             ))}
-
-            {/* Add link button */}
-            {
-                editingLinkIndex === null && (
-                    <div
-                        className="flex items-center gap-2"
-                        role="group"
-                        aria-label="Add link divider"
-                    >
-                        <hr className="flex-grow border-t border-divider" />
-                        <Button
-                            text={dictionary.components.coachNotes.addLink}
-                            hasIconLeft
-                            iconLeft={<IconPlus />}
-                            onClick={handleAddLink}
-                            aria-label="Add link"
-                            variant="text"
-                            disabled={editingLinkIndex !== null}
-                        />
-                        <hr className="flex-grow border-t border-divider" />
-                    </div>
-                )
-            }
+            {editingLinkIndex === links.length && (
+                <LinkEdit
+                    initialTitle=""
+                    initialUrl=""
+                    onSave={(title, url, customIcon) =>
+                        handleSave(
+                            links.length,
+                            title,
+                            url,
+                            customIcon,
+                        )
+                    }
+                    onDiscard={() =>
+                        handleDiscard(links.length)
+                    }
+                    onImageChange={async (fileRequest, abortSignal) =>
+                        await onImageChange(
+                            links.length,
+                            fileRequest,
+                            abortSignal,
+                        )
+                    }
+                    onDeleteIcon={() =>
+                        onDeleteIcon(links.length)
+                    }
+                    locale={locale}
+                />
+            )}
+            {editingLinkIndex === null && <div
+                className="flex items-center gap-2"
+                role="group"
+                aria-label="Add link divider"
+            >
+                <hr className="flex-grow border-t border-divider" />
+                <Button
+                    text={dictionary.components.coachNotes.addLink}
+                    hasIconLeft
+                    iconLeft={<IconPlus />}
+                    onClick={handleAddLink}
+                    aria-label="Add Link"
+                    variant="text"
+                    disabled={editingLinkIndex !== null}
+                />
+                <hr className="flex-grow border-t border-divider" />
+            </div>}
         </div >
     );
 };
