@@ -5,11 +5,7 @@ import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
 import UserCourses from '../../../client/pages/workspace/user-courses';
 
-interface UserCoursesProps {}
-
-export default async function UserCoursesServerComponent(
-    props: UserCoursesProps,
-) {
+export default async function UserCoursesServerComponent() {
     const session = await getSession();
 
     if (!session || !session.user) {

@@ -13,7 +13,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/client';
-import { useListCoursesPresenter } from '../../hooks/use-courses-presenter';
+import { useListCoursesPresenter } from '../../hooks/use-list-courses-presenter';
 import { useRouter } from 'next/navigation';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 

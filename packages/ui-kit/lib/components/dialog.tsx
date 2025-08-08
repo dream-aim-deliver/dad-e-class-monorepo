@@ -122,20 +122,20 @@ export const DialogContent: React.FC<DialogContentProps> = ({
     closeOnEscape,
 }) => {
     const { isOpen, setIsOpen } = useDialog();
-    const contentRef = useRef(null);
+    const contentRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        const handleEscape = (event) => {
+        const handleEscape = (event: KeyboardEvent) => {
             if (closeOnEscape && event.key === 'Escape') {
                 setIsOpen(false);
             }
         };
 
-        const handleClickOutside = (event) => {
+        const handleClickOutside = (event: MouseEvent) => {
             if (
                 closeOnOverlayClick &&
                 contentRef.current &&
-                !contentRef.current.contains(event.target)
+                !contentRef.current.contains(event.target as Node)
             ) {
                 setIsOpen(false);
             }
