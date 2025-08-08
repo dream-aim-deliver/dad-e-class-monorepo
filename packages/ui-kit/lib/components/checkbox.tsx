@@ -10,7 +10,7 @@ export interface CheckBoxProps {
   disabled?: boolean;
   withText?: boolean;
   size?: 'small' | 'medium' | 'large';
-  onChange?: (value: string) => void; // Emit the checkbox value on change
+  onChange?: (value: string) => void;
   className?: string;
   labelClass?: string;
 }
