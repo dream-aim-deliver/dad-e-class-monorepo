@@ -9,11 +9,17 @@ import { auth, viewModels } from '@maany_shr/e-class-models';
 import { NextAuthGateway } from '@maany_shr/e-class-auth';
 import nextAuth from '../../../lib/infrastructure/server/config/auth/next-auth.config';
 import {
+    getQueryClient,
+    trpc,
+} from '../../../lib/infrastructure/server/config/trpc/server';
+import { env } from '../../../lib/infrastructure/server/utils/env';
+import {
     languageCodeToLocale,
     localeToLanguageCode,
 } from '../../../lib/infrastructure/server/utils/language-mapping';
 import Layout from '../../../lib/infrastructure/client/pages/layout';
-import CMSTRPCClientProviders from '../../../lib/infrastructure/client/trpc/cms-client-provider';
+import { createGetLanguagesPresenter } from '../../../lib/infrastructure/server/presenter/get-languages-presenter';
+import MockTRPCClientProviders from '../../../lib/infrastructure/client/trpc/mock-client-providers';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -48,33 +54,22 @@ export default async function RootLayout({
     children: React.ReactNode;
     params: Promise<{ locale: string }>;
 }) {
-    // const queryOptions = trpc.listLanguages.queryOptions({});
-    // const queryClient = getQueryClient();
-    // const languagesResponse = await queryClient.fetchQuery(queryOptions);
-    // let languagesViewModel: viewModels.TLanguageListViewModel | undefined;
-    // const presenter = createGetLanguagesPresenter((viewModel) => {
-    //     languagesViewModel = viewModel;
-    // });
-    // await presenter.present(languagesResponse, languagesViewModel);
-    // if (!languagesViewModel || languagesViewModel.mode !== 'default') {
-    //     throw Error(
-    //         languagesViewModel?.data?.message ||
-    //             'Unknown error happened while loading languages',
-    //     );
-    // }
+    const queryOptions = trpc.listLanguages.queryOptions({});
+    const queryClient = getQueryClient();
+    const languagesResponse = await queryClient.fetchQuery(queryOptions);
+    let languagesViewModel: viewModels.TLanguageListViewModel | undefined;
+    const presenter = createGetLanguagesPresenter((viewModel) => {
+        languagesViewModel = viewModel;
+    });
+    await presenter.present(languagesResponse, languagesViewModel);
+    if (!languagesViewModel || languagesViewModel.mode !== 'default') {
+        throw Error(
+            languagesViewModel?.data?.message ||
+                'Unknown error happened while loading languages',
+        );
+    }
 
-    const { languages } = {
-        languages: [
-            {
-                languageCode: "en",
-                name: "English",
-            },
-            {
-                languageCode: "de",
-                name: "German",
-            }
-        ]
-    };
+    const { languages } = languagesViewModel.data;
 
     // Check if platform's languages are supported
     const availableLocales: TLocale[] = [];
@@ -102,27 +97,27 @@ export default async function RootLayout({
     const messages = await getMessages({ locale });
 
     // Perform authentication
-    // const authGateway = new NextAuthGateway(nextAuth);
-    // const sessionDTO = await authGateway.getSession();
-    // let session: auth.TSession | null = null;
-    // if (sessionDTO.success) {
-    //     session = sessionDTO.data;
-    // }
+    const authGateway = new NextAuthGateway(nextAuth);
+    const sessionDTO = await authGateway.getSession();
+    let session: auth.TSession | null = null;
+    if (sessionDTO.success) {
+        session = sessionDTO.data;
+    }
 
     return (
         <html lang={locale}>
             <body
                 className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
             >
-                {/* <SessionProvider session={session}> */}
+                <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
-                        <CMSTRPCClientProviders>
-                            {/* <Layout availableLocales={availableLocales}> */}
+                        <MockTRPCClientProviders>
+                            <Layout availableLocales={availableLocales}>
                                 {children}
-                            {/* </Layout> */}
-                        </CMSTRPCClientProviders>
+                            </Layout>
+                        </MockTRPCClientProviders>
                     </NextIntlClientProvider>
-                {/* </SessionProvider> */}
+                </SessionProvider>
             </body>
         </html>
     );
