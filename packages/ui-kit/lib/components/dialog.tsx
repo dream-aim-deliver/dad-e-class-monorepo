@@ -15,7 +15,7 @@ interface DialogContextType {
 
 interface DialogProps {
     children: React.ReactNode;
-    open: boolean;
+    open?: boolean;
     onOpenChange: (open: boolean) => void;
     defaultOpen: boolean;
 }
@@ -46,7 +46,7 @@ interface DialogCloseProps {
 }
 const DialogContext = createContext<DialogContextType | null>(null);
 
-const useDialog = () => {
+export const useDialog = () => {
     const context = useContext(DialogContext);
     if (!context) {
         throw new Error(
