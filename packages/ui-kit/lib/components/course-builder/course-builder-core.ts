@@ -4,6 +4,7 @@ import imageGalleryElement from "../course-builder-lesson-component/image-galler
 import imageFilesElement from "../course-builder-lesson-component/image";
 import videoFileElement from "../course-builder-lesson-component/video";
 import { CourseElementRegistry, CourseElementType } from "./types";
+import linksElement from "../course-builder-lesson-component/links";
 
 
 /**
@@ -15,5 +16,6 @@ export const courseElements: CourseElementRegistry = {
     [CourseElementType.Quiz]: quizElement,
     [CourseElementType.ImageFile]: imageFilesElement,
     [CourseElementType.VideoFile]: videoFileElement,
-    [CourseElementType.ImageGallery]: imageGalleryElement
+    [CourseElementType.ImageGallery]: imageGalleryElement,
+    [CourseElementType.Links]: linksElement,
 };

@@ -603,6 +603,7 @@ export const DE: TDictionary = {
       emptyState: 'Noch keine Lernenden',
     },
     link: {
+      linksText: 'Links',
       titleLabel: 'Titel',
       titlePlaceholder: 'Z.B. Mein neues Video-Projekt',
       urlLabel: 'URL',

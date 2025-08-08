@@ -290,4 +290,33 @@ export interface ImageGallery {
     images: ImageFileMetadata[];
 }
 
+type noteLink = {
+    url: string;
+    title: string;
+    customIconMetadata?: fileMetadata.TFileMetadata; // Add metadata for file upload status
+};
 
+export interface Links extends isLocalAware {
+    type: CourseElementType.Links;
+    id: number;
+    order: number;
+    onNoteLinksChange: (noteLinks: noteLink[]) => void;
+    includeInMaterials: boolean;
+    onIncludeInMaterialsChange: (includeInMaterials: boolean) => void;
+    onImageChange: (
+        index: number,
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    links: noteLink[];
+    onDeleteIcon: (index: number) => void;
+};
+
+export interface LinksView extends isLocalAware {
+    type: CourseElementType.Links;
+    id: number;
+    order: number;
+    links: noteLink[];
+}
+
+export type LinksElement = Links | LinksView;
