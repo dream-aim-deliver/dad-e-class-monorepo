@@ -8,31 +8,31 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TCoursesPresenterUtilities = {};
 
-export const ListCoursesResponseMiddleware =
+export const SearchCoursesResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListCoursesUseCaseResponse,
-        viewModels.TCourseListViewModel,
+        useCaseModels.TSearchCoursesUseCaseResponse,
+        viewModels.TCourseSearchViewModel,
         TCoursesPresenterUtilities
     >;
 
-type TListCoursesResponseMiddleware = typeof ListCoursesResponseMiddleware;
+type TSearchCoursesResponseMiddleware = typeof SearchCoursesResponseMiddleware;
 
 export default class CoursesPresenter extends BasePresenter<
-    useCaseModels.TListCoursesUseCaseResponse,
-    viewModels.TCourseListViewModel,
+    useCaseModels.TSearchCoursesUseCaseResponse,
+    viewModels.TCourseSearchViewModel,
     TCoursesPresenterUtilities,
-    TListCoursesResponseMiddleware
+    TSearchCoursesResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.TCourseListViewModel) => void,
+        setViewModel: (viewModel: viewModels.TCourseSearchViewModel) => void,
         viewUtilities: TCoursesPresenterUtilities,
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
-                viewModel: viewModels.HomePageViewModelSchema,
+                responseModel: useCaseModels.SearchCoursesUseCaseResponseSchema,
+                viewModel: viewModels.CourseSearchViewModelSchema,
             },
-            middleware: ListCoursesResponseMiddleware,
+            middleware: SearchCoursesResponseMiddleware,
             viewUtilities: viewUtilities,
             setViewModel: setViewModel,
         });
@@ -40,10 +40,10 @@ export default class CoursesPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListCoursesUseCaseResponse,
+            useCaseModels.TSearchCoursesUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TCourseListViewModel {
+    ): viewModels.TCourseSearchViewModel {
         return {
             mode: 'default',
             data: {
@@ -51,12 +51,13 @@ export default class CoursesPresenter extends BasePresenter<
             },
         };
     }
+
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListCoursesUseCaseErrorResponse,
-            TListCoursesResponseMiddleware
+            useCaseModels.TSearchCoursesUseCaseErrorResponse,
+            TSearchCoursesResponseMiddleware
         >,
-    ): viewModels.TCourseListViewModel {
+    ): viewModels.TCourseSearchViewModel {
         if (response.data.errorType === 'NotFound') {
             return {
                 mode: 'not-found',

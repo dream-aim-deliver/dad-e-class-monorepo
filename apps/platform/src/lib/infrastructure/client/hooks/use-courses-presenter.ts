@@ -4,8 +4,8 @@ import CoursesPresenter, {
     TCoursesPresenterUtilities,
 } from '../../common/presenters/courses-presenter';
 
-export function useListCoursesPresenter(
-    setViewModel: (viewModel: viewModels.TCourseListViewModel) => void,
+export function useSearchCoursesPresenter(
+    setViewModel: (viewModel: viewModels.TCourseSearchViewModel) => void,
 ) {
     const presenterUtilities: TCoursesPresenterUtilities = {};
     const presenter = useMemo(
