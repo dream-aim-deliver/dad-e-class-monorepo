@@ -13,27 +13,83 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import UserCoursesList from './user-courses-list';
+import { trpc } from '../../trpc/client';
+import { useEffect, useState } from 'react';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useSearchCoursesPresenter } from '../../hooks/use-courses-presenter';
 
 interface UserCoursesProps {
     roles: string[];
 }
 
+function useDebounce(value: any, delay: number): any {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+}
+
 function CreateCourseDialogContent() {
     const locale = useLocale() as TLocale;
-    const { isOpen, setIsOpen } = useDialog();
+    const { setIsOpen } = useDialog();
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const debouncedSearchQuery = useDebounce(searchQuery, 250);
+
+    const {
+        data: searchResponse,
+        isFetching,
+        error,
+    } = trpc.searchCourses.useQuery(
+        {
+            titleContains: debouncedSearchQuery,
+            pagination: {
+                page: 1,
+                pageSize: 4,
+            },
+        },
+        {},
+    );
+    const [searchViewModel, setSearchViewModel] = useState<
+        viewModels.TCourseSearchViewModel | undefined
+    >(undefined);
+    const { presenter } = useSearchCoursesPresenter(setSearchViewModel);
+    useEffect(() => {
+        if (searchResponse) {
+            presenter.present(searchResponse, searchViewModel);
+        }
+    }, [searchResponse, setSearchViewModel]);
+
+    const courses =
+        searchViewModel?.mode === 'default' ? searchViewModel.data.courses : [];
 
     return (
         <div className="p-6">
             <CreateCourseModal
                 locale={locale}
-                isLoading={false}
+                isLoading={isFetching}
                 onCreateNew={() => console.log('Create New Course')}
                 onDuplicate={(course) =>
                     console.log('Duplicate Course', course)
                 }
-                onQueryChange={(query) =>
-                    console.log('Search Query Changed:', query)
-                }
+                onQueryChange={(query) => setSearchQuery(query)}
+                courses={courses.map((course) => ({
+                    ...course,
+                    author: {
+                        ...course.author,
+                        isYou: false,
+                        avatarUrl: course.author.avatarUrl ?? '',
+                    },
+                }))}
                 onClose={() => setIsOpen(false)}
             />
         </div>
