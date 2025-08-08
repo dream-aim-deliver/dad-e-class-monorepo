@@ -1,8 +1,6 @@
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { useState } from 'react';
 import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';
-import { IconButton } from '../icon-button';
-import { IconClose } from '../icons/icon-close';
 import { Button } from '../button';
 import { IconPlus } from '../icons/icon-plus';
 import { IconSearch } from '../icons/icon-search';
