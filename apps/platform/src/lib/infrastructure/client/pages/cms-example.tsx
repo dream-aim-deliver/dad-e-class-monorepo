@@ -2,7 +2,7 @@
 
 import { TLocale } from "@maany_shr/e-class-translations";
 import { useLocale } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { trpc } from "../trpc/cms-client";
 
 // This is a simple example component that uses the CMS client
@@ -10,7 +10,7 @@ import { trpc } from "../trpc/cms-client";
 // and display it in a Next.js page.
 export default function CMSExample() {
     const locale = useLocale() as TLocale;
-    const router = useRouter();
+    const { data: session, status } = useSession();
 
     const [cmsVersion] = trpc.version.useSuspenseQuery();
     const [skills] = trpc.getSkills.useSuspenseQuery({
@@ -32,6 +32,65 @@ export default function CMSExample() {
                     </div>
                     
                     <div className="p-6 space-y-8">
+                        <div className="bg-gray-700 rounded-xl p-6 border border-gray-600">
+                            <div className="flex items-center mb-4">
+                                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+                                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-2 1-1 1H6a2 2 0 01-2-2v-1l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <h2 className="text-xl font-semibold text-gray-100">Authentication Status</h2>
+                            </div>
+                            <div className="bg-gray-800 rounded-lg border border-gray-600 p-4">
+                                {status === "loading" ? (
+                                    <div className="flex items-center text-gray-400">
+                                        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin mr-3"></div>
+                                        <span className="text-sm">Loading authentication status...</span>
+                                    </div>
+                                ) : session ? (
+                                    <div className="space-y-3">
+                                        <div className="flex items-center">
+                                            <div className="w-3 h-3 bg-green-400 rounded-full mr-3"></div>
+                                            <span className="text-sm font-medium text-green-400">Authenticated</span>
+                                        </div>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            <div className="bg-gray-700 rounded-lg p-3 border border-gray-600">
+                                                <p className="text-xs text-gray-400 uppercase tracking-wider">Name</p>
+                                                <p className="text-sm text-gray-100 font-medium">{session.user?.name || 'N/A'}</p>
+                                            </div>
+                                            <div className="bg-gray-700 rounded-lg p-3 border border-gray-600">
+                                                <p className="text-xs text-gray-400 uppercase tracking-wider">Email</p>
+                                                <p className="text-sm text-gray-100 font-medium">{session.user?.email || 'N/A'}</p>
+                                            </div>
+                                            {session.user?.roles && session.user.roles.length > 0 && (
+                                                <div className="bg-gray-700 rounded-lg p-3 border border-gray-600">
+                                                    <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">Roles</p>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {session.user.roles.map((role, index) => (
+                                                            <span key={index} className="px-2 py-1 bg-gray-600 text-gray-200 rounded text-xs">
+                                                                {role}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {session.expires && (
+                                                <div className="bg-gray-700 rounded-lg p-3 border border-gray-600">
+                                                    <p className="text-xs text-gray-400 uppercase tracking-wider">Session Expires</p>
+                                                    <p className="text-sm text-gray-100 font-medium">{new Date(session.expires).toLocaleString()}</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center">
+                                        <div className="w-3 h-3 bg-red-400 rounded-full mr-3"></div>
+                                        <span className="text-sm font-medium text-red-400">Not authenticated</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
                         <div className="bg-gray-700 rounded-xl p-6 border border-gray-600">
                             <div className="flex items-center mb-4">
                                 <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center mr-3">

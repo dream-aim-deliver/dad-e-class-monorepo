@@ -135,7 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </>
         ) : (
-          <a href="/login">
+          <a href="/auth/login">
             <Button
               text={dictionary.components.navbar.login}
               variant="primary"
@@ -248,7 +248,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               defaultValue={locale}
             />
             {!isLoggedIn && (
-              <a href="/login">
+              <a href="/auth/login">
                 <Button
                   text={dictionary.components.navbar.login}
                   variant="primary"
