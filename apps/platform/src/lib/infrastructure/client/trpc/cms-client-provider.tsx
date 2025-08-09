@@ -1,7 +1,7 @@
 'use client';
 
 import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
 import {
     getQueryClient,
@@ -11,6 +11,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { trpc } from '../trpc/client';
 import { httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
+import { useSession } from 'next-auth/react';
+import { useLocale } from 'next-intl';
 
 interface ClientProvidersProps {
     children: ReactNode;
@@ -18,15 +20,34 @@ interface ClientProvidersProps {
 
 export default function CMSTRPCClientProviders({ children }: ClientProvidersProps) {
     const queryClient = getQueryClient();
-    const [trpcClient] = useState(() =>
+    const { data: session } = useSession();
+    const locale = useLocale();
+
+    const trpcClient = useMemo(() =>
         trpc.createClient({
             links: [
                 httpBatchLink({
                     transformer: superjson,
                     url: getTRPCUrl(),
+                    headers() {
+                        const headers: Record<string, string> = {};
+
+                        // Add authorization header if session has ID token
+                        if (session?.user?.idToken) {
+                            headers['Authorization'] = `Bearer ${session.user.idToken}`;
+                        }
+
+                        // Add locale header
+                        if (locale) {
+                            headers['Accept-Language'] = locale;
+                        }
+
+                        return headers;
+                    },
                 }),
             ],
         }),
+        [session?.user?.idToken, locale] // Recreate client when session or locale changes
     );
 
     return (

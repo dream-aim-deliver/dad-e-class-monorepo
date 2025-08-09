@@ -12,14 +12,48 @@ import {
 } from '@trpc/tanstack-react-query';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import superjson from 'superjson';
+import nextAuth from '../auth/next-auth.config';
+import { getLocale } from 'next-intl/server';
 
 export const getQueryClient = cache(makeQueryClient);
+
+/**
+ * Creates headers for server-side TRPC requests with authentication and localization
+ */
+async function createServerHeaders(): Promise<Record<string, string>> {
+    const headers: Record<string, string> = {};
+
+    // Get session from NextAuth
+    try {
+        const session = await nextAuth.auth();
+        if (session?.user?.idToken) {
+            headers['Authorization'] = `Bearer ${session.user.idToken}`;
+        }
+    } catch (error) {
+        console.warn('Failed to get NextAuth session for server-side TRPC:', error);
+    }
+
+    // Add locale header
+    try {
+        const locale = await getLocale();
+        if (locale) {
+            headers['Accept-Language'] = locale;
+        }
+    } catch (error) {
+        console.warn('Failed to get locale for server-side TRPC:', error);
+    }
+
+    return headers;
+}
 
 const client = createTRPCClient<TAppRouter>({
     links: [
         httpBatchLink({
             transformer: superjson,
             url: getTRPCUrl(),
+            async headers() {
+                return await createServerHeaders();
+            },
         }),
     ],
 });
