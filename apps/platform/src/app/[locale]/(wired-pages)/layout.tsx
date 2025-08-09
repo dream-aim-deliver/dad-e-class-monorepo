@@ -102,27 +102,27 @@ export default async function RootLayout({
     const messages = await getMessages({ locale });
 
     // Perform authentication
-    // const authGateway = new NextAuthGateway(nextAuth);
-    // const sessionDTO = await authGateway.getSession();
-    // let session: auth.TSession | null = null;
-    // if (sessionDTO.success) {
-    //     session = sessionDTO.data;
-    // }
+    const authGateway = new NextAuthGateway(nextAuth);
+    const sessionDTO = await authGateway.getSession();
+    let session: auth.TSession | null = null;
+    if (sessionDTO.success) {
+        session = sessionDTO.data;
+    }
 
     return (
         <html lang={locale}>
             <body
                 className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
             >
-                {/* <SessionProvider session={session}> */}
+                <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <CMSTRPCClientProviders>
-                            {/* <Layout availableLocales={availableLocales}> */}
+                            <Layout availableLocales={availableLocales}>
                                 {children}
-                            {/* </Layout> */}
+                            </Layout>
                         </CMSTRPCClientProviders>
                     </NextIntlClientProvider>
-                {/* </SessionProvider> */}
+                </SessionProvider>
             </body>
         </html>
     );
