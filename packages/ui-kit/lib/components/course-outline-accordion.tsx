@@ -101,7 +101,7 @@ export function CourseOutlineAccordion({
                                 value={module.title}
                                 className="pt-2"
                             >
-                                <LessonLink>
+                                <LessonLink key={`module-link-${module.id}`}>
                                     {module.lessons.map(
                                         (lesson, lessonIndex) => {
                                             const lessonLink = (
