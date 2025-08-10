@@ -4,10 +4,10 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconLoaderSpinner } from './icons/icon-loader-spinner';
 
 export interface VideoPlayerProps extends isLocalAware {
-  videoId?: string;
-  thumbnailUrl?: string;
-  onErrorCallback?: (message: string, error: Event | Error) => void;
-  className?: string;
+    videoId?: string;
+    thumbnailUrl?: string;
+    onErrorCallback?: (message: string, error: Event | Error) => void;
+    className?: string;
 }
 /**
  * A responsive, localized video player component built on top of Mux.
@@ -48,104 +48,114 @@ export interface VideoPlayerProps extends isLocalAware {
  * />
  */
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
-  videoId,
-  thumbnailUrl,
-  onErrorCallback,
-  locale,
-  className = "w-full"
+    videoId,
+    thumbnailUrl,
+    onErrorCallback,
+    locale,
+    className = 'w-full',
 }) => {
-  const dictionary = getDictionary(locale);
-  const [showPlayer, setShowPlayer] = useState(!thumbnailUrl);
-  const [autoPlay, setAutoPlay] = useState(false);
-  const [videoError, setVideoError] = useState(!videoId);
-  const [isPlayerReady, setIsPlayerReady] = useState(false);
- const [thumbnailLoaded, setThumbnailLoaded] = useState(!thumbnailUrl);
+    const dictionary = getDictionary(locale);
+    const [showPlayer, setShowPlayer] = useState(!thumbnailUrl);
+    const [autoPlay, setAutoPlay] = useState(false);
+    const [videoError, setVideoError] = useState(!videoId);
+    const [isPlayerReady, setIsPlayerReady] = useState(false);
+    const [thumbnailLoaded, setThumbnailLoaded] = useState<boolean | undefined>(
+        thumbnailUrl !== undefined ? true : undefined,
+    );
 
-  useEffect(() => {
-    setVideoError(!videoId);
-    setIsPlayerReady(false);
-    setAutoPlay(false);
-    setThumbnailLoaded(!thumbnailUrl); // Only set to false if there's actually a thumbnail to load
-    if (!thumbnailUrl) setShowPlayer(true);
-  }, [videoId, thumbnailUrl]);
+    useEffect(() => {
+        setVideoError(!videoId);
+        setIsPlayerReady(false);
+        setAutoPlay(false);
+        setThumbnailLoaded(thumbnailUrl !== undefined ? true : undefined); // Only set to false if there's actually a thumbnail to load
+        if (!thumbnailUrl) setShowPlayer(true);
+    }, [videoId, thumbnailUrl]);
 
-  const handleThumbnailClick = () => {
-    setShowPlayer(true);
-    setAutoPlay(true);
-  };
+    const handleThumbnailClick = () => {
+        setShowPlayer(true);
+        setAutoPlay(true);
+    };
 
-  const handleThumbnailError = () => {
-    setShowPlayer(true);
-    setAutoPlay(false);
-    setThumbnailLoaded(true);
-  };
+    const handleThumbnailError = () => {
+        setShowPlayer(true);
+        setAutoPlay(false);
+        setThumbnailLoaded(true);
+    };
 
-  const handleThumbnailLoad = () => {
-    setThumbnailLoaded(true);
-  };
+    const handleThumbnailLoad = () => {
+        setThumbnailLoaded(true);
+    };
 
-  const handleVideoError = (event: Event) => {
-    setVideoError(true);
-   onErrorCallback?.(dictionary.components.videoPlayer.videoErrorText, event);
-  };
+    const handleVideoError = (event: Event) => {
+        setVideoError(true);
+        onErrorCallback?.(
+            dictionary.components.videoPlayer.videoErrorText,
+            event,
+        );
+    };
 
-  const handlePlayerReady = () => {
-    setIsPlayerReady(true);
-  };
+    const handlePlayerReady = () => {
+        setIsPlayerReady(true);
+    };
 
-  // Fixed aspect ratio container with absolute positioning for all content
-  return (
-    <div className={`relative ${className}`}  >
-      {/* Thumbnail state */}
-      {!showPlayer && thumbnailUrl && (
-        <div className="absolute inset-0 w-full h-full">
-          <img
-            src={thumbnailUrl}
-            alt="Thumbnail"
-            className={`w-full h-full object-contain cursor-pointer transition-opacity duration-200 ${thumbnailLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
-            onClick={handleThumbnailClick}
-            onError={handleThumbnailError}
-            onLoad={handleThumbnailLoad}
-          />
+    const hasThumbnail: boolean = !showPlayer && thumbnailUrl !== undefined;
+
+    // Fixed aspect ratio container with absolute positioning for all content
+    return (
+        <div className={`relative ${className}`}>
+            {/* Thumbnail state */}
+            {hasThumbnail && (
+                <div className="absolute inset-0 w-full h-full">
+                    <img
+                        src={thumbnailUrl}
+                        alt="Thumbnail"
+                        className={`w-full h-full object-contain cursor-pointer transition-opacity duration-200 ${
+                            thumbnailLoaded ? 'opacity-100' : 'opacity-0'
+                        }`}
+                        onClick={handleThumbnailClick}
+                        onError={handleThumbnailError}
+                        onLoad={handleThumbnailLoad}
+                    />
+                </div>
+            )}
+
+            {/* Error state */}
+            {videoError && (
+                <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
+                    <span className="text-text-secondary text-md">
+                        {dictionary.components.videoPlayer.videoErrorText}
+                    </span>
+                </div>
+            )}
+
+            {/* Loading state - only shown when player is loading and no error */}
+            {((thumbnailUrl && thumbnailLoaded === false) ||
+                (showPlayer && !isPlayerReady && !videoError)) && (
+                <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
+                    <IconLoaderSpinner
+                        classNames="animate-spin text-text-primary "
+                        size="6"
+                    />
+                </div>
+            )}
+
+            {/* Video player - always rendered but hidden when not ready */}
+            {showPlayer && !videoError && (
+                <div
+                    className={`absolute inset-0 w-full h-full ${!isPlayerReady ? 'opacity-0' : 'opacity-100'}`}
+                >
+                    <MuxPlayer
+                        key={videoId}
+                        streamType="on-demand"
+                        playbackId={videoId}
+                        accentColor="var(--color-base-brand-500)"
+                        className="w-full h-full"
+                        autoPlay={autoPlay}
+                        onCanPlay={handlePlayerReady}
+                        onError={handleVideoError}
+                    />
+                </div>
+            )}
         </div>
-      )}
-
-      {/* Error state */}
-      {videoError && (
-        <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
-          <span className="text-text-secondary text-md">
-            {dictionary.components.videoPlayer.videoErrorText}
-          </span>
-        </div>
-      )}
-
-      {/* Loading state - only shown when player is loading and no error */}
-      {((thumbnailUrl && !thumbnailLoaded) || (showPlayer && !isPlayerReady && !videoError)) && (
-
-        <div className="absolute inset-0 w-full h-full bg-base-neutral-700 flex items-center justify-center p-4">
-          <IconLoaderSpinner
-            classNames="animate-spin text-text-primary "
-            size="6"
-          />
-        </div>
-      )}
-
-      {/* Video player - always rendered but hidden when not ready */}
-      {showPlayer && !videoError && (
-        <div className={`absolute inset-0 w-full h-full ${!isPlayerReady ? 'opacity-0' : 'opacity-100'}`}>
-          <MuxPlayer
-            key={videoId}
-            streamType="on-demand"
-            playbackId={videoId}
-            accentColor="var(--color-base-brand-500)"
-            className="w-full h-full"
-            autoPlay={autoPlay}
-            onCanPlay={handlePlayerReady}
-            onError={handleVideoError}
-          />
-        </div>
-      )}
-    </div>
-  );
+    );
 };
