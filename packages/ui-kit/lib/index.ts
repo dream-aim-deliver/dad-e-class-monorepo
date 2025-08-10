@@ -104,4 +104,9 @@ export { CourseGeneralInformationVisitor } from './components/course-general-inf
 
 export * from './components/sidemenu';
 
-export { CourseOutlineAccordion } from './components/course-outline-accordion';
+
+
+export * from './components/sidemenu';
+
+export { CourseOutlineAccordion, CourseModule } from './components/course-outline-accordion';
+export { LessonHeader } from './components/lesson-header';
