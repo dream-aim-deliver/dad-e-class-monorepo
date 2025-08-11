@@ -74,7 +74,7 @@ const ImageFileSchema = FileSchema.extend({
 const LinkSchema = z.object({
     title: z.string(),
     url: z.string(),
-    iconFile: FileSchema,
+    iconFile: ImageFileSchema.nullable(),
 });
 
 const RichTextSchema = BaseComponent.extend({
@@ -137,11 +137,13 @@ const LinksSchema = BaseComponent.extend({
     includeInMaterials: z.boolean(),
 });
 
+const DownloadFileSchema = FileSchema.extend({
+    thumbnailUrl: z.string().nullable(),
+});
+
 const DownloadFilesSchema = BaseComponent.extend({
     type: z.literal('downloadFiles'),
-    files: z.array(FileSchema.extend({
-        thumbnailUrl: z.string().nullable(),
-    })),
+    files: z.array(DownloadFileSchema),
 });
 
 const UploadFilesSchema = BaseComponent.extend({
@@ -208,6 +210,8 @@ const AssignmentSchema = BaseComponent.extend({
     type: z.literal('assignment'),
     title: z.string(),
     description: z.string(),
+    resources: z.array(DownloadFileSchema),
+    links: z.array(LinkSchema),
 });
 
 export const AssessmentComponentSchema = z.discriminatedUnion('type', [
