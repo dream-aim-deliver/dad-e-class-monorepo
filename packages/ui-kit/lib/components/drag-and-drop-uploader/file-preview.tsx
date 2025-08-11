@@ -20,7 +20,7 @@ interface FilePreviewProps extends isLocalAware {
     isDeletionAllowed?: boolean;
     className?: string;
     onDelete?: (id: string) => void;
-    readOnly?: false;
+    readOnly?: boolean;
 }
 
 /**

@@ -100,4 +100,5 @@ export { CreateCourseForm, useCreateCourseForm } from './components/create-cours
 export * from './utils/file-utils';
 export { CourseOutlineAccordion } from './components/course-outline-accordion';
 export { CourseOutlineAccordion, CourseModule } from './components/course-outline-accordion';
+export { CourseOutlineAccordion, type CourseModule } from './components/course-outline-accordion';
 export { LessonHeader } from './components/lesson-header';

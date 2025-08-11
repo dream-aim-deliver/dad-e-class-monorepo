@@ -103,13 +103,11 @@ const LinkEdit: React.FC<LinkEditProps> = ({
             const tempMetadata: fileMetadata.TFileMetadata = {
                 id: fileRequest.id,
                 name: fileRequest.name,
-                mimeType: newFile.type,
                 size: newFile.size,
                 category: 'image',
                 status: 'processing',
                 url: URL.createObjectURL(newFile),
                 thumbnailUrl: URL.createObjectURL(newFile),
-                checksum: "",
             };
             setCustomIcon(tempMetadata);
 

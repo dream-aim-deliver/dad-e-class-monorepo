@@ -156,9 +156,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
       const baseMetadata = {
         id: tempId,
         name: file.name,
-        mimeType: file.type || 'application/octet-stream',
         size: file.size,
-        checksum: 'processing',
         status: 'processing' as const,
         category: variant,
       };

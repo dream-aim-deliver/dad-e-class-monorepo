@@ -59,6 +59,9 @@ export const AssignmentBuilderView: FC<AssignmentBuilderViewTypes> = ({
                             onDownload={() => onFileDownload(file.id)}
                             locale={locale}
                             readOnly={true}
+                            onCancel={() => {
+                                // No cancel action in this view
+                            }}
                         />
                     ))}
                     {assignmentData.links.map((link, index) => (
