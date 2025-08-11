@@ -27,7 +27,7 @@ interface CourseMilestone {
     completed?: boolean;
 }
 
-export interface CourseModule {
+interface CourseModule {
     id: number;
     title: string;
     order: number;
@@ -43,7 +43,7 @@ interface CourseOutlineAccordionProps extends isLocalAware {
     className?: string;
 }
 
-export function CourseOutlineAccordion({
+function CourseOutlineAccordion({
     locale,
     modules,
     activeLessonId,
@@ -164,3 +164,5 @@ export function CourseOutlineAccordion({
         </Accordion>
     );
 }
+
+export { CourseOutlineAccordion, type CourseModule };

@@ -128,10 +128,14 @@ export function FormComponent({ elementInstance, locale, onDownload }: DownloadF
         <div className="flex flex-col bg-card-fill p-4 rounded-md border-card-stroke gap-4">
             {elementInstance.files && elementInstance.files.length > 0 &&
                 elementInstance.files.map((file) => (<FilePreview
+                    key={file.id}
                     locale={locale}
                     readOnly={true}
                     onDownload={() => handleDownload(file.id)}
                     uploadResponse={file}
+                    onCancel={() => {
+                        // No cancel action in form view
+                    }} 
                 />))}
 
         </div>)
