@@ -159,29 +159,27 @@ export function FormElementRenderer({
         }
     };
 
+    // TODO: decompose pre-assessment card wrapper
     return (
-        <form onSubmit={handleSubmit} className="max-w-[560px] p-6 flex flex-col gap-4 bg-card-fill shadow-[0px_4px_12px_0px_base-neutral-950] border-1 rounded-medium border-card-stroke text-text-primary">
-            <h3>{dictionary.components.formRenderer.title}</h3>
-            <div className="flex flex-col gap-4">
-                {elements.map((elementInstance) => {
-                    const Element = formElements[elementInstance.type].formComponent;
-                    return (
-                        <div key={elementInstance.id.toString()} className="flex flex-col gap-2 items-start">
-                            <Element
-                                submitValue={submitValue}
-                                elementInstance={elementInstance}
-                                locale={locale}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-text-primary">
+            {elements.map((elementInstance) => {
+                const Element = formElements[elementInstance.type].formComponent;
+                return (
+                    <div key={elementInstance.id.toString()} className="flex flex-col gap-2 items-start">
+                        <Element
+                            submitValue={submitValue}
+                            elementInstance={elementInstance}
+                            locale={locale}
+                        />
+                        {formErrors[elementInstance.id] && (
+                            <Banner
+                                style="error"
+                                description={getErrorMessage(elementInstance)}
                             />
-                            {formErrors[elementInstance.id] && (
-                                <Banner
-                                    style="error"
-                                    description={getErrorMessage(elementInstance)}
-                                />
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
+                        )}
+                    </div>
+                );
+            })}
             {isError && (
                 <Banner
                     style="error"
