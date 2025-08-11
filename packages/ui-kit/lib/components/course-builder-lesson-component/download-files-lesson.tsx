@@ -125,7 +125,7 @@ export function FormComponent({ elementInstance, locale, onDownload }: DownloadF
         onDownload(id);
     }
     return (
-        <div className="flex flex-col bg-card-fill p-4 rounded-md border-card-stroke gap-4">
+        <div className="flex flex-col bg-card-fill p-4 rounded-md border-card-stroke gap-4 w-full">
             {elementInstance.files && elementInstance.files.length > 0 &&
                 elementInstance.files.map((file) => (<FilePreview
                     key={file.id}

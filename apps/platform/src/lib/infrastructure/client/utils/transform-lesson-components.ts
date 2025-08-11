@@ -11,6 +11,9 @@ import {
     SingleChoiceElement,
     TextInputElement,
     VideoFileElement,
+    ImageFileElement,
+    DownloadFilesElement,
+    UploadsFilesElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
 
@@ -137,6 +140,57 @@ function transformVideo(
     };
 }
 
+function transformImage(
+    component: Extract<useCaseModels.TLessonComponent, { type: 'image' }>,
+): ImageFileElement {
+    return {
+        type: LessonElementType.ImageFile,
+        order: component.order,
+        id: component.id,
+        file: {
+            id: component.imageFile.id,
+            name: component.imageFile.name,
+            size: component.imageFile.size,
+            category: 'image',
+            url: component.imageFile.downloadUrl,
+            status: 'available',
+            thumbnailUrl: component.imageFile.downloadUrl,
+        },
+    };
+}
+
+function transformDownloadFiles(
+    component: Extract<
+        useCaseModels.TLessonComponent,
+        { type: 'downloadFiles' }
+    >,
+): DownloadFilesElement {
+    return {
+        type: LessonElementType.DownloadFiles,
+        order: component.order,
+        id: component.id,
+        files: component.files.map((file) => ({
+            id: file.id,
+            name: file.name,
+            size: file.size,
+            category: 'generic', // TODO: find a way to pass category
+            url: file.downloadUrl,
+            status: 'available',
+        })),
+    };
+}
+
+function transformUploadFiles(
+    component: Extract<useCaseModels.TLessonComponent, { type: 'uploadFiles' }>,
+): UploadsFilesElement {
+    return {
+        type: LessonElementType.UploadFiles,
+        order: component.order,
+        id: component.id,
+        description: component.description,
+    };
+}
+
 const transformers = {
     richText: transformRichText,
     heading: transformHeading,
@@ -145,6 +199,9 @@ const transformers = {
     textInput: transformTextInput,
     oneOutOfThree: transformOneOutOfThree,
     video: transformVideo,
+    image: transformImage,
+    downloadFiles: transformDownloadFiles,
+    uploadFiles: transformUploadFiles,
 } as const;
 
 export function transformLessonComponents(

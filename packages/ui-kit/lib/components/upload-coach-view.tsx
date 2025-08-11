@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from "./button";
 import { IconCloudUpload } from "./icons/icon-cloud-upload";
 import { IconFile } from "./icons/icon-file";
-import { uploadStudentTypes } from './course-builder-lesson-component/types';
+import { UploadFilesForm } from './course-builder-lesson-component/types';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 /**
  * Props interface for the Upload Coach View component
@@ -11,7 +11,7 @@ import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
  * 
  *  callback function triggered when a file download is requested 
  */
-export interface UploadCoachViewProps extends uploadStudentTypes, isLocalAware {
+export interface UploadCoachViewProps extends UploadFilesForm, isLocalAware {
     onDownload: (fileId: string) => void;
     createdAt: string;
 }
