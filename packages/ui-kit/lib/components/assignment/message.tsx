@@ -13,7 +13,7 @@ export interface MessageProps extends isLocalAware {
     onFileDownload: (id: string) => void;
     onFileDelete: (id: number, fileId: string) => void;
     onLinkDelete: (id: number, linkId: number) => void;
-    onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+    onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex: number) => void;
     onDeleteIcon: (id: string) => void;
 };

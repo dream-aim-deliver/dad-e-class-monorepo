@@ -22,7 +22,7 @@ export interface ReplyPanelProps extends isLocalAware {
     onFileDelete: (fileId: string) => void;
     onLinkDelete: (linkId: number, index: number) => void;
     onFilesChange: (file: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
-    onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+    onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onDeleteIcon: (id: string) => void;
     onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
     onCreateLink: (data: shared.TLinkWithId, index: number) => void;
