@@ -14,8 +14,6 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
 
-
-
 function transformRichText(
     component: Extract<useCaseModels.TLessonComponent, { type: 'richText' }>,
 ): RichTextElement {
@@ -135,7 +133,7 @@ function transformVideo(
             status: 'available',
             videoId: component.videoFile.playbackId,
             thumbnailUrl: component.videoFile.thumbnailUrl,
-        }        
+        },
     };
 }
 
