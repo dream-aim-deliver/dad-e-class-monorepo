@@ -5,9 +5,7 @@ import LessonComponentsPresenter, {
 } from '../../common/presenters/lesson-components-presenter';
 
 export function useListLessonComponentsPresenter(
-    setViewModel: (
-        viewModel: viewModels.TLessonComponentListViewModel,
-    ) => void,
+    setViewModel: (viewModel: viewModels.TLessonComponentListViewModel) => void,
 ) {
     const presenterUtilities: TLessonComponentsPresenterUtilities = {};
     const presenter = useMemo(
