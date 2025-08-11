@@ -73,7 +73,6 @@ export * from './components/course-builder-lesson-component/types';
 export { CourseElementType, type CourseElement } from './components/course-builder/types';
 export { LessonElementType, type LessonElement } from './components/lesson/types';
 export { lessonElements } from './components/lesson/element-core';
-export * from './components/course-builder-lesson-component/types';
 
 export * from './components/icons';
 export { CourseGeneralInformationView } from './components/course-general-information/course-general-information-view';
