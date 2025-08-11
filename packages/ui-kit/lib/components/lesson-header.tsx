@@ -90,7 +90,7 @@ export const LessonHeader: FC<LessonHeaderProps> = ({
     }, [onClick]);
 
     return (
-        <div className={cn("flex justify-between items-center w-full md:flex-row flex-col gap-4", className)}>
+        <div className={cn("flex justify-between lg:items-center w-full lg:flex-row flex-col gap-2 lg:gap-4", className)}>
             <div className="flex flex-col gap-4 items-start">
                 <p className="text-text-secondary text-md font-bold leading-[120%]">
                     {dictionary.components.lessonHeader.moduleText} {currentModule} / {totalModules} {moduleTitle}
