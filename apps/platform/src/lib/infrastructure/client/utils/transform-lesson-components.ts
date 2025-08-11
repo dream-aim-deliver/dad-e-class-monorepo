@@ -1,5 +1,7 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
 import {
+    LessonElement,
+    LessonElementType,
     FormElement,
     FormElementType,
     HeadingElement,
@@ -8,14 +10,17 @@ import {
     RichTextElement,
     SingleChoiceElement,
     TextInputElement,
+    VideoFileElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
+
+
 
 function transformRichText(
     component: Extract<useCaseModels.TLessonComponent, { type: 'richText' }>,
 ): RichTextElement {
     return {
-        type: FormElementType.RichText,
+        type: LessonElementType.RichText,
         order: component.order,
         id: component.id,
         content: component.text,
@@ -26,7 +31,7 @@ function transformHeading(
     component: Extract<useCaseModels.TLessonComponent, { type: 'heading' }>,
 ): HeadingElement {
     return {
-        type: FormElementType.HeadingText,
+        type: LessonElementType.HeadingText,
         order: component.order,
         id: component.id,
         heading: component.text,
@@ -41,7 +46,7 @@ function transformSingleChoice(
     >,
 ): SingleChoiceElement {
     return {
-        type: FormElementType.SingleChoice,
+        type: LessonElementType.SingleChoice,
         order: component.order,
         id: component.id,
         title: component.title,
@@ -61,7 +66,7 @@ function transformMultipleChoice(
     >,
 ): MultiCheckElement {
     return {
-        type: FormElementType.MultiCheck,
+        type: LessonElementType.MultiCheck,
         order: component.order,
         id: component.id,
         title: component.title,
@@ -78,7 +83,7 @@ function transformTextInput(
     component: Extract<useCaseModels.TLessonComponent, { type: 'textInput' }>,
 ): TextInputElement {
     return {
-        type: FormElementType.TextInput,
+        type: LessonElementType.TextInput,
         order: component.order,
         id: component.id,
         helperText: component.helperText,
@@ -99,7 +104,7 @@ function transformOneOutOfThree(
     }));
 
     return {
-        type: FormElementType.OneOutOfThree,
+        type: LessonElementType.OneOutOfThree,
         order: component.order,
         id: component.id,
         data: {
@@ -114,6 +119,26 @@ function transformOneOutOfThree(
     };
 }
 
+function transformVideo(
+    component: Extract<useCaseModels.TLessonComponent, { type: 'video' }>,
+): VideoFileElement {
+    return {
+        type: LessonElementType.VideoFile,
+        order: component.order,
+        id: component.id,
+        file: {
+            id: component.videoFile.id,
+            name: component.videoFile.name,
+            size: component.videoFile.size,
+            category: 'video',
+            url: component.videoFile.downloadUrl,
+            status: 'available',
+            videoId: component.videoFile.playbackId,
+            thumbnailUrl: component.videoFile.thumbnailUrl,
+        }        
+    };
+}
+
 const transformers = {
     richText: transformRichText,
     heading: transformHeading,
@@ -121,6 +146,7 @@ const transformers = {
     multipleChoice: transformMultipleChoice,
     textInput: transformTextInput,
     oneOutOfThree: transformOneOutOfThree,
+    video: transformVideo,
 } as const;
 
 export function transformLessonComponents(
