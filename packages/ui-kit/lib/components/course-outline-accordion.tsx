@@ -129,7 +129,7 @@ export function CourseOutlineAccordion({
                                             const milestones =
                                                 milestonesMap[lesson.id] || [];
                                             return (
-                                                <>
+                                                <div key={`lesson-container-${module.id}-${lesson.id}`}>
                                                     {lessonLink}
                                                     {milestones.map(
                                                         (milestone) => (
@@ -148,7 +148,7 @@ export function CourseOutlineAccordion({
                                                             </div>
                                                         ),
                                                     )}
-                                                </>
+                                                </div>
                                             );
                                         },
                                     )}
