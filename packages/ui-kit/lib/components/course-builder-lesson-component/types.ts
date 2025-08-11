@@ -32,7 +32,7 @@ export interface CoachingSessionStudentViewTypes extends isLocalAware, BaseFormE
 
 export type QuizType = "quizTypeOne" | "quizTypeTwo" | "quizTypeThree" | "quizTypeFour";
 
-export interface fileProps {
+export interface FileProps {
     onFilesChange: (files: fileMetadata.TFileUploadRequest[], abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onFileDelete: (fileId: string, index: number) => void;
     onFileDownload: (id: string) => void;
@@ -47,7 +47,7 @@ export interface QuizElementBase extends isLocalAware, BaseFormElement {
     onTypeChange?: (type: QuizType) => void;
 }
 
-export interface QuizTypeOneElement extends QuizElementBase, fileProps {
+export interface QuizTypeOneElement extends QuizElementBase, FileProps {
     quizType: "quizTypeOne";
     error?: boolean;
     fileData: fileMetadata.TFileMetadata;
@@ -69,7 +69,7 @@ export interface QuizTypeOneElement extends QuizElementBase, fileProps {
     }) => void;
 }
 
-export interface QuizTypeTwoElement extends QuizElementBase, fileProps {
+export interface QuizTypeTwoElement extends QuizElementBase, FileProps {
     quizType: "quizTypeTwo";
     error?: boolean;
     fileData: fileMetadata.TFileMetadata;
@@ -97,7 +97,7 @@ export interface QuizTypeTwoElement extends QuizElementBase, fileProps {
     }) => void;
 }
 
-export interface QuizTypeThreeElement extends QuizElementBase, fileProps {
+export interface QuizTypeThreeElement extends QuizElementBase, FileProps {
     quizType: "quizTypeThree";
     error?: boolean;
     options: {
@@ -119,7 +119,7 @@ export interface QuizTypeThreeElement extends QuizElementBase, fileProps {
     }) => void;
 }
 
-export interface QuizTypeFourElement extends QuizElementBase, fileProps {
+export interface QuizTypeFourElement extends QuizElementBase, FileProps {
     quizType: "quizTypeFour";
     labels: {
         letter: string;
@@ -257,21 +257,21 @@ export interface QuizTypeFourStudentViewElement extends QuizElementBase {
         }[]
     }) => void;
 }
-export type downloadsFilesTypes =  {
+export type DownloadFilesElement =  {
     type: CourseElementType.DownloadFiles;
     files: fileMetadata.TFileMetadata[] | null;
 } & BaseFormElement;
 
-export interface uploadCoachingTypes extends BaseFormElement {
+export interface UploadFilesDesigner extends BaseFormElement {
     type: CourseElementType.UploadFiles;
      description: string;
 };
-export interface uploadStudentTypes extends BaseFormElement {
+export interface UploadFilesForm extends BaseFormElement {
     type: CourseElementType.UploadFiles;
     files: fileMetadata.TFileMetadata[] | null;
     comment: string;
 }
-export type uploadsFilesTypes = uploadCoachingTypes | uploadStudentTypes;
+export type UploadsFilesElement = UploadFilesDesigner | UploadFilesForm;
 
 export interface CreateAssignmentBuilderViewTypes extends isLocalAware, BaseFormElement {
     type: CourseElementType.Assignment;
@@ -316,7 +316,7 @@ export type QuizElement =
 
 
 type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
-export interface ImageFile extends BaseFormElement {
+export interface ImageFileElement extends BaseFormElement {
     type: CourseElementType.ImageFile;
     order: number;
     file: ImageFileMetadata;
