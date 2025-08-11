@@ -134,7 +134,7 @@ export function transformLessonComponents(
             const element = transformer(component as any);
             elements.push(element);
         } else {
-            console.error(`Unknown component type: ${component.type}`);
+            // console.error(`Unknown component type: ${component.type}`);
         }
     }
 
