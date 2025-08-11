@@ -66,14 +66,14 @@ export default async function RootLayout({
     const { languages } = {
         languages: [
             {
-                languageCode: "en",
-                name: "English",
+                languageCode: 'en',
+                name: 'English',
             },
             {
-                languageCode: "de",
-                name: "German",
-            }
-        ]
+                languageCode: 'de',
+                name: 'German',
+            },
+        ],
     };
 
     // Check if platform's languages are supported
