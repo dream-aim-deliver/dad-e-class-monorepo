@@ -99,14 +99,5 @@ export * from './components/dialog';
 export { CreateCourseForm, useCreateCourseForm } from './components/create-course-form';
 export * from './utils/file-utils';
 
-
-export { CourseGeneralInformationVisitor } from './components/course-general-information/course-general-information-visitor';
-
-export * from './components/sidemenu';
-
-
-
-export * from './components/sidemenu';
-
 export { CourseOutlineAccordion, CourseModule } from './components/course-outline-accordion';
 export { LessonHeader } from './components/lesson-header';
