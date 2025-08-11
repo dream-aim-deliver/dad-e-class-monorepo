@@ -176,7 +176,7 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
                                 styles="text"
                                 size="small"
                                 title={dictionary.components.uploadingSection.deleteText}
-                                onClick={() => props.onDelete(uploadResponse.id as string)}
+                                onClick={() => props.onDelete?.(uploadResponse.id as string)}
                             />
                         }
                     </div>
