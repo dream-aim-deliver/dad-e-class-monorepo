@@ -36,7 +36,7 @@ export const Default: Story = {
     inputField: {
       hasLeftContent: false,
       hasRightContent: false,
-      inputPlaceholder: 'Enter text...',
+      inputText: 'Enter text...',
       state: 'placeholder',
       setValue: (value: string) => console.log('Input value:', value),
     },
@@ -54,7 +54,7 @@ export const WithErrorFeedback: Story = {
     inputField: {
       hasLeftContent: true,
       leftContent: <IconSearch />,
-      inputPlaceholder: 'Search...',
+      inputText: 'Search...',
       state: 'error',
       setValue: (value: string) => console.log('Input value:', value),
     },
@@ -72,7 +72,7 @@ export const WithoutFeedback: Story = {
     inputField: {
       hasLeftContent: false,
       hasRightContent: false,
-      inputPlaceholder: 'Enter text...',
+      inputText: 'Enter text...',
       state: 'placeholder',
       setValue: (value: string) => console.log('Input value:', value),
     },
@@ -90,7 +90,7 @@ export const WarningFeedback: Story = {
     inputField: {
       hasRightContent: true,
       rightContent: <Button text="Change Password" variant="text" />,
-      inputPlaceholder: 'Type here...',
+      inputText: 'Type here...',
       state: 'warning',
       setValue: (value: string) => console.log('Input value:', value),
     },

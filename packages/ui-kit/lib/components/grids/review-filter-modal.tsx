@@ -141,7 +141,7 @@ export const ReviewFilterModal: React.FC<ReviewFilterModalProps> = ({
                         className: "w-full text-white border-input-stroke",
                         defaultValue: filters.studentName,
                         setValue: (value: string) => handleChange('studentName', value),
-                        inputPlaceholder: dictionary.studentNamePlaceholder,
+                        inputText: dictionary.studentNamePlaceholder,
                     }}
                 />
             </div>
@@ -158,7 +158,7 @@ export const ReviewFilterModal: React.FC<ReviewFilterModalProps> = ({
                         className: "w-full text-white border-input-stroke",
                         defaultValue: filters.courseName,
                         setValue: (value: string) => handleChange('courseName', value),
-                        inputPlaceholder: dictionary.courseNamePlaceholder,
+                        inputText: dictionary.courseNamePlaceholder,
                     }}
                 />
             </div>

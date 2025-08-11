@@ -101,7 +101,7 @@ export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
         <div className="flex flex-col gap-4 mt-4 w-full">
             <div className="w-full">
                 <InputField
-                    inputPlaceholder="single-choice-title"
+                    inputText="single-choice-title"
                     className="border-0"
                     value={title}
                     setValue={(value) => setTitle(value)}
@@ -119,7 +119,7 @@ export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
                     <div className="w-full">
                         <InputField
                             className="border-0 w-full"
-                            inputPlaceholder="choice-name"
+                            inputText="choice-name"
                             value={choice.name}
                             setValue={(value) => handleInputChange(index, value)}
                         />

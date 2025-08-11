@@ -165,7 +165,7 @@ export const CreateContentModal = ({
                                 setSelectedItem(null);
                             }}
                             hasLeftContent={true}
-                            inputPlaceholder={searchLabel}
+                            inputText={searchLabel}
                             leftContent={<IconSearch />}
                         />
                         {searchContent.trim() && (

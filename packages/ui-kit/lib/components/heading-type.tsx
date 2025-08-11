@@ -46,7 +46,7 @@ const HeadingLesson = ({ initialHeadingValue, initialHeadingType, onChange, loca
         value={headingValue.heading}
         type="text"
         className="w-full"
-        inputPlaceholder={dictionary.components.lessons.headingPlaceholder}
+        inputText={dictionary.components.lessons.headingPlaceholder}
       />
       <Dropdown
         defaultValue={headingValue.type}

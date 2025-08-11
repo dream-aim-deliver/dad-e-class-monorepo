@@ -279,7 +279,7 @@ export const NotificationGrid = (props: NotificationGridProps) => {
           <InputField
             className="flex-grow relative md:mr-2 h-10"
             setValue={setSearchTerm} value={searchTerm}
-            inputPlaceholder={dictionary.searchPlaceholder}
+            inputText={dictionary.searchPlaceholder}
             hasLeftContent
             leftContent={<IconSearch />}
           />

@@ -127,7 +127,7 @@ export const AddCoachModal = ({
                         setSearchContent(value);
                     }}
                     hasLeftContent={true}
-                    inputPlaceholder={dictionary.searchLabel}
+                    inputText={dictionary.searchLabel}
                     leftContent={<IconSearch />}
                 />
                 {/* No coaches found & skeleton */}

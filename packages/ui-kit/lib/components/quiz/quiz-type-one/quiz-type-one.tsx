@@ -129,7 +129,7 @@ const QuizTypeOne: FC<QuizTypeOneElement> = ({
             className: 'w-full',
             value: title,
             setValue: handleTitleChange,
-            inputPlaceholder: dictionary.components.quiz.enterTitleText,
+            inputText: dictionary.components.quiz.enterTitleText,
           }}
           label={dictionary.components.quiz.quizTitleText}
         />
@@ -176,7 +176,7 @@ const QuizTypeOne: FC<QuizTypeOneElement> = ({
               </div>
               <InputField
                 className="w-full"
-                inputPlaceholder={dictionary.components.quiz.quizTypeOne.radioButtonText}
+                inputText={dictionary.components.quiz.quizTypeOne.radioButtonText}
                 value={choice.optionText}
                 setValue={(val) => handleChoiceTextChange(index, val)}
               />
