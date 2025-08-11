@@ -1,5 +1,5 @@
 import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
-import type { ImageFile } from "./types";
+import type { ImageFileElement } from "./types";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { IconImage } from "../icons/icon-image";
 import DesignerLayout from "../designer-layout";
@@ -123,7 +123,7 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
 
     // Type guard to ensure we're working with an ImageFile
-    const imageFile = elementInstance as ImageFile;
+    const imageFile = elementInstance as ImageFileElement;
     const [imageError, setImageError] = useState<boolean>(false);
     return (
         <section className="w-full">
