@@ -15,7 +15,7 @@ export interface AssignmentModalProps extends Omit<assignment.TAssignmentWithId,
     onFileDelete: (id: number, fileId: string) => void;
     onLinkDelete: (id: number, linkId: number) => void;
     onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex: number) => void;
-    onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+    onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onDeleteIcon: (id: string) => void;
     onClickCourse: () => void;
     onClickUser: () => void;

@@ -19,7 +19,7 @@ interface AssignmentCardListProps extends isLocalAware {
   onFileDelete: (assignmentId: number, fileId: string) => void;
   onLinkDelete: (assignmentId: number, linkId: number) => void;
   onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex: number) => void;
-  onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+  onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
   onClickCourse: () => void;
   onClickUser: () => void;
   onClickGroup: () => void;

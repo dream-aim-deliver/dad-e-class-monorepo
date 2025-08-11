@@ -16,11 +16,11 @@ export interface AssignmentCardProps extends assignment.TAssignmentWithId, isLoc
     onReplyFileDelete: (replyId: number, fileId: string) => void;
     onReplyLinkDelete: (replyId: number, linkId: number) => void;
     linkEditIndex: number;
-    onImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+    onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onDeleteIcon: (id: string) => void;
     onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex: number) => void;
     replyLinkEditIndex: number;
-    onReplyImageChange: (image: fileMetadata.TFileMetadata, abortSignal?: AbortSignal) => void;
+    onReplyImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onReplyDeleteIcon: (id: string) => void;
     onReplyChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], replyLinkEditIndex: number) => void;
     onClickCourse: () => void;
