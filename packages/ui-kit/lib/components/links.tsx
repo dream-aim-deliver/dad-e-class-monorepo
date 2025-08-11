@@ -11,6 +11,7 @@ import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { IconCloudUpload } from "./icons";
 import { getFaviconUrl } from "../utils/url-utils";
+import { IconExternalLink } from "./icons/icon-external-link";
 
 interface LinkEditProps extends isLocalAware {
     initialTitle?: string;
@@ -213,7 +214,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                             value={title}
                             setValue={setTitle}
                             state={errors.title ? 'error' : 'filled'}
-                            inputPlaceholder={dictionary.components.link.titlePlaceholder}
+                            inputText={dictionary.components.link.titlePlaceholder}
                         />
                         {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
                     </div>
@@ -226,7 +227,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                             setValue={setUrl}
                             type='url'
                             state={errors.url ? 'error' : 'filled'}
-                            inputPlaceholder={dictionary.components.link.urlPlaceholder}
+                            inputText={dictionary.components.link.urlPlaceholder}
                         />
                         {errors.url && <p className="text-sm text-red-500">{errors.url}</p>}
                     </div>

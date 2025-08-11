@@ -313,7 +313,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                 value={searchQuery}
                 setValue={(value: string) => setSearchQuery(value)}
                 hasLeftContent={true}
-                inputPlaceholder="Search..."
+                inputText="Search..."
                 leftContent={<IconSearch />}
               />
               <ul className="flex flex-col gap-2">

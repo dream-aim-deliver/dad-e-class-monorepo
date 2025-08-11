@@ -143,7 +143,7 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
             className: "w-full",
             value: title,
             setValue: handleTitleChange,
-            inputPlaceholder: dictionary.components.quiz.enterTitleText,
+            inputText: dictionary.components.quiz.enterTitleText,
           }}
           label={dictionary.components.quiz.quizTitleText}
         />

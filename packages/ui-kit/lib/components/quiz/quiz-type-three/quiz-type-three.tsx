@@ -110,7 +110,7 @@ const QuizTypeThree: FC<QuizTypeThreeElement> = ({
             className: "w-full",
             value: title,
             setValue: handleTitleChange,
-            inputPlaceholder: dictionary.components.quiz.enterTitleText,
+            inputText: dictionary.components.quiz.enterTitleText,
           }}
           label={dictionary.components.quiz.quizTitleText}
         />
@@ -142,7 +142,7 @@ const QuizTypeThree: FC<QuizTypeThreeElement> = ({
               />
               <InputField
                 className="w-full"
-                inputPlaceholder={dictionary.components.quiz.quizTypeThree.choiceDescriptionText}
+                inputText={dictionary.components.quiz.quizTypeThree.choiceDescriptionText}
                 value={option.description}
                 setValue={(value) =>
                   handleChoiceDescriptionChange(index, value)

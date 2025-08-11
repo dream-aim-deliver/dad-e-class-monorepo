@@ -6,7 +6,7 @@ export interface InputFieldProps {
   hasRightContent?: boolean;
   leftContent?: ReactNode;
   rightContent?: ReactNode;
-  inputPlaceholder: string;
+  inputText: string;
   state?:
   | 'placeholder'
   | 'disabled'
@@ -68,7 +68,7 @@ export const InputField: FC<InputFieldProps> = ({
   hasRightContent = false,
   leftContent,
   rightContent,
-  inputPlaceholder,
+  inputText: inputPlaceholder,
   state = 'placeholder',
   value,
   setValue,

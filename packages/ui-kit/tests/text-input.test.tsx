@@ -92,7 +92,7 @@ describe('<TextInput />', () => {
           id: 'test-input',
           value: 'Test Value',
           setValue: mockSetValue,
-          inputPlaceholder: 'Placeholder Text',
+          inputText: 'Placeholder Text',
           state: 'filling',
         }}
       />,

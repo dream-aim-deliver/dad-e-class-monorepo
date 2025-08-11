@@ -15,7 +15,7 @@ describe('<InputField />', () => {
     render(
       <InputField
         id="test-input"
-        inputPlaceholder="Enter text here"
+        inputText="Enter text here"
         value=""
         setValue={mockSetValue}
       />,

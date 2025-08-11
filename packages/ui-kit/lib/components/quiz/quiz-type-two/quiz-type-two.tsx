@@ -165,7 +165,7 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
             className: "w-full",
             value: title,
             setValue: handleTitleChange,
-            inputPlaceholder: dictionary.components.quiz.enterTitleText,
+            inputText: dictionary.components.quiz.enterTitleText,
           }}
           label={dictionary.components.quiz.quizTitleText}
         />
@@ -205,7 +205,7 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
               <div key={groupIdx} className="flex flex-col gap-[18px] w-full">
                 <InputField
                   className="w-full"
-                  inputPlaceholder={dictionary.components.quiz.quizTypeTwo.groupTitleText}
+                  inputText={dictionary.components.quiz.quizTypeTwo.groupTitleText}
                   value={group.groupTitle}
                   setValue={(value) => handleGroupTitleChange(groupIdx, value)}
                 />
@@ -224,7 +224,7 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
                       </div>
                       <InputField
                         className="w-full"
-                        inputPlaceholder={dictionary.components.quiz.quizTypeTwo.radioButtonText}
+                        inputText={dictionary.components.quiz.quizTypeTwo.radioButtonText}
                         value={option.optionText}
                         setValue={(val) => handleOptionTextChange(groupIdx, optionIdx, val)}
                       />
