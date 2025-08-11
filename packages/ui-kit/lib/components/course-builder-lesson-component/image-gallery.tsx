@@ -86,9 +86,9 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.ImageGalleryText}
             icon={<IconImageGallery classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(Number(elementInstance.id))}
-            onDownClick={() => onDownClick(Number(elementInstance.id))}
-            onDeleteClick={() => onDeleteClick(Number(elementInstance.id))}
+            onUpClick={() => onUpClick(elementInstance.id)}
+            onDownClick={() => onDownClick(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >

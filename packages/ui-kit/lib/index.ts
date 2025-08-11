@@ -65,10 +65,14 @@ export { PackageCard } from './components/packages/package-card';
 export { default as CoachCard } from './components/coach/coach-card';
 export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';
 
-export { FormElementRenderer } from './components/pre-assessment/form-renderer';
+export { FormElementRenderer } from './components/lesson/form-renderer';
 export { SubmissionElementsRenderer as SubmissionRenderer } from './components/pre-assessment/submission-renderer';
 export * from './components/pre-assessment/types';
 export * from './components/lesson-components/types';
+export { CourseElementType, CourseElement } from './components/course-builder/types';
+export { LessonElementType, LessonElement } from './components/lesson/types';
+export { lessonElements } from './components/lesson/element-core';
+export * from './components/course-builder-lesson-component/types';
 
 export * from './components/icons';
 export { CourseGeneralInformationView } from './components/course-general-information/course-general-information-view';
