@@ -10,6 +10,7 @@ import { LessonLink } from '../../lib/components/course-outline/lesson-link';
 import { LessonLinkItem } from '../../lib/components/course-outline/lesson-link-item';
 import { useMemo } from 'react';
 import { Milestone } from './course-outline/milestone';
+import { cn } from '../utils/style-utils';
 
 interface CourseLesson {
     id: number;
@@ -39,6 +40,7 @@ interface CourseOutlineAccordionProps extends isLocalAware {
     modules: CourseModule[];
     activeLessonId?: number;
     onLessonClick: (lessonId: number) => void;
+    className?: string;
 }
 
 export function CourseOutlineAccordion({
@@ -46,6 +48,7 @@ export function CourseOutlineAccordion({
     modules,
     activeLessonId,
     onLessonClick,
+    className,
 }: CourseOutlineAccordionProps) {
     const dictionary = getDictionary(locale).components.courseOutline;
 
@@ -74,7 +77,7 @@ export function CourseOutlineAccordion({
 
     return (
         <Accordion
-            className="flex flex-col gap-7 md:w-[343px] w-[280px]"
+            className={cn("flex flex-col gap-7 flex-shrink-0", className)}
             type="single"
             defaultValue={[sortedModules[0].title]}
         >
