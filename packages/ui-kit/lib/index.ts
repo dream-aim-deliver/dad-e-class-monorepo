@@ -66,11 +66,11 @@ export { default as CoachCard } from './components/coach/coach-card';
 export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';
 
 export { FormElementRenderer } from './components/lesson/form-renderer';
-export { SubmissionElementsRenderer as SubmissionRenderer } from './components/pre-assessment/submission-renderer';
+export { SubmissionElementsRenderer as SubmissionRenderer } from './components/lesson/submission-renderer';
 export * from './components/pre-assessment/types';
 export * from './components/lesson-components/types';
-export { CourseElementType, CourseElement } from './components/course-builder/types';
-export { LessonElementType, LessonElement } from './components/lesson/types';
+export { CourseElementType, type CourseElement } from './components/course-builder/types';
+export { LessonElementType, type LessonElement } from './components/lesson/types';
 export { lessonElements } from './components/lesson/element-core';
 export * from './components/course-builder-lesson-component/types';
 
@@ -98,11 +98,9 @@ export { BookSessionWith } from './components/book-session-with-banner';
 export { BuyCoachingSessionBanner } from './components/buy-coaching-session-banner';
 
 export { Breadcrumbs } from './components/breadcrumbs';
-export { SubmissionElementsRenderer } from './components/pre-assessment/submission-renderer';
 export * from './components/dialog';
 export { CreateCourseForm, useCreateCourseForm } from './components/create-course-form';
 export * from './utils/file-utils';
-export { CourseOutlineAccordion } from './components/course-outline-accordion';
-export { CourseOutlineAccordion, CourseModule } from './components/course-outline-accordion';
-export { CourseOutlineAccordion, type CourseModule } from './components/course-outline-accordion';
 export { LessonHeader } from './components/lesson-header';
+
+export { PreAssessmentForm } from './components/pre-assessment/pre-assessment-form';

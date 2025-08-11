@@ -5,13 +5,13 @@ import { useMemo, useState } from 'react';
 import {
     DefaultError,
     DefaultLoading,
+    SubmissionRenderer,
     FormElement,
 } from '@maany_shr/e-class-ui-kit';
 import { transformLessonComponentsWithProgress } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useListAssessmentProgressesPresenter } from '../../../hooks/use-assessment-progresses-presenter';
-import { SubmissionElementsRenderer } from 'packages/ui-kit/lib/components/pre-assessment/submission-renderer';
 
 interface EnrolledCourseCompletedAssessmentProps {
     courseSlug: string;
@@ -69,7 +69,5 @@ export default function EnrolledCourseCompletedAssessment(
         return <DefaultError locale={locale} />;
     }
 
-    return (
-        <SubmissionElementsRenderer elements={formElements} locale={locale} />
-    );
+    return <SubmissionRenderer elements={formElements} locale={locale} />;
 }
