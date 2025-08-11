@@ -23,3 +23,4 @@ export * from './list-assessment-progresses-usecase-models';
 export * from './common';
 export * from './list-user-courses-usecase-models';
 export * from './get-course-structure-usecase-models';
+export * from './list-lesson-components-usecase-models';
