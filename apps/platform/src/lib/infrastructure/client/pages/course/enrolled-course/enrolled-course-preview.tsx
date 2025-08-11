@@ -3,16 +3,66 @@ import {
     CourseOutlineAccordion,
     DefaultError,
     DefaultLoading,
+    Divider,
+    FormElement,
+    FormElementRenderer,
     LessonHeader,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import { Suspense, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { trpc } from '../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
+import { useListLessonComponentsPresenter } from '../../../hooks/use-lesson-components-presenter';
+import { transformLessonComponents } from '../../../utils/transform-lesson-components';
 
 interface EnrolledCoursePreviewProps {
     courseSlug: string;
+}
+
+function CoursePreviewLesson(props: { lessonId: number }) {
+    const locale = useLocale() as TLocale;
+
+    const [componentsResponse] = trpc.listLessonComponents.useSuspenseQuery({
+        lessonId: props.lessonId,
+    });
+    const [componentsViewModel, setLessonComponentsViewModel] = useState<
+        viewModels.TLessonComponentListViewModel | undefined
+    >(undefined);
+    const { presenter } = useListLessonComponentsPresenter(
+        setLessonComponentsViewModel,
+    );
+    presenter.present(componentsResponse, componentsViewModel);
+
+    const formElements: FormElement[] = useMemo(() => {
+        if (!componentsViewModel || componentsViewModel.mode !== 'default') {
+            return [];
+        }
+        const components = componentsViewModel.data.components;
+
+        return transformLessonComponents(components);
+    }, [componentsViewModel]);
+
+    if (!componentsViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (componentsViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
+
+    return (
+        <FormElementRenderer
+            key={`lesson-form-${props.lessonId}`}
+            elements={formElements}
+            locale={locale}
+            isLoading={false}
+            isError={false}
+            onSubmit={function (formValues: Record<string, FormElement>): void {
+                throw new Error('Function not implemented.');
+            }}
+        />
+    );
 }
 
 function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
@@ -107,30 +157,37 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     const currentLesson = getCurrentLesson();
 
     return (
-        <div className="flex flex-row space-x-6">
+        <div className="flex flex-col gap-6 md:flex-row">
             <CourseOutlineAccordion
                 locale={locale}
                 modules={transformedModules}
                 activeLessonId={currentLesson?.id}
                 onLessonClick={handleLessonClick}
+                className="lg:w-[343px] md:w-[280px] w-full"
             />
-            <div className="w-full">
+            <div className="flex-1 min-w-0">
                 {currentModule && currentLesson && (
-                    <LessonHeader
-                        currentModule={currentModule.order}
-                        totalModules={modules.length}
-                        moduleTitle={currentModule.title}
-                        currentLesson={currentLesson.order}
-                        totalLessons={currentModule.lessons.length}
-                        lessonTitle={currentLesson.title}
-                        areNotesAvailable={false}
-                        onClickPrevious={handlePreviousLesson}
-                        onClickNext={handleNextLesson}
-                        onClick={() => {
-                            // This function handles opening notes. As they aren't available in preview mode, it's left empty.
-                        }}
-                        locale={locale}
-                    />
+                    <>
+                        <LessonHeader
+                            currentModule={currentModule.order}
+                            totalModules={modules.length}
+                            moduleTitle={currentModule.title}
+                            currentLesson={currentLesson.order}
+                            totalLessons={currentModule.lessons.length}
+                            lessonTitle={currentLesson.title}
+                            areNotesAvailable={false}
+                            onClickPrevious={handlePreviousLesson}
+                            onClickNext={handleNextLesson}
+                            onClick={() => {
+                                // This function handles opening notes. As they aren't available in preview mode, it's left empty.
+                            }}
+                            locale={locale}
+                        />
+                        <Divider className="my-6" />
+                        <Suspense fallback={<DefaultLoading locale={locale} />}>
+                            <CoursePreviewLesson lessonId={currentLesson.id} />
+                        </Suspense>
+                    </>
                 )}
             </div>
         </div>
