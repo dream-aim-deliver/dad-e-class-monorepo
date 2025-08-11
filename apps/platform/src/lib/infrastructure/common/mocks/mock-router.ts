@@ -32,6 +32,7 @@ import {
     verifyCourseImage,
 } from './procedures/course-image';
 import { getCourseStructure } from './procedures/course-structure';
+import { listLessonComponents } from './procedures/lesson-components';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -63,6 +64,7 @@ export const mockRouter = t.router({
     createCourse,
     getCourseShort,
     getCourseStructure,
+    listLessonComponents,
 });
 
 export type MockRouter = typeof mockRouter;
