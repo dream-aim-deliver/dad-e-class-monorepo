@@ -176,10 +176,10 @@ export function FormComponent({
     };
 
     return (
-        <div className="p-4 border rounded-md bg-base-neutral-800 flex flex-col gap-4 border-base-neutral-700">
-            <div className="flex items-center gap-2 flex-1 text-text-primary py-2 border-b border-divider">
-                <span className="min-w-0"><IconCloudUpload /></span>
-                <p className=" text-sm md:text-md font-important leading-[24px] word-break ">{dictionary.components.courseBuilder.uploadFilesText}</p>
+        <div className="p-4 pt-2 border rounded-md bg-base-neutral-800 flex flex-col gap-4 border-base-neutral-700">
+            <div className="flex items-center gap-2 flex-1 text-text-primary py-4 border-b border-divider">
+                <span className="min-w-0 flex-shrink-0"><IconCloudUpload /></span>
+                <p className="text-md font-important leading-[24px] word-break ">{dictionary.components.courseBuilder.uploadFilesText}</p>
             </div>
 
             <p className="font-important text-text-primary leading-[150%] text-sm md:text-md">
