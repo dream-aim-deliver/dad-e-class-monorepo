@@ -98,6 +98,30 @@ export default function CreateCourse() {
         } as fileMetadata.TFileMetadata;
     };
 
+    // TODO: decompose download logic for reuse
+    const downloadImage = async (id: string) => {
+        if (courseImage?.id !== id) return;
+        try {
+            const response = await fetch(courseImage.url);
+            const blob = await response.blob();
+
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = courseImage.name;
+            link.style.display = 'none';
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error('Download failed:', error);
+        }
+    };
+
     return (
         <div className="flex flex-col gap-4">
             <div className="flex w-full items-center justify-between">
@@ -132,9 +156,7 @@ export default function CreateCourse() {
                         setCourseImage(null);
                     }
                 }}
-                onDownload={(id: string) => {
-                    throw new Error('Function not implemented.');
-                }}
+                onDownload={downloadImage}
                 locale={locale}
             />
         </div>
