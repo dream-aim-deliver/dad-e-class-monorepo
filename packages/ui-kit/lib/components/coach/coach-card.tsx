@@ -65,7 +65,7 @@ const CoachCard: FC<CoachCardProps> = ({
     <div
       role="article"
       className={cn(
-        'flex flex-col bg-card-fill gap-4 text-sm md:text-md border border-card-stroke p-4 rounded-lg text-text-secondary h-[550px]',
+        'flex flex-col bg-card-fill gap-4 text-sm md:text-md border border-card-stroke p-4 rounded-lg text-text-secondary max-w-[406px]',
         className
       )}
     >
@@ -84,14 +84,14 @@ const CoachCard: FC<CoachCardProps> = ({
         </div>
 
         {/* Language & Session Count */}
-        <div className="flex items-start gap-y-2 gap-x-4 w-full flex-wrap">
-          <p className="flex items-center gap-1 lg:truncate">
+        <div className="flex items-start gap-x-4 w-full overflow-hidden">
+          <p className="flex items-center gap-1 truncate whitespace-nowrap" title={cardDetails.languages.join(', ')}>
             <IconLanguage classNames='flex-shrink-0' size="4" />
             <span className="capitalize truncate">{cardDetails.languages.join(', ')}</span>
           </p>
-          <p className="flex items-center gap-1 truncate">
+          <p className="flex items-center gap-1 truncate whitespace-nowrap">
             <IconCoachingSession classNames='flex-shrink-0' size="4" />
-            <span className="capitalize truncate">
+            <span className="capitalize truncate" title={`${cardDetails.sessionCount} ${dictionary.components.coachCard.coachingSession}${cardDetails.sessionCount > 1 ? 's' : ''}`}>
               {cardDetails.sessionCount} {dictionary.components.coachCard.coachingSession}
               {cardDetails.sessionCount > 1 ? 's' : ''}
             </span>
@@ -104,33 +104,57 @@ const CoachCard: FC<CoachCardProps> = ({
         <SkillBadges locale={locale} skills={cardDetails.skills} />
       </div>
 
-
-      <div className="flex flex-col  gap-4">
+      <div className="flex flex-col gap-4 flex-1">
         <div className="h-21 lg:h-24">
-          <p className="leading-[150%] line-clamp-4 ">{cardDetails.description}</p>
+          <p title={cardDetails.description} className="leading-[150%] line-clamp-4 ">{cardDetails.description}</p>
         </div>
 
         {/* Teaches Section */}
-        <div className="flex flex-wrap gap-2 items-center min-h-18">
-          <span className="text-sm">{dictionary.components.coachCard.teaches}:</span>
-          {cardDetails.courses.slice(0, 3).map((course) => (
+        <div className="flex flex-wrap gap-2 items-center max-h-18">
+          {/* Keep label and first course on the same line */}
+          {cardDetails.courses.length > 0 && (
+            <div className="flex items-center gap-2 min-w-0 whitespace-nowrap">
+              <span className="text-sm flex-shrink-0">{dictionary.components.coachCard.teaches}:</span>
+              <Button
+                className={cn('p-0 gap-1 text-sm truncate max-w-full')}
+                size='small'
+                title={cardDetails.courses[0].title}
+                variant="text"
+                hasIconLeft
+                iconLeft={<UserAvatar fullName={cardDetails.courses[0].title} imageUrl={cardDetails.courses[0].image} className="rounded-small" size="small" />}
+                text={cardDetails.courses[0].title}
+                onClick={() => onClickCourse?.(cardDetails.courses[0].slug)}
+              />
+            </div>
+          )}
+
+          {/* Render second course (if any) normally so it can wrap */}
+          {cardDetails.courses.length > 1 && (
             <Button
-              key={course.title}
-              className="p-0 gap-1 text-sm truncate"
+              className={cn('p-0 gap-1 text-sm truncate')}
               size='small'
-              title={course.title}
+              title={cardDetails.courses[1].title}
               variant="text"
               hasIconLeft
-              iconLeft={<UserAvatar fullName={course.title} imageUrl={course.image} className="rounded-small" size="small" />}
-              text={course.title}
-              onClick={() => onClickCourse?.(course.slug)}
+              iconLeft={<UserAvatar fullName={cardDetails.courses[1].title} imageUrl={cardDetails.courses[1].image} className="rounded-small" size="small" />}
+              text={cardDetails.courses[1].title}
+              onClick={() => onClickCourse?.(cardDetails.courses[1].slug)}
             />
-          ))}
+          )}
+
+          {cardDetails.courses.length > 2 && (
+            <span
+              className="text-xs text-text-secondary truncate"
+              title={cardDetails.courses.slice(2).map((c) => c.title).join(', ')}
+            >
+              +{cardDetails.courses.length - 2} {dictionary.components.coachCard.more}
+            </span>
+          )}
         </div>
       </div>
 
       {/* Card Footer */}
-      <div className="flex flex-col gap-2">
+      <div className="mt-auto flex flex-col gap-2">
         <Button
           variant="secondary"
           size="medium"
