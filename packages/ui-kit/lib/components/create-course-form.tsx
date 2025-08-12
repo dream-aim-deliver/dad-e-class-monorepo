@@ -118,6 +118,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                             Slug
                         </label>
                         <InputField
+                            // TODO: Add translations
                             inputText="Slug"
                             type="text"
                             value={courseSlug}
