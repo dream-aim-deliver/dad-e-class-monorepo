@@ -9,12 +9,33 @@ import {
     useCreateCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import { TCourseMetadata } from 'packages/models/src/course';
-import {
-    TFileUploadRequest,
-    TFileMetadata,
-} from 'packages/models/src/file-metadata';
+import { fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
+import { trpc } from '../../trpc/client';
+import CryptoJS from 'crypto-js';
+
+async function calculateMd5(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            if (!event.target || !event.target.result) {
+                reject(new Error('Failed to read file'));
+                return;
+            }
+            const arrayBuffer = event.target.result as ArrayBuffer;
+            const wordArray = CryptoJS.lib.WordArray.create(arrayBuffer);
+            const hash = CryptoJS.MD5(wordArray);
+            resolve(hash.toString(CryptoJS.enc.Hex));
+        };
+
+        reader.onerror = function (error) {
+            reject(error);
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+}
 
 export default function CreateCourse() {
     const locale = useLocale() as TLocale;
@@ -27,6 +48,45 @@ export default function CreateCourse() {
         courseDescription,
         setCourseDescription,
     } = useCreateCourseForm();
+
+    const uploadMutation = trpc.uploadCourseImage.useMutation();
+    const verifyMutation = trpc.verifyCourseImage.useMutation();
+
+    const [courseImage, setCourseImage] =
+        useState<fileMetadata.TFileMetadataImage | null>(null);
+
+    const uploadImage = async (
+        uploadRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => {
+        const uploadResult = await uploadMutation.mutateAsync({
+            name: uploadRequest.name,
+            checksum: await calculateMd5(uploadRequest.file),
+            mimeType: uploadRequest.file.type,
+            size: uploadRequest.file.size,
+        });
+        if (!uploadResult.success) {
+            throw new Error('Failed to upload image');
+        }
+
+        // TODO: perform MinIO upload
+
+        const verifyResult = await verifyMutation.mutateAsync({
+            fileId: uploadResult.data.file.id,
+        });
+        if (!verifyResult.success) {
+            throw new Error('Failed to verify image upload');
+        }
+
+        return {
+            id: uploadResult.data.file.id,
+            name: uploadResult.data.file.name,
+            url: verifyResult.data.downloadUrl,
+            thumbnailUrl: verifyResult.data.downloadUrl,
+            size: uploadResult.data.file.size,
+            category: uploadResult.data.file.category,
+        } as fileMetadata.TFileMetadata;
+    };
 
     return (
         <div className="flex flex-col gap-4">
@@ -44,26 +104,21 @@ export default function CreateCourse() {
             </div>
 
             <CreateCourseForm
-                image={null}
+                image={courseImage}
                 courseTitle={courseTitle}
                 setCourseTitle={setCourseTitle}
                 courseSlug={courseSlug}
                 setCourseSlug={setCourseSlug}
                 courseDescription={courseDescription}
                 setCourseDescription={setCourseDescription}
-                onFileChange={function (
-                    file: TFileUploadRequest,
-                    abortSignal?: AbortSignal,
-                ): Promise<TFileMetadata> {
-                    throw new Error('Function not implemented.');
+                onFileChange={uploadImage}
+                onUploadComplete={(file) => {
+                    setCourseImage(file);
                 }}
-                onUploadComplete={function (file): void {
-                    throw new Error('Function not implemented.');
+                onDelete={(id: string) => {
+                    setCourseImage(null);
                 }}
-                onDelete={function (id: string): void {
-                    throw new Error('Function not implemented.');
-                }}
-                onDownload={function (id: string): void {
+                onDownload={(id: string) => {
                     throw new Error('Function not implemented.');
                 }}
                 locale={locale}
