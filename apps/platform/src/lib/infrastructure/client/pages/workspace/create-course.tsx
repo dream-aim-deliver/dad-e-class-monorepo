@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { trpc } from '../../trpc/client';
 import CryptoJS from 'crypto-js';
 
+// TODO: Move this utility function to a shared utilities file
 async function calculateMd5(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -35,6 +36,44 @@ async function calculateMd5(file: File): Promise<string> {
 
         reader.readAsArrayBuffer(file);
     });
+}
+
+// TODO: Move this upload function to a shared utilities file
+interface UploadToS3Params {
+    file: File;
+    checksum: string;
+    objectName: string;
+    storageUrl: string;
+    formFields: Record<string, string>;
+    abortSignal?: AbortSignal;
+}
+
+async function uploadToS3({
+    file,
+    storageUrl,
+    objectName,
+    checksum,
+    formFields,
+    abortSignal,
+}: UploadToS3Params): Promise<void> {
+    const formData = new FormData();
+    Object.entries(formFields).forEach(([key, value]) => {
+        formData.append(key, value);
+    });
+    formData.append('key', objectName);
+    formData.append('file', file);
+    formData.append('Content-Type', file.type);
+    formData.append('Content-MD5', checksum);
+
+    const response = await fetch(storageUrl, {
+        method: 'POST',
+        body: formData,
+        signal: abortSignal,
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to upload file');
+    }
 }
 
 export default function CreateCourse() {
@@ -63,11 +102,13 @@ export default function CreateCourse() {
             throw new Error('Upload was aborted');
         }
 
+        const checksum = await calculateMd5(uploadRequest.file);
+
         // For mutations, we aren't able to abort them midway.
         // Hence, we check for abort signal before each step.
         const uploadResult = await uploadMutation.mutateAsync({
             name: uploadRequest.name,
-            checksum: await calculateMd5(uploadRequest.file),
+            checksum,
             mimeType: uploadRequest.file.type,
             size: uploadRequest.file.size,
         });
@@ -79,7 +120,15 @@ export default function CreateCourse() {
             throw new Error('Upload was aborted');
         }
 
-        // TODO: perform MinIO upload
+        // Comment out to test without the storage running
+        await uploadToS3({
+            file: uploadRequest.file,
+            checksum,
+            storageUrl: uploadResult.data.storageUrl,
+            objectName: uploadResult.data.file.objectName,
+            formFields: uploadResult.data.formFields,
+            abortSignal,
+        });
 
         const verifyResult = await verifyMutation.mutateAsync({
             fileId: uploadResult.data.file.id,
@@ -132,7 +181,6 @@ export default function CreateCourse() {
                     onClick={() => {
                         // Handle create course logic
                     }}
-                    // TODO: Add translations
                     text="Save"
                     hasIconLeft
                     iconLeft={<IconSave />}

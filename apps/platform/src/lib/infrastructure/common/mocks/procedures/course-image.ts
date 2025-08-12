@@ -3,7 +3,7 @@ import { t } from '../trpc-setup';
 
 const uploadCourseImageMock: useCaseModels.TUploadCourseImageSuccessResponse['data'] =
     {
-        storageUrl: 'https://example.com/image.jpg',
+        storageUrl: 'http://localhost:9000/test',
         formFields: {
             field1: 'value1',
             field2: 'value2',
@@ -13,6 +13,7 @@ const uploadCourseImageMock: useCaseModels.TUploadCourseImageSuccessResponse['da
             name: 'test-image.jpg',
             size: 1500000, // 1.5 MB
             category: 'image',
+            objectName: 'courses/images/image.jpg',
         },
     };
 
@@ -41,19 +42,7 @@ export const uploadCourseImage = t.procedure
             await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
             return {
                 success: true,
-                data: {
-                    storageUrl: 'https://example.com/image.jpg',
-                    formFields: {
-                        field1: 'value1',
-                        field2: 'value2',
-                    },
-                    file: {
-                        id: 'file-id',
-                        name: ctx.input.name,
-                        size: ctx.input.size,
-                        category: 'image',
-                    },
-                },
+                data: uploadCourseImageMock,
             };
         },
     );
