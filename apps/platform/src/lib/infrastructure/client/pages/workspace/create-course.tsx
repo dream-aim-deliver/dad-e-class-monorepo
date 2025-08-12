@@ -91,12 +91,14 @@ export default function CreateCourse() {
     return (
         <div className="flex flex-col gap-4">
             <div className="flex w-full items-center justify-between">
+                {/* TODO: Add translations */}
                 <SectionHeading text="Create Course" />
                 <Button
                     variant="primary"
                     onClick={() => {
                         // Handle create course logic
                     }}
+                    // TODO: Add translations
                     text="Save"
                     hasIconLeft
                     iconLeft={<IconSave />}
@@ -116,7 +118,9 @@ export default function CreateCourse() {
                     setCourseImage(file);
                 }}
                 onDelete={(id: string) => {
-                    setCourseImage(null);
+                    if (courseImage?.id === id) {
+                        setCourseImage(null);
+                    }
                 }}
                 onDownload={(id: string) => {
                     throw new Error('Function not implemented.');
