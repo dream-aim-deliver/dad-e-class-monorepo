@@ -59,6 +59,12 @@ export default function CreateCourse() {
         uploadRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
+        if (abortSignal?.aborted) {
+            throw new Error('Upload was aborted');
+        }
+
+        // For mutations, we aren't able to abort them midway.
+        // Hence, we check for abort signal before each step.
         const uploadResult = await uploadMutation.mutateAsync({
             name: uploadRequest.name,
             checksum: await calculateMd5(uploadRequest.file),
@@ -67,6 +73,10 @@ export default function CreateCourse() {
         });
         if (!uploadResult.success) {
             throw new Error('Failed to upload image');
+        }
+
+        if (abortSignal?.aborted) {
+            throw new Error('Upload was aborted');
         }
 
         // TODO: perform MinIO upload
