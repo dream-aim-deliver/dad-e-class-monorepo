@@ -176,7 +176,7 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                                 props.onQueryChange(value);
                             }}
                             hasLeftContent={true}
-                            inputPlaceholder={dictionary.searchCourse}
+                            inputText={dictionary.searchCourse}
                             leftContent={<IconSearch />}
                         />
                         {props.isLoading && <CourseSearchSkeleton />}
