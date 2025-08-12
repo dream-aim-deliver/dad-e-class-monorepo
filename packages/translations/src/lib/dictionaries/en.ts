@@ -795,6 +795,18 @@ export const EN: TDictionary = {
       workspace: 'Workspace',
       courses: 'Courses',
     },
+    courseIntroInformation: {
+      generalInformation: 'General Information',
+      courseTitle: 'Course Title',
+      briefDescription: 'Brief Description',
+      briefDescriptionPlaceholder: 'Add a brief description of the course...',
+      estimatedDuration: 'Estimated Duration in Hours',
+      requirements: 'Requirements',
+      requirementsDescription: 'What is expected of the students to begin this course? Add the required courses below.',
+      searchCoursesPlaceholder: 'Search Courses',
+      featuredImage: 'Featured Image',
+      removeCourse:'Remove Course'
+    },
   },
   pages: {
     home: Home_EN,

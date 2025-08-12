@@ -108,9 +108,13 @@ function CreateCourseDialog() {
     const pageTranslations = useTranslations('pages.userCourses');
 
     return (
-        <Dialog open={undefined} onOpenChange={() => {
-            // This function is called when the dialog is opened or closed
-        }} defaultOpen={false}>
+        <Dialog
+            open={undefined}
+            onOpenChange={() => {
+                // This function is called when the dialog is opened or closed
+            }}
+            defaultOpen={false}
+        >
             <DialogTrigger asChild>
                 <Button text={pageTranslations('createCourse')} />
             </DialogTrigger>

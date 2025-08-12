@@ -800,6 +800,18 @@ export const DE: TDictionary = {
       workspace: 'Arbeitsbereich',
       courses: 'Kurse',
     },
+    courseIntroInformation: {
+      generalInformation: 'Allgemeine Informationen',
+      courseTitle: 'Kurstitel',
+      briefDescription: 'Kurze Beschreibung',
+      briefDescriptionPlaceholder: 'Fügen Sie eine kurze Beschreibung des Kurses hinzu...',
+      estimatedDuration: 'Geschätzte Dauer in Stunden',
+      requirements: 'Anforderungen',
+      requirementsDescription: 'Was wird von den Studierenden erwartet, um diesen Kurs zu beginnen? Fügen Sie unten die erforderlichen Kurse hinzu.',
+      searchCoursesPlaceholder: 'Kurse suchen',
+      featuredImage: 'Vorschaubild',
+      removeCourse: 'Kurs entfernen'
+    },
   },
   pages: {
     home: Home_DE,

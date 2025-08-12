@@ -18,36 +18,40 @@ interface ClientProvidersProps {
     children: ReactNode;
 }
 
-export default function CMSTRPCClientProviders({ children }: ClientProvidersProps) {
+export default function CMSTRPCClientProviders({
+    children,
+}: ClientProvidersProps) {
     const queryClient = getQueryClient();
     const { data: session } = useSession();
     const locale = useLocale();
 
-    const trpcClient = useMemo(() =>
-        trpc.createClient({
-            links: [
-                httpBatchLink({
-                    transformer: superjson,
-                    url: getTRPCUrl(),
-                    headers() {
-                        const headers: Record<string, string> = {};
+    const trpcClient = useMemo(
+        () =>
+            trpc.createClient({
+                links: [
+                    httpBatchLink({
+                        transformer: superjson,
+                        url: getTRPCUrl(),
+                        headers() {
+                            const headers: Record<string, string> = {};
 
-                        // Add authorization header if session has ID token
-                        if (session?.user?.idToken) {
-                            headers['Authorization'] = `Bearer ${session.user.idToken}`;
-                        }
+                            // Add authorization header if session has ID token
+                            if (session?.user?.idToken) {
+                                headers['Authorization'] =
+                                    `Bearer ${session.user.idToken}`;
+                            }
 
-                        // Add locale header
-                        if (locale) {
-                            headers['Accept-Language'] = locale;
-                        }
+                            // Add locale header
+                            if (locale) {
+                                headers['Accept-Language'] = locale;
+                            }
 
-                        return headers;
-                    },
-                }),
-            ],
-        }),
-        [session?.user?.idToken, locale] // Recreate client when session or locale changes
+                            return headers;
+                        },
+                    }),
+                ],
+            }),
+        [session?.user?.idToken, locale], // Recreate client when session or locale changes
     );
 
     return (

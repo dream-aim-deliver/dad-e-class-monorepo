@@ -786,6 +786,18 @@ export const DictionarySchema = z.object({
       workspace: z.string(),
       courses: z.string(),
     }),
+    courseIntroInformation: z.object({
+      generalInformation: z.string(),
+      courseTitle: z.string(),
+      briefDescription: z.string(),
+      briefDescriptionPlaceholder: z.string(),
+      estimatedDuration: z.string(),
+      requirements: z.string(),
+      requirementsDescription: z.string(),
+      searchCoursesPlaceholder: z.string(),
+      featuredImage: z.string(),
+      removeCourse:z.string()
+    }),
   }),
   pages: z.object({
     sso: z.object({
