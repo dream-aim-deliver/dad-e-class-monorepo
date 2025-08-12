@@ -64,6 +64,8 @@ export type TFileMetadata = z.infer<
     typeof FileMetadataSchema
 >;
 
+export type TFileMetadataImage = z.infer<typeof FileMetadataImageSchema>;
+
 
 export const FileUploadRequestSchema = z.object({
     id: z.string(),
