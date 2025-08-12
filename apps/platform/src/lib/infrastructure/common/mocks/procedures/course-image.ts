@@ -23,9 +23,37 @@ export const uploadCourseImage = t.procedure
             ctx,
         ): Promise<useCaseModels.TUploadCourseImageUseCaseResponse> => {
             console.log(ctx.input);
+            if (
+                ctx.input.mimeType !== 'image/jpeg' &&
+                ctx.input.mimeType !== 'image/png'
+            ) {
+                return {
+                    success: false,
+                    data: {
+                        errorType: 'ValidationError',
+                        message: 'Only JPEG and PNG files are allowed',
+                        operation: 'uploadCourseImage',
+                        context: {},
+                        trace: undefined,
+                    },
+                };
+            }
+            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
             return {
                 success: true,
-                data: uploadCourseImageMock,
+                data: {
+                    storageUrl: 'https://example.com/image.jpg',
+                    formFields: {
+                        field1: 'value1',
+                        field2: 'value2',
+                    },
+                    file: {
+                        id: 'file-id',
+                        name: ctx.input.name,
+                        size: ctx.input.size,
+                        category: 'image',
+                    },
+                },
             };
         },
     );
