@@ -6,6 +6,7 @@ import {
     CreateCourseForm,
     IconSave,
     SectionHeading,
+    useCreateCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { TCourseMetadata } from 'packages/models/src/course';
@@ -13,9 +14,19 @@ import {
     TFileUploadRequest,
     TFileMetadata,
 } from 'packages/models/src/file-metadata';
+import { useState } from 'react';
 
 export default function CreateCourse() {
     const locale = useLocale() as TLocale;
+
+    const {
+        courseTitle,
+        setCourseTitle,
+        courseSlug,
+        setCourseSlug,
+        courseDescription,
+        setCourseDescription,
+    } = useCreateCourseForm();
 
     return (
         <div className="flex flex-col gap-4">
@@ -34,6 +45,12 @@ export default function CreateCourse() {
 
             <CreateCourseForm
                 image={null}
+                courseTitle={courseTitle}
+                setCourseTitle={setCourseTitle}
+                courseSlug={courseSlug}
+                setCourseSlug={setCourseSlug}
+                courseDescription={courseDescription}
+                setCourseDescription={setCourseDescription}
                 onFileChange={function (
                     file: TFileUploadRequest,
                     abortSignal?: AbortSignal,
@@ -41,9 +58,6 @@ export default function CreateCourse() {
                     throw new Error('Function not implemented.');
                 }}
                 onUploadComplete={function (file): void {
-                    throw new Error('Function not implemented.');
-                }}
-                onSave={function (course: TCourseMetadata): void {
                     throw new Error('Function not implemented.');
                 }}
                 onDelete={function (id: string): void {
