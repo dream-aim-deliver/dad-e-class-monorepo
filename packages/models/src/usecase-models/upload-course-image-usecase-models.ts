@@ -22,6 +22,7 @@ export const UploadCourseImageSuccessResponseSchema = BaseSuccessSchemaFactory(z
     name: z.string(),
     size: z.number(),
     category: z.string(),
+    objectName: z.string(),
   })
 }));
 
