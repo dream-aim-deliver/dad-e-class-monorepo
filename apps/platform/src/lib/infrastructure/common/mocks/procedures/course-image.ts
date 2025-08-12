@@ -19,7 +19,9 @@ const uploadCourseImageMock: useCaseModels.TUploadCourseImageSuccessResponse['da
 export const uploadCourseImage = t.procedure
     .input(useCaseModels.UploadCourseImageRequestSchema)
     .mutation(
-        async (ctx): Promise<useCaseModels.TUploadCourseImageUseCaseResponse> => {
+        async (
+            ctx,
+        ): Promise<useCaseModels.TUploadCourseImageUseCaseResponse> => {
             console.log(ctx.input);
             return {
                 success: true,
