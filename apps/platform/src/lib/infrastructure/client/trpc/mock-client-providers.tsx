@@ -16,7 +16,9 @@ interface ClientProvidersProps {
     children: ReactNode;
 }
 
-export default function MockTRPCClientProviders({ children }: ClientProvidersProps) {
+export default function MockTRPCClientProviders({
+    children,
+}: ClientProvidersProps) {
     const queryClient = getQueryClient();
     const [trpcClient] = useState(() =>
         trpc.createClient({
