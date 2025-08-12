@@ -1,0 +1,192 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+import { trpc } from '../../trpc/client';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useListUserCoursesPresenter } from '../../hooks/use-user-courses-presenter';
+import {
+    Button,
+    CardListLayout,
+    CoachCourseCard,
+    CourseCreatorCard,
+    CourseStatus,
+    DefaultError,
+    DefaultLoading,
+    DefaultNotFound,
+    StudentCourseCard,
+} from '@maany_shr/e-class-ui-kit';
+import { useLocale, useTranslations } from 'next-intl';
+import { TLocale } from '@maany_shr/e-class-translations';
+import useClientSidePagination from '../../utils/use-client-side-pagination';
+import { useRouter } from 'next/navigation';
+
+export default function UserCoursesList() {
+    const locale = useLocale() as TLocale;
+    const router = useRouter();
+
+    const paginationTranslations = useTranslations(
+        'components.paginationButton',
+    );
+
+    const [coursesResponse] = trpc.listUserCourses.useSuspenseQuery({});
+    const [coursesViewModel, setCoursesViewModel] = useState<
+        viewModels.TUserCourseListViewModel | undefined
+    >(undefined);
+    const { presenter } = useListUserCoursesPresenter(setCoursesViewModel);
+    presenter.present(coursesResponse, coursesViewModel);
+
+    const courses = useMemo(() => {
+        if (!coursesViewModel || coursesViewModel.mode !== 'default') {
+            return [];
+        }
+        return coursesViewModel.data.courses;
+    }, [coursesViewModel]);
+
+    const {
+        displayedItems: displayedCourses,
+        hasMoreItems: hasMoreCourses,
+        handleLoadMore,
+    } = useClientSidePagination({
+        items: courses,
+    });
+
+    if (!coursesViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (coursesViewModel.mode === 'not-found') {
+        return <DefaultNotFound locale={locale} />;
+    }
+
+    if (coursesViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
+    }
+
+    if (displayedCourses.length === 0) {
+        return <DefaultNotFound locale={locale} />;
+    }
+
+    const onCourseVisit = (courseSlug: string) => {
+        router.push(`/courses/${courseSlug}`);
+    };
+
+    const onCourseEdit = (courseSlug: string) => {
+        router.push(`/edit/course/${courseSlug}`);
+    };
+
+    const onClickUser = (username: string) => {
+        router.push(`/coaches/${username}`);
+    };
+
+    return (
+        <div className="flex flex-col space-y-2 mt-3">
+            <CardListLayout>
+                {displayedCourses.map((course) => {
+                    // Leaving some fields empty as neither response provides them, nor the view uses them
+
+                    const language = {
+                        code: '',
+                        name: course.language,
+                    };
+                    const author = {
+                        name: course.author.name + ' ' + course.author.surname,
+                        image: course.author.avatarUrl ?? '',
+                    };
+                    const duration = {
+                        selfStudy: course.fullDuration,
+                        video: 0,
+                        coaching: 0,
+                    };
+                    const pricing = {
+                        partialPrice: 0,
+                        currency: '',
+                        fullPrice: 0,
+                    };
+
+                    if (course.role === 'coach') {
+                        return (
+                            <CoachCourseCard
+                                key={course.id}
+                                title={course.title}
+                                reviewCount={course.reviewCount}
+                                sessions={course.coachingSessionCount ?? 0}
+                                sales={course.salesCount}
+                                locale={locale}
+                                language={language}
+                                imageUrl={course.imageUrl ?? ''}
+                                author={author}
+                                duration={duration}
+                                rating={course.averageRating}
+                                onManage={() => onCourseVisit(course.slug)}
+                                onClickUser={() =>
+                                    onClickUser(course.author.username)
+                                }
+                            />
+                        );
+                    }
+                    if (course.role === 'student') {
+                        return (
+                            <StudentCourseCard
+                                key={course.id}
+                                locale={locale}
+                                sales={course.salesCount}
+                                reviewCount={course.reviewCount}
+                                title={course.title}
+                                description={course.description}
+                                language={language}
+                                imageUrl={course.imageUrl ?? ''}
+                                author={author}
+                                pricing={pricing}
+                                duration={duration}
+                                rating={course.averageRating}
+                                progress={course.progress}
+                                onBegin={() => onCourseVisit(course.slug)}
+                                onResume={() => onCourseVisit(course.slug)}
+                                onClickUser={() =>
+                                    onClickUser(course.author.username)
+                                }
+                            />
+                        );
+                    }
+                    if (course.role === 'owner' || course.role === 'admin') {
+                        const stateToStatus: Record<string, CourseStatus> = {
+                            draft: 'draft',
+                            review: 'under-review',
+                            live: 'published',
+                        };
+                        return (
+                            <CourseCreatorCard
+                                key={course.id}
+                                rating={course.averageRating}
+                                reviewCount={course.reviewCount}
+                                sessions={course.coachingSessionCount ?? 0}
+                                sales={course.salesCount}
+                                status={stateToStatus[course.state] || 'draft'}
+                                locale={locale}
+                                title={course.title}
+                                description={course.description}
+                                imageUrl={course.imageUrl ?? ''}
+                                author={author}
+                                language={language}
+                                duration={duration}
+                                pricing={pricing}
+                                onClickUser={() =>
+                                    onClickUser(course.author.username)
+                                }
+                                onManage={() => onCourseVisit(course.slug)}
+                                onEdit={() => onCourseEdit(course.slug)}
+                            />
+                        );
+                    }
+                })}
+            </CardListLayout>
+            {hasMoreCourses && (
+                <Button
+                    variant="text"
+                    text={paginationTranslations('loadMore')}
+                    onClick={handleLoadMore}
+                />
+            )}
+        </div>
+    );
+}

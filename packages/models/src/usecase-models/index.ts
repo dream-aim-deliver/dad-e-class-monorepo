@@ -21,3 +21,5 @@ export * from './get-course-introduction-usecase-models';
 export * from './get-course-outline-usecase-models';
 export * from './list-assessment-progresses-usecase-models';
 export * from './common';
+export * from './list-user-courses-usecase-models';
+export * from './search-courses-usecase-models';
