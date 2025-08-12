@@ -48,20 +48,7 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
 
     async getSession(): Promise<TGetSessionDTO> {
         const auth = this.nextAuth.auth
-        //const session = await auth();
-        const session = {
-    user: {
-        id: "usr_admin_001",
-        email: "admin@platform.com",
-        name: "System Administrator",
-        image: "https://api.dicebear.com/7.x/avataaars/svg?seed=admin",
-        accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfYWRtaW5fMDAxIiwiaWF0IjoxNzIzMDQwNDAwLCJleHAiOjE3MjMxMjY4MDB9.Kd8fJ2mN9xL4pQ7sR3tY6vB1nM5cA8eF9gH0iJ2kL3m",
-        idToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfYWRtaW5fMDAxIiwiZW1haWwiOiJhZG1pbkBwbGF0Zm9ybS5jb20iLCJuYW1lIjoiU3lzdGVtIEFkbWluaXN0cmF0b3IifQ.X7yZ2aB4cD5eF6gH1iJ9kL0mN3oP8qR7sT4uV5wY8zA",
-        roles: ["admin", "coach"]
-    },
-    platform: "platform_main_001",
-    expires: "2025-08-08T14:30:00.000Z"
-};
+        const session = await auth();
 
         if (session) {
             const isValidSession = authModels.SessionSchema.safeParse(session);
