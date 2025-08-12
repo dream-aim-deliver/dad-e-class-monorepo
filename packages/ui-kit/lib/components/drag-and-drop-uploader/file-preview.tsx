@@ -120,7 +120,7 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
     };
 
     return (
-        <div className={cn('flex items-center justify-between gap-2 p-2 rounded-medium', 'bg-base-neutral-900', props.className)}>
+        <div className={cn('flex items-center justify-between gap-2 py-2 rounded-medium', 'bg-base-neutral-900', props.className)}>
             <div className="flex items-center gap-2">
                 <div className="w-12 h-12 flex items-center justify-center rounded-medium bg-base-neutral-800 border border-base-neutral-700">
                     {getFilePreviewElement()}

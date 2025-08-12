@@ -9,10 +9,8 @@ import { serialize } from './rich-text-element/serializer';
 import { Descendant } from 'slate';
 import { z } from 'zod';
 
-type TFileMetadataImage = z.infer<typeof fileMetadata.FileMetadataImageSchema>;
-
 interface CreateCourseFormProps extends isLocalAware {
-    image: TFileMetadataImage | null;
+    image: fileMetadata.TFileMetadataImage | null;
     courseTitle: string;
     setCourseTitle: (title: string) => void;
     courseSlug: string;
@@ -23,7 +21,7 @@ interface CreateCourseFormProps extends isLocalAware {
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata>;
-    onUploadComplete: (file: TFileMetadataImage) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadataImage) => void;
     onDelete: (id: string) => void;
     onDownload: (id: string) => void;
 }
@@ -166,6 +164,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                             onUploadComplete={handleOnUploadComplete}
                             onDelete={onDelete}
                             onDownload={onDownload}
+                            isDeletionAllowed
                         />
                     </div>
                 </div>
