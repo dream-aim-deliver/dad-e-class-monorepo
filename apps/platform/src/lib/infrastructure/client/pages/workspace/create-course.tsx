@@ -14,6 +14,13 @@ import { useState } from 'react';
 import { trpc } from '../../trpc/client';
 import CryptoJS from 'crypto-js';
 
+class AbortError extends Error {
+    constructor(message: string = 'The operation was aborted') {
+        super(message);
+        this.name = 'AbortError';
+    }
+}
+
 // TODO: Move this utility function to a shared utilities file
 async function calculateMd5(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -73,7 +80,7 @@ async function uploadToS3({
     });
 
     if (!response.ok) {
-        throw new Error('Failed to upload file');
+        throw new Error('Failed to upload file to storage');
     }
 }
 
@@ -130,7 +137,7 @@ export default function CreateCourse() {
         abortSignal?: AbortSignal,
     ) => {
         if (abortSignal?.aborted) {
-            throw new Error('Upload was aborted');
+            throw new AbortError();
         }
 
         const checksum = await calculateMd5(uploadRequest.file);
@@ -144,11 +151,11 @@ export default function CreateCourse() {
             size: uploadRequest.file.size,
         });
         if (!uploadResult.success) {
-            throw new Error('Failed to upload image');
+            throw new Error('Failed to get upload credentials');
         }
 
         if (abortSignal?.aborted) {
-            throw new Error('Upload was aborted');
+            throw new AbortError();
         }
 
         // Comment out to test without the storage running
@@ -176,6 +183,23 @@ export default function CreateCourse() {
             size: uploadResult.data.file.size,
             category: uploadResult.data.file.category,
         } as fileMetadata.TFileMetadata;
+    };
+
+    const onFileChange = async (
+        uploadRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ): Promise<fileMetadata.TFileMetadata> => {
+        setError(undefined);
+        try {
+            return await uploadImage(uploadRequest, abortSignal);
+        } catch (error) {
+            if (error instanceof AbortError) {
+                console.warn('File upload was aborted');
+            }
+            console.error('File upload failed:', error);
+            setError('Failed to upload image. Please try again.');
+            throw error;
+        }
     };
 
     // TODO: decompose download logic for reuse
@@ -224,7 +248,7 @@ export default function CreateCourse() {
                 setCourseSlug={setCourseSlug}
                 courseDescription={courseDescription}
                 setCourseDescription={setCourseDescription}
-                onFileChange={uploadImage}
+                onFileChange={onFileChange}
                 onUploadComplete={(file) => {
                     setCourseImage(file);
                 }}
