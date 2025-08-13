@@ -117,7 +117,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
         useState<boolean>(false);
 
     const renderCourseIcon = () => {
-        const imageUrlString = duplicationCourse.imageUrl ?? '';
+        const imageUrlString = duplicationCourse?.imageUrl ?? '';
 
         if (!imageUrlString || hasDuplicationThumbnailError) {
             return <IconCourse className="w-6 h-6" />;
@@ -127,7 +127,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
             <img
                 className="w-6 h-6 rounded-md"
                 src={imageUrlString}
-                alt={duplicationCourse.title}
+                alt={duplicationCourse?.title}
                 onError={() => setHasDuplicationThumbnailError(true)}
             />
         );
@@ -191,7 +191,9 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                                     .briefDescriptionPlaceholder
                             }
                             initialValue={courseDescription}
-                            onLoseFocus={(value) => {}}
+                            onLoseFocus={(value) => {
+                                // Don't perform any action on lose focus
+                            }}
                             onChange={(value) => setCourseDescription(value)}
                             onDeserializationError={(msg, err) =>
                                 console.error(msg, err)
