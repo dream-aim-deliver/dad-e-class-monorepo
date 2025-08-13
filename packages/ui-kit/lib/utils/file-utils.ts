@@ -24,7 +24,7 @@ export async function calculateMd5(file: File): Promise<string> {
 }
 
 export class AbortError extends Error {
-    constructor(message: string = 'The operation was aborted') {
+    constructor(message = 'The operation was aborted') {
         super(message);
         this.name = 'AbortError';
     }
