@@ -6,7 +6,7 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 
 export const CreateCourseRequestSchema = z.object({
-  duplicateCourseid: z.number().optional(),
+  duplicateCourseSlug: z.string().optional(),
   title: z.string(),
   slug: z.string(),
   description: z.string(),
