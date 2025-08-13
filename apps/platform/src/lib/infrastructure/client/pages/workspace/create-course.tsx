@@ -6,6 +6,8 @@ import {
     Button,
     calculateMd5,
     CreateCourseForm,
+    DefaultError,
+    DefaultLoading,
     downloadFile,
     IconSave,
     SectionHeading,
@@ -14,10 +16,11 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { trpc } from '../../trpc/client';
 import { useCreateCoursePresenter } from '../../hooks/use-create-course-presenter';
 import { useRouter } from 'next/navigation';
+import { useGetCourseShortPresenter } from '../../hooks/use-course-short-presenter';
 
 const useCreateCourse = () => {
     const router = useRouter();
@@ -189,7 +192,14 @@ const useCourseImageUpload = () => {
     };
 };
 
-export default function CreateCourse() {
+interface CreateCourseContentProps {
+    duplicationCourse?: {
+        title: string;
+        imageUrl?: string;
+    };
+}
+
+function CreateCourseContent(props: CreateCourseContentProps) {
     const locale = useLocale() as TLocale;
 
     const {
@@ -285,7 +295,73 @@ export default function CreateCourse() {
                 locale={locale}
                 errorMessage={errorMessage}
                 hasSuccess={isSuccess}
+                duplicationCourse={props.duplicationCourse}
             />
         </div>
     );
+}
+
+function CreateCourseWithDuplication({
+    duplicationCourseSlug,
+}: {
+    duplicationCourseSlug: string;
+}) {
+    const locale = useLocale() as TLocale;
+
+    const [duplicationCourseResponse] = trpc.getCourseShort.useSuspenseQuery({
+        courseSlug: duplicationCourseSlug,
+    });
+    const [duplicationCourseViewModel, setDuplicationCourseViewModel] =
+        useState<viewModels.TCourseShortViewModel | undefined>(undefined);
+    const { presenter: duplicationCoursePresenter } =
+        useGetCourseShortPresenter(setDuplicationCourseViewModel);
+    duplicationCoursePresenter.present(
+        duplicationCourseResponse,
+        duplicationCourseViewModel,
+    );
+
+    if (!duplicationCourseViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (duplicationCourseViewModel.mode === 'not-found') {
+        // TODO: Translate error message
+        return (
+            <DefaultError
+                description="Could not find the course to duplicate"
+                locale={locale}
+            />
+        );
+    }
+
+    if (duplicationCourseViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
+    }
+
+    return (
+        <CreateCourseContent
+            duplicationCourse={{
+                title: duplicationCourseViewModel.data.title,
+                imageUrl: duplicationCourseViewModel.data.imageUrl ?? undefined,
+            }}
+        />
+    );
+}
+
+export default function CreateCourse({
+    duplicationCourseSlug,
+}: {
+    duplicationCourseSlug?: string;
+}) {
+    const locale = useLocale() as TLocale;
+    if (duplicationCourseSlug) {
+        return (
+            <Suspense fallback={<DefaultLoading locale={locale} />}>
+                <CreateCourseWithDuplication
+                    duplicationCourseSlug={duplicationCourseSlug}
+                />
+            </Suspense>
+        );
+    }
+    return <CreateCourseContent />;
 }
