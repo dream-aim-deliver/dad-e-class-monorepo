@@ -128,10 +128,11 @@ export default function CreateCourse() {
         } catch (error) {
             if (error instanceof AbortError) {
                 console.warn('File upload was aborted');
+            } else {
+                console.error('File upload failed:', error);
+                // TODO: Translate error message
+                setError('Failed to upload image. Please try again.');
             }
-            console.error('File upload failed:', error);
-            // TODO: Translate error message
-            setError('Failed to upload image. Please try again.');
             throw error;
         }
     };
