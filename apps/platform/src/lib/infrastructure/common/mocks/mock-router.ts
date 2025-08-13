@@ -25,6 +25,7 @@ import { getCourseOutline } from './procedures/course-outline';
 import { listAssessmentProgresses } from './procedures/assessment-progresses';
 import { listUserCourses } from './procedures/user-courses';
 import { searchCourses } from './procedures/courses';
+import { createCourse } from './procedures/create-course';
 import {
     uploadCourseImage,
     verifyCourseImage,
@@ -57,6 +58,7 @@ export const mockRouter = t.router({
     searchCourses,
     uploadCourseImage,
     verifyCourseImage,
+    createCourse,
 });
 
 export type MockRouter = typeof mockRouter;

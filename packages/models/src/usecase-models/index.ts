@@ -24,5 +24,5 @@ export * from './common';
 export * from './list-user-courses-usecase-models';
 export * from './search-courses-usecase-models';
 export * from './upload-course-image-usecase-models';
-
 export * from './verify-course-image-usecase-models';
+export * from './create-course-usecase-models';
