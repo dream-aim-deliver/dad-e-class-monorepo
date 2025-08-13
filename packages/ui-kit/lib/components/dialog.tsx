@@ -15,7 +15,7 @@ interface DialogContextType {
 
 interface DialogProps {
     children: React.ReactNode;
-    open: boolean;
+    open?: boolean;
     onOpenChange: (open: boolean) => void;
     defaultOpen: boolean;
 }
@@ -46,7 +46,7 @@ interface DialogCloseProps {
 }
 const DialogContext = createContext<DialogContextType | null>(null);
 
-const useDialog = () => {
+export const useDialog = () => {
     const context = useContext(DialogContext);
     if (!context) {
         throw new Error(
@@ -122,20 +122,20 @@ export const DialogContent: React.FC<DialogContentProps> = ({
     closeOnEscape,
 }) => {
     const { isOpen, setIsOpen } = useDialog();
-    const contentRef = useRef(null);
+    const contentRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        const handleEscape = (event) => {
+        const handleEscape = (event: KeyboardEvent) => {
             if (closeOnEscape && event.key === 'Escape') {
                 setIsOpen(false);
             }
         };
 
-        const handleClickOutside = (event) => {
+        const handleClickOutside = (event: MouseEvent) => {
             if (
                 closeOnOverlayClick &&
                 contentRef.current &&
-                !contentRef.current.contains(event.target)
+                !contentRef.current.contains(event.target as Node)
             ) {
                 setIsOpen(false);
             }
@@ -170,7 +170,7 @@ export const DialogContent: React.FC<DialogContentProps> = ({
                 aria-modal="true"
             >
                 {showCloseButton && (
-                    <div className="absolute right-3 top-0">
+                    <div className="absolute right-3 top-3">
                         <IconButton
                             aria-label="Close dialog"
                             styles="text"

@@ -5,14 +5,11 @@ import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
-import { auth, viewModels } from '@maany_shr/e-class-models';
-import { NextAuthGateway } from '@maany_shr/e-class-auth';
-import nextAuth from '../../../lib/infrastructure/server/config/auth/next-auth.config';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     getQueryClient,
     trpc,
 } from '../../../lib/infrastructure/server/config/trpc/server';
-import { env } from '../../../lib/infrastructure/server/utils/env';
 import {
     languageCodeToLocale,
     localeToLanguageCode,
@@ -20,6 +17,7 @@ import {
 import Layout from '../../../lib/infrastructure/client/pages/layout';
 import { createGetLanguagesPresenter } from '../../../lib/infrastructure/server/presenter/get-languages-presenter';
 import MockTRPCClientProviders from '../../../lib/infrastructure/client/trpc/mock-client-providers';
+import getSession from '../../../lib/infrastructure/server/config/auth/get-session';
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -95,14 +93,7 @@ export default async function RootLayout({
     }
 
     const messages = await getMessages({ locale });
-
-    // Perform authentication
-    const authGateway = new NextAuthGateway(nextAuth);
-    const sessionDTO = await authGateway.getSession();
-    let session: auth.TSession | null = null;
-    if (sessionDTO.success) {
-        session = sessionDTO.data;
-    }
+    const session = await getSession();
 
     return (
         <html lang={locale}>

@@ -3,13 +3,14 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import CMSExample from '../../client/pages/cms-example';
 
-
 export default async function CMSVersionRSC() {
     await Promise.all([
         prefetch(trpc.version.queryOptions()),
-        prefetch(trpc.getSkills.queryOptions({
-            userId: '1'
-        })),
+        prefetch(
+            trpc.getSkills.queryOptions({
+                userId: '1',
+            }),
+        ),
     ]);
     return (
         <HydrateClient>

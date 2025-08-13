@@ -23,6 +23,14 @@ import { listIncludedCoachingSessions } from './procedures/included-coaching-ses
 import { getCourseIntroduction } from './procedures/course-introduction';
 import { getCourseOutline } from './procedures/course-outline';
 import { listAssessmentProgresses } from './procedures/assessment-progresses';
+import { listUserCourses } from './procedures/user-courses';
+import { searchCourses } from './procedures/courses';
+import { createCourse } from './procedures/create-course';
+import { getCourseShort } from './procedures/course-short';
+import {
+    uploadCourseImage,
+    verifyCourseImage,
+} from './procedures/course-image';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -47,6 +55,12 @@ export const mockRouter = t.router({
     getCourseIntroduction,
     getCourseOutline,
     listAssessmentProgresses,
+    listUserCourses,
+    searchCourses,
+    uploadCourseImage,
+    verifyCourseImage,
+    createCourse,
+    getCourseShort,
 });
 
 export type MockRouter = typeof mockRouter;

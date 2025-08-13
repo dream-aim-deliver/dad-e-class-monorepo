@@ -49,6 +49,7 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
     async getSession(): Promise<TGetSessionDTO> {
         const auth = this.nextAuth.auth
         const session = await auth();
+
         if (session) {
             const isValidSession = authModels.SessionSchema.safeParse(session);
             if (isValidSession.success) {

@@ -30,7 +30,10 @@ async function createServerHeaders(): Promise<Record<string, string>> {
             headers['Authorization'] = `Bearer ${session.user.idToken}`;
         }
     } catch (error) {
-        console.warn('Failed to get NextAuth session for server-side TRPC:', error);
+        console.warn(
+            'Failed to get NextAuth session for server-side TRPC:',
+            error,
+        );
     }
 
     // Add locale header
