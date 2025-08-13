@@ -22,3 +22,4 @@ export * from './course-outline-view-model';
 export * from './assessment-progress-list-view-model';
 export * from './user-course-list-view-model';
 export * from './course-search-view-model';
+export * from './create-course-view-model';
