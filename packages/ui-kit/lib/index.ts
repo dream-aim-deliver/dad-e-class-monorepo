@@ -97,3 +97,4 @@ export { Breadcrumbs } from './components/breadcrumbs';
 export { SubmissionElementsRenderer } from './components/pre-assessment/submission-renderer';
 export * from './components/dialog';
 export { CreateCourseForm, useCreateCourseForm } from './components/create-course-form';
+export * from './utils/file-utils';

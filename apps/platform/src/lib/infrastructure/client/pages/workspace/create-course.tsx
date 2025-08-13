@@ -2,87 +2,20 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
+    AbortError,
     Button,
+    calculateMd5,
     CreateCourseForm,
+    downloadFile,
     IconSave,
     SectionHeading,
+    uploadToS3,
     useCreateCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { trpc } from '../../trpc/client';
-import CryptoJS from 'crypto-js';
-
-class AbortError extends Error {
-    constructor(message: string = 'The operation was aborted') {
-        super(message);
-        this.name = 'AbortError';
-    }
-}
-
-// TODO: Move this utility function to a shared utilities file
-async function calculateMd5(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-
-        reader.onload = function (event) {
-            if (!event.target || !event.target.result) {
-                reject(new Error('Failed to read file'));
-                return;
-            }
-            const arrayBuffer = event.target.result as ArrayBuffer;
-            const wordArray = CryptoJS.lib.WordArray.create(arrayBuffer);
-            const hash = CryptoJS.MD5(wordArray);
-            resolve(CryptoJS.enc.Base64.stringify(hash));
-        };
-
-        reader.onerror = function (error) {
-            reject(error);
-        };
-
-        reader.readAsArrayBuffer(file);
-    });
-}
-
-// TODO: Move this upload function to a shared utilities file
-interface UploadToS3Params {
-    file: File;
-    checksum: string;
-    objectName: string;
-    storageUrl: string;
-    formFields: Record<string, string>;
-    abortSignal?: AbortSignal;
-}
-
-async function uploadToS3({
-    file,
-    storageUrl,
-    objectName,
-    checksum,
-    formFields,
-    abortSignal,
-}: UploadToS3Params): Promise<void> {
-    const formData = new FormData();
-    Object.entries(formFields).forEach(([key, value]) => {
-        formData.append(key, value);
-    });
-    formData.append('key', objectName);
-    formData.append('Content-Type', file.type);
-    formData.append('Content-MD5', checksum);
-
-    formData.append('file', file);
-
-    const response = await fetch(storageUrl, {
-        method: 'POST',
-        body: formData,
-        signal: abortSignal,
-    });
-
-    if (!response.ok) {
-        throw new Error('Failed to upload file to storage');
-    }
-}
 
 export default function CreateCourse() {
     const locale = useLocale() as TLocale;
@@ -197,33 +130,15 @@ export default function CreateCourse() {
                 console.warn('File upload was aborted');
             }
             console.error('File upload failed:', error);
+            // TODO: Translate error message
             setError('Failed to upload image. Please try again.');
             throw error;
         }
     };
 
-    // TODO: decompose download logic for reuse
     const downloadImage = async (id: string) => {
         if (courseImage?.id !== id) return;
-        try {
-            const response = await fetch(courseImage.url);
-            const blob = await response.blob();
-
-            const blobUrl = window.URL.createObjectURL(blob);
-
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            link.download = courseImage.name;
-            link.style.display = 'none';
-
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            window.URL.revokeObjectURL(blobUrl);
-        } catch (error) {
-            console.error('Download failed:', error);
-        }
+        downloadFile(courseImage.url, courseImage.name);
     };
 
     return (
