@@ -19,23 +19,8 @@ import { trpc } from '../../trpc/client';
 import { useCreateCoursePresenter } from '../../hooks/use-create-course-presenter';
 import { useRouter } from 'next/navigation';
 
-export default function CreateCourse() {
-    const locale = useLocale() as TLocale;
+const useCreateCourse = () => {
     const router = useRouter();
-
-    const {
-        courseTitle,
-        setCourseTitle,
-        courseSlug,
-        setCourseSlug,
-        courseDescription,
-        setCourseDescription,
-        isDescriptionValid,
-        serializeDescription,
-    } = useCreateCourseForm();
-
-    const uploadMutation = trpc.uploadCourseImage.useMutation();
-    const verifyMutation = trpc.verifyCourseImage.useMutation();
     const createMutation = trpc.createCourse.useMutation();
 
     const [createCourseViewModel, setCreateCourseViewModel] = useState<
@@ -45,6 +30,7 @@ export default function CreateCourse() {
         setCreateCourseViewModel,
     );
 
+    // Navigation effect after successful creation
     useEffect(() => {
         if (createMutation.isSuccess) {
             createCoursePresenter.present(
@@ -54,6 +40,7 @@ export default function CreateCourse() {
         }
     }, [createMutation.isSuccess]);
 
+    // Redirect to courses page after success
     useEffect(() => {
         if (createCourseViewModel?.mode === 'default') {
             setTimeout(() => {
@@ -62,10 +49,10 @@ export default function CreateCourse() {
         }
     }, [createCourseViewModel]);
 
-    const hasViewModelError =
-        createCourseViewModel && createCourseViewModel.mode !== 'default';
-
     const getSubmitErrorMessage = () => {
+        const hasViewModelError =
+            createCourseViewModel && createCourseViewModel.mode !== 'default';
+
         if (createCourseViewModel?.mode === 'invalid') {
             // TODO: Decide if we can pass the error message directly
             return createCourseViewModel.data.message;
@@ -77,42 +64,33 @@ export default function CreateCourse() {
         return undefined;
     };
 
+    const createCourse = async (courseData: {
+        title: string;
+        slug: string;
+        description: string;
+        imageFileId: string;
+    }) => {
+        createMutation.mutate(courseData);
+    };
+
+    return {
+        createCourse,
+        isCreating: createMutation.isPending,
+        isSuccess: createMutation.isSuccess,
+        getSubmitErrorMessage,
+    };
+};
+
+// Custom hook for image upload logic
+const useCourseImageUpload = () => {
+    const uploadMutation = trpc.uploadCourseImage.useMutation();
+    const verifyMutation = trpc.verifyCourseImage.useMutation();
+
     const [courseImage, setCourseImage] =
         useState<fileMetadata.TFileMetadataImage | null>(null);
-
-    const [error, setError] = useState<string | undefined>(undefined);
-
-    const validateCourse = (): string | undefined => {
-        // TODO: Translate error messages
-        if (!courseTitle || !courseSlug) {
-            return 'Please fill in title and slug';
-        }
-        if (!courseDescription || !isDescriptionValid()) {
-            return 'Please provide a course description';
-        }
-        // TODO: Add more client validation logic as needed
-        if (!courseImage) {
-            return 'Please upload a course image';
-        }
-        return undefined;
-    };
-
-    const createCourse = async () => {
-        setError(undefined);
-
-        const validationError = validateCourse();
-        if (validationError) {
-            setError(validationError);
-            return;
-        }
-
-        createMutation.mutate({
-            title: courseTitle,
-            slug: courseSlug,
-            description: serializeDescription(),
-            imageFileId: courseImage!.id,
-        });
-    };
+    const [uploadError, setUploadError] = useState<string | undefined>(
+        undefined,
+    );
 
     const uploadImage = async (
         uploadRequest: fileMetadata.TFileUploadRequest,
@@ -167,11 +145,11 @@ export default function CreateCourse() {
         } as fileMetadata.TFileMetadata;
     };
 
-    const onFileChange = async (
+    const handleFileChange = async (
         uploadRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ): Promise<fileMetadata.TFileMetadata> => {
-        setError(undefined);
+        setUploadError(undefined);
         try {
             return await uploadImage(uploadRequest, abortSignal);
         } catch (error) {
@@ -180,16 +158,102 @@ export default function CreateCourse() {
             } else {
                 console.error('File upload failed:', error);
                 // TODO: Translate error message
-                setError('Failed to upload image. Please try again.');
+                setUploadError('Failed to upload image. Please try again.');
             }
             throw error;
         }
     };
 
-    const downloadImage = async (id: string) => {
+    const handleUploadComplete = (file: fileMetadata.TFileMetadataImage) => {
+        setCourseImage(file);
+    };
+
+    const handleDelete = (id: string) => {
+        if (courseImage?.id === id) {
+            setCourseImage(null);
+        }
+    };
+
+    const handleDownload = async (id: string) => {
         if (courseImage?.id !== id) return;
         downloadFile(courseImage.url, courseImage.name);
     };
+
+    return {
+        courseImage,
+        uploadError,
+        handleFileChange,
+        handleUploadComplete,
+        handleDelete,
+        handleDownload,
+    };
+};
+
+export default function CreateCourse() {
+    const locale = useLocale() as TLocale;
+
+    const {
+        courseTitle,
+        setCourseTitle,
+        courseSlug,
+        setCourseSlug,
+        courseDescription,
+        setCourseDescription,
+        isDescriptionValid,
+        serializeDescription,
+    } = useCreateCourseForm();
+
+    const { createCourse, isCreating, isSuccess, getSubmitErrorMessage } =
+        useCreateCourse();
+
+    const {
+        courseImage,
+        uploadError,
+        handleFileChange,
+        handleUploadComplete,
+        handleDelete,
+        handleDownload,
+    } = useCourseImageUpload();
+
+    const [validationError, setValidationError] = useState<string | undefined>(
+        undefined,
+    );
+
+    const validateCourse = (): string | undefined => {
+        // TODO: Translate error messages
+        if (!courseTitle || !courseSlug) {
+            return 'Please fill in title and slug';
+        }
+        if (!courseDescription || !isDescriptionValid()) {
+            return 'Please provide a course description';
+        }
+        // TODO: Add more client validation logic as needed
+        if (!courseImage) {
+            return 'Please upload a course image';
+        }
+        return undefined;
+    };
+
+    const handleCreateCourse = async () => {
+        setValidationError(undefined);
+
+        const validationError = validateCourse();
+        if (validationError) {
+            setValidationError(validationError);
+            return;
+        }
+
+        await createCourse({
+            title: courseTitle,
+            slug: courseSlug,
+            description: serializeDescription(),
+            imageFileId: courseImage!.id,
+        });
+    };
+
+    const isSubmitDisabled = isSuccess || isCreating;
+    const errorMessage =
+        validationError ?? uploadError ?? getSubmitErrorMessage();
 
     return (
         <div className="flex flex-col gap-4">
@@ -198,10 +262,11 @@ export default function CreateCourse() {
                 <SectionHeading text="Create Course" />
                 <Button
                     variant="primary"
-                    onClick={createCourse}
-                    text="Save"
+                    onClick={handleCreateCourse}
+                    text="Submit"
                     hasIconLeft
                     iconLeft={<IconSave />}
+                    disabled={isSubmitDisabled}
                 />
             </div>
 
@@ -213,19 +278,13 @@ export default function CreateCourse() {
                 setCourseSlug={setCourseSlug}
                 courseDescription={courseDescription}
                 setCourseDescription={setCourseDescription}
-                onFileChange={onFileChange}
-                onUploadComplete={(file) => {
-                    setCourseImage(file);
-                }}
-                onDelete={(id: string) => {
-                    if (courseImage?.id === id) {
-                        setCourseImage(null);
-                    }
-                }}
-                onDownload={downloadImage}
+                onFileChange={handleFileChange}
+                onUploadComplete={handleUploadComplete}
+                onDelete={handleDelete}
+                onDownload={handleDownload}
                 locale={locale}
-                errorMessage={error ?? getSubmitErrorMessage()}
-                hasSuccess={createMutation.isSuccess}
+                errorMessage={errorMessage}
+                hasSuccess={isSuccess}
             />
         </div>
     );
