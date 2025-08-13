@@ -17,9 +17,11 @@ import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { useEffect, useState } from 'react';
 import { trpc } from '../../trpc/client';
 import { useCreateCoursePresenter } from '../../hooks/use-create-course-presenter';
+import { useRouter } from 'next/navigation';
 
 export default function CreateCourse() {
     const locale = useLocale() as TLocale;
+    const router = useRouter();
 
     const {
         courseTitle,
@@ -54,8 +56,9 @@ export default function CreateCourse() {
 
     useEffect(() => {
         if (createCourseViewModel?.mode === 'default') {
-            alert('Course created successfully!');
-            // TODO: Handle successful course creation
+            setTimeout(() => {
+                router.push('/workspace/courses');
+            }, 1000);
         }
     }, [createCourseViewModel]);
 
@@ -222,6 +225,7 @@ export default function CreateCourse() {
                 onDownload={downloadImage}
                 locale={locale}
                 errorMessage={error ?? getSubmitErrorMessage()}
+                hasSuccess={createMutation.isSuccess}
             />
         </div>
     );

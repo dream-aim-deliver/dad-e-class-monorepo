@@ -25,6 +25,7 @@ interface CreateCourseFormProps extends isLocalAware {
     onDelete: (id: string) => void;
     onDownload: (id: string) => void;
     errorMessage?: string;
+    hasSuccess?: boolean;
 }
 
 export function useCreateCourseForm() {
@@ -84,6 +85,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
         courseDescription,
         setCourseDescription,
         errorMessage,
+        hasSuccess,
     } = props;
 
     const handleOnFilesChange = async (
@@ -179,6 +181,8 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                 </div>
             </div>
             {errorMessage && <Banner style="error" description={errorMessage} />}
+            {/* TODO: add translations */}
+            {hasSuccess && <Banner style="success" description="Course created successfully! Redirecting..." />}
         </div>
     );
 }
