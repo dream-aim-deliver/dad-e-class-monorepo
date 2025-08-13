@@ -13,9 +13,10 @@ import {
     useCreateCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import { fileMetadata } from '@maany_shr/e-class-models';
-import { useState } from 'react';
+import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
+import { useEffect, useState } from 'react';
 import { trpc } from '../../trpc/client';
+import { useCreateCoursePresenter } from '../../hooks/use-create-course-presenter';
 
 export default function CreateCourse() {
     const locale = useLocale() as TLocale;
@@ -28,10 +29,50 @@ export default function CreateCourse() {
         courseDescription,
         setCourseDescription,
         isDescriptionValid,
+        serializeDescription,
     } = useCreateCourseForm();
 
     const uploadMutation = trpc.uploadCourseImage.useMutation();
     const verifyMutation = trpc.verifyCourseImage.useMutation();
+    const createMutation = trpc.createCourse.useMutation();
+
+    const [createCourseViewModel, setCreateCourseViewModel] = useState<
+        viewModels.TCreateCourseViewModel | undefined
+    >(undefined);
+    const { presenter: createCoursePresenter } = useCreateCoursePresenter(
+        setCreateCourseViewModel,
+    );
+
+    useEffect(() => {
+        if (createMutation.isSuccess) {
+            createCoursePresenter.present(
+                createMutation.data,
+                createCourseViewModel,
+            );
+        }
+    }, [createMutation.isSuccess]);
+
+    useEffect(() => {
+        if (createCourseViewModel?.mode === 'default') {
+            alert('Course created successfully!');
+            // TODO: Handle successful course creation
+        }
+    }, [createCourseViewModel]);
+
+    const hasViewModelError =
+        createCourseViewModel && createCourseViewModel.mode !== 'default';
+
+    const getSubmitErrorMessage = () => {
+        if (createCourseViewModel?.mode === 'invalid') {
+            // TODO: Decide if we can pass the error message directly
+            return createCourseViewModel.data.message;
+        }
+        if (createMutation.error || hasViewModelError) {
+            // TODO: Translate error message
+            return 'Course creation failed. Please try again.';
+        }
+        return undefined;
+    };
 
     const [courseImage, setCourseImage] =
         useState<fileMetadata.TFileMetadataImage | null>(null);
@@ -62,7 +103,12 @@ export default function CreateCourse() {
             return;
         }
 
-        // TODO: Handle create course logic
+        createMutation.mutate({
+            title: courseTitle,
+            slug: courseSlug,
+            description: serializeDescription(),
+            imageFileId: courseImage!.id,
+        });
     };
 
     const uploadImage = async (
@@ -175,7 +221,7 @@ export default function CreateCourse() {
                 }}
                 onDownload={downloadImage}
                 locale={locale}
-                errorMessage={error}
+                errorMessage={error ?? getSubmitErrorMessage()}
             />
         </div>
     );
