@@ -87,6 +87,7 @@ export default function CreateCourse() {
         setCourseSlug,
         courseDescription,
         setCourseDescription,
+        isDescriptionValid,
     } = useCreateCourseForm();
 
     const uploadMutation = trpc.uploadCourseImage.useMutation();
@@ -95,8 +96,33 @@ export default function CreateCourse() {
     const [courseImage, setCourseImage] =
         useState<fileMetadata.TFileMetadataImage | null>(null);
 
+    const [error, setError] = useState<string | undefined>(undefined);
+
+    const validateCourse = (): string | undefined => {
+        // TODO: Translate error messages
+        if (!courseTitle || !courseSlug) {
+            return 'Please fill in title and slug';
+        }
+        if (!courseDescription || !isDescriptionValid()) {
+            return 'Please provide a course description';
+        }
+        // TODO: Add more client validation logic as needed
+        if (!courseImage) {
+            return 'Please upload a course image';
+        }
+        return undefined;
+    };
+
     const createCourse = async () => {
-        // Handle create course logic
+        setError(undefined);
+
+        const validationError = validateCourse();
+        if (validationError) {
+            setError(validationError);
+            return;
+        }
+
+        // TODO: Handle create course logic
     };
 
     const uploadImage = async (
@@ -183,9 +209,7 @@ export default function CreateCourse() {
                 <SectionHeading text="Create Course" />
                 <Button
                     variant="primary"
-                    onClick={() => {
-                        // Handle create course logic
-                    }}
+                    onClick={createCourse}
                     text="Save"
                     hasIconLeft
                     iconLeft={<IconSave />}
@@ -211,6 +235,7 @@ export default function CreateCourse() {
                 }}
                 onDownload={downloadImage}
                 locale={locale}
+                errorMessage={error}
             />
         </div>
     );

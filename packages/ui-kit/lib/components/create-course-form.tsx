@@ -6,8 +6,8 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { InputField } from './input-field';
 import RichTextEditor from './rich-text-element/editor';
 import { serialize } from './rich-text-element/serializer';
-import { Descendant } from 'slate';
-import { z } from 'zod';
+import { Descendant, Node } from 'slate';
+import Banner from './banner';
 
 interface CreateCourseFormProps extends isLocalAware {
     image: fileMetadata.TFileMetadataImage | null;
@@ -24,6 +24,7 @@ interface CreateCourseFormProps extends isLocalAware {
     onUploadComplete: (file: fileMetadata.TFileMetadataImage) => void;
     onDelete: (id: string) => void;
     onDownload: (id: string) => void;
+    errorMessage?: string;
 }
 
 export function useCreateCourseForm() {
@@ -52,6 +53,11 @@ export function useCreateCourseForm() {
         }
     };
 
+    const isDescriptionValid = () => {
+        const content = courseDescription.map(n => Node.string(n)).join('\n').trim();
+        return content.length > 0;
+    }
+
     return {
         courseTitle,
         setCourseTitle: handleCourseTitleChange,
@@ -61,6 +67,7 @@ export function useCreateCourseForm() {
         setCourseDescription,
         serializeDescription,
         hasUserEditedSlug,
+        isDescriptionValid,
     };
 }
 
@@ -76,6 +83,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
         setCourseSlug,
         courseDescription,
         setCourseDescription,
+        errorMessage,
     } = props;
 
     const handleOnFilesChange = async (
@@ -170,6 +178,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                     </div>
                 </div>
             </div>
+            {errorMessage && <Banner style="error" description={errorMessage} />}
         </div>
     );
 }
