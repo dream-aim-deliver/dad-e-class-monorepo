@@ -5,7 +5,13 @@ import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
 import CreateCourse from '../../../client/pages/workspace/create-course';
 
-export default async function CreateCourseServerComponent() {
+interface CreateCourseServerComponentProps {
+    duplicationCourseSlug?: string;
+}
+
+export default async function CreateCourseServerComponent(
+    props: CreateCourseServerComponentProps,
+) {
     const session = await getSession();
 
     if (!session || !session.user) {
@@ -17,13 +23,16 @@ export default async function CreateCourseServerComponent() {
         throw new Error();
     }
 
+    // TODO: possible prefetch duplication course
     await Promise.all([prefetch(trpc.listUserCourses.queryOptions({}))]);
 
     return (
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <CreateCourse />
+                    <CreateCourse
+                        duplicationCourseSlug={props.duplicationCourseSlug}
+                    />
                 </Suspense>
             </HydrateClient>
         </>
