@@ -26,3 +26,4 @@ export * from './search-courses-usecase-models';
 export * from './upload-course-image-usecase-models';
 export * from './verify-course-image-usecase-models';
 export * from './create-course-usecase-models';
+export * from './get-course-short-usecase-models';
