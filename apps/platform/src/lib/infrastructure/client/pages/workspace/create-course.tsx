@@ -27,7 +27,7 @@ async function calculateMd5(file: File): Promise<string> {
             const arrayBuffer = event.target.result as ArrayBuffer;
             const wordArray = CryptoJS.lib.WordArray.create(arrayBuffer);
             const hash = CryptoJS.MD5(wordArray);
-            resolve(hash.toString(CryptoJS.enc.Hex));
+            resolve(CryptoJS.enc.Base64.stringify(hash));
         };
 
         reader.onerror = function (error) {
@@ -61,9 +61,10 @@ async function uploadToS3({
         formData.append(key, value);
     });
     formData.append('key', objectName);
-    formData.append('file', file);
     formData.append('Content-Type', file.type);
     formData.append('Content-MD5', checksum);
+
+    formData.append('file', file);
 
     const response = await fetch(storageUrl, {
         method: 'POST',
@@ -93,6 +94,10 @@ export default function CreateCourse() {
 
     const [courseImage, setCourseImage] =
         useState<fileMetadata.TFileMetadataImage | null>(null);
+
+    const createCourse = async () => {
+        // Handle create course logic
+    };
 
     const uploadImage = async (
         uploadRequest: fileMetadata.TFileUploadRequest,
