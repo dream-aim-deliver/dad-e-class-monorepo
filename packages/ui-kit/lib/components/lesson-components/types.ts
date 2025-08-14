@@ -65,18 +65,12 @@ export interface RichTextElement extends BaseFormElement {
  * };
  * ```
  */
-interface TextInputWithHelperOnly extends BaseFormElement {
+
+export interface TextInputElement extends BaseFormElement {
     type: FormElementType.TextInput;
     helperText: string;
+    content?: string;
 }
-
-interface TextInputWithBoth extends BaseFormElement {
-    type: FormElementType.TextInput;
-    helperText: string;
-    content: string;
-}
-
-export type TextInputElement = TextInputWithHelperOnly | TextInputWithBoth;
 
 /**
  * Option interface for choice elements.
