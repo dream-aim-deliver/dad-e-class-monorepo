@@ -1,6 +1,11 @@
-import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
+import {
+    fileMetadata,
+    useCaseModels,
+    viewModels,
+} from '@maany_shr/e-class-models';
 import {
     CourseElement,
+    DownloadFilesFormComponent,
     HeadingFormComponent,
     ImageFormComponent,
     ImageGalleryFormComponent,
@@ -9,13 +14,17 @@ import {
     RichTextFormComponent,
     SingleChoiceFormComponent,
     TextInputFormComponent,
+    UploadFilesElement,
+    UploadFilesFormComponent,
     VideoFormComponent,
 } from '@maany_shr/e-class-ui-kit';
 import { FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
-import { JSX, useMemo, useRef } from 'react';
+import { JSX, useEffect, useMemo, useRef, useState } from 'react';
 import { getLessonComponentsMap } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { Download } from 'lucide-react';
+import { on } from 'events';
 
 interface LessonFormProps {
     data: viewModels.TLessonComponentListSuccess;
@@ -155,6 +164,95 @@ function renderImageCarouselComponent({
     );
 }
 
+function renderDownloadFilesComponent({
+    formElement,
+    key,
+    locale,
+}: ComponentRendererProps) {
+    return (
+        <DownloadFilesFormComponent
+            key={key}
+            elementInstance={formElement as CourseElement}
+            locale={locale}
+            onDownload={(id) => {
+                // TODO: Implement download logic
+                // Integrate from create course
+            }}
+        />
+    );
+}
+
+function renderUploadFilesComponent({
+    formElement,
+    key,
+    locale,
+    elementProgress,
+}: ComponentRendererProps) {
+    const element = formElement as UploadFilesElement;
+
+    const [files, setFiles] = useState<fileMetadata.TFileMetadata[]>(
+        element.files || [],
+    );
+
+    useEffect(() => {
+        elementProgress.current.set(element.id, {
+            ...element,
+            files: files,
+        });
+    }, [files]);
+
+    const onFilesUpload = async (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ): Promise<fileMetadata.TFileMetadata | null> => {
+        // TODO: Implement real file upload logic
+
+        // Simulate file upload logic
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const mockFile: fileMetadata.TFileMetadata = {
+            id: Math.random().toString(36).substring(2, 15),
+            name: fileRequest.file.name,
+            size: fileRequest.file.size,
+            url: 'https://example.com/mock-file-url',
+            status: 'available',
+            category: 'generic',
+        };
+        return mockFile;
+    };
+
+    return (
+        <UploadFilesFormComponent
+            key={key}
+            elementInstance={element}
+            locale={locale}
+            files={files}
+            onFilesUpload={onFilesUpload}
+            onFileDelete={(id) => {
+                setFiles((prev) => prev.filter((file) => file.id !== id));
+            }}
+            onFileDownload={(id) => {
+                // TODO: Implement download logic
+            }}
+            onUploadComplete={(fileMetadata) => {
+                setFiles((prev) => {
+                    // Check if the file already exists to avoid duplicates
+                    if (prev.some((file) => file.id === fileMetadata.id)) {
+                        return prev;
+                    }
+                    // Add the new file to the list
+                    return [...prev, fileMetadata];
+                });
+            }}
+            onStudentCommentChange={(comment) => {
+                elementProgress.current.set(element.id, {
+                    ...element,
+                    userComment: comment,
+                });
+            }}
+        />
+    );
+}
+
 const typeToRendererMap: Record<
     string,
     (props: ComponentRendererProps) => JSX.Element | null
@@ -168,6 +266,8 @@ const typeToRendererMap: Record<
     video: renderVideoComponent,
     image: renderImageComponent,
     imageCarousel: renderImageCarouselComponent,
+    downloadFiles: renderDownloadFilesComponent,
+    uploadFiles: renderUploadFilesComponent,
 };
 
 export default function LessonForm({ data }: LessonFormProps) {

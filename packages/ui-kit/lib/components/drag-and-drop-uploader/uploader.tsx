@@ -47,6 +47,7 @@ interface CommonUploaderProps extends isLocalAware {
     abortSignal?: AbortSignal
   ) => Promise<fileMetadata.TFileMetadata>;
   onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
+  isDeletionAllowed?: boolean;
 }
 
 /**
@@ -81,6 +82,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
     onFilesChange,
     onUploadComplete,
     locale,
+    isDeletionAllowed,
   } = props;
 
   const [uploadingFiles, setUploadingFiles] = useState<fileMetadata.TFileMetadata[]>([]);
@@ -245,6 +247,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
                 onDownload={onDownload}
                 onCancel={handleCancelUpload}
                 locale={locale}
+                isDeletionAllowed={isDeletionAllowed}
               />
             </div>
           ))}
