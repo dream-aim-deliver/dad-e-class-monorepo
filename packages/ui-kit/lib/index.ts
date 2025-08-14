@@ -106,3 +106,5 @@ export { LessonHeader } from './components/lesson-header';
 export { PreAssessmentForm } from './components/pre-assessment/pre-assessment-form';
 
 export { FormComponent as RichTextFormComponent } from './components/lesson-components/rich-text';
+export { FormComponent as HeadingFormComponent } from './components/lesson-components/heading-lesson';
+export { FormComponent as TextInputFormComponent } from './components/lesson-components/text-input';
