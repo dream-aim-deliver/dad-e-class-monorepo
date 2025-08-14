@@ -207,7 +207,7 @@ const transformers = {
 export function getLessonComponentsMap(
     components: useCaseModels.TLessonComponent[],
 ): Map<string, LessonElement> {
-    const map = new Map<string, LessonElement>;
+    const map = new Map<string, LessonElement>();
 
     components.forEach((component) => {
         const transformer = transformers[component.type];
@@ -218,7 +218,7 @@ export function getLessonComponentsMap(
             // console.error(`Unknown component type: ${component.type}`);
         }
     });
-    
+
     return map;
 }
 
@@ -302,7 +302,7 @@ const progressAppliers: Record<
 } as const;
 
 export function applyProgressToElements(
-    elements: FormElement[],
+    elements: LessonElement[],
     answers: TAnswer[],
 ): void {
     const answersMap = new Map(
@@ -324,7 +324,7 @@ export function applyProgressToElements(
 export function transformLessonComponentsWithProgress(
     components: useCaseModels.TLessonComponent[],
     answers: TAnswer[],
-): FormElement[] {
+): LessonElement[] {
     const elements = transformLessonComponents(components);
     applyProgressToElements(elements, answers);
     return elements;
