@@ -204,10 +204,28 @@ const transformers = {
     uploadFiles: transformUploadFiles,
 } as const;
 
+export function getLessonComponentsMap(
+    components: useCaseModels.TLessonComponent[],
+): Map<string, LessonElement> {
+    const map = new Map<string, LessonElement>;
+
+    components.forEach((component) => {
+        const transformer = transformers[component.type];
+        if (transformer) {
+            const element = transformer(component as any);
+            map.set(element.id, element);
+        } else {
+            // console.error(`Unknown component type: ${component.type}`);
+        }
+    });
+    
+    return map;
+}
+
 export function transformLessonComponents(
     components: useCaseModels.TLessonComponent[],
-): FormElement[] {
-    const elements: FormElement[] = [];
+): LessonElement[] {
+    const elements: LessonElement[] = [];
 
     for (const component of components) {
         const transformer = transformers[component.type];
