@@ -192,6 +192,7 @@ export function FormComponent({
                 onDelete={handleFileDelete}
                 onDownload={handleFileDownload}
                 locale={locale}
+                isDeletionAllowed={true} // Allow deletion of uploaded files
             />
             <div className="w-full flex flex-col gap-2">
                 <p className="text-sm md:text-md text-text-secondary flex gap-1 items-center">
