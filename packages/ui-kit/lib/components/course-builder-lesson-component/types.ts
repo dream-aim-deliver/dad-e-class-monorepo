@@ -2,14 +2,14 @@ import { isLocalAware } from "@maany_shr/e-class-translations";
 import { CourseElementType } from "../course-builder/types";
 import { assignment, fileMetadata, shared } from "@maany_shr/e-class-models";
 
-interface BaseFormElement {
+interface BaseCourseFormElement {
     type: CourseElementType;
     order: number;
     id: string;
     required?: boolean;
 }
 
-export interface CoachingSessionTypes extends isLocalAware, BaseFormElement {
+export interface CoachingSessionTypes extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.CoachingSession;
     coachingSessionTypes: {
         id: number;
@@ -24,7 +24,7 @@ export interface CoachingSessionTypes extends isLocalAware, BaseFormElement {
     }) => void;
 };
 
-export interface CoachingSessionStudentViewTypes extends isLocalAware, BaseFormElement {
+export interface CoachingSessionStudentViewTypes extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.CoachingSession;
     children: React.ReactNode;
     studentHadSessionBeforeInCourse: boolean;
@@ -39,7 +39,7 @@ export interface FileProps {
     onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
 }
 
-export interface QuizElementBase extends isLocalAware, BaseFormElement {
+export interface QuizElementBase extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.Quiz;
     title: string;
     isUploading?: boolean;
@@ -260,20 +260,16 @@ export interface QuizTypeFourStudentViewElement extends QuizElementBase {
 export type DownloadFilesElement =  {
     type: CourseElementType.DownloadFiles;
     files: fileMetadata.TFileMetadata[] | null;
-} & BaseFormElement;
+} & BaseCourseFormElement;
 
-export interface UploadFilesDesigner extends BaseFormElement {
+export interface UploadFilesElement extends BaseCourseFormElement {
     type: CourseElementType.UploadFiles;
-     description: string;
-};
-export interface UploadFilesForm extends BaseFormElement {
-    type: CourseElementType.UploadFiles;
+    description?: string;
     files: fileMetadata.TFileMetadata[] | null;
-    comment: string;
+    userComment?: string;
 }
-export type UploadsFilesElement = UploadFilesDesigner | UploadFilesForm;
 
-export interface CreateAssignmentBuilderViewTypes extends isLocalAware, BaseFormElement {
+export interface CreateAssignmentBuilderViewTypes extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.Assignment;
     assignmentData: assignment.TAssignmentBaseWithId;
     onChange: (updatedData: {
@@ -295,7 +291,7 @@ export interface CreateAssignmentBuilderViewTypes extends isLocalAware, BaseForm
     onClickAddLink: () => void;
 };
 
-export interface AssignmentBuilderViewTypes extends isLocalAware, BaseFormElement {
+export interface AssignmentBuilderViewTypes extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.Assignment;
     assignmentData: assignment.TAssignmentBaseWithId;
     onFileDownload: (id: string) => void;
@@ -318,18 +314,18 @@ export type QuizElement =
 
 
 type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
-export interface ImageElement extends BaseFormElement {
+export interface ImageElement extends BaseCourseFormElement {
     type: CourseElementType.ImageFile;
     file: ImageFileMetadata | null;
 }
 
 type VideoFileMetadata = fileMetadata.TFileMetadata & { category: 'video' };
-export interface VideoElement extends BaseFormElement {
+export interface VideoElement extends BaseCourseFormElement {
     type: CourseElementType.VideoFile;
     file: VideoFileMetadata | null;
 };
 
-export interface ImageGallery extends BaseFormElement {
+export interface ImageGallery extends BaseCourseFormElement {
     type: CourseElementType.ImageGallery;
     images: ImageFileMetadata[] | null;
 }

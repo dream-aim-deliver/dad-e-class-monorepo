@@ -69,6 +69,7 @@ export { FormElementRenderer } from './components/lesson/form-renderer';
 export { SubmissionElementsRenderer as SubmissionRenderer } from './components/lesson/submission-renderer';
 export * from './components/pre-assessment/types';
 export * from './components/lesson-components/types';
+export * from './components/course-builder-lesson-component/types';
 export { CourseElementType, type CourseElement } from './components/course-builder/types';
 export { LessonElementType, type LessonElement } from './components/lesson/types';
 export { lessonElements } from './components/lesson/element-core';
@@ -117,3 +118,6 @@ export { FormComponent as OneOutOfThreeFormComponent } from './components/lesson
 export { FormComponent as VideoFormComponent } from './components/course-builder-lesson-component/video';
 export { FormComponent as ImageFormComponent } from './components/course-builder-lesson-component/image';
 export { FormComponent as ImageGalleryFormComponent } from './components/course-builder-lesson-component/image-gallery';
+
+export { FormComponent as DownloadFilesFormComponent } from './components/course-builder-lesson-component/download-files-lesson';
+export { FormComponent as UploadFilesFormComponent } from './components/course-builder-lesson-component/upload-files-lesson';

@@ -4,18 +4,14 @@ import {
     DefaultError,
     DefaultLoading,
     Divider,
-    FormElement,
-    FormElementRenderer,
-    LessonElement,
     LessonHeader,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { trpc } from '../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
 import { useListLessonComponentsPresenter } from '../../../hooks/use-lesson-components-presenter';
-import { transformLessonComponents } from '../../../utils/transform-lesson-components';
 import LessonForm from './lesson-form';
 
 interface EnrolledCoursePreviewProps {
