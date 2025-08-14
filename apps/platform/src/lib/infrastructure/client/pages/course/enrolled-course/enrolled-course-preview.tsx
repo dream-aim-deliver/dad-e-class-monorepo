@@ -6,6 +6,7 @@ import {
     Divider,
     FormElement,
     FormElementRenderer,
+    LessonElement,
     LessonHeader,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
@@ -15,6 +16,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
 import { useListLessonComponentsPresenter } from '../../../hooks/use-lesson-components-presenter';
 import { transformLessonComponents } from '../../../utils/transform-lesson-components';
+import LessonForm from './lesson-form';
 
 interface EnrolledCoursePreviewProps {
     courseSlug: string;
@@ -34,15 +36,6 @@ function CoursePreviewLesson(props: { lessonId: number }) {
     );
     presenter.present(componentsResponse, componentsViewModel);
 
-    const formElements: FormElement[] = useMemo(() => {
-        if (!componentsViewModel || componentsViewModel.mode !== 'default') {
-            return [];
-        }
-        const components = componentsViewModel.data.components;
-
-        return transformLessonComponents(components);
-    }, [componentsViewModel]);
-
     if (!componentsViewModel) {
         return <DefaultLoading locale={locale} />;
     }
@@ -52,16 +45,7 @@ function CoursePreviewLesson(props: { lessonId: number }) {
     }
 
     return (
-        <FormElementRenderer
-            key={`lesson-form-${props.lessonId}`}
-            elements={formElements}
-            locale={locale}
-            isLoading={false}
-            isError={false}
-            onSubmit={function (formValues: Record<string, FormElement>): void {
-                throw new Error('Function not implemented.');
-            }}
-        />
+        <LessonForm data={componentsViewModel.data} />
     );
 }
 
