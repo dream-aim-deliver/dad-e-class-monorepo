@@ -1,32 +1,41 @@
-import { useEffect, useRef, useState } from "react";
-import { Badge } from "../badge";
-import { Button } from "../button";
-import { IconClock } from "../icons/icon-clock";
+import { useEffect, useRef, useState } from 'react';
+import { Badge } from '../badge';
+import { Button } from '../button';
+import { IconClock } from '../icons/icon-clock';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { TEClassPackage } from "packages/models/src/eclass-package";
+import { TEClassPackage } from 'packages/models/src/eclass-package';
 
-export interface PackageCardProps extends TEClassPackage , isLocalAware {
+export interface PackageCardProps extends TEClassPackage, isLocalAware {
     courseCount: number;
-    onClickPurchase?: () => void;
-    onClickDetails?: () => void;
-};
+    onClickPurchase: () => void;
+    onClickDetails: () => void;
+}
 
 /**
- * A card component for displaying package details, such as title, description, duration, course count, and pricing information.
- * Includes an image, badges, and buttons for user actions like purchasing or viewing more details.
+ * A visual card component for displaying e-class package details.
  *
- * @param imageUrl The URL of the package image. Displays a placeholder if omitted or invalid.
- * @param title The title of the package content.
- * @param description A brief description of the package content.
- * @param duration The duration of the package in minutes. Automatically formatted to "hours and minutes" if greater than 59 minutes.
- * @param courseCount The number of courses included in the package.
- * @param pricing An object representing pricing details for the package.
- * @param pricing.currency The currency used for pricing (e.g., "USD", "EUR").
- * @param pricing.fullPrice The full price of the package before discounts.
- * @param pricing.partialPrice The discounted price of the package.
- * @param locale The locale for translation and localization purposes (e.g., "en" for English, "de" for German).
- * @param onClickPurchase An optional callback function to handle the "Purchase Packages" button click.
- * @param onClickDetails An optional callback function to handle the "Details" button click.
+ * Displays an image (or placeholder), title, description, duration,
+ * number of courses, and pricing information.
+ * Includes badges and action buttons for purchasing and viewing details.
+ *
+ * Props are a combination of:
+ * - `TEClassPackage` (package details such as `imageUrl`, `title`, `description`, `duration`, `pricing`)
+ * - `isLocalAware` (locale handling)
+ * - Additional UI-related props defined in `PackageCardProps`
+ *
+ * @prop {number} courseCount
+ *   The number of courses included in the package. Displayed as a badge if greater than zero.
+ * @prop {() => void} onClickPurchase
+ *   Callback for when the "Purchase Package" button is clicked.
+ * @prop {() => void} onClickDetails
+ *   Callback for when the "Details" button is clicked.
+ *
+ * @remarks
+ * - If `imageUrl` is missing or the image fails to load, a placeholder text is shown instead.
+ * - Duration is formatted into hours and minutes if over 59 minutes (e.g., `1h 30m`).
+ * - The title truncates after two lines, with a tooltip on hover showing the full title.
+ * - Pricing is displayed with full price and a “save” amount.
+ * - All button texts, labels, and placeholders are localized using `getDictionary(locale)`.
  *
  * @example
  * <PackageCard
@@ -37,26 +46,21 @@ export interface PackageCardProps extends TEClassPackage , isLocalAware {
  *   courseCount={5}
  *   pricing={{ currency: 'USD', fullPrice: 299, partialPrice: 249 }}
  *   locale="en"
- *   onClickPurchase={() => console.log('Purchase button clicked')}
- *   onClickDetails={() => console.log('Details button clicked')}
+ *   onClickPurchase={() => console.log('Purchase clicked')}
+ *   onClickDetails={() => console.log('Details clicked')}
  * />
- *
- * @remarks
- * - If `imageUrl` is invalid or omitted, a placeholder image will be displayed.
- * - The `duration` is automatically formatted to "hours and minutes" using a helper function.
- * - Conditional rendering ensures that missing or invalid props do not break the component's layout.
  */
 
 export const PackageCard = ({
     imageUrl,
     title,
-    description ,
+    description,
     duration,
-    courseCount ,
-    pricing ,
-    locale ,
-    onClickPurchase ,
-    onClickDetails 
+    courseCount,
+    pricing,
+    locale,
+    onClickPurchase,
+    onClickDetails,
 }: PackageCardProps) => {
     const dictionary = getDictionary(locale);
     const titleRef = useRef<HTMLHeadingElement>(null);
@@ -67,13 +71,12 @@ export const PackageCard = ({
     const formatDuration = (duration?: number): string => {
         if (!duration || duration <= 0) return '0m';
         if (duration > 59) {
-          const hours = Math.floor(duration / 60);
-          const minutes = duration % 60;
-          return `${hours}h ${minutes}m`;
+            const hours = Math.floor(duration / 60);
+            const minutes = duration % 60;
+            return `${hours}h ${minutes}m`;
         }
         return `${duration}m`;
     };
-    
 
     // Handle image error and set error state
     const handleImageError = () => {
@@ -82,44 +85,48 @@ export const PackageCard = ({
 
     const shouldShowPlaceholder = !imageUrl || isImageError;
 
-    // Check for truncation of title on resize 
+    // Check for truncation of title on resize
     useEffect(() => {
         const checkTruncation = () => {
-          if (titleRef.current) {
-            const { scrollHeight, clientHeight } = titleRef.current;
-            setIsTruncated(scrollHeight > clientHeight);
-          }
+            if (titleRef.current) {
+                const { scrollHeight, clientHeight } = titleRef.current;
+                setIsTruncated(scrollHeight > clientHeight);
+            }
         };
-    
+
         checkTruncation();
-        window.addEventListener("resize", checkTruncation);
-        return () => window.removeEventListener("resize", checkTruncation);
-      }, [title]);
+        window.addEventListener('resize', checkTruncation);
+        return () => window.removeEventListener('resize', checkTruncation);
+    }, [title]);
+
     return (
-        <div className="flex flex-col bg-card-fill border-2 border-card-stroke rounded-medium w-auto">
+        <div className="flex flex-col rounded-medium border border-card-stroke bg-card-fill w-full max-w-[24rem]">
+            {/* Image Section */}
             {shouldShowPlaceholder ? (
-                <div className="rounded-t-lg w-full h-[262px] lg:max-h-[262px] bg-base-neutral-700 flex items-center justify-center">
+                <div className="rounded-t-lg w-full h-[12rem] bg-base-neutral-700 flex items-center justify-center">
                     <span className="text-text-secondary text-md">
                         {dictionary.components.generalCard.placeHolderText}
                     </span>
                 </div>
-                ) : (
+            ) : (
                 <div className="relative w-full rounded-t-medium overflow-hidden">
                     <img
                         loading="lazy"
                         src={imageUrl}
                         alt={title}
                         onError={handleImageError}
-                        className="object-cover w-full max-h-[262px] rounded-t-medium border-bottom-0"
+                        className="object-cover w-full h-[12rem] rounded-t-medium border-bottom-0"
                     />
                 </div>
             )}
+
+            {/* Card Information Section */}
             <div className="flex flex-col gap-4 p-6">
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                     <div className="group relative">
-                        <h4 
+                        <h4
                             ref={titleRef}
-                            className="text-text-primary text-xl lg:text-3xl font-bold leading-[120%] line-clamp-2"
+                            className="text-text-primary lg:text-2xl line-clamp-2"
                         >
                             {title}
                         </h4>
@@ -130,43 +137,66 @@ export const PackageCard = ({
                             </div>
                         )}
                     </div>
+
+                    {/* Duration & Courses Badges */}
                     <div className="flex gap-2">
-                        {duration > 0 &&
+                        {duration > 0 && (
                             <Badge
                                 hasIconLeft
-                                iconLeft={<IconClock size='5'/>}
+                                iconLeft={<IconClock size="5" />}
                                 key={duration}
                                 text={formatDuration(duration)}
                                 className="h-6 py-1 text-base max-w-full"
                             />
-                        }
-                        {courseCount > 0 && 
+                        )}
+                        {courseCount > 0 && (
                             <Badge
                                 key={courseCount}
-                                text={courseCount + ' ' + dictionary.components.packages.coursesText}
+                                text={
+                                    courseCount +
+                                    ' ' +
+                                    dictionary.components.packages.coursesText
+                                }
                                 className="h-6 py-1 text-base max-w-full"
                             />
-                        }
+                        )}
                     </div>
                 </div>
-                <p className="text-text-secondary text-md lg:text-xl leading-[150%]">
-                    {description}
-                </p>
-                <div className="flex flex-col pt-4 gap-4">
+
+                {/* Description */}
+                <p className="text-text-secondary lg:text-lg">{description}</p>
+
+                <div className="flex flex-col md:pt-4 gap-4">
                     <div className="flex flex-wrap gap-4">
-                        <Button variant='primary' size="big" text={dictionary.components.packages.purchasePackageText} onClick={onClickPurchase}/>
-                        <Button variant='secondary' size="big" text={dictionary.components.packages.detailsText}  onClick={onClickDetails}/>
+                        <Button
+                            variant="primary"
+                            size="big"
+                            text={
+                                dictionary.components.packages
+                                    .purchasePackageText
+                            }
+                            onClick={onClickPurchase}
+                        />
+                        <Button
+                            variant="secondary"
+                            size="big"
+                            text={dictionary.components.packages.detailsText}
+                            onClick={onClickDetails}
+                        />
+
+                        {/* Prices */}
                         <div className="flex gap-2 items-center">
-                            <p className="text-text-primary lg:text-xl text-md font-bold leading-[120%]">
+                            <h6 className="text-text-primary lg:text-lg">
                                 {pricing.currency} {pricing.fullPrice}
-                            </p>
-                            <p className="text-feedback-success-primary lg:text-md text-sm font-bold">
-                                {dictionary.components.packages.saveText} {pricing.currency} {pricing.partialPrice}
+                            </h6>
+                            <p className="text-feedback-success-primary lg:text-md text-sm font-important">
+                                {dictionary.components.packages.saveText}{' '}
+                                {pricing.currency} {pricing.partialPrice}
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 };

@@ -307,7 +307,6 @@ export const EN: TDictionary = {
       placeHolderText: 'No image available',
       coursesText: 'courses',
       saveText: 'save',
-      ourPackagesText: 'Our packages',
       archivedBadge: 'Archived',
       editButton: 'Edit',
       publishButton: 'Publish',

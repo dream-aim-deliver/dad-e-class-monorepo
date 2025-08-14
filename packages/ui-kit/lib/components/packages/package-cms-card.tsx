@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Badge } from '../badge';
 import { Button } from '../button';
 import { IconClock } from '../icons/icon-clock';
@@ -26,46 +26,42 @@ export type PackageCmsCardProps =
     | PackageCmsArchivedCardProps;
 
 /**
- * PackageCmsCard Component
+ * A CMS card component for displaying e-class package information in either **published** or **archived** state.
  *
- * A reusable CMS card for displaying either a **published** or **archived** e-class package.
- * This component adapts its appearance and available actions based on the `status` prop.
+ * The component adjusts its available actions and visual indicators based on the `status` prop.
+ * It shows package details (title, description, duration, course count, pricing) and provides contextual CMS controls.
  *
- * Features:
- * - Displays package image (or a placeholder if missing or failed to load)
- * - Shows package title, description, duration, and course count
- * - Displays pricing with a "save" message
- * - Includes contextual action buttons:
- *   - **Published**: Archive + Edit
- *   - **Archived**: Publish + Edit
- * - Locale-aware (text is retrieved from `@maany_shr/e-class-translations`)
+ * ## Features
+ * - Locale-aware (text pulled from `@maany_shr/e-class-translations`)
+ * - Shows image or placeholder if missing/failed to load
+ * - Duration formatting in hours and minutes (if > 59 minutes)
+ * - Title truncates after two lines with tooltip on hover
+ * - Displays pricing with “save” message
+ * - Contextual buttons:
+ *   - **Published:** Archive + Edit
+ *   - **Archived:** Publish + Edit + "Archived" badge
  *
- * Props:
- * ----------
- * Common props (from `TEClassPackage` and `isLocalAware`):
- * - `imageUrl` (string) — URL to the package image
- * - `title` (string) — Package title
- * - `description` (string) — Short description text
- * - `duration` (number) — Duration in minutes (formatted to h/m)
- * - `pricing` ({ currency: string; fullPrice: number; partialPrice: number }) — Price info
- * - `locale` (string) — Language/locale for translations
- * - `courseCount` (number) — Number of courses in the package
- * - `onClickEdit` (() => void) — Callback when the edit button is clicked
+ * ## Common Props
+ * Inherited from:
+ * - `TEClassPackage` — e-class package details (`imageUrl`, `title`, `description`, `duration`, `pricing`)
+ * - `isLocalAware` — locale for translations (`locale`)
  *
- * Published-specific:
- * - `status`: 'published'
- * - `onClickArchive` (() => void) — Callback when the archive button is clicked
+ * Additional:
+ * @prop {number} courseCount — Number of courses in the package (badge shown if > 0)
+ * @prop {() => void} onClickEdit — Called when the "Edit" button is clicked
  *
- * Archived-specific:
- * - `status`: 'archived'
- * - `onClickPublished` (() => void) — Callback when the publish button is clicked
+ * ## Published Variant (`status: 'published'`)
+ * @prop {'published'} status — Marks the package as published
+ * @prop {() => void} onClickArchive — Called when the "Archive" button is clicked
  *
- * Usage Example:
- * --------------
+ * ## Archived Variant (`status: 'archived'`)
+ * @prop {'archived'} status — Marks the package as archived
+ * @prop {() => void} onClickPublished — Called when the "Publish" button is clicked
+ *
+ * ## Examples
+ *
  * ```tsx
- * import { PackageCmsCard } from './package-cms-card';
- *
- * // Example: Published package card
+ * // Published card
  * <PackageCmsCard
  *   status="published"
  *   title="React for Beginners"
@@ -79,7 +75,7 @@ export type PackageCmsCardProps =
  *   onClickArchive={() => console.log('Archive clicked')}
  * />
  *
- * // Example: Archived package card
+ * // Archived card
  * <PackageCmsCard
  *   status="archived"
  *   title="Advanced TypeScript"
@@ -108,6 +104,8 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
     } = props;
     const dictionary = getDictionary(locale).components.packages;
     const [isImageError, setIsImageError] = useState(false);
+    const titleRef = useRef<HTMLHeadingElement>(null);
+    const [isTruncated, setIsTruncated] = useState(false);
 
     // Helper function to format duration in hours and minutes
     const formatDuration = (duration?: number): string => {
@@ -126,6 +124,20 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
     };
 
     const shouldShowPlaceholder = !imageUrl || isImageError;
+
+    // Check for truncation of title on resize
+    useEffect(() => {
+        const checkTruncation = () => {
+            if (titleRef.current) {
+                const { scrollHeight, clientHeight } = titleRef.current;
+                setIsTruncated(scrollHeight > clientHeight);
+            }
+        };
+
+        checkTruncation();
+        window.addEventListener('resize', checkTruncation);
+        return () => window.removeEventListener('resize', checkTruncation);
+    }, [title]);
 
     return (
         <div className="flex flex-col gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:max-w-[22rem]">
@@ -161,7 +173,20 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                     )}
 
                     {/* Title */}
-                    <h4 className="text-text-primary">{title}</h4>
+                    <div className="group relative">
+                    <h4
+                        className="text-text-primary lg:text-2xl line-clamp-2"
+                        ref={titleRef}
+                    >
+                        {title}
+                    </h4>
+                    {isTruncated && (
+                        <div className="absolute invisible group-hover:visible opacity-10 group-hover:opacity-100 transition-opacity duration-200 bg-card-stroke text-text-primary text-sm rounded py-2 px-3 -top-18 left-0 w-max max-w-[14rem] z-10">
+                            {title}
+                            <div className="absolute top-full left-4 w-0 h-0 border-x-8 border-x-transparent border-t-8 border-card-stroke" />
+                        </div>
+                    )}
+                    </div>
 
                     {/* Duration & Courses Badges */}
                     <div className="flex flex-row gap-2">
@@ -189,14 +214,14 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                 </div>
 
                 {/* Description */}
-                <p className="text-text-secondary">{description}</p>
+                <p className="text-text-secondary lg:text-lg">{description}</p>
 
                 {/* Prices */}
                 <div className="flex gap-2 items-center">
-                    <h6 className="text-text-primary">
+                    <h6 className="text-text-primary lg:text-lg">
                         {pricing.currency} {pricing.fullPrice}
                     </h6>
-                    <p className="text-feedback-success-primary font-important">
+                    <p className="text-feedback-success-primary lg:text-md text-sm font-important">
                         {dictionary.saveText} {pricing.currency}{' '}
                         {pricing.partialPrice}
                     </p>

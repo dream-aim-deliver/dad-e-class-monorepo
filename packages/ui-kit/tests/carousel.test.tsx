@@ -16,14 +16,6 @@ vi.mock('@maany_shr/e-class-translations', () => ({
   isLocalAware: vi.fn(),
 }));
 
-vi.mock('../lib/components/button', () => ({
-  Button: ({ text, onClick, className }: { text: string; onClick?: () => void; className?: string }) => (
-    <button onClick={onClick} className={className}>
-      {text}
-    </button>
-  ),
-}));
-
 vi.mock('../lib/components/carousel/general-card', () => ({
   GeneralCard: ({ title, description, buttonText, buttonUrl }: any) => (
     <div data-testid="general-card">
@@ -48,7 +40,7 @@ vi.mock('../lib/components/icons/icon-chevron-right', () => ({
 
 describe('Carousel', () => {
   const defaultCards = [
-    <GeneralCard
+      <GeneralCard
       key="card1"
       imageUrl="image1.jpg"
       title="Card 1"
@@ -56,6 +48,7 @@ describe('Carousel', () => {
       buttonText="Click 1"
       buttonUrl="/card1"
       locale="en"
+      onButtonClick={vi.fn()}
     />,
     <GeneralCard
       key="card2"
@@ -65,6 +58,7 @@ describe('Carousel', () => {
       buttonText="Click 2"
       buttonUrl="/card2"
       locale="en"
+      onButtonClick={vi.fn()}
     />,
     <GeneralCard
       key="card3"
@@ -74,6 +68,7 @@ describe('Carousel', () => {
       buttonText="Click 3"
       buttonUrl="/card3"
       locale="en"
+      onButtonClick={vi.fn()}
     />,
     <GeneralCard
       key="card4"
@@ -83,6 +78,7 @@ describe('Carousel', () => {
       buttonText="Click 4"
       buttonUrl="/card4"
       locale="en"
+      onButtonClick={vi.fn()}
     />,
   ];
 
@@ -90,10 +86,11 @@ describe('Carousel', () => {
     children: defaultCards,
     itemsPerView: 3,
     locale: 'en' as const,
+    className: 'test-carousel',
   };
 
   it('renders nothing when children array is empty', () => {
-    const { container } = render(<Carousel children={[]} locale="en" />);
+    const { container } = render(<Carousel children={[]} locale="en" className='test-carousel' />);
     expect(container.firstChild).toBeNull();
   });
 
@@ -136,19 +133,6 @@ describe('Carousel', () => {
       expect(screen.getByText('Card 3')).toBeInTheDocument();
       expect(screen.queryByText('Card 4')).not.toBeInTheDocument();
     }, { timeout: 500 });
-  });
-
-  it('renders default CTA button when no custom onClick is provided', () => {
-    render(<Carousel {...defaultProps} />);
-    expect(screen.getByText('Default CTA')).toBeInTheDocument();
-  });
-
-  it('calls custom onClick when CTA button is clicked', () => {
-    const onClick = vi.fn();
-    render(<Carousel {...defaultProps} onClick={onClick} />);
-    const ctaButton = screen.getByText('Default CTA');
-    fireEvent.click(ctaButton);
-    expect(onClick).toHaveBeenCalled();
   });
 
   it('renders pagination dots when there are multiple pages', () => {

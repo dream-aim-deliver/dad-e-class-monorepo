@@ -310,7 +310,6 @@ export const DE: TDictionary = {
       placeHolderText: 'Kein Bild verfugbar',
       coursesText: 'Kurse',
       saveText: 'speichern',
-      ourPackagesText: 'Unsere Pakete',
       archivedBadge: 'Archiviert',
       editButton: 'Bearbeiten',
       publishButton: 'Veröffentlichen',

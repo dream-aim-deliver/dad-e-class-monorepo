@@ -313,7 +313,6 @@ export const DictionarySchema = z.object({
       placeHolderText: z.string(),
       coursesText: z.string(),
       saveText: z.string(),
-      ourPackagesText: z.string(),
       archivedBadge: z.string(),
       editButton: z.string(),
       publishButton: z.string(),
