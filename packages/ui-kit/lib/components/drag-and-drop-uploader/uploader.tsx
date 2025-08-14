@@ -82,6 +82,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
     onFilesChange,
     onUploadComplete,
     locale,
+    isDeletionAllowed,
   } = props;
 
   const [uploadingFiles, setUploadingFiles] = useState<fileMetadata.TFileMetadata[]>([]);
