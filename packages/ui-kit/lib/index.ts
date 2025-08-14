@@ -106,3 +106,5 @@ export { CourseOutlineAccordion, CourseModule } from './components/course-outlin
 export { LessonHeader } from './components/lesson-header';
 
 export { PreAssessmentForm } from './components/pre-assessment/pre-assessment-form';
+
+export { FormComponent as RichTextFormComponent } from './components/lesson-components/rich-text';
