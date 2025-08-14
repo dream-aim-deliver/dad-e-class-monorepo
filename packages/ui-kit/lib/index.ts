@@ -110,3 +110,6 @@ export { PreAssessmentForm } from './components/pre-assessment/pre-assessment-fo
 export { FormComponent as RichTextFormComponent } from './components/lesson-components/rich-text';
 export { FormComponent as HeadingFormComponent } from './components/lesson-components/heading-lesson';
 export { FormComponent as TextInputFormComponent } from './components/lesson-components/text-input';
+export { FormComponent as SingleChoiceFormComponent } from './components/lesson-components/single-choice';
+export { FormComponent as MultiCheckFormComponent } from './components/lesson-components/multi-check';
+export { FormComponent as OneOutOfThreeFormComponent } from './components/lesson-components/one-out-of-three';
