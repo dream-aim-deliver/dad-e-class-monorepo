@@ -1,11 +1,14 @@
-import { viewModels } from '@maany_shr/e-class-models';
+import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import {
     HeadingFormComponent,
+    MultiCheckFormComponent,
+    OneOutOfThreeFormComponent,
     RichTextFormComponent,
+    SingleChoiceFormComponent,
     TextInputFormComponent,
 } from '@maany_shr/e-class-ui-kit';
 import { FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
-import { useMemo, useRef } from 'react';
+import { JSX, useMemo, useRef } from 'react';
 import { getLessonComponentsMap } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -14,41 +17,38 @@ interface LessonFormProps {
     data: viewModels.TLessonComponentListSuccess;
 }
 
-interface ComponentRendererProps<T extends LessonElement = LessonElement> {
+interface ComponentRendererProps {
     key: string;
-    formElement: FormElement;
+    formElement: LessonElement;
     elementProgress: React.RefObject<Map<string, LessonElement>>;
-    component: T;
+    component: useCaseModels.TLessonComponent;
     locale: TLocale;
 }
 
 function renderRichTextComponent({
     formElement,
-    component,
     key,
 }: ComponentRendererProps) {
-    return <RichTextFormComponent key={key} elementInstance={formElement} />;
+    return <RichTextFormComponent key={key} elementInstance={formElement as FormElement} />;
 }
 
 function renderHeadingComponent({
     formElement,
-    component,
     key,
 }: ComponentRendererProps) {
-    return <HeadingFormComponent key={key} elementInstance={formElement} />;
+    return <HeadingFormComponent key={key} elementInstance={formElement as FormElement} />;
 }
 
 function renderTextInputComponent({
     formElement,
     elementProgress,
-    component,
     key,
     locale,
 }: ComponentRendererProps) {
     return (
         <TextInputFormComponent
             key={key}
-            elementInstance={formElement}
+            elementInstance={formElement as FormElement}
             locale={locale}
             submitValue={(id, element) => {
                 elementProgress.current.set(id, element);
@@ -56,6 +56,63 @@ function renderTextInputComponent({
         />
     );
 }
+
+function renderSingleChoiceComponent({
+    formElement,
+    elementProgress,
+    key,
+}: ComponentRendererProps) {
+    return (
+        <SingleChoiceFormComponent
+            key={key}
+            elementInstance={formElement as FormElement}
+            submitValue={(id, element) => {
+                elementProgress.current.set(id, element);
+            }}
+        />
+    );
+}
+
+function renderMultiCheckComponent({
+    formElement,
+    elementProgress,
+    key,
+}: ComponentRendererProps) {
+    return (
+        <MultiCheckFormComponent
+            key={key}
+            elementInstance={formElement as FormElement}
+            submitValue={(id, element) => {
+                elementProgress.current.set(id, element);
+            }}
+        />
+    );
+}
+
+function renderOneOutOfThreeComponent({
+    formElement,
+    elementProgress,
+    key,
+}: ComponentRendererProps) {
+    return (
+        <OneOutOfThreeFormComponent
+            key={key}
+            elementInstance={formElement as FormElement}
+            submitValue={(id, element) => {
+                elementProgress.current.set(id, element);
+            }}
+        />
+    );
+}
+
+const typeToRendererMap: Record<string, (props: ComponentRendererProps) => JSX.Element | null> = {
+    richText: renderRichTextComponent,
+    heading: renderHeadingComponent,
+    textInput: renderTextInputComponent,
+    multipleChoice: renderMultiCheckComponent,
+    singleChoice: renderSingleChoiceComponent,
+    oneOutOfThree: renderOneOutOfThreeComponent,
+};
 
 export default function LessonForm({ data }: LessonFormProps) {
     const components = data.components;
@@ -67,7 +124,7 @@ export default function LessonForm({ data }: LessonFormProps) {
 
     const elementProgress = useRef(new Map([...formElements]));
 
-    const renderComponent = (component: any) => {
+    const renderComponent = (component: useCaseModels.TLessonComponent) => {
         const formElement = formElements.get(component.id) as
             | FormElement
             | undefined;
@@ -81,15 +138,9 @@ export default function LessonForm({ data }: LessonFormProps) {
             key: `component-${component.id}`,
         };
 
-        switch (component.type) {
-            case 'richText':
-                return renderRichTextComponent(props);
-            case 'heading':
-                return renderHeadingComponent(props);
-            case 'textInput':
-                return renderTextInputComponent(props);
-            default:
-                return null;
+        const renderer = typeToRendererMap[component.type];
+        if (renderer) {
+            return renderer(props);
         }
     };
 
