@@ -13,7 +13,7 @@ import {
     VideoElement,
     ImageElement,
     DownloadFilesElement,
-    UploadsFilesElement,
+    UploadFilesElement,
     ImageGallery as ImageGalleryElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
@@ -205,12 +205,13 @@ function transformDownloadFiles(
 
 function transformUploadFiles(
     component: Extract<useCaseModels.TLessonComponent, { type: 'uploadFiles' }>,
-): UploadsFilesElement {
+): UploadFilesElement {
     return {
         type: LessonElementType.UploadFiles,
         order: component.order,
         id: component.id,
         description: component.description,
+        files: null,
     };
 }
 
@@ -269,7 +270,6 @@ const applyTextInputProgress = (
     answer: TAnswer,
 ): void => {
     if (answer.type === 'textInput') {
-        // @ts-expect-error As TextInput might not have content, being a joint type, ignore typing to assign it
         element.content = answer.answer;
     }
 };

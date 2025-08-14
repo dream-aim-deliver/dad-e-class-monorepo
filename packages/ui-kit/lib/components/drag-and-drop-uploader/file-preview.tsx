@@ -88,7 +88,7 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
                     <div className="relative  flex items-center justify-center">
                         <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-secondary" />
                         <img
-                            src={(uploadResponse as fileMetadata.TFileMetadata & { thumbnailUrl?: string }).thumbnailUrl || ''}
+                            src={(uploadResponse as fileMetadata.TFileMetadata & { thumbnailUrl?: string }).thumbnailUrl || 'https://example.com'}
                             alt={uploadResponse.name}
                             className="absolute inset-0 w-full h-full object-cover rounded-small opacity-0"
                             onLoad={() => setThumbnailLoading(false)}
