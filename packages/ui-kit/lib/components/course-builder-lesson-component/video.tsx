@@ -1,5 +1,5 @@
 import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
-import type { VideoFileElement } from "./types";
+import type { VideoElement } from "./types";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { IconVideo } from "../icons/icon-video";
 import DesignerLayout from "../designer-layout";
@@ -131,13 +131,13 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
 
     // Type guard to ensure we're working with a VideoFile
-    const videoFile = elementInstance as VideoFileElement;
+    const videoFile = elementInstance as VideoElement;
 
     return (
         <section className="w-full">
             <VideoPlayer
-                videoId={videoFile.file.videoId}
-                thumbnailUrl={videoFile.file.thumbnailUrl}
+                videoId={videoFile.file?.videoId}
+                thumbnailUrl={videoFile.file?.thumbnailUrl}
                 locale={locale}
                 className="aspect-video w-full"
             />

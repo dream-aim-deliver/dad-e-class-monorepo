@@ -10,10 +10,11 @@ import {
     RichTextElement,
     SingleChoiceElement,
     TextInputElement,
-    VideoFileElement,
-    ImageFileElement,
+    VideoElement,
+    ImageElement,
     DownloadFilesElement,
     UploadsFilesElement,
+    ImageGallery as ImageGalleryElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
 
@@ -122,7 +123,7 @@ function transformOneOutOfThree(
 
 function transformVideo(
     component: Extract<useCaseModels.TLessonComponent, { type: 'video' }>,
-): VideoFileElement {
+): VideoElement {
     return {
         type: LessonElementType.VideoFile,
         order: component.order,
@@ -142,7 +143,7 @@ function transformVideo(
 
 function transformImage(
     component: Extract<useCaseModels.TLessonComponent, { type: 'image' }>,
-): ImageFileElement {
+): ImageElement {
     return {
         type: LessonElementType.ImageFile,
         order: component.order,
@@ -156,6 +157,28 @@ function transformImage(
             status: 'available',
             thumbnailUrl: component.imageFile.downloadUrl,
         },
+    };
+}
+
+function transformImageCarousel(
+    component: Extract<
+        useCaseModels.TLessonComponent,
+        { type: 'imageCarousel' }
+    >,
+): ImageGalleryElement {
+    return {
+        type: LessonElementType.ImageGallery,
+        order: component.order,
+        id: component.id,
+        images: component.imageFiles.map((image) => ({
+            id: image.id,
+            name: image.name,
+            size: image.size,
+            category: 'image',
+            url: image.downloadUrl,
+            status: 'available',
+            thumbnailUrl: image.downloadUrl,
+        })),
     };
 }
 
@@ -202,6 +225,7 @@ const transformers = {
     image: transformImage,
     downloadFiles: transformDownloadFiles,
     uploadFiles: transformUploadFiles,
+    imageCarousel: transformImageCarousel,
 } as const;
 
 export function getLessonComponentsMap(

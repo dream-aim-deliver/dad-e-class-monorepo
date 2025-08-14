@@ -3,23 +3,23 @@ import { useState } from 'react';
 import { courseElements } from '../../lib/components/course-builder/course-builder-core';
 import { CourseElementType } from '../../lib/components/course-builder/types';
 import { fileMetadata } from '@maany_shr/e-class-models';
-import { ImageFileElement } from '../../lib/components/course-builder-lesson-component/types';
+import { ImageElement } from '../../lib/components/course-builder-lesson-component/types';
 
 // Get components from courseElements
 const { designerComponent: DesignerComponent, formComponent: FormComponent } =
     courseElements[CourseElementType.ImageFile];
 
-type ImageFileWithMetadata = ImageFileElement & fileMetadata.TFileMetadata;
+type ImageFileWithMetadata = ImageElement & fileMetadata.TFileMetadata;
 
 // Define the props for our stories
 interface StoryProps {
     locale: 'en' | 'de';
-    elementInstance: ImageFileElement;
+    elementInstance: ImageElement;
     initialFile?: ImageFileWithMetadata | null;
 }
 
 // Default element instance
-const defaultElementInstance: ImageFileElement = {
+const defaultElementInstance: ImageElement = {
     id: '1',
     type: CourseElementType.ImageFile,
     order: 1,
