@@ -176,6 +176,14 @@ const listLessonComponentsMock: useCaseModels.TListLessonComponentsSuccessRespon
                         downloadUrl:
                             'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
                     },
+                    {
+                        id: 'carousel_img_004',
+                        name: 'team-collaboration.jpg',
+                        size: 1920000,
+                        category: 'image',
+                        downloadUrl:
+                            'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+                    },
                 ],
             },
             // Links Component

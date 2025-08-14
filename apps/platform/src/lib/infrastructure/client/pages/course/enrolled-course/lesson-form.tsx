@@ -1,11 +1,15 @@
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import {
+    CourseElement,
     HeadingFormComponent,
+    ImageFormComponent,
+    ImageGalleryFormComponent,
     MultiCheckFormComponent,
     OneOutOfThreeFormComponent,
     RichTextFormComponent,
     SingleChoiceFormComponent,
     TextInputFormComponent,
+    VideoFormComponent,
 } from '@maany_shr/e-class-ui-kit';
 import { FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
 import { JSX, useMemo, useRef } from 'react';
@@ -25,18 +29,22 @@ interface ComponentRendererProps {
     locale: TLocale;
 }
 
-function renderRichTextComponent({
-    formElement,
-    key,
-}: ComponentRendererProps) {
-    return <RichTextFormComponent key={key} elementInstance={formElement as FormElement} />;
+function renderRichTextComponent({ formElement, key }: ComponentRendererProps) {
+    return (
+        <RichTextFormComponent
+            key={key}
+            elementInstance={formElement as FormElement}
+        />
+    );
 }
 
-function renderHeadingComponent({
-    formElement,
-    key,
-}: ComponentRendererProps) {
-    return <HeadingFormComponent key={key} elementInstance={formElement as FormElement} />;
+function renderHeadingComponent({ formElement, key }: ComponentRendererProps) {
+    return (
+        <HeadingFormComponent
+            key={key}
+            elementInstance={formElement as FormElement}
+        />
+    );
 }
 
 function renderTextInputComponent({
@@ -105,13 +113,61 @@ function renderOneOutOfThreeComponent({
     );
 }
 
-const typeToRendererMap: Record<string, (props: ComponentRendererProps) => JSX.Element | null> = {
+function renderVideoComponent({
+    formElement,
+    key,
+    locale,
+}: ComponentRendererProps) {
+    return (
+        <VideoFormComponent
+            key={key}
+            elementInstance={formElement as CourseElement}
+            locale={locale}
+        />
+    );
+}
+
+function renderImageComponent({
+    formElement,
+    locale,
+    key,
+}: ComponentRendererProps) {
+    return (
+        <ImageFormComponent
+            key={key}
+            elementInstance={formElement as CourseElement}
+            locale={locale}
+        />
+    );
+}
+
+function renderImageCarouselComponent({
+    formElement,
+    key,
+    locale,
+}: ComponentRendererProps) {
+    return (
+        <ImageGalleryFormComponent
+            key={key}
+            elementInstance={formElement as CourseElement}
+            locale={locale}
+        />
+    );
+}
+
+const typeToRendererMap: Record<
+    string,
+    (props: ComponentRendererProps) => JSX.Element | null
+> = {
     richText: renderRichTextComponent,
     heading: renderHeadingComponent,
     textInput: renderTextInputComponent,
     multipleChoice: renderMultiCheckComponent,
     singleChoice: renderSingleChoiceComponent,
     oneOutOfThree: renderOneOutOfThreeComponent,
+    video: renderVideoComponent,
+    image: renderImageComponent,
+    imageCarousel: renderImageCarouselComponent,
 };
 
 export default function LessonForm({ data }: LessonFormProps) {

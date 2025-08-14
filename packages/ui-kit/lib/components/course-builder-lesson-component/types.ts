@@ -316,21 +316,20 @@ export type QuizElement =
 
 
 type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
-export interface ImageFileElement extends BaseFormElement {
+export interface ImageElement extends BaseFormElement {
     type: CourseElementType.ImageFile;
-    order: number;
-    file: ImageFileMetadata;
+    file: ImageFileMetadata | null;
 }
 
 type VideoFileMetadata = fileMetadata.TFileMetadata & { category: 'video' };
-export interface VideoFileElement extends BaseFormElement {
+export interface VideoElement extends BaseFormElement {
     type: CourseElementType.VideoFile;
-    file: VideoFileMetadata;
+    file: VideoFileMetadata | null;
 };
 
 export interface ImageGallery extends BaseFormElement {
     type: CourseElementType.ImageGallery;
-    images: ImageFileMetadata[];
+    images: ImageFileMetadata[] | null;
 }
 
 
