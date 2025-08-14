@@ -111,3 +111,7 @@ export { FormComponent as TextInputFormComponent } from './components/lesson-com
 export { FormComponent as SingleChoiceFormComponent } from './components/lesson-components/single-choice';
 export { FormComponent as MultiCheckFormComponent } from './components/lesson-components/multi-check';
 export { FormComponent as OneOutOfThreeFormComponent } from './components/lesson-components/one-out-of-three';
+
+export { FormComponent as VideoFormComponent } from './components/course-builder-lesson-component/video';
+export { FormComponent as ImageFormComponent } from './components/course-builder-lesson-component/image';
+export { FormComponent as ImageGalleryFormComponent } from './components/course-builder-lesson-component/image-gallery';

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { useState, useEffect } from 'react';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { CourseElementType } from '../../lib/components/course-builder/types';
-import { ImageGallery, ImageFileElement } from '../../lib/components/course-builder-lesson-component/types';
+import { ImageGallery, ImageElement } from '../../lib/components/course-builder-lesson-component/types';
 import { DesignerComponent, FormComponent } from '../../lib/components/course-builder-lesson-component/image-gallery';
 import { ImageGallerySkeleton } from '../../lib/components/skeletons/image-gallery-skeleton';
 
@@ -12,14 +12,14 @@ import { ImageGallerySkeleton } from '../../lib/components/skeletons/image-galle
 interface StoryProps {
     locale: 'en' | 'de';
     elementInstance: ImageGallery;
-    onImageUpload: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<ImageFileElement | null>;
-    onUploadComplete: (file: ImageFileElement) => void;
+    onImageUpload: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<ImageElement | null>;
+    onUploadComplete: (file: ImageElement) => void;
     onFileDownload: () => void;
     onFileDelete: () => void;
     onUpClick: (id: number) => void;
     onDownClick: (id: number) => void;
     onDeleteClick: (id: number) => void;
-    files?: ImageFileElement[] | null;
+    files?: ImageElement[] | null;
 }
 
 const meta: Meta<StoryProps> = {
@@ -155,10 +155,10 @@ const mockFiles: imageGalleryMetadata[] = [
 
 
 // Mock upload function that simulates an API call
-const mockUpload = async (): Promise<ImageFileElement> => {
+const mockUpload = async (): Promise<ImageElement> => {
     return new Promise((resolve) => {
         setTimeout(() => {
-            const newFile: ImageFileElement = {
+            const newFile: ImageElement = {
                 id: `file-${Date.now()}`,
                 name: `uploaded-${Math.floor(Math.random() * 1000)}.jpg`,
                 url: `https://picsum.photos/id/${Math.floor(Math.random() * 100)}/800/600`,
@@ -178,9 +178,9 @@ const mockUpload = async (): Promise<ImageFileElement> => {
 
 interface ImageGalleryWithStateProps {
     elementInstance: ImageGallery;
-    initialFiles?: ImageFileElement[] | null;
-    onImageUpload: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<ImageFileElement | null>;
-    onUploadComplete: (file: ImageFileElement) => void;
+    initialFiles?: ImageElement[] | null;
+    onImageUpload: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<ImageElement | null>;
+    onUploadComplete: (file: ImageElement) => void;
     onFileDelete: () => void;
     onFileDownload: () => void;
     onUpClick: (id: number) => void;
@@ -208,12 +208,12 @@ const ImageGalleryWithState = ({
                 ...image,
                 type: CourseElementType.ImageFile,
                 order: index,
-            } as ImageFileElement));
+            } as ImageElement));
         }
         return initialFiles || [];
     };
 
-    const [files, setFiles] = useState<ImageFileElement[]>(getInitialFiles());
+    const [files, setFiles] = useState<ImageElement[]>(getInitialFiles());
 
     // Update files when elementInstance changes
     useEffect(() => {
@@ -267,12 +267,12 @@ const ImageGalleryWrapper = (args: StoryProps) => {
                 ...image,
                 type: CourseElementType.ImageFile,
                 order: index,
-            } as ImageFileElement));
+            } as ImageElement));
         }
         return [];
     };
 
-    const [files, setFiles] = useState<ImageFileElement[]>(getInitialFiles());
+    const [files, setFiles] = useState<ImageElement[]>(getInitialFiles());
 
     // Update files when args.elementInstance changes
     useEffect(() => {
@@ -287,7 +287,7 @@ const ImageGalleryWrapper = (args: StoryProps) => {
         return result || null;
     };
 
-    const handleUploadComplete = (file: ImageFileElement) => {
+    const handleUploadComplete = (file: ImageElement) => {
         setFiles(prev => [...prev, file]);
         args.onUploadComplete?.(file);
     };

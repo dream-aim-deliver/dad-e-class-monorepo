@@ -139,8 +139,7 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
     };
 
     const [visibleItems, setVisibleItems] = useState(getVisibleItemCount());
-    const imageElements =
-        "images" in elementInstance ? elementInstance.images : [];
+    const imageElements = elementInstance?.images ? elementInstance.images : [];
 
     const totalSlides = imageElements.length;
 
