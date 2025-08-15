@@ -39,6 +39,21 @@ export interface FileProps {
     onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
 }
 
+type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
+
+export interface TempQuizTypeOneElement extends BaseCourseFormElement {
+    type: CourseElementType.QuizTypeOne;
+    title: string;
+    description: string;
+    imageFile: ImageFileMetadata | null;
+    options: {
+        id: number;
+        name: string;
+        isSelected?: boolean;
+    }[];
+    correctOptionId: number;
+}
+
 export interface QuizElementBase extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.Quiz;
     title: string;
@@ -312,8 +327,6 @@ export type QuizElement =
     | QuizTypeThreeStudentViewElement
     | QuizTypeFourStudentViewElement;
 
-
-type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
 export interface ImageElement extends BaseCourseFormElement {
     type: CourseElementType.ImageFile;
     file: ImageFileMetadata | null;

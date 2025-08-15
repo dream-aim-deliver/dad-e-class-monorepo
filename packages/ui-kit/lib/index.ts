@@ -121,3 +121,6 @@ export { FormComponent as ImageGalleryFormComponent } from './components/course-
 
 export { FormComponent as DownloadFilesFormComponent } from './components/course-builder-lesson-component/download-files-lesson';
 export { FormComponent as UploadFilesFormComponent } from './components/course-builder-lesson-component/upload-files-lesson';
+
+export { FormComponentWrapper as QuizFormComponentWrapper } from './components/course-builder-lesson-component/quiz';
+export { default as QuizTypeOneStudentView } from './components/quiz/quiz-type-one/quiz-type-one-student-view';
