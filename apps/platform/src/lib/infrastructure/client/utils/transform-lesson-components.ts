@@ -16,6 +16,7 @@ import {
     UploadFilesElement,
     ImageGallery as ImageGalleryElement,
     TempQuizTypeOneElement,
+    TempQuizTypeTwoElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
 
@@ -240,6 +241,33 @@ function transformQuizTypeOne(
     };
 }
 
+function transformQuizTypeTwo(
+    component: Extract<useCaseModels.TLessonComponent, { type: 'quizTypeTwo' }>,
+): TempQuizTypeTwoElement {
+    return {
+        type: LessonElementType.QuizTypeTwo,
+        order: component.order,
+        id: component.id,
+        title: component.title,
+        description: component.description,
+        imageFile: {
+            ...component.imageFile,
+            url: component.imageFile.downloadUrl,
+            status: 'available',
+            thumbnailUrl: component.imageFile.downloadUrl,
+        },
+        groups: component.groups.map((group) => ({
+            id: group.id,
+            title: group.title,
+            options: group.options.map((option) => ({
+                id: option.id,
+                name: option.name,
+            })),
+            correctOptionId: group.correctOptionId,
+        })),
+    };
+}
+
 const transformers = {
     richText: transformRichText,
     heading: transformHeading,
@@ -253,6 +281,7 @@ const transformers = {
     uploadFiles: transformUploadFiles,
     imageCarousel: transformImageCarousel,
     quizTypeOne: transformQuizTypeOne,
+    quizTypeTwo: transformQuizTypeTwo,
 } as const;
 
 export function getLessonComponentsMap(
