@@ -22,4 +22,6 @@ export const courseElements: CourseElementRegistry = {
     [CourseElementType.UploadFiles]: uploadFilesElement,
     [CourseElementType.DownloadFiles]: downloadFilesElement,
     [CourseElementType.Assignment]: assignmentElement,
+    // Temporary elements for specific quiz types
+    [CourseElementType.QuizTypeOne]: quizElement,
 };
