@@ -69,6 +69,32 @@ export interface TempQuizTypeTwoElement extends BaseCourseFormElement {
     }[];
 }
 
+export interface TempQuizTypeThreeElement extends BaseCourseFormElement {
+    type: CourseElementType.QuizTypeThree;
+    title: string;
+    description: string;
+    options: {
+        id: number;
+        imageFile: ImageFileMetadata | null;
+        description: string;
+    }[];
+    correctOptionId: number;
+}
+
+export interface TempQuizTypeFourElement extends BaseCourseFormElement {
+    type: CourseElementType.QuizTypeFour;
+    title: string;
+    description: string;
+    labels: {
+        letter: string;
+        description: string;
+    }[];
+    images: {
+        correctLetter: string;
+        imageFile: ImageFileMetadata | null;
+    }[];
+}
+
 export interface QuizElementBase extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.Quiz;
     title: string;
