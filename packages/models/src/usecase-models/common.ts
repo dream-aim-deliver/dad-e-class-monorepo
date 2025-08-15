@@ -161,9 +161,10 @@ const QuizGroupSchema = z.object({
   id: z.number(),
   title: z.string(),
   options: z.array(z.object({
-    id: z.string(),
+    id: z.number(),
     name: z.string(),
   })),
+  correctOptionId: z.number(),
 });
 
 const QuizTypeOneSchema = BaseComponent.extend({
@@ -181,7 +182,6 @@ const QuizTypeTwoSchema = BaseComponent.extend({
     description: z.string(),
     imageFile: ImageFileSchema,
     groups: z.array(QuizGroupSchema),
-    correctOptionId: z.number(),
 });
 
 const QuizTypeThreeSchema = BaseComponent.extend({

@@ -24,4 +24,7 @@ export const courseElements: CourseElementRegistry = {
     [CourseElementType.Assignment]: assignmentElement,
     // Temporary elements for specific quiz types
     [CourseElementType.QuizTypeOne]: quizElement,
+    [CourseElementType.QuizTypeTwo]: quizElement,
+    [CourseElementType.QuizTypeThree]: quizElement,
+    [CourseElementType.QuizTypeFour]: quizElement,
 };
