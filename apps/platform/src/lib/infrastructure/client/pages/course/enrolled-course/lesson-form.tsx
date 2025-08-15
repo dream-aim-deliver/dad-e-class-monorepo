@@ -11,8 +11,11 @@ import {
     ImageGalleryFormComponent,
     MultiCheckFormComponent,
     OneOutOfThreeFormComponent,
+    QuizFormComponentWrapper,
+    QuizTypeOneStudentView,
     RichTextFormComponent,
     SingleChoiceFormComponent,
+    TempQuizTypeOneElement,
     TextInputFormComponent,
     UploadFilesElement,
     UploadFilesFormComponent,
@@ -253,6 +256,22 @@ function renderUploadFilesComponent({
     );
 }
 
+function renderQuizTypeOneComponent({
+    formElement,
+    key,
+    locale,
+}: ComponentRendererProps) {
+    return (
+        <QuizFormComponentWrapper locale={locale} key={key}>
+            <QuizTypeOneStudentView
+                key={key}
+                elementInstance={formElement as TempQuizTypeOneElement}
+                locale={locale}
+            />
+        </QuizFormComponentWrapper>
+    );
+}
+
 const typeToRendererMap: Record<
     string,
     (props: ComponentRendererProps) => JSX.Element | null
@@ -268,6 +287,7 @@ const typeToRendererMap: Record<
     imageCarousel: renderImageCarouselComponent,
     downloadFiles: renderDownloadFilesComponent,
     uploadFiles: renderUploadFilesComponent,
+    quizTypeOne: renderQuizTypeOneComponent,
 };
 
 export default function LessonForm({ data }: LessonFormProps) {
