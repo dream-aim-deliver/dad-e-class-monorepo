@@ -13,10 +13,12 @@ import {
     OneOutOfThreeFormComponent,
     QuizFormComponentWrapper,
     QuizTypeOneStudentView,
+    QuizTypeThreeStudentView,
     QuizTypeTwoStudentView,
     RichTextFormComponent,
     SingleChoiceFormComponent,
     TempQuizTypeOneElement,
+    TempQuizTypeThreeElement,
     TempQuizTypeTwoElement,
     TextInputFormComponent,
     UploadFilesElement,
@@ -290,6 +292,22 @@ function renderQuizTypeTwoComponent({
     );
 }
 
+function renderQuizTypeThreeComponent({
+    formElement,
+    key,
+    locale,
+}: ComponentRendererProps) {
+    return (
+        <QuizFormComponentWrapper locale={locale} key={key}>
+            <QuizTypeThreeStudentView
+                key={key}
+                elementInstance={formElement as TempQuizTypeThreeElement}
+                locale={locale}
+            />
+        </QuizFormComponentWrapper>
+    );
+}
+
 const typeToRendererMap: Record<
     string,
     (props: ComponentRendererProps) => JSX.Element | null
@@ -307,6 +325,7 @@ const typeToRendererMap: Record<
     uploadFiles: renderUploadFilesComponent,
     quizTypeOne: renderQuizTypeOneComponent,
     quizTypeTwo: renderQuizTypeTwoComponent,
+    quizTypeThree: renderQuizTypeThreeComponent,
 };
 
 export default function LessonForm({ data }: LessonFormProps) {
