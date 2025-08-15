@@ -314,31 +314,33 @@ const listLessonComponentsMock: useCaseModels.TListLessonComponentsSuccessRespon
                         id: 1,
                         title: 'Frontend Frameworks',
                         options: [
-                            { id: '1', name: 'React' },
-                            { id: '2', name: 'Vue.js' },
-                            { id: '3', name: 'Angular' },
+                            { id: 1, name: 'React' },
+                            { id: 2, name: 'Vue.js' },
+                            { id: 3, name: 'Angular' },
                         ],
+                        correctOptionId: 1,
                     },
                     {
                         id: 2,
                         title: 'Styling Solutions',
                         options: [
-                            { id: '4', name: 'Tailwind CSS' },
-                            { id: '5', name: 'Styled Components' },
-                            { id: '6', name: 'SCSS' },
+                            { id: 4, name: 'Tailwind CSS' },
+                            { id: 5, name: 'Styled Components' },
+                            { id: 6, name: 'SCSS' },
                         ],
+                        correctOptionId: 5,
                     },
                     {
                         id: 3,
                         title: 'Build Tools',
                         options: [
-                            { id: '7', name: 'Webpack' },
-                            { id: '8', name: 'Vite' },
-                            { id: '9', name: 'Parcel' },
+                            { id: 7, name: 'Webpack' },
+                            { id: 8, name: 'Vite' },
+                            { id: 9, name: 'Parcel' },
                         ],
+                        correctOptionId: 9,
                     },
                 ],
-                correctOptionId: 1,
             },
             // QuizTypeThree Component
             {

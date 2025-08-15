@@ -122,3 +122,4 @@ export { FormComponent as UploadFilesFormComponent } from './components/course-b
 
 export { FormComponentWrapper as QuizFormComponentWrapper } from './components/course-builder-lesson-component/quiz';
 export { default as QuizTypeOneStudentView } from './components/quiz/quiz-type-one/quiz-type-one-student-view';
+export { default as QuizTypeTwoStudentView } from './components/quiz/quiz-type-two/quiz-type-two-student-view';

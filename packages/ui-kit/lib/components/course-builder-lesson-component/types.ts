@@ -49,9 +49,24 @@ export interface TempQuizTypeOneElement extends BaseCourseFormElement {
     options: {
         id: number;
         name: string;
-        isSelected?: boolean;
     }[];
     correctOptionId: number;
+}
+
+export interface TempQuizTypeTwoElement extends BaseCourseFormElement {
+    type: CourseElementType.QuizTypeTwo;
+    title: string;
+    description: string;
+    imageFile: ImageFileMetadata | null;
+    groups: {
+        id: number;
+        title: string;
+        options: {
+            id: number;
+            name: string;
+        }[];
+        correctOptionId: number;
+    }[];
 }
 
 export interface QuizElementBase extends isLocalAware, BaseCourseFormElement {

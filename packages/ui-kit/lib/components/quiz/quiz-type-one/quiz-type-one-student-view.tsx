@@ -77,21 +77,10 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewProps> = ({
       id: opt.id,
       correct: opt.id === elementInstance.correctOptionId,
       optionText: opt.name,
-      selected: opt.isSelected,
+      selected: false,
      })));
-    const preSelectedIndex = elementInstance.options.findIndex(opt => opt.isSelected);
     setCorrectIndex(elementInstance.options.findIndex(opt => opt.id === elementInstance.correctOptionId));
-    if (preSelectedIndex !== -1) {
-      setChecked(true);
-      setIsCorrect(elementInstance.options[preSelectedIndex].id === elementInstance.correctOptionId);
-      setUserSelectedIndex(preSelectedIndex);
-    } else {
-      setChecked(false);
-      setIsCorrect(false);
-      setUserSelectedIndex(null);
-    }
-    setShowingSolution(false);
-  }, [elementInstance.options]);
+  }, [elementInstance]);
 
   // function to handle select
   const handleSelect = (idx: number) => {
