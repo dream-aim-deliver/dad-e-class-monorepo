@@ -25,7 +25,7 @@ export function ModuleContent({
                 if (item.type === ContentType.Milestone) {
                     return (
                         <MilestoneItem
-                            key={`milestone-${index}`}
+                            key={`milestone-${item.id ?? index}`}
                             milestone={item}
                             onMoveUp={() => onMoveContentUp(index)}
                             onMoveDown={() => onMoveContentDown(index)}
@@ -38,7 +38,7 @@ export function ModuleContent({
                 if (item.type === ContentType.Lesson) {
                     return (
                         <LessonItem
-                            key={`lesson-${index}`}
+                            key={`lesson-${item.id ?? index}`}
                             lesson={item}
                             onMoveUp={() => onMoveContentUp(index)}
                             onMoveDown={() => onMoveContentDown(index)}
