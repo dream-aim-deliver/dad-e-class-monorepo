@@ -22,7 +22,7 @@ export function MilestoneItem({
     isLast,
 }: MilestoneItemProps) {
     return (
-        <div className="flex gap-4 items-center bg-card-fill border border-base-neutral-700 rounded-lg p-3">
+        <div className="flex gap-4 items-center bg-card-fill border border-base-neutral-700 rounded-lg px-4 py-2">
             <IconMilestone />
             <span className="font-bold w-full">Milestone</span>
             <ContentControlButtons
