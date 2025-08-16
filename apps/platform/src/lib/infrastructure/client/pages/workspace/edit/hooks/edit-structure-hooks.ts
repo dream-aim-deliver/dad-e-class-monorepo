@@ -202,10 +202,11 @@ export function useContentOperations({
             if (moduleIndex < 0 || moduleIndex >= prev.length) return prev;
             if (contentIndex <= 0) return prev;
 
-            const module = prev[moduleIndex];
-            if (!module || contentIndex >= module.content.length) return prev;
+            const courseModule = prev[moduleIndex];
+            if (!courseModule || contentIndex >= courseModule.content.length)
+                return prev;
 
-            const newContent = [...module.content];
+            const newContent = [...courseModule.content];
             [newContent[contentIndex - 1], newContent[contentIndex]] = [
                 newContent[contentIndex],
                 newContent[contentIndex - 1],
@@ -213,7 +214,7 @@ export function useContentOperations({
 
             const updated = [...prev];
             updated[moduleIndex] = {
-                ...module,
+                ...courseModule,
                 content: newContent,
             };
 
@@ -227,12 +228,15 @@ export function useContentOperations({
         setModules((prev) => {
             if (moduleIndex < 0 || moduleIndex >= prev.length) return prev;
 
-            const module = prev[moduleIndex];
-            if (!module) return prev;
-            if (contentIndex < 0 || contentIndex >= module.content.length - 1)
+            const courseModule = prev[moduleIndex];
+            if (!courseModule) return prev;
+            if (
+                contentIndex < 0 ||
+                contentIndex >= courseModule.content.length - 1
+            )
                 return prev;
 
-            const newContent = [...module.content];
+            const newContent = [...courseModule.content];
             [newContent[contentIndex], newContent[contentIndex + 1]] = [
                 newContent[contentIndex + 1],
                 newContent[contentIndex],
@@ -240,7 +244,7 @@ export function useContentOperations({
 
             const updated = [...prev];
             updated[moduleIndex] = {
-                ...module,
+                ...courseModule,
                 content: newContent,
             };
 
@@ -254,18 +258,18 @@ export function useContentOperations({
         setModules((prev) => {
             if (moduleIndex < 0 || moduleIndex >= prev.length) return prev;
 
-            const module = prev[moduleIndex];
-            if (!module) return prev;
-            if (contentIndex < 0 || contentIndex >= module.content.length)
+            const courseModule = prev[moduleIndex];
+            if (!courseModule) return prev;
+            if (contentIndex < 0 || contentIndex >= courseModule.content.length)
                 return prev;
 
-            const newContent = module.content.filter(
+            const newContent = courseModule.content.filter(
                 (_, index) => index !== contentIndex,
             );
 
             const updated = [...prev];
             updated[moduleIndex] = {
-                ...module,
+                ...courseModule,
                 content: newContent,
             };
 
@@ -300,20 +304,20 @@ export function useLessonOperations({
     ) => {
         setModules((prev) => {
             if (moduleIndex < 0 || moduleIndex >= prev.length) return prev;
-            const module = prev[moduleIndex];
+            const courseModule = prev[moduleIndex];
             if (
-                !module ||
+                !courseModule ||
                 lessonIndex < 0 ||
-                lessonIndex >= module.content.length
+                lessonIndex >= courseModule.content.length
             )
                 return prev;
-            const lesson = module.content[lessonIndex];
+            const lesson = courseModule.content[lessonIndex];
             if (!lesson) return prev;
 
             const updated = [...prev];
             updated[moduleIndex] = {
-                ...module,
-                content: module.content.map((lesson, index) => {
+                ...courseModule,
+                content: courseModule.content.map((lesson, index) => {
                     if (
                         index === lessonIndex &&
                         lesson.type === ContentType.Lesson
@@ -340,13 +344,13 @@ export function useLessonOperations({
     ) => {
         setModules((prev) => {
             if (moduleIndex < 0 || moduleIndex >= prev.length) return prev;
-            const module = prev[moduleIndex];
-            if (!module) return prev;
+            const courseModule = prev[moduleIndex];
+            if (!courseModule) return prev;
 
             const updated = [...prev];
             updated[moduleIndex] = {
-                ...module,
-                content: module.content.map((lesson, index) => {
+                ...courseModule,
+                content: courseModule.content.map((lesson, index) => {
                     if (
                         index === lessonIndex &&
                         lesson.type === ContentType.Lesson
