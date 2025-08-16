@@ -18,6 +18,7 @@ import {
     TempQuizTypeOneElement,
     TempQuizTypeTwoElement,
     TempQuizTypeThreeElement,
+    TempQuizTypeFourElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
 
@@ -295,6 +296,38 @@ function transformQuizTypeThree(
     };
 }
 
+const getLetterByIndex = (index: number) => {
+    return String.fromCharCode(65 + index); // 65 is ASCII for 'A'
+};
+
+function transformQuizTypeFour(
+    component: Extract<
+        useCaseModels.TLessonComponent,
+        { type: 'quizTypeFour' }
+    >,
+): TempQuizTypeFourElement {
+    return {
+        type: LessonElementType.QuizTypeFour,
+        order: component.order,
+        id: component.id,
+        title: component.title,
+        description: component.description,
+        images: component.options.map((option, idx) => ({
+            imageFile: {
+                ...option.imageFile,
+                url: option.imageFile.downloadUrl,
+                status: 'available',
+                thumbnailUrl: option.imageFile.downloadUrl,
+            },
+            correctLetter: getLetterByIndex(idx),
+        })),
+        labels: component.options.map((option, idx) => ({
+            letter: getLetterByIndex(idx),
+            description: option.description,
+        })),
+    };
+}
+
 const transformers = {
     richText: transformRichText,
     heading: transformHeading,
@@ -310,6 +343,7 @@ const transformers = {
     quizTypeOne: transformQuizTypeOne,
     quizTypeTwo: transformQuizTypeTwo,
     quizTypeThree: transformQuizTypeThree,
+    quizTypeFour: transformQuizTypeFour,
 } as const;
 
 export function getLessonComponentsMap(
