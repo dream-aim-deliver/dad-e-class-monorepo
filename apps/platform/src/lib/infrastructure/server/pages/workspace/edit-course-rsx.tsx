@@ -8,7 +8,7 @@ import {
 } from '../../config/trpc/server';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import EditCourse from '../../../client/pages/workspace/edit-course';
+import EditCourse from '../../../client/pages/workspace/edit/edit-course';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 
 interface CourseServerComponentProps {
