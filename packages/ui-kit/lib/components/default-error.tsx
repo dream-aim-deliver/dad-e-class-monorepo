@@ -6,6 +6,7 @@ interface DefaultErrorProps {
     title?: string;
     description?: string;
     onRetry?: () => void;
+    className?: string;
 }
 
 // TODO: properly design the default error
@@ -22,5 +23,6 @@ export default function DefaultError(props: DefaultErrorProps) {
             onClick: props.onRetry,
             label: dictionary.components.defaultError.retry,
         }}
+        className={props.className}
     />;
 }
