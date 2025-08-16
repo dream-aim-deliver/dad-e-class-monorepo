@@ -113,9 +113,9 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({
   };
 
   // Track image errors per image index
-  const [imageErrors, setImageErrors] = useState({});
+  const [imageErrors, setImageErrors] = useState<{ [key: number]: boolean }>({});
 
-  const handleImageError = (index) => {
+  const handleImageError = (index: number) => {
     setImageErrors((prev) => ({ ...prev, [index]: true }));
   };
 
@@ -179,7 +179,7 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({
                     </div>
                   ) : (
                     <img
-                      src={image.imageFile?.thumbnailUrl}
+                      src={image.imageFile?.thumbnailUrl ?? undefined}
                       alt={`Quiz Illustration ${index + 1}`}
                       className="rounded w-full h-[153px] object-cover"
                       onError={() => handleImageError(index)}

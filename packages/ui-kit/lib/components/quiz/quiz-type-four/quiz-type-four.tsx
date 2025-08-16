@@ -107,6 +107,7 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
     const nextLetter = String.fromCharCode(65 + labels.length);
     handleChange({
       labels: [...labels, { letter: nextLetter, description: "" }],
+      // @ts-ignore
       images: [...images, { correctLetter: nextLetter, fileData: undefined }],
     });
   };

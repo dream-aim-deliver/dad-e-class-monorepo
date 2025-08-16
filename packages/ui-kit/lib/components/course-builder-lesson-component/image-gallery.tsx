@@ -25,6 +25,7 @@ const imageGalleryElement: CourseElementTemplate = {
         icon: IconImageGallery,
         label: "Image Gallery"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent
 };
@@ -77,8 +78,8 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
         return await onImageUpload(fileRequest, abortSignal);
     };
 
-    const handleUploadComplete = (imageMetadata: TImageFile) => {
-        onUploadComplete?.(imageMetadata);
+    const handleUploadComplete = (imageMetadata: fileMetadata.TFileMetadata) => {
+        onUploadComplete?.(imageMetadata as TImageFile);
     };
 
     return (
@@ -86,9 +87,9 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.ImageGalleryText}
             icon={<IconImageGallery classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(elementInstance.id)}
-            onDownClick={() => onDownClick(elementInstance.id)}
-            onDeleteClick={() => onDeleteClick(elementInstance.id)}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >

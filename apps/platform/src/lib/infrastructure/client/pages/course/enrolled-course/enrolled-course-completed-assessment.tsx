@@ -55,7 +55,10 @@ export default function EnrolledCourseCompletedAssessment(
         const components = componentsViewModel.data.components;
         const progress = progressViewModel.data.progress;
 
-        return transformLessonComponentsWithProgress(components, progress);
+        return transformLessonComponentsWithProgress(
+            components,
+            progress,
+        ) as FormElement[];
     }, [componentsViewModel, progressViewModel]);
 
     if (!componentsViewModel || !progressViewModel) {

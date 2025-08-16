@@ -21,7 +21,9 @@ const downloadFilesElement: CourseElementTemplate = {
         icon: IconCloudDownload,
         label: "Download Files"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
+    // @ts-ignore
     formComponent: FormComponent
 };
 
@@ -87,9 +89,9 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.downloadFilesText}
             icon={<IconCloudDownload classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(elementInstance.id)}
-            onDownClick={() => onDownClick(elementInstance.id)}
-            onDeleteClick={() => onDeleteClick(elementInstance.id)}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >

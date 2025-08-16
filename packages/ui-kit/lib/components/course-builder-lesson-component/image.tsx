@@ -24,6 +24,7 @@ const imageFilesElement: CourseElementTemplate = {
         icon: IconImage,
         label: "Image"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent
 };
@@ -80,10 +81,10 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
         return await onImageUpload(fileRequest, abortSignal);
     };
 
-    const handleUploadComplete = (ImageMetadata: TImageFile) => {
+    const handleUploadComplete = (ImageMetadata: fileMetadata.TFileMetadata) => {
         // Update form data with the uploaded file URL (if it exists)
         // Notify parent component that upload is complete
-        onUploadComplete?.(ImageMetadata);
+        onUploadComplete?.(ImageMetadata as TImageFile);
     };
 
     return (
@@ -91,9 +92,9 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.ImageFileText}
             icon={<IconImage classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(elementInstance.id)}
-            onDownClick={() => onDownClick(elementInstance.id)}
-            onDeleteClick={() => onDeleteClick(elementInstance.id)}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >
@@ -128,7 +129,7 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
     return (
         <section className="w-full">
             <img
-                src={imageFile.file.url}
+                src={imageFile.file?.url}
                 alt="Uploaded image content"
                 className="w-full h-auto object-cover"
                 onError={() => setImageError(true)}

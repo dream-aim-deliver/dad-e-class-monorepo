@@ -192,7 +192,7 @@ function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
       {"content" in elementInstance && (
         <TextInputRenderer
           className="p-2 bg-base-neutral-800 rounded-md"
-          content={elementInstance.content}
+          content={elementInstance.content ?? []}
           onDeserializationError={onDeserializationError}
         />
       )}
