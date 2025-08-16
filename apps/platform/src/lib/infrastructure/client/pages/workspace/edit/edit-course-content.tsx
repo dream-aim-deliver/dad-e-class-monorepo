@@ -34,26 +34,42 @@ function StructureComponent({ name, icon, onClick }: StructureComponentProps) {
     );
 }
 
+enum ContentType {
+    Lesson = 'lesson',
+    Milestone = 'milestone',
+}
+
 interface CourseLesson {
+    type: ContentType.Lesson;
     id?: number;
     title?: string;
     isExtraTraining: boolean;
 }
 
 interface CourseMilestone {
+    type: ContentType.Milestone;
     id?: number;
 }
 
 interface CourseModule {
     id?: number;
     title?: string;
-    lessons: CourseLesson[];
-    milestones: CourseMilestone[];
+    content: (CourseLesson | CourseMilestone)[];
 }
 
 interface ModuleContentProps {
-    lessons: CourseLesson[];
-    milestones: CourseMilestone[];
+    content: (CourseLesson | CourseMilestone)[];
+}
+
+function LessonItem({ lesson }: { lesson: CourseLesson }) {
+    return (
+        <div className="flex gap-2 items-center bg-card-fill border border-base-neutral-700 rounded-lg p-3">
+            <IconLesson />
+            <span className="font-bold">
+                {lesson.title || 'Untitled Lesson'}
+            </span>
+        </div>
+    );
 }
 
 function MilestoneItem({ milestone }: { milestone: CourseMilestone }) {
@@ -65,8 +81,8 @@ function MilestoneItem({ milestone }: { milestone: CourseMilestone }) {
     );
 }
 
-function ModuleContents({ lessons, milestones }: ModuleContentProps) {
-    const isEmpty = lessons.length === 0 && milestones.length === 0;
+function ModuleContents({ content }: ModuleContentProps) {
+    const isEmpty = content.length === 0;
 
     return (
         <div className="flex flex-col gap-2 ml-4">
@@ -77,12 +93,20 @@ function ModuleContents({ lessons, milestones }: ModuleContentProps) {
                     </span>
                 </div>
             )}
-            {milestones.map((milestone, index) => (
-                <MilestoneItem
-                    key={`milestone-${index}`}
-                    milestone={milestone}
-                />
-            ))}
+            {content.map((item, index) => {
+                if (item.type === ContentType.Milestone) {
+                    return (
+                        <MilestoneItem
+                            key={`milestone-${index}`}
+                            milestone={item}
+                        />
+                    );
+                }
+                if (item.type === ContentType.Lesson) {
+                    return <LessonItem key={`lesson-${index}`} lesson={item} />;
+                }
+                return null;
+            })}
         </div>
     );
 }
@@ -112,6 +136,8 @@ export function ModuleEditor({
     isFirst,
     isLast,
 }: ModuleEditorProps) {
+    console.log(module.content);
+
     const handleTitleChange = (value: string) => {
         onUpdate(index, { ...module, title: value });
     };
@@ -163,12 +189,7 @@ export function ModuleEditor({
                     />
                 </div>
             </div>
-            {isExpanded && (
-                <ModuleContents
-                    lessons={module.lessons}
-                    milestones={module.milestones}
-                />
-            )}
+            {isExpanded && <ModuleContents content={module.content} />}
         </div>
     );
 }
@@ -176,6 +197,7 @@ export function ModuleEditor({
 // TODO: Translate
 // TODO: Add search functionality
 // TODO: Add lesson templating
+// TODO: Add limits on number of modules, lessons, and milestones
 export default function EditCourseContent({ slug }: EditCourseContentProps) {
     const [modules, setModules] = useState<CourseModule[]>([]);
     const [expandedModuleIndex, setExpandedModuleIndex] = useState<
@@ -184,8 +206,7 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
 
     const addModule = () => {
         const newModule: CourseModule = {
-            lessons: [],
-            milestones: [],
+            content: [],
         };
         setModules([...modules, newModule]);
     };
@@ -233,35 +254,70 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
     };
 
     const addLesson = () => {
-        let moduleIndex = expandedModuleIndex;
-        if (moduleIndex === null) {
-            setExpandedModuleIndex(0);
-            moduleIndex = 0;
-        }
-
-        const newLesson: CourseLesson = {
-            isExtraTraining: false,
-        };
         setModules((prev) => {
+            let targetModuleIndex = expandedModuleIndex;
+
+            if (targetModuleIndex === null) {
+                if (prev.length === 0) {
+                    return prev;
+                }
+                targetModuleIndex = 0;
+            }
+
+            if (targetModuleIndex < 0 || targetModuleIndex >= prev.length) {
+                return prev;
+            }
+
+            const newLesson: CourseLesson = {
+                type: ContentType.Lesson,
+                isExtraTraining: false,
+            };
+
             const updated = [...prev];
-            updated[moduleIndex].lessons.push(newLesson);
+            updated[targetModuleIndex] = {
+                ...updated[targetModuleIndex],
+                content: [...updated[targetModuleIndex].content, newLesson],
+            };
+
             return updated;
         });
+
+        if (expandedModuleIndex === null && modules.length > 0) {
+            setExpandedModuleIndex(0);
+        }
     };
 
     const addMilestone = () => {
-        let moduleIndex = expandedModuleIndex;
-        if (moduleIndex === null) {
-            setExpandedModuleIndex(0);
-            moduleIndex = 0;
-        }
-
-        const newMilestone: CourseMilestone = {};
         setModules((prev) => {
+            let targetModuleIndex = expandedModuleIndex;
+
+            if (targetModuleIndex === null) {
+                if (prev.length === 0) {
+                    return prev;
+                }
+                targetModuleIndex = 0;
+            }
+
+            if (targetModuleIndex < 0 || targetModuleIndex >= prev.length) {
+                return prev;
+            }
+
+            const newMilestone: CourseMilestone = {
+                type: ContentType.Milestone,
+            };
+
             const updated = [...prev];
-            updated[moduleIndex].milestones.push(newMilestone);
+            updated[targetModuleIndex] = {
+                ...updated[targetModuleIndex],
+                content: [...updated[targetModuleIndex].content, newMilestone],
+            };
+
             return updated;
         });
+
+        if (expandedModuleIndex === null && modules.length > 0) {
+            setExpandedModuleIndex(0);
+        }
     };
 
     return (
@@ -272,17 +328,17 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
                     <StructureComponent
                         name="Module"
                         icon={<IconModule />}
-                        onClick={addModule}
+                        onClick={() => addModule()}
                     />
                     <StructureComponent
                         name="Lesson"
                         icon={<IconLesson />}
-                        onClick={addLesson}
+                        onClick={() => addLesson()}
                     />
                     <StructureComponent
                         name="Milestone"
                         icon={<IconMilestone />}
-                        onClick={addMilestone}
+                        onClick={() => addMilestone()}
                     />
                 </div>
             </div>
