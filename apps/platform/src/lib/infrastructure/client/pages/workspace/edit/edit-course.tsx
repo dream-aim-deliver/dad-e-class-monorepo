@@ -12,7 +12,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { Suspense, useEffect, useState } from 'react';
-import EditCourseContent from './edit-course-content';
+import EditCourseStructure from './edit-course-structure';
 import { CourseModule } from './types';
 import { trpc } from '../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
@@ -212,7 +212,7 @@ export default function EditCourse({ slug }: EditCoursesProps) {
                     className={tabContentClass}
                 >
                     <Suspense fallback={<DefaultLoading locale={locale} />}>
-                        <EditCourseContent
+                        <EditCourseStructure
                             slug={slug}
                             isEdited={isEdited}
                             setIsEdited={setIsEdited}

@@ -1,40 +1,17 @@
-import {
-    ComponentCard,
-    IconLesson,
-    IconMilestone,
-    IconModule,
-} from '@maany_shr/e-class-ui-kit';
-import { TLocale } from '@maany_shr/e-class-translations';
-import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
-import { useEffect, useState } from 'react';
-import { ModuleEditor } from './components/module-editor';
+import { useGetCourseStructurePresenter } from '../../../../hooks/use-course-structure-presenter';
+import { useState } from 'react';
 import {
     ContentType,
     CourseLesson,
     CourseMilestone,
     CourseModule,
-    EditCourseContentProps,
-} from './types';
-import { getModulesFromResponse } from './utils/transform-modules';
+} from '../types';
 
-export default function EditCourseContent({
-    slug,
-    isEdited,
-    setIsEdited,
-    modules,
-    setModules,
-    setCourseVersion,
-}: EditCourseContentProps) {
-    const locale = useLocale() as TLocale;
-
+export function useCourseStructure(slug: string) {
     const [courseStructureResponse] = trpc.getCourseStructure.useSuspenseQuery(
-        {
-            courseSlug: slug,
-        },
+        { courseSlug: slug },
         {
             refetchOnWindowFocus: false,
             refetchOnReconnect: false,
@@ -43,33 +20,33 @@ export default function EditCourseContent({
             staleTime: Infinity,
         },
     );
+
     const [courseStructureViewModel, setCourseStructureViewModel] = useState<
         viewModels.TCourseStructureViewModel | undefined
     >(undefined);
+
     const { presenter } = useGetCourseStructurePresenter(
         setCourseStructureViewModel,
     );
+
     presenter.present(courseStructureResponse, courseStructureViewModel);
 
-    useEffect(() => {
-        if (!courseStructureViewModel) return;
-        if (courseStructureViewModel.mode !== 'default') return;
-        setModules(getModulesFromResponse(courseStructureViewModel.data));
-        setCourseVersion(courseStructureViewModel.data.courseVersion);
-    }, [courseStructureViewModel]);
+    return courseStructureViewModel;
+}
 
-    const [expandedModuleIndex, setExpandedModuleIndex] = useState<
-        number | null
-    >(null);
+interface UseModuleOperationsProps {
+    modules: CourseModule[];
+    setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
+    setIsEdited: (edited: boolean) => void;
+    setExpandedModuleIndex: React.Dispatch<React.SetStateAction<number | null>>;
+}
 
-    if (!courseStructureViewModel) {
-        return <DefaultLoading locale={locale} />;
-    }
-
-    if (courseStructureViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
-    }
-
+export function useModuleOperations({
+    modules,
+    setModules,
+    setIsEdited,
+    setExpandedModuleIndex,
+}: UseModuleOperationsProps) {
     const addModule = () => {
         const newModule: CourseModule = {
             content: [],
@@ -125,6 +102,30 @@ export default function EditCourseContent({
         setIsEdited(true);
     };
 
+    return {
+        addModule,
+        updateModule,
+        deleteModule,
+        moveModuleUp,
+        moveModuleDown,
+    };
+}
+
+interface UseContentOperationsProps {
+    modules: CourseModule[];
+    setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
+    setIsEdited: (edited: boolean) => void;
+    expandedModuleIndex: number | null;
+    setExpandedModuleIndex: React.Dispatch<React.SetStateAction<number | null>>;
+}
+
+export function useContentOperations({
+    modules,
+    setModules,
+    setIsEdited,
+    expandedModuleIndex,
+    setExpandedModuleIndex,
+}: UseContentOperationsProps) {
     const addLesson = () => {
         setModules((prev) => {
             let targetModuleIndex = expandedModuleIndex;
@@ -274,6 +275,24 @@ export default function EditCourseContent({
         setIsEdited(true);
     };
 
+    return {
+        addLesson,
+        addMilestone,
+        onMoveContentUp,
+        onMoveContentDown,
+        onDeleteContent,
+    };
+}
+
+interface UseLessonOperationsProps {
+    setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
+    setIsEdited: (edited: boolean) => void;
+}
+
+export function useLessonOperations({
+    setModules,
+    setIsEdited,
+}: UseLessonOperationsProps) {
     const onLessonTitleChange = (
         moduleIndex: number,
         lessonIndex: number,
@@ -347,74 +366,24 @@ export default function EditCourseContent({
         setIsEdited(true);
     };
 
-    return (
-        <div className="flex lg:flex-row flex-col gap-4 text-text-primary">
-            <div className="h-fit flex flex-col gap-3 bg-card-fill border border-base-neutral-700 rounded-lg p-4 lg:w-[300px] w-full">
-                <span className="text-lg font-bold">Components</span>
-                <div className="flex flex-col gap-2">
-                    <ComponentCard
-                        name="Module"
-                        icon={<IconModule />}
-                        onClick={() => addModule()}
-                    />
-                    <ComponentCard
-                        name="Lesson"
-                        icon={<IconLesson />}
-                        onClick={() => addLesson()}
-                    />
-                    <ComponentCard
-                        name="Milestone"
-                        icon={<IconMilestone />}
-                        onClick={() => addMilestone()}
-                    />
-                </div>
-            </div>
-            <div className="flex flex-col gap-2 flex-1">
-                {modules.map((module, index) => (
-                    <ModuleEditor
-                        key={`module-${index}`}
-                        module={module}
-                        onUpdate={(updatedModule) =>
-                            updateModule(index, updatedModule)
-                        }
-                        onDelete={() => deleteModule(index)}
-                        onMoveUp={() => moveModuleUp(index)}
-                        onMoveDown={() => moveModuleDown(index)}
-                        onMoveContentUp={(contentIndex) =>
-                            onMoveContentUp(index, contentIndex)
-                        }
-                        onMoveContentDown={(contentIndex) =>
-                            onMoveContentDown(index, contentIndex)
-                        }
-                        onDeleteContent={(contentIndex) =>
-                            onDeleteContent(index, contentIndex)
-                        }
-                        isExpanded={expandedModuleIndex === index}
-                        onExpand={() => {
-                            if (expandedModuleIndex === index) {
-                                setExpandedModuleIndex(null);
-                            } else {
-                                setExpandedModuleIndex(index);
-                            }
-                        }}
-                        isFirst={index === 0}
-                        isLast={index === modules.length - 1}
-                        onLessonTitleChange={(lessonIndex, title) =>
-                            onLessonTitleChange(index, lessonIndex, title)
-                        }
-                        onLessonExtraTrainingChange={(
-                            lessonIndex,
-                            isExtraTraining,
-                        ) => {
-                            onExtraTrainingChange(
-                                index,
-                                lessonIndex,
-                                isExtraTraining,
-                            );
-                        }}
-                    />
-                ))}
-            </div>
-        </div>
-    );
+    return {
+        onLessonTitleChange,
+        onExtraTrainingChange,
+    };
+}
+
+export function useModuleExpansion() {
+    const [expandedModuleIndex, setExpandedModuleIndex] = useState<
+        number | null
+    >(null);
+
+    const onExpand = (index: number) => {
+        setExpandedModuleIndex((prev) => (prev === index ? null : index));
+    };
+
+    return {
+        expandedModuleIndex,
+        setExpandedModuleIndex,
+        onExpand,
+    };
 }
