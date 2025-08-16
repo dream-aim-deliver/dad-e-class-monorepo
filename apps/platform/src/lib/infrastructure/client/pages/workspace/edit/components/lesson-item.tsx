@@ -30,7 +30,7 @@ export function LessonItem({
     onExtraTrainingChange,
 }: LessonItemProps) {
     return (
-        <div className="flex flex-col gap-4 bg-card-fill border border-base-neutral-700 rounded-lg p-3">
+        <div className="flex flex-col gap-4 bg-card-fill border border-base-neutral-700 rounded-lg p-4">
             <div className="flex gap-4 items-center w-full">
                 <IconLesson />
                 <InputField
