@@ -20,7 +20,13 @@ import {
     EditCourseContentProps,
 } from './types';
 
-export default function EditCourseContent({ slug }: EditCourseContentProps) {
+export default function EditCourseContent({
+    slug,
+    isEdited,
+    setIsEdited,
+    modules,
+    setModules,
+}: EditCourseContentProps) {
     const locale = useLocale() as TLocale;
 
     const [courseStructureResponse] = trpc.getCourseStructure.useSuspenseQuery(
@@ -32,6 +38,7 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
             refetchOnReconnect: false,
             refetchOnMount: false,
             retry: false,
+            staleTime: Infinity,
         },
     );
     const [courseStructureViewModel, setCourseStructureViewModel] = useState<
@@ -41,8 +48,6 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
         setCourseStructureViewModel,
     );
     presenter.present(courseStructureResponse, courseStructureViewModel);
-
-    const [modules, setModules] = useState<CourseModule[]>([]);
 
     useEffect(() => {
         if (!courseStructureViewModel) return;
@@ -64,7 +69,7 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
                 };
             }),
         );
-    }, [courseStructureViewModel]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [courseStructureViewModel]);
 
     const [expandedModuleIndex, setExpandedModuleIndex] = useState<
         number | null
@@ -83,6 +88,7 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
             content: [],
         };
         setModules([...modules, newModule]);
+        setIsEdited(true);
     };
 
     const updateModule = (index: number, updatedModule: CourseModule) => {
@@ -91,10 +97,13 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
             updated[index] = updatedModule;
             return updated;
         });
+        setIsEdited(true);
     };
 
     const deleteModule = (index: number) => {
         setModules((prev) => prev.filter((_, i) => i !== index));
+        setExpandedModuleIndex(null);
+        setIsEdited(true);
     };
 
     const moveModuleUp = (index: number) => {
@@ -110,6 +119,7 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
         });
 
         setExpandedModuleIndex(null);
+        setIsEdited(true);
     };
 
     const moveModuleDown = (index: number) => {
@@ -125,6 +135,7 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
         });
 
         setExpandedModuleIndex(null);
+        setIsEdited(true);
     };
 
     const addLesson = () => {
@@ -159,6 +170,8 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
         if (expandedModuleIndex === null && modules.length > 0) {
             setExpandedModuleIndex(0);
         }
+
+        setIsEdited(true);
     };
 
     const addMilestone = () => {
@@ -192,6 +205,8 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
         if (expandedModuleIndex === null && modules.length > 0) {
             setExpandedModuleIndex(0);
         }
+
+        setIsEdited(true);
     };
 
     const onMoveContentUp = (moduleIndex: number, contentIndex: number) => {
@@ -216,6 +231,8 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
 
             return updated;
         });
+
+        setIsEdited(true);
     };
 
     const onMoveContentDown = (moduleIndex: number, contentIndex: number) => {
@@ -241,6 +258,8 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
 
             return updated;
         });
+
+        setIsEdited(true);
     };
 
     const onDeleteContent = (moduleIndex: number, contentIndex: number) => {
@@ -264,6 +283,8 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
 
             return updated;
         });
+
+        setIsEdited(true);
     };
 
     const onLessonTitleChange = (
@@ -302,6 +323,8 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
 
             return updated;
         });
+
+        setIsEdited(true);
     };
 
     const onExtraTrainingChange = (
@@ -333,6 +356,8 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
 
             return updated;
         });
+
+        setIsEdited(true);
     };
 
     return (

@@ -26,10 +26,15 @@ export function TabProvider({ children, onValueChange, defaultTab }: TabProvider
   const [activeTab, setActiveTab] = useState(defaultTab);
 
   const handleSetActiveTab = (id: string) => {
-    setActiveTab(id);
     if (onValueChange) {
-      onValueChange(id);
+      try {
+        onValueChange(id);
+      } catch (error) {
+        console.warn('Tab change cancelled');
+        return;
+      }
     }
+    setActiveTab(id);
   }
 
   return (

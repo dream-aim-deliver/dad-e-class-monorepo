@@ -10,10 +10,10 @@ import {
     DefaultLoading,
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
-import { Edit } from 'lucide-react';
 import { useLocale } from 'next-intl';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import EditCourseContent from './edit-course-content';
+import { CourseModule } from './types';
 
 interface EditCoursesProps {
     slug: string;
@@ -22,9 +22,14 @@ interface EditCoursesProps {
 interface EditCourseHeaderProps {
     onPreview: () => void;
     onSave: () => void;
+    canPreview: boolean;
 }
 
-function EditCourseHeader({ onPreview, onSave }: EditCourseHeaderProps) {
+function EditCourseHeader({
+    onPreview,
+    onSave,
+    canPreview,
+}: EditCourseHeaderProps) {
     return (
         <div className="flex md:flex-row flex-col md:items-center justify-between gap-4">
             <PageTitle text="Edit course" />
@@ -33,9 +38,10 @@ function EditCourseHeader({ onPreview, onSave }: EditCourseHeaderProps) {
                     variant="text"
                     iconLeft={<IconEyeShow />}
                     hasIconLeft
-                    text="Show Preview (Alt+P)"
+                    text={canPreview ? 'Show Preview' : 'Save to preview'}
                     className="px-0"
                     onClick={onPreview}
+                    disabled={!canPreview}
                 />
                 <Button
                     variant="primary"
@@ -49,10 +55,34 @@ function EditCourseHeader({ onPreview, onSave }: EditCourseHeaderProps) {
     );
 }
 
+enum TabTypes {
+    General = 'general',
+    IntroOutline = 'intro-outline',
+    CourseContent = 'course-content',
+}
+
 // TODO: Translate
 export default function EditCourse({ slug }: EditCoursesProps) {
     const tabContentClass = 'mt-5';
     const locale = useLocale() as TLocale;
+
+    const [isEdited, setIsEdited] = useState(false);
+    const [activeTab, setActiveTab] = useState<TabTypes>(TabTypes.General);
+    const [modules, setModules] = useState<CourseModule[]>([]);
+
+    const handleTabChange = (value: string) => {
+        if (isEdited) {
+            const confirmSwitch = confirm(
+                'You have unsaved changes. Are you sure you want to switch tabs?',
+            );
+            if (!confirmSwitch) {
+                throw new Error('Tab switch cancelled due to unsaved changes.');
+            }
+        }
+        setIsEdited(false);
+        setModules([]);
+        setActiveTab(value as TabTypes);
+    };
 
     const handlePreview = () => {
         // TODO: Implement preview functionality
@@ -62,31 +92,35 @@ export default function EditCourse({ slug }: EditCoursesProps) {
     const handleSave = () => {
         // TODO: Implement save functionality
         console.log('Save clicked for course:', slug);
+        setIsEdited(false); // Reset edited state after saving
     };
 
     return (
         <div className="flex flex-col gap-4">
-            <EditCourseHeader onPreview={handlePreview} onSave={handleSave} />
-            <Tabs.Root defaultTab="general">
+            <EditCourseHeader
+                onPreview={handlePreview}
+                onSave={handleSave}
+                canPreview={!isEdited}
+            />
+            <Tabs.Root
+                defaultTab={TabTypes.General}
+                onValueChange={handleTabChange}
+            >
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
-                    <Tabs.Trigger value="general">General</Tabs.Trigger>
-                    <Tabs.Trigger value="intro-outline">
+                    <Tabs.Trigger value={TabTypes.General}>
+                        General
+                    </Tabs.Trigger>
+                    <Tabs.Trigger value={TabTypes.IntroOutline}>
                         Intro & Outline
                     </Tabs.Trigger>
-                    <Tabs.Trigger value="course-content">
+                    <Tabs.Trigger value={TabTypes.CourseContent}>
                         Course Content
                     </Tabs.Trigger>
                 </Tabs.List>
-                <Tabs.Content value="general" className={tabContentClass}>
-                    <Suspense fallback={<DefaultLoading locale={locale} />}>
-                        <DefaultError
-                            locale={locale}
-                            title="Not implemented yet"
-                            description="This feature is not implemented yet."
-                        />
-                    </Suspense>
-                </Tabs.Content>
-                <Tabs.Content value="intro-outline" className={tabContentClass}>
+                <Tabs.Content
+                    value={TabTypes.General}
+                    className={tabContentClass}
+                >
                     <Suspense fallback={<DefaultLoading locale={locale} />}>
                         <DefaultError
                             locale={locale}
@@ -96,11 +130,29 @@ export default function EditCourse({ slug }: EditCoursesProps) {
                     </Suspense>
                 </Tabs.Content>
                 <Tabs.Content
-                    value="course-content"
+                    value={TabTypes.IntroOutline}
                     className={tabContentClass}
                 >
                     <Suspense fallback={<DefaultLoading locale={locale} />}>
-                        <EditCourseContent slug={slug} />
+                        <DefaultError
+                            locale={locale}
+                            title="Not implemented yet"
+                            description="This feature is not implemented yet."
+                        />
+                    </Suspense>
+                </Tabs.Content>
+                <Tabs.Content
+                    value={TabTypes.CourseContent}
+                    className={tabContentClass}
+                >
+                    <Suspense fallback={<DefaultLoading locale={locale} />}>
+                        <EditCourseContent
+                            slug={slug}
+                            isEdited={isEdited}
+                            setIsEdited={setIsEdited}
+                            modules={modules}
+                            setModules={setModules}
+                        />
                     </Suspense>
                 </Tabs.Content>
             </Tabs.Root>
