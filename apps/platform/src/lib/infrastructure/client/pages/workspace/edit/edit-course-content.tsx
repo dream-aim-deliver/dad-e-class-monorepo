@@ -62,6 +62,11 @@ interface ModuleContentProps {
     onMoveContentUp: (contentIndex: number) => void;
     onMoveContentDown: (contentIndex: number) => void;
     onDeleteContent: (contentIndex: number) => void;
+    onLessonTitleChange: (lessonIndex: number, newTitle: string) => void;
+    onLessonExtraTrainingChange: (
+        lessonIndex: number,
+        extraTraining: boolean,
+    ) => void;
 }
 
 function ContentControlButtons({
@@ -128,6 +133,8 @@ function LessonItem({
     onDelete,
     isFirst,
     isLast,
+    onTitleChange,
+    onExtraTrainingChange,
 }: {
     lesson: CourseLesson;
     onMoveUp: () => void;
@@ -135,13 +142,20 @@ function LessonItem({
     onDelete: () => void;
     isFirst: boolean;
     isLast: boolean;
+    onTitleChange: (newTitle: string) => void;
+    onExtraTrainingChange: (isExtraTraining: boolean) => void;
 }) {
     return (
-        <div className="flex gap-2 items-center bg-card-fill border border-base-neutral-700 rounded-lg p-3">
+        <div className="flex gap-4 items-center bg-card-fill border border-base-neutral-700 rounded-lg p-3">
             <IconLesson />
-            <span className="font-bold">
-                {lesson.title || 'Untitled Lesson'}
-            </span>
+            <InputField
+                value={lesson.title || ''}
+                inputText="Lesson title"
+                setValue={(value) => {
+                    onTitleChange(value);
+                }}
+                className="flex-1 font-bold"
+            />
             <ContentControlButtons
                 onMoveUp={onMoveUp}
                 onMoveDown={onMoveDown}
@@ -171,7 +185,7 @@ function MilestoneItem({
     return (
         <div className="flex gap-2 items-center bg-card-fill border border-base-neutral-700 rounded-lg p-3">
             <IconMilestone />
-            <span className="font-bold">Milestone</span>
+            <span className="font-bold w-full">Milestone</span>
             <ContentControlButtons
                 onMoveUp={onMoveUp}
                 onMoveDown={onMoveDown}
@@ -188,6 +202,8 @@ function ModuleContent({
     onMoveContentUp,
     onMoveContentDown,
     onDeleteContent,
+    onLessonTitleChange,
+    onLessonExtraTrainingChange,
 }: ModuleContentProps) {
     const isEmpty = content.length === 0;
 
@@ -224,6 +240,15 @@ function ModuleContent({
                             onDelete={() => onDeleteContent(index)}
                             isFirst={index === 0}
                             isLast={index === content.length - 1}
+                            onTitleChange={(newTitle) =>
+                                onLessonTitleChange(index, newTitle)
+                            }
+                            onExtraTrainingChange={(isExtraTraining) =>
+                                onLessonExtraTrainingChange(
+                                    index,
+                                    isExtraTraining,
+                                )
+                            }
                         />
                     );
                 }
@@ -235,7 +260,6 @@ function ModuleContent({
 
 interface ModuleEditorProps {
     module: CourseModule;
-    index: number;
     onUpdate: (updatedModule: CourseModule) => void;
     onDelete: () => void;
     onMoveUp: () => void;
@@ -247,11 +271,16 @@ interface ModuleEditorProps {
     onExpand: () => void;
     isFirst: boolean;
     isLast: boolean;
+
+    onLessonTitleChange: (index: number, title: string) => void;
+    onLessonExtraTrainingChange: (
+        index: number,
+        isExtraTraining: boolean,
+    ) => void;
 }
 
 export function ModuleEditor({
     module,
-    index,
     onUpdate,
     onDelete,
     onMoveUp,
@@ -263,9 +292,9 @@ export function ModuleEditor({
     onExpand,
     isFirst,
     isLast,
+    onLessonTitleChange,
+    onLessonExtraTrainingChange,
 }: ModuleEditorProps) {
-    console.log(module.content);
-
     const handleTitleChange = (value: string) => {
         onUpdate({ ...module, title: value });
     };
@@ -305,6 +334,18 @@ export function ModuleEditor({
                     }
                     onDeleteContent={(contentIndex) =>
                         onDeleteContent(contentIndex)
+                    }
+                    onLessonTitleChange={(lessonIndex, newTitle) =>
+                        onLessonTitleChange(lessonIndex, newTitle)
+                    }
+                    onLessonExtraTrainingChange={(
+                        lessonIndex,
+                        isExtraTraining,
+                    ) =>
+                        onLessonExtraTrainingChange(
+                            lessonIndex,
+                            isExtraTraining,
+                        )
                     }
                 />
             )}
@@ -510,6 +551,44 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
         });
     };
 
+    const onLessonTitleChange = (
+        moduleIndex: number,
+        lessonIndex: number,
+        newTitle: string,
+    ) => {
+        setModules((prev) => {
+            if (moduleIndex < 0 || moduleIndex >= prev.length) return prev;
+            const module = prev[moduleIndex];
+            if (
+                !module ||
+                lessonIndex < 0 ||
+                lessonIndex >= module.content.length
+            )
+                return prev;
+            const lesson = module.content[lessonIndex];
+            if (!lesson) return prev;
+
+            const updated = [...prev];
+            updated[moduleIndex] = {
+                ...module,
+                content: module.content.map((lesson, index) => {
+                    if (
+                        index === lessonIndex &&
+                        lesson.type === ContentType.Lesson
+                    ) {
+                        return {
+                            ...lesson,
+                            title: newTitle,
+                        };
+                    }
+                    return lesson;
+                }),
+            };
+
+            return updated;
+        });
+    };
+
     return (
         <div className="flex lg:flex-row flex-col gap-4 text-text-primary">
             <div className="h-fit flex flex-col gap-3 bg-card-fill border border-base-neutral-700 rounded-lg p-4 lg:w-[300px] w-full">
@@ -537,7 +616,6 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
                     <ModuleEditor
                         key={`module-${index}`}
                         module={module}
-                        index={index}
                         onUpdate={(updatedModule) =>
                             updateModule(index, updatedModule)
                         }
@@ -563,6 +641,10 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
                         }}
                         isFirst={index === 0}
                         isLast={index === modules.length - 1}
+                        onLessonTitleChange={(lessonIndex, title) =>
+                            onLessonTitleChange(index, lessonIndex, title)
+                        }
+                        onLessonExtraTrainingChange={() => {}}
                     />
                 ))}
             </div>
