@@ -175,7 +175,11 @@ function LessonItem({
                 withText
                 className="w-fit"
             />
-            <Button variant="secondary" text="Edit" disabled />
+            <Button
+                variant="secondary"
+                text={lesson.id ? 'Edit' : 'Save to edit'}
+                disabled={lesson.id === undefined}
+            />
         </div>
     );
 }
