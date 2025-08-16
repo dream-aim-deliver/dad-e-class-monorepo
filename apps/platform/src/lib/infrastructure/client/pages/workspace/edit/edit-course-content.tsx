@@ -56,16 +56,33 @@ interface ModuleContentProps {
     milestones: CourseMilestone[];
 }
 
+function MilestoneItem({ milestone }: { milestone: CourseMilestone }) {
+    return (
+        <div className="flex gap-2 items-center bg-card-fill border border-base-neutral-700 rounded-lg p-3">
+            <IconMilestone />
+            <span className="font-bold">Milestone</span>
+        </div>
+    );
+}
+
 function ModuleContents({ lessons, milestones }: ModuleContentProps) {
     const isEmpty = lessons.length === 0 && milestones.length === 0;
 
     return (
-        <div className="ml-4 flex flex-col gap-2 bg-card-fill border border-base-neutral-700 rounded-lg p-4">
+        <div className="flex flex-col gap-2 ml-4">
             {isEmpty && (
-                <span className="text-sm text-text-secondary">
-                    Add lessons or milestones via the components bar
-                </span>
+                <div className=" flex flex-col gap-2 bg-card-fill border border-base-neutral-700 rounded-lg p-4">
+                    <span className="text-text-secondary">
+                        Add lessons or milestones
+                    </span>
+                </div>
             )}
+            {milestones.map((milestone, index) => (
+                <MilestoneItem
+                    key={`milestone-${index}`}
+                    milestone={milestone}
+                />
+            ))}
         </div>
     );
 }
@@ -110,7 +127,7 @@ export function ModuleEditor({
                         value={module.title || ''}
                         inputText="Module title"
                         setValue={handleTitleChange}
-                        className="w-full"
+                        className="w-full font-bold"
                     />
                 </div>
                 <div className="flex items-center gap-2">
@@ -196,6 +213,8 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
             ];
             return updated;
         });
+
+        setExpandedModuleIndex(null);
     };
 
     const moveModuleDown = (index: number) => {
@@ -209,6 +228,8 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
             ];
             return updated;
         });
+
+        setExpandedModuleIndex(null);
     };
 
     const addLesson = () => {
