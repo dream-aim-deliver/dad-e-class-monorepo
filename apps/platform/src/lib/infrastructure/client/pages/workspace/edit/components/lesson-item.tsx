@@ -2,6 +2,7 @@ import {
     Button,
     CheckBox,
     ContentControlButtons,
+    IconEdit,
     IconLesson,
     InputField,
 } from '@maany_shr/e-class-ui-kit';
@@ -61,6 +62,8 @@ export function LessonItem({
                 variant="secondary"
                 text={lesson.id ? 'Edit' : 'Save to edit'}
                 disabled={lesson.id === undefined}
+                iconLeft={<IconEdit />}
+                hasIconLeft
             />
         </div>
     );
