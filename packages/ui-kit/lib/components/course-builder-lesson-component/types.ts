@@ -41,6 +41,11 @@ export interface FileProps {
 
 type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
 
+export interface LinksElement extends BaseCourseFormElement {
+    type: CourseElementType.Links;
+    links: shared.TLink[];
+}
+
 export interface TempQuizTypeOneElement extends BaseCourseFormElement {
     type: CourseElementType.QuizTypeOne;
     title: string;

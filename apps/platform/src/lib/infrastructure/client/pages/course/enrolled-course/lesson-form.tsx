@@ -9,6 +9,8 @@ import {
     HeadingFormComponent,
     ImageFormComponent,
     ImageGalleryFormComponent,
+    LinksElement,
+    LinksFormComponent,
     MultiCheckFormComponent,
     OneOutOfThreeFormComponent,
     QuizFormComponentWrapper,
@@ -326,6 +328,20 @@ function renderQuizTypeFourComponent({
     );
 }
 
+function renderLinksComponent({
+    formElement,
+    key,
+    locale,
+}: ComponentRendererProps) {
+    return (
+        <LinksFormComponent
+            key={key}
+            elementInstance={formElement as LinksElement}
+            locale={locale}
+        />
+    );
+}
+
 const typeToRendererMap: Record<
     string,
     (props: ComponentRendererProps) => JSX.Element | null
@@ -345,6 +361,7 @@ const typeToRendererMap: Record<
     quizTypeTwo: renderQuizTypeTwoComponent,
     quizTypeThree: renderQuizTypeThreeComponent,
     quizTypeFour: renderQuizTypeFourComponent,
+    links: renderLinksComponent,
 };
 
 export default function LessonForm({ data }: LessonFormProps) {

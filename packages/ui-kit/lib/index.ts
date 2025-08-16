@@ -125,3 +125,5 @@ export { default as QuizTypeOneStudentView } from './components/quiz/quiz-type-o
 export { default as QuizTypeTwoStudentView } from './components/quiz/quiz-type-two/quiz-type-two-student-view';
 export { default as QuizTypeThreeStudentView } from './components/quiz/quiz-type-three/quiz-type-three-student-view';
 export { default as QuizTypeFourStudentView } from './components/quiz/quiz-type-four/quiz-type-four-student-view';
+
+export { FormComponent as LinksFormComponent } from './components/course-builder-lesson-component/links';
