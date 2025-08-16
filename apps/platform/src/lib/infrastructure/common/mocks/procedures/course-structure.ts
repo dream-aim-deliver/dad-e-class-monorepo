@@ -389,3 +389,21 @@ export const getCourseStructure = t.procedure
             };
         },
     );
+
+const saveCourseStructureMock: useCaseModels.TSaveCourseStructureSuccessResponse['data'] =
+    {
+        courseVersion: 1,
+        modules: [],
+    };
+
+export const saveCourseStructure = t.procedure
+    .input(useCaseModels.SaveCourseStructureRequestSchema)
+    .mutation(
+        async (): Promise<useCaseModels.TSaveCourseStructureUseCaseResponse> => {
+            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
+            return {
+                success: true,
+                data: saveCourseStructureMock,
+            };
+        },
+    );
