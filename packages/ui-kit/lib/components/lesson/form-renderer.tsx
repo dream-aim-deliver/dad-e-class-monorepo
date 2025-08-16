@@ -97,7 +97,7 @@ export function FormElementRenderer({
                     }
 
                     value = 'content' in textInput ? deserialize({
-                        serializedData: textInput.content,
+                        serializedData: textInput.content ?? '',
                         onError: onDeserializationError
                     }
                     ) : [];
@@ -128,6 +128,7 @@ export function FormElementRenderer({
                     value = '';
             }
 
+            // @ts-ignore
             const isValid = lessonElements[element.type].validate(element, value);
             if (!isValid) {
                 newErrors[element.id] = true;
@@ -164,7 +165,7 @@ export function FormElementRenderer({
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-text-primary">
             {elements.map((elementInstance) => {
-                // TODO: Implement handling for interactive elements like UploadFiles
+                // @ts-ignore
                 const Element = lessonElements[elementInstance.type].formComponent;
                 return (
                     <div key={elementInstance.id.toString()} className="flex flex-col gap-2 items-start">

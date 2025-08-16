@@ -23,6 +23,7 @@ const videoFileElement: CourseElementTemplate = {
         icon: IconVideo,
         label: "Video"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent
 };
@@ -89,8 +90,8 @@ export function DesignerComponent({
         return await onVideoUpload(fileRequest, abortSignal);
     };
 
-    const handleUploadComplete = (videoMetadata: TVideoFile) => {
-        onUploadComplete?.(videoMetadata);
+    const handleUploadComplete = (videoMetadata: fileMetadata.TFileMetadata) => {
+        onUploadComplete?.(videoMetadata as TVideoFile);
     };
 
     return (
@@ -98,9 +99,9 @@ export function DesignerComponent({
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.videoFileText}
             icon={<IconVideo classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(elementInstance.id)}
-            onDownClick={() => onDownClick(elementInstance.id)}
-            onDeleteClick={() => onDeleteClick(elementInstance.id)}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >
@@ -136,8 +137,8 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     return (
         <section className="w-full">
             <VideoPlayer
-                videoId={videoFile.file?.videoId}
-                thumbnailUrl={videoFile.file?.thumbnailUrl}
+                videoId={videoFile.file?.videoId ?? undefined}
+                thumbnailUrl={videoFile.file?.thumbnailUrl ?? undefined}
                 locale={locale}
                 className="aspect-video w-full"
             />

@@ -37,6 +37,8 @@ import { JSX, useEffect, useMemo, useRef, useState } from 'react';
 import { getLessonComponentsMap } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { mockCoaches } from '../../../../common/mocks/simple/coaches';
+import { simulateUploadFile } from '../../../../common/mocks/simple/upload-file';
 
 interface LessonFormProps {
     data: viewModels.TLessonComponentListSuccess;
@@ -50,7 +52,7 @@ interface ComponentRendererProps {
     locale: TLocale;
 }
 
-function renderRichTextComponent({ formElement, key }: ComponentRendererProps) {
+function RichTextComponent({ formElement, key }: ComponentRendererProps) {
     return (
         <RichTextFormComponent
             key={key}
@@ -59,7 +61,7 @@ function renderRichTextComponent({ formElement, key }: ComponentRendererProps) {
     );
 }
 
-function renderHeadingComponent({ formElement, key }: ComponentRendererProps) {
+function HeadingComponent({ formElement, key }: ComponentRendererProps) {
     return (
         <HeadingFormComponent
             key={key}
@@ -68,7 +70,7 @@ function renderHeadingComponent({ formElement, key }: ComponentRendererProps) {
     );
 }
 
-function renderTextInputComponent({
+function TextInputComponent({
     formElement,
     elementProgress,
     key,
@@ -86,7 +88,7 @@ function renderTextInputComponent({
     );
 }
 
-function renderSingleChoiceComponent({
+function SingleChoiceComponent({
     formElement,
     elementProgress,
     key,
@@ -102,7 +104,7 @@ function renderSingleChoiceComponent({
     );
 }
 
-function renderMultiCheckComponent({
+function MultiCheckComponent({
     formElement,
     elementProgress,
     key,
@@ -118,7 +120,7 @@ function renderMultiCheckComponent({
     );
 }
 
-function renderOneOutOfThreeComponent({
+function OneOutOfThreeComponent({
     formElement,
     elementProgress,
     key,
@@ -134,11 +136,7 @@ function renderOneOutOfThreeComponent({
     );
 }
 
-function renderVideoComponent({
-    formElement,
-    key,
-    locale,
-}: ComponentRendererProps) {
+function VideoComponent({ formElement, key, locale }: ComponentRendererProps) {
     return (
         <VideoFormComponent
             key={key}
@@ -148,11 +146,7 @@ function renderVideoComponent({
     );
 }
 
-function renderImageComponent({
-    formElement,
-    locale,
-    key,
-}: ComponentRendererProps) {
+function ImageComponent({ formElement, locale, key }: ComponentRendererProps) {
     return (
         <ImageFormComponent
             key={key}
@@ -162,7 +156,7 @@ function renderImageComponent({
     );
 }
 
-function renderImageCarouselComponent({
+function ImageCarouselComponent({
     formElement,
     key,
     locale,
@@ -176,7 +170,7 @@ function renderImageCarouselComponent({
     );
 }
 
-function renderDownloadFilesComponent({
+function DownloadFilesComponent({
     formElement,
     key,
     locale,
@@ -194,7 +188,7 @@ function renderDownloadFilesComponent({
     );
 }
 
-function renderUploadFilesComponent({
+function UploadFilesComponent({
     formElement,
     key,
     locale,
@@ -220,15 +214,7 @@ function renderUploadFilesComponent({
         // TODO: Implement real file upload logic
 
         // Simulate file upload logic; for the preview we might want to leave this as is
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        const mockFile: fileMetadata.TFileMetadata = {
-            id: Math.random().toString(36).substring(2, 15),
-            name: fileRequest.file.name,
-            size: fileRequest.file.size,
-            url: 'https://example.com/mock-file-url',
-            status: 'available',
-            category: 'generic',
-        };
+        const mockFile = await simulateUploadFile(fileRequest.file);
 
         if (abortSignal?.aborted) return null;
 
@@ -268,7 +254,7 @@ function renderUploadFilesComponent({
     );
 }
 
-function renderQuizTypeOneComponent({
+function QuizTypeOneComponent({
     formElement,
     key,
     locale,
@@ -284,7 +270,7 @@ function renderQuizTypeOneComponent({
     );
 }
 
-function renderQuizTypeTwoComponent({
+function QuizTypeTwoComponent({
     formElement,
     key,
     locale,
@@ -300,7 +286,7 @@ function renderQuizTypeTwoComponent({
     );
 }
 
-function renderQuizTypeThreeComponent({
+function QuizTypeThreeComponent({
     formElement,
     key,
     locale,
@@ -316,7 +302,7 @@ function renderQuizTypeThreeComponent({
     );
 }
 
-function renderQuizTypeFourComponent({
+function QuizTypeFourComponent({
     formElement,
     key,
     locale,
@@ -332,11 +318,7 @@ function renderQuizTypeFourComponent({
     );
 }
 
-function renderLinksComponent({
-    formElement,
-    key,
-    locale,
-}: ComponentRendererProps) {
+function LinksComponent({ formElement, key, locale }: ComponentRendererProps) {
     return (
         <LinksFormComponent
             key={key}
@@ -347,44 +329,12 @@ function renderLinksComponent({
 }
 
 // Mocked for the MVP
-function CourseCoachList(
-    {
-        // TODO: This needs courseSlug passed to it. Maybe through a context?
-    },
-) {
+function CourseCoachList() {
+    // TODO: This needs courseSlug passed to it. Maybe through a context?
     const locale = useLocale() as TLocale;
 
     // TODO: Implement fetching of coaches based on courseSlug
-    const coaches = [
-        {
-            username: 'janesmith',
-            name: 'Jane Smith',
-            rating: 4.8,
-            imageUrl:
-                'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-            numberOfRatings: 120,
-            description:
-                'Expert in communication skills and personal development.',
-        },
-        {
-            username: 'johndoe',
-            name: 'John Doe',
-            rating: 4.5,
-            imageUrl:
-                'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464950/2151206390_1_c38sdb.jpg',
-            numberOfRatings: 85,
-            description: 'Specialist in leadership and team building.',
-        },
-        {
-            username: 'alicejohnson',
-            name: 'Alice Johnson',
-            rating: 4.7,
-            imageUrl:
-                'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464952/2151206391_1_c38sdc.jpg',
-            numberOfRatings: 100,
-            description: 'Career coach with 10 years of experience.',
-        },
-    ];
+    const coaches = mockCoaches;
 
     // TODO: Implement "show more" functionality
     return (
@@ -411,7 +361,7 @@ function CourseCoachList(
     );
 }
 
-function renderCoachingSessionComponent({
+function CoachingSessionComponent({
     formElement,
     key,
     locale,
@@ -430,23 +380,23 @@ const typeToRendererMap: Record<
     string,
     (props: ComponentRendererProps) => JSX.Element | null
 > = {
-    richText: renderRichTextComponent,
-    heading: renderHeadingComponent,
-    textInput: renderTextInputComponent,
-    multipleChoice: renderMultiCheckComponent,
-    singleChoice: renderSingleChoiceComponent,
-    oneOutOfThree: renderOneOutOfThreeComponent,
-    video: renderVideoComponent,
-    image: renderImageComponent,
-    imageCarousel: renderImageCarouselComponent,
-    downloadFiles: renderDownloadFilesComponent,
-    uploadFiles: renderUploadFilesComponent,
-    quizTypeOne: renderQuizTypeOneComponent,
-    quizTypeTwo: renderQuizTypeTwoComponent,
-    quizTypeThree: renderQuizTypeThreeComponent,
-    quizTypeFour: renderQuizTypeFourComponent,
-    links: renderLinksComponent,
-    coachingSession: renderCoachingSessionComponent,
+    richText: RichTextComponent,
+    heading: HeadingComponent,
+    textInput: TextInputComponent,
+    multipleChoice: MultiCheckComponent,
+    singleChoice: SingleChoiceComponent,
+    oneOutOfThree: OneOutOfThreeComponent,
+    video: VideoComponent,
+    image: ImageComponent,
+    imageCarousel: ImageCarouselComponent,
+    downloadFiles: DownloadFilesComponent,
+    uploadFiles: UploadFilesComponent,
+    quizTypeOne: QuizTypeOneComponent,
+    quizTypeTwo: QuizTypeTwoComponent,
+    quizTypeThree: QuizTypeThreeComponent,
+    quizTypeFour: QuizTypeFourComponent,
+    links: LinksComponent,
+    coachingSession: CoachingSessionComponent,
 };
 
 export default function LessonForm({ data }: LessonFormProps) {
@@ -458,6 +408,7 @@ export default function LessonForm({ data }: LessonFormProps) {
     }, [components]);
 
     const elementProgress = useRef(new Map([...formElements]));
+    // When implementing student submission, this will be used to track progress
 
     const renderComponent = (component: useCaseModels.TLessonComponent) => {
         const formElement = formElements.get(component.id) as

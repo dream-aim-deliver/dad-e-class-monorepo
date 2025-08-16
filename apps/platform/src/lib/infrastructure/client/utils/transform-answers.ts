@@ -11,7 +11,7 @@ import {
 function transformTextInputAnswer(
     element: TextInputElement,
 ): Extract<useCaseModels.TAnswer, { type: 'textInput' }> {
-    if (!('content' in element)) {
+    if (!element.content) {
         throw new Error(`Text input element ${element.id} is missing content`);
     }
 

@@ -1,6 +1,6 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import React from "react";
-import { AssignmentElement, CoachingElement, QuizElement, ImageElement, ImageGallery, VideoElement, DownloadFilesElement, UploadFilesElement, TempQuizTypeOneElement, TempQuizTypeTwoElement, TempQuizTypeThreeElement, TempQuizTypeFourElement, LinksElement } from "../course-builder-lesson-component/types";
+import { AssignmentElement, CoachingElement, QuizElement, ImageElement, ImageGallery, VideoElement, DownloadFilesElement, UploadFilesElement, TempQuizTypeOneElement, TempQuizTypeTwoElement, TempQuizTypeThreeElement, TempQuizTypeFourElement, LinksElement, CoachingSessionElement } from "../course-builder-lesson-component/types";
 /**
  * Enum defining the types of course elements available in the course builder.
  * Each type represents a different kind of interactive element that can be added to a course.
@@ -49,7 +49,8 @@ export type CourseElement = CoachingElement |
     ImageElement |
     VideoElement |
     ImageGallery |
-    AssignmentElement;
+    AssignmentElement |
+    CoachingSessionElement;
 
 /**
  * Function type for submitting form values in the course builder.

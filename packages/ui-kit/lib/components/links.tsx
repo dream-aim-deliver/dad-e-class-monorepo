@@ -53,7 +53,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
     const [errors, setErrors] = useState<{ title?: string; url?: string }>({});
     const fileInputRef = useRef<HTMLInputElement>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
-    const [customIcon, setCustomIcon] = useState<fileMetadata.TFileMetadata | null>(initialCustomIcon);
+    const [customIcon, setCustomIcon] = useState<fileMetadata.TFileMetadata | null>(initialCustomIcon ?? null);
     const dictionary = getDictionary(locale);
     useEffect(() => {
         setCustomIcon(initialCustomIcon || null);
@@ -82,7 +82,7 @@ const LinkEdit: React.FC<LinkEditProps> = ({
 
     const handleSave = () => {
         if (validateFields()) {
-            onSave(title, url, customIcon);
+            onSave(title, url, customIcon ?? undefined);
         }
     };
 
