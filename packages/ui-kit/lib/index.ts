@@ -134,3 +134,6 @@ export { LessonCoachComponent } from './components/coaching-session-course-build
 
 export { SideMenu } from './components/sidemenu/sidemenu';
 export { CourseOutlineAccordion } from './components/course-outline-accordion';
+
+export { ComponentCard } from './components/course-builder/component-card';
+export { ContentControlButtons } from './components/course-builder/control-buttons';
