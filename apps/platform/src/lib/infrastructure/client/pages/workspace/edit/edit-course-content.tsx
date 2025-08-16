@@ -59,29 +59,136 @@ interface CourseModule {
 
 interface ModuleContentProps {
     content: (CourseLesson | CourseMilestone)[];
+    onMoveContentUp: (contentIndex: number) => void;
+    onMoveContentDown: (contentIndex: number) => void;
+    onDeleteContent: (contentIndex: number) => void;
 }
 
-function LessonItem({ lesson }: { lesson: CourseLesson }) {
+function ContentControlButtons({
+    onMoveUp,
+    onMoveDown,
+    onDelete,
+    isExpanded = false,
+    onExpand,
+    isFirst,
+    isLast,
+}: {
+    onMoveUp: () => void;
+    onMoveDown: () => void;
+    onDelete: () => void;
+    isExpanded?: boolean;
+    onExpand?: () => void;
+    isFirst: boolean;
+    isLast: boolean;
+}) {
+    return (
+        <div className="flex gap-2">
+            <div className="flex items-center gap-2">
+                <Button
+                    variant="text"
+                    iconLeft={<IconTrashAlt />}
+                    hasIconLeft
+                    onClick={() => onDelete()}
+                    className="px-0"
+                />
+                <Button
+                    variant="text"
+                    iconLeft={<IconChevronUp />}
+                    hasIconLeft
+                    onClick={() => onMoveUp()}
+                    disabled={isFirst}
+                    className="px-0"
+                />
+                <Button
+                    variant="text"
+                    iconLeft={<IconChevronDown />}
+                    hasIconLeft
+                    onClick={() => onMoveDown()}
+                    disabled={isLast}
+                    className="px-0"
+                />
+                {onExpand && (
+                    <Button
+                        variant="text"
+                        iconLeft={isExpanded ? <IconMinus /> : <IconPlus />}
+                        hasIconLeft
+                        onClick={() => onExpand()}
+                        className="px-0"
+                    />
+                )}
+            </div>
+        </div>
+    );
+}
+
+function LessonItem({
+    lesson,
+    onMoveUp,
+    onMoveDown,
+    onDelete,
+    isFirst,
+    isLast,
+}: {
+    lesson: CourseLesson;
+    onMoveUp: () => void;
+    onMoveDown: () => void;
+    onDelete: () => void;
+    isFirst: boolean;
+    isLast: boolean;
+}) {
     return (
         <div className="flex gap-2 items-center bg-card-fill border border-base-neutral-700 rounded-lg p-3">
             <IconLesson />
             <span className="font-bold">
                 {lesson.title || 'Untitled Lesson'}
             </span>
+            <ContentControlButtons
+                onMoveUp={onMoveUp}
+                onMoveDown={onMoveDown}
+                onDelete={onDelete}
+                isFirst={isFirst}
+                isLast={isLast}
+            />
         </div>
     );
 }
 
-function MilestoneItem({ milestone }: { milestone: CourseMilestone }) {
+function MilestoneItem({
+    milestone,
+    onMoveUp,
+    onMoveDown,
+    onDelete,
+    isFirst,
+    isLast,
+}: {
+    milestone: CourseMilestone;
+    onMoveUp: () => void;
+    onMoveDown: () => void;
+    onDelete: () => void;
+    isFirst: boolean;
+    isLast: boolean;
+}) {
     return (
         <div className="flex gap-2 items-center bg-card-fill border border-base-neutral-700 rounded-lg p-3">
             <IconMilestone />
             <span className="font-bold">Milestone</span>
+            <ContentControlButtons
+                onMoveUp={onMoveUp}
+                onMoveDown={onMoveDown}
+                onDelete={onDelete}
+                isFirst={isFirst}
+                isLast={isLast}
+            />
         </div>
     );
 }
 
-function ModuleContents({ content }: ModuleContentProps) {
+function ModuleContent({
+    content,
+    onMoveContentUp,
+    onMoveContentDown,
+    onDeleteContent,
+}: ModuleContentProps) {
     const isEmpty = content.length === 0;
 
     return (
@@ -99,11 +206,26 @@ function ModuleContents({ content }: ModuleContentProps) {
                         <MilestoneItem
                             key={`milestone-${index}`}
                             milestone={item}
+                            onMoveUp={() => onMoveContentUp(index)}
+                            onMoveDown={() => onMoveContentDown(index)}
+                            onDelete={() => onDeleteContent(index)}
+                            isFirst={index === 0}
+                            isLast={index === content.length - 1}
                         />
                     );
                 }
                 if (item.type === ContentType.Lesson) {
-                    return <LessonItem key={`lesson-${index}`} lesson={item} />;
+                    return (
+                        <LessonItem
+                            key={`lesson-${index}`}
+                            lesson={item}
+                            onMoveUp={() => onMoveContentUp(index)}
+                            onMoveDown={() => onMoveContentDown(index)}
+                            onDelete={() => onDeleteContent(index)}
+                            isFirst={index === 0}
+                            isLast={index === content.length - 1}
+                        />
+                    );
                 }
                 return null;
             })}
@@ -114,10 +236,13 @@ function ModuleContents({ content }: ModuleContentProps) {
 interface ModuleEditorProps {
     module: CourseModule;
     index: number;
-    onUpdate: (index: number, updatedModule: CourseModule) => void;
-    onDelete: (index: number) => void;
-    onMoveUp: (index: number) => void;
-    onMoveDown: (index: number) => void;
+    onUpdate: (updatedModule: CourseModule) => void;
+    onDelete: () => void;
+    onMoveUp: () => void;
+    onMoveDown: () => void;
+    onMoveContentUp: (contentIndex: number) => void;
+    onMoveContentDown: (contentIndex: number) => void;
+    onDeleteContent: (contentIndex: number) => void;
     isExpanded: boolean;
     onExpand: () => void;
     isFirst: boolean;
@@ -131,6 +256,9 @@ export function ModuleEditor({
     onDelete,
     onMoveUp,
     onMoveDown,
+    onMoveContentUp,
+    onMoveContentDown,
+    onDeleteContent,
     isExpanded,
     onExpand,
     isFirst,
@@ -139,7 +267,7 @@ export function ModuleEditor({
     console.log(module.content);
 
     const handleTitleChange = (value: string) => {
-        onUpdate(index, { ...module, title: value });
+        onUpdate({ ...module, title: value });
     };
 
     return (
@@ -156,40 +284,30 @@ export function ModuleEditor({
                         className="w-full font-bold"
                     />
                 </div>
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant="text"
-                        iconLeft={<IconTrashAlt />}
-                        hasIconLeft
-                        onClick={() => onDelete(index)}
-                        className="px-0"
-                    />
-                    <Button
-                        variant="text"
-                        iconLeft={<IconChevronUp />}
-                        hasIconLeft
-                        onClick={() => onMoveUp(index)}
-                        disabled={isFirst}
-                        className="px-0"
-                    />
-                    <Button
-                        variant="text"
-                        iconLeft={<IconChevronDown />}
-                        hasIconLeft
-                        onClick={() => onMoveDown(index)}
-                        disabled={isLast}
-                        className="px-0"
-                    />
-                    <Button
-                        variant="text"
-                        iconLeft={isExpanded ? <IconMinus /> : <IconPlus />}
-                        hasIconLeft
-                        onClick={onExpand}
-                        className="px-0"
-                    />
-                </div>
+                <ContentControlButtons
+                    onMoveUp={onMoveUp}
+                    onMoveDown={onMoveDown}
+                    onDelete={onDelete}
+                    isFirst={isFirst}
+                    isLast={isLast}
+                    isExpanded={isExpanded}
+                    onExpand={onExpand}
+                />
             </div>
-            {isExpanded && <ModuleContents content={module.content} />}
+            {isExpanded && (
+                <ModuleContent
+                    content={module.content}
+                    onMoveContentUp={(contentIndex) =>
+                        onMoveContentUp(contentIndex)
+                    }
+                    onMoveContentDown={(contentIndex) =>
+                        onMoveContentDown(contentIndex)
+                    }
+                    onDeleteContent={(contentIndex) =>
+                        onDeleteContent(contentIndex)
+                    }
+                />
+            )}
         </div>
     );
 }
@@ -320,6 +438,78 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
         }
     };
 
+    const onMoveContentUp = (moduleIndex: number, contentIndex: number) => {
+        setModules((prev) => {
+            if (moduleIndex < 0 || moduleIndex >= prev.length) return prev;
+            if (contentIndex <= 0) return prev;
+
+            const module = prev[moduleIndex];
+            if (!module || contentIndex >= module.content.length) return prev;
+
+            const newContent = [...module.content];
+            [newContent[contentIndex - 1], newContent[contentIndex]] = [
+                newContent[contentIndex],
+                newContent[contentIndex - 1],
+            ];
+
+            const updated = [...prev];
+            updated[moduleIndex] = {
+                ...module,
+                content: newContent,
+            };
+
+            return updated;
+        });
+    };
+
+    const onMoveContentDown = (moduleIndex: number, contentIndex: number) => {
+        setModules((prev) => {
+            if (moduleIndex < 0 || moduleIndex >= prev.length) return prev;
+
+            const module = prev[moduleIndex];
+            if (!module) return prev;
+            if (contentIndex < 0 || contentIndex >= module.content.length - 1)
+                return prev;
+
+            const newContent = [...module.content];
+            [newContent[contentIndex], newContent[contentIndex + 1]] = [
+                newContent[contentIndex + 1],
+                newContent[contentIndex],
+            ];
+
+            const updated = [...prev];
+            updated[moduleIndex] = {
+                ...module,
+                content: newContent,
+            };
+
+            return updated;
+        });
+    };
+
+    const onDeleteContent = (moduleIndex: number, contentIndex: number) => {
+        setModules((prev) => {
+            if (moduleIndex < 0 || moduleIndex >= prev.length) return prev;
+
+            const module = prev[moduleIndex];
+            if (!module) return prev;
+            if (contentIndex < 0 || contentIndex >= module.content.length)
+                return prev;
+
+            const newContent = module.content.filter(
+                (_, index) => index !== contentIndex,
+            );
+
+            const updated = [...prev];
+            updated[moduleIndex] = {
+                ...module,
+                content: newContent,
+            };
+
+            return updated;
+        });
+    };
+
     return (
         <div className="flex lg:flex-row flex-col gap-4 text-text-primary">
             <div className="h-fit flex flex-col gap-3 bg-card-fill border border-base-neutral-700 rounded-lg p-4 lg:w-[300px] w-full">
@@ -348,10 +538,21 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
                         key={`module-${index}`}
                         module={module}
                         index={index}
-                        onUpdate={updateModule}
-                        onDelete={deleteModule}
-                        onMoveUp={moveModuleUp}
-                        onMoveDown={moveModuleDown}
+                        onUpdate={(updatedModule) =>
+                            updateModule(index, updatedModule)
+                        }
+                        onDelete={() => deleteModule(index)}
+                        onMoveUp={() => moveModuleUp(index)}
+                        onMoveDown={() => moveModuleDown(index)}
+                        onMoveContentUp={(contentIndex) =>
+                            onMoveContentUp(index, contentIndex)
+                        }
+                        onMoveContentDown={(contentIndex) =>
+                            onMoveContentDown(index, contentIndex)
+                        }
+                        onDeleteContent={(contentIndex) =>
+                            onDeleteContent(index, contentIndex)
+                        }
                         isExpanded={expandedModuleIndex === index}
                         onExpand={() => {
                             if (expandedModuleIndex === index) {
