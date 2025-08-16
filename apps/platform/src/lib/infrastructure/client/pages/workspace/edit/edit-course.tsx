@@ -10,8 +10,10 @@ import {
     DefaultLoading,
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
+import { Edit } from 'lucide-react';
 import { useLocale } from 'next-intl';
 import { Suspense } from 'react';
+import EditCourseContent from './edit-course-content';
 
 interface EditCoursesProps {
     slug: string;
@@ -97,9 +99,9 @@ export default function EditCourse({ slug }: EditCoursesProps) {
                     value="course-content"
                     className={tabContentClass}
                 >
-                    <Suspense
-                        fallback={<DefaultLoading locale={locale} />}
-                    ></Suspense>
+                    <Suspense fallback={<DefaultLoading locale={locale} />}>
+                        <EditCourseContent slug={slug} />
+                    </Suspense>
                 </Tabs.Content>
             </Tabs.Root>
         </div>
