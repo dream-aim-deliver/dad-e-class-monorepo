@@ -45,7 +45,7 @@ interface CommonUploaderProps extends isLocalAware {
   onFilesChange: (
     file: fileMetadata.TFileUploadRequest,
     abortSignal?: AbortSignal
-  ) => Promise<fileMetadata.TFileMetadata>;
+  ) => Promise<fileMetadata.TFileMetadata | null>;
   onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
   isDeletionAllowed?: boolean;
 }
@@ -170,6 +170,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
             category: 'video' as const,
             videoId: "0", // Temporary placeholder
             thumbnailUrl: '', // Temporary placeholder
+            url: '',
           };
         case 'image':
           return {
@@ -210,6 +211,8 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
           { id: processingFile.id, name: processingFile.name, file: originalFile },
           controller.signal
         );
+
+        if (!finalMetadata) throw new Error('File upload failed');
 
         onUploadComplete(finalMetadata);
       } catch (err) {

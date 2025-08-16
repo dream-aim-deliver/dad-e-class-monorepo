@@ -21,7 +21,9 @@ const uploadFilesElement: CourseElementTemplate = {
         icon: IconCloudUpload,
         label: "Upload Files"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
+    // @ts-ignore
     formComponent: FormComponent
 };
 
@@ -76,9 +78,9 @@ export function DesignerComponent({
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.uploadFilesText}
             icon={<IconCloudUpload classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(elementInstance.id)}
-            onDownClick={() => onDownClick(elementInstance.id)}
-            onDeleteClick={() => onDeleteClick(elementInstance.id)}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >

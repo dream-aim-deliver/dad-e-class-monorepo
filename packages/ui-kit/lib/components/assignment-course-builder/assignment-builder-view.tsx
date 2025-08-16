@@ -52,7 +52,7 @@ export const AssignmentBuilderView: FC<AssignmentBuilderViewTypes> = ({
                     {assignmentData.description}
                 </p>
                 <div className="flex flex-col gap-2 items-start w-full">
-                    {assignmentData.files.map((file, index) => (
+                    {assignmentData.files?.map((file, index) => (
                         <FilePreview
                             key={index}
                             uploadResponse={file}
@@ -64,7 +64,7 @@ export const AssignmentBuilderView: FC<AssignmentBuilderViewTypes> = ({
                             }}
                         />
                     ))}
-                    {assignmentData.links.map((link, index) => (
+                    {assignmentData.links?.map((link, index) => (
                         <div className="flex flex-col w-full" key={index}>
                             <LinkPreview
                                 preview={false}

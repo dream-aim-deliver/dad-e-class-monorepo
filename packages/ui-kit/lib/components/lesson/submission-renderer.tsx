@@ -9,6 +9,7 @@ interface SubmissionRendererProps extends isLocalAware {
 export function SubmissionElementsRenderer({elements, locale}: SubmissionRendererProps) {
     return <div className="flex flex-col gap-4">
         {elements.map((elementInstance) => {
+            // @ts-ignore
             const Element = lessonElements[elementInstance.type].submissionComponent;
             return (
                 <div key={elementInstance.id.toString()} className="flex flex-col gap-2 items-start">

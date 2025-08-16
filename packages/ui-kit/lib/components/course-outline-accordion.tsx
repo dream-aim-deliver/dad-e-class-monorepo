@@ -142,7 +142,7 @@ function CourseOutlineAccordion({
                                                             >
                                                                 <Milestone
                                                                     completed={
-                                                                        milestone.completed
+                                                                        milestone.completed ?? false
                                                                     }
                                                                     locale={
                                                                         locale

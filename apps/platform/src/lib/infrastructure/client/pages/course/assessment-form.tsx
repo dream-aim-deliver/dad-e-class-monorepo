@@ -50,7 +50,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         }
         const components = componentsViewModel.data.components;
 
-        return transformLessonComponents(components);
+        return transformLessonComponents(components) as FormElement[];
     }, [componentsViewModel]);
 
     const submitMutation = trpc.submitAssessmentProgress.useMutation({});
