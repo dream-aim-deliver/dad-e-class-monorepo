@@ -19,6 +19,7 @@ import {
     CourseModule,
     EditCourseContentProps,
 } from './types';
+import { getModulesFromResponse } from './utils/transform-modules';
 
 export default function EditCourseContent({
     slug,
@@ -53,34 +54,7 @@ export default function EditCourseContent({
     useEffect(() => {
         if (!courseStructureViewModel) return;
         if (courseStructureViewModel.mode !== 'default') return;
-        setModules(
-            courseStructureViewModel.data.modules.map((module) => {
-                const content: (CourseLesson | CourseMilestone)[] = [];
-                module.lessons.forEach((lesson) => {
-                    content.push({
-                        type: ContentType.Lesson,
-                        id: lesson.id,
-                        title: lesson.title,
-                        isExtraTraining: lesson.extraTraining,
-                    });
-                });
-                module.milestones.forEach((milestone) => {
-                    const precedingLessonIndex = content.findIndex(
-                        (item) =>
-                            item.type === ContentType.Lesson &&
-                            item.id === milestone.precedingLessonId,
-                    );
-                    content.splice(precedingLessonIndex + 1, 0, {
-                        type: ContentType.Milestone,
-                        id: milestone.id,
-                    });
-                });
-                return {
-                    ...module,
-                    content,
-                };
-            }),
-        );
+        setModules(getModulesFromResponse(courseStructureViewModel.data));
         setCourseVersion(courseStructureViewModel.data.courseVersion);
     }, [courseStructureViewModel]);
 

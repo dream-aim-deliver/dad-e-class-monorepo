@@ -11,9 +11,13 @@ import {
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import { act, Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import EditCourseContent from './edit-course-content';
 import { CourseModule } from './types';
+import { trpc } from '../../../trpc/client';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useSaveCourseStructurePresenter } from '../../../hooks/use-save-course-structure-presenter';
+import { getModulesFromResponse } from './utils/transform-modules';
 
 interface EditCoursesProps {
     slug: string;
@@ -23,12 +27,14 @@ interface EditCourseHeaderProps {
     onPreview: () => void;
     onSave: () => void;
     canPreview: boolean;
+    isSaving: boolean;
 }
 
 function EditCourseHeader({
     onPreview,
     onSave,
     canPreview,
+    isSaving,
 }: EditCourseHeaderProps) {
     return (
         <div className="flex md:flex-row flex-col md:items-center justify-between gap-4">
@@ -47,8 +53,9 @@ function EditCourseHeader({
                     variant="primary"
                     iconLeft={<IconSave />}
                     hasIconLeft
-                    text="Save draft"
+                    text={isSaving ? 'Saving...' : 'Save draft'}
                     onClick={onSave}
+                    disabled={isSaving}
                 />
             </div>
         </div>
@@ -70,6 +77,37 @@ export default function EditCourse({ slug }: EditCoursesProps) {
     const [activeTab, setActiveTab] = useState<TabTypes>(TabTypes.General);
 
     const [courseVersion, setCourseVersion] = useState<number | null>(null);
+
+    const saveCourseStructureMutation = trpc.saveCourseStructure.useMutation();
+    const [saveCourseStructureViewModel, setSaveCourseStructureViewModel] =
+        useState<viewModels.TSaveCourseStructureViewModel | undefined>(
+            undefined,
+        );
+    const { presenter: saveCourseStructurePresenter } =
+        useSaveCourseStructurePresenter(setSaveCourseStructureViewModel);
+
+    useEffect(() => {
+        if (saveCourseStructureMutation.isSuccess) {
+            saveCourseStructurePresenter.present(
+                saveCourseStructureMutation.data,
+                saveCourseStructureViewModel,
+            );
+        }
+    }, [saveCourseStructureMutation]);
+
+    useEffect(() => {
+        if (
+            saveCourseStructureMutation.isSuccess &&
+            saveCourseStructureViewModel?.mode === 'default'
+        ) {
+            const transformedModules = getModulesFromResponse(
+                saveCourseStructureViewModel.data,
+            );
+            setModules(transformedModules);
+            setCourseVersion(saveCourseStructureViewModel.data.courseVersion);
+        }
+        // TODO: Handle error modes
+    }, [saveCourseStructureViewModel, saveCourseStructureMutation.isSuccess]);
 
     const [modules, setModules] = useState<CourseModule[]>([]);
 
@@ -93,14 +131,28 @@ export default function EditCourse({ slug }: EditCoursesProps) {
         console.log('Preview clicked for course:', slug);
     };
 
-    const saveCourseStructure = async () => {};
+    const saveCourseStructure = async () => {
+        if (!courseVersion) {
+            // TODO: Show an error message or handle the case where courseVersion is not set
+            return;
+        }
+
+        const result = await saveCourseStructureMutation.mutateAsync({
+            courseSlug: slug,
+            courseVersion,
+            modules: [],
+        });
+
+        if (result.success) {
+            setIsEdited(false);
+        }
+    };
 
     const handleSave = () => {
         if (activeTab === TabTypes.CourseContent) {
             saveCourseStructure();
             return;
         }
-        setIsEdited(false); // Reset edited state after saving
     };
 
     return (
@@ -109,6 +161,7 @@ export default function EditCourse({ slug }: EditCoursesProps) {
                 onPreview={handlePreview}
                 onSave={handleSave}
                 canPreview={!isEdited}
+                isSaving={saveCourseStructureMutation.isPending}
             />
             <Tabs.Root
                 defaultTab={TabTypes.General}
