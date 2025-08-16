@@ -23,6 +23,10 @@ export interface CourseModule {
 
 export interface EditCourseContentProps {
     slug: string;
+    isEdited: boolean;
+    setIsEdited: (isEdited: boolean) => void;
+    modules: CourseModule[];
+    setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
 }
 
 export interface ModuleContentProps {
