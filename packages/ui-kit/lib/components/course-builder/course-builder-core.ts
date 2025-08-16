@@ -7,6 +7,7 @@ import videoFileElement from "../course-builder-lesson-component/video";
 import downloadFilesElement from "../course-builder-lesson-component/download-files-lesson";
 import uploadFilesElement from "../course-builder-lesson-component/upload-files-lesson";
 import { CourseElementRegistry, CourseElementType } from "./types";
+import linksElement from "../course-builder-lesson-component/links";
 
 
 /**
@@ -27,4 +28,5 @@ export const courseElements: CourseElementRegistry = {
     [CourseElementType.QuizTypeTwo]: quizElement,
     [CourseElementType.QuizTypeThree]: quizElement,
     [CourseElementType.QuizTypeFour]: quizElement,
+    [CourseElementType.Links]: linksElement,
 };
