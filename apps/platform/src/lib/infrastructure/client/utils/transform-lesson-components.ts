@@ -20,6 +20,7 @@ import {
     TempQuizTypeThreeElement,
     TempQuizTypeFourElement,
     LinksElement,
+    CoachingSessionElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
 
@@ -351,6 +352,24 @@ function transformLinks(
     };
 }
 
+function transformCoachingSession(
+    component: Extract<
+        useCaseModels.TLessonComponent,
+        { type: 'coachingSession' }
+    >,
+): CoachingSessionElement {
+    return {
+        type: LessonElementType.CoachingSession,
+        order: component.order,
+        id: component.id,
+        coachingSession: {
+            id: component.courseCoachingOfferingId,
+            name: component.name,
+            duration: component.duration,
+        },
+    };
+}
+
 const transformers = {
     richText: transformRichText,
     heading: transformHeading,
@@ -368,6 +387,7 @@ const transformers = {
     quizTypeThree: transformQuizTypeThree,
     quizTypeFour: transformQuizTypeFour,
     links: transformLinks,
+    coachingSession: transformCoachingSession,
 } as const;
 
 export function getLessonComponentsMap(
