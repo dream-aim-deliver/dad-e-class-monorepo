@@ -10,8 +10,12 @@ export function SubmissionElementsRenderer({elements, locale}: SubmissionRendere
     return <div className="flex flex-col gap-4">
         {elements.map((elementInstance) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
             const Element = (lessonElements as any)[elementInstance.type].submissionComponent;
 =======
+=======
+            // @ts-ignore
+>>>>>>> ab85e948 ((partially) fix build and lint issues)
             const Element = lessonElements[elementInstance.type].submissionComponent;
 >>>>>>> 4d2b7300 (Decompose pre course assessment form and element renderer)
             return (
