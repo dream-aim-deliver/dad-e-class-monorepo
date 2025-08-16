@@ -1,5 +1,9 @@
-import { FC } from "react";
-import { CoachingSessionStudentViewTypes } from "../course-builder-lesson-component/types";
+import { FC } from 'react';
+import {
+    CoachingSessionElement,
+} from '../course-builder-lesson-component/types';
+import { CoachingSessionHeader } from './coaching-session-header';
+import { isLocalAware } from '@maany_shr/e-class-translations';
 
 /**
  * A component that displays the student view of a coaching session.
@@ -18,12 +22,24 @@ import { CoachingSessionStudentViewTypes } from "../course-builder-lesson-compon
  * </CoachingSessionStudentView>
  */
 
-export const CoachingSessionStudentView: FC<CoachingSessionStudentViewTypes> = ({
-  children,
-}) => {
-  return (
-    <div className="flex flex-col gap-4 p-4 bg-card-fill border-1 border-card-stroke rounded-medium">
-      {children}
-    </div>
-  );
+interface CoachingSessionStudentViewProps extends isLocalAware {
+    elementInstance: CoachingSessionElement;
+    coachList: React.ReactNode;
+}
+
+export const CoachingSessionStudentView: FC<
+    CoachingSessionStudentViewProps
+> = ({ elementInstance, coachList, locale }) => {
+    if (!elementInstance.coachingSession) return null;
+
+    return (
+        <div className="flex flex-col gap-4 p-4 bg-card-fill border-1 border-card-stroke rounded-medium">
+            <CoachingSessionHeader
+                name={elementInstance.coachingSession.name}
+                duration={elementInstance.coachingSession.duration}
+                locale={locale}
+            />
+            {coachList}
+        </div>
+    );
 };

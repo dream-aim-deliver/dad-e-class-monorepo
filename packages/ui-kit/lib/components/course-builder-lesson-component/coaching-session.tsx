@@ -97,13 +97,9 @@ function DesignerComponent({
  * {formComponent({ elementInstance, locale: "en" })}
  */
 
+// TODO: replace this with normal implementation after a refactor
 function formComponent({ elementInstance, locale }: FormComponentProps) {
-    return (
-        <CoachingSessionStudentView
-            {...(elementInstance as CoachingSessionStudentViewTypes)}
-            locale={locale}
-        />
-    );
+    return <div>Mock Coaching Session</div>;
 };
 
 export default coachingSessionElement;

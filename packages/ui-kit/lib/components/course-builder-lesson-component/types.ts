@@ -9,6 +9,15 @@ interface BaseCourseFormElement {
     required?: boolean;
 }
 
+export interface CoachingSessionElement extends BaseCourseFormElement {
+    type: CourseElementType.CoachingSession;
+    coachingSession?: {
+        id: number;
+        name: string;
+        duration: number;
+    }
+}
+
 export interface CoachingSessionTypes extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.CoachingSession;
     coachingSessionTypes: {

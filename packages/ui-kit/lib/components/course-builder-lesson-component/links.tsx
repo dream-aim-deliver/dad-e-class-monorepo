@@ -35,9 +35,6 @@ export function FormComponent({
 }: FormComponentProps) {
   if (elementInstance.type !== CourseElementType.Links) return null;
 
-  const dictionary = getDictionary(locale);
-
-  // TODO: translate links title
   return (
     <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
       {elementInstance.links.map((link, index) => (
