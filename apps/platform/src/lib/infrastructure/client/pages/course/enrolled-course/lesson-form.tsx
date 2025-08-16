@@ -4,6 +4,8 @@ import {
     viewModels,
 } from '@maany_shr/e-class-models';
 import {
+    CoachingSessionElement,
+    CoachingSessionStudentView,
     CourseElement,
     DownloadFilesFormComponent,
     HeadingFormComponent,
@@ -218,7 +220,7 @@ function renderUploadFilesComponent({
     ): Promise<fileMetadata.TFileMetadata | null> => {
         // TODO: Implement real file upload logic
 
-        // Simulate file upload logic
+        // Simulate file upload logic; for the preview we might want to leave this as is
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const mockFile: fileMetadata.TFileMetadata = {
             id: Math.random().toString(36).substring(2, 15),
@@ -342,6 +344,21 @@ function renderLinksComponent({
     );
 }
 
+function renderCoachingSessionComponent({
+    formElement,
+    key,
+    locale,
+}: ComponentRendererProps) {
+    return (
+        <CoachingSessionStudentView
+            key={key}
+            elementInstance={formElement as CoachingSessionElement}
+            locale={locale}
+            coachList={null}
+        />
+    );
+}
+
 const typeToRendererMap: Record<
     string,
     (props: ComponentRendererProps) => JSX.Element | null
@@ -362,6 +379,7 @@ const typeToRendererMap: Record<
     quizTypeThree: renderQuizTypeThreeComponent,
     quizTypeFour: renderQuizTypeFourComponent,
     links: renderLinksComponent,
+    coachingSession: renderCoachingSessionComponent,
 };
 
 export default function LessonForm({ data }: LessonFormProps) {
