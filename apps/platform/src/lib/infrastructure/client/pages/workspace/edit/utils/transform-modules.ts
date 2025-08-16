@@ -45,16 +45,16 @@ export function getRequestFromModules(modules: CourseModule[]): RequestModules {
     const requestModules: RequestModules = [];
 
     for (let moduleIndex = 0; moduleIndex < modules.length; moduleIndex++) {
-        const module = modules[moduleIndex];
-        if (!module.title) {
+        const courseModule = modules[moduleIndex];
+        if (!courseModule.title) {
             throw new Error(
                 `Module at position ${moduleIndex + 1} doesn't have a title`,
             );
         }
 
         const requestModule: RequestModules[number] = {
-            id: module.id,
-            title: module.title || '',
+            id: courseModule.id,
+            title: courseModule.title || '',
             lessons: [],
             milestones: [],
             order: moduleIndex + 1,
@@ -62,10 +62,10 @@ export function getRequestFromModules(modules: CourseModule[]): RequestModules {
 
         for (
             let contentIndex = 0;
-            contentIndex < module.content.length;
+            contentIndex < courseModule.content.length;
             contentIndex++
         ) {
-            const item = module.content[contentIndex];
+            const item = courseModule.content[contentIndex];
             const order = contentIndex + 1;
             if (item.type === ContentType.Lesson) {
                 if (!item.title) {
