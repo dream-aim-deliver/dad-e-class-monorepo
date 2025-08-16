@@ -147,6 +147,7 @@ export default function EditCourse({ slug }: EditCoursesProps) {
                         locale={locale}
                         className={tabContentClass}
                         title="Error saving the course"
+                        description={errorMessage}
                     />
                 )}
                 <Tabs.Content

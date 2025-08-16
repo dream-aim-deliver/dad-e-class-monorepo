@@ -399,7 +399,10 @@ const saveCourseStructureMock: useCaseModels.TSaveCourseStructureSuccessResponse
 export const saveCourseStructure = t.procedure
     .input(useCaseModels.SaveCourseStructureRequestSchema)
     .mutation(
-        async (): Promise<useCaseModels.TSaveCourseStructureUseCaseResponse> => {
+        async (
+            ctx,
+        ): Promise<useCaseModels.TSaveCourseStructureUseCaseResponse> => {
+            console.dir(ctx.input, { depth: null });
             await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
             return {
                 success: true,

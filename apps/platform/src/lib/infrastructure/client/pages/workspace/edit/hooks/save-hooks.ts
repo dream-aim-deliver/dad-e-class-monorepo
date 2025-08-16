@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { trpc } from '../../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useSaveCourseStructurePresenter } from '../../../../hooks/use-save-course-structure-presenter';
-import { getModulesFromResponse } from '../utils/transform-modules';
+import {
+    getModulesFromResponse,
+    getRequestFromModules,
+} from '../utils/transform-modules';
 import { CourseModule } from '../types';
 
 interface SaveStructureProps {
@@ -67,7 +70,7 @@ export function useSaveStructure({
         saveCourseStructureMutation.error,
     ]);
 
-    const saveCourseStructure = async () => {
+    const saveCourseStructure = useCallback(async () => {
         if (courseVersion === null) {
             setErrorMessage('Course slug or version is not set');
             return;
@@ -79,15 +82,20 @@ export function useSaveStructure({
             const result = await saveCourseStructureMutation.mutateAsync({
                 courseSlug: slug,
                 courseVersion: courseVersion,
-                modules: [], // Transform moduleData as needed
+                modules: getRequestFromModules(modules),
             });
 
             return result;
         } catch (error) {
-            setErrorMessage('Unknown error occurred while saving the course');
+            // TODO: Handle custom error types with localization
+            const errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : 'Unknown error occurred while saving the course';
+            setErrorMessage(errorMessage);
             throw error;
         }
-    };
+    }, [courseVersion, modules, saveCourseStructureMutation, slug]);
 
     return {
         modules,
