@@ -63,6 +63,17 @@ export default function EditCourseContent({
                         isExtraTraining: lesson.extraTraining,
                     });
                 });
+                module.milestones.forEach((milestone) => {
+                    const precedingLessonIndex = content.findIndex(
+                        (item) =>
+                            item.type === ContentType.Lesson &&
+                            item.id === milestone.precedingLessonId,
+                    );
+                    content.splice(precedingLessonIndex + 1, 0, {
+                        type: ContentType.Milestone,
+                        id: milestone.id,
+                    });
+                });
                 return {
                     ...module,
                     content,
