@@ -32,6 +32,7 @@ export const CoachingSessionStudentView: FC<
 > = ({ elementInstance, coachList, locale }) => {
     if (!elementInstance.coachingSession) return null;
 
+    // TODO: add book a coach text
     return (
         <div className="flex flex-col gap-4 p-4 bg-card-fill border-1 border-card-stroke rounded-medium">
             <CoachingSessionHeader
