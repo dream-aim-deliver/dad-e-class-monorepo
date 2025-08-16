@@ -39,17 +39,7 @@ export function FormComponent({
 
   // TODO: translate links title
   return (
-    <div>
-      <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
-      <div className="flex gap-1 items-start pb-2 border-b-[1px] border-divider">
-        <IconQuiz
-          classNames="fill-base-white"
-          size="6"
-        />
-        <p className="text-sm text-base-white leading-[150%] font-bold">
-          Links
-        </p>
-      </div>
+    <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
       {elementInstance.links.map((link, index) => (
         <LinkPreview
           key={`link-${elementInstance.id}-${index}`}
@@ -58,7 +48,6 @@ export function FormComponent({
           customIcon={link.customIcon}
         />
       ))}
-    </div>
     </div>
   );
 };
