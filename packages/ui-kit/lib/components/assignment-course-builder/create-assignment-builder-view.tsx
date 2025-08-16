@@ -135,7 +135,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                 <Uploader
                     type="multiple"
                     variant="generic"
-                    files={assignmentData.files}
+                    files={assignmentData.files ?? []}
                     maxFile={5}
                     onFilesChange={onFilesChange}
                     onDelete={onFileDelete}
@@ -147,7 +147,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                 />
 
                 <div className="flex flex-col items-center justify-center gap-[10px] w-full">
-                    {assignmentData.links.map((link, index) =>
+                    {assignmentData.links?.map((link, index) =>
                         linkEditIndex === index ? (
                             <div className="flex flex-col w-full" key={index}>
                                 <LinkEdit

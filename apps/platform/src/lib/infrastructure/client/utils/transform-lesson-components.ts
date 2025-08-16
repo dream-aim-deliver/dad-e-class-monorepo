@@ -2,7 +2,6 @@ import { useCaseModels } from '@maany_shr/e-class-models';
 import {
     LessonElement,
     LessonElementType,
-    FormElement,
     FormElementType,
     HeadingElement,
     MultiCheckElement,
@@ -21,6 +20,7 @@ import {
     TempQuizTypeFourElement,
     LinksElement,
     CoachingSessionElement,
+    CourseElementType,
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
 
@@ -388,6 +388,7 @@ const transformers = {
     quizTypeFour: transformQuizTypeFour,
     links: transformLinks,
     coachingSession: transformCoachingSession,
+    assignment: undefined,
 } as const;
 
 export function getLessonComponentsMap(
@@ -475,7 +476,7 @@ const applyOneOutOfThreeProgress = (
 };
 
 const progressAppliers: Record<
-    FormElementType,
+    FormElementType | CourseElementType,
     ((element: any, answer: TAnswer) => void) | undefined
 > = {
     [FormElementType.TextInput]: applyTextInputProgress,
@@ -484,6 +485,19 @@ const progressAppliers: Record<
     [FormElementType.OneOutOfThree]: applyOneOutOfThreeProgress,
     [FormElementType.RichText]: undefined,
     [FormElementType.HeadingText]: undefined,
+    [CourseElementType.VideoFile]: undefined,
+    [CourseElementType.ImageFile]: undefined,
+    [CourseElementType.ImageGallery]: undefined,
+    [CourseElementType.DownloadFiles]: undefined,
+    [CourseElementType.UploadFiles]: undefined,
+    [CourseElementType.Quiz]: undefined,
+    [CourseElementType.QuizTypeOne]: undefined,
+    [CourseElementType.QuizTypeTwo]: undefined,
+    [CourseElementType.QuizTypeThree]: undefined,
+    [CourseElementType.QuizTypeFour]: undefined,
+    [CourseElementType.Links]: undefined,
+    [CourseElementType.CoachingSession]: undefined,
+    [CourseElementType.Assignment]: undefined,
 } as const;
 
 export function applyProgressToElements(

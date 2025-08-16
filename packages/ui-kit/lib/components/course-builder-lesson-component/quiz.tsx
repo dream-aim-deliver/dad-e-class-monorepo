@@ -58,9 +58,9 @@ function DesignerComponent({
       type={elementInstance.type}
       title={dictionary.components.quiz.quizText}
       icon={<IconQuiz classNames="w-6 h-6" />}
-      onUpClick={() => onUpClick(elementInstance.id)}
-      onDownClick={() => onDownClick(elementInstance.id)}
-      onDeleteClick={() => onDeleteClick(elementInstance.id)}
+      onUpClick={() => onUpClick?.(elementInstance.id)}
+      onDownClick={() => onDownClick?.(elementInstance.id)}
+      onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
       locale={locale}
       courseBuilder={true}
     >
@@ -69,7 +69,7 @@ function DesignerComponent({
         <Dropdown
           type="simple"
           options={typeOptions}
-          onSelectionChange={(selected) => elementInstance.onTypeChange(selected as QuizType)}
+          onSelectionChange={(selected) => elementInstance.onTypeChange?.(selected as QuizType)}
           text={{ simpleText: "Select Quiz Type" }}
           defaultValue={quizType}
           className="w-fit"
