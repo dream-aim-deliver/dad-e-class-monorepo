@@ -12,11 +12,13 @@ import {
     MultiCheckFormComponent,
     OneOutOfThreeFormComponent,
     QuizFormComponentWrapper,
+    QuizTypeFourStudentView,
     QuizTypeOneStudentView,
     QuizTypeThreeStudentView,
     QuizTypeTwoStudentView,
     RichTextFormComponent,
     SingleChoiceFormComponent,
+    TempQuizTypeFourElement,
     TempQuizTypeOneElement,
     TempQuizTypeThreeElement,
     TempQuizTypeTwoElement,
@@ -308,6 +310,22 @@ function renderQuizTypeThreeComponent({
     );
 }
 
+function renderQuizTypeFourComponent({
+    formElement,
+    key,
+    locale,
+}: ComponentRendererProps) {
+    return (
+        <QuizFormComponentWrapper locale={locale} key={key}>
+            <QuizTypeFourStudentView
+                key={key}
+                elementInstance={formElement as TempQuizTypeFourElement}
+                locale={locale}
+            />
+        </QuizFormComponentWrapper>
+    );
+}
+
 const typeToRendererMap: Record<
     string,
     (props: ComponentRendererProps) => JSX.Element | null
@@ -326,6 +344,7 @@ const typeToRendererMap: Record<
     quizTypeOne: renderQuizTypeOneComponent,
     quizTypeTwo: renderQuizTypeTwoComponent,
     quizTypeThree: renderQuizTypeThreeComponent,
+    quizTypeFour: renderQuizTypeFourComponent,
 };
 
 export default function LessonForm({ data }: LessonFormProps) {
