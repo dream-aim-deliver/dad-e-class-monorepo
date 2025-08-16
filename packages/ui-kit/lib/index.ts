@@ -102,7 +102,6 @@ export * from './components/dialog';
 export { CreateCourseForm, useCreateCourseForm } from './components/create-course-form';
 export * from './utils/file-utils';
 
-export { CourseOutlineAccordion, type CourseModule } from './components/course-outline-accordion';
 export { LessonHeader } from './components/lesson-header';
 
 
@@ -134,3 +133,4 @@ export { CoachingSessionStudentView } from './components/coaching-session-course
 export { LessonCoachComponent } from './components/coaching-session-course-builder/lesson-coach-component';
 
 export { SideMenu } from './components/sidemenu/sidemenu';
+export { CourseOutlineAccordion } from './components/course-outline-accordion';
