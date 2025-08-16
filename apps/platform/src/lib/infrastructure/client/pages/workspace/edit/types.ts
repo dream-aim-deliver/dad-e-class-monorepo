@@ -27,6 +27,7 @@ export interface EditCourseContentProps {
     setIsEdited: (isEdited: boolean) => void;
     modules: CourseModule[];
     setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
+    setCourseVersion: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 export interface ModuleContentProps {

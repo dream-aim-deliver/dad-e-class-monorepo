@@ -26,6 +26,7 @@ export default function EditCourseContent({
     setIsEdited,
     modules,
     setModules,
+    setCourseVersion,
 }: EditCourseContentProps) {
     const locale = useLocale() as TLocale;
 
@@ -80,6 +81,7 @@ export default function EditCourseContent({
                 };
             }),
         );
+        setCourseVersion(courseStructureViewModel.data.courseVersion);
     }, [courseStructureViewModel]);
 
     const [expandedModuleIndex, setExpandedModuleIndex] = useState<

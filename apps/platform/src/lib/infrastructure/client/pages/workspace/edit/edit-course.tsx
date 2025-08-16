@@ -11,7 +11,7 @@ import {
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import { Suspense, useState } from 'react';
+import { act, Suspense, useState } from 'react';
 import EditCourseContent from './edit-course-content';
 import { CourseModule } from './types';
 
@@ -68,6 +68,9 @@ export default function EditCourse({ slug }: EditCoursesProps) {
 
     const [isEdited, setIsEdited] = useState(false);
     const [activeTab, setActiveTab] = useState<TabTypes>(TabTypes.General);
+
+    const [courseVersion, setCourseVersion] = useState<number | null>(null);
+
     const [modules, setModules] = useState<CourseModule[]>([]);
 
     const handleTabChange = (value: string) => {
@@ -80,6 +83,7 @@ export default function EditCourse({ slug }: EditCoursesProps) {
             }
         }
         setIsEdited(false);
+        setCourseVersion(null);
         setModules([]);
         setActiveTab(value as TabTypes);
     };
@@ -89,9 +93,13 @@ export default function EditCourse({ slug }: EditCoursesProps) {
         console.log('Preview clicked for course:', slug);
     };
 
+    const saveCourseStructure = async () => {};
+
     const handleSave = () => {
-        // TODO: Implement save functionality
-        console.log('Save clicked for course:', slug);
+        if (activeTab === TabTypes.CourseContent) {
+            saveCourseStructure();
+            return;
+        }
         setIsEdited(false); // Reset edited state after saving
     };
 
@@ -157,6 +165,7 @@ export default function EditCourse({ slug }: EditCoursesProps) {
                             setIsEdited={setIsEdited}
                             modules={modules}
                             setModules={setModules}
+                            setCourseVersion={setCourseVersion}
                         />
                     </Suspense>
                 </Tabs.Content>
