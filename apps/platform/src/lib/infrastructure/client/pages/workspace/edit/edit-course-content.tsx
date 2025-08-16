@@ -4,7 +4,9 @@ import {
     IconChevronUp,
     IconLesson,
     IconMilestone,
+    IconMinus,
     IconModule,
+    IconPlus,
     IconTrashAlt,
     InputField,
 } from '@maany_shr/e-class-ui-kit';
@@ -44,6 +46,8 @@ interface ModuleEditorProps {
     onDelete: (index: number) => void;
     onMoveUp: (index: number) => void;
     onMoveDown: (index: number) => void;
+    isExpanded: boolean;
+    onExpand: () => void;
     isFirst: boolean;
     isLast: boolean;
 }
@@ -55,6 +59,8 @@ export function ModuleEditor({
     onDelete,
     onMoveUp,
     onMoveDown,
+    isExpanded,
+    onExpand,
     isFirst,
     isLast,
 }: ModuleEditorProps) {
@@ -63,43 +69,61 @@ export function ModuleEditor({
     };
 
     return (
-        <div className="flex items-center justify-between gap-4 bg-card-fill border border-base-neutral-700 rounded-lg p-4">
-            <div className="flex items-center gap-4 flex-1">
-                <div className="h-12 w-12 flex-shrink-0 bg-base-neutral-700 border border-base-neutral-600 rounded-lg flex items-center justify-center">
-                    <IconModule />
+        <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-4 bg-card-fill border border-base-neutral-700 rounded-lg p-4">
+                <div className="flex items-center gap-4 flex-1">
+                    <div className="h-12 w-12 flex-shrink-0 bg-base-neutral-700 border border-base-neutral-600 rounded-lg flex items-center justify-center">
+                        <IconModule />
+                    </div>
+                    <InputField
+                        value={module.title || ''}
+                        inputText="Module title"
+                        setValue={handleTitleChange}
+                        className="w-full"
+                    />
                 </div>
-                <InputField
-                    value={module.title || ''}
-                    inputText="Module title"
-                    setValue={handleTitleChange}
-                    className="w-full"
-                />
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="text"
+                        iconLeft={<IconTrashAlt />}
+                        hasIconLeft
+                        onClick={() => onDelete(index)}
+                        className="px-0"
+                    />
+                    <Button
+                        variant="text"
+                        iconLeft={<IconChevronUp />}
+                        hasIconLeft
+                        onClick={() => onMoveUp(index)}
+                        disabled={isFirst}
+                        className="px-0"
+                    />
+                    <Button
+                        variant="text"
+                        iconLeft={<IconChevronDown />}
+                        hasIconLeft
+                        onClick={() => onMoveDown(index)}
+                        disabled={isLast}
+                        className="px-0"
+                    />
+                    <Button
+                        variant="text"
+                        iconLeft={isExpanded ? <IconMinus /> : <IconPlus />}
+                        hasIconLeft
+                        onClick={onExpand}
+                        className="px-0"
+                    />
+                </div>
             </div>
-            <div className="flex items-center gap-2">
-                <Button
-                    variant="text"
-                    iconLeft={<IconTrashAlt />}
-                    hasIconLeft
-                    onClick={() => onDelete(index)}
-                    className="px-0"
-                />
-                <Button
-                    variant="text"
-                    iconLeft={<IconChevronUp />}
-                    hasIconLeft
-                    onClick={() => onMoveUp(index)}
-                    disabled={isFirst}
-                    className="px-0"
-                />
-                <Button
-                    variant="text"
-                    iconLeft={<IconChevronDown />}
-                    hasIconLeft
-                    onClick={() => onMoveDown(index)}
-                    disabled={isLast}
-                    className="px-0"
-                />
-            </div>
+            {isExpanded && (
+                <div className="ml-4">
+                    <div className="flex flex-col gap-2 bg-card-fill border border-base-neutral-700 rounded-lg p-4">
+                        <span className="text-sm text-text-secondary">
+                            Add lessons or milestones via the components bar
+                        </span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
@@ -109,6 +133,9 @@ export function ModuleEditor({
 // TODO: Add lesson templating
 export default function EditCourseContent({ slug }: EditCourseContentProps) {
     const [modules, setModules] = useState<CourseModule[]>([]);
+    const [expandedModuleIndex, setExpandedModuleIndex] = useState<
+        number | null
+    >(null);
 
     const addModule = () => {
         const newModule: CourseModule = {};
@@ -155,7 +182,7 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
 
     return (
         <div className="flex lg:flex-row flex-col gap-4 text-text-primary">
-            <div className="flex flex-col gap-3 bg-card-fill border border-base-neutral-700 rounded-lg p-4 lg:w-[300px] w-full">
+            <div className="h-fit flex flex-col gap-3 bg-card-fill border border-base-neutral-700 rounded-lg p-4 lg:w-[300px] w-full">
                 <span className="text-lg font-bold">Components</span>
                 <div className="flex flex-col gap-2">
                     <StructureComponent
@@ -185,6 +212,14 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
                         onDelete={deleteModule}
                         onMoveUp={moveModuleUp}
                         onMoveDown={moveModuleDown}
+                        isExpanded={expandedModuleIndex === index}
+                        onExpand={() => {
+                            if (expandedModuleIndex === index) {
+                                setExpandedModuleIndex(null);
+                            } else {
+                                setExpandedModuleIndex(index);
+                            }
+                        }}
                         isFirst={index === 0}
                         isLast={index === modules.length - 1}
                     />
