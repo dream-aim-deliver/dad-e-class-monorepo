@@ -12,18 +12,12 @@ import {
   QuizTypeTwoElement,
   QuizTypeThreeElement,
   QuizTypeFourElement,
-  QuizTypeTwoStudentViewElement,
-  QuizTypeThreeStudentViewElement,
-  QuizTypeFourStudentViewElement,
   QuizTypeOneElement,
 } from "../course-builder-lesson-component/types";
 import QuizTypeOne from "../quiz/quiz-type-one/quiz-type-one";
 import QuizTypeTwo from "../quiz/quiz-type-two/quiz-type-two";
 import QuizTypeThree from "../quiz/quiz-type-three/quiz-type-three";
 import QuizTypeFour from "../quiz/quiz-type-four/quiz-type-four";
-import QuizTypeTwoStudentView from "../quiz/quiz-type-two/quiz-type-two-student-view";
-import QuizTypeThreeStudentView from "../quiz/quiz-type-three/quiz-type-three-student-view";
-import QuizTypeFourStudentView from "../quiz/quiz-type-four/quiz-type-four-student-view";
 import { getDictionary, TLocale } from "@maany_shr/e-class-translations";
 import DesignerLayout from "../designer-layout";
 import { IconQuiz } from "../icons/icon-quiz";
@@ -99,6 +93,7 @@ function DesignerComponent({
 }
 
 // Inline QuizPreview logic
+// TODO: remove and instead use different types of elements
 function formComponent({ elementInstance, locale }: FormComponentProps) {
   if (elementInstance.type !== CourseElementType.Quiz) return null;
 
@@ -115,9 +110,6 @@ function formComponent({ elementInstance, locale }: FormComponentProps) {
           {dictionary.components.quiz.quizText}
         </p>
       </div>
-      {quizType === "quizTypeTwo" && <QuizTypeTwoStudentView {...({ ...elementInstance, locale } as QuizTypeTwoStudentViewElement)} />}
-      {quizType === "quizTypeThree" && <QuizTypeThreeStudentView {...({ ...elementInstance, locale } as QuizTypeThreeStudentViewElement)} />}
-      {quizType === "quizTypeFour" && <QuizTypeFourStudentView {...({ ...elementInstance, locale } as QuizTypeFourStudentViewElement)} />}
     </div>
   );
 }

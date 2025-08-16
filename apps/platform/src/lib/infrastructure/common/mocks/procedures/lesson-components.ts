@@ -195,14 +195,7 @@ const listLessonComponentsMock: useCaseModels.TListLessonComponentsSuccessRespon
                     {
                         title: 'React Official Documentation',
                         url: 'https://reactjs.org/docs/getting-started.html',
-                        iconFile: {
-                            id: 'icon_001',
-                            name: 'react-icon.png',
-                            size: 32768,
-                            category: 'image',
-                            downloadUrl:
-                                'https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&auto=format&fit=crop&w=64&q=80',
-                        },
+                        iconFile: null,
                     },
                     {
                         title: 'TypeScript Handbook',

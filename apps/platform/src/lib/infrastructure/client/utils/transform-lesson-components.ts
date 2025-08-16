@@ -19,6 +19,7 @@ import {
     TempQuizTypeTwoElement,
     TempQuizTypeThreeElement,
     TempQuizTypeFourElement,
+    LinksElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
 
@@ -328,6 +329,28 @@ function transformQuizTypeFour(
     };
 }
 
+function transformLinks(
+    component: Extract<useCaseModels.TLessonComponent, { type: 'links' }>,
+): LinksElement {
+    return {
+        type: LessonElementType.Links,
+        order: component.order,
+        id: component.id,
+        links: component.links.map((link) => ({
+            title: link.title,
+            url: link.url,
+            customIcon: link.iconFile
+                ? {
+                      ...link.iconFile,
+                      status: 'available',
+                      url: link.iconFile?.downloadUrl,
+                      thumbnailUrl: link.iconFile?.downloadUrl,
+                  }
+                : undefined,
+        })),
+    };
+}
+
 const transformers = {
     richText: transformRichText,
     heading: transformHeading,
@@ -344,6 +367,7 @@ const transformers = {
     quizTypeTwo: transformQuizTypeTwo,
     quizTypeThree: transformQuizTypeThree,
     quizTypeFour: transformQuizTypeFour,
+    links: transformLinks,
 } as const;
 
 export function getLessonComponentsMap(
