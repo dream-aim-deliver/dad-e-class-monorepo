@@ -31,9 +31,7 @@ const mockCoach = {
 const generateFile = (): fileMetadata.TFileMetadata => ({
     id: Math.random().toString(),
     name: 'Slide.pdf',
-    mimeType: 'application/pdf',
     size: 102400,
-    checksum: 'xyz123',
     status: 'available',
     category: 'document',
     url: 'https://example.com/slide.pdf',

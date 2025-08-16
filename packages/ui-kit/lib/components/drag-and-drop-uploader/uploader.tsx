@@ -45,8 +45,9 @@ interface CommonUploaderProps extends isLocalAware {
   onFilesChange: (
     file: fileMetadata.TFileUploadRequest,
     abortSignal?: AbortSignal
-  ) => Promise<fileMetadata.TFileMetadata>;
+  ) => Promise<fileMetadata.TFileMetadata | null>;
   onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
+  isDeletionAllowed?: boolean;
 }
 
 /**
@@ -81,6 +82,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
     onFilesChange,
     onUploadComplete,
     locale,
+    isDeletionAllowed,
   } = props;
 
   const [uploadingFiles, setUploadingFiles] = useState<fileMetadata.TFileMetadata[]>([]);
@@ -155,9 +157,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
       const baseMetadata = {
         id: tempId,
         name: file.name,
-        mimeType: file.type || 'application/octet-stream',
         size: file.size,
-        checksum: 'processing',
         status: 'processing' as const,
         category: variant,
       };
@@ -170,6 +170,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
             category: 'video' as const,
             videoId: "0", // Temporary placeholder
             thumbnailUrl: '', // Temporary placeholder
+            url: '',
           };
         case 'image':
           return {
@@ -211,6 +212,8 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
           controller.signal
         );
 
+        if (!finalMetadata) throw new Error('File upload failed');
+
         onUploadComplete(finalMetadata);
       } catch (err) {
         if ((err as Error).name !== 'AbortError') {
@@ -247,6 +250,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
                 onDownload={onDownload}
                 onCancel={handleCancelUpload}
                 locale={locale}
+                isDeletionAllowed={isDeletionAllowed}
               />
             </div>
           ))}

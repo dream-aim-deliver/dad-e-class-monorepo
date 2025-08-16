@@ -1,5 +1,5 @@
 import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
-import type { VideoFile } from "./types";
+import type { VideoElement } from "./types";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { IconVideo } from "../icons/icon-video";
 import DesignerLayout from "../designer-layout";
@@ -23,6 +23,7 @@ const videoFileElement: CourseElementTemplate = {
         icon: IconVideo,
         label: "Video"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent
 };
@@ -89,8 +90,8 @@ export function DesignerComponent({
         return await onVideoUpload(fileRequest, abortSignal);
     };
 
-    const handleUploadComplete = (videoMetadata: TVideoFile) => {
-        onUploadComplete?.(videoMetadata);
+    const handleUploadComplete = (videoMetadata: fileMetadata.TFileMetadata) => {
+        onUploadComplete?.(videoMetadata as TVideoFile);
     };
 
     return (
@@ -98,9 +99,9 @@ export function DesignerComponent({
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.videoFileText}
             icon={<IconVideo classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(Number(elementInstance.id))}
-            onDownClick={() => onDownClick(Number(elementInstance.id))}
-            onDeleteClick={() => onDeleteClick(Number(elementInstance.id))}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >
@@ -131,13 +132,13 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
 
     // Type guard to ensure we're working with a VideoFile
-    const videoFile = elementInstance as VideoFile;
+    const videoFile = elementInstance as VideoElement;
 
     return (
         <section className="w-full">
             <VideoPlayer
-                videoId={videoFile.videoId}
-                thumbnailUrl={videoFile.thumbnailUrl}
+                videoId={videoFile.file?.videoId ?? undefined}
+                thumbnailUrl={videoFile.file?.thumbnailUrl ?? undefined}
                 locale={locale}
                 className="aspect-video w-full"
             />

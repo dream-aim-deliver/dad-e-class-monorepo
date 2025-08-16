@@ -11,6 +11,7 @@ import {
     DefaultLoading,
     FormElement,
     FormElementRenderer,
+    PreAssessmentForm,
 } from '@maany_shr/e-class-ui-kit';
 import { transformLessonComponents } from '../../utils/transform-lesson-components';
 import { transformFormAnswers } from '../../utils/transform-answers';
@@ -49,7 +50,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         }
         const components = componentsViewModel.data.components;
 
-        return transformLessonComponents(components);
+        return transformLessonComponents(components) as FormElement[];
     }, [componentsViewModel]);
 
     const submitMutation = trpc.submitAssessmentProgress.useMutation({});
@@ -93,21 +94,23 @@ export default function AssessmentForm(props: AssessmentFormProps) {
 
     return (
         <div className="flex justify-center">
-            <FormElementRenderer
-                isError={hasViewModelError || submitMutation.isError}
-                isLoading={submitMutation.isPending}
-                onSubmit={(formValues) => {
-                    const answers: useCaseModels.TAnswer[] =
-                        transformFormAnswers(formValues);
-                    submitMutation.mutate({
-                        answers,
-                        courseSlug: props.courseSlug,
-                    });
-                }}
-                elements={formElements}
-                locale={locale}
-                errorMessage={getErrorMessage()}
-            />
+            <PreAssessmentForm locale={locale}>
+                <FormElementRenderer
+                    isError={hasViewModelError || submitMutation.isError}
+                    isLoading={submitMutation.isPending}
+                    onSubmit={(formValues) => {
+                        const answers: useCaseModels.TAnswer[] =
+                            transformFormAnswers(formValues);
+                        submitMutation.mutate({
+                            answers,
+                            courseSlug: props.courseSlug,
+                        });
+                    }}
+                    elements={formElements}
+                    locale={locale}
+                    errorMessage={getErrorMessage()}
+                />
+            </PreAssessmentForm>
         </div>
     );
 }

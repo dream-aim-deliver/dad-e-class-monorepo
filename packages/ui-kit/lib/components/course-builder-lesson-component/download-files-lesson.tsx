@@ -21,7 +21,9 @@ const downloadFilesElement: CourseElementTemplate = {
         icon: IconCloudDownload,
         label: "Download Files"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
+    // @ts-ignore
     formComponent: FormComponent
 };
 
@@ -87,9 +89,9 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.downloadFilesText}
             icon={<IconCloudDownload classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(elementInstance.id)}
-            onDownClick={() => onDownClick(elementInstance.id)}
-            onDeleteClick={() => onDeleteClick(elementInstance.id)}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >
@@ -125,13 +127,17 @@ export function FormComponent({ elementInstance, locale, onDownload }: DownloadF
         onDownload(id);
     }
     return (
-        <div className="flex flex-col bg-card-fill p-4 rounded-md border-card-stroke gap-4">
+        <div className="flex flex-col bg-card-fill p-4 rounded-md border-card-stroke gap-4 w-full">
             {elementInstance.files && elementInstance.files.length > 0 &&
                 elementInstance.files.map((file) => (<FilePreview
+                    key={file.id}
                     locale={locale}
                     readOnly={true}
                     onDownload={() => handleDownload(file.id)}
                     uploadResponse={file}
+                    onCancel={() => {
+                        // No cancel action in form view
+                    }} 
                 />))}
 
         </div>)

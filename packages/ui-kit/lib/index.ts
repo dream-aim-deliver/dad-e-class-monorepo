@@ -65,10 +65,15 @@ export { PackageCard } from './components/packages/package-card';
 export { default as CoachCard } from './components/coach/coach-card';
 export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';
 
-export { FormElementRenderer } from './components/pre-assessment/form-renderer';
-export { SubmissionElementsRenderer as SubmissionRenderer } from './components/pre-assessment/submission-renderer';
+export { FormElementRenderer } from './components/lesson/form-renderer';
+export { SubmissionElementsRenderer as SubmissionRenderer } from './components/lesson/submission-renderer';
 export * from './components/pre-assessment/types';
 export * from './components/lesson-components/types';
+export * from './components/course-builder-lesson-component/types';
+export { CourseElementType, type CourseElement } from './components/course-builder/types';
+export { LessonElementType, type LessonElement } from './components/lesson/types';
+export { lessonElements } from './components/lesson/element-core';
+export * from './components/course-builder-lesson-component/types';
 
 export * from './components/icons';
 export { CourseGeneralInformationView } from './components/course-general-information-view';
@@ -94,4 +99,32 @@ export { BookSessionWith } from './components/book-session-with-banner';
 export { BuyCoachingSessionBanner } from './components/buy-coaching-session-banner';
 
 export { Breadcrumbs } from './components/breadcrumbs';
-export { SubmissionElementsRenderer } from './components/pre-assessment/submission-renderer';
+export { CourseOutlineAccordion, type CourseModule } from './components/course-outline-accordion';
+export { LessonHeader } from './components/lesson-header';
+
+export { PreAssessmentForm } from './components/pre-assessment/pre-assessment-form';
+
+export { FormComponent as RichTextFormComponent } from './components/lesson-components/rich-text';
+export { FormComponent as HeadingFormComponent } from './components/lesson-components/heading-lesson';
+export { FormComponent as TextInputFormComponent } from './components/lesson-components/text-input';
+export { FormComponent as SingleChoiceFormComponent } from './components/lesson-components/single-choice';
+export { FormComponent as MultiCheckFormComponent } from './components/lesson-components/multi-check';
+export { FormComponent as OneOutOfThreeFormComponent } from './components/lesson-components/one-out-of-three';
+
+export { FormComponent as VideoFormComponent } from './components/course-builder-lesson-component/video';
+export { FormComponent as ImageFormComponent } from './components/course-builder-lesson-component/image';
+export { FormComponent as ImageGalleryFormComponent } from './components/course-builder-lesson-component/image-gallery';
+
+export { FormComponent as DownloadFilesFormComponent } from './components/course-builder-lesson-component/download-files-lesson';
+export { FormComponent as UploadFilesFormComponent } from './components/course-builder-lesson-component/upload-files-lesson';
+
+export { FormComponentWrapper as QuizFormComponentWrapper } from './components/course-builder-lesson-component/quiz';
+export { default as QuizTypeOneStudentView } from './components/quiz/quiz-type-one/quiz-type-one-student-view';
+export { default as QuizTypeTwoStudentView } from './components/quiz/quiz-type-two/quiz-type-two-student-view';
+export { default as QuizTypeThreeStudentView } from './components/quiz/quiz-type-three/quiz-type-three-student-view';
+export { default as QuizTypeFourStudentView } from './components/quiz/quiz-type-four/quiz-type-four-student-view';
+
+export { FormComponent as LinksFormComponent } from './components/course-builder-lesson-component/links';
+
+export { CoachingSessionStudentView } from './components/coaching-session-course-builder/coaching-session-student-view';
+export { LessonCoachComponent } from './components/coaching-session-course-builder/lesson-coach-component';

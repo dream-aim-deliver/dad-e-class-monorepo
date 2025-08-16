@@ -94,7 +94,7 @@ const HeadingLessonPreview = ({ headingValue }: { headingValue: HeadingType }) =
 
   }
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 text-text-primary">
       {renderHeading()}
     </div>
   );

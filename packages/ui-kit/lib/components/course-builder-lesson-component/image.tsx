@@ -1,5 +1,5 @@
 import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
-import type { ImageFile } from "./types";
+import type { ImageElement } from "./types";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { IconImage } from "../icons/icon-image";
 import DesignerLayout from "../designer-layout";
@@ -24,6 +24,7 @@ const imageFilesElement: CourseElementTemplate = {
         icon: IconImage,
         label: "Image"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent
 };
@@ -80,10 +81,10 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
         return await onImageUpload(fileRequest, abortSignal);
     };
 
-    const handleUploadComplete = (ImageMetadata: TImageFile) => {
+    const handleUploadComplete = (ImageMetadata: fileMetadata.TFileMetadata) => {
         // Update form data with the uploaded file URL (if it exists)
         // Notify parent component that upload is complete
-        onUploadComplete?.(ImageMetadata);
+        onUploadComplete?.(ImageMetadata as TImageFile);
     };
 
     return (
@@ -91,9 +92,9 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.ImageFileText}
             icon={<IconImage classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(Number(elementInstance.id))}
-            onDownClick={() => onDownClick(Number(elementInstance.id))}
-            onDeleteClick={() => onDeleteClick(Number(elementInstance.id))}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >
@@ -123,12 +124,12 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
 
     // Type guard to ensure we're working with an ImageFile
-    const imageFile = elementInstance as ImageFile;
+    const imageFile = elementInstance as ImageElement;
     const [imageError, setImageError] = useState<boolean>(false);
     return (
         <section className="w-full">
             <img
-                src={imageFile.url}
+                src={imageFile.file?.url}
                 alt="Uploaded image content"
                 className="w-full h-auto object-cover"
                 onError={() => setImageError(true)}

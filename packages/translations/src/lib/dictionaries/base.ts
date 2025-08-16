@@ -363,6 +363,7 @@ export const DictionarySchema = z.object({
       milestoneText: z.string(),
     }),
     courseOutline: z.object({
+      title: z.string(),
       optionalText: z.string(),
       updatedText: z.string(),
       moduleText: z.string(),

@@ -7,8 +7,6 @@ import { TextAreaInput } from "../text-areaInput";
 import DesignerLayout from "../designer-layout";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { Uploader } from "../drag-and-drop-uploader/uploader";
-import { uploadCoachingTypes } from "./types";
-
 
 
 
@@ -23,7 +21,9 @@ const uploadFilesElement: CourseElementTemplate = {
         icon: IconCloudUpload,
         label: "Upload Files"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
+    // @ts-ignore
     formComponent: FormComponent
 };
 
@@ -57,9 +57,7 @@ export function DesignerComponent({
     if (elementInstance.type !== CourseElementType.UploadFiles) return null;
     const dictionary = getDictionary(locale);
     const [description, setDescription] = useState<string>(
-        (elementInstance.type === CourseElementType.UploadFiles && 'description' in elementInstance)
-            ? (elementInstance as uploadCoachingTypes).description
-            : ""
+        elementInstance.description ?? ""
     );
 
     /**
@@ -80,9 +78,9 @@ export function DesignerComponent({
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.uploadFilesText}
             icon={<IconCloudUpload classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(elementInstance.id)}
-            onDownClick={() => onDownClick(elementInstance.id)}
-            onDeleteClick={() => onDeleteClick(elementInstance.id)}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >
@@ -142,8 +140,8 @@ export function FormComponent({
     onUploadComplete,
     onFileDelete,
     onFileDownload,
+    onStudentCommentChange,
     files,
-    onStudentCommentChange
 }: UploadFilesFormProps) {
     if (elementInstance.type !== CourseElementType.UploadFiles) return null;
 
@@ -176,16 +174,14 @@ export function FormComponent({
     };
 
     return (
-        <div className="p-4 pt-2 border rounded-md bg-base-neutral-800 flex flex-col gap-4 border-base-neutral-700">
+        <div className="p-4 pt-2 w-full border rounded-md bg-base-neutral-800 flex flex-col gap-4 border-base-neutral-700">
             <div className="flex items-center gap-2 flex-1 text-text-primary py-4 border-b border-divider">
                 <span className="min-w-0 flex-shrink-0"><IconCloudUpload /></span>
                 <p className="text-md font-important leading-[24px] word-break ">{dictionary.components.courseBuilder.uploadFilesText}</p>
             </div>
 
             <p className="font-important text-text-primary leading-[150%] text-sm md:text-md">
-                {(elementInstance.type === CourseElementType.UploadFiles && 'description' in elementInstance)
-                    && (elementInstance as uploadCoachingTypes).description
-                    }
+                {elementInstance.description}
             </p>
             <Uploader
                 type="multiple"
@@ -197,6 +193,7 @@ export function FormComponent({
                 onDelete={handleFileDelete}
                 onDownload={handleFileDownload}
                 locale={locale}
+                isDeletionAllowed={true} // Allow deletion of uploaded files
             />
             <div className="w-full flex flex-col gap-2">
                 <p className="text-sm md:text-md text-text-secondary flex gap-1 items-center">

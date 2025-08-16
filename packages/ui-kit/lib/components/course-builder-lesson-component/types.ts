@@ -2,10 +2,24 @@ import { isLocalAware } from "@maany_shr/e-class-translations";
 import { CourseElementType } from "../course-builder/types";
 import { assignment, fileMetadata, shared } from "@maany_shr/e-class-models";
 
-export interface CoachingSessionTypes extends isLocalAware {
-    type: CourseElementType.CoachingSession;
-    id: number;
+interface BaseCourseFormElement {
+    type: CourseElementType;
     order: number;
+    id: string;
+    required?: boolean;
+}
+
+export interface CoachingSessionElement extends BaseCourseFormElement {
+    type: CourseElementType.CoachingSession;
+    coachingSession?: {
+        id: number;
+        name: string;
+        duration: number;
+    }
+}
+
+export interface CoachingSessionTypes extends isLocalAware, BaseCourseFormElement {
+    type: CourseElementType.CoachingSession;
     coachingSessionTypes: {
         id: number;
         name: string;
@@ -13,41 +27,97 @@ export interface CoachingSessionTypes extends isLocalAware {
     }[];
     onChange: (updatedData: {
         type: CourseElementType.CoachingSession;
-        id: number;
+        id: string;
         order: number;
         coachingOfferingTypeId: number;
     }) => void;
 };
 
-export interface CoachingSessionStudentViewTypes extends isLocalAware {
+export interface CoachingSessionStudentViewTypes extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.CoachingSession;
-    id: number;
-    order: number;
     children: React.ReactNode;
     studentHadSessionBeforeInCourse: boolean;
 };
 
 export type QuizType = "quizTypeOne" | "quizTypeTwo" | "quizTypeThree" | "quizTypeFour";
 
-export interface fileProps {
+export interface FileProps {
     onFilesChange: (files: fileMetadata.TFileUploadRequest[], abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onFileDelete: (fileId: string, index: number) => void;
     onFileDownload: (id: string) => void;
     onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
 }
 
-export interface QuizElementBase extends isLocalAware {
+type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
+
+export interface LinksElement extends BaseCourseFormElement {
+    type: CourseElementType.Links;
+    links: shared.TLink[];
+}
+
+export interface TempQuizTypeOneElement extends BaseCourseFormElement {
+    type: CourseElementType.QuizTypeOne;
+    title: string;
+    description: string;
+    imageFile: ImageFileMetadata | null;
+    options: {
+        id: number;
+        name: string;
+    }[];
+    correctOptionId: number;
+}
+
+export interface TempQuizTypeTwoElement extends BaseCourseFormElement {
+    type: CourseElementType.QuizTypeTwo;
+    title: string;
+    description: string;
+    imageFile: ImageFileMetadata | null;
+    groups: {
+        id: number;
+        title: string;
+        options: {
+            id: number;
+            name: string;
+        }[];
+        correctOptionId: number;
+    }[];
+}
+
+export interface TempQuizTypeThreeElement extends BaseCourseFormElement {
+    type: CourseElementType.QuizTypeThree;
+    title: string;
+    description: string;
+    options: {
+        id: number;
+        imageFile: ImageFileMetadata | null;
+        description: string;
+    }[];
+    correctOptionId: number;
+}
+
+export interface TempQuizTypeFourElement extends BaseCourseFormElement {
+    type: CourseElementType.QuizTypeFour;
+    title: string;
+    description: string;
+    labels: {
+        letter: string;
+        description: string;
+    }[];
+    images: {
+        correctLetter: string;
+        imageFile: ImageFileMetadata | null;
+    }[];
+}
+
+export interface QuizElementBase extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.Quiz;
-    id: number;
-    order: number;
-    required?: boolean;
     title: string;
     isUploading?: boolean;
     description: string;
     onTypeChange?: (type: QuizType) => void;
 }
 
-export interface QuizTypeOneElement extends QuizElementBase, fileProps {
+export interface QuizTypeOneElement extends QuizElementBase, FileProps {
     quizType: "quizTypeOne";
     error?: boolean;
     fileData: fileMetadata.TFileMetadata;
@@ -57,7 +127,7 @@ export interface QuizTypeOneElement extends QuizElementBase, fileProps {
     }[];
     onChange: (updatedData: {
         quizType: "quizTypeOne";
-        id: number;
+        id: string;
         order: number;
         title: string;
         description: string;
@@ -69,7 +139,7 @@ export interface QuizTypeOneElement extends QuizElementBase, fileProps {
     }) => void;
 }
 
-export interface QuizTypeTwoElement extends QuizElementBase, fileProps {
+export interface QuizTypeTwoElement extends QuizElementBase, FileProps {
     quizType: "quizTypeTwo";
     error?: boolean;
     fileData: fileMetadata.TFileMetadata;
@@ -82,7 +152,7 @@ export interface QuizTypeTwoElement extends QuizElementBase, fileProps {
     }[];
     onChange: (updatedData: {
         quizType: "quizTypeTwo";
-        id: number;
+        id: string;
         order: number;
         title: string;
         description: string;
@@ -97,7 +167,7 @@ export interface QuizTypeTwoElement extends QuizElementBase, fileProps {
     }) => void;
 }
 
-export interface QuizTypeThreeElement extends QuizElementBase, fileProps {
+export interface QuizTypeThreeElement extends QuizElementBase, FileProps {
     quizType: "quizTypeThree";
     error?: boolean;
     options: {
@@ -107,7 +177,7 @@ export interface QuizTypeThreeElement extends QuizElementBase, fileProps {
     }[];
     onChange: (updatedData: {
         quizType: "quizTypeThree";
-        id: number;
+        id: string;
         order: number;
         title: string;
         description: string;
@@ -119,7 +189,7 @@ export interface QuizTypeThreeElement extends QuizElementBase, fileProps {
     }) => void;
 }
 
-export interface QuizTypeFourElement extends QuizElementBase, fileProps {
+export interface QuizTypeFourElement extends QuizElementBase, FileProps {
     quizType: "quizTypeFour";
     labels: {
         letter: string;
@@ -131,7 +201,7 @@ export interface QuizTypeFourElement extends QuizElementBase, fileProps {
     }[];
     onChange: (updatedData: {
         quizType: "quizTypeFour";
-        id: number;
+        id: string;
         order: number;
         title: string,
         description: string;
@@ -157,7 +227,7 @@ export interface QuizTypeOneStudentViewElement extends QuizElementBase {
     }[];
     onChange: (updatedData: {
         quizType: "quizTypeOne";
-        id: number;
+        id: string;
         order: number;
         title: string;
         description: string;
@@ -185,7 +255,7 @@ export interface QuizTypeTwoStudentViewElement extends QuizElementBase {
     }[];
     onChange: (updatedData: {
         quizType: "quizTypeTwo";
-        id: number;
+        id: string;
         order: number;
         title: string;
         description: string;
@@ -213,7 +283,7 @@ export interface QuizTypeThreeStudentViewElement extends QuizElementBase {
     }[];
     onChange: (updatedData: {
         quizType: "quizTypeThree",
-        id: number;
+        id: string;
         order: number;
         title: string;
         description: string;
@@ -241,7 +311,7 @@ export interface QuizTypeFourStudentViewElement extends QuizElementBase {
     }[];
     onChange: (updatedData: {
         quizType: "quizTypeFour";
-        id: number;
+        id: string;
         order: number;
         title: string;
         description: string;
@@ -257,37 +327,24 @@ export interface QuizTypeFourStudentViewElement extends QuizElementBase {
         }[]
     }) => void;
 }
-export type downloadsFilesTypes =  {
+export type DownloadFilesElement =  {
     type: CourseElementType.DownloadFiles;
     files: fileMetadata.TFileMetadata[] | null;
-    id: number;
-    order: number;
-};
+} & BaseCourseFormElement;
 
-export interface uploadCoachingTypes  {
+export interface UploadFilesElement extends BaseCourseFormElement {
     type: CourseElementType.UploadFiles;
-     description: string;
-    id: number;
-    order: number;
-
-}
-export interface uploadStudentTypes{
-    type: CourseElementType.UploadFiles;
-    id: number;
-    order: number;
+    description?: string;
     files: fileMetadata.TFileMetadata[] | null;
-    comment: string;
+    userComment?: string;
 }
-export type uploadsFilesTypes = uploadCoachingTypes | uploadStudentTypes;
 
-export interface CreateAssignmentBuilderViewTypes extends isLocalAware {
+export interface CreateAssignmentBuilderViewTypes extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.Assignment;
-    id: number;
-    order: number;
     assignmentData: assignment.TAssignmentBaseWithId;
     onChange: (updatedData: {
         type: CourseElementType.Assignment;
-        id: number;
+        id: string;
         order: number;
         assignmentData: assignment.TAssignmentBaseWithId;
     }) => void;
@@ -304,10 +361,8 @@ export interface CreateAssignmentBuilderViewTypes extends isLocalAware {
     onClickAddLink: () => void;
 };
 
-export interface AssignmentBuilderViewTypes extends isLocalAware {
+export interface AssignmentBuilderViewTypes extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.Assignment;
-    id: number;
-    order: number;
     assignmentData: assignment.TAssignmentBaseWithId;
     onFileDownload: (id: string) => void;
 };
@@ -325,24 +380,20 @@ export type QuizElement =
     | QuizTypeThreeStudentViewElement
     | QuizTypeFourStudentViewElement;
 
-
-type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
-export interface ImageFile extends ImageFileMetadata {
+export interface ImageElement extends BaseCourseFormElement {
     type: CourseElementType.ImageFile;
-    order: number;
+    file: ImageFileMetadata | null;
 }
 
 type VideoFileMetadata = fileMetadata.TFileMetadata & { category: 'video' };
-export interface VideoFile extends VideoFileMetadata {
+export interface VideoElement extends BaseCourseFormElement {
     type: CourseElementType.VideoFile;
-    order: number;
+    file: VideoFileMetadata | null;
 };
 
-export interface ImageGallery {
+export interface ImageGallery extends BaseCourseFormElement {
     type: CourseElementType.ImageGallery;
-    id: number;
-    order: number;
-    images: ImageFileMetadata[];
+    images: ImageFileMetadata[] | null;
 }
 
 
