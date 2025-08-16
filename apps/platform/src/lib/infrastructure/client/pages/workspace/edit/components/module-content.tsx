@@ -1,0 +1,64 @@
+import { ContentType, ModuleContentProps } from '../types';
+import { LessonItem } from './lesson-item';
+import { MilestoneItem } from './milestone-item';
+
+export function ModuleContent({
+    content,
+    onMoveContentUp,
+    onMoveContentDown,
+    onDeleteContent,
+    onLessonTitleChange,
+    onLessonExtraTrainingChange,
+}: ModuleContentProps) {
+    const isEmpty = content.length === 0;
+
+    return (
+        <div className="flex flex-col gap-2 ml-4">
+            {isEmpty && (
+                <div className=" flex flex-col gap-2 bg-card-fill border border-base-neutral-700 rounded-lg p-4">
+                    <span className="text-text-secondary">
+                        Add lessons or milestones
+                    </span>
+                </div>
+            )}
+            {content.map((item, index) => {
+                if (item.type === ContentType.Milestone) {
+                    return (
+                        <MilestoneItem
+                            key={`milestone-${index}`}
+                            milestone={item}
+                            onMoveUp={() => onMoveContentUp(index)}
+                            onMoveDown={() => onMoveContentDown(index)}
+                            onDelete={() => onDeleteContent(index)}
+                            isFirst={index === 0}
+                            isLast={index === content.length - 1}
+                        />
+                    );
+                }
+                if (item.type === ContentType.Lesson) {
+                    return (
+                        <LessonItem
+                            key={`lesson-${index}`}
+                            lesson={item}
+                            onMoveUp={() => onMoveContentUp(index)}
+                            onMoveDown={() => onMoveContentDown(index)}
+                            onDelete={() => onDeleteContent(index)}
+                            isFirst={index === 0}
+                            isLast={index === content.length - 1}
+                            onTitleChange={(newTitle) =>
+                                onLessonTitleChange(index, newTitle)
+                            }
+                            onExtraTrainingChange={(isExtraTraining) =>
+                                onLessonExtraTrainingChange(
+                                    index,
+                                    isExtraTraining,
+                                )
+                            }
+                        />
+                    );
+                }
+                return null;
+            })}
+        </div>
+    );
+}
