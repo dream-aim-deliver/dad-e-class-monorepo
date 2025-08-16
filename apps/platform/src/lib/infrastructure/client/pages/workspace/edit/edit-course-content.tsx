@@ -34,9 +34,40 @@ function StructureComponent({ name, icon, onClick }: StructureComponentProps) {
     );
 }
 
+interface CourseLesson {
+    id?: number;
+    title?: string;
+    isExtraTraining: boolean;
+}
+
+interface CourseMilestone {
+    id?: number;
+}
+
 interface CourseModule {
     id?: number;
     title?: string;
+    lessons: CourseLesson[];
+    milestones: CourseMilestone[];
+}
+
+interface ModuleContentProps {
+    lessons: CourseLesson[];
+    milestones: CourseMilestone[];
+}
+
+function ModuleContents({ lessons, milestones }: ModuleContentProps) {
+    const isEmpty = lessons.length === 0 && milestones.length === 0;
+
+    return (
+        <div className="ml-4 flex flex-col gap-2 bg-card-fill border border-base-neutral-700 rounded-lg p-4">
+            {isEmpty && (
+                <span className="text-sm text-text-secondary">
+                    Add lessons or milestones via the components bar
+                </span>
+            )}
+        </div>
+    );
 }
 
 interface ModuleEditorProps {
@@ -116,13 +147,10 @@ export function ModuleEditor({
                 </div>
             </div>
             {isExpanded && (
-                <div className="ml-4">
-                    <div className="flex flex-col gap-2 bg-card-fill border border-base-neutral-700 rounded-lg p-4">
-                        <span className="text-sm text-text-secondary">
-                            Add lessons or milestones via the components bar
-                        </span>
-                    </div>
-                </div>
+                <ModuleContents
+                    lessons={module.lessons}
+                    milestones={module.milestones}
+                />
             )}
         </div>
     );
@@ -138,7 +166,10 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
     >(null);
 
     const addModule = () => {
-        const newModule: CourseModule = {};
+        const newModule: CourseModule = {
+            lessons: [],
+            milestones: [],
+        };
         setModules([...modules, newModule]);
     };
 
@@ -180,6 +211,38 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
         });
     };
 
+    const addLesson = () => {
+        let moduleIndex = expandedModuleIndex;
+        if (moduleIndex === null) {
+            setExpandedModuleIndex(0);
+            moduleIndex = 0;
+        }
+
+        const newLesson: CourseLesson = {
+            isExtraTraining: false,
+        };
+        setModules((prev) => {
+            const updated = [...prev];
+            updated[moduleIndex].lessons.push(newLesson);
+            return updated;
+        });
+    };
+
+    const addMilestone = () => {
+        let moduleIndex = expandedModuleIndex;
+        if (moduleIndex === null) {
+            setExpandedModuleIndex(0);
+            moduleIndex = 0;
+        }
+
+        const newMilestone: CourseMilestone = {};
+        setModules((prev) => {
+            const updated = [...prev];
+            updated[moduleIndex].milestones.push(newMilestone);
+            return updated;
+        });
+    };
+
     return (
         <div className="flex lg:flex-row flex-col gap-4 text-text-primary">
             <div className="h-fit flex flex-col gap-3 bg-card-fill border border-base-neutral-700 rounded-lg p-4 lg:w-[300px] w-full">
@@ -193,12 +256,12 @@ export default function EditCourseContent({ slug }: EditCourseContentProps) {
                     <StructureComponent
                         name="Lesson"
                         icon={<IconLesson />}
-                        onClick={() => console.log('Lesson clicked')}
+                        onClick={addLesson}
                     />
                     <StructureComponent
                         name="Milestone"
                         icon={<IconMilestone />}
-                        onClick={() => console.log('Milestone clicked')}
+                        onClick={addMilestone}
                     />
                 </div>
             </div>
