@@ -29,3 +29,4 @@ export * from './create-course-usecase-models';
 export * from './get-course-short-usecase-models';
 export * from './get-course-structure-usecase-models';
 export * from './list-lesson-components-usecase-models';
+export * from './save-course-structure-usecase-models';
