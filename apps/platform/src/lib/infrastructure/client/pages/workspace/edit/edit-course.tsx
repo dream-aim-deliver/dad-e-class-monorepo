@@ -11,13 +11,9 @@ import {
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useState } from 'react';
 import EditCourseStructure from './edit-course-structure';
-import { CourseModule } from './types';
-import { trpc } from '../../../trpc/client';
-import { viewModels } from '@maany_shr/e-class-models';
-import { useSaveCourseStructurePresenter } from '../../../hooks/use-save-course-structure-presenter';
-import { getModulesFromResponse } from './utils/transform-modules';
+import { useSaveStructure } from './hooks/save-hooks';
 
 interface EditCoursesProps {
     slug: string;
@@ -26,14 +22,14 @@ interface EditCoursesProps {
 interface EditCourseHeaderProps {
     onPreview: () => void;
     onSave: () => void;
-    canPreview: boolean;
+    disablePreview: boolean;
     isSaving: boolean;
 }
 
 function EditCourseHeader({
     onPreview,
     onSave,
-    canPreview,
+    disablePreview,
     isSaving,
 }: EditCourseHeaderProps) {
     return (
@@ -44,10 +40,10 @@ function EditCourseHeader({
                     variant="text"
                     iconLeft={<IconEyeShow />}
                     hasIconLeft
-                    text={canPreview ? 'Show Preview' : 'Save to preview'}
+                    text={disablePreview ? 'Save to preview' : 'Preview'}
                     className="px-0"
                     onClick={onPreview}
-                    disabled={!canPreview}
+                    disabled={disablePreview}
                 />
                 <Button
                     variant="primary"
@@ -77,39 +73,20 @@ export default function EditCourse({ slug }: EditCoursesProps) {
     const [activeTab, setActiveTab] = useState<TabTypes>(TabTypes.General);
 
     const [courseVersion, setCourseVersion] = useState<number | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const saveCourseStructureMutation = trpc.saveCourseStructure.useMutation();
-    const [saveCourseStructureViewModel, setSaveCourseStructureViewModel] =
-        useState<viewModels.TSaveCourseStructureViewModel | undefined>(
-            undefined,
-        );
-    const { presenter: saveCourseStructurePresenter } =
-        useSaveCourseStructurePresenter(setSaveCourseStructureViewModel);
-
-    useEffect(() => {
-        if (saveCourseStructureMutation.isSuccess) {
-            saveCourseStructurePresenter.present(
-                saveCourseStructureMutation.data,
-                saveCourseStructureViewModel,
-            );
-        }
-    }, [saveCourseStructureMutation]);
-
-    useEffect(() => {
-        if (
-            saveCourseStructureMutation.isSuccess &&
-            saveCourseStructureViewModel?.mode === 'default'
-        ) {
-            const transformedModules = getModulesFromResponse(
-                saveCourseStructureViewModel.data,
-            );
-            setModules(transformedModules);
-            setCourseVersion(saveCourseStructureViewModel.data.courseVersion);
-        }
-        // TODO: Handle error modes
-    }, [saveCourseStructureViewModel, saveCourseStructureMutation.isSuccess]);
-
-    const [modules, setModules] = useState<CourseModule[]>([]);
+    const {
+        modules,
+        setModules,
+        saveCourseStructure,
+        isSavingCourseStructure,
+    } = useSaveStructure({
+        slug,
+        courseVersion,
+        setCourseVersion,
+        errorMessage,
+        setErrorMessage,
+    });
 
     const handleTabChange = (value: string) => {
         if (isEdited) {
@@ -124,6 +101,7 @@ export default function EditCourse({ slug }: EditCoursesProps) {
         setCourseVersion(null);
         setModules([]);
         setActiveTab(value as TabTypes);
+        setErrorMessage(null);
     };
 
     const handlePreview = () => {
@@ -131,26 +109,12 @@ export default function EditCourse({ slug }: EditCoursesProps) {
         console.log('Preview clicked for course:', slug);
     };
 
-    const saveCourseStructure = async () => {
-        if (!courseVersion) {
-            // TODO: Show an error message or handle the case where courseVersion is not set
-            return;
-        }
-
-        const result = await saveCourseStructureMutation.mutateAsync({
-            courseSlug: slug,
-            courseVersion,
-            modules: [],
-        });
-
-        if (result.success) {
-            setIsEdited(false);
-        }
-    };
-
-    const handleSave = () => {
+    const handleSave = async () => {
         if (activeTab === TabTypes.CourseContent) {
-            saveCourseStructure();
+            const result = await saveCourseStructure();
+            if (result) {
+                setIsEdited(false);
+            }
             return;
         }
     };
@@ -160,8 +124,8 @@ export default function EditCourse({ slug }: EditCoursesProps) {
             <EditCourseHeader
                 onPreview={handlePreview}
                 onSave={handleSave}
-                canPreview={!isEdited}
-                isSaving={saveCourseStructureMutation.isPending}
+                disablePreview={isEdited}
+                isSaving={isSavingCourseStructure}
             />
             <Tabs.Root
                 defaultTab={TabTypes.General}
@@ -178,11 +142,13 @@ export default function EditCourse({ slug }: EditCoursesProps) {
                         Course Content
                     </Tabs.Trigger>
                 </Tabs.List>
-                <DefaultError
-                    locale={locale}
-                    className={tabContentClass}
-                    title="Error saving the course"
-                />
+                {errorMessage && (
+                    <DefaultError
+                        locale={locale}
+                        className={tabContentClass}
+                        title="Error saving the course"
+                    />
+                )}
                 <Tabs.Content
                     value={TabTypes.General}
                     className={tabContentClass}
