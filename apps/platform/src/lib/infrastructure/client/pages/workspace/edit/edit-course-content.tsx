@@ -11,7 +11,17 @@ import {
     IconTrashAlt,
     InputField,
 } from '@maany_shr/e-class-ui-kit';
-import { useState } from 'react';
+import { TLocale } from '@maany_shr/e-class-translations';
+import {
+    DefaultError,
+    DefaultLoading,
+    Divider,
+} from '@maany_shr/e-class-ui-kit';
+import { useLocale } from 'next-intl';
+import { trpc } from '../../../trpc/client';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
+import { useEffect, useState } from 'react';
 
 interface EditCourseContentProps {
     slug: string;
@@ -200,7 +210,7 @@ function MilestoneItem({
     isLast: boolean;
 }) {
     return (
-        <div className="flex gap-2 items-center bg-card-fill border border-base-neutral-700 rounded-lg p-3">
+        <div className="flex gap-4 items-center bg-card-fill border border-base-neutral-700 rounded-lg p-3">
             <IconMilestone />
             <span className="font-bold w-full">Milestone</span>
             <ContentControlButtons
@@ -374,11 +384,66 @@ export function ModuleEditor({
 // TODO: Add search functionality
 // TODO: Add lesson templating
 // TODO: Add limits on number of modules, lessons, and milestones
+// TODO: Integrate undo/redo functionality
+// TODO: Add verification on deletion of modules, lessons, and milestones
+// TODO: Scroll to newly created module, lesson, or milestone
 export default function EditCourseContent({ slug }: EditCourseContentProps) {
+    const locale = useLocale() as TLocale;
+
+    const [courseStructureResponse] = trpc.getCourseStructure.useSuspenseQuery(
+        {
+            courseSlug: slug,
+        },
+        {
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
+            refetchOnMount: false,
+            retry: false,
+        },
+    );
+    const [courseStructureViewModel, setCourseStructureViewModel] = useState<
+        viewModels.TCourseStructureViewModel | undefined
+    >(undefined);
+    const { presenter } = useGetCourseStructurePresenter(
+        setCourseStructureViewModel,
+    );
+    presenter.present(courseStructureResponse, courseStructureViewModel);
+
     const [modules, setModules] = useState<CourseModule[]>([]);
+
+    useEffect(() => {
+        if (!courseStructureViewModel) return;
+        if (courseStructureViewModel.mode !== 'default') return;
+        setModules(
+            courseStructureViewModel.data.modules.map((module) => {
+                const content: (CourseLesson | CourseMilestone)[] = [];
+                module.lessons.forEach((lesson) => {
+                    content.push({
+                        type: ContentType.Lesson,
+                        id: lesson.id,
+                        title: lesson.title,
+                        isExtraTraining: lesson.extraTraining,
+                    });
+                });
+                return {
+                    ...module,
+                    content,
+                };
+            }),
+        );
+    }, [courseStructureViewModel]); // eslint-disable-line react-hooks/exhaustive-deps
+
     const [expandedModuleIndex, setExpandedModuleIndex] = useState<
         number | null
     >(null);
+
+    if (!courseStructureViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (courseStructureViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
 
     const addModule = () => {
         const newModule: CourseModule = {

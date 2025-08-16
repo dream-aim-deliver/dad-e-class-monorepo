@@ -130,3 +130,4 @@ export { FormComponent as LinksFormComponent } from './components/course-builder
 
 export { CoachingSessionStudentView } from './components/coaching-session-course-builder/coaching-session-student-view';
 export { LessonCoachComponent } from './components/coaching-session-course-builder/lesson-coach-component';
+export { CourseOutlineAccordion } from './components/course-outline-accordion';
