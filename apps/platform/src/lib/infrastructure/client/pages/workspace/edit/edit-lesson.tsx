@@ -23,6 +23,7 @@ import {
     LessonElement,
     RichTextElement,
     TextInputElement,
+    UploadFilesElement,
     VideoElement,
 } from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
@@ -152,7 +153,15 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconCloudUpload />,
             label: 'Upload Files',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: UploadFilesElement = {
+                    id: generateTempId(),
+                    type: CourseElementType.UploadFiles,
+                    description: '',
+                    files: null,
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
         {
             icon: <IconSingleChoice />,
