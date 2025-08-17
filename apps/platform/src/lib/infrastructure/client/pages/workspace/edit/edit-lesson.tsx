@@ -22,6 +22,7 @@ import {
     ImageGallery,
     LessonElement,
     RichTextElement,
+    SingleChoiceElement,
     TextInputElement,
     UploadFilesElement,
     VideoElement,
@@ -166,7 +167,16 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconSingleChoice />,
             label: 'Single Choice',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: SingleChoiceElement = {
+                    id: generateTempId(),
+                    type: FormElementType.SingleChoice,
+                    title: '',
+                    options: [],
+                    required: false,
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
         {
             icon: <IconMultiChoice />,

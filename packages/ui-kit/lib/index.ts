@@ -146,3 +146,4 @@ export { DesignerComponent as ImageGalleryDesignerComponent } from './components
 export { DesignerComponent as DownloadFilesDesignerComponent } from './components/course-builder-lesson-component/download-files-lesson';
 export { DesignerComponent as UploadFilesDesignerComponent } from './components/course-builder-lesson-component/upload-files-lesson';
 export { DesignerComponent as TextInputDesignerComponent } from './components/lesson-components/text-input';
+export { DesignerComponent as SingleChoiceDesignerComponent } from './components/lesson-components/single-choice';
