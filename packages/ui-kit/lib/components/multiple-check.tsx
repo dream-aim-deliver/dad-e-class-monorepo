@@ -56,7 +56,7 @@ export default function MultipleChoicePreview({
 interface MultipleChoiceEditProps extends isLocalAware {
     initialTitle?: string;
     initialOptions?: optionsType[];
-    onChange?: (data: { title: string; options: optionsType[] }) => void;
+    onChange?: (title: string, options: optionsType[]) => void;
 };
 
 export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
@@ -71,9 +71,9 @@ export const MultipleChoiceEdit: React.FC<MultipleChoiceEditProps> = ({
 
     useEffect(() => {
         if (onChange) {
-            onChange({ title, options });
+            onChange(title, options);
         }
-    }, [title, options, onChange]);
+    }, [title, options]);
 
     const handleAddChoice = () => {
         const newOption = {

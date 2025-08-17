@@ -14,6 +14,8 @@ import {
     ImageElement,
     ImageGalleryDesignerComponent,
     LessonElement,
+    MultiCheckDesignerComponent,
+    MultiCheckElement,
     RichTextDesignerComponent,
     RichTextElement,
     SingleChoiceDesignerComponent,
@@ -664,6 +666,52 @@ function SingleChoiceComponent({
     );
 }
 
+function MultiCheckComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== FormElementType.MultiCheck) return null;
+
+    const onChange = (title: string, options: MultiCheckElement['options']) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === FormElementType.MultiCheck
+                    ? { ...comp, title, options }
+                    : comp,
+            ),
+        );
+    };
+
+    const onRequiredChange = (isRequired: boolean) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === FormElementType.MultiCheck
+                    ? { ...comp, required: isRequired }
+                    : comp,
+            ),
+        );
+    };
+
+    return (
+        <MultiCheckDesignerComponent
+            elementInstance={elementInstance}
+            locale={locale}
+            onRequiredChange={onRequiredChange}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onChange={onChange}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
@@ -674,6 +722,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.TextInput]: TextInputComponent,
     [CourseElementType.UploadFiles]: UploadFilesComponent,
     [FormElementType.SingleChoice]: SingleChoiceComponent,
+    [FormElementType.MultiCheck]: MultiCheckComponent,
     // Add other mappings as needed
 };
 
