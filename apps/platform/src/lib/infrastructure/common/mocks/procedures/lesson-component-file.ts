@@ -19,7 +19,7 @@ const uploadLessonComponentFileMock: useCaseModels.TUploadLessonComponentFileSuc
 
 export const uploadLessonComponentFile = t.procedure
     .input(useCaseModels.UploadLessonComponentFileRequestSchema)
-    .query(
+    .mutation(
         async (): Promise<useCaseModels.TUploadLessonComponentFileUseCaseResponse> => {
             return {
                 success: true,
