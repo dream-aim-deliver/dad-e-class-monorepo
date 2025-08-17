@@ -43,7 +43,7 @@ type Story = StoryObj<typeof GroupCourseBanner>;
 export const Default: Story = {
     args: {
         locale: 'en',
-        studentNames: studentsExample,
+        students: studentsExample,
         totalStudentCount: 9,
         onClickGroupWorkspace: () => alert('Group workspace clicked'),
     },

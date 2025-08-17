@@ -15,7 +15,7 @@ interface Student {
 }
 export interface CourseGeneralInformationViewBaseProps
     extends TCourseMetadata,
-        isLocalAware {
+    isLocalAware {
     longDescription: string;
     onClickAuthor: () => void;
     students: Student[];
@@ -154,11 +154,10 @@ export const CourseGeneralInformationView: FC<
         const hours = Math.floor(durationInMinutes / 60);
         const minutes = durationInMinutes % 60;
 
-        let result = `${hours} ${
-            hours === 1
-                ? dictionary.components.courseGeneralInformationView.hourText
-                : dictionary.components.courseGeneralInformationView.hoursText
-        }`;
+        let result = `${hours} ${hours === 1
+            ? dictionary.components.courseGeneralInformationView.hourText
+            : dictionary.components.courseGeneralInformationView.hoursText
+            }`;
 
         if (minutes > 0) {
             result += ` ${minutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;

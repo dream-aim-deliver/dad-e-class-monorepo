@@ -8,7 +8,7 @@ interface Student {
 }
 
 export interface GroupCourseBannerProps extends isLocalAware {
-    studentNames: Student[];
+    students: Student[];
     totalStudentCount: number;
     onClickGroupWorkspace: () => void;
 }
@@ -18,7 +18,7 @@ export interface GroupCourseBannerProps extends isLocalAware {
  * who are taking the same course and provides a button to access a group workspace.
  *
  * @param {GroupCourseBannerProps} props - Component props
- * @param {Student[]} props.studentNames - List of student objects with name and avatarUrl.
+ * @param {Student[]} props.students - List of student objects with name and avatarUrl.
  * @param {number} props.totalStudentCount - Total number of students in the course group.
  * @param {() => void} props.onClickGroupWorkspace - Callback triggered when the "Group Workspace" button is clicked.
  * @param {string} props.locale - Locale string used for localization.
@@ -43,7 +43,7 @@ export interface GroupCourseBannerProps extends isLocalAware {
  * };
  *
  * <GroupCourseBanner
- *   studentNames={students}
+ *   students={students}
  *   totalStudentCount={10}
  *   onClickGroupWorkspace={handleWorkspaceClick}
  *   locale="en"
@@ -52,7 +52,7 @@ export interface GroupCourseBannerProps extends isLocalAware {
  */
 
 export const GroupCourseBanner = ({
-    studentNames,
+    students,
     onClickGroupWorkspace,
     totalStudentCount,
     locale,
@@ -67,7 +67,7 @@ export const GroupCourseBanner = ({
                 </p>
                 <div className="flex flex-row items-center gap-4">
                     <UserAvatarReel
-                        users={studentNames}
+                        users={students}
                         totalUsersCount={totalStudentCount}
                         locale={locale}
                         size="medium"
