@@ -1,14 +1,110 @@
 'use client';
 
-import { ComponentCard, IconModule } from '@maany_shr/e-class-ui-kit';
+import {
+    ComponentCard,
+    IconCloudDownload,
+    IconCloudUpload,
+    IconCoachingSession,
+    IconHeading,
+    IconModule,
+    IconMultiChoice,
+    IconOneOutOfThree,
+    IconRichText,
+    IconSingleChoice,
+    IconTextInput,
+    IconVideo,
+} from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
 import EditLayout from './components/edit-layout';
+import { IconImage } from 'packages/ui-kit/lib/components/icons/icon-image';
+import { IconImageGallery } from 'packages/ui-kit/lib/components/icons/icon-image-gallery';
+import { IconLink } from 'packages/ui-kit/lib/components/icons/icon-link';
+import { IconQuiz } from 'packages/ui-kit/lib/components/icons/icon-quiz';
+import { LessonComponentButton } from './types';
+import LessonComponentsBar from './components/lesson-components-bar';
 
 interface EditLessonProps {
     lessonId: number;
 }
 
+// TODO: Translate
 export default function EditLesson({ lessonId }: EditLessonProps) {
+    const simpleComponentButtons: LessonComponentButton[] = [
+        {
+            icon: <IconRichText />,
+            label: 'Rich Text',
+            onClick: () => {},
+        },
+        {
+            icon: <IconHeading />,
+            label: 'Heading',
+            onClick: () => {},
+        },
+        {
+            icon: <IconVideo />,
+            label: 'Video',
+            onClick: () => {},
+        },
+        {
+            icon: <IconImage />,
+            label: 'Image',
+            onClick: () => {},
+        },
+        {
+            icon: <IconImageGallery />,
+            label: 'Image Carousel',
+            onClick: () => {},
+        },
+        {
+            icon: <IconLink />,
+            label: 'Link',
+            onClick: () => {},
+        },
+        {
+            icon: <IconCloudDownload />,
+            label: 'Download Files',
+            onClick: () => {},
+        },
+    ];
+
+    const interactiveComponentButtons: LessonComponentButton[] = [
+        {
+            icon: <IconTextInput />,
+            label: 'Text Input',
+            onClick: () => {},
+        },
+        {
+            icon: <IconCloudUpload />,
+            label: 'Upload Files',
+            onClick: () => {},
+        },
+        {
+            icon: <IconSingleChoice />,
+            label: 'Single Choice',
+            onClick: () => {},
+        },
+        {
+            icon: <IconMultiChoice />,
+            label: 'Checklist',
+            onClick: () => {},
+        },
+        {
+            icon: <IconOneOutOfThree />,
+            label: '1 out of 3',
+            onClick: () => {},
+        },
+        {
+            icon: <IconQuiz />,
+            label: 'Quiz',
+            onClick: () => {},
+        },
+        {
+            icon: <IconCoachingSession />,
+            label: 'Coaching Session',
+            onClick: () => {},
+        },
+    ];
+
     return (
         <div className="flex flex-col gap-4">
             <EditHeader
@@ -24,16 +120,12 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
             />
             <EditLayout
                 panel={
-                    <>
-                        <span className="text-lg font-bold">Components</span>
-                        <div className="flex flex-col gap-2">
-                            <ComponentCard
-                                name="Module"
-                                icon={<IconModule />}
-                                onClick={() => {}}
-                            />
-                        </div>
-                    </>
+                    <LessonComponentsBar
+                        simpleComponentButtons={simpleComponentButtons}
+                        interactiveComponentButtons={
+                            interactiveComponentButtons
+                        }
+                    />
                 }
                 editor={undefined}
             />
