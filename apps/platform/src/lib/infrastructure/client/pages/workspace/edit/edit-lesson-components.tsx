@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLessonComponents } from './hooks/edit-lesson-hooks';
 import {
     AbortError,
     calculateMd5,
     CourseElementType,
     DefaultError,
+    DefaultLoading,
     downloadFile,
     DownloadFilesDesignerComponent,
     FormElementType,
@@ -30,6 +31,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { trpc } from '../../../trpc/client';
 import { fileMetadata } from '@maany_shr/e-class-models';
+import { transformLessonComponents } from '../../../utils/transform-lesson-components';
 
 interface FileUploadProps {
     lessonId: number;
@@ -735,6 +737,18 @@ export default function EditLessonComponents({
 }: EditLessonComponentsProps) {
     const lessonComponentsViewModel = useLessonComponents(lessonId);
 
+    useEffect(() => {
+        if (!lessonComponentsViewModel) return;
+        if (lessonComponentsViewModel.mode !== 'default') return;
+
+        setComponents(
+            transformLessonComponents(
+                lessonComponentsViewModel.data.components,
+            ),
+        );
+        setCourseVersion(lessonComponentsViewModel.data.courseVersion);
+    }, [lessonComponentsViewModel]);
+
     const onUpClick = (id: string) => {
         setComponents((prev) => {
             const index = prev.findIndex((comp) => comp.id === id);
@@ -766,6 +780,14 @@ export default function EditLessonComponents({
     };
 
     const locale = useLocale() as TLocale;
+
+    if (!lessonComponentsViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (lessonComponentsViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
 
     return (
         <div className="flex flex-col gap-2">
