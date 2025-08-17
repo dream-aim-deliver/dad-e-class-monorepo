@@ -396,6 +396,19 @@ const saveCourseStructureMock: useCaseModels.TSaveCourseStructureSuccessResponse
         modules: [],
     };
 
+const saveCourseStructureError: useCaseModels.TSaveCourseStructureUseCaseErrorResponse =
+    {
+        success: false,
+        data: {
+            errorType: 'ConflictError',
+            courseVersion: 2,
+            message: 'Course has been modified before saving.',
+            operation: 'saveCourseStructure',
+            context: {},
+            trace: undefined,
+        },
+    };
+
 export const saveCourseStructure = t.procedure
     .input(useCaseModels.SaveCourseStructureRequestSchema)
     .mutation(

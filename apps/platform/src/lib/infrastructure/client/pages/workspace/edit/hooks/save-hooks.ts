@@ -55,7 +55,16 @@ export function useSaveStructure({
             setCourseVersion(saveCourseStructureViewModel.data.courseVersion);
             setErrorMessage(null);
         }
-        // TODO: Handle error modes properly
+        if (
+            saveCourseStructureMutation.isSuccess &&
+            saveCourseStructureViewModel?.mode === 'conflict'
+        ) {
+            setErrorMessage(
+                `The course has been updated by another user. Please refresh the page to see the latest changes or click save to overwrite them.`,
+            );
+            // @ts-ignore
+            setCourseVersion(saveCourseStructureViewModel.data.courseVersion);
+        }
     }, [saveCourseStructureViewModel, saveCourseStructureMutation.isSuccess]);
 
     useEffect(() => {
