@@ -17,6 +17,7 @@ import {
     RichTextDesignerComponent,
     RichTextElement,
     TextInputDesignerComponent,
+    UploadFilesDesignerComponent,
     uploadToS3,
     VideoDesignerComponent,
     VideoElement,
@@ -567,17 +568,48 @@ function TextInputComponent({
     };
 
     return (
-        <div className="flex flex-col gap-2">
-            <TextInputDesignerComponent
-                elementInstance={elementInstance}
-                locale={locale}
-                onUpClick={onUpClick}
-                onDownClick={onDownClick}
-                onDeleteClick={onDeleteClick}
-                onHelperTextChange={onHelperTextChange}
-                onRequiredChange={onRequiredChange}
-            />
-        </div>
+        <TextInputDesignerComponent
+            elementInstance={elementInstance}
+            locale={locale}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onHelperTextChange={onHelperTextChange}
+            onRequiredChange={onRequiredChange}
+        />
+    );
+}
+
+function UploadFilesComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== CourseElementType.UploadFiles) return null;
+
+    const onDescriptionChange = (description: string) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id
+                    ? { ...comp, description }
+                    : comp,
+            ),
+        );
+    };
+
+    return (
+        <UploadFilesDesignerComponent
+            elementInstance={elementInstance}
+            locale={locale}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onChange={onDescriptionChange}
+        />
     );
 }
 
@@ -589,6 +621,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [CourseElementType.ImageGallery]: ImageGalleryComponent,
     [CourseElementType.DownloadFiles]: DownloadFilesComponent,
     [FormElementType.TextInput]: TextInputComponent,
+    [CourseElementType.UploadFiles]: UploadFilesComponent,
     // Add other mappings as needed
 };
 
