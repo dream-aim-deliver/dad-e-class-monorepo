@@ -9,7 +9,9 @@ export default function EditLayout(props: EditLayoutProps) {
             <div className="h-fit flex flex-col gap-3 bg-card-fill border border-base-neutral-700 rounded-lg p-4 lg:w-[300px] w-full">
                 {props.panel}
             </div>
-            <div className="flex flex-col gap-2 flex-1 min-w-0">{props.editor}</div>
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
+                {props.editor}
+            </div>
         </div>
     );
 }
