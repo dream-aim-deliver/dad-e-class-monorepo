@@ -4,6 +4,7 @@ import {
     ComponentCard,
     DefaultLoading,
     FormElementType,
+    HeadingElement,
     IconCloudDownload,
     IconCloudUpload,
     IconCoachingSession,
@@ -39,7 +40,7 @@ interface EditLessonProps {
 const generateTempId = () => {
     const randomId = crypto.randomUUID();
     return `temp-${randomId}`;
-}
+};
 
 // TODO: Translate
 export default function EditLesson({ lessonId }: EditLessonProps) {
@@ -63,7 +64,15 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconHeading />,
             label: 'Heading',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: HeadingElement = {
+                    id: generateTempId(),
+                    type: FormElementType.HeadingText,
+                    heading: '',
+                    headingType: 'h1', // Default to h1
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
         {
             icon: <IconVideo />,
@@ -129,6 +138,8 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
             onClick: () => {},
         },
     ];
+
+    console.log(components);
 
     return (
         <div className="flex flex-col gap-4">

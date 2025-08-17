@@ -2,6 +2,8 @@ import React from 'react';
 import { useLessonComponents } from './hooks/edit-lesson-hooks';
 import {
     FormElementType,
+    HeadingDesignerComponent,
+    HeadingElement,
     LessonElement,
     RichTextDesignerComponent,
     RichTextElement,
@@ -27,7 +29,7 @@ interface LessonComponentProps {
 }
 
 function RichTextComponent({
-    elementInstance: element,
+    elementInstance,
     locale,
     setComponents,
     onUpClick,
@@ -37,14 +39,16 @@ function RichTextComponent({
     const onContentChange = (value: string) => {
         setComponents((prev) =>
             prev.map((comp) =>
-                comp.id === element.id ? { ...comp, content: value } : comp,
+                comp.id === elementInstance.id
+                    ? { ...comp, content: value }
+                    : comp,
             ),
         );
     };
 
     return (
         <RichTextDesignerComponent
-            elementInstance={element as RichTextElement}
+            elementInstance={elementInstance as RichTextElement}
             locale={locale}
             onUpClick={onUpClick}
             onDownClick={onDownClick}
@@ -54,8 +58,41 @@ function RichTextComponent({
     );
 }
 
+function HeadingComponent({
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    return (
+        <HeadingDesignerComponent
+            elementInstance={elementInstance as HeadingElement}
+            locale={locale}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onChange={(value) => {
+                setComponents((prev) =>
+                    prev.map((comp) =>
+                        comp.id === elementInstance.id
+                            ? {
+                                  ...comp,
+                                  heading: value.heading,
+                                  headingType: value.type,
+                              }
+                            : comp,
+                    ),
+                );
+            }}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
+    [FormElementType.HeadingText]: HeadingComponent,
     // Add other mappings as needed
 };
 

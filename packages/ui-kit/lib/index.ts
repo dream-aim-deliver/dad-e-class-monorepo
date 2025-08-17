@@ -134,4 +134,6 @@ export { CourseOutlineAccordion } from './components/course-outline-accordion';
 
 export { ComponentCard } from './components/course-builder/component-card';
 export { ContentControlButtons } from './components/course-builder/control-buttons';
+
 export { DesignerComponent as RichTextDesignerComponent } from './components/lesson-components/rich-text';
+export { DesignerComponent as HeadingDesignerComponent } from './components/lesson-components/heading-lesson';
