@@ -40,7 +40,7 @@ export const CoachingSessionTracker: FC<CoachingSessionTrackerProps> = ({
     return (
         <div className="flex md:flex-row flex-col p-4 gap-4 bg-card-fill border-1 border-card-stroke rounded-medium items-center w-full">
             <div className="flex flex-col gap-2 items-start w-full">
-                <p className="text-xs text-text-secondary font-bold">
+                <p className="text-xs lg:text-sm text-text-secondary font-important">
                     {hasChildren ?
                         dictionary.components.coachingSessionTracker.coachingSessionText :
                         dictionary.components.coachingSessionTracker.noCoachingSessionText

@@ -1,3 +1,4 @@
+'use client';
 import { FC } from 'react';
 import { Badge } from '../badge';
 import { UserAvatar } from '../avatar/user-avatar';
@@ -67,15 +68,15 @@ export const SideMenu: FC<SideMenuProps> = ({
       className={cn(
         'bg-card-fill rounded-medium border-[1px] border-card-stroke flex flex-col gap-4 py-6 items-center relative overflow-hidden transition-all duration-500 ease-in-out',
         isCollapsed
-          ? 'w-[4rem] px-4 gap-3 h-fit'
-          : `w-[18rem] px-6 h-fit`,
+          ? 'w-[4rem] px-4 gap-3'
+          : `w-[18rem] px-6`,
         className
       )}
       data-testid="menu-container"
     >
       {/* User Profile Section */}
       <div className={cn('flex w-full gap-4 h-auto')}>
-        <div className={cn('flex items-center', isCollapsed && 'h-[4rem]')}>
+        <div className={cn('flex items-center')}>
           <UserAvatar
             imageUrl={profileImageUrl}
             size={isCollapsed ? 'small' : 'large'}
@@ -83,7 +84,7 @@ export const SideMenu: FC<SideMenuProps> = ({
           />
         </div>
         {!isCollapsed && (
-          <div className="flex flex-col gap-[6px] items-start justify-center">
+          <div className="flex flex-col items-start justify-center">
             <p className="text-text-primary text-md font-bold leading-[100%]">
               {userName}
             </p>

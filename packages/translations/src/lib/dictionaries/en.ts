@@ -354,6 +354,7 @@ export const EN: TDictionary = {
     courseProgressBar: {
       resumeText: 'Resume',
       progressText: 'Progress',
+      beginText: 'Begin course',
     },
     milestone: {
       milestoneText: 'Milestone',
@@ -384,6 +385,9 @@ export const EN: TDictionary = {
       requirementsTitle: 'Requirements',
       requirementsDetails: 'Before starting the course, we highly recommend completing these courses:',
       noRequirements: 'There are no requirements to take this course.',
+      courseCompletedBadge: 'Course completed',
+      reviewCourseButton: 'Review',
+      beginCourseButton: 'Begin course',
     },
     uploadingSection: {
       maxSizeText: 'Max size',
@@ -807,6 +811,9 @@ export const EN: TDictionary = {
       featuredImage: 'Featured Image',
       removeCourse:'Remove Course'
     },
+    courseIntroBanner: {
+      title: 'Couse Introduction'
+    }
   },
   pages: {
     home: Home_EN,

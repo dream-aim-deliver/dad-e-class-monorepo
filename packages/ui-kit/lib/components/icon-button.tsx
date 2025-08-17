@@ -1,3 +1,4 @@
+'use-client';
 import { FC, ButtonHTMLAttributes, ReactNode, isValidElement } from 'react';
 
 import { IconRefresh } from './icons/icon-refresh';

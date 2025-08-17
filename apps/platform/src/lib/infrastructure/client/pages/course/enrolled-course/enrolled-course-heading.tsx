@@ -5,8 +5,7 @@ import {
     Button,
     CourseProgressBar,
     Dropdown,
-    IconCloudDownload,
-    SectionHeading,
+    IconCertification,
     StarRating,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
@@ -51,7 +50,7 @@ export default function EnrolledCourseHeading({
                     />
                     <Button
                         hasIconLeft
-                        iconLeft={<IconCloudDownload />}
+                        iconLeft={<IconCertification />}
                         className="px-0 mb-0"
                         variant="text"
                         text={courseTranslations(
@@ -123,7 +122,7 @@ export default function EnrolledCourseHeading({
     return (
         <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:justify-between md:items-center">
             <div className="flex flex-col space-y-3">
-                <SectionHeading text={courseViewModel.data.title} />
+                <h1> {courseViewModel.data.title} </h1>
                 <div className="flex space-x-2 items-center">
                     <StarRating
                         totalStars={5}

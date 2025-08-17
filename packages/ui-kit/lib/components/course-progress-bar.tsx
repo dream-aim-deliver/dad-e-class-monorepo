@@ -1,12 +1,12 @@
-import { FC } from "react";
+import { FC } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Button } from './button';
-import { ProgressBar } from "./progress-bar";
+import { ProgressBar } from './progress-bar';
 
 export interface CourseProgressBarProps extends isLocalAware {
     percentage: number;
     onClickResume: () => void;
-};
+}
 
 /**
  * A component that displays the progress of a course with a visual progress bar and a resume button.
@@ -31,6 +31,13 @@ export const CourseProgressBar: FC<CourseProgressBarProps> = ({
     locale,
 }) => {
     const dictionary = getDictionary(locale);
+
+    // Choose button text based on progress
+    const buttonText =
+        percentage === 0
+            ? dictionary.components.courseProgressBar.beginText
+            : dictionary.components.courseProgressBar.resumeText;
+
     return (
         <div className="flex p-2 gap-4 items-center justify-between w-fit h-fit bg-card-fill border-1 border-card-stroke rounded-medium">
             <div className="flex gap-2 items-center w-full">
@@ -38,10 +45,7 @@ export const CourseProgressBar: FC<CourseProgressBarProps> = ({
                     <p className="text-xs text-text-secondary font-bold leading-[100%]">
                         {dictionary.components.courseProgressBar.progressText}
                     </p>
-                    <ProgressBar
-                        progress={percentage}
-                        type="progress"
-                    />
+                    <ProgressBar progress={percentage} type="progress" />
                 </div>
                 <p className="text-sm font-bold text-text-primary">
                     {percentage}%
@@ -52,7 +56,7 @@ export const CourseProgressBar: FC<CourseProgressBarProps> = ({
                 size="small"
                 className="px-0"
                 onClick={onClickResume}
-                text={dictionary.components.courseProgressBar.resumeText}
+                text={buttonText}
             />
         </div>
     );

@@ -98,3 +98,10 @@ export { SubmissionElementsRenderer } from './components/pre-assessment/submissi
 export * from './components/dialog';
 export { CreateCourseForm, useCreateCourseForm } from './components/create-course-form';
 export * from './utils/file-utils';
+
+
+export { SideMenu, SideMenuProps } from './components/sidemenu/sidemenu';
+import {
+  MenuItem,
+  SideMenuItem,
+} from './components/sidemenu/sidemenu-item';

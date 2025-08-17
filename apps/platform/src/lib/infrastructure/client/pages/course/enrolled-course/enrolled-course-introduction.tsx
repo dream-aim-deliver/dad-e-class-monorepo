@@ -61,8 +61,7 @@ function EnrolledCourseIntroductionContent(
                 }}
                 rating={courseViewModel.data.author.averageRating}
                 author={{
-                    name:
-                        courseViewModel.data.author.name +
+                    name: courseViewModel.data.author.name +
                         ' ' +
                         courseViewModel.data.author.surname,
                     image: courseViewModel.data.author.avatarUrl ?? '',
@@ -76,13 +75,12 @@ function EnrolledCourseIntroductionContent(
                 totalStudentCount={courseViewModel.data.studentCount}
                 onClickAuthor={() => {
                     router.push(
-                        `/coaches/${courseViewModel.data.author.username}`,
+                        `/coaches/${courseViewModel.data.author.username}`
                     );
-                }}
+                } }
                 onClickResume={() => {
                     tabContext.setActiveTab(StudentCourseTab.STUDY);
-                }}
-            />
+                } } isCompleted={undefined} onClickReview={undefined}            />
             <CourseIntroduction courseSlug={props.courseSlug} />
             <CourseOutline courseSlug={props.courseSlug} />
         </div>

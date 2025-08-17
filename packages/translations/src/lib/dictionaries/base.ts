@@ -358,6 +358,7 @@ export const DictionarySchema = z.object({
     courseProgressBar: z.object({
       resumeText: z.string(),
       progressText: z.string(),
+      beginText: z.string(),
     }),
     milestone: z.object({
       milestoneText: z.string(),
@@ -388,6 +389,9 @@ export const DictionarySchema = z.object({
       requirementsTitle: z.string(),
       requirementsDetails: z.string(),
       noRequirements: z.string(),
+      courseCompletedBadge: z.string(),
+      reviewCourseButton: z.string(),
+      beginCourseButton: z.string(),
     }),
     uploadingSection: z.object({
       maxSizeText: z.string(),
@@ -798,6 +802,9 @@ export const DictionarySchema = z.object({
       featuredImage: z.string(),
       removeCourse:z.string()
     }),
+    courseIntroBanner: z.object({
+      title: z.string(),
+    })
   }),
   pages: z.object({
     sso: z.object({

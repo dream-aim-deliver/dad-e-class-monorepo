@@ -75,6 +75,7 @@ function CourseTabList({ role }: { role: string }) {
                     <Tabs.Trigger
                         value={StudentCourseTab.ASSESSMENT}
                         icon={<IconLesson />}
+                        className="border-none"
                     >
                         {courseTranslations('tabs.assessment')}
                     </Tabs.Trigger>
@@ -122,6 +123,7 @@ function CourseTabList({ role }: { role: string }) {
                     <Tabs.Trigger
                         value={CoachCourseTab.MATERIAL}
                         icon={<IconLesson />}
+                        className="border-none"
                     >
                         {courseTranslations('tabs.material')}
                     </Tabs.Trigger>
@@ -131,9 +133,7 @@ function CourseTabList({ role }: { role: string }) {
     };
 
     return (
-        <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
-            {getTabs()}
-        </Tabs.List>
+        <Tabs.List className="flex rounded-medium gap-2">{getTabs()}</Tabs.List>
     );
 }
 
