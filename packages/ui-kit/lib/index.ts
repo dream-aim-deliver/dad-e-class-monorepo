@@ -142,3 +142,4 @@ export { DesignerComponent as RichTextDesignerComponent } from './components/les
 export { DesignerComponent as HeadingDesignerComponent } from './components/lesson-components/heading-lesson';
 export { DesignerComponent as VideoDesignerComponent } from './components/course-builder-lesson-component/video';
 export { DesignerComponent as ImageDesignerComponent } from './components/course-builder-lesson-component/image';
+export { DesignerComponent as ImageGalleryDesignerComponent } from './components/course-builder-lesson-component/image-gallery';

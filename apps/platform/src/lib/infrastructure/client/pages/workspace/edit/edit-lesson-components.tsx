@@ -11,6 +11,7 @@ import {
     HeadingElement,
     ImageDesignerComponent,
     ImageElement,
+    ImageGalleryDesignerComponent,
     LessonElement,
     RichTextDesignerComponent,
     RichTextElement,
@@ -26,14 +27,12 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 interface FileUploadProps {
     lessonId: number;
     componentType: string;
-    file: fileMetadata.TFileMetadata | null;
     setFile: (file: fileMetadata.TFileMetadata | null) => void;
 }
 
 const useFileUpload = ({
     lessonId,
     componentType,
-    file,
     setFile,
 }: FileUploadProps) => {
     const uploadMutation = trpc.uploadLessonComponentFile.useMutation();
@@ -121,23 +120,10 @@ const useFileUpload = ({
         setFile(file);
     };
 
-    const handleDelete = (id: string) => {
-        if (file?.id === id) {
-            setFile(null);
-        }
-    };
-
-    const handleDownload = async (id: string) => {
-        if (file?.id !== id) return;
-        downloadFile(file.url, file.name);
-    };
-
     return {
         uploadError,
         handleFileChange,
         handleUploadComplete,
-        handleDelete,
-        handleDownload,
     };
 };
 
@@ -249,18 +235,22 @@ function VideoComponent({
         );
     };
 
-    const {
-        uploadError,
-        handleFileChange,
-        handleUploadComplete,
-        handleDelete,
-        handleDownload,
-    } = useFileUpload({
-        lessonId,
-        componentType: 'video',
-        file: elementInstance.file,
-        setFile,
-    });
+    const handleDelete = () => {
+        setFile(null);
+    };
+
+    const handleDownload = () => {
+        if (elementInstance.file) {
+            downloadFile(elementInstance.file.url, elementInstance.file.name);
+        }
+    };
+
+    const { uploadError, handleFileChange, handleUploadComplete } =
+        useFileUpload({
+            lessonId,
+            componentType: 'video',
+            setFile,
+        });
 
     const onVideoUpload = async (
         fileRequest: fileMetadata.TFileUploadRequest,
@@ -283,10 +273,8 @@ function VideoComponent({
                 maxSize={15}
                 onVideoUpload={onVideoUpload}
                 onUploadComplete={handleUploadComplete}
-                onFileDelete={() => {
-                    handleDelete(elementInstance.file!.id);
-                }}
-                onFileDownload={() => handleDownload(elementInstance.file!.id)}
+                onFileDelete={handleDelete}
+                onFileDownload={handleDownload}
             />
             {uploadError && (
                 <DefaultError locale={locale} description={uploadError} />
@@ -323,18 +311,22 @@ function ImageComponent({
         );
     };
 
-    const {
-        uploadError,
-        handleFileChange,
-        handleUploadComplete,
-        handleDelete,
-        handleDownload,
-    } = useFileUpload({
-        lessonId,
-        componentType: 'image',
-        file: elementInstance.file,
-        setFile,
-    });
+    const handleDelete = () => {
+        setFile(null);
+    };
+
+    const handleDownload = () => {
+        if (elementInstance.file) {
+            downloadFile(elementInstance.file.url, elementInstance.file.name);
+        }
+    };
+
+    const { uploadError, handleFileChange, handleUploadComplete } =
+        useFileUpload({
+            lessonId,
+            componentType: 'image',
+            setFile,
+        });
 
     const onImageUpload = async (
         fileRequest: fileMetadata.TFileUploadRequest,
@@ -357,10 +349,103 @@ function ImageComponent({
                 maxSize={15}
                 onImageUpload={onImageUpload}
                 onUploadComplete={handleUploadComplete}
-                onFileDelete={() => {
-                    handleDelete(elementInstance.file!.id);
-                }}
-                onFileDownload={() => handleDownload(elementInstance.file!.id)}
+                onFileDelete={handleDelete}
+                onFileDownload={handleDownload}
+            />
+            {uploadError && (
+                <DefaultError locale={locale} description={uploadError} />
+            )}
+        </div>
+    );
+}
+
+function ImageGalleryComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== CourseElementType.ImageGallery) return null;
+
+    const setFile = (file: fileMetadata.TFileMetadata | null) => {
+        setComponents((prev) =>
+            prev.map((comp) => {
+                if (
+                    comp.id === elementInstance.id &&
+                    comp.type === CourseElementType.ImageGallery
+                ) {
+                    const images = comp.images ? [...comp.images] : [];
+                    return {
+                        ...comp,
+                        images: [
+                            ...images,
+                            file as fileMetadata.TFileMetadataImage,
+                        ],
+                    };
+                }
+                return comp;
+            }),
+        );
+    };
+
+    const handleDelete = (id: string) => {
+        setComponents((prev) =>
+            prev.map((comp) => {
+                if (
+                    comp.id === elementInstance.id &&
+                    comp.type === CourseElementType.ImageGallery
+                ) {
+                    return {
+                        ...comp,
+                        images:
+                            comp.images?.filter((img) => img.id !== id) ?? null,
+                    };
+                }
+                return comp;
+            }),
+        );
+    };
+
+    const handleDownload = (id: string) => {
+        const file = elementInstance.images?.find((img) => img.id === id);
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
+
+    const { uploadError, handleFileChange, handleUploadComplete } =
+        useFileUpload({
+            lessonId,
+            componentType: 'image',
+            setFile,
+        });
+
+    const onImageUpload = async (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ): Promise<fileMetadata.TFileMetadataImage> => {
+        return (await handleFileChange(
+            fileRequest,
+            abortSignal,
+        )) as fileMetadata.TFileMetadataImage;
+    };
+
+    return (
+        <div className="flex flex-col gap-2">
+            <ImageGalleryDesignerComponent
+                elementInstance={elementInstance}
+                locale={locale}
+                onUpClick={onUpClick}
+                onDownClick={onDownClick}
+                onDeleteClick={onDeleteClick}
+                onImageUpload={onImageUpload}
+                onUploadComplete={handleUploadComplete}
+                onFileDelete={handleDelete}
+                onFileDownload={handleDownload}
+                maxSize={15}
             />
             {uploadError && (
                 <DefaultError locale={locale} description={uploadError} />
@@ -374,6 +459,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.HeadingText]: HeadingComponent,
     [CourseElementType.VideoFile]: VideoComponent,
     [CourseElementType.ImageFile]: ImageComponent,
+    [CourseElementType.ImageGallery]: ImageGalleryComponent,
     // Add other mappings as needed
 };
 
@@ -422,6 +508,7 @@ export default function EditLessonComponents({
         <div className="flex flex-col gap-2">
             {components.map((component) => {
                 const Component = typeToRendererMap[component.type];
+                if (!Component) return null;
                 // TODO: pass isFirst and isLast
                 return (
                     <Component
