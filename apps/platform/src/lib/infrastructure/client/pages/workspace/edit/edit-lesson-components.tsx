@@ -16,6 +16,8 @@ import {
     LessonElement,
     RichTextDesignerComponent,
     RichTextElement,
+    SingleChoiceDesignerComponent,
+    SingleChoiceElement,
     TextInputDesignerComponent,
     UploadFilesDesignerComponent,
     uploadToS3,
@@ -613,6 +615,55 @@ function UploadFilesComponent({
     );
 }
 
+function SingleChoiceComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== FormElementType.SingleChoice) return null;
+
+    const onChange = (
+        title: string,
+        options: SingleChoiceElement['options'],
+    ) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === FormElementType.SingleChoice
+                    ? { ...comp, title, options }
+                    : comp,
+            ),
+        );
+    };
+
+    const onRequiredChange = (isRequired: boolean) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === FormElementType.SingleChoice
+                    ? { ...comp, required: isRequired }
+                    : comp,
+            ),
+        );
+    };
+
+    return (
+        <SingleChoiceDesignerComponent
+            elementInstance={elementInstance}
+            locale={locale}
+            onRequiredChange={onRequiredChange}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onChange={onChange}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
@@ -622,6 +673,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [CourseElementType.DownloadFiles]: DownloadFilesComponent,
     [FormElementType.TextInput]: TextInputComponent,
     [CourseElementType.UploadFiles]: UploadFilesComponent,
+    [FormElementType.SingleChoice]: SingleChoiceComponent,
     // Add other mappings as needed
 };
 
