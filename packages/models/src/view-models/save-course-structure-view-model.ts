@@ -12,7 +12,9 @@ export type TSaveCourseStructureSuccess = z.infer<typeof SaveCourseStructureSucc
 
 const SaveCourseStructureDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", SaveCourseStructureSuccessSchema);
 const SaveCourseStructureInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory());
-const SaveCourseStructureConflictViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("conflict", BaseErrorDataSchemaFactory());
+const SaveCourseStructureConflictViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("conflict", BaseErrorDataSchemaFactory(z.object({
+    courseVersion: z.number(),
+})));
 const SaveCourseStructureKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
 
 export const SaveCourseStructureViewModelSchemaMap = {

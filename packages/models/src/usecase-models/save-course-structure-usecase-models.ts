@@ -3,7 +3,6 @@ import {
   BaseDiscriminatedErrorTypeSchemaFactory,
   BaseErrorDiscriminatedUnionSchemaFactory,
   BaseStatusDiscriminatedUnionSchemaFactory,
-  BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
 import { GetCourseStructureSuccessResponseSchema } from './get-course-structure-usecase-models';
 
@@ -44,6 +43,7 @@ const SaveCourseStructureUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnio
     type: 'ConflictError',
     schema: z.object({
       trace: z.string().optional(),
+      courseVersion: z.number(),
     }),
   }),
 });

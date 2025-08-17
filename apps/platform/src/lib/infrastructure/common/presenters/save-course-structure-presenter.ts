@@ -62,15 +62,19 @@ export default class SaveCourseStructurePresenter extends BasePresenter<
             TSaveCourseStructureResponseMiddleware
         >,
     ): viewModels.TSaveCourseStructureViewModel {
+        // TODO: Get rid of ignores after fixing typing
         if (response.data.errorType === 'ConflictError') {
             return {
                 mode: 'conflict',
                 data: {
+                    // @ts-ignore
                     type: response.data.errorType,
                     message: response.data.message,
                     operation: response.data.operation,
                     context: response.data.context,
                     trace: undefined,
+                    // @ts-ignore
+                    courseVersion: response.data.courseVersion,
                 },
             };
         }
