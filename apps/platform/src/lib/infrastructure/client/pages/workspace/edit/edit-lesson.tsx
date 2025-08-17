@@ -21,6 +21,7 @@ import {
     ImageElement,
     ImageGallery,
     LessonElement,
+    MultiCheckElement,
     RichTextElement,
     SingleChoiceElement,
     TextInputElement,
@@ -181,7 +182,16 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconMultiChoice />,
             label: 'Checklist',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: MultiCheckElement = {
+                    id: generateTempId(),
+                    type: FormElementType.MultiCheck,
+                    title: '',
+                    options: [],
+                    required: false,
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
         {
             icon: <IconOneOutOfThree />,

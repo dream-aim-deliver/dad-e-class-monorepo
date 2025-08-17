@@ -46,6 +46,7 @@ const singleChoiceElement: FormElementTemplate = {
         icon: IconSingleChoice,
         label: "Single Choice"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
