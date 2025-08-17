@@ -22,6 +22,7 @@ import {
     ImageGallery,
     LessonElement,
     RichTextElement,
+    TextInputElement,
     VideoElement,
 } from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
@@ -138,7 +139,15 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconTextInput />,
             label: 'Text Input',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: TextInputElement = {
+                    id: generateTempId(),
+                    type: FormElementType.TextInput,
+                    helperText: '',
+                    isRequired: false,
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
         {
             icon: <IconCloudUpload />,
