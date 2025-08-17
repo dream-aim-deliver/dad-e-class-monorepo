@@ -34,8 +34,7 @@ const useFileUpload = ({
     file,
     setFile,
 }: FileUploadProps) => {
-    // TODO: Replace with specific upload implementation
-    const uploadMutation = trpc.uploadCourseImage.useMutation();
+    const uploadMutation = trpc.uploadLessonComponentFile.useMutation();
     const verifyMutation = trpc.verifyFile.useMutation();
 
     const [uploadError, setUploadError] = useState<string | undefined>(
@@ -55,7 +54,8 @@ const useFileUpload = ({
         // For mutations, we aren't able to abort them midway.
         // Hence, we check for abort signal before each step.
         const uploadResult = await uploadMutation.mutateAsync({
-            // TODO: Pass lessonId and componentType
+            lessonId,
+            componentType,
             name: uploadRequest.name,
             checksum,
             mimeType: uploadRequest.file.type,
