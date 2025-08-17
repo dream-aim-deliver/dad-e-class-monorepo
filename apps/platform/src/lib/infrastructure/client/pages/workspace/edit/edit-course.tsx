@@ -14,48 +14,10 @@ import { useLocale } from 'next-intl';
 import { Suspense, useState } from 'react';
 import EditCourseStructure from './edit-course-structure';
 import { useSaveStructure } from './hooks/save-hooks';
+import EditHeader from './components/edit-header';
 
-interface EditCoursesProps {
+interface EditCourseProps {
     slug: string;
-}
-
-interface EditCourseHeaderProps {
-    onPreview: () => void;
-    onSave: () => void;
-    disablePreview: boolean;
-    isSaving: boolean;
-}
-
-function EditCourseHeader({
-    onPreview,
-    onSave,
-    disablePreview,
-    isSaving,
-}: EditCourseHeaderProps) {
-    return (
-        <div className="flex md:flex-row flex-col md:items-center justify-between gap-4">
-            <PageTitle text="Edit course" />
-            <div className="flex sm:flex-row flex-col sm:items-center gap-3">
-                <Button
-                    variant="text"
-                    iconLeft={<IconEyeShow />}
-                    hasIconLeft
-                    text={disablePreview ? 'Save to preview' : 'Preview'}
-                    className="px-0"
-                    onClick={onPreview}
-                    disabled={disablePreview}
-                />
-                <Button
-                    variant="primary"
-                    iconLeft={<IconSave />}
-                    hasIconLeft
-                    text={isSaving ? 'Saving...' : 'Save draft'}
-                    onClick={onSave}
-                    disabled={isSaving}
-                />
-            </div>
-        </div>
-    );
 }
 
 enum TabTypes {
@@ -65,7 +27,7 @@ enum TabTypes {
 }
 
 // TODO: Translate
-export default function EditCourse({ slug }: EditCoursesProps) {
+export default function EditCourse({ slug }: EditCourseProps) {
     const tabContentClass = 'mt-5';
     const locale = useLocale() as TLocale;
 
@@ -121,7 +83,8 @@ export default function EditCourse({ slug }: EditCoursesProps) {
 
     return (
         <div className="flex flex-col gap-4">
-            <EditCourseHeader
+            <EditHeader
+                title="Edit course"
                 onPreview={handlePreview}
                 onSave={handleSave}
                 disablePreview={isEdited}
