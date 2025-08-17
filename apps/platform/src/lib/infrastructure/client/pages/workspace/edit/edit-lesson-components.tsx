@@ -16,6 +16,7 @@ import {
     LessonElement,
     RichTextDesignerComponent,
     RichTextElement,
+    TextInputDesignerComponent,
     uploadToS3,
     VideoDesignerComponent,
     VideoElement,
@@ -538,6 +539,48 @@ function DownloadFilesComponent({
     );
 }
 
+function TextInputComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== FormElementType.TextInput) return null;
+
+    const onHelperTextChange = (helperText: string) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id ? { ...comp, helperText } : comp,
+            ),
+        );
+    };
+
+    const onRequiredChange = (isRequired: boolean) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id ? { ...comp, isRequired } : comp,
+            ),
+        );
+    };
+
+    return (
+        <div className="flex flex-col gap-2">
+            <TextInputDesignerComponent
+                elementInstance={elementInstance}
+                locale={locale}
+                onUpClick={onUpClick}
+                onDownClick={onDownClick}
+                onDeleteClick={onDeleteClick}
+                onHelperTextChange={onHelperTextChange}
+                onRequiredChange={onRequiredChange}
+            />
+        </div>
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
@@ -545,6 +588,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [CourseElementType.ImageFile]: ImageComponent,
     [CourseElementType.ImageGallery]: ImageGalleryComponent,
     [CourseElementType.DownloadFiles]: DownloadFilesComponent,
+    [FormElementType.TextInput]: TextInputComponent,
     // Add other mappings as needed
 };
 

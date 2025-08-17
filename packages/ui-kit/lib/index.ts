@@ -144,3 +144,5 @@ export { DesignerComponent as VideoDesignerComponent } from './components/course
 export { DesignerComponent as ImageDesignerComponent } from './components/course-builder-lesson-component/image';
 export { DesignerComponent as ImageGalleryDesignerComponent } from './components/course-builder-lesson-component/image-gallery';
 export { DesignerComponent as DownloadFilesDesignerComponent } from './components/course-builder-lesson-component/download-files-lesson';
+export { DesignerComponent as UploadFilesDesignerComponent } from './components/course-builder-lesson-component/upload-files-lesson';
+export { DesignerComponent as TextInputDesignerComponent } from './components/lesson-components/text-input';
