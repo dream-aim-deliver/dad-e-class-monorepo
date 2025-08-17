@@ -2,6 +2,8 @@
 
 import {
     ComponentCard,
+    DefaultLoading,
+    FormElementType,
     IconCloudDownload,
     IconCloudUpload,
     IconCoachingSession,
@@ -13,6 +15,8 @@ import {
     IconSingleChoice,
     IconTextInput,
     IconVideo,
+    LessonElement,
+    RichTextElement,
 } from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
 import EditLayout from './components/edit-layout';
@@ -22,18 +26,39 @@ import { IconLink } from 'packages/ui-kit/lib/components/icons/icon-link';
 import { IconQuiz } from 'packages/ui-kit/lib/components/icons/icon-quiz';
 import { LessonComponentButton } from './types';
 import LessonComponentsBar from './components/lesson-components-bar';
+import { Suspense, useState } from 'react';
+import { useLocale } from 'next-intl';
+import { TLocale } from '@maany_shr/e-class-translations';
+import EditLessonComponents from './edit-lesson-components';
 
 interface EditLessonProps {
     lessonId: number;
 }
 
+// Required to seamlessly integrate with the components
+const generateTempId = () => {
+    const randomId = crypto.randomUUID();
+    return `temp-${randomId}`;
+}
+
 // TODO: Translate
 export default function EditLesson({ lessonId }: EditLessonProps) {
+    const locale = useLocale() as TLocale;
+    const [components, setComponents] = useState<LessonElement[]>([]);
+    const [courseVersion, setCourseVersion] = useState<number | null>(null);
+
     const simpleComponentButtons: LessonComponentButton[] = [
         {
             icon: <IconRichText />,
             label: 'Rich Text',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: RichTextElement = {
+                    id: generateTempId(),
+                    type: FormElementType.RichText,
+                    content: '',
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
         {
             icon: <IconHeading />,
@@ -127,7 +152,17 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                         }
                     />
                 }
-                editor={undefined}
+                editor={
+                    <Suspense fallback={<DefaultLoading locale={locale} />}>
+                        <EditLessonComponents
+                            lessonId={lessonId}
+                            components={components}
+                            setComponents={setComponents}
+                            courseVersion={courseVersion}
+                            setCourseVersion={setCourseVersion}
+                        />
+                    </Suspense>
+                }
             />
         </div>
     );

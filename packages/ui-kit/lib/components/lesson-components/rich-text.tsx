@@ -19,6 +19,7 @@ const richTextElement: FormElementTemplate = {
         icon: IconRichText,
         label: "Rich Text"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
@@ -51,7 +52,11 @@ const richTextElement: FormElementTemplate = {
  * ```
  */
 
-function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+interface RichTextDesignerComponentProps extends DesignerComponentProps {
+    onContentChange: (value: string) => void;
+}
+
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onContentChange }: RichTextDesignerComponentProps) {
     if (elementInstance.type !== FormElementType.RichText) return null;
     const dictionary = getDictionary(locale);
 
@@ -63,7 +68,9 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
 
     const handleContentChange = (value: Descendant[]) => {
         setContent(value);
-        const contentString = serialize(value);  // TODO
+        const contentString = serialize(value);
+        // TODO: This might be bad for performance. Consider migrating this to handleLoseFocus
+        onContentChange(contentString);
     };
 
     const handleLoseFocus = (value: string) => {

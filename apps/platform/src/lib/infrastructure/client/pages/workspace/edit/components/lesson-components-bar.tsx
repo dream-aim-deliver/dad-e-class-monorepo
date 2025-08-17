@@ -6,6 +6,7 @@ interface LessonComponentsBarProps {
     interactiveComponentButtons: LessonComponentButton[];
 }
 
+// TODO: Translate
 export default function LessonComponentsBar({
     simpleComponentButtons,
     interactiveComponentButtons,
