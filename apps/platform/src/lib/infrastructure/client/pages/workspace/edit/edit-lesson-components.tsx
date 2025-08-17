@@ -21,29 +21,35 @@ interface LessonComponentProps {
     elementInstance: LessonElement;
     locale: TLocale;
     setComponents: React.Dispatch<React.SetStateAction<LessonElement[]>>;
+    onUpClick: (id: string) => void;
+    onDownClick: (id: string) => void;
+    onDeleteClick: (id: string) => void;
 }
 
 function RichTextComponent({
     elementInstance: element,
     locale,
     setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
 }: LessonComponentProps) {
+    const onContentChange = (value: string) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === element.id ? { ...comp, content: value } : comp,
+            ),
+        );
+    };
+
     return (
         <RichTextDesignerComponent
             elementInstance={element as RichTextElement}
             locale={locale}
-            onUpClick={() => {}}
-            onDownClick={() => {}}
-            onDeleteClick={() => {}}
-            onContentChange={(value: string) => {
-                setComponents((prev) =>
-                    prev.map((comp) =>
-                        comp.id === element.id
-                            ? { ...comp, content: value }
-                            : comp,
-                    ),
-                );
-            }}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onContentChange={onContentChange}
         />
     );
 }
@@ -62,21 +68,55 @@ export default function EditLessonComponents({
 }: EditLessonComponentsProps) {
     const lessonComponentsViewModel = useLessonComponents(lessonId);
 
-    console.log(components);
+    const onUpClick = (id: string) => {
+        setComponents((prev) => {
+            const index = prev.findIndex((comp) => comp.id === id);
+            if (index > 0) {
+                const updatedComponents = [...prev];
+                const [movedComponent] = updatedComponents.splice(index, 1);
+                updatedComponents.splice(index - 1, 0, movedComponent);
+                return updatedComponents;
+            }
+            return prev;
+        });
+    };
+
+    const onDownClick = (id: string) => {
+        setComponents((prev) => {
+            const index = prev.findIndex((comp) => comp.id === id);
+            if (index < prev.length - 1) {
+                const updatedComponents = [...prev];
+                const [movedComponent] = updatedComponents.splice(index, 1);
+                updatedComponents.splice(index + 1, 0, movedComponent);
+                return updatedComponents;
+            }
+            return prev;
+        });
+    };
+
+    const onDeleteClick = (id: string) => {
+        setComponents((prev) => prev.filter((comp) => comp.id !== id));
+    };
 
     const locale = useLocale() as TLocale;
 
-    return <div className="flex flex-col gap-2">
-        {components.map((component) => {
-            const Component = typeToRendererMap[component.type];
-            return (
-                <Component
-                    key={component.id}
-                    elementInstance={component}
-                    locale={locale}
-                    setComponents={setComponents}
-                />
-            );
-        })} 
-    </div>;
+    return (
+        <div className="flex flex-col gap-2">
+            {components.map((component) => {
+                const Component = typeToRendererMap[component.type];
+                // TODO: pass isFirst and isLast
+                return (
+                    <Component
+                        key={component.id}
+                        elementInstance={component}
+                        locale={locale}
+                        setComponents={setComponents}
+                        onUpClick={onUpClick}
+                        onDownClick={onDownClick}
+                        onDeleteClick={onDeleteClick}
+                    />
+                );
+            })}
+        </div>
+    );
 }
