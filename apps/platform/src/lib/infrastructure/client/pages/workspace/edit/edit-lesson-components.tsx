@@ -4,6 +4,7 @@ import {
     AbortError,
     calculateMd5,
     CourseElementType,
+    DefaultError,
     downloadFile,
     FormElementType,
     HeadingDesignerComponent,
@@ -269,22 +270,26 @@ function VideoComponent({
         )) as fileMetadata.TFileMetadataVideo;
     };
 
-    // TODO: Add error banner for upload error
     return (
-        <VideoDesignerComponent
-            elementInstance={elementInstance as VideoElement}
-            locale={locale}
-            onUpClick={onUpClick}
-            onDownClick={onDownClick}
-            onDeleteClick={onDeleteClick}
-            maxSize={15}
-            onVideoUpload={onVideoUpload}
-            onUploadComplete={handleUploadComplete}
-            onFileDelete={() => {
-                handleDelete(elementInstance.file!.id);
-            }}
-            onFileDownload={() => handleDownload(elementInstance.file!.id)}
-        />
+        <div className="flex flex-col gap-2">
+            <VideoDesignerComponent
+                elementInstance={elementInstance as VideoElement}
+                locale={locale}
+                onUpClick={onUpClick}
+                onDownClick={onDownClick}
+                onDeleteClick={onDeleteClick}
+                maxSize={15}
+                onVideoUpload={onVideoUpload}
+                onUploadComplete={handleUploadComplete}
+                onFileDelete={() => {
+                    handleDelete(elementInstance.file!.id);
+                }}
+                onFileDownload={() => handleDownload(elementInstance.file!.id)}
+            />
+            {uploadError && (
+                <DefaultError locale={locale} description={uploadError} />
+            )}
+        </div>
     );
 }
 
