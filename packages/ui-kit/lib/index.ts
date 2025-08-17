@@ -141,3 +141,4 @@ export { ContentControlButtons } from './components/course-builder/control-butto
 export { DesignerComponent as RichTextDesignerComponent } from './components/lesson-components/rich-text';
 export { DesignerComponent as HeadingDesignerComponent } from './components/lesson-components/heading-lesson';
 export { DesignerComponent as VideoDesignerComponent } from './components/course-builder-lesson-component/video';
+export { DesignerComponent as ImageDesignerComponent } from './components/course-builder-lesson-component/image';
