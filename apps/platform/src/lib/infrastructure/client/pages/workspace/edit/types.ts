@@ -61,3 +61,9 @@ export interface ModuleEditorProps {
         isExtraTraining: boolean,
     ) => void;
 }
+
+export interface LessonComponentButton {
+    icon: React.ReactNode;
+    label: string;
+    onClick: () => void;
+}
