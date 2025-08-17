@@ -6,6 +6,7 @@ import {
     CourseElementType,
     DefaultError,
     downloadFile,
+    DownloadFilesDesignerComponent,
     FormElementType,
     HeadingDesignerComponent,
     HeadingElement,
@@ -270,7 +271,7 @@ function VideoComponent({
                 onUpClick={onUpClick}
                 onDownClick={onDownClick}
                 onDeleteClick={onDeleteClick}
-                maxSize={15}
+                maxSize={15} // TODO: tweak file size
                 onVideoUpload={onVideoUpload}
                 onUploadComplete={handleUploadComplete}
                 onFileDelete={handleDelete}
@@ -346,7 +347,7 @@ function ImageComponent({
                 onUpClick={onUpClick}
                 onDownClick={onDownClick}
                 onDeleteClick={onDeleteClick}
-                maxSize={15}
+                maxSize={15} // TODO: tweak file size
                 onImageUpload={onImageUpload}
                 onUploadComplete={handleUploadComplete}
                 onFileDelete={handleDelete}
@@ -445,7 +446,90 @@ function ImageGalleryComponent({
                 onUploadComplete={handleUploadComplete}
                 onFileDelete={handleDelete}
                 onFileDownload={handleDownload}
-                maxSize={15}
+                maxSize={15} // TODO: tweak file size
+            />
+            {uploadError && (
+                <DefaultError locale={locale} description={uploadError} />
+            )}
+        </div>
+    );
+}
+
+function DownloadFilesComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
+
+    const setFile = (file: fileMetadata.TFileMetadata | null) => {
+        setComponents((prev) =>
+            prev.map((comp) => {
+                if (
+                    comp.id === elementInstance.id &&
+                    comp.type === CourseElementType.DownloadFiles
+                ) {
+                    const files = comp.files ? [...comp.files] : [];
+                    return {
+                        ...comp,
+                        files: [...files, file as fileMetadata.TFileMetadata],
+                    };
+                }
+                return comp;
+            }),
+        );
+    };
+
+    const handleDelete = (id: string) => {
+        setComponents((prev) =>
+            prev.map((comp) => {
+                if (
+                    comp.id === elementInstance.id &&
+                    comp.type === CourseElementType.DownloadFiles
+                ) {
+                    return {
+                        ...comp,
+                        files:
+                            comp.files?.filter((file) => file.id !== id) ??
+                            null,
+                    };
+                }
+                return comp;
+            }),
+        );
+    };
+
+    const handleDownload = (id: string) => {
+        const file = elementInstance.files?.find((file) => file.id === id);
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
+
+    const { uploadError, handleFileChange, handleUploadComplete } =
+        useFileUpload({
+            lessonId,
+            componentType: 'downloadFiles',
+            setFile,
+        });
+
+    return (
+        <div className="flex flex-col gap-2">
+            <DownloadFilesDesignerComponent
+                elementInstance={elementInstance}
+                locale={locale}
+                onUpClick={onUpClick}
+                onDownClick={onDownClick}
+                onDeleteClick={onDeleteClick}
+                onFilesUpload={handleFileChange}
+                onUploadComplete={handleUploadComplete}
+                onFileDelete={handleDelete}
+                onFileDownload={handleDownload}
+                maxSize={15} // TODO: tweak file size
             />
             {uploadError && (
                 <DefaultError locale={locale} description={uploadError} />
@@ -460,6 +544,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [CourseElementType.VideoFile]: VideoComponent,
     [CourseElementType.ImageFile]: ImageComponent,
     [CourseElementType.ImageGallery]: ImageGalleryComponent,
+    [CourseElementType.DownloadFiles]: DownloadFilesComponent,
     // Add other mappings as needed
 };
 
