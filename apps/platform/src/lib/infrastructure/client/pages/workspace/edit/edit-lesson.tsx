@@ -17,6 +17,7 @@ import {
     IconSingleChoice,
     IconTextInput,
     IconVideo,
+    ImageElement,
     LessonElement,
     RichTextElement,
     VideoElement,
@@ -91,7 +92,14 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconImage />,
             label: 'Image',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: ImageElement = {
+                    id: generateTempId(),
+                    type: CourseElementType.ImageFile,
+                    file: null,
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
         {
             icon: <IconImageGallery />,

@@ -29,13 +29,6 @@ const imageFilesElement: CourseElementTemplate = {
     formComponent: FormComponent
 };
 
-/**
- * Props interface for the image file edit component.
- * Extends DesignerComponentProps with additional properties for file handling.
- * @interface
- */
-type TImageFile = fileMetadata.TFileMetadata & { category: 'image' };
-
 interface ImageFileEditProps extends DesignerComponentProps {
     /** Maximum file size allowed for upload in MB */
     maxSize: number;
@@ -43,14 +36,12 @@ interface ImageFileEditProps extends DesignerComponentProps {
     onImageUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
-    ) => Promise<TImageFile | null>;
+    ) => Promise<fileMetadata.TFileMetadataImage | null>;
 
-    onUploadComplete: (file: TImageFile) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadataImage) => void;
     onFileDelete: () => void;
     /** Callback function to handle file download */
     onFileDownload: () => void;
-    /** Currently selected file or null if no file is selected */
-    file: TImageFile | null;
 }
 
 /**
@@ -71,20 +62,20 @@ interface ImageFileEditProps extends DesignerComponentProps {
  * @param maxSize - Maximum file size allowed for upload, in MB
  * @returns JSX.Element | null
  */
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, file, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize }: ImageFileEditProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize }: ImageFileEditProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
     const dictionary = getDictionary(locale);
     const handleImageFile = async (
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
-    ): Promise<TImageFile | null> => {
+    ): Promise<fileMetadata.TFileMetadataImage | null> => {
         return await onImageUpload(fileRequest, abortSignal);
     };
 
     const handleUploadComplete = (ImageMetadata: fileMetadata.TFileMetadata) => {
         // Update form data with the uploaded file URL (if it exists)
         // Notify parent component that upload is complete
-        onUploadComplete?.(ImageMetadata as TImageFile);
+        onUploadComplete?.(ImageMetadata as fileMetadata.TFileMetadataImage);
     };
 
     return (
@@ -101,13 +92,14 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             <Uploader
                 type="single"
                 variant="image"
-                file={file}
+                file={elementInstance.file}
                 onFilesChange={handleImageFile}
                 onUploadComplete={handleUploadComplete}
                 onDelete={onFileDelete}
                 onDownload={onFileDownload}
                 locale={locale}
                 maxSize={maxSize}
+                isDeletionAllowed={true}
             />
         </DesignerLayout>
     );

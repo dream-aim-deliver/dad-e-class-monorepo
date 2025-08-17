@@ -9,6 +9,8 @@ import {
     FormElementType,
     HeadingDesignerComponent,
     HeadingElement,
+    ImageDesignerComponent,
+    ImageElement,
     LessonElement,
     RichTextDesignerComponent,
     RichTextElement,
@@ -293,10 +295,85 @@ function VideoComponent({
     );
 }
 
+function ImageComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== CourseElementType.ImageFile) return null;
+
+    const setFile = (file: fileMetadata.TFileMetadata | null) => {
+        setComponents((prev) =>
+            prev.map((comp) => {
+                if (
+                    comp.id === elementInstance.id &&
+                    comp.type === CourseElementType.ImageFile
+                ) {
+                    return {
+                        ...comp,
+                        file: file as fileMetadata.TFileMetadataImage,
+                    };
+                }
+                return comp;
+            }),
+        );
+    };
+
+    const {
+        uploadError,
+        handleFileChange,
+        handleUploadComplete,
+        handleDelete,
+        handleDownload,
+    } = useFileUpload({
+        lessonId,
+        componentType: 'image',
+        file: elementInstance.file,
+        setFile,
+    });
+
+    const onImageUpload = async (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ): Promise<fileMetadata.TFileMetadataImage> => {
+        return (await handleFileChange(
+            fileRequest,
+            abortSignal,
+        )) as fileMetadata.TFileMetadataImage;
+    };
+
+    return (
+        <div className="flex flex-col gap-2">
+            <ImageDesignerComponent
+                elementInstance={elementInstance as ImageElement}
+                locale={locale}
+                onUpClick={onUpClick}
+                onDownClick={onDownClick}
+                onDeleteClick={onDeleteClick}
+                maxSize={15}
+                onImageUpload={onImageUpload}
+                onUploadComplete={handleUploadComplete}
+                onFileDelete={() => {
+                    handleDelete(elementInstance.file!.id);
+                }}
+                onFileDownload={() => handleDownload(elementInstance.file!.id)}
+            />
+            {uploadError && (
+                <DefaultError locale={locale} description={uploadError} />
+            )}
+        </div>
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
     [CourseElementType.VideoFile]: VideoComponent,
+    [CourseElementType.ImageFile]: ImageComponent,
     // Add other mappings as needed
 };
 
