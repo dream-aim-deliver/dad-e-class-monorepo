@@ -18,6 +18,7 @@ import {
     IconTextInput,
     IconVideo,
     ImageElement,
+    ImageGallery,
     LessonElement,
     RichTextElement,
     VideoElement,
@@ -104,7 +105,14 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconImageGallery />,
             label: 'Image Carousel',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: ImageGallery = {
+                    id: generateTempId(),
+                    type: CourseElementType.ImageGallery,
+                    images: [],
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
         {
             icon: <IconLink />,

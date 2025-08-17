@@ -46,11 +46,9 @@ interface ImageGalleryEditProps extends DesignerComponentProps {
     ) => Promise<TImageFile | null>;
 
     onUploadComplete: (file: TImageFile) => void;
-    onFileDelete: () => void;
+    onFileDelete: (id: string) => void;
     /** Callback function to handle file download */
-    onFileDownload: () => void;
-    /** Currently selected file or null if no file is selected */
-    files: TImageFile[] | null;
+    onFileDownload: (id: string) => void;
 }
 
 /**
@@ -67,7 +65,7 @@ interface ImageGalleryEditProps extends DesignerComponentProps {
  * @param onFileDownload - Callback for file downloads
  * @param onFileDelete - Callback for file deletion
  */
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, files, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize }: ImageGalleryEditProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize }: ImageGalleryEditProps) {
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
     const dictionary = getDictionary(locale);
 
@@ -96,7 +94,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             <Uploader
                 type="multiple"
                 variant="image"
-                files={files}
+                files={elementInstance.images}
                 maxFile={6}
                 onFilesChange={handleImageFile}
                 onUploadComplete={handleUploadComplete}
@@ -104,6 +102,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 onDownload={onFileDownload}
                 locale={locale}
                 maxSize={maxSize}
+                isDeletionAllowed={true}
             />
         </DesignerLayout>
     );
