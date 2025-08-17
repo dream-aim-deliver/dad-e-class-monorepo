@@ -90,7 +90,6 @@ const meta: Meta<typeof CourseGeneralInformationVisitor> = {
         coaches: coachesExample,
         totalCoachesCount: 4,
         requiredCourses: requiredCoursesExample,
-        coachingIncluded: true,
         onClickBook: () => alert('Book clicked'),
         onClickBuyCourse: (included: boolean) =>
             alert(`Buy course clicked, coaching included: ${included}`),

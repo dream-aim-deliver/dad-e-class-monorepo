@@ -22,7 +22,7 @@ interface RequiredCourse {
 
 export interface CourseGeneralInformationVisitorProps
     extends TCourseMetadata,
-        isLocalAware {
+    isLocalAware {
     longDescription: string;
     onClickBook: () => void;
     onClickBuyCourse: (coachingIncluded: boolean) => void;
@@ -101,7 +101,7 @@ export interface CourseGeneralInformationVisitorProps
  * @param {string} props.imageUrl - URL for the main course image.
  * @param {Coach[]} props.coaches - List of coaches with names and avatars.
  * @param {number} props.totalCoachesCount - Total number of coaches available.
- * @param {boolean} props.coachingIncluded - Whether coaching is included in the purchase.
+ * @param {boolean} props.coachingIncluded - Optional: Initial value of 'coaching included in the course' checkbox. Defaults to true.
  * @param {Function} props.onCoachingIncludedChange - Callback when coaching is toggled.
  * @param {Function} props.onClickBook - Callback when book button is clicked.
  * @param {Function} props.onClickBuyCourse - Callback when main CTA button is clicked.
@@ -134,337 +134,336 @@ export const CourseGeneralInformationVisitor: FC<
     ownerTotalRating,
     totalCoachesCount,
     requiredCourses,
-    coachingIncluded: initialCoachingIncluded,
+    coachingIncluded: initialCoachingIncluded = true,
 }) => {
-    const dictionary = getDictionary(locale);
-    const [isImageError, setIsImageError] = useState(false);
-    const [coachingIncluded, setCoachingIncluded] = useState(
-        initialCoachingIncluded,
-    );
+        const dictionary = getDictionary(locale);
+        const [isImageError, setIsImageError] = useState(false);
+        const [coachingIncluded, setCoachingIncluded] = useState(
+            initialCoachingIncluded,
+        );
 
-    const requirementsDetails =
-        requiredCourses.length > 0
-            ? dictionary.components.courseGeneralInformationView
-                  .requirementsDetails
-            : dictionary.components.courseGeneralInformationView.noRequirements;
+        const requirementsDetails =
+            requiredCourses.length > 0
+                ? dictionary.components.courseGeneralInformationView
+                    .requirementsDetails
+                : dictionary.components.courseGeneralInformationView.noRequirements;
 
-    useEffect(() => {
-        setCoachingIncluded(initialCoachingIncluded);
-    }, [initialCoachingIncluded]);
+        useEffect(() => {
+            setCoachingIncluded(initialCoachingIncluded);
+        }, [initialCoachingIncluded]);
 
-    const handleImageError = () => {
-        setIsImageError(true);
-    };
+        const handleImageError = () => {
+            setIsImageError(true);
+        };
 
-    const shouldShowPlaceholder = !imageUrl || isImageError;
+        const shouldShowPlaceholder = !imageUrl || isImageError;
 
-    const formatDuration = (durationInMinutes?: number): string => {
-        if (!durationInMinutes || durationInMinutes <= 0) return '0m';
-        if (durationInMinutes > 59) {
+        const formatDuration = (durationInMinutes?: number): string => {
+            if (!durationInMinutes || durationInMinutes <= 0) return '0m';
+            if (durationInMinutes > 59) {
+                const hours = Math.floor(durationInMinutes / 60);
+                const minutes = durationInMinutes % 60;
+                return `${hours}h ${minutes}m`;
+            }
+            return `${durationInMinutes}m`;
+        };
+
+        const totalDurationInMinutes =
+            (duration?.video || 0) +
+            (duration?.coaching || 0) +
+            (duration?.selfStudy || 0);
+        const formattedTotalDuration = formatDuration(totalDurationInMinutes);
+
+        const formatSingleDurationSegment = (
+            durationInMinutes: number,
+            dictionary: ReturnType<typeof getDictionary>,
+        ): string => {
+            if (durationInMinutes < 60) {
+                return `${durationInMinutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
+            }
+
             const hours = Math.floor(durationInMinutes / 60);
             const minutes = durationInMinutes % 60;
-            return `${hours}h ${minutes}m`;
-        }
-        return `${durationInMinutes}m`;
-    };
 
-    const totalDurationInMinutes =
-        (duration?.video || 0) +
-        (duration?.coaching || 0) +
-        (duration?.selfStudy || 0);
-    const formattedTotalDuration = formatDuration(totalDurationInMinutes);
-
-    const formatSingleDurationSegment = (
-        durationInMinutes: number,
-        dictionary: ReturnType<typeof getDictionary>,
-    ): string => {
-        if (durationInMinutes < 60) {
-            return `${durationInMinutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
-        }
-
-        const hours = Math.floor(durationInMinutes / 60);
-        const minutes = durationInMinutes % 60;
-
-        let result = `${hours} ${
-            hours === 1
+            let result = `${hours} ${hours === 1
                 ? dictionary.components.courseGeneralInformationView.hourText
                 : dictionary.components.courseGeneralInformationView.hoursText
-        }`;
+                }`;
 
-        if (minutes > 0) {
-            result += ` ${minutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
-        }
+            if (minutes > 0) {
+                result += ` ${minutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
+            }
 
-        return result;
-    };
+            return result;
+        };
 
-    const handleCheckboxChange = () => {
-        const newValue = !coachingIncluded;
-        setCoachingIncluded(newValue);
-        onCoachingIncludedChange(newValue);
-    };
+        const handleCheckboxChange = () => {
+            const newValue = !coachingIncluded;
+            setCoachingIncluded(newValue);
+            onCoachingIncludedChange(newValue);
+        };
 
-    return (
-        <div className="flex w-full max-w-full overflow-hidden md:gap-15 gap-4 px-4 py-6 flex-col md:flex-row flex-wrap min-w-0">
-            <div className="flex flex-col basis-full md:flex-1 gap-4 md:gap-6 md:pt-9 items-start order-1 md:order-2 min-w-0">
-                {/* Title & rating */}
-                <h1 className="text-text-primary"> {title} </h1>
-                <div className="flex flex-row gap-2">
-                    <h6 className="text-text-primary"> {rating} </h6>
-                    <StarRating totalStars={5} size={'4'} rating={rating} />
-                    <p className="text-text-secondary text-xs">
-                        {' '}
-                        {totalRating}{' '}
-                        {
-                            dictionary.components.courseGeneralInformationView
-                                .reviewLabel
-                        }{' '}
-                    </p>
+        return (
+            <div className="flex w-full max-w-full overflow-hidden md:gap-15 gap-4 px-4 py-6 flex-col md:flex-row flex-wrap min-w-0">
+                <div className="flex flex-col basis-full md:flex-1 gap-4 md:gap-6 md:pt-9 items-start order-1 md:order-2 min-w-0">
+                    {/* Title & rating */}
+                    <h1 className="text-text-primary"> {title} </h1>
+                    <div className="flex flex-row gap-2">
+                        <h6 className="text-text-primary"> {rating} </h6>
+                        <StarRating totalStars={5} size={'4'} rating={rating} />
+                        <p className="text-text-secondary text-xs">
+                            {' '}
+                            {totalRating}{' '}
+                            {
+                                dictionary.components.courseGeneralInformationView
+                                    .reviewLabel
+                            }{' '}
+                        </p>
+                    </div>
+
+                    {/* IMAGE for mobile */}
+                    <div className="relative w-full max-w-full max-h-[400px] bg-base-neutral-700 rounded-medium overflow-hidden block md:hidden">
+                        {shouldShowPlaceholder ? (
+                            <div className="flex items-center justify-center h-full min-h-[200px]">
+                                <span className="text-text-secondary text-md">
+                                    {
+                                        dictionary.components.coachBanner
+                                            .placeHolderText
+                                    }
+                                </span>
+                            </div>
+                        ) : (
+                            <img
+                                loading="lazy"
+                                src={imageUrl}
+                                className="w-full h-auto max-h-[400px] object-cover rounded-medium"
+                                onError={handleImageError}
+                            />
+                        )}
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-md text-text-secondary">{longDescription}</p>
+
+                    {/* Duration */}
+                    <div className="flex gap-2 flex-col">
+                        <div className="flex gap-4">
+                            <h6 className="text-text-primary text-lg">
+                                {
+                                    dictionary.components
+                                        .courseGeneralInformationView.durationText
+                                }
+                                : {formattedTotalDuration}
+                            </h6>
+                        </div>
+
+                        {/* Duration details */}
+                        <div className="flex flex-col">
+                            <div className="flex flex-row gap-2">
+                                <IconVideoCamera
+                                    classNames="text-text-primary"
+                                    size="4"
+                                />
+                                <p className="text-text-secondary text-sm">
+                                    {formatSingleDurationSegment(
+                                        duration.video,
+                                        dictionary,
+                                    )}{' '}
+                                    {
+                                        dictionary.components
+                                            .courseGeneralInformationView
+                                            .filmMaterialText
+                                    }
+                                </p>
+                            </div>
+
+                            <div className="flex flex-row gap-2">
+                                <IconCoachingSession
+                                    classNames="text-text-primary"
+                                    size="4"
+                                />
+                                <p className="text-text-secondary text-sm">
+                                    {formatSingleDurationSegment(
+                                        duration.coaching,
+                                        dictionary,
+                                    )}{' '}
+                                    {
+                                        dictionary.components
+                                            .courseGeneralInformationView
+                                            .coachingWithAProfessionalText
+                                    }
+                                </p>
+                            </div>
+
+                            <div className="flex flex-row gap-2">
+                                <IconCourse
+                                    classNames="text-text-primary"
+                                    size="4"
+                                />
+                                <p className="text-text-secondary text-sm">
+                                    {formatSingleDurationSegment(
+                                        duration.selfStudy,
+                                        dictionary,
+                                    )}{' '}
+                                    {
+                                        dictionary.components
+                                            .courseGeneralInformationView
+                                            .selfStudyMaterialText
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 items-center lg:grid-cols-2 gap-6 w-full">
+                        {/* Created by */}
+                        <div className="flex flex-col gap-2 items-start">
+                            <h6 className="text-text-primary text-lg">
+                                {
+                                    dictionary.components
+                                        .courseGeneralInformationView.createdByText
+                                }
+                            </h6>
+                            <div className="flex items-center gap-3 min-w-0">
+                                <UserAvatar
+                                    size="medium"
+                                    fullName={author.name}
+                                    imageUrl={author.image}
+                                />
+                                <div className="flex flex-col min-w-0">
+                                    <p className="text-md text-text-primary font-important truncate">
+                                        {author.name}
+                                    </p>
+                                    <div className="flex items-center gap-1">
+                                        <StarRating
+                                            totalStars={5}
+                                            size={'4'}
+                                            rating={ownerRating}
+                                        />
+                                        <p className="text-text-primary text-xs font-important">
+                                            {rating}
+                                        </p>
+                                        <p className="text-text-secondary text-2xs">
+                                            ({ownerTotalRating})
+                                        </p>
+                                    </div>
+                                </div>
+                                <Button
+                                    size="medium"
+                                    variant="text"
+                                    text={
+                                        dictionary.components
+                                            .courseGeneralInformationView.bookLabel
+                                    }
+                                    onClick={onClickBook}
+                                    className="px-0 ml-auto hidden md:block"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Taught by */}
+                        <div className="flex flex-col gap-2 items-start">
+                            <h6 className="text-text-primary text-lg">
+                                {
+                                    dictionary.components
+                                        .courseGeneralInformationView.taughtBy
+                                }
+                            </h6>
+                            <UserAvatarReel
+                                users={coaches}
+                                totalUsersCount={
+                                    totalCoachesCount ?? coaches.length
+                                }
+                                locale={locale}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Requirements */}
+                    <div className="flex flex-col gap-1 items-start w-full">
+                        <h6 className="text-text-primary text-lg">
+                            {
+                                dictionary.components.courseGeneralInformationView
+                                    .requirementsTitle
+                            }
+                        </h6>
+                        <p className="text-text-secondary">{requirementsDetails}</p>
+                        <div className="flex flex-wrap gap-3">
+                            {requiredCourses.map((course) => (
+                                <Button
+                                    key={course.courseTitle}
+                                    className="p-0 gap-1 text-sm sm:w-auto truncate"
+                                    size="small"
+                                    title={course.courseTitle}
+                                    variant="text"
+                                    onClick={() =>
+                                        onClickRequiredCourse(course.slug)
+                                    }
+                                    hasIconLeft
+                                    iconLeft={
+                                        <UserAvatar
+                                            fullName={course.courseTitle}
+                                            imageUrl={course.image}
+                                            className="rounded-small"
+                                            size="xSmall"
+                                        />
+                                    }
+                                    text={course.courseTitle}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Checkbox coaching included */}
+                    <div className="flex flex-row items-center gap-2">
+                        <CheckBox
+                            name="coachingIncluded"
+                            value="coachingIncluded"
+                            checked={coachingIncluded}
+                            size="medium"
+                            withText={true}
+                            label={
+                                dictionary.components.courseGeneralInformationView
+                                    .coachingIncluded
+                            }
+                            labelClass="text-text-secondary text-md"
+                            onChange={handleCheckboxChange}
+                        />
+                        <p className="text-feedback-success-primary lg:text-md text-sm font-important whitespace-nowrap">
+                            {
+                                dictionary.components.courseGeneralInformationView
+                                    .saveLabel
+                            }{' '}
+                            {pricing.currency} {pricing.partialPrice}
+                        </p>
+                    </div>
+
+                    {/* Button */}
+                    <Button
+                        size="huge"
+                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${pricing.currency} ${pricing.fullPrice})`}
+                        onClick={() => onClickBuyCourse(coachingIncluded)}
+                        className="w-full text-lg lg:text-2xl"
+                    />
                 </div>
 
-                {/* IMAGE for mobile */}
-                <div className="relative w-full max-w-full max-h-[400px] bg-base-neutral-700 rounded-medium overflow-hidden block md:hidden">
+                {/* Image desktop */}
+                <div className="relative basis-1/2 h-full order-1 md:order-2 hidden md:block">
                     {shouldShowPlaceholder ? (
-                        <div className="flex items-center justify-center h-full min-h-[200px]">
+                        <div className="w-full h-[400px] bg-base-neutral-700 flex items-center justify-center rounded-medium">
                             <span className="text-text-secondary text-md">
-                                {
-                                    dictionary.components.coachBanner
-                                        .placeHolderText
-                                }
+                                {dictionary.components.coachBanner.placeHolderText}
                             </span>
                         </div>
                     ) : (
                         <img
                             loading="lazy"
                             src={imageUrl}
-                            className="w-full h-auto max-h-[400px] object-cover rounded-medium"
+                            className="w-full h-auto object-cover rounded-medium"
                             onError={handleImageError}
                         />
                     )}
                 </div>
-
-                {/* Description */}
-                <p className="text-md text-text-secondary">{longDescription}</p>
-
-                {/* Duration */}
-                <div className="flex gap-2 flex-col">
-                    <div className="flex gap-4">
-                        <h6 className="text-text-primary text-lg">
-                            {
-                                dictionary.components
-                                    .courseGeneralInformationView.durationText
-                            }
-                            : {formattedTotalDuration}
-                        </h6>
-                    </div>
-
-                    {/* Duration details */}
-                    <div className="flex flex-col">
-                        <div className="flex flex-row gap-2">
-                            <IconVideoCamera
-                                classNames="text-text-primary"
-                                size="4"
-                            />
-                            <p className="text-text-secondary text-sm">
-                                {formatSingleDurationSegment(
-                                    duration.video,
-                                    dictionary,
-                                )}{' '}
-                                {
-                                    dictionary.components
-                                        .courseGeneralInformationView
-                                        .filmMaterialText
-                                }
-                            </p>
-                        </div>
-
-                        <div className="flex flex-row gap-2">
-                            <IconCoachingSession
-                                classNames="text-text-primary"
-                                size="4"
-                            />
-                            <p className="text-text-secondary text-sm">
-                                {formatSingleDurationSegment(
-                                    duration.coaching,
-                                    dictionary,
-                                )}{' '}
-                                {
-                                    dictionary.components
-                                        .courseGeneralInformationView
-                                        .coachingWithAProfessionalText
-                                }
-                            </p>
-                        </div>
-
-                        <div className="flex flex-row gap-2">
-                            <IconCourse
-                                classNames="text-text-primary"
-                                size="4"
-                            />
-                            <p className="text-text-secondary text-sm">
-                                {formatSingleDurationSegment(
-                                    duration.selfStudy,
-                                    dictionary,
-                                )}{' '}
-                                {
-                                    dictionary.components
-                                        .courseGeneralInformationView
-                                        .selfStudyMaterialText
-                                }
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 items-center lg:grid-cols-2 gap-6 w-full">
-                    {/* Created by */}
-                    <div className="flex flex-col gap-2 items-start">
-                        <h6 className="text-text-primary text-lg">
-                            {
-                                dictionary.components
-                                    .courseGeneralInformationView.createdByText
-                            }
-                        </h6>
-                        <div className="flex items-center gap-3 min-w-0">
-                            <UserAvatar
-                                size="medium"
-                                fullName={author.name}
-                                imageUrl={author.image}
-                            />
-                            <div className="flex flex-col min-w-0">
-                                <p className="text-md text-text-primary font-important truncate">
-                                    {author.name}
-                                </p>
-                                <div className="flex items-center gap-1">
-                                    <StarRating
-                                        totalStars={5}
-                                        size={'4'}
-                                        rating={ownerRating}
-                                    />
-                                    <p className="text-text-primary text-xs font-important">
-                                        {rating}
-                                    </p>
-                                    <p className="text-text-secondary text-2xs">
-                                        ({ownerTotalRating})
-                                    </p>
-                                </div>
-                            </div>
-                            <Button
-                                size="medium"
-                                variant="text"
-                                text={
-                                    dictionary.components
-                                        .courseGeneralInformationView.bookLabel
-                                }
-                                onClick={onClickBook}
-                                className="px-0 ml-auto hidden md:block"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Taught by */}
-                    <div className="flex flex-col gap-2 items-start">
-                        <h6 className="text-text-primary text-lg">
-                            {
-                                dictionary.components
-                                    .courseGeneralInformationView.taughtBy
-                            }
-                        </h6>
-                        <UserAvatarReel
-                            users={coaches}
-                            totalUsersCount={
-                                totalCoachesCount ?? coaches.length
-                            }
-                            locale={locale}
-                        />
-                    </div>
-                </div>
-
-                {/* Requirements */}
-                <div className="flex flex-col gap-1 items-start w-full">
-                    <h6 className="text-text-primary text-lg">
-                        {
-                            dictionary.components.courseGeneralInformationView
-                                .requirementsTitle
-                        }
-                    </h6>
-                    <p className="text-text-secondary">{requirementsDetails}</p>
-                    <div className="flex flex-wrap gap-3">
-                        {requiredCourses.map((course) => (
-                            <Button
-                                key={course.courseTitle}
-                                className="p-0 gap-1 text-sm sm:w-auto truncate"
-                                size="small"
-                                title={course.courseTitle}
-                                variant="text"
-                                onClick={() =>
-                                    onClickRequiredCourse(course.slug)
-                                }
-                                hasIconLeft
-                                iconLeft={
-                                    <UserAvatar
-                                        fullName={course.courseTitle}
-                                        imageUrl={course.image}
-                                        className="rounded-small"
-                                        size="xSmall"
-                                    />
-                                }
-                                text={course.courseTitle}
-                            />
-                        ))}
-                    </div>
-                </div>
-
-                {/* Checkbox coaching included */}
-                <div className="flex flex-row items-center gap-2">
-                    <CheckBox
-                        name="coachingIncluded"
-                        value="coachingIncluded"
-                        checked={coachingIncluded}
-                        size="medium"
-                        withText={true}
-                        label={
-                            dictionary.components.courseGeneralInformationView
-                                .coachingIncluded
-                        }
-                        labelClass="text-text-secondary text-md"
-                        onChange={handleCheckboxChange}
-                    />
-                    <p className="text-feedback-success-primary lg:text-md text-sm font-important whitespace-nowrap">
-                        {
-                            dictionary.components.courseGeneralInformationView
-                                .saveLabel
-                        }{' '}
-                        {pricing.currency} {pricing.partialPrice}
-                    </p>
-                </div>
-
-                {/* Button */}
-                <Button
-                    size="huge"
-                    text={`${dictionary.components.courseGeneralInformationView.buyButton} (${pricing.currency} ${pricing.fullPrice})`}
-                    onClick={() => onClickBuyCourse(coachingIncluded)}
-                    className="w-full text-lg lg:text-2xl"
-                />
             </div>
-
-            {/* Image desktop */}
-            <div className="relative basis-1/2 h-full order-1 md:order-2 hidden md:block">
-                {shouldShowPlaceholder ? (
-                    <div className="w-full h-[400px] bg-base-neutral-700 flex items-center justify-center rounded-medium">
-                        <span className="text-text-secondary text-md">
-                            {dictionary.components.coachBanner.placeHolderText}
-                        </span>
-                    </div>
-                ) : (
-                    <img
-                        loading="lazy"
-                        src={imageUrl}
-                        className="w-full h-auto object-cover rounded-medium"
-                        onError={handleImageError}
-                    />
-                )}
-            </div>
-        </div>
-    );
-};
+        );
+    };

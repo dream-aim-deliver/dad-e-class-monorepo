@@ -63,7 +63,7 @@ describe('GroupCourseBanner', () => {
 
     const baseProps: GroupCourseBannerProps = {
         locale: 'en',
-        studentNames: [
+        students: [
             { name: 'Alice Smith', avatarUrl: '/avatars/alice.png' },
             { name: 'Bob Johnson', avatarUrl: '/avatars/bob.png' },
         ],
