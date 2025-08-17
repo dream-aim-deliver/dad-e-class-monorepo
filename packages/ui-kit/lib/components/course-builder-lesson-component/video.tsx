@@ -46,8 +46,6 @@ interface VideoFileEditProps extends DesignerComponentProps {
     onFileDelete: () => void;
     /** Callback function to handle file download */
     onFileDownload: () => void;
-    /** Currently selected file or null if no file is selected */
-    file: TVideoFile | null;
 }
 
 /**
@@ -72,7 +70,6 @@ export function DesignerComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
-    file,
     onVideoUpload,
     onUploadComplete,
     onFileDelete,
@@ -114,6 +111,7 @@ export function DesignerComponent({
                 onDownload={onFileDownload}
                 locale={locale}
                 maxSize={maxSize}
+                isDeletionAllowed={true}
             />
         </DesignerLayout>
     );

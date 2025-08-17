@@ -2,6 +2,7 @@
 
 import {
     ComponentCard,
+    CourseElementType,
     DefaultLoading,
     FormElementType,
     HeadingElement,
@@ -18,6 +19,7 @@ import {
     IconVideo,
     LessonElement,
     RichTextElement,
+    VideoElement,
 } from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
 import EditLayout from './components/edit-layout';
@@ -77,7 +79,14 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconVideo />,
             label: 'Video',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: VideoElement = {
+                    id: generateTempId(),
+                    type: CourseElementType.VideoFile,
+                    file: null,
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
         {
             icon: <IconImage />,

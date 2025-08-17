@@ -3,6 +3,7 @@ import { useLessonComponents } from './hooks/edit-lesson-hooks';
 import {
     AbortError,
     calculateMd5,
+    CourseElementType,
     downloadFile,
     FormElementType,
     HeadingDesignerComponent,
@@ -11,18 +12,31 @@ import {
     RichTextDesignerComponent,
     RichTextElement,
     uploadToS3,
+    VideoDesignerComponent,
+    VideoElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { trpc } from '../../../trpc/client';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
-const useFileUpload = (lessonId: number, componentType: string) => {
+interface FileUploadProps {
+    lessonId: number;
+    componentType: string;
+    file: fileMetadata.TFileMetadata | null;
+    setFile: (file: fileMetadata.TFileMetadata | null) => void;
+}
+
+const useFileUpload = ({
+    lessonId,
+    componentType,
+    file,
+    setFile,
+}: FileUploadProps) => {
     // TODO: Replace with specific upload implementation
     const uploadMutation = trpc.uploadCourseImage.useMutation();
     const verifyMutation = trpc.verifyFile.useMutation();
 
-    const [file, setFile] = useState<fileMetadata.TFileMetadata | null>(null);
     const [uploadError, setUploadError] = useState<string | undefined>(
         undefined,
     );
@@ -55,14 +69,14 @@ const useFileUpload = (lessonId: number, componentType: string) => {
         }
 
         // Comment out to test without the storage running
-        await uploadToS3({
-            file: uploadRequest.file,
-            checksum,
-            storageUrl: uploadResult.data.storageUrl,
-            objectName: uploadResult.data.file.objectName,
-            formFields: uploadResult.data.formFields,
-            abortSignal,
-        });
+        // await uploadToS3({
+        //     file: uploadRequest.file,
+        //     checksum,
+        //     storageUrl: uploadResult.data.storageUrl,
+        //     objectName: uploadResult.data.file.objectName,
+        //     formFields: uploadResult.data.formFields,
+        //     abortSignal,
+        // });
 
         const verifyResult = await verifyMutation.mutateAsync({
             fileId: uploadResult.data.file.id,
@@ -116,7 +130,6 @@ const useFileUpload = (lessonId: number, componentType: string) => {
     };
 
     return {
-        file,
         uploadError,
         handleFileChange,
         handleUploadComplete,
@@ -134,6 +147,7 @@ interface EditLessonComponentsProps {
 }
 
 interface LessonComponentProps {
+    lessonId: number;
     elementInstance: LessonElement;
     locale: TLocale;
     setComponents: React.Dispatch<React.SetStateAction<LessonElement[]>>;
@@ -204,9 +218,80 @@ function HeadingComponent({
     );
 }
 
+function VideoComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== CourseElementType.VideoFile) return null;
+
+    const setFile = (file: fileMetadata.TFileMetadata | null) => {
+        setComponents((prev) =>
+            prev.map((comp) => {
+                if (
+                    comp.id === elementInstance.id &&
+                    comp.type === CourseElementType.VideoFile
+                ) {
+                    return {
+                        ...comp,
+                        file: file as fileMetadata.TFileMetadataVideo,
+                    };
+                }
+                return comp;
+            }),
+        );
+    };
+
+    const {
+        uploadError,
+        handleFileChange,
+        handleUploadComplete,
+        handleDelete,
+        handleDownload,
+    } = useFileUpload({
+        lessonId,
+        componentType: 'video',
+        file: elementInstance.file,
+        setFile,
+    });
+
+    const onVideoUpload = async (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ): Promise<fileMetadata.TFileMetadataVideo> => {
+        return (await handleFileChange(
+            fileRequest,
+            abortSignal,
+        )) as fileMetadata.TFileMetadataVideo;
+    };
+
+    // TODO: Add error banner for upload error
+    return (
+        <VideoDesignerComponent
+            elementInstance={elementInstance as VideoElement}
+            locale={locale}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            maxSize={15}
+            onVideoUpload={onVideoUpload}
+            onUploadComplete={handleUploadComplete}
+            onFileDelete={() => {
+                handleDelete(elementInstance.file!.id);
+            }}
+            onFileDownload={() => handleDownload(elementInstance.file!.id)}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
+    [CourseElementType.VideoFile]: VideoComponent,
     // Add other mappings as needed
 };
 
@@ -258,6 +343,7 @@ export default function EditLessonComponents({
                 // TODO: pass isFirst and isLast
                 return (
                     <Component
+                        lessonId={lessonId}
                         key={component.id}
                         elementInstance={component}
                         locale={locale}

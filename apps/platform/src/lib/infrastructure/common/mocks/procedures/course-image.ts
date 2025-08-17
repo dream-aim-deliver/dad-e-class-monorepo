@@ -24,21 +24,21 @@ export const uploadCourseImage = t.procedure
             ctx,
         ): Promise<useCaseModels.TUploadCourseImageUseCaseResponse> => {
             console.log(ctx.input);
-            if (
-                ctx.input.mimeType !== 'image/jpeg' &&
-                ctx.input.mimeType !== 'image/png'
-            ) {
-                return {
-                    success: false,
-                    data: {
-                        errorType: 'ValidationError',
-                        message: 'Only JPEG and PNG files are allowed',
-                        operation: 'uploadCourseImage',
-                        context: {},
-                        trace: undefined,
-                    },
-                };
-            }
+            // if (
+            //     ctx.input.mimeType !== 'image/jpeg' &&
+            //     ctx.input.mimeType !== 'image/png'
+            // ) {
+            //     return {
+            //         success: false,
+            //         data: {
+            //             errorType: 'ValidationError',
+            //             message: 'Only JPEG and PNG files are allowed',
+            //             operation: 'uploadCourseImage',
+            //             context: {},
+            //             trace: undefined,
+            //         },
+            //     };
+            // }
             await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
             return {
                 success: true,
