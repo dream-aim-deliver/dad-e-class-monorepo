@@ -1,3 +1,5 @@
+import EditLessonServerComponent from 'apps/platform/src/lib/infrastructure/server/pages/workspace/edit-lesson-rsx';
+
 export default async function Page({
     params: paramsPromise,
 }: {
@@ -11,5 +13,5 @@ export default async function Page({
         throw Error('Invalid lesson ID');
     }
 
-    return <div>{id}</div>;
+    return <EditLessonServerComponent lessonId={id} />;
 }

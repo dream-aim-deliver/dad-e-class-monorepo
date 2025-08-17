@@ -18,6 +18,7 @@ import {
     useModuleExpansion,
     useModuleOperations,
 } from './hooks/edit-structure-hooks';
+import EditLayout from './components/edit-layout';
 
 export default function EditCourseStructure({
     slug,
@@ -68,82 +69,71 @@ export default function EditCourseStructure({
     }
 
     return (
-        <div className="flex lg:flex-row flex-col gap-4 text-text-primary">
-            <div className="h-fit flex flex-col gap-3 bg-card-fill border border-base-neutral-700 rounded-lg p-4 lg:w-[300px] w-full">
-                <span className="text-lg font-bold">Components</span>
-                <div className="flex flex-col gap-2">
-                    <ComponentCard
-                        name="Module"
-                        icon={<IconModule />}
-                        onClick={moduleOperations.addModule}
-                    />
-                    <ComponentCard
-                        name="Lesson"
-                        icon={<IconLesson />}
-                        onClick={contentOperations.addLesson}
-                    />
-                    <ComponentCard
-                        name="Milestone"
-                        icon={<IconMilestone />}
-                        onClick={contentOperations.addMilestone}
-                    />
-                </div>
-            </div>
-            <div className="flex flex-col gap-2 flex-1">
-                {modules.map((module, index) => (
-                    <ModuleEditor
-                        key={`module-${index}`}
-                        module={module}
-                        onUpdate={(updatedModule) =>
-                            moduleOperations.updateModule(index, updatedModule)
-                        }
-                        onDelete={() => moduleOperations.deleteModule(index)}
-                        onMoveUp={() => moduleOperations.moveModuleUp(index)}
-                        onMoveDown={() =>
-                            moduleOperations.moveModuleDown(index)
-                        }
-                        onMoveContentUp={(contentIndex) =>
-                            contentOperations.onMoveContentUp(
-                                index,
-                                contentIndex,
-                            )
-                        }
-                        onMoveContentDown={(contentIndex) =>
-                            contentOperations.onMoveContentDown(
-                                index,
-                                contentIndex,
-                            )
-                        }
-                        onDeleteContent={(contentIndex) =>
-                            contentOperations.onDeleteContent(
-                                index,
-                                contentIndex,
-                            )
-                        }
-                        isExpanded={expandedModuleIndex === index}
-                        onExpand={() => onExpand(index)}
-                        isFirst={index === 0}
-                        isLast={index === modules.length - 1}
-                        onLessonTitleChange={(lessonIndex, title) =>
-                            lessonOperations.onLessonTitleChange(
-                                index,
-                                lessonIndex,
-                                title,
-                            )
-                        }
-                        onLessonExtraTrainingChange={(
+        <EditLayout
+            panel={
+                <>
+                    <span className="text-lg font-bold">Components</span>
+                    <div className="flex flex-col gap-2">
+                        <ComponentCard
+                            name="Module"
+                            icon={<IconModule />}
+                            onClick={moduleOperations.addModule}
+                        />
+                        <ComponentCard
+                            name="Lesson"
+                            icon={<IconLesson />}
+                            onClick={contentOperations.addLesson}
+                        />
+                        <ComponentCard
+                            name="Milestone"
+                            icon={<IconMilestone />}
+                            onClick={contentOperations.addMilestone}
+                        />
+                    </div>
+                </>
+            }
+            editor={modules.map((module, index) => (
+                <ModuleEditor
+                    key={`module-${index}`}
+                    module={module}
+                    onUpdate={(updatedModule) =>
+                        moduleOperations.updateModule(index, updatedModule)
+                    }
+                    onDelete={() => moduleOperations.deleteModule(index)}
+                    onMoveUp={() => moduleOperations.moveModuleUp(index)}
+                    onMoveDown={() => moduleOperations.moveModuleDown(index)}
+                    onMoveContentUp={(contentIndex) =>
+                        contentOperations.onMoveContentUp(index, contentIndex)
+                    }
+                    onMoveContentDown={(contentIndex) =>
+                        contentOperations.onMoveContentDown(index, contentIndex)
+                    }
+                    onDeleteContent={(contentIndex) =>
+                        contentOperations.onDeleteContent(index, contentIndex)
+                    }
+                    isExpanded={expandedModuleIndex === index}
+                    onExpand={() => onExpand(index)}
+                    isFirst={index === 0}
+                    isLast={index === modules.length - 1}
+                    onLessonTitleChange={(lessonIndex, title) =>
+                        lessonOperations.onLessonTitleChange(
+                            index,
+                            lessonIndex,
+                            title,
+                        )
+                    }
+                    onLessonExtraTrainingChange={(
+                        lessonIndex,
+                        isExtraTraining,
+                    ) => {
+                        lessonOperations.onExtraTrainingChange(
+                            index,
                             lessonIndex,
                             isExtraTraining,
-                        ) => {
-                            lessonOperations.onExtraTrainingChange(
-                                index,
-                                lessonIndex,
-                                isExtraTraining,
-                            );
-                        }}
-                    />
-                ))}
-            </div>
-        </div>
+                        );
+                    }}
+                />
+            ))}
+        />
     );
 }
