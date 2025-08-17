@@ -64,6 +64,9 @@ export function LessonItem({
                 disabled={lesson.id === undefined}
                 iconLeft={<IconEdit />}
                 hasIconLeft
+                onClick={() =>
+                    window.open(`/edit/lesson/${lesson.id}`, '_blank')
+                }
             />
         </div>
     );
