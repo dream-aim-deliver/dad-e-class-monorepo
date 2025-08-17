@@ -143,3 +143,4 @@ export { DesignerComponent as HeadingDesignerComponent } from './components/less
 export { DesignerComponent as VideoDesignerComponent } from './components/course-builder-lesson-component/video';
 export { DesignerComponent as ImageDesignerComponent } from './components/course-builder-lesson-component/image';
 export { DesignerComponent as ImageGalleryDesignerComponent } from './components/course-builder-lesson-component/image-gallery';
+export { DesignerComponent as DownloadFilesDesignerComponent } from './components/course-builder-lesson-component/download-files-lesson';

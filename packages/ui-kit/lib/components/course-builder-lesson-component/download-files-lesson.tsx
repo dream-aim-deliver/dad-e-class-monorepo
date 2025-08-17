@@ -28,10 +28,10 @@ export interface DownloadFilesDesignerProps extends BaseDesignerComponentProps {
     onFileDelete: (id: string) => void;
     /** Callback function to handle file download */
     onFileDownload: (id: string) => void;
-    /** Currently selected files or null if no files are selected */
-    files: fileMetadata.TFileMetadata[] | null;
     /** Maximum number of files allowed (default: 5) */
     maxFiles?: number;
+    /** Maximum file size allowed in megabytes (default: 5MB) */
+    maxSize?: number;
 }
 
 /**
@@ -59,8 +59,8 @@ export function DesignerComponent({
     onFilesUpload,
     onFileDelete,
     onFileDownload,
-    files,
     maxFiles = 5,
+    maxSize = 15, // Default to 15MB
 }: DownloadFilesDesignerProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
     const dictionary = getDictionary(locale);
@@ -95,13 +95,14 @@ export function DesignerComponent({
             <Uploader
                 type="multiple"
                 variant="generic"
-                files={files}
+                files={elementInstance.files}
                 maxFile={maxFiles}
                 onFilesChange={handleDownloadFile as any}
                 onUploadComplete={handleUploadComplete}
                 onDelete={handleFileDelete}
                 onDownload={handleFileDownload}
                 locale={locale}
+                maxSize={maxSize}
             />
         </DesignerLayout>
     );

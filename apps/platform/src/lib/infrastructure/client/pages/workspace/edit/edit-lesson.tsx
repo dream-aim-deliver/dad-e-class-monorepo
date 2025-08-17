@@ -4,6 +4,7 @@ import {
     ComponentCard,
     CourseElementType,
     DefaultLoading,
+    DownloadFilesElement,
     FormElementType,
     HeadingElement,
     IconCloudDownload,
@@ -122,7 +123,14 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconCloudDownload />,
             label: 'Download Files',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: DownloadFilesElement = {
+                    id: generateTempId(),
+                    type: CourseElementType.DownloadFiles,
+                    files: [],
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
     ];
 
