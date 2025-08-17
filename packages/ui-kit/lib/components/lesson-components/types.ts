@@ -20,7 +20,6 @@ import { FormElementType } from "../pre-assessment/types";
  */
 export interface BaseFormElement {
     type: FormElementType;
-    order: number;
     id: string;
     required?: boolean; // Changed from required:true to optional boolean
 }

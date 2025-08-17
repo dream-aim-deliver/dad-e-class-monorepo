@@ -4,7 +4,6 @@ import { assignment, fileMetadata, shared } from "@maany_shr/e-class-models";
 
 interface BaseCourseFormElement {
     type: CourseElementType;
-    order: number;
     id: string;
     required?: boolean;
 }
