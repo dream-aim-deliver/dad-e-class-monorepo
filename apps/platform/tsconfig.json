@@ -54,9 +54,6 @@
     },
     {
       "path": "../../packages/auth"
-    },
-      {
-          "path": "src/lib/infrastructure/server"
-      }
+    }
   ]
 }
