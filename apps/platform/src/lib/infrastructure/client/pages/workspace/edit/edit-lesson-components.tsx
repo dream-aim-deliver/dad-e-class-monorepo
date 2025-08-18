@@ -3,6 +3,7 @@ import { useLessonComponents } from './hooks/edit-lesson-hooks';
 import {
     AbortError,
     calculateMd5,
+    CourseElement,
     CourseElementType,
     DefaultError,
     DefaultLoading,
@@ -19,6 +20,7 @@ import {
     MultiCheckElement,
     OneOutOfThreeData,
     OneOutOfThreeDesignerComponent,
+    QuizDesignerComponent,
     RichTextDesignerComponent,
     RichTextElement,
     SingleChoiceDesignerComponent,
@@ -82,14 +84,14 @@ const useFileUpload = ({
         }
 
         // Comment out to test without the storage running
-        // await uploadToS3({
-        //     file: uploadRequest.file,
-        //     checksum,
-        //     storageUrl: uploadResult.data.storageUrl,
-        //     objectName: uploadResult.data.file.objectName,
-        //     formFields: uploadResult.data.formFields,
-        //     abortSignal,
-        // });
+        await uploadToS3({
+            file: uploadRequest.file,
+            checksum,
+            storageUrl: uploadResult.data.storageUrl,
+            objectName: uploadResult.data.file.objectName,
+            formFields: uploadResult.data.formFields,
+            abortSignal,
+        });
 
         const verifyResult = await verifyMutation.mutateAsync({
             fileId: uploadResult.data.file.id,
@@ -762,6 +764,89 @@ function OneOutOfThreeComponent({
     );
 }
 
+function QuizTypeOneComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== CourseElementType.QuizTypeOne) return null;
+
+    const onChange = (updated: Partial<CourseElement>) => {
+        if (updated.type !== CourseElementType.QuizTypeOne) return;
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeOne
+                    ? { ...comp, ...updated }
+                    : comp,
+            ),
+        );
+    };
+
+    const onFileDelete = () => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeOne
+                    ? {
+                          ...comp,
+                          imageFile: null,
+                      }
+                    : comp,
+            ),
+        );
+    };
+
+    const setFile = (file: fileMetadata.TFileMetadata | null) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeOne
+                    ? {
+                          ...comp,
+                          imageFile: file as fileMetadata.TFileMetadataImage,
+                      }
+                    : comp,
+            ),
+        );
+    };
+
+    const handleDownload = () => {
+        const file = elementInstance.imageFile;
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
+
+    const { uploadError, handleFileChange, handleUploadComplete } =
+        useFileUpload({
+            lessonId,
+            componentType: 'downloadFiles',
+            setFile,
+        });
+
+    return (
+        <QuizDesignerComponent
+            elementInstance={elementInstance}
+            locale={locale}
+            onTypeChange={() => {}}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onChange={onChange}
+            onFileChange={handleFileChange}
+            onFileDelete={onFileDelete}
+            onFileDownload={handleDownload}
+            onUploadComplete={handleUploadComplete}
+            uploadError={uploadError ?? null}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
@@ -774,6 +859,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.SingleChoice]: SingleChoiceComponent,
     [FormElementType.MultiCheck]: MultiCheckComponent,
     [FormElementType.OneOutOfThree]: OneOutOfThreeComponent,
+    [CourseElementType.QuizTypeOne]: QuizTypeOneComponent,
     // Add other mappings as needed
 };
 

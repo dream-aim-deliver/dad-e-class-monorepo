@@ -146,5 +146,6 @@ export { DesignerComponent as TextInputDesignerComponent } from './components/le
 export { DesignerComponent as SingleChoiceDesignerComponent } from './components/lesson-components/single-choice';
 export { DesignerComponent as MultiCheckDesignerComponent } from './components/lesson-components/multi-check';
 export { DesignerComponent as OneOutOfThreeDesignerComponent } from './components/lesson-components/one-out-of-three';
+export { DesignerComponent as QuizDesignerComponent } from './components/course-builder-lesson-component/quiz';
 
 export { OneOutOfThreeData } from './components/out-of-three/one-out-of-three';
