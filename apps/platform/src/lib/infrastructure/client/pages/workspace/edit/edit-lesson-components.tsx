@@ -17,6 +17,8 @@ import {
     LessonElement,
     MultiCheckDesignerComponent,
     MultiCheckElement,
+    OneOutOfThreeData,
+    OneOutOfThreeDesignerComponent,
     RichTextDesignerComponent,
     RichTextElement,
     SingleChoiceDesignerComponent,
@@ -714,6 +716,52 @@ function MultiCheckComponent({
     );
 }
 
+function OneOutOfThreeComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== FormElementType.OneOutOfThree) return null;
+
+    const onChange = (updatedData: OneOutOfThreeData) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === FormElementType.OneOutOfThree
+                    ? { ...comp, data: updatedData }
+                    : comp,
+            ),
+        );
+    };
+
+    const onRequiredChange = (isRequired: boolean) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === FormElementType.OneOutOfThree
+                    ? { ...comp, required: isRequired }
+                    : comp,
+            ),
+        );
+    };
+
+    return (
+        <OneOutOfThreeDesignerComponent
+            elementInstance={elementInstance}
+            locale={locale}
+            onRequiredChange={onRequiredChange}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onChange={onChange}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
@@ -725,6 +773,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [CourseElementType.UploadFiles]: UploadFilesComponent,
     [FormElementType.SingleChoice]: SingleChoiceComponent,
     [FormElementType.MultiCheck]: MultiCheckComponent,
+    [FormElementType.OneOutOfThree]: OneOutOfThreeComponent,
     // Add other mappings as needed
 };
 

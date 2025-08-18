@@ -35,7 +35,12 @@ const oneOutOfThreeElement: FormElementTemplate = {
     }
 };
 
-function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+interface OneOutOfThreeDesignerComponentProps extends DesignerComponentProps {
+    onChange: (updatedData: OneOutOfThreeData) => void;
+    onRequiredChange: (isRequired: boolean) => void;
+}
+
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange }: OneOutOfThreeDesignerComponentProps) {
     if (elementInstance.type !== FormElementType.OneOutOfThree) return null;
     const dictionary = getDictionary(locale);
     const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
@@ -45,6 +50,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
     })
     const handleRequiredChange = () => {
         setIsRequired(prev => !prev);
+        onRequiredChange(!isRequired);
     };
 
     return (
@@ -63,7 +69,10 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
             <OneOutOfThree
                 locale={locale}
                 data={data}
-                onUpdate={(updatedData) => setData(updatedData)}
+                onUpdate={(updatedData) => {
+                    setData(updatedData);
+                    onChange(updatedData);
+                }}
             />
 
 

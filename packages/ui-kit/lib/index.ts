@@ -148,3 +148,6 @@ export { DesignerComponent as UploadFilesDesignerComponent } from './components/
 export { DesignerComponent as TextInputDesignerComponent } from './components/lesson-components/text-input';
 export { DesignerComponent as SingleChoiceDesignerComponent } from './components/lesson-components/single-choice';
 export { DesignerComponent as MultiCheckDesignerComponent } from './components/lesson-components/multi-check';
+export { DesignerComponent as OneOutOfThreeDesignerComponent } from './components/lesson-components/one-out-of-three';
+
+export { OneOutOfThreeData } from './components/out-of-three/one-out-of-three';
