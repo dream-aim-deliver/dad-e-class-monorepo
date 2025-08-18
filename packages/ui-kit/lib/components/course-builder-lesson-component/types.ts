@@ -62,6 +62,7 @@ export interface TempQuizTypeOneElement extends BaseCourseFormElement {
     options: {
         id: number;
         name: string;
+        correct?: boolean;
     }[];
     correctOptionId: number;
 }
