@@ -1,9 +1,9 @@
-import { getDictionary } from "@maany_shr/e-class-translations";
-import { FC } from "react";
-import { AssignmentBuilderViewTypes } from "../course-builder-lesson-component/types";
-import { IconAssignment } from "../icons/icon-assignment";
-import { FilePreview } from "../drag-and-drop-uploader/file-preview";
-import { LinkPreview } from "../links";
+import { getDictionary } from '@maany_shr/e-class-translations';
+import { FC } from 'react';
+import { AssignmentBuilderViewTypes } from '../course-builder-lesson-component/types';
+import { IconAssignment } from '../icons/icon-assignment';
+import { FilePreview } from '../drag-and-drop-uploader/file-preview';
+import { LinkPreview } from '../links';
 
 /**
  * Displays a summary view of the assignment, including title, description, attached files, and resource links.
@@ -31,7 +31,9 @@ import { LinkPreview } from "../links";
 export const AssignmentBuilderView: FC<AssignmentBuilderViewTypes> = ({
     assignmentData,
     onFileDownload,
-    locale
+    locale,
+    onFileCancel,
+    onFileDelete,
 }) => {
     const dictionary = getDictionary(locale);
 
@@ -40,7 +42,10 @@ export const AssignmentBuilderView: FC<AssignmentBuilderViewTypes> = ({
             <div className="flex gap-1 items-center justify-center">
                 <IconAssignment classNames="text-text-primary" />
                 <p className="text-sm text-text-primary font-bold leading-[150%]">
-                    {dictionary.components.assignment.assignmentBuilder.assignmentText}
+                    {
+                        dictionary.components.assignment.assignmentBuilder
+                            .assignmentText
+                    }
                 </p>
             </div>
             <div className="w-full h-[1px] bg-divider" />
@@ -56,9 +61,14 @@ export const AssignmentBuilderView: FC<AssignmentBuilderViewTypes> = ({
                         <FilePreview
                             key={index}
                             uploadResponse={file}
-                            onDownload={() => onFileDownload(file.id)}
                             locale={locale}
                             readOnly={true}
+                            onCancel={() => onFileCancel(file.id)}
+                            deletion={{
+                                isAllowed: true,
+                                onDelete: () => onFileDelete(file.id),
+                            }}
+                            onDownload={() => onFileDownload(file.id)}
                         />
                     ))}
                     {assignmentData.links.map((link, index) => (

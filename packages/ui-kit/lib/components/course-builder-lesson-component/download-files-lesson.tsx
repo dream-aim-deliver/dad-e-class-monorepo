@@ -1,12 +1,17 @@
-import { CourseElementTemplate, CourseElementType, FormComponentProps, DesignerComponentProps as BaseDesignerComponentProps } from "../course-builder/types";
-import { getDictionary } from "@maany_shr/e-class-translations";
-import { IconCloudDownload } from "../icons/icon-cloud-download";
-import DesignerLayout from "../designer-layout";
-import { fileMetadata } from "@maany_shr/e-class-models";
-import { Uploader } from "../drag-and-drop-uploader/uploader";
-import { FilePreview } from "../drag-and-drop-uploader/file-preview";
+import {
+    CourseElementTemplate,
+    CourseElementType,
+    FormComponentProps,
+    DesignerComponentProps as BaseDesignerComponentProps,
+} from '../course-builder/types';
+import { getDictionary } from '@maany_shr/e-class-translations';
+import { IconCloudDownload } from '../icons/icon-cloud-download';
+import DesignerLayout from '../designer-layout';
+import { fileMetadata } from '@maany_shr/e-class-models';
+import { Uploader } from '../drag-and-drop-uploader/uploader';
+import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 
-/** 
+/**
  * Template configuration for the Download Files course element
  * Defines the type, design elements, and component mappings
  */
@@ -19,14 +24,14 @@ const downloadFilesElement: CourseElementTemplate = {
     type: CourseElementType.DownloadFiles,
     designerBtnElement: {
         icon: IconCloudDownload,
-        label: "Download Files"
+        label: 'Download Files',
     },
     designerComponent: DesignerComponent,
-    formComponent: FormComponent
+    formComponent: FormComponent,
 };
 
 /** Props interface for the Download Files Designer component */
-/** 
+/**
  * Props interface for the Download Files Designer component
  * Extends the base designer component props with file handling capabilities
  */
@@ -34,7 +39,7 @@ export interface DownloadFilesDesignerProps extends BaseDesignerComponentProps {
     /** Callback function triggered when files are changed */
     onFilesUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata | null>;
     onUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
     /** Callback function to handle file deletion */
@@ -50,7 +55,7 @@ export interface DownloadFilesDesignerProps extends BaseDesignerComponentProps {
 /**
  * Designer Component for Download Files
  * Provides an interface for uploading and managing downloadable files in the course builder
- * 
+ *
  * @param elementInstance - The current instance of the download files element
  * @param locale - The current locale for internationalization
  * @param onUpClick - Callback for moving the element up in order
@@ -62,12 +67,24 @@ export interface DownloadFilesDesignerProps extends BaseDesignerComponentProps {
  * @param files - Array of currently uploaded files
  */
 
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onUploadComplete, onFilesUpload, onFileDelete, onFileDownload, files, maxFiles = 5 }: DownloadFilesDesignerProps) {
+export function DesignerComponent({
+    elementInstance,
+    locale,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+    onUploadComplete,
+    onFilesUpload,
+    onFileDelete,
+    onFileDownload,
+    files,
+    maxFiles = 5,
+}: DownloadFilesDesignerProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
     const dictionary = getDictionary(locale);
     const handleDownloadFile = async (
         fileRequest: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
     ): Promise<fileMetadata.TFileMetadata | null> => {
         return await onFilesUpload(fileRequest, abortSignal);
     };
@@ -78,10 +95,10 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
 
     const handleFileDelete = (id: string) => {
         onFileDelete(id);
-    }
+    };
     const handleFileDownload = (id: string) => {
         onFileDownload(id);
-    }
+    };
     return (
         <DesignerLayout
             type={elementInstance.type}
@@ -112,29 +129,39 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
  * Form Component for Download Files
  * Renders the preview of uploaded files with their metadata and action buttons
  * Supports different file types including images and videos with appropriate icons
- * 
+ *
  * @param elementInstance - The current instance of the download files element containing file data
  * @returns JSX element displaying the files or null if invalid type
  */
 interface DownloadFilesFormProps extends FormComponentProps {
     onDownload: (id: string) => void;
 }
-export function FormComponent({ elementInstance, locale, onDownload }: DownloadFilesFormProps) {
+export function FormComponent({
+    elementInstance,
+    locale,
+    onDownload,
+}: DownloadFilesFormProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
     const handleDownload = (id: string) => {
         onDownload(id);
-    }
+    };
     return (
         <div className="flex flex-col bg-card-fill p-4 rounded-md border-card-stroke gap-4">
-            {elementInstance.files && elementInstance.files.length > 0 &&
-                elementInstance.files.map((file) => (<FilePreview
-                    locale={locale}
-                    readOnly={true}
-                    onDownload={() => handleDownload(file.id)}
-                    uploadResponse={file}
-                />))}
-
-        </div>)
+            {elementInstance.files &&
+                elementInstance.files.length > 0 &&
+                elementInstance.files.map((file) => (
+                    <FilePreview
+                        locale={locale}
+                        readOnly={true}
+                        onDownload={() => handleDownload(file.id)}
+                        uploadResponse={file}
+                        deletion={{
+                            isAllowed: false,
+                        }}
+                    />
+                ))}
+        </div>
+    );
 }
 
 export default downloadFilesElement;

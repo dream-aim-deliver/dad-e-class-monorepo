@@ -310,6 +310,8 @@ export interface AssignmentBuilderViewTypes extends isLocalAware {
     order: number;
     assignmentData: assignment.TAssignmentBaseWithId;
     onFileDownload: (id: string) => void;
+    onFileCancel: (id: string) => void;
+    onFileDelete: (id: string) => void;
 };
 
 

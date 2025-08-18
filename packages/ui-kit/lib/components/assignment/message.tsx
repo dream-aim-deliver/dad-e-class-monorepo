@@ -1,11 +1,11 @@
-import { FC } from "react";
-import { UserAvatar } from "../avatar/user-avatar";
+import { FC } from 'react';
+import { UserAvatar } from '../avatar/user-avatar';
 import { assignment, fileMetadata, shared } from '@maany_shr/e-class-models';
-import { cn } from "../../utils/style-utils";
-import Banner from "../banner";
-import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
-import { FilePreview } from "../drag-and-drop-uploader/file-preview";
-import { LinkEdit, LinkPreview } from "../links";
+import { cn } from '../../utils/style-utils';
+import Banner from '../banner';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { FilePreview } from '../drag-and-drop-uploader/file-preview';
+import { LinkEdit, LinkPreview } from '../links';
 
 export interface MessageProps extends isLocalAware {
     reply: assignment.TAssignmentReplyWithId;
@@ -13,15 +13,22 @@ export interface MessageProps extends isLocalAware {
     onFileDownload: (id: string) => void;
     onFileDelete: (id: number, fileId: string) => void;
     onLinkDelete: (id: number, linkId: number) => void;
-    onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
-    onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex: number) => void;
+    onImageChange: (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    onChange: (
+        files: fileMetadata.TFileMetadata[],
+        links: shared.TLinkWithId[],
+        linkEditIndex: number,
+    ) => void;
     onDeleteIcon: (id: string) => void;
-};
+}
 
 /**
  * Renders a single assignment reply message in a chat/conversation style, showing sender,
  * date/time, comment, any attached files and resource links, along with in-place editing of links.
- * 
+ *
  * This is a presentational component; all state and callback handlers (file actions, link edit, etc) are controlled by the parent.
  * Styling of the message bubble changes based on which user sent the message.
  *
@@ -66,7 +73,7 @@ export const Message: FC<MessageProps> = ({
     onChange,
     onImageChange,
     onDeleteIcon,
-    locale
+    locale,
 }) => {
     const dictionary = getDictionary(locale);
 
@@ -93,22 +100,35 @@ export const Message: FC<MessageProps> = ({
     };
 
     const messageBubble = (
-        <div className={cn('flex flex-col gap-2 p-2 border-1 rounded-tl-medium rounded-tr-medium min-w-0 flex-1', reply.sender.isCurrentUser ? ' rounded-br-none rounded-bl-medium bg-base-neutral-700 border-base-neutral-600' : 'rounded-br-medium rounded-bl-none bg-base-neutral-800 border-base-neutral-700')}>
+        <div
+            className={cn(
+                'flex flex-col gap-2 p-2 border-1 rounded-tl-medium rounded-tr-medium min-w-0 flex-1',
+                reply.sender.isCurrentUser
+                    ? ' rounded-br-none rounded-bl-medium bg-base-neutral-700 border-base-neutral-600'
+                    : 'rounded-br-medium rounded-bl-none bg-base-neutral-800 border-base-neutral-700',
+            )}
+        >
             <div className="flex justify-between">
                 <p className="text-xs text-text-primary font-bold leading-[100%]">
-                    {reply.sender.isCurrentUser ? dictionary.components.assignment.message.youText : reply.sender.name}
+                    {reply.sender.isCurrentUser
+                        ? dictionary.components.assignment.message.youText
+                        : reply.sender.name}
                 </p>
                 <p className="text-2xs text-text-secondary font-bold leading-[100%]">
-                    {formattedDateTime.formattedDate} {formattedDateTime.formattedTime}
+                    {formattedDateTime.formattedDate}{' '}
+                    {formattedDateTime.formattedTime}
                 </p>
             </div>
             {reply.type === 'text' ? (
                 <p className="text-sm text-text-primary leading-[150%]">
                     {reply.comment}
                 </p>
-            ) : (reply.type === 'passed' ? (
+            ) : reply.type === 'passed' ? (
                 <Banner
-                    title={dictionary.components.assignment.message.markAssignmentText}
+                    title={
+                        dictionary.components.assignment.message
+                            .markAssignmentText
+                    }
                     style="success"
                 />
             ) : (
@@ -121,43 +141,59 @@ export const Message: FC<MessageProps> = ({
                         <FilePreview
                             key={index}
                             uploadResponse={file}
-                            onDelete={() => onFileDelete(reply.replyId, file.id)}
+                            deletion={{
+                                isAllowed: true,
+                                onDelete: () =>
+                                    onFileDelete(reply.replyId, file.id),
+                            }}
                             onDownload={() => onFileDownload(file.id)}
                             locale={locale}
-                            onCancel={() => onFileDelete(reply.replyId, file.id)}
+                            onCancel={() =>
+                                onFileDelete(reply.replyId, file.id)
+                            }
                             readOnly={!reply.sender.isCurrentUser}
                         />
                     ))}
                     {reply.links.map((link, index) =>
-                        linkEditIndex === index ?
-                            (
-                                <div className="flex flex-col w-full" key={index}>
-                                    <LinkEdit
-                                        locale={locale}
-                                        initialTitle={link.title}
-                                        initialUrl={link.url}
-                                        initialCustomIcon={link.customIcon}
-                                        onSave={(title, url, customIcon) => handleSaveLink({ title, url, customIcon }, index)}
-                                        onDiscard={() => onLinkDelete(reply.replyId, link.linkId)}
-                                        onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
-                                        onDeleteIcon={onDeleteIcon}
-                                    />
-                                </div>
-                            ) : (
-                                <div className="flex flex-col w-full" key={index}>
-                                    <LinkPreview
-                                        preview={reply.sender.isCurrentUser}
-                                        title={link.title}
-                                        url={link.url}
-                                        customIcon={link.customIcon}
-                                        onEdit={() => handleOnClickLinkEdit(index)}
-                                        onDelete={() => onLinkDelete(reply.replyId, link.linkId)}
-                                    />
-                                </div>
-                            )
+                        linkEditIndex === index ? (
+                            <div className="flex flex-col w-full" key={index}>
+                                <LinkEdit
+                                    locale={locale}
+                                    initialTitle={link.title}
+                                    initialUrl={link.url}
+                                    initialCustomIcon={link.customIcon}
+                                    onSave={(title, url, customIcon) =>
+                                        handleSaveLink(
+                                            { title, url, customIcon },
+                                            index,
+                                        )
+                                    }
+                                    onDiscard={() =>
+                                        onLinkDelete(reply.replyId, link.linkId)
+                                    }
+                                    onImageChange={(image, abortSignal) =>
+                                        onImageChange(image, abortSignal)
+                                    }
+                                    onDeleteIcon={onDeleteIcon}
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex flex-col w-full" key={index}>
+                                <LinkPreview
+                                    preview={reply.sender.isCurrentUser}
+                                    title={link.title}
+                                    url={link.url}
+                                    customIcon={link.customIcon}
+                                    onEdit={() => handleOnClickLinkEdit(index)}
+                                    onDelete={() =>
+                                        onLinkDelete(reply.replyId, link.linkId)
+                                    }
+                                />
+                            </div>
+                        ),
                     )}
                 </div>
-            ))}
+            )}
         </div>
     );
 

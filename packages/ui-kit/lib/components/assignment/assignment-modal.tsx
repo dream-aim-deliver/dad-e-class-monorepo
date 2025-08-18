@@ -1,21 +1,35 @@
-import { FC } from "react";
-import { IconButton } from "../icon-button";
-import { IconClose, IconAssignment } from "../icons";
-import { AssignmentHeader } from "./assignment-header";
-import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
-import { assignment, fileMetadata, role, shared } from "@maany_shr/e-class-models";
-import { FilePreview } from "../drag-and-drop-uploader/file-preview";
-import { LinkEdit, LinkPreview } from "../links";
+import { FC } from 'react';
+import { IconButton } from '../icon-button';
+import { IconClose, IconAssignment } from '../icons';
+import { AssignmentHeader } from './assignment-header';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import {
+    assignment,
+    fileMetadata,
+    role,
+    shared,
+} from '@maany_shr/e-class-models';
+import { FilePreview } from '../drag-and-drop-uploader/file-preview';
+import { LinkEdit, LinkPreview } from '../links';
 
-export interface AssignmentModalProps extends Omit<assignment.TAssignmentWithId, 'replies'>, isLocalAware {
+export interface AssignmentModalProps
+    extends Omit<assignment.TAssignmentWithId, 'replies'>,
+        isLocalAware {
     role: Omit<role.TRole, 'visitor' | 'admin'>;
     linkEditIndex: number;
     children: React.ReactNode;
     onFileDownload: (id: string) => void;
     onFileDelete: (id: number, fileId: string) => void;
     onLinkDelete: (id: number, linkId: number) => void;
-    onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex: number) => void;
-    onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
+    onChange: (
+        files: fileMetadata.TFileMetadata[],
+        links: shared.TLinkWithId[],
+        linkEditIndex: number,
+    ) => void;
+    onImageChange: (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
     onDeleteIcon: (id: string) => void;
     onClickCourse: () => void;
     onClickUser: () => void;
@@ -25,7 +39,7 @@ export interface AssignmentModalProps extends Omit<assignment.TAssignmentWithId,
 
 /**
  * Displays a modal dialog presenting the details and resources of a single assignment.
- * 
+ *
  * The modal includes:
  *   - Modal close button (top right)
  *   - Assignment icon and label at the top
@@ -33,8 +47,8 @@ export interface AssignmentModalProps extends Omit<assignment.TAssignmentWithId,
  *   - Main body: assignment description, attached files, and resource links, with support for in-place editing/deletion for roles with permissions (coach)
  *   - Divider lines between main sections
  *   - A flexible children section that can render messages, reply panels, or any React nodes after the assignment content.
- * 
- * Props control all data, permissions, and handler callbacks for files, links, and navigation. 
+ *
+ * Props control all data, permissions, and handler callbacks for files, links, and navigation.
  *
  * @param role The current user's role ("coach", "student", etc.), no "visitor"/"admin"
  * @param linkEditIndex Index of the resource link currently being edited; -1 or undefined if none
@@ -115,7 +129,6 @@ export interface AssignmentModalProps extends Omit<assignment.TAssignmentWithId,
  * </AssignmentModal>
  */
 
-
 export const AssignmentModal: FC<AssignmentModalProps> = ({
     role,
     assignmentId,
@@ -141,7 +154,7 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
     onDeleteIcon,
     onClickGroup,
     onClose,
-    locale
+    locale,
 }) => {
     const dictionary = getDictionary(locale);
 
@@ -172,10 +185,13 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
             {/* Assignment Icon & Label */}
             <div className="flex items-center gap-2">
                 <span className="p-1 bg-base-neutral-700 rounded-small">
-                    <IconAssignment size='4' classNames="text-text-primary" />
+                    <IconAssignment size="4" classNames="text-text-primary" />
                 </span>
                 <p className="text-sm font-bold text-text-primary leading-[150%]">
-                    {dictionary.components.assignment.assignmentModal.assignmentText}
+                    {
+                        dictionary.components.assignment.assignmentModal
+                            .assignmentText
+                    }
                 </p>
             </div>
 
@@ -201,7 +217,9 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
 
             {/* Body Content */}
             <div className="flex flex-col gap-4 items-start w-full">
-                <p className="text-md text-text-primary leading-[150%]">{description}</p>
+                <p className="text-md text-text-primary leading-[150%]">
+                    {description}
+                </p>
 
                 {/* Files */}
                 <div className="flex flex-col gap-2 w-full">
@@ -210,10 +228,14 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                             key={index}
                             uploadResponse={file}
                             locale={locale}
-                            onDelete={() => onFileDelete(assignmentId, file.id)}
                             onDownload={() => onFileDownload(file.id)}
                             onCancel={() => onFileDelete(assignmentId, file.id)}
-                            readOnly={role !== "coach"}
+                            readOnly={role !== 'coach'}
+                            deletion={{
+                                isAllowed: true,
+                                onDelete: () =>
+                                    onFileDelete(assignmentId, file.id),
+                            }}
                         />
                     ))}
                 </div>
@@ -226,24 +248,35 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                                 initialTitle={link.title}
                                 initialUrl={link.url}
                                 initialCustomIcon={link.customIcon}
-                                onSave={(title, url, customIcon) => handleSaveLink({ title, url, customIcon }, index)}
-                                onDiscard={() => onLinkDelete(assignmentId, link.linkId)}
-                                onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
+                                onSave={(title, url, customIcon) =>
+                                    handleSaveLink(
+                                        { title, url, customIcon },
+                                        index,
+                                    )
+                                }
+                                onDiscard={() =>
+                                    onLinkDelete(assignmentId, link.linkId)
+                                }
+                                onImageChange={(image, abortSignal) =>
+                                    onImageChange(image, abortSignal)
+                                }
                                 onDeleteIcon={onDeleteIcon}
                             />
                         </div>
                     ) : (
                         <div key={index} className="flex flex-col w-full">
                             <LinkPreview
-                                preview={role === "coach"}
+                                preview={role === 'coach'}
                                 title={link.title}
                                 url={link.url}
                                 customIcon={link.customIcon}
                                 onEdit={() => handleOnClickLinkEdit(index)}
-                                onDelete={() => onLinkDelete(assignmentId, link.linkId)}
+                                onDelete={() =>
+                                    onLinkDelete(assignmentId, link.linkId)
+                                }
                             />
                         </div>
-                    )
+                    ),
                 )}
             </div>
 
