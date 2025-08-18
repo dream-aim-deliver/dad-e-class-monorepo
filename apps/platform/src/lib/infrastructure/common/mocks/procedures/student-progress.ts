@@ -3,7 +3,7 @@ import { t } from '../trpc-setup';
 
 const getStudentProgressMock: useCaseModels.TGetStudentProgressSuccessResponse['data'] =
     {
-        progressPercent: 0,
+        progressPercent: 46,
         isCompleted: false,
     };
 

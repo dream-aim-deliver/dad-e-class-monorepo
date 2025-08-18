@@ -8,10 +8,10 @@ export default async function RootLayout({
     params: Promise<{ locale: string }>;
 }) {
     return (
-        <div className="flex flex-row gap-8 p-4">
+        <div className="flex flex-row lg:gap-8">
             <div
                 id="sidebar"
-                className="sticky top-25 h-screen flex-shrink-0 z-[1000]"
+                className="sticky md:p-5 top-25 h-screen flex-shrink-0 z-[1000]"
             >
                 <WorkspaceSidebar
                     isCollapsed={true}
@@ -23,7 +23,7 @@ export default async function RootLayout({
             </div>
             <div
                 id="content"
-                className="w-full pr-6"
+                className="w-full md:pr-30"
             >
                 {children}
             </div>

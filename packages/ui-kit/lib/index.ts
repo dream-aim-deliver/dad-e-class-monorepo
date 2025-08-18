@@ -100,8 +100,6 @@ export { CreateCourseForm, useCreateCourseForm } from './components/create-cours
 export * from './utils/file-utils';
 
 
+export { CourseGeneralInformationVisitor } from './components/course-general-information/course-general-information-visitor';
+
 export { SideMenu, SideMenuProps } from './components/sidemenu/sidemenu';
-import {
-  MenuItem,
-  SideMenuItem,
-} from './components/sidemenu/sidemenu-item';
