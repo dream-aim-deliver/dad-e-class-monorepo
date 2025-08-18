@@ -197,12 +197,12 @@ export const FilePreview = (props: FilePreviewProps) => {
                         </span>
                     ) : (
                         // Only show the Button if 'onCancel' exists in props
-                        'onCancel' in props && (
+                        props.onCancel && (
                             <Button
                                 variant="text"
                                 className="px-0"
                                 onClick={() => {
-                                    props.onCancel(uploadResponse.id as string);
+                                    props.onCancel!(uploadResponse.id as string);
                                 }}
                                 text={
                                     dictionary.components.uploadingSection

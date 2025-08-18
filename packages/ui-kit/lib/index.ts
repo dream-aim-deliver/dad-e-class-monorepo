@@ -102,4 +102,4 @@ export * from './utils/file-utils';
 
 export { CourseGeneralInformationVisitor } from './components/course-general-information/course-general-information-visitor';
 
-export { SideMenu, SideMenuProps } from './components/sidemenu/sidemenu';
+export * from './components/sidemenu';
