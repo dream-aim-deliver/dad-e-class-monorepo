@@ -17,14 +17,12 @@ export default async function RootLayout({
                     isCollapsed={true}
                     userName={'Carla'}
                     userRole={'student'}
-                    children={undefined}
                     locale={'en'}
-                />
+                >
+                    {children}
+                </WorkspaceSidebar>
             </div>
-            <div
-                id="content"
-                className="w-full md:pr-30"
-            >
+            <div id="content" className="w-full md:pr-30">
                 {children}
             </div>
         </div>
