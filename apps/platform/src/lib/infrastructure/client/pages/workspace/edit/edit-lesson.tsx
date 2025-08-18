@@ -22,6 +22,7 @@ import {
     ImageGallery,
     LessonElement,
     MultiCheckElement,
+    OneOutOfThreeElement,
     RichTextElement,
     SingleChoiceElement,
     TextInputElement,
@@ -196,7 +197,17 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconOneOutOfThree />,
             label: '1 out of 3',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: OneOutOfThreeElement = {
+                    id: generateTempId(),
+                    type: FormElementType.OneOutOfThree,
+                    data: {
+                        tableTitle: '',
+                        rows: [],
+                    },
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
         {
             icon: <IconQuiz />,
