@@ -21,7 +21,6 @@ import {
     OneOutOfThreeData,
     OneOutOfThreeDesignerComponent,
     QuizDesignerComponent,
-    QuizTypeOneElement,
     RichTextDesignerComponent,
     RichTextElement,
     SingleChoiceDesignerComponent,
@@ -32,7 +31,6 @@ import {
     TempQuizTypeTwoElement,
     TextInputDesignerComponent,
     UploadFilesDesignerComponent,
-    uploadToS3,
     VideoDesignerComponent,
     VideoElement,
 } from '@maany_shr/e-class-ui-kit';
