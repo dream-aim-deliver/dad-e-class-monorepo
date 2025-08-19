@@ -26,6 +26,7 @@ import {
     RichTextElement,
     SingleChoiceDesignerComponent,
     SingleChoiceElement,
+    TempQuizTypeFourElement,
     TempQuizTypeOneElement,
     TempQuizTypeThreeElement,
     TempQuizTypeTwoElement,
@@ -840,6 +841,20 @@ const onTypeChange = (
             newComponent,
         ]);
     }
+    if (type === 'quizTypeFour') {
+        const newComponent: TempQuizTypeFourElement = {
+            id: generateTempId(),
+            type: CourseElementType.QuizTypeFour,
+            title: '',
+            description: '',
+            images: [],
+            labels: [],
+        };
+        setComponents((prev) => [
+            ...prev.filter((comp) => comp.id !== elementInstance.id),
+            newComponent,
+        ]);
+    }
 };
 
 function QuizTypeOneComponent({
@@ -1119,6 +1134,113 @@ function QuizTypeThreeComponent({
     );
 }
 
+function QuizTypeFourComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== CourseElementType.QuizTypeFour) return null;
+
+    const onChange = (updated: Partial<CourseElement>) => {
+        if (updated.type !== CourseElementType.QuizTypeFour) return;
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeFour
+                    ? { ...comp, ...updated }
+                    : comp,
+            ),
+        );
+    };
+
+    const onFileDelete = (fileId: string, index: number) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeFour
+                    ? {
+                          ...comp,
+                          images: comp.images?.map((image, idx) =>
+                              idx === index
+                                  ? { ...image, imageFile: null }
+                                  : image,
+                          ),
+                      }
+                    : comp,
+            ),
+        );
+    };
+
+    const setFile = (
+        file: fileMetadata.TFileMetadata | null,
+        index: number,
+    ) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeFour
+                    ? {
+                          ...comp,
+                          images: comp.images.map((image, idx) =>
+                              idx === index
+                                  ? {
+                                        ...image,
+                                        imageFile:
+                                            file as fileMetadata.TFileMetadataImage,
+                                    }
+                                  : image,
+                          ),
+                      }
+                    : comp,
+            ),
+        );
+    };
+
+    const handleDownload = (id: string) => {
+        const file = elementInstance.images?.find(
+            (image) => image.imageFile?.id === id,
+        )?.imageFile;
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
+
+    const handleUploadComplete = (
+        file: fileMetadata.TFileMetadata,
+        index: number,
+    ) => {
+        setFile(file, index);
+    };
+
+    const { uploadError, handleFileChange } = useFileUpload({
+        lessonId,
+        componentType: 'quizTypeTwo',
+    });
+
+    return (
+        <QuizDesignerComponent
+            elementInstance={elementInstance}
+            locale={locale}
+            onTypeChange={(type) =>
+                onTypeChange(type, elementInstance, setComponents)
+            }
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onChange={onChange}
+            onFileChange={handleFileChange}
+            onFileDelete={onFileDelete}
+            onFileDownload={handleDownload}
+            onUploadComplete={handleUploadComplete}
+            uploadError={uploadError ?? null}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
@@ -1134,6 +1256,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [CourseElementType.QuizTypeOne]: QuizTypeOneComponent,
     [CourseElementType.QuizTypeTwo]: QuizTypeTwoComponent,
     [CourseElementType.QuizTypeThree]: QuizTypeThreeComponent,
+    [CourseElementType.QuizTypeFour]: QuizTypeFourComponent,
     // Add other mappings as needed
 };
 
