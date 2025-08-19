@@ -41,12 +41,28 @@ import LessonComponentsBar from './components/lesson-components-bar';
 import { Suspense, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import EditLessonComponents from './edit-lesson-components';
 import { generateTempId } from './utils/generate-temp-id';
+import dynamic from 'next/dynamic';
 
 interface EditLessonProps {
     lessonId: number;
 }
+
+/*
+ This might not be significant for production builds,
+ but in development mode there is a long delay before the component
+ is rendered without using lazy loading.
+ This ensures there is a loading indicator during the component's initial render.
+ The issue most likely happens due to a lot of heavy component imports.
+ We should test this in production and see if the issue persists.
+*/
+const EditLessonComponents = dynamic(() => import('./edit-lesson-components'), {
+    loading: () => {
+        const locale = useLocale() as TLocale;
+        return <DefaultLoading locale={locale} />;
+    },
+    ssr: false,
+});
 
 // TODO: Translate
 export default function EditLesson({ lessonId }: EditLessonProps) {
