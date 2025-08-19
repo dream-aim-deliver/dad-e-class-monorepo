@@ -10,6 +10,7 @@ import {
 import { Dropdown } from '../dropdown';
 import {
     QuizType,
+    TempQuizTypeFourElement,
     TempQuizTypeOneElement,
     TempQuizTypeThreeElement,
     TempQuizTypeTwoElement,
@@ -21,6 +22,7 @@ import { IconQuiz } from '../icons/icon-quiz';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import QuizTypeTwo from '../quiz/quiz-type-two/quiz-type-two';
 import QuizTypeThree from '../quiz/quiz-type-three/quiz-type-three';
+import QuizTypeFour from '../quiz/quiz-type-four/quiz-type-four';
 
 const quizElement: CourseElementTemplate = {
     type: CourseElementType.Quiz,
@@ -146,6 +148,18 @@ export function DesignerComponent({
                 {quizType === 'quizTypeThree' && (
                     <QuizTypeThree
                         element={elementInstance as TempQuizTypeThreeElement}
+                        locale={locale}
+                        onChange={onChange}
+                        onFileChange={onFileChange}
+                        onFileDelete={onFileDelete}
+                        onFileDownload={onFileDownload}
+                        onUploadComplete={onUploadComplete}
+                        uploadError={uploadError}
+                    />
+                )}
+                {quizType === 'quizTypeFour' && (
+                    <QuizTypeFour
+                        element={elementInstance as TempQuizTypeFourElement}
                         locale={locale}
                         onChange={onChange}
                         onFileChange={onFileChange}
