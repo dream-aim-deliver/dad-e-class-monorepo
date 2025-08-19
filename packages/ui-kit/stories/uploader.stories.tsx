@@ -34,7 +34,6 @@ const meta: Meta<typeof Uploader> = {
 } satisfies Meta<typeof Uploader>;
 
 export default meta;
-
 type Story = StoryObj<typeof Uploader>;
 
 // Mock functions for handlers
@@ -82,7 +81,7 @@ const mockOnFilesChange = async (
     return {
       ...baseMetadata,
       category: 'video' as const,
-      videoId: Math.floor(Math.random() * 1000),
+      videoId: Math.floor(Math.random() * 1000).toString(), // ✅ Convertido a string
       thumbnailUrl: 'https://via.placeholder.com/150x100?text=Video+Thumbnail',
     };
   } else if (
@@ -129,7 +128,7 @@ const sampleVideoFile: fileMetadata.TFileMetadata = {
   checksum: 'sample-checksum-video',
   status: 'available',
   category: 'video',
-  videoId: 12345,
+  videoId: '12345', // ✅ Como string directamente
   thumbnailUrl: 'https://via.placeholder.com/300x200?text=Video+Thumbnail',
 };
 
@@ -317,13 +316,6 @@ export const MultipleImageUploadEmpty: Story = {
 };
 
 export const MultipleImageUploadWithFiles: Story = {
-  args: {
-    variant: 'document',
-    type: 'single',
-    maxSize: 0,
-    locale: 'de',
-  },
-
   render: () => (
     <InteractiveUploader
       type="multiple"
@@ -335,7 +327,6 @@ export const MultipleImageUploadWithFiles: Story = {
       ]}
     />
   ),
-
   parameters: {
     docs: {
       description: {
@@ -480,25 +471,57 @@ export const ThumbnailErrorFallback: Story = {
     docs: {
       description: {
         story:
-          'Uploader demonstrating thumbnail error fallback with broken image URL',
+          'Single image uploader with broken thumbnail URL showing icon fallback behavior',
       },
     },
   },
 };
-// Story with only broken thumbnail to clearly show the fallback
-export const OnlyBrokenThumbnail: Story = {
+
+// Comprehensive comparison story
+export const UploaderComparison: Story = {
   render: () => (
-    <InteractiveUploader
-      type="single"
-      variant="image"
-      file={sampleImageFileWithBrokenThumbnail}
-    />
+    <div className="space-y-8">
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Single Image Uploader</h3>
+        <InteractiveUploader type="single" variant="image" file={null} />
+      </div>
+      
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Multiple Image Uploader</h3>
+        <InteractiveUploader
+          type="multiple"
+          variant="image"
+          maxFile={3}
+          files={[]}
+        />
+      </div>
+      
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Document Uploader</h3>
+        <InteractiveUploader
+          type="single"
+          variant="document"
+          file={null}
+          acceptedFileTypes={['application/pdf', '.doc', '.docx']}
+        />
+      </div>
+      
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Video Uploader</h3>
+        <InteractiveUploader
+          type="single"
+          variant="video"
+          file={null}
+          maxSize={20}
+        />
+      </div>
+    </div>
   ),
   parameters: {
     docs: {
       description: {
         story:
-          'Single image uploader with broken thumbnail URL showing icon fallback behavior',
+          'Comprehensive comparison showing different uploader variants and types side by side',
       },
     },
   },

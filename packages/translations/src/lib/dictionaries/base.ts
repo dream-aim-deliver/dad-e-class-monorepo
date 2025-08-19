@@ -804,7 +804,13 @@ export const DictionarySchema = z.object({
     }),
     courseIntroBanner: z.object({
       title: z.string(),
-    })
+    }),
+    createCourseForm: z.object({
+      duplicating: z.string(),
+      slug: z.string(),
+      successBanner: z.string(),
+      recommendedSizeText: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({
@@ -897,6 +903,29 @@ export const DictionarySchema = z.object({
       createCourse: z.string(),
       becomeCourseCreator: z.string(),
     }),
+    createCourse: z.object({
+      createTitle: z.string(),
+      submitButton: z.string(),
+      duplicationDefaultError: z.string(),
+      courseCreationError: z.string(),
+      uploadError: z.string(),
+      titleSlugError: z.string(),
+      descriptionError: z.string(),
+      missingImageError: z.string(),
+    }),
+    sidebarLayout: z.object({
+      dashboard: z.string(),
+      courses: z.string(),
+      yourCourses: z.string(),
+      coachingSessions: z.string(),
+      yourCoachingSessions: z.string(),
+      calendar: z.string(),
+      yourStudents: z.string(),
+      yourReviews: z.string(),
+      yourProfile: z.string(),
+      orderPayments: z.string(),
+      logout: z.string(),
+    })
   }),
 });
 

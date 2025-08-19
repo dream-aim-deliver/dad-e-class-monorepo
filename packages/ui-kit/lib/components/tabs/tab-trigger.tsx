@@ -8,6 +8,7 @@ interface TabTriggerProps
     children: React.ReactNode;
     variant?: 'default';
     icon?: React.ReactNode;
+    isLast: boolean;
 }
 
 export function TabTrigger({
@@ -16,6 +17,7 @@ export function TabTrigger({
     children,
     className,
     variant = 'default',
+    isLast = false,
     ...props
 }: TabTriggerProps) {
     const { activeTab, setActiveTab } = useTabContext();
@@ -28,12 +30,15 @@ export function TabTrigger({
             'cursor-pointer',
             isActive
                 ? 'flex items-center justify-center bg-button-primary-fill rounded-medium text-button-primary-text'
-                : 'border-transparent text-text-primary border-r-1 border-divider',
+                : 'border-transparent text-text-primary',
         ),
     };
 
     return (
-        <div className="flex flex-row w-full items-center justify-center ">
+        <div className={cn(
+            "flex flex-row w-full items-center justify-center pr-2",
+            isLast ? "" : "border-r-1 border-divider" // Las tab without divider
+        )}>
             <button
                 role="tab"
                 aria-selected={isActive}

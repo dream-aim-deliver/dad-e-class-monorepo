@@ -818,7 +818,13 @@ export const DE: TDictionary = {
     },
     courseIntroBanner: {
       title: 'Kurseinführung'
-    }
+    },
+    createCourseForm: {
+      duplicating: 'Duplicating',
+      slug: "Slug",
+      successBanner: 'Kurs erfolgreich erstellt! Weiterleitung...',
+      recommendedSizeText: '(Empfohlene Bildgröße: 612 x 702 pixel für optimale Darstellungsqualität.)'
+    },
   },
   pages: {
     home: Home_DE,
@@ -865,6 +871,29 @@ export const DE: TDictionary = {
       yourCourses: 'Ihre Kurse',
       createCourse: 'Einen Kurs erstellen',
       becomeCourseCreator: 'Kursersteller werden',
-    }
+    },
+    createCourse: {
+      createTitle: "Kurs erstellen",
+      submitButton: "Entwurf speichern",
+      duplicationDefaultError: "Der zu duplizierende Kurs konnte nicht gefunden werden",
+      courseCreationError: 'Kurserstellung fehlgeschlagen. Bitte versuchen Sie es erneut.',
+      uploadError: "Bild-Upload fehlgeschlagen. Bitte versuchen Sie es erneut.",
+      titleSlugError: "Bitte Titel und Slug ausfüllen",
+      descriptionError: "Bitte geben Sie eine Kursbeschreibung an",
+      missingImageError: "Bitte laden Sie ein Kursbild hoch",
+    },
+    sidebarLayout: {
+      dashboard: "Dashboard",
+      courses: "Kurse",
+      yourCourses: "Deine Kurse",
+      coachingSessions: "Coaching-Sitzungen",
+      yourCoachingSessions: "Deine Coaching-Sitzungen",
+      calendar: "Kalender",
+      yourStudents: "Deine Schüler",
+      yourReviews: "Deine Bewertungen",
+      yourProfile: "Dein Profil",
+      orderPayments: "Bestellungen & Zahlungen",
+      logout: "Abmelden",
+    },
   },
 };

@@ -87,7 +87,7 @@ export const SideMenuItem: FC<SideMenuItemProps> = ({
                         >
                             {item.label}
                         </span>
-                        {item?.notificationCount > 0 && (
+                        {item?.notificationCount && item.notificationCount > 0 && (
                             <div className="flex-shrink-0">
                                 <Badge text={`${item?.notificationCount}`} size="medium" />
                             </div>

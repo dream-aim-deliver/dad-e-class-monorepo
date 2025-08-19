@@ -813,7 +813,13 @@ export const EN: TDictionary = {
     },
     courseIntroBanner: {
       title: 'Couse Introduction'
-    }
+    },
+    createCourseForm: {
+      duplicating: 'Duplicating',
+      slug: 'Slug',
+      successBanner: 'Course created successfully! Redirecting...',
+      recommendedSizeText: '(Recommended image size: 612 x 702 pixels for optimal display quality.)'
+    },
   },
   pages: {
     home: Home_EN,
@@ -860,6 +866,29 @@ export const EN: TDictionary = {
       yourCourses: 'Your Courses',
       createCourse: 'Create a course',
       becomeCourseCreator: 'Become a course creator',
-    }
+    },
+    createCourse: {
+      createTitle: "Create course",
+      submitButton: "Save draft",
+      duplicationDefaultError: "Could not find the course to duplicate",
+      courseCreationError: 'Course creation failed. Please try again.',
+      uploadError: "Failed to upload image. Please try again.",
+      titleSlugError: "Please fill in title and slug",
+      descriptionError: "Please provide a course description",
+      missingImageError: "Please upload a course image",
+    },
+    sidebarLayout: {
+      dashboard: "Dashboard",
+      courses: "Courses",
+      yourCourses: "Your Courses",
+      coachingSessions: "Coaching Sessions",
+      yourCoachingSessions: "Your Coaching Sessions",
+      calendar: "Calendar",
+      yourStudents: "Your Students",
+      yourReviews: "Your Reviews",
+      yourProfile: "Your Profile",
+      orderPayments: "Order & Payments",
+      logout: "Logout",
+    },
   },
 };

@@ -7,7 +7,6 @@ import {
     DefaultAccordion,
     DefaultError,
     DefaultLoading,
-    SectionHeading,
 } from '@maany_shr/e-class-ui-kit';
 import { useGetCourseOutlinePresenter } from '../../hooks/use-course-outline-presenter';
 

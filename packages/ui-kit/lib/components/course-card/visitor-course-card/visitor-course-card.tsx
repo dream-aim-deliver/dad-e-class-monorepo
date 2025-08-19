@@ -89,7 +89,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
 
   const pricingValue = coachingIncluded ? `${pricing.currency} ${pricing.fullPrice}` : `${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.partialPrice}`;
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="w-full mx-auto">
       <div className="flex flex-col w-auto h-[600px] rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
         <div className="relative flex-shrink-0">
           {shouldShowPlaceholder ? (

@@ -11,14 +11,14 @@ import { TRole } from 'packages/models/src/role';
 import { cn } from '../../utils/style-utils';
 
 export interface SideMenuProps extends isLocalAware {
-  userName: string;
-  userRole: Exclude<TRole, 'admin' | 'visitor'> | 'courseCreator';
-  profileImageUrl?: string;
-  children: React.ReactNode;
-  rating?: { score: number; count: number };
-  className?: string;
-  isCollapsed?: boolean;
-  onClickToggle?: (isCollapsed: boolean) => void;
+    userName: string;
+    userRole: Exclude<TRole, 'admin' | 'visitor'> | 'courseCreator';
+    profileImageUrl?: string;
+    children: React.ReactNode;
+    rating?: { score: number; count: number };
+    className?: string;
+    isCollapsed?: boolean;
+    onClickToggle?: (isCollapsed: boolean) => void;
 }
 
 /**
@@ -50,89 +50,107 @@ export interface SideMenuProps extends isLocalAware {
  * />
  */
 
-
 export const SideMenu: FC<SideMenuProps> = ({
-  userName,
-  userRole,
-  profileImageUrl,
-  rating,
-  className,
-  isCollapsed = false,
-  children,
-  onClickToggle,
-  locale
+    userName,
+    userRole,
+    profileImageUrl,
+    rating,
+    className,
+    isCollapsed = false,
+    children,
+    onClickToggle,
+    locale,
 }) => {
-  const dictionary = getDictionary(locale);
-  return (
-    <div
-      className={cn(
-        'bg-card-fill rounded-medium border-[1px] border-card-stroke flex flex-col gap-4 py-6 items-center relative overflow-hidden transition-all duration-500 ease-in-out',
-        isCollapsed
-          ? 'w-[4rem] px-4 gap-3'
-          : `w-[18rem] px-6`,
-        className
-      )}
-      data-testid="menu-container"
-    >
-      {/* User Profile Section */}
-      <div className={cn('flex w-full gap-4 h-auto')}>
-        <div className={cn('flex items-center')}>
-          <UserAvatar
-            imageUrl={profileImageUrl}
-            size={isCollapsed ? 'small' : 'large'}
-            className="rounded-full"
-          />
-        </div>
-        {!isCollapsed && (
-          <div className="flex flex-col items-start justify-center">
-            <p className="text-text-primary text-md font-bold leading-[100%]">
-              {userName}
-            </p>
-            <div className="flex gap-2">
-              {
-                userRole === 'student' &&
-                <Badge data-testid="badge" text={dictionary.components.sideMenu.studentText} />
-              }
-              {
-                (userRole === 'coach' || userRole === 'courseCreator') &&
-                <Badge text={dictionary.components.sideMenu.coachText} />
-              }
-              {userRole === 'courseCreator' && <Badge text={dictionary.components.sideMenu.courseCreatorText} />}
-            </div>
-            {userRole !== 'student' && rating && (
-              <div className="flex gap-[0.25rem] items-end">
-                <StarRating rating={rating.score} totalStars={5} />
-                <p className="text-text-primary text-xs font-bold leading-[100%]">
-                  {rating.score}
-                </p>
-                <p className="text-text-secondary text-2xs font-bold leading-[100%]">
-                  ({rating.count})
-                </p>
-              </div>
+    const dictionary = getDictionary(locale);
+    return (
+        <div
+            className={cn(
+                'bg-card-fill rounded-medium border-[1px] border-card-stroke flex flex-col gap-4 py-6 items-center relative overflow-hidden transition-all duration-500 ease-in-out',
+                isCollapsed ? 'w-[4rem] px-4 gap-3' : `w-[18rem] px-6`,
+                className,
             )}
-          </div>
-        )}
-      </div>
+            data-testid="menu-container"
+        >
+            {/* User Profile Section */}
+            <div className={cn('flex w-full gap-4 h-auto')}>
+                <div className={cn('flex items-center')}>
+                    <UserAvatar
+                        imageUrl={profileImageUrl}
+                        size={isCollapsed ? 'small' : 'large'}
+                        className="rounded-full"
+                    />
+                </div>
+                {!isCollapsed && (
+                    <div className="flex flex-col items-start gap-2 justify-center">
+                        <p className="text-text-primary text-md font-bold leading-[100%]">
+                            {userName}
+                        </p>
+                        <div className="flex gap-2">
+                            {userRole === 'student' && (
+                                <Badge
+                                    data-testid="badge"
+                                    text={
+                                        dictionary.components.sideMenu
+                                            .studentText
+                                    }
+                                />
+                            )}
+                            {(userRole === 'coach' ||
+                                userRole === 'courseCreator') && (
+                                <Badge
+                                    text={
+                                        dictionary.components.sideMenu.coachText
+                                    }
+                                />
+                            )}
+                            {userRole === 'courseCreator' && (
+                                <Badge
+                                    text={
+                                        dictionary.components.sideMenu
+                                            .courseCreatorText
+                                    }
+                                />
+                            )}
+                        </div>
+                        {userRole !== 'student' && rating && (
+                            <div className="flex gap-[0.25rem] items-end">
+                                <StarRating
+                                    rating={rating.score}
+                                    totalStars={5}
+                                />
+                                <p className="text-text-primary text-xs font-bold leading-[100%]">
+                                    {rating.score}
+                                </p>
+                                <p className="text-text-secondary text-2xs font-bold leading-[100%]">
+                                    ({rating.count})
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
 
-      {/* Menu Groups */}
-      <div className="flex flex-col items-end gap-2 self-stretch mb-[1.5rem]">
-        {children}
-      </div>
+            {/* Menu Groups */}
+            <div className="flex flex-col items-end gap-2 self-stretch mb-[1.5rem]">
+                {children}
+            </div>
 
-      {/* Collapse Button */}
-      <div
-        className={cn(
-          'flex w-[2rem] h-[2rem] absolute p-[4] right-[0.5rem] bottom-[0.5rem] items-center',
-        )}
-        data-testid="toggle-container"
-      >
-        <IconButton
-          icon={isCollapsed ? <IconChevronRight /> : <IconChevronLeft />}
-          styles="text"
-          size="small"
-          onClick={() => onClickToggle(isCollapsed)}
-        />
-      </div>
-    </div>
-  );
+            {/* Collapse Button */}
+            <div
+                className={cn(
+                    'flex w-[2rem] h-[2rem] absolute p-[4] right-[0.5rem] bottom-[0.5rem] items-center',
+                )}
+                data-testid="toggle-container"
+            >
+                <IconButton
+                    icon={
+                        isCollapsed ? <IconChevronRight /> : <IconChevronLeft />
+                    }
+                    styles="text"
+                    size="small"
+                    onClick={() => onClickToggle && onClickToggle(isCollapsed)}
+                />
+            </div>
+        </div>
+    );
 };

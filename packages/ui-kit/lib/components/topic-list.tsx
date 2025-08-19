@@ -40,7 +40,7 @@ interface TopicListProps {
  */
 const TopicList: React.FC<TopicListProps> = ({ title, list }) => {
   return (
-    <div className="max-w-7xl flex flex-col items-center justify-center gap-6 py-2">
+    <div className="w-full flex flex-col items-center justify-center gap-6 py-2">
       <h3 className="text-text-primary lg:text-mega text-2xl">{title}</h3>
       <div className="flex gap-3 flex-wrap items-center justify-center">
         {list.map((topic, index) => (
