@@ -8,7 +8,6 @@ import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { TextAreaInput } from '../../text-areaInput';
 import { TextInput } from '../../text-input';
 import {
-    QuizTypeOneElement,
     TempQuizTypeOneElement,
 } from '../../course-builder-lesson-component/types';
 import Banner from '../../banner';

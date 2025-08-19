@@ -21,10 +21,13 @@ import {
     OneOutOfThreeData,
     OneOutOfThreeDesignerComponent,
     QuizDesignerComponent,
+    QuizTypeOneElement,
     RichTextDesignerComponent,
     RichTextElement,
     SingleChoiceDesignerComponent,
     SingleChoiceElement,
+    TempQuizTypeOneElement,
+    TempQuizTypeTwoElement,
     TextInputDesignerComponent,
     UploadFilesDesignerComponent,
     uploadToS3,
@@ -36,6 +39,7 @@ import { useLocale } from 'next-intl';
 import { trpc } from '../../../trpc/client';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { transformLessonComponents } from '../../../utils/transform-lesson-components';
+import { generateTempId } from './utils/generate-temp-id';
 
 interface FileUploadProps {
     lessonId: number;
@@ -764,6 +768,53 @@ function OneOutOfThreeComponent({
     );
 }
 
+const onTypeChange = (
+    type: string,
+    elementInstance: LessonElement,
+    setComponents: React.Dispatch<React.SetStateAction<LessonElement[]>>,
+) => {
+    if (type === 'quizTypeOne') {
+        if (elementInstance.type === CourseElementType.QuizTypeOne) return;
+        const newComponent: TempQuizTypeOneElement = {
+            id: generateTempId(),
+            type: CourseElementType.QuizTypeOne,
+            title: '',
+            description: '',
+            imageFile: null,
+            options: [],
+        };
+        setComponents((prev) => [
+            ...prev.filter((comp) => comp.id !== elementInstance.id),
+            newComponent,
+        ]);
+    }
+    if (type === 'quizTypeTwo') {
+        const newComponent: TempQuizTypeTwoElement = {
+            id: generateTempId(),
+            type: CourseElementType.QuizTypeTwo,
+            title: '',
+            description: '',
+            imageFile: null,
+            groups: [
+                {
+                    id: 0,
+                    title: '',
+                    options: [],
+                },
+                {
+                    id: 1,
+                    title: '',
+                    options: [],
+                },
+            ],
+        };
+        setComponents((prev) => [
+            ...prev.filter((comp) => comp.id !== elementInstance.id),
+            newComponent,
+        ]);
+    }
+};
+
 function QuizTypeOneComponent({
     lessonId,
     elementInstance,
@@ -825,7 +876,7 @@ function QuizTypeOneComponent({
     const { uploadError, handleFileChange, handleUploadComplete } =
         useFileUpload({
             lessonId,
-            componentType: 'downloadFiles',
+            componentType: 'quizTypeOne',
             setFile,
         });
 
@@ -833,7 +884,94 @@ function QuizTypeOneComponent({
         <QuizDesignerComponent
             elementInstance={elementInstance}
             locale={locale}
-            onTypeChange={() => {}}
+            onTypeChange={(type) =>
+                onTypeChange(type, elementInstance, setComponents)
+            }
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onChange={onChange}
+            onFileChange={handleFileChange}
+            onFileDelete={onFileDelete}
+            onFileDownload={handleDownload}
+            onUploadComplete={handleUploadComplete}
+            uploadError={uploadError ?? null}
+        />
+    );
+}
+
+function QuizTypeTwoComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== CourseElementType.QuizTypeTwo) return null;
+
+    const onChange = (updated: Partial<CourseElement>) => {
+        if (updated.type !== CourseElementType.QuizTypeTwo) return;
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeTwo
+                    ? { ...comp, ...updated }
+                    : comp,
+            ),
+        );
+    };
+
+    const onFileDelete = () => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeTwo
+                    ? {
+                          ...comp,
+                          imageFile: null,
+                      }
+                    : comp,
+            ),
+        );
+    };
+
+    const setFile = (file: fileMetadata.TFileMetadata | null) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeTwo
+                    ? {
+                          ...comp,
+                          imageFile: file as fileMetadata.TFileMetadataImage,
+                      }
+                    : comp,
+            ),
+        );
+    };
+
+    const handleDownload = () => {
+        const file = elementInstance.imageFile;
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
+
+    const { uploadError, handleFileChange, handleUploadComplete } =
+        useFileUpload({
+            lessonId,
+            componentType: 'quizTypeTwo',
+            setFile,
+        });
+
+    return (
+        <QuizDesignerComponent
+            elementInstance={elementInstance}
+            locale={locale}
+            onTypeChange={(type) =>
+                onTypeChange(type, elementInstance, setComponents)
+            }
             onUpClick={onUpClick}
             onDownClick={onDownClick}
             onDeleteClick={onDeleteClick}
@@ -860,6 +998,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.MultiCheck]: MultiCheckComponent,
     [FormElementType.OneOutOfThree]: OneOutOfThreeComponent,
     [CourseElementType.QuizTypeOne]: QuizTypeOneComponent,
+    [CourseElementType.QuizTypeTwo]: QuizTypeTwoComponent,
     // Add other mappings as needed
 };
 
