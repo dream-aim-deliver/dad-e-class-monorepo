@@ -51,11 +51,16 @@ export interface ComponentRendererProps {
     locale: TLocale;
 }
 
-function RichTextComponent({ formElement, key }: ComponentRendererProps) {
+function RichTextComponent({
+    formElement,
+    key,
+    locale,
+}: ComponentRendererProps) {
     return (
         <RichTextFormComponent
             key={key}
             elementInstance={formElement as FormElement}
+            locale={locale}
         />
     );
 }

@@ -1,10 +1,11 @@
-import React from "react";
-import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations"
-import { IconTrashAlt } from "./icons/icon-trash-alt"
-import { IconButton } from "./icon-button"
-import { IconChevronUp } from "./icons/icon-chevron-up"
-import { IconChevronDown } from "./icons/icon-chevron-down"
-import { AnimatedRadioButton } from "./animated-radio-button";
+import React from 'react';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { IconTrashAlt } from './icons/icon-trash-alt';
+import { IconButton } from './icon-button';
+import { IconChevronUp } from './icons/icon-chevron-up';
+import { IconChevronDown } from './icons/icon-chevron-down';
+import { AnimatedRadioButton } from './animated-radio-button';
+import DefaultError from './default-error';
 
 /**
  * Designer Layout Component
@@ -26,17 +27,17 @@ import { AnimatedRadioButton } from "./animated-radio-button";
  * ```
  */
 interface DesignerLayoutProps extends isLocalAware {
-    title: string,
-    type: string,
-    icon: React.ReactNode,
-    isChecked?: boolean,
-    onUpClick: () => void,
-    onDownClick: () => void,
-    onDeleteClick: () => void,
-    onChange?: (value: string) => void,
-    courseBuilder: boolean,
-    children: React.ReactNode,
-
+    title: string;
+    type: string;
+    icon: React.ReactNode;
+    isChecked?: boolean;
+    onUpClick: () => void;
+    onDownClick: () => void;
+    onDeleteClick: () => void;
+    onChange?: (value: string) => void;
+    courseBuilder: boolean;
+    children: React.ReactNode;
+    validationError?: string;
 }
 
 /**
@@ -65,6 +66,7 @@ const DesignerLayout = ({
     locale,
     children,
     courseBuilder = false,
+    validationError,
 }: DesignerLayoutProps) => {
     const dictionary = getDictionary(locale);
     return (
@@ -74,28 +76,32 @@ const DesignerLayout = ({
                 {/* Title and Icon */}
                 <div className="flex items-center gap-2 flex-1 text-text-primary">
                     <span className="min-w-0 flex-shrink-0">{icon}</span>
-                    <p className="text-md font-important leading-[24px] word-break">{title}</p>
+                    <p className="text-md font-important leading-[24px] word-break">
+                        {title}
+                    </p>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-1">
-                    {
-                        type != "richText" && type !== "headingText" && !courseBuilder &&
-                        <div className="mr-4 flex items-center">
-                            <AnimatedRadioButton
-                                name="required"
-                                value="required"
-                                checked={isChecked}
-                                size="small"
-                                onChange={onChange}
-                                withText={true}
-                                labelClass="text-text-primary capitalize"
-                                label={dictionary.components.formRenderer.requiredText}
-
-
-                            />
-                        </div>
-                    }
+                    {type != 'richText' &&
+                        type !== 'headingText' &&
+                        !courseBuilder && (
+                            <div className="mr-4 flex items-center">
+                                <AnimatedRadioButton
+                                    name="required"
+                                    value="required"
+                                    checked={isChecked}
+                                    size="small"
+                                    onChange={onChange}
+                                    withText={true}
+                                    labelClass="text-text-primary capitalize"
+                                    label={
+                                        dictionary.components.formRenderer
+                                            .requiredText
+                                    }
+                                />
+                            </div>
+                        )}
                     <IconButton
                         icon={<IconTrashAlt />}
                         onClick={onDeleteClick}
@@ -123,11 +129,17 @@ const DesignerLayout = ({
             {/* Divider */}
             <hr className="border-base-neutral-600" />
             {/* Content */}
-            <div>
-                {children}
-            </div>
+            <div>{children}</div>
+            {/* // TODO: Translate validation error title */}
+            {validationError && (
+                <DefaultError
+                    locale={locale}
+                    title={'Element is invalid'}
+                    description={validationError}
+                />
+            )}
         </div>
-    )
-}
+    );
+};
 
 export default DesignerLayout;
