@@ -119,7 +119,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
     const [isImageError, setIsImageError] = React.useState(false);
     // Calculate total course duration in minutes and convert to hours
     const totalDurationInMinutes =
-        duration.video + duration.coaching + duration.selfStudy;
+        (duration as any).video as number + (duration as any).coaching as number + (duration as any).selfStudy as number;
     const totalDurationInHours = totalDurationInMinutes / 60;
     // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
     const formattedDuration = Number.isInteger(totalDurationInHours)
@@ -180,8 +180,8 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                         )}
 
                         <CourseCreator
-                            creatorName={author.name}
-                            imageUrl={author.image}
+                            creatorName={(author as any).name as string}
+                            imageUrl={(author as any).image as string}
                             locale={locale as TLocale}
                             you={true}
                             onClickUser={onClickUser}
@@ -189,7 +189,7 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
 
                         <CourseStats
                             locale={locale as TLocale}
-                            language={language.name}
+                            language={(language as any).name as string}
                             sessions={sessions}
                             duration={`${formattedDuration}  ${dictionary.components.courseCard.hours}`}
                             sales={sales}

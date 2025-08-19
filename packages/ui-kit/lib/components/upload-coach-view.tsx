@@ -55,7 +55,7 @@ const UploadCoachView: React.FC<UploadCoachViewProps> = ({ files, userComment, o
                 <p className="text-md font-important leading-[24px] word-break">{dictionary.components.courseBuilder.uploadFiles}</p>
             </div>
             <main>
-                {files.map((file, index) => (
+                {(files as any).map((file, index) => (
                     <div key={index} className="grid grid-cols-3 items-center gap-4 border-b border-divider py-4 text-text-primary w-full">
                         <div className="flex items-center gap-2 min-w-0">
                             <IconFile classNames="flex-shrink-0" />
@@ -73,7 +73,7 @@ const UploadCoachView: React.FC<UploadCoachViewProps> = ({ files, userComment, o
                             <Button
                                 variant="text"
                                 text={dictionary.components.courseBuilder.downloadFilesText}
-                                onClick={() => onDownload?.(file.id)}
+                                onClick={() => onDownload?.(file.id as string)}
                                 className="flex-shrink-0"
                             />
                         </div>

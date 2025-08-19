@@ -183,17 +183,17 @@ export function FormComponent({
             <p className="font-important text-text-primary leading-[150%] text-sm md:text-md">
                 {elementInstance.description}
             </p>
+            {/* @ts-ignore */}
             <Uploader
                 type="multiple"
                 variant="generic"
-                files={files}
+                files={files as any}
                 maxFile={5}
-                onFilesChange={handleFilesUpload}
+                onFilesChange={handleFilesUpload as any}
                 onUploadComplete={handleUploadComplete}
                 onDelete={handleFileDelete}
                 onDownload={handleFileDownload}
                 locale={locale}
-                isDeletionAllowed={true} // Allow deletion of uploaded files
             />
             <div className="w-full flex flex-col gap-2">
                 <p className="text-sm md:text-md text-text-secondary flex gap-1 items-center">

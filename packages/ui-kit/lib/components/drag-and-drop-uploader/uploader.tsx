@@ -282,7 +282,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
                                 uploadResponse={file}
                                 deletion={{
                                     isAllowed: true,
-                                    onDelete: () => onDelete(file.id),
+                                    onDelete: () => onDelete(file.id as string),
                                 }}
                                 onDownload={onDownload}
                                 onCancel={handleCancelUpload}

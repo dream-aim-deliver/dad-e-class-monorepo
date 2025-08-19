@@ -68,7 +68,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     if (!selected) return;
 
     const newLanguages = Array.isArray(selected)
-      ? selectedLanguages.filter((lang) => selected.includes(lang.code))
+      ? selectedLanguages.filter((lang) => selected.includes(lang.code as string))
       : selectedLanguages.filter((lang) => lang.code === selected);
 
     setSpokenLanguages(newLanguages);
@@ -109,10 +109,10 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             key={spokenLanguages.map((lang) => lang.code).join(',')}
             type="multiple-choice-and-search"
             options={selectedLanguages.map((lang) => ({
-              label: lang.name,
-              value: lang.code,
+              label: lang.name as string,
+              value: lang.code as string,
             }))}
-            defaultValue={spokenLanguages.map((lang) => lang.code)}
+            defaultValue={spokenLanguages.map((lang) => lang.code as string)}
             onSelectionChange={handleSpokenLanguagesChange}
             className="w-[200px]"
             text={{
@@ -149,8 +149,8 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         <Dropdown
           type="simple"
           options={selectedLanguages.map((lang) => ({
-            label: lang.name,
-            value: lang.code,
+            label: lang.name as string,
+            value: lang.code as string,
           }))}
           onSelectionChange={handleInterfaceLanguageChange}
           className="w-fit"

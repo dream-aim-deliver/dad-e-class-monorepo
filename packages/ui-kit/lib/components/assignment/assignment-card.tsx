@@ -164,27 +164,27 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
     const getLatestReply = (replies: assignment.TAssignmentReplyWithId[]) => {
         if (replies.length === 0) return undefined;
         return replies.reduce((latest, current) =>
-            new Date(current.timestamp) > new Date(latest.timestamp)
+            new Date(current.timestamp as string) > new Date(latest.timestamp as string)
                 ? current
                 : latest,
         );
     };
 
     const handleSaveLink = (data: shared.TLinkWithId, index: number) => {
-        const updatedLinks = [...links];
+        const updatedLinks = [...(links as shared.TLinkWithId[])];
         updatedLinks[index] = data;
-        onChange(files, updatedLinks, null);
+        onChange(files as fileMetadata.TFileMetadata[], updatedLinks, -1);
     };
 
     const handleOnClickLinkEdit = (index: number) => {
-        onChange(files, links, index);
+        onChange(files as fileMetadata.TFileMetadata[], links as shared.TLinkWithId[], index);
     };
 
     return (
         <div
             className={cn(
                 'flex flex-col p-4 bg-card-fill border-1 border-card-stroke rounded-medium',
-                replies.length > 0 ? 'gap-2' : 'gap-4',
+                (replies as assignment.TAssignmentReplyWithId[]).length > 0 ? 'gap-2' : 'gap-4',
             )}
         >
             <AssignmentHeader
@@ -201,10 +201,10 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                 locale={locale}
                 role={role}
             />
-            {replies.length > 0
+            {(replies as assignment.TAssignmentReplyWithId[]).length > 0
                 ? // Show latest reply if there are replies
                   (() => {
-                      const latestReply = getLatestReply(replies);
+                      const latestReply = getLatestReply(replies as assignment.TAssignmentReplyWithId[]);
                       return latestReply ? (
                           <div className="flex flex-col gap-2">
                               <h6 className="text-md text-text-primary font-bold leading-[120%]">
@@ -228,20 +228,20 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                       ) : null;
                   })()
                 : // Show assignment content (description, files, links) if no replies
-                  (!!description || files.length > 0 || links.length > 0) && (
+                  (!!description || (files as fileMetadata.TFileMetadata[]).length > 0 || (links as shared.TLinkWithId[]).length > 0) && (
                       <div className="flex flex-col gap-4 items-start w-full">
                           <p className="text-md text-text-primary leading-[150%]">
                               {description}
                           </p>
                           <div className="flex flex-col gap-2 w-full">
-                              {files.map((file, index) => (
+                              {(files as fileMetadata.TFileMetadata[]).map((file, index) => (
                                   <FilePreview
                                       key={index}
                                       uploadResponse={file}
                                       locale={locale}
-                                      onDownload={() => onFileDownload(file.id)}
+                                      onDownload={() => onFileDownload(file.id as string)}
                                       onCancel={() =>
-                                          onFileDelete(assignmentId, file.id)
+                                          onFileDelete(assignmentId as number, file.id as string)
                                       }
                                       readOnly={role !== 'coach'}
                                       deletion={{
@@ -249,7 +249,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                                       }}
                                   />
                               ))}
-                              {links.map((link, index) =>
+                              {(links as shared.TLinkWithId[]).map((link, index) =>
                                   linkEditIndex === index ? (
                                       <div
                                           className="flex flex-col w-full"
@@ -278,8 +278,8 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                                               }
                                               onDiscard={() =>
                                                   onLinkDelete(
-                                                      assignmentId,
-                                                      link.linkId,
+                                                      assignmentId as number,
+                                                      link.linkId as number,
                                                   )
                                               }
                                               onImageChange={(
@@ -301,16 +301,16 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                                       >
                                           <LinkPreview
                                               preview={role === 'coach'}
-                                              title={link.title}
-                                              url={link.url}
+                                              title={link.title as string}
+                                              url={link.url as string}
                                               customIcon={link.customIcon}
                                               onEdit={() =>
                                                   handleOnClickLinkEdit(index)
                                               }
                                               onDelete={() =>
                                                   onLinkDelete(
-                                                      assignmentId,
-                                                      link.linkId,
+                                                      assignmentId as number,
+                                                      link.linkId as number,
                                                   )
                                               }
                                           />

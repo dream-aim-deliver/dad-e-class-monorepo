@@ -221,7 +221,7 @@ export const CourseGeneralInformationView: FC<
                     <div className="flex flex-col">
                         <p className="text-text-secondary text-sm">
                             {formatSingleDurationSegment(
-                                duration.video,
+                                (duration as any).video as number,
                                 dictionary,
                             )}{' '}
                             {
@@ -233,7 +233,7 @@ export const CourseGeneralInformationView: FC<
 
                         <p className="text-text-secondary text-sm">
                             {formatSingleDurationSegment(
-                                duration.coaching,
+                                (duration as any).coaching as number,
                                 dictionary,
                             )}{' '}
                             {
@@ -245,7 +245,7 @@ export const CourseGeneralInformationView: FC<
 
                         <p className="text-text-secondary text-sm">
                             {formatSingleDurationSegment(
-                                duration.selfStudy,
+                                (duration as any).selfStudy as number,
                                 dictionary,
                             )}{' '}
                             {
@@ -268,12 +268,12 @@ export const CourseGeneralInformationView: FC<
                     <div className="flex gap-2">
                         <UserAvatar
                             size="large"
-                            fullName={author.name}
-                            imageUrl={author.image}
+                            fullName={(author as any).name as string}
+                            imageUrl={(author as any).image as string}
                         />
                         <div className="flex flex-col justify-center items-start">
                             <p className="text-md text-text-primary font-bold leading-[120%]">
-                                {author.name}
+                                {(author as any).name as string}
                             </p>
                             <div className="flex gap-2 items-center">
                                 <Badge

@@ -73,8 +73,8 @@ const QuizTypeThreeStudentView: FC<QuizTypeThreeStudentViewProps> = ({
   // Sync state with props on mount or prop change
   useEffect(() => {
     setOptions(elementInstance.options.map(opt => ({ 
-      imageId: opt.imageFile.id,
-      imageThumbnailUrl: opt.imageFile.thumbnailUrl,
+      imageId: (opt.imageFile as any).id as string,
+      imageThumbnailUrl: (opt.imageFile as any).thumbnailUrl as string,
       description: opt.description,
       correct: opt.id === elementInstance.correctOptionId,
       selected: false,

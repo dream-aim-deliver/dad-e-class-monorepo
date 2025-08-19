@@ -103,7 +103,7 @@ export * from './components/dialog';
 export { CreateCourseForm, useCreateCourseForm } from './components/create-course-form';
 export * from './utils/file-utils';
 
-export { CourseOutlineAccordion, CourseModule } from './components/course-outline-accordion';
+export { CourseOutlineAccordion, type CourseModule } from './components/course-outline-accordion';
 export { LessonHeader } from './components/lesson-header';
 
 export { PreAssessmentForm } from './components/pre-assessment/pre-assessment-form';

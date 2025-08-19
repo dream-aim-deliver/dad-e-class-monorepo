@@ -83,10 +83,10 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
         className="w-full"
       >
         <TabList className="grid w-full grid-cols-2 mb-8">
-          <TabTrigger value="personal">
+          <TabTrigger value="personal" isLast={false}>
             {dictionary.components.profileTab.personal}
           </TabTrigger>
-          <TabTrigger value="professional">
+          <TabTrigger value="professional" isLast={true}>
             {dictionary.components.profileTab.professional}
           </TabTrigger>
         </TabList>

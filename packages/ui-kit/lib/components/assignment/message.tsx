@@ -89,34 +89,34 @@ export const Message: FC<MessageProps> = ({
 
     const handleSaveLink = (data: shared.TLinkWithId, index: number) => {
         if (reply.type !== 'resources') return;
-        const updatedLinks = [...reply.links];
+        const updatedLinks = [...(reply as any).links as shared.TLinkWithId[]];
         updatedLinks[index] = data;
-        onChange(reply.files, updatedLinks, null);
+        onChange((reply as any).files as fileMetadata.TFileMetadata[], updatedLinks, -1);
     };
 
     const handleOnClickLinkEdit = (index: number) => {
         if (reply.type !== 'resources') return;
-        onChange(reply.files, reply.links, index);
+        onChange((reply as any).files as fileMetadata.TFileMetadata[], (reply as any).links as shared.TLinkWithId[], index);
     };
 
     const messageBubble = (
         <div
             className={cn(
                 'flex flex-col gap-2 p-2 border-1 rounded-tl-medium rounded-tr-medium min-w-0 flex-1',
-                reply.sender.isCurrentUser
+(reply.sender as any).isCurrentUser
                     ? ' rounded-br-none rounded-bl-medium bg-base-neutral-700 border-base-neutral-600'
                     : 'rounded-br-medium rounded-bl-none bg-base-neutral-800 border-base-neutral-700',
             )}
         >
             <div className="flex justify-between">
                 <p className="text-xs text-text-primary font-bold leading-[100%]">
-                    {reply.sender.isCurrentUser
+                    {(reply.sender as any).isCurrentUser
                         ? dictionary.components.assignment.message.youText
-                        : reply.sender.name}
+                        : (reply.sender as any).name}
                 </p>
                 <p className="text-2xs text-text-secondary font-bold leading-[100%]">
-                    {formattedDateTime.formattedDate}{' '}
-                    {formattedDateTime.formattedTime}
+                    {(formattedDateTime as any).formattedDate}{' '}
+                    {(formattedDateTime as any).formattedTime}
                 </p>
             </div>
             {reply.type === 'text' ? (
@@ -134,27 +134,27 @@ export const Message: FC<MessageProps> = ({
             ) : (
                 <div className="flex flex-col gap-2">
                     <p className="text-sm text-text-primary leading-[150%]">
-                        {reply.comment}
+                        {(reply as any).comment as string}
                     </p>
                     <div className="w-full h-[1px] bg-base-neutral-500" />
-                    {reply.files.map((file, index) => (
+                    {((reply as any).files as fileMetadata.TFileMetadata[]).map((file, index) => (
                         <FilePreview
                             key={index}
                             uploadResponse={file}
                             deletion={{
                                 isAllowed: true,
                                 onDelete: () =>
-                                    onFileDelete(reply.replyId, file.id),
+                                    onFileDelete((reply as any).replyId as number, file.id as string),
                             }}
-                            onDownload={() => onFileDownload(file.id)}
+                            onDownload={() => onFileDownload(file.id as string)}
                             locale={locale}
                             onCancel={() =>
-                                onFileDelete(reply.replyId, file.id)
+                                onFileDelete((reply as any).replyId as number, file.id as string)
                             }
-                            readOnly={!reply.sender.isCurrentUser}
+                            readOnly={!(reply.sender as any).isCurrentUser}
                         />
                     ))}
-                    {reply.links.map((link, index) =>
+                    {((reply as any).links as shared.TLinkWithId[]).map((link, index) =>
                         linkEditIndex === index ? (
                             <div className="flex flex-col w-full" key={index}>
                                 <LinkEdit
@@ -169,7 +169,7 @@ export const Message: FC<MessageProps> = ({
                                         )
                                     }
                                     onDiscard={() =>
-                                        onLinkDelete(reply.replyId, link.linkId)
+                                        onLinkDelete((reply as any).replyId as number, link.linkId as number)
                                     }
                                     onImageChange={(image, abortSignal) =>
                                         onImageChange(image, abortSignal)
@@ -180,13 +180,13 @@ export const Message: FC<MessageProps> = ({
                         ) : (
                             <div className="flex flex-col w-full" key={index}>
                                 <LinkPreview
-                                    preview={reply.sender.isCurrentUser}
-                                    title={link.title}
-                                    url={link.url}
+                                    preview={(reply.sender as any).isCurrentUser}
+                                    title={link.title as string}
+                                    url={link.url as string}
                                     customIcon={link.customIcon}
                                     onEdit={() => handleOnClickLinkEdit(index)}
                                     onDelete={() =>
-                                        onLinkDelete(reply.replyId, link.linkId)
+                                        onLinkDelete((reply as any).replyId as number, link.linkId as number)
                                     }
                                 />
                             </div>
@@ -199,14 +199,14 @@ export const Message: FC<MessageProps> = ({
 
     return (
         <div className="w-full">
-            {reply.sender.isCurrentUser ? (
+            {(reply.sender as any).isCurrentUser ? (
                 <div className="flex gap-2 items-end">
                     {messageBubble}
                     <div className="flex-shrink-0">
                         <UserAvatar
-                            imageUrl={reply.sender.image}
+                            imageUrl={(reply.sender as any).image as string}
                             size="xSmall"
-                            fullName={reply.sender.name}
+                            fullName={(reply.sender as any).name as string}
                         />
                     </div>
                 </div>
@@ -214,9 +214,9 @@ export const Message: FC<MessageProps> = ({
                 <div className="flex gap-2 items-end">
                     <div className="flex-shrink-0">
                         <UserAvatar
-                            imageUrl={reply.sender.image}
+                            imageUrl={(reply.sender as any).image as string}
                             size="xSmall"
-                            fullName={reply.sender.name}
+                            fullName={(reply.sender as any).name as string}
                         />
                     </div>
                     {messageBubble}

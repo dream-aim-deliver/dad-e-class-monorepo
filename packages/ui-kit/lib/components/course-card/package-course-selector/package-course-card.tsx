@@ -79,7 +79,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
 }) => {
 
     // Calculate total course duration in minutes and convert to hours
-    const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+    const totalDurationInMinutes = (duration as any).video as number + (duration as any).coaching as number + (duration as any).selfStudy as number;
     const totalDurationInHours = totalDurationInMinutes / 60;
     // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
     const formattedDuration = Number.isInteger(totalDurationInHours)
@@ -128,7 +128,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
 
                     </div>
                     <div className="flex gap-1 items-end">
-                        <StarRating totalStars={5} rating={rating} />
+                        <StarRating totalStars={5} rating={rating as number} />
                         <span className="text-xs text-text-primary leading-[100%]">
                             {rating}
                         </span>
@@ -138,7 +138,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
                     </div>
 
                     <CourseCreator
-                        creatorName={author?.name}
+                        creatorName={author?.name as string}
                         imageUrl={author?.image}
                         locale={locale as TLocale}
                         onClickUser={onClickUser}
@@ -146,7 +146,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
 
                     <CourseStats
                         locale={locale as TLocale}
-                        language={language.name}
+                        language={(language as any).name as string}
                         sessions={10}
                         duration={`${formattedDuration} ${dictionary.components.courseCard.hours}`}
                         sales={sales}
@@ -159,7 +159,7 @@ export const PackageCourseCard: React.FC<PackageCourseCardProps> = ({
 
                 <div className="flex flex-col gap-2">
                     <PackageCourseActions
-                        pricing={pricing}
+                        pricing={pricing as any}
                         courseIncluded={courseIncluded}
                         onClickDetails={onClickDetails}
                         onClickIncludeExclude={onClickIncludeExclude}

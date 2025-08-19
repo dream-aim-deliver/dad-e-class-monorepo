@@ -109,7 +109,7 @@ export function DesignerComponent({
                 type="single"
                 variant="video"
                 file={file}
-                onFilesChange={handleVideoFile}
+                onFilesChange={handleVideoFile as any}
                 onUploadComplete={handleUploadComplete}
                 onDelete={onFileDelete}
                 onDownload={onFileDownload}

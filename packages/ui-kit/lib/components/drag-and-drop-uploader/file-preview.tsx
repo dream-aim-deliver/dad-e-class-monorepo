@@ -97,7 +97,7 @@ export const FilePreview = (props: FilePreviewProps) => {
         // Determine file category - use specified category or detect from extension if generic
         const fileCategory =
             uploadResponse?.category === 'generic'
-                ? getFileTypeFromExtension(uploadResponse.name)
+                ? getFileTypeFromExtension(uploadResponse.name as string)
                 : uploadResponse?.category;
 
         // Return appropriate element based on category
@@ -183,7 +183,7 @@ export const FilePreview = (props: FilePreviewProps) => {
                             {uploadResponse.name}
                         </span>
                         <span className="text-xs text-text-secondary">
-                            {(uploadResponse.size / (1024 * 1024)).toFixed(2)}{' '}
+                            {((uploadResponse.size as number) / (1024 * 1024)).toFixed(2)}{' '}
                             MB
                         </span>
                     </>

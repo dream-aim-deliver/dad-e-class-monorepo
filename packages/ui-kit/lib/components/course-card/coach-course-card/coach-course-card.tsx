@@ -80,7 +80,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
   const shouldShowPlaceholder = !imageUrl || isImageError;
 
   // Calculate total course duration in minutes and convert to hours
-  const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+  const totalDurationInMinutes = (duration as any).video as number + (duration as any).coaching as number + (duration as any).selfStudy as number;
   const totalDurationInHours = totalDurationInMinutes / 60;
   const formattedDuration = Number.isInteger(totalDurationInHours)
     ? totalDurationInHours.toString()
@@ -120,7 +120,7 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
             </div>
 
             <div className="flex gap-1 items-end">
-              <StarRating totalStars={5} rating={rating} />
+              <StarRating totalStars={5} rating={rating as number} />
               <span className="text-xs text-text-primary leading-[100%]">
                 {rating}
               </span>
@@ -129,11 +129,11 @@ export const CoachCourseCard: React.FC<CoachCourseCardProps> = ({
               </span>
             </div>
 
-            <CourseCreator creatorName={author.name} imageUrl={author.image} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
+            <CourseCreator creatorName={(author as any).name as string} imageUrl={(author as any).image as string} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
 
             <CourseStats
               locale={locale as TLocale}
-              language={language.name}
+              language={(language as any).name as string}
               sessions={sessions}
               duration={`${formattedDuration} ${dictionary.components.courseCard.hours}`}
               sales={sales}

@@ -40,8 +40,8 @@ export function FormComponent({
       {elementInstance.links.map((link, index) => (
         <LinkPreview
           key={`link-${elementInstance.id}-${index}`}
-          title={link.title}
-          url={link.url}
+          title={link.title as string}
+          url={link.url as string}
           customIcon={link.customIcon}
         />
       ))}

@@ -159,13 +159,13 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
     const dictionary = getDictionary(locale);
 
     const handleSaveLink = (data: shared.TLinkWithId, index: number) => {
-        const updatedLinks = [...links];
+        const updatedLinks = [...(links as shared.TLinkWithId[])];
         updatedLinks[index] = data;
-        onChange(files, updatedLinks, null);
+        onChange(files as fileMetadata.TFileMetadata[], updatedLinks, -1);
     };
 
     const handleOnClickLinkEdit = (index: number) => {
-        onChange(files, links, index);
+        onChange(files as fileMetadata.TFileMetadata[], links as shared.TLinkWithId[], index);
     };
 
     return (
@@ -223,24 +223,24 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
 
                 {/* Files */}
                 <div className="flex flex-col gap-2 w-full">
-                    {files.map((file, index) => (
+                    {(files as fileMetadata.TFileMetadata[]).map((file, index) => (
                         <FilePreview
                             key={index}
                             uploadResponse={file}
                             locale={locale}
-                            onDownload={() => onFileDownload(file.id)}
-                            onCancel={() => onFileDelete(assignmentId, file.id)}
+                            onDownload={() => onFileDownload(file.id as string)}
+                            onCancel={() => onFileDelete(assignmentId as number, file.id as string)}
                             readOnly={role !== 'coach'}
                             deletion={{
                                 isAllowed: true,
                                 onDelete: () =>
-                                    onFileDelete(assignmentId, file.id),
+                                    onFileDelete(assignmentId as number, file.id as string),
                             }}
                         />
                     ))}
                 </div>
                 {/* Links */}
-                {links.map((link, index) =>
+                {(links as shared.TLinkWithId[]).map((link, index) =>
                     linkEditIndex === index ? (
                         <div key={index} className="flex flex-col w-full">
                             <LinkEdit
@@ -255,7 +255,7 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                                     )
                                 }
                                 onDiscard={() =>
-                                    onLinkDelete(assignmentId, link.linkId)
+                                    onLinkDelete(assignmentId as number, link.linkId as number)
                                 }
                                 onImageChange={(image, abortSignal) =>
                                     onImageChange(image, abortSignal)
@@ -267,12 +267,12 @@ export const AssignmentModal: FC<AssignmentModalProps> = ({
                         <div key={index} className="flex flex-col w-full">
                             <LinkPreview
                                 preview={role === 'coach'}
-                                title={link.title}
-                                url={link.url}
+                                title={link.title as string}
+                                url={link.url as string}
                                 customIcon={link.customIcon}
                                 onEdit={() => handleOnClickLinkEdit(index)}
                                 onDelete={() =>
-                                    onLinkDelete(assignmentId, link.linkId)
+                                    onLinkDelete(assignmentId as number, link.linkId as number)
                                 }
                             />
                         </div>

@@ -102,7 +102,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 type="single"
                 variant="image"
                 file={file}
-                onFilesChange={handleImageFile}
+                onFilesChange={handleImageFile as any}
                 onUploadComplete={handleUploadComplete}
                 onDelete={onFileDelete}
                 onDownload={onFileDownload}

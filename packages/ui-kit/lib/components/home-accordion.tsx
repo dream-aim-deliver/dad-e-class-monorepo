@@ -13,9 +13,9 @@ export function HomeAccordion({
     showNumbers,
 }: HomeAccordionProps) {
     return <DefaultAccordion items={items.map((item) => ({
-        title: item.title,
+        title: item.title as string,
         iconImageUrl: item.iconImageUrl,
-        content: item.content,
+        content: item.content as string,
         position: item.position,
     }))} showNumbers={showNumbers}>
         <h3 className="text-text-primary lg:text-mega text-2xl">{title}</h3>
