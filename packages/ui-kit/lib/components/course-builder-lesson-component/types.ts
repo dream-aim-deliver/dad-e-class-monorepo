@@ -92,8 +92,9 @@ export interface TempQuizTypeThreeElement extends BaseCourseFormElement {
         id: number;
         imageFile: ImageFileMetadata | null;
         description: string;
+        correct: boolean;
     }[];
-    correctOptionId: number;
+    correctOptionId?: number;
 }
 
 export interface TempQuizTypeFourElement extends BaseCourseFormElement {

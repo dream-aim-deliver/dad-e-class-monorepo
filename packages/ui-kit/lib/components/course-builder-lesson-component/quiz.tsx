@@ -11,6 +11,7 @@ import { Dropdown } from '../dropdown';
 import {
     QuizType,
     TempQuizTypeOneElement,
+    TempQuizTypeThreeElement,
     TempQuizTypeTwoElement,
 } from '../course-builder-lesson-component/types';
 import QuizTypeOne from '../quiz/quiz-type-one/quiz-type-one';
@@ -19,6 +20,7 @@ import DesignerLayout from '../designer-layout';
 import { IconQuiz } from '../icons/icon-quiz';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import QuizTypeTwo from '../quiz/quiz-type-two/quiz-type-two';
+import QuizTypeThree from '../quiz/quiz-type-three/quiz-type-three';
 
 const quizElement: CourseElementTemplate = {
     type: CourseElementType.Quiz,
@@ -132,6 +134,18 @@ export function DesignerComponent({
                 {quizType === 'quizTypeTwo' && (
                     <QuizTypeTwo
                         element={elementInstance as TempQuizTypeTwoElement}
+                        locale={locale}
+                        onChange={onChange}
+                        onFileChange={onFileChange}
+                        onFileDelete={onFileDelete}
+                        onFileDownload={onFileDownload}
+                        onUploadComplete={onUploadComplete}
+                        uploadError={uploadError}
+                    />
+                )}
+                {quizType === 'quizTypeThree' && (
+                    <QuizTypeThree
+                        element={elementInstance as TempQuizTypeThreeElement}
                         locale={locale}
                         onChange={onChange}
                         onFileChange={onFileChange}

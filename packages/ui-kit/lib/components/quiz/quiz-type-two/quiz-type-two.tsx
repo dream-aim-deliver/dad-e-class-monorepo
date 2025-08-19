@@ -199,6 +199,7 @@ const QuizTypeTwo: FC<QuizTypeTwoProps> = ({
           locale={locale}
           className="w-full"
           maxSize={5}
+          isDeletionAllowed
         />
         {/* error */}
         {uploadError && (
