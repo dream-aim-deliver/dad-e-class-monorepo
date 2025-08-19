@@ -37,7 +37,7 @@ export default function LessonForm({ data }: LessonFormProps) {
             key: `component-${component.id}`,
         };
 
-        const renderer = typeToRendererMap[component.type];
+        const renderer = typeToRendererMap[formElement.type];
         if (renderer) {
             return renderer(props);
         }
