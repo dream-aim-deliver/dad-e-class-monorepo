@@ -177,9 +177,6 @@ export function DesignerComponent({
 // Inline QuizPreview logic
 // TODO: remove and instead use different types of elements
 function formComponent({ elementInstance, locale }: FormComponentProps) {
-    if (elementInstance.type !== CourseElementType.Quiz) return null;
-
-    const quizType = elementInstance.quizType as QuizType;
     const dictionary = getDictionary(locale);
     return (
         <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
