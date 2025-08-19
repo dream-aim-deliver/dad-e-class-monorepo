@@ -150,3 +150,4 @@ export { DesignerComponent as QuizDesignerComponent } from './components/course-
 export { DesignerComponent as LinksDesignerComponent } from './components/course-builder-lesson-component/links';
 
 export { OneOutOfThreeData } from './components/out-of-three/one-out-of-three';
+export { validatorPerType } from './components/lesson/validators';

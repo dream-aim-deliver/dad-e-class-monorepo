@@ -28,6 +28,7 @@ import {
     UploadFilesElement,
     VideoElement,
     DefaultError,
+    validatorPerType,
 } from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
 import EditLayout from './components/edit-layout';
@@ -39,7 +40,7 @@ import { LessonComponentButton } from './types';
 import LessonComponentsBar from './components/lesson-components-bar';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useLocale } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { generateTempId } from './utils/generate-temp-id';
 import dynamic from 'next/dynamic';
 import {
@@ -103,6 +104,7 @@ function PreviewRenderer({
 // TODO: Translate
 export default function EditLesson({ lessonId }: EditLessonProps) {
     const locale = useLocale() as TLocale;
+    const dictionary = getDictionary(locale);
 
     const lessonComponentsViewModel = useLessonComponents(lessonId);
 
@@ -295,6 +297,30 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
     ];
 
+    const [validationErrors, elementValidationErrors] = useState<
+        Map<string, string | undefined>
+    >(new Map());
+
+    const onSave = () => {
+        const newErrors = new Map<string, string | undefined>();
+        components.forEach((component) => {
+            const validate = validatorPerType[component.type];
+            if (validate) {
+                const error = validate({
+                    elementInstance: component,
+                    dictionary,
+                });
+                if (error) {
+                    newErrors.set(component.id, error);
+                }
+            }
+        });
+        elementValidationErrors(newErrors);
+        if (newErrors.size > 0) {
+            return;
+        }
+    };
+
     // As we don't need to track progress, leave this map empty
     const elementProgress = useRef(new Map<string, LessonElement>());
 
@@ -313,9 +339,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                 onPreview={() => {
                     setIsPreviewing((prev) => !prev);
                 }}
-                onSave={() => {
-                    console.log('Save clicked for lesson:', lessonId);
-                }}
+                onSave={onSave}
                 disablePreview={false}
                 isSaving={false}
                 isPreviewing={isPreviewing}
@@ -345,6 +369,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                                 setComponents={setComponents}
                                 courseVersion={courseVersion}
                                 setCourseVersion={setCourseVersion}
+                                validationErrors={validationErrors}
                             />
                         </Suspense>
                     }
