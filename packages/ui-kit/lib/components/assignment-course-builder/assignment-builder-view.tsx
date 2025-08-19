@@ -63,20 +63,20 @@ export const AssignmentBuilderView: FC<AssignmentBuilderViewTypes> = ({
                             uploadResponse={file}
                             locale={locale}
                             readOnly={true}
-                            onCancel={() => onFileCancel(file.id)}
+                            onCancel={() => file.id && onFileCancel(file.id)}
                             deletion={{
                                 isAllowed: true,
-                                onDelete: () => onFileDelete(file.id),
+                                onDelete: () => file.id && onFileDelete(file.id),
                             }}
-                            onDownload={() => onFileDownload(file.id)}
+                            onDownload={() => file.id && onFileDownload(file.id)}
                         />
                     ))}
                     {assignmentData.links?.map((link, index) => (
                         <div className="flex flex-col w-full" key={index}>
                             <LinkPreview
                                 preview={false}
-                                title={link.title}
-                                url={link.url}
+                                title={link.title as string}
+                                url={link.url as string}
                             />
                         </div>
                     ))}

@@ -64,7 +64,8 @@ export default defineConfig({
     }),
     !process.env.VITEST ? checker({
       typescript: {
-        buildMode: true
+        buildMode: true,
+        tsconfigPath: path.join(__dirname, 'tsconfig.lib.json')
       }
     }) : undefined,
   ],
