@@ -380,7 +380,7 @@ export const typeToRendererMap: Record<
     (props: ComponentRendererProps) => JSX.Element | null
 > = {
     richText: RichTextComponent,
-    heading: HeadingComponent,
+    headingText: HeadingComponent,
     textInput: TextInputComponent,
     multipleChoice: MultiCheckComponent,
     singleChoice: SingleChoiceComponent,
