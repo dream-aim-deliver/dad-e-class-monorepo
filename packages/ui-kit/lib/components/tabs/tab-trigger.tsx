@@ -36,7 +36,7 @@ export function TabTrigger({
 
     return (
         <div className={cn(
-            "flex flex-row w-full items-center justify-center pr-2",
+            "flex flex-row w-full items-center justify-center pr-1",
             isLast ? "" : "border-r-1 border-divider" // Las tab without divider
         )}>
             <button

@@ -132,3 +132,5 @@ export { FormComponent as LinksFormComponent } from './components/course-builder
 
 export { CoachingSessionStudentView } from './components/coaching-session-course-builder/coaching-session-student-view';
 export { LessonCoachComponent } from './components/coaching-session-course-builder/lesson-coach-component';
+
+export { SideMenu } from './components/sidemenu/sidemenu';

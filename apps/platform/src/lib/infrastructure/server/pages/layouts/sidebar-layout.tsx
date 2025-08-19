@@ -12,11 +12,11 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
     const session = await nextAuth.auth();
     const isLoggedIn = session !== null;
     return (
-        <div className="flex flex-row lg:gap-8">
+        <div className="flex flex-row lg:gap-3 p-5">
             {isLoggedIn && (
                 <div
                     id="sidebar"
-                    className="sticky md:p-5 top-25 h-screen flex-shrink-0 z-[1000]"
+                    className="sticky top-25 h-screen flex-shrink-0 z-[1000]"
                 >
                     <WorkspaceSidebar
                         isCollapsed={true}
@@ -32,14 +32,14 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
                         }
                         locale={'en'}
                         profileImageUrl={session.user.image}
-                        //TODO: Replace with actual rating logic
+                        // TODO: Replace with actual rating logic
                         rating={{ score: 4.5, count: 10 }}
                     >
                         {props.children}
                     </WorkspaceSidebar>
                 </div>
             )}
-            <div id="content" className="w-full md:pr-30">
+            <div id="content" className="w-full px-5">
                 {props.children}
             </div>
         </div>

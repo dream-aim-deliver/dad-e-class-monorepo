@@ -191,6 +191,8 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
                             category: 'video' as const,
                             videoId: '0', // Temporary placeholder
                             thumbnailUrl: '', // Temporary placeholder
+                            duration: 0, // Temporary placeholder
+                            url: '', // Temporary placeholder
                         };
                     case 'image':
                         return {
@@ -198,12 +200,14 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
                             category: 'image' as const,
                             url: '', // Temporary placeholder
                             thumbnailUrl: '', // Temporary placeholder
+                            duration: 0, // Temporary placeholder
                         };
                     case 'document':
                         return {
                             ...baseMetadata,
                             category: 'document' as const,
                             url: '', // Temporary placeholder
+                            duration: 0, // Temporary placeholder
                         };
                     case 'generic':
                     default:
@@ -211,6 +215,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
                             ...baseMetadata,
                             category: 'generic' as const,
                             url: '', // Temporary placeholder
+                            duration: 0, // Temporary placeholder
                         };
                 }
             },
