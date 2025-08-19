@@ -10,10 +10,10 @@ import {
 import { Dropdown } from '../dropdown';
 import {
     QuizType,
-    TempQuizTypeFourElement,
-    TempQuizTypeOneElement,
-    TempQuizTypeThreeElement,
-    TempQuizTypeTwoElement,
+    QuizTypeFourElement,
+    QuizTypeOneElement,
+    QuizTypeThreeElement,
+    QuizTypeTwoElement,
 } from '../course-builder-lesson-component/types';
 import QuizTypeOne from '../quiz/quiz-type-one/quiz-type-one';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
@@ -123,7 +123,7 @@ export function DesignerComponent({
                 />
                 {quizType === 'quizTypeOne' && (
                     <QuizTypeOne
-                        element={elementInstance as TempQuizTypeOneElement}
+                        element={elementInstance as QuizTypeOneElement}
                         locale={locale}
                         onChange={onChange}
                         onFileChange={onFileChange}
@@ -135,7 +135,7 @@ export function DesignerComponent({
                 )}
                 {quizType === 'quizTypeTwo' && (
                     <QuizTypeTwo
-                        element={elementInstance as TempQuizTypeTwoElement}
+                        element={elementInstance as QuizTypeTwoElement}
                         locale={locale}
                         onChange={onChange}
                         onFileChange={onFileChange}
@@ -147,7 +147,7 @@ export function DesignerComponent({
                 )}
                 {quizType === 'quizTypeThree' && (
                     <QuizTypeThree
-                        element={elementInstance as TempQuizTypeThreeElement}
+                        element={elementInstance as QuizTypeThreeElement}
                         locale={locale}
                         onChange={onChange}
                         onFileChange={onFileChange}
@@ -159,7 +159,7 @@ export function DesignerComponent({
                 )}
                 {quizType === 'quizTypeFour' && (
                     <QuizTypeFour
-                        element={elementInstance as TempQuizTypeFourElement}
+                        element={elementInstance as QuizTypeFourElement}
                         locale={locale}
                         onChange={onChange}
                         onFileChange={onFileChange}

@@ -5,7 +5,7 @@ import { IconCheck } from "../../icons/icon-check";
 import { IconClose } from "../../icons/icon-close";
 import { InputField } from "../../input-field";
 import { FC, useEffect, useState } from "react";
-import { TempQuizTypeFourElement } from "../../course-builder-lesson-component/types";
+import { QuizTypeFourElement } from "../../course-builder-lesson-component/types";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { IconError, IconSuccess } from "../../icons";
 
@@ -49,7 +49,7 @@ import { IconError, IconSuccess } from "../../icons";
  */
 
 interface QuizTypeFourStudentViewProps extends isLocalAware {
-  elementInstance: TempQuizTypeFourElement;
+  elementInstance: QuizTypeFourElement;
 }
 
 const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({

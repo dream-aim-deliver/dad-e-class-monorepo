@@ -4,7 +4,7 @@ import { RadioButton } from "../../radio-button";
 import { getDictionary, TLocale } from "@maany_shr/e-class-translations";
 import { TextAreaInput } from "../../text-areaInput";
 import { TextInput } from "../../text-input";
-import { TempQuizTypeThreeElement } from "../../course-builder-lesson-component/types";
+import { QuizTypeThreeElement } from "../../course-builder-lesson-component/types";
 import Banner from "../../banner";
 import { Uploader } from "../../drag-and-drop-uploader/uploader";
 import { fileMetadata } from "@maany_shr/e-class-models";
@@ -52,9 +52,9 @@ import { CourseElementType } from "../../course-builder/types";
  */
 
 interface QuizTypeThreeProps {
-    element: TempQuizTypeThreeElement;
+    element: QuizTypeThreeElement;
     locale: TLocale;
-    onChange: (updated: Partial<TempQuizTypeThreeElement>) => void;
+    onChange: (updated: Partial<QuizTypeThreeElement>) => void;
     onFileChange: (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
@@ -78,7 +78,7 @@ const QuizTypeThree: FC<QuizTypeThreeProps> = ({
   const dictionary = getDictionary(locale);
 
   // Triggers parent update with partial updates
-  const handleChange = (updated: Partial<TempQuizTypeThreeElement>) => {
+  const handleChange = (updated: Partial<QuizTypeThreeElement>) => {
     onChange({
       type: CourseElementType.QuizTypeThree,
       id: element.id,

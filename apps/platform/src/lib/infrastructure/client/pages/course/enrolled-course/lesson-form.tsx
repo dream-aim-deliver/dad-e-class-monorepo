@@ -23,10 +23,10 @@ import {
     QuizTypeTwoStudentView,
     RichTextFormComponent,
     SingleChoiceFormComponent,
-    TempQuizTypeFourElement,
-    TempQuizTypeOneElement,
-    TempQuizTypeThreeElement,
-    TempQuizTypeTwoElement,
+    QuizTypeFourElement,
+    QuizTypeOneElement,
+    QuizTypeThreeElement,
+    QuizTypeTwoElement,
     TextInputFormComponent,
     UploadFilesElement,
     UploadFilesFormComponent,
@@ -263,7 +263,7 @@ function QuizTypeOneComponent({
         <QuizFormComponentWrapper locale={locale} key={key}>
             <QuizTypeOneStudentView
                 key={key}
-                elementInstance={formElement as TempQuizTypeOneElement}
+                elementInstance={formElement as QuizTypeOneElement}
                 locale={locale}
             />
         </QuizFormComponentWrapper>
@@ -279,7 +279,7 @@ function QuizTypeTwoComponent({
         <QuizFormComponentWrapper locale={locale} key={key}>
             <QuizTypeTwoStudentView
                 key={key}
-                elementInstance={formElement as TempQuizTypeTwoElement}
+                elementInstance={formElement as QuizTypeTwoElement}
                 locale={locale}
             />
         </QuizFormComponentWrapper>
@@ -295,7 +295,7 @@ function QuizTypeThreeComponent({
         <QuizFormComponentWrapper locale={locale} key={key}>
             <QuizTypeThreeStudentView
                 key={key}
-                elementInstance={formElement as TempQuizTypeThreeElement}
+                elementInstance={formElement as QuizTypeThreeElement}
                 locale={locale}
             />
         </QuizFormComponentWrapper>
@@ -311,7 +311,7 @@ function QuizTypeFourComponent({
         <QuizFormComponentWrapper locale={locale} key={key}>
             <QuizTypeFourStudentView
                 key={key}
-                elementInstance={formElement as TempQuizTypeFourElement}
+                elementInstance={formElement as QuizTypeFourElement}
                 locale={locale}
             />
         </QuizFormComponentWrapper>

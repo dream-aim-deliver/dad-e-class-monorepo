@@ -8,7 +8,7 @@ import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { TextAreaInput } from '../../text-areaInput';
 import { TextInput } from '../../text-input';
 import {
-    TempQuizTypeOneElement,
+    QuizTypeOneElement,
 } from '../../course-builder-lesson-component/types';
 import Banner from '../../banner';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
@@ -58,9 +58,9 @@ import { CourseElementType } from '../../course-builder/types';
  */
 
 interface QuizTypeOneProps {
-    element: TempQuizTypeOneElement;
+    element: QuizTypeOneElement;
     locale: TLocale;
-    onChange: (updated: Partial<TempQuizTypeOneElement>) => void;
+    onChange: (updated: Partial<QuizTypeOneElement>) => void;
     onFileChange: (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
@@ -84,7 +84,7 @@ const QuizTypeOne: FC<QuizTypeOneProps> = ({
     const dictionary = getDictionary(locale);
 
     // Triggers parent update with partial updates
-    const handleChange = (updated: Partial<TempQuizTypeOneElement>) => {
+    const handleChange = (updated: Partial<QuizTypeOneElement>) => {
         onChange({
             type: CourseElementType.QuizTypeOne,
             id: element.id,
