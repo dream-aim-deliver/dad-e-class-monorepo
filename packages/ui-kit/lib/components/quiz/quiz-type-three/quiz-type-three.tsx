@@ -1,13 +1,14 @@
 import React, { FC } from "react";
 import { InputField } from "../../input-field";
 import { RadioButton } from "../../radio-button";
-import { getDictionary } from "@maany_shr/e-class-translations";
+import { getDictionary, TLocale } from "@maany_shr/e-class-translations";
 import { TextAreaInput } from "../../text-areaInput";
 import { TextInput } from "../../text-input";
-import { QuizTypeThreeElement } from "../../course-builder-lesson-component/types";
+import { TempQuizTypeThreeElement } from "../../course-builder-lesson-component/types";
 import Banner from "../../banner";
 import { Uploader } from "../../drag-and-drop-uploader/uploader";
 import { fileMetadata } from "@maany_shr/e-class-models";
+import { CourseElementType } from "../../course-builder/types";
 
 /**
  * A component for creating and editing a single-choice quiz question where each option
@@ -50,31 +51,40 @@ import { fileMetadata } from "@maany_shr/e-class-models";
  * />
  */
 
-const QuizTypeThree: FC<QuizTypeThreeElement> = ({
-  id,
-  order,
-  error,
-  title,
-  description,
-  options,
+interface QuizTypeThreeProps {
+    element: TempQuizTypeThreeElement;
+    locale: TLocale;
+    onChange: (updated: Partial<TempQuizTypeThreeElement>) => void;
+    onFileChange: (
+        file: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    onFileDelete: (fileId: string, index: number) => void;
+    onFileDownload: (id: string) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
+    uploadError: string | null;
+}
+
+const QuizTypeThree: FC<QuizTypeThreeProps> = ({
+  element,
   locale,
   onChange,
-  onFilesChange,
+  onFileChange,
   onFileDelete,
   onFileDownload,
   onUploadComplete,
+  uploadError,
 }) => {
   const dictionary = getDictionary(locale);
 
   // Triggers parent update with partial updates
-  const handleChange = (updated: Partial<QuizTypeThreeElement>) => {
+  const handleChange = (updated: Partial<TempQuizTypeThreeElement>) => {
     onChange({
-      quizType: "quizTypeThree",
-      id,
-      order,
-      title: updated.title ?? title,
-      description: updated.description ?? description,
-      options: updated.options ?? options,
+      type: CourseElementType.QuizTypeThree,
+      id: element.id,
+      title: updated.title ?? element.title,
+      description: updated.description ?? element.description,
+      options: updated.options ?? element.options,
     });
   };
 
@@ -84,14 +94,14 @@ const QuizTypeThree: FC<QuizTypeThreeElement> = ({
     handleChange({ description: value });
 
   const handleChoiceDescriptionChange = (index: number, value: string) => {
-    const updatedOptions = options.map((opt, i) =>
+    const updatedOptions = element.options.map((opt, i) =>
       i === index ? { ...opt, description: value } : opt
     );
     handleChange({ options: updatedOptions });
   };
 
   const handleCorrectAnswerChange = (index: number) => {
-    const updatedOptions = options.map((opt, i) => ({
+    const updatedOptions = element.options.map((opt, i) => ({
       ...opt,
       correct: i === index,
     }));
@@ -108,7 +118,7 @@ const QuizTypeThree: FC<QuizTypeThreeElement> = ({
         <TextInput
           inputField={{
             className: "w-full",
-            value: title,
+            value: element.title,
             setValue: handleTitleChange,
             inputText: dictionary.components.quiz.enterTitleText,
           }}
@@ -117,21 +127,21 @@ const QuizTypeThree: FC<QuizTypeThreeElement> = ({
         <TextAreaInput
           label={dictionary.components.quiz.descriptionText}
           placeholder={dictionary.components.quiz.enterDescriptionText}
-          value={description}
+          value={element.description}
           setValue={handleDescriptionChange}
         />
       </div>
       {/* error */}
-      {error && (
+      {uploadError && (
         <Banner
           style="error"
-          title={dictionary.components.quiz.errorText}
+          title={uploadError}
           className="w-full"
         />
       )}
       {/* Choices Section */}
       <div className="flex flex-col md:flex-row w-full gap-4 md:gap-0">
-        {options.map((option, index) => (
+        {element.options.map((option, index) => (
           <React.Fragment key={index}>
             <div className="flex-1 min-w-0 flex flex-col gap-4 items-start">
               <RadioButton
@@ -152,18 +162,19 @@ const QuizTypeThree: FC<QuizTypeThreeElement> = ({
                 <Uploader
                   type="single"
                   variant="image"
-                  file={option.fileData}
-                  onFilesChange={(file, abortSignal) => onFilesChange([file], abortSignal)}
+                  file={option.imageFile}
+                  onFilesChange={(file, abortSignal) => onFileChange(file, abortSignal)}
                   onDelete={(id) => onFileDelete(id, index)}
                   onDownload={(id) => onFileDownload(id)}
                   onUploadComplete={(file) => onUploadComplete(file, index)}
                   locale={locale}
                   className="w-full"
                   maxSize={5}
+                  isDeletionAllowed
                 />
               </div>
             </div>
-            {index !== options.length - 1 && (
+            {index !== element.options.length - 1 && (
               <>
                 <div className="hidden md:flex self-stretch w-[1px] bg-divider mx-4" />
                 <div className="flex md:hidden self-stretch h-[1px] bg-divider" />

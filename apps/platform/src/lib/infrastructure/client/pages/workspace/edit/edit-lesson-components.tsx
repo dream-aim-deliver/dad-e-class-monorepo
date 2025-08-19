@@ -27,6 +27,7 @@ import {
     SingleChoiceDesignerComponent,
     SingleChoiceElement,
     TempQuizTypeOneElement,
+    TempQuizTypeThreeElement,
     TempQuizTypeTwoElement,
     TextInputDesignerComponent,
     UploadFilesDesignerComponent,
@@ -44,7 +45,7 @@ import { generateTempId } from './utils/generate-temp-id';
 interface FileUploadProps {
     lessonId: number;
     componentType: string;
-    setFile: (file: fileMetadata.TFileMetadata | null) => void;
+    setFile?: (file: fileMetadata.TFileMetadata | null) => void;
 }
 
 const useFileUpload = ({
@@ -88,14 +89,14 @@ const useFileUpload = ({
         }
 
         // Comment out to test without the storage running
-        await uploadToS3({
-            file: uploadRequest.file,
-            checksum,
-            storageUrl: uploadResult.data.storageUrl,
-            objectName: uploadResult.data.file.objectName,
-            formFields: uploadResult.data.formFields,
-            abortSignal,
-        });
+        // await uploadToS3({
+        //     file: uploadRequest.file,
+        //     checksum,
+        //     storageUrl: uploadResult.data.storageUrl,
+        //     objectName: uploadResult.data.file.objectName,
+        //     formFields: uploadResult.data.formFields,
+        //     abortSignal,
+        // });
 
         const verifyResult = await verifyMutation.mutateAsync({
             fileId: uploadResult.data.file.id,
@@ -134,7 +135,7 @@ const useFileUpload = ({
     };
 
     const handleUploadComplete = (file: fileMetadata.TFileMetadata) => {
-        setFile(file);
+        setFile?.(file);
     };
 
     return {
@@ -813,6 +814,32 @@ const onTypeChange = (
             newComponent,
         ]);
     }
+    if (type === 'quizTypeThree') {
+        const newComponent: TempQuizTypeThreeElement = {
+            id: generateTempId(),
+            type: CourseElementType.QuizTypeThree,
+            title: '',
+            description: '',
+            options: [
+                {
+                    id: 0,
+                    imageFile: null,
+                    description: '',
+                    correct: false,
+                },
+                {
+                    id: 1,
+                    imageFile: null,
+                    description: '',
+                    correct: false,
+                },
+            ],
+        };
+        setComponents((prev) => [
+            ...prev.filter((comp) => comp.id !== elementInstance.id),
+            newComponent,
+        ]);
+    }
 };
 
 function QuizTypeOneComponent({
@@ -985,6 +1012,113 @@ function QuizTypeTwoComponent({
     );
 }
 
+function QuizTypeThreeComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    if (elementInstance.type !== CourseElementType.QuizTypeThree) return null;
+
+    const onChange = (updated: Partial<CourseElement>) => {
+        if (updated.type !== CourseElementType.QuizTypeThree) return;
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeThree
+                    ? { ...comp, ...updated }
+                    : comp,
+            ),
+        );
+    };
+
+    const onFileDelete = (fileId: string, index: number) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeThree
+                    ? {
+                          ...comp,
+                          options: comp.options?.map((option, idx) =>
+                              idx === index
+                                  ? { ...option, imageFile: null }
+                                  : option,
+                          ),
+                      }
+                    : comp,
+            ),
+        );
+    };
+
+    const setFile = (
+        file: fileMetadata.TFileMetadata | null,
+        index: number,
+    ) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                comp.id === elementInstance.id &&
+                comp.type === CourseElementType.QuizTypeThree
+                    ? {
+                          ...comp,
+                          options: comp.options?.map((option, idx) =>
+                              idx === index
+                                  ? {
+                                        ...option,
+                                        imageFile:
+                                            file as fileMetadata.TFileMetadataImage,
+                                    }
+                                  : option,
+                          ),
+                      }
+                    : comp,
+            ),
+        );
+    };
+
+    const handleDownload = (id: string) => {
+        const file = elementInstance.options?.find(
+            (option) => option.imageFile?.id === id,
+        )?.imageFile;
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
+
+    const handleUploadComplete = (
+        file: fileMetadata.TFileMetadata,
+        index: number,
+    ) => {
+        setFile(file, index);
+    };
+
+    const { uploadError, handleFileChange } = useFileUpload({
+        lessonId,
+        componentType: 'quizTypeTwo',
+    });
+
+    return (
+        <QuizDesignerComponent
+            elementInstance={elementInstance}
+            locale={locale}
+            onTypeChange={(type) =>
+                onTypeChange(type, elementInstance, setComponents)
+            }
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onChange={onChange}
+            onFileChange={handleFileChange}
+            onFileDelete={onFileDelete}
+            onFileDownload={handleDownload}
+            onUploadComplete={handleUploadComplete}
+            uploadError={uploadError ?? null}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
@@ -999,6 +1133,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.OneOutOfThree]: OneOutOfThreeComponent,
     [CourseElementType.QuizTypeOne]: QuizTypeOneComponent,
     [CourseElementType.QuizTypeTwo]: QuizTypeTwoComponent,
+    [CourseElementType.QuizTypeThree]: QuizTypeThreeComponent,
     // Add other mappings as needed
 };
 
