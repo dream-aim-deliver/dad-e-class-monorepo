@@ -11,11 +11,11 @@ export enum CourseElementType {
     /** Represents a quiz element */
     Quiz = 'quiz',
     /** Represents an image file element */
-    ImageFile = "ImageFile",
+    ImageFile = "imageFile",
     /** Represents a video file element */
-    VideoFile = "VideoFile",
+    VideoFile = "videoFile",
     /** Represents an image gallery element */
-    ImageGallery = "ImageGallery",
+    ImageGallery = "imageGallery",
     /** Represents downloadable files element */
     DownloadFiles = "downloadFiles",
     UploadFiles = "uploadFiles",
