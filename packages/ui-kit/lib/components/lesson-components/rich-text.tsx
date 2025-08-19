@@ -1,13 +1,21 @@
-import { useState } from "react";
-import { IconRichText } from "../icons/icon-rich-text";
-import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps, valueType } from "../pre-assessment/types";
-import RichTextRenderer from "../rich-text-element/renderer";
-import DesignerLayout from "../designer-layout";
-import { RichTextEditor } from "../rich-text-element/editor";
-import { Descendant } from "slate";
-import { deserialize, serialize } from "../rich-text-element/serializer";
-import { getDictionary } from "@maany_shr/e-class-translations";
-
+import { useState } from 'react';
+import { IconRichText } from '../icons/icon-rich-text';
+import {
+    FormElement,
+    FormElementTemplate,
+    FormElementType,
+    DesignerComponentProps,
+    valueType,
+    FormComponentProps,
+} from '../pre-assessment/types';
+import RichTextRenderer from '../rich-text-element/renderer';
+import DesignerLayout from '../designer-layout';
+import { RichTextEditor } from '../rich-text-element/editor';
+import { Descendant } from 'slate';
+import { deserialize, serialize } from '../rich-text-element/serializer';
+import { getDictionary } from '@maany_shr/e-class-translations';
+import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
 
 /**
  * Template for the rich text form element
@@ -17,28 +25,26 @@ const richTextElement: FormElementTemplate = {
     type: FormElementType.RichText,
     designerBtnElement: {
         icon: IconRichText,
-        label: "Rich Text"
+        label: 'Rich Text',
     },
     // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: valueType) => true
-
+    validate: (elementInstance: FormElement, value: valueType) => true,
 };
-
 
 /**
  * Rich Text Element for Pre-Assessment
  * This component provides a rich text display element for pre-assessment forms.
  * It supports formatted text content display and validation.
- * 
+ *
  * Features:
  * - Rich text content display
  * - Required field validation
  * - Form submission handling
  * - Helper text display
- * 
+ *
  * @example
  * ```tsx
  * <RichText
@@ -56,15 +62,42 @@ interface RichTextDesignerComponentProps extends DesignerComponentProps {
     onContentChange: (value: string) => void;
 }
 
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onContentChange }: RichTextDesignerComponentProps) {
+// TODO: Translate validation errors
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== FormElementType.RichText)
+        return 'Wrong element type';
+
+    if (!elementInstance.content) {
+        return 'Text content should not be empty';
+    }
+
+    return undefined;
+};
+
+export function DesignerComponent({
+    elementInstance,
+    locale,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+    onContentChange,
+    validationError,
+}: RichTextDesignerComponentProps) {
     if (elementInstance.type !== FormElementType.RichText) return null;
     const dictionary = getDictionary(locale);
 
     const onDeserializationError = (message: string, error: Error) => {
         // TODO: see how to pass a callback from the parent to here
-    }
+    };
 
-    const [content, setContent] = useState<Descendant[]>(deserialize({ serializedData: elementInstance.content || "", onError: onDeserializationError }));
+    const [content, setContent] = useState<Descendant[]>(
+        deserialize({
+            serializedData: elementInstance.content || '',
+            onError: onDeserializationError,
+        }),
+    );
 
     const handleContentChange = (value: Descendant[]) => {
         setContent(value);
@@ -87,6 +120,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             <RichTextEditor
                 name={`rich-text-${elementInstance.id}`}
@@ -101,22 +135,37 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
     );
 }
 
-
-
 /**
  * Form Component for Rich Text
  * Renders the rich text content in the form view
  */
-export function FormComponent({ elementInstance }: { elementInstance: FormElement }) {
+export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== FormElementType.RichText) return null;
+
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        // TODO: Translate validation error title (should be common)
+        return (
+            <DefaultError
+                locale={locale}
+                title={'Element is invalid'}
+                description={validationError}
+            />
+        );
+    }
 
     const onDeserializationError = (message: string, error: Error) => {
         // TODO: see how to pass a callback from the parent to here
-    }
+    };
 
     return (
         <div className="text-text-primary flex flex-col gap-2">
-            <RichTextRenderer content={elementInstance.content} onDeserializationError={onDeserializationError} />
+            <RichTextRenderer
+                content={elementInstance.content}
+                onDeserializationError={onDeserializationError}
+            />
         </div>
     );
 }
@@ -130,14 +179,16 @@ function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
 
     const onDeserializationError = (message: string, error: Error) => {
         // TODO: see how to pass a callback from the parent to here
-    }
+    };
 
     return (
         <div className="text-text-primary flex flex-col">
-            <RichTextRenderer content={elementInstance.content} onDeserializationError={onDeserializationError} />
+            <RichTextRenderer
+                content={elementInstance.content}
+                onDeserializationError={onDeserializationError}
+            />
         </div>
     );
 }
 
 export default richTextElement;
-
