@@ -101,7 +101,7 @@ const QuizTypeOne: FC<QuizTypeOneProps> = ({
 
     const handleChoiceTextChange = (index: number, text: string) => {
         const updatedOptions = element.options.map((opt, i) =>
-            i === index ? { ...opt, optionText: text } : opt,
+            i === index ? { ...opt, name: text } : opt,
         );
         handleChange({ options: updatedOptions });
     };
