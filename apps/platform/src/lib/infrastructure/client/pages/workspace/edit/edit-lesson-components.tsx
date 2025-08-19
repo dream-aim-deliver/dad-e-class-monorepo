@@ -170,12 +170,25 @@ function RichTextComponent({
     onDownClick,
     onDeleteClick,
 }: LessonComponentProps) {
+    const updateComponent = (
+        comp: LessonElement,
+        updated: Partial<LessonElement>,
+    ): LessonElement => {
+        if (comp.type !== FormElementType.RichText) return comp;
+        if (updated.type !== FormElementType.RichText) return comp;
+        if (comp.id === elementInstance.id) {
+            return { ...comp, ...updated };
+        }
+        return comp;
+    };
+
     const onContentChange = (value: string) => {
         setComponents((prev) =>
             prev.map((comp) =>
-                comp.id === elementInstance.id
-                    ? { ...comp, content: value }
-                    : comp,
+                updateComponent(comp, {
+                    type: FormElementType.RichText,
+                    content: value,
+                }),
             ),
         );
     };
@@ -200,6 +213,30 @@ function HeadingComponent({
     onDownClick,
     onDeleteClick,
 }: LessonComponentProps) {
+    const updateComponent = (
+        comp: LessonElement,
+        updated: Partial<LessonElement>,
+    ): LessonElement => {
+        if (comp.type !== FormElementType.HeadingText) return comp;
+        if (updated.type !== FormElementType.HeadingText) return comp;
+        if (comp.id === elementInstance.id) {
+            return { ...comp, ...updated };
+        }
+        return comp;
+    };
+
+    const handleChange = (value: { heading: string; type: string }) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                updateComponent(comp, {
+                    type: FormElementType.HeadingText,
+                    heading: value.heading,
+                    headingType: value.type,
+                }),
+            ),
+        );
+    };
+
     return (
         <HeadingDesignerComponent
             elementInstance={elementInstance as HeadingElement}
@@ -207,19 +244,7 @@ function HeadingComponent({
             onUpClick={onUpClick}
             onDownClick={onDownClick}
             onDeleteClick={onDeleteClick}
-            onChange={(value) => {
-                setComponents((prev) =>
-                    prev.map((comp) =>
-                        comp.id === elementInstance.id
-                            ? {
-                                  ...comp,
-                                  heading: value.heading,
-                                  headingType: value.type,
-                              }
-                            : comp,
-                    ),
-                );
-            }}
+            onChange={handleChange}
         />
     );
 }
@@ -235,20 +260,26 @@ function VideoComponent({
 }: LessonComponentProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
 
+    const updateComponent = (
+        comp: LessonElement,
+        updated: Partial<LessonElement>,
+    ): LessonElement => {
+        if (comp.type !== CourseElementType.VideoFile) return comp;
+        if (updated.type !== CourseElementType.VideoFile) return comp;
+        if (comp.id === elementInstance.id) {
+            return { ...comp, ...updated };
+        }
+        return comp;
+    };
+
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
         setComponents((prev) =>
-            prev.map((comp) => {
-                if (
-                    comp.id === elementInstance.id &&
-                    comp.type === CourseElementType.VideoFile
-                ) {
-                    return {
-                        ...comp,
-                        file: file as fileMetadata.TFileMetadataVideo,
-                    };
-                }
-                return comp;
-            }),
+            prev.map((comp) =>
+                updateComponent(comp, {
+                    type: CourseElementType.VideoFile,
+                    file: file as fileMetadata.TFileMetadataVideo,
+                }),
+            ),
         );
     };
 
@@ -311,20 +342,26 @@ function ImageComponent({
 }: LessonComponentProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
 
+    const updateComponent = (
+        comp: LessonElement,
+        updated: Partial<LessonElement>,
+    ): LessonElement => {
+        if (comp.type !== CourseElementType.ImageFile) return comp;
+        if (updated.type !== CourseElementType.ImageFile) return comp;
+        if (comp.id === elementInstance.id) {
+            return { ...comp, ...updated };
+        }
+        return comp;
+    };
+
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
         setComponents((prev) =>
-            prev.map((comp) => {
-                if (
-                    comp.id === elementInstance.id &&
-                    comp.type === CourseElementType.ImageFile
-                ) {
-                    return {
-                        ...comp,
-                        file: file as fileMetadata.TFileMetadataImage,
-                    };
-                }
-                return comp;
-            }),
+            prev.map((comp) =>
+                updateComponent(comp, {
+                    type: CourseElementType.ImageFile,
+                    file: file as fileMetadata.TFileMetadataImage,
+                }),
+            ),
         );
     };
 
@@ -387,42 +424,51 @@ function ImageGalleryComponent({
 }: LessonComponentProps) {
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
 
+    const updateComponent = (
+        comp: LessonElement,
+        updated: Partial<LessonElement>,
+    ): LessonElement => {
+        if (comp.type !== CourseElementType.ImageGallery) return comp;
+        if (updated.type !== CourseElementType.ImageGallery) return comp;
+        if (comp.id === elementInstance.id) {
+            return { ...comp, ...updated };
+        }
+        return comp;
+    };
+
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
-        setComponents((prev) =>
-            prev.map((comp) => {
-                if (
-                    comp.id === elementInstance.id &&
-                    comp.type === CourseElementType.ImageGallery
-                ) {
-                    const images = comp.images ? [...comp.images] : [];
-                    return {
-                        ...comp,
-                        images: [
-                            ...images,
-                            file as fileMetadata.TFileMetadataImage,
-                        ],
-                    };
-                }
-                return comp;
-            }),
+        const existingImages = elementInstance.images
+            ? [...elementInstance.images]
+            : [];
+
+        const updatedImages = [
+            ...existingImages,
+            file as fileMetadata.TFileMetadataImage,
+        ];
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) =>
+                updateComponent(component, {
+                    type: CourseElementType.ImageGallery,
+                    images: updatedImages,
+                }),
+            ),
         );
     };
 
-    const handleDelete = (id: string) => {
-        setComponents((prev) =>
-            prev.map((comp) => {
-                if (
-                    comp.id === elementInstance.id &&
-                    comp.type === CourseElementType.ImageGallery
-                ) {
-                    return {
-                        ...comp,
-                        images:
-                            comp.images?.filter((img) => img.id !== id) ?? null,
-                    };
-                }
-                return comp;
-            }),
+    const handleDelete = (imageId: string) => {
+        const filteredImages =
+            elementInstance.images?.filter(
+                (image: any) => image.id !== imageId,
+            ) ?? null;
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) =>
+                updateComponent(component, {
+                    type: CourseElementType.ImageGallery,
+                    images: filteredImages,
+                }),
+            ),
         );
     };
 
@@ -482,40 +528,50 @@ function DownloadFilesComponent({
 }: LessonComponentProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
 
+    const updateComponent = (
+        comp: LessonElement,
+        updated: Partial<LessonElement>,
+    ): LessonElement => {
+        if (comp.type !== CourseElementType.DownloadFiles) return comp;
+        if (updated.type !== CourseElementType.DownloadFiles) return comp;
+        if (comp.id === elementInstance.id) {
+            return { ...comp, ...updated };
+        }
+        return comp;
+    };
+
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
-        setComponents((prev) =>
-            prev.map((comp) => {
-                if (
-                    comp.id === elementInstance.id &&
-                    comp.type === CourseElementType.DownloadFiles
-                ) {
-                    const files = comp.files ? [...comp.files] : [];
-                    return {
-                        ...comp,
-                        files: [...files, file as fileMetadata.TFileMetadata],
-                    };
-                }
-                return comp;
-            }),
+        const existingFiles = elementInstance.files
+            ? [...elementInstance.files]
+            : [];
+
+        const updatedFiles = [
+            ...existingFiles,
+            file as fileMetadata.TFileMetadata,
+        ];
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) =>
+                updateComponent(component, {
+                    type: CourseElementType.DownloadFiles,
+                    files: updatedFiles,
+                }),
+            ),
         );
     };
 
-    const handleDelete = (id: string) => {
-        setComponents((prev) =>
-            prev.map((comp) => {
-                if (
-                    comp.id === elementInstance.id &&
-                    comp.type === CourseElementType.DownloadFiles
-                ) {
-                    return {
-                        ...comp,
-                        files:
-                            comp.files?.filter((file) => file.id !== id) ??
-                            null,
-                    };
-                }
-                return comp;
-            }),
+    const handleDelete = (fileId: string) => {
+        const filteredFiles =
+            elementInstance.files?.filter((file: any) => file.id !== fileId) ??
+            null;
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) =>
+                updateComponent(component, {
+                    type: CourseElementType.DownloadFiles,
+                    files: filteredFiles,
+                }),
+            ),
         );
     };
 
@@ -606,13 +662,17 @@ function UploadFilesComponent({
     if (elementInstance.type !== CourseElementType.UploadFiles) return null;
 
     const onDescriptionChange = (description: string) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id
-                    ? { ...comp, description }
-                    : comp,
-            ),
-        );
+        setComponents((prevComponents) => {
+            return prevComponents.map((component) => {
+                const isTargetComponent = component.id === elementInstance.id;
+
+                if (isTargetComponent) {
+                    return { ...component, description };
+                }
+
+                return component;
+            });
+        });
     };
 
     return (
@@ -642,25 +702,31 @@ function SingleChoiceComponent({
         title: string,
         options: SingleChoiceElement['options'],
     ) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === FormElementType.SingleChoice
-                    ? { ...comp, title, options }
-                    : comp,
-            ),
-        );
+        setComponents((prevComponents) => {
+            return prevComponents.map((component) => {
+                if (component.type !== FormElementType.SingleChoice) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, title, options };
+            });
+        });
     };
 
     const onRequiredChange = (isRequired: boolean) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === FormElementType.SingleChoice
-                    ? { ...comp, required: isRequired }
-                    : comp,
-            ),
-        );
+        setComponents((prevComponents) => {
+            return prevComponents.map((component) => {
+                if (component.type !== FormElementType.SingleChoice) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, required: isRequired };
+            });
+        });
     };
 
     return (
@@ -687,26 +753,35 @@ function MultiCheckComponent({
 }: LessonComponentProps) {
     if (elementInstance.type !== FormElementType.MultiCheck) return null;
 
-    const onChange = (title: string, options: MultiCheckElement['options']) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === FormElementType.MultiCheck
-                    ? { ...comp, title, options }
-                    : comp,
-            ),
-        );
+    const onChange = (
+        title: string,
+        options: SingleChoiceElement['options'],
+    ) => {
+        setComponents((prevComponents) => {
+            return prevComponents.map((component) => {
+                if (component.type !== FormElementType.MultiCheck) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, title, options };
+            });
+        });
     };
 
     const onRequiredChange = (isRequired: boolean) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === FormElementType.MultiCheck
-                    ? { ...comp, required: isRequired }
-                    : comp,
-            ),
-        );
+        setComponents((prevComponents) => {
+            return prevComponents.map((component) => {
+                if (component.type !== FormElementType.MultiCheck) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, required: isRequired };
+            });
+        });
     };
 
     return (
@@ -734,25 +809,31 @@ function OneOutOfThreeComponent({
     if (elementInstance.type !== FormElementType.OneOutOfThree) return null;
 
     const onChange = (updatedData: OneOutOfThreeData) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === FormElementType.OneOutOfThree
-                    ? { ...comp, data: updatedData }
-                    : comp,
-            ),
-        );
+        setComponents((prevComponents) => {
+            return prevComponents.map((component) => {
+                if (component.type !== FormElementType.OneOutOfThree) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, data: updatedData };
+            });
+        });
     };
 
     const onRequiredChange = (isRequired: boolean) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === FormElementType.OneOutOfThree
-                    ? { ...comp, required: isRequired }
-                    : comp,
-            ),
-        );
+        setComponents((prevComponents) => {
+            return prevComponents.map((component) => {
+                if (component.type !== FormElementType.OneOutOfThree) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, isRequired: isRequired };
+            });
+        });
     };
 
     return (
@@ -768,91 +849,75 @@ function OneOutOfThreeComponent({
     );
 }
 
+const quizTypeInitializers: Record<string, () => LessonElement> = {
+    quizTypeOne: () => ({
+        id: generateTempId(),
+        type: CourseElementType.QuizTypeOne,
+        title: '',
+        description: '',
+        imageFile: null,
+        options: [],
+    }),
+    quizTypeTwo: () => ({
+        id: generateTempId(),
+        type: CourseElementType.QuizTypeTwo,
+        title: '',
+        description: '',
+        imageFile: null,
+        groups: [
+            {
+                id: 0,
+                title: '',
+                options: [],
+            },
+            {
+                id: 1,
+                title: '',
+                options: [],
+            },
+        ],
+    }),
+    quizTypeThree: () => ({
+        id: generateTempId(),
+        type: CourseElementType.QuizTypeThree,
+        title: '',
+        description: '',
+        options: [
+            {
+                id: 0,
+                imageFile: null,
+                description: '',
+                correct: false,
+            },
+            {
+                id: 1,
+                imageFile: null,
+                description: '',
+                correct: false,
+            },
+        ],
+    }),
+    quizTypeFour: () => ({
+        id: generateTempId(),
+        type: CourseElementType.QuizTypeFour,
+        title: '',
+        description: '',
+        images: [],
+        labels: [],
+    }),
+};
+
 const onTypeChange = (
     type: string,
     elementInstance: LessonElement,
     setComponents: React.Dispatch<React.SetStateAction<LessonElement[]>>,
 ) => {
-    if (type === 'quizTypeOne') {
-        if (elementInstance.type === CourseElementType.QuizTypeOne) return;
-        const newComponent: TempQuizTypeOneElement = {
-            id: generateTempId(),
-            type: CourseElementType.QuizTypeOne,
-            title: '',
-            description: '',
-            imageFile: null,
-            options: [],
-        };
-        setComponents((prev) => [
-            ...prev.filter((comp) => comp.id !== elementInstance.id),
-            newComponent,
-        ]);
-    }
-    if (type === 'quizTypeTwo') {
-        const newComponent: TempQuizTypeTwoElement = {
-            id: generateTempId(),
-            type: CourseElementType.QuizTypeTwo,
-            title: '',
-            description: '',
-            imageFile: null,
-            groups: [
-                {
-                    id: 0,
-                    title: '',
-                    options: [],
-                },
-                {
-                    id: 1,
-                    title: '',
-                    options: [],
-                },
-            ],
-        };
-        setComponents((prev) => [
-            ...prev.filter((comp) => comp.id !== elementInstance.id),
-            newComponent,
-        ]);
-    }
-    if (type === 'quizTypeThree') {
-        const newComponent: TempQuizTypeThreeElement = {
-            id: generateTempId(),
-            type: CourseElementType.QuizTypeThree,
-            title: '',
-            description: '',
-            options: [
-                {
-                    id: 0,
-                    imageFile: null,
-                    description: '',
-                    correct: false,
-                },
-                {
-                    id: 1,
-                    imageFile: null,
-                    description: '',
-                    correct: false,
-                },
-            ],
-        };
-        setComponents((prev) => [
-            ...prev.filter((comp) => comp.id !== elementInstance.id),
-            newComponent,
-        ]);
-    }
-    if (type === 'quizTypeFour') {
-        const newComponent: TempQuizTypeFourElement = {
-            id: generateTempId(),
-            type: CourseElementType.QuizTypeFour,
-            title: '',
-            description: '',
-            images: [],
-            labels: [],
-        };
-        setComponents((prev) => [
-            ...prev.filter((comp) => comp.id !== elementInstance.id),
-            newComponent,
-        ]);
-    }
+    if (elementInstance.type === type) return;
+    const newComponent = quizTypeInitializers[type]();
+    setComponents((prev) => [
+        ...prev.filter((comp) => comp.id !== elementInstance.id),
+        newComponent,
+    ]);
 };
 
 function QuizTypeOneComponent({
@@ -868,41 +933,48 @@ function QuizTypeOneComponent({
 
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeOne) return;
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeOne
-                    ? { ...comp, ...updated }
-                    : comp,
-            ),
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeOne) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, ...updated };
+            }),
         );
     };
 
     const onFileDelete = () => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeOne
-                    ? {
-                          ...comp,
-                          imageFile: null,
-                      }
-                    : comp,
-            ),
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeOne) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, imageFile: null };
+            }),
         );
     };
 
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeOne
-                    ? {
-                          ...comp,
-                          imageFile: file as fileMetadata.TFileMetadataImage,
-                      }
-                    : comp,
-            ),
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeOne) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return {
+                    ...component,
+                    imageFile: file as fileMetadata.TFileMetadataImage,
+                };
+            }),
         );
     };
 
@@ -953,41 +1025,48 @@ function QuizTypeTwoComponent({
 
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeTwo) return;
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeTwo
-                    ? { ...comp, ...updated }
-                    : comp,
-            ),
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeTwo) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, ...updated };
+            }),
         );
     };
 
     const onFileDelete = () => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeTwo
-                    ? {
-                          ...comp,
-                          imageFile: null,
-                      }
-                    : comp,
-            ),
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeTwo) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, imageFile: null };
+            }),
         );
     };
 
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeTwo
-                    ? {
-                          ...comp,
-                          imageFile: file as fileMetadata.TFileMetadataImage,
-                      }
-                    : comp,
-            ),
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeTwo) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return {
+                    ...component,
+                    imageFile: file as fileMetadata.TFileMetadataImage,
+                };
+            }),
         );
     };
 
@@ -1038,31 +1117,41 @@ function QuizTypeThreeComponent({
 
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeThree) return;
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeThree
-                    ? { ...comp, ...updated }
-                    : comp,
-            ),
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeThree) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, ...updated };
+            }),
         );
     };
 
-    const onFileDelete = (fileId: string, index: number) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeThree
-                    ? {
-                          ...comp,
-                          options: comp.options?.map((option, idx) =>
-                              idx === index
-                                  ? { ...option, imageFile: null }
-                                  : option,
-                          ),
-                      }
-                    : comp,
-            ),
+    const onFileDelete = (_: string, index: number) => {
+        const updateOption = (option: any, idx: number) => {
+            if (idx !== index) {
+                return option;
+            }
+            return { ...option, imageFile: null };
+        };
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeThree) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return {
+                    ...component,
+                    options: component.options?.map(updateOption),
+                };
+            }),
         );
     };
 
@@ -1070,24 +1159,29 @@ function QuizTypeThreeComponent({
         file: fileMetadata.TFileMetadata | null,
         index: number,
     ) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeThree
-                    ? {
-                          ...comp,
-                          options: comp.options?.map((option, idx) =>
-                              idx === index
-                                  ? {
-                                        ...option,
-                                        imageFile:
-                                            file as fileMetadata.TFileMetadataImage,
-                                    }
-                                  : option,
-                          ),
-                      }
-                    : comp,
-            ),
+        const updateOption = (option: any, idx: number) => {
+            if (idx !== index) {
+                return option;
+            }
+            return {
+                ...option,
+                imageFile: file as fileMetadata.TFileMetadataImage,
+            };
+        };
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeThree) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return {
+                    ...component,
+                    options: component.options?.map(updateOption),
+                };
+            }),
         );
     };
 
@@ -1145,31 +1239,41 @@ function QuizTypeFourComponent({
 
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeFour) return;
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeFour
-                    ? { ...comp, ...updated }
-                    : comp,
-            ),
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeFour) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, ...updated };
+            }),
         );
     };
 
     const onFileDelete = (fileId: string, index: number) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeFour
-                    ? {
-                          ...comp,
-                          images: comp.images?.map((image, idx) =>
-                              idx === index
-                                  ? { ...image, imageFile: null }
-                                  : image,
-                          ),
-                      }
-                    : comp,
-            ),
+        const updateImage = (image: any, idx: number) => {
+            if (idx !== index) {
+                return image;
+            }
+            return { ...image, imageFile: null };
+        };
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeFour) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return {
+                    ...component,
+                    images: component.images?.map(updateImage),
+                };
+            }),
         );
     };
 
@@ -1177,24 +1281,29 @@ function QuizTypeFourComponent({
         file: fileMetadata.TFileMetadata | null,
         index: number,
     ) => {
-        setComponents((prev) =>
-            prev.map((comp) =>
-                comp.id === elementInstance.id &&
-                comp.type === CourseElementType.QuizTypeFour
-                    ? {
-                          ...comp,
-                          images: comp.images.map((image, idx) =>
-                              idx === index
-                                  ? {
-                                        ...image,
-                                        imageFile:
-                                            file as fileMetadata.TFileMetadataImage,
-                                    }
-                                  : image,
-                          ),
-                      }
-                    : comp,
-            ),
+        const updateImage = (image: any, idx: number) => {
+            if (idx !== index) {
+                return image;
+            }
+            return {
+                ...image,
+                imageFile: file as fileMetadata.TFileMetadataImage,
+            };
+        };
+
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.QuizTypeFour) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return {
+                    ...component,
+                    images: component.images?.map(updateImage),
+                };
+            }),
         );
     };
 
