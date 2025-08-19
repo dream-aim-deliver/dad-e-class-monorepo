@@ -139,14 +139,6 @@ const useFileUpload = ({
     };
 };
 
-interface EditLessonComponentsProps {
-    lessonId: number;
-    components: LessonElement[];
-    setComponents: React.Dispatch<React.SetStateAction<LessonElement[]>>;
-    courseVersion: number | null;
-    setCourseVersion: React.Dispatch<React.SetStateAction<number | null>>;
-}
-
 interface LessonComponentProps {
     lessonId: number;
     elementInstance: LessonElement;
@@ -155,6 +147,7 @@ interface LessonComponentProps {
     onUpClick: (id: string) => void;
     onDownClick: (id: string) => void;
     onDeleteClick: (id: string) => void;
+    validationError?: string | undefined;
 }
 
 function RichTextComponent({
@@ -164,6 +157,7 @@ function RichTextComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     const updateComponent = (
         comp: LessonElement,
@@ -196,6 +190,7 @@ function RichTextComponent({
             onDownClick={onDownClick}
             onDeleteClick={onDeleteClick}
             onContentChange={onContentChange}
+            validationError={validationError}
         />
     );
 }
@@ -1478,12 +1473,22 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     // Add other mappings as needed
 };
 
+interface EditLessonComponentsProps {
+    lessonId: number;
+    components: LessonElement[];
+    setComponents: React.Dispatch<React.SetStateAction<LessonElement[]>>;
+    courseVersion: number | null;
+    setCourseVersion: React.Dispatch<React.SetStateAction<number | null>>;
+    validationErrors: Map<string, string | undefined>;
+}
+
 export default function EditLessonComponents({
     lessonId,
     components,
     setComponents,
     courseVersion,
     setCourseVersion,
+    validationErrors,
 }: EditLessonComponentsProps) {
     const onUpClick = (id: string) => {
         setComponents((prev) => {
@@ -1533,6 +1538,7 @@ export default function EditLessonComponents({
                         onUpClick={onUpClick}
                         onDownClick={onDownClick}
                         onDeleteClick={onDeleteClick}
+                        validationError={validationErrors.get(component.id)}
                     />
                 );
             })}

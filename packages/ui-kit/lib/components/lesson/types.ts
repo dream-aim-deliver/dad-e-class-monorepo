@@ -13,7 +13,7 @@ export type LessonElement = CourseElement | FormElement;
 export type valueType = preAssessmentValueType | courseBuilderValueType;
 
  interface ValidationProps {
-    elementInstance: FormElement;
+    elementInstance: LessonElement;
     dictionary: TDictionary;
 }
 
