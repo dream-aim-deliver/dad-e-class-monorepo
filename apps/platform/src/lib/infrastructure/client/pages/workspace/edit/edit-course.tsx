@@ -87,7 +87,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
                 title="Edit course"
                 onPreview={handlePreview}
                 onSave={handleSave}
-                disablePreview={isEdited}
+                disablePreview={isEdited || isSavingCourseStructure}
                 isSaving={isSavingCourseStructure}
             />
             <Tabs.Root
