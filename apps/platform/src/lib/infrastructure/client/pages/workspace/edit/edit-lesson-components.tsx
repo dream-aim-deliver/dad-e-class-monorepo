@@ -17,7 +17,6 @@ import {
     ImageGalleryDesignerComponent,
     LessonElement,
     MultiCheckDesignerComponent,
-    MultiCheckElement,
     OneOutOfThreeData,
     OneOutOfThreeDesignerComponent,
     QuizDesignerComponent,
@@ -25,19 +24,17 @@ import {
     RichTextElement,
     SingleChoiceDesignerComponent,
     SingleChoiceElement,
-    QuizTypeFourElement,
-    QuizTypeOneElement,
-    QuizTypeThreeElement,
-    QuizTypeTwoElement,
     TextInputDesignerComponent,
     UploadFilesDesignerComponent,
     VideoDesignerComponent,
     VideoElement,
+    LinksDesignerComponent,
+    LinksElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { trpc } from '../../../trpc/client';
-import { fileMetadata } from '@maany_shr/e-class-models';
+import { fileMetadata, shared } from '@maany_shr/e-class-models';
 import { transformLessonComponents } from '../../../utils/transform-lesson-components';
 import { generateTempId } from './utils/generate-temp-id';
 
@@ -111,6 +108,7 @@ const useFileUpload = ({
             thumbnailUrl: verifyResult.data.downloadUrl,
             size: uploadResult.data.file.size,
             category: uploadResult.data.file.category,
+            status: 'available',
         } as fileMetadata.TFileMetadata;
     };
 
@@ -1203,7 +1201,7 @@ function QuizTypeThreeComponent({
 
     const { uploadError, handleFileChange } = useFileUpload({
         lessonId,
-        componentType: 'quizTypeTwo',
+        componentType: 'quizTypeThree',
     });
 
     return (
@@ -1325,7 +1323,7 @@ function QuizTypeFourComponent({
 
     const { uploadError, handleFileChange } = useFileUpload({
         lessonId,
-        componentType: 'quizTypeTwo',
+        componentType: 'quizTypeFour',
     });
 
     return (
@@ -1348,6 +1346,121 @@ function QuizTypeFourComponent({
     );
 }
 
+function LinksComponent({
+    lessonId,
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+}: LessonComponentProps) {
+    const onLinkEdit = (data: shared.TLink, index: number) => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.Links) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                const updatedLinks = [...component.links];
+                updatedLinks[index] = { ...updatedLinks[index], ...data };
+                return { ...component, links: updatedLinks };
+            }),
+        );
+    };
+
+    const onAddLink = () => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.Links) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                const updatedLinks = [...component.links];
+                updatedLinks.push({
+                    title: 'New Link',
+                    url: 'https://example.com',
+                });
+                return { ...component, links: updatedLinks };
+            }),
+        );
+    };
+
+    const onLinkDelete = (index: number) => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.Links) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                const updatedLinks = [...component.links];
+                updatedLinks.splice(index, 1);
+                return { ...component, links: updatedLinks };
+            }),
+        );
+    };
+
+    const onDeleteIcon = (index: number) => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.Links) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                const updatedLinks = [...component.links];
+                updatedLinks[index].customIcon = undefined;
+                return { ...component, links: updatedLinks };
+            }),
+        );
+    };
+
+    const onImageReady = (file: fileMetadata.TFileMetadata, index: number) => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.Links) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                const updatedLinks = [...component.links];
+                updatedLinks[index].customIcon = file;
+                return { ...component, links: updatedLinks };
+            }),
+        );
+    };
+
+    const { uploadError, handleFileChange } = useFileUpload({
+        lessonId,
+        componentType: 'links',
+    });
+
+    // TODO: Integrate upload error with a banner
+    return (
+        <LinksDesignerComponent
+            elementInstance={elementInstance as LinksElement}
+            locale={locale}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onImageChange={handleFileChange}
+            onImageReady={onImageReady}
+            onLinkDelete={onLinkDelete}
+            onLinkEdit={onLinkEdit}
+            onDeleteIcon={onDeleteIcon}
+            onClickAddLink={onAddLink}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
@@ -1364,6 +1477,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [CourseElementType.QuizTypeTwo]: QuizTypeTwoComponent,
     [CourseElementType.QuizTypeThree]: QuizTypeThreeComponent,
     [CourseElementType.QuizTypeFour]: QuizTypeFourComponent,
+    [CourseElementType.Links]: LinksComponent,
     // Add other mappings as needed
 };
 
