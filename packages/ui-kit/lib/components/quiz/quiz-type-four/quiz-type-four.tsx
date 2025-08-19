@@ -5,7 +5,7 @@ import { IconTrashAlt } from "../../icons/icon-trash-alt";
 import { getDictionary, TLocale } from "@maany_shr/e-class-translations";
 import { TextAreaInput } from "../../text-areaInput";
 import { TextInput } from "../../text-input";
-import { TempQuizTypeFourElement } from "../../course-builder-lesson-component/types";
+import { QuizTypeFourElement } from "../../course-builder-lesson-component/types";
 import { Uploader } from "../../drag-and-drop-uploader/uploader";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { CourseElementType } from "../../course-builder/types";
@@ -61,9 +61,9 @@ import { CourseElementType } from "../../course-builder/types";
  */
 
 interface QuizTypeFourProps {
-    element: TempQuizTypeFourElement;
+    element: QuizTypeFourElement;
     locale: TLocale;
-    onChange: (updated: Partial<TempQuizTypeFourElement>) => void;
+    onChange: (updated: Partial<QuizTypeFourElement>) => void;
     onFileChange: (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
@@ -86,7 +86,7 @@ const QuizTypeFour: FC<QuizTypeFourProps> = ({
   const dictionary = getDictionary(locale);
 
   // Triggers parent update with partial updates
-  const handleChange = (updated: Partial<TempQuizTypeFourElement>) => {
+  const handleChange = (updated: Partial<QuizTypeFourElement>) => {
     onChange({
       type: CourseElementType.QuizTypeFour,
       id: element.id,

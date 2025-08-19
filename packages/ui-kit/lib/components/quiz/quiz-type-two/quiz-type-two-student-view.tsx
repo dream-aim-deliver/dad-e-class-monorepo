@@ -6,7 +6,7 @@ import { IconClose } from '../../icons/icon-close';
 import { RadioButton } from '../../radio-button';
 import React, { FC, useEffect, useState } from 'react';
 import {
-    TempQuizTypeTwoElement,
+    QuizTypeTwoElement,
 } from '../../course-builder-lesson-component/types';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { IconError, IconSuccess } from '../../icons';
@@ -73,7 +73,7 @@ export interface QuizGroup {
  */
 
 interface QuizTypeTwoStudentViewProps extends isLocalAware {
-    elementInstance: TempQuizTypeTwoElement;
+    elementInstance: QuizTypeTwoElement;
 }
 
 const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({

@@ -54,7 +54,7 @@ export interface LinksElement extends BaseCourseFormElement {
     links: shared.TLink[];
 }
 
-export interface TempQuizTypeOneElement extends BaseCourseFormElement {
+export interface QuizTypeOneElement extends BaseCourseFormElement {
     type: CourseElementType.QuizTypeOne;
     title: string;
     description: string;
@@ -67,7 +67,7 @@ export interface TempQuizTypeOneElement extends BaseCourseFormElement {
     correctOptionId?: number;
 }
 
-export interface TempQuizTypeTwoElement extends BaseCourseFormElement {
+export interface QuizTypeTwoElement extends BaseCourseFormElement {
     type: CourseElementType.QuizTypeTwo;
     title: string;
     description: string;
@@ -84,7 +84,7 @@ export interface TempQuizTypeTwoElement extends BaseCourseFormElement {
     }[];
 }
 
-export interface TempQuizTypeThreeElement extends BaseCourseFormElement {
+export interface QuizTypeThreeElement extends BaseCourseFormElement {
     type: CourseElementType.QuizTypeThree;
     title: string;
     description: string;
@@ -97,7 +97,7 @@ export interface TempQuizTypeThreeElement extends BaseCourseFormElement {
     correctOptionId?: number;
 }
 
-export interface TempQuizTypeFourElement extends BaseCourseFormElement {
+export interface QuizTypeFourElement extends BaseCourseFormElement {
     type: CourseElementType.QuizTypeFour;
     title: string;
     description: string;

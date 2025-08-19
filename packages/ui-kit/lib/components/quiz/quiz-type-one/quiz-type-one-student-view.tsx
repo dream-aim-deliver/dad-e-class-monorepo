@@ -5,7 +5,7 @@ import { IconCheck } from "../../icons/icon-check";
 import { IconClose } from "../../icons/icon-close";
 import { RadioButton } from "../../radio-button";
 import { FC, useEffect, useState } from "react";
-import { TempQuizTypeOneElement } from "../../course-builder-lesson-component/types";
+import { QuizTypeOneElement } from "../../course-builder-lesson-component/types";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { IconError, IconSuccess } from "../../icons";
 
@@ -54,7 +54,7 @@ export interface QuizOption {
  */
 
 interface QuizTypeOneStudentViewProps extends isLocalAware {
-  elementInstance: TempQuizTypeOneElement;
+  elementInstance: QuizTypeOneElement;
 }
 
 const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewProps> = ({

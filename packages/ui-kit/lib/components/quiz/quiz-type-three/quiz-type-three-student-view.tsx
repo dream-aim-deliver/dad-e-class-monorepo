@@ -5,7 +5,7 @@ import { IconCheck } from "../../icons/icon-check";
 import { IconClose } from "../../icons/icon-close";
 import { RadioButton } from "../../radio-button";
 import { FC, useEffect, useState } from "react";
-import { TempQuizTypeThreeElement } from "../../course-builder-lesson-component/types";
+import { QuizTypeThreeElement } from "../../course-builder-lesson-component/types";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { IconError, IconSuccess } from "../../icons";
 
@@ -53,7 +53,7 @@ export interface QuizTypeThreeStudentViewOption {
  */
 
 interface QuizTypeThreeStudentViewProps extends isLocalAware {
-  elementInstance: TempQuizTypeThreeElement;
+  elementInstance: QuizTypeThreeElement;
 }
 
 const QuizTypeThreeStudentView: FC<QuizTypeThreeStudentViewProps> = ({

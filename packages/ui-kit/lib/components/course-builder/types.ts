@@ -39,10 +39,10 @@ export enum CourseElementType {
  * Currently includes CoachingElement and QuizElement , AssignmentElement but can be extended for other element types.
  */
 export type CourseElement = CoachingElement |
-    TempQuizTypeOneElement |
-    TempQuizTypeTwoElement |
-    TempQuizTypeThreeElement |
-    TempQuizTypeFourElement |
+    QuizTypeOneElement |
+    QuizTypeTwoElement |
+    QuizTypeThreeElement |
+    QuizTypeFourElement |
     LinksElement |
     DownloadFilesElement |
     UploadFilesElement |

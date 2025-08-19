@@ -7,7 +7,7 @@ import { IconTrashAlt } from "../../icons/icon-trash-alt";
 import { getDictionary, TLocale } from "@maany_shr/e-class-translations";
 import { TextAreaInput } from "../../text-areaInput";
 import { TextInput } from "../../text-input";
-import { TempQuizTypeTwoElement } from "../../course-builder-lesson-component/types";
+import { QuizTypeTwoElement } from "../../course-builder-lesson-component/types";
 import Banner from "../../banner";
 import { Uploader } from "../../drag-and-drop-uploader/uploader";
 import { fileMetadata } from "@maany_shr/e-class-models";
@@ -69,9 +69,9 @@ import { CourseElementType } from "../../course-builder/types";
  */
 
 interface QuizTypeTwoProps {
-    element: TempQuizTypeTwoElement;
+    element: QuizTypeTwoElement;
     locale: TLocale;
-    onChange: (updated: Partial<TempQuizTypeTwoElement>) => void;
+    onChange: (updated: Partial<QuizTypeTwoElement>) => void;
     onFileChange: (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
@@ -95,7 +95,7 @@ const QuizTypeTwo: FC<QuizTypeTwoProps> = ({
   const dictionary = getDictionary(locale);
 
   // Call parent onChange with updated fields
-  const handleChange = (updated: Partial<TempQuizTypeTwoElement>) => {
+  const handleChange = (updated: Partial<QuizTypeTwoElement>) => {
     onChange({
       type: CourseElementType.QuizTypeTwo,
       id: element.id,

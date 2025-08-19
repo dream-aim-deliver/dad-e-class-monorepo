@@ -14,10 +14,10 @@ import {
     DownloadFilesElement,
     UploadFilesElement,
     ImageGallery as ImageGalleryElement,
-    TempQuizTypeOneElement,
-    TempQuizTypeTwoElement,
-    TempQuizTypeThreeElement,
-    TempQuizTypeFourElement,
+    QuizTypeOneElement,
+    QuizTypeTwoElement,
+    QuizTypeThreeElement,
+    QuizTypeFourElement,
     LinksElement,
     CoachingSessionElement,
     CourseElementType,
@@ -223,7 +223,7 @@ function transformUploadFiles(
 
 function transformQuizTypeOne(
     component: Extract<useCaseModels.TLessonComponent, { type: 'quizTypeOne' }>,
-): TempQuizTypeOneElement {
+): QuizTypeOneElement {
     return {
         type: LessonElementType.QuizTypeOne,
         order: component.order,
@@ -247,7 +247,7 @@ function transformQuizTypeOne(
 
 function transformQuizTypeTwo(
     component: Extract<useCaseModels.TLessonComponent, { type: 'quizTypeTwo' }>,
-): TempQuizTypeTwoElement {
+): QuizTypeTwoElement {
     return {
         type: LessonElementType.QuizTypeTwo,
         order: component.order,
@@ -277,7 +277,7 @@ function transformQuizTypeThree(
         useCaseModels.TLessonComponent,
         { type: 'quizTypeThree' }
     >,
-): TempQuizTypeThreeElement {
+): QuizTypeThreeElement {
     return {
         type: LessonElementType.QuizTypeThree,
         order: component.order,
@@ -307,7 +307,7 @@ function transformQuizTypeFour(
         useCaseModels.TLessonComponent,
         { type: 'quizTypeFour' }
     >,
-): TempQuizTypeFourElement {
+): QuizTypeFourElement {
     return {
         type: LessonElementType.QuizTypeFour,
         order: component.order,

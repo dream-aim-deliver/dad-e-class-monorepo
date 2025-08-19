@@ -25,7 +25,7 @@ import {
     OneOutOfThreeElement,
     RichTextElement,
     SingleChoiceElement,
-    TempQuizTypeOneElement,
+    QuizTypeOneElement,
     TextInputElement,
     UploadFilesElement,
     VideoElement,
@@ -209,7 +209,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
             icon: <IconQuiz />,
             label: 'Quiz',
             onClick: () => {
-                const newComponent: TempQuizTypeOneElement = {
+                const newComponent: QuizTypeOneElement = {
                     id: generateTempId(),
                     type: CourseElementType.QuizTypeOne,
                     title: '',
