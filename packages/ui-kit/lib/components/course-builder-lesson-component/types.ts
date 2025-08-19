@@ -64,7 +64,7 @@ export interface TempQuizTypeOneElement extends BaseCourseFormElement {
         name: string;
         correct?: boolean;
     }[];
-    correctOptionId: number;
+    correctOptionId?: number;
 }
 
 export interface TempQuizTypeTwoElement extends BaseCourseFormElement {
@@ -78,8 +78,9 @@ export interface TempQuizTypeTwoElement extends BaseCourseFormElement {
         options: {
             id: number;
             name: string;
+            correct?: boolean;
         }[];
-        correctOptionId: number;
+        correctOptionId?: number;
     }[];
 }
 

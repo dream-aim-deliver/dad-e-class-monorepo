@@ -25,6 +25,7 @@ import {
     OneOutOfThreeElement,
     RichTextElement,
     SingleChoiceElement,
+    TempQuizTypeOneElement,
     TextInputElement,
     UploadFilesElement,
     VideoElement,
@@ -41,16 +42,11 @@ import { Suspense, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import EditLessonComponents from './edit-lesson-components';
+import { generateTempId } from './utils/generate-temp-id';
 
 interface EditLessonProps {
     lessonId: number;
 }
-
-// Required to seamlessly integrate with the components
-const generateTempId = () => {
-    const randomId = crypto.randomUUID();
-    return `temp-${randomId}`;
-};
 
 // TODO: Translate
 export default function EditLesson({ lessonId }: EditLessonProps) {
@@ -212,7 +208,17 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconQuiz />,
             label: 'Quiz',
-            onClick: () => {},
+            onClick: () => {
+                const newComponent: TempQuizTypeOneElement = {
+                    id: generateTempId(),
+                    type: CourseElementType.QuizTypeOne,
+                    title: '',
+                    description: '',
+                    imageFile: null,
+                    options: [],
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
         },
         {
             icon: <IconCoachingSession />,

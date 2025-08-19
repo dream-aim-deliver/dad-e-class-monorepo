@@ -4,12 +4,14 @@ import { InputField } from "../../input-field";
 import { RadioButton } from "../../radio-button";
 import { IconButton } from "../../icon-button";
 import { IconTrashAlt } from "../../icons/icon-trash-alt";
-import { getDictionary } from "@maany_shr/e-class-translations";
+import { getDictionary, TLocale } from "@maany_shr/e-class-translations";
 import { TextAreaInput } from "../../text-areaInput";
 import { TextInput } from "../../text-input";
-import { QuizTypeTwoElement } from "../../course-builder-lesson-component/types";
+import { TempQuizTypeTwoElement } from "../../course-builder-lesson-component/types";
 import Banner from "../../banner";
 import { Uploader } from "../../drag-and-drop-uploader/uploader";
+import { fileMetadata } from "@maany_shr/e-class-models";
+import { CourseElementType } from "../../course-builder/types";
 
 /**
  * A component for creating and editing a matching-type quiz question.
@@ -66,33 +68,41 @@ import { Uploader } from "../../drag-and-drop-uploader/uploader";
  * />
  */
 
-const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
-  id,
-  order,
-  error,
-  title,
-  description,
-  fileData,
-  groups,
+interface QuizTypeTwoProps {
+    element: TempQuizTypeTwoElement;
+    locale: TLocale;
+    onChange: (updated: Partial<TempQuizTypeTwoElement>) => void;
+    onFileChange: (
+        file: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    onFileDelete: (fileId: string, index: number) => void;
+    onFileDownload: (id: string) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
+    uploadError: string | null;
+}
+
+const QuizTypeTwo: FC<QuizTypeTwoProps> = ({
+  element,
   locale,
   onChange,
-  onFilesChange,
+  onFileChange,
   onFileDelete,
   onFileDownload,
   onUploadComplete,
+  uploadError,
 }) => {
   const dictionary = getDictionary(locale);
 
   // Call parent onChange with updated fields
-  const handleChange = (updated: Partial<QuizTypeTwoElement>) => {
+  const handleChange = (updated: Partial<TempQuizTypeTwoElement>) => {
     onChange({
-      quizType: "quizTypeTwo",
-      id,
-      order,
-      title: updated.title ?? title,
-      description: updated.description ?? description,
-      fileData: updated.fileData ?? fileData,
-      groups: updated.groups ?? groups,
+      type: CourseElementType.QuizTypeTwo,
+      id: element.id,
+      title: updated.title ?? element.title,
+      description: updated.description ?? element.description,
+      imageFile: updated.imageFile ?? element.imageFile,
+      groups: updated.groups ?? element.groups,
     });
   };
 
@@ -100,17 +110,17 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
   const handleDescriptionChange = (value: string) => handleChange({ description: value });
 
   const handleGroupTitleChange = (groupIdx: number, value: string) => {
-    const updatedGroups = groups.map((grp, i) =>
-      i === groupIdx ? { ...grp, groupTitle: value } : grp
+    const updatedGroups = element.groups.map((grp, i) =>
+      i === groupIdx ? { ...grp, title: value } : grp
     );
     handleChange({ groups: updatedGroups });
   };
 
   const handleOptionTextChange = (groupIdx: number, optionIdx: number, value: string) => {
-    const updatedGroups = groups.map((grp, i) => {
+    const updatedGroups = element.groups.map((grp, i) => {
       if (i !== groupIdx) return grp;
       const updatedOptions = grp.options.map((opt, j) =>
-        j === optionIdx ? { ...opt, optionText: value } : opt
+        j === optionIdx ? { ...opt, name: value } : opt
       );
       return { ...grp, options: updatedOptions };
     });
@@ -118,7 +128,7 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
   };
 
   const handleCorrectAnswerChange = (groupIdx: number, optionIdx: number) => {
-    const updatedGroups = groups.map((grp, i) => {
+    const updatedGroups = element.groups.map((grp, i) => {
       if (i !== groupIdx) return grp;
       const updatedOptions = grp.options.map((opt, j) => ({
         ...opt,
@@ -130,18 +140,18 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
   };
 
   const handleAddChoice = (groupIdx: number) => {
-    const updatedGroups = groups.map((grp, i) => {
+    const updatedGroups = element.groups.map((grp, i) => {
       if (i !== groupIdx) return grp;
       return {
         ...grp,
-        options: [...grp.options, { optionText: "", correct: false }],
+        options: [...grp.options, { id: 0, name: '', correct: false }],
       };
     });
     handleChange({ groups: updatedGroups });
   };
 
   const handleDeleteChoice = (groupIdx: number, optionIdx: number) => {
-    const updatedGroups = groups.map((grp, i) => {
+    const updatedGroups = element.groups.map((grp, i) => {
       if (i !== groupIdx) return grp;
       const remaining = grp.options.filter((_, j) => j !== optionIdx);
       // Reassign correct if needed
@@ -163,7 +173,7 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
         <TextInput
           inputField={{
             className: "w-full",
-            value: title,
+            value: element.title,
             setValue: handleTitleChange,
             inputText: dictionary.components.quiz.enterTitleText,
           }}
@@ -172,7 +182,7 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
         <TextAreaInput
           label={dictionary.components.quiz.descriptionText}
           placeholder={dictionary.components.quiz.enterDescriptionText}
-          value={description}
+          value={element.description}
           setValue={handleDescriptionChange}
         />
       </div>
@@ -181,8 +191,8 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
         <Uploader
           type="single"
           variant="image"
-          file={fileData}
-          onFilesChange={(file, abortSignal) => onFilesChange([file], abortSignal)}
+          file={element.imageFile}
+          onFilesChange={(file, abortSignal) => onFileChange(file, abortSignal)}
           onDelete={(id) => onFileDelete(id, 0)}
           onDownload={(id) => onFileDownload(id)}
           onUploadComplete={(file) => onUploadComplete(file, 0)}
@@ -191,22 +201,22 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
           maxSize={5}
         />
         {/* error */}
-        {error && (
+        {uploadError && (
           <Banner
             style="error"
-            title={dictionary.components.quiz.errorText}
+            title={uploadError}
             className="w-full"
           />
         )}
         {/* Groups Section */}
         <div className="flex flex-col md:flex-row w-full">
-          {groups.map((group, groupIdx) => (
+          {element.groups.map((group, groupIdx) => (
             <React.Fragment key={groupIdx}>
               <div key={groupIdx} className="flex flex-col gap-[18px] w-full">
                 <InputField
                   className="w-full"
                   inputText={dictionary.components.quiz.quizTypeTwo.groupTitleText}
-                  value={group.groupTitle}
+                  value={group.title}
                   setValue={(value) => handleGroupTitleChange(groupIdx, value)}
                 />
                 <div className="flex flex-col gap-3">
@@ -225,7 +235,7 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
                       <InputField
                         className="w-full"
                         inputText={dictionary.components.quiz.quizTypeTwo.radioButtonText}
-                        value={option.optionText}
+                        value={option.name}
                         setValue={(val) => handleOptionTextChange(groupIdx, optionIdx, val)}
                       />
                       <IconButton
@@ -248,7 +258,7 @@ const QuizTypeTwo: FC<QuizTypeTwoElement> = ({
                 />
               </div>
               {/* Divider between groups - not after last group */}
-              {groupIdx !== groups.length - 1 && (
+              {groupIdx !== element.groups.length - 1 && (
                 <>
                   <div className="hidden md:flex w-[1px] bg-divider mx-4" />
                   <div className="md:hidden flex h-[1px] bg-divider my-4" />
