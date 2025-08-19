@@ -1,7 +1,6 @@
 'use client';
 
 import {
-    ComponentCard,
     CourseElementType,
     DefaultLoading,
     DownloadFilesElement,
@@ -11,7 +10,6 @@ import {
     IconCloudUpload,
     IconCoachingSession,
     IconHeading,
-    IconModule,
     IconMultiChoice,
     IconOneOutOfThree,
     IconRichText,
@@ -29,6 +27,7 @@ import {
     TextInputElement,
     UploadFilesElement,
     VideoElement,
+    DefaultError,
 } from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
 import EditLayout from './components/edit-layout';
@@ -38,11 +37,17 @@ import { IconLink } from 'packages/ui-kit/lib/components/icons/icon-link';
 import { IconQuiz } from 'packages/ui-kit/lib/components/icons/icon-quiz';
 import { LessonComponentButton } from './types';
 import LessonComponentsBar from './components/lesson-components-bar';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { generateTempId } from './utils/generate-temp-id';
 import dynamic from 'next/dynamic';
+import {
+    ComponentRendererProps,
+    typeToRendererMap,
+} from '../../common/component-renderers';
+import { useLessonComponents } from './hooks/edit-lesson-hooks';
+import { transformLessonComponents } from '../../../utils/transform-lesson-components';
 
 interface EditLessonProps {
     lessonId: number;
@@ -64,11 +69,58 @@ const EditLessonComponents = dynamic(() => import('./edit-lesson-components'), {
     ssr: false,
 });
 
+function PreviewRenderer({
+    components,
+    elementProgress,
+    locale,
+}: {
+    components: LessonElement[];
+    elementProgress: React.RefObject<Map<string, LessonElement>>;
+    locale: TLocale;
+}) {
+    const renderComponent = (formElement: LessonElement) => {
+        const props: ComponentRendererProps = {
+            formElement,
+            elementProgress,
+            locale,
+            key: `component-${formElement.id}`,
+        };
+
+        const renderer = typeToRendererMap[formElement.type];
+        if (renderer) {
+            return renderer(props);
+        }
+        return null;
+    };
+
+    return (
+        <div className="flex flex-col gap-4">
+            {components.map(renderComponent)}
+        </div>
+    );
+}
+
 // TODO: Translate
 export default function EditLesson({ lessonId }: EditLessonProps) {
     const locale = useLocale() as TLocale;
+
+    const lessonComponentsViewModel = useLessonComponents(lessonId);
+
+    useEffect(() => {
+        if (!lessonComponentsViewModel) return;
+        if (lessonComponentsViewModel.mode !== 'default') return;
+
+        setComponents(
+            transformLessonComponents(
+                lessonComponentsViewModel.data.components,
+            ),
+        );
+        setCourseVersion(lessonComponentsViewModel.data.courseVersion);
+    }, [lessonComponentsViewModel]);
+
     const [components, setComponents] = useState<LessonElement[]>([]);
     const [courseVersion, setCourseVersion] = useState<number | null>(null);
+    const [isPreviewing, setIsPreviewing] = useState(false);
 
     const simpleComponentButtons: LessonComponentButton[] = [
         {
@@ -243,42 +295,61 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
     ];
 
-    console.log(components);
+    // As we don't need to track progress, leave this map empty
+    const elementProgress = useRef(new Map<string, LessonElement>());
+
+    if (!lessonComponentsViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (lessonComponentsViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
 
     return (
         <div className="flex flex-col gap-4">
             <EditHeader
                 title="Edit lesson"
                 onPreview={() => {
-                    console.log('Preview clicked for lesson:', lessonId);
+                    setIsPreviewing((prev) => !prev);
                 }}
                 onSave={() => {
                     console.log('Save clicked for lesson:', lessonId);
                 }}
                 disablePreview={false}
                 isSaving={false}
+                isPreviewing={isPreviewing}
             />
-            <EditLayout
-                panel={
-                    <LessonComponentsBar
-                        simpleComponentButtons={simpleComponentButtons}
-                        interactiveComponentButtons={
-                            interactiveComponentButtons
-                        }
-                    />
-                }
-                editor={
-                    <Suspense fallback={<DefaultLoading locale={locale} />}>
-                        <EditLessonComponents
-                            lessonId={lessonId}
-                            components={components}
-                            setComponents={setComponents}
-                            courseVersion={courseVersion}
-                            setCourseVersion={setCourseVersion}
+            {isPreviewing && (
+                <PreviewRenderer
+                    components={components}
+                    elementProgress={elementProgress}
+                    locale={locale}
+                />
+            )}
+            {!isPreviewing && (
+                <EditLayout
+                    panel={
+                        <LessonComponentsBar
+                            simpleComponentButtons={simpleComponentButtons}
+                            interactiveComponentButtons={
+                                interactiveComponentButtons
+                            }
                         />
-                    </Suspense>
-                }
-            />
+                    }
+                    editor={
+                        <Suspense fallback={<DefaultLoading locale={locale} />}>
+                            <EditLessonComponents
+                                lessonId={lessonId}
+                                components={components}
+                                setComponents={setComponents}
+                                courseVersion={courseVersion}
+                                setCourseVersion={setCourseVersion}
+                            />
+                        </Suspense>
+                    }
+                />
+            )}
         </div>
     );
 }

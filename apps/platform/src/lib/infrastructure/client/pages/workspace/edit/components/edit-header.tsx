@@ -11,6 +11,7 @@ interface EditHeaderProps {
     onSave: () => void;
     disablePreview: boolean;
     isSaving: boolean;
+    isPreviewing?: boolean;
 }
 
 export default function EditHeader({
@@ -19,7 +20,14 @@ export default function EditHeader({
     onSave,
     disablePreview,
     isSaving,
+    isPreviewing = false,
 }: EditHeaderProps) {
+    const previewButtonText = isPreviewing
+        ? 'Hide preview'
+        : disablePreview
+          ? 'Save to preview'
+          : 'Preview';
+
     return (
         <div className="flex md:flex-row flex-col md:items-center justify-between gap-4">
             <PageTitle text={title} />
@@ -28,7 +36,7 @@ export default function EditHeader({
                     variant="text"
                     iconLeft={<IconEyeShow />}
                     hasIconLeft
-                    text={disablePreview ? 'Save to preview' : 'Preview'}
+                    text={previewButtonText}
                     className="px-0"
                     onClick={onPreview}
                     disabled={disablePreview}
