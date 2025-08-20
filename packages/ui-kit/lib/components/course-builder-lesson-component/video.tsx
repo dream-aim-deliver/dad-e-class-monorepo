@@ -23,8 +23,7 @@ const videoFileElement: CourseElementTemplate = {
         icon: IconVideo,
         label: "Video"
     },
-    // @ts-ignore
-    designerComponent: DesignerComponent,
+    designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
     formComponent: FormComponent
 };
 

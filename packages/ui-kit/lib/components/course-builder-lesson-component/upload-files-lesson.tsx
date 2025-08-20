@@ -21,9 +21,8 @@ const uploadFilesElement: CourseElementTemplate = {
         icon: IconCloudUpload,
         label: "Upload Files"
     },
-    // @ts-ignore
-    designerComponent: DesignerComponent,
-    // @ts-ignore
+    designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
+    // @ts-expect-error - Type mismatch between FormComponent props and expected interface
     formComponent: FormComponent
 };
 
@@ -183,7 +182,6 @@ export function FormComponent({
             <p className="font-important text-text-primary leading-[150%] text-sm md:text-md">
                 {elementInstance.description}
             </p>
-            {/* @ts-ignore */}
             <Uploader
                 type="multiple"
                 variant="generic"

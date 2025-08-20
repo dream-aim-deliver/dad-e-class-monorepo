@@ -25,8 +25,7 @@ const imageGalleryElement: CourseElementTemplate = {
         icon: IconImageGallery,
         label: "Image Gallery"
     },
-    // @ts-ignore
-    designerComponent: DesignerComponent,
+    designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
     formComponent: FormComponent
 };
 

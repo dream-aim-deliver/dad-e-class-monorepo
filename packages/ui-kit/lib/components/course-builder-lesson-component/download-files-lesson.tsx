@@ -157,7 +157,7 @@ const downloadFilesElement: CourseElementTemplate = {
         icon: IconCloudDownload,
         label: 'Download Files',
     },
-    designerComponent: DesignerComponent,
+    designerComponent: DesignerComponent as React.FC<BaseDesignerComponentProps>,
     formComponent: FormComponent,
 };
 

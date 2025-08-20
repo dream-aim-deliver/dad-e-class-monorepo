@@ -24,8 +24,7 @@ const imageFilesElement: CourseElementTemplate = {
         icon: IconImage,
         label: "Image"
     },
-    // @ts-ignore
-    designerComponent: DesignerComponent,
+    designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
     formComponent: FormComponent
 };
 

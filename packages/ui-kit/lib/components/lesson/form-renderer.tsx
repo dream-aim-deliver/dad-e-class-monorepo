@@ -7,7 +7,6 @@ import { IconLoaderSpinner } from "../icons/icon-loader-spinner";
 import { LessonElement, LessonElementType, valueType } from "./types";
 import { TextInputElement, SingleChoiceElement, RichTextElement, MultiCheckElement, OneOutOfThreeElement } from "../lesson-components/types";
 import { deserialize } from "../rich-text-element/serializer";
-import { FormComponent as UploadFilesFormComponent } from "../course-builder-lesson-component/upload-files-lesson";
 
 
 /**
@@ -128,8 +127,7 @@ export function FormElementRenderer({
                     value = '';
             }
 
-            // @ts-ignore
-            const isValid = lessonElements[element.type].validate(element, value);
+            const isValid = (lessonElements as any)[element.type].validate(element, value);
             if (!isValid) {
                 newErrors[element.id] = true;
             }
@@ -165,8 +163,7 @@ export function FormElementRenderer({
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-text-primary">
             {elements.map((elementInstance) => {
-                // @ts-ignore
-                const Element = lessonElements[elementInstance.type].formComponent;
+                const Element = (lessonElements as any)[elementInstance.type].formComponent;
                 return (
                     <div key={elementInstance.id.toString()} className="flex flex-col gap-2 items-start">
                         <Element

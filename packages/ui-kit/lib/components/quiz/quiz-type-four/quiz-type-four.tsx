@@ -107,7 +107,7 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
     const nextLetter = String.fromCharCode(65 + labels.length);
     handleChange({
       labels: [...labels, { letter: nextLetter, description: "" }],
-      // @ts-ignore
+      // @ts-expect-error - Type mismatch with fileData undefined property
       images: [...images, { correctLetter: nextLetter, fileData: undefined }],
     });
   };

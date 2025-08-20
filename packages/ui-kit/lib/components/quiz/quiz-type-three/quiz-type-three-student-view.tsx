@@ -124,10 +124,10 @@ const QuizTypeThreeStudentView: FC<QuizTypeThreeStudentViewProps> = ({
     setUserSelectedIndex(null);
   };
 
-  const [imageErrors, setImageErrors] = useState({});
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
 
   // Handler for image error per option
-  const handleImageError = (index) => {
+  const handleImageError = (index: number) => {
     setImageErrors((prev) => ({ ...prev, [index]: true }));
   };
   return (
