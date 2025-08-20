@@ -516,11 +516,15 @@ export const listLessonComponents = t.procedure
 
 export const saveLessonComponents = t.procedure
     .input(useCaseModels.SaveLessonComponentsRequestSchema)
-    .query(
+    .mutation(
         async (): Promise<useCaseModels.TSaveLessonComponentsUseCaseResponse> => {
+            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
             return {
                 success: true,
-                data: listLessonComponentsMock,
+                data: {
+                    ...listLessonComponentsMock,
+                    components: listLessonComponentsMock.components.slice(0, 3),
+                },
             };
         },
     );

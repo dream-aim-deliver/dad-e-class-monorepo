@@ -49,6 +49,7 @@ import {
 } from '../../common/component-renderers';
 import { useLessonComponents } from './hooks/edit-lesson-hooks';
 import { transformLessonComponents } from '../../../utils/transform-lesson-components';
+import { useSaveLesson } from './hooks/save-hooks';
 
 interface EditLessonProps {
     lessonId: number;
@@ -122,8 +123,15 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         setCourseVersion(lessonComponentsViewModel.data.courseVersion);
     }, [lessonComponentsViewModel]);
 
-    const [components, setComponents] = useState<LessonElement[]>([]);
     const [courseVersion, setCourseVersion] = useState<number | null>(null);
+    const { components, setComponents, saveLesson, isSaving } = useSaveLesson({
+        lessonId,
+        courseVersion,
+        setCourseVersion,
+        errorMessage: null,
+        setErrorMessage: () => {},
+    });
+
     const [isPreviewing, setIsPreviewing] = useState(false);
 
     const simpleComponentButtons: LessonComponentButton[] = [
@@ -325,6 +333,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         if (newErrors.size > 0) {
             return;
         }
+        saveLesson();
     };
 
     // As we don't need to track progress, leave this map empty
@@ -347,7 +356,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                 }}
                 onSave={onSave}
                 disablePreview={false}
-                isSaving={false}
+                isSaving={isSaving}
                 isPreviewing={isPreviewing}
             />
             {isPreviewing && (

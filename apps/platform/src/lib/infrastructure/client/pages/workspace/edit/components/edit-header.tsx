@@ -39,7 +39,7 @@ export default function EditHeader({
                     text={previewButtonText}
                     className="px-0"
                     onClick={onPreview}
-                    disabled={disablePreview}
+                    disabled={disablePreview || isSaving}
                 />
                 <Button
                     variant="primary"
@@ -47,7 +47,7 @@ export default function EditHeader({
                     hasIconLeft
                     text={isSaving ? 'Saving...' : 'Save draft'}
                     onClick={onSave}
-                    disabled={isSaving}
+                    disabled={isSaving || isPreviewing}
                 />
             </div>
         </div>
