@@ -25,6 +25,109 @@ function transformRichText(
     };
 }
 
+function transformHeading(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'heading' }> {
+    if (component.type !== FormElementType.HeadingText) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'heading',
+        order: order,
+        text: component.heading,
+        size: component.headingType as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6',
+    };
+}
+
+function transformTextInput(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'textInput' }> {
+    if (component.type !== FormElementType.TextInput) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'textInput',
+        order: order,
+        helperText: component.helperText,
+        required: component.required ?? false,
+    };
+}
+
+function transformSingleChoice(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'singleChoice' }> {
+    if (component.type !== FormElementType.SingleChoice) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'singleChoice',
+        order: order,
+        title: component.title,
+        options: component.options.map((option) => ({
+            name: option.name,
+        })),
+        required: component.required ?? false,
+    };
+}
+
+function transformMultipleChoice(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'multipleChoice' }> {
+    if (component.type !== FormElementType.MultiCheck) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'multipleChoice',
+        order: order,
+        title: component.title,
+        options: component.options.map((option) => ({
+            name: option.name,
+        })),
+        required: component.required ?? false,
+    };
+}
+
+function transformOneOutOfThree(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'oneOutOfThree' }> {
+    if (component.type !== FormElementType.OneOutOfThree) {
+        throw new Error('Invalid component type');
+    }
+
+    // Extract unique column titles from all rows
+    const columnSet = new Set<string>();
+    component.data.rows.forEach((row) => {
+        row.columns.forEach((column) => {
+            columnSet.add(column.columnTitle);
+        });
+    });
+
+    return {
+        id: component.id,
+        type: 'oneOutOfThree',
+        order: order,
+        title: component.data.tableTitle,
+        columns: Array.from(columnSet).map((name) => ({ name })),
+        rows: component.data.rows.map((row) => ({
+            name: row.rowTitle,
+        })),
+        required: component.required ?? false,
+    };
+}
+
 const transformerPerType: Record<
     CourseElementType | FormElementType,
     (
@@ -98,31 +201,11 @@ const transformerPerType: Record<
         throw new Error('Function not implemented.');
     },
     [FormElementType.RichText]: transformRichText,
-    [FormElementType.SingleChoice]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [FormElementType.MultiCheck]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [FormElementType.TextInput]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [FormElementType.HeadingText]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [FormElementType.OneOutOfThree]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
+    [FormElementType.SingleChoice]: transformSingleChoice,
+    [FormElementType.MultiCheck]: transformMultipleChoice,
+    [FormElementType.TextInput]: transformTextInput,
+    [FormElementType.HeadingText]: transformHeading,
+    [FormElementType.OneOutOfThree]: transformOneOutOfThree,
 };
 
 export function transformLessonToRequest(

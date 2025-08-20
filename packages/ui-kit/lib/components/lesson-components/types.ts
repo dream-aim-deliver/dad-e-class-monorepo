@@ -69,7 +69,6 @@ export interface TextInputElement extends BaseFormElement {
     type: FormElementType.TextInput;
     helperText: string;
     content?: string;
-    isRequired?: boolean;
 }
 
 /**
