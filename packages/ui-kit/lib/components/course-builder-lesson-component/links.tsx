@@ -16,10 +16,10 @@ import { IconPlus } from '../icons/icon-plus';
 import { set } from 'zod';
 
 const linksElement: CourseElementTemplate = {
-    type: CourseElementType.Quiz,
+    type: CourseElementType.Links,
     designerBtnElement: {
-        icon: IconQuiz,
-        label: 'Quiz',
+        icon: IconLink,
+        label: 'Links',
     },
     // @ts-ignore
     designerComponent: DesignerComponent,

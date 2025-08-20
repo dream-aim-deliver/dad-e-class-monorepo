@@ -16,7 +16,6 @@ import linksElement from "../course-builder-lesson-component/links";
  */
 export const courseElements: CourseElementRegistry = {
     [CourseElementType.CoachingSession]: coachingSessionElement,
-    [CourseElementType.Quiz]: quizElement,
     [CourseElementType.ImageFile]: imageFilesElement,
     [CourseElementType.VideoFile]: videoFileElement,
     [CourseElementType.ImageGallery]: imageGalleryElement,

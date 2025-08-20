@@ -474,7 +474,6 @@ const progressAppliers: Record<
     [CourseElementType.ImageGallery]: undefined,
     [CourseElementType.DownloadFiles]: undefined,
     [CourseElementType.UploadFiles]: undefined,
-    [CourseElementType.Quiz]: undefined,
     [CourseElementType.QuizTypeOne]: undefined,
     [CourseElementType.QuizTypeTwo]: undefined,
     [CourseElementType.QuizTypeThree]: undefined,

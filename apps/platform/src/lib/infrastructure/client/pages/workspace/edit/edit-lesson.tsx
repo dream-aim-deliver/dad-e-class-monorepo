@@ -232,7 +232,6 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                     id: generateTempId(),
                     type: FormElementType.TextInput,
                     helperText: '',
-                    isRequired: false,
                 };
                 setComponents((prev) => [...prev, newComponent]);
             },

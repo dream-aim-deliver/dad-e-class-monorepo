@@ -25,7 +25,7 @@ import QuizTypeThree from '../quiz/quiz-type-three/quiz-type-three';
 import QuizTypeFour from '../quiz/quiz-type-four/quiz-type-four';
 
 const quizElement: CourseElementTemplate = {
-    type: CourseElementType.Quiz,
+    type: CourseElementType.QuizTypeOne,
     designerBtnElement: {
         icon: IconQuiz,
         label: 'Quiz',
