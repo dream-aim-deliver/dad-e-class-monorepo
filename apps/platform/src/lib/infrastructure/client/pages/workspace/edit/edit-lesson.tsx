@@ -123,14 +123,15 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         );
         setCourseVersion(lessonComponentsViewModel.data.courseVersion);
     }, [lessonComponentsViewModel]);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const [courseVersion, setCourseVersion] = useState<number | null>(null);
     const { components, setComponents, saveLesson, isSaving } = useSaveLesson({
         lessonId,
         courseVersion,
         setCourseVersion,
-        errorMessage: null,
-        setErrorMessage: () => {},
+        errorMessage,
+        setErrorMessage,
     });
 
     const [isPreviewing, setIsPreviewing] = useState(false);
@@ -364,6 +365,13 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                 isSaving={isSaving}
                 isPreviewing={isPreviewing}
             />
+            {errorMessage && (
+                <DefaultError
+                    locale={locale}
+                    title="Error saving the lesson"
+                    description={errorMessage}
+                />
+            )}
             {isPreviewing && (
                 <PreviewRenderer
                     components={components}
