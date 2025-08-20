@@ -15,6 +15,7 @@ export function TabTrigger({
   value,
   children,
   className,
+  disabled,
   variant = 'default',
   ...props
 }: TabTriggerProps) {
@@ -29,6 +30,7 @@ export function TabTrigger({
       isActive
         ? 'flex items-center justify-center bg-button-primary-fill  rounded-medium   text-button-primary-text'
         : 'border-transparent text-text-primary',
+      disabled && 'opacity-50 cursor-not-allowed',
     ),
   };
 
@@ -38,6 +40,7 @@ export function TabTrigger({
       aria-selected={isActive}
       aria-controls={`panel-${value}`}
       tabIndex={isActive ? 0 : -1}
+      disabled={disabled}
       onClick={() => setActiveTab(value)}
       className={cn(baseStyles, variantStyles[variant], className)}
       {...props}

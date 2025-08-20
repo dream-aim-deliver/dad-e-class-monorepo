@@ -509,10 +509,7 @@ export const listLessonComponents = t.procedure
         async (): Promise<useCaseModels.TListLessonComponentsUseCaseResponse> => {
             return {
                 success: true,
-                data: {
-                    ...listLessonComponentsMock,
-                    components: [],
-                },
+                data: listLessonComponentsMock,
             };
         },
     );

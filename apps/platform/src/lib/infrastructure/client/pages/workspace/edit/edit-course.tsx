@@ -15,6 +15,7 @@ import { Suspense, useState } from 'react';
 import EditCourseStructure from './edit-course-structure';
 import { useSaveStructure } from './hooks/save-hooks';
 import EditHeader from './components/edit-header';
+import EnrolledCoursePreview from '../../course/enrolled-course/enrolled-course-preview';
 
 interface EditCourseProps {
     slug: string;
@@ -49,6 +50,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
         errorMessage,
         setErrorMessage,
     });
+    const [isPreviewing, setIsPreviewing] = useState(false);
 
     const handleTabChange = (value: string) => {
         if (isEdited) {
@@ -67,8 +69,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
     };
 
     const handlePreview = () => {
-        // TODO: Implement preview functionality
-        console.log('Preview clicked for course:', slug);
+        setIsPreviewing((prev) => !prev);
     };
 
     const handleSave = async () => {
@@ -81,6 +82,8 @@ export default function EditCourse({ slug }: EditCourseProps) {
         }
     };
 
+    const isSaving = isSavingCourseStructure;
+
     return (
         <div className="flex flex-col gap-4">
             <EditHeader
@@ -89,19 +92,29 @@ export default function EditCourse({ slug }: EditCourseProps) {
                 onSave={handleSave}
                 disablePreview={isEdited || isSavingCourseStructure}
                 isSaving={isSavingCourseStructure}
+                isPreviewing={isPreviewing}
             />
             <Tabs.Root
                 defaultTab={TabTypes.General}
                 onValueChange={handleTabChange}
             >
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
-                    <Tabs.Trigger value={TabTypes.General}>
+                    <Tabs.Trigger
+                        value={TabTypes.General}
+                        disabled={isSaving || isPreviewing}
+                    >
                         General
                     </Tabs.Trigger>
-                    <Tabs.Trigger value={TabTypes.IntroOutline}>
+                    <Tabs.Trigger
+                        value={TabTypes.IntroOutline}
+                        disabled={isSaving || isPreviewing}
+                    >
                         Intro & Outline
                     </Tabs.Trigger>
-                    <Tabs.Trigger value={TabTypes.CourseContent}>
+                    <Tabs.Trigger
+                        value={TabTypes.CourseContent}
+                        disabled={isSaving || isPreviewing}
+                    >
                         Course Content
                     </Tabs.Trigger>
                 </Tabs.List>
@@ -141,16 +154,21 @@ export default function EditCourse({ slug }: EditCourseProps) {
                     value={TabTypes.CourseContent}
                     className={tabContentClass}
                 >
-                    <Suspense fallback={<DefaultLoading locale={locale} />}>
-                        <EditCourseStructure
-                            slug={slug}
-                            isEdited={isEdited}
-                            setIsEdited={setIsEdited}
-                            modules={modules}
-                            setModules={setModules}
-                            setCourseVersion={setCourseVersion}
-                        />
-                    </Suspense>
+                    {isPreviewing && (
+                        <EnrolledCoursePreview courseSlug={slug} />
+                    )}
+                    {!isPreviewing && (
+                        <Suspense fallback={<DefaultLoading locale={locale} />}>
+                            <EditCourseStructure
+                                slug={slug}
+                                isEdited={isEdited}
+                                setIsEdited={setIsEdited}
+                                modules={modules}
+                                setModules={setModules}
+                                setCourseVersion={setCourseVersion}
+                            />
+                        </Suspense>
+                    )}
                 </Tabs.Content>
             </Tabs.Root>
         </div>
