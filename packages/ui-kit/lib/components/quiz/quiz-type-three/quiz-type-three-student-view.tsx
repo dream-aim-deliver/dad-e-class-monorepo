@@ -73,8 +73,8 @@ const QuizTypeThreeStudentView: FC<QuizTypeThreeStudentViewProps> = ({
   // Sync state with props on mount or prop change
   useEffect(() => {
     setOptions(elementInstance.options.map(opt => ({ 
-      imageId: opt.imageFile.id,
-      imageThumbnailUrl: opt.imageFile.thumbnailUrl,
+      imageId: opt.imageFile?.id ?? '',
+      imageThumbnailUrl: opt.imageFile?.thumbnailUrl ?? '',
       description: opt.description,
       correct: opt.id === elementInstance.correctOptionId,
       selected: false,
@@ -124,11 +124,11 @@ const QuizTypeThreeStudentView: FC<QuizTypeThreeStudentViewProps> = ({
     setUserSelectedIndex(null);
   };
 
-  const [imageErrors, setImageErrors] = useState({});
+  const [imageErrors, setImageErrors] = useState<Map<number, boolean>>(() => new Map());
 
   // Handler for image error per option
-  const handleImageError = (index) => {
-    setImageErrors((prev) => ({ ...prev, [index]: true }));
+  const handleImageError = (index: number) => {
+    setImageErrors((prev) => new Map(prev).set(index, true));
   };
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -150,7 +150,7 @@ const QuizTypeThreeStudentView: FC<QuizTypeThreeStudentViewProps> = ({
 
           // Determine if placeholder should be shown
           const shouldShowPlaceholder =
-            !choice.imageThumbnailUrl || imageErrors[index];
+            !choice.imageThumbnailUrl || imageErrors.get(index);
 
           return (
             <div key={index} className="flex flex-col gap-3">

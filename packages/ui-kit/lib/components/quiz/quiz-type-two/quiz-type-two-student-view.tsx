@@ -136,7 +136,8 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
         if (selectedIndexes.some((idx) => idx === -1)) return;
         const allCorrect = groups.every((group, gi) => {
             const selIdx = selectedIndexes[gi];
-            return selIdx !== -1 && group.options[selIdx]?.correct;
+            if (selIdx === null || selIdx === -1) return false;
+            return group.options[selIdx]?.correct;
         });
         setIsCorrect(allCorrect);
         setChecked(true);

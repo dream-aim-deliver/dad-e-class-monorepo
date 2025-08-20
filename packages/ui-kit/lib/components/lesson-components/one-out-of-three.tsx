@@ -12,6 +12,7 @@ const oneOutOfThreeElement: FormElementTemplate = {
         icon: IconOneOutOfThree,
         label: "One Out Of Three"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
