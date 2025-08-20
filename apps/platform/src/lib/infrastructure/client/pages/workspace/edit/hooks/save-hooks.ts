@@ -11,6 +11,7 @@ import { useSaveLessonComponentsPresenter } from '../../../../hooks/use-save-les
 import { LessonElement } from '@maany_shr/e-class-ui-kit';
 import { transformLessonComponents } from '../../../../utils/transform-lesson-components';
 import { set } from 'zod';
+import { transformLessonToRequest } from '../utils/lesson-to-request';
 
 interface SaveStructureProps {
     slug: string;
@@ -75,7 +76,7 @@ export function useSaveStructure({
         if (saveCourseStructureMutation.isError) {
             setErrorMessage(
                 saveCourseStructureMutation.error?.message ||
-                'Failed to save course',
+                    'Failed to save course',
             );
         }
     }, [
@@ -137,13 +138,13 @@ export function useSaveLesson({
     const [components, setComponents] = useState<LessonElement[]>([]);
 
     const saveLessonMutation = trpc.saveLessonComponents.useMutation();
-    const [saveLessonViewModel, setSaveLessonViewModel] =
-        useState<viewModels.TSaveLessonComponentsViewModel | undefined>(
-            undefined,
-        );
+    const [saveLessonViewModel, setSaveLessonViewModel] = useState<
+        viewModels.TSaveLessonComponentsViewModel | undefined
+    >(undefined);
 
-    const { presenter: saveLessonPresenter } =
-        useSaveLessonComponentsPresenter(setSaveLessonViewModel);
+    const { presenter: saveLessonPresenter } = useSaveLessonComponentsPresenter(
+        setSaveLessonViewModel,
+    );
 
     useEffect(() => {
         if (saveLessonMutation.isSuccess) {
@@ -160,7 +161,7 @@ export function useSaveLesson({
             saveLessonViewModel?.mode === 'default'
         ) {
             const transformedComponents = transformLessonComponents(
-                saveLessonViewModel.data.components
+                saveLessonViewModel.data.components,
             );
             setComponents(transformedComponents);
             setCourseVersion(saveLessonViewModel.data.courseVersion);
@@ -181,14 +182,10 @@ export function useSaveLesson({
     useEffect(() => {
         if (saveLessonMutation.isError) {
             setErrorMessage(
-                saveLessonMutation.error?.message ||
-                'Failed to save lesson',
+                saveLessonMutation.error?.message || 'Failed to save lesson',
             );
         }
-    }, [
-        saveLessonMutation.isError,
-        saveLessonMutation.error,
-    ]);
+    }, [saveLessonMutation.isError, saveLessonMutation.error]);
 
     const saveLesson = useCallback(async () => {
         if (courseVersion === null) {
@@ -199,10 +196,12 @@ export function useSaveLesson({
         setErrorMessage(null);
 
         try {
+            const requestComponents = transformLessonToRequest(components);
+
             const result = await saveLessonMutation.mutateAsync({
                 lessonId: lessonId,
                 courseVersion: courseVersion,
-                components: [],
+                components: requestComponents,
             });
 
             return result;
