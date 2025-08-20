@@ -62,11 +62,13 @@ interface EditLessonProps {
  The issue most likely happens due to a lot of heavy component imports.
  We should test this in production and see if the issue persists.
 */
+const LoadingComponent = () => {
+    const locale = useLocale() as TLocale;
+    return <DefaultLoading locale={locale} />;
+};
+
 const EditLessonComponents = dynamic(() => import('./edit-lesson-components'), {
-    loading: () => {
-        const locale = useLocale() as TLocale;
-        return <DefaultLoading locale={locale} />;
-    },
+    loading: LoadingComponent,
     ssr: false,
 });
 
@@ -189,7 +191,9 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconLink />,
             label: 'Link',
-            onClick: () => {},
+            onClick: () => {
+                // TODO: Implement link component
+            },
         },
         {
             icon: <IconCloudDownload />,
@@ -293,7 +297,9 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         {
             icon: <IconCoachingSession />,
             label: 'Coaching Session',
-            onClick: () => {},
+            onClick: () => {
+                // TODO: Implement coaching session component
+            },
         },
     ];
 

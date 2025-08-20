@@ -1,4 +1,4 @@
-import EditLessonServerComponent from 'apps/platform/src/lib/infrastructure/server/pages/workspace/edit-lesson-rsx';
+import EditLessonServerComponent from '../../../../../../lib/infrastructure/server/pages/workspace/edit-lesson-rsx';
 
 export default async function Page({
     params: paramsPromise,

@@ -248,8 +248,6 @@ function VideoComponent({
     onDownClick,
     onDeleteClick,
 }: LessonComponentProps) {
-    if (elementInstance.type !== CourseElementType.VideoFile) return null;
-
     const updateComponent = (
         comp: LessonElement,
         updated: Partial<LessonElement>,
@@ -277,18 +275,20 @@ function VideoComponent({
         setFile(null);
     };
 
-    const handleDownload = () => {
-        if (elementInstance.file) {
-            downloadFile(elementInstance.file.url, elementInstance.file.name);
-        }
-    };
-
     const { uploadError, handleFileChange, handleUploadComplete } =
         useFileUpload({
             lessonId,
             componentType: 'video',
             setFile,
         });
+
+    if (elementInstance.type !== CourseElementType.VideoFile) return null;
+
+    const handleDownload = () => {
+        if (elementInstance.file) {
+            downloadFile(elementInstance.file.url, elementInstance.file.name);
+        }
+    };
 
     const onVideoUpload = async (
         fileRequest: fileMetadata.TFileUploadRequest,
@@ -330,8 +330,6 @@ function ImageComponent({
     onDownClick,
     onDeleteClick,
 }: LessonComponentProps) {
-    if (elementInstance.type !== CourseElementType.ImageFile) return null;
-
     const updateComponent = (
         comp: LessonElement,
         updated: Partial<LessonElement>,
@@ -359,18 +357,20 @@ function ImageComponent({
         setFile(null);
     };
 
-    const handleDownload = () => {
-        if (elementInstance.file) {
-            downloadFile(elementInstance.file.url, elementInstance.file.name);
-        }
-    };
-
     const { uploadError, handleFileChange, handleUploadComplete } =
         useFileUpload({
             lessonId,
             componentType: 'image',
             setFile,
         });
+
+    if (elementInstance.type !== CourseElementType.ImageFile) return null;
+
+    const handleDownload = () => {
+        if (elementInstance.file) {
+            downloadFile(elementInstance.file.url, elementInstance.file.name);
+        }
+    };
 
     const onImageUpload = async (
         fileRequest: fileMetadata.TFileUploadRequest,
@@ -412,8 +412,6 @@ function ImageGalleryComponent({
     onDownClick,
     onDeleteClick,
 }: LessonComponentProps) {
-    if (elementInstance.type !== CourseElementType.ImageGallery) return null;
-
     const updateComponent = (
         comp: LessonElement,
         updated: Partial<LessonElement>,
@@ -427,6 +425,7 @@ function ImageGalleryComponent({
     };
 
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
+        if (elementInstance.type !== CourseElementType.ImageGallery) return;
         const existingImages = elementInstance.images
             ? [...elementInstance.images]
             : [];
@@ -445,6 +444,15 @@ function ImageGalleryComponent({
             ),
         );
     };
+
+    const { uploadError, handleFileChange, handleUploadComplete } =
+        useFileUpload({
+            lessonId,
+            componentType: 'image',
+            setFile,
+        });
+
+    if (elementInstance.type !== CourseElementType.ImageGallery) return null;
 
     const handleDelete = (imageId: string) => {
         const filteredImages =
@@ -468,13 +476,6 @@ function ImageGalleryComponent({
             downloadFile(file.url, file.name);
         }
     };
-
-    const { uploadError, handleFileChange, handleUploadComplete } =
-        useFileUpload({
-            lessonId,
-            componentType: 'image',
-            setFile,
-        });
 
     const onImageUpload = async (
         fileRequest: fileMetadata.TFileUploadRequest,
@@ -516,8 +517,6 @@ function DownloadFilesComponent({
     onDownClick,
     onDeleteClick,
 }: LessonComponentProps) {
-    if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
-
     const updateComponent = (
         comp: LessonElement,
         updated: Partial<LessonElement>,
@@ -531,6 +530,7 @@ function DownloadFilesComponent({
     };
 
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
+        if (elementInstance.type !== CourseElementType.DownloadFiles) return;
         const existingFiles = elementInstance.files
             ? [...elementInstance.files]
             : [];
@@ -550,6 +550,22 @@ function DownloadFilesComponent({
         );
     };
 
+    const { uploadError, handleFileChange, handleUploadComplete } =
+        useFileUpload({
+            lessonId,
+            componentType: 'downloadFiles',
+            setFile,
+        });
+
+    if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
+
+    const handleDownload = (id: string) => {
+        const file = elementInstance.files?.find((file) => file.id === id);
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
+
     const handleDelete = (fileId: string) => {
         const filteredFiles =
             elementInstance.files?.filter((file: any) => file.id !== fileId) ??
@@ -564,20 +580,6 @@ function DownloadFilesComponent({
             ),
         );
     };
-
-    const handleDownload = (id: string) => {
-        const file = elementInstance.files?.find((file) => file.id === id);
-        if (file) {
-            downloadFile(file.url, file.name);
-        }
-    };
-
-    const { uploadError, handleFileChange, handleUploadComplete } =
-        useFileUpload({
-            lessonId,
-            componentType: 'downloadFiles',
-            setFile,
-        });
 
     return (
         <div className="flex flex-col gap-2">
@@ -919,8 +921,6 @@ function QuizTypeOneComponent({
     onDownClick,
     onDeleteClick,
 }: LessonComponentProps) {
-    if (elementInstance.type !== CourseElementType.QuizTypeOne) return null;
-
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeOne) return;
 
@@ -968,19 +968,21 @@ function QuizTypeOneComponent({
         );
     };
 
-    const handleDownload = () => {
-        const file = elementInstance.imageFile;
-        if (file) {
-            downloadFile(file.url, file.name);
-        }
-    };
-
     const { uploadError, handleFileChange, handleUploadComplete } =
         useFileUpload({
             lessonId,
             componentType: 'quizTypeOne',
             setFile,
         });
+
+    if (elementInstance.type !== CourseElementType.QuizTypeOne) return null;
+
+    const handleDownload = () => {
+        const file = elementInstance.imageFile;
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
 
     return (
         <QuizDesignerComponent
@@ -1011,8 +1013,6 @@ function QuizTypeTwoComponent({
     onDownClick,
     onDeleteClick,
 }: LessonComponentProps) {
-    if (elementInstance.type !== CourseElementType.QuizTypeTwo) return null;
-
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeTwo) return;
 
@@ -1060,19 +1060,21 @@ function QuizTypeTwoComponent({
         );
     };
 
-    const handleDownload = () => {
-        const file = elementInstance.imageFile;
-        if (file) {
-            downloadFile(file.url, file.name);
-        }
-    };
-
     const { uploadError, handleFileChange, handleUploadComplete } =
         useFileUpload({
             lessonId,
             componentType: 'quizTypeTwo',
             setFile,
         });
+
+    if (elementInstance.type !== CourseElementType.QuizTypeTwo) return null;
+
+    const handleDownload = () => {
+        const file = elementInstance.imageFile;
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
 
     return (
         <QuizDesignerComponent
@@ -1103,8 +1105,6 @@ function QuizTypeThreeComponent({
     onDownClick,
     onDeleteClick,
 }: LessonComponentProps) {
-    if (elementInstance.type !== CourseElementType.QuizTypeThree) return null;
-
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeThree) return;
 
@@ -1175,15 +1175,6 @@ function QuizTypeThreeComponent({
         );
     };
 
-    const handleDownload = (id: string) => {
-        const file = elementInstance.options?.find(
-            (option) => option.imageFile?.id === id,
-        )?.imageFile;
-        if (file) {
-            downloadFile(file.url, file.name);
-        }
-    };
-
     const handleUploadComplete = (
         file: fileMetadata.TFileMetadata,
         index: number,
@@ -1195,6 +1186,17 @@ function QuizTypeThreeComponent({
         lessonId,
         componentType: 'quizTypeThree',
     });
+
+    if (elementInstance.type !== CourseElementType.QuizTypeThree) return null;
+
+    const handleDownload = (id: string) => {
+        const file = elementInstance.options?.find(
+            (option) => option.imageFile?.id === id,
+        )?.imageFile;
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
 
     return (
         <QuizDesignerComponent
@@ -1225,8 +1227,6 @@ function QuizTypeFourComponent({
     onDownClick,
     onDeleteClick,
 }: LessonComponentProps) {
-    if (elementInstance.type !== CourseElementType.QuizTypeFour) return null;
-
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeFour) return;
 
@@ -1297,15 +1297,6 @@ function QuizTypeFourComponent({
         );
     };
 
-    const handleDownload = (id: string) => {
-        const file = elementInstance.images?.find(
-            (image) => image.imageFile?.id === id,
-        )?.imageFile;
-        if (file) {
-            downloadFile(file.url, file.name);
-        }
-    };
-
     const handleUploadComplete = (
         file: fileMetadata.TFileMetadata,
         index: number,
@@ -1317,6 +1308,17 @@ function QuizTypeFourComponent({
         lessonId,
         componentType: 'quizTypeFour',
     });
+
+    if (elementInstance.type !== CourseElementType.QuizTypeFour) return null;
+
+    const handleDownload = (id: string) => {
+        const file = elementInstance.images?.find(
+            (image) => image.imageFile?.id === id,
+        )?.imageFile;
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
 
     return (
         <QuizDesignerComponent

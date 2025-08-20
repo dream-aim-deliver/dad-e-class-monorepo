@@ -67,13 +67,13 @@ export default class SaveCourseStructurePresenter extends BasePresenter<
             return {
                 mode: 'conflict',
                 data: {
-                    // @ts-ignore
+                    // @ts-expect-error The factory doesn't provide proper typing for custom errors
                     type: response.data.errorType,
                     message: response.data.message,
                     operation: response.data.operation,
                     context: response.data.context,
                     trace: undefined,
-                    // @ts-ignore
+                    // @ts-expect-error The factory doesn't provide proper typing for custom errors
                     courseVersion: response.data.courseVersion,
                 },
             };

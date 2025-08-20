@@ -62,7 +62,7 @@ export function useSaveStructure({
             setErrorMessage(
                 `The course has been updated by another user. Please refresh the page to see the latest changes or click save to overwrite them.`,
             );
-            // @ts-ignore
+            // @ts-expect-error The factory doesn't provide proper typing for custom errors
             setCourseVersion(saveCourseStructureViewModel.data.courseVersion);
         }
     }, [saveCourseStructureViewModel, saveCourseStructureMutation.isSuccess]);
