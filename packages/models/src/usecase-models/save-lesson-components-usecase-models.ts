@@ -61,17 +61,17 @@ const OneOutOfThreeComponentSchema = BaseComponentSchema.extend({
 
 const VideoComponentSchema = BaseComponentSchema.extend({
   type: z.literal('video'),
-  videoFileId: z.number().int(),
+  videoFileId: z.string(),
 });
 
 const ImageComponentSchema = BaseComponentSchema.extend({
   type: z.literal('image'),
-  imageFileId: z.number().int(),
+  imageFileId: z.string(),
 });
 
 const ImageCarouselComponentSchema = BaseComponentSchema.extend({
   type: z.literal('imageCarousel'),
-  imageFileIds: z.array(z.number().int()),
+  imageFileIds: z.array(z.string()),
 });
 
 const LinksComponentSchema = BaseComponentSchema.extend({
@@ -79,13 +79,13 @@ const LinksComponentSchema = BaseComponentSchema.extend({
   links: z.array(z.object({
     title: z.string(),
     url: z.string(),
-    iconFileId: z.number().int().nullable(),
+    iconFileId: z.string().nullable(),
   })),
 });
 
 const DownloadFilesComponentSchema = BaseComponentSchema.extend({
   type: z.literal('downloadFiles'),
-  fileIds: z.array(z.number().int()),
+  fileIds: z.array(z.string()),
 });
 
 const UploadFilesComponentSchema = BaseComponentSchema.extend({
@@ -97,7 +97,7 @@ const QuizTypeOneComponentSchema = BaseComponentSchema.extend({
   type: z.literal('quizTypeOne'),
   title: z.string(),
   description: z.string(),
-  imageFileId: z.number().int(),
+  imageFileId: z.string(),
   options: z.array(z.object({
     name: z.string(),
     isCorrect: z.boolean(),
@@ -108,7 +108,7 @@ const QuizTypeTwoComponentSchema = BaseComponentSchema.extend({
   type: z.literal('quizTypeTwo'),
   title: z.string(),
   description: z.string(),
-  imageFileId: z.number().int(),
+  imageFileId: z.string(),
   groups: z.array(z.object({
     title: z.string(),
     options: z.array(z.object({
@@ -123,7 +123,7 @@ const QuizTypeThreeComponentSchema = BaseComponentSchema.extend({
   title: z.string(),
   description: z.string(),
   options: z.array(z.object({
-    imageFileId: z.number().int(),
+    imageFileId: z.string(),
     description: z.string(),
     isCorrect: z.boolean(),
   })),
@@ -134,7 +134,7 @@ const QuizTypeFourComponentSchema = BaseComponentSchema.extend({
   title: z.string(),
   description: z.string(),
   options: z.array(z.object({
-    imageFileId: z.number().int(),
+    imageFileId: z.string(),
     description: z.string(),
   })),
 });

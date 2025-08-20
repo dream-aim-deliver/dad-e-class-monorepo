@@ -8,8 +8,6 @@ import { AssignmentElement, CoachingElement, ImageElement, ImageGallery, VideoEl
 export enum CourseElementType {
     /** Represents a coaching session element */
     CoachingSession = "coachingSession",
-    /** Represents a quiz element */
-    Quiz = 'quiz',
     /** Represents an image file element */
     ImageFile = "imageFile",
     /** Represents a video file element */

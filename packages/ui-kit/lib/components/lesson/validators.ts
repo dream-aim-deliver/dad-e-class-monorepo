@@ -8,9 +8,6 @@ export const validatorPerType: Record<CourseElementType | FormElementType, Eleme
     [CourseElementType.CoachingSession]: function (): string | undefined {
         return undefined;
     },
-    [CourseElementType.Quiz]: function (): string | undefined {
-        return undefined;
-    },
     [CourseElementType.ImageFile]: function (): string | undefined {
         return undefined;
     },

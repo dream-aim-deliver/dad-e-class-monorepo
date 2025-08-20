@@ -128,6 +128,199 @@ function transformOneOutOfThree(
     };
 }
 
+function transformVideo(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'video' }> {
+    if (component.type !== CourseElementType.VideoFile) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'video',
+        order: order,
+        videoFileId: component.file!.id,
+    };
+}
+
+function transformImage(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'image' }> {
+    if (component.type !== CourseElementType.ImageFile) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'image',
+        order: order,
+        imageFileId: component.file!.id,
+    };
+}
+
+function transformImageCarousel(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'imageCarousel' }> {
+    if (component.type !== CourseElementType.ImageGallery) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'imageCarousel',
+        order: order,
+        imageFileIds: component.images!.map((image) => image.id),
+    };
+}
+
+function transformLinks(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'links' }> {
+    if (component.type !== CourseElementType.Links) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'links',
+        order: order,
+        links: component.links.map((link) => ({
+            title: link.title,
+            url: link.url,
+            iconFileId: link.customIcon?.id || null,
+        })),
+    };
+}
+
+function transformDownloadFiles(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'downloadFiles' }> {
+    if (component.type !== CourseElementType.DownloadFiles) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'downloadFiles',
+        order: order,
+        fileIds: component.files!.map((file) => file.id),
+    };
+}
+
+function transformUploadFiles(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'uploadFiles' }> {
+    if (component.type !== CourseElementType.UploadFiles) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'uploadFiles',
+        order: order,
+        description: component.description || '',
+    };
+}
+
+function transformQuizTypeOne(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'quizTypeOne' }> {
+    if (component.type !== CourseElementType.QuizTypeOne) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'quizTypeOne',
+        order: order,
+        title: component.title,
+        description: component.description,
+        imageFileId: component.imageFile!.id,
+        options: component.options.map((option) => ({
+            name: option.name,
+            isCorrect: option.correct || false,
+        })),
+    };
+}
+
+function transformQuizTypeTwo(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'quizTypeTwo' }> {
+    if (component.type !== CourseElementType.QuizTypeTwo) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'quizTypeTwo',
+        order: order,
+        title: component.title,
+        description: component.description,
+        imageFileId: component.imageFile!.id,
+        groups: component.groups.map((group) => ({
+            title: group.title,
+            options: group.options.map((option) => ({
+                name: option.name,
+                isCorrect: option.correct || false,
+            })),
+        })),
+    };
+}
+
+function transformQuizTypeThree(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'quizTypeThree' }> {
+    if (component.type !== CourseElementType.QuizTypeThree) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'quizTypeThree',
+        order: order,
+        title: component.title,
+        description: component.description,
+        options: component.options.map((option) => ({
+            imageFileId: option.imageFile!.id,
+            description: option.description,
+            isCorrect: option.correct,
+        })),
+    };
+}
+
+function transformQuizTypeFour(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'quizTypeFour' }> {
+    if (component.type !== CourseElementType.QuizTypeFour) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: component.id,
+        type: 'quizTypeFour',
+        order: order,
+        title: component.title,
+        description: component.description,
+        options: component.images.map((image) => ({
+            imageFileId: image.imageFile!.id,
+            description:
+                component.labels.find(
+                    (label) => label.letter === image.correctLetter,
+                )?.description || '',
+        })),
+    };
+}
+
 const transformerPerType: Record<
     CourseElementType | FormElementType,
     (
@@ -135,71 +328,24 @@ const transformerPerType: Record<
         order: number,
     ) => useCaseModels.TSaveLessonComponentsRequest['components'][number]
 > = {
-    [CourseElementType.CoachingSession]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
+    [CourseElementType.CoachingSession]: () => {
+        // TODO: Implement transformation for CoachingSession
         throw new Error('Function not implemented.');
     },
-    [CourseElementType.Quiz]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
+    [CourseElementType.ImageFile]: transformImage,
+    [CourseElementType.VideoFile]: transformVideo,
+    [CourseElementType.ImageGallery]: transformImageCarousel,
+    [CourseElementType.DownloadFiles]: transformDownloadFiles,
+    [CourseElementType.UploadFiles]: transformUploadFiles,
+    [CourseElementType.Assignment]: () => {
+        // TODO: Implement transformation for Assignment
         throw new Error('Function not implemented.');
     },
-    [CourseElementType.ImageFile]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [CourseElementType.VideoFile]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [CourseElementType.ImageGallery]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [CourseElementType.DownloadFiles]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [CourseElementType.UploadFiles]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [CourseElementType.Assignment]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [CourseElementType.QuizTypeOne]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [CourseElementType.QuizTypeTwo]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [CourseElementType.QuizTypeThree]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [CourseElementType.QuizTypeFour]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
-    [CourseElementType.Links]: function (
-        component: LessonElement,
-    ): useCaseModels.TSaveLessonComponentsRequest['components'][number] {
-        throw new Error('Function not implemented.');
-    },
+    [CourseElementType.QuizTypeOne]: transformQuizTypeOne,
+    [CourseElementType.QuizTypeTwo]: transformQuizTypeTwo,
+    [CourseElementType.QuizTypeThree]: transformQuizTypeThree,
+    [CourseElementType.QuizTypeFour]: transformQuizTypeFour,
+    [CourseElementType.Links]: transformLinks,
     [FormElementType.RichText]: transformRichText,
     [FormElementType.SingleChoice]: transformSingleChoice,
     [FormElementType.MultiCheck]: transformMultipleChoice,
