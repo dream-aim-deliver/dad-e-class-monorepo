@@ -32,7 +32,8 @@ export default class LessonComponentsPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.SaveLessonComponentsUseCaseResponseSchema,
+                responseModel:
+                    useCaseModels.SaveLessonComponentsUseCaseResponseSchema,
                 viewModel: viewModels.SaveLessonComponentsViewModelSchema,
             },
             middleware: SaveLessonComponentsResponseMiddleware,
