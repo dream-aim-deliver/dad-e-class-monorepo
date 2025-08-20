@@ -624,7 +624,9 @@ function TextInputComponent({
     const onRequiredChange = (isRequired: boolean) => {
         setComponents((prev) =>
             prev.map((comp) =>
-                comp.id === elementInstance.id ? { ...comp, isRequired } : comp,
+                comp.id === elementInstance.id
+                    ? { ...comp, required: isRequired }
+                    : comp,
             ),
         );
     };
