@@ -46,6 +46,7 @@ const singleChoiceElement: FormElementTemplate = {
         icon: IconSingleChoice,
         label: "Single Choice"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
@@ -76,15 +77,20 @@ const singleChoiceElement: FormElementTemplate = {
  */
 
 
-function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+interface SingleChoiceDesignerProps extends DesignerComponentProps {
+    onChange: (title: string, options: optionsType[]) => void;
+    onRequiredChange: (isRequired: boolean) => void;
+}
+
+// TODO: Translate
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange }: SingleChoiceDesignerProps) {
     if (elementInstance.type !== FormElementType.SingleChoice) return null;
 
-    const [options, setOptions] = useState<optionsType[]>(elementInstance.options || []);
-    const [title, setTitle] = useState<string>(elementInstance.title || "");
     const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
 
     const handleRequiredChange = () => {
         setIsRequired(prev => !prev);
+        onRequiredChange(!isRequired);
     };
 
     return (
@@ -101,10 +107,10 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
             onChange={handleRequiredChange}
         >
             <SingleChoiceEdit
-                initialTitle={title}
-                initialOptions={options}
-
+                initialTitle={elementInstance.title}
+                initialOptions={elementInstance.options}
                 locale={locale}
+                onChange={onChange}
             />
         </DesignerLayout>
     );

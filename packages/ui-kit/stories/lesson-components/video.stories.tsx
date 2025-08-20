@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { courseElements } from '../../lib/components/course-builder/course-builder-core';
 import { CourseElementType } from '../../lib/components/course-builder/types';
 import { fileMetadata } from '@maany_shr/e-class-models';
-import { VideoFile as VideoFileType } from '../../lib/components/course-builder-lesson-component/types';
+import { VideoElement as VideoFileType } from '../../lib/components/course-builder-lesson-component/types';
 
 // Get components from courseElements
 const { designerComponent: DesignerComponent, formComponent: FormComponent } =

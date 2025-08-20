@@ -6,7 +6,7 @@ import { extractPlatformSpecificRoles } from "../utils";
 
 
 export class NextAuthGateway implements AuthGatewayOutputPort {
-    constructor(private nextAuth: NextAuthResult) {}
+    constructor(private nextAuth: NextAuthResult) { }
 
     async extractJWT(): Promise<TExtractJWTDTO> {
         const sessionDTO = await this.getSession();
@@ -100,14 +100,14 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
 
 
         const roles = user.roles;
-        if(!roles) {
+        if (!roles) {
             return {
                 success: true,
                 data: ["visitor", "student"]
             }
         }
         const platform = session.platform;
-        if(!platform) {
+        if (!platform) {
             throw new Error("CRITICAL! Platform not found in the session object")
         }
         const platformSpecificRoles = extractPlatformSpecificRoles(roles, platform);
@@ -118,7 +118,7 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
                 data: ["visitor", "student"]
             }
         }
-        if(platformSpecificRoles.length === 0) {
+        if (platformSpecificRoles.length === 0) {
             return {
                 success: true,
                 data: ["visitor", "student"]
@@ -133,7 +133,7 @@ export class NextAuthGateway implements AuthGatewayOutputPort {
             }
         }
 
-        if(platformSpecificRoles.includes("coach")) {
+        if (platformSpecificRoles.includes("coach")) {
             return {
                 success: true,
                 data: ["visitor", "student", "coach"]

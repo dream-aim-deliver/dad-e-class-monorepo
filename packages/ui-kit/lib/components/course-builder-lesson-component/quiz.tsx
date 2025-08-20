@@ -1,128 +1,214 @@
 import {
-  CourseElementTemplate,
-  CourseElementType,
-  DesignerComponentProps,
-  FormComponentProps
-} from "../course-builder/types";
+    CourseElement,
+    CourseElementTemplate,
+    CourseElementType,
+    DesignerComponentProps,
+    FormComponentProps,
+} from '../course-builder/types';
 
 // Inline QuizEdit dependencies
-import { Dropdown } from "../dropdown";
+import { Dropdown } from '../dropdown';
 import {
-  QuizType,
-  QuizTypeOneElement,
-  QuizTypeTwoElement,
-  QuizTypeThreeElement,
-  QuizTypeFourElement,
-  QuizTypeOneStudentViewElement,
-  QuizTypeTwoStudentViewElement,
-  QuizTypeThreeStudentViewElement,
-  QuizTypeFourStudentViewElement,
-} from "../course-builder-lesson-component/types";
-import QuizTypeOne from "../quiz/quiz-type-one/quiz-type-one";
-import QuizTypeTwo from "../quiz/quiz-type-two/quiz-type-two";
-import QuizTypeThree from "../quiz/quiz-type-three/quiz-type-three";
-import QuizTypeFour from "../quiz/quiz-type-four/quiz-type-four";
-import QuizTypeOneStudentView from "../quiz/quiz-type-one/quiz-type-one-student-view";
-import QuizTypeTwoStudentView from "../quiz/quiz-type-two/quiz-type-two-student-view";
-import QuizTypeThreeStudentView from "../quiz/quiz-type-three/quiz-type-three-student-view";
-import QuizTypeFourStudentView from "../quiz/quiz-type-four/quiz-type-four-student-view";
-import { getDictionary } from "@maany_shr/e-class-translations";
-import DesignerLayout from "../designer-layout";
-import { IconQuiz } from "../icons/icon-quiz";
+    QuizType,
+    QuizTypeFourElement,
+    QuizTypeOneElement,
+    QuizTypeThreeElement,
+    QuizTypeTwoElement,
+} from '../course-builder-lesson-component/types';
+import QuizTypeOne from '../quiz/quiz-type-one/quiz-type-one';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import DesignerLayout from '../designer-layout';
+import { IconQuiz } from '../icons/icon-quiz';
+import { fileMetadata } from '@maany_shr/e-class-models';
+import QuizTypeTwo from '../quiz/quiz-type-two/quiz-type-two';
+import QuizTypeThree from '../quiz/quiz-type-three/quiz-type-three';
+import QuizTypeFour from '../quiz/quiz-type-four/quiz-type-four';
 
 const quizElement: CourseElementTemplate = {
-  type: CourseElementType.Quiz,
-  designerBtnElement: {
-    icon: IconQuiz,
-    label: "Quiz"
-  },
-  designerComponent: DesignerComponent,
-  formComponent: formComponent,
+    type: CourseElementType.QuizTypeOne,
+    designerBtnElement: {
+        icon: IconQuiz,
+        label: 'Quiz',
+    },
+    // @ts-ignore
+    designerComponent: DesignerComponent,
+    formComponent: formComponent,
 };
 
-function DesignerComponent({
-  elementInstance,
-  onUpClick,
-  onDownClick,
-  onDeleteClick,
-  locale,
-}: DesignerComponentProps) {
-  if (elementInstance.type !== CourseElementType.Quiz) return null;
+interface QuizDesignerComponentProps extends DesignerComponentProps {
+    onTypeChange: (type: QuizType) => void;
+    onChange: (element: Partial<CourseElement>) => void;
+    onFileChange: (
+        file: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    onFileDelete: (fileId: string, index: number) => void;
+    onFileDownload: (id: string) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
+    uploadError: string | null;
+}
 
-  const quizType = elementInstance.quizType as QuizType;
+const getQuizType = (elementInstance: CourseElement): QuizType | undefined => {
+    if (elementInstance.type === CourseElementType.QuizTypeOne) {
+        return 'quizTypeOne';
+    }
+    if (elementInstance.type === CourseElementType.QuizTypeTwo) {
+        return 'quizTypeTwo';
+    }
+    if (elementInstance.type === CourseElementType.QuizTypeThree) {
+        return 'quizTypeThree';
+    }
+    if (elementInstance.type === CourseElementType.QuizTypeFour) {
+        return 'quizTypeFour';
+    }
+    return undefined;
+};
 
-  const dictionary = getDictionary(locale);
+export function DesignerComponent({
+    elementInstance,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+    locale,
+    onTypeChange,
+    onChange,
+    onFileChange,
+    onFileDelete,
+    onFileDownload,
+    onUploadComplete,
+    uploadError,
+}: QuizDesignerComponentProps) {
+    const quizType = getQuizType(elementInstance);
+    if (!quizType) return null;
 
-  // Options for dropdown
-  const typeOptions = [
-    { label: dictionary.components.quiz.typeOneText, value: "quizTypeOne" },
-    { label: dictionary.components.quiz.typeTwoText, value: "quizTypeTwo" },
-    { label: dictionary.components.quiz.typeThreeText, value: "quizTypeThree" },
-    { label: dictionary.components.quiz.typeFourText, value: "quizTypeFour" },
-  ];
+    const dictionary = getDictionary(locale);
 
-  return (
-    <DesignerLayout
-      type={elementInstance.type}
-      title={dictionary.components.quiz.quizText}
-      icon={<IconQuiz classNames="w-6 h-6" />}
-      onUpClick={() => onUpClick(elementInstance.id)}
-      onDownClick={() => onDownClick(elementInstance.id)}
-      onDeleteClick={() => onDeleteClick(elementInstance.id)}
-      locale={locale}
-      courseBuilder={true}
-    >
-      {/* Inline QuizEdit logic */}
-      <div className="flex flex-col gap-4 mt-4 w-full">
-        <Dropdown
-          type="simple"
-          options={typeOptions}
-          onSelectionChange={(selected) => elementInstance.onTypeChange(selected as QuizType)}
-          text={{ simpleText: "Select Quiz Type" }}
-          defaultValue={quizType}
-          className="w-fit"
-          buttonClassName="bg-base-neutral-700 border-base-neutral-600"
-        />
-        {quizType === "quizTypeOne" && (
-          <QuizTypeOne {...({ ...elementInstance, quizType, locale } as QuizTypeOneElement)} />
-        )}
-        {quizType === "quizTypeTwo" && (
-          <QuizTypeTwo {...({ ...elementInstance, quizType, locale } as QuizTypeTwoElement)} />
-        )}
-        {quizType === "quizTypeThree" && (
-          <QuizTypeThree {...({ ...elementInstance, quizType, locale } as QuizTypeThreeElement)} />
-        )}
-        {quizType === "quizTypeFour" && (
-          <QuizTypeFour {...({ ...elementInstance, quizType, locale } as QuizTypeFourElement)} />
-        )}
-      </div>
-    </DesignerLayout>
-  );
+    // Options for dropdown
+    const typeOptions = [
+        { label: dictionary.components.quiz.typeOneText, value: 'quizTypeOne' },
+        { label: dictionary.components.quiz.typeTwoText, value: 'quizTypeTwo' },
+        {
+            label: dictionary.components.quiz.typeThreeText,
+            value: 'quizTypeThree',
+        },
+        {
+            label: dictionary.components.quiz.typeFourText,
+            value: 'quizTypeFour',
+        },
+    ];
+
+    return (
+        <DesignerLayout
+            type={elementInstance.type}
+            title={dictionary.components.quiz.quizText}
+            icon={<IconQuiz classNames="w-6 h-6" />}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
+            locale={locale}
+            courseBuilder={true}
+        >
+            {/* Inline QuizEdit logic */}
+            <div className="flex flex-col gap-4 mt-4 w-full">
+                <Dropdown
+                    type="simple"
+                    options={typeOptions}
+                    onSelectionChange={(selected) =>
+                        onTypeChange(selected as QuizType)
+                    }
+                    text={{ simpleText: 'Select Quiz Type' }}
+                    defaultValue={quizType}
+                    className="w-fit"
+                    buttonClassName="bg-base-neutral-700 border-base-neutral-600"
+                />
+                {quizType === 'quizTypeOne' && (
+                    <QuizTypeOne
+                        element={elementInstance as QuizTypeOneElement}
+                        locale={locale}
+                        onChange={onChange}
+                        onFileChange={onFileChange}
+                        onFileDelete={onFileDelete}
+                        onFileDownload={onFileDownload}
+                        onUploadComplete={onUploadComplete}
+                        uploadError={uploadError}
+                    />
+                )}
+                {quizType === 'quizTypeTwo' && (
+                    <QuizTypeTwo
+                        element={elementInstance as QuizTypeTwoElement}
+                        locale={locale}
+                        onChange={onChange}
+                        onFileChange={onFileChange}
+                        onFileDelete={onFileDelete}
+                        onFileDownload={onFileDownload}
+                        onUploadComplete={onUploadComplete}
+                        uploadError={uploadError}
+                    />
+                )}
+                {quizType === 'quizTypeThree' && (
+                    <QuizTypeThree
+                        element={elementInstance as QuizTypeThreeElement}
+                        locale={locale}
+                        onChange={onChange}
+                        onFileChange={onFileChange}
+                        onFileDelete={onFileDelete}
+                        onFileDownload={onFileDownload}
+                        onUploadComplete={onUploadComplete}
+                        uploadError={uploadError}
+                    />
+                )}
+                {quizType === 'quizTypeFour' && (
+                    <QuizTypeFour
+                        element={elementInstance as QuizTypeFourElement}
+                        locale={locale}
+                        onChange={onChange}
+                        onFileChange={onFileChange}
+                        onFileDelete={onFileDelete}
+                        onFileDownload={onFileDownload}
+                        onUploadComplete={onUploadComplete}
+                        uploadError={uploadError}
+                    />
+                )}
+            </div>
+        </DesignerLayout>
+    );
 }
 
 // Inline QuizPreview logic
+// TODO: remove and instead use different types of elements
 function formComponent({ elementInstance, locale }: FormComponentProps) {
-  if (elementInstance.type !== CourseElementType.Quiz) return null;
+    const dictionary = getDictionary(locale);
+    return (
+        <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
+            <div className="flex gap-1 items-start pb-2 border-b-[1px] border-divider">
+                <IconQuiz classNames="fill-base-white" size="6" />
+                <p className="text-sm text-base-white leading-[150%] font-bold">
+                    {dictionary.components.quiz.quizText}
+                </p>
+            </div>
+        </div>
+    );
+}
 
-  const quizType = elementInstance.quizType as QuizType;
-  const dictionary = getDictionary(locale);
-  return (
-    <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
-      <div className="flex gap-1 items-start pb-2 border-b-[1px] border-divider">
-        <IconQuiz
-          classNames="fill-base-white"
-          size="6"
-        />
-        <p className="text-sm text-base-white leading-[150%] font-bold">
-          {dictionary.components.quiz.quizText}
-        </p>
-      </div>
-      {quizType === "quizTypeOne" && <QuizTypeOneStudentView {...({ ...elementInstance, locale } as QuizTypeOneStudentViewElement)} />}
-      {quizType === "quizTypeTwo" && <QuizTypeTwoStudentView {...({ ...elementInstance, locale } as QuizTypeTwoStudentViewElement)} />}
-      {quizType === "quizTypeThree" && <QuizTypeThreeStudentView {...({ ...elementInstance, locale } as QuizTypeThreeStudentViewElement)} />}
-      {quizType === "quizTypeFour" && <QuizTypeFourStudentView {...({ ...elementInstance, locale } as QuizTypeFourStudentViewElement)} />}
-    </div>
-  );
+export function FormComponentWrapper({
+    children,
+    locale,
+}: {
+    children: React.ReactNode;
+    locale: TLocale;
+}) {
+    const dictionary = getDictionary(locale);
+    return (
+        <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
+            <div className="flex gap-1 items-start pb-2 border-b-[1px] border-divider">
+                <IconQuiz classNames="fill-base-white" size="6" />
+                <p className="text-sm text-base-white leading-[150%] font-bold">
+                    {dictionary.components.quiz.quizText}
+                </p>
+            </div>
+            {children}
+        </div>
+    );
 }
 
 export default quizElement;

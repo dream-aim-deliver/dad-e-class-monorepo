@@ -20,7 +20,6 @@ import { FormElementType } from "../pre-assessment/types";
  */
 export interface BaseFormElement {
     type: FormElementType;
-    order: number;
     id: string;
     required?: boolean; // Changed from required:true to optional boolean
 }
@@ -65,18 +64,12 @@ export interface RichTextElement extends BaseFormElement {
  * };
  * ```
  */
-interface TextInputWithHelperOnly extends BaseFormElement {
+
+export interface TextInputElement extends BaseFormElement {
     type: FormElementType.TextInput;
     helperText: string;
+    content?: string;
 }
-
-interface TextInputWithBoth extends BaseFormElement {
-    type: FormElementType.TextInput;
-    helperText: string;
-    content: string;
-}
-
-export type TextInputElement = TextInputWithHelperOnly | TextInputWithBoth;
 
 /**
  * Option interface for choice elements.

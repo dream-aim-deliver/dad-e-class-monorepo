@@ -1,15 +1,19 @@
-import { FC } from "react";
-import { Button } from "../../button";
-import { InputField } from "../../input-field";
-import { RadioButton } from "../../radio-button";
-import { IconButton } from "../../icon-button";
-import { IconTrashAlt } from "../../icons/icon-trash-alt";
-import { getDictionary } from "@maany_shr/e-class-translations";
-import { TextAreaInput } from "../../text-areaInput";
-import { TextInput } from "../../text-input";
-import { QuizTypeOneElement } from "../../course-builder-lesson-component/types";
-import Banner from "../../banner";
-import { Uploader } from "../../drag-and-drop-uploader/uploader";
+import { FC } from 'react';
+import { Button } from '../../button';
+import { InputField } from '../../input-field';
+import { RadioButton } from '../../radio-button';
+import { IconButton } from '../../icon-button';
+import { IconTrashAlt } from '../../icons/icon-trash-alt';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import { TextAreaInput } from '../../text-areaInput';
+import { TextInput } from '../../text-input';
+import {
+    QuizTypeOneElement,
+} from '../../course-builder-lesson-component/types';
+import Banner from '../../banner';
+import { Uploader } from '../../drag-and-drop-uploader/uploader';
+import { fileMetadata } from '@maany_shr/e-class-models';
+import { CourseElementType } from '../../course-builder/types';
 
 /**
  * A component for creating and editing a single-choice quiz question.
@@ -53,153 +57,172 @@ import { Uploader } from "../../drag-and-drop-uploader/uploader";
  * />
  */
 
-const QuizTypeOne: FC<QuizTypeOneElement> = ({
-  id,
-  error,
-  order,
-  title,
-  description,
-  fileData,
-  options,
-  locale,
-  onChange,
-  onFileDownload,
-  onFileDelete,
-  onFilesChange,
-  onUploadComplete,
+interface QuizTypeOneProps {
+    element: QuizTypeOneElement;
+    locale: TLocale;
+    onChange: (updated: Partial<QuizTypeOneElement>) => void;
+    onFileChange: (
+        file: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    onFileDelete: (fileId: string, index: number) => void;
+    onFileDownload: (id: string) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
+    uploadError: string | null;
+}
+
+const QuizTypeOne: FC<QuizTypeOneProps> = ({
+    element,
+    locale,
+    onChange,
+    onFileDownload,
+    onFileDelete,
+    onFileChange,
+    onUploadComplete,
+    uploadError,
 }) => {
-  const dictionary = getDictionary(locale);
+    const dictionary = getDictionary(locale);
 
-  // Triggers parent update with partial updates
-  const handleChange = (updated: Partial<QuizTypeOneElement>) => {
-    onChange({
-      quizType: "quizTypeOne",
-      id,
-      order,
-      title: updated.title ?? title,
-      description: updated.description ?? description,
-      fileData: updated.fileData ?? fileData,
-      options: updated.options ?? options,
-    });
-  };
+    // Triggers parent update with partial updates
+    const handleChange = (updated: Partial<QuizTypeOneElement>) => {
+        onChange({
+            type: CourseElementType.QuizTypeOne,
+            id: element.id,
+            title: updated.title ?? element.title,
+            description: updated.description ?? element.description,
+            imageFile: updated.imageFile ?? element.imageFile,
+            options: updated.options ?? element.options,
+        });
+    };
 
-  const handleTitleChange = (value: string) => handleChange({ title: value });
-  const handleDescriptionChange = (value: string) =>
-    handleChange({ description: value });
+    const handleTitleChange = (value: string) => handleChange({ title: value });
+    const handleDescriptionChange = (value: string) =>
+        handleChange({ description: value });
 
+    const handleChoiceTextChange = (index: number, text: string) => {
+        const updatedOptions = element.options.map((opt, i) =>
+            i === index ? { ...opt, name: text } : opt,
+        );
+        handleChange({ options: updatedOptions });
+    };
 
-  const handleChoiceTextChange = (index: number, text: string) => {
-    const updatedOptions = options.map((opt, i) =>
-      i === index ? { ...opt, optionText: text } : opt
-    );
-    handleChange({ options: updatedOptions });
-  };
+    const handleCorrectAnswerChange = (index: number) => {
+        const updatedOptions = element.options.map((opt, i) => ({
+            ...opt,
+            correct: i === index,
+        }));
+        handleChange({ options: updatedOptions });
+    };
 
-  const handleCorrectAnswerChange = (index: number) => {
-    const updatedOptions = options.map((opt, i) => ({
-      ...opt,
-      correct: i === index,
-    }));
-    handleChange({ options: updatedOptions });
-  };
+    const handleAddChoice = () => {
+        const newOption = { id: 0, name: '' };
+        handleChange({ options: [...element.options, newOption] });
+    };
 
-  const handleAddChoice = () => {
-    const newOption = { optionText: "", correct: false };
-    handleChange({ options: [...options, newOption] });
-  };
+    const handleDeleteChoice = (index: number) => {
+        const newOptions = element.options.filter((_, i) => i !== index);
+        // Reassign correct answer if needed
+        if (element.options[index].correct && newOptions.length > 0) {
+            newOptions[0].correct = true;
+        }
+        handleChange({ options: newOptions });
+    };
 
-  const handleDeleteChoice = (index: number) => {
-    const newOptions = options.filter((_, i) => i !== index);
-    // Reassign correct answer if needed
-    if (options[index].correct && newOptions.length > 0) {
-      newOptions[0].correct = true;
-    }
-    handleChange({ options: newOptions });
-  };
-
-  return (
-    <div className="flex flex-col gap-4 w-full">
-      <p className="text-md text-base-white leading-[150%]">
-        {dictionary.components.quiz.quizTypeOne.headingText}
-      </p>
-      {/* Title and Description Inputs */}
-      <div className="flex flex-col gap-2">
-        <TextInput
-          inputField={{
-            className: 'w-full',
-            value: title,
-            setValue: handleTitleChange,
-            inputText: dictionary.components.quiz.enterTitleText,
-          }}
-          label={dictionary.components.quiz.quizTitleText}
-        />
-        <TextAreaInput
-          label={dictionary.components.quiz.descriptionText}
-          placeholder={dictionary.components.quiz.enterDescriptionText}
-          value={description}
-          setValue={handleDescriptionChange}
-        />
-      </div>
-      <div className="flex flex-col gap-[18px]">
-        {/* Image Uploader */}
-        <Uploader
-          type="single"
-          variant="generic"
-          file={fileData}
-          onFilesChange={(file, abortSignal) => onFilesChange([file], abortSignal)}
-          onDelete={(id) => onFileDelete(id, 0)}
-          onDownload={(id) => onFileDownload(id)}
-          onUploadComplete={(file) => onUploadComplete(file, 0)}
-          locale={locale}
-          className="w-full"
-          maxSize={5}
-        />
-        {/* error */}
-        {error && (
-          <Banner
-            style="error"
-            title={dictionary.components.quiz.errorText}
-            className="w-full"
-          />
-        )}
-        {/* Choices Section */}
-        <div className="flex flex-col gap-3">
-          {options.map((choice, index) => (
-            <div key={index} className="flex gap-2 items-center">
-              <div className="w-fit">
-                <RadioButton
-                  name="single-choice"
-                  value={`choice-${index}`}
-                  checked={choice.correct}
-                  onChange={() => handleCorrectAnswerChange(index)}
+    return (
+        <div className="flex flex-col gap-4 w-full">
+            <p className="text-md text-base-white leading-[150%]">
+                {dictionary.components.quiz.quizTypeOne.headingText}
+            </p>
+            {/* Title and Description Inputs */}
+            <div className="flex flex-col gap-2">
+                <TextInput
+                    inputField={{
+                        className: 'w-full',
+                        value: element.title,
+                        setValue: handleTitleChange,
+                        inputText: dictionary.components.quiz.enterTitleText,
+                    }}
+                    label={dictionary.components.quiz.quizTitleText}
                 />
-              </div>
-              <InputField
-                className="w-full"
-                inputText={dictionary.components.quiz.quizTypeOne.radioButtonText}
-                value={choice.optionText}
-                setValue={(val) => handleChoiceTextChange(index, val)}
-              />
-              <IconButton
-                data-testid={`delete-choice-${index}`}
-                styles="text"
-                icon={<IconTrashAlt />}
-                size="medium"
-                onClick={() => handleDeleteChoice(index)}
-                disabled={options.length <= 1}
-              />
+                <TextAreaInput
+                    label={dictionary.components.quiz.descriptionText}
+                    placeholder={
+                        dictionary.components.quiz.enterDescriptionText
+                    }
+                    value={element.description}
+                    setValue={handleDescriptionChange}
+                />
             </div>
-          ))}
+            <div className="flex flex-col gap-[18px]">
+                {/* Image Uploader */}
+                <Uploader
+                    type="single"
+                    variant="generic"
+                    file={element.imageFile}
+                    onFilesChange={(file, abortSignal) =>
+                        onFileChange(file, abortSignal)
+                    }
+                    onDelete={(id) => onFileDelete(id, 0)}
+                    onDownload={(id) => onFileDownload(id)}
+                    onUploadComplete={(file) => onUploadComplete(file, 0)}
+                    locale={locale}
+                    className="w-full"
+                    maxSize={5}
+                    isDeletionAllowed={true}
+                />
+                {/* error */}
+                {uploadError && (
+                    <Banner
+                        style="error"
+                        title={uploadError}
+                        className="w-full"
+                    />
+                )}
+                {/* Choices Section */}
+                <div className="flex flex-col gap-3">
+                    {element.options.map((choice, index) => (
+                        <div key={index} className="flex gap-2 items-center">
+                            <div className="w-fit">
+                                <RadioButton
+                                    name="single-choice"
+                                    value={`choice-${index}`}
+                                    checked={choice.correct}
+                                    onChange={() =>
+                                        handleCorrectAnswerChange(index)
+                                    }
+                                />
+                            </div>
+                            <InputField
+                                className="w-full"
+                                inputText={
+                                    dictionary.components.quiz.quizTypeOne
+                                        .radioButtonText
+                                }
+                                value={choice.name}
+                                setValue={(val) =>
+                                    handleChoiceTextChange(index, val)
+                                }
+                            />
+                            <IconButton
+                                data-testid={`delete-choice-${index}`}
+                                styles="text"
+                                icon={<IconTrashAlt />}
+                                size="medium"
+                                onClick={() => handleDeleteChoice(index)}
+                                disabled={element.options.length <= 1}
+                            />
+                        </div>
+                    ))}
+                </div>
+                {/* Add Choice Button */}
+                <Button
+                    variant="secondary"
+                    onClick={handleAddChoice}
+                    text={dictionary.components.quiz.addChoiceText}
+                />
+            </div>
         </div>
-        {/* Add Choice Button */}
-        <Button
-          variant="secondary"
-          onClick={handleAddChoice}
-          text={dictionary.components.quiz.addChoiceText}
-        />
-      </div>
-    </div>
-  );
+    );
 };
 
 export default QuizTypeOne;

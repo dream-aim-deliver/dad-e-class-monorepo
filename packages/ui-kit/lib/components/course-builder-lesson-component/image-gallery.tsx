@@ -25,6 +25,7 @@ const imageGalleryElement: CourseElementTemplate = {
         icon: IconImageGallery,
         label: "Image Gallery"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent
 };
@@ -45,11 +46,9 @@ interface ImageGalleryEditProps extends DesignerComponentProps {
     ) => Promise<TImageFile | null>;
 
     onUploadComplete: (file: TImageFile) => void;
-    onFileDelete: () => void;
+    onFileDelete: (id: string) => void;
     /** Callback function to handle file download */
-    onFileDownload: () => void;
-    /** Currently selected file or null if no file is selected */
-    files: TImageFile[] | null;
+    onFileDownload: (id: string) => void;
 }
 
 /**
@@ -66,7 +65,7 @@ interface ImageGalleryEditProps extends DesignerComponentProps {
  * @param onFileDownload - Callback for file downloads
  * @param onFileDelete - Callback for file deletion
  */
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, files, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize }: ImageGalleryEditProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize }: ImageGalleryEditProps) {
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
     const dictionary = getDictionary(locale);
 
@@ -77,8 +76,8 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
         return await onImageUpload(fileRequest, abortSignal);
     };
 
-    const handleUploadComplete = (imageMetadata: TImageFile) => {
-        onUploadComplete?.(imageMetadata);
+    const handleUploadComplete = (imageMetadata: fileMetadata.TFileMetadata) => {
+        onUploadComplete?.(imageMetadata as TImageFile);
     };
 
     return (
@@ -86,16 +85,16 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             type={elementInstance.type}
             title={dictionary.components.courseBuilder.ImageGalleryText}
             icon={<IconImageGallery classNames="w-6 h-6" />}
-            onUpClick={() => onUpClick(Number(elementInstance.id))}
-            onDownClick={() => onDownClick(Number(elementInstance.id))}
-            onDeleteClick={() => onDeleteClick(Number(elementInstance.id))}
+            onUpClick={() => onUpClick?.(elementInstance.id)}
+            onDownClick={() => onDownClick?.(elementInstance.id)}
+            onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
         >
             <Uploader
                 type="multiple"
                 variant="image"
-                files={files}
+                files={elementInstance.images}
                 maxFile={6}
                 onFilesChange={handleImageFile}
                 onUploadComplete={handleUploadComplete}
@@ -103,6 +102,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 onDownload={onFileDownload}
                 locale={locale}
                 maxSize={maxSize}
+                isDeletionAllowed={true}
             />
         </DesignerLayout>
     );
@@ -139,8 +139,7 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
     };
 
     const [visibleItems, setVisibleItems] = useState(getVisibleItemCount());
-    const imageElements =
-        "images" in elementInstance ? elementInstance.images : [];
+    const imageElements = elementInstance?.images ? elementInstance.images : [];
 
     const totalSlides = imageElements.length;
 

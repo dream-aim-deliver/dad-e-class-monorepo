@@ -14,33 +14,25 @@ const FileStatusEnumSchema = z.enum(['available', 'processing', 'unavailable']);
 
 export type TFileStatusEnum = z.infer<typeof FileStatusEnumSchema>;
 
-
-export const ExternalProviderSchema = z.object({
-    name: z.string(),
-    externalId: z.string(),
-});
-
-
 export const FileMetadataBaseSchema = z.object({
     id: z.string(),
     name: z.string(),
-    mimeType: z.string(), // TBD: should we add a validator?
     size: z.number(),
-    checksum: z.string(),
     status: FileStatusEnumSchema,
     category: FileCategoryEnumSchema,
 });
 
 export const FileMetadataVideoSchema = FileMetadataBaseSchema.extend({
     category: z.literal('video'),
-    videoId: z.string(),
-    thumbnailUrl: z.string().url(),
+    url: z.string().url(),
+    videoId: z.string().nullable(),
+    thumbnailUrl: z.string().url().nullable(),
 });
 
 export const FileMetadataImageSchema = FileMetadataBaseSchema.extend({
     category: z.literal('image'),
     url: z.string().url(),
-    thumbnailUrl: z.string().url(),
+    thumbnailUrl: z.string().url().nullable(),
 });
 
 export const FileMetadataDocumentSchema = FileMetadataBaseSchema.extend({
@@ -65,7 +57,7 @@ export type TFileMetadata = z.infer<
 >;
 
 export type TFileMetadataImage = z.infer<typeof FileMetadataImageSchema>;
-
+export type TFileMetadataVideo = z.infer<typeof FileMetadataVideoSchema>;
 
 export const FileUploadRequestSchema = z.object({
     id: z.string(),

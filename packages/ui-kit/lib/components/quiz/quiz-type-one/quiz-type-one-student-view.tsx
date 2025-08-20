@@ -5,11 +5,12 @@ import { IconCheck } from "../../icons/icon-check";
 import { IconClose } from "../../icons/icon-close";
 import { RadioButton } from "../../radio-button";
 import { FC, useEffect, useState } from "react";
-import { QuizTypeOneStudentViewElement } from "../../course-builder-lesson-component/types";
-import { getDictionary } from "@maany_shr/e-class-translations";
+import { QuizTypeOneElement } from "../../course-builder-lesson-component/types";
+import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { IconError, IconSuccess } from "../../icons";
 
 export interface QuizOption {
+  id: number;
   optionText: string;
   correct: boolean;
   selected: boolean;
@@ -52,16 +53,12 @@ export interface QuizOption {
  * />
  */
 
-const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewElement> = ({
-  quizType,
-  id,
-  order,
-  title,
-  description,
-  imageId,
-  imageThumbnailUrl,
-  options: propOptions,
-  onChange,
+interface QuizTypeOneStudentViewProps extends isLocalAware {
+  elementInstance: QuizTypeOneElement;
+}
+
+const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewProps> = ({
+  elementInstance,
   locale,
 }) => {
   const dictionary = getDictionary(locale);
@@ -76,36 +73,14 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewElement> = ({
 
   // Sync state with props on mount or prop change
   useEffect(() => {
-    setOptions(propOptions.map(opt => ({ ...opt })));
-    const preSelectedIndex = propOptions.findIndex(opt => opt.selected);
-    setCorrectIndex(propOptions.findIndex(opt => opt.correct));
-    if (preSelectedIndex !== -1) {
-      setChecked(true);
-      setIsCorrect(propOptions[preSelectedIndex].correct);
-      setUserSelectedIndex(preSelectedIndex);
-    } else {
-      setChecked(false);
-      setIsCorrect(false);
-      setUserSelectedIndex(null);
-    }
-    setShowingSolution(false);
-  }, [propOptions, title, description, imageThumbnailUrl, imageId, id]);
-
-  // Helper: Send change to parent
-  const sendChange = (opts: QuizOption[]) => {
-    if (onChange) {
-      onChange({
-        quizType,
-        id,
-        order,
-        title,
-        description,
-        imageId,
-        imageThumbnailUrl,
-        options: opts,
-      });
-    }
-  };
+    setOptions(elementInstance.options.map(opt => ({ 
+      id: opt.id,
+      correct: opt.id === elementInstance.correctOptionId,
+      optionText: opt.name,
+      selected: false,
+     })));
+    setCorrectIndex(elementInstance.options.findIndex(opt => opt.id === elementInstance.correctOptionId));
+  }, [elementInstance]);
 
   // function to handle select
   const handleSelect = (idx: number) => {
@@ -127,7 +102,6 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewElement> = ({
     setChecked(true);
     setIsCorrect(!!correct);
     setShowingSolution(false);
-    sendChange(options);
   };
 
   // function to handle show solution
@@ -150,7 +124,6 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewElement> = ({
     setIsCorrect(false);
     setShowingSolution(false);
     setUserSelectedIndex(null);
-    sendChange(newOptions);
   };
 
   const [isImageError, setIsImageError] = useState(false);
@@ -159,14 +132,15 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewElement> = ({
     setIsImageError(true);
   };
 
-  const shouldShowPlaceholder = !imageThumbnailUrl || isImageError;
+  const thumbnailUrl = elementInstance.imageFile?.thumbnailUrl;
+  const shouldShowPlaceholder = !thumbnailUrl || isImageError;
 
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* Title & Description */}
       <div className="flex flex-col gap-1">
-        <h5 className="text-xl text-text-primary leading-[120%] font-bold">{title}</h5>
-        <p className="text-lg text-text-secondary leading-[150%]">{description}</p>
+        <h5 className="text-xl text-text-primary leading-[120%] font-bold">{elementInstance.title}</h5>
+        <p className="text-lg text-text-secondary leading-[150%]">{elementInstance.description}</p>
       </div>
 
       {/* Image */}
@@ -180,8 +154,8 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewElement> = ({
         ) : (
           <img
             loading="lazy"
-            src={imageThumbnailUrl}
-            alt={title}
+            src={thumbnailUrl}
+            alt={elementInstance.title}
             className="rounded w-full h-[147px] object-cover"
             onError={handleImageError}
           />
@@ -201,7 +175,7 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewElement> = ({
           return (
             <div key={index} className="flex justify-between items-center">
               <RadioButton
-                name={`single-choice-${id}`}
+                name={`single-choice-${elementInstance.id}`}
                 value={`choice-${index}`}
                 checked={isSelected}
                 onChange={() => handleSelect(index)}

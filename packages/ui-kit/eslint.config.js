@@ -21,4 +21,10 @@ export default [
       parser: await import('jsonc-eslint-parser'),
     },
   },
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    rules: {
+       '@typescript-eslint/ban-ts-comment': 'off'
+    },
+  }
 ];

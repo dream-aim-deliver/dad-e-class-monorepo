@@ -2,11 +2,13 @@ import { Button } from "../../button";
 import { FC } from "react";
 import { IconButton } from "../../icon-button";
 import { IconTrashAlt } from "../../icons/icon-trash-alt";
-import { getDictionary } from "@maany_shr/e-class-translations";
+import { getDictionary, TLocale } from "@maany_shr/e-class-translations";
 import { TextAreaInput } from "../../text-areaInput";
 import { TextInput } from "../../text-input";
 import { QuizTypeFourElement } from "../../course-builder-lesson-component/types";
 import { Uploader } from "../../drag-and-drop-uploader/uploader";
+import { fileMetadata } from "@maany_shr/e-class-models";
+import { CourseElementType } from "../../course-builder/types";
 
 /**
  * A component for creating and editing a "Label-Image Pair" quiz question (QuizTypeFour).
@@ -58,20 +60,25 @@ import { Uploader } from "../../drag-and-drop-uploader/uploader";
  * />
  */
 
+interface QuizTypeFourProps {
+    element: QuizTypeFourElement;
+    locale: TLocale;
+    onChange: (updated: Partial<QuizTypeFourElement>) => void;
+    onFileChange: (
+        file: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    onFileDelete: (fileId: string, index: number) => void;
+    onFileDownload: (id: string) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
+    uploadError: string | null;
+}
 
-const QuizTypeFour: FC<QuizTypeFourElement> = ({
-  type,
-  quizType,
-  required,
-  id,
-  order,
-  title,
-  description,
-  labels,
-  images,
+const QuizTypeFour: FC<QuizTypeFourProps> = ({
+  element,
   locale,
   onChange,
-  onFilesChange,
+  onFileChange,
   onFileDelete,
   onFileDownload,
   onUploadComplete,
@@ -81,13 +88,12 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
   // Triggers parent update with partial updates
   const handleChange = (updated: Partial<QuizTypeFourElement>) => {
     onChange({
-      quizType: "quizTypeFour",
-      id,
-      order,
-      title: updated.title ?? title,
-      description: updated.description ?? description,
-      labels: updated.labels ?? labels,
-      images: updated.images ?? images,
+      type: CourseElementType.QuizTypeFour,
+      id: element.id,
+      title: updated.title ?? element.title,
+      description: updated.description ?? element.description,
+      labels: updated.labels ?? element.labels,
+      images: updated.images ?? element.images,
     });
   };
 
@@ -96,7 +102,7 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
 
   // Label description change
   const handleLabelDescriptionChange = (index: number, value: string) => {
-    const updatedLabels = labels.map((lbl, i) =>
+    const updatedLabels = element.labels.map((lbl, i) =>
       i === index ? { ...lbl, description: value } : lbl
     );
     handleChange({ labels: updatedLabels });
@@ -104,18 +110,18 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
 
   // Add new label-image pair
   const handleAddPair = () => {
-    const nextLetter = String.fromCharCode(65 + labels.length);
+    const nextLetter = String.fromCharCode(65 + element.labels.length);
     handleChange({
-      labels: [...labels, { letter: nextLetter, description: "" }],
-      images: [...images, { correctLetter: nextLetter, fileData: undefined }],
+      labels: [...element.labels, { letter: nextLetter, description: "" }],
+      images: [...element.images, { correctLetter: nextLetter, imageFile: null }],
     });
   };
 
   // Delete a label-image pair (and reassign all letters)
   const handleDeletePair = (idx: number) => {
     // Remove pair and reassign letters (A, B, C, ...)
-    const filteredLabels = labels.filter((_, i) => i !== idx);
-    const filteredImages = images.filter((_, i) => i !== idx);
+    const filteredLabels = element.labels.filter((_, i) => i !== idx);
+    const filteredImages = element.images.filter((_, i) => i !== idx);
 
     const reassignedLabels = filteredLabels.map((lbl, i) => ({
       ...lbl,
@@ -141,7 +147,7 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
         <TextInput
           inputField={{
             className: "w-full",
-            value: title,
+            value: element.title,
             setValue: handleTitleChange,
             inputText: dictionary.components.quiz.enterTitleText,
           }}
@@ -150,12 +156,12 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
         <TextAreaInput
           label={dictionary.components.quiz.descriptionText}
           placeholder={dictionary.components.quiz.enterDescriptionText}
-          value={description}
+          value={element.description}
           setValue={handleDescriptionChange}
         />
         {/* Label-Image Pair Section */}
         <div className="flex flex-col gap-3 w-full">
-          {labels.map((lbl, idx) => (
+          {element.labels.map((lbl, idx) => (
             <div key={idx} className="flex gap-2 md:flex-row flex-col items-stretch w-full">
               {/* Label and TextArea */}
               <div className="text-text-primary text-md leading-[120%] font-bold mt-2 flex items-center">
@@ -175,14 +181,15 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
                   <Uploader
                     type="single"
                     variant="image"
-                    file={images[idx]?.fileData}
-                    onFilesChange={(file, abortSignal) => onFilesChange([file], abortSignal)}
+                    file={element.images[idx]?.imageFile}
+                    onFilesChange={(file, abortSignal) => onFileChange(file, abortSignal)}
                     onDelete={(id) => onFileDelete(id, idx)}
                     onDownload={(id) => onFileDownload(id)}
                     onUploadComplete={(file) => onUploadComplete(file, idx)}
                     locale={locale}
                     className="w-full"
                     maxSize={5}
+                    isDeletionAllowed
                   />
                 </div>
               </div>
@@ -193,7 +200,7 @@ const QuizTypeFour: FC<QuizTypeFourElement> = ({
                   icon={<IconTrashAlt />}
                   size="small"
                   onClick={() => handleDeletePair(idx)}
-                  disabled={labels.length <= 1}
+                  disabled={element.labels.length <= 1}
                 />
               </div>
             </div>

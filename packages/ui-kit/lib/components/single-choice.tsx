@@ -74,7 +74,7 @@ export const SingleChoiceEdit: React.FC<SingleChoiceEditProps> = ({
         if (onChange) {
             onChange(title, options );
         }
-    }, [title, options, onChange]);
+    }, [title, options]);
 
     const handleAddChoice = () => {
         const newOption = {

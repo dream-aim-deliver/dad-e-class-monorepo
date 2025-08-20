@@ -87,7 +87,7 @@ const useCreateCourse = () => {
 // Custom hook for image upload logic
 const useCourseImageUpload = () => {
     const uploadMutation = trpc.uploadCourseImage.useMutation();
-    const verifyMutation = trpc.verifyCourseImage.useMutation();
+    const verifyMutation = trpc.verifyFile.useMutation();
 
     const [courseImage, setCourseImage] =
         useState<fileMetadata.TFileMetadataImage | null>(null);

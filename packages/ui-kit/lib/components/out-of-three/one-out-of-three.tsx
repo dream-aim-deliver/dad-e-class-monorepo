@@ -8,7 +8,7 @@ import { RadioButton } from "../radio-button";
 import { IconTrashAlt } from "../icons/icon-trash-alt";
 import { IconButton } from "../icon-button";
 
-export interface OneOutOfThreeData {
+interface OneOutOfThreeData {
   tableTitle: string;
 
   rows: {
@@ -256,4 +256,4 @@ export interface OneOutOfThreePreviewProps  {
    );
  };
  
-export { OneOutOfThree, OneOutOfThreePreview };
+export { OneOutOfThree, OneOutOfThreePreview, type OneOutOfThreeData };

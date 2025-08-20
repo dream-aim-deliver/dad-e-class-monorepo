@@ -22,9 +22,7 @@ const mockStudent = {
 const fakeFile = (): fileMetadata.TFileMetadata => ({
     id: Math.random().toString(36).substring(2),
     name: "Assignment.pdf",
-    mimeType: "application/pdf",
     size: 50488,
-    checksum: "abc",
     status: "available",
     category: "document",
     url: "https://example.com/document.pdf",

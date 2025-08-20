@@ -1,7 +1,7 @@
 import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps, valueType } from "../pre-assessment/types";
 import DesignerLayout from "../designer-layout";
 import { IconHeading } from "../icons/icon-heading";
-import { HeadingLesson, HeadingLessonPreview } from "../heading-type";
+import { HeadingLesson, HeadingLessonPreview, HeadingType } from "../heading-type";
 
 
 /**
@@ -14,6 +14,7 @@ const headingTextElement: FormElementTemplate = {
         icon: IconHeading,
         label: "Heading"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
@@ -44,7 +45,11 @@ const headingTextElement: FormElementTemplate = {
  * ```
  */
 
-function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+interface HeadingDesignerComponentProps extends DesignerComponentProps {
+    onChange: (value: HeadingType) => void;
+}
+
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange }: HeadingDesignerComponentProps) {
     if (elementInstance.type !== FormElementType.HeadingText) return null;
 
     return (
@@ -62,7 +67,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
                 initialHeadingType={elementInstance.headingType}
                 initialHeadingValue={elementInstance.heading}
                 locale={locale}
-                onChange={(value) => value}  // TODO: no-op that will be replaced with a real function when we implment the builder
+                onChange={onChange}
             />
         </DesignerLayout>
     );

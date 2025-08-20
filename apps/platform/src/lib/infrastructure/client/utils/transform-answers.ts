@@ -5,12 +5,13 @@ import {
     SingleChoiceElement,
     MultiCheckElement,
     OneOutOfThreeElement,
+    LessonElement,
 } from '@maany_shr/e-class-ui-kit';
 
 function transformTextInputAnswer(
     element: TextInputElement,
 ): Extract<useCaseModels.TAnswer, { type: 'textInput' }> {
-    if (!('content' in element)) {
+    if (!element.content) {
         throw new Error(`Text input element ${element.id} is missing content`);
     }
 
@@ -104,7 +105,7 @@ const answerTransformers = {
 } as const;
 
 export function transformFormAnswers(
-    formValues: Record<string, FormElement>,
+    formValues: Record<string, LessonElement>,
 ): useCaseModels.TAnswer[] {
     const answers: useCaseModels.TAnswer[] = [];
 

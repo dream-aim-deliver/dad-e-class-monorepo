@@ -1,12 +1,13 @@
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
-import { formElements } from "./form-element-core";
+import { lessonElements } from "./element-core";
 import { useRef, useState } from "react";
 import { Button } from "../button";
 import Banner from "../banner";
 import { IconLoaderSpinner } from "../icons/icon-loader-spinner";
-import { FormElement, FormElementType, valueType } from "./types";
+import { LessonElement, LessonElementType, valueType } from "./types";
 import { TextInputElement, SingleChoiceElement, RichTextElement, MultiCheckElement, OneOutOfThreeElement } from "../lesson-components/types";
 import { deserialize } from "../rich-text-element/serializer";
+import { FormComponent as UploadFilesFormComponent } from "../course-builder-lesson-component/upload-files-lesson";
 
 
 /**
@@ -21,11 +22,12 @@ interface FormElementRendererProps extends isLocalAware {
     /** Indicates if there was an error during form submission */
     isError: boolean;
     /** Callback function invoked when the form is successfully submitted and validated */
-    onSubmit: (formValues: Record<string, FormElement>) => void;
+    onSubmit: (formValues: Record<string, LessonElement>) => void;
     /** Array of form elements to render in the form */
-    elements: FormElement[];
+    elements: LessonElement[];
     /** Optional error message to display when isError is true */
     errorMessage?: string;
+    // TODO: Add functions to handle interactive elements like UploadFiles
 }
 
 /**
@@ -66,9 +68,9 @@ export function FormElementRenderer({
     errorMessage
 }: FormElementRendererProps) {
     const dictionary = getDictionary(locale);
-    const formValues = useRef<{ [key: string]: FormElement }>({});
+    const formValues = useRef<{ [key: string]: LessonElement }>({});
     const [formErrors, setFormErrors] = useState<{ [key: string]: boolean }>({});
-    const submitValue = (id: string, value: FormElement) => {
+    const submitValue = (id: string, value: LessonElement) => {
         formValues.current[id] = value;
     };
 
@@ -87,7 +89,7 @@ export function FormElementRenderer({
 
             let value: valueType;
             switch (element.type) {
-                case FormElementType.TextInput: {
+                case LessonElementType.TextInput: {
                     const textInput = formElement as TextInputElement;
 
                     const onDeserializationError = (message: string, error: Error) => {
@@ -95,37 +97,39 @@ export function FormElementRenderer({
                     }
 
                     value = 'content' in textInput ? deserialize({
-                        serializedData: textInput.content,
+                        serializedData: textInput.content ?? '',
                         onError: onDeserializationError
                     }
                     ) : [];
                     break;
                 }
-                case FormElementType.SingleChoice: {
+                case LessonElementType.SingleChoice: {
                     const singleChoice = formElement as SingleChoiceElement;
                     value = singleChoice?.options ?? [];
                     break;
                 }
-                case FormElementType.RichText: {
+                case LessonElementType.RichText: {
                     const richText = formElement as RichTextElement;
                     value = richText?.content ?? '';
                     break;
                 }
-                case FormElementType.MultiCheck: {
+                case LessonElementType.MultiCheck: {
                     const multiCheck = formElement as MultiCheckElement;
                     value = multiCheck?.options ?? [];
                     break;
                 }
-                case FormElementType.OneOutOfThree: {
+                case LessonElementType.OneOutOfThree: {
                     const oneOutOfThree = formElement as OneOutOfThreeElement;
                     value = oneOutOfThree.data ?? [];
                     break;
                 }
+                // TODO: Add other element types
                 default:
                     value = '';
             }
 
-            const isValid = formElements[element.type].validate(element, value);
+            // @ts-ignore
+            const isValid = lessonElements[element.type].validate(element, value);
             if (!isValid) {
                 newErrors[element.id] = true;
             }
@@ -148,40 +152,37 @@ export function FormElementRenderer({
         onSubmit(formValues.current);
     };
 
-    const getErrorMessage = (element: FormElement): string => {
+    const getErrorMessage = (element: LessonElement): string => {
         switch (element.type) {
-            case FormElementType.TextInput:
+            case LessonElementType.TextInput:
                 return dictionary.components.formRenderer.fieldRequired;
-            case FormElementType.SingleChoice:
+            case LessonElementType.SingleChoice:
                 return dictionary.components.formRenderer.selectOption;
             default:
                 return dictionary.components.formRenderer.fieldRequired;
         }
     };
-
     return (
-        <form onSubmit={handleSubmit} className="max-w-[560px] p-6 flex flex-col gap-4 bg-card-fill shadow-[0px_4px_12px_0px_base-neutral-950] border-1 rounded-medium border-card-stroke text-text-primary">
-            <h3>{dictionary.components.formRenderer.title}</h3>
-            <div className="flex flex-col gap-4">
-                {elements.map((elementInstance) => {
-                    const Element = formElements[elementInstance.type].formComponent;
-                    return (
-                        <div key={elementInstance.id.toString()} className="flex flex-col gap-2 items-start">
-                            <Element
-                                submitValue={submitValue}
-                                elementInstance={elementInstance}
-                                locale={locale}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-text-primary">
+            {elements.map((elementInstance) => {
+                // @ts-ignore
+                const Element = lessonElements[elementInstance.type].formComponent;
+                return (
+                    <div key={elementInstance.id.toString()} className="flex flex-col gap-2 items-start">
+                        <Element
+                            submitValue={submitValue}
+                            elementInstance={elementInstance}
+                            locale={locale}
+                        />
+                        {formErrors[elementInstance.id] && (
+                            <Banner
+                                style="error"
+                                description={getErrorMessage(elementInstance)}
                             />
-                            {formErrors[elementInstance.id] && (
-                                <Banner
-                                    style="error"
-                                    description={getErrorMessage(elementInstance)}
-                                />
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
+                        )}
+                    </div>
+                );
+            })}
             {isError && (
                 <Banner
                     style="error"

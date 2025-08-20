@@ -12,6 +12,7 @@ const multiCheckElement: FormElementTemplate = {
         icon: IconMultiChoice,
         label: "Multiple Choice"
     },
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
@@ -23,14 +24,19 @@ const multiCheckElement: FormElementTemplate = {
     }
 };
 
+interface MultiCheckDesignerProps extends DesignerComponentProps {
+    onChange: (title: string, options: optionsType[]) => void;
+    onRequiredChange: (isRequired: boolean) => void;
+}
 
-function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick }: DesignerComponentProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange }: MultiCheckDesignerProps) {
     if (elementInstance.type !== FormElementType.MultiCheck) return null;
     const dictionary = getDictionary(locale);
     const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
 
     const handleRequiredChange = () => {
         setIsRequired(prev => !prev);
+        onRequiredChange(!isRequired);
     };
 
     return (
@@ -50,9 +56,7 @@ function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, on
                 locale={locale}
                 initialTitle={elementInstance.title || ""}
                 initialOptions={elementInstance.options || []}
-                onChange={() => {
-                    // Handle change
-                }} />
+                onChange={onChange} />
 
 
         </DesignerLayout>

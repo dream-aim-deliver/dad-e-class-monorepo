@@ -27,6 +27,7 @@ import { useGetStudentProgressPresenter } from '../../../hooks/use-student-progr
 import { useRouter } from 'next/navigation';
 import { CoachCourseTab, StudentCourseTab } from '../../../utils/course-tabs';
 import EnrolledCourseCompletedAssessment from './enrolled-course-completed-assessment';
+import EnrolledCoursePreview from './enrolled-course-preview';
 
 interface EnrolledCourseProps {
     roles: string[];
@@ -215,6 +216,12 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                         progressViewModel={props.studentProgressViewModel}
                         courseSlug={props.courseSlug}
                     />
+                </Tabs.Content>
+                <Tabs.Content
+                    value={CoachCourseTab.PREVIEW}
+                    className={tabContentClass}
+                >
+                    <EnrolledCoursePreview courseSlug={props.courseSlug} />
                 </Tabs.Content>
                 <Tabs.Content value="study" className={tabContentClass}>
                     <DefaultError locale={locale} />

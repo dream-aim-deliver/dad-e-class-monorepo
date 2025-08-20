@@ -5,8 +5,8 @@ import { IconCheck } from "../../icons/icon-check";
 import { IconClose } from "../../icons/icon-close";
 import { InputField } from "../../input-field";
 import { FC, useEffect, useState } from "react";
-import { QuizTypeFourStudentViewElement } from "../../course-builder-lesson-component/types";
-import { getDictionary } from "@maany_shr/e-class-translations";
+import { QuizTypeFourElement } from "../../course-builder-lesson-component/types";
+import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { IconError, IconSuccess } from "../../icons";
 
 /**
@@ -48,68 +48,27 @@ import { IconError, IconSuccess } from "../../icons";
  * />
  */
 
-const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewElement> = ({
-  quizType,
-  id,
-  order,
-  required,
-  title,
-  description,
-  labels,
-  images,
-  onChange,
+interface QuizTypeFourStudentViewProps extends isLocalAware {
+  elementInstance: QuizTypeFourElement;
+}
+
+const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({
+  elementInstance,
   locale,
 }) => {
   const dictionary = getDictionary(locale);
-
+  
   // State
-  const [userInputs, setUserInputs] = useState<string[]>(images.map(img => img.userInput || ""));
+  const [userInputs, setUserInputs] = useState<string[]>(Array(elementInstance.images.length).fill(""));
   const [checked, setChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showingSolution, setShowingSolution] = useState(false);
 
   // Sync state with props on mount or prop change
   useEffect(() => {
-    const initialInputs = images.map(img => img.userInput || "");
+    const initialInputs = Array(elementInstance.images.length).fill("");
     setUserInputs(initialInputs);
-
-    // Check if any input is filled
-    const hasAnswers = initialInputs.some(input => input && input.trim() !== "");
-    if (hasAnswers) {
-      // Check if all answers are correct
-      const allCorrect =
-        initialInputs.length === images.length &&
-        initialInputs.every(
-          (answer, idx) =>
-            answer &&
-            answer.toUpperCase() === images[idx].correctLetter.toUpperCase()
-        );
-      setChecked(true);
-      setIsCorrect(allCorrect);
-    } else {
-      setChecked(false);
-      setIsCorrect(false);
-    }
-    setShowingSolution(false);
-  }, [images, title, description, id]);
-
-  // Propagate change to parent
-  const sendChange = (updatedInputs: string[]) => {
-    if (onChange) {
-      onChange({
-        quizType,
-        id,
-        order,
-        title,
-        description,
-        labels,
-        images: images.map((img, i) => ({
-          ...img,
-          userInput: updatedInputs[i],
-        })),
-      });
-    }
-  };
+  }, [elementInstance]);
 
   // Handle user input
   const handleInputChange = (idx: number, value: string) => {
@@ -123,16 +82,15 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewElement> = ({
   // Check answer
   const handleCheckAnswer = () => {
     const allCorrect =
-      userInputs.length === images.length &&
+      userInputs.length === elementInstance.images.length &&
       userInputs.every(
         (answer, idx) =>
           answer &&
-          answer.toUpperCase() === images[idx].correctLetter.toUpperCase()
+          answer.toUpperCase() === elementInstance.images[idx].correctLetter.toUpperCase()
       );
     setChecked(true);
     setIsCorrect(allCorrect);
     setShowingSolution(false);
-    sendChange(userInputs);
   };
 
   // Show solution
@@ -147,18 +105,17 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewElement> = ({
 
   // Try again
   const handleTryAgain = () => {
-    const resetInputs = Array(images.length).fill("");
+    const resetInputs = Array(elementInstance.images.length).fill("");
     setUserInputs(resetInputs);
     setChecked(false);
     setIsCorrect(false);
     setShowingSolution(false);
-    sendChange(resetInputs);
   };
 
   // Track image errors per image index
-  const [imageErrors, setImageErrors] = useState({});
+  const [imageErrors, setImageErrors] = useState<{ [key: number]: boolean }>({});
 
-  const handleImageError = (index) => {
+  const handleImageError = (index: number) => {
     setImageErrors((prev) => ({ ...prev, [index]: true }));
   };
 
@@ -166,8 +123,8 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewElement> = ({
     <div className="flex flex-col gap-4 w-full">
       {/* Title & Description */}
       <div className="flex flex-col gap-1">
-        <h5 className="text-xl text-text-primary leading-[120%] font-bold">{title}</h5>
-        <p className="text-lg text-text-secondary leading-[150%]">{description}</p>
+        <h5 className="text-xl text-text-primary leading-[120%] font-bold">{elementInstance.title}</h5>
+        <p className="text-lg text-text-secondary leading-[150%]">{elementInstance.description}</p>
       </div>
 
       <div className="h-[1px] bg-divider" />
@@ -182,7 +139,7 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewElement> = ({
         {/* Labels/Descriptions */}
         <div className="flex items-center justify-start basis-2/5">
           <div className="flex flex-col gap-6 justify-start">
-            {labels?.map((label, index) => (
+            {elementInstance.labels?.map((label, index) => (
               <div key={index} className="flex gap-4 items-center">
                 <div className="flex items-center justify-center min-w-[40px] min-h-[40px] bg-divider border-[1px] border-checkbox-stroke rounded-[8px]">
                   <p className="text-[20px] text-text-primary leading-[120%] font-bold">
@@ -201,7 +158,7 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewElement> = ({
 
         {/* Images and answer inputs */}
         <div className="grid grid-cols-2 gap-4 basis-3/5">
-          {images.map((image, index) => {
+          {elementInstance.images.map((image, index) => {
             const userValue = userInputs[index];
             const correctValue = image.correctLetter;
             const showCorrect = showingSolution;
@@ -209,7 +166,7 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewElement> = ({
 
             // Determine if placeholder should be shown
             const shouldShowPlaceholder =
-              !image.imageThumbnailUrl || imageErrors[index];
+              !image.imageFile?.thumbnailUrl || imageErrors[index];
 
             return (
               <div key={index} className="flex flex-col gap-2 items-center">
@@ -222,7 +179,7 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewElement> = ({
                     </div>
                   ) : (
                     <img
-                      src={image.imageThumbnailUrl}
+                      src={image.imageFile?.thumbnailUrl ?? undefined}
                       alt={`Quiz Illustration ${index + 1}`}
                       className="rounded w-full h-[153px] object-cover"
                       onError={() => handleImageError(index)}
