@@ -12,7 +12,7 @@ const multiCheckElement: FormElementTemplate = {
         icon: IconMultiChoice,
         label: "Multiple Choice"
     },
-    // @ts-check
+    // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,

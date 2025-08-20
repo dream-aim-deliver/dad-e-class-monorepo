@@ -29,7 +29,6 @@ function transformRichText(
 ): RichTextElement {
     return {
         type: LessonElementType.RichText,
-        order: component.order,
         id: component.id,
         content: component.text,
     };
@@ -40,7 +39,6 @@ function transformHeading(
 ): HeadingElement {
     return {
         type: LessonElementType.HeadingText,
-        order: component.order,
         id: component.id,
         heading: component.text,
         headingType: component.size,
@@ -55,7 +53,6 @@ function transformSingleChoice(
 ): SingleChoiceElement {
     return {
         type: LessonElementType.SingleChoice,
-        order: component.order,
         id: component.id,
         title: component.title,
         options: component.options.map((option) => ({
@@ -75,7 +72,6 @@ function transformMultipleChoice(
 ): MultiCheckElement {
     return {
         type: LessonElementType.MultiCheck,
-        order: component.order,
         id: component.id,
         title: component.title,
         options: component.options.map((option) => ({
@@ -92,7 +88,6 @@ function transformTextInput(
 ): TextInputElement {
     return {
         type: LessonElementType.TextInput,
-        order: component.order,
         id: component.id,
         helperText: component.helperText,
         required: component.required,
@@ -113,7 +108,6 @@ function transformOneOutOfThree(
 
     return {
         type: LessonElementType.OneOutOfThree,
-        order: component.order,
         id: component.id,
         data: {
             tableTitle: component.title,
@@ -132,7 +126,6 @@ function transformVideo(
 ): VideoElement {
     return {
         type: LessonElementType.VideoFile,
-        order: component.order,
         id: component.id,
         file: {
             id: component.videoFile.id,
@@ -152,7 +145,6 @@ function transformImage(
 ): ImageElement {
     return {
         type: LessonElementType.ImageFile,
-        order: component.order,
         id: component.id,
         file: {
             id: component.imageFile.id,
@@ -174,7 +166,6 @@ function transformImageCarousel(
 ): ImageGalleryElement {
     return {
         type: LessonElementType.ImageGallery,
-        order: component.order,
         id: component.id,
         images: component.imageFiles.map((image) => ({
             id: image.id,
@@ -196,7 +187,6 @@ function transformDownloadFiles(
 ): DownloadFilesElement {
     return {
         type: LessonElementType.DownloadFiles,
-        order: component.order,
         id: component.id,
         files: component.files.map((file) => ({
             id: file.id,
@@ -214,7 +204,6 @@ function transformUploadFiles(
 ): UploadFilesElement {
     return {
         type: LessonElementType.UploadFiles,
-        order: component.order,
         id: component.id,
         description: component.description,
         files: null,
@@ -226,7 +215,6 @@ function transformQuizTypeOne(
 ): QuizTypeOneElement {
     return {
         type: LessonElementType.QuizTypeOne,
-        order: component.order,
         id: component.id,
         title: component.title,
         description: component.description,
@@ -250,7 +238,6 @@ function transformQuizTypeTwo(
 ): QuizTypeTwoElement {
     return {
         type: LessonElementType.QuizTypeTwo,
-        order: component.order,
         id: component.id,
         title: component.title,
         description: component.description,
@@ -280,7 +267,6 @@ function transformQuizTypeThree(
 ): QuizTypeThreeElement {
     return {
         type: LessonElementType.QuizTypeThree,
-        order: component.order,
         id: component.id,
         title: component.title,
         description: component.description,
@@ -293,6 +279,7 @@ function transformQuizTypeThree(
                 thumbnailUrl: option.imageFile.downloadUrl,
             },
             description: option.description,
+            correct: false,
         })),
         correctOptionId: component.correctOptionId,
     };
@@ -310,7 +297,6 @@ function transformQuizTypeFour(
 ): QuizTypeFourElement {
     return {
         type: LessonElementType.QuizTypeFour,
-        order: component.order,
         id: component.id,
         title: component.title,
         description: component.description,
@@ -335,7 +321,6 @@ function transformLinks(
 ): LinksElement {
     return {
         type: LessonElementType.Links,
-        order: component.order,
         id: component.id,
         links: component.links.map((link) => ({
             title: link.title,
@@ -360,7 +345,6 @@ function transformCoachingSession(
 ): CoachingSessionElement {
     return {
         type: LessonElementType.CoachingSession,
-        order: component.order,
         id: component.id,
         coachingSession: {
             id: component.courseCoachingOfferingId,

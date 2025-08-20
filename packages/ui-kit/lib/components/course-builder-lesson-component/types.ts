@@ -18,6 +18,7 @@ export interface CoachingSessionElement extends BaseCourseFormElement {
 }
 
 export interface CoachingSessionTypes extends isLocalAware, BaseCourseFormElement {
+    order: number;
     type: CourseElementType.CoachingSession;
     coachingSessionTypes: {
         id: number;
@@ -125,6 +126,7 @@ export interface UploadFilesElement extends BaseCourseFormElement {
 
 export interface CreateAssignmentBuilderViewTypes extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.Assignment;
+    order: number;
     assignmentData: assignment.TAssignmentBaseWithId;
     onChange: (updatedData: {
         type: CourseElementType.Assignment;
