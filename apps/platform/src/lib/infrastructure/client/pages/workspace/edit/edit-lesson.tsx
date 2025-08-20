@@ -29,6 +29,7 @@ import {
     VideoElement,
     DefaultError,
     validatorPerType,
+    LinksElement,
 } from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
 import EditLayout from './components/edit-layout';
@@ -200,7 +201,12 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
             icon: <IconLink />,
             label: 'Link',
             onClick: () => {
-                // TODO: Implement link component
+                const newComponent: LinksElement = {
+                    id: generateTempId(),
+                    type: CourseElementType.Links,
+                    links: [],
+                };
+                setComponents((prev) => [...prev, newComponent]);
             },
         },
         {
