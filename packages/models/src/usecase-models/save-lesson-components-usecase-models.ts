@@ -1,11 +1,183 @@
 import { z } from 'zod';
 import {
+  BaseDiscriminatedErrorTypeSchemaFactory,
     BaseErrorDiscriminatedUnionSchemaFactory,
     BaseStatusDiscriminatedUnionSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
 import { ListLessonComponentsSuccessResponseSchema } from './list-lesson-components-usecase-models';
 
-export const SaveLessonComponentsRequestSchema = z.object({});
+const BaseComponentSchema = z.object({
+  id: z.string().optional(), // Doesn't exist if the component is new
+  order: z.number().int(),
+});
+
+const RichTextComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('richText'),
+  text: z.string(),
+  includeInMaterials: z.boolean(),
+});
+
+const HeadingComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('heading'),
+  text: z.string(),
+  size: z.enum(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
+});
+
+const SingleChoiceComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('singleChoice'),
+  title: z.string(),
+  options: z.array(z.object({
+    name: z.string(),
+  })),
+  required: z.boolean(),
+});
+
+const MultipleChoiceComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('multipleChoice'),
+  title: z.string(),
+  options: z.array(z.object({
+    name: z.string(),
+  })),
+  required: z.boolean(),
+});
+
+const TextInputComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('textInput'),
+  helperText: z.string(),
+  required: z.boolean(),
+});
+
+const OneOutOfThreeComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('oneOutOfThree'),
+  title: z.string(),
+  columns: z.array(z.object({
+    name: z.string(),
+  })),
+  rows: z.array(z.object({
+    name: z.string(),
+  })),
+  required: z.boolean(),
+});
+
+const VideoComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('video'),
+  videoFileId: z.number().int(),
+});
+
+const ImageComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('image'),
+  imageFileId: z.number().int(),
+});
+
+const ImageCarouselComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('imageCarousel'),
+  imageFileIds: z.array(z.number().int()),
+});
+
+const LinksComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('links'),
+  links: z.array(z.object({
+    title: z.string(),
+    url: z.string(),
+    iconFileId: z.number().int().nullable(),
+  })),
+});
+
+const DownloadFilesComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('downloadFiles'),
+  fileIds: z.array(z.number().int()),
+});
+
+const UploadFilesComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('uploadFiles'),
+  description: z.string(),
+});
+
+const QuizTypeOneComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('quizTypeOne'),
+  title: z.string(),
+  description: z.string(),
+  imageFileId: z.number().int(),
+  options: z.array(z.object({
+    name: z.string(),
+    isCorrect: z.boolean(),
+  })),
+});
+
+const QuizTypeTwoComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('quizTypeTwo'),
+  title: z.string(),
+  description: z.string(),
+  imageFileId: z.number().int(),
+  groups: z.array(z.object({
+    title: z.string(),
+    options: z.array(z.object({
+      name: z.string(),
+      isCorrect: z.boolean(),
+    })),
+  })),
+});
+
+const QuizTypeThreeComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('quizTypeThree'),
+  title: z.string(),
+  description: z.string(),
+  options: z.array(z.object({
+    imageFileId: z.number().int(),
+    description: z.string(),
+    isCorrect: z.boolean(),
+  })),
+});
+
+const QuizTypeFourComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('quizTypeFour'),
+  title: z.string(),
+  description: z.string(),
+  options: z.array(z.object({
+    imageFileId: z.number().int(),
+    description: z.string(),
+  })),
+});
+
+const CoachingSessionComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('coachingSession'),
+  courseCoachingOfferingId: z.number().int(),
+  name: z.string(),
+  duration: z.number().int(),
+});
+
+const AssignmentComponentSchema = BaseComponentSchema.extend({
+  type: z.literal('assignment'),
+  title: z.string(),
+  description: z.string(),
+});
+
+const ComponentSchema = z.discriminatedUnion('type', [
+  RichTextComponentSchema,
+  HeadingComponentSchema,
+  SingleChoiceComponentSchema,
+  MultipleChoiceComponentSchema,
+  TextInputComponentSchema,
+  OneOutOfThreeComponentSchema,
+  VideoComponentSchema,
+  ImageComponentSchema,
+  ImageCarouselComponentSchema,
+  LinksComponentSchema,
+  DownloadFilesComponentSchema,
+  UploadFilesComponentSchema,
+  QuizTypeOneComponentSchema,
+  QuizTypeTwoComponentSchema,
+  QuizTypeThreeComponentSchema,
+  QuizTypeFourComponentSchema,
+  CoachingSessionComponentSchema,
+  AssignmentComponentSchema,
+]);
+
+export const SaveLessonComponentsRequestSchema = z.object({
+  lessonId: z.number(),
+  courseVersion: z.string(),
+  components: z.array(ComponentSchema)
+});
 
 export type TSaveLessonComponentsRequest = z.infer<typeof SaveLessonComponentsRequestSchema>;
 
@@ -13,7 +185,15 @@ export const SaveLessonComponentsSuccessResponseSchema = ListLessonComponentsSuc
 
 export type TSaveLessonComponentsSuccessResponse = z.infer<typeof SaveLessonComponentsSuccessResponseSchema>;
 
-const SaveLessonComponentsUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
+const SaveLessonComponentsUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({
+  ConflictError: BaseDiscriminatedErrorTypeSchemaFactory({
+    type: 'ConflictError',
+    schema: z.object({
+      trace: z.string().optional(),
+      courseVersion: z.number(),
+    }),
+  }),
+});
 export type TSaveLessonComponentsUseCaseErrorResponse = z.infer<typeof SaveLessonComponentsUseCaseErrorResponseSchema>;
 
 export const SaveLessonComponentsUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([

@@ -32,6 +32,7 @@ import { getCourseStructure } from './procedures/course-structure';
 import { listLessonComponents } from './procedures/lesson-components';
 import { saveCourseStructure } from './procedures/course-structure';
 import { uploadLessonComponentFile } from './procedures/lesson-component-file';
+import { saveLessonComponents } from './procedures/lesson-components';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -66,6 +67,7 @@ export const mockRouter = t.router({
     listLessonComponents,
     saveCourseStructure,
     uploadLessonComponentFile,
+    saveLessonComponents,
 });
 
 export type MockRouter = typeof mockRouter;
