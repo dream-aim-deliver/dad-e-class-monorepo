@@ -2,7 +2,6 @@ import { z } from 'zod';
 import {
     BaseErrorDiscriminatedUnionSchemaFactory,
     BaseStatusDiscriminatedUnionSchemaFactory,
-    BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
 import { ListLessonComponentsSuccessResponseSchema } from './list-lesson-components-usecase-models';
 
