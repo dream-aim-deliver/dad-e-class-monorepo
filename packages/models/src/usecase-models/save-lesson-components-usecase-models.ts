@@ -175,7 +175,7 @@ const ComponentSchema = z.discriminatedUnion('type', [
 
 export const SaveLessonComponentsRequestSchema = z.object({
   lessonId: z.number(),
-  courseVersion: z.string(),
+  courseVersion: z.number(),
   components: z.array(ComponentSchema)
 });
 
