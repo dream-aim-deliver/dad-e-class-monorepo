@@ -27,3 +27,4 @@ export * from './course-short-view-model';
 export * from './course-structure-view-model';
 export * from './lesson-component-list-view-model';
 export * from './save-course-structure-view-model';
+export * from './save-lesson-component-view-model';
