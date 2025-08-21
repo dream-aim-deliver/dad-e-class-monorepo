@@ -67,13 +67,13 @@ export const getValidationError: ElementValidator = (props) => {
     if (elementInstance.type !== FormElementType.RichText)
         return dictionary.components.lessons.typeValidationText;
 
-    // Student validation: Rich text is display-only, no user input validation needed
+     // Student validation: Rich text is display-only, no user input validation needed
     if (context === 'student') {
         return undefined; // Always pass for student
     }
 
     // Coach validation: Check element structure (course builder - both designer and preview)
-    if ( !elementInstance.content) {
+    if ( !elementInstance.content || elementInstance.content.trim() === '') {
         return dictionary.components.richTextLesson.textContentValidationText;
     }
 
