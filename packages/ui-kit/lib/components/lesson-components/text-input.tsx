@@ -23,18 +23,18 @@ export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== FormElementType.TextInput)
-        return 'Wrong element type';
+        return dictionary.components.lessons.typeValidationText;
 
   
         // Check if content exists
         if (!elementInstance.content) {
-            return 'Text input content is required';
+            return dictionary.components.textInputLesson.textContentValidationText;
         }
 
         // Check if content has meaningful text (not just whitespace)
         const trimmedContent = elementInstance.content.trim();
         if (trimmedContent.length === 0) {
-            return 'Please enter some text';
+            return dictionary.components.textInputLesson.meaningfulTextValidationText;
         }
     
 
@@ -134,7 +134,7 @@ export function DesignerComponent({
     return (
         <DesignerLayout
             type={elementInstance.type}
-            title="Text Input"
+            title={dictionary.components.lessons.textInput}
             icon={<IconTextInput classNames="w-6 h-6" />}
             onUpClick={() => onUpClick?.(elementInstance.id)}
             onDownClick={() => onDownClick?.(elementInstance.id)}
@@ -183,7 +183,7 @@ export function FormComponent({
         return (
             <DefaultError
                 locale={locale}
-                title={'Element is invalid'}
+                title={dictionary.components.lessons.elementValidationText}
                 description={validationError}
             />
         );

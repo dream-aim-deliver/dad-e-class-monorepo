@@ -426,6 +426,10 @@ export const EN: TDictionary = {
       singleChoice: "Single choice",
       oneOutOfThree: "one out of three",
       heading: "Heading",
+      textInput: 'Text input',
+      richText: 'Rich text',
+      typeValidationText: 'Wrong element type',
+      elementValidationText: 'Element is invalid',
     },
     lessonHeader: {
       moduleText: 'Module',
@@ -845,8 +849,74 @@ export const EN: TDictionary = {
       requirementsDescription: 'What is expected of the students to begin this course? Add the required courses below.',
       searchCoursesPlaceholder: 'Search Courses',
       featuredImage: 'Featured Image',
-      removeCourse:'Remove Course'
+      removeCourse: 'Remove Course'
     },
+    headingLesson: {
+      headingValidationText: 'Heading text cannot be empty',
+    },
+    multiCheckLesson: {
+      titleValidationText: 'Title should not be empty',
+      optionValidationText: 'There should be at least one option',
+      optionNameValidationText: 'All option names should be non-empty',
+    },
+    oneOutOfThreeLesson: {
+      titleValidationText: 'Title should not be empty',
+      rowCountValidationText: 'There should be at least one row',
+      rowTitleValidationText: 'No row title should be empty',
+      columnTitleValidationText: 'No column title should be empty',
+    },
+    richTextLesson: {
+      textContentValidationText: 'Text content should not be empty',
+    },
+    singleChoiceLesson: {
+      titleValidationText: 'Title should not be empty',
+      optionCountValidationText: 'There should be at least one option',
+      optionNameValidationText: 'All option names should be non-empty',
+    },
+    textInputLesson: {
+      textContentValidationText: 'Text input content is required',
+      meaningfulTextValidationText: 'Please enter some text',
+    },
+    videoLesson: {
+      videoValidationText: 'There should be a file attached',
+      metadataValidationText: 'Invalid video metadata: missing required properties',
+      categoryValidationText: 'File must be a video',
+      statusValidationText: 'Video file must be available',
+      urlValidationText: 'Invalid video URL format',
+    },
+    imageLesson: {
+      imageValidationText: 'There should be a file attached',
+      metadataValidationText: 'Invalid image metadata: missing required properties',
+      categoryValidationText: 'File must be an image',
+      statusValidationText: 'Image file must be available',
+      urlValidationText: 'Invalid image URL format',
+    },
+    imageGalleryLesson: {
+      imageCountValidationText: 'There should be at least two files attached',
+      matadataValidationText: 'Invalid image metadata for image',
+      missingPropertiesValidationText: 'missing required properties',
+      file: 'File',
+      image: 'Image',
+      categoryValidationText: 'must be an image',
+      statusValidationText: 'must be available',
+      urlValidationText: 'Invalid URL format for image',
+    },
+    linkLesson: {
+      linkCountValidationText: 'There should be at least one link',
+      titleValidationText: 'Links should have non empty title',
+      urlValidationText: 'Links should have non empty URL',
+    },
+    downloadFileLesson: {
+      fileCountValidationText: 'At least a single file should be attached',
+      metadataValidationText: 'Invalid file metadata: missing required properties',
+      statusValidationText: 'All files must be available for download',
+      urlValidationText: 'Invalid file URL format',
+    },
+    uploadFileLesson: {
+      descriptionValidationText: 'Description should not be empty',
+      metadataValidationText: 'Invalid file metadata: missing required properties',
+      urlValidationText: 'Invalid file URL format',
+    }
   },
   pages: {
     home: Home_EN,

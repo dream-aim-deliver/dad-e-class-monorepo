@@ -452,6 +452,10 @@ export const DictionarySchema = z.object({
       singleChoice: z.string(),
       heading: z.string(),
       oneOutOfThree: z.string(),
+      textInput: z.string(),
+      richText: z.string(),
+      typeValidationText: z.string(),
+      elementValidationText: z.string(),
     }),
     dateInput: z.object({
       placeholder: z.string(),
@@ -836,7 +840,73 @@ export const DictionarySchema = z.object({
       requirementsDescription: z.string(),
       searchCoursesPlaceholder: z.string(),
       featuredImage: z.string(),
-      removeCourse:z.string()
+      removeCourse: z.string()
+    }),
+    headingLesson: z.object({
+      headingValidationText: z.string(),
+    }),
+    multiCheckLesson: z.object({
+      titleValidationText: z.string(),
+      optionValidationText: z.string(),
+      optionNameValidationText: z.string(),
+    }),
+    oneOutOfThreeLesson: z.object({
+      titleValidationText: z.string(),
+      rowCountValidationText: z.string(),
+      rowTitleValidationText: z.string(),
+      columnTitleValidationText: z.string(),
+    }),
+    richTextLesson: z.object({
+      textContentValidationText: z.string(),
+    }),
+    singleChoiceLesson: z.object({
+      titleValidationText: z.string(),
+      optionCountValidationText: z.string(),
+      optionNameValidationText: z.string(),
+    }),
+    textInputLesson: z.object({
+      textContentValidationText: z.string(),
+      meaningfulTextValidationText: z.string(),
+    }),
+    videoLesson: z.object({
+      videoValidationText: z.string(),
+      metadataValidationText: z.string(),
+      categoryValidationText: z.string(),
+      statusValidationText: z.string(),
+      urlValidationText: z.string(),
+    }),
+    imageLesson: z.object({
+      imageValidationText: z.string(),
+      metadataValidationText: z.string(),
+      categoryValidationText: z.string(),
+      statusValidationText: z.string(),
+      urlValidationText: z.string(),
+    }),
+    imageGalleryLesson: z.object({
+      imageCountValidationText: z.string(),
+      matadataValidationText: z.string(),
+      missingPropertiesValidationText: z.string(),
+      file: z.string(),
+      image: z.string(),
+      categoryValidationText: z.string(),
+      statusValidationText: z.string(),
+      urlValidationText: z.string(),
+    }),
+    linkLesson: z.object({
+      linkCountValidationText: z.string(),
+      titleValidationText: z.string(),
+      urlValidationText: z.string(),
+    }),
+    downloadFileLesson: z.object({
+      fileCountValidationText: z.string(),
+      metadataValidationText: z.string(),
+      statusValidationText: z.string(),
+      urlValidationText: z.string(),
+    }),
+    uploadFileLesson: z.object({
+      descriptionValidationText: z.string(),
+      metadataValidationText: z.string(),
+      urlValidationText: z.string(),
     }),
   }),
   pages: z.object({

@@ -18,28 +18,28 @@ export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== CourseElementType.DownloadFiles)
-        return 'Wrong element type';
+        return dictionary.components.lessons.typeValidationText;
 
     // Check if at least one file is attached
     if (!elementInstance.files || elementInstance.files.length === 0) {
-        return 'At least a single file should be attached';
+        return dictionary.components.downloadFileLesson.fileCountValidationText;
     }
 
     // Validate each file has required metadata properties
     for (const file of elementInstance.files) {
         if (!file.id || !file.name || !file.url) {
-            return 'Invalid file metadata: missing required properties';
+            return dictionary.components.downloadFileLesson.metadataValidationText;
         }
 
         if (file.status !== 'available') {
-            return 'All files must be available for download';
+            return dictionary.components.downloadFileLesson.statusValidationText;
         }
 
         // Validate URL format
         try {
             new URL(file.url);
         } catch {
-            return 'Invalid file URL format';
+            return dictionary.components.downloadFileLesson.urlValidationText;
         }
     }
 
@@ -191,7 +191,7 @@ export function FormComponent({
         return (
             <DefaultError
                 locale={locale}
-                title={'Element is invalid'}
+                title={dictionary.components.lessons.elementValidationText}
                 description={validationError}
             />
         );

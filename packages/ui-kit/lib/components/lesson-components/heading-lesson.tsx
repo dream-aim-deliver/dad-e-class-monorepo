@@ -11,11 +11,11 @@ export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== FormElementType.HeadingText)
-        return 'Wrong element type';
+        return dictionary.components.lessons.typeValidationText;
 
     // Check if heading content exists
     if (!elementInstance.heading || elementInstance.heading.trim().length === 0) {
-        return 'Heading text cannot be empty';
+        return dictionary.components.headingLesson.headingValidationText;
     }
 
     return undefined;
@@ -66,12 +66,14 @@ interface HeadingDesignerComponentProps extends DesignerComponentProps {
 }
 
 export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange }: HeadingDesignerComponentProps) {
+    const dictionary = getDictionary(locale);
+
     if (elementInstance.type !== FormElementType.HeadingText) return null;
 
     return (
         <DesignerLayout
             type={elementInstance.type}
-            title="Heading"
+            title={dictionary.components.lessons.heading}
             icon={<IconHeading classNames="w-6 h-6" />}
             onUpClick={() => onUpClick?.(elementInstance.id)}
             onDownClick={() => onDownClick?.(elementInstance.id)}
@@ -99,13 +101,13 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== FormElementType.HeadingText) return null;
 
     const dictionary = getDictionary(locale);
-console.log(locale)
+    console.log(locale)
     const validationError = getValidationError({ elementInstance, dictionary });
     if (validationError) {
         return (
             <DefaultError
                 locale={locale}
-                title={'Element is invalid'}
+                title={dictionary.components.lessons.elementValidationText}
                 description={validationError}
             />
         );

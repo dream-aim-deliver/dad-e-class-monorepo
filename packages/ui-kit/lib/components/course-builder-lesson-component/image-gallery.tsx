@@ -17,11 +17,11 @@ export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== CourseElementType.ImageGallery)
-        return 'Wrong element type';
+        return dictionary.components.lessons.typeValidationText;
 
     // Check if at least two image files are attached
     if (!elementInstance.images || elementInstance.images.length < 2) {
-        return 'There should be at least two files attached';
+        return dictionary.components.imageGalleryLesson.imageCountValidationText;
     }
 
     // Validate each image file metadata
@@ -29,23 +29,23 @@ export const getValidationError: ElementValidator = (props) => {
         const image = elementInstance.images[i];
 
         if (!image.id || !image.name || !image.url) {
-            return `Invalid image metadata for image ${i + 1}: missing required properties`;
+            return `${dictionary.components.imageGalleryLesson.matadataValidationText} ${i + 1}: ${dictionary.components.imageGalleryLesson.missingPropertiesValidationText}`;
         }
 
         // Validate that it's an image file
         if (image.category !== 'image') {
-            return `File ${i + 1} must be an image`;
+            return `${dictionary.components.imageGalleryLesson.file} ${i + 1} ${dictionary.components.imageGalleryLesson.categoryValidationText}`;
         }
 
         if (image.status !== 'available') {
-            return `Image ${i + 1} must be available`;
+            return `${dictionary.components.imageGalleryLesson.image} ${i + 1} ${dictionary.components.imageGalleryLesson.statusValidationText}`;
         }
 
         // Validate URL format
         try {
             new URL(image.url);
         } catch {
-            return `Invalid URL format for image ${i + 1}`;
+            return `${dictionary.components.imageGalleryLesson.urlValidationText} ${i + 1}`;
         }
     }
 
@@ -171,7 +171,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
         return (
             <DefaultError
                 locale={locale}
-                title={'Element is invalid'}
+                title={dictionary.components.lessons.elementValidationText}
                 description={validationError}
             />
         );

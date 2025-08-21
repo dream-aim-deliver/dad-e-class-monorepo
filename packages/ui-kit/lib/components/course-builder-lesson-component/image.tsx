@@ -14,33 +14,33 @@ export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== CourseElementType.ImageFile)
-        return 'Wrong element type';
+        return dictionary.components.lessons.typeValidationText;
 
     // Check if an image file is attached
     if (!elementInstance.file) {
-        return 'There should be a file attached';
+        return dictionary.components.imageLesson.imageValidationText;
     }
 
     // Validate image file metadata
     const file = elementInstance.file;
     if (!file.id || !file.name || !file.url) {
-        return 'Invalid image metadata: missing required properties';
+        return dictionary.components.imageLesson.metadataValidationText;
     }
 
     // Validate that it's an image file
     if (file.category !== 'image') {
-        return 'File must be an image';
+        return dictionary.components.imageLesson.categoryValidationText;
     }
 
     if (file.status !== 'available') {
-        return 'Image file must be available';
+        return dictionary.components.imageLesson.statusValidationText;
     }
 
     // Validate URL format
     try {
         new URL(file.url);
     } catch {
-        return 'Invalid image URL format';
+        return dictionary.components.imageLesson.urlValidationText;
     }
 
     return undefined;
@@ -166,7 +166,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
         return (
             <DefaultError
                 locale={locale}
-                title={'Element is invalid'}
+                title={dictionary.components.lessons.elementValidationText}
                 description={validationError}
             />
         );

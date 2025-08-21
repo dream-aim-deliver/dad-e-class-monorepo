@@ -12,16 +12,16 @@ export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== FormElementType.OneOutOfThree)
-        return 'Wrong element type';
+        return dictionary.components.lessons.typeValidationText;
 
     // Check if title (tableTitle) is empty
     if (!elementInstance.data?.tableTitle || elementInstance.data.tableTitle.trim() === '') {
-        return 'Title should not be empty';
+        return dictionary.components.oneOutOfThreeLesson.titleValidationText;
     }
 
     // Check if there is at least one row
     if (!elementInstance.data?.rows || elementInstance.data.rows.length === 0) {
-        return 'There should be at least one row';
+        return dictionary.components.oneOutOfThreeLesson.rowCountValidationText;
     }
 
     // Check if any row title is empty
@@ -29,7 +29,7 @@ export const getValidationError: ElementValidator = (props) => {
         !row.rowTitle || row.rowTitle.trim() === ''
     );
     if (hasEmptyRowTitle) {
-        return 'No row title should be empty';
+        return dictionary.components.oneOutOfThreeLesson.rowTitleValidationText;
     }
 
     // Check if any column title is empty
@@ -37,7 +37,7 @@ export const getValidationError: ElementValidator = (props) => {
         row.columns.some(col => !col.columnTitle || col.columnTitle.trim() === '')
     );
     if (hasEmptyColumnTitle) {
-        return 'No column title should be empty';
+        return dictionary.components.oneOutOfThreeLesson.columnTitleValidationText;
     }
 
     return undefined;
@@ -119,7 +119,7 @@ export function FormComponent({ elementInstance, submitValue, locale }: FormComp
         return (
             <DefaultError
                 locale={locale}
-                title={'Element is invalid'}
+                title={dictionary.components.lessons.elementValidationText}
                 description={validationError}
             />
         );

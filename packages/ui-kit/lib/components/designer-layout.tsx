@@ -134,7 +134,7 @@ const DesignerLayout = ({
             {validationError && (
                 <DefaultError
                     locale={locale}
-                    title={'Element is invalid'}
+                    title={dictionary.components.lessons.elementValidationText}
                     description={validationError}
                 />
             )}

@@ -430,7 +430,10 @@ export const DE: TDictionary = {
       singleChoice: "Einzelwahl",
       oneOutOfThree: "einer von drei",
       heading: "Überschrift",
-
+      textInput: 'Texteingabe',
+      richText: 'Rich-Text',
+      typeValidationText: 'Falscher Elementtyp',
+      elementValidationText: 'Element ist ungültig',
     },
     lessonHeader: {
       moduleText: 'Modul',
@@ -852,6 +855,72 @@ export const DE: TDictionary = {
       featuredImage: 'Vorschaubild',
       removeCourse: 'Kurs entfernen'
     },
+    headingLesson: {
+      headingValidationText: 'Der Überschriftentext darf nicht leer sein',
+    },
+    multiCheckLesson: {
+      titleValidationText: 'Der Titel darf nicht leer sein',
+      optionValidationText: 'Es sollte mindestens eine Option geben',
+      optionNameValidationText: 'Alle Optionsnamen dürfen nicht leer sein',
+    },
+    oneOutOfThreeLesson: {
+      titleValidationText: 'Der Titel darf nicht leer sein',
+      rowCountValidationText: 'Es sollte mindestens eine Zeile geben',
+      rowTitleValidationText: 'Kein Zeilentitel sollte leer sein',
+      columnTitleValidationText: 'Kein Spaltentitel sollte leer sein',
+    },
+    richTextLesson: {
+      textContentValidationText: 'Der Textinhalt sollte nicht leer sein',
+    },
+    singleChoiceLesson: {
+      titleValidationText: 'Der Titel darf nicht leer sein',
+      optionCountValidationText: 'Es sollte mindestens eine Option geben',
+      optionNameValidationText: 'Alle Optionsnamen dürfen nicht leer sein',
+    },
+    textInputLesson: {
+      textContentValidationText: 'Texteingabeinhalt ist erforderlich',
+      meaningfulTextValidationText: 'Bitte geben Sie einen Text ein',
+    },
+    videoLesson: {
+      videoValidationText: 'Es sollte eine Datei angehängt sein',
+      metadataValidationText: 'Ungültige Videometadaten: erforderliche Eigenschaften fehlen',
+      categoryValidationText: 'Die Datei muss ein Video sein',
+      statusValidationText: 'Videodatei muss verfügbar sein',
+      urlValidationText: 'Ungültiges Video-URL-Format',
+    },
+    imageLesson: {
+      imageValidationText: 'Es sollte eine Datei angehängt sein',
+      metadataValidationText: 'Ungültige Bildmetadaten: erforderliche Eigenschaften fehlen',
+      categoryValidationText: 'Die Datei muss ein Bild sein',
+      statusValidationText: 'Bilddatei muss vorhanden sein',
+      urlValidationText: 'Ungültiges Bild-URL-Format',
+    },
+    imageGalleryLesson: {
+      imageCountValidationText: 'Es sollten mindestens zwei Dateien angehängt sein',
+      matadataValidationText: 'Ungültige Bildmetadaten für Bild',
+      missingPropertiesValidationText: 'Es fehlen erforderliche Eigenschaften',
+      file: 'Datei',
+      image: 'Bild',
+      categoryValidationText: 'muss ein Bild sein',
+      statusValidationText: 'muss vorhanden sein',
+      urlValidationText: 'Ungültiges URL-Format für Bild',
+    },
+    linkLesson: {
+      linkCountValidationText: 'Es sollte mindestens ein Link vorhanden sein',
+      titleValidationText: 'Links sollten einen nicht leeren Titel haben',
+      urlValidationText: 'Links sollten eine nicht leere URL haben',
+    },
+    downloadFileLesson: {
+      fileCountValidationText: 'Es sollte mindestens eine Datei angehängt werden',
+      metadataValidationText: 'Ungültige Dateimetadaten: erforderliche Eigenschaften fehlen',
+      statusValidationText: 'Alle Dateien müssen zum Download verfügbar sein',
+      urlValidationText: 'Ungültiges Datei-URL-Format',
+    },
+    uploadFileLesson: {
+      descriptionValidationText: 'Die Beschreibung darf nicht leer sein',
+      metadataValidationText: 'Ungültige Dateimetadaten: erforderliche Eigenschaften fehlen',
+      urlValidationText: 'Ungültiges Datei-URL-Format',
+    }
   },
   pages: {
     home: Home_DE,

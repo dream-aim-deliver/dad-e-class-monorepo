@@ -66,7 +66,7 @@ export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== FormElementType.RichText)
-        return 'Wrong element type';
+        return dictionary.components.lessons.typeValidationText;
 
     if (elementInstance.content.trim() && !elementInstance.content) {
         return 'Text content should not be empty';
@@ -112,7 +112,7 @@ export function DesignerComponent({
     return (
         <DesignerLayout
             type={elementInstance.type}
-            title="Rich Text"
+            title={dictionary.components.lessons.richText}
             icon={<IconRichText classNames="w-6 h-6" />}
             onUpClick={() => onUpClick?.(elementInstance.id)}
             onDownClick={() => onDownClick?.(elementInstance.id)}
@@ -149,7 +149,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
         return (
             <DefaultError
                 locale={locale}
-                title={'Element is invalid'}
+                title={dictionary.components.lessons.elementValidationText}
                 description={validationError}
             />
         );

@@ -12,16 +12,16 @@ export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== FormElementType.MultiCheck)
-        return 'Wrong element type';
+        return dictionary.components.lessons.typeValidationText;
 
     // Check if title is empty
     if (!elementInstance.title || elementInstance.title.trim() === '') {
-        return 'Title should not be empty';
+        return dictionary.components.multiCheckLesson.titleValidationText;
     }
 
     // Check if there is at least one option
     if (!elementInstance.options || elementInstance.options.length === 0) {
-        return 'There should be at least one option';
+        return dictionary.components.multiCheckLesson.optionValidationText;
     }
 
     // Check if all option names are non-empty
@@ -29,7 +29,7 @@ export const getValidationError: ElementValidator = (props) => {
         !option.name || option.name.trim() === ''
     );
     if (hasEmptyOptionName) {
-        return 'All option names should be non-empty';
+        return dictionary.components.multiCheckLesson.optionNameValidationText;
     }
 
     return undefined;
@@ -110,7 +110,7 @@ export function FormComponent({ elementInstance, submitValue, locale }: FormComp
         return (
             <DefaultError
                 locale={locale}
-                title={'Element is invalid'}
+                title={dictionary.components.lessons.elementValidationText}
                 description={validationError}
             />
         );

@@ -22,20 +22,20 @@ export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== CourseElementType.Links)
-        return 'Wrong element type';
+        return dictionary.components.lessons.typeValidationText;
 
     // Check if at least one link is provided
     if (!elementInstance.links || elementInstance.links.length === 0) {
-        return 'There should be at least one link';
+        return dictionary.components.linkLesson.linkCountValidationText;
     }
 
     // Validate each link has non-empty title and URL
     for (const link of elementInstance.links) {
         if (!link.title || link.title.trim().length === 0) {
-            return 'Links should have non empty title';
+            return;
         }
         if (!link.url || link.url.trim().length === 0) {
-            return 'Links should have non empty URL';
+            return dictionary.components.linkLesson.urlValidationText;
         }
     }
 
@@ -166,7 +166,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
         return (
             <DefaultError
                 locale={locale}
-                title={'Element is invalid'}
+                title={dictionary.components.lessons.elementValidationText}
                 description={validationError}
             />
         );

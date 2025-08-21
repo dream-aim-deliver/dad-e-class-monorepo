@@ -12,16 +12,16 @@ export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== FormElementType.SingleChoice)
-        return 'Wrong element type';
+        return dictionary.components.lessons.typeValidationText;
 
     // Check if title is empty
     if (!elementInstance.title || elementInstance.title.trim() === '') {
-        return 'Title should not be empty';
+        return dictionary.components.singleChoiceLesson.titleValidationText;
     }
 
     // Check if there is at least one option
     if (!elementInstance.options || elementInstance.options.length === 0) {
-        return 'There should be at least one option';
+        return dictionary.components.singleChoiceLesson.optionCountValidationText;
     }
 
     // Check if all option names are non-empty
@@ -29,7 +29,7 @@ export const getValidationError: ElementValidator = (props) => {
         !option.name || option.name.trim() === ''
     );
     if (hasEmptyOptionName) {
-        return 'All option names should be non-empty';
+        return dictionary.components.singleChoiceLesson.optionNameValidationText;
     }
 
     return undefined;
@@ -109,6 +109,8 @@ interface SingleChoiceDesignerProps extends DesignerComponentProps {
 
 // TODO: Translate
 export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange, validationError }: SingleChoiceDesignerProps) {
+    const dictionary = getDictionary(locale);
+
     if (elementInstance.type !== FormElementType.SingleChoice) return null;
 
     const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
@@ -121,7 +123,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
     return (
         <DesignerLayout
             type={elementInstance.type}
-            title="Single Choice"
+            title={dictionary.components.lessons.singleChoice}
             icon={<IconSingleChoice classNames="w-6 h-6" />}
             onUpClick={() => onUpClick?.(elementInstance.id)}
             onDownClick={() => onDownClick?.(elementInstance.id)}
@@ -164,7 +166,7 @@ export function FormComponent({ elementInstance, submitValue, locale }: FormComp
         return (
             <DefaultError
                 locale={locale}
-                title={'Element is invalid'}
+                title={dictionary.components.lessons.elementValidationText}
                 description={validationError}
             />
         );
