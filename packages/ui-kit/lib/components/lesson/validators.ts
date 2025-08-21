@@ -15,60 +15,23 @@ import { getValidationError as getQuizValidationError } from "../course-builder-
 import { FormElementType } from "../pre-assessment/types";
 import { ElementValidator } from "./types";
 
-// TODO: add all validators
 export const validatorPerType: Record<CourseElementType | FormElementType, ElementValidator> = {
-    [CourseElementType.CoachingSession]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.ImageFile]: function (props): string | undefined {
-        return getImageValidationError(props);
-    },
-    [CourseElementType.VideoFile]: function (props): string | undefined {
-        return getVideoValidationError(props);
-    },
-    [CourseElementType.ImageGallery]: function (props): string | undefined {
-        return getImageGalleryValidationError(props);
-    },
-    [CourseElementType.DownloadFiles]: function (props): string | undefined {
-        return getDownloadFilesValidationError(props);
-    },
-    [CourseElementType.UploadFiles]: function (props): string | undefined {
-        return getUploadFilesValidationError(props);
-    },
-    [CourseElementType.Assignment]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.QuizTypeOne]: function (props): string | undefined {
-        return getQuizValidationError(props);
-    },
-    [CourseElementType.QuizTypeTwo]: function (props): string | undefined {
-        return getQuizValidationError(props);
-    },
-    [CourseElementType.QuizTypeThree]: function (props): string | undefined {
-        return getQuizValidationError(props);
-    },
-    [CourseElementType.QuizTypeFour]: function (props): string | undefined {
-        return getQuizValidationError(props);
-    },
-    [CourseElementType.Links]: function (props): string | undefined {
-        return getLinksValidationError(props);
-    },
-    [FormElementType.RichText]: function (props): string | undefined {
-        return getRichTextValidationError(props);
-    },
-    [FormElementType.SingleChoice]: function (props): string | undefined {
-        return getSingleChoiceValidationError(props);
-    },
-    [FormElementType.MultiCheck]: function (props): string | undefined {
-        return getMultiCheckValidationError(props);
-    },
-    [FormElementType.TextInput]: function (props): string | undefined {
-        return getTextInputValidationError(props);
-    },
-    [FormElementType.HeadingText]: function (props): string | undefined {
-        return getHeadingTextValidationError(props);
-    },
-    [FormElementType.OneOutOfThree]: function (props): string | undefined {
-        return getOneOutOfThreeValidationError(props);
-    }
+    [CourseElementType.CoachingSession]: () => undefined,
+    [CourseElementType.ImageFile]: getImageValidationError,
+    [CourseElementType.VideoFile]: getVideoValidationError,
+    [CourseElementType.ImageGallery]: getImageGalleryValidationError,
+    [CourseElementType.DownloadFiles]: getDownloadFilesValidationError,
+    [CourseElementType.UploadFiles]: getUploadFilesValidationError,
+    [CourseElementType.Assignment]: () => undefined,
+    [CourseElementType.QuizTypeOne]: getQuizValidationError,
+    [CourseElementType.QuizTypeTwo]: getQuizValidationError,
+    [CourseElementType.QuizTypeThree]: getQuizValidationError,
+    [CourseElementType.QuizTypeFour]: getQuizValidationError,
+    [CourseElementType.Links]: getLinksValidationError,
+    [FormElementType.RichText]: getRichTextValidationError,
+    [FormElementType.SingleChoice]: getSingleChoiceValidationError,
+    [FormElementType.MultiCheck]: getMultiCheckValidationError,
+    [FormElementType.TextInput]: getTextInputValidationError,
+    [FormElementType.HeadingText]: getHeadingTextValidationError,
+    [FormElementType.OneOutOfThree]: getOneOutOfThreeValidationError
 }
