@@ -23,6 +23,30 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import QuizTypeTwo from '../quiz/quiz-type-two/quiz-type-two';
 import QuizTypeThree from '../quiz/quiz-type-three/quiz-type-three';
 import QuizTypeFour from '../quiz/quiz-type-four/quiz-type-four';
+import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
+import { getValidationError as getQuizTypeOneValidationError } from '../quiz/quiz-type-one/quiz-type-one';
+import { getValidationError as getQuizTypeTwoValidationError } from '../quiz/quiz-type-two/quiz-type-two';
+import { getValidationError as getQuizTypeThreeValidationError } from '../quiz/quiz-type-three/quiz-type-three';
+import { getValidationError as getQuizTypeFourValidationError } from '../quiz/quiz-type-four/quiz-type-four';
+
+// Main validation function that routes to specific quiz type validators
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance } = props;
+
+    switch (elementInstance.type) {
+        case CourseElementType.QuizTypeOne:
+            return getQuizTypeOneValidationError(props);
+        case CourseElementType.QuizTypeTwo:
+            return getQuizTypeTwoValidationError(props);
+        case CourseElementType.QuizTypeThree:
+            return getQuizTypeThreeValidationError(props);
+        case CourseElementType.QuizTypeFour:
+            return getQuizTypeFourValidationError(props);
+        default:
+            return 'Unknown quiz type';
+    }
+};
 
 const quizElement: CourseElementTemplate = {
     type: CourseElementType.QuizTypeOne,
@@ -77,6 +101,7 @@ export function DesignerComponent({
     onFileDownload,
     onUploadComplete,
     uploadError,
+    validationError
 }: QuizDesignerComponentProps) {
     const quizType = getQuizType(elementInstance);
     if (!quizType) return null;
@@ -107,6 +132,7 @@ export function DesignerComponent({
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             {/* Inline QuizEdit logic */}
             <div className="flex flex-col gap-4 mt-4 w-full">
@@ -193,11 +219,28 @@ function formComponent({ elementInstance, locale }: FormComponentProps) {
 export function FormComponentWrapper({
     children,
     locale,
+    elementInstance,
 }: {
     children: React.ReactNode;
     locale: TLocale;
+    elementInstance?: CourseElement;
 }) {
     const dictionary = getDictionary(locale);
+
+    // Check for validation errors if elementInstance is provided
+    if (elementInstance) {
+        const validationError = getValidationError({ elementInstance, dictionary });
+        if (validationError) {
+            return (
+                <DefaultError
+                    locale={locale}
+                    title={'Quiz is invalid'}
+                    description={validationError}
+                />
+            );
+        }
+    }
+
     return (
         <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
             <div className="flex gap-1 items-start pb-2 border-b-[1px] border-divider">

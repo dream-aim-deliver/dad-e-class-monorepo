@@ -172,7 +172,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
 
     const dictionary = getDictionary(locale);
-console.log(locale)
+    console.log(locale)
     const validationError = getValidationError({ elementInstance, dictionary });
     if (validationError) {
         return (

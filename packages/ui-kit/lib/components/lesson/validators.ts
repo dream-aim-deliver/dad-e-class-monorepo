@@ -11,6 +11,7 @@ import { getValidationError as getImageGalleryValidationError } from "../course-
 import { getValidationError as getLinksValidationError } from "../course-builder-lesson-component/links";
 import { getValidationError as getDownloadFilesValidationError } from "../course-builder-lesson-component/download-files-lesson";
 import { getValidationError as getUploadFilesValidationError } from "../course-builder-lesson-component/upload-files-lesson";
+import { getValidationError as getQuizValidationError } from "../course-builder-lesson-component/quiz";
 import { FormElementType } from "../pre-assessment/types";
 import { ElementValidator } from "./types";
 
@@ -37,17 +38,17 @@ export const validatorPerType: Record<CourseElementType | FormElementType, Eleme
     [CourseElementType.Assignment]: function (): string | undefined {
         return undefined;
     },
-    [CourseElementType.QuizTypeOne]: function (): string | undefined {
-        return undefined;
+    [CourseElementType.QuizTypeOne]: function (props): string | undefined {
+        return getQuizValidationError(props);
     },
-    [CourseElementType.QuizTypeTwo]: function (): string | undefined {
-        return undefined;
+    [CourseElementType.QuizTypeTwo]: function (props): string | undefined {
+        return getQuizValidationError(props);
     },
-    [CourseElementType.QuizTypeThree]: function (): string | undefined {
-        return undefined;
+    [CourseElementType.QuizTypeThree]: function (props): string | undefined {
+        return getQuizValidationError(props);
     },
-    [CourseElementType.QuizTypeFour]: function (): string | undefined {
-        return undefined;
+    [CourseElementType.QuizTypeFour]: function (props): string | undefined {
+        return getQuizValidationError(props);
     },
     [CourseElementType.Links]: function (props): string | undefined {
         return getLinksValidationError(props);

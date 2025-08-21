@@ -9,6 +9,52 @@ import Banner from "../../banner";
 import { Uploader } from "../../drag-and-drop-uploader/uploader";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { CourseElementType } from "../../course-builder/types";
+import { ElementValidator } from "../../lesson/types";
+
+// Quiz Type Three Validation
+export const getValidationError: ElementValidator = (props) => {
+  const { elementInstance, dictionary } = props;
+
+  if (elementInstance.type !== CourseElementType.QuizTypeThree)
+    return 'Wrong element type';
+
+  const quiz = elementInstance as QuizTypeThreeElement;
+
+  // Title non empty
+  if (!quiz.title || quiz.title.trim() === '') {
+    return 'Title should not be empty';
+  }
+
+  // Description non empty
+  if (!quiz.description || quiz.description.trim() === '') {
+    return 'Description should not be empty';
+  }
+
+  // At least one option present
+  if (!quiz.options || quiz.options.length === 0) {
+    return 'At least one option should be present';
+  }
+
+  for (const option of quiz.options) {
+    // File image attached to each option
+    if (!option.imageFile) {
+      return 'Image file should be attached to each option';
+    }
+
+    // Each option has a non empty description
+    if (!option.description || option.description.trim() === '') {
+      return 'Each option should have a non-empty description';
+    }
+  }
+
+  // At least one option chosen as correct
+  const hasCorrectOption = quiz.options.some(option => option.correct);
+  if (!hasCorrectOption) {
+    return 'At least one option should be chosen as correct';
+  }
+
+  return undefined;
+};
 
 /**
  * A component for creating and editing a single-choice quiz question where each option
@@ -52,17 +98,17 @@ import { CourseElementType } from "../../course-builder/types";
  */
 
 interface QuizTypeThreeProps {
-    element: QuizTypeThreeElement;
-    locale: TLocale;
-    onChange: (updated: Partial<QuizTypeThreeElement>) => void;
-    onFileChange: (
-        file: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal,
-    ) => Promise<fileMetadata.TFileMetadata>;
-    onFileDelete: (fileId: string, index: number) => void;
-    onFileDownload: (id: string) => void;
-    onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
-    uploadError: string | null;
+  element: QuizTypeThreeElement;
+  locale: TLocale;
+  onChange: (updated: Partial<QuizTypeThreeElement>) => void;
+  onFileChange: (
+    file: fileMetadata.TFileUploadRequest,
+    abortSignal?: AbortSignal,
+  ) => Promise<fileMetadata.TFileMetadata>;
+  onFileDelete: (fileId: string, index: number) => void;
+  onFileDownload: (id: string) => void;
+  onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
+  uploadError: string | null;
 }
 
 const QuizTypeThree: FC<QuizTypeThreeProps> = ({

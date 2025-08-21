@@ -14,6 +14,51 @@ import Banner from '../../banner';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { CourseElementType } from '../../course-builder/types';
+import { ElementValidator } from '../../lesson/types';
+
+// Quiz Type One Validation
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.QuizTypeOne)
+        return 'Wrong element type';
+
+    const quiz = elementInstance as QuizTypeOneElement;
+
+    // Title non empty
+    if (!quiz.title || quiz.title.trim() === '') {
+        return 'Title should not be empty';
+    }
+
+    // Description non empty
+    if (!quiz.description || quiz.description.trim() === '') {
+        return 'Description should not be empty';
+    }
+
+    // File image attached
+    if (!quiz.imageFile) {
+        return 'Image file should be attached';
+    }
+
+    // At least one option present
+    if (!quiz.options || quiz.options.length === 0) {
+        return 'At least one option should be present';
+    }
+
+    // All options have non empty titles
+    for (const option of quiz.options) {
+        if (!option.name || option.name.trim() === '') {
+            return 'All option names should be non-empty';
+        }
+    }
+
+    // One option chosen as correct
+    if (!quiz.correctOptionId || !quiz.options.some(option => option.id === quiz.correctOptionId)) {
+        return 'One option should be chosen as correct';
+    }
+
+    return undefined;
+};
 
 /**
  * A component for creating and editing a single-choice quiz question.

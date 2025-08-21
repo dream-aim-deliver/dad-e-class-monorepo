@@ -12,6 +12,61 @@ import Banner from "../../banner";
 import { Uploader } from "../../drag-and-drop-uploader/uploader";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { CourseElementType } from "../../course-builder/types";
+import { ElementValidator } from "../../lesson/types";
+
+// Quiz Type Two Validation
+export const getValidationError: ElementValidator = (props) => {
+  const { elementInstance, dictionary } = props;
+
+  if (elementInstance.type !== CourseElementType.QuizTypeTwo)
+    return 'Wrong element type';
+
+  const quiz = elementInstance as QuizTypeTwoElement;
+
+  // Title non empty
+  if (!quiz.title || quiz.title.trim() === '') {
+    return 'Title should not be empty';
+  }
+
+  // Description non empty
+  if (!quiz.description || quiz.description.trim() === '') {
+    return 'Description should not be empty';
+  }
+
+  // File image attached
+  if (!quiz.imageFile) {
+    return 'Image file should be attached';
+  }
+
+  // Each group has a non empty title and at least one option
+  if (!quiz.groups || quiz.groups.length === 0) {
+    return 'At least one group should be present';
+  }
+
+  for (const group of quiz.groups) {
+    if (!group.title || group.title.trim() === '') {
+      return 'Each group should have a non-empty title';
+    }
+
+    if (!group.options || group.options.length === 0) {
+      return 'At least one option should be present in each group';
+    }
+
+    // All options have non empty titles
+    for (const option of group.options) {
+      if (!option.name || option.name.trim() === '') {
+        return 'All option names should be non-empty';
+      }
+    }
+
+    // One option chosen as correct per group
+    if (!group.correctOptionId || !group.options.some(option => option.id === group.correctOptionId)) {
+      return 'One option should be chosen as correct per group';
+    }
+  }
+
+  return undefined;
+};
 
 /**
  * A component for creating and editing a matching-type quiz question.
@@ -69,17 +124,17 @@ import { CourseElementType } from "../../course-builder/types";
  */
 
 interface QuizTypeTwoProps {
-    element: QuizTypeTwoElement;
-    locale: TLocale;
-    onChange: (updated: Partial<QuizTypeTwoElement>) => void;
-    onFileChange: (
-        file: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal,
-    ) => Promise<fileMetadata.TFileMetadata>;
-    onFileDelete: (fileId: string, index: number) => void;
-    onFileDownload: (id: string) => void;
-    onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
-    uploadError: string | null;
+  element: QuizTypeTwoElement;
+  locale: TLocale;
+  onChange: (updated: Partial<QuizTypeTwoElement>) => void;
+  onFileChange: (
+    file: fileMetadata.TFileUploadRequest,
+    abortSignal?: AbortSignal,
+  ) => Promise<fileMetadata.TFileMetadata>;
+  onFileDelete: (fileId: string, index: number) => void;
+  onFileDownload: (id: string) => void;
+  onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
+  uploadError: string | null;
 }
 
 const QuizTypeTwo: FC<QuizTypeTwoProps> = ({
