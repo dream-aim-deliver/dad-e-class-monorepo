@@ -5,7 +5,7 @@ import { isLocalAware } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { InputField } from './input-field';
 import RichTextEditor from './rich-text-element/editor';
-import { serialize } from './rich-text-element/serializer';
+import { deserialize, serialize } from './rich-text-element/serializer';
 import { Descendant, Node } from 'slate';
 import Banner from './banner';
 import { IconCourse } from './icons/icon-course';
@@ -66,7 +66,7 @@ export interface CourseFormState {
     setCourseTitle: (title: string) => void;
     setCourseSlug: (slug: string) => void;
     setCourseDescription: (description: Descendant[]) => void;
-    setDuration: (duration: number) => void;
+    setDuration: (duration: number | undefined) => void;
     onAddRequirement: (requirement: CourseRequirement) => void;
     onRemoveRequirement: (requirementId: number) => void;
 
@@ -74,15 +74,38 @@ export interface CourseFormState {
     serializeDescription: () => string;
 }
 
+interface UseCourseInitialState {
+    courseTitle?: string;
+    courseSlug?: string;
+    courseDescription?: string;
+    duration?: number | undefined;
+    requirements?: CourseRequirement[];
+}
+
 // Hook for parent components to manage form state
-export function useCourseForm(): CourseFormState {
-    const [courseTitle, setCourseTitle] = useState('');
-    const [courseSlug, setCourseSlug] = useState('');
-    const [courseDescription, setCourseDescription] = useState<Descendant[]>(
-        [],
+export function useCourseForm(
+    initialState?: UseCourseInitialState,
+): CourseFormState {
+    const [courseTitle, setCourseTitle] = useState(
+        initialState?.courseTitle ?? '',
     );
-    const [duration, setDuration] = useState<number | undefined>(undefined);
-    const [requirements, setRequirements] = useState<CourseRequirement[]>([]);
+    const [courseSlug, setCourseSlug] = useState(
+        initialState?.courseSlug ?? '',
+    );
+    const [courseDescription, setCourseDescription] = useState<Descendant[]>(
+        initialState?.courseDescription
+            ? deserialize({
+                  serializedData: initialState.courseDescription,
+                  onError: console.error,
+              })
+            : [],
+    );
+    const [duration, setDuration] = useState<number | undefined>(
+        initialState?.duration,
+    );
+    const [requirements, setRequirements] = useState<CourseRequirement[]>(
+        initialState?.requirements ?? [],
+    );
     const [hasUserEditedSlug, setHasEditedCourseSlug] = useState(false);
 
     const serializeDescription = () => serialize(courseDescription);
@@ -246,17 +269,19 @@ export function CourseForm(props: CourseFormProps) {
                     </div>
 
                     {/* Slug */}
-                    <div className="flex flex-col gap-1">
-                        <label className="text-sm md:text-md text-text-secondary">
-                            Slug
-                        </label>
-                        <InputField
-                            inputText="Slug"
-                            type="text"
-                            value={courseSlug}
-                            setValue={(value) => setCourseSlug(value)}
-                        />
-                    </div>
+                    {!isEditMode && (
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm md:text-md text-text-secondary">
+                                Slug
+                            </label>
+                            <InputField
+                                inputText="Slug"
+                                type="text"
+                                value={courseSlug}
+                                setValue={(value) => setCourseSlug(value)}
+                            />
+                        </div>
+                    )}
 
                     {/* Duration - only in edit mode */}
 

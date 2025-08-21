@@ -18,6 +18,9 @@ import { useSaveStructure } from './hooks/save-hooks';
 import EditHeader from './components/edit-header';
 import EnrolledCoursePreview from '../../course/enrolled-course/enrolled-course-preview';
 import EditCourseGeneral from './edit-course-general';
+import { trpc } from '../../../trpc/client';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
 
 interface EditCourseProps {
     slug: string;
@@ -29,8 +32,37 @@ enum TabTypes {
     CourseContent = 'course-content',
 }
 
-// TODO: Translate
 export default function EditCourse({ slug }: EditCourseProps) {
+    const locale = useLocale() as TLocale;
+
+    const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery({
+        courseSlug: slug,
+    });
+    const [courseViewModel, setCourseViewModel] = useState<
+        viewModels.TEnrolledCourseDetailsViewModel | undefined
+    >(undefined);
+    const { presenter: coursePresenter } =
+        useGetEnrolledCourseDetailsPresenter(setCourseViewModel);
+    coursePresenter.present(courseResponse, courseViewModel);
+
+    if (!courseViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (courseViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
+
+    return <EditCourseContent slug={slug} course={courseViewModel.data} />;
+}
+
+interface EditCourseContentProps {
+    slug: string;
+    course: viewModels.TEnrolledCourseDetailsSuccess;
+}
+
+// TODO: Translate
+function EditCourseContent({ slug, course }: EditCourseContentProps) {
     const tabContentClass = 'mt-5';
     const locale = useLocale() as TLocale;
 
@@ -84,7 +116,11 @@ export default function EditCourse({ slug }: EditCourseProps) {
         }
     };
 
-    const generalState = useCourseForm();
+    const generalState = useCourseForm({
+        courseTitle: course.title,
+        courseDescription: course.description,
+        duration: course.duration.selfStudy ?? undefined,
+    });
 
     const isSaving = isSavingCourseStructure;
 
@@ -136,6 +172,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
                 >
                     <Suspense fallback={<DefaultLoading locale={locale} />}>
                         <EditCourseGeneral
+                            slug={slug}
                             courseForm={generalState}
                             image={null}
                             setImage={() => {}}

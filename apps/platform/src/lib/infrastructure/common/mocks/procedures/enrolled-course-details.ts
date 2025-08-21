@@ -12,12 +12,35 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                     name: 'advanced-react-patterns.jpg',
                     size: 102400,
                     category: 'image',
-                    downloadUrl: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop',
+                    downloadUrl:
+                        'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop',
                 },
                 averageRating: 4.8,
                 reviewCount: 247,
-                description:
-                    'Master advanced React patterns, hooks, and performance optimization techniques. Learn context patterns, custom hooks, and modern state management approaches.',
+                description: JSON.stringify([
+                    {
+                        type: 'paragraph',
+                        children: [
+                            {
+                                text: 'Welcome to this comprehensive lesson on ',
+                            },
+                            {
+                                text: 'Modern Web Development',
+                                bold: true,
+                            },
+                            {
+                                text: '. In this lesson, we will explore ',
+                            },
+                            {
+                                text: 'React, TypeScript, and best practices',
+                                italic: true,
+                            },
+                            {
+                                text: ' for building scalable applications.',
+                            },
+                        ],
+                    },
+                ]),
                 duration: {
                     video: 180,
                     coaching: 60,
@@ -60,7 +83,8 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                     name: 'machine-learning-fundamentals.jpg',
                     size: 102400,
                     category: 'image',
-                    downloadUrl: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=400&fit=crop',
+                    downloadUrl:
+                        'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=400&fit=crop',
                 },
                 averageRating: 4.6,
                 reviewCount: 189,
@@ -108,7 +132,8 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                     name: 'ui-ux-design-mastery.jpg',
                     size: 102400,
                     category: 'image',
-                    downloadUrl: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=400&fit=crop',
+                    downloadUrl:
+                        'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=400&fit=crop',
                 },
                 averageRating: 4.9,
                 reviewCount: 324,
@@ -155,7 +180,8 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                     name: 'devops-cloud-architecture.jpg',
                     size: 102400,
                     category: 'image',
-                    downloadUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=400&fit=crop',
+                    downloadUrl:
+                        'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=400&fit=crop',
                 },
                 averageRating: 4.7,
                 reviewCount: 156,
@@ -244,7 +270,8 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
                     name: 'full-stack-js-development.jpg',
                     size: 102400,
                     category: 'image',
-                    downloadUrl: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=400&fit=crop',
+                    downloadUrl:
+                        'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=400&fit=crop',
                 },
                 averageRating: 4.4,
                 reviewCount: 312,

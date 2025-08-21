@@ -4,6 +4,7 @@ import { CourseForm, CourseFormState } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 
 interface EditCourseGeneralProps {
+    slug: string;
     courseForm: CourseFormState;
     image: fileMetadata.TFileMetadataImage | null;
     setImage: (image: fileMetadata.TFileMetadataImage | null) => void;
