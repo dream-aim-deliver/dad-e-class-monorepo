@@ -2,12 +2,12 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { CourseForm, CourseFormState } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
+import { CourseImageUploadState } from '../../common/hooks/use-course-image-upload';
 
 interface EditCourseGeneralProps {
     slug: string;
     courseForm: CourseFormState;
-    image: fileMetadata.TFileMetadataImage | null;
-    setImage: (image: fileMetadata.TFileMetadataImage | null) => void;
+    uploadImage: CourseImageUploadState;
 }
 
 export default function EditCourseGeneral(props: EditCourseGeneralProps) {
@@ -16,7 +16,7 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     return (
         <CourseForm
             mode="edit"
-            image={props.image}
+            image={props.uploadImage.courseImage}
             courseTitle={props.courseForm.courseTitle}
             setCourseTitle={props.courseForm.setCourseTitle}
             courseSlug={props.courseForm.courseSlug}
@@ -27,20 +27,12 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
             setDuration={props.courseForm.setDuration}
             onAddRequirement={props.courseForm.onAddRequirement}
             onRemoveRequirement={props.courseForm.onRemoveRequirement}
-            onFileChange={() => {
-                throw new Error('File change not implemented');
-            }}
-            onUploadComplete={() => {
-                throw new Error('Upload complete not implemented');
-            }}
-            onDelete={() => {
-                throw new Error('Delete not implemented');
-            }}
-            onDownload={() => {
-                throw new Error('Download not implemented');
-            }}
+            onFileChange={props.uploadImage.handleFileChange}
+            onUploadComplete={props.uploadImage.handleUploadComplete}
+            onDelete={props.uploadImage.handleDelete}
+            onDownload={props.uploadImage.handleDownload}
             locale={locale}
-            errorMessage={undefined}
+            errorMessage={props.uploadImage.uploadError}
             hasSuccess={false}
         />
     );

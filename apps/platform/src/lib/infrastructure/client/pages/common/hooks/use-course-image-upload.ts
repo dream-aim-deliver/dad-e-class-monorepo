@@ -7,13 +7,27 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { trpc } from '../../../trpc/client';
 
+export interface CourseImageUploadState {
+    courseImage: fileMetadata.TFileMetadataImage | null;
+    uploadError: string | undefined;
+    handleFileChange: (
+        uploadRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    handleUploadComplete: (file: fileMetadata.TFileMetadataImage) => void;
+    handleDelete: (id: string) => void;
+    handleDownload: (id: string) => void;
+}
+
 // Custom hook for image upload logic
-export const useCourseImageUpload = () => {
+export const useCourseImageUpload = (
+    initialImage: fileMetadata.TFileMetadataImage | null = null,
+): CourseImageUploadState => {
     const uploadMutation = trpc.uploadCourseImage.useMutation();
     const verifyMutation = trpc.verifyFile.useMutation();
 
     const [courseImage, setCourseImage] =
-        useState<fileMetadata.TFileMetadataImage | null>(null);
+        useState<fileMetadata.TFileMetadataImage | null>(initialImage);
     const [uploadError, setUploadError] = useState<string | undefined>(
         undefined,
     );

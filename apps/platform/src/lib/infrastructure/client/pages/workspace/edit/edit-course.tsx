@@ -2,25 +2,22 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
-    Button,
-    IconEyeShow,
-    IconSave,
-    PageTitle,
     DefaultError,
     DefaultLoading,
     Tabs,
     useCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import EditCourseStructure from './edit-course-structure';
 import { useSaveStructure } from './hooks/save-hooks';
 import EditHeader from './components/edit-header';
 import EnrolledCoursePreview from '../../course/enrolled-course/enrolled-course-preview';
 import EditCourseGeneral from './edit-course-general';
 import { trpc } from '../../../trpc/client';
-import { viewModels } from '@maany_shr/e-class-models';
+import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
+import { useCourseImageUpload } from '../../common/hooks/use-course-image-upload';
 
 interface EditCourseProps {
     slug: string;
@@ -35,9 +32,20 @@ enum TabTypes {
 export default function EditCourse({ slug }: EditCourseProps) {
     const locale = useLocale() as TLocale;
 
-    const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery({
-        courseSlug: slug,
-    });
+    // This is external as rich text is internally controlled
+    // Hence it can't be changed after rendering with initial value
+    const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery(
+        {
+            courseSlug: slug,
+        },
+        {
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
+            refetchOnMount: false,
+            retry: false,
+            staleTime: Infinity,
+        },
+    );
     const [courseViewModel, setCourseViewModel] = useState<
         viewModels.TEnrolledCourseDetailsViewModel | undefined
     >(undefined);
@@ -71,6 +79,17 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
 
     const [courseVersion, setCourseVersion] = useState<number | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    const transformCourseImage = (): fileMetadata.TFileMetadataImage | null => {
+        return course.imageFile
+            ? {
+                  ...course.imageFile,
+                  status: 'available',
+                  url: course.imageFile.downloadUrl,
+                  thumbnailUrl: course.imageFile.downloadUrl,
+              }
+            : null;
+    };
 
     const {
         modules,
@@ -121,6 +140,14 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
         courseDescription: course.description,
         duration: course.duration.selfStudy ?? undefined,
     });
+
+    const courseImageUpload = useCourseImageUpload(transformCourseImage());
+
+    useEffect(() => {
+        const courseImage = transformCourseImage();
+        if (!courseImage) return;
+        courseImageUpload.handleUploadComplete(courseImage);
+    }, [course]);
 
     const isSaving = isSavingCourseStructure;
 
@@ -174,8 +201,7 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
                         <EditCourseGeneral
                             slug={slug}
                             courseForm={generalState}
-                            image={null}
-                            setImage={() => {}}
+                            uploadImage={courseImageUpload}
                         />
                     </Suspense>
                 </Tabs.Content>
