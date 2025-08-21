@@ -8,6 +8,7 @@ import { FC, useState } from 'react';
 import { IconClock } from '../icons/icon-clock';
 import { IconStar } from '../icons/icon-star';
 import { UserAvatarReel } from '../avatar/user-avatar-reel';
+import RichTextRenderer from '../rich-text-element/renderer';
 
 interface Student {
     name: string;
@@ -170,7 +171,7 @@ export const CourseGeneralInformationView: FC<
         <div className="flex md:gap-20  gap-10 w-full md:flex-row flex-col-reverse">
             <div className="flex gap-[42px] flex-col basis-1/2">
                 {/* Description */}
-                <p className="text-md text-text-secondary">{longDescription}</p>
+                <RichTextRenderer onDeserializationError={console.error} content={longDescription} className="text-md text-text-secondary" />
 
                 {/* Duration */}
                 <div className="flex gap-2 flex-col">
