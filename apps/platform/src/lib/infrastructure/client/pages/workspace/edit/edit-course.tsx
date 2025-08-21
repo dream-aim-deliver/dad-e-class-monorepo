@@ -75,6 +75,14 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
     const locale = useLocale() as TLocale;
 
     const [isEdited, setIsEdited] = useState(false);
+
+    const editWrap = <T extends Array<any>, U>(fn: (...args: T) => U) => {
+        return (...args: T): U => {
+            setIsEdited(true);
+            return fn(...args);
+        };
+    };
+
     const [activeTab, setActiveTab] = useState<TabTypes>(TabTypes.General);
 
     const [courseVersion, setCourseVersion] = useState<number | null>(
@@ -137,6 +145,10 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
         }
         if (!generalState.serializeDescription()) {
             setErrorMessage('Course description is required');
+            return;
+        }
+        if (Number.isNaN(generalState.duration)) {
+            setErrorMessage('Course duration is invalid');
             return;
         }
         if (!courseImageUpload.courseImage) {
@@ -238,8 +250,22 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
                     <Suspense fallback={<DefaultLoading locale={locale} />}>
                         <EditCourseGeneral
                             slug={slug}
-                            courseForm={generalState}
-                            uploadImage={courseImageUpload}
+                            courseForm={{
+                                ...generalState,
+                                setCourseTitle: editWrap(
+                                    generalState.setCourseTitle,
+                                ),
+                                setCourseDescription: editWrap(
+                                    generalState.setCourseDescription,
+                                ),
+                                setDuration: editWrap(generalState.setDuration),
+                            }}
+                            uploadImage={{
+                                ...courseImageUpload,
+                                handleDelete: editWrap(
+                                    courseImageUpload.handleDelete,
+                                ),
+                            }}
                         />
                     </Suspense>
                 </Tabs.Content>
