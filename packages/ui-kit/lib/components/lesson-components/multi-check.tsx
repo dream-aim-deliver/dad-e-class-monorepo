@@ -64,7 +64,7 @@ interface MultiCheckDesignerProps extends DesignerComponentProps {
     onRequiredChange: (isRequired: boolean) => void;
 }
 
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange, validationError,isCourseBuilder }: MultiCheckDesignerProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange, validationError, isCourseBuilder }: MultiCheckDesignerProps) {
     if (elementInstance.type !== FormElementType.MultiCheck) return null;
     const dictionary = getDictionary(locale);
     const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);

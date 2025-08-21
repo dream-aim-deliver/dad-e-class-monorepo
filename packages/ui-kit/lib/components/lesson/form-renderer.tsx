@@ -120,7 +120,7 @@ export function FormElementRenderer({
     };
 
     const getErrorMessage = (element: LessonElement): string => {
-        return formErrors[element.id]
+        return formErrors[element.id] || '';
     };
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-text-primary">

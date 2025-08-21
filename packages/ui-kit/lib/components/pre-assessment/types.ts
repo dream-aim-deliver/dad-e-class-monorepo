@@ -126,7 +126,7 @@ export interface DesignerComponentProps extends isLocalAware {
     onDownClick?: (id: string) => void;
     onDeleteClick?: (id: string) => void;
     validationError?: string;
-    isCourseBuilder?: boolean;
+    isCourseBuilder: boolean;
 }
 
 /**

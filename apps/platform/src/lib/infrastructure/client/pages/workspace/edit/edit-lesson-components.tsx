@@ -238,6 +238,7 @@ function HeadingComponent({
             onDeleteClick={onDeleteClick}
             onChange={handleChange}
             validationError={validationError}
+            isCourseBuilder={true}
         />
     );
 }
