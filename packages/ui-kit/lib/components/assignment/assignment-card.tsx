@@ -1,14 +1,21 @@
-import { FC } from "react";
-import { Button } from "../button";
-import { assignment, fileMetadata, role, shared } from '@maany_shr/e-class-models';
-import { AssignmentHeader } from "./assignment-header";
-import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
-import { Message } from "./message";
-import { cn } from "../../utils/style-utils";
-import { FilePreview } from "../drag-and-drop-uploader/file-preview";
-import { LinkEdit, LinkPreview } from "../links";
+import { FC } from 'react';
+import { Button } from '../button';
+import {
+    assignment,
+    fileMetadata,
+    role,
+    shared,
+} from '@maany_shr/e-class-models';
+import { AssignmentHeader } from './assignment-header';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { Message } from './message';
+import { cn } from '../../utils/style-utils';
+import { FilePreview } from '../drag-and-drop-uploader/file-preview';
+import { LinkEdit, LinkPreview } from '../links';
 
-export interface AssignmentCardProps extends assignment.TAssignmentWithId, isLocalAware {
+export interface AssignmentCardProps
+    extends assignment.TAssignmentWithId,
+        isLocalAware {
     role: Omit<role.TRole, 'visitor' | 'admin'>;
     onFileDownload: (id: string) => void;
     onFileDelete: (assignmentId: number, fileId: string) => void;
@@ -16,30 +23,44 @@ export interface AssignmentCardProps extends assignment.TAssignmentWithId, isLoc
     onReplyFileDelete: (replyId: number, fileId: string) => void;
     onReplyLinkDelete: (replyId: number, linkId: number) => void;
     linkEditIndex: number;
-    onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
+    onImageChange: (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
     onDeleteIcon: (id: string) => void;
-    onChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], linkEditIndex: number) => void;
+    onChange: (
+        files: fileMetadata.TFileMetadata[],
+        links: shared.TLinkWithId[],
+        linkEditIndex: number,
+    ) => void;
     replyLinkEditIndex: number;
-    onReplyImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
+    onReplyImageChange: (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
     onReplyDeleteIcon: (id: string) => void;
-    onReplyChange: (files: fileMetadata.TFileMetadata[], links: shared.TLinkWithId[], replyLinkEditIndex: number) => void;
+    onReplyChange: (
+        files: fileMetadata.TFileMetadata[],
+        links: shared.TLinkWithId[],
+        replyLinkEditIndex: number,
+    ) => void;
     onClickCourse: () => void;
     onClickUser: () => void;
     onClickGroup: () => void;
     onClickView: () => void;
-};
+}
 
 /**
  * Renders an interactive assignment card, displaying assignment details, attached files, resource links,
  * and the most recent assignment reply in a structured card format.
- * 
+ *
  * The card includes:
  *   - Assignment header (title, course/module/lesson info, status, student or group info)
  *   - Description/comment
  *   - List of attached files and resource links with support for in-place editing/deletion (for coaches)
  *   - The latest reply in the assignment conversation (if present), using the Message component
  *   - "View" button to trigger details or navigation
- * 
+ *
  * This is a presentational component; all state and callback handlers for files/links/replies are managed via props.
  * Styling changes subtly depending on whether there are student replies or not.
  *
@@ -64,7 +85,7 @@ export interface AssignmentCardProps extends assignment.TAssignmentWithId, isLoc
  * @param onReplyChange Callback to update files/links in a reply
  * @param onChange Callback to update assignment files/links or to open a link for editing
  * @param onClickCourse Callback to view the course (triggers when user clicks course in header)
- * @param onClickUser Callback to view the student (in header) 
+ * @param onClickUser Callback to view the student (in header)
  * @param onClickGroup Callback to view the group (in header)
  * @param onClickView Callback for the "View" button at the bottom of the card
  * @param onImageChange Callback to update the Link image.
@@ -143,26 +164,29 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
     const getLatestReply = (replies: assignment.TAssignmentReplyWithId[]) => {
         if (replies.length === 0) return undefined;
         return replies.reduce((latest, current) =>
-            new Date(current.timestamp) > new Date(latest.timestamp) ? current : latest
+            new Date(current.timestamp as string) > new Date(latest.timestamp as string)
+                ? current
+                : latest,
         );
     };
 
     const handleSaveLink = (data: shared.TLinkWithId, index: number) => {
-        const updatedLinks = [...links];
+        const updatedLinks = [...(links as shared.TLinkWithId[])];
         updatedLinks[index] = data;
-        onChange(files, updatedLinks, null);
+        onChange(files as fileMetadata.TFileMetadata[], updatedLinks, -1);
     };
 
     const handleOnClickLinkEdit = (index: number) => {
-        onChange(files, links, index);
+        onChange(files as fileMetadata.TFileMetadata[], links as shared.TLinkWithId[], index);
     };
 
     return (
         <div
             className={cn(
-                "flex flex-col p-4 bg-card-fill border-1 border-card-stroke rounded-medium",
-                replies.length > 0 ? 'gap-2' : 'gap-4'
-            )}>
+                'flex flex-col p-4 bg-card-fill border-1 border-card-stroke rounded-medium',
+                (replies as assignment.TAssignmentReplyWithId[]).length > 0 ? 'gap-2' : 'gap-4',
+            )}
+        >
             <AssignmentHeader
                 title={title}
                 course={course}
@@ -177,79 +201,125 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                 locale={locale}
                 role={role}
             />
-            {replies.length > 0 ? (
-                // Show latest reply if there are replies
-                (() => {
-                    const latestReply = getLatestReply(replies);
-                    return latestReply ? (
-                        <div className="flex flex-col gap-2">
-                            <h6 className="text-md text-text-primary font-bold leading-[120%]">
-                                {dictionary.components.assignment.assignmentCard.lastActivityText}
-                            </h6>
-                            <Message
-                                reply={latestReply}
-                                linkEditIndex={replyLinkEditIndex}
-                                onFileDownload={onFileDownload}
-                                onFileDelete={onReplyFileDelete}
-                                onLinkDelete={onReplyLinkDelete}
-                                onImageChange={onReplyImageChange}
-                                onDeleteIcon={onReplyDeleteIcon}
-                                onChange={onReplyChange}
-                                locale={locale}
-                            />
-                        </div>
-                    ) : null;
-                })()
-            ) : (
-                // Show assignment content (description, files, links) if no replies
-                (!!description || files.length > 0 || links.length > 0) && (
-                    <div className="flex flex-col gap-4 items-start w-full">
-                        <p className="text-md text-text-primary leading-[150%]">
-                            {description}
-                        </p>
-                        <div className="flex flex-col gap-2 w-full">
-                            {files.map((file, index) => (
-                                <FilePreview
-                                    key={index}
-                                    uploadResponse={file}
-                                    locale={locale}
-                                    onDelete={() => onFileDelete(assignmentId, file.id)}
-                                    onDownload={() => onFileDownload(file.id)}
-                                    onCancel={() => onFileDelete(assignmentId, file.id)}
-                                    readOnly={role !== 'coach'}
-                                />
-                            ))}
-                            {links.map((link, index) =>
-                                linkEditIndex === index ? (
-                                    <div className="flex flex-col w-full" key={index}>
-                                        <LinkEdit
-                                            locale={locale}
-                                            initialTitle={link.title}
-                                            initialUrl={link.url}
-                                            initialCustomIcon={link.customIcon}
-                                            onSave={(title, url, customIcon) => handleSaveLink({ title, url, customIcon }, index)}
-                                            onDiscard={() => onLinkDelete(assignmentId, link.linkId)}
-                                            onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
-                                            onDeleteIcon={onDeleteIcon}
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col w-full" key={index}>
-                                        <LinkPreview
-                                            preview={role === 'coach'}
-                                            title={link.title}
-                                            url={link.url}
-                                            customIcon={link.customIcon}
-                                            onEdit={() => handleOnClickLinkEdit(index)}
-                                            onDelete={() => onLinkDelete(assignmentId, link.linkId)}
-                                        />
-                                    </div>
-                                )
-                            )}
-                        </div>
-                    </div>
-                )
-            )}
+            {(replies as assignment.TAssignmentReplyWithId[]).length > 0
+                ? // Show latest reply if there are replies
+                  (() => {
+                      const latestReply = getLatestReply(replies as assignment.TAssignmentReplyWithId[]);
+                      return latestReply ? (
+                          <div className="flex flex-col gap-2">
+                              <h6 className="text-md text-text-primary font-bold leading-[120%]">
+                                  {
+                                      dictionary.components.assignment
+                                          .assignmentCard.lastActivityText
+                                  }
+                              </h6>
+                              <Message
+                                  reply={latestReply}
+                                  linkEditIndex={replyLinkEditIndex}
+                                  onFileDownload={onFileDownload}
+                                  onFileDelete={onReplyFileDelete}
+                                  onLinkDelete={onReplyLinkDelete}
+                                  onImageChange={onReplyImageChange}
+                                  onDeleteIcon={onReplyDeleteIcon}
+                                  onChange={onReplyChange}
+                                  locale={locale}
+                              />
+                          </div>
+                      ) : null;
+                  })()
+                : // Show assignment content (description, files, links) if no replies
+                  (!!description || (files as fileMetadata.TFileMetadata[]).length > 0 || (links as shared.TLinkWithId[]).length > 0) && (
+                      <div className="flex flex-col gap-4 items-start w-full">
+                          <p className="text-md text-text-primary leading-[150%]">
+                              {description}
+                          </p>
+                          <div className="flex flex-col gap-2 w-full">
+                              {(files as fileMetadata.TFileMetadata[]).map((file, index) => (
+                                  <FilePreview
+                                      key={index}
+                                      uploadResponse={file}
+                                      locale={locale}
+                                      onDownload={() => onFileDownload(file.id as string)}
+                                      onCancel={() =>
+                                          onFileDelete(assignmentId as number, file.id as string)
+                                      }
+                                      readOnly={role !== 'coach'}
+                                      deletion={{
+                                          isAllowed: false,
+                                      }}
+                                  />
+                              ))}
+                              {(links as shared.TLinkWithId[]).map((link, index) =>
+                                  linkEditIndex === index ? (
+                                      <div
+                                          className="flex flex-col w-full"
+                                          key={index}
+                                      >
+                                          <LinkEdit
+                                              locale={locale}
+                                              initialTitle={link.title}
+                                              initialUrl={link.url}
+                                              initialCustomIcon={
+                                                  link.customIcon
+                                              }
+                                              onSave={(
+                                                  title,
+                                                  url,
+                                                  customIcon,
+                                              ) =>
+                                                  handleSaveLink(
+                                                      {
+                                                          title,
+                                                          url,
+                                                          customIcon,
+                                                      },
+                                                      index,
+                                                  )
+                                              }
+                                              onDiscard={() =>
+                                                  onLinkDelete(
+                                                      assignmentId as number,
+                                                      link.linkId as number,
+                                                  )
+                                              }
+                                              onImageChange={(
+                                                  image,
+                                                  abortSignal,
+                                              ) =>
+                                                  onImageChange(
+                                                      image,
+                                                      abortSignal,
+                                                  )
+                                              }
+                                              onDeleteIcon={onDeleteIcon}
+                                          />
+                                      </div>
+                                  ) : (
+                                      <div
+                                          className="flex flex-col w-full"
+                                          key={index}
+                                      >
+                                          <LinkPreview
+                                              preview={role === 'coach'}
+                                              title={link.title as string}
+                                              url={link.url as string}
+                                              customIcon={link.customIcon}
+                                              onEdit={() =>
+                                                  handleOnClickLinkEdit(index)
+                                              }
+                                              onDelete={() =>
+                                                  onLinkDelete(
+                                                      assignmentId as number,
+                                                      link.linkId as number,
+                                                  )
+                                              }
+                                          />
+                                      </div>
+                                  ),
+                              )}
+                          </div>
+                      </div>
+                  )}
             <Button
                 variant="secondary"
                 size="medium"

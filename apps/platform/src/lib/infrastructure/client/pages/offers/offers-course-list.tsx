@@ -5,7 +5,6 @@ import {
     DefaultError,
     DefaultLoading,
     DefaultNotFound,
-    SectionHeading,
     VisitorCourseCard,
 } from '@maany_shr/e-class-ui-kit';
 import { useMemo, useState } from 'react';
@@ -30,7 +29,7 @@ export function OffersCourseHeading({
 
     return (
         <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:justify-between w-full">
-            <SectionHeading text={t('ourCourses')} />
+            <h2> {t('ourCourses')} </h2>
             <CheckBox
                 name="coaching-filter"
                 value="coaching-included"

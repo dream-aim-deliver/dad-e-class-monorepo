@@ -100,7 +100,7 @@ export const AssignmentModalList: React.FC<AssignmentModalListProps> = ({
   const filteredAssignments = assignments
     .filter((assignment) => {
       const matchesSearch =
-        assignment.title.toLowerCase().includes(search.toLowerCase()) ||
+        (assignment.title as string).toLowerCase().includes(search.toLowerCase()) ||
         assignment.course?.title?.toLowerCase().includes(search.toLowerCase()) ||
         assignment.description?.toLowerCase().includes(search.toLowerCase()) ||
         assignment.student?.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -109,11 +109,11 @@ export const AssignmentModalList: React.FC<AssignmentModalListProps> = ({
       // Apply filter modal filters
       let matches = true;
 
-      if (filters.title && !assignment.title.toLowerCase().includes(filters.title.toLowerCase())) {
+      if (filters.title && !(assignment.title as string).toLowerCase().includes(filters.title.toLowerCase())) {
         matches = false;
       }
 
-      if (filters.status && filters.status.length > 0 && !filters.status.includes(assignment.status)) {
+      if (filters.status && filters.status.length > 0 && !filters.status.includes(assignment.status as string)) {
         matches = false;
       }
 
@@ -121,11 +121,11 @@ export const AssignmentModalList: React.FC<AssignmentModalListProps> = ({
         matches = false;
       }
 
-      if (filters.module && assignment.module.toString() !== filters.module) {
+      if (filters.module && (assignment.module as number).toString() !== filters.module) {
         matches = false;
       }
 
-      if (filters.lesson && assignment.lesson.toString() !== filters.lesson) {
+      if (filters.lesson && (assignment.lesson as number).toString() !== filters.lesson) {
         matches = false;
       }
 
@@ -140,14 +140,14 @@ export const AssignmentModalList: React.FC<AssignmentModalListProps> = ({
       return matchesSearch && matches;
     })
     .sort((a, b) => {
-      if (sortBy === 'title') return a.title.localeCompare(b.title);
-      if (sortBy === 'status') return a.status.localeCompare(b.status);
+      if (sortBy === 'title') return (a.title as string).localeCompare(b.title as string);
+      if (sortBy === 'status') return (a.status as string).localeCompare(b.status as string);
       if (sortBy === 'course') return (a.course?.title || '').localeCompare(b.course?.title || '');
-      if (sortBy === 'module') return a.module - b.module;
-      if (sortBy === 'lesson') return a.lesson - b.lesson;
+      if (sortBy === 'module') return (a.module as number) - (b.module as number);
+      if (sortBy === 'lesson') return (a.lesson as number) - (b.lesson as number);
       if (sortBy === 'student') return (a.student?.name || '').localeCompare(b.student?.name || '');
       if (sortBy === 'group') return (a.groupName || '').localeCompare(b.groupName || '');
-      if (sortBy === 'assignmentId') return a.assignmentId - b.assignmentId;
+      if (sortBy === 'assignmentId') return (a.assignmentId as number) - (b.assignmentId as number);
       // Date sorting would require a date field in the assignment object
       return 0;
     });

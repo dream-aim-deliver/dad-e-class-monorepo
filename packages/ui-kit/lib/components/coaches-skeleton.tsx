@@ -53,7 +53,12 @@ export const CoachesSkeleton = ({
     onRegister,
     locale,
 }: CoachesSkeletonProps) => {
-    const dictionary = getDictionary(locale).components.coachesSkeleton;
+    const dictionary = getDictionary(locale).components?.coachesSkeleton;
+    
+    if (!dictionary) {
+        // This should never happen as dictionary is always defined
+        return null;
+    }
     const skeletonCount = useResponsiveSkeletonCount();
 
     return (

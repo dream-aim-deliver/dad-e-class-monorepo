@@ -12,15 +12,24 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { FeedBackMessage } from '../feedback-message';
 import { IconImage } from '../icons/icon-image';
 
+interface DeletionAllowed {
+    isAllowed: true;
+    onDelete: (id: string) => void;
+}
+
+interface DeletionNotAllowed {
+    isAllowed: false;
+}
+
+type Deletion = DeletionAllowed | DeletionNotAllowed;
 
 interface FilePreviewProps extends isLocalAware {
     uploadResponse: fileMetadata.TFileMetadata;
     onDownload: (id: string) => void;
-    onCancel: (id: string) => void;
-    isDeletionAllowed?: boolean;
+    onCancel?: (id: string) => void;
+    deletion: Deletion;
     className?: string;
-    onDelete?: (id: string) => void;
-    readOnly?: boolean;
+    readOnly: boolean;
 }
 
 /**
@@ -29,9 +38,12 @@ interface FilePreviewProps extends isLocalAware {
  *
  * @param file The file object containing information about the uploaded file.
  * @param index The index of the file in the list of uploaded files.
- * @param onDelete Callback function to handle file deletion.
+ * @param deletion Contains isAllowed (to delete), if the user is allowed to delete the file, and if so, also an onDelete callback function to handle file deletion.
  * @param onDownload Callback function to handle file download.
  * @param locale The locale for translations.
+ * @param readOnly If the user has read-only permission to the file while it is processing
+ * @param onCancel Optional callback, if passed, renders a button to cancel the upload while it is processing
+ * @param 
  **/
 
 /**
@@ -39,17 +51,28 @@ interface FilePreviewProps extends isLocalAware {
  * @param fileName The name of the file
  * @returns The determined file type: 'image', 'video', or 'document'
  */
-const getFileTypeFromExtension = (fileName: string): 'image' | 'video' | 'document' => {
+const getFileTypeFromExtension = (
+    fileName: string,
+): 'image' | 'video' | 'document' => {
     const extension = fileName.split('.').pop()?.toLowerCase() || '';
     const imageTypes = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
-    const videoTypes = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'wmv', 'flv', 'mkv'];
+    const videoTypes = [
+        'mp4',
+        'webm',
+        'ogg',
+        'mov',
+        'avi',
+        'wmv',
+        'flv',
+        'mkv',
+    ];
 
     if (imageTypes.includes(extension)) return 'image';
     if (videoTypes.includes(extension)) return 'video';
     return 'document';
 };
 
-export const FilePreview: React.FC<FilePreviewProps> = (props) => {
+export const FilePreview = (props: FilePreviewProps) => {
     const { uploadResponse, onDownload, locale } = props;
     const dictionary = getDictionary(locale);
     const [thumbnailError, setThumbnailError] = useState(false);
@@ -72,9 +95,10 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
         }
 
         // Determine file category - use specified category or detect from extension if generic
-        const fileCategory = uploadResponse?.category === 'generic'
-            ? getFileTypeFromExtension(uploadResponse.name)
-            : uploadResponse?.category;
+        const fileCategory =
+            uploadResponse?.category === 'generic'
+                ? getFileTypeFromExtension(uploadResponse.name as string)
+                : uploadResponse?.category;
 
         // Return appropriate element based on category
         if (fileCategory === 'image') {
@@ -88,7 +112,13 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
                     <div className="relative  flex items-center justify-center">
                         <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-secondary" />
                         <img
-                            src={(uploadResponse as fileMetadata.TFileMetadata & { thumbnailUrl?: string }).thumbnailUrl || 'https://example.com'}
+                            src={
+                                (
+                                    uploadResponse as fileMetadata.TFileMetadata & {
+                                        thumbnailUrl?: string;
+                                    }
+                                ).thumbnailUrl || ''
+                            }
                             alt={uploadResponse.name}
                             className="absolute inset-0 w-full h-full object-cover rounded-small opacity-0"
                             onLoad={() => setThumbnailLoading(false)}
@@ -103,7 +133,13 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
 
             return (
                 <img
-                    src={(uploadResponse as fileMetadata.TFileMetadata & { thumbnailUrl?: string }).thumbnailUrl || ''}
+                    src={
+                        (
+                            uploadResponse as fileMetadata.TFileMetadata & {
+                                thumbnailUrl?: string;
+                            }
+                        ).thumbnailUrl || ''
+                    }
                     alt={uploadResponse.name}
                     className="w-10 h-10 object-cover rounded-small"
                     onError={() => setThumbnailError(true)}
@@ -120,7 +156,13 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
     };
 
     return (
-        <div className={cn('flex items-center justify-between gap-2 py-2 rounded-medium', 'bg-base-neutral-900', props.className)}>
+        <div
+            className={cn(
+                'flex items-center justify-between gap-2 p-2 rounded-medium',
+                'bg-base-neutral-900',
+                props.className,
+            )}
+        >
             <div className="flex items-center gap-2">
                 <div className="w-12 h-12 flex items-center justify-center rounded-medium bg-base-neutral-800 border border-base-neutral-700">
                     {getFilePreviewElement()}
@@ -134,32 +176,40 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
                     </>
                 ) : (
                     <>
-                        <span title={uploadResponse.name} className="text-sm font-medium text-text-primary truncate">
+                        <span
+                            title={uploadResponse.name}
+                            className="text-sm font-medium text-text-primary truncate"
+                        >
                             {uploadResponse.name}
                         </span>
                         <span className="text-xs text-text-secondary">
-                            {(uploadResponse.size / (1024 * 1024)).toFixed(2)} MB
+                            {((uploadResponse.size as number) / (1024 * 1024)).toFixed(2)}{' '}
+                            MB
                         </span>
                     </>
                 )}
             </div>
             <div>
                 {uploadResponse?.status === 'processing' ? (
-                    ('readOnly' in props && props.readOnly) ? (
+                    props.readOnly ? (
                         <span className="text-sm text-text-secondary">
                             Processing...
                         </span>
                     ) : (
-                        <Button
-                            variant="text"
-                            className="px-0"
-                            onClick={() => {
-                                if ('onCancel' in props) {
-                                    props.onCancel(uploadResponse.id as string);
+                        // Only show the Button if 'onCancel' exists in props
+                        props.onCancel && (
+                            <Button
+                                variant="text"
+                                className="px-0"
+                                onClick={() => {
+                                    props.onCancel!(uploadResponse.id as string);
+                                }}
+                                text={
+                                    dictionary.components.uploadingSection
+                                        .cancelUpload
                                 }
-                            }}
-                            text={dictionary.components.uploadingSection.cancelUpload}
-                        />
+                            />
+                        )
                     )
                 ) : (
                     <div className="font-bold flex items-center cursor-pointer">
@@ -167,18 +217,32 @@ export const FilePreview: React.FC<FilePreviewProps> = (props) => {
                             icon={<IconCloudDownload />}
                             size="small"
                             styles="text"
-                            title={dictionary.components.uploadingSection.downloadText}
-                            onClick={() => onDownload(uploadResponse.id as string)}
+                            title={
+                                dictionary.components.uploadingSection
+                                    .downloadText
+                            }
+                            onClick={() =>
+                                onDownload(uploadResponse.id as string)
+                            }
                         />
-                        {props.isDeletionAllowed &&
+                        {props.deletion.isAllowed === true && (
                             <IconButton
                                 icon={<IconTrashAlt />}
                                 styles="text"
                                 size="small"
-                                title={dictionary.components.uploadingSection.deleteText}
-                                onClick={() => props.onDelete?.(uploadResponse.id as string)}
+                                title={
+                                    dictionary.components.uploadingSection
+                                        .deleteText
+                                }
+                                onClick={() => {
+                                    if (props.deletion.isAllowed) {
+                                        props.deletion.onDelete(
+                                            uploadResponse.id as string,
+                                        );
+                                    }
+                                }}
                             />
-                        }
+                        )}
                     </div>
                 )}
             </div>

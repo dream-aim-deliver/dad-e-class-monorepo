@@ -88,7 +88,12 @@ export const AddCoachModal = ({
     content,
     addedCoachIds = [],
 }: AddCoachModalProps) => {
-    const dictionary = getDictionary(locale).components.addCoachModal;
+    const dictionary = getDictionary(locale).components?.addCoachModal;
+    
+    if (!dictionary) {
+        // This should never happen as dictionary is always defined
+        return null;
+    }
 
     const [searchContent, setSearchContent] = useState('');
 
@@ -127,7 +132,7 @@ export const AddCoachModal = ({
                         setSearchContent(value);
                     }}
                     hasLeftContent={true}
-                    inputText={dictionary.searchLabel}
+                    inputText={dictionary.searchLabel || ''}
                     leftContent={<IconSearch />}
                 />
                 {/* No coaches found & skeleton */}
@@ -220,7 +225,7 @@ export const AddCoachModal = ({
                 className="w-full"
                 variant="text"
                 size="medium"
-                text={dictionary.closeButton}
+                text={dictionary.closeButton || ''}
                 onClick={onClose}
             />
         </div>

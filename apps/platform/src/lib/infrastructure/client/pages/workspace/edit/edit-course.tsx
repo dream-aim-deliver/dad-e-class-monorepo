@@ -95,13 +95,13 @@ export default function EditCourse({ slug }: EditCourseProps) {
                 onValueChange={handleTabChange}
             >
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
-                    <Tabs.Trigger value={TabTypes.General}>
+                    <Tabs.Trigger value={TabTypes.General} isLast={false}>
                         General
                     </Tabs.Trigger>
-                    <Tabs.Trigger value={TabTypes.IntroOutline}>
+                    <Tabs.Trigger value={TabTypes.IntroOutline} isLast={false}>
                         Intro & Outline
                     </Tabs.Trigger>
-                    <Tabs.Trigger value={TabTypes.CourseContent}>
+                    <Tabs.Trigger value={TabTypes.CourseContent} isLast={true}>
                         Course Content
                     </Tabs.Trigger>
                 </Tabs.List>

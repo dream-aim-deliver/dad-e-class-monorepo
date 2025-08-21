@@ -37,11 +37,13 @@ export const HighlyRatedCoach: Story = {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
           title: 'Leadership Mastery',
+          slug: 'leadership-mastery',
         },
         {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
           title: 'Effective Communication',
+          slug: 'effective-communication',
         },
       ],
       rating: 5.0,
@@ -70,16 +72,19 @@ export const NewCoach: Story = {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
           title: 'Career Advancement',
+          slug: 'career-advancement',
         },
         {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
           title: 'Career Advancement',
+          slug: 'career-advancement',
         },
         {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
           title: 'Career Advancement',
+          slug: 'career-advancement',
         },
       ],
       rating: 4.2,
@@ -107,6 +112,7 @@ export const NoProfilePicture: Story = {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
           title: 'Personal Growth',
+          slug: 'personal-growth',
         },
       ],
       rating: 4.7,
@@ -150,11 +156,13 @@ export const CoachWithManySkills: Story = {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
           title: 'Business Growth',
+          slug: 'business-growth',
         },
         {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
           title: 'Marketing 101',
+          slug: 'marketing-101',
         },
       ],
 
@@ -183,11 +191,13 @@ export const LowRatedCoach: Story = {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
           title: 'Speaking with Confidence',
+          slug: 'speaking-with-confidence',
         },
          {
           image:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
           title: 'Speaking with Confidence',
+          slug: 'speaking-with-confidence',
         },
       ],
       rating: 2.5,

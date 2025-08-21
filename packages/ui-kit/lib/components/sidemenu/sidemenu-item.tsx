@@ -59,7 +59,7 @@ export const SideMenuItem: FC<SideMenuItemProps> = ({
 }) => {
     return (
         <div
-            onClick={() => onClickItem(item)}
+            onClick={() => onClickItem?.(item)}
             key={item.label}
             className={cn(
                 'flex items-center cursor-pointer w-full hover:bg-base-neutral-800 rounded-medium',
@@ -87,9 +87,9 @@ export const SideMenuItem: FC<SideMenuItemProps> = ({
                         >
                             {item.label}
                         </span>
-                        {item.notificationCount > 0 && (
+                        {item?.notificationCount && item.notificationCount > 0 && (
                             <div className="flex-shrink-0">
-                                <Badge text={`${item.notificationCount}`} size="medium" />
+                                <Badge text={`${item?.notificationCount}`} size="medium" />
                             </div>
                         )}
                     </div>

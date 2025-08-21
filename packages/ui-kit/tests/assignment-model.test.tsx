@@ -24,12 +24,12 @@ vi.mock('../lib/components/assignment/assignment-header', () => ({
 }));
 
 vi.mock('../lib/components/drag-and-drop-uploader/file-preview', () => ({
-    FilePreview: ({ uploadResponse, onDelete, onDownload, isDeleteAllowed = true }) => (
+    FilePreview: ({ uploadResponse, deletion, onDownload }) => (
         <div data-testid={`file-preview-${uploadResponse.id}`}>
             <span>{uploadResponse.name}</span>
             <button data-testid={`download-btn-${uploadResponse.id}`} onClick={onDownload}>Download</button>
-            {isDeleteAllowed ? (
-                <button data-testid={`delete-btn-${uploadResponse.id}`} onClick={onDelete}>Delete</button>
+            {deletion?.isAllowed ? (
+                <button data-testid={`delete-btn-${uploadResponse.id}`} onClick={deletion.onDelete}>Delete</button>
             ) : null}
         </div>
     ),

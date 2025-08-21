@@ -102,8 +102,8 @@ export function DesignerComponent({
                         <div className="flex flex-col w-full" key={index}>
                             <LinkPreview
                                 preview
-                                title={link.title}
-                                url={link.url}
+                                title={link.title || ''}
+                                url={link.url || ''}
                                 customIcon={link.customIcon}
                                 onEdit={() => {
                                     setLinkEditIndex(index);
@@ -132,18 +132,18 @@ export function DesignerComponent({
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.Links) return null;
 
-    return (
-        <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
-            {elementInstance.links.map((link, index) => (
-                <LinkPreview
-                    key={`link-${elementInstance.id}-${index}`}
-                    title={link.title}
-                    url={link.url}
-                    customIcon={link.customIcon}
-                />
-            ))}
-        </div>
-    );
-}
+  return (
+    <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
+      {elementInstance.links.map((link, index) => (
+        <LinkPreview
+          key={`link-${elementInstance.id}-${index}`}
+          title={link.title as string}
+          url={link.url as string}
+          customIcon={link.customIcon}
+        />
+      ))}
+    </div>
+  );
+};
 
 export default linksElement;

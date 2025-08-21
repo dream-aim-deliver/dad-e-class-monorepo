@@ -55,9 +55,9 @@ const FilterSwitch: React.FC<TopicListProps> = ({ title, list, onFilterChange, s
   };
 
   return (
-    <div className="max-w-7xl  flex flex-col gap-4">
+    <div className="w-full flex flex-col gap-4">
       <h5 className="text-text-primary md:text-lg lg:text-2xl">{title}</h5>
-      <div className="flex gap-3 flex-wrap items-center">
+      <div className="flex gap-3 flex-wrap items-start">
         {list.map((topic, index) => (
           <Button
             key={index}

@@ -104,7 +104,7 @@ export const PackageCourseSelector: FC<PackageCourseSelectorProps> = ({
                             {pricing.currency}  {pricing.partialPrice}
                         </h6>
                         <p className="text-sm font-bold text-feedback-success-primary leading-[100%] whitespace-nowrap">
-                            {dictionary.components.courseCard.saveText}  {pricing.currency}  {pricing.fullPrice - pricing.partialPrice}
+                            {dictionary.components.courseCard.saveText}  {pricing.currency}  {(pricing.fullPrice as number) - (pricing.partialPrice as number)}
                         </p>
                     </div>
                 </div>

@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react';
 import { trpc } from '../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListUserCoursesPresenter } from '../../hooks/use-user-courses-presenter';
+import { useSession } from 'next-auth/react';
+
 import {
     Button,
     CardListLayout,
@@ -23,11 +25,18 @@ import { useRouter } from 'next/navigation';
 export default function UserCoursesList() {
     const locale = useLocale() as TLocale;
     const router = useRouter();
-
+    const sessionDTO = useSession();
+    const session = sessionDTO.data
+    const sessionStatus = sessionDTO.status
     const paginationTranslations = useTranslations(
         'components.paginationButton',
     );
-
+    if ( sessionStatus !== "authenticated" || session == null ) {
+        // redirect to login page
+        router.push("/auth/login")
+    }
+    const userRoles = session?.user.roles
+    const isAdmin = userRoles?.includes("admin")
     const [coursesResponse] = trpc.listUserCourses.useSuspenseQuery({});
     const [coursesViewModel, setCoursesViewModel] = useState<
         viewModels.TUserCourseListViewModel | undefined
@@ -79,7 +88,7 @@ export default function UserCoursesList() {
     };
 
     return (
-        <div className="flex flex-col space-y-2 mt-3">
+        <div className="flex flex-col space-y-2 mt-6">
             <CardListLayout>
                 {displayedCourses.map((course) => {
                     // Leaving some fields empty as neither response provides them, nor the view uses them
@@ -102,7 +111,36 @@ export default function UserCoursesList() {
                         currency: '',
                         fullPrice: 0,
                     };
-
+                    if (course.role === 'owner' || isAdmin) {
+                        const stateToStatus: Record<string, CourseStatus> = {
+                            draft: 'draft',
+                            review: 'under-review',
+                            live: 'published',
+                        };
+                        return (
+                            <CourseCreatorCard
+                                key={course.id}
+                                rating={course.averageRating}
+                                reviewCount={course.reviewCount}
+                                sessions={course.coachingSessionCount ?? 0}
+                                sales={course.salesCount}
+                                status={stateToStatus[course.state] || 'draft'}
+                                locale={locale}
+                                title={course.title}
+                                description={course.description}
+                                imageUrl={course.imageUrl ?? ''}
+                                author={author}
+                                language={language}
+                                duration={duration}
+                                pricing={pricing}
+                                onClickUser={() =>
+                                    onClickUser(course.author.username)
+                                }
+                                onManage={() => onCourseVisit(course.slug)}
+                                onEdit={() => onCourseEdit(course.slug)}
+                            />
+                        );
+                    }
                     if (course.role === 'coach') {
                         return (
                             <CoachCourseCard
@@ -148,36 +186,7 @@ export default function UserCoursesList() {
                             />
                         );
                     }
-                    if (course.role === 'owner' || course.role === 'admin') {
-                        const stateToStatus: Record<string, CourseStatus> = {
-                            draft: 'draft',
-                            review: 'under-review',
-                            live: 'published',
-                        };
-                        return (
-                            <CourseCreatorCard
-                                key={course.id}
-                                rating={course.averageRating}
-                                reviewCount={course.reviewCount}
-                                sessions={course.coachingSessionCount ?? 0}
-                                sales={course.salesCount}
-                                status={stateToStatus[course.state] || 'draft'}
-                                locale={locale}
-                                title={course.title}
-                                description={course.description}
-                                imageUrl={course.imageUrl ?? ''}
-                                author={author}
-                                language={language}
-                                duration={duration}
-                                pricing={pricing}
-                                onClickUser={() =>
-                                    onClickUser(course.author.username)
-                                }
-                                onManage={() => onCourseVisit(course.slug)}
-                                onEdit={() => onCourseEdit(course.slug)}
-                            />
-                        );
-                    }
+                    
                 })}
             </CardListLayout>
             {hasMoreCourses && (
@@ -185,6 +194,8 @@ export default function UserCoursesList() {
                     variant="text"
                     text={paginationTranslations('loadMore')}
                     onClick={handleLoadMore}
+                    size="medium"
+                    className='pt-10'
                 />
             )}
         </div>

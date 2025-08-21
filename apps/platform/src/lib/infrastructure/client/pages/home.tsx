@@ -88,7 +88,8 @@ export default function Home() {
     const homePage = homePageViewModel.data;
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col items-center">
+            <div className='gap-4 px-30 mb-15'>
             <Hero
                 locale={locale}
                 title={homePage.banner.title}
@@ -114,7 +115,9 @@ export default function Home() {
             </Carousel>
             <Divider />
             <Topics />
+            </div>
             {/* Breakpoints might be adjusted here */}
+            <div className='bg-base-neutral-950 px-30 py-10 mb-15'>
             <CoachingOnDemandBanner
                 title={homePage.coachingOnDemand.title}
                 description={homePage.coachingOnDemand.description}
@@ -147,11 +150,14 @@ export default function Home() {
                     </>
                 }
             />
+            </div>
+            <div className='w-full px-30'>
             <HomeAccordion
                 title={homePage.accordion.title}
                 showNumbers={homePage.accordion.showNumbers}
                 items={homePage.accordion.items}
             />
+            </div>
         </div>
     );
 }

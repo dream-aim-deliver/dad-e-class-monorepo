@@ -23,8 +23,7 @@ const videoFileElement: CourseElementTemplate = {
         icon: IconVideo,
         label: "Video"
     },
-    // @ts-ignore
-    designerComponent: DesignerComponent,
+    designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
     formComponent: FormComponent
 };
 
@@ -106,7 +105,7 @@ export function DesignerComponent({
                 type="single"
                 variant="video"
                 file={elementInstance.file}
-                onFilesChange={handleVideoFile}
+                onFilesChange={handleVideoFile as any}
                 onUploadComplete={handleUploadComplete}
                 onDelete={onFileDelete}
                 onDownload={onFileDownload}

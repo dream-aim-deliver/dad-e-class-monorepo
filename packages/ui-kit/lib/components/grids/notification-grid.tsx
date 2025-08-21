@@ -356,11 +356,11 @@ export const NotificationGrid = (props: NotificationGridProps) => {
         className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap flex-shrink-0"
         variant="small"
       >
-        <Tabs.Trigger value="all" className="cursor-pointer">
+        <Tabs.Trigger value="all" className="cursor-pointer" isLast={platforms.length === 0}>
           {dictionary.all} ({notificationCounts.all})
         </Tabs.Trigger>
-        {platforms.map((platform) => (
-          <Tabs.Trigger key={platform} value={platform} className="cursor-pointer">
+        {platforms.map((platform, index) => (
+          <Tabs.Trigger key={platform} value={platform} className="cursor-pointer" isLast={index === platforms.length - 1}>
             {localizedPlatformName(platform)} ({notificationCounts[platform]})
           </Tabs.Trigger>
         ))}

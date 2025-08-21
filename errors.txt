@@ -1,0 +1,412 @@
+
+ NX   Running target build for project ui-kit and 2 tasks it depends on:
+
+
+
+> nx run models:build  [existing outputs match the cache, left as is]
+
+
+> nx run translations:build  [existing outputs match the cache, left as is]
+
+
+> nx run ui-kit:build
+
+> vite build
+
+[36mvite v5.4.11 [32mbuilding for production...[36m[39m
+transforming...
+lib/components/assignment-course-builder/assignment-builder-view.tsx(66,58): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment-course-builder/assignment-builder-view.tsx(69,62): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment-course-builder/assignment-builder-view.tsx(71,62): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment-course-builder/assignment-builder-view.tsx(78,33): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment-course-builder/assignment-builder-view.tsx(79,33): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment-course-builder/create-assignment-builder-view.tsx(120,25): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment-course-builder/create-assignment-builder-view.tsx(159,67): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment-course-builder/create-assignment-builder-view.tsx(168,37): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment-course-builder/create-assignment-builder-view.tsx(169,37): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment-course-builder/create-assignment-builder-view.tsx(172,66): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/assignment-card-list.tsx(103,9): error TS18048: 'assignment.title' is possibly 'undefined'.
+lib/components/assignment/assignment-card-list.tsx(112,29): error TS18048: 'assignment.title' is possibly 'undefined'.
+lib/components/assignment/assignment-card-list.tsx(116,83): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-card-list.tsx(124,29): error TS18048: 'assignment.module' is possibly 'undefined'.
+lib/components/assignment/assignment-card-list.tsx(128,29): error TS18048: 'assignment.lesson' is possibly 'undefined'.
+lib/components/assignment/assignment-card-list.tsx(143,38): error TS18048: 'a.title' is possibly 'undefined'.
+lib/components/assignment/assignment-card-list.tsx(143,60): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(that: string, locales?: LocalesArgument, options?: CollatorOptions | undefined): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 2 of 3, '(that: string, locales?: string | string[] | undefined, options?: CollatorOptions | undefined): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 3 of 3, '(that: string): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-card-list.tsx(144,39): error TS18048: 'a.status' is possibly 'undefined'.
+lib/components/assignment/assignment-card-list.tsx(144,62): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(that: string, locales?: LocalesArgument, options?: CollatorOptions | undefined): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 2 of 3, '(that: string, locales?: string | string[] | undefined, options?: CollatorOptions | undefined): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 3 of 3, '(that: string): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-card.tsx(167,22): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+lib/components/assignment/assignment-card.tsx(167,52): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+lib/components/assignment/assignment-card.tsx(174,34): error TS2488: Type '{ url?: string | undefined; title?: string | undefined; customIcon?: { id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?:...' must have a '[Symbol.iterator]()' method that returns an iterator.
+lib/components/assignment/assignment-card.tsx(176,18): error TS2345: Argument of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[] | undefined' is not assignable to parameter of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+  Type 'undefined' is not assignable to type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+lib/components/assignment/assignment-card.tsx(180,18): error TS2345: Argument of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[] | undefined' is not assignable to parameter of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+  Type 'undefined' is not assignable to type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+lib/components/assignment/assignment-card.tsx(187,17): error TS18048: 'replies' is possibly 'undefined'.
+lib/components/assignment/assignment-card.tsx(204,14): error TS18048: 'replies' is possibly 'undefined'.
+lib/components/assignment/assignment-card.tsx(207,58): error TS2345: Argument of type '({ type?: "text" | undefined; timestamp?: string | undefined; sender?: { id?: string | undefined; name?: string | undefined; image?: string | undefined; email?: string | undefined; isCurrentUser?: boolean | undefined; role?: "student" | undefined; } | { ...; } | undefined; comment?: string | undefined; replyId?: num...' is not assignable to parameter of type '({ type?: "text" | undefined; timestamp?: string | undefined; sender?: { id?: string | undefined; name?: string | undefined; image?: string | undefined; email?: string | undefined; isCurrentUser?: boolean | undefined; role?: "student" | undefined; } | { ...; } | undefined; comment?: string | undefined; replyId?: num...'.
+  Type 'undefined' is not assignable to type '({ type?: "text" | undefined; timestamp?: string | undefined; sender?: { id?: string | undefined; name?: string | undefined; image?: string | undefined; email?: string | undefined; isCurrentUser?: boolean | undefined; role?: "student" | undefined; } | { ...; } | undefined; comment?: string | undefined; replyId?: num...'.
+lib/components/assignment/assignment-card.tsx(231,37): error TS18048: 'files' is possibly 'undefined'.
+lib/components/assignment/assignment-card.tsx(231,57): error TS18048: 'links' is possibly 'undefined'.
+lib/components/assignment/assignment-card.tsx(237,32): error TS18048: 'files' is possibly 'undefined'.
+lib/components/assignment/assignment-card.tsx(242,72): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-card.tsx(244,56): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/assignment-card.tsx(252,32): error TS18048: 'links' is possibly 'undefined'.
+lib/components/assignment/assignment-card.tsx(281,55): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/assignment-card.tsx(304,47): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-card.tsx(305,47): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-card.tsx(312,55): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/assignment-modal-list.tsx(103,9): error TS18048: 'assignment.title' is possibly 'undefined'.
+lib/components/assignment/assignment-modal-list.tsx(112,29): error TS18048: 'assignment.title' is possibly 'undefined'.
+lib/components/assignment/assignment-modal-list.tsx(116,83): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-modal-list.tsx(124,29): error TS18048: 'assignment.module' is possibly 'undefined'.
+lib/components/assignment/assignment-modal-list.tsx(128,29): error TS18048: 'assignment.lesson' is possibly 'undefined'.
+lib/components/assignment/assignment-modal-list.tsx(143,38): error TS18048: 'a.title' is possibly 'undefined'.
+lib/components/assignment/assignment-modal-list.tsx(143,60): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(that: string, locales?: LocalesArgument, options?: CollatorOptions | undefined): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 2 of 3, '(that: string, locales?: string | string[] | undefined, options?: CollatorOptions | undefined): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 3 of 3, '(that: string): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-modal-list.tsx(144,39): error TS18048: 'a.status' is possibly 'undefined'.
+lib/components/assignment/assignment-modal-list.tsx(144,62): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(that: string, locales?: LocalesArgument, options?: CollatorOptions | undefined): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 2 of 3, '(that: string, locales?: string | string[] | undefined, options?: CollatorOptions | undefined): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 3 of 3, '(that: string): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-modal-list.tsx(146,39): error TS18048: 'a.module' is possibly 'undefined'.
+lib/components/assignment/assignment-modal-list.tsx(146,50): error TS18048: 'b.module' is possibly 'undefined'.
+lib/components/assignment/assignment-modal-list.tsx(147,39): error TS18048: 'a.lesson' is possibly 'undefined'.
+lib/components/assignment/assignment-modal-list.tsx(147,50): error TS18048: 'b.lesson' is possibly 'undefined'.
+lib/components/assignment/assignment-modal-list.tsx(150,45): error TS18048: 'a.assignmentId' is possibly 'undefined'.
+lib/components/assignment/assignment-modal-list.tsx(150,62): error TS18048: 'b.assignmentId' is possibly 'undefined'.
+lib/components/assignment/assignment-modal.tsx(164,18): error TS2345: Argument of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[] | undefined' is not assignable to parameter of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+  Type 'undefined' is not assignable to type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+lib/components/assignment/assignment-modal.tsx(168,18): error TS2345: Argument of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[] | undefined' is not assignable to parameter of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+  Type 'undefined' is not assignable to type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+lib/components/assignment/assignment-modal.tsx(226,22): error TS18048: 'files' is possibly 'undefined'.
+lib/components/assignment/assignment-modal.tsx(231,62): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-modal.tsx(232,58): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/assignment-modal.tsx(237,50): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/assignment-modal.tsx(243,18): error TS18048: 'links' is possibly 'undefined'.
+lib/components/assignment/assignment-modal.tsx(258,50): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/assignment-modal.tsx(270,33): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-modal.tsx(271,33): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/assignment-modal.tsx(275,50): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/message.tsx(92,34): error TS2488: Type '{ url?: string | undefined; title?: string | undefined; customIcon?: { id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?:...' must have a '[Symbol.iterator]()' method that returns an iterator.
+lib/components/assignment/message.tsx(94,18): error TS2345: Argument of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[] | undefined' is not assignable to parameter of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+  Type 'undefined' is not assignable to type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+lib/components/assignment/message.tsx(99,18): error TS2345: Argument of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[] | undefined' is not assignable to parameter of type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+  Type 'undefined' is not assignable to type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; })[]'.
+lib/components/assignment/message.tsx(106,17): error TS18048: 'reply.sender' is possibly 'undefined'.
+lib/components/assignment/message.tsx(113,22): error TS18048: 'reply.sender' is possibly 'undefined'.
+lib/components/assignment/message.tsx(115,27): error TS18048: 'reply.sender' is possibly 'undefined'.
+lib/components/assignment/message.tsx(118,22): error TS18047: 'formattedDateTime' is possibly 'null'.
+lib/components/assignment/message.tsx(119,22): error TS18047: 'formattedDateTime' is possibly 'null'.
+lib/components/assignment/message.tsx(137,32): error TS2339: Property 'comment' does not exist on type '{ type?: "text" | undefined; timestamp?: string | undefined; sender?: { id?: string | undefined; name?: string | undefined; image?: string | undefined; email?: string | undefined; isCurrentUser?: boolean | undefined; role?: "student" | undefined; } | { ...; } | undefined; comment?: string | undefined; replyId?: numb...'.
+  Property 'comment' does not exist on type '{ type?: "passed" | undefined; timestamp?: string | undefined; sender?: { id?: string | undefined; name?: string | undefined; image?: string | undefined; email?: string | undefined; isCurrentUser?: boolean | undefined; role?: "student" | undefined; } | { ...; } | undefined; replyId?: number | undefined; }'.
+lib/components/assignment/message.tsx(140,28): error TS2339: Property 'files' does not exist on type '{ type?: "text" | undefined; timestamp?: string | undefined; sender?: { id?: string | undefined; name?: string | undefined; image?: string | undefined; email?: string | undefined; isCurrentUser?: boolean | undefined; role?: "student" | undefined; } | { ...; } | undefined; comment?: string | undefined; replyId?: numb...'.
+  Property 'files' does not exist on type '{ type?: "text" | undefined; timestamp?: string | undefined; sender?: { id?: string | undefined; name?: string | undefined; image?: string | undefined; email?: string | undefined; isCurrentUser?: boolean | undefined; role?: "student" | undefined; } | { ...; } | undefined; comment?: string | undefined; replyId?: numb...'.
+lib/components/assignment/message.tsx(147,50): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/message.tsx(152,46): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/message.tsx(154,40): error TS18048: 'reply.sender' is possibly 'undefined'.
+lib/components/assignment/message.tsx(157,28): error TS2339: Property 'links' does not exist on type '{ type?: "text" | undefined; timestamp?: string | undefined; sender?: { id?: string | undefined; name?: string | undefined; image?: string | undefined; email?: string | undefined; isCurrentUser?: boolean | undefined; role?: "student" | undefined; } | { ...; } | undefined; comment?: string | undefined; replyId?: numb...'.
+  Property 'links' does not exist on type '{ type?: "text" | undefined; timestamp?: string | undefined; sender?: { id?: string | undefined; name?: string | undefined; image?: string | undefined; email?: string | undefined; isCurrentUser?: boolean | undefined; role?: "student" | undefined; } | { ...; } | undefined; comment?: string | undefined; replyId?: numb...'.
+lib/components/assignment/message.tsx(172,54): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/message.tsx(183,46): error TS18048: 'reply.sender' is possibly 'undefined'.
+lib/components/assignment/message.tsx(189,54): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/message.tsx(202,14): error TS18048: 'reply.sender' is possibly 'undefined'.
+lib/components/assignment/message.tsx(207,39): error TS18048: 'reply.sender' is possibly 'undefined'.
+lib/components/assignment/message.tsx(209,39): error TS18048: 'reply.sender' is possibly 'undefined'.
+lib/components/assignment/message.tsx(217,39): error TS18048: 'reply.sender' is possibly 'undefined'.
+lib/components/assignment/message.tsx(219,39): error TS18048: 'reply.sender' is possibly 'undefined'.
+lib/components/assignment/reply-panel.tsx(182,71): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/assignment/reply-panel.tsx(191,41): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/reply-panel.tsx(192,41): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/assignment/reply-panel.tsx(195,70): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/buy-complete-package-banner.tsx(101,30): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/buy-complete-package-banner.tsx(138,56): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/buy-complete-package-banner.tsx(139,34): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/buy-complete-package-banner.tsx(142,56): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/buy-complete-package-banner.tsx(143,34): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/course-builder-lesson-component/download-files-lesson.tsx(119,17): error TS2322: Type '(fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata | null>' is not assignable to type '(file: { id?: string | undefined; name?: string | undefined; file?: File | undefined; }, abortSignal?: AbortSignal | undefined) => Promise<{ id?: string | undefined; ... 6 more ...; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }>'.
+  Type 'Promise<{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; } | null>' is not assignable to type 'Promise<{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }>'.
+    Type '{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; } | null' is not assignable to type '{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }'.
+      Type 'null' is not assignable to type '{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }'.
+lib/components/course-builder-lesson-component/download-files-lesson.tsx(157,58): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-builder-lesson-component/image.tsx(105,17): error TS2322: Type '(fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<TImageFile | null>' is not assignable to type '(file: { id?: string | undefined; name?: string | undefined; file?: File | undefined; }, abortSignal?: AbortSignal | undefined) => Promise<{ id?: string | undefined; ... 6 more ...; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }>'.
+  Type 'Promise<({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "image" | undefined; url?: string | undefined; thumbnailUrl?: string | undefined; } & { ...; }) | null>' is not assignable to type 'Promise<{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }>'.
+    Type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "image" | undefined; url?: string | undefined; thumbnailUrl?: string | undefined; } & { ...; }) | null' is not assignable to type '{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }'.
+      Type 'null' is not assignable to type '{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }'.
+lib/components/course-builder-lesson-component/links.tsx(43,11): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-builder-lesson-component/links.tsx(44,11): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-builder-lesson-component/upload-files-lesson.tsx(191,17): error TS2322: Type '(fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata | null>' is not assignable to type '(file: { id?: string | undefined; name?: string | undefined; file?: File | undefined; }, abortSignal?: AbortSignal | undefined) => Promise<{ id?: string | undefined; ... 6 more ...; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }>'.
+  Type 'Promise<{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; } | null>' is not assignable to type 'Promise<{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }>'.
+    Type '{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; } | null' is not assignable to type '{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }'.
+      Type 'null' is not assignable to type '{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }'.
+lib/components/course-builder-lesson-component/video.tsx(112,17): error TS2322: Type '(fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<TVideoFile | null>' is not assignable to type '(file: { id?: string | undefined; name?: string | undefined; file?: File | undefined; }, abortSignal?: AbortSignal | undefined) => Promise<{ id?: string | undefined; ... 6 more ...; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }>'.
+  Type 'Promise<({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } & { ...; }) | null>' is not assignable to type 'Promise<{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }>'.
+    Type '({ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } & { ...; }) | null' is not assignable to type '{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }'.
+      Type 'null' is not assignable to type '{ id?: string | undefined; name?: string | undefined; size?: number | undefined; status?: "available" | "processing" | "unavailable" | undefined; category?: "video" | undefined; url?: string | undefined; videoId?: string | undefined; thumbnailUrl?: string | undefined; } | { ...; } | { ...; } | { ...; }'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(83,34): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(83,34): error TS18048: 'duration.video' is possibly 'undefined'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(83,51): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(83,51): error TS18048: 'duration.coaching' is possibly 'undefined'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(83,71): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(83,71): error TS18048: 'duration.selfStudy' is possibly 'undefined'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(123,42): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(132,28): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(132,41): error TS18048: 'author' is possibly 'undefined'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(132,64): error TS18048: 'author' is possibly 'undefined'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(136,15): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-card/coach-course-card/coach-course-card.tsx(136,25): error TS18048: 'language' is possibly 'undefined'.
+lib/components/course-card/course-card.tsx(139,13): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/course-card/course-creator-course-card/course-creator-card.tsx(122,9): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/course-creator-course-card/course-creator-card.tsx(122,9): error TS18048: 'duration.video' is possibly 'undefined'.
+lib/components/course-card/course-creator-course-card/course-creator-card.tsx(122,26): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/course-creator-course-card/course-creator-card.tsx(122,26): error TS18048: 'duration.coaching' is possibly 'undefined'.
+lib/components/course-card/course-creator-course-card/course-creator-card.tsx(122,46): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/course-creator-course-card/course-creator-card.tsx(122,46): error TS18048: 'duration.selfStudy' is possibly 'undefined'.
+lib/components/course-card/course-creator-course-card/course-creator-card.tsx(183,29): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-card/course-creator-course-card/course-creator-card.tsx(183,42): error TS18048: 'author' is possibly 'undefined'.
+lib/components/course-card/course-creator-course-card/course-creator-card.tsx(184,39): error TS18048: 'author' is possibly 'undefined'.
+lib/components/course-card/course-creator-course-card/course-creator-card.tsx(192,29): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-card/course-creator-course-card/course-creator-card.tsx(192,39): error TS18048: 'language' is possibly 'undefined'.
+lib/components/course-card/package-course-selector/package-course-card.tsx(82,36): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/package-course-selector/package-course-card.tsx(82,36): error TS18048: 'duration.video' is possibly 'undefined'.
+lib/components/course-card/package-course-selector/package-course-card.tsx(82,53): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/package-course-selector/package-course-card.tsx(82,53): error TS18048: 'duration.coaching' is possibly 'undefined'.
+lib/components/course-card/package-course-selector/package-course-card.tsx(82,73): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/package-course-selector/package-course-card.tsx(82,73): error TS18048: 'duration.selfStudy' is possibly 'undefined'.
+lib/components/course-card/package-course-selector/package-course-card.tsx(131,52): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/course-card/package-course-selector/package-course-card.tsx(141,25): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-card/package-course-selector/package-course-card.tsx(149,25): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-card/package-course-selector/package-course-card.tsx(149,35): error TS18048: 'language' is possibly 'undefined'.
+lib/components/course-card/package-course-selector/package-course-card.tsx(162,25): error TS2322: Type '{ currency?: string | undefined; fullPrice?: number | undefined; partialPrice?: number | undefined; } | undefined' is not assignable to type '{ currency?: string | undefined; fullPrice?: number | undefined; partialPrice?: number | undefined; }'.
+  Type 'undefined' is not assignable to type '{ currency?: string | undefined; fullPrice?: number | undefined; partialPrice?: number | undefined; }'.
+lib/components/course-card/package-course-selector/package-course-selector.tsx(107,95): error TS18048: 'pricing.fullPrice' is possibly 'undefined'.
+lib/components/course-card/package-course-selector/package-course-selector.tsx(107,115): error TS18048: 'pricing.partialPrice' is possibly 'undefined'.
+lib/components/course-card/student-course-card/student-course-card.tsx(86,34): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/student-course-card/student-course-card.tsx(86,34): error TS18048: 'duration.video' is possibly 'undefined'.
+lib/components/course-card/student-course-card/student-course-card.tsx(86,51): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/student-course-card/student-course-card.tsx(86,51): error TS18048: 'duration.coaching' is possibly 'undefined'.
+lib/components/course-card/student-course-card/student-course-card.tsx(86,71): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/student-course-card/student-course-card.tsx(86,71): error TS18048: 'duration.selfStudy' is possibly 'undefined'.
+lib/components/course-card/student-course-card/student-course-card.tsx(143,42): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/course-card/student-course-card/student-course-card.tsx(153,15): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-card/student-course-card/student-course-card.tsx(161,15): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-card/student-course-card/student-course-card.tsx(161,25): error TS18048: 'language' is possibly 'undefined'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(77,34): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(77,34): error TS18048: 'duration.video' is possibly 'undefined'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(77,51): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(77,51): error TS18048: 'duration.coaching' is possibly 'undefined'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(77,71): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(77,71): error TS18048: 'duration.selfStudy' is possibly 'undefined'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(90,46): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(90,66): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(90,138): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(90,158): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(125,42): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(134,28): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(138,15): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/course-card/visitor-course-card/visitor-course-card.tsx(138,25): error TS18048: 'language' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-view.tsx(224,33): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-view.tsx(224,33): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/course-general-information/course-general-information-view.tsx(236,33): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-view.tsx(236,33): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/course-general-information/course-general-information-view.tsx(248,33): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-view.tsx(248,33): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/course-general-information/course-general-information-view.tsx(271,39): error TS18048: 'author' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-view.tsx(272,39): error TS18048: 'author' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-view.tsx(276,34): error TS18048: 'author' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-visitor.tsx(269,41): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-visitor.tsx(269,41): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/course-general-information/course-general-information-visitor.tsx(287,41): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-visitor.tsx(287,41): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/course-general-information/course-general-information-visitor.tsx(305,41): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-visitor.tsx(305,41): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+lib/components/course-general-information/course-general-information-visitor.tsx(330,47): error TS18048: 'author' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-visitor.tsx(331,47): error TS18048: 'author' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-visitor.tsx(335,42): error TS18048: 'author' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-visitor.tsx(437,30): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-visitor.tsx(437,49): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-visitor.tsx(444,99): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/course-general-information/course-general-information-visitor.tsx(444,119): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/drag-and-drop-uploader/file-preview.tsx(100,44): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/drag-and-drop-uploader/file-preview.tsx(186,31): error TS18048: 'uploadResponse.size' is possibly 'undefined'.
+lib/components/drag-and-drop-uploader/uploader.tsx(285,62): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/grids/notification-grid.tsx(359,10): error TS2741: Property 'isLast' is missing in type '{ children: (string | number)[]; value: string; className: string; }' but required in type 'TabTriggerProps'.
+lib/components/grids/notification-grid.tsx(363,12): error TS2741: Property 'isLast' is missing in type '{ children: (string | number)[]; key: string; value: string; className: string; }' but required in type 'TabTriggerProps'.
+lib/components/grids/user-grid.tsx(601,26): error TS2741: Property 'isLast' is missing in type '{ children: (string | number)[]; value: string; icon: Element; className: string; }' but required in type 'TabTriggerProps'.
+lib/components/grids/user-grid.tsx(604,26): error TS2741: Property 'isLast' is missing in type '{ children: (string | number)[]; value: string; icon: Element; className: string; }' but required in type 'TabTriggerProps'.
+lib/components/grids/user-grid.tsx(611,26): error TS2741: Property 'isLast' is missing in type '{ children: (string | number)[]; value: string; icon: Element; className: string; }' but required in type 'TabTriggerProps'.
+lib/components/grids/user-grid.tsx(618,26): error TS2741: Property 'isLast' is missing in type '{ children: (string | number)[]; value: string; icon: Element; className: string; }' but required in type 'TabTriggerProps'.
+lib/components/grids/user-grid.tsx(625,26): error TS2741: Property 'isLast' is missing in type '{ children: (string | number)[]; value: string; icon: Element; className: string; }' but required in type 'TabTriggerProps'.
+lib/components/home-accordion.tsx(15,30): error TS2322: Type '{ title: string | undefined; iconImageUrl: string | undefined; content: string | undefined; position: number | undefined; }[]' is not assignable to type '{ title: string; iconImageUrl?: string | undefined; content: string; position?: number | undefined; }[]'.
+  Type '{ title: string | undefined; iconImageUrl: string | undefined; content: string | undefined; position: number | undefined; }' is not assignable to type '{ title: string; iconImageUrl?: string | undefined; content: string; position?: number | undefined; }'.
+    Types of property 'title' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.
+lib/components/home-banner/hero.tsx(36,22): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/home-banner/hero.tsx(36,36): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/language-selector.tsx(71,62): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/language-selector.tsx(111,13): error TS2322: Type '{ label: string | undefined; value: string | undefined; }[]' is not assignable to type '{ label: ReactNode; value: string; }[]'.
+  Type '{ label: string | undefined; value: string | undefined; }' is not assignable to type '{ label: ReactNode; value: string; }'.
+    Types of property 'value' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.
+lib/components/language-selector.tsx(115,13): error TS2322: Type '(string | undefined)[]' is not assignable to type 'string | string[] | undefined'.
+  Type '(string | undefined)[]' is not assignable to type 'string[]'.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+lib/components/language-selector.tsx(151,11): error TS2322: Type '{ label: string | undefined; value: string | undefined; }[]' is not assignable to type '{ label: ReactNode; value: string; }[]'.
+  Type '{ label: string | undefined; value: string | undefined; }' is not assignable to type '{ label: ReactNode; value: string; }'.
+    Types of property 'value' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.
+lib/components/links.tsx(286,71): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/notifications/activity.tsx(147,16): error TS18048: 'recipients' is possibly 'undefined'.
+lib/components/notifications/activity.tsx(196,16): error TS18048: 'recipients' is possibly 'undefined'.
+lib/components/package-general-information-banner.tsx(131,48): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/package-general-information-banner.tsx(132,26): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/package-general-information-banner.tsx(135,48): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/package-general-information-banner.tsx(136,26): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/packages/package-card.tsx(134,26): error TS18048: 'duration' is possibly 'undefined'.
+lib/components/packages/package-card.tsx(161,34): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/packages/package-card.tsx(161,53): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/packages/package-card.tsx(164,76): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/packages/package-card.tsx(164,95): error TS18048: 'pricing' is possibly 'undefined'.
+lib/components/profile-tabs.tsx(86,12): error TS2741: Property 'isLast' is missing in type '{ children: string; value: string; }' but required in type 'TabTriggerProps'.
+lib/components/profile-tabs.tsx(89,12): error TS2741: Property 'isLast' is missing in type '{ children: string; value: string; }' but required in type 'TabTriggerProps'.
+lib/components/profile/professional-info.tsx(163,13): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+lib/components/quiz/quiz-type-three/quiz-type-three-student-view.tsx(75,16): error TS2345: Argument of type '{ imageId: string | undefined; imageThumbnailUrl: string | undefined; description: string; correct: boolean; selected: false; }[]' is not assignable to parameter of type 'SetStateAction<QuizTypeThreeStudentViewOption[]>'.
+  Type '{ imageId: string | undefined; imageThumbnailUrl: string | undefined; description: string; correct: boolean; selected: false; }[]' is not assignable to type 'QuizTypeThreeStudentViewOption[]'.
+    Type '{ imageId: string | undefined; imageThumbnailUrl: string | undefined; description: string; correct: boolean; selected: false; }' is not assignable to type 'QuizTypeThreeStudentViewOption'.
+      Types of property 'imageId' are incompatible.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+lib/components/quiz/quiz-type-three/quiz-type-three-student-view.tsx(76,16): error TS18047: 'opt.imageFile' is possibly 'null'.
+lib/components/quiz/quiz-type-three/quiz-type-three-student-view.tsx(77,26): error TS18047: 'opt.imageFile' is possibly 'null'.
+lib/components/quiz/quiz-type-two/quiz-type-two-student-view.tsx(139,51): error TS2538: Type 'null' cannot be used as an index type.
+lib/components/upload-coach-view.tsx(58,18): error TS18047: 'files' is possibly 'null'.
+lib/components/upload-coach-view.tsx(76,61): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+
+
+ NX   Running target build for project ui-kit and 2 tasks it depends on failed
+
+Failed tasks:
+
+- ui-kit:build
+
+Hint: run the command with --verbose for more details.
+
+
+ NX   Nx Cloud encountered some problems
+
+This Nx Cloud organization has been disabled due to exceeding the FREE plan.
+An organization admin can start a free two week PRO plan trial with no billing required at https://cloud.nx.app/orgs/677813402f196d703cd4647f/plans. (code: 401)
+

@@ -8,6 +8,7 @@ import { FC, useState } from 'react';
 import { IconClock } from '../icons/icon-clock';
 import { IconStar } from '../icons/icon-star';
 import { UserAvatarReel } from '../avatar/user-avatar-reel';
+import { IconCheck } from '../icons';
 
 interface Student {
     name: string;
@@ -15,7 +16,7 @@ interface Student {
 }
 export interface CourseGeneralInformationViewBaseProps
     extends TCourseMetadata,
-    isLocalAware {
+        isLocalAware {
     longDescription: string;
     onClickAuthor: () => void;
     students: Student[];
@@ -27,6 +28,7 @@ export interface WithProgressViewProps
     progress: number;
     onClickResume: () => void;
     showProgress: true;
+    onClickReview: () => void;
 }
 
 export interface WithoutProgressViewProps
@@ -41,62 +43,86 @@ export type CourseGeneralInformationViewProps =
 /**
  * CourseGeneralInformationView
  *
- * A responsive and localized component for displaying detailed course metadata.
- * It supports two modes:
- * - With progress tracking and resume button (for enrolled users),
- * - Without progress display (for public or unauthenticated users).
+ * A responsive and localized component for displaying detailed course metadata with dynamic progress states.
+ * It supports multiple modes based on user enrollment and progress:
+ * - Public view (no progress tracking for unauthenticated users)
+ * - Not started (progress = 0, shows "Begin Course" button)
+ * - In progress (0 < progress < 100, shows progress bar and "Resume" button)
+ * - Completed (progress = 100, shows completion badge and "Review" button)
  *
  * @component
  *
  * @param {CourseGeneralInformationViewProps} props - The props for the component.
- * @param {string} props.longDescription - A detailed description of the course.
- * @param {object} props.duration - Duration details including video, coaching, and self-study (in minutes).
- * @param {object} props.author - Author information containing name and image.
- * @param {string} [props.imageUrl] - URL for the course image. If missing or broken, a placeholder is shown.
- * @param {boolean} props.showProgress - Whether to show progress bar and resume button.
- * @param {number} [props.progress] - Current progress percentage (required when `showProgress` is true).
- * @param {Function} [props.onClickResume] - Callback when the resume button is clicked (required when `showProgress` is true).
+ * @param {string} props.title - Course title (from TCourseMetadata).
+ * @param {string} props.longDescription - A detailed description of the course content.
+ * @param {object} props.duration - Duration breakdown including video, coaching, and self-study time (in minutes).
+ * @param {number} props.duration.video - Video content duration in minutes.
+ * @param {number} props.duration.coaching - Professional coaching duration in minutes.
+ * @param {number} props.duration.selfStudy - Self-study material duration in minutes.
+ * @param {object} props.author - Course author information.
+ * @param {string} props.author.name - Author's full name.
+ * @param {string} props.author.image - URL to author's profile image.
+ * @param {number} props.rating - Course rating (typically 1-5 scale).
+ * @param {string} [props.imageUrl] - URL for the course banner image. Shows placeholder if missing or fails to load.
+ * @param {boolean} props.showProgress - Determines if progress tracking UI should be displayed.
+ * @param {number} [props.progress] - Current completion percentage (0-100). Required when `showProgress` is true.
+ * @param {Function} [props.onClickResume] - Callback for resume/begin course button. Required when `showProgress` is true.
+ * @param {Function} [props.onClickReview] - Callback for review course button. Required when `showProgress` is true.
  * @param {Function} props.onClickAuthor - Callback when the author's profile is clicked.
- * @param {Student[]} props.students - Array of enrolled students with name and avatar.
- * @param {number} [props.totalStudentCount] - Optional total student count (used when more students exist than avatars shown).
- * @param {string} props.locale - Current language/locale code for translations.
+ * @param {Student[]} props.students - Array of enrolled students with name and avatar information.
+ * @param {string} props.students[].name - Student's name.
+ * @param {string} props.students[].avatarUrl - URL to student's avatar image.
+ * @param {number} props.totalStudentCount - Total number of enrolled students (may exceed students array length).
+ * @param {string} props.locale - Language/locale code for translations (e.g., 'en', 'es', 'de').
  *
  * @example
- * ```tsx
- * import { CourseGeneralInformationView } from './components/course/course-general-information-view';
- *
- * const courseData = {
- *   title: 'Intro to Design Systems',
- *   longDescription: 'Learn how to create consistent and scalable UI systems...',
- *   duration: {
- *     video: 90,
- *     coaching: 60,
- *     selfStudy: 45,
- *   },
- *   author: {
- *     name: 'Jane Doe',
- *     image: 'https://example.com/avatars/jane.jpg',
- *   },
- *   imageUrl: 'https://example.com/images/course-banner.jpg',
- *   students: [
- *     { name: 'Alice', avatarUrl: '/avatars/alice.png' },
- *     { name: 'Bob', avatarUrl: '/avatars/bob.png' },
- *   ],
- *   totalStudentCount: 128,
- *   rating: 4.8,
- *   locale: 'en',
- *   onClickAuthor: () => alert('Author clicked!'),
- * };
- *
- * const App = () => (
- *   <CourseGeneralInformationView
- *     {...courseData}
- *     showProgress={true}
- *     progress={65}
- *     onClickResume={() => alert('Resume course!')}
- *   />
- * );
  * ```
+ * // Coaches view (without progress bar)
+ * <CourseGeneralInformationView
+ *   title="Advanced React Patterns"
+ *   longDescription="Master advanced React concepts including hooks, context, and performance optimization..."
+ *   duration={{ video: 180, coaching: 90, selfStudy: 120 }}
+ *   author={{ name: "Sarah Johnson", image: "/avatars/sarah.jpg" }}
+ *   rating={4.7}
+ *   imageUrl="/courses/react-advanced.jpg"
+ *   students={[{ name: "Alice", avatarUrl: "/avatars/alice.jpg" }]}
+ *   totalStudentCount={245}
+ *   locale="en"
+ *   showProgress={false}
+ *   onClickAuthor={() => navigate('/author/sarah-johnson')}
+ * />
+ *
+ * // Course not started (progress = 0)
+ * <CourseGeneralInformationView
+ *   {...courseData}
+ *   showProgress={true}
+ *   progress={0}
+ *   onClickResume={() => startCourse()}
+ *   onClickReview={() => reviewCourse()}
+ * />
+ *
+ * // Course in progress (0 < progress < 100)
+ * <CourseGeneralInformationView
+ *   {...courseData}
+ *   showProgress={true}
+ *   progress={65}
+ *   onClickResume={() => resumeCourse()}
+ *   onClickReview={() => reviewCourse()}
+ * />
+ *
+ * // Course completed (progress = 100)
+ * <CourseGeneralInformationView
+ *   {...courseData}
+ *   showProgress={true}
+ *   progress={100}
+ *   onClickResume={() => resumeCourse()}
+ *   onClickReview={() => reviewCourse()}
+ * />
+ * ```
+ *
+ * @see {@link Student} Student interface definition
+ * @see {@link CourseGeneralInformationViewProps} Complete props type definition
+ * @see {@link TCourseMetadata} Course metadata interface from models package
  */
 
 export const CourseGeneralInformationView: FC<
@@ -154,10 +180,11 @@ export const CourseGeneralInformationView: FC<
         const hours = Math.floor(durationInMinutes / 60);
         const minutes = durationInMinutes % 60;
 
-        let result = `${hours} ${hours === 1
-            ? dictionary.components.courseGeneralInformationView.hourText
-            : dictionary.components.courseGeneralInformationView.hoursText
-            }`;
+        let result = `${hours} ${
+            hours === 1
+                ? dictionary.components.courseGeneralInformationView.hourText
+                : dictionary.components.courseGeneralInformationView.hoursText
+        }`;
 
         if (minutes > 0) {
             result += ` ${minutes} ${dictionary.components.courseGeneralInformationView.minutesText}`;
@@ -194,7 +221,7 @@ export const CourseGeneralInformationView: FC<
                     <div className="flex flex-col">
                         <p className="text-text-secondary text-sm">
                             {formatSingleDurationSegment(
-                                duration.video,
+                                (duration as any).video as number,
                                 dictionary,
                             )}{' '}
                             {
@@ -206,7 +233,7 @@ export const CourseGeneralInformationView: FC<
 
                         <p className="text-text-secondary text-sm">
                             {formatSingleDurationSegment(
-                                duration.coaching,
+                                (duration as any).coaching as number,
                                 dictionary,
                             )}{' '}
                             {
@@ -218,7 +245,7 @@ export const CourseGeneralInformationView: FC<
 
                         <p className="text-text-secondary text-sm">
                             {formatSingleDurationSegment(
-                                duration.selfStudy,
+                                (duration as any).selfStudy as number,
                                 dictionary,
                             )}{' '}
                             {
@@ -241,12 +268,12 @@ export const CourseGeneralInformationView: FC<
                     <div className="flex gap-2">
                         <UserAvatar
                             size="large"
-                            fullName={author.name}
-                            imageUrl={author.image}
+                            fullName={(author as any).name as string}
+                            imageUrl={(author as any).image as string}
                         />
                         <div className="flex flex-col justify-center items-start">
                             <p className="text-md text-text-primary font-bold leading-[120%]">
-                                {author.name}
+                                {(author as any).name as string}
                             </p>
                             <div className="flex gap-2 items-center">
                                 <Badge
@@ -282,32 +309,83 @@ export const CourseGeneralInformationView: FC<
 
                 {/* Show Progress Bar & Resume Button JUST if the user is a student */}
                 {showProgress === true && (
-                    <div className="flex flex-col gap-2 md:w-[488px] w-full">
-                        <h6 className="text-text-primary">
-                            {
-                                dictionary.components
-                                    .courseGeneralInformationView
-                                    .yourProgressText
-                            }
-                        </h6>
-                        <div className="flex gap-4">
-                            <ProgressBar
-                                progress={props.progress}
-                                type="progress"
-                            />
-                            <p className="text-md text-text-secondary font-bold leading-[150%]">
-                                {props.progress}%
-                            </p>
-                        </div>
-                        <Button
-                            size="huge"
-                            text={
-                                dictionary.components
-                                    .courseGeneralInformationView.resumeText
-                            }
-                            onClick={props.onClickResume}
-                        />
-                    </div>
+                    <>
+                        {/* Begin course if progress is 0 */}
+                        {props.progress === 0 && (
+                            <div className="flex flex-col gap-2 md:w-[488px] w-full">
+                                <Button
+                                    size="big"
+                                    text={
+                                        dictionary.components
+                                            .courseGeneralInformationView
+                                            .beginCourseButton
+                                    }
+                                    onClick={props.onClickResume}
+                                />
+                            </div>
+                        )}
+
+                        {/* Course in progress */}
+                        {props.progress > 0 && props.progress < 100 && (
+                            <div className="flex flex-col gap-2 md:w-[488px] w-full">
+                                <h6 className="text-md text-text-primary font-bold leading-[120%]">
+                                    {
+                                        dictionary.components
+                                            .courseGeneralInformationView
+                                            .yourProgressText
+                                    }
+                                </h6>
+                                <div className="flex gap-4">
+                                    <ProgressBar
+                                        progress={props.progress}
+                                        type="progress"
+                                    />
+                                    <p className="text-md text-text-secondary font-bold leading-[150%]">
+                                        {props.progress}%
+                                    </p>
+                                </div>
+                                <Button
+                                    size="big"
+                                    text={
+                                        dictionary.components
+                                            .courseGeneralInformationView
+                                            .resumeText
+                                    }
+                                    onClick={props.onClickResume}
+                                />
+                            </div>
+                        )}
+
+                        {/* Completed course if progress is 100 */}
+                        {props.progress === 100 && (
+                            <div className="flex flex-col gap-2 md:w-[488px] w-full items-center">
+                                <div className="flex gap-4 items-center">
+                                    <Badge
+                                        variant="successprimary"
+                                        size="big"
+                                        text={
+                                            dictionary.components
+                                                .courseGeneralInformationView
+                                                .courseCompletedBadge
+                                        }
+                                        className="h-7 text-xs lg:text-sm py-1 max-w-full"
+                                        hasIconLeft
+                                        iconLeft={<IconCheck />}
+                                    />
+                                </div>
+                                <Button
+                                    size="big"
+                                    text={
+                                        dictionary.components
+                                            .courseGeneralInformationView
+                                            .reviewCourseButton
+                                    }
+                                    onClick={props.onClickReview}
+                                    className="w-full"
+                                />
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
 

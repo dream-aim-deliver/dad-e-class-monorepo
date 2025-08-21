@@ -266,7 +266,7 @@ export const CourseGeneralInformationVisitor: FC<
                                 />
                                 <p className="text-text-secondary text-sm">
                                     {formatSingleDurationSegment(
-                                        duration.video,
+                                        (duration as any).video as number,
                                         dictionary,
                                     )}{' '}
                                     {
@@ -284,7 +284,7 @@ export const CourseGeneralInformationVisitor: FC<
                                 />
                                 <p className="text-text-secondary text-sm">
                                     {formatSingleDurationSegment(
-                                        duration.coaching,
+                                        (duration as any).coaching as number,
                                         dictionary,
                                     )}{' '}
                                     {
@@ -302,7 +302,7 @@ export const CourseGeneralInformationVisitor: FC<
                                 />
                                 <p className="text-text-secondary text-sm">
                                     {formatSingleDurationSegment(
-                                        duration.selfStudy,
+                                        (duration as any).selfStudy as number,
                                         dictionary,
                                     )}{' '}
                                     {
@@ -327,12 +327,12 @@ export const CourseGeneralInformationVisitor: FC<
                             <div className="flex items-center gap-3 min-w-0">
                                 <UserAvatar
                                     size="medium"
-                                    fullName={author.name}
-                                    imageUrl={author.image}
+                                    fullName={(author as any).name as string}
+                                    imageUrl={(author as any).image as string}
                                 />
                                 <div className="flex flex-col min-w-0">
                                     <p className="text-md text-text-primary font-important truncate">
-                                        {author.name}
+                                        {(author as any).name as string}
                                     </p>
                                     <div className="flex items-center gap-1">
                                         <StarRating
@@ -434,14 +434,14 @@ export const CourseGeneralInformationVisitor: FC<
                                 dictionary.components.courseGeneralInformationView
                                     .saveLabel
                             }{' '}
-                            {pricing.currency} {pricing.partialPrice}
+                            {(pricing as any).currency as string} {(pricing as any).partialPrice as number}
                         </p>
                     </div>
 
                     {/* Button */}
                     <Button
                         size="huge"
-                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${pricing.currency} ${pricing.fullPrice})`}
+                        text={`${dictionary.components.courseGeneralInformationView.buyButton} (${(pricing as any).currency as string} ${(pricing as any).fullPrice as number})`}
                         onClick={() => onClickBuyCourse(coachingIncluded)}
                         className="w-full text-lg lg:text-2xl"
                     />
