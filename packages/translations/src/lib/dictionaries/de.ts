@@ -875,7 +875,7 @@ export const DE: TDictionary = {
     },
     createCourse: {
       createTitle: "Kurs erstellen",
-      submitButton: "Entwurf speichern",
+      saveDraftButton: "Entwurf speichern",
       duplicationDefaultError: "Der zu duplizierende Kurs konnte nicht gefunden werden",
       courseCreationError: 'Kurserstellung fehlgeschlagen. Bitte versuchen Sie es erneut.',
       uploadError: "Bild-Upload fehlgeschlagen. Bitte versuchen Sie es erneut.",

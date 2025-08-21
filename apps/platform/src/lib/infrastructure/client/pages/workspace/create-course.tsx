@@ -274,7 +274,7 @@ function CreateCourseContent(props: CreateCourseContentProps) {
                 <Button
                     variant="primary"
                     onClick={handleCreateCourse}
-                    text={createCourseTranslations('submitButton')}
+                    text={createCourseTranslations('saveDraftButton')}
                     hasIconLeft
                     iconLeft={<IconSave />}
                     disabled={isSubmitDisabled}

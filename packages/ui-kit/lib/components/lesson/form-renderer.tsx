@@ -128,12 +128,8 @@ export function FormElementRenderer({
                     value = '';
             }
 
-<<<<<<< HEAD
-            const isValid = (lessonElements as any)[element.type].validate(element, value);
-=======
             // @ts-ignore
             const isValid = lessonElements[element.type].validate(element, value);
->>>>>>> ab85e948 ((partially) fix build and lint issues)
             if (!isValid) {
                 newErrors[element.id] = true;
             }
@@ -169,16 +165,8 @@ export function FormElementRenderer({
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-text-primary">
             {elements.map((elementInstance) => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                const Element = (lessonElements as any)[elementInstance.type].formComponent;
-=======
-                // TODO: Implement handling for interactive elements like UploadFiles
-=======
                 // @ts-ignore
->>>>>>> ab85e948 ((partially) fix build and lint issues)
                 const Element = lessonElements[elementInstance.type].formComponent;
->>>>>>> 99172dd2 (Integrate additional lesson components)
                 return (
                     <div key={elementInstance.id.toString()} className="flex flex-col gap-2 items-start">
                         <Element

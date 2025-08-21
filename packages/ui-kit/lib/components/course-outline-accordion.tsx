@@ -43,7 +43,7 @@ interface CourseOutlineAccordionProps extends isLocalAware {
     className?: string;
 }
 
-function CourseOutlineAccordion({
+export function CourseOutlineAccordion({
     locale,
     modules,
     activeLessonId,

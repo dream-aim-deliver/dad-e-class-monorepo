@@ -906,7 +906,7 @@ export const DictionarySchema = z.object({
     }),
     createCourse: z.object({
       createTitle: z.string(),
-      submitButton: z.string(),
+      saveDraftButton: z.string(),
       duplicationDefaultError: z.string(),
       courseCreationError: z.string(),
       uploadError: z.string(),

@@ -870,7 +870,7 @@ export const EN: TDictionary = {
     },
     createCourse: {
       createTitle: "Create course",
-      submitButton: "Save draft",
+      saveDraftButton: "Save draft",
       duplicationDefaultError: "Could not find the course to duplicate",
       courseCreationError: 'Course creation failed. Please try again.',
       uploadError: "Failed to upload image. Please try again.",

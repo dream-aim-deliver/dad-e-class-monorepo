@@ -91,7 +91,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             <Uploader
                 type="single"
                 variant="image"
-                file={file}
+                file={elementInstance.file}
                 onFilesChange={handleImageFile as any}
                 onUploadComplete={handleUploadComplete}
                 onDelete={onFileDelete}

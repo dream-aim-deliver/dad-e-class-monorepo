@@ -104,7 +104,7 @@ export function DesignerComponent({
             <Uploader
                 type="single"
                 variant="video"
-                file={file}
+                file={elementInstance.file}
                 onFilesChange={handleVideoFile as any}
                 onUploadComplete={handleUploadComplete}
                 onDelete={onFileDelete}
