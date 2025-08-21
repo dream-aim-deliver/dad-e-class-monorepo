@@ -70,7 +70,7 @@ interface HeadingDesignerComponentProps extends DesignerComponentProps {
     onChange: (value: HeadingType) => void;
 }
 
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, isCourseBuilder }: HeadingDesignerComponentProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, isCourseBuilder, validationError }: HeadingDesignerComponentProps) {
     const dictionary = getDictionary(locale);
 
     if (elementInstance.type !== FormElementType.HeadingText) return null;
@@ -85,6 +85,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={isCourseBuilder}
+            validationError={validationError}
         >
             <HeadingLesson
                 initialHeadingType={elementInstance.headingType}

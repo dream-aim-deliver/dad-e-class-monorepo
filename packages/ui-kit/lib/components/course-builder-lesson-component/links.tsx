@@ -77,6 +77,7 @@ export function DesignerComponent({
     onLinkEdit,
     onDeleteIcon,
     onClickAddLink,
+    validationError,
 }: LinkDesignerComponentProps) {
     if (elementInstance.type !== CourseElementType.Links) return null;
 
@@ -93,6 +94,7 @@ export function DesignerComponent({
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             <div className="flex flex-col items-center justify-center gap-[10px] w-full">
                 {elementInstance.links?.map((link, index) =>

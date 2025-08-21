@@ -47,7 +47,7 @@ export const getValidationError: ElementValidator = (props) => {
 
     // Check if any column title is empty
     const hasEmptyColumnTitle = elementInstance.data.rows.some(row =>
-        row.columns.some(col => !col.columnTitle || col.columnTitle.trim() === '')
+        row.columns.length < 3 || row.columns.some(col => !col.columnTitle || col.columnTitle.trim() === '')
     );
     if (hasEmptyColumnTitle) {
         return dictionary.components.oneOutOfThreeLesson.columnTitleValidationText;

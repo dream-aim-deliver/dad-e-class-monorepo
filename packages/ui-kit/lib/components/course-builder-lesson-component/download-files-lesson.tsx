@@ -113,6 +113,7 @@ export function DesignerComponent({
     onFilesUpload,
     onFileDelete,
     onFileDownload,
+    validationError,
     maxFiles = 5,
     maxSize = 15, // Default to 15MB
 }: DownloadFilesDesignerProps) {
@@ -147,6 +148,7 @@ export function DesignerComponent({
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             <Uploader
                 type="multiple"

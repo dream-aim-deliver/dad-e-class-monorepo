@@ -84,7 +84,8 @@ export function DesignerComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
-    onChange
+    onChange,
+    validationError,
 }: UploadFilesDesignerProps) {
     if (elementInstance.type !== CourseElementType.UploadFiles) return null;
     const dictionary = getDictionary(locale);
@@ -115,6 +116,7 @@ export function DesignerComponent({
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             <div>
                 <label className="text-text-secondary text-sm md:text-md">

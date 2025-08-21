@@ -53,7 +53,7 @@ export const getValidationError: ElementValidator = (props) => {
     }
 
     // One option chosen as correct
-    if (!quiz.correctOptionId || !quiz.options.some(option => option.id === quiz.correctOptionId)) {
+    if (!quiz.options.some(option => option.correct)) {
         return dictionary.components.quiz.quizTypeOne.validationErrors.correctOptionRequired;
     }
 
