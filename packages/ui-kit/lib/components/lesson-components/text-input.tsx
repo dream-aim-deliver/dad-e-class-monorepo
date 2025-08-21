@@ -19,23 +19,25 @@ import { ElementValidator } from '../lesson/types';
 import DefaultError from '../default-error';
 
 export const getValidationError: ElementValidator = (props) => {
-    const { elementInstance, dictionary } = props;
+    const { elementInstance, dictionary, context = 'coach' } = props;
 
     if (elementInstance.type !== FormElementType.TextInput)
         return dictionary.components.lessons.typeValidationText;
 
+    // Student validation: Check if user has entered content when required (actual form submission)
+    if (context === 'student') {
+        if (elementInstance.required) {
+            if (!elementInstance.content || elementInstance.content.trim() === '') {
+                return dictionary.components.formRenderer.fieldRequired;
+            }
+        }
+        return undefined; // Student validation passed
+    }
 
-    // Check if content exists
-    if (!elementInstance.content) {
+    // Coach validation: Check if helperText is provided (coach needs to configure helper text)
+    if (!elementInstance.helperText || elementInstance.helperText.trim() === '') {
         return dictionary.components.textInputLesson.textContentValidationText;
     }
-
-    // Check if content has meaningful text (not just whitespace)
-    const trimmedContent = elementInstance.content.trim();
-    if (trimmedContent.length === 0) {
-        return dictionary.components.textInputLesson.meaningfulTextValidationText;
-    }
-
 
     return undefined;
 };
@@ -86,6 +88,7 @@ const textInputElement: FormElementTemplate = {
 interface TextInputDesignerComponentProps extends DesignerComponentProps {
     onRequiredChange: (isRequired: boolean) => void;
     onHelperTextChange: (helperText: string) => void;
+    isCourseBuilder: boolean;
 }
 
 export function DesignerComponent({
@@ -96,7 +99,8 @@ export function DesignerComponent({
     onDeleteClick,
     onHelperTextChange,
     onRequiredChange,
-    validationError
+    validationError,
+    isCourseBuilder
 }: TextInputDesignerComponentProps) {
     if (elementInstance.type !== FormElementType.TextInput) return null;
     const dictionary = getDictionary(locale);
@@ -139,7 +143,7 @@ export function DesignerComponent({
             onDownClick={() => onDownClick?.(elementInstance.id)}
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
-            courseBuilder={false}
+            courseBuilder={isCourseBuilder}
             isChecked={isRequired}
             onChange={handleRequiredChange}
             validationError={validationError}
@@ -178,7 +182,7 @@ export function FormComponent({
 
     const dictionary = getDictionary(locale);
 
-    const validationError = getValidationError({ elementInstance, dictionary });
+    const validationError = getValidationError({ elementInstance, dictionary, context: 'coach' });
     if (validationError) {
         return (
             <DefaultError

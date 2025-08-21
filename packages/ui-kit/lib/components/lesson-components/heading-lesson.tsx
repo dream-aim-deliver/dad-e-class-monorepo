@@ -7,11 +7,17 @@ import { getDictionary } from "@maany_shr/e-class-translations";
 import DefaultError from "../default-error";
 
 export const getValidationError: ElementValidator = (props) => {
-    const { elementInstance, dictionary } = props;
+    const { elementInstance, dictionary, context = 'coach' } = props;
 
     if (elementInstance.type !== FormElementType.HeadingText)
         return dictionary.components.lessons.typeValidationText;
 
+    // Student validation: Heading is display-only, no user input validation needed
+    if (context === 'student') {
+        return undefined; // Always pass for student
+    }
+
+    // Coach validation: Check element structure (course builder - both designer and preview)
     // Check if heading content exists
     if (!elementInstance.heading || elementInstance.heading.trim().length === 0) {
         return dictionary.components.headingLesson.headingValidationText;
@@ -100,7 +106,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== FormElementType.HeadingText) return null;
 
     const dictionary = getDictionary(locale);
-    const validationError = getValidationError({ elementInstance, dictionary });
+    const validationError = getValidationError({ elementInstance, dictionary, context: 'coach' });
     if (validationError) {
         return (
             <DefaultError

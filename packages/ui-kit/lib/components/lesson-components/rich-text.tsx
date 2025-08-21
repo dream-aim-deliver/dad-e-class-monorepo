@@ -62,12 +62,18 @@ interface RichTextDesignerComponentProps extends DesignerComponentProps {
 }
 
 export const getValidationError: ElementValidator = (props) => {
-    const { elementInstance, dictionary } = props;
+    const { elementInstance, dictionary, context = 'coach' } = props;
 
     if (elementInstance.type !== FormElementType.RichText)
         return dictionary.components.lessons.typeValidationText;
 
-    if (elementInstance.content.trim() && !elementInstance.content) {
+    // Student validation: Rich text is display-only, no user input validation needed
+    if (context === 'student') {
+        return undefined; // Always pass for student
+    }
+
+    // Coach validation: Check element structure (course builder - both designer and preview)
+    if ( !elementInstance.content) {
         return dictionary.components.richTextLesson.textContentValidationText;
     }
 
@@ -82,6 +88,7 @@ export function DesignerComponent({
     onDeleteClick,
     onContentChange,
     validationError,
+    isCourseBuilder
 }: RichTextDesignerComponentProps) {
     if (elementInstance.type !== FormElementType.RichText) return null;
     const dictionary = getDictionary(locale);
@@ -117,8 +124,8 @@ export function DesignerComponent({
             onDownClick={() => onDownClick?.(elementInstance.id)}
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
-            courseBuilder={true}
             validationError={validationError}
+            courseBuilder={isCourseBuilder}
         >
             <RichTextEditor
                 name={`rich-text-${elementInstance.id}`}
@@ -142,7 +149,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
 
     const dictionary = getDictionary(locale);
 
-    const validationError = getValidationError({ elementInstance, dictionary });
+    const validationError = getValidationError({ elementInstance, dictionary, context: 'coach' });
     if (validationError) {
         return (
             <DefaultError

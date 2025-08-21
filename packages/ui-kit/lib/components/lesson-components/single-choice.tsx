@@ -8,11 +8,23 @@ import { getDictionary } from "@maany_shr/e-class-translations";
 import DefaultError from "../default-error";
 
 export const getValidationError: ElementValidator = (props) => {
-    const { elementInstance, dictionary } = props;
+    const { elementInstance, dictionary, context = 'coach' } = props;
 
     if (elementInstance.type !== FormElementType.SingleChoice)
         return dictionary.components.lessons.typeValidationText;
 
+    // Student validation: Check if user has made a selection when required (actual form submission)
+    if (context === 'student') {
+        if (elementInstance.required) {
+            const hasSelection = elementInstance.options && elementInstance.options.some(option => option.isSelected);
+            if (!hasSelection) {
+                return dictionary.components.formRenderer.fieldRequired;
+            }
+        }
+        return undefined; // Student validation passed
+    }
+
+    // Coach validation: Check element structure (course builder - both designer and preview)
     // Check if title is empty
     if (!elementInstance.title || elementInstance.title.trim() === '') {
         return dictionary.components.singleChoiceLesson.titleValidationText;
@@ -106,7 +118,7 @@ interface SingleChoiceDesignerProps extends DesignerComponentProps {
     onRequiredChange: (isRequired: boolean) => void;
 }
 
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange, validationError }: SingleChoiceDesignerProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange, validationError,isCourseBuilder }: SingleChoiceDesignerProps) {
     const dictionary = getDictionary(locale);
 
     if (elementInstance.type !== FormElementType.SingleChoice) return null;
@@ -127,7 +139,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             onDownClick={() => onDownClick?.(elementInstance.id)}
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
-            courseBuilder={false}
+            courseBuilder={isCourseBuilder}
             isChecked={isRequired}
             onChange={handleRequiredChange}
             validationError={validationError}
@@ -159,7 +171,7 @@ export function FormComponent({ elementInstance, submitValue, locale }: FormComp
 
     const dictionary = getDictionary(locale);
 
-    const validationError = getValidationError({ elementInstance, dictionary });
+    const validationError = getValidationError({ elementInstance, dictionary, context: 'coach' });
     if (validationError) {
         return (
             <DefaultError

@@ -191,6 +191,7 @@ function RichTextComponent({
             onDeleteClick={onDeleteClick}
             onContentChange={onContentChange}
             validationError={validationError}
+            isCourseBuilder={true}
         />
     );
 }
@@ -652,6 +653,7 @@ function TextInputComponent({
             onHelperTextChange={onHelperTextChange}
             onRequiredChange={onRequiredChange}
             validationError={validationError}
+            isCourseBuilder={true}
         />
     );
 }
@@ -748,6 +750,7 @@ function SingleChoiceComponent({
             onDeleteClick={onDeleteClick}
             onChange={onChange}
             validationError={validationError}
+            isCourseBuilder={true}
         />
     );
 }
@@ -805,6 +808,7 @@ function MultiCheckComponent({
             onDeleteClick={onDeleteClick}
             onChange={onChange}
             validationError={validationError}
+            isCourseBuilder={true}
         />
     );
 }
@@ -859,6 +863,7 @@ function OneOutOfThreeComponent({
             onDeleteClick={onDeleteClick}
             onChange={onChange}
             validationError={validationError}
+            isCourseBuilder={true}
         />
     );
 }

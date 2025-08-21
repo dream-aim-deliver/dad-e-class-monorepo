@@ -13,7 +13,7 @@ import { validatorPerType } from "./validators";
 
 /**
  * Props for the FormElementRenderer component
- * 
+ *
  * @interface FormElementRendererProps
  * @extends {isLocalAware}
  */
@@ -81,7 +81,7 @@ export function FormElementRenderer({
         for (const element of elements) {
             const formElement = formValues.current[element.id];
 
-            
+
             const elementToValidate = formElement || element;
 
             // Use the new validation system
@@ -89,7 +89,8 @@ export function FormElementRenderer({
             if (validator) {
                 const validationError = validator({
                     elementInstance: elementToValidate,
-                    dictionary: dictionary
+                    dictionary: dictionary,
+                    context: 'student' // This is student view validation for actual form submission
                 });
 
                 if (validationError) {
@@ -119,8 +120,7 @@ export function FormElementRenderer({
     };
 
     const getErrorMessage = (element: LessonElement): string => {
-        // Return the stored error message or fallback to generic message
-        return formErrors[element.id] || dictionary.components.formRenderer.fieldRequired;
+        return formErrors[element.id]
     };
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-text-primary">
