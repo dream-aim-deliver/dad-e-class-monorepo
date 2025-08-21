@@ -6,6 +6,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
         {
             success: true,
             data: {
+                courseVersion: 1,
                 title: 'Advanced React Patterns & Performance',
                 imageFile: {
                     id: '1',
@@ -77,6 +78,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
         {
             success: true,
             data: {
+                courseVersion: 1,
                 title: 'Machine Learning Fundamentals',
                 imageFile: {
                     id: '2',
@@ -126,6 +128,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
         {
             success: true,
             data: {
+                courseVersion: 1,
                 title: 'UI/UX Design Mastery',
                 imageFile: {
                     id: '3',
@@ -174,6 +177,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
         {
             success: true,
             data: {
+                courseVersion: 1,
                 title: 'DevOps & Cloud Architecture',
                 imageFile: {
                     id: '4',
@@ -223,6 +227,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
         {
             success: true,
             data: {
+                courseVersion: 1,
                 title: 'Mobile App Development with Flutter',
                 imageFile: null, // Testing nullable field
                 averageRating: 4.5,
@@ -264,6 +269,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
         {
             success: true,
             data: {
+                courseVersion: 1,
                 title: 'Full-Stack JavaScript Development',
                 imageFile: {
                     id: '5',

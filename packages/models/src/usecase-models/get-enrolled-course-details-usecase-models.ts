@@ -14,6 +14,7 @@ export const GetEnrolledCourseDetailsRequestSchema = z.object({
 export type TGetEnrolledCourseDetailsRequest = z.infer<typeof GetEnrolledCourseDetailsRequestSchema>;
 
 export const GetEnrolledCourseDetailsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
+  courseVersion: z.number(),
   title: z.string(),
   imageFile: ImageFileSchema.nullable(),
   averageRating: z.number(),

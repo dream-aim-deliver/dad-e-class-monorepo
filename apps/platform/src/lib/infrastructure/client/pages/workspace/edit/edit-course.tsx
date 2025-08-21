@@ -77,7 +77,9 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
     const [isEdited, setIsEdited] = useState(false);
     const [activeTab, setActiveTab] = useState<TabTypes>(TabTypes.General);
 
-    const [courseVersion, setCourseVersion] = useState<number | null>(null);
+    const [courseVersion, setCourseVersion] = useState<number | null>(
+        course.courseVersion,
+    );
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const transformCourseImage = (): fileMetadata.TFileMetadataImage | null => {
@@ -115,7 +117,6 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
             }
         }
         setIsEdited(false);
-        setCourseVersion(null);
         setModules([]);
         setActiveTab(value as TabTypes);
         setErrorMessage(null);
@@ -125,7 +126,44 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
         setIsPreviewing((prev) => !prev);
     };
 
+    const saveDetailsMutation = trpc.saveCourseDetails.useMutation();
+
+    const saveCourseDetails = async () => {
+        if (!courseVersion) return;
+        // TODO: Translate error messages
+        if (!generalState.courseTitle) {
+            setErrorMessage('Course title is required');
+            return;
+        }
+        if (!generalState.serializeDescription()) {
+            setErrorMessage('Course description is required');
+            return;
+        }
+        if (!courseImageUpload.courseImage) {
+            setErrorMessage('Course image is required');
+            return;
+        }
+
+        setErrorMessage(null);
+        const result = await saveDetailsMutation.mutateAsync({
+            courseSlug: slug,
+            courseVersion: courseVersion,
+            title: generalState.courseTitle,
+            description: generalState.serializeDescription(),
+            selfStudyDuration: generalState.duration,
+            imageId: courseImageUpload.courseImage?.id,
+        });
+        if (!result.success) {
+            setErrorMessage(result.data.message);
+            return;
+        }
+        window.location.reload();
+    };
+
     const handleSave = async () => {
+        if (activeTab === TabTypes.General) {
+            await saveCourseDetails();
+        }
         if (activeTab === TabTypes.CourseContent) {
             const result = await saveCourseStructure();
             if (result) {
@@ -149,7 +187,7 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
         courseImageUpload.handleUploadComplete(courseImage);
     }, [course]);
 
-    const isSaving = isSavingCourseStructure;
+    const isSaving = isSavingCourseStructure || saveDetailsMutation.isPending;
 
     return (
         <div className="flex flex-col gap-4">
@@ -157,8 +195,8 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
                 title="Edit course"
                 onPreview={handlePreview}
                 onSave={handleSave}
-                disablePreview={isEdited || isSavingCourseStructure}
-                isSaving={isSavingCourseStructure}
+                disablePreview={isEdited || isSaving}
+                isSaving={isSaving}
                 isPreviewing={isPreviewing}
             />
             <Tabs.Root
