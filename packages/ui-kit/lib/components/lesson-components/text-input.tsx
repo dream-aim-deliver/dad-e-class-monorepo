@@ -18,25 +18,24 @@ import { IconTextInput } from '../icons/icon-text-input';
 import { ElementValidator } from '../lesson/types';
 import DefaultError from '../default-error';
 
-// TODO: Translate validation errors
 export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== FormElementType.TextInput)
         return dictionary.components.lessons.typeValidationText;
 
-  
-        // Check if content exists
-        if (!elementInstance.content) {
-            return dictionary.components.textInputLesson.textContentValidationText;
-        }
 
-        // Check if content has meaningful text (not just whitespace)
-        const trimmedContent = elementInstance.content.trim();
-        if (trimmedContent.length === 0) {
-            return dictionary.components.textInputLesson.meaningfulTextValidationText;
-        }
-    
+    // Check if content exists
+    if (!elementInstance.content) {
+        return dictionary.components.textInputLesson.textContentValidationText;
+    }
+
+    // Check if content has meaningful text (not just whitespace)
+    const trimmedContent = elementInstance.content.trim();
+    if (trimmedContent.length === 0) {
+        return dictionary.components.textInputLesson.meaningfulTextValidationText;
+    }
+
 
     return undefined;
 };
@@ -140,7 +139,8 @@ export function DesignerComponent({
             onDownClick={() => onDownClick?.(elementInstance.id)}
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
-            courseBuilder={true}
+            courseBuilder={false}
+            isChecked={isRequired}
             onChange={handleRequiredChange}
             validationError={validationError}
         >

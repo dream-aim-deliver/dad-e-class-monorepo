@@ -9,7 +9,6 @@ import { VideoPlayer } from "../video-player";
 import { ElementValidator } from "../lesson/types";
 import DefaultError from "../default-error";
 
-// TODO: Translate validation errors
 export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
@@ -172,7 +171,6 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
 
     const dictionary = getDictionary(locale);
-    console.log(locale)
     const validationError = getValidationError({ elementInstance, dictionary });
     if (validationError) {
         return (

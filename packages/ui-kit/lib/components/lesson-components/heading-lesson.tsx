@@ -6,7 +6,6 @@ import { ElementValidator } from "../lesson/types";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import DefaultError from "../default-error";
 
-// TODO: Translate validation errors
 export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
@@ -101,7 +100,6 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== FormElementType.HeadingText) return null;
 
     const dictionary = getDictionary(locale);
-    console.log(locale)
     const validationError = getValidationError({ elementInstance, dictionary });
     if (validationError) {
         return (

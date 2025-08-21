@@ -7,7 +7,6 @@ import { ElementValidator } from "../lesson/types";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import DefaultError from "../default-error";
 
-// TODO: Translate validation errors
 export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
@@ -107,7 +106,6 @@ interface SingleChoiceDesignerProps extends DesignerComponentProps {
     onRequiredChange: (isRequired: boolean) => void;
 }
 
-// TODO: Translate
 export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange, validationError }: SingleChoiceDesignerProps) {
     const dictionary = getDictionary(locale);
 

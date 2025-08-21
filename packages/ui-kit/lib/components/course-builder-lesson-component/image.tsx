@@ -9,7 +9,6 @@ import { useState } from "react";
 import { ElementValidator } from "../lesson/types";
 import DefaultError from "../default-error";
 
-// TODO: Translate validation errors
 export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 

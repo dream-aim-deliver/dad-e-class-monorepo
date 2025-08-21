@@ -234,7 +234,7 @@ export function FormComponentWrapper({
             return (
                 <DefaultError
                     locale={locale}
-                    title={'Quiz is invalid'}
+                    title={dictionary.components.lessons.elementValidationText}
                     description={validationError}
                 />
             );

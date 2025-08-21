@@ -60,7 +60,7 @@ export const getValidationError: ElementValidator = (props) => {
     }
 
     // One option chosen as correct per group
-    if (!group.correctOptionId || !group.options.some(option => option.id === group.correctOptionId)) {
+    if (!group.options.some((option) => option.correct)) {
       return dictionary.components.quiz.quizTypeTwo.validationErrors.correctOptionRequiredPerGroup;
     }
   }

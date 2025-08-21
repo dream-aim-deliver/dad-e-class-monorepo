@@ -61,7 +61,6 @@ interface RichTextDesignerComponentProps extends DesignerComponentProps {
     onContentChange: (value: string) => void;
 }
 
-// TODO: Translate validation errors
 export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
@@ -69,7 +68,7 @@ export const getValidationError: ElementValidator = (props) => {
         return dictionary.components.lessons.typeValidationText;
 
     if (elementInstance.content.trim() && !elementInstance.content) {
-        return 'Text content should not be empty';
+        return dictionary.components.richTextLesson.textContentValidationText;
     }
 
     return undefined;
@@ -145,7 +144,6 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
 
     const validationError = getValidationError({ elementInstance, dictionary });
     if (validationError) {
-        // TODO: Translate validation error title (should be common)
         return (
             <DefaultError
                 locale={locale}
