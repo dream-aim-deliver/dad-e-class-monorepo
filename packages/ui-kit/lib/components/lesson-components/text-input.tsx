@@ -25,7 +25,7 @@ export const getValidationError: ElementValidator = (props) => {
     if (elementInstance.type !== FormElementType.TextInput)
         return 'Wrong element type';
 
-    if (elementInstance.required) {
+  
         // Check if content exists
         if (!elementInstance.content) {
             return 'Text input content is required';
@@ -36,7 +36,7 @@ export const getValidationError: ElementValidator = (props) => {
         if (trimmedContent.length === 0) {
             return 'Please enter some text';
         }
-    }
+    
 
     return undefined;
 };
