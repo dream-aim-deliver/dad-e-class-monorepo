@@ -223,7 +223,7 @@ export function FormComponentWrapper({
 }: {
     children: React.ReactNode;
     locale: TLocale;
-    elementInstance?: CourseElement;
+    elementInstance: CourseElement;
 }) {
     const dictionary = getDictionary(locale);
 

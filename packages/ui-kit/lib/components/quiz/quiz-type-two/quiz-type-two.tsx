@@ -19,49 +19,49 @@ export const getValidationError: ElementValidator = (props) => {
   const { elementInstance, dictionary } = props;
 
   if (elementInstance.type !== CourseElementType.QuizTypeTwo)
-    return 'Wrong element type';
+    return dictionary.components.quiz.quizTypeTwo.validationErrors.wrongElementType;
 
   const quiz = elementInstance as QuizTypeTwoElement;
 
   // Title non empty
   if (!quiz.title || quiz.title.trim() === '') {
-    return 'Title should not be empty';
+    return dictionary.components.quiz.quizTypeTwo.validationErrors.titleRequired;
   }
 
   // Description non empty
   if (!quiz.description || quiz.description.trim() === '') {
-    return 'Description should not be empty';
+    return dictionary.components.quiz.quizTypeTwo.validationErrors.descriptionRequired;
   }
 
   // File image attached
   if (!quiz.imageFile) {
-    return 'Image file should be attached';
+    return dictionary.components.quiz.quizTypeTwo.validationErrors.imageRequired;
   }
 
   // Each group has a non empty title and at least one option
   if (!quiz.groups || quiz.groups.length === 0) {
-    return 'At least one group should be present';
+    return dictionary.components.quiz.quizTypeTwo.validationErrors.atLeastOneGroup;
   }
 
   for (const group of quiz.groups) {
     if (!group.title || group.title.trim() === '') {
-      return 'Each group should have a non-empty title';
+      return dictionary.components.quiz.quizTypeTwo.validationErrors.groupTitleRequired;
     }
 
     if (!group.options || group.options.length === 0) {
-      return 'At least one option should be present in each group';
+      return dictionary.components.quiz.quizTypeTwo.validationErrors.atLeastOneOptionPerGroup;
     }
 
     // All options have non empty titles
     for (const option of group.options) {
       if (!option.name || option.name.trim() === '') {
-        return 'All option names should be non-empty';
+        return dictionary.components.quiz.quizTypeTwo.validationErrors.optionNamesRequired;
       }
     }
 
     // One option chosen as correct per group
     if (!group.correctOptionId || !group.options.some(option => option.id === group.correctOptionId)) {
-      return 'One option should be chosen as correct per group';
+      return dictionary.components.quiz.quizTypeTwo.validationErrors.correctOptionRequiredPerGroup;
     }
   }
 

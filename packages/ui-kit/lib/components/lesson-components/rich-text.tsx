@@ -68,7 +68,7 @@ export const getValidationError: ElementValidator = (props) => {
     if (elementInstance.type !== FormElementType.RichText)
         return 'Wrong element type';
 
-    if (!elementInstance.content) {
+    if (elementInstance.content.trim() && !elementInstance.content) {
         return 'Text content should not be empty';
     }
 

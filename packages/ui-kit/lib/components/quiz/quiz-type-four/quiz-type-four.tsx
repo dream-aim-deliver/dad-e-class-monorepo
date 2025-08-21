@@ -16,46 +16,46 @@ export const getValidationError: ElementValidator = (props) => {
   const { elementInstance, dictionary } = props;
 
   if (elementInstance.type !== CourseElementType.QuizTypeFour)
-    return 'Wrong element type';
+    return dictionary.components.quiz.quizTypeFour.validationErrors.wrongElementType;
 
   const quiz = elementInstance as QuizTypeFourElement;
 
   // Title non empty
   if (!quiz.title || quiz.title.trim() === '') {
-    return 'Title should not be empty';
+    return dictionary.components.quiz.quizTypeFour.validationErrors.titleRequired;
   }
 
   // Description non empty
   if (!quiz.description || quiz.description.trim() === '') {
-    return 'Description should not be empty';
+    return dictionary.components.quiz.quizTypeFour.validationErrors.descriptionRequired;
   }
 
   // At least one label present
   if (!quiz.labels || quiz.labels.length === 0) {
-    return 'At least one label should be present';
+    return dictionary.components.quiz.quizTypeFour.validationErrors.atLeastOneLabel;
   }
 
   // All labels have non empty descriptions
   for (const label of quiz.labels) {
     if (!label.description || label.description.trim() === '') {
-      return 'Each label should have a non-empty description';
+      return dictionary.components.quiz.quizTypeFour.validationErrors.labelDescriptionsRequired;
     }
   }
 
   // At least one image present
   if (!quiz.images || quiz.images.length === 0) {
-    return 'At least one image should be present';
+    return dictionary.components.quiz.quizTypeFour.validationErrors.atLeastOneImage;
   }
 
   for (const image of quiz.images) {
     // File image attached to each option
     if (!image.imageFile) {
-      return 'Image file should be attached to each option';
+      return dictionary.components.quiz.quizTypeFour.validationErrors.imageRequiredPerImage;
     }
 
     // Each image should have a correct letter assigned
     if (!image.correctLetter || image.correctLetter.trim() === '') {
-      return 'Each image should have a correct letter assigned';
+      return dictionary.components.quiz.quizTypeFour.validationErrors.correctLetterRequiredPerImage;
     }
   }
 

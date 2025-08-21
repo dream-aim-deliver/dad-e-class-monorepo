@@ -21,40 +21,40 @@ export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
 
     if (elementInstance.type !== CourseElementType.QuizTypeOne)
-        return 'Wrong element type';
+        return dictionary.components.quiz.quizTypeOne.validationErrors.wrongElementType;
 
     const quiz = elementInstance as QuizTypeOneElement;
 
     // Title non empty
     if (!quiz.title || quiz.title.trim() === '') {
-        return 'Title should not be empty';
+        return dictionary.components.quiz.quizTypeOne.validationErrors.titleRequired;
     }
 
     // Description non empty
     if (!quiz.description || quiz.description.trim() === '') {
-        return 'Description should not be empty';
+        return dictionary.components.quiz.quizTypeOne.validationErrors.descriptionRequired;
     }
 
     // File image attached
     if (!quiz.imageFile) {
-        return 'Image file should be attached';
+        return dictionary.components.quiz.quizTypeOne.validationErrors.imageRequired;
     }
 
     // At least one option present
     if (!quiz.options || quiz.options.length === 0) {
-        return 'At least one option should be present';
+        return dictionary.components.quiz.quizTypeOne.validationErrors.atLeastOneOption;
     }
 
     // All options have non empty titles
     for (const option of quiz.options) {
         if (!option.name || option.name.trim() === '') {
-            return 'All option names should be non-empty';
+            return dictionary.components.quiz.quizTypeOne.validationErrors.optionNamesRequired;
         }
     }
 
     // One option chosen as correct
     if (!quiz.correctOptionId || !quiz.options.some(option => option.id === quiz.correctOptionId)) {
-        return 'One option should be chosen as correct';
+        return dictionary.components.quiz.quizTypeOne.validationErrors.correctOptionRequired;
     }
 
     return undefined;
