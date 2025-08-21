@@ -8,6 +8,7 @@ import { LessonElement, LessonElementType, valueType } from "./types";
 import { TextInputElement, SingleChoiceElement, RichTextElement, MultiCheckElement, OneOutOfThreeElement } from "../lesson-components/types";
 import { deserialize } from "../rich-text-element/serializer";
 import { FormComponent as UploadFilesFormComponent } from "../course-builder-lesson-component/upload-files-lesson";
+import { validatorPerType } from "./validators";
 
 
 /**
@@ -69,69 +70,34 @@ export function FormElementRenderer({
 }: FormElementRendererProps) {
     const dictionary = getDictionary(locale);
     const formValues = useRef<{ [key: string]: LessonElement }>({});
-    const [formErrors, setFormErrors] = useState<{ [key: string]: boolean }>({});
+    const [formErrors, setFormErrors] = useState<{ [key: string]: string | null }>({});
     const submitValue = (id: string, value: LessonElement) => {
         formValues.current[id] = value;
     };
 
     const validateForm = (): boolean => {
-        const newErrors: { [key: string]: boolean } = {};
+        const newErrors: { [key: string]: string | null } = {};
 
         for (const element of elements) {
             const formElement = formValues.current[element.id];
 
-            if (!formElement) {
-                if (element.required) {
-                    newErrors[element.id] = true;
-                }
-                continue;
-            }
+            
+            const elementToValidate = formElement || element;
 
-            let value: valueType;
-            switch (element.type) {
-                case LessonElementType.TextInput: {
-                    const textInput = formElement as TextInputElement;
+            // Use the new validation system
+            const validator = validatorPerType[element.type];
+            if (validator) {
+                const validationError = validator({
+                    elementInstance: elementToValidate,
+                    dictionary: dictionary
+                });
 
-                    const onDeserializationError = (message: string, error: Error) => {
-                        // TODO: check how to pass a callback from the parent to here
-                    }
-
-                    value = 'content' in textInput ? deserialize({
-                        serializedData: textInput.content ?? '',
-                        onError: onDeserializationError
-                    }
-                    ) : [];
-                    break;
+                if (validationError) {
+                    newErrors[element.id] = validationError;
                 }
-                case LessonElementType.SingleChoice: {
-                    const singleChoice = formElement as SingleChoiceElement;
-                    value = singleChoice?.options ?? [];
-                    break;
-                }
-                case LessonElementType.RichText: {
-                    const richText = formElement as RichTextElement;
-                    value = richText?.content ?? '';
-                    break;
-                }
-                case LessonElementType.MultiCheck: {
-                    const multiCheck = formElement as MultiCheckElement;
-                    value = multiCheck?.options ?? [];
-                    break;
-                }
-                case LessonElementType.OneOutOfThree: {
-                    const oneOutOfThree = formElement as OneOutOfThreeElement;
-                    value = oneOutOfThree.data ?? [];
-                    break;
-                }
-                // TODO: Add other element types
-                default:
-                    value = '';
-            }
-
-            // @ts-ignore
-            const isValid = lessonElements[element.type].validate(element, value);
-            if (!isValid) {
-                newErrors[element.id] = true;
+            } else if (!formElement && element.required) {
+                // Fallback if no validator exists
+                newErrors[element.id] = dictionary.components.formRenderer.fieldRequired;
             }
         }
 
@@ -153,14 +119,8 @@ export function FormElementRenderer({
     };
 
     const getErrorMessage = (element: LessonElement): string => {
-        switch (element.type) {
-            case LessonElementType.TextInput:
-                return dictionary.components.formRenderer.fieldRequired;
-            case LessonElementType.SingleChoice:
-                return dictionary.components.formRenderer.selectOption;
-            default:
-                return dictionary.components.formRenderer.fieldRequired;
-        }
+        // Return the stored error message or fallback to generic message
+        return formErrors[element.id] || dictionary.components.formRenderer.fieldRequired;
     };
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-text-primary">

@@ -1,7 +1,25 @@
-import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps, valueType } from "../pre-assessment/types";
+import { FormElement, FormElementTemplate, FormElementType, DesignerComponentProps, valueType, FormComponentProps } from "../pre-assessment/types";
 import DesignerLayout from "../designer-layout";
 import { IconHeading } from "../icons/icon-heading";
 import { HeadingLesson, HeadingLessonPreview, HeadingType } from "../heading-type";
+import { ElementValidator } from "../lesson/types";
+import { getDictionary } from "@maany_shr/e-class-translations";
+import DefaultError from "../default-error";
+
+// TODO: Translate validation errors
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== FormElementType.HeadingText)
+        return 'Wrong element type';
+
+    // Check if heading content exists
+    if (!elementInstance.heading || elementInstance.heading.trim().length === 0) {
+        return 'Heading text cannot be empty';
+    }
+
+    return undefined;
+};
 
 
 /**
@@ -18,8 +36,6 @@ const headingTextElement: FormElementTemplate = {
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: valueType) => true
-
 };
 /**
  * Heading  for Pre-Assessment
@@ -79,8 +95,21 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
  * Form Component for Rich Text
  * Renders the rich text content in the form view
  */
-export function FormComponent({ elementInstance }: { elementInstance: FormElement }) {
+export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== FormElementType.HeadingText) return null;
+
+    const dictionary = getDictionary(locale);
+console.log(locale)
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={'Element is invalid'}
+                description={validationError}
+            />
+        );
+    }
 
     const heading = elementInstance.heading || ""; // Default to "h1" if undefined
     const type = elementInstance.headingType || "h1";

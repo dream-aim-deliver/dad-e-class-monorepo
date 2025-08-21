@@ -31,7 +31,6 @@ const richTextElement: FormElementTemplate = {
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: valueType) => true,
 };
 
 /**

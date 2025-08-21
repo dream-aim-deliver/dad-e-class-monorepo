@@ -1,8 +1,39 @@
 import { useState } from "react";
 import { IconSingleChoice } from "../icons/icon-single-choice";
-import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps } from "../pre-assessment/types";
+import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps, FormComponentProps } from "../pre-assessment/types";
 import SingleChoicePreview, { optionsType, SingleChoiceEdit } from "../single-choice";
 import DesignerLayout from "../designer-layout";
+import { ElementValidator } from "../lesson/types";
+import { getDictionary } from "@maany_shr/e-class-translations";
+import DefaultError from "../default-error";
+
+// TODO: Translate validation errors
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== FormElementType.SingleChoice)
+        return 'Wrong element type';
+
+    // Check if title is empty
+    if (!elementInstance.title || elementInstance.title.trim() === '') {
+        return 'Title should not be empty';
+    }
+
+    // Check if there is at least one option
+    if (!elementInstance.options || elementInstance.options.length === 0) {
+        return 'There should be at least one option';
+    }
+
+    // Check if all option names are non-empty
+    const hasEmptyOptionName = elementInstance.options.some(option =>
+        !option.name || option.name.trim() === ''
+    );
+    if (hasEmptyOptionName) {
+        return 'All option names should be non-empty';
+    }
+
+    return undefined;
+};
 
 
 /**
@@ -50,12 +81,6 @@ const singleChoiceElement: FormElementTemplate = {
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: valueType) => {
-        if (elementInstance.required) {
-            return Array.isArray(value) ? (value as optionsType[]).some(opt => opt.isSelected) : false;
-        }
-        return true;
-    }
 };
 
 
@@ -83,7 +108,7 @@ interface SingleChoiceDesignerProps extends DesignerComponentProps {
 }
 
 // TODO: Translate
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange }: SingleChoiceDesignerProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange, validationError }: SingleChoiceDesignerProps) {
     if (elementInstance.type !== FormElementType.SingleChoice) return null;
 
     const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
@@ -105,6 +130,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             courseBuilder={false}
             isChecked={isRequired}
             onChange={handleRequiredChange}
+            validationError={validationError}
         >
             <SingleChoiceEdit
                 initialTitle={elementInstance.title}
@@ -124,12 +150,25 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
  * @param elementInstance - The form element instance containing configuration
  * @param submitValue - Callback function for form submission
  */
-export function FormComponent({ elementInstance, submitValue }: { elementInstance: FormElement; submitValue?: SubmitFunction }) {
+export function FormComponent({ elementInstance, submitValue, locale }: FormComponentProps) {
     const isSingleChoice = elementInstance.type === FormElementType.SingleChoice;
 
     const [options, setOptions] = useState<optionsType[]>(isSingleChoice ? elementInstance.options : []);
 
     if (!isSingleChoice) return null;
+
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={'Element is invalid'}
+                description={validationError}
+            />
+        );
+    }
 
     const handleOptionChange = (option: string) => {
         setOptions(prevOptions => {

@@ -7,6 +7,39 @@ import { TextAreaInput } from "../text-areaInput";
 import DesignerLayout from "../designer-layout";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { Uploader } from "../drag-and-drop-uploader/uploader";
+import { ElementValidator } from "../lesson/types";
+import DefaultError from "../default-error";
+
+// TODO: Translate validation errors
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.UploadFiles)
+        return 'Wrong element type';
+
+    // Check if description is not empty
+    if (!elementInstance.description || elementInstance.description.trim().length === 0) {
+        return 'Description should not be empty';
+    }
+
+    // If files are present, validate their metadata
+    if (elementInstance.files && elementInstance.files.length > 0) {
+        for (const file of elementInstance.files) {
+            if (!file.id || !file.name || !file.url) {
+                return 'Invalid file metadata: missing required properties';
+            }
+
+            // Validate URL format
+            try {
+                new URL(file.url);
+            } catch {
+                return 'Invalid file URL format';
+            }
+        }
+    }
+
+    return undefined;
+};
 
 
 
@@ -145,8 +178,20 @@ export function FormComponent({
 }: UploadFilesFormProps) {
     if (elementInstance.type !== CourseElementType.UploadFiles) return null;
 
-    const [comment, setComment] = useState<string>("");
     const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={'Element is invalid'}
+                description={validationError}
+            />
+        );
+    }
+
+    const [comment, setComment] = useState<string>("");
     const handleStudentComment = (newValue: string) => {
         setComment(newValue);
         if (onStudentCommentChange) {

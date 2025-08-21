@@ -14,6 +14,33 @@ import { fileMetadata, shared } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { IconPlus } from '../icons/icon-plus';
 import { set } from 'zod';
+import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
+
+// TODO: Translate validation errors
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.Links)
+        return 'Wrong element type';
+
+    // Check if at least one link is provided
+    if (!elementInstance.links || elementInstance.links.length === 0) {
+        return 'There should be at least one link';
+    }
+
+    // Validate each link has non-empty title and URL
+    for (const link of elementInstance.links) {
+        if (!link.title || link.title.trim().length === 0) {
+            return 'Links should have non empty title';
+        }
+        if (!link.url || link.url.trim().length === 0) {
+            return 'Links should have non empty URL';
+        }
+    }
+
+    return undefined;
+};
 
 const linksElement: CourseElementTemplate = {
     type: CourseElementType.Links,
@@ -131,6 +158,19 @@ export function DesignerComponent({
 
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.Links) return null;
+
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={'Element is invalid'}
+                description={validationError}
+            />
+        );
+    }
 
     return (
         <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">

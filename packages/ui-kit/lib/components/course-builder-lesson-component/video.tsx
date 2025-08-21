@@ -6,6 +6,46 @@ import DesignerLayout from "../designer-layout";
 import { fileMetadata } from "@maany_shr/e-class-models";
 import { Uploader } from "../drag-and-drop-uploader/uploader";
 import { VideoPlayer } from "../video-player";
+import { ElementValidator } from "../lesson/types";
+import DefaultError from "../default-error";
+
+// TODO: Translate validation errors
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.VideoFile)
+        return 'Wrong element type';
+
+    // Check if a video file is attached
+    if (!elementInstance.file) {
+        return 'There should be a file attached';
+    }
+
+    // Validate video file metadata
+    const file = elementInstance.file;
+    if (!file.id || !file.name || !file.url) {
+        return 'Invalid video metadata: missing required properties';
+    }
+
+
+    // Validate that it's a video file
+    if (file.category !== 'video') {
+        return 'File must be a video';
+    }
+
+    if (file.status !== 'available') {
+        return 'Video file must be available';
+    }
+
+    // Validate URL format
+    try {
+        new URL(file.url);
+    } catch {
+        return 'Invalid video URL format';
+    }
+
+    return undefined;
+};
 
 
 /**
@@ -75,7 +115,8 @@ export function DesignerComponent({
     onUploadComplete,
     onFileDelete,
     onFileDownload,
-    maxSize
+    maxSize,
+    validationError
 }: VideoFileEditProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
     const dictionary = getDictionary(locale);
@@ -101,6 +142,7 @@ export function DesignerComponent({
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             <Uploader
                 type="single"
@@ -128,6 +170,19 @@ export function DesignerComponent({
  */
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
+
+    const dictionary = getDictionary(locale);
+console.log(locale)
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={'Element is invalid'}
+                description={validationError}
+            />
+        );
+    }
 
     // Type guard to ensure we're working with a VideoFile
     const videoFile = elementInstance as VideoElement;

@@ -1,9 +1,39 @@
 import { useState } from "react";
-import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps } from "../pre-assessment/types";
+import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps, FormComponentProps } from "../pre-assessment/types";
 import DesignerLayout from "../designer-layout";
 import { IconMultiChoice } from "../icons/icon-multi-choice";
 import MultipleChoicePreview, { MultipleChoiceEdit, optionsType } from "../multiple-check";
 import { getDictionary } from "@maany_shr/e-class-translations";
+import { ElementValidator } from "../lesson/types";
+import DefaultError from "../default-error";
+
+// TODO: Translate validation errors
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== FormElementType.MultiCheck)
+        return 'Wrong element type';
+
+    // Check if title is empty
+    if (!elementInstance.title || elementInstance.title.trim() === '') {
+        return 'Title should not be empty';
+    }
+
+    // Check if there is at least one option
+    if (!elementInstance.options || elementInstance.options.length === 0) {
+        return 'There should be at least one option';
+    }
+
+    // Check if all option names are non-empty
+    const hasEmptyOptionName = elementInstance.options.some(option =>
+        !option.name || option.name.trim() === ''
+    );
+    if (hasEmptyOptionName) {
+        return 'All option names should be non-empty';
+    }
+
+    return undefined;
+};
 
 
 const multiCheckElement: FormElementTemplate = {
@@ -16,12 +46,6 @@ const multiCheckElement: FormElementTemplate = {
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: valueType) => {
-        if (elementInstance.required) {
-            return Array.isArray(value) ? (value as optionsType[]).some(opt => opt.isSelected) : false;
-        }
-        return true;
-    }
 };
 
 interface MultiCheckDesignerProps extends DesignerComponentProps {
@@ -29,7 +53,7 @@ interface MultiCheckDesignerProps extends DesignerComponentProps {
     onRequiredChange: (isRequired: boolean) => void;
 }
 
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange }: MultiCheckDesignerProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange, validationError }: MultiCheckDesignerProps) {
     if (elementInstance.type !== FormElementType.MultiCheck) return null;
     const dictionary = getDictionary(locale);
     const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
@@ -51,6 +75,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             courseBuilder={false}
             isChecked={isRequired}
             onChange={handleRequiredChange}
+            validationError={validationError}
         >
             <MultipleChoiceEdit
                 locale={locale}
@@ -71,12 +96,25 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
  * @param {SubmitFunction} [props.submitValue] - Function to handle submission of the form element value
  * @returns {JSX.Element|null} - Rendered component or null if element type doesn't match
  */
-export function FormComponent({ elementInstance, submitValue }: { elementInstance: FormElement; submitValue?: SubmitFunction }) {
+export function FormComponent({ elementInstance, submitValue, locale }: FormComponentProps) {
     const isMultiCheck = elementInstance.type === FormElementType.MultiCheck;
 
     const [options, setOptions] = useState<optionsType[]>(isMultiCheck ? elementInstance.options : []);
 
     if (!isMultiCheck) return null;
+
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={'Element is invalid'}
+                description={validationError}
+            />
+        );
+    }
 
     const handleOptionChange = (option: string) => {
         setOptions(prevOptions => {

@@ -65,11 +65,12 @@ function RichTextComponent({
     );
 }
 
-function HeadingComponent({ formElement, key }: ComponentRendererProps) {
+function HeadingComponent({ formElement, key,locale }: ComponentRendererProps) {
     return (
         <HeadingFormComponent
             key={key}
             elementInstance={formElement as FormElement}
+            locale={locale}
         />
     );
 }
@@ -96,6 +97,7 @@ function SingleChoiceComponent({
     formElement,
     elementProgress,
     key,
+    locale
 }: ComponentRendererProps) {
     return (
         <SingleChoiceFormComponent
@@ -104,6 +106,7 @@ function SingleChoiceComponent({
             submitValue={(id, element) => {
                 elementProgress.current.set(id, element);
             }}
+            locale={locale}
         />
     );
 }
@@ -112,6 +115,7 @@ function MultiCheckComponent({
     formElement,
     elementProgress,
     key,
+    locale
 }: ComponentRendererProps) {
     return (
         <MultiCheckFormComponent
@@ -120,6 +124,8 @@ function MultiCheckComponent({
             submitValue={(id, element) => {
                 elementProgress.current.set(id, element);
             }}
+            locale={locale}
+
         />
     );
 }
@@ -128,6 +134,7 @@ function OneOutOfThreeComponent({
     formElement,
     elementProgress,
     key,
+    locale
 }: ComponentRendererProps) {
     return (
         <OneOutOfThreeFormComponent
@@ -136,6 +143,7 @@ function OneOutOfThreeComponent({
             submitValue={(id, element) => {
                 elementProgress.current.set(id, element);
             }}
+            locale={locale}
         />
     );
 }

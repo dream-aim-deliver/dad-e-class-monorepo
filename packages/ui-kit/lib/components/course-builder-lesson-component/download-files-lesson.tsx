@@ -10,6 +10,41 @@ import DesignerLayout from '../designer-layout';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
+import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
+
+// TODO: Translate validation errors
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.DownloadFiles)
+        return 'Wrong element type';
+
+    // Check if at least one file is attached
+    if (!elementInstance.files || elementInstance.files.length === 0) {
+        return 'At least a single file should be attached';
+    }
+
+    // Validate each file has required metadata properties
+    for (const file of elementInstance.files) {
+        if (!file.id || !file.name || !file.url) {
+            return 'Invalid file metadata: missing required properties';
+        }
+
+        if (file.status !== 'available') {
+            return 'All files must be available for download';
+        }
+
+        // Validate URL format
+        try {
+            new URL(file.url);
+        } catch {
+            return 'Invalid file URL format';
+        }
+    }
+
+    return undefined;
+};
 
 /**
  * Template configuration for the Download Files course element
@@ -102,7 +137,7 @@ export function DesignerComponent({
     const handleFileDownload = (id: string) => {
         onFileDownload(id);
     };
-    
+
     return (
         <DesignerLayout
             type={elementInstance.type}
@@ -148,6 +183,20 @@ export function FormComponent({
     onDownload,
 }: DownloadFilesFormProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
+
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={'Element is invalid'}
+                description={validationError}
+            />
+        );
+    }
+
     const handleDownload = (id: string) => {
         onDownload(id);
     };

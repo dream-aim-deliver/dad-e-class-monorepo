@@ -82,6 +82,8 @@ export interface DesignerComponentProps extends isLocalAware {
     onDownClick?: (id: string) => void;
     /** Optional callback fired when the element should be deleted */
     onDeleteClick?: (id: string) => void;
+    /** Validation error message to display */
+    validationError?: string;
 }
 
 /**

@@ -217,7 +217,6 @@ export interface FormElementTemplate {
     designerComponent: React.FC<DesignerComponentProps>;
     formComponent: React.FC<FormComponentProps>;
     submissionComponent: React.FC<SubmissionComponentProps>;
-    validate: (element: FormElement, value: valueType) => boolean;
 }
 
 /**

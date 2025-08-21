@@ -9,6 +9,48 @@ import { IconButton } from "../icon-button";
 import { IconChevronLeft } from "../icons/icon-chevron-left";
 import { IconChevronRight } from "../icons/icon-chevron-right";
 import { cn } from "../../utils/style-utils";
+import { ElementValidator } from "../lesson/types";
+import DefaultError from "../default-error";
+
+// TODO: Translate validation errors
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.ImageGallery)
+        return 'Wrong element type';
+
+    // Check if at least two image files are attached
+    if (!elementInstance.images || elementInstance.images.length < 2) {
+        return 'There should be at least two files attached';
+    }
+
+    // Validate each image file metadata
+    for (let i = 0; i < elementInstance.images.length; i++) {
+        const image = elementInstance.images[i];
+
+        if (!image.id || !image.name || !image.url) {
+            return `Invalid image metadata for image ${i + 1}: missing required properties`;
+        }
+
+        // Validate that it's an image file
+        if (image.category !== 'image') {
+            return `File ${i + 1} must be an image`;
+        }
+
+        if (image.status !== 'available') {
+            return `Image ${i + 1} must be available`;
+        }
+
+        // Validate URL format
+        try {
+            new URL(image.url);
+        } catch {
+            return `Invalid URL format for image ${i + 1}`;
+        }
+    }
+
+    return undefined;
+};
 
 
 /**
@@ -119,8 +161,21 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
  * @param elementInstance - The gallery element instance containing image URLs
  * @returns A responsive image gallery with navigation controls
  */
-export function FormComponent({ elementInstance }: FormComponentProps) {
+export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
+
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={'Element is invalid'}
+                description={validationError}
+            />
+        );
+    }
 
     const [currentIndex, setCurrentIndex] = useState(0);
 

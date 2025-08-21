@@ -202,6 +202,7 @@ function HeadingComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     const updateComponent = (
         comp: LessonElement,
@@ -235,6 +236,7 @@ function HeadingComponent({
             onDownClick={onDownClick}
             onDeleteClick={onDeleteClick}
             onChange={handleChange}
+            validationError={validationError}
         />
     );
 }
@@ -247,6 +249,7 @@ function VideoComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     const updateComponent = (
         comp: LessonElement,
@@ -313,6 +316,7 @@ function VideoComponent({
                 onUploadComplete={handleUploadComplete}
                 onFileDelete={handleDelete}
                 onFileDownload={handleDownload}
+                validationError={validationError}
             />
             {uploadError && (
                 <DefaultError locale={locale} description={uploadError} />
@@ -329,6 +333,7 @@ function ImageComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     const updateComponent = (
         comp: LessonElement,
@@ -395,6 +400,7 @@ function ImageComponent({
                 onUploadComplete={handleUploadComplete}
                 onFileDelete={handleDelete}
                 onFileDownload={handleDownload}
+                validationError={validationError}
             />
             {uploadError && (
                 <DefaultError locale={locale} description={uploadError} />
@@ -411,6 +417,7 @@ function ImageGalleryComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     const updateComponent = (
         comp: LessonElement,
@@ -500,6 +507,7 @@ function ImageGalleryComponent({
                 onFileDelete={handleDelete}
                 onFileDownload={handleDownload}
                 maxSize={15} // TODO: tweak file size
+                validationError={validationError}
             />
             {uploadError && (
                 <DefaultError locale={locale} description={uploadError} />
@@ -516,6 +524,7 @@ function DownloadFilesComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     const updateComponent = (
         comp: LessonElement,
@@ -594,6 +603,7 @@ function DownloadFilesComponent({
                 onFileDelete={handleDelete}
                 onFileDownload={handleDownload}
                 maxSize={15} // TODO: tweak file size
+                validationError={validationError}
             />
             {uploadError && (
                 <DefaultError locale={locale} description={uploadError} />
@@ -610,6 +620,7 @@ function TextInputComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     if (elementInstance.type !== FormElementType.TextInput) return null;
 
@@ -640,6 +651,7 @@ function TextInputComponent({
             onDeleteClick={onDeleteClick}
             onHelperTextChange={onHelperTextChange}
             onRequiredChange={onRequiredChange}
+            validationError={validationError}
         />
     );
 }
@@ -652,6 +664,7 @@ function UploadFilesComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     if (elementInstance.type !== CourseElementType.UploadFiles) return null;
 
@@ -677,6 +690,7 @@ function UploadFilesComponent({
             onDownClick={onDownClick}
             onDeleteClick={onDeleteClick}
             onChange={onDescriptionChange}
+            validationError={validationError}
         />
     );
 }
@@ -689,6 +703,7 @@ function SingleChoiceComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     if (elementInstance.type !== FormElementType.SingleChoice) return null;
 
@@ -732,6 +747,7 @@ function SingleChoiceComponent({
             onDownClick={onDownClick}
             onDeleteClick={onDeleteClick}
             onChange={onChange}
+            validationError={validationError}
         />
     );
 }
@@ -744,6 +760,7 @@ function MultiCheckComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     if (elementInstance.type !== FormElementType.MultiCheck) return null;
 
@@ -787,6 +804,7 @@ function MultiCheckComponent({
             onDownClick={onDownClick}
             onDeleteClick={onDeleteClick}
             onChange={onChange}
+            validationError={validationError}
         />
     );
 }
@@ -799,6 +817,7 @@ function OneOutOfThreeComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     if (elementInstance.type !== FormElementType.OneOutOfThree) return null;
 
@@ -839,6 +858,7 @@ function OneOutOfThreeComponent({
             onDownClick={onDownClick}
             onDeleteClick={onDeleteClick}
             onChange={onChange}
+            validationError={validationError}
         />
     );
 }
@@ -922,6 +942,7 @@ function QuizTypeOneComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeOne) return;
@@ -1002,6 +1023,7 @@ function QuizTypeOneComponent({
             onFileDownload={handleDownload}
             onUploadComplete={handleUploadComplete}
             uploadError={uploadError ?? null}
+            validationError={validationError}
         />
     );
 }
@@ -1014,6 +1036,7 @@ function QuizTypeTwoComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeTwo) return;
@@ -1094,6 +1117,7 @@ function QuizTypeTwoComponent({
             onFileDownload={handleDownload}
             onUploadComplete={handleUploadComplete}
             uploadError={uploadError ?? null}
+            validationError={validationError}
         />
     );
 }
@@ -1106,6 +1130,7 @@ function QuizTypeThreeComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeThree) return;
@@ -1216,6 +1241,7 @@ function QuizTypeThreeComponent({
             onFileDownload={handleDownload}
             onUploadComplete={handleUploadComplete}
             uploadError={uploadError ?? null}
+            validationError={validationError}
         />
     );
 }
@@ -1228,6 +1254,7 @@ function QuizTypeFourComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     const onChange = (updated: Partial<CourseElement>) => {
         if (updated.type !== CourseElementType.QuizTypeFour) return;
@@ -1338,6 +1365,7 @@ function QuizTypeFourComponent({
             onFileDownload={handleDownload}
             onUploadComplete={handleUploadComplete}
             uploadError={uploadError ?? null}
+            validationError={validationError}
         />
     );
 }
@@ -1350,6 +1378,7 @@ function LinksComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
+    validationError,
 }: LessonComponentProps) {
     const onLinkEdit = (data: shared.TLink, index: number) => {
         setComponents((prevComponents) =>
@@ -1453,6 +1482,7 @@ function LinksComponent({
             onLinkEdit={onLinkEdit}
             onDeleteIcon={onDeleteIcon}
             onClickAddLink={onAddLink}
+            validationError={validationError}
         />
     );
 }

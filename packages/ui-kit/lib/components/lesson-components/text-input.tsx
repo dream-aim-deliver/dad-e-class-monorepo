@@ -15,6 +15,31 @@ import { serialize, deserialize } from '../rich-text-element/serializer';
 import { getDictionary } from '@maany_shr/e-class-translations';
 import DesignerLayout from '../designer-layout';
 import { IconTextInput } from '../icons/icon-text-input';
+import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
+
+// TODO: Translate validation errors
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== FormElementType.TextInput)
+        return 'Wrong element type';
+
+    if (elementInstance.required) {
+        // Check if content exists
+        if (!elementInstance.content) {
+            return 'Text input content is required';
+        }
+
+        // Check if content has meaningful text (not just whitespace)
+        const trimmedContent = elementInstance.content.trim();
+        if (trimmedContent.length === 0) {
+            return 'Please enter some text';
+        }
+    }
+
+    return undefined;
+};
 
 /**
  * Template for the text input form element
@@ -30,19 +55,6 @@ const textInputElement: FormElementTemplate = {
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: valueType) => {
-        if (elementInstance.required) {
-            if (Array.isArray(value)) {
-                const content = (value as Descendant[])
-                    .map((n) => Node.string(n))
-                    .join('\n')
-                    .trim();
-                return content.length > 0;
-            }
-            return false;
-        }
-        return true;
-    },
 };
 
 /**
@@ -85,6 +97,7 @@ export function DesignerComponent({
     onDeleteClick,
     onHelperTextChange,
     onRequiredChange,
+    validationError
 }: TextInputDesignerComponentProps) {
     if (elementInstance.type !== FormElementType.TextInput) return null;
     const dictionary = getDictionary(locale);
@@ -130,6 +143,7 @@ export function DesignerComponent({
             courseBuilder={false}
             isChecked={isRequired}
             onChange={handleRequiredChange}
+            validationError={validationError}
         >
             <section className="w-full flex items-center">
                 <TextInputEditor
@@ -163,6 +177,19 @@ export function FormComponent({
 }: FormComponentProps) {
     if (elementInstance.type !== FormElementType.TextInput) return null;
 
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={'Element is invalid'}
+                description={validationError}
+            />
+        );
+    }
+
     const onDeserializationError = (message: string, error: Error) => {
         // TODO: see how to pass a callback from the parent component to here
     };
@@ -170,8 +197,6 @@ export function FormComponent({
     const [value, setValue] = useState<Descendant[]>(
         deserialize({ serializedData: '', onError: onDeserializationError }),
     );
-
-    const dictionary = getDictionary(locale);
 
     const onLoseFocus = () => {
         if (!submitValue || !value) return;
