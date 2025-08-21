@@ -140,8 +140,7 @@ export function DesignerComponent({
             onDownClick={() => onDownClick?.(elementInstance.id)}
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
-            courseBuilder={false}
-            isChecked={isRequired}
+            courseBuilder={true}
             onChange={handleRequiredChange}
             validationError={validationError}
         >
