@@ -136,6 +136,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
 
     return (
         <div className="flex flex-col w-full gap-6 md:flex-row">
+
             <CourseOutlineAccordion
                 locale={locale}
                 modules={transformedModules}

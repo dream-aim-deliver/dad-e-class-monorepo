@@ -104,7 +104,6 @@ export * from './utils/file-utils';
 
 export { LessonHeader } from './components/lesson-header';
 
-
 export { PreAssessmentForm } from './components/pre-assessment/pre-assessment-form';
 
 export { FormComponent as RichTextFormComponent } from './components/lesson-components/rich-text';
@@ -133,6 +132,7 @@ export { CoachingSessionStudentView } from './components/coaching-session-course
 export { LessonCoachComponent } from './components/coaching-session-course-builder/lesson-coach-component';
 
 export { SideMenu } from './components/sidemenu/sidemenu';
+
 export { CourseOutlineAccordion } from './components/course-outline-accordion';
 
 export { ComponentCard } from './components/course-builder/component-card';
