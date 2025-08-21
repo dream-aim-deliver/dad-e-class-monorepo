@@ -42,7 +42,7 @@ function EnrolledCourseIntroductionContent(
                 // These fields aren't utilized and are coming from a common model
                 title={''}
                 description={''}
-                showProgress={true}
+                showProgress={progressViewModel !== undefined}
                 language={{
                     name: '',
                     code: '',
@@ -55,9 +55,9 @@ function EnrolledCourseIntroductionContent(
                 locale={locale}
                 longDescription={courseViewModel.data.description}
                 duration={{
-                    video: courseViewModel.data.duration.video,
-                    coaching: courseViewModel.data.duration.coaching,
-                    selfStudy: courseViewModel.data.duration.selfStudy,
+                    video: courseViewModel.data.duration.video ?? 0,
+                    coaching: courseViewModel.data.duration.coaching ?? 0,
+                    selfStudy: courseViewModel.data.duration.selfStudy ?? 0,
                 }}
                 rating={courseViewModel.data.author.averageRating}
                 author={{
@@ -68,7 +68,7 @@ function EnrolledCourseIntroductionContent(
                     image: courseViewModel.data.author.avatarUrl ?? '',
                 }}
                 progress={progressViewModel?.data.progressPercent}
-                imageUrl={courseViewModel.data.imageUrl ?? ''}
+                imageUrl={courseViewModel.data.imageFile?.downloadUrl ?? ''}
                 students={courseViewModel.data.students.map((student) => ({
                     name: student.name,
                     avatarUrl: student.avatarUrl ?? '',

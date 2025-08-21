@@ -10,11 +10,13 @@ import { Descendant, Node } from 'slate';
 import Banner from './banner';
 import { IconCourse } from './icons/icon-course';
 import { Divider } from './divider';
+import { IconSearch } from './icons';
 
 interface CourseRequirement {
-    id: string;
+    id: number;
     title: string;
     slug: string;
+    imageUrl: string;
 }
 
 interface CourseFormProps extends isLocalAware {
@@ -33,7 +35,7 @@ interface CourseFormProps extends isLocalAware {
     setDuration?: (duration: number) => void;
     requirements?: CourseRequirement[];
     onAddRequirement?: (requirement: CourseRequirement) => void;
-    onRemoveRequirement?: (requirementId: string) => void;
+    onRemoveRequirement?: (requirementId: number) => void;
     availableCourses?: CourseRequirement[];
 
     // File handling
@@ -66,7 +68,7 @@ export interface CourseFormState {
     setCourseDescription: (description: Descendant[]) => void;
     setDuration: (duration: number) => void;
     onAddRequirement: (requirement: CourseRequirement) => void;
-    onRemoveRequirement: (requirementId: string) => void;
+    onRemoveRequirement: (requirementId: number) => void;
 
     isDescriptionValid: () => boolean;
     serializeDescription: () => string;
@@ -107,7 +109,7 @@ export function useCourseForm(): CourseFormState {
         }
     };
 
-    const handleRemoveRequirement = (courseId: string) => {
+    const handleRemoveRequirement = (courseId: number) => {
         setRequirements((prev) => prev.filter((req) => req.id !== courseId));
     };
 
@@ -140,106 +142,6 @@ export function useCourseForm(): CourseFormState {
         isDescriptionValid,
         serializeDescription,
     };
-}
-
-// Course Requirements Component
-interface CourseRequirementsProps extends isLocalAware {
-    requirements: CourseRequirement[];
-    availableCourses: CourseRequirement[];
-    onAdd: (course: CourseRequirement) => void;
-    onRemove: (courseId: string) => void;
-}
-
-function CourseRequirements({
-    requirements,
-    availableCourses,
-    onAdd,
-    onRemove,
-    locale,
-}: CourseRequirementsProps) {
-    const [searchTerm, setSearchTerm] = useState('');
-    const dictionary = getDictionary(locale);
-
-    const filteredCourses = availableCourses.filter(
-        (course) =>
-            course.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            !requirements.find((req) => req.id === course.id),
-    );
-
-    return (
-        <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2">
-                <label className="text-sm md:text-md text-text-secondary">
-                    Add Course Requirement
-                </label>
-                <div className="relative">
-                    <InputField
-                        inputText="Search courses..."
-                        type="text"
-                        value={searchTerm}
-                        setValue={setSearchTerm}
-                    />
-                    {searchTerm && filteredCourses.length > 0 && (
-                        <div className="absolute z-10 w-full mt-1 bg-white border border-card-stroke rounded-md shadow-lg max-h-40 overflow-y-auto">
-                            {filteredCourses.slice(0, 5).map((course) => (
-                                <button
-                                    key={course.id}
-                                    className="w-full px-3 py-2 text-left hover:bg-gray-50 border-b last:border-b-0"
-                                    onClick={() => {
-                                        onAdd(course);
-                                        setSearchTerm('');
-                                    }}
-                                >
-                                    <div className="font-medium">
-                                        {course.title}
-                                    </div>
-                                    <div className="text-sm text-text-secondary">
-                                        {course.slug}
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {requirements.length > 0 && (
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm md:text-md text-text-secondary">
-                        Current Requirements ({requirements.length})
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                        {requirements.map((req) => (
-                            <div
-                                key={req.id}
-                                className="flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-full"
-                            >
-                                <span className="text-sm font-medium">
-                                    {req.title}
-                                </span>
-                                <button
-                                    onClick={() => onRemove(req.id)}
-                                    className="text-blue-600 hover:text-red-600"
-                                >
-                                    <svg
-                                        className="w-4 h-4"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-        </div>
-    );
 }
 
 // Main unified form component
@@ -398,22 +300,6 @@ export function CourseForm(props: CourseFormProps) {
                                 setValue={(value) =>
                                     setDuration(parseInt(value))
                                 }
-                            />
-                        </div>
-                    )}
-
-                    {/* Requirements - only in edit mode */}
-                    {isEditMode && onAddRequirement && onRemoveRequirement && (
-                        <div className="flex flex-col gap-1">
-                            <label className="text-sm md:text-md text-text-secondary">
-                                Course Requirements
-                            </label>
-                            <CourseRequirements
-                                requirements={requirements}
-                                availableCourses={availableCourses}
-                                onAdd={onAddRequirement}
-                                onRemove={onRemoveRequirement}
-                                locale={locale}
                             />
                         </div>
                     )}

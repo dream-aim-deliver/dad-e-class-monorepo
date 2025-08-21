@@ -53,7 +53,7 @@ const FileCategoryEnumSchema = z.enum([
     'document',
 ]);
 
-const FileSchema = z.object({
+export const FileSchema = z.object({
     id: z.string(),
     name: z.string(),
     size: z.number(),
@@ -61,13 +61,13 @@ const FileSchema = z.object({
     downloadUrl: z.string(),
 });
 
-const VideoFileSchema = FileSchema.extend({
+export const VideoFileSchema = FileSchema.extend({
     category: z.literal('video'),
     thumbnailUrl: z.string().nullable(),
     playbackId: z.string().nullable(),
 });
 
-const ImageFileSchema = FileSchema.extend({
+export const ImageFileSchema = FileSchema.extend({
     category: z.literal('image'),
 });
 

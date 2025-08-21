@@ -5,6 +5,7 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
+import { ImageFileSchema } from './common';
 
 export const GetEnrolledCourseDetailsRequestSchema = z.object({
   courseSlug: z.string(),
@@ -14,15 +15,15 @@ export type TGetEnrolledCourseDetailsRequest = z.infer<typeof GetEnrolledCourseD
 
 export const GetEnrolledCourseDetailsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
   title: z.string(),
-  imageUrl: z.string().nullable(),
+  imageFile: ImageFileSchema.nullable(),
   averageRating: z.number(),
   reviewCount: z.number().int(),
   description: z.string(),
   duration: z.object({
     // Minutes
-    video: z.number().int().min(0),
-    coaching: z.number().int().min(0),
-    selfStudy: z.number().int().min(0),
+    video: z.number().int().min(0).nullable(),
+    coaching: z.number().int().min(0).nullable(),
+    selfStudy: z.number().int().min(0).nullable(),
   }),
   author: z.object({
     username: z.string(),
