@@ -9,6 +9,7 @@ import {
     DefaultError,
     DefaultLoading,
     Tabs,
+    useCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { Suspense, useState } from 'react';
@@ -16,6 +17,7 @@ import EditCourseStructure from './edit-course-structure';
 import { useSaveStructure } from './hooks/save-hooks';
 import EditHeader from './components/edit-header';
 import EnrolledCoursePreview from '../../course/enrolled-course/enrolled-course-preview';
+import EditCourseGeneral from './edit-course-general';
 
 interface EditCourseProps {
     slug: string;
@@ -82,6 +84,8 @@ export default function EditCourse({ slug }: EditCourseProps) {
         }
     };
 
+    const generalState = useCourseForm();
+
     const isSaving = isSavingCourseStructure;
 
     return (
@@ -131,10 +135,10 @@ export default function EditCourse({ slug }: EditCourseProps) {
                     className={tabContentClass}
                 >
                     <Suspense fallback={<DefaultLoading locale={locale} />}>
-                        <DefaultError
-                            locale={locale}
-                            title="Not implemented yet"
-                            description="This feature is not implemented yet."
+                        <EditCourseGeneral
+                            courseForm={generalState}
+                            image={null}
+                            setImage={() => {}}
                         />
                     </Suspense>
                 </Tabs.Content>

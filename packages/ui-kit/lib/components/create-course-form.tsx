@@ -11,7 +11,15 @@ import Banner from './banner';
 import { IconCourse } from './icons/icon-course';
 import { Divider } from './divider';
 
-interface CreateCourseFormProps extends isLocalAware {
+interface CourseRequirement {
+    id: string;
+    title: string;
+    slug: string;
+}
+
+interface CourseFormProps extends isLocalAware {
+    mode: 'create' | 'edit';
+    // Controlled form values
     image: fileMetadata.TFileMetadataImage | null;
     courseTitle: string;
     setCourseTitle: (title: string) => void;
@@ -19,6 +27,16 @@ interface CreateCourseFormProps extends isLocalAware {
     setCourseSlug: (slug: string) => void;
     courseDescription: Descendant[];
     setCourseDescription: (description: Descendant[]) => void;
+
+    // Edit mode specific fields
+    duration?: number;
+    setDuration?: (duration: number) => void;
+    requirements?: CourseRequirement[];
+    onAddRequirement?: (requirement: CourseRequirement) => void;
+    onRemoveRequirement?: (requirementId: string) => void;
+    availableCourses?: CourseRequirement[];
+
+    // File handling
     onFileChange: (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
@@ -26,6 +44,8 @@ interface CreateCourseFormProps extends isLocalAware {
     onUploadComplete: (file: fileMetadata.TFileMetadataImage) => void;
     onDelete: (id: string) => void;
     onDownload: (id: string) => void;
+
+    // UI state
     errorMessage?: string;
     hasSuccess?: boolean;
     duplicationCourse?: {
@@ -34,12 +54,33 @@ interface CreateCourseFormProps extends isLocalAware {
     };
 }
 
-export function useCreateCourseForm() {
+export interface CourseFormState {
+    courseTitle: string;
+    courseSlug: string;
+    courseDescription: Descendant[];
+    duration?: number;
+    requirements?: CourseRequirement[];
+    hasUserEditedSlug: boolean;
+    setCourseTitle: (title: string) => void;
+    setCourseSlug: (slug: string) => void;
+    setCourseDescription: (description: Descendant[]) => void;
+    setDuration: (duration: number) => void;
+    onAddRequirement: (requirement: CourseRequirement) => void;
+    onRemoveRequirement: (requirementId: string) => void;
+
+    isDescriptionValid: () => boolean;
+    serializeDescription: () => string;
+}
+
+// Hook for parent components to manage form state
+export function useCourseForm(): CourseFormState {
     const [courseTitle, setCourseTitle] = useState('');
     const [courseSlug, setCourseSlug] = useState('');
     const [courseDescription, setCourseDescription] = useState<Descendant[]>(
         [],
     );
+    const [duration, setDuration] = useState<number | undefined>(undefined);
+    const [requirements, setRequirements] = useState<CourseRequirement[]>([]);
     const [hasUserEditedSlug, setHasEditedCourseSlug] = useState(false);
 
     const serializeDescription = () => serialize(courseDescription);
@@ -60,6 +101,16 @@ export function useCreateCourseForm() {
         }
     };
 
+    const handleAddRequirement = (course: CourseRequirement) => {
+        if (!requirements.find((req) => req.id === course.id)) {
+            setRequirements((prev) => [...prev, course]);
+        }
+    };
+
+    const handleRemoveRequirement = (courseId: string) => {
+        setRequirements((prev) => prev.filter((req) => req.id !== courseId));
+    };
+
     const isDescriptionValid = () => {
         const content = courseDescription
             .map((n) => Node.string(n))
@@ -69,30 +120,154 @@ export function useCreateCourseForm() {
     };
 
     return {
+        // Form values
         courseTitle,
-        setCourseTitle: handleCourseTitleChange,
         courseSlug,
-        setCourseSlug: handleCourseSlugChange,
         courseDescription,
+        duration,
+        requirements,
+
+        // Form handlers
+        setCourseTitle: handleCourseTitleChange,
+        setCourseSlug: handleCourseSlugChange,
         setCourseDescription,
-        serializeDescription,
+        setDuration,
+        onAddRequirement: handleAddRequirement,
+        onRemoveRequirement: handleRemoveRequirement,
+
+        // Utilities
         hasUserEditedSlug,
         isDescriptionValid,
+        serializeDescription,
     };
 }
 
-export function CreateCourseForm(props: CreateCourseFormProps) {
+// Course Requirements Component
+interface CourseRequirementsProps extends isLocalAware {
+    requirements: CourseRequirement[];
+    availableCourses: CourseRequirement[];
+    onAdd: (course: CourseRequirement) => void;
+    onRemove: (courseId: string) => void;
+}
+
+function CourseRequirements({
+    requirements,
+    availableCourses,
+    onAdd,
+    onRemove,
+    locale,
+}: CourseRequirementsProps) {
+    const [searchTerm, setSearchTerm] = useState('');
+    const dictionary = getDictionary(locale);
+
+    const filteredCourses = availableCourses.filter(
+        (course) =>
+            course.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+            !requirements.find((req) => req.id === course.id),
+    );
+
+    return (
+        <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+                <label className="text-sm md:text-md text-text-secondary">
+                    Add Course Requirement
+                </label>
+                <div className="relative">
+                    <InputField
+                        inputText="Search courses..."
+                        type="text"
+                        value={searchTerm}
+                        setValue={setSearchTerm}
+                    />
+                    {searchTerm && filteredCourses.length > 0 && (
+                        <div className="absolute z-10 w-full mt-1 bg-white border border-card-stroke rounded-md shadow-lg max-h-40 overflow-y-auto">
+                            {filteredCourses.slice(0, 5).map((course) => (
+                                <button
+                                    key={course.id}
+                                    className="w-full px-3 py-2 text-left hover:bg-gray-50 border-b last:border-b-0"
+                                    onClick={() => {
+                                        onAdd(course);
+                                        setSearchTerm('');
+                                    }}
+                                >
+                                    <div className="font-medium">
+                                        {course.title}
+                                    </div>
+                                    <div className="text-sm text-text-secondary">
+                                        {course.slug}
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {requirements.length > 0 && (
+                <div className="flex flex-col gap-2">
+                    <label className="text-sm md:text-md text-text-secondary">
+                        Current Requirements ({requirements.length})
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                        {requirements.map((req) => (
+                            <div
+                                key={req.id}
+                                className="flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-full"
+                            >
+                                <span className="text-sm font-medium">
+                                    {req.title}
+                                </span>
+                                <button
+                                    onClick={() => onRemove(req.id)}
+                                    className="text-blue-600 hover:text-red-600"
+                                >
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// Main unified form component
+export function CourseForm(props: CourseFormProps) {
     const dictionary = getDictionary(props.locale);
     const {
+        mode,
         locale,
-        onDelete,
-        onDownload,
+        // Controlled form values
+        image,
         courseTitle,
         setCourseTitle,
         courseSlug,
         setCourseSlug,
         courseDescription,
         setCourseDescription,
+        duration = 0,
+        setDuration,
+        requirements = [],
+        onAddRequirement,
+        onRemoveRequirement,
+        availableCourses = [],
+        // File handling
+        onFileChange,
+        onUploadComplete,
+        onDelete,
+        onDownload,
+        // UI state
         errorMessage,
         hasSuccess,
         duplicationCourse,
@@ -102,7 +277,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
-        return props.onFileChange(file, abortSignal);
+        return onFileChange(file, abortSignal);
     };
 
     const handleOnUploadComplete = (file: fileMetadata.TFileMetadata) => {
@@ -110,7 +285,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
             console.error('Uploaded file is not an image');
             return;
         }
-        props.onUploadComplete(file);
+        onUploadComplete(file);
     };
 
     const [hasDuplicationThumbnailError, setHasDuplicationThumbnailError] =
@@ -133,20 +308,23 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
         );
     };
 
+    const isEditMode = mode === 'edit';
+
     return (
         <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke">
             {duplicationCourse && (
                 <>
                     <div className="flex items-center gap-3 text-text-primary">
                         {renderCourseIcon()}
-                        {/* TODO: add translation */}
                         <span>Duplicating {duplicationCourse.title}</span>
                     </div>
                     <Divider className="my-1" />
                 </>
             )}
+
             <div className="w-full flex flex-col md:flex-row gap-8 min-w-0">
                 <div className="flex-1 w-full flex flex-col gap-4 min-w-0">
+                    {/* Title */}
                     <div className="flex flex-col gap-1">
                         <label className="text-sm md:text-md text-text-secondary">
                             {
@@ -164,18 +342,23 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                             setValue={(value) => setCourseTitle(value)}
                         />
                     </div>
+
+                    {/* Slug */}
                     <div className="flex flex-col gap-1">
                         <label className="text-sm md:text-md text-text-secondary">
                             Slug
                         </label>
                         <InputField
-                            // TODO: Add translations
                             inputText="Slug"
                             type="text"
                             value={courseSlug}
                             setValue={(value) => setCourseSlug(value)}
                         />
                     </div>
+
+                    {/* Duration - only in edit mode */}
+
+                    {/* Description */}
                     <div className="flex flex-col gap-1">
                         <label className="text-sm md:text-md text-text-secondary">
                             {
@@ -200,7 +383,43 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                             }
                         />
                     </div>
+
+                    {isEditMode && setDuration && (
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm md:text-md text-text-secondary">
+                                Estimated duration of self-study material
+                                (minutes)
+                            </label>
+                            <InputField
+                                inputText="Duration in minutes"
+                                type="number"
+                                min={0}
+                                value={duration.toString()}
+                                setValue={(value) =>
+                                    setDuration(parseInt(value))
+                                }
+                            />
+                        </div>
+                    )}
+
+                    {/* Requirements - only in edit mode */}
+                    {isEditMode && onAddRequirement && onRemoveRequirement && (
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm md:text-md text-text-secondary">
+                                Course Requirements
+                            </label>
+                            <CourseRequirements
+                                requirements={requirements}
+                                availableCourses={availableCourses}
+                                onAdd={onAddRequirement}
+                                onRemove={onRemoveRequirement}
+                                locale={locale}
+                            />
+                        </div>
+                    )}
                 </div>
+
+                {/* Image Upload */}
                 <div className="flex flex-col gap-1 min-w-0 md:w-80 w-full">
                     <label className="text-sm md:text-md text-text-secondary leading-[150%] capitalize">
                         {
@@ -213,7 +432,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                             locale={locale}
                             variant="image"
                             type="single"
-                            file={props.image}
+                            file={image}
                             onFilesChange={handleOnFilesChange}
                             onUploadComplete={handleOnUploadComplete}
                             onDelete={onDelete}
@@ -223,14 +442,19 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                     </div>
                 </div>
             </div>
+
+            {/* Error/Success Messages */}
             {errorMessage && (
                 <Banner style="error" description={errorMessage} />
             )}
-            {/* TODO: add translations */}
             {hasSuccess && (
                 <Banner
                     style="success"
-                    description="Course created successfully! Redirecting..."
+                    description={
+                        isEditMode
+                            ? 'Course updated successfully!'
+                            : 'Course created successfully! Redirecting...'
+                    }
                 />
             )}
         </div>
