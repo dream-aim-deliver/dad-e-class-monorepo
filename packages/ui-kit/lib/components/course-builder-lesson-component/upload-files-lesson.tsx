@@ -53,9 +53,8 @@ const uploadFilesElement: CourseElementTemplate = {
         icon: IconCloudUpload,
         label: "Upload Files"
     },
-    // @ts-ignore
-    designerComponent: DesignerComponent,
-    // @ts-ignore
+    designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
+    // @ts-expect-error - Type mismatch between FormComponent props and expected interface
     formComponent: FormComponent
 };
 
@@ -232,9 +231,9 @@ export function FormComponent({
             <Uploader
                 type="multiple"
                 variant="generic"
-                files={files}
+                files={files as any}
                 maxFile={5}
-                onFilesChange={handleFilesUpload}
+                onFilesChange={handleFilesUpload as any}
                 onUploadComplete={handleUploadComplete}
                 onDelete={handleFileDelete}
                 onDownload={handleFileDownload}

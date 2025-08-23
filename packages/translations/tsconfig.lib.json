@@ -6,6 +6,7 @@
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": true,
     "declaration": true,
+    "strictNullChecks": true,
     "types": ["node", "vite/client"]
   },
   "include": ["src/**/*.ts"],

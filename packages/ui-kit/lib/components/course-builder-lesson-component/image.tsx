@@ -62,8 +62,7 @@ const imageFilesElement: CourseElementTemplate = {
         icon: IconImage,
         label: "Image"
     },
-    // @ts-ignore
-    designerComponent: DesignerComponent,
+    designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
     formComponent: FormComponent
 };
 
@@ -132,7 +131,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 type="single"
                 variant="image"
                 file={elementInstance.file}
-                onFilesChange={handleImageFile}
+                onFilesChange={handleImageFile as any}
                 onUploadComplete={handleUploadComplete}
                 onDelete={onFileDelete}
                 onDownload={onFileDownload}

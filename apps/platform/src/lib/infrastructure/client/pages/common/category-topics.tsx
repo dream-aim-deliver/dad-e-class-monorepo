@@ -88,8 +88,12 @@ export default function CategoryTopics({
     };
 
     // Render helpers
-    const renderCategoryTab = (category: string) => (
-        <Tabs.Trigger value={category} key={category}>
+    const renderCategoryTab = (category: string, index: number, totalLength: number) => (
+        <Tabs.Trigger 
+            value={category} 
+            key={category}
+            isLast={index === totalLength - 1} // Last tab without divider
+        >
             {category}
         </Tabs.Trigger>
     );
@@ -117,8 +121,15 @@ export default function CategoryTopics({
     return (
         <Tabs.Root defaultTab="all" onValueChange={handleTabChange}>
             <Tabs.List>
-                <Tabs.Trigger value="all">All</Tabs.Trigger>
-                {categories.map(renderCategoryTab)}
+                <Tabs.Trigger 
+                    value="all" 
+                    isLast={categories.length === 0}
+                >
+                    All
+                </Tabs.Trigger>
+                {categories.map((category, index) => 
+                    renderCategoryTab(category, index, categories.length)
+                )}
             </Tabs.List>
 
             <Tabs.Content value="all" className={CONTENT_CLASS_NAME}>

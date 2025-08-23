@@ -175,11 +175,11 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                                 <div className="flex flex-col w-full" key={index}>
                                     <LinkEdit
                                         locale={locale}
-                                        initialTitle={link.title}
-                                        initialUrl={link.url}
+                                        initialTitle={link.title as string}
+                                        initialUrl={link.url as string}
                                         initialCustomIcon={link.customIcon}
-                                        onSave={(title, url, customIcon) => onCreateLink({ title, url, customIcon }, index)}
-                                        onDiscard={() => onLinkDelete(link.linkId, index)}
+                                        onSave={(title, url, customIcon) => onCreateLink({ title, url, customIcon, linkId: link.linkId as number }, index)}
+                                        onDiscard={() => onLinkDelete(link.linkId as number, index)}
                                         onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
                                         onDeleteIcon={onDeleteIcon}
                                     />
@@ -188,11 +188,11 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                                 <div className="flex flex-col w-full" key={index}>
                                     <LinkPreview
                                         preview
-                                        title={link.title}
-                                        url={link.url}
+                                        title={link.title as string}
+                                        url={link.url as string}
                                         customIcon={link.customIcon}
                                         onEdit={() => onClickEditLink(index)}
-                                        onDelete={() => onLinkDelete(link.linkId, index)}
+                                        onDelete={() => onLinkDelete(link.linkId as number, index)}
                                     />
                                 </div>
                             )

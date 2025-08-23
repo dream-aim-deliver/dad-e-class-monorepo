@@ -1,6 +1,7 @@
 import { isLocalAware } from "@maany_shr/e-class-translations";
 import React from "react";
 import { AssignmentElement, CoachingElement, ImageElement, ImageGallery, VideoElement, DownloadFilesElement, UploadFilesElement, QuizTypeOneElement, QuizTypeTwoElement, QuizTypeThreeElement, QuizTypeFourElement, LinksElement, CoachingSessionElement } from "../course-builder-lesson-component/types";
+import { DownloadFilesFormProps } from "../course-builder-lesson-component/download-files-lesson";
 /**
  * Enum defining the types of course elements available in the course builder.
  * Each type represents a different kind of interactive element that can be added to a course.
@@ -119,7 +120,7 @@ export interface CourseElementTemplate {
     /** React component for rendering this element in the designer view */
     designerComponent: React.FC<DesignerComponentProps>;
     /** React component for rendering the form to configure this element */
-    formComponent: React.FC<FormComponentProps>;
+    formComponent: React.FC<DownloadFilesFormProps>;
 }
 
 /**

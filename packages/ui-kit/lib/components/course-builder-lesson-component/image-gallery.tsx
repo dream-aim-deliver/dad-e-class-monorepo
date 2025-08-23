@@ -66,8 +66,7 @@ const imageGalleryElement: CourseElementTemplate = {
         icon: IconImageGallery,
         label: "Image Gallery"
     },
-    // @ts-ignore
-    designerComponent: DesignerComponent,
+    designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
     formComponent: FormComponent
 };
 
@@ -84,7 +83,7 @@ interface ImageGalleryEditProps extends DesignerComponentProps {
     onImageUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
-    ) => Promise<TImageFile | null>;
+    ) => Promise<TImageFile>;
 
     onUploadComplete: (file: TImageFile) => void;
     onFileDelete: (id: string) => void;
@@ -113,7 +112,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
     const handleImageFile = async (
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
-    ): Promise<TImageFile | null> => {
+    ): Promise<TImageFile> => {
         return await onImageUpload(fileRequest, abortSignal);
     };
 

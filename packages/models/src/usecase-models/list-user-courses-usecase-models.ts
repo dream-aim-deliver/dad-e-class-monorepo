@@ -18,6 +18,7 @@ const BaseCourseSchema = z.object({
   id: z.number(),
   slug: z.string(),
   title: z.string(),
+  state: z.string(),
   description: z.string(),
   imageUrl: z.string().nullable(),
   averageRating: z.number(),

@@ -11,7 +11,6 @@ import {
     DefaultError,
     DefaultLoading,
     Outline,
-    SectionHeading,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -57,12 +56,12 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
     const coachingPage = coachingPageViewModel.data;
 
     return (
-        <div className="flex flex-col space-y-5">
+        <div className="flex flex-col space-y-5 px-30">
             <Outline
                 title={coachingPage.title}
                 description={coachingPage.description}
             />
-            <SectionHeading text={t('chooseCategory')} />
+            <h2> {t('chooseCategory')} </h2>
             <CategoryTopics
                 selectedTopics={selectedTopics}
                 setSelectedTopics={setSelectedTopics}

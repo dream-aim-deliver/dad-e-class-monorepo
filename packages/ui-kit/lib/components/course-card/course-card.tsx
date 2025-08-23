@@ -136,7 +136,7 @@ export const CourseCard: React.FC<CourseCardProps> = (props) => {
             title={course.title}
             author={course.author}
             imageUrl={course.imageUrl}
-            rating={course.rating}
+            rating={course.rating as number}
             duration={course.duration}
             language={language}
             reviewCount={reviewCount}

@@ -8,12 +8,12 @@ export function PageTitle({ text }: { text: string }) {
 
 export function SectionHeading({ text, className = "" }: { text: string, className?: string }) {
     return <h2 className={cn(
-        "text-2xl lg:text-mega text-text-primary font-bold",
+        "text-2xl lg:text-3xl text-text-primary font-bold",
         className
     )}>
         {text}
     </h2>;
-}
+} 
 
 export function SubsectionHeading({ text }: { text: string }) {
     return <h3 className="text-xl lg:text-2xl text-text-primary font-bold">

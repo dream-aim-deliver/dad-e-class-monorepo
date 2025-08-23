@@ -357,6 +357,7 @@ export const DE: TDictionary = {
     courseProgressBar: {
       resumeText: 'Wieder aufnehmen',
       progressText: 'Fortschritt',
+      beginText: 'Kurs starten',
     },
     milestone: {
       milestoneText: 'Meilenstein',
@@ -388,6 +389,9 @@ export const DE: TDictionary = {
       requirementsTitle: 'Voraussetzigä',
       requirementsDetails: 'Bevor Sie mit dem Kurs beginnen, empfehlen wir dringend, diese Kurse abzuschließen:',
       noRequirements: 'Für diesen Kurs sind keine Voraussetzungen erforderlich.',
+      courseCompletedBadge: 'Kurs abgeschlossen',
+      reviewCourseButton: 'Bewertung',
+      beginCourseButton: 'Kurs starten',
     },
     uploadingSection: {
       maxSizeText: "maximale Größe",
@@ -921,6 +925,15 @@ export const DE: TDictionary = {
       metadataValidationText: 'Ungültige Dateimetadaten: erforderliche Eigenschaften fehlen',
       urlValidationText: 'Ungültiges Datei-URL-Format',
     }
+    courseIntroBanner: {
+      title: 'Kurseinführung'
+    },
+    createCourseForm: {
+      duplicating: 'Duplicating',
+      slug: "Slug",
+      successBanner: 'Kurs erfolgreich erstellt! Weiterleitung...',
+      recommendedSizeText: '(Empfohlene Bildgröße: 612 x 702 pixel für optimale Darstellungsqualität.)'
+    },
   },
   pages: {
     home: Home_DE,
@@ -967,6 +980,29 @@ export const DE: TDictionary = {
       yourCourses: 'Ihre Kurse',
       createCourse: 'Einen Kurs erstellen',
       becomeCourseCreator: 'Kursersteller werden',
-    }
+    },
+    createCourse: {
+      createTitle: "Kurs erstellen",
+      saveDraftButton: "Entwurf speichern",
+      duplicationDefaultError: "Der zu duplizierende Kurs konnte nicht gefunden werden",
+      courseCreationError: 'Kurserstellung fehlgeschlagen. Bitte versuchen Sie es erneut.',
+      uploadError: "Bild-Upload fehlgeschlagen. Bitte versuchen Sie es erneut.",
+      titleSlugError: "Bitte Titel und Slug ausfüllen",
+      descriptionError: "Bitte geben Sie eine Kursbeschreibung an",
+      missingImageError: "Bitte laden Sie ein Kursbild hoch",
+    },
+    sidebarLayout: {
+      dashboard: "Dashboard",
+      courses: "Kurse",
+      yourCourses: "Deine Kurse",
+      coachingSessions: "Coaching-Sitzungen",
+      yourCoachingSessions: "Deine Coaching-Sitzungen",
+      calendar: "Kalender",
+      yourStudents: "Deine Schüler",
+      yourReviews: "Deine Bewertungen",
+      yourProfile: "Dein Profil",
+      orderPayments: "Bestellungen & Zahlungen",
+      logout: "Abmelden",
+    },
   },
 };

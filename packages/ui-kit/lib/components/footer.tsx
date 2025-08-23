@@ -118,7 +118,7 @@ export const Footer: React.FC<FooterProps> = ({
                 </div>
 
                 {/* Desktop Layout (Larger Screens) */}
-                <div className="hidden py-6 px-10.5 lg:flex flex-row justify-between items-start lg:items-center">
+                <div className="hidden py-6 lg:flex flex-row justify-between items-start lg:items-center">
                     {/* Left Section: Logo Only */}
                     <div className="mb-6 lg:mb-0">
                         <a href="/" className="block h-12 w-fit">

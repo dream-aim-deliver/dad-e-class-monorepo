@@ -7,6 +7,8 @@ import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 import { glob } from "glob";
 import { fileURLToPath } from "url";
 import preserveDirectives from 'rollup-preserve-directives';
+import { checker } from 'vite-plugin-checker';
+
 
 /**
  * STATIC_ASSETS_DIR is the directory where static assets are stored. They are copied to the dist directory during the build process.
@@ -60,6 +62,12 @@ export default defineConfig({
       entryRoot: 'lib',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
     }),
+    !process.env.VITEST ? checker({
+      typescript: {
+        buildMode: true,
+        tsconfigPath: path.join(__dirname, 'tsconfig.lib.json')
+      }
+    }) : undefined,
   ],
   // Uncomment this if you are using workers.
   // worker: {

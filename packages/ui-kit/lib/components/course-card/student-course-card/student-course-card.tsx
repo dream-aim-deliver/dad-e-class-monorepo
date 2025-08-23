@@ -83,7 +83,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
 }) => {
 
   // Calculate total course duration in minutes and convert to hours
-  const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+  const totalDurationInMinutes = (duration as any).video as number + (duration as any).coaching as number + (duration as any).selfStudy as number;
   const totalDurationInHours = totalDurationInMinutes / 60;
   // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
   const formattedDuration = Number.isInteger(totalDurationInHours)
@@ -107,8 +107,8 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
         : 'yet-to-start';
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="flex flex-col flex-1 w-auto h-[550px] rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
+    <div className="w-full mx-auto">
+      <div className="flex flex-col flex-1 w-auto h-fit rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
         <div className="relative">
           {shouldShowPlaceholder ? (
             // Placeholder for broken image (matching CoachBanner styling)
@@ -140,7 +140,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               
             </div>
             <div className="flex gap-1 items-end">
-              <StarRating totalStars={5} rating={rating} />
+              <StarRating totalStars={5} rating={rating as number} />
               <span className="text-xs text-text-primary leading-[100%]">
                 {rating}
               </span>
@@ -150,7 +150,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
             </div>
 
             <CourseCreator
-              creatorName={author?.name}
+              creatorName={author?.name as string}
               imageUrl={author?.image}
               locale={locale as TLocale}
               onClickUser={onClickUser}
@@ -158,7 +158,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
 
             <CourseStats
               locale={locale as TLocale}
-              language={language.name}
+              language={(language as any).name as string}
               sessions={10}
               duration={`${formattedDuration} ${dictionary.components.courseCard.hours}`}
               sales={sales}

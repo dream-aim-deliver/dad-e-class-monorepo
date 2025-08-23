@@ -354,6 +354,7 @@ export const EN: TDictionary = {
     courseProgressBar: {
       resumeText: 'Resume',
       progressText: 'Progress',
+      beginText: 'Begin course',
     },
     milestone: {
       milestoneText: 'Milestone',
@@ -385,6 +386,9 @@ export const EN: TDictionary = {
       requirementsTitle: 'Requirements',
       requirementsDetails: 'Before starting the course, we highly recommend completing these courses:',
       noRequirements: 'There are no requirements to take this course.',
+      courseCompletedBadge: 'Course completed',
+      reviewCourseButton: 'Review',
+      beginCourseButton: 'Begin course',
     },
     uploadingSection: {
       maxSizeText: 'Max size',
@@ -916,7 +920,17 @@ export const EN: TDictionary = {
       descriptionValidationText: 'Description should not be empty',
       metadataValidationText: 'Invalid file metadata: missing required properties',
       urlValidationText: 'Invalid file URL format',
-    }
+   
+    },
+    courseIntroBanner: {
+      title: 'Couse Introduction'
+    },
+    createCourseForm: {
+      duplicating: 'Duplicating',
+      slug: 'Slug',
+      successBanner: 'Course created successfully! Redirecting...',
+      recommendedSizeText: '(Recommended image size: 612 x 702 pixels for optimal display quality.)'
+    },
   },
   pages: {
     home: Home_EN,
@@ -963,6 +977,29 @@ export const EN: TDictionary = {
       yourCourses: 'Your Courses',
       createCourse: 'Create a course',
       becomeCourseCreator: 'Become a course creator',
-    }
+    },
+    createCourse: {
+      createTitle: "Create course",
+      saveDraftButton: "Save draft",
+      duplicationDefaultError: "Could not find the course to duplicate",
+      courseCreationError: 'Course creation failed. Please try again.',
+      uploadError: "Failed to upload image. Please try again.",
+      titleSlugError: "Please fill in title and slug",
+      descriptionError: "Please provide a course description",
+      missingImageError: "Please upload a course image",
+    },
+    sidebarLayout: {
+      dashboard: "Dashboard",
+      courses: "Courses",
+      yourCourses: "Your Courses",
+      coachingSessions: "Coaching Sessions",
+      yourCoachingSessions: "Your Coaching Sessions",
+      calendar: "Calendar",
+      yourStudents: "Your Students",
+      yourReviews: "Your Reviews",
+      yourProfile: "Your Profile",
+      orderPayments: "Order & Payments",
+      logout: "Logout",
+    },
   },
 };

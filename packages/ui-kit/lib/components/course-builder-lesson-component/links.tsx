@@ -130,8 +130,8 @@ export function DesignerComponent({
                         <div className="flex flex-col w-full" key={index}>
                             <LinkPreview
                                 preview
-                                title={link.title}
-                                url={link.url}
+                                title={link.title || ''}
+                                url={link.url || ''}
                                 customIcon={link.customIcon}
                                 onEdit={() => {
                                     setLinkEditIndex(index);

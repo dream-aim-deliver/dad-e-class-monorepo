@@ -144,7 +144,7 @@ export const Activity: FC<ActivityProps> = ({
               {platformName && (
                 <p className="text-xs text-text-secondary leading-[100%]">{platformName}</p>
               )}
-              {recipients > 0 && (
+              {(recipients as number) > 0 && (
                 <p className="text-xs text-text-secondary leading-[100%]">
                   {recipientsText} {recipients}
                 </p>
@@ -193,7 +193,7 @@ export const Activity: FC<ActivityProps> = ({
               />
             )}
             <div className="flex gap-2 items-center">
-              {recipients > 0 && (
+              {(recipients as number) > 0 && (
                 <p className="text-xs text-text-secondary leading-[100%]">
                   {recipientsText} {recipients}
                 </p>

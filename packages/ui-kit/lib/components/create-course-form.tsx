@@ -139,8 +139,14 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                 <>
                     <div className="flex items-center gap-3 text-text-primary">
                         {renderCourseIcon()}
-                        {/* TODO: add translation */}
-                        <span>Duplicating {duplicationCourse.title}</span>
+                        <span>
+                            {' '}
+                            {
+                                dictionary.components.createCourseForm
+                                    .duplicating
+                            }{' '}
+                            {duplicationCourse.title}
+                        </span>
                     </div>
                     <Divider className="my-1" />
                 </>
@@ -166,11 +172,12 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                     </div>
                     <div className="flex flex-col gap-1">
                         <label className="text-sm md:text-md text-text-secondary">
-                            Slug
+                            {dictionary.components.createCourseForm.slug}
                         </label>
                         <InputField
-                            // TODO: Add translations
-                            inputText="Slug"
+                            inputText={
+                                dictionary.components.createCourseForm.slug
+                            }
                             type="text"
                             value={courseSlug}
                             setValue={(value) => setCourseSlug(value)}
@@ -218,19 +225,23 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                             onUploadComplete={handleOnUploadComplete}
                             onDelete={onDelete}
                             onDownload={onDownload}
-                            isDeletionAllowed
+                            className='mb-2'
                         />
+                        <p className="text-text-secondary text-sm">
+                            {dictionary.components.createCourseForm.recommendedSizeText}
+                        </p>
                     </div>
                 </div>
             </div>
             {errorMessage && (
                 <Banner style="error" description={errorMessage} />
             )}
-            {/* TODO: add translations */}
             {hasSuccess && (
                 <Banner
                     style="success"
-                    description="Course created successfully! Redirecting..."
+                    description={
+                        dictionary.components.createCourseForm.successBanner
+                    }
                 />
             )}
         </div>

@@ -160,7 +160,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <TextAreaInput
             className="h-[104px]"
             label={dictionary.components.professionalInfo.bio}
-            value={formData.bio}
+            value={formData.bio as string}
             setValue={(value: string) => handleChange('bio', value)}
             placeholder={dictionary.components.professionalInfo.bioPlaceholder}
           />

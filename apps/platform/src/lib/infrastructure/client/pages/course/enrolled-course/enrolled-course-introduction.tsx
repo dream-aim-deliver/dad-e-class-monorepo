@@ -82,6 +82,10 @@ function EnrolledCourseIntroductionContent(
                 onClickResume={() => {
                     tabContext.setActiveTab(StudentCourseTab.STUDY);
                 }}
+                onClickReview={() => {
+                    // TODO: add a callback
+                    console.log("This would trigger a popup to review the course")
+                }}
             />
             <CourseIntroduction courseSlug={props.courseSlug} />
             <CourseOutline courseSlug={props.courseSlug} />
