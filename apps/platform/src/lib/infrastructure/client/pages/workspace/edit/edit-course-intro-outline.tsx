@@ -22,6 +22,7 @@ import {
 } from './hooks/use-accordion-icon-upload';
 import CourseIntroduction from '../../common/course-introduction';
 import CourseOutline from '../../common/course-outline';
+import { useCourseOutline } from './hooks/edit-outline-hooks';
 
 interface EditCourseIntroOutlineProps {
     slug: string;
@@ -60,6 +61,7 @@ export default function EditCourseIntroOutline({
     const locale = useLocale() as TLocale;
 
     const introductionViewModel = useCourseIntroduction(slug);
+    const outlineViewModel = useCourseOutline(slug);
 
     useEffect(() => {
         if (!introductionViewModel || introductionViewModel.mode !== 'default')
@@ -80,6 +82,24 @@ export default function EditCourseIntroOutline({
         setIsEdited(false);
         setCourseVersion(introductionViewModel.data.courseVersion);
     }, [introductionViewModel]);
+
+    useEffect(() => {
+        if (!outlineViewModel || outlineViewModel.mode !== 'default') return;
+        setOutlineItems(
+            outlineViewModel.data.items.map((item) => ({
+                title: item.title,
+                content: item.description,
+                icon: item.icon
+                    ? {
+                          ...item.icon,
+                          status: 'available',
+                          url: item.icon.downloadUrl,
+                          thumbnailUrl: item.icon.downloadUrl,
+                      }
+                    : null,
+            })),
+        );
+    }, [outlineViewModel]);
 
     if (!introductionViewModel) {
         return <DefaultLoading locale={locale} />;
