@@ -36,3 +36,5 @@ export * from './save-lesson-components-usecase-models';
 export * from './save-course-details-usecase-models';
 
 export * from './upload-introduction-video-usecase-models';
+
+export * from './save-course-introduction-usecase-models';

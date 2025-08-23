@@ -33,8 +33,35 @@ export function useSaveIntroduction({
 
     const introductionVideoUpload = useIntroductionVideoUpload(slug);
 
+    const saveIntroductionMutation = trpc.saveCourseIntroduction.useMutation();
+
+    const saveCourseIntroduction = async () => {
+        if (!courseVersion) return;
+        if (!courseIntroduction.introductionText) {
+            setErrorMessage('Course introduction text is required');
+            return;
+        }
+
+        setErrorMessage(null);
+        const result = await saveIntroductionMutation.mutateAsync({
+            courseSlug: slug,
+            courseVersion: courseVersion,
+            text: courseIntroduction.serializeIntroductionText(),
+            videoId: introductionVideoUpload.video?.id ?? null,
+        });
+        if (!result.success) {
+            setErrorMessage(result.data.message);
+            return;
+        }
+        window.location.reload();
+
+        return result;
+    };
+
     return {
         courseIntroduction,
         introductionVideoUpload,
+        saveCourseIntroduction,
+        isIntroductionSaving: saveIntroductionMutation.isPending,
     };
 }

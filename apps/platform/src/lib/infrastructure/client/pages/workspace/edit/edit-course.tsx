@@ -65,13 +65,16 @@ export default function EditCourse({ slug }: EditCourseProps) {
     });
 
     // Introduction Tab State
-    const { courseIntroduction, introductionVideoUpload } = useSaveIntroduction(
-        {
-            slug,
-            courseVersion,
-            setErrorMessage,
-        },
-    );
+    const {
+        courseIntroduction,
+        introductionVideoUpload,
+        isIntroductionSaving,
+        saveCourseIntroduction,
+    } = useSaveIntroduction({
+        slug,
+        courseVersion,
+        setErrorMessage,
+    });
 
     // Course Content Tab State
     const {
@@ -88,19 +91,25 @@ export default function EditCourse({ slug }: EditCourseProps) {
     });
 
     const handleSave = async () => {
+        let result;
         if (activeTab === TabTypes.General) {
-            await saveCourseDetails();
+            result = await saveCourseDetails();
+        }
+        if (activeTab === TabTypes.IntroOutline) {
+            result = await saveCourseIntroduction();
         }
         if (activeTab === TabTypes.CourseContent) {
-            const result = await saveCourseStructure();
-            if (result) {
-                setIsEdited(false);
-            }
-            return;
+            result = await saveCourseStructure();
+        }
+        if (result) {
+            setIsEdited(false);
         }
     };
 
-    const isSaving = isSavingCourseStructure || saveDetailsMutation.isPending;
+    const isSaving =
+        isSavingCourseStructure ||
+        saveDetailsMutation.isPending ||
+        isIntroductionSaving;
 
     return (
         <EditCourseLayout

@@ -53,3 +53,17 @@ export const getCourseIntroduction = t.procedure
             };
         },
     );
+
+const saveCourseIntroductionMock: useCaseModels.TSaveCourseIntroductionSuccessResponse['data'] =
+    {};
+
+export const saveCourseIntroduction = t.procedure
+    .input(useCaseModels.SaveCourseIntroductionRequestSchema)
+    .mutation(
+        async (): Promise<useCaseModels.TSaveCourseIntroductionUseCaseResponse> => {
+            return {
+                success: true,
+                data: saveCourseIntroductionMock,
+            };
+        },
+    );

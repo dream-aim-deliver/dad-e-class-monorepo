@@ -20,7 +20,6 @@ import { submitAssessmentProgress } from './procedures/assessment-progress';
 import { getEnrolledCourseDetails } from './procedures/enrolled-course-details';
 import { getStudentProgress } from './procedures/student-progress';
 import { listIncludedCoachingSessions } from './procedures/included-coaching-sessions';
-import { getCourseIntroduction } from './procedures/course-introduction';
 import { getCourseOutline } from './procedures/course-outline';
 import { listAssessmentProgresses } from './procedures/assessment-progresses';
 import { listUserCourses } from './procedures/user-courses';
@@ -35,6 +34,10 @@ import { uploadLessonComponentFile } from './procedures/lesson-component-file';
 import { saveLessonComponents } from './procedures/lesson-components';
 import { saveCourseDetails } from './procedures/course-details';
 import { uploadIntroductionVideo } from './procedures/introduction-video';
+import {
+    getCourseIntroduction,
+    saveCourseIntroduction,
+} from './procedures/course-introduction';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -72,6 +75,7 @@ export const mockRouter = t.router({
     saveLessonComponents,
     saveCourseDetails,
     uploadIntroductionVideo,
+    saveCourseIntroduction,
 });
 
 export type MockRouter = typeof mockRouter;

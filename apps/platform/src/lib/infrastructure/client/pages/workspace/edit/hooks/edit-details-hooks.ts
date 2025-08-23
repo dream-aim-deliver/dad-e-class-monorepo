@@ -58,8 +58,6 @@ export function useSaveDetails({
         return true;
     };
 
-    const utils = trpc.useUtils();
-
     const saveCourseDetails = async () => {
         if (!courseVersion) return;
         if (!validateCourseDetails()) return;
@@ -77,7 +75,9 @@ export function useSaveDetails({
             setErrorMessage(result.data.message);
             return;
         }
-        utils.getEnrolledCourseDetails.invalidate();
+        window.location.reload();
+
+        return result;
     };
 
     return {
