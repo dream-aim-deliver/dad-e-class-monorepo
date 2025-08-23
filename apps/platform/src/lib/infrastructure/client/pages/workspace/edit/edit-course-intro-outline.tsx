@@ -16,6 +16,7 @@ interface EditCourseIntroOutlineProps {
     setCourseVersion: (version: number | null) => void;
     courseIntroduction: CourseIntroductionForm;
     introductionVideoUpload: IntroductionVideoUploadState;
+    setIsEdited: (isEdited: boolean) => void;
 }
 
 export default function EditCourseIntroOutline({
@@ -24,6 +25,7 @@ export default function EditCourseIntroOutline({
     setCourseVersion,
     courseIntroduction,
     introductionVideoUpload,
+    setIsEdited,
 }: EditCourseIntroOutlineProps) {
     const locale = useLocale() as TLocale;
 
@@ -45,6 +47,7 @@ export default function EditCourseIntroOutline({
                 videoId: video.playbackId,
             });
         }
+        setIsEdited(false);
         setCourseVersion(introductionViewModel.data.courseVersion);
     }, [introductionViewModel]);
 

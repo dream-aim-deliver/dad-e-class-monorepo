@@ -344,8 +344,22 @@ function EditCourseTabContent({
                         slug={slug}
                         courseVersion={courseVersion}
                         setCourseVersion={setCourseVersion}
-                        courseIntroduction={courseIntroduction}
-                        introductionVideoUpload={introductionVideoUpload}
+                        courseIntroduction={{
+                            ...courseIntroduction,
+                            setIntroductionText: editWrap(
+                                courseIntroduction.setIntroductionText,
+                            ),
+                        }}
+                        introductionVideoUpload={{
+                            ...introductionVideoUpload,
+                            handleUploadComplete: editWrap(
+                                introductionVideoUpload.handleUploadComplete,
+                            ),
+                            handleDelete: editWrap(
+                                introductionVideoUpload.handleDelete,
+                            ),
+                        }}
+                        setIsEdited={setIsEdited}
                     />
                 </Suspense>
             </Tabs.Content>

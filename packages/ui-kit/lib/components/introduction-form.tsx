@@ -4,7 +4,7 @@ import RichTextEditor from './rich-text-element/editor';
 import { SectionHeading } from './text';
 import { deserialize, serialize } from './rich-text-element/serializer';
 import { Descendant } from 'slate';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DefaultError from './default-error';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 
@@ -53,6 +53,12 @@ export const useCourseIntroductionForm = (): CourseIntroductionForm => {
 };
 
 export function IntroductionForm(props: IntroductionProps) {
+    const [editorKey, setEditorKey] = useState(0);
+
+    useEffect(() => {
+        setEditorKey((prevKey) => prevKey + 1);
+    }, [props.courseVersion]);
+
     return (
         <div className="flex flex-col gap-4">
             <SectionHeading text="Introduction" />
@@ -61,7 +67,7 @@ export function IntroductionForm(props: IntroductionProps) {
                     Course introduction (600 characters max)
                 </label>
                 <RichTextEditor
-                    key={`introduction-${props.courseVersion}`}
+                    key={`introduction-${editorKey}`}
                     name="introduction"
                     placeholder="Write course introduction"
                     initialValue={props.introductionText}
