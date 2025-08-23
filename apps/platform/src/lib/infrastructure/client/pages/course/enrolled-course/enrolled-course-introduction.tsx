@@ -109,7 +109,7 @@ function IncludedCoachingSessions({ courseSlug }: { courseSlug: string }) {
     const locale = useLocale() as TLocale;
 
     if (!coachingSessionsViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     // If there is an error, nothing is rendered
@@ -151,7 +151,7 @@ function StudentEnrolledCourseIntroduction(
 
     return (
         <div className="flex flex-col space-y-10">
-            <Suspense fallback={<DefaultLoading locale={locale} />}>
+            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                 <IncludedCoachingSessions courseSlug={props.courseSlug} />
             </Suspense>
             <EnrolledCourseIntroductionContent {...props} />

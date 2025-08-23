@@ -29,7 +29,7 @@ function AvailableCoachings() {
     const locale = useLocale() as TLocale;
 
     if (!availableCoachingsViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (availableCoachingsViewModel.mode === 'kaboom') {
@@ -95,7 +95,7 @@ export default function CoachingOfferingsPanel() {
     }, [coachingOfferingsViewModel]);
 
     if (!coachingOfferingsViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (coachingOfferingsViewModel.mode === 'not-found') {

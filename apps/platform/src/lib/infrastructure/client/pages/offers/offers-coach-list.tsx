@@ -43,7 +43,7 @@ export default function OffersCoachList({ selectedTopics }: CoachListProps) {
     const router = useRouter();
 
     if (!coachesViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (coachesViewModel.mode === 'not-found') {

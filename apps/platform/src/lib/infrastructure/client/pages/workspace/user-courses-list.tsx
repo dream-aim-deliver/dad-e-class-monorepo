@@ -60,7 +60,7 @@ export default function UserCoursesList() {
     });
 
     if (!coursesViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (coursesViewModel.mode === 'not-found') {

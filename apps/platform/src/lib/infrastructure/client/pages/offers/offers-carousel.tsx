@@ -36,7 +36,7 @@ export default function OffersCarousel() {
     const router = useRouter();
 
     if (!carouselViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (carouselViewModel.mode === 'kaboom') {

@@ -46,7 +46,7 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
     const isLoggedIn = !!session;
 
     if (!coachingPageViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (coachingPageViewModel.mode === 'kaboom') {

@@ -62,7 +62,7 @@ export default function EnrolledCourseCompletedAssessment(
     }, [componentsViewModel, progressViewModel]);
 
     if (!componentsViewModel || !progressViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (

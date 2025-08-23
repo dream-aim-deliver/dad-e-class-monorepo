@@ -74,7 +74,7 @@ export default function CategoryTopics({
 
     // Loading state
     if (!topicsByCategoryViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     // Error state

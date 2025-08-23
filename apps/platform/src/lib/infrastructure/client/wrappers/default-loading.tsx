@@ -6,5 +6,5 @@ import { useLocale } from 'next-intl';
 
 export default function DefaultLoadingWrapper() {
     const locale = useLocale() as TLocale;
-    return <DefaultLoading locale={locale} />;
+    return <DefaultLoading locale={locale} variant="minimal" />;
 }

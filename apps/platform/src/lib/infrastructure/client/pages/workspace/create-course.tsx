@@ -325,7 +325,7 @@ function CreateCourseWithDuplication({
     );
 
     if (!duplicationCourseViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (duplicationCourseViewModel.mode === 'not-found') {
@@ -361,7 +361,7 @@ export default function CreateCourse({
     const locale = useLocale() as TLocale;
     if (duplicationCourseSlug) {
         return (
-            <Suspense fallback={<DefaultLoading locale={locale} />}>
+            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                 <CreateCourseWithDuplication
                     duplicationCourseSlug={duplicationCourseSlug}
                 />

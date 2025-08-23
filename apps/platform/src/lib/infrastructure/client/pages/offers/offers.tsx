@@ -46,7 +46,7 @@ export default function Offers(props: OffersProps) {
     const [coachingIncluded, setCoachingIncluded] = useState<boolean>(false);
 
     if (!outlineViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (outlineViewModel.mode === 'kaboom') {
@@ -76,7 +76,7 @@ export default function Offers(props: OffersProps) {
             </Suspense>
             <Divider className="my-12" />
             <h2> text={t('ourPackages')} </h2>
-            <Suspense fallback={<DefaultLoading locale={locale} />}>
+            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                 <PackageList />
             </Suspense>
             <Divider className="my-12" />

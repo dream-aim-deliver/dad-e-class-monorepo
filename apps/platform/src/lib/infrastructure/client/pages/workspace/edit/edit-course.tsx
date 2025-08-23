@@ -117,7 +117,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
                     value={TabTypes.General}
                     className={tabContentClass}
                 >
-                    <Suspense fallback={<DefaultLoading locale={locale} />}>
+                    <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                         <DefaultError
                             locale={locale}
                             title="Not implemented yet"
@@ -129,7 +129,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
                     value={TabTypes.IntroOutline}
                     className={tabContentClass}
                 >
-                    <Suspense fallback={<DefaultLoading locale={locale} />}>
+                    <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                         <DefaultError
                             locale={locale}
                             title="Not implemented yet"
@@ -141,7 +141,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
                     value={TabTypes.CourseContent}
                     className={tabContentClass}
                 >
-                    <Suspense fallback={<DefaultLoading locale={locale} />}>
+                    <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                         <EditCourseStructure
                             slug={slug}
                             isEdited={isEdited}

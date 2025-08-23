@@ -66,7 +66,7 @@ interface EditLessonProps {
 */
 const LoadingComponent = () => {
     const locale = useLocale() as TLocale;
-    return <DefaultLoading locale={locale} />;
+    return <DefaultLoading locale={locale} variant="minimal" />;
 };
 
 const EditLessonComponents = dynamic(() => import('./edit-lesson-components'), {
@@ -348,7 +348,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     const elementProgress = useRef(new Map<string, LessonElement>());
 
     if (!lessonComponentsViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (lessonComponentsViewModel.mode !== 'default') {
@@ -392,7 +392,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                         />
                     }
                     editor={
-                        <Suspense fallback={<DefaultLoading locale={locale} />}>
+                        <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                             <EditLessonComponents
                                 lessonId={lessonId}
                                 components={components}
