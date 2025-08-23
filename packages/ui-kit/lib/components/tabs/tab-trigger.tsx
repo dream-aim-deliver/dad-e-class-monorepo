@@ -12,13 +12,15 @@ interface TabTriggerProps
 }
 
 export function TabTrigger({
-    icon,
-    value,
-    children,
-    className,
-    variant = 'default',
-    isLast = false,
-    ...props
+
+  icon,
+  value,
+  children,
+  className,
+  disabled,
+  isLast = false,
+  variant = 'default',
+  ...props
 }: TabTriggerProps) {
     const { activeTab, setActiveTab } = useTabContext();
     const isActive = activeTab === value;
@@ -27,10 +29,11 @@ export function TabTrigger({
         'w-fit px-4 py-2 font-important transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 relative overflow-hidden';
     const variantStyles = {
         default: cn(
-            'cursor-pointer',
+            'cursor-pointer transform transition-transform hover:scale-95',
             isActive
                 ? 'flex items-center justify-center bg-button-primary-fill rounded-medium text-button-primary-text'
                 : 'border-transparent text-text-primary',
+            disabled && 'opacity-50 cursor-not-allowed',
         ),
     };
 
@@ -44,6 +47,7 @@ export function TabTrigger({
                 aria-selected={isActive}
                 aria-controls={`panel-${value}`}
                 tabIndex={isActive ? 0 : -1}
+                disabled={disabled}
                 onClick={() => setActiveTab(value)}
                 className={cn(baseStyles, variantStyles[variant], 'w-full', className)}
                 {...props}
