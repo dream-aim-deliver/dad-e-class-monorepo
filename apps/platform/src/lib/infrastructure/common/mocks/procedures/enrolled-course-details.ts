@@ -6,7 +6,7 @@ const getEnrolledCourseDetailsMock: useCaseModels.TGetEnrolledCourseDetailsSucce
         {
             success: true,
             data: {
-                courseVersion: 2,
+                courseVersion: 1,
                 title: 'Advanced React Patterns & Performance',
                 imageFile: {
                     id: '1',

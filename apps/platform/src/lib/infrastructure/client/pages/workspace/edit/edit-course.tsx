@@ -16,7 +16,9 @@ import EditCourseStructure from './edit-course-structure';
 import { useSaveStructure } from './hooks/save-hooks';
 import EditHeader from './components/edit-header';
 import EnrolledCoursePreview from '../../course/enrolled-course/enrolled-course-preview';
-import EditCourseGeneral from './edit-course-general';
+import EditCourseGeneral, {
+    EditCourseGeneralPreview,
+} from './edit-course-general';
 import { trpc } from '../../../trpc/client';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
@@ -327,63 +329,13 @@ function EditCourseLayout({
     );
 }
 
-interface GeneralTabPreviewProps {
-    course: viewModels.TEnrolledCourseDetailsSuccess;
-}
-
-function GeneralTabPreview({ course }: GeneralTabPreviewProps) {
-    const locale = useLocale() as TLocale;
-
-    return (
-        <div className="flex flex-col space-y-4">
-            <SectionHeading text={course.title} />
-            <CourseGeneralInformationView
-                // These fields aren't utilized and are coming from a common model
-                title={''}
-                description={''}
-                showProgress={false}
-                language={{
-                    name: '',
-                    code: '',
-                }}
-                pricing={{
-                    fullPrice: 0,
-                    partialPrice: 0,
-                    currency: '',
-                }}
-                locale={locale}
-                longDescription={course.description}
-                duration={{
-                    video: course.duration.video ?? 0,
-                    coaching: course.duration.coaching ?? 0,
-                    selfStudy: course.duration.selfStudy ?? 0,
-                }}
-                rating={course.author.averageRating}
-                author={{
-                    name: course.author.name + ' ' + course.author.surname,
-                    image: course.author.avatarUrl ?? '',
-                }}
-                imageUrl={course.imageFile?.downloadUrl ?? ''}
-                students={course.students.map((student) => ({
-                    name: student.name,
-                    avatarUrl: student.avatarUrl ?? '',
-                }))}
-                totalStudentCount={course.studentCount}
-                onClickAuthor={() => {
-                    // Don't handle author click
-                }}
-            />
-        </div>
-    );
-}
-
 interface EditCourseTabContentProps {
     activeTab: TabTypes;
     slug: string;
     locale: TLocale;
     isPreviewing: boolean;
     isEdited: boolean;
-    setIsEdited: (edited: boolean) => void;
+    setIsEdited: React.Dispatch<React.SetStateAction<boolean>>;
     courseDetails: CourseDetailsState;
     courseImageUpload: CourseImageUploadState;
     modules: CourseModule[];
@@ -415,12 +367,13 @@ function EditCourseTabContent({
     return (
         <>
             <Tabs.Content value={TabTypes.General} className={tabContentClass}>
-                {/* {isPreviewing && <GeneralTabPreview />} */}
+                {isPreviewing && <EditCourseGeneralPreview slug={slug} />}
                 {!isPreviewing && (
                     <Suspense fallback={<DefaultLoading locale={locale} />}>
                         <EditCourseGeneral
                             courseVersion={courseVersion}
                             setCourseVersion={setCourseVersion}
+                            setIsEdited={setIsEdited}
                             slug={slug}
                             courseForm={{
                                 ...courseDetails,
