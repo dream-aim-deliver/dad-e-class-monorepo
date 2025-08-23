@@ -120,6 +120,9 @@ export default function EditCourse({ slug }: EditCourseProps) {
         }
         if (result) {
             setIsEdited(false);
+            if (activeTab !== TabTypes.CourseContent) {
+                window.location.reload();
+            }
         }
     };
 

@@ -75,8 +75,6 @@ export function useSaveDetails({
             setErrorMessage(result.data.message);
             return;
         }
-        window.location.reload();
-
         return result;
     };
 

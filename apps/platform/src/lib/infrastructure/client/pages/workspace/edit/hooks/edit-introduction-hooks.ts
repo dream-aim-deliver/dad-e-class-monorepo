@@ -53,8 +53,6 @@ export function useSaveIntroduction({
             setErrorMessage(result.data.message);
             return;
         }
-        window.location.reload();
-
         return result;
     };
 

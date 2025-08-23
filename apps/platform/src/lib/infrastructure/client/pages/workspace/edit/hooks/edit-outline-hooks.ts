@@ -1,10 +1,9 @@
 import {
     AccordionBuilderItem,
-    useCourseIntroductionForm,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../../../trpc/client';
 import { useState } from 'react';
-import { viewModels } from '@maany_shr/e-class-models';
+import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseOutlinePresenter } from '../../../../hooks/use-course-outline-presenter';
 import { useAccordionIconUpload } from './use-accordion-icon-upload';
 
@@ -39,20 +38,38 @@ export function useSaveOutline({
 
     const saveCourseOutline = async () => {
         if (!courseVersion) return;
-        // TODO: validate
+        if (accordionBuilderItems.length < 1) {
+            setErrorMessage('At least one outline item is required');
+            return;
+        }
+        const requestItems: useCaseModels.TSaveCourseOutlineRequest['items'] =
+            [];
+        for (let i = 0; i < accordionBuilderItems.length; i++) {
+            const item = accordionBuilderItems[i];
+            if (!item.title || !item.content) {
+                setErrorMessage(
+                    'All outline items must have a title and content',
+                );
+                return;
+            }
+            requestItems.push({
+                title: item.title,
+                description: item.content,
+                position: i + 1,
+                iconId: item.icon?.id ?? null,
+            });
+        }
 
         setErrorMessage(null);
         const result = await saveOutlineMutation.mutateAsync({
             courseSlug: slug,
             courseVersion: courseVersion,
-            items: [],
+            items: requestItems,
         });
         if (!result.success) {
             setErrorMessage(result.data.message);
             return;
         }
-        window.location.reload();
-
         return result;
     };
 

@@ -275,7 +275,10 @@ const saveCourseOutlineMock: useCaseModels.TSaveCourseOutlineSuccessResponse['da
 export const saveCourseOutline = t.procedure
     .input(useCaseModels.SaveCourseOutlineRequestSchema)
     .mutation(
-        async (): Promise<useCaseModels.TSaveCourseOutlineUseCaseResponse> => {
+        async (
+            ctx,
+        ): Promise<useCaseModels.TSaveCourseOutlineUseCaseResponse> => {
+            console.log(ctx.input);
             return {
                 success: true,
                 data: saveCourseOutlineMock,
