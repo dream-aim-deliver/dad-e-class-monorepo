@@ -4,6 +4,7 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
+import { VideoFileSchema } from './common';
 
 export const GetCourseIntroductionRequestSchema = z.object({
   courseSlug: z.string(),
@@ -13,8 +14,7 @@ export type TGetCourseIntroductionRequest = z.infer<typeof GetCourseIntroduction
 
 export const GetCourseIntroductionSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
   text: z.string(),
-  playbackId: z.string(),
-  thumbnailUrl: z.string().nullable(),
+  video: VideoFileSchema,
 }));
 
 export type TGetCourseIntroductionSuccessResponse = z.infer<typeof GetCourseIntroductionSuccessResponseSchema>;

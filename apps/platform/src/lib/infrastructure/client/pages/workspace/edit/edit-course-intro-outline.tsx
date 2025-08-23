@@ -13,12 +13,14 @@ import { useCourseIntroduction } from './hooks/edit-introduction-hooks';
 import { useEffect } from 'react';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
 
 interface EditCourseIntroOutlineProps {
     slug: string;
     courseVersion: number | null;
     setCourseVersion: (version: number | null) => void;
     courseIntroduction: CourseIntroductionForm;
+    introductionVideoUpload: IntroductionVideoUploadState;
 }
 
 export default function EditCourseIntroOutline({
@@ -26,6 +28,7 @@ export default function EditCourseIntroOutline({
     courseVersion,
     setCourseVersion,
     courseIntroduction,
+    introductionVideoUpload,
 }: EditCourseIntroOutlineProps) {
     const locale = useLocale() as TLocale;
 
@@ -51,23 +54,15 @@ export default function EditCourseIntroOutline({
     return (
         <div>
             <IntroductionForm
+                locale={locale}
                 courseVersion={courseVersion}
                 {...courseIntroduction}
-                onFileChange={function (
-                    file: TFileUploadRequest,
-                    abortSignal?: AbortSignal,
-                ): Promise<TFileMetadata> {
-                    throw new Error('Function not implemented.');
-                }}
-                onUploadComplete={function (file: TFileMetadataImage): void {
-                    throw new Error('Function not implemented.');
-                }}
-                onDelete={function (id: string): void {
-                    throw new Error('Function not implemented.');
-                }}
-                onDownload={function (id: string): void {
-                    throw new Error('Function not implemented.');
-                }}
+                onFileChange={introductionVideoUpload.handleFileChange}
+                onUploadComplete={introductionVideoUpload.handleUploadComplete}
+                onDelete={introductionVideoUpload.handleDelete}
+                onDownload={introductionVideoUpload.handleDownload}
+                videoFile={introductionVideoUpload.video}
+                uploadError={introductionVideoUpload.uploadError}
             />
         </div>
     );

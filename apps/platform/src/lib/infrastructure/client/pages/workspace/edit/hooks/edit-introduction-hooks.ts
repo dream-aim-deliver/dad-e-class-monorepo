@@ -3,6 +3,7 @@ import { useGetCourseIntroductionPresenter } from '../../../../hooks/use-course-
 import { trpc } from '../../../../trpc/client';
 import { useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
+import { useIntroductionVideoUpload } from './use-introduction-video-upload';
 
 export function useCourseIntroduction(slug: string) {
     const [introductionResponse] = trpc.getCourseIntroduction.useSuspenseQuery({
@@ -29,7 +30,11 @@ export function useSaveIntroduction({
     setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>;
 }) {
     const courseIntroduction = useCourseIntroductionForm();
+
+    const introductionVideoUpload = useIntroductionVideoUpload();
+
     return {
         courseIntroduction,
+        introductionVideoUpload,
     };
 }

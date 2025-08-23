@@ -5,18 +5,22 @@ import { SectionHeading } from './text';
 import { deserialize, serialize } from './rich-text-element/serializer';
 import { Descendant } from 'slate';
 import { useState } from 'react';
+import DefaultError from './default-error';
+import { isLocalAware } from '@maany_shr/e-class-translations';
 
-interface IntroductionProps {
+interface IntroductionProps extends isLocalAware {
     courseVersion: number | null;
     introductionText?: Descendant[];
     setIntroductionText: (text: Descendant[]) => void;
+    videoFile: fileMetadata.TFileMetadataVideo | null;
     onFileChange: (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata>;
-    onUploadComplete: (file: fileMetadata.TFileMetadataImage) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadataVideo) => void;
     onDelete: (id: string) => void;
     onDownload: (id: string) => void;
+    uploadError: string | undefined;
 }
 
 export interface CourseIntroductionForm {
@@ -72,18 +76,23 @@ export function IntroductionForm(props: IntroductionProps) {
                     Introduction video
                 </label>
                 <Uploader
-                    onDownload={() => {}}
-                    onDelete={() => {}}
+                    onDownload={props.onDownload}
+                    onDelete={props.onDelete}
                     variant="video"
-                    onFilesChange={() => {
-                        throw Error('File upload failed');
-                    }}
-                    onUploadComplete={() => {}}
+                    onFilesChange={props.onFileChange}
+                    onUploadComplete={props.onUploadComplete}
                     locale="en"
                     type="single"
                     maxSize={15}
-                    file={null}
+                    file={props.videoFile}
+                    isDeletionAllowed
                 />
+                {props.uploadError && (
+                    <DefaultError
+                        locale={props.locale}
+                        description={props.uploadError}
+                    />
+                )}
             </div>
         </div>
     );

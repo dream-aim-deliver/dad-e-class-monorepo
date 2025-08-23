@@ -28,9 +28,17 @@ const getCourseIntroductionMock: useCaseModels.TGetCourseIntroductionSuccessResp
                 ],
             },
         ]),
-        playbackId: '102R01TI2leK9vznt4qvfta9FTsj100U4TD24XbB2Gzpl8',
-        thumbnailUrl:
-            'https://images.unsplash.com/photo-1750785328656-eb4c9942e58f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        video: {
+            id: '1',
+            name: 'advanced-react-patterns.mp4',
+            size: 102400,
+            category: 'video',
+            downloadUrl:
+                'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop',
+            playbackId: '102R01TI2leK9vznt4qvfta9FTsj100U4TD24XbB2Gzpl8',
+            thumbnailUrl:
+                'https://images.unsplash.com/photo-1750785328656-eb4c9942e58f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        },
     };
 
 export const getCourseIntroduction = t.procedure

@@ -22,6 +22,7 @@ import EditCourseIntroOutline from './edit-course-intro-outline';
 import { CourseModule } from './types';
 import { useSaveDetails } from './hooks/edit-details-hooks';
 import { useSaveIntroduction } from './hooks/edit-introduction-hooks';
+import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
 
 interface EditCourseProps {
     slug: string;
@@ -64,11 +65,13 @@ export default function EditCourse({ slug }: EditCourseProps) {
     });
 
     // Introduction Tab State
-    const { courseIntroduction } = useSaveIntroduction({
-        slug,
-        courseVersion,
-        setErrorMessage,
-    });
+    const { courseIntroduction, introductionVideoUpload } = useSaveIntroduction(
+        {
+            slug,
+            courseVersion,
+            setErrorMessage,
+        },
+    );
 
     // Course Content Tab State
     const {
@@ -122,6 +125,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
                 courseDetails={courseDetails}
                 courseIntroduction={courseIntroduction}
                 courseImageUpload={courseImageUpload}
+                introductionVideoUpload={introductionVideoUpload}
                 modules={modules}
                 setModules={setModules}
                 setCourseVersion={setCourseVersion}
@@ -269,6 +273,7 @@ interface EditCourseTabContentProps {
     courseDetails: CourseDetailsState;
     courseIntroduction: CourseIntroductionForm;
     courseImageUpload: CourseImageUploadState;
+    introductionVideoUpload: IntroductionVideoUploadState;
     modules: CourseModule[];
     setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
     courseVersion: number | null;
@@ -293,6 +298,7 @@ function EditCourseTabContent({
     setCourseVersion,
     courseIntroduction,
     editWrap,
+    introductionVideoUpload,
 }: EditCourseTabContentProps) {
     const tabContentClass = 'mt-5';
 
@@ -339,6 +345,7 @@ function EditCourseTabContent({
                         courseVersion={courseVersion}
                         setCourseVersion={setCourseVersion}
                         courseIntroduction={courseIntroduction}
+                        introductionVideoUpload={introductionVideoUpload}
                     />
                 </Suspense>
             </Tabs.Content>
