@@ -10,7 +10,42 @@ import DesignerLayout from '../designer-layout';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
+import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
 
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.DownloadFiles)
+        return dictionary.components.lessons.typeValidationText;
+
+    // Check if at least one file is attached
+    if (!elementInstance.files || elementInstance.files.length === 0) {
+        return dictionary.components.downloadFileLesson.fileCountValidationText;
+    }
+
+    // Validate each file has required metadata properties
+    for (const file of elementInstance.files) {
+        if (!file.id || !file.name || !file.url) {
+            return dictionary.components.downloadFileLesson
+                .metadataValidationText;
+        }
+
+        if (file.status !== 'available') {
+            return dictionary.components.downloadFileLesson
+                .statusValidationText;
+        }
+
+        // Validate URL format
+        try {
+            new URL(file.url);
+        } catch {
+            return dictionary.components.downloadFileLesson.urlValidationText;
+        }
+    }
+
+    return undefined;
+};
 
 /** Props interface for the Download Files Designer component */
 /**
@@ -59,6 +94,7 @@ export function DesignerComponent({
     onFilesUpload,
     onFileDelete,
     onFileDownload,
+    validationError,
     maxFiles = 5,
     maxSize = 15, // Default to 15MB
 }: DownloadFilesDesignerProps) {
@@ -91,6 +127,7 @@ export function DesignerComponent({
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             <Uploader
                 type="multiple"
@@ -125,6 +162,20 @@ export function FormComponent({
     onDownload,
 }: DownloadFilesFormProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
+
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={dictionary.components.lessons.elementValidationText}
+                description={validationError}
+            />
+        );
+    }
+
     const handleDownload = (id: string) => {
         onDownload(id);
     };
@@ -158,7 +209,8 @@ const downloadFilesElement: CourseElementTemplate = {
         icon: IconCloudDownload,
         label: 'Download Files',
     },
-    designerComponent: DesignerComponent as React.FC<BaseDesignerComponentProps>,
+    designerComponent:
+        DesignerComponent as React.FC<BaseDesignerComponentProps>,
     formComponent: FormComponent,
 };
 

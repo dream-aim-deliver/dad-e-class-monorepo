@@ -1,27 +1,74 @@
-import { useState } from "react";
-import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps } from "../pre-assessment/types";
-import DesignerLayout from "../designer-layout";
-import { IconMultiChoice } from "../icons/icon-multi-choice";
-import MultipleChoicePreview, { MultipleChoiceEdit, optionsType } from "../multiple-check";
-import { getDictionary } from "@maany_shr/e-class-translations";
+import { useState } from 'react';
+import {
+    FormElement,
+    FormElementTemplate,
+    SubmitFunction,
+    FormElementType,
+    valueType,
+    DesignerComponentProps,
+    FormComponentProps,
+} from '../pre-assessment/types';
+import DesignerLayout from '../designer-layout';
+import { IconMultiChoice } from '../icons/icon-multi-choice';
+import MultipleChoicePreview, {
+    MultipleChoiceEdit,
+    optionsType,
+} from '../multiple-check';
+import { getDictionary } from '@maany_shr/e-class-translations';
+import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
 
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary, context = 'coach' } = props;
+
+    if (elementInstance.type !== FormElementType.MultiCheck)
+        return dictionary.components.lessons.typeValidationText;
+
+    // Student validation: Check if user has made at least one selection when required (actual form submission)
+    if (context === 'student') {
+        if (elementInstance.required) {
+            const hasSelection =
+                elementInstance.options &&
+                elementInstance.options.some((option) => option.isSelected);
+            if (!hasSelection) {
+                return dictionary.components.formRenderer.fieldRequired;
+            }
+        }
+        return undefined; // Student validation passed
+    }
+
+    // Coach validation: Check element structure (course builder - both designer and preview)
+    // Check if title is empty
+    if (!elementInstance.title || elementInstance.title.trim() === '') {
+        return dictionary.components.multiCheckLesson.titleValidationText;
+    }
+
+    // Check if there is at least one option
+    if (!elementInstance.options || elementInstance.options.length === 0) {
+        return dictionary.components.multiCheckLesson.optionValidationText;
+    }
+
+    // Check if all option names are non-empty
+    const hasEmptyOptionName = elementInstance.options.some(
+        (option) => !option.name || option.name.trim() === '',
+    );
+    if (hasEmptyOptionName) {
+        return dictionary.components.multiCheckLesson.optionNameValidationText;
+    }
+
+    return undefined;
+};
 
 const multiCheckElement: FormElementTemplate = {
     type: FormElementType.MultiCheck,
     designerBtnElement: {
         icon: IconMultiChoice,
-        label: "Multiple Choice"
+        label: 'Multiple Choice',
     },
     // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: valueType) => {
-        if (elementInstance.required) {
-            return Array.isArray(value) ? (value as optionsType[]).some(opt => opt.isSelected) : false;
-        }
-        return true;
-    }
 };
 
 interface MultiCheckDesignerProps extends DesignerComponentProps {
@@ -29,13 +76,25 @@ interface MultiCheckDesignerProps extends DesignerComponentProps {
     onRequiredChange: (isRequired: boolean) => void;
 }
 
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange }: MultiCheckDesignerProps) {
+export function DesignerComponent({
+    elementInstance,
+    locale,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+    onChange,
+    onRequiredChange,
+    validationError,
+    isCourseBuilder,
+}: MultiCheckDesignerProps) {
     if (elementInstance.type !== FormElementType.MultiCheck) return null;
     const dictionary = getDictionary(locale);
-    const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
+    const [isRequired, setIsRequired] = useState<boolean>(
+        elementInstance.required || false,
+    );
 
     const handleRequiredChange = () => {
-        setIsRequired(prev => !prev);
+        setIsRequired((prev) => !prev);
         onRequiredChange(!isRequired);
     };
 
@@ -48,17 +107,17 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             onDownClick={() => onDownClick?.(elementInstance.id)}
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
-            courseBuilder={false}
+            courseBuilder={isCourseBuilder}
             isChecked={isRequired}
             onChange={handleRequiredChange}
+            validationError={validationError}
         >
             <MultipleChoiceEdit
                 locale={locale}
-                initialTitle={elementInstance.title || ""}
+                initialTitle={elementInstance.title || ''}
                 initialOptions={elementInstance.options || []}
-                onChange={onChange} />
-
-
+                onChange={onChange}
+            />
         </DesignerLayout>
     );
 }
@@ -71,36 +130,60 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
  * @param {SubmitFunction} [props.submitValue] - Function to handle submission of the form element value
  * @returns {JSX.Element|null} - Rendered component or null if element type doesn't match
  */
-export function FormComponent({ elementInstance, submitValue }: { elementInstance: FormElement; submitValue?: SubmitFunction }) {
+export function FormComponent({
+    elementInstance,
+    submitValue,
+    locale,
+}: FormComponentProps) {
     const isMultiCheck = elementInstance.type === FormElementType.MultiCheck;
 
-    const [options, setOptions] = useState<optionsType[]>(isMultiCheck ? elementInstance.options : []);
+    const [options, setOptions] = useState<optionsType[]>(
+        isMultiCheck ? elementInstance.options : [],
+    );
 
     if (!isMultiCheck) return null;
 
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({
+        elementInstance,
+        dictionary,
+        context: 'coach',
+    });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={dictionary.components.lessons.elementValidationText}
+                description={validationError}
+            />
+        );
+    }
+
     const handleOptionChange = (option: string) => {
-        setOptions(prevOptions => {
-            const newOptions = prevOptions.map(opt => ({
+        setOptions((prevOptions) => {
+            const newOptions = prevOptions.map((opt) => ({
                 ...opt,
-                isSelected: opt.name === option ? !opt.isSelected : opt.isSelected
+                isSelected:
+                    opt.name === option ? !opt.isSelected : opt.isSelected,
             }));
 
             // Notify form builder of the change
             if (submitValue) {
                 const updatedElement = {
                     ...elementInstance,
-                    options: newOptions.map(opt => ({
+                    options: newOptions.map((opt) => ({
                         id: opt.id,
                         name: opt.name,
-                        isSelected: opt.isSelected
-                    }))
+                        isSelected: opt.isSelected,
+                    })),
                 };
                 submitValue(elementInstance.id, updatedElement);
             }
 
             return newOptions;
         });
-    }
+    };
 
     return (
         <div className="text-text-primary flex flex-col gap-2">

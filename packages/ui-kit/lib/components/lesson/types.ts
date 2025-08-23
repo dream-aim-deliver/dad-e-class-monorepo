@@ -15,6 +15,7 @@ export type valueType = preAssessmentValueType | courseBuilderValueType;
  interface ValidationProps {
     elementInstance: LessonElement;
     dictionary: TDictionary;
+    context?: 'coach' | 'student'; // coach = validate element structure (designer + preview), student = validate user input
 }
 
 export type ElementValidator = (props: ValidationProps) => string | undefined;

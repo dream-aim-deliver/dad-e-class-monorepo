@@ -12,7 +12,10 @@ interface DefaultErrorProps {
 // TODO: properly design the default error
 export default function DefaultError(props: DefaultErrorProps) {
     const dictionary = getDictionary(props.locale);
-    const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? '';
+    const contactEmail =
+        (typeof process !== 'undefined' &&
+            process?.env?.NEXT_PUBLIC_CONTACT_EMAIL) ||
+        '';
     const defaultDescription =
         dictionary.components.defaultError.description.replace(
             '{contactEmail}',
@@ -20,19 +23,17 @@ export default function DefaultError(props: DefaultErrorProps) {
         );
 
     return (
-        <div className='px-20'>
-            <Banner
-                title={props.title || dictionary.components.defaultError.title}
-                description={props.description || defaultDescription}
-                style="error"
-                button={
-                    props.onRetry && {
-                        onClick: props.onRetry,
-                        label: dictionary.components.defaultError.retry,
-                    }
+        <Banner
+            title={props.title || dictionary.components.defaultError.title}
+            description={props.description || defaultDescription}
+            style="error"
+            button={
+                props.onRetry && {
+                    onClick: props.onRetry,
+                    label: dictionary.components.defaultError.retry,
                 }
-                className={props.className}
-            />
-        </div>
+            }
+            className={props.className}
+        />
     );
 }

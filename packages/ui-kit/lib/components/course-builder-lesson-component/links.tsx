@@ -14,6 +14,32 @@ import { fileMetadata, shared } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { IconPlus } from '../icons/icon-plus';
 import { set } from 'zod';
+import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
+
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.Links)
+        return dictionary.components.lessons.typeValidationText;
+
+    // Check if at least one link is provided
+    if (!elementInstance.links || elementInstance.links.length === 0) {
+        return dictionary.components.linkLesson.linkCountValidationText;
+    }
+
+    // Validate each link has non-empty title and URL
+    for (const link of elementInstance.links) {
+        if (!link.title || link.title.trim().length === 0) {
+            return;
+        }
+        if (!link.url || link.url.trim().length === 0) {
+            return dictionary.components.linkLesson.urlValidationText;
+        }
+    }
+
+    return undefined;
+};
 
 const linksElement: CourseElementTemplate = {
     type: CourseElementType.Links,
@@ -32,7 +58,10 @@ interface LinkDesignerComponentProps extends DesignerComponentProps {
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata>;
-    onImageReady: (fileMetadata: fileMetadata.TFileMetadata, index: number) => void;
+    onImageReady: (
+        fileMetadata: fileMetadata.TFileMetadata,
+        index: number,
+    ) => void;
     onLinkDelete: (index: number) => void;
     onLinkEdit: (data: shared.TLink, index: number) => void;
     onDeleteIcon: (index: number) => void;
@@ -51,6 +80,7 @@ export function DesignerComponent({
     onLinkEdit,
     onDeleteIcon,
     onClickAddLink,
+    validationError,
 }: LinkDesignerComponentProps) {
     if (elementInstance.type !== CourseElementType.Links) return null;
 
@@ -67,6 +97,7 @@ export function DesignerComponent({
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             <div className="flex flex-col items-center justify-center gap-[10px] w-full">
                 {elementInstance.links?.map((link, index) =>
@@ -132,18 +163,31 @@ export function DesignerComponent({
 export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.Links) return null;
 
-  return (
-    <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
-      {elementInstance.links.map((link, index) => (
-        <LinkPreview
-          key={`link-${elementInstance.id}-${index}`}
-          title={link.title as string}
-          url={link.url as string}
-          customIcon={link.customIcon}
-        />
-      ))}
-    </div>
-  );
-};
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={dictionary.components.lessons.elementValidationText}
+                description={validationError}
+            />
+        );
+    }
+
+    return (
+        <div className="flex flex-col gap-4 p-4 bg-card-fill border-[1px] border-card-stroke rounded-medium w-full">
+            {elementInstance.links.map((link, index) => (
+                <LinkPreview
+                    key={`link-${elementInstance.id}-${index}`}
+                    title={link.title as string}
+                    url={link.url as string}
+                    customIcon={link.customIcon}
+                />
+            ))}
+        </div>
+    );
+}
 
 export default linksElement;

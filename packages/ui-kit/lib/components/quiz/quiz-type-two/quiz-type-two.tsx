@@ -1,17 +1,81 @@
-import React, { FC } from "react";
-import { Button } from "../../button";
-import { InputField } from "../../input-field";
-import { RadioButton } from "../../radio-button";
-import { IconButton } from "../../icon-button";
-import { IconTrashAlt } from "../../icons/icon-trash-alt";
-import { getDictionary, TLocale } from "@maany_shr/e-class-translations";
-import { TextAreaInput } from "../../text-areaInput";
-import { TextInput } from "../../text-input";
-import { QuizTypeTwoElement } from "../../course-builder-lesson-component/types";
-import Banner from "../../banner";
-import { Uploader } from "../../drag-and-drop-uploader/uploader";
-import { fileMetadata } from "@maany_shr/e-class-models";
-import { CourseElementType } from "../../course-builder/types";
+import React, { FC } from 'react';
+import { Button } from '../../button';
+import { InputField } from '../../input-field';
+import { RadioButton } from '../../radio-button';
+import { IconButton } from '../../icon-button';
+import { IconTrashAlt } from '../../icons/icon-trash-alt';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import { TextAreaInput } from '../../text-areaInput';
+import { TextInput } from '../../text-input';
+import { QuizTypeTwoElement } from '../../course-builder-lesson-component/types';
+import Banner from '../../banner';
+import { Uploader } from '../../drag-and-drop-uploader/uploader';
+import { fileMetadata } from '@maany_shr/e-class-models';
+import { CourseElementType } from '../../course-builder/types';
+import { ElementValidator } from '../../lesson/types';
+
+// Quiz Type Two Validation
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.QuizTypeTwo)
+        return dictionary.components.quiz.quizTypeTwo.validationErrors
+            .wrongElementType;
+
+    const quiz = elementInstance as QuizTypeTwoElement;
+
+    // Title non empty
+    if (!quiz.title || quiz.title.trim() === '') {
+        return dictionary.components.quiz.quizTypeTwo.validationErrors
+            .titleRequired;
+    }
+
+    // Description non empty
+    if (!quiz.description || quiz.description.trim() === '') {
+        return dictionary.components.quiz.quizTypeTwo.validationErrors
+            .descriptionRequired;
+    }
+
+    // File image attached
+    if (!quiz.imageFile) {
+        return dictionary.components.quiz.quizTypeTwo.validationErrors
+            .imageRequired;
+    }
+
+    // Each group has a non empty title and at least one option
+    if (!quiz.groups || quiz.groups.length === 0) {
+        return dictionary.components.quiz.quizTypeTwo.validationErrors
+            .atLeastOneGroup;
+    }
+
+    for (const group of quiz.groups) {
+        if (!group.title || group.title.trim() === '') {
+            return dictionary.components.quiz.quizTypeTwo.validationErrors
+                .groupTitleRequired;
+        }
+
+        if (!group.options || group.options.length === 0) {
+            return dictionary.components.quiz.quizTypeTwo.validationErrors
+                .atLeastOneOptionPerGroup;
+        }
+
+        // All options have non empty titles
+        for (const option of group.options) {
+            if (!option.name || option.name.trim() === '') {
+                return dictionary.components.quiz.quizTypeTwo.validationErrors
+                    .optionNamesRequired;
+            }
+        }
+
+        // One option chosen as correct per group
+        if (!group.options.some((option) => option.correct)) {
+            return dictionary.components.quiz.quizTypeTwo.validationErrors
+                .correctOptionRequiredPerGroup;
+        }
+    }
+
+    return undefined;
+};
 
 /**
  * A component for creating and editing a matching-type quiz question.
@@ -37,7 +101,7 @@ import { CourseElementType } from "../../course-builder/types";
  * @param onFileDelete A callback function triggered when a file is deleted. It receives the ID of the deleted file.
  * @param onFileDownload A callback function triggered when a file is downloaded. It receives the ID of the file to be downloaded.
  * @param onUploadComplete A callback function triggered when a file upload is completed.
- * 
+ *
  * It receives the updated `QuizTypeTwoElement` object.
  *
  * @example
@@ -83,194 +147,234 @@ interface QuizTypeTwoProps {
 }
 
 const QuizTypeTwo: FC<QuizTypeTwoProps> = ({
-  element,
-  locale,
-  onChange,
-  onFileChange,
-  onFileDelete,
-  onFileDownload,
-  onUploadComplete,
-  uploadError,
+    element,
+    locale,
+    onChange,
+    onFileChange,
+    onFileDelete,
+    onFileDownload,
+    onUploadComplete,
+    uploadError,
 }) => {
-  const dictionary = getDictionary(locale);
+    const dictionary = getDictionary(locale);
 
-  // Call parent onChange with updated fields
-  const handleChange = (updated: Partial<QuizTypeTwoElement>) => {
-    onChange({
-      type: CourseElementType.QuizTypeTwo,
-      id: element.id,
-      title: updated.title ?? element.title,
-      description: updated.description ?? element.description,
-      imageFile: updated.imageFile ?? element.imageFile,
-      groups: updated.groups ?? element.groups,
-    });
-  };
+    // Call parent onChange with updated fields
+    const handleChange = (updated: Partial<QuizTypeTwoElement>) => {
+        onChange({
+            type: CourseElementType.QuizTypeTwo,
+            id: element.id,
+            title: updated.title ?? element.title,
+            description: updated.description ?? element.description,
+            imageFile: updated.imageFile ?? element.imageFile,
+            groups: updated.groups ?? element.groups,
+        });
+    };
 
-  const handleTitleChange = (value: string) => handleChange({ title: value });
-  const handleDescriptionChange = (value: string) => handleChange({ description: value });
+    const handleTitleChange = (value: string) => handleChange({ title: value });
+    const handleDescriptionChange = (value: string) =>
+        handleChange({ description: value });
 
-  const handleGroupTitleChange = (groupIdx: number, value: string) => {
-    const updatedGroups = element.groups.map((grp, i) =>
-      i === groupIdx ? { ...grp, title: value } : grp
-    );
-    handleChange({ groups: updatedGroups });
-  };
+    const handleGroupTitleChange = (groupIdx: number, value: string) => {
+        const updatedGroups = element.groups.map((grp, i) =>
+            i === groupIdx ? { ...grp, title: value } : grp,
+        );
+        handleChange({ groups: updatedGroups });
+    };
 
-  const handleOptionTextChange = (groupIdx: number, optionIdx: number, value: string) => {
-    const updatedGroups = element.groups.map((grp, i) => {
-      if (i !== groupIdx) return grp;
-      const updatedOptions = grp.options.map((opt, j) =>
-        j === optionIdx ? { ...opt, name: value } : opt
-      );
-      return { ...grp, options: updatedOptions };
-    });
-    handleChange({ groups: updatedGroups });
-  };
+    const handleOptionTextChange = (
+        groupIdx: number,
+        optionIdx: number,
+        value: string,
+    ) => {
+        const updatedGroups = element.groups.map((grp, i) => {
+            if (i !== groupIdx) return grp;
+            const updatedOptions = grp.options.map((opt, j) =>
+                j === optionIdx ? { ...opt, name: value } : opt,
+            );
+            return { ...grp, options: updatedOptions };
+        });
+        handleChange({ groups: updatedGroups });
+    };
 
-  const handleCorrectAnswerChange = (groupIdx: number, optionIdx: number) => {
-    const updatedGroups = element.groups.map((grp, i) => {
-      if (i !== groupIdx) return grp;
-      const updatedOptions = grp.options.map((opt, j) => ({
-        ...opt,
-        correct: j === optionIdx,
-      }));
-      return { ...grp, options: updatedOptions };
-    });
-    handleChange({ groups: updatedGroups });
-  };
+    const handleCorrectAnswerChange = (groupIdx: number, optionIdx: number) => {
+        const updatedGroups = element.groups.map((grp, i) => {
+            if (i !== groupIdx) return grp;
+            const updatedOptions = grp.options.map((opt, j) => ({
+                ...opt,
+                correct: j === optionIdx,
+            }));
+            return { ...grp, options: updatedOptions };
+        });
+        handleChange({ groups: updatedGroups });
+    };
 
-  const handleAddChoice = (groupIdx: number) => {
-    const updatedGroups = element.groups.map((grp, i) => {
-      if (i !== groupIdx) return grp;
-      return {
-        ...grp,
-        options: [...grp.options, { id: 0, name: '', correct: false }],
-      };
-    });
-    handleChange({ groups: updatedGroups });
-  };
+    const handleAddChoice = (groupIdx: number) => {
+        const updatedGroups = element.groups.map((grp, i) => {
+            if (i !== groupIdx) return grp;
+            return {
+                ...grp,
+                options: [...grp.options, { id: 0, name: '', correct: false }],
+            };
+        });
+        handleChange({ groups: updatedGroups });
+    };
 
-  const handleDeleteChoice = (groupIdx: number, optionIdx: number) => {
-    const updatedGroups = element.groups.map((grp, i) => {
-      if (i !== groupIdx) return grp;
-      const remaining = grp.options.filter((_, j) => j !== optionIdx);
-      // Reassign correct if needed
-      if (grp.options[optionIdx].correct && remaining.length > 0) {
-        remaining[0].correct = true;
-      }
-      return { ...grp, options: remaining };
-    });
-    handleChange({ groups: updatedGroups });
-  };
+    const handleDeleteChoice = (groupIdx: number, optionIdx: number) => {
+        const updatedGroups = element.groups.map((grp, i) => {
+            if (i !== groupIdx) return grp;
+            const remaining = grp.options.filter((_, j) => j !== optionIdx);
+            // Reassign correct if needed
+            if (grp.options[optionIdx].correct && remaining.length > 0) {
+                remaining[0].correct = true;
+            }
+            return { ...grp, options: remaining };
+        });
+        handleChange({ groups: updatedGroups });
+    };
 
-  return (
-    <div className="flex flex-col gap-4 w-full">
-      <p className="text-md text-base-white leading-[150%]">
-        {dictionary.components.quiz.quizTypeTwo.headingText}
-      </p>
-      {/* Title and Description Inputs */}
-      <div className="flex flex-col gap-2">
-        <TextInput
-          inputField={{
-            className: "w-full",
-            value: element.title,
-            setValue: handleTitleChange,
-            inputText: dictionary.components.quiz.enterTitleText,
-          }}
-          label={dictionary.components.quiz.quizTitleText}
-        />
-        <TextAreaInput
-          label={dictionary.components.quiz.descriptionText}
-          placeholder={dictionary.components.quiz.enterDescriptionText}
-          value={element.description}
-          setValue={handleDescriptionChange}
-        />
-      </div>
-      <div className="flex flex-col gap-[18px]">
-        {/* Image Uploader */}
-        <Uploader
-          type="single"
-          variant="image"
-          file={element.imageFile}
-          onFilesChange={(file, abortSignal) => onFileChange(file, abortSignal)}
-          onDelete={(id) => onFileDelete(id, 0)}
-          onDownload={(id) => onFileDownload(id)}
-          onUploadComplete={(file) => onUploadComplete(file, 0)}
-          locale={locale}
-          className="w-full"
-          maxSize={5}
-          isDeletionAllowed
-        />
-        {/* error */}
-        {uploadError && (
-          <Banner
-            style="error"
-            title={uploadError}
-            className="w-full"
-          />
-        )}
-        {/* Groups Section */}
-        <div className="flex flex-col md:flex-row w-full">
-          {element.groups.map((group, groupIdx) => (
-            <React.Fragment key={groupIdx}>
-              <div key={groupIdx} className="flex flex-col gap-[18px] w-full">
-                <InputField
-                  className="w-full"
-                  inputText={dictionary.components.quiz.quizTypeTwo.groupTitleText}
-                  value={group.title}
-                  setValue={(value) => handleGroupTitleChange(groupIdx, value)}
+    return (
+        <div className="flex flex-col gap-4 w-full">
+            <p className="text-md text-base-white leading-[150%]">
+                {dictionary.components.quiz.quizTypeTwo.headingText}
+            </p>
+            {/* Title and Description Inputs */}
+            <div className="flex flex-col gap-2">
+                <TextInput
+                    inputField={{
+                        className: 'w-full',
+                        value: element.title,
+                        setValue: handleTitleChange,
+                        inputText: dictionary.components.quiz.enterTitleText,
+                    }}
+                    label={dictionary.components.quiz.quizTitleText}
                 />
-                <div className="flex flex-col gap-3">
-                  {group.options.map((option, optionIdx) => (
-                    <div key={optionIdx} className="flex gap-2 items-center">
-                      <div className="w-fit">
-                        <RadioButton
-                          name={`group-${groupIdx}`}
-                          value={`option-${optionIdx}`}
-                          checked={option.correct}
-                          onChange={() =>
-                            handleCorrectAnswerChange(groupIdx, optionIdx)
-                          }
-                        />
-                      </div>
-                      <InputField
+                <TextAreaInput
+                    label={dictionary.components.quiz.descriptionText}
+                    placeholder={
+                        dictionary.components.quiz.enterDescriptionText
+                    }
+                    value={element.description}
+                    setValue={handleDescriptionChange}
+                />
+            </div>
+            <div className="flex flex-col gap-[18px]">
+                {/* Image Uploader */}
+                <Uploader
+                    type="single"
+                    variant="image"
+                    file={element.imageFile}
+                    onFilesChange={(file, abortSignal) =>
+                        onFileChange(file, abortSignal)
+                    }
+                    onDelete={(id) => onFileDelete(id, 0)}
+                    onDownload={(id) => onFileDownload(id)}
+                    onUploadComplete={(file) => onUploadComplete(file, 0)}
+                    locale={locale}
+                    className="w-full"
+                    maxSize={5}
+                    isDeletionAllowed
+                />
+                {/* error */}
+                {uploadError && (
+                    <Banner
+                        style="error"
+                        title={uploadError}
                         className="w-full"
-                        inputText={dictionary.components.quiz.quizTypeTwo.radioButtonText}
-                        value={option.name}
-                        setValue={(val) => handleOptionTextChange(groupIdx, optionIdx, val)}
-                      />
-                      <IconButton
-                        data-testid={`delete-choice-${groupIdx}-${optionIdx}`}
-                        styles="text"
-                        icon={<IconTrashAlt />}
-                        size="medium"
-                        onClick={() =>
-                          handleDeleteChoice(groupIdx, optionIdx)
-                        }
-                        disabled={group.options.length <= 1}
-                      />
-                    </div>
-                  ))}
+                    />
+                )}
+                {/* Groups Section */}
+                <div className="flex flex-col md:flex-row w-full">
+                    {element.groups.map((group, groupIdx) => (
+                        <React.Fragment key={groupIdx}>
+                            <div
+                                key={groupIdx}
+                                className="flex flex-col gap-[18px] w-full"
+                            >
+                                <InputField
+                                    className="w-full"
+                                    inputText={
+                                        dictionary.components.quiz.quizTypeTwo
+                                            .groupTitleText
+                                    }
+                                    value={group.title}
+                                    setValue={(value) =>
+                                        handleGroupTitleChange(groupIdx, value)
+                                    }
+                                />
+                                <div className="flex flex-col gap-3">
+                                    {group.options.map((option, optionIdx) => (
+                                        <div
+                                            key={optionIdx}
+                                            className="flex gap-2 items-center"
+                                        >
+                                            <div className="w-fit">
+                                                <RadioButton
+                                                    name={`group-${groupIdx}`}
+                                                    value={`option-${optionIdx}`}
+                                                    checked={option.correct}
+                                                    onChange={() =>
+                                                        handleCorrectAnswerChange(
+                                                            groupIdx,
+                                                            optionIdx,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            <InputField
+                                                className="w-full"
+                                                inputText={
+                                                    dictionary.components.quiz
+                                                        .quizTypeTwo
+                                                        .radioButtonText
+                                                }
+                                                value={option.name}
+                                                setValue={(val) =>
+                                                    handleOptionTextChange(
+                                                        groupIdx,
+                                                        optionIdx,
+                                                        val,
+                                                    )
+                                                }
+                                            />
+                                            <IconButton
+                                                data-testid={`delete-choice-${groupIdx}-${optionIdx}`}
+                                                styles="text"
+                                                icon={<IconTrashAlt />}
+                                                size="medium"
+                                                onClick={() =>
+                                                    handleDeleteChoice(
+                                                        groupIdx,
+                                                        optionIdx,
+                                                    )
+                                                }
+                                                disabled={
+                                                    group.options.length <= 1
+                                                }
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                                <Button
+                                    variant="secondary"
+                                    onClick={() => handleAddChoice(groupIdx)}
+                                    text={
+                                        dictionary.components.quiz.addChoiceText
+                                    }
+                                />
+                            </div>
+                            {/* Divider between groups - not after last group */}
+                            {groupIdx !== element.groups.length - 1 && (
+                                <>
+                                    <div className="hidden md:flex w-[1px] bg-divider mx-4" />
+                                    <div className="md:hidden flex h-[1px] bg-divider my-4" />
+                                </>
+                            )}
+                        </React.Fragment>
+                    ))}
                 </div>
-                <Button
-                  variant="secondary"
-                  onClick={() => handleAddChoice(groupIdx)}
-                  text={dictionary.components.quiz.addChoiceText}
-                />
-              </div>
-              {/* Divider between groups - not after last group */}
-              {groupIdx !== element.groups.length - 1 && (
-                <>
-                  <div className="hidden md:flex w-[1px] bg-divider mx-4" />
-                  <div className="md:hidden flex h-[1px] bg-divider my-4" />
-                </>
-              )}
-            </React.Fragment>
-          ))}
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default QuizTypeTwo;

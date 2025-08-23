@@ -1,9 +1,65 @@
-import { useState } from "react";
-import { IconSingleChoice } from "../icons/icon-single-choice";
-import { FormElement, FormElementTemplate, SubmitFunction, FormElementType, valueType, DesignerComponentProps } from "../pre-assessment/types";
-import SingleChoicePreview, { optionsType, SingleChoiceEdit } from "../single-choice";
-import DesignerLayout from "../designer-layout";
+import { useState } from 'react';
+import { IconSingleChoice } from '../icons/icon-single-choice';
+import {
+    FormElement,
+    FormElementTemplate,
+    SubmitFunction,
+    FormElementType,
+    valueType,
+    DesignerComponentProps,
+    FormComponentProps,
+} from '../pre-assessment/types';
+import SingleChoicePreview, {
+    optionsType,
+    SingleChoiceEdit,
+} from '../single-choice';
+import DesignerLayout from '../designer-layout';
+import { ElementValidator } from '../lesson/types';
+import { getDictionary } from '@maany_shr/e-class-translations';
+import DefaultError from '../default-error';
 
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary, context = 'coach' } = props;
+
+    if (elementInstance.type !== FormElementType.SingleChoice)
+        return dictionary.components.lessons.typeValidationText;
+
+    // Student validation: Check if user has made a selection when required (actual form submission)
+    if (context === 'student') {
+        if (elementInstance.required) {
+            const hasSelection =
+                elementInstance.options &&
+                elementInstance.options.some((option) => option.isSelected);
+            if (!hasSelection) {
+                return dictionary.components.formRenderer.fieldRequired;
+            }
+        }
+        return undefined; // Student validation passed
+    }
+
+    // Coach validation: Check element structure (course builder - both designer and preview)
+    // Check if title is empty
+    if (!elementInstance.title || elementInstance.title.trim() === '') {
+        return dictionary.components.singleChoiceLesson.titleValidationText;
+    }
+
+    // Check if there is at least one option
+    if (!elementInstance.options || elementInstance.options.length === 0) {
+        return dictionary.components.singleChoiceLesson
+            .optionCountValidationText;
+    }
+
+    // Check if all option names are non-empty
+    const hasEmptyOptionName = elementInstance.options.some(
+        (option) => !option.name || option.name.trim() === '',
+    );
+    if (hasEmptyOptionName) {
+        return dictionary.components.singleChoiceLesson
+            .optionNameValidationText;
+    }
+
+    return undefined;
+};
 
 /**
  * Single Choice Element for Pre-Assessment
@@ -35,7 +91,6 @@ import DesignerLayout from "../designer-layout";
  * ```
  */
 
-
 /**
  * Template for the single choice form element
  * Defines the component's behavior, validation, and UI elements
@@ -44,20 +99,13 @@ const singleChoiceElement: FormElementTemplate = {
     type: FormElementType.SingleChoice,
     designerBtnElement: {
         icon: IconSingleChoice,
-        label: "Single Choice"
+        label: 'Single Choice',
     },
     // @ts-ignore
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: valueType) => {
-        if (elementInstance.required) {
-            return Array.isArray(value) ? (value as optionsType[]).some(opt => opt.isSelected) : false;
-        }
-        return true;
-    }
 };
-
 
 /**
  * Designer Component for Single Choice
@@ -76,35 +124,48 @@ const singleChoiceElement: FormElementTemplate = {
  * @param onDeleteClick - Callback when deleting element
  */
 
-
 interface SingleChoiceDesignerProps extends DesignerComponentProps {
     onChange: (title: string, options: optionsType[]) => void;
     onRequiredChange: (isRequired: boolean) => void;
 }
 
-// TODO: Translate
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onChange, onRequiredChange }: SingleChoiceDesignerProps) {
+export function DesignerComponent({
+    elementInstance,
+    locale,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+    onChange,
+    onRequiredChange,
+    validationError,
+    isCourseBuilder,
+}: SingleChoiceDesignerProps) {
+    const dictionary = getDictionary(locale);
+
     if (elementInstance.type !== FormElementType.SingleChoice) return null;
 
-    const [isRequired, setIsRequired] = useState<boolean>(elementInstance.required || false);
+    const [isRequired, setIsRequired] = useState<boolean>(
+        elementInstance.required || false,
+    );
 
     const handleRequiredChange = () => {
-        setIsRequired(prev => !prev);
+        setIsRequired((prev) => !prev);
         onRequiredChange(!isRequired);
     };
 
     return (
         <DesignerLayout
             type={elementInstance.type}
-            title="Single Choice"
+            title={dictionary.components.lessons.singleChoice}
             icon={<IconSingleChoice classNames="w-6 h-6" />}
             onUpClick={() => onUpClick?.(elementInstance.id)}
             onDownClick={() => onDownClick?.(elementInstance.id)}
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
-            courseBuilder={false}
+            courseBuilder={isCourseBuilder}
             isChecked={isRequired}
             onChange={handleRequiredChange}
+            validationError={validationError}
         >
             <SingleChoiceEdit
                 initialTitle={elementInstance.title}
@@ -116,7 +177,6 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
     );
 }
 
-
 /**
  * Form Component for Single Choice
  * Renders the interactive single choice selection with radio buttons
@@ -124,16 +184,40 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
  * @param elementInstance - The form element instance containing configuration
  * @param submitValue - Callback function for form submission
  */
-export function FormComponent({ elementInstance, submitValue }: { elementInstance: FormElement; submitValue?: SubmitFunction }) {
-    const isSingleChoice = elementInstance.type === FormElementType.SingleChoice;
+export function FormComponent({
+    elementInstance,
+    submitValue,
+    locale,
+}: FormComponentProps) {
+    const isSingleChoice =
+        elementInstance.type === FormElementType.SingleChoice;
 
-    const [options, setOptions] = useState<optionsType[]>(isSingleChoice ? elementInstance.options : []);
+    const [options, setOptions] = useState<optionsType[]>(
+        isSingleChoice ? elementInstance.options : [],
+    );
 
     if (!isSingleChoice) return null;
 
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({
+        elementInstance,
+        dictionary,
+        context: 'coach',
+    });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={dictionary.components.lessons.elementValidationText}
+                description={validationError}
+            />
+        );
+    }
+
     const handleOptionChange = (option: string) => {
-        setOptions(prevOptions => {
-            const newOptions = prevOptions.map(opt => ({
+        setOptions((prevOptions) => {
+            const newOptions = prevOptions.map((opt) => ({
                 ...opt,
                 isSelected: opt.name === option,
             }));
@@ -142,18 +226,18 @@ export function FormComponent({ elementInstance, submitValue }: { elementInstanc
             if (submitValue) {
                 const updatedElement = {
                     ...elementInstance,
-                    options: newOptions.map(opt => ({
+                    options: newOptions.map((opt) => ({
                         id: opt.id,
                         name: opt.name,
-                        isSelected: opt.isSelected
-                    }))
+                        isSelected: opt.isSelected,
+                    })),
                 };
                 submitValue(elementInstance.id, updatedElement);
             }
 
             return newOptions;
         });
-    }
+    };
     return (
         <div className="text-text-primary flex flex-col gap-2">
             <SingleChoicePreview

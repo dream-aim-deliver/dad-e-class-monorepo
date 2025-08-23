@@ -15,6 +15,38 @@ import { serialize, deserialize } from '../rich-text-element/serializer';
 import { getDictionary } from '@maany_shr/e-class-translations';
 import DesignerLayout from '../designer-layout';
 import { IconTextInput } from '../icons/icon-text-input';
+import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
+
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary, context = 'coach' } = props;
+
+    if (elementInstance.type !== FormElementType.TextInput)
+        return dictionary.components.lessons.typeValidationText;
+
+    // Student validation: Check if user has entered content when required (actual form submission)
+    if (context === 'student') {
+        if (elementInstance.required) {
+            if (
+                !elementInstance.content ||
+                elementInstance.content.trim() === ''
+            ) {
+                return dictionary.components.formRenderer.fieldRequired;
+            }
+        }
+        return undefined; // Student validation passed
+    }
+
+    // Coach validation: Check if helperText is provided (coach needs to configure helper text)
+    if (
+        !elementInstance.helperText ||
+        elementInstance.helperText.trim() === ''
+    ) {
+        return dictionary.components.textInputLesson.textContentValidationText;
+    }
+
+    return undefined;
+};
 
 /**
  * Template for the text input form element
@@ -30,19 +62,6 @@ const textInputElement: FormElementTemplate = {
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: valueType) => {
-        if (elementInstance.required) {
-            if (Array.isArray(value)) {
-                const content = (value as Descendant[])
-                    .map((n) => Node.string(n))
-                    .join('\n')
-                    .trim();
-                return content.length > 0;
-            }
-            return false;
-        }
-        return true;
-    },
 };
 
 /**
@@ -75,6 +94,7 @@ const textInputElement: FormElementTemplate = {
 interface TextInputDesignerComponentProps extends DesignerComponentProps {
     onRequiredChange: (isRequired: boolean) => void;
     onHelperTextChange: (helperText: string) => void;
+    isCourseBuilder: boolean;
 }
 
 export function DesignerComponent({
@@ -85,6 +105,8 @@ export function DesignerComponent({
     onDeleteClick,
     onHelperTextChange,
     onRequiredChange,
+    validationError,
+    isCourseBuilder,
 }: TextInputDesignerComponentProps) {
     if (elementInstance.type !== FormElementType.TextInput) return null;
     const dictionary = getDictionary(locale);
@@ -121,15 +143,16 @@ export function DesignerComponent({
     return (
         <DesignerLayout
             type={elementInstance.type}
-            title="Text Input"
+            title={dictionary.components.lessons.textInput}
             icon={<IconTextInput classNames="w-6 h-6" />}
             onUpClick={() => onUpClick?.(elementInstance.id)}
             onDownClick={() => onDownClick?.(elementInstance.id)}
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
-            courseBuilder={false}
+            courseBuilder={isCourseBuilder}
             isChecked={isRequired}
             onChange={handleRequiredChange}
+            validationError={validationError}
         >
             <section className="w-full flex items-center">
                 <TextInputEditor
@@ -163,6 +186,23 @@ export function FormComponent({
 }: FormComponentProps) {
     if (elementInstance.type !== FormElementType.TextInput) return null;
 
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({
+        elementInstance,
+        dictionary,
+        context: 'coach',
+    });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={dictionary.components.lessons.elementValidationText}
+                description={validationError}
+            />
+        );
+    }
+
     const onDeserializationError = (message: string, error: Error) => {
         // TODO: see how to pass a callback from the parent component to here
     };
@@ -170,8 +210,6 @@ export function FormComponent({
     const [value, setValue] = useState<Descendant[]>(
         deserialize({ serializedData: '', onError: onDeserializationError }),
     );
-
-    const dictionary = getDictionary(locale);
 
     const onLoseFocus = () => {
         if (!submitValue || !value) return;

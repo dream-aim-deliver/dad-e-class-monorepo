@@ -459,6 +459,10 @@ export const DictionarySchema = z.object({
       singleChoice: z.string(),
       heading: z.string(),
       oneOutOfThree: z.string(),
+      textInput: z.string(),
+      richText: z.string(),
+      typeValidationText: z.string(),
+      elementValidationText: z.string(),
     }),
     dateInput: z.object({
       placeholder: z.string(),
@@ -666,6 +670,15 @@ export const DictionarySchema = z.object({
       quizTypeOne: z.object({
         headingText: z.string(),
         radioButtonText: z.string(),
+        validationErrors: z.object({
+          wrongElementType: z.string(),
+          titleRequired: z.string(),
+          descriptionRequired: z.string(),
+          imageRequired: z.string(),
+          atLeastOneOption: z.string(),
+          optionNamesRequired: z.string(),
+          correctOptionRequired: z.string(),
+        }),
       }),
       quizTypeTwo: z.object({
         headingText: z.string(),
@@ -673,15 +686,45 @@ export const DictionarySchema = z.object({
         errorText: z.string(),
         groupTitleText: z.string(),
         radioButtonText: z.string(),
+        validationErrors: z.object({
+          wrongElementType: z.string(),
+          titleRequired: z.string(),
+          descriptionRequired: z.string(),
+          imageRequired: z.string(),
+          atLeastOneGroup: z.string(),
+          groupTitleRequired: z.string(),
+          atLeastOneOptionPerGroup: z.string(),
+          optionNamesRequired: z.string(),
+          correctOptionRequiredPerGroup: z.string(),
+        }),
       }),
       quizTypeThree: z.object({
         headingText: z.string(),
         choiceDescriptionText: z.string(),
+        validationErrors: z.object({
+          wrongElementType: z.string(),
+          titleRequired: z.string(),
+          descriptionRequired: z.string(),
+          atLeastOneOption: z.string(),
+          imageRequiredPerOption: z.string(),
+          descriptionRequiredPerOption: z.string(),
+          correctOptionRequired: z.string(),
+        }),
       }),
       quizTypeFour: z.object({
         headingText: z.string(),
         choiceDescriptionText: z.string(),
         correctLetterText: z.string(),
+        validationErrors: z.object({
+          wrongElementType: z.string(),
+          titleRequired: z.string(),
+          descriptionRequired: z.string(),
+          atLeastOneLabel: z.string(),
+          labelDescriptionsRequired: z.string(),
+          atLeastOneImage: z.string(),
+          imageRequiredPerImage: z.string(),
+          correctLetterRequiredPerImage: z.string(),
+        }),
       }),
       quizTypeFourStudentView: z.object({
         descriptionText: z.string(),
@@ -804,7 +847,73 @@ export const DictionarySchema = z.object({
       requirementsDescription: z.string(),
       searchCoursesPlaceholder: z.string(),
       featuredImage: z.string(),
-      removeCourse:z.string()
+      removeCourse: z.string()
+    }),
+    headingLesson: z.object({
+      headingValidationText: z.string(),
+    }),
+    multiCheckLesson: z.object({
+      titleValidationText: z.string(),
+      optionValidationText: z.string(),
+      optionNameValidationText: z.string(),
+    }),
+    oneOutOfThreeLesson: z.object({
+      titleValidationText: z.string(),
+      rowCountValidationText: z.string(),
+      rowTitleValidationText: z.string(),
+      columnTitleValidationText: z.string(),
+    }),
+    richTextLesson: z.object({
+      textContentValidationText: z.string(),
+    }),
+    singleChoiceLesson: z.object({
+      titleValidationText: z.string(),
+      optionCountValidationText: z.string(),
+      optionNameValidationText: z.string(),
+    }),
+    textInputLesson: z.object({
+      textContentValidationText: z.string(),
+      meaningfulTextValidationText: z.string(),
+    }),
+    videoLesson: z.object({
+      videoValidationText: z.string(),
+      metadataValidationText: z.string(),
+      categoryValidationText: z.string(),
+      statusValidationText: z.string(),
+      urlValidationText: z.string(),
+    }),
+    imageLesson: z.object({
+      imageValidationText: z.string(),
+      metadataValidationText: z.string(),
+      categoryValidationText: z.string(),
+      statusValidationText: z.string(),
+      urlValidationText: z.string(),
+    }),
+    imageGalleryLesson: z.object({
+      imageCountValidationText: z.string(),
+      matadataValidationText: z.string(),
+      missingPropertiesValidationText: z.string(),
+      file: z.string(),
+      image: z.string(),
+      categoryValidationText: z.string(),
+      statusValidationText: z.string(),
+      urlValidationText: z.string(),
+    }),
+    linkLesson: z.object({
+      linkCountValidationText: z.string(),
+      titleValidationText: z.string(),
+      urlValidationText: z.string(),
+    }),
+    downloadFileLesson: z.object({
+      fileCountValidationText: z.string(),
+      metadataValidationText: z.string(),
+      statusValidationText: z.string(),
+      urlValidationText: z.string(),
+    }),
+    uploadFileLesson: z.object({
+      descriptionValidationText: z.string(),
+      metadataValidationText: z.string(),
+      urlValidationText: z.string(),
     }),
     courseIntroBanner: z.object({
       title: z.string(),
