@@ -31,7 +31,7 @@ export function useSaveIntroduction({
 }) {
     const courseIntroduction = useCourseIntroductionForm();
 
-    const introductionVideoUpload = useIntroductionVideoUpload();
+    const introductionVideoUpload = useIntroductionVideoUpload(slug);
 
     return {
         courseIntroduction,

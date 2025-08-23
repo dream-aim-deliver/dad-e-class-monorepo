@@ -13,6 +13,7 @@ export const GetCourseIntroductionRequestSchema = z.object({
 export type TGetCourseIntroductionRequest = z.infer<typeof GetCourseIntroductionRequestSchema>;
 
 export const GetCourseIntroductionSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
+  courseVersion: z.number(),
   text: z.string(),
   video: VideoFileSchema,
 }));

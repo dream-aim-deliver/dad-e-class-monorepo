@@ -3,6 +3,7 @@ import { t } from '../trpc-setup';
 
 const getCourseIntroductionMock: useCaseModels.TGetCourseIntroductionSuccessResponse['data'] =
     {
+        courseVersion: 1,
         text: JSON.stringify([
             {
                 type: 'paragraph',

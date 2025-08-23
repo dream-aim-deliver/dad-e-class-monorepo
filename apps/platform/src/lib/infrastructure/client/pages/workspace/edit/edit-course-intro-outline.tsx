@@ -4,11 +4,6 @@ import {
     DefaultLoading,
     IntroductionForm,
 } from '@maany_shr/e-class-ui-kit';
-import {
-    TFileUploadRequest,
-    TFileMetadata,
-    TFileMetadataImage,
-} from 'packages/models/src/file-metadata';
 import { useCourseIntroduction } from './hooks/edit-introduction-hooks';
 import { useEffect } from 'react';
 import { useLocale } from 'next-intl';
@@ -40,7 +35,17 @@ export default function EditCourseIntroOutline({
         courseIntroduction.parseIntroductionText(
             introductionViewModel.data.text,
         );
-        setCourseVersion(5);
+        const video = introductionViewModel.data.video;
+        if (video) {
+            introductionVideoUpload.handleUploadComplete({
+                ...video,
+                status: 'available',
+                url: video.downloadUrl,
+                thumbnailUrl: video.thumbnailUrl,
+                videoId: video.playbackId,
+            });
+        }
+        setCourseVersion(introductionViewModel.data.courseVersion);
     }, [introductionViewModel]);
 
     if (!introductionViewModel) {

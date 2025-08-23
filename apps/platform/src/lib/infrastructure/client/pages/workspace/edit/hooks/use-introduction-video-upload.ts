@@ -20,8 +20,10 @@ export interface IntroductionVideoUploadState {
 }
 
 // Custom hook for video upload logic
-export const useIntroductionVideoUpload = (): IntroductionVideoUploadState => {
-    const uploadMutation = trpc.uploadCourseImage.useMutation();
+export const useIntroductionVideoUpload = (
+    slug: string,
+): IntroductionVideoUploadState => {
+    const uploadMutation = trpc.uploadIntroductionVideo.useMutation();
     const verifyMutation = trpc.verifyFile.useMutation();
 
     const [video, setVideo] = useState<fileMetadata.TFileMetadataVideo | null>(
@@ -44,6 +46,7 @@ export const useIntroductionVideoUpload = (): IntroductionVideoUploadState => {
         // For mutations, we aren't able to abort them midway.
         // Hence, we check for abort signal before each step.
         const uploadResult = await uploadMutation.mutateAsync({
+            courseSlug: slug,
             name: uploadRequest.name,
             checksum,
             mimeType: uploadRequest.file.type,
