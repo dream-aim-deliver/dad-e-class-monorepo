@@ -19,7 +19,9 @@ import EditCourseGeneral, {
     EditCourseGeneralPreview,
 } from './edit-course-general';
 import { CourseImageUploadState } from '../../common/hooks/use-course-image-upload';
-import EditCourseIntroOutline from './edit-course-intro-outline';
+import EditCourseIntroOutline, {
+    CourseIntroOutlinePreview,
+} from './edit-course-intro-outline';
 import { CourseModule } from './types';
 import { useSaveDetails } from './hooks/edit-details-hooks';
 import { useSaveIntroduction } from './hooks/edit-introduction-hooks';
@@ -380,32 +382,35 @@ function EditCourseTabContent({
                 value={TabTypes.IntroOutline}
                 className={tabContentClass}
             >
-                <Suspense fallback={<DefaultLoading locale={locale} />}>
-                    <EditCourseIntroOutline
-                        slug={slug}
-                        courseVersion={courseVersion}
-                        setCourseVersion={setCourseVersion}
-                        courseIntroduction={{
-                            ...courseIntroduction,
-                            setIntroductionText: editWrap(
-                                courseIntroduction.setIntroductionText,
-                            ),
-                        }}
-                        introductionVideoUpload={{
-                            ...introductionVideoUpload,
-                            handleUploadComplete: editWrap(
-                                introductionVideoUpload.handleUploadComplete,
-                            ),
-                            handleDelete: editWrap(
-                                introductionVideoUpload.handleDelete,
-                            ),
-                        }}
-                        outlineItems={outlineItems}
-                        setOutlineItems={setOutlineItems}
-                        accordionIconUpload={accordionIconUpload}
-                        setIsEdited={setIsEdited}
-                    />
-                </Suspense>
+                {isPreviewing && <CourseIntroOutlinePreview slug={slug} />}
+                {!isPreviewing && (
+                    <Suspense fallback={<DefaultLoading locale={locale} />}>
+                        <EditCourseIntroOutline
+                            slug={slug}
+                            courseVersion={courseVersion}
+                            setCourseVersion={setCourseVersion}
+                            courseIntroduction={{
+                                ...courseIntroduction,
+                                setIntroductionText: editWrap(
+                                    courseIntroduction.setIntroductionText,
+                                ),
+                            }}
+                            introductionVideoUpload={{
+                                ...introductionVideoUpload,
+                                handleUploadComplete: editWrap(
+                                    introductionVideoUpload.handleUploadComplete,
+                                ),
+                                handleDelete: editWrap(
+                                    introductionVideoUpload.handleDelete,
+                                ),
+                            }}
+                            outlineItems={outlineItems}
+                            setOutlineItems={setOutlineItems}
+                            accordionIconUpload={accordionIconUpload}
+                            setIsEdited={setIsEdited}
+                        />
+                    </Suspense>
+                )}
             </Tabs.Content>
             <Tabs.Content
                 value={TabTypes.CourseContent}

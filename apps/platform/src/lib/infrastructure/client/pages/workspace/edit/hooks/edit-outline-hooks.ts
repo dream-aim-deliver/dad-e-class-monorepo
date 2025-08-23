@@ -1,6 +1,4 @@
-import {
-    AccordionBuilderItem,
-} from '@maany_shr/e-class-ui-kit';
+import { AccordionBuilderItem } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../../../trpc/client';
 import { useState } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';

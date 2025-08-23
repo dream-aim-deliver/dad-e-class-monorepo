@@ -20,6 +20,8 @@ import {
     AccordionIconUploadState,
     useAccordionIconUpload,
 } from './hooks/use-accordion-icon-upload';
+import CourseIntroduction from '../../common/course-introduction';
+import CourseOutline from '../../common/course-outline';
 
 interface EditCourseIntroOutlineProps {
     slug: string;
@@ -33,6 +35,15 @@ interface EditCourseIntroOutlineProps {
         React.SetStateAction<AccordionBuilderItem[]>
     >;
     accordionIconUpload: AccordionIconUploadState;
+}
+
+export function CourseIntroOutlinePreview({ slug }: { slug: string }) {
+    return (
+        <div>
+            <CourseIntroduction courseSlug={slug} />
+            <CourseOutline courseSlug={slug} />
+        </div>
+    );
 }
 
 export default function EditCourseIntroOutline({
