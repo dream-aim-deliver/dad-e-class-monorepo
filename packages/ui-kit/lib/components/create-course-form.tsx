@@ -10,7 +10,6 @@ import { Descendant, Node } from 'slate';
 import Banner from './banner';
 import { IconCourse } from './icons/icon-course';
 import { Divider } from './divider';
-import { IconSearch } from './icons';
 
 interface CourseRequirement {
     id: number;
@@ -58,7 +57,7 @@ interface CourseFormProps extends isLocalAware {
     };
 }
 
-export interface CourseFormState {
+export interface CourseDetailsState {
     courseTitle: string;
     courseSlug: string;
     courseDescription: Descendant[];
@@ -88,7 +87,7 @@ interface UseCourseInitialState {
 // Hook for parent components to manage form state
 export function useCourseForm(
     initialState?: UseCourseInitialState,
-): CourseFormState {
+): CourseDetailsState {
     const [courseTitle, setCourseTitle] = useState(
         initialState?.courseTitle ?? '',
     );

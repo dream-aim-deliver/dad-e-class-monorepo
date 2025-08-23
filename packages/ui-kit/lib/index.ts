@@ -100,7 +100,7 @@ export { BuyCoachingSessionBanner } from './components/buy-coaching-session-bann
 
 export { Breadcrumbs } from './components/breadcrumbs';
 export * from './components/dialog';
-export { CourseForm, useCourseForm, type CourseFormState } from './components/create-course-form';
+export { CourseForm, useCourseForm, type CourseDetailsState } from './components/create-course-form';
 export * from './utils/file-utils';
 export { LessonHeader } from './components/lesson-header';
 

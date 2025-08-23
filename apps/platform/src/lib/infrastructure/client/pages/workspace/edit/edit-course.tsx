@@ -2,7 +2,7 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
-    CourseFormState,
+    CourseDetailsState,
     CourseGeneralInformationView,
     DefaultError,
     DefaultLoading,
@@ -39,44 +39,6 @@ enum TabTypes {
 
 export default function EditCourse({ slug }: EditCourseProps) {
     const locale = useLocale() as TLocale;
-
-    const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery(
-        {
-            courseSlug: slug,
-        },
-        {
-            refetchOnWindowFocus: false,
-            refetchOnReconnect: false,
-            refetchOnMount: false,
-            retry: false,
-            staleTime: Infinity,
-        },
-    );
-    const [courseViewModel, setCourseViewModel] = useState<
-        viewModels.TEnrolledCourseDetailsViewModel | undefined
-    >(undefined);
-    const { presenter: coursePresenter } =
-        useGetEnrolledCourseDetailsPresenter(setCourseViewModel);
-    coursePresenter.present(courseResponse, courseViewModel);
-
-    if (!courseViewModel) {
-        return <DefaultLoading locale={locale} />;
-    }
-
-    if (courseViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
-    }
-
-    return <EditCourseContent slug={slug} course={courseViewModel.data} />;
-}
-
-interface EditCourseContentProps {
-    slug: string;
-    course: viewModels.TEnrolledCourseDetailsSuccess;
-}
-
-function EditCourseContent({ slug, course }: EditCourseContentProps) {
-    const locale = useLocale() as TLocale;
     const {
         activeTab,
         setActiveTab,
@@ -90,7 +52,7 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
     } = useEditCourseState();
 
     const { courseVersion, setCourseVersion, errorMessage, setErrorMessage } =
-        useCourseVersionState(course.courseVersion);
+        useCourseVersionState();
 
     const {
         modules,
@@ -106,12 +68,11 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
     });
 
     const {
-        generalState,
+        courseDetails,
         courseImageUpload,
         saveCourseDetails,
         saveDetailsMutation,
     } = useCourseDetailsState({
-        course,
         slug,
         courseVersion,
         setErrorMessage,
@@ -146,14 +107,13 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
         >
             <EditCourseTabContent
                 courseVersion={courseVersion}
-                course={course}
                 activeTab={activeTab}
                 slug={slug}
                 locale={locale}
                 isPreviewing={isPreviewing}
                 isEdited={isEdited}
                 setIsEdited={setIsEdited}
-                generalState={generalState}
+                courseDetails={courseDetails}
                 courseImageUpload={courseImageUpload}
                 modules={modules}
                 setModules={setModules}
@@ -206,10 +166,8 @@ function useEditCourseState() {
     };
 }
 
-function useCourseVersionState(initialVersion: number) {
-    const [courseVersion, setCourseVersion] = useState<number | null>(
-        initialVersion,
-    );
+function useCourseVersionState() {
+    const [courseVersion, setCourseVersion] = useState<number | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     return {
@@ -221,54 +179,48 @@ function useCourseVersionState(initialVersion: number) {
 }
 
 function useCourseDetailsState({
-    course,
     slug,
     courseVersion,
     setErrorMessage,
 }: {
-    course: viewModels.TEnrolledCourseDetailsSuccess;
     slug: string;
     courseVersion: number | null;
     setErrorMessage: (message: string | null) => void;
 }) {
-    const transformCourseImage = (): fileMetadata.TFileMetadataImage | null => {
-        return course.imageFile
-            ? {
-                  ...course.imageFile,
-                  status: 'available',
-                  url: course.imageFile.downloadUrl,
-                  thumbnailUrl: course.imageFile.downloadUrl,
-              }
-            : null;
-    };
+    // const transformCourseImage = (): fileMetadata.TFileMetadataImage | null => {
+    //     return course.imageFile
+    //         ? {
+    //               ...course.imageFile,
+    //               status: 'available',
+    //               url: course.imageFile.downloadUrl,
+    //               thumbnailUrl: course.imageFile.downloadUrl,
+    //           }
+    //         : null;
+    // };
 
-    const generalState = useCourseForm({
-        courseTitle: course.title,
-        courseDescription: course.description,
-        duration: course.duration.selfStudy ?? undefined,
-    });
+    const courseDetails = useCourseForm();
 
-    const courseImageUpload = useCourseImageUpload(transformCourseImage());
+    const courseImageUpload = useCourseImageUpload();
 
-    useEffect(() => {
-        const courseImage = transformCourseImage();
-        if (!courseImage) return;
-        courseImageUpload.handleUploadComplete(courseImage);
-    }, [course]);
+    // useEffect(() => {
+    //     const courseImage = transformCourseImage();
+    //     if (!courseImage) return;
+    //     courseImageUpload.handleUploadComplete(courseImage);
+    // }, [course]);
 
     const saveDetailsMutation = trpc.saveCourseDetails.useMutation();
 
     const saveCourseDetails = async () => {
         if (!courseVersion) return;
-        if (!generalState.courseTitle) {
+        if (!courseDetails.courseTitle) {
             setErrorMessage('Course title is required');
             return;
         }
-        if (!generalState.serializeDescription()) {
+        if (!courseDetails.serializeDescription()) {
             setErrorMessage('Course description is required');
             return;
         }
-        if (Number.isNaN(generalState.duration)) {
+        if (Number.isNaN(courseDetails.duration)) {
             setErrorMessage('Course duration is invalid');
             return;
         }
@@ -281,9 +233,9 @@ function useCourseDetailsState({
         const result = await saveDetailsMutation.mutateAsync({
             courseSlug: slug,
             courseVersion: courseVersion,
-            title: generalState.courseTitle,
-            description: generalState.serializeDescription(),
-            selfStudyDuration: generalState.duration,
+            title: courseDetails.courseTitle,
+            description: courseDetails.serializeDescription(),
+            selfStudyDuration: courseDetails.duration,
             imageId: courseImageUpload.courseImage?.id,
         });
         if (!result.success) {
@@ -294,7 +246,7 @@ function useCourseDetailsState({
     };
 
     return {
-        generalState,
+        courseDetails,
         courseImageUpload,
         saveCourseDetails,
         saveDetailsMutation,
@@ -427,13 +379,12 @@ function GeneralTabPreview({ course }: GeneralTabPreviewProps) {
 
 interface EditCourseTabContentProps {
     activeTab: TabTypes;
-    course: viewModels.TEnrolledCourseDetailsSuccess;
     slug: string;
     locale: TLocale;
     isPreviewing: boolean;
     isEdited: boolean;
     setIsEdited: (edited: boolean) => void;
-    generalState: CourseFormState;
+    courseDetails: CourseDetailsState;
     courseImageUpload: CourseImageUploadState;
     modules: CourseModule[];
     setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
@@ -448,12 +399,11 @@ function EditCourseTabContent({
     activeTab,
     courseVersion,
     slug,
-    course,
     locale,
     isPreviewing,
     isEdited,
     setIsEdited,
-    generalState,
+    courseDetails,
     courseImageUpload,
     modules,
     setModules,
@@ -465,28 +415,33 @@ function EditCourseTabContent({
     return (
         <>
             <Tabs.Content value={TabTypes.General} className={tabContentClass}>
-                {isPreviewing && <GeneralTabPreview course={course} />}
+                {/* {isPreviewing && <GeneralTabPreview />} */}
                 {!isPreviewing && (
-                    <EditCourseGeneral
-                        courseVersion={courseVersion}
-                        slug={slug}
-                        courseForm={{
-                            ...generalState,
-                            setCourseTitle: editWrap(
-                                generalState.setCourseTitle,
-                            ),
-                            setCourseDescription: editWrap(
-                                generalState.setCourseDescription,
-                            ),
-                            setDuration: editWrap(generalState.setDuration),
-                        }}
-                        uploadImage={{
-                            ...courseImageUpload,
-                            handleDelete: editWrap(
-                                courseImageUpload.handleDelete,
-                            ),
-                        }}
-                    />
+                    <Suspense fallback={<DefaultLoading locale={locale} />}>
+                        <EditCourseGeneral
+                            courseVersion={courseVersion}
+                            setCourseVersion={setCourseVersion}
+                            slug={slug}
+                            courseForm={{
+                                ...courseDetails,
+                                setCourseTitle: editWrap(
+                                    courseDetails.setCourseTitle,
+                                ),
+                                setCourseDescription: editWrap(
+                                    courseDetails.setCourseDescription,
+                                ),
+                                setDuration: editWrap(
+                                    courseDetails.setDuration,
+                                ),
+                            }}
+                            uploadImage={{
+                                ...courseImageUpload,
+                                handleDelete: editWrap(
+                                    courseImageUpload.handleDelete,
+                                ),
+                            }}
+                        />
+                    </Suspense>
                 )}
             </Tabs.Content>
             <Tabs.Content

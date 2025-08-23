@@ -1,18 +1,65 @@
-import { fileMetadata } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { CourseForm, CourseFormState } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { CourseImageUploadState } from '../../common/hooks/use-course-image-upload';
+import {
+    CourseDetailsState,
+    CourseForm,
+    DefaultError,
+    DefaultLoading,
+} from '@maany_shr/e-class-ui-kit';
+import React, { useEffect, useState } from 'react';
+import { trpc } from '../../../trpc/client';
+import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
+import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
 
 interface EditCourseGeneralProps {
     slug: string;
     courseVersion: number | null;
-    courseForm: CourseFormState;
+    setCourseVersion: React.Dispatch<React.SetStateAction<number | null>>;
+    courseForm: CourseDetailsState;
     uploadImage: CourseImageUploadState;
 }
 
 export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     const locale = useLocale() as TLocale;
+
+    const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery(
+        {
+            courseSlug: props.slug,
+        },
+        {
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
+            refetchOnMount: false,
+            retry: false,
+            staleTime: Infinity,
+        },
+    );
+    const [courseViewModel, setCourseViewModel] = useState<
+        viewModels.TEnrolledCourseDetailsViewModel | undefined
+    >(undefined);
+    const { presenter: coursePresenter } =
+        useGetEnrolledCourseDetailsPresenter(setCourseViewModel);
+    coursePresenter.present(courseResponse, courseViewModel);
+
+    const [isFormLoading, setIsFormLoading] = useState(true);
+
+    useEffect(() => {
+        if (!courseViewModel) return;
+        props.courseForm.setCourseTitle(courseViewModel.data.title);
+        props.courseForm.parseDescription(courseViewModel.data.description);
+        props.courseForm.setDuration(courseViewModel.data.duration);
+        props.setCourseVersion(courseViewModel.data.courseVersion);
+        setIsFormLoading(false);
+    }, [courseViewModel]);
+
+    if (!courseViewModel || isFormLoading) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (courseViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
 
     return (
         <CourseForm
