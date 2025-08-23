@@ -3,15 +3,13 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
     CourseDetailsState,
-    CourseGeneralInformationView,
     DefaultError,
     DefaultLoading,
-    SectionHeading,
     Tabs,
     useCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import EditCourseStructure from './edit-course-structure';
 import { useSaveStructure } from './hooks/save-hooks';
 import EditHeader from './components/edit-header';
@@ -20,8 +18,6 @@ import EditCourseGeneral, {
     EditCourseGeneralPreview,
 } from './edit-course-general';
 import { trpc } from '../../../trpc/client';
-import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
-import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
 import {
     CourseImageUploadState,
     useCourseImageUpload,
@@ -189,47 +185,33 @@ function useCourseDetailsState({
     courseVersion: number | null;
     setErrorMessage: (message: string | null) => void;
 }) {
-    // const transformCourseImage = (): fileMetadata.TFileMetadataImage | null => {
-    //     return course.imageFile
-    //         ? {
-    //               ...course.imageFile,
-    //               status: 'available',
-    //               url: course.imageFile.downloadUrl,
-    //               thumbnailUrl: course.imageFile.downloadUrl,
-    //           }
-    //         : null;
-    // };
-
     const courseDetails = useCourseForm();
 
     const courseImageUpload = useCourseImageUpload();
 
-    // useEffect(() => {
-    //     const courseImage = transformCourseImage();
-    //     if (!courseImage) return;
-    //     courseImageUpload.handleUploadComplete(courseImage);
-    // }, [course]);
-
     const saveDetailsMutation = trpc.saveCourseDetails.useMutation();
 
-    const saveCourseDetails = async () => {
-        if (!courseVersion) return;
+    const validateCourseDetails = () => {
         if (!courseDetails.courseTitle) {
             setErrorMessage('Course title is required');
-            return;
+            return false;
         }
         if (!courseDetails.serializeDescription()) {
             setErrorMessage('Course description is required');
-            return;
+            return false;
         }
         if (Number.isNaN(courseDetails.duration)) {
             setErrorMessage('Course duration is invalid');
-            return;
+            return false;
         }
-        if (!courseImageUpload.courseImage) {
-            setErrorMessage('Course image is required');
-            return;
-        }
+        return true;
+    };
+
+    const utils = trpc.useUtils();
+
+    const saveCourseDetails = async () => {
+        if (!courseVersion) return;
+        if (!validateCourseDetails()) return;
 
         setErrorMessage(null);
         const result = await saveDetailsMutation.mutateAsync({
@@ -244,7 +226,7 @@ function useCourseDetailsState({
             setErrorMessage(result.data.message);
             return;
         }
-        window.location.reload();
+        utils.getEnrolledCourseDetails.invalidate();
     };
 
     return {

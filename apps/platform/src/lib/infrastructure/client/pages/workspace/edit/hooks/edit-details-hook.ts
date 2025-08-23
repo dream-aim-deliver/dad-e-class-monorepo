@@ -13,7 +13,6 @@ export function useCourseDetails(slug: string) {
             refetchOnReconnect: false,
             refetchOnMount: true,
             retry: false,
-            // staleTime: Infinity,
         },
     );
     const [courseViewModel, setCourseViewModel] = useState<
