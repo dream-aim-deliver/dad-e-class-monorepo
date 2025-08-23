@@ -65,11 +65,16 @@ function RichTextComponent({
     );
 }
 
-function HeadingComponent({ formElement, key }: ComponentRendererProps) {
+function HeadingComponent({
+    formElement,
+    key,
+    locale,
+}: ComponentRendererProps) {
     return (
         <HeadingFormComponent
             key={key}
             elementInstance={formElement as FormElement}
+            locale={locale}
         />
     );
 }
@@ -96,6 +101,7 @@ function SingleChoiceComponent({
     formElement,
     elementProgress,
     key,
+    locale,
 }: ComponentRendererProps) {
     return (
         <SingleChoiceFormComponent
@@ -104,6 +110,7 @@ function SingleChoiceComponent({
             submitValue={(id, element) => {
                 elementProgress.current.set(id, element);
             }}
+            locale={locale}
         />
     );
 }
@@ -112,6 +119,7 @@ function MultiCheckComponent({
     formElement,
     elementProgress,
     key,
+    locale,
 }: ComponentRendererProps) {
     return (
         <MultiCheckFormComponent
@@ -120,6 +128,7 @@ function MultiCheckComponent({
             submitValue={(id, element) => {
                 elementProgress.current.set(id, element);
             }}
+            locale={locale}
         />
     );
 }
@@ -128,6 +137,7 @@ function OneOutOfThreeComponent({
     formElement,
     elementProgress,
     key,
+    locale,
 }: ComponentRendererProps) {
     return (
         <OneOutOfThreeFormComponent
@@ -136,6 +146,7 @@ function OneOutOfThreeComponent({
             submitValue={(id, element) => {
                 elementProgress.current.set(id, element);
             }}
+            locale={locale}
         />
     );
 }
@@ -264,7 +275,11 @@ function QuizTypeOneComponent({
     locale,
 }: ComponentRendererProps) {
     return (
-        <QuizFormComponentWrapper locale={locale} key={key}>
+        <QuizFormComponentWrapper
+            locale={locale}
+            key={key}
+            elementInstance={formElement as QuizTypeOneElement}
+        >
             <QuizTypeOneStudentView
                 key={key}
                 elementInstance={formElement as QuizTypeOneElement}
@@ -280,7 +295,11 @@ function QuizTypeTwoComponent({
     locale,
 }: ComponentRendererProps) {
     return (
-        <QuizFormComponentWrapper locale={locale} key={key}>
+        <QuizFormComponentWrapper
+            locale={locale}
+            key={key}
+            elementInstance={formElement as QuizTypeTwoElement}
+        >
             <QuizTypeTwoStudentView
                 key={key}
                 elementInstance={formElement as QuizTypeTwoElement}
@@ -296,7 +315,11 @@ function QuizTypeThreeComponent({
     locale,
 }: ComponentRendererProps) {
     return (
-        <QuizFormComponentWrapper locale={locale} key={key}>
+        <QuizFormComponentWrapper
+            locale={locale}
+            key={key}
+            elementInstance={formElement as QuizTypeThreeElement}
+        >
             <QuizTypeThreeStudentView
                 key={key}
                 elementInstance={formElement as QuizTypeThreeElement}
@@ -312,7 +335,11 @@ function QuizTypeFourComponent({
     locale,
 }: ComponentRendererProps) {
     return (
-        <QuizFormComponentWrapper locale={locale} key={key}>
+        <QuizFormComponentWrapper
+            locale={locale}
+            key={key}
+            elementInstance={formElement as QuizTypeFourElement}
+        >
             <QuizTypeFourStudentView
                 key={key}
                 elementInstance={formElement as QuizTypeFourElement}

@@ -1,62 +1,37 @@
 import { CourseElementType } from "../course-builder/types";
 import { getValidationError as getRichTextValidationError } from "../lesson-components/rich-text";
+import { getValidationError as getOneOutOfThreeValidationError } from "../lesson-components/one-out-of-three";
+import { getValidationError as getSingleChoiceValidationError } from "../lesson-components/single-choice";
+import { getValidationError as getMultiCheckValidationError } from "../lesson-components/multi-check";
+import { getValidationError as getTextInputValidationError } from "../lesson-components/text-input";
+import { getValidationError as getHeadingTextValidationError } from "../lesson-components/heading-lesson";
+import { getValidationError as getVideoValidationError } from "../course-builder-lesson-component/video";
+import { getValidationError as getImageValidationError } from "../course-builder-lesson-component/image";
+import { getValidationError as getImageGalleryValidationError } from "../course-builder-lesson-component/image-gallery";
+import { getValidationError as getLinksValidationError } from "../course-builder-lesson-component/links";
+import { getValidationError as getDownloadFilesValidationError } from "../course-builder-lesson-component/download-files-lesson";
+import { getValidationError as getUploadFilesValidationError } from "../course-builder-lesson-component/upload-files-lesson";
+import { getValidationError as getQuizValidationError } from "../course-builder-lesson-component/quiz";
 import { FormElementType } from "../pre-assessment/types";
 import { ElementValidator } from "./types";
 
-// TODO: add all validators
 export const validatorPerType: Record<CourseElementType | FormElementType, ElementValidator> = {
-    [CourseElementType.CoachingSession]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.ImageFile]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.VideoFile]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.ImageGallery]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.DownloadFiles]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.UploadFiles]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.Assignment]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.QuizTypeOne]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.QuizTypeTwo]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.QuizTypeThree]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.QuizTypeFour]: function (): string | undefined {
-        return undefined;
-    },
-    [CourseElementType.Links]: function (): string | undefined {
-        return undefined;
-    },
-    [FormElementType.RichText]: function (props): string | undefined {
-        return getRichTextValidationError(props);
-    },
-    [FormElementType.SingleChoice]: function (): string | undefined {
-        return undefined;
-    },
-    [FormElementType.MultiCheck]: function (): string | undefined {
-        return undefined;
-    },
-    [FormElementType.TextInput]: function (): string | undefined {
-        return undefined;
-    },
-    [FormElementType.HeadingText]: function (): string | undefined {
-        return undefined;
-    },
-    [FormElementType.OneOutOfThree]: function (): string | undefined {
-        return undefined;
-    }
+    [CourseElementType.CoachingSession]: () => undefined,
+    [CourseElementType.ImageFile]: getImageValidationError,
+    [CourseElementType.VideoFile]: getVideoValidationError,
+    [CourseElementType.ImageGallery]: getImageGalleryValidationError,
+    [CourseElementType.DownloadFiles]: getDownloadFilesValidationError,
+    [CourseElementType.UploadFiles]: getUploadFilesValidationError,
+    [CourseElementType.Assignment]: () => undefined,
+    [CourseElementType.QuizTypeOne]: getQuizValidationError,
+    [CourseElementType.QuizTypeTwo]: getQuizValidationError,
+    [CourseElementType.QuizTypeThree]: getQuizValidationError,
+    [CourseElementType.QuizTypeFour]: getQuizValidationError,
+    [CourseElementType.Links]: getLinksValidationError,
+    [FormElementType.RichText]: getRichTextValidationError,
+    [FormElementType.SingleChoice]: getSingleChoiceValidationError,
+    [FormElementType.MultiCheck]: getMultiCheckValidationError,
+    [FormElementType.TextInput]: getTextInputValidationError,
+    [FormElementType.HeadingText]: getHeadingTextValidationError,
+    [FormElementType.OneOutOfThree]: getOneOutOfThreeValidationError
 }

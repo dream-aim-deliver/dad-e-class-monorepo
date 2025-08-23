@@ -1,14 +1,53 @@
-import { useState } from "react";
-import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
-import { getDictionary } from "@maany_shr/e-class-translations";
-import { InputField } from "../input-field";
-import { IconCloudUpload } from "../icons/icon-cloud-upload";
-import { TextAreaInput } from "../text-areaInput";
-import DesignerLayout from "../designer-layout";
-import { fileMetadata } from "@maany_shr/e-class-models";
-import { Uploader } from "../drag-and-drop-uploader/uploader";
+import { useState } from 'react';
+import {
+    CourseElementTemplate,
+    CourseElementType,
+    DesignerComponentProps,
+    FormComponentProps,
+} from '../course-builder/types';
+import { getDictionary } from '@maany_shr/e-class-translations';
+import { InputField } from '../input-field';
+import { IconCloudUpload } from '../icons/icon-cloud-upload';
+import { TextAreaInput } from '../text-areaInput';
+import DesignerLayout from '../designer-layout';
+import { fileMetadata } from '@maany_shr/e-class-models';
+import { Uploader } from '../drag-and-drop-uploader/uploader';
+import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
 
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
 
+    if (elementInstance.type !== CourseElementType.UploadFiles)
+        return dictionary.components.lessons.typeValidationText;
+
+    // Check if description is not empty
+    if (
+        !elementInstance.description ||
+        elementInstance.description.trim().length === 0
+    ) {
+        return dictionary.components.uploadFileLesson.descriptionValidationText;
+    }
+
+    // If files are present, validate their metadata
+    if (elementInstance.files && elementInstance.files.length > 0) {
+        for (const file of elementInstance.files) {
+            if (!file.id || !file.name || !file.url) {
+                return dictionary.components.uploadFileLesson
+                    .metadataValidationText;
+            }
+
+            // Validate URL format
+            try {
+                new URL(file.url);
+            } catch {
+                return dictionary.components.uploadFileLesson.urlValidationText;
+            }
+        }
+    }
+
+    return undefined;
+};
 
 /**
  * Template configuration for the Upload Files course element
@@ -16,14 +55,14 @@ import { Uploader } from "../drag-and-drop-uploader/uploader";
  * Allows students to upload files and add comments for review
  */
 const uploadFilesElement: CourseElementTemplate = {
-    type: CourseElementType.UploadFiles,  // Changed from DownloadFiles to uploadFile
+    type: CourseElementType.UploadFiles, // Changed from DownloadFiles to uploadFile
     designerBtnElement: {
         icon: IconCloudUpload,
-        label: "Upload Files"
+        label: 'Upload Files',
     },
     designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
     // @ts-expect-error - Type mismatch between FormComponent props and expected interface
-    formComponent: FormComponent
+    formComponent: FormComponent,
 };
 
 /**
@@ -37,7 +76,7 @@ interface UploadFilesDesignerProps extends DesignerComponentProps {
 /**
  * Designer Component for Upload Files
  * Provides an interface for configuring file upload requirements and description
- * 
+ *
  * @param elementInstance - Current instance of the upload file element
  * @param locale - Current locale for internationalization
  * @param onUpClick - Callback for moving element up
@@ -51,18 +90,19 @@ export function DesignerComponent({
     onUpClick,
     onDownClick,
     onDeleteClick,
-    onChange
+    onChange,
+    validationError,
 }: UploadFilesDesignerProps) {
     if (elementInstance.type !== CourseElementType.UploadFiles) return null;
     const dictionary = getDictionary(locale);
     const [description, setDescription] = useState<string>(
-        elementInstance.description ?? ""
+        elementInstance.description ?? '',
     );
 
     /**
      * Handles changes to the description input field
      * Updates local state and triggers the onChange callback
-     * 
+     *
      * @param newValue - The new description text
      */
     const handleValue = (newValue: string) => {
@@ -70,7 +110,7 @@ export function DesignerComponent({
         if (onChange) {
             onChange(newValue);
         }
-    }
+    };
 
     return (
         <DesignerLayout
@@ -82,13 +122,16 @@ export function DesignerComponent({
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             <div>
                 <label className="text-text-secondary text-sm md:text-md">
                     {dictionary.components.courseBuilder.descriptionText}
                 </label>
                 <InputField
-                    inputText={dictionary.components.courseBuilder.uploadResumeText}
+                    inputText={
+                        dictionary.components.courseBuilder.uploadResumeText
+                    }
                     value={description}
                     setValue={handleValue}
                 />
@@ -105,7 +148,7 @@ export interface UploadFilesFormProps extends FormComponentProps {
     /** Callback function triggered when files are uploaded */
     onFilesUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata | null>;
     /** Callback function triggered when upload is complete */
     onUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
@@ -122,7 +165,7 @@ export interface UploadFilesFormProps extends FormComponentProps {
 /**
  * Form Component for handling file uploads and student comments
  * Provides interface for students to upload files and add comments
- * 
+ *
  * @param elementInstance - Current upload file element instance
  * @param locale - Current locale for internationalization
  * @param onFilesUpload - Callback for file uploads
@@ -144,8 +187,20 @@ export function FormComponent({
 }: UploadFilesFormProps) {
     if (elementInstance.type !== CourseElementType.UploadFiles) return null;
 
-    const [comment, setComment] = useState<string>("");
     const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={dictionary.components.lessons.elementValidationText}
+                description={validationError}
+            />
+        );
+    }
+
+    const [comment, setComment] = useState<string>('');
     const handleStudentComment = (newValue: string) => {
         setComment(newValue);
         if (onStudentCommentChange) {
@@ -155,7 +210,7 @@ export function FormComponent({
 
     const handleFilesUpload = async (
         fileRequest: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
     ): Promise<fileMetadata.TFileMetadata | null> => {
         return await onFilesUpload(fileRequest, abortSignal);
     };
@@ -175,8 +230,12 @@ export function FormComponent({
     return (
         <div className="p-4 pt-2 w-full border rounded-md bg-base-neutral-800 flex flex-col gap-4 border-base-neutral-700">
             <div className="flex items-center gap-2 flex-1 text-text-primary py-4 border-b border-divider">
-                <span className="min-w-0 flex-shrink-0"><IconCloudUpload /></span>
-                <p className="text-md font-important leading-[24px] word-break ">{dictionary.components.courseBuilder.uploadFilesText}</p>
+                <span className="min-w-0 flex-shrink-0">
+                    <IconCloudUpload />
+                </span>
+                <p className="text-md font-important leading-[24px] word-break ">
+                    {dictionary.components.courseBuilder.uploadFilesText}
+                </p>
             </div>
 
             <p className="font-important text-text-primary leading-[150%] text-sm md:text-md">
@@ -196,12 +255,18 @@ export function FormComponent({
             />
             <div className="w-full flex flex-col gap-2">
                 <p className="text-sm md:text-md text-text-secondary flex gap-1 items-center">
-                    {dictionary.components.courseBuilder.additionalCommentsTooltip}
+                    {
+                        dictionary.components.courseBuilder
+                            .additionalCommentsTooltip
+                    }
                 </p>
                 <TextAreaInput
                     setValue={handleStudentComment}
                     value={comment}
-                    placeholder={dictionary.components.courseBuilder.additionalCommentsPlaceholder}
+                    placeholder={
+                        dictionary.components.courseBuilder
+                            .additionalCommentsPlaceholder
+                    }
                 />
             </div>
         </div>

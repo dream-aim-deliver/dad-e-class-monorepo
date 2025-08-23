@@ -126,6 +126,7 @@ export interface DesignerComponentProps extends isLocalAware {
     onDownClick?: (id: string) => void;
     onDeleteClick?: (id: string) => void;
     validationError?: string;
+    isCourseBuilder: boolean;
 }
 
 /**
@@ -217,7 +218,6 @@ export interface FormElementTemplate {
     designerComponent: React.FC<DesignerComponentProps>;
     formComponent: React.FC<FormComponentProps>;
     submissionComponent: React.FC<SubmissionComponentProps>;
-    validate: (element: FormElement, value: valueType) => boolean;
 }
 
 /**

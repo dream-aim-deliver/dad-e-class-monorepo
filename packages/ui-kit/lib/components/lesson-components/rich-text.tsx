@@ -31,7 +31,6 @@ const richTextElement: FormElementTemplate = {
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
     submissionComponent: ViewComponent,
-    validate: (elementInstance: FormElement, value: valueType) => true,
 };
 
 /**
@@ -62,15 +61,20 @@ interface RichTextDesignerComponentProps extends DesignerComponentProps {
     onContentChange: (value: string) => void;
 }
 
-// TODO: Translate validation errors
 export const getValidationError: ElementValidator = (props) => {
-    const { elementInstance, dictionary } = props;
+    const { elementInstance, dictionary, context = 'coach' } = props;
 
     if (elementInstance.type !== FormElementType.RichText)
-        return 'Wrong element type';
+        return dictionary.components.lessons.typeValidationText;
 
-    if (!elementInstance.content) {
-        return 'Text content should not be empty';
+    // Student validation: Rich text is display-only, no user input validation needed
+    if (context === 'student') {
+        return undefined; // Always pass for student
+    }
+
+    // Coach validation: Check element structure (course builder - both designer and preview)
+    if (!elementInstance.content || elementInstance.content.trim() === '') {
+        return dictionary.components.richTextLesson.textContentValidationText;
     }
 
     return undefined;
@@ -84,6 +88,7 @@ export function DesignerComponent({
     onDeleteClick,
     onContentChange,
     validationError,
+    isCourseBuilder,
 }: RichTextDesignerComponentProps) {
     if (elementInstance.type !== FormElementType.RichText) return null;
     const dictionary = getDictionary(locale);
@@ -113,14 +118,14 @@ export function DesignerComponent({
     return (
         <DesignerLayout
             type={elementInstance.type}
-            title="Rich Text"
+            title={dictionary.components.lessons.richText}
             icon={<IconRichText classNames="w-6 h-6" />}
             onUpClick={() => onUpClick?.(elementInstance.id)}
             onDownClick={() => onDownClick?.(elementInstance.id)}
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
-            courseBuilder={true}
             validationError={validationError}
+            courseBuilder={isCourseBuilder}
         >
             <RichTextEditor
                 name={`rich-text-${elementInstance.id}`}
@@ -144,13 +149,16 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
 
     const dictionary = getDictionary(locale);
 
-    const validationError = getValidationError({ elementInstance, dictionary });
+    const validationError = getValidationError({
+        elementInstance,
+        dictionary,
+        context: 'coach',
+    });
     if (validationError) {
-        // TODO: Translate validation error title (should be common)
         return (
             <DefaultError
                 locale={locale}
-                title={'Element is invalid'}
+                title={dictionary.components.lessons.elementValidationText}
                 description={validationError}
             />
         );

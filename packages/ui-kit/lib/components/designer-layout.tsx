@@ -130,11 +130,10 @@ const DesignerLayout = ({
             <hr className="border-base-neutral-600" />
             {/* Content */}
             <div>{children}</div>
-            {/* // TODO: Translate validation error title */}
             {validationError && (
                 <DefaultError
                     locale={locale}
-                    title={'Element is invalid'}
+                    title={dictionary.components.lessons.elementValidationText}
                     description={validationError}
                 />
             )}

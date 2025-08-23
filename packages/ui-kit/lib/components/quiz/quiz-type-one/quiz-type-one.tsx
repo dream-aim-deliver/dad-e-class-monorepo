@@ -7,13 +7,63 @@ import { IconTrashAlt } from '../../icons/icon-trash-alt';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { TextAreaInput } from '../../text-areaInput';
 import { TextInput } from '../../text-input';
-import {
-    QuizTypeOneElement,
-} from '../../course-builder-lesson-component/types';
+import { QuizTypeOneElement } from '../../course-builder-lesson-component/types';
 import Banner from '../../banner';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { CourseElementType } from '../../course-builder/types';
+import { ElementValidator } from '../../lesson/types';
+
+// Quiz Type One Validation
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.QuizTypeOne)
+        return dictionary.components.quiz.quizTypeOne.validationErrors
+            .wrongElementType;
+
+    const quiz = elementInstance as QuizTypeOneElement;
+
+    // Title non empty
+    if (!quiz.title || quiz.title.trim() === '') {
+        return dictionary.components.quiz.quizTypeOne.validationErrors
+            .titleRequired;
+    }
+
+    // Description non empty
+    if (!quiz.description || quiz.description.trim() === '') {
+        return dictionary.components.quiz.quizTypeOne.validationErrors
+            .descriptionRequired;
+    }
+
+    // File image attached
+    if (!quiz.imageFile) {
+        return dictionary.components.quiz.quizTypeOne.validationErrors
+            .imageRequired;
+    }
+
+    // At least one option present
+    if (!quiz.options || quiz.options.length === 0) {
+        return dictionary.components.quiz.quizTypeOne.validationErrors
+            .atLeastOneOption;
+    }
+
+    // All options have non empty titles
+    for (const option of quiz.options) {
+        if (!option.name || option.name.trim() === '') {
+            return dictionary.components.quiz.quizTypeOne.validationErrors
+                .optionNamesRequired;
+        }
+    }
+
+    // One option chosen as correct
+    if (!quiz.options.some((option) => option.correct)) {
+        return dictionary.components.quiz.quizTypeOne.validationErrors
+            .correctOptionRequired;
+    }
+
+    return undefined;
+};
 
 /**
  * A component for creating and editing a single-choice quiz question.

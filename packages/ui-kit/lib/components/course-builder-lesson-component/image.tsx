@@ -1,12 +1,54 @@
-import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
-import type { ImageElement } from "./types";
-import { getDictionary } from "@maany_shr/e-class-translations";
-import { IconImage } from "../icons/icon-image";
-import DesignerLayout from "../designer-layout";
-import { fileMetadata } from "@maany_shr/e-class-models";
-import { Uploader } from "../drag-and-drop-uploader/uploader";
-import { useState } from "react";
+import {
+    CourseElementTemplate,
+    CourseElementType,
+    DesignerComponentProps,
+    FormComponentProps,
+} from '../course-builder/types';
+import type { ImageElement } from './types';
+import { getDictionary } from '@maany_shr/e-class-translations';
+import { IconImage } from '../icons/icon-image';
+import DesignerLayout from '../designer-layout';
+import { fileMetadata } from '@maany_shr/e-class-models';
+import { Uploader } from '../drag-and-drop-uploader/uploader';
+import { useState } from 'react';
+import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
 
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.ImageFile)
+        return dictionary.components.lessons.typeValidationText;
+
+    // Check if an image file is attached
+    if (!elementInstance.file) {
+        return dictionary.components.imageLesson.imageValidationText;
+    }
+
+    // Validate image file metadata
+    const file = elementInstance.file;
+    if (!file.id || !file.name || !file.url) {
+        return dictionary.components.imageLesson.metadataValidationText;
+    }
+
+    // Validate that it's an image file
+    if (file.category !== 'image') {
+        return dictionary.components.imageLesson.categoryValidationText;
+    }
+
+    if (file.status !== 'available') {
+        return dictionary.components.imageLesson.statusValidationText;
+    }
+
+    // Validate URL format
+    try {
+        new URL(file.url);
+    } catch {
+        return dictionary.components.imageLesson.urlValidationText;
+    }
+
+    return undefined;
+};
 
 /**
  * @fileoverview Image file component for the course builder.
@@ -22,10 +64,10 @@ const imageFilesElement: CourseElementTemplate = {
     type: CourseElementType.ImageFile,
     designerBtnElement: {
         icon: IconImage,
-        label: "Image"
+        label: 'Image',
     },
     designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
-    formComponent: FormComponent
+    formComponent: FormComponent,
 };
 
 interface ImageFileEditProps extends DesignerComponentProps {
@@ -34,7 +76,7 @@ interface ImageFileEditProps extends DesignerComponentProps {
     /** Callback function triggered when files are changed. Returns a Promise with upload response */
     onImageUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadataImage | null>;
 
     onUploadComplete: (file: fileMetadata.TFileMetadataImage) => void;
@@ -46,7 +88,7 @@ interface ImageFileEditProps extends DesignerComponentProps {
 /**
  * Designer component for handling image file uploads in the course builder.
  * Provides a UI for uploading, viewing, and managing image files.
- * 
+ *
  * @param elementInstance - The current course element instance
  * @param locale - The current locale for translations
  * @param onUpClick - Callback for moving the element up
@@ -61,17 +103,31 @@ interface ImageFileEditProps extends DesignerComponentProps {
  * @param maxSize - Maximum file size allowed for upload, in MB
  * @returns JSX.Element | null
  */
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize }: ImageFileEditProps) {
+export function DesignerComponent({
+    elementInstance,
+    locale,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+    onImageUpload,
+    onUploadComplete,
+    onFileDownload,
+    onFileDelete,
+    maxSize,
+    validationError,
+}: ImageFileEditProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
     const dictionary = getDictionary(locale);
     const handleImageFile = async (
         fileRequest: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal
+        abortSignal?: AbortSignal,
     ): Promise<fileMetadata.TFileMetadataImage | null> => {
         return await onImageUpload(fileRequest, abortSignal);
     };
 
-    const handleUploadComplete = (ImageMetadata: fileMetadata.TFileMetadata) => {
+    const handleUploadComplete = (
+        ImageMetadata: fileMetadata.TFileMetadata,
+    ) => {
         // Update form data with the uploaded file URL (if it exists)
         // Notify parent component that upload is complete
         onUploadComplete?.(ImageMetadata as fileMetadata.TFileMetadataImage);
@@ -87,6 +143,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             <Uploader
                 type="single"
@@ -107,15 +164,30 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
 /**
  * Form component for displaying uploaded images in the course content.
  * Renders the image in a responsive container.
- * 
+ *
  * @param elementInstance - The course element instance containing image data
  * @returns JSX.Element | null - Returns null if the element is not an image file
  */
-export function FormComponent({ elementInstance }: FormComponentProps) {
+export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
 
     // Type guard to ensure we're working with an ImageFile
     const imageFile = elementInstance as ImageElement;
+
+    const dictionary = getDictionary(locale);
+
+    // Only validate if there's a file but it's invalid
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={dictionary.components.lessons.elementValidationText}
+                description={validationError}
+            />
+        );
+    }
+
     const [imageError, setImageError] = useState<boolean>(false);
     return (
         <section className="w-full">
@@ -126,7 +198,7 @@ export function FormComponent({ elementInstance }: FormComponentProps) {
                 onError={() => setImageError(true)}
             />
         </section>
-    )
+    );
 }
 
 export default imageFilesElement;

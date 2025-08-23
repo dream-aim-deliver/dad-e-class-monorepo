@@ -283,7 +283,7 @@ export const EN: TDictionary = {
       howItWorks: 'How It Works',
       about: 'About',
       dashboard: 'Dashboard',
-      yourProfile: 'Your profile',
+      yourProfile: 'Your Profile',
       logout: 'Logout',
     },
     footer: {
@@ -433,6 +433,10 @@ export const EN: TDictionary = {
       singleChoice: "Single choice",
       oneOutOfThree: "one out of three",
       heading: "Heading",
+      textInput: 'Text input',
+      richText: 'Rich text',
+      typeValidationText: 'Wrong element type',
+      elementValidationText: 'Element is invalid',
     },
     lessonHeader: {
       moduleText: 'Module',
@@ -675,6 +679,15 @@ export const EN: TDictionary = {
       quizTypeOne: {
         headingText: 'Student picks one correct answer out of many choices',
         radioButtonText: 'Radio button text',
+        validationErrors: {
+          wrongElementType: 'Wrong element type',
+          titleRequired: 'Title should not be empty',
+          descriptionRequired: 'Description should not be empty',
+          imageRequired: 'Image file should be attached',
+          atLeastOneOption: 'At least one option should be present',
+          optionNamesRequired: 'All option names should be non-empty',
+          correctOptionRequired: 'One option should be chosen as correct',
+        },
       },
       quizTypeTwo: {
         headingText: 'Student has to choose the right choice for each group',
@@ -682,15 +695,45 @@ export const EN: TDictionary = {
         errorText: "You need to define what's the correct answer",
         groupTitleText: 'Group title',
         radioButtonText: 'Radio button text',
+        validationErrors: {
+          wrongElementType: 'Wrong element type',
+          titleRequired: 'Title should not be empty',
+          descriptionRequired: 'Description should not be empty',
+          imageRequired: 'Image file should be attached',
+          atLeastOneGroup: 'At least one group should be present',
+          groupTitleRequired: 'Each group should have a non-empty title',
+          atLeastOneOptionPerGroup: 'At least one option should be present in each group',
+          optionNamesRequired: 'All option names should be non-empty',
+          correctOptionRequiredPerGroup: 'One option should be chosen as correct per group',
+        },
       },
       quizTypeThree: {
         headingText: 'The user picks one of the 2 images',
         choiceDescriptionText: 'Choice description',
+        validationErrors: {
+          wrongElementType: 'Wrong element type',
+          titleRequired: 'Title should not be empty',
+          descriptionRequired: 'Description should not be empty',
+          atLeastOneOption: 'At least one option should be present',
+          imageRequiredPerOption: 'Image file should be attached to each option',
+          descriptionRequiredPerOption: 'Each option should have a non-empty description',
+          correctOptionRequired: 'At least one option should be chosen as correct',
+        },
       },
       quizTypeFour: {
         headingText: 'Student must match all text with all images',
         choiceDescriptionText: 'Choice description',
         correctLetterText: 'Correct letter',
+        validationErrors: {
+          wrongElementType: 'Wrong element type',
+          titleRequired: 'Title should not be empty',
+          descriptionRequired: 'Description should not be empty',
+          atLeastOneLabel: 'At least one label should be present',
+          labelDescriptionsRequired: 'Each label should have a non-empty description',
+          atLeastOneImage: 'At least one image should be present',
+          imageRequiredPerImage: 'Image file should be attached to each image',
+          correctLetterRequiredPerImage: 'Each image should have a correct letter assigned',
+        },
       },
       quizTypeFourStudentView: {
         descriptionText: 'Enter the letter that corresponds to the correct description below each image. Only one letter (uppercase or lowercase) is allowed-no other characters, or it will result in an error.',
@@ -813,7 +856,74 @@ export const EN: TDictionary = {
       requirementsDescription: 'What is expected of the students to begin this course? Add the required courses below.',
       searchCoursesPlaceholder: 'Search Courses',
       featuredImage: 'Featured Image',
-      removeCourse:'Remove Course'
+      removeCourse: 'Remove Course'
+    },
+    headingLesson: {
+      headingValidationText: 'Heading text cannot be empty',
+    },
+    multiCheckLesson: {
+      titleValidationText: 'Title should not be empty',
+      optionValidationText: 'There should be at least one option',
+      optionNameValidationText: 'All option names should be non-empty',
+    },
+    oneOutOfThreeLesson: {
+      titleValidationText: 'Title should not be empty',
+      rowCountValidationText: 'There should be at least one row',
+      rowTitleValidationText: 'No row title should be empty',
+      columnTitleValidationText: 'No column title should be empty',
+    },
+    richTextLesson: {
+      textContentValidationText: 'Text content should not be empty',
+    },
+    singleChoiceLesson: {
+      titleValidationText: 'Title should not be empty',
+      optionCountValidationText: 'There should be at least one option',
+      optionNameValidationText: 'All option names should be non-empty',
+    },
+    textInputLesson: {
+      textContentValidationText: 'Text input content is required',
+      meaningfulTextValidationText: 'Please enter some text',
+    },
+    videoLesson: {
+      videoValidationText: 'There should be a file attached',
+      metadataValidationText: 'Invalid video metadata: missing required properties',
+      categoryValidationText: 'File must be a video',
+      statusValidationText: 'Video file must be available',
+      urlValidationText: 'Invalid video URL format',
+    },
+    imageLesson: {
+      imageValidationText: 'There should be a file attached',
+      metadataValidationText: 'Invalid image metadata: missing required properties',
+      categoryValidationText: 'File must be an image',
+      statusValidationText: 'Image file must be available',
+      urlValidationText: 'Invalid image URL format',
+    },
+    imageGalleryLesson: {
+      imageCountValidationText: 'There should be at least two files attached',
+      matadataValidationText: 'Invalid image metadata for image',
+      missingPropertiesValidationText: 'missing required properties',
+      file: 'File',
+      image: 'Image',
+      categoryValidationText: 'must be an image',
+      statusValidationText: 'must be available',
+      urlValidationText: 'Invalid URL format for image',
+    },
+    linkLesson: {
+      linkCountValidationText: 'There should be at least one link',
+      titleValidationText: 'Links should have non empty title',
+      urlValidationText: 'Links should have non empty URL',
+    },
+    downloadFileLesson: {
+      fileCountValidationText: 'At least a single file should be attached',
+      metadataValidationText: 'Invalid file metadata: missing required properties',
+      statusValidationText: 'All files must be available for download',
+      urlValidationText: 'Invalid file URL format',
+    },
+    uploadFileLesson: {
+      descriptionValidationText: 'Description should not be empty',
+      metadataValidationText: 'Invalid file metadata: missing required properties',
+      urlValidationText: 'Invalid file URL format',
+   
     },
     courseIntroBanner: {
       title: 'Couse Introduction'

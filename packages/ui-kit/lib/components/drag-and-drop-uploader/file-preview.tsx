@@ -43,7 +43,7 @@ interface FilePreviewProps extends isLocalAware {
  * @param locale The locale for translations.
  * @param readOnly If the user has read-only permission to the file while it is processing
  * @param onCancel Optional callback, if passed, renders a button to cancel the upload while it is processing
- * @param 
+ * @param
  **/
 
 /**
@@ -158,8 +158,7 @@ export const FilePreview = (props: FilePreviewProps) => {
     return (
         <div
             className={cn(
-                'flex items-center justify-between gap-2 p-2 rounded-medium',
-                'bg-base-neutral-900',
+                'flex items-center justify-between gap-2 py-2 rounded-medium',
                 props.className,
             )}
         >
@@ -183,7 +182,10 @@ export const FilePreview = (props: FilePreviewProps) => {
                             {uploadResponse.name}
                         </span>
                         <span className="text-xs text-text-secondary">
-                            {((uploadResponse.size as number) / (1024 * 1024)).toFixed(2)}{' '}
+                            {(
+                                (uploadResponse.size as number) /
+                                (1024 * 1024)
+                            ).toFixed(2)}{' '}
                             MB
                         </span>
                     </>
@@ -202,7 +204,9 @@ export const FilePreview = (props: FilePreviewProps) => {
                                 variant="text"
                                 className="px-0"
                                 onClick={() => {
-                                    props.onCancel!(uploadResponse.id as string);
+                                    props.onCancel!(
+                                        uploadResponse.id as string,
+                                    );
                                 }}
                                 text={
                                     dictionary.components.uploadingSection
