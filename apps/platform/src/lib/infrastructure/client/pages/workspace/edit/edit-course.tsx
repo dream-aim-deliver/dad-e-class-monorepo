@@ -2,6 +2,7 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
+    CourseFormState,
     CourseGeneralInformationView,
     DefaultError,
     DefaultLoading,
@@ -10,7 +11,7 @@ import {
     useCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
-import { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import EditCourseStructure from './edit-course-structure';
 import { useSaveStructure } from './hooks/save-hooks';
 import EditHeader from './components/edit-header';
@@ -19,7 +20,12 @@ import EditCourseGeneral from './edit-course-general';
 import { trpc } from '../../../trpc/client';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
-import { useCourseImageUpload } from '../../common/hooks/use-course-image-upload';
+import {
+    CourseImageUploadState,
+    useCourseImageUpload,
+} from '../../common/hooks/use-course-image-upload';
+import EditCourseIntroOutline from './edit-course-intro-outline';
+import { CourseModule } from './types';
 
 interface EditCourseProps {
     slug: string;
@@ -139,6 +145,7 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
             locale={locale}
         >
             <EditCourseTabContent
+                courseVersion={courseVersion}
                 course={course}
                 activeTab={activeTab}
                 slug={slug}
@@ -426,11 +433,12 @@ interface EditCourseTabContentProps {
     isPreviewing: boolean;
     isEdited: boolean;
     setIsEdited: (edited: boolean) => void;
-    generalState: any;
-    courseImageUpload: any;
-    modules: any;
-    setModules: any;
-    setCourseVersion: any;
+    generalState: CourseFormState;
+    courseImageUpload: CourseImageUploadState;
+    modules: CourseModule[];
+    setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
+    courseVersion: number | null;
+    setCourseVersion: React.Dispatch<React.SetStateAction<number | null>>;
     editWrap: <T extends Array<any>, U>(
         fn: (...args: T) => U,
     ) => (...args: T) => U;
@@ -438,6 +446,7 @@ interface EditCourseTabContentProps {
 
 function EditCourseTabContent({
     activeTab,
+    courseVersion,
     slug,
     course,
     locale,
@@ -459,6 +468,7 @@ function EditCourseTabContent({
                 {isPreviewing && <GeneralTabPreview course={course} />}
                 {!isPreviewing && (
                     <EditCourseGeneral
+                        courseVersion={courseVersion}
                         slug={slug}
                         courseForm={{
                             ...generalState,
@@ -484,11 +494,7 @@ function EditCourseTabContent({
                 className={tabContentClass}
             >
                 <Suspense fallback={<DefaultLoading locale={locale} />}>
-                    <DefaultError
-                        locale={locale}
-                        title="Not implemented yet"
-                        description="This feature is not implemented yet."
-                    />
+                    <EditCourseIntroOutline />
                 </Suspense>
             </Tabs.Content>
             <Tabs.Content

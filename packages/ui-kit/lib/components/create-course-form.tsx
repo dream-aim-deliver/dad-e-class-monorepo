@@ -22,6 +22,8 @@ interface CourseRequirement {
 interface CourseFormProps extends isLocalAware {
     mode: 'create' | 'edit';
     // Controlled form values
+    courseVersion: number | null;
+
     image: fileMetadata.TFileMetadataImage | null;
     courseTitle: string;
     setCourseTitle: (title: string) => void;
@@ -72,6 +74,7 @@ export interface CourseFormState {
 
     isDescriptionValid: () => boolean;
     serializeDescription: () => string;
+    parseDescription: (value: string) => void;
 }
 
 interface UseCourseInitialState {
@@ -144,6 +147,14 @@ export function useCourseForm(
         return content.length > 0;
     };
 
+    const parseDescription = (value: string) => {
+        const parsed = deserialize({
+            serializedData: value,
+            onError: console.error,
+        });
+        setCourseDescription(parsed);
+    };
+
     return {
         // Form values
         courseTitle,
@@ -164,6 +175,7 @@ export function useCourseForm(
         hasUserEditedSlug,
         isDescriptionValid,
         serializeDescription,
+        parseDescription,
     };
 }
 
@@ -173,6 +185,7 @@ export function CourseForm(props: CourseFormProps) {
     const {
         mode,
         locale,
+        courseVersion,
         // Controlled form values
         image,
         courseTitle,
@@ -295,6 +308,7 @@ export function CourseForm(props: CourseFormProps) {
                         </label>
                         <RichTextEditor
                             locale={locale}
+                            key={`course-description-${courseVersion}`} // Reset editor when course version changes
                             name="courseDescription"
                             placeholder={
                                 dictionary.components.courseIntroInformation

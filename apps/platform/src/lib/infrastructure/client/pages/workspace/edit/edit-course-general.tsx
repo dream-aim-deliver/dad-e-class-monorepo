@@ -6,6 +6,7 @@ import { CourseImageUploadState } from '../../common/hooks/use-course-image-uplo
 
 interface EditCourseGeneralProps {
     slug: string;
+    courseVersion: number | null;
     courseForm: CourseFormState;
     uploadImage: CourseImageUploadState;
 }
@@ -16,6 +17,7 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     return (
         <CourseForm
             mode="edit"
+            courseVersion={props.courseVersion}
             image={props.uploadImage.courseImage}
             courseTitle={props.courseForm.courseTitle}
             setCourseTitle={props.courseForm.setCourseTitle}
