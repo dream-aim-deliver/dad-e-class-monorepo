@@ -10,7 +10,6 @@ import { Descendant, Node } from 'slate';
 import Banner from './banner';
 import { IconCourse } from './icons/icon-course';
 import { Divider } from './divider';
-import { IconSearch } from './icons';
 
 interface CourseRequirement {
     id: number;
@@ -282,7 +281,9 @@ export function CourseForm(props: CourseFormProps) {
                                 {dictionary.components.createCourseForm.slug}
                             </label>
                             <InputField
-                                inputText={dictionary.components.createCourseForm.slug}
+                                inputText={
+                                    dictionary.components.createCourseForm.slug
+                                }
                                 type="text"
                                 value={courseSlug}
                                 setValue={(value) => setCourseSlug(value)}
@@ -355,10 +356,13 @@ export function CourseForm(props: CourseFormProps) {
                             onUploadComplete={handleOnUploadComplete}
                             onDelete={onDelete}
                             onDownload={onDownload}
-                            className='mb-2'
+                            className="mb-2"
                         />
                         <p className="text-text-secondary text-sm">
-                            {dictionary.components.createCourseForm.recommendedSizeText}
+                            {
+                                dictionary.components.createCourseForm
+                                    .recommendedSizeText
+                            }
                         </p>
                     </div>
                 </div>
@@ -373,9 +377,10 @@ export function CourseForm(props: CourseFormProps) {
                     style="success"
                     description={
                         isEditMode
-                            ? 'Course updated successfully!'
-                            : 'Course created successfully! Redirecting...'
-
+                            ? dictionary.components.createCourseForm
+                                  .successUpdatedBanner
+                            : dictionary.components.createCourseForm
+                                  .successCreatedBanner
                     }
                 />
             )}

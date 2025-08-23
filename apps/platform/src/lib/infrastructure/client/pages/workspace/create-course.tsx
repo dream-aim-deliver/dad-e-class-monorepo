@@ -7,7 +7,6 @@ import {
     DefaultError,
     DefaultLoading,
     IconSave,
-    SectionHeading,
     useCourseForm,
     uploadToS3,
 } from '@maany_shr/e-class-ui-kit';

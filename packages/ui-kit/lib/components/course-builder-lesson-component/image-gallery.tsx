@@ -1,19 +1,14 @@
-import {
-    CourseElementTemplate,
-    CourseElementType,
-    DesignerComponentProps,
-    FormComponentProps,
-} from '../course-builder/types';
-import { getDictionary } from '@maany_shr/e-class-translations';
-import { IconImageGallery } from '../icons/icon-image-gallery';
-import DesignerLayout from '../designer-layout';
-import { fileMetadata } from '@maany_shr/e-class-models';
-import { Uploader } from '../drag-and-drop-uploader/uploader';
-import { useEffect, useState } from 'react';
-import { IconButton } from '../icon-button';
-import { IconChevronLeft } from '../icons/icon-chevron-left';
-import { IconChevronRight } from '../icons/icon-chevron-right';
-import { cn } from '../../utils/style-utils';
+import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
+import { getDictionary } from "@maany_shr/e-class-translations";
+import { IconImageGallery } from "../icons/icon-image-gallery";
+import DesignerLayout from "../designer-layout";
+import { fileMetadata } from "@maany_shr/e-class-models";
+import { Uploader } from "../drag-and-drop-uploader/uploader";
+import { useEffect, useState } from "react";
+import { IconButton } from "../icon-button";
+import { IconChevronLeft } from "../icons/icon-chevron-left";
+import { IconChevronRight } from "../icons/icon-chevron-right";
+import { cn } from "../../utils/style-utils";
 import { ElementValidator } from '../lesson/types';
 import DefaultError from '../default-error';
 
@@ -69,10 +64,10 @@ const imageGalleryElement: CourseElementTemplate = {
     type: CourseElementType.ImageGallery,
     designerBtnElement: {
         icon: IconImageGallery,
-        label: 'Image Gallery',
+        label: "Image Gallery"
     },
     designerComponent: DesignerComponent as React.FC<DesignerComponentProps>,
-    formComponent: FormComponent,
+    formComponent: FormComponent
 };
 
 type TImageFile = fileMetadata.TFileMetadata & { category: 'image' };
@@ -87,7 +82,7 @@ interface ImageGalleryEditProps extends DesignerComponentProps {
     /** Callback function triggered when files are changed. Returns a Promise with upload response */
     onImageUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal,
+        abortSignal?: AbortSignal
     ) => Promise<TImageFile>;
 
     onUploadComplete: (file: TImageFile) => void;
@@ -99,7 +94,7 @@ interface ImageGalleryEditProps extends DesignerComponentProps {
 /**
  * Designer component for managing multiple image uploads in a gallery format.
  * Provides UI for uploading, viewing, and managing multiple images with a maximum limit.
- *
+ * 
  * @param elementInstance - The current gallery element instance
  * @param locale - The current locale for translations
  * @param onUpClick - Callback for moving the element up
@@ -110,31 +105,18 @@ interface ImageGalleryEditProps extends DesignerComponentProps {
  * @param onFileDownload - Callback for file downloads
  * @param onFileDelete - Callback for file deletion
  */
-export function DesignerComponent({
-    elementInstance,
-    locale,
-    onUpClick,
-    onDownClick,
-    onDeleteClick,
-    onImageUpload,
-    onUploadComplete,
-    onFileDownload,
-    onFileDelete,
-    maxSize,
-}: ImageGalleryEditProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize }: ImageGalleryEditProps) {
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
     const dictionary = getDictionary(locale);
 
     const handleImageFile = async (
         fileRequest: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal,
+        abortSignal?: AbortSignal
     ): Promise<TImageFile> => {
         return await onImageUpload(fileRequest, abortSignal);
     };
 
-    const handleUploadComplete = (
-        imageMetadata: fileMetadata.TFileMetadata,
-    ) => {
+    const handleUploadComplete = (imageMetadata: fileMetadata.TFileMetadata) => {
         onUploadComplete?.(imageMetadata as TImageFile);
     };
 
@@ -173,7 +155,7 @@ export function DesignerComponent({
  * - Thumbnail navigation
  * - Responsive layout with different number of visible thumbnails
  * - Previous/Next navigation controls
- *
+ * 
  * @param elementInstance - The gallery element instance containing image URLs
  * @returns A responsive image gallery with navigation controls
  */
@@ -181,7 +163,6 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
 
     const dictionary = getDictionary(locale);
-
     const validationError = getValidationError({ elementInstance, dictionary });
     if (validationError) {
         return (
@@ -200,11 +181,11 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
      * @returns {number} The number of thumbnails to display
      */
     const getVisibleItemCount = () => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
             const width = window.innerWidth;
             if (width < 640) return 3; // Small mobile devices (e.g., phones in portrait)
             if (width < 768) return 4; // Mobile (640px to 767px)
-            return 6; // Tablet and larger (768px+)
+            return 6;                  // Tablet and larger (768px+)
         }
         return 3; // Default fallback (SSR or undefined window)
     };
@@ -219,11 +200,11 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
             setVisibleItems(getVisibleItemCount());
         };
 
-        window.addEventListener('resize', handleResize);
+        window.addEventListener("resize", handleResize);
         handleResize();
 
         return () => {
-            window.removeEventListener('resize', handleResize);
+            window.removeEventListener("resize", handleResize);
         };
     }, []);
 
@@ -232,33 +213,31 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     const nextSlide = () => {
         if (!canScroll) return;
         setCurrentIndex((prevIndex) =>
-            prevIndex === totalSlides - 1 ? 0 : prevIndex + 1,
+            prevIndex === totalSlides - 1 ? 0 : prevIndex + 1
         );
     };
 
     const prevSlide = () => {
         if (!canScroll) return;
         setCurrentIndex((prevIndex) =>
-            prevIndex === 0 ? totalSlides - 1 : prevIndex - 1,
+            prevIndex === 0 ? totalSlides - 1 : prevIndex - 1
         );
     };
 
     const thumbWidthPercent = canScroll
-        ? 100 / visibleItems
-        : totalSlides > 0
-          ? 100 / totalSlides
-          : 100;
+        ? (100 / visibleItems)
+        : (totalSlides > 0 ? (100 / totalSlides) : 100);
 
     const translateXPercent = canScroll
         ? -(currentIndex * (100 / visibleItems))
         : 0;
 
     return (
-        <div className="flex flex-col items-center p-4">
-            <div className="w-full max-w-xl">
+        <section className="w-full flex justify-center p-4 rounded-lg">
+            <div className="w-full max-w-[1000px]">
                 {/* Featured image */}
                 <img
-                    className="w-full h-96 object-cover rounded-lg mb-4"
+                    className="w-full h-64 sm:h-72 md:h-80 lg:h-96 object-cover rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-base-neutral-700 mb-6"
                     src={imageElements[currentIndex].url}
                     alt={`Image ${currentIndex + 1}`}
                 />
@@ -268,21 +247,17 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                     <div
                         className="flex gap-2 transition-transform duration-500 ease-out"
                         style={{
-                            transform: `translateX(${translateXPercent}%)`,
+                            transform: `translateX(${translateXPercent}%)`
                         }}
                     >
                         {imageElements.map((image, index) => (
                             <div
                                 key={index}
-                                className={cn(
-                                    'flex-shrink-0',
-                                    index === currentIndex &&
-                                        'border-2 border-button-primary-fill rounded-md',
-                                )}
+                                className={cn("flex-shrink-0 p-1 transition-all duration-300", index === currentIndex && "ring-2 ring-button-primary-fill ring-offset-2 ring-offset-base-neutral-900 rounded-lg shadow-lg scale-105")}
                                 style={{ width: `${thumbWidthPercent}%` }}
                             >
                                 <img
-                                    className="w-full h-24 object-cover cursor-pointer rounded-md"
+                                    className="w-full h-24 object-cover cursor-pointer rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 border border-base-neutral-600"
                                     src={image?.url}
                                     alt={`Image ${index}`}
                                     onClick={() => setCurrentIndex(index)}
@@ -299,7 +274,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                                 onClick={prevSlide}
                                 styles="secondary"
                                 size="small"
-                                className="absolute left-0 top-1/2 -translate-y-1/2 p-2 border-none cursor-pointer text-button-primary-fill bg-none z-10"
+                                className="absolute -left-2 top-1/2 -translate-y-1/2 p-3 bg-base-neutral-800 hover:bg-base-neutral-700 border border-base-neutral-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer text-text-primary z-10"
                                 aria-label="Previous slide"
                             />
                             <IconButton
@@ -307,15 +282,15 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
                                 onClick={nextSlide}
                                 styles="secondary"
                                 size="small"
-                                className="absolute right-0 top-1/2 -translate-y-1/2 p-2 border-none cursor-pointer z-10"
+                                className="absolute -right-2 top-1/2 -translate-y-1/2 p-3 bg-base-neutral-800 hover:bg-base-neutral-700 border border-base-neutral-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer text-text-primary z-10"
                                 aria-label="Next slide"
                             />
                         </>
                     )}
                 </div>
             </div>
-        </div>
-    );
+        </section>
+    )
 }
 
 export default imageGalleryElement;

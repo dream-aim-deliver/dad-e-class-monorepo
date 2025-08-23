@@ -5,6 +5,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { ModuleEditorProps } from '../types';
 import { ModuleContent } from './module-content';
+import { useTranslations } from 'next-intl';
 
 export function ModuleEditor({
     module,
@@ -25,6 +26,7 @@ export function ModuleEditor({
     const handleTitleChange = (value: string) => {
         onUpdate({ ...module, title: value });
     };
+    const editCourseTranslations = useTranslations('pages.editCourse.moduleEditor');
 
     return (
         <div className="flex flex-col gap-2">
@@ -35,7 +37,7 @@ export function ModuleEditor({
                     </div>
                     <InputField
                         value={module.title || ''}
-                        inputText="Module title"
+                        inputText={editCourseTranslations('moduleTitle')}
                         setValue={handleTitleChange}
                         className="w-full font-bold"
                     />

@@ -12,6 +12,7 @@ export function ModuleContent({
 }: ModuleContentProps) {
     const isEmpty = content.length === 0;
 
+    // TODO: Translate
     return (
         <div className="flex flex-col gap-2 ml-4">
             {isEmpty && (

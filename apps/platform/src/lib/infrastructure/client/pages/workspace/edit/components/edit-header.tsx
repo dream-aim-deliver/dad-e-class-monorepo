@@ -1,8 +1,8 @@
 import {
     Button,
     IconEyeShow,
+    IconEyeHide,
     IconSave,
-    PageTitle,
 } from '@maany_shr/e-class-ui-kit';
 
 interface EditHeaderProps {
@@ -15,7 +15,6 @@ interface EditHeaderProps {
 }
 
 export default function EditHeader({
-    title,
     onPreview,
     onSave,
     disablePreview,
@@ -28,13 +27,14 @@ export default function EditHeader({
           ? 'Save to preview'
           : 'Preview';
 
+    // TODO: Translate
     return (
-        <div className="flex md:flex-row flex-col md:items-center justify-between gap-4">
-            <h1>{title}</h1>
+        <div className="flex md:flex-row flex-col md:items-center justify-between gap-5">
+            <h1>Edit Lesson</h1>
             <div className="flex sm:flex-row flex-col sm:items-center gap-3">
                 <Button
                     variant="text"
-                    iconLeft={<IconEyeShow />}
+                    iconLeft={isPreviewing ? <IconEyeHide /> : <IconEyeShow />}
                     hasIconLeft
                     text={previewButtonText}
                     className="px-0"
