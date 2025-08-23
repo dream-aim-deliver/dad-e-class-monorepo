@@ -5,13 +5,23 @@ import { isLocalAware } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { InputField } from './input-field';
 import RichTextEditor from './rich-text-element/editor';
-import { serialize } from './rich-text-element/serializer';
+import { deserialize, serialize } from './rich-text-element/serializer';
 import { Descendant, Node } from 'slate';
 import Banner from './banner';
 import { IconCourse } from './icons/icon-course';
 import { Divider } from './divider';
+import { IconSearch } from './icons';
 
-interface CreateCourseFormProps extends isLocalAware {
+interface CourseRequirement {
+    id: number;
+    title: string;
+    slug: string;
+    imageUrl: string;
+}
+
+interface CourseFormProps extends isLocalAware {
+    mode: 'create' | 'edit';
+    // Controlled form values
     image: fileMetadata.TFileMetadataImage | null;
     courseTitle: string;
     setCourseTitle: (title: string) => void;
@@ -19,6 +29,16 @@ interface CreateCourseFormProps extends isLocalAware {
     setCourseSlug: (slug: string) => void;
     courseDescription: Descendant[];
     setCourseDescription: (description: Descendant[]) => void;
+
+    // Edit mode specific fields
+    duration?: number;
+    setDuration?: (duration: number) => void;
+    requirements?: CourseRequirement[];
+    onAddRequirement?: (requirement: CourseRequirement) => void;
+    onRemoveRequirement?: (requirementId: number) => void;
+    availableCourses?: CourseRequirement[];
+
+    // File handling
     onFileChange: (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
@@ -26,6 +46,8 @@ interface CreateCourseFormProps extends isLocalAware {
     onUploadComplete: (file: fileMetadata.TFileMetadataImage) => void;
     onDelete: (id: string) => void;
     onDownload: (id: string) => void;
+
+    // UI state
     errorMessage?: string;
     hasSuccess?: boolean;
     duplicationCourse?: {
@@ -34,11 +56,55 @@ interface CreateCourseFormProps extends isLocalAware {
     };
 }
 
-export function useCreateCourseForm() {
-    const [courseTitle, setCourseTitle] = useState('');
-    const [courseSlug, setCourseSlug] = useState('');
+export interface CourseFormState {
+    courseTitle: string;
+    courseSlug: string;
+    courseDescription: Descendant[];
+    duration?: number;
+    requirements?: CourseRequirement[];
+    hasUserEditedSlug: boolean;
+    setCourseTitle: (title: string) => void;
+    setCourseSlug: (slug: string) => void;
+    setCourseDescription: (description: Descendant[]) => void;
+    setDuration: (duration: number | undefined) => void;
+    onAddRequirement: (requirement: CourseRequirement) => void;
+    onRemoveRequirement: (requirementId: number) => void;
+
+    isDescriptionValid: () => boolean;
+    serializeDescription: () => string;
+}
+
+interface UseCourseInitialState {
+    courseTitle?: string;
+    courseSlug?: string;
+    courseDescription?: string;
+    duration?: number | undefined;
+    requirements?: CourseRequirement[];
+}
+
+// Hook for parent components to manage form state
+export function useCourseForm(
+    initialState?: UseCourseInitialState,
+): CourseFormState {
+    const [courseTitle, setCourseTitle] = useState(
+        initialState?.courseTitle ?? '',
+    );
+    const [courseSlug, setCourseSlug] = useState(
+        initialState?.courseSlug ?? '',
+    );
     const [courseDescription, setCourseDescription] = useState<Descendant[]>(
-        [],
+        initialState?.courseDescription
+            ? deserialize({
+                  serializedData: initialState.courseDescription,
+                  onError: console.error,
+              })
+            : [],
+    );
+    const [duration, setDuration] = useState<number | undefined>(
+        initialState?.duration,
+    );
+    const [requirements, setRequirements] = useState<CourseRequirement[]>(
+        initialState?.requirements ?? [],
     );
     const [hasUserEditedSlug, setHasEditedCourseSlug] = useState(false);
 
@@ -60,6 +126,16 @@ export function useCreateCourseForm() {
         }
     };
 
+    const handleAddRequirement = (course: CourseRequirement) => {
+        if (!requirements.find((req) => req.id === course.id)) {
+            setRequirements((prev) => [...prev, course]);
+        }
+    };
+
+    const handleRemoveRequirement = (courseId: number) => {
+        setRequirements((prev) => prev.filter((req) => req.id !== courseId));
+    };
+
     const isDescriptionValid = () => {
         const content = courseDescription
             .map((n) => Node.string(n))
@@ -69,30 +145,54 @@ export function useCreateCourseForm() {
     };
 
     return {
+        // Form values
         courseTitle,
-        setCourseTitle: handleCourseTitleChange,
         courseSlug,
-        setCourseSlug: handleCourseSlugChange,
         courseDescription,
+        duration,
+        requirements,
+
+        // Form handlers
+        setCourseTitle: handleCourseTitleChange,
+        setCourseSlug: handleCourseSlugChange,
         setCourseDescription,
-        serializeDescription,
+        setDuration,
+        onAddRequirement: handleAddRequirement,
+        onRemoveRequirement: handleRemoveRequirement,
+
+        // Utilities
         hasUserEditedSlug,
         isDescriptionValid,
+        serializeDescription,
     };
 }
 
-export function CreateCourseForm(props: CreateCourseFormProps) {
+// Main unified form component
+export function CourseForm(props: CourseFormProps) {
     const dictionary = getDictionary(props.locale);
     const {
+        mode,
         locale,
-        onDelete,
-        onDownload,
+        // Controlled form values
+        image,
         courseTitle,
         setCourseTitle,
         courseSlug,
         setCourseSlug,
         courseDescription,
         setCourseDescription,
+        duration = 0,
+        setDuration,
+        requirements = [],
+        onAddRequirement,
+        onRemoveRequirement,
+        availableCourses = [],
+        // File handling
+        onFileChange,
+        onUploadComplete,
+        onDelete,
+        onDownload,
+        // UI state
         errorMessage,
         hasSuccess,
         duplicationCourse,
@@ -102,7 +202,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
-        return props.onFileChange(file, abortSignal);
+        return onFileChange(file, abortSignal);
     };
 
     const handleOnUploadComplete = (file: fileMetadata.TFileMetadata) => {
@@ -110,7 +210,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
             console.error('Uploaded file is not an image');
             return;
         }
-        props.onUploadComplete(file);
+        onUploadComplete(file);
     };
 
     const [hasDuplicationThumbnailError, setHasDuplicationThumbnailError] =
@@ -133,6 +233,8 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
         );
     };
 
+    const isEditMode = mode === 'edit';
+
     return (
         <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke">
             {duplicationCourse && (
@@ -151,8 +253,10 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                     <Divider className="my-1" />
                 </>
             )}
+
             <div className="w-full flex flex-col md:flex-row gap-8 min-w-0">
                 <div className="flex-1 w-full flex flex-col gap-4 min-w-0">
+                    {/* Title */}
                     <div className="flex flex-col gap-1">
                         <label className="text-sm md:text-md text-text-secondary">
                             {
@@ -170,19 +274,25 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                             setValue={(value) => setCourseTitle(value)}
                         />
                     </div>
-                    <div className="flex flex-col gap-1">
-                        <label className="text-sm md:text-md text-text-secondary">
-                            {dictionary.components.createCourseForm.slug}
-                        </label>
-                        <InputField
-                            inputText={
-                                dictionary.components.createCourseForm.slug
-                            }
-                            type="text"
-                            value={courseSlug}
-                            setValue={(value) => setCourseSlug(value)}
-                        />
-                    </div>
+
+                    {/* Slug */}
+                    {!isEditMode && (
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm md:text-md text-text-secondary">
+                                {dictionary.components.createCourseForm.slug}
+                            </label>
+                            <InputField
+                                inputText={dictionary.components.createCourseForm.slug}
+                                type="text"
+                                value={courseSlug}
+                                setValue={(value) => setCourseSlug(value)}
+                            />
+                        </div>
+                    )}
+
+                    {/* Duration - only in edit mode */}
+
+                    {/* Description */}
                     <div className="flex flex-col gap-1">
                         <label className="text-sm md:text-md text-text-secondary">
                             {
@@ -207,7 +317,27 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                             }
                         />
                     </div>
+
+                    {isEditMode && setDuration && (
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm md:text-md text-text-secondary">
+                                Estimated duration of self-study material
+                                (minutes)
+                            </label>
+                            <InputField
+                                inputText="Duration in minutes"
+                                type="number"
+                                min={0}
+                                value={duration.toString()}
+                                setValue={(value) =>
+                                    setDuration(parseInt(value))
+                                }
+                            />
+                        </div>
+                    )}
                 </div>
+
+                {/* Image Upload */}
                 <div className="flex flex-col gap-1 min-w-0 md:w-80 w-full">
                     <label className="text-sm md:text-md text-text-secondary leading-[150%] capitalize">
                         {
@@ -220,7 +350,7 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                             locale={locale}
                             variant="image"
                             type="single"
-                            file={props.image}
+                            file={image}
                             onFilesChange={handleOnFilesChange}
                             onUploadComplete={handleOnUploadComplete}
                             onDelete={onDelete}
@@ -233,6 +363,8 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                     </div>
                 </div>
             </div>
+
+            {/* Error/Success Messages */}
             {errorMessage && (
                 <Banner style="error" description={errorMessage} />
             )}
@@ -240,7 +372,10 @@ export function CreateCourseForm(props: CreateCourseFormProps) {
                 <Banner
                     style="success"
                     description={
-                        dictionary.components.createCourseForm.successBanner
+                        isEditMode
+                            ? 'Course updated successfully!'
+                            : 'Course created successfully! Redirecting...'
+
                     }
                 />
             )}

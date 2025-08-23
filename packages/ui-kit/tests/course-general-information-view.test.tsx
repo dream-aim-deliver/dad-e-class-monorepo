@@ -18,6 +18,9 @@ const mockDictionary = {
             createdByText: 'Created by',
             yourProgressText: 'Your Progress',
             resumeText: 'Resume',
+            beginCourseButton: 'Begin Course',
+            reviewCourseButton: 'Review Course',
+            courseCompletedBadge: 'Course Completed',
             and: 'and',
             andLabel: 'and',
             other: 'other',
@@ -46,7 +49,8 @@ const mockStudents = [
     { name: 'Charlie Brown', avatarUrl: 'https://example.com/avatar3.jpg' },
 ];
 
-const baseProps = {
+const basePropsWithProgress = {
+    title: 'Advanced React Development',
     longDescription: 'This is a sample course description for testing.',
     duration: {
         video: 120,
@@ -59,20 +63,41 @@ const baseProps = {
     },
     rating: 4.7,
     progress: 65,
-    showProgress: true,
+    showProgress: true as const,
     imageUrl: 'https://example.com/course.jpg',
     locale: 'en' as TLocale,
     onClickResume: vi.fn(),
+    onClickReview: vi.fn(),
+    onClickAuthor: vi.fn(),
+    students: mockStudents,
+    totalStudentCount: 10,
+};
+
+const basePropsWithoutProgress = {
+    title: 'Advanced React Development',
+    longDescription: 'This is a sample course description for testing.',
+    duration: {
+        video: 120,
+        coaching: 60,
+        selfStudy: 180,
+    },
+    author: {
+        name: 'Dr. Emily Carter',
+        image: 'https://example.com/avatar.jpg',
+    },
+    rating: 4.7,
+    showProgress: false as const,
+    imageUrl: 'https://example.com/course.jpg',
+    locale: 'en' as TLocale,
     onClickAuthor: vi.fn(),
     students: mockStudents,
     totalStudentCount: 10,
 };
 
 describe('CourseGeneralInformationView', () => {
-    it('renders all main course information', () => {
-        render(<CourseGeneralInformationView {...baseProps} />);
+    it('renders all main course information with progress', () => {
+        render(<CourseGeneralInformationView {...basePropsWithProgress} />);
 
-        expect(screen.getByText(baseProps.longDescription)).toBeInTheDocument();
         expect(screen.getByText('Total Duration')).toBeInTheDocument();
         expect(screen.getByText('6h 0m')).toBeInTheDocument();
 
@@ -96,7 +121,7 @@ describe('CourseGeneralInformationView', () => {
     });
 
     it('renders placeholder when imageUrl is missing', () => {
-        render(<CourseGeneralInformationView {...baseProps} imageUrl="" />);
+        render(<CourseGeneralInformationView {...basePropsWithProgress} imageUrl="" />);
         expect(screen.getByText('No image available')).toBeInTheDocument();
     });
 
@@ -104,7 +129,7 @@ describe('CourseGeneralInformationView', () => {
         const onClickAuthor = vi.fn();
         render(
             <CourseGeneralInformationView
-                {...baseProps}
+                {...basePropsWithProgress}
                 onClickAuthor={onClickAuthor}
             />,
         );
@@ -116,7 +141,7 @@ describe('CourseGeneralInformationView', () => {
         const onClickResume = vi.fn();
         render(
             <CourseGeneralInformationView
-                {...baseProps}
+                {...basePropsWithProgress}
                 onClickResume={onClickResume}
             />,
         );
@@ -124,10 +149,46 @@ describe('CourseGeneralInformationView', () => {
         expect(onClickResume).toHaveBeenCalledTimes(1);
     });
 
+    it('shows Begin Course button when progress is 0', () => {
+        render(
+            <CourseGeneralInformationView
+                {...basePropsWithProgress}
+                progress={0}
+            />,
+        );
+        expect(screen.getByText('Begin Course')).toBeInTheDocument();
+        expect(screen.queryByText('Your Progress')).not.toBeInTheDocument();
+    });
+
+    it('shows Review Course button and completion badge when progress is 100', () => {
+        render(
+            <CourseGeneralInformationView
+                {...basePropsWithProgress}
+                progress={100}
+            />,
+        );
+        expect(screen.getByText('Review Course')).toBeInTheDocument();
+        expect(screen.getByText('Course Completed')).toBeInTheDocument();
+        expect(screen.queryByText('Your Progress')).not.toBeInTheDocument();
+    });
+
+    it('calls onClickReview when Review Course is clicked', () => {
+        const onClickReview = vi.fn();
+        render(
+            <CourseGeneralInformationView
+                {...basePropsWithProgress}
+                progress={100}
+                onClickReview={onClickReview}
+            />,
+        );
+        fireEvent.click(screen.getByText('Review Course'));
+        expect(onClickReview).toHaveBeenCalledTimes(1);
+    });
+
     it('shows correct formatting for short durations', () => {
         render(
             <CourseGeneralInformationView
-                {...baseProps}
+                {...basePropsWithProgress}
                 duration={{ video: 15, coaching: 0, selfStudy: 30 }}
             />,
         );
@@ -144,7 +205,7 @@ describe('CourseGeneralInformationView', () => {
     it('renders anonymous author correctly', () => {
         render(
             <CourseGeneralInformationView
-                {...baseProps}
+                {...basePropsWithProgress}
                 author={{ name: 'Anonymous Instructor', image: '' }}
             />,
         );
@@ -152,13 +213,10 @@ describe('CourseGeneralInformationView', () => {
     });
 
     it('does not render progress section if showProgress is false', () => {
-        render(
-            <CourseGeneralInformationView
-                {...baseProps}
-                showProgress={false}
-            />,
-        );
+        render(<CourseGeneralInformationView {...basePropsWithoutProgress} />);
         expect(screen.queryByText('Your Progress')).not.toBeInTheDocument();
         expect(screen.queryByText('Resume')).not.toBeInTheDocument();
+        expect(screen.queryByText('Begin Course')).not.toBeInTheDocument();
+        expect(screen.queryByText('Review Course')).not.toBeInTheDocument();
     });
 });

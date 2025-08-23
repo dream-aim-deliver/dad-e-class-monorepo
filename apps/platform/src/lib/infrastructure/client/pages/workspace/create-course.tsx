@@ -2,16 +2,14 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
-    AbortError,
     Button,
-    calculateMd5,
-    CreateCourseForm,
+    CourseForm,
     DefaultError,
     DefaultLoading,
-    downloadFile,
     IconSave,
+    SectionHeading,
+    useCourseForm,
     uploadToS3,
-    useCreateCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
@@ -20,6 +18,7 @@ import { trpc } from '../../trpc/client';
 import { useCreateCoursePresenter } from '../../hooks/use-create-course-presenter';
 import { useRouter } from 'next/navigation';
 import { useGetCourseShortPresenter } from '../../hooks/use-course-short-presenter';
+import { useCourseImageUpload } from '../common/hooks/use-course-image-upload';
 
 const useCreateCourse = () => {
     const router = useRouter();
@@ -84,115 +83,6 @@ const useCreateCourse = () => {
     };
 };
 
-// Custom hook for image upload logic
-const useCourseImageUpload = () => {
-    const uploadMutation = trpc.uploadCourseImage.useMutation();
-    const verifyMutation = trpc.verifyFile.useMutation();
-
-    const [courseImage, setCourseImage] =
-        useState<fileMetadata.TFileMetadataImage | null>(null);
-    const [uploadError, setUploadError] = useState<string | undefined>(
-        undefined,
-    );
-
-    const uploadImage = async (
-        uploadRequest: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal,
-    ) => {
-        if (abortSignal?.aborted) {
-            throw new AbortError();
-        }
-
-        const checksum = await calculateMd5(uploadRequest.file);
-
-        // For mutations, we aren't able to abort them midway.
-        // Hence, we check for abort signal before each step.
-        const uploadResult = await uploadMutation.mutateAsync({
-            name: uploadRequest.name,
-            checksum,
-            mimeType: uploadRequest.file.type,
-            size: uploadRequest.file.size,
-        });
-        if (!uploadResult.success) {
-            throw new Error('Failed to get upload credentials');
-        }
-
-        if (abortSignal?.aborted) {
-            throw new AbortError();
-        }
-
-        // Comment out to test without the storage running
-        await uploadToS3({
-            file: uploadRequest.file,
-            checksum,
-            storageUrl: uploadResult.data.storageUrl,
-            objectName: uploadResult.data.file.objectName,
-            formFields: uploadResult.data.formFields,
-            abortSignal,
-        });
-
-        const verifyResult = await verifyMutation.mutateAsync({
-            fileId: uploadResult.data.file.id,
-        });
-        if (!verifyResult.success) {
-            throw new Error('Failed to verify image upload');
-        }
-
-        return {
-            id: uploadResult.data.file.id,
-            name: uploadResult.data.file.name,
-            url: verifyResult.data.downloadUrl,
-            thumbnailUrl: verifyResult.data.downloadUrl,
-            size: uploadResult.data.file.size,
-            category: uploadResult.data.file.category,
-        } as fileMetadata.TFileMetadata;
-    };
-
-    const createCourseTranslations = useTranslations('pages.createCourse');
-
-    const handleFileChange = async (
-        uploadRequest: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal,
-    ): Promise<fileMetadata.TFileMetadata> => {
-        setUploadError(undefined);
-        try {
-            return await uploadImage(uploadRequest, abortSignal);
-        } catch (error) {
-            if (error instanceof AbortError) {
-                console.warn('File upload was aborted');
-            } else {
-                console.error('File upload failed:', error);
-                setUploadError(createCourseTranslations('uploadError'));
-            }
-            throw error;
-        }
-    };
-
-    const handleUploadComplete = (file: fileMetadata.TFileMetadataImage) => {
-        setCourseImage(file);
-    };
-
-    const handleDelete = (id: string) => {
-        if (courseImage?.id === id) {
-            setCourseImage(null);
-        }
-    };
-
-    const handleDownload = async (id: string) => {
-        if (courseImage?.id !== id) return;
-        downloadFile(courseImage.url, courseImage.name);
-    };
-
-    return {
-        courseImage,
-        uploadError,
-        handleFileChange,
-        handleUploadComplete,
-        handleDelete,
-        handleDownload,
-    };
-};
-
 interface CreateCourseContentProps {
     duplicationCourse?: {
         title: string;
@@ -212,7 +102,7 @@ function CreateCourseContent(props: CreateCourseContentProps) {
         setCourseDescription,
         isDescriptionValid,
         serializeDescription,
-    } = useCreateCourseForm();
+    } = useCourseForm();
 
     const { createCourse, isCreating, isSuccess, getSubmitErrorMessage } =
         useCreateCourse();
@@ -280,25 +170,25 @@ function CreateCourseContent(props: CreateCourseContentProps) {
                     disabled={isSubmitDisabled}
                 />
             </div>
-            <div>
-                <CreateCourseForm
-                    image={courseImage}
-                    courseTitle={courseTitle}
-                    setCourseTitle={setCourseTitle}
-                    courseSlug={courseSlug}
-                    setCourseSlug={setCourseSlug}
-                    courseDescription={courseDescription}
-                    setCourseDescription={setCourseDescription}
-                    onFileChange={handleFileChange}
-                    onUploadComplete={handleUploadComplete}
-                    onDelete={handleDelete}
-                    onDownload={handleDownload}
-                    locale={locale}
-                    errorMessage={errorMessage}
-                    hasSuccess={isSuccess}
-                    duplicationCourse={props.duplicationCourse}
-                />
-            </div>
+
+            <CourseForm
+                mode="create"
+                image={courseImage}
+                courseTitle={courseTitle}
+                setCourseTitle={setCourseTitle}
+                courseSlug={courseSlug}
+                setCourseSlug={setCourseSlug}
+                courseDescription={courseDescription}
+                setCourseDescription={setCourseDescription}
+                onFileChange={handleFileChange}
+                onUploadComplete={handleUploadComplete}
+                onDelete={handleDelete}
+                onDownload={handleDownload}
+                locale={locale}
+                errorMessage={errorMessage}
+                hasSuccess={isSuccess}
+                duplicationCourse={props.duplicationCourse}
+            />
         </div>
     );
 }
@@ -325,7 +215,7 @@ function CreateCourseWithDuplication({
     );
 
     if (!duplicationCourseViewModel) {
-        return <DefaultLoading locale={locale} variant="minimal" />;
+        return <DefaultLoading locale={locale} variant='minimal'/>;
     }
 
     if (duplicationCourseViewModel.mode === 'not-found') {
@@ -361,7 +251,7 @@ export default function CreateCourse({
     const locale = useLocale() as TLocale;
     if (duplicationCourseSlug) {
         return (
-            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
+            <Suspense fallback={<DefaultLoading locale={locale} variant='minimal'/>}>
                 <CreateCourseWithDuplication
                     duplicationCourseSlug={duplicationCourseSlug}
                 />
