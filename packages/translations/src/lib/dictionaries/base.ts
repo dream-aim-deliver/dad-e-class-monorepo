@@ -288,6 +288,9 @@ export const DictionarySchema = z.object({
       coaching: z.string(),
       howItWorks: z.string(),
       about: z.string(),
+      dashboard: z.string(),
+      yourProfile: z.string(),
+      logout: z.string(),
     }),
     footer: z.object({
       impressum: z.string(),

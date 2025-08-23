@@ -5,17 +5,11 @@ import { getMessages } from 'next-intl/server';
 import { Figtree, Nunito, Raleway, Roboto } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
-import { viewModels } from '@maany_shr/e-class-models';
-import {
-    getQueryClient,
-    trpc,
-} from '../../../lib/infrastructure/server/config/trpc/server';
 import {
     languageCodeToLocale,
     localeToLanguageCode,
 } from '../../../lib/infrastructure/server/utils/language-mapping';
 import Layout from '../../../lib/infrastructure/client/pages/layout';
-import { createGetLanguagesPresenter } from '../../../lib/infrastructure/server/presenter/get-languages-presenter';
 import MockTRPCClientProviders from '../../../lib/infrastructure/client/trpc/mock-client-providers';
 import getSession from '../../../lib/infrastructure/server/config/auth/get-session';
 
@@ -52,22 +46,33 @@ export default async function RootLayout({
     children: React.ReactNode;
     params: Promise<{ locale: string }>;
 }) {
-    const queryOptions = trpc.listLanguages.queryOptions({});
-    const queryClient = getQueryClient();
-    const languagesResponse = await queryClient.fetchQuery(queryOptions);
-    let languagesViewModel: viewModels.TLanguageListViewModel | undefined;
-    const presenter = createGetLanguagesPresenter((viewModel) => {
-        languagesViewModel = viewModel;
-    });
-    await presenter.present(languagesResponse, languagesViewModel);
-    if (!languagesViewModel || languagesViewModel.mode !== 'default') {
-        throw Error(
-            languagesViewModel?.data?.message ||
-                'Unknown error happened while loading languages',
-        );
-    }
+    // const queryOptions = trpc.listLanguages.queryOptions({});
+    // const queryClient = getQueryClient();
+    // const languagesResponse = await queryClient.fetchQuery(queryOptions);
+    // let languagesViewModel: viewModels.TLanguageListViewModel | undefined;
+    // const presenter = createGetLanguagesPresenter((viewModel) => {
+    //     languagesViewModel = viewModel;
+    // });
+    // await presenter.present(languagesResponse, languagesViewModel);
+    // if (!languagesViewModel || languagesViewModel.mode !== 'default') {
+    //     throw Error(
+    //         languagesViewModel?.data?.message ||
+    //             'Unknown error happened while loading languages',
+    //     );
+    // }
 
-    const { languages } = languagesViewModel.data;
+    const { languages } = {
+        languages: [
+            {
+                languageCode: 'en',
+                name: 'English',
+            },
+            {
+                languageCode: 'de',
+                name: 'German',
+            },
+        ],
+    };
 
     // Check if platform's languages are supported
     const availableLocales: TLocale[] = [];

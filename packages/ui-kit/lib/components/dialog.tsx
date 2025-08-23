@@ -123,6 +123,29 @@ export const DialogContent: React.FC<DialogContentProps> = ({
 }) => {
     const { isOpen, setIsOpen } = useDialog();
     const contentRef = useRef<HTMLDivElement | null>(null);
+    const [isAnimating, setIsAnimating] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
+
+    // Handle opening and closing animations
+    useEffect(() => {
+        if (isOpen) {
+            // Opening animation
+            setIsClosing(false);
+            setIsAnimating(true);
+            // Small delay to trigger entrance animation
+            const timer = setTimeout(() => setIsAnimating(false), 50);
+            return () => clearTimeout(timer);
+        } else {
+            // Closing animation
+            setIsClosing(true);
+            // Wait for closing animation to complete before unmounting
+            const timer = setTimeout(() => {
+                setIsClosing(false);
+                setIsAnimating(false);
+            }, 300); // Match animation duration
+            return () => clearTimeout(timer);
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         const handleEscape = (event: KeyboardEvent) => {
@@ -154,18 +177,28 @@ export const DialogContent: React.FC<DialogContentProps> = ({
         };
     }, [isOpen, closeOnEscape, closeOnOverlayClick, setIsOpen]);
 
-    if (!isOpen) return null;
+    // Show dialog during opening, open state, and closing animation
+    if (!isOpen && !isClosing) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Overlay */}
-            <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm" />
+        <>
+            {/* Overlay with fade-in/out */}
+            <div 
+                className={`fixed inset-0 z-40 bg-neutral-900/60 backdrop-blur-sm transition-all duration-300 ease-out ${
+                    isAnimating || isClosing ? 'opacity-0' : 'opacity-100'
+                }`} 
+            />
 
-            {/* Content */}
+            {/* Content with scale + fade animation */}
             <div
                 ref={contentRef}
-                className={`relative z-50 w-full max-w-lg bg-card-fill border border-card-stroke rounded-lg 
-          shadow-[0_4px_12px_0var(base-neutral-950)] transform transition-all duration-200 ${className}`}
+                className={`fixed top-1/2 left-1/2 z-50 w-full max-w-lg 
+                    bg-card-fill border border-card-stroke rounded-lg shadow-[0_4px_12px_0var(base-neutral-950)] 
+                    p-4 transition-all duration-300 ease-out transform -translate-x-1/2 -translate-y-1/2 ${
+                        isAnimating || isClosing 
+                            ? 'opacity-0 scale-95' 
+                            : 'opacity-100 scale-100'
+                    } ${className}`}
                 role="dialog"
                 aria-modal="true"
             >
@@ -183,7 +216,7 @@ export const DialogContent: React.FC<DialogContentProps> = ({
                 )}
                 {children}
             </div>
-        </div>
+        </>
     );
 };
 

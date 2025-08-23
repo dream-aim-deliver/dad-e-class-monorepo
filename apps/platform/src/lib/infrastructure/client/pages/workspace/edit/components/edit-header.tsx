@@ -30,7 +30,7 @@ export default function EditHeader({
 
     return (
         <div className="flex md:flex-row flex-col md:items-center justify-between gap-4">
-            <PageTitle text={title} />
+            <h1>{title}</h1>
             <div className="flex sm:flex-row flex-col sm:items-center gap-3">
                 <Button
                     variant="text"

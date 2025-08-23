@@ -1,4 +1,5 @@
 import SidebarLayout from '../../../../../../src/lib/infrastructure/server/pages/layouts/sidebar-layout';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 export default async function CourseLayout({
     children,
@@ -9,6 +10,8 @@ export default async function CourseLayout({
 }) {
     const params = await paramsPromise;
     return (
-        <SidebarLayout params={params}>{children}</SidebarLayout>
+        <SidebarLayout params={{ ...params, locale: params.locale as TLocale }}>
+            {children}
+        </SidebarLayout>
     );
 }

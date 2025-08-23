@@ -3,13 +3,14 @@
 import { trpc } from '../trpc/client';
 import Header from './header';
 import Footer from './footer';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetPlatformPresenter } from '../hooks/use-platform-presenter';
 import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -20,6 +21,27 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
     const locale = useLocale() as TLocale;
     const sessionDTO = useSession();
     const session = sessionDTO.data;
+    const pathname = usePathname();
+    const contentRef = useRef<HTMLDivElement>(null);
+    const isInitialMount = useRef(true);
+
+    // Trigger animation on route change (but not on initial mount)
+    useEffect(() => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
+        }
+        
+        if (contentRef.current) {
+            // Remove animation class
+            contentRef.current.classList.remove('page-content-entrance');
+            // Force reflow
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            contentRef.current.offsetHeight;
+            // Re-add animation class
+            contentRef.current.classList.add('page-content-entrance');
+        }
+    }, [pathname]);
 
     const [platformResponse] = trpc.getPlatform.useSuspenseQuery({});
     const [platformViewModel, setPlatformViewModel] = useState<
@@ -52,7 +74,9 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
                 session={session}
             />
             <main className="flex-grow w-full mx-auto py-25 justify-center items-center">
-                {children}
+                <div ref={contentRef} className="page-content-entrance w-full">
+                    {children}
+                </div>
             </main>
             <Footer
                 locale={locale}

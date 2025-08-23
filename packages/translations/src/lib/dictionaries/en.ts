@@ -282,6 +282,9 @@ export const EN: TDictionary = {
       coaching: 'Coaching',
       howItWorks: 'How It Works',
       about: 'About',
+      dashboard: 'Dashboard',
+      yourProfile: 'Your profile',
+      logout: 'Logout',
     },
     footer: {
       impressum: 'Impressum',

@@ -82,7 +82,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
     };
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 px-15">
             <EditHeader
                 title="Edit course"
                 onPreview={handlePreview}

@@ -1,10 +1,11 @@
 import WorkspaceSidebar from './sidebar';
 import nextAuth from '../../config/auth/next-auth.config';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 export interface SidebarLayoutProps {
     children: React.ReactNode,
     params: {
-        locale: string
+        locale: TLocale
     }
 }
 export default async function SidebarLayout(props: SidebarLayoutProps) {
@@ -30,7 +31,7 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
                                     ? 'student'
                                     : 'student'
                         }
-                        locale={'en'}
+                        locale={props.params.locale}
                         profileImageUrl={session.user.image}
                         // TODO: Replace with actual rating logic
                         rating={{ score: 4.5, count: 10 }}
