@@ -29,7 +29,7 @@ function IntroductionBanner({ courseSlug }: CourseIntroductionProps) {
     const locale = useLocale() as TLocale;
 
     if (!introductionViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (introductionViewModel.mode !== 'default') {
@@ -58,7 +58,7 @@ export default function CourseIntroduction({
 
     return (
         <div className="flex flex-col space-y-6">
-            <Suspense fallback={<DefaultLoading locale={locale} />}>
+            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                 <IntroductionBanner courseSlug={courseSlug} />
             </Suspense>
         </div>

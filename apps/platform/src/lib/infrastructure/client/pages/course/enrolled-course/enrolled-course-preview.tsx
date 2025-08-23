@@ -33,7 +33,7 @@ function CoursePreviewLesson(props: { lessonId: number }) {
     presenter.present(componentsResponse, componentsViewModel);
 
     if (!componentsViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (componentsViewModel.mode !== 'default') {
@@ -66,7 +66,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     >(undefined);
 
     if (!courseStructureViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (courseStructureViewModel.mode !== 'default') {
@@ -163,7 +163,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                             locale={locale}
                         />
                         <Divider className="my-6" />
-                        <Suspense fallback={<DefaultLoading locale={locale} />}>
+                        <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                             <CoursePreviewLesson lessonId={currentLesson.id} />
                         </Suspense>
                     </>
@@ -178,7 +178,7 @@ export default function EnrolledCoursePreview({
 }: EnrolledCoursePreviewProps) {
     const locale = useLocale() as TLocale;
     return (
-        <Suspense fallback={<DefaultLoading locale={locale} />}>
+        <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
             <CoursePreviewContent courseSlug={courseSlug} />
         </Suspense>
     );

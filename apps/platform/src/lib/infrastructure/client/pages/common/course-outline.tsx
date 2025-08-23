@@ -27,7 +27,7 @@ function OutlineAccordion({ courseSlug }: CourseOutlineProps) {
     const locale = useLocale() as TLocale;
 
     if (!outlineViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (outlineViewModel.mode !== 'default') {
@@ -55,7 +55,7 @@ export default function CourseOutline({ courseSlug }: CourseOutlineProps) {
     return (
         <div className="flex flex-col space-y-6">
             <h2> Course content </h2>
-            <Suspense fallback={<DefaultLoading locale={locale} />}>
+            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                 <OutlineAccordion courseSlug={courseSlug} />
             </Suspense>
         </div>

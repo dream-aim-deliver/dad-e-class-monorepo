@@ -7,12 +7,14 @@ import { IconHamburgerMenu } from './icons/icon-hamburger-menu';
 import { IconChat } from './icons/icon-chat';
 import { IconChevronDown } from './icons/icon-chevron-down';
 import { UserAvatar } from './avatar/user-avatar';
+import DefaultLoading from './default-loading';
 
 interface NavbarProps extends isLocalAware {
   isLoggedIn: boolean;
   notificationCount?: number;
   onChangeLanguage?: (locale: string) => void;
   onLogout?: () => void;
+  isLoggingOut?: boolean;
   children: React.ReactNode;
   logo?: React.ReactNode;
   userProfile?: React.ReactNode;
@@ -144,6 +146,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   notificationCount = 0,
   onChangeLanguage,
   onLogout,
+  isLoggingOut = false,
   children,
   userProfile,
   userProfileImageSrc,
@@ -374,6 +377,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
         </div>
+      )}
+      
+      {/* Logout Loading Overlay */}
+      {isLoggingOut && (
+        <DefaultLoading 
+          locale={locale} 
+          variant="overlay"
+        />
       )}
     </nav>
   );

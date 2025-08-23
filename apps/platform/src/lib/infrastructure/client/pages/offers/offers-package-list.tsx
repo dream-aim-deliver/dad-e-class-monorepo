@@ -27,7 +27,7 @@ export default function PackageList() {
     const router = useRouter();
 
     if (!packagesViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (packagesViewModel.mode === 'not-found') {

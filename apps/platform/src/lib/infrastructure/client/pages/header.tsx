@@ -6,6 +6,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -71,14 +72,21 @@ export default function Header({
     // TODO: handle notifications
     const pathname = usePathname();
     const router = useRouter();
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     const changeLanguage = (newLocale: string) => {
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
         router.push(newUrl);
     };
 
-    const handleLogout = () => {
-        signOut({ callbackUrl: `/${locale}/` });
+    const handleLogout = async () => {
+        try {
+            setIsLoggingOut(true);
+            await signOut({ callbackUrl: `/${locale}/` });
+        } catch (error) {
+            console.error('Logout failed:', error);
+            setIsLoggingOut(false);
+        }
     };
 
     return (
@@ -98,6 +106,7 @@ export default function Header({
             }
             onChangeLanguage={changeLanguage}
             onLogout={handleLogout}
+            isLoggingOut={isLoggingOut}
             userName={session?.user.name}
             userProfileImageSrc={session?.user.image}
             router={router}

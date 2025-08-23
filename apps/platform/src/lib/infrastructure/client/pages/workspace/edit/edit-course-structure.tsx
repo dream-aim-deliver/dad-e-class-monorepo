@@ -61,7 +61,7 @@ export default function EditCourseStructure({
     }, [courseStructureViewModel, setModules, setCourseVersion]);
 
     if (!courseStructureViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (courseStructureViewModel.mode !== 'default') {

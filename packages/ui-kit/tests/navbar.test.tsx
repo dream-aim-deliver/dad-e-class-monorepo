@@ -194,7 +194,10 @@ describe('Navbar Component', () => {
 
     const workspaces = screen.getAllByText('Arbeitsbereich');
     expect(workspaces.length).toBe(2); // Desktop and mobile
-    expect(workspaces[1]).toHaveClass('text-sm'); // Mobile version
+    
+    // Check that the mobile version's parent container has text-sm class
+    const mobileWorkspaceContainer = workspaces[1].parentElement;
+    expect(mobileWorkspaceContainer).toHaveClass('text-sm'); // Mobile version
     expect(screen.getByTestId('language-dropdown')).toHaveValue('de');
   });
 

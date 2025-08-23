@@ -187,7 +187,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     }, [props.tab]);
 
     if (!courseViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     // Don't display anything, wait for the redirect from useEffect
@@ -247,7 +247,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                     <DefaultError locale={locale} />
                 </Tabs.Content>
                 <Tabs.Content value="assessment" className={tabContentClass}>
-                    <Suspense fallback={<DefaultLoading locale={locale} />}>
+                    <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
                         <EnrolledCourseCompletedAssessment
                             courseSlug={props.courseSlug}
                         />
@@ -276,7 +276,7 @@ export function ProgressEnrolledCourse(props: EnrolledCourseProps) {
     const locale = useLocale() as TLocale;
 
     if (!studentProgressViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (studentProgressViewModel.mode !== 'default') {

@@ -19,11 +19,13 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
+import { DefaultLoading } from '@maany_shr/e-class-ui-kit';
 
 const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
     const sidebarTranslations = useTranslations('pages.sidebarLayout');
     const router = useRouter();
     const pathname = usePathname();
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
     
     // Extract locale from props (passed from layout)
     const locale = props.locale || 'en';
@@ -127,8 +129,14 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
             {
                 icon: <IconLogOut />,
                 label: sidebarTranslations('logout'),
-                onClick: () => {
-                    signOut({ callbackUrl: `/${locale}/` });
+                onClick: async () => {
+                    try {
+                        setIsLoggingOut(true);
+                        await signOut({ callbackUrl: `/${locale}/` });
+                    } catch (error) {
+                        console.error('Logout failed:', error);
+                        setIsLoggingOut(false);
+                    }
                 },
             },
         ],
@@ -162,30 +170,40 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
     };
 
     return (
-        <SideMenu
-            {...props}
-            isCollapsed={isCollapsed}
-            onClickToggle={handleToggle}
-        >
-            {createMenuItems(props.userRole === 'student').map(
-                (group, i) => (
-                    <div key={i} className="flex flex-col w-full">
-                        {i > 0 && <div className="h-[1px] bg-divider my-2" />}
-                        {group.map((item) => (
-                            <SideMenuItem
-                                key={item.label}
-                                item={{
-                                    ...item,
-                                    isActive: item.label === activeItem,
-                                }}
-                                onClickItem={handleItemClick}
-                                isCollapsed={isCollapsed}
-                            />
-                        ))}
-                    </div>
-                ),
+        <>
+            <SideMenu
+                {...props}
+                isCollapsed={isCollapsed}
+                onClickToggle={handleToggle}
+            >
+                {createMenuItems(props.userRole === 'student').map(
+                    (group, i) => (
+                        <div key={i} className="flex flex-col w-full">
+                            {i > 0 && <div className="h-[1px] bg-divider my-2" />}
+                            {group.map((item) => (
+                                <SideMenuItem
+                                    key={item.label}
+                                    item={{
+                                        ...item,
+                                        isActive: item.label === activeItem,
+                                    }}
+                                    onClickItem={handleItemClick}
+                                    isCollapsed={isCollapsed}
+                                />
+                            ))}
+                        </div>
+                    ),
+                )}
+            </SideMenu>
+            
+            {/* Logout Loading Overlay */}
+            {isLoggingOut && (
+                <DefaultLoading 
+                    locale={locale} 
+                    variant="overlay"
+                />
             )}
-        </SideMenu>
+        </>
     );
 };
 

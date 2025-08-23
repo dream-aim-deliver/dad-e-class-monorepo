@@ -45,7 +45,7 @@ function Topics() {
     topicsPresenter.present(topicsResponse, topicsViewModel);
 
     if (!topicsViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (topicsViewModel.mode === 'kaboom') {
@@ -78,7 +78,7 @@ export default function Home() {
     const router = useRouter();
 
     if (!homePageViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (homePageViewModel.mode === 'kaboom') {

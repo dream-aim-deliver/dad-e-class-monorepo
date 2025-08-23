@@ -71,7 +71,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
     }, [submitAssessmentViewModel]);
 
     if (!componentsViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (componentsViewModel.mode === 'kaboom') {

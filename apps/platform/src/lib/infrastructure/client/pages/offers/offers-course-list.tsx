@@ -95,7 +95,7 @@ export function OffersCourseList({
     });
 
     if (!coursesViewModel) {
-        return <DefaultLoading locale={locale} />;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (
