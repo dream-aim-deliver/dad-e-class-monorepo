@@ -11,5 +11,9 @@ export const getDictionary =  (
   locale: TLocale,
 ): TDictionary => {
 
-  return dictionaries[locale];
+  const dictionary = dictionaries[locale];
+  if (!dictionary) {
+    throw new Error(`Dictionary not found for locale: ${locale}`);
+  }
+  return dictionary;
 };

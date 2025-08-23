@@ -51,7 +51,7 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
                 locale={locale}
                 session={session}
             />
-            <main className="flex-grow w-full max-w-7xl mx-auto px-4 py-16">
+            <main className="flex-grow w-full mx-auto py-25 justify-center items-center">
                 {children}
             </main>
             <Footer

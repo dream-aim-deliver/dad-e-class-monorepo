@@ -8,7 +8,6 @@ import {
     CourseIntroBanner,
     DefaultError,
     DefaultLoading,
-    SectionHeading,
 } from '@maany_shr/e-class-ui-kit';
 
 interface CourseIntroductionProps {
@@ -59,7 +58,6 @@ export default function CourseIntroduction({
 
     return (
         <div className="flex flex-col space-y-6">
-            <SectionHeading text="Introduction" />
             <Suspense fallback={<DefaultLoading locale={locale} />}>
                 <IntroductionBanner courseSlug={courseSlug} />
             </Suspense>

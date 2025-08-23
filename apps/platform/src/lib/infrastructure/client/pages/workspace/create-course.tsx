@@ -9,9 +9,11 @@ import {
     IconSave,
     SectionHeading,
     useCourseForm,
+    uploadToS3,
+    useCreateCourseForm,
 } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
-import { viewModels } from '@maany_shr/e-class-models';
+import { useLocale, useTranslations } from 'next-intl';
+import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { Suspense, useEffect, useState } from 'react';
 import { trpc } from '../../trpc/client';
 import { useCreateCoursePresenter } from '../../hooks/use-create-course-presenter';
@@ -49,6 +51,8 @@ const useCreateCourse = () => {
         }
     }, [createCourseViewModel]);
 
+    const createCourseTranslations = useTranslations('pages.createCourse');
+
     const getSubmitErrorMessage = () => {
         const hasViewModelError =
             createCourseViewModel && createCourseViewModel.mode !== 'default';
@@ -58,8 +62,7 @@ const useCreateCourse = () => {
             return createCourseViewModel.data.message;
         }
         if (createMutation.error || hasViewModelError) {
-            // TODO: Translate error message
-            return 'Course creation failed. Please try again.';
+            return createCourseTranslations('courseCreationError');
         }
         return undefined;
     };
@@ -119,16 +122,15 @@ function CreateCourseContent(props: CreateCourseContentProps) {
     );
 
     const validateCourse = (): string | undefined => {
-        // TODO: Translate error messages
         if (!courseTitle || !courseSlug) {
-            return 'Please fill in title and slug';
+            return createCourseTranslations('titleSlugError');
         }
         if (!courseDescription || !isDescriptionValid()) {
-            return 'Please provide a course description';
+            return createCourseTranslations('descriptionError');
         }
         // TODO: Add more client validation logic as needed
         if (!courseImage) {
-            return 'Please upload a course image';
+            return createCourseTranslations('missingImageError');
         }
         return undefined;
     };
@@ -154,15 +156,16 @@ function CreateCourseContent(props: CreateCourseContentProps) {
     const errorMessage =
         validationError ?? uploadError ?? getSubmitErrorMessage();
 
+    const createCourseTranslations = useTranslations('pages.createCourse');
+
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 px-30">
             <div className="flex w-full items-center justify-between">
-                {/* TODO: Add translations */}
-                <SectionHeading text="Create Course" />
+                <h1> {createCourseTranslations('createTitle')} </h1>
                 <Button
                     variant="primary"
                     onClick={handleCreateCourse}
-                    text="Submit"
+                    text={createCourseTranslations('saveDraftButton')}
                     hasIconLeft
                     iconLeft={<IconSave />}
                     disabled={isSubmitDisabled}
@@ -201,6 +204,8 @@ function CreateCourseWithDuplication({
     const [duplicationCourseResponse] = trpc.getCourseShort.useSuspenseQuery({
         courseSlug: duplicationCourseSlug,
     });
+    const createCourseTranslations = useTranslations('pages.createCourse');
+
     const [duplicationCourseViewModel, setDuplicationCourseViewModel] =
         useState<viewModels.TCourseShortViewModel | undefined>(undefined);
     const { presenter: duplicationCoursePresenter } =
@@ -215,10 +220,11 @@ function CreateCourseWithDuplication({
     }
 
     if (duplicationCourseViewModel.mode === 'not-found') {
-        // TODO: Translate error message
         return (
             <DefaultError
-                description="Could not find the course to duplicate"
+                description={createCourseTranslations(
+                    'duplicationDefaultError',
+                )}
                 locale={locale}
             />
         );

@@ -151,6 +151,8 @@ export interface AssignmentBuilderViewTypes extends isLocalAware, BaseCourseForm
     type: CourseElementType.Assignment;
     assignmentData: assignment.TAssignmentBaseWithId;
     onFileDownload: (id: string) => void;
+    onFileCancel: (id: string) => void;
+    onFileDelete: (id: string) => void;
 };
 
 

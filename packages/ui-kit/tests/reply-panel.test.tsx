@@ -191,7 +191,7 @@ describe('ReplyPanel Component', () => {
         expect(screen.getByTestId('link-edit')).toBeInTheDocument();
 
         fireEvent.click(screen.getByTestId('save-link'));
-        expect(props.onCreateLink).toHaveBeenCalledWith({ title: 'Edited Link', url: 'https://edited.com' }, 1);
+        expect(props.onCreateLink).toHaveBeenCalledWith({ title: 'Edited Link', url: 'https://edited.com', customIcon: undefined, linkId: 2 }, 1);
 
         fireEvent.click(screen.getByTestId('discard-link'));
         expect(props.onLinkDelete).toHaveBeenCalledWith(2, 1);

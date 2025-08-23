@@ -8,7 +8,6 @@ import {
     DefaultLoading,
     Divider,
     Outline,
-    SectionHeading,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/client';
 import { Suspense, lazy, useState } from 'react';
@@ -57,9 +56,9 @@ export default function Offers(props: OffersProps) {
     const outline = outlineViewModel.data;
 
     return (
-        <div className="flex flex-col space-y-5">
+        <div className="flex flex-col space-y-5 px-30">
             <Outline title={outline.title} description={outline.description} />
-            <SectionHeading text={t('chooseCategory')} />
+            <h2> {t('chooseCategory')} </h2>
             <OffersFilters
                 selectedTopics={selectedTopics}
                 setSelectedTopics={setSelectedTopics}
@@ -76,17 +75,17 @@ export default function Offers(props: OffersProps) {
                 />
             </Suspense>
             <Divider className="my-12" />
-            <SectionHeading text={t('ourPackages')} />
+            <h2> text={t('ourPackages')} </h2>
             <Suspense fallback={<DefaultLoading locale={locale} />}>
                 <PackageList />
             </Suspense>
             <Divider className="my-12" />
-            <SectionHeading text={t('coachingOnDemand')} />
+            <h2> text={t('coachingOnDemand')} </h2>
             <Suspense fallback={<CoachCardListSkeleton />}>
                 <OffersCoachList selectedTopics={selectedTopics} />
             </Suspense>
             <Divider className="my-12" />
-            <SectionHeading text={t('haveNotFound')} className="text-center" />
+            <h2> text={t('haveNotFound')} </h2>
             <Suspense fallback={<CarouselSkeleton />}>
                 <Carousel />
             </Suspense>

@@ -338,18 +338,21 @@ function EditCourseLayout({
                     <Tabs.Trigger
                         value={TabTypes.General}
                         disabled={isSaving || isPreviewing}
+                        isLast={false}
                     >
                         General
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={TabTypes.IntroOutline}
                         disabled={isSaving || isPreviewing}
+                        isLast={false}
                     >
                         Intro & Outline
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={TabTypes.CourseContent}
                         disabled={isSaving || isPreviewing}
+                        isLast={true}
                     >
                         Course Content
                     </Tabs.Trigger>

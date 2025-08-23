@@ -73,7 +73,6 @@ export * from './components/course-builder-lesson-component/types';
 export { CourseElementType, type CourseElement } from './components/course-builder/types';
 export { LessonElementType, type LessonElement } from './components/lesson/types';
 export { lessonElements } from './components/lesson/element-core';
-export * from './components/course-builder-lesson-component/types';
 
 export * from './components/icons';
 export { CourseGeneralInformationView } from './components/course-general-information/course-general-information-view';
@@ -102,6 +101,7 @@ export { Breadcrumbs } from './components/breadcrumbs';
 export * from './components/dialog';
 export { CourseForm, useCourseForm, type CourseFormState } from './components/create-course-form';
 export * from './utils/file-utils';
+
 export { LessonHeader } from './components/lesson-header';
 
 export { PreAssessmentForm } from './components/pre-assessment/pre-assessment-form';
@@ -130,6 +130,9 @@ export { FormComponent as LinksFormComponent } from './components/course-builder
 
 export { CoachingSessionStudentView } from './components/coaching-session-course-builder/coaching-session-student-view';
 export { LessonCoachComponent } from './components/coaching-session-course-builder/lesson-coach-component';
+
+export { SideMenu } from './components/sidemenu/sidemenu';
+
 export { CourseOutlineAccordion } from './components/course-outline-accordion';
 
 export { ComponentCard } from './components/course-builder/component-card';

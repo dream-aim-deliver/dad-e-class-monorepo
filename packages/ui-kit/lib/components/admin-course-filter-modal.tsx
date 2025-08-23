@@ -135,7 +135,12 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
   locale
 }) => {
 
-  const dictionary = getDictionary(locale).components.courseFilterModal;
+  const dictionary = getDictionary(locale).components?.courseFilterModal;
+  
+  // if (!dictionary) {
+  //   // This should never happen as dictionary is always defined
+  //   return null;
+  // }
 
   const [filters, setFilters] = useState({
     minRating: initialFilters?.minRating || 0,
@@ -245,23 +250,23 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
         <h3 className="text-xl font-semibold">{dictionary.numberOfSalesFilter}</h3>
         <div className="flex gap-2 flex-row">
           <AutocompleteInput
-            label={dictionary.min}
+            label={dictionary.min || ''}
             inputField={{
               id: 'minSales',
               className: "w-full text-white border-input-stroke",
               value: filters.minSales,
               setValue: (value: string | string[]) => handleChange('minSales', Array.isArray(value) ? value[0] : value),
-              inputText: dictionary.numberOfSalesMinPlaceholder,
+              inputText: dictionary.numberOfSalesMinPlaceholder || '',
             }}
           />
           <AutocompleteInput
-            label={dictionary.max}
+            label={dictionary.max || ''}
             inputField={{
               id: 'maxSales',
               className: "w-full text-white border-input-stroke",
               value: filters.maxSales,
               setValue: (value: string | string[]) => handleChange('maxSales', Array.isArray(value) ? value[0] : value),
-              inputText: dictionary.numberOfSalesMaxPlaceholder,
+              inputText: dictionary.numberOfSalesMaxPlaceholder || '',
             }}
           />
         </div>
@@ -272,47 +277,47 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
       <div className="flex flex-col gap-4">
         <h3 className="text-xl font-semibold">{dictionary.coachesFilter}</h3>
         <AutocompleteInput
-          label={dictionary.createdBy}
+          label={dictionary.createdBy || ''}
           inputField={{
             id: 'createdBy',
             className: "w-full text-white border-input-stroke",
             value: filters.createdBy,
             setValue: (value: string | string[]) => handleChange('createdBy', Array.isArray(value) ? value[0] : value),
-            inputText: dictionary.coachesCreatedByPlaceholder,
+            inputText: dictionary.coachesCreatedByPlaceholder as string,
             options: creators,
           }}
         />
         <AutocompleteInput
-          label={dictionary.taughtBy}
+          label={dictionary.taughtBy || ''}
           inputField={{
             id: 'taughtBy',
             className: "w-full text-white border-input-stroke",
             value: filters.taughtBy,
             setValue: (value: string | string[]) => handleChange('taughtBy', Array.isArray(value) ? value[0] : value),
-            inputText: dictionary.coachesTaughtByPlaceholder,
+            inputText: dictionary.coachesTaughtByPlaceholder as string,
             options: coaches,
           }}
         />
         <h3 className="text-xl font-semibold">{dictionary.numberOfCoaches}</h3>
         <div className="flex gap-2">
           <AutocompleteInput
-            label={dictionary.min}
+            label={dictionary.min || ''}
             inputField={{
               id: 'minCoaches',
               className: "w-full text-white border-input-stroke",
               value: filters.minCoaches,
               setValue: (value: string | string[]) => handleChange('minCoaches', typeof value === 'string' ? value : value[0] || ''),
-              inputText: dictionary.numberOfCoachesMinPlaceholder,
+              inputText: dictionary.numberOfCoachesMinPlaceholder as string,
             }}
           />
           <AutocompleteInput
-            label={dictionary.max}
+            label={dictionary.max || ''}
             inputField={{
               id: 'maxCoaches',
               className: "w-full text-white border-input-stroke",
               value: filters.maxCoaches,
               setValue: (value: string | string[]) => handleChange('maxCoaches', typeof value === 'string' ? value : value[0] || ''),
-              inputText: dictionary.numberOfCoachesMaxPlaceholder,
+              inputText: dictionary.numberOfCoachesMaxPlaceholder as string,
             }}
           />
         </div>
@@ -348,7 +353,7 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
             className: "w-full text-white border-input-stroke",
             value: filters.tags,
             setValue: (value: string | string[]) => handleChange('tags', Array.isArray(value) ? value : [value]),
-            inputText: dictionary.skillsPlaceholder,
+            inputText: dictionary.skillsPlaceholder as string,
             options: tags,
             multiple: true,
           }}
@@ -376,13 +381,13 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
           </div>
         </div>
         <DateInput
-          label={dictionary.publishedBefore}
+          label={dictionary.publishedBefore || ''}
           value={filters.publishBefore}
           onChange={(value: string) => handleChange('publishBefore', value)}
           locale={locale}
         />
         <DateInput
-          label={dictionary.publishedAfter}
+          label={dictionary.publishedAfter || ''}
           value={filters.publishAfter}
           onChange={(value: string) => handleChange('publishAfter', value)}
           locale={locale}
@@ -396,14 +401,14 @@ export const AdminCourseFilterModalExpanded: React.FC<AdminCourseFilterModalProp
           size="medium"
           onClick={handleReset}
           className="flex-1"
-          text={dictionary.resetFilters}
+          text={dictionary.resetFilters || ''}
         />
         <Button
           variant="primary"
           size="medium"
           onClick={handleApply}
           className="flex-1"
-          text={dictionary.applyFilters}
+          text={dictionary.applyFilters || ''}
         />
       </div>
     </div>

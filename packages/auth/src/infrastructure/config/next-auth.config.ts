@@ -152,7 +152,8 @@ export const generateNextAuthConfig = (config: {
                             session.user.roles?.push(role);
                     }
                 });
-
+                // THIS IS A TEMPORARY WAY TO CONTROL ROLES FOR BUILDING THE UI
+                session.user.roles = ["visitor", "student", "coach", "admin"]
                 // TODO: Enable this to align the session expiry with the token expiry, currently session_expiry < token_expiry
                 // if (nextAuthToken.account.expires_at) {
                 //     session.expires = new Date((nextAuthToken.account.expires_at) * 1000).toISOString() as unknown as (Date & string);

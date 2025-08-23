@@ -74,7 +74,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
   const dictionary = getDictionary(locale);
 
   // Calculate total course duration in minutes and convert to hours
-  const totalDurationInMinutes = duration.video + duration.coaching + duration.selfStudy;
+  const totalDurationInMinutes = (duration as any).video as number + (duration as any).coaching as number + (duration as any).selfStudy as number;
   const totalDurationInHours = totalDurationInMinutes / 60;
   // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
   const formattedDuration = Number.isInteger(totalDurationInHours)
@@ -87,9 +87,9 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
 
   const shouldShowPlaceholder = !imageUrl || isImageError;
 
-  const pricingValue = coachingIncluded ? `${pricing.currency} ${pricing.fullPrice}` : `${dictionary.components.courseCard.fromButton} ${pricing.currency} ${pricing.partialPrice}`;
+  const pricingValue = coachingIncluded ? `${(pricing as any).currency} ${(pricing as any).fullPrice}` : `${dictionary.components.courseCard.fromButton} ${(pricing as any).currency} ${(pricing as any).partialPrice}`;
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="w-full mx-auto">
       <div className="flex flex-col w-auto h-[600px] rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
         <div className="relative flex-shrink-0">
           {shouldShowPlaceholder ? (
@@ -122,7 +122,7 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
             </div>
 
             <div className="flex gap-1 items-end">
-              <StarRating totalStars={5} rating={rating} />
+              <StarRating totalStars={5} rating={rating as number} />
               <span className="text-xs text-text-primary leading-[100%]">
                 {rating}
               </span>
@@ -131,11 +131,11 @@ export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
               </span>
             </div>
 
-            <CourseCreator creatorName={author?.name} imageUrl={author?.image} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
+            <CourseCreator creatorName={author?.name as string} imageUrl={author?.image} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
 
             <CourseStats
               locale={locale as TLocale}
-              language={language.name}
+              language={(language as any).name as string}
               sessions={sessions}
               duration={`${formattedDuration}  ${dictionary.components.courseCard.hours}`}
               sales={sales}

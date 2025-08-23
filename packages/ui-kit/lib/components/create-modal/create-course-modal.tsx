@@ -42,16 +42,15 @@ enum CreateCourseModalTab {
 function CourseSearchSkeleton() {
     const getSingleSkeleton = () => (
         <div className="flex justify-between items-center mt-2 mb-2 bg-base-neutral-800 rounded-lg border border-base-neutral-700 p-4">
-                {/* Skeleton title and rating*/}
-                <div className="flex flex-col items-start gap-3 w-full animate-pulse">
-                    <div className="w-80 h-6 bg-base-neutral-700 rounded-lg" />
-                    <div className="w-40 h-4 bg-base-neutral-700 rounded-lg" />
-                </div>
-                {/* Skeleton avatar */}
-                <div className="w-10 h-10 items-end rounded-full bg-base-neutral-700 animate-pulse" />
+            {/* Skeleton title and rating*/}
+            <div className="flex flex-col items-start gap-3 w-full animate-pulse">
+                <div className="w-80 h-6 bg-base-neutral-700 rounded-lg" />
+                <div className="w-40 h-4 bg-base-neutral-700 rounded-lg" />
             </div>
+            {/* Skeleton avatar */}
+            <div className="w-10 h-10 items-end rounded-full bg-base-neutral-700 animate-pulse" />
+        </div>
     );
-            
 
     return (
         <div className="flex flex-col">
@@ -126,6 +125,17 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
 
     const isQuerySuccessful = !props.isLoading && !props.hasSearchError;
 
+    const tabs = [
+        {
+            value: CreateCourseModalTab.CREATE_NEW,
+            label: dictionary.startFromScratch
+        },
+        {
+            value: CreateCourseModalTab.DUPLICATE,
+            label: dictionary.duplicateCourse
+        }
+    ];
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex flex-col items-start gap-4 w-full">
@@ -145,12 +155,15 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                 className="w-full"
             >
                 <TabList className="mb-4">
-                    <TabTrigger value={CreateCourseModalTab.CREATE_NEW}>
-                        {dictionary.startFromScratch}
-                    </TabTrigger>
-                    <TabTrigger value={CreateCourseModalTab.DUPLICATE}>
-                        {dictionary.duplicateCourse}
-                    </TabTrigger>
+                    {tabs.map((tab, index) => (
+                        <TabTrigger 
+                            key={tab.value}
+                            value={tab.value}
+                            isLast={index === tabs.length - 1}
+                        >
+                            {tab.label}
+                        </TabTrigger>
+                    ))}
                 </TabList>
 
                 <TabContent value={CreateCourseModalTab.CREATE_NEW}>
@@ -180,24 +193,30 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                             leftContent={<IconSearch />}
                         />
                         {props.isLoading && <CourseSearchSkeleton />}
-                        {isQuerySuccessful && props.courses && props.courses.length === 0 && (
-                            <h6 className="text-text-primary">
-                                {dictionary.noCourseFound}
-                            </h6>
+                        {isQuerySuccessful &&
+                            props.courses &&
+                            props.courses.length === 0 && (
+                                <h6 className="text-text-primary">
+                                    {dictionary.noCourseFound}
+                                </h6>
+                            )}
+                        {!props.isLoading && props.hasSearchError && (
+                            <DefaultError locale={props.locale} />
                         )}
-                        {!props.isLoading && props.hasSearchError && <DefaultError locale={props.locale} />}
-                        {isQuerySuccessful && props.courses && props.courses.length > 0 && (
-                            <ul className="flex flex-col gap-4 max-h-70 overflow-y-auto">
-                                {props.courses.map((course) => (
-                                    <DuplicationCourseCard
-                                        key={course.id}
-                                        course={course}
-                                        locale={props.locale}
-                                        onSelect={props.onDuplicate}
-                                    />
-                                ))}
-                            </ul>
-                        )}
+                        {isQuerySuccessful &&
+                            props.courses &&
+                            props.courses.length > 0 && (
+                                <ul className="flex flex-col gap-4 max-h-70 overflow-y-auto">
+                                    {props.courses.map((course) => (
+                                        <DuplicationCourseCard
+                                            key={course.id}
+                                            course={course}
+                                            locale={props.locale}
+                                            onSelect={props.onDuplicate}
+                                        />
+                                    ))}
+                                </ul>
+                            )}
                     </div>
                 </TabContent>
             </Tabs.Root>

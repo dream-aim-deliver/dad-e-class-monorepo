@@ -9,6 +9,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 id: 1,
                 slug: 'coach-course',
                 title: 'Advanced JavaScript Mastery',
+                state: 'live',
                 description:
                     'Master advanced JavaScript concepts including closures, prototypes, async programming, and modern ES6+ features.',
                 imageUrl:
@@ -32,6 +33,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 id: 2,
                 slug: 'progress-course',
                 title: 'Digital Photography Fundamentals',
+                state: 'draft',
                 description:
                     'Learn the art and science of digital photography from composition to post-processing techniques.',
                 imageUrl:
@@ -56,6 +58,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 id: 3,
                 slug: 'admin-course',
                 title: 'React Native Mobile Development',
+                state: 'live',
                 description:
                     'Build cross-platform mobile applications using React Native, from basics to advanced deployment strategies.',
                 imageUrl:
@@ -73,12 +76,12 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 2134,
                 fullDuration: 3600, // 60 hours
                 role: 'owner' as const,
-                state: 'live' as const,
             },
             {
                 id: 4,
                 slug: 'culinary-arts-italian-cuisine',
                 title: 'Italian Culinary Arts Masterclass',
+                state: 'draft',
                 description:
                     'Discover the secrets of authentic Italian cooking with traditional recipes and modern techniques.',
                 imageUrl:
@@ -102,6 +105,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 id: 5,
                 slug: 'data-science-python-analytics',
                 title: 'Data Science with Python & Analytics',
+                state: 'live',
                 description:
                     'Comprehensive data science course covering Python, pandas, machine learning, and statistical analysis.',
                 imageUrl:
@@ -119,12 +123,12 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 1567,
                 fullDuration: 4320, // 72 hours
                 role: 'admin' as const,
-                state: 'live' as const,
             },
             {
                 id: 6,
                 slug: 'watercolor-painting-techniques',
                 title: 'Watercolor Painting Techniques',
+                state: 'live',
                 description:
                     'Explore the beautiful world of watercolor painting with step-by-step tutorials and artistic guidance.',
                 imageUrl:
@@ -149,6 +153,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 id: 7,
                 slug: 'blockchain-cryptocurrency-fundamentals',
                 title: 'Blockchain & Cryptocurrency Fundamentals',
+                state: 'review',
                 description:
                     'Understanding blockchain technology, cryptocurrency markets, and decentralized finance (DeFi) applications.',
                 imageUrl:
@@ -166,12 +171,12 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 1289,
                 fullDuration: 2880, // 48 hours
                 role: 'owner' as const,
-                state: 'review' as const,
             },
             {
                 id: 8,
                 slug: 'yoga-meditation-wellness',
                 title: 'Yoga, Meditation & Wellness',
+                state: 'draft',
                 description:
                     'Complete wellness program combining yoga practices, meditation techniques, and mindfulness training.',
                 imageUrl:
@@ -195,6 +200,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 id: 9,
                 slug: 'digital-marketing-social-media',
                 title: 'Digital Marketing & Social Media Strategy',
+                state: 'live',
                 description:
                     'Master digital marketing strategies including SEO, social media marketing, and content creation.',
                 imageUrl:
@@ -212,12 +218,12 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 1743,
                 fullDuration: 2700, // 45 hours
                 role: 'admin' as const,
-                state: 'live' as const,
             },
             {
                 id: 10,
                 slug: 'guitar-masterclass-acoustic',
                 title: 'Acoustic Guitar Masterclass',
+                state: 'review',
                 description:
                     'Comprehensive acoustic guitar course from beginner chords to advanced fingerstyle techniques.',
                 imageUrl:
@@ -242,6 +248,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 id: 11,
                 slug: 'ux-ui-design-principles',
                 title: 'UX/UI Design Principles',
+                state: 'live',
                 description:
                     'Learn user experience and interface design principles with hands-on projects and industry best practices.',
                 imageUrl:
@@ -259,12 +266,12 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 2089,
                 fullDuration: 3240, // 54 hours
                 role: 'owner' as const,
-                state: 'live' as const,
             },
             {
                 id: 12,
                 slug: 'entrepreneurship-startup-bootcamp',
                 title: 'Entrepreneurship & Startup Bootcamp',
+                state: 'live',
                 description:
                     'From idea to launch: complete guide to building a successful startup with real-world case studies.',
                 imageUrl:
@@ -288,6 +295,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 id: 13,
                 slug: 'landscape-photography-workshop',
                 title: 'Landscape Photography Workshop',
+                state: 'draft',
                 description:
                     'Capture stunning landscapes with advanced techniques in composition, lighting, and post-processing.',
                 imageUrl:
@@ -305,12 +313,12 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 678,
                 fullDuration: 1920, // 32 hours
                 role: 'admin' as const,
-                state: 'draft' as const,
             },
             {
                 id: 14,
                 slug: 'machine-learning-tensorflow',
                 title: 'Machine Learning with TensorFlow',
+                state: 'review',
                 description:
                     'Deep dive into machine learning using TensorFlow, covering neural networks and deep learning applications.',
                 imageUrl:
@@ -335,6 +343,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 id: 15,
                 slug: 'french-language-immersion',
                 title: 'French Language Immersion',
+                state: 'live',
                 description:
                     'Complete French language course with immersive techniques, cultural context, and conversation practice.',
                 imageUrl:
@@ -352,12 +361,12 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 987,
                 fullDuration: 3000, // 50 hours
                 role: 'owner' as const,
-                state: 'live' as const,
             },
             {
                 id: 16,
                 slug: 'woodworking-furniture-crafting',
                 title: 'Woodworking & Furniture Crafting',
+                state: 'draft',
                 description:
                     'Traditional woodworking techniques for creating beautiful, functional furniture pieces from scratch.',
                 imageUrl:
@@ -381,6 +390,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 id: 17,
                 slug: 'personal-finance-investment',
                 title: 'Personal Finance & Investment Strategy',
+                state: 'review',
                 description:
                     'Comprehensive guide to personal finance management, investment strategies, and wealth building.',
                 imageUrl:
@@ -398,12 +408,12 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 salesCount: 1678,
                 fullDuration: 2400, // 40 hours
                 role: 'admin' as const,
-                state: 'review' as const,
             },
             {
                 id: 18,
                 slug: 'sustainable-gardening-permaculture',
                 title: 'Sustainable Gardening & Permaculture',
+                state: 'live',
                 description:
                     'Learn sustainable gardening and permaculture principles to create eco-friendly, productive gardens.',
                 imageUrl:

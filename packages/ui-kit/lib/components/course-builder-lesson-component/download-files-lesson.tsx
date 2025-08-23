@@ -11,26 +11,6 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 
-/**
- * Template configuration for the Download Files course element
- * Defines the type, design elements, and component mappings
- */
-/**
- * Template configuration for the Download Files course element
- * Defines the type, design elements, and component mappings for the downloadable files feature
- * This element allows course creators to add downloadable resources to their courses
- */
-const downloadFilesElement: CourseElementTemplate = {
-    type: CourseElementType.DownloadFiles,
-    designerBtnElement: {
-        icon: IconCloudDownload,
-        label: 'Download Files',
-    },
-    // @ts-ignore
-    designerComponent: DesignerComponent,
-    // @ts-ignore
-    formComponent: FormComponent,
-};
 
 /** Props interface for the Download Files Designer component */
 /**
@@ -98,11 +78,9 @@ export function DesignerComponent({
     const handleFileDelete = (id: string) => {
         onFileDelete(id);
     };
-
     const handleFileDownload = (id: string) => {
         onFileDownload(id);
     };
-    
     return (
         <DesignerLayout
             type={elementInstance.type}
@@ -119,13 +97,12 @@ export function DesignerComponent({
                 variant="generic"
                 files={elementInstance.files}
                 maxFile={maxFiles}
-                onFilesChange={handleDownloadFile}
+                onFilesChange={handleDownloadFile as any}
                 onUploadComplete={handleUploadComplete}
                 onDelete={handleFileDelete}
                 onDownload={handleFileDownload}
                 locale={locale}
                 maxSize={maxSize}
-                isDeletionAllowed={true}
             />
         </DesignerLayout>
     );
@@ -139,7 +116,7 @@ export function DesignerComponent({
  * @param elementInstance - The current instance of the download files element containing file data
  * @returns JSX element displaying the files or null if invalid type
  */
-interface DownloadFilesFormProps extends FormComponentProps {
+export interface DownloadFilesFormProps extends FormComponentProps {
     onDownload: (id: string) => void;
 }
 export function FormComponent({
@@ -152,23 +129,37 @@ export function FormComponent({
         onDownload(id);
     };
     return (
-        <div className="flex flex-col bg-card-fill p-4 rounded-md border-card-stroke gap-4 w-full">
+        <div className="flex flex-col bg-card-fill p-4 rounded-md border-card-stroke gap-4">
             {elementInstance.files &&
                 elementInstance.files.length > 0 &&
                 elementInstance.files.map((file) => (
                     <FilePreview
-                        key={file.id}
                         locale={locale}
                         readOnly={true}
-                        onDownload={() => handleDownload(file.id)}
+                        onDownload={() => handleDownload(file.id as string)}
                         uploadResponse={file}
-                        onCancel={() => {
-                            // No cancel action in form view
+                        deletion={{
+                            isAllowed: false,
                         }}
                     />
                 ))}
         </div>
     );
 }
+
+/**
+ * Template configuration for the Download Files course element
+ * Defines the type, design elements, and component mappings for the downloadable files feature
+ * This element allows course creators to add downloadable resources to their courses
+ */
+const downloadFilesElement: CourseElementTemplate = {
+    type: CourseElementType.DownloadFiles,
+    designerBtnElement: {
+        icon: IconCloudDownload,
+        label: 'Download Files',
+    },
+    designerComponent: DesignerComponent as React.FC<BaseDesignerComponentProps>,
+    formComponent: FormComponent,
+};
 
 export default downloadFilesElement;

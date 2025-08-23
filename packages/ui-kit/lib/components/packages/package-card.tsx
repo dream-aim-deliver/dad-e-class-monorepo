@@ -131,7 +131,7 @@ export const PackageCard = ({
                         )}
                     </div>
                     <div className="flex gap-2">
-                        {duration > 0 &&
+                        {(duration as number) > 0 &&
                             <Badge
                                 hasIconLeft
                                 iconLeft={<IconClock size='5'/>}
@@ -158,10 +158,10 @@ export const PackageCard = ({
                         <Button variant='secondary' size="big" text={dictionary.components.packages.detailsText}  onClick={onClickDetails}/>
                         <div className="flex gap-2 items-center">
                             <p className="text-text-primary lg:text-xl text-md font-bold leading-[120%]">
-                                {pricing.currency} {pricing.fullPrice}
+                                {(pricing as any).currency as string} {(pricing as any).fullPrice as number}
                             </p>
                             <p className="text-feedback-success-primary lg:text-md text-sm font-bold">
-                                {dictionary.components.packages.saveText} {pricing.currency} {pricing.partialPrice}
+                                {dictionary.components.packages.saveText} {(pricing as any).currency as string} {(pricing as any).partialPrice as number}
                             </p>
                         </div>
                     </div>

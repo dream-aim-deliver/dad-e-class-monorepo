@@ -598,13 +598,14 @@ export const UserGrid = (props: UserGridProps) => {
                         className="flex bg-base-neutral-800 rounded-medium gap-2 text-sm whitespace-nowrap flex-shrink-0"
                         variant="small"
                     >
-                        <TabTrigger value="all" icon={<IconAll />} className="cursor-pointer">
+                        <TabTrigger value="all" icon={<IconAll />} className="cursor-pointer" isLast={false}>
                             {dictionary.all} ({userCounts.all})
                         </TabTrigger>
                         <TabTrigger
                             value="student"
                             icon={<RoleIcon role="student" />}
                             className="cursor-pointer"
+                            isLast={false}
                         >
                             {dictionary.students} ({userCounts.student})
                         </TabTrigger>
@@ -612,6 +613,7 @@ export const UserGrid = (props: UserGridProps) => {
                             value="coach"
                             icon={<RoleIcon role="coach" />}
                             className="cursor-pointer"
+                            isLast={false}
                         >
                             {dictionary.coaches} ({userCounts.coach})
                         </TabTrigger>
@@ -619,6 +621,7 @@ export const UserGrid = (props: UserGridProps) => {
                             value="course creator"
                             icon={<RoleIcon role="course creator" />}
                             className="cursor-pointer"
+                            isLast={false}
                         >
                             {dictionary.courseCreators} ({userCounts['course creator']})
                         </TabTrigger>
@@ -626,6 +629,7 @@ export const UserGrid = (props: UserGridProps) => {
                             value="admin"
                             icon={<RoleIcon role="admin" />}
                             className="cursor-pointer"
+                            isLast={true}
                         >
                             {dictionary.admin} ({userCounts.admin})
                         </TabTrigger>

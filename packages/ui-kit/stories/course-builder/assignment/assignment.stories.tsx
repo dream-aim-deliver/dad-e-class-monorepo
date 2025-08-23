@@ -62,6 +62,7 @@ const initialPreviewAssignment: AssignmentBuilderViewTypes = {
     assignmentData: BASE_ASSIGNMENT,
     locale: "en",
     onFileDownload: () => alert("onFileDownload"),
+    onFileCancel: (id: string) => alert(`File with id ${id} cancelled`)
 };
 
 

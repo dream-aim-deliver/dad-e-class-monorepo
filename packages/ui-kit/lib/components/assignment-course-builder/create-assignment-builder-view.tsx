@@ -117,7 +117,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                 </div>
                 <div className="w-full">
                     <TextAreaInput
-                        value={assignmentData.description}
+                        value={assignmentData.description as string}
                         setValue={handleDescriptionChange}
                         placeholder={dictionary.components.assignment.assignmentBuilder.descriptionPlaceholderText}
                     />
@@ -156,7 +156,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                                     initialUrl={link.url}
                                     initialCustomIcon={link.customIcon}
                                     onSave={(title, url, customIcon) => onLinkEdit({ title, url, customIcon }, index)}
-                                    onDiscard={() => onLinkDelete(link.linkId)}
+                                    onDiscard={() => link.linkId && onLinkDelete(link.linkId)}
                                     onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
                                     onDeleteIcon={onDeleteIcon}
                                 />
@@ -165,11 +165,11 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                             <div className="flex flex-col w-full" key={index}>
                                 <LinkPreview
                                     preview
-                                    title={link.title}
-                                    url={link.url}
+                                    title={link.title as string}
+                                    url={link.url as string}
                                     customIcon={link.customIcon}
                                     onEdit={() => onClickEditLink(index)}
-                                    onDelete={() => onLinkDelete(link.linkId)}
+                                    onDelete={() => link.linkId && onLinkDelete(link.linkId)}
                                 />
                             </div>
                         )

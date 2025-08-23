@@ -41,100 +41,111 @@ function CourseTabList({ role }: { role: string }) {
 
     const getTabs = () => {
         if (role === 'student') {
+            const studentTabs = [
+                {
+                    icon: <IconInfoCircle />,
+                    value: StudentCourseTab.INTRODUCTION,
+                    label: courseTranslations('tabs.introduction'),
+                },
+                {
+                    icon: <IconHourglass />,
+                    value: StudentCourseTab.STUDY,
+                    label: courseTranslations('tabs.study'),
+                },
+                {
+                    icon: <IconAssignment />,
+                    value: StudentCourseTab.ASSIGNMENTS,
+                    label: courseTranslations('tabs.assignments'),
+                },
+                {
+                    icon: <IconNotes />,
+                    value: StudentCourseTab.NOTES,
+                    label: courseTranslations('tabs.notes'),
+                },
+                {
+                    icon: <IconLesson />,
+                    value: StudentCourseTab.MATERIAL,
+                    label: courseTranslations('tabs.material'),
+                },
+                {
+                    icon: <IconLesson />,
+                    value: StudentCourseTab.ASSESSMENT,
+                    label: courseTranslations('tabs.assessment'),
+                },
+            ];
+
             return (
                 <>
-                    <Tabs.Trigger
-                        icon={<IconInfoCircle />}
-                        value={StudentCourseTab.INTRODUCTION}
-                    >
-                        {courseTranslations('tabs.introduction')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value={StudentCourseTab.STUDY}
-                        icon={<IconHourglass />}
-                    >
-                        {courseTranslations('tabs.study')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value={StudentCourseTab.ASSIGNMENTS}
-                        icon={<IconAssignment />}
-                    >
-                        {courseTranslations('tabs.assignments')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value={StudentCourseTab.NOTES}
-                        icon={<IconNotes />}
-                    >
-                        {courseTranslations('tabs.notes')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value={StudentCourseTab.MATERIAL}
-                        icon={<IconLesson />}
-                    >
-                        {courseTranslations('tabs.material')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value={StudentCourseTab.ASSESSMENT}
-                        icon={<IconLesson />}
-                    >
-                        {courseTranslations('tabs.assessment')}
-                    </Tabs.Trigger>
+                    {studentTabs.map((tab, index) => (
+                        <Tabs.Trigger
+                            key={tab.value}
+                            icon={tab.icon}
+                            value={tab.value}
+                            isLast={index === studentTabs.length - 1}
+                        >
+                            {tab.label}
+                        </Tabs.Trigger>
+                    ))}
                 </>
             );
         } else {
+            const coachTabs = [
+                {
+                    icon: <IconInfoCircle />,
+                    value: CoachCourseTab.INTRODUCTION,
+                    label: courseTranslations('tabs.introduction'),
+                },
+                {
+                    icon: <IconEyeShow />,
+                    value: CoachCourseTab.PREVIEW,
+                    label: courseTranslations('tabs.preview'),
+                },
+                {
+                    icon: <IconStudent />,
+                    value: CoachCourseTab.STUDENTS,
+                    label: courseTranslations('tabs.students'),
+                },
+                {
+                    icon: <IconAssignment />,
+                    value: CoachCourseTab.ASSIGNMENTS,
+                    label: courseTranslations('tabs.assignments'),
+                },
+                {
+                    icon: <IconCoach />,
+                    value: CoachCourseTab.COACHES,
+                    label: courseTranslations('tabs.coaches'),
+                },
+                {
+                    icon: <IconGroup />,
+                    value: CoachCourseTab.GROUPS,
+                    label: courseTranslations('tabs.groups'),
+                },
+                {
+                    icon: <IconLesson />,
+                    value: CoachCourseTab.MATERIAL,
+                    label: courseTranslations('tabs.material'),
+                },
+            ];
+
             return (
                 <>
-                    <Tabs.Trigger
-                        value={CoachCourseTab.INTRODUCTION}
-                        icon={<IconInfoCircle />}
-                    >
-                        {courseTranslations('tabs.introduction')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value={CoachCourseTab.PREVIEW}
-                        icon={<IconEyeShow />}
-                    >
-                        {courseTranslations('tabs.preview')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value={CoachCourseTab.STUDENTS}
-                        icon={<IconStudent />}
-                    >
-                        {courseTranslations('tabs.students')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value={CoachCourseTab.ASSIGNMENTS}
-                        icon={<IconAssignment />}
-                    >
-                        {courseTranslations('tabs.assignments')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value={CoachCourseTab.COACHES}
-                        icon={<IconCoach />}
-                    >
-                        {courseTranslations('tabs.coaches')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value={CoachCourseTab.GROUPS}
-                        icon={<IconGroup />}
-                    >
-                        {courseTranslations('tabs.groups')}
-                    </Tabs.Trigger>
-                    <Tabs.Trigger
-                        value={CoachCourseTab.MATERIAL}
-                        icon={<IconLesson />}
-                    >
-                        {courseTranslations('tabs.material')}
-                    </Tabs.Trigger>
+                    {coachTabs.map((tab, index) => (
+                        <Tabs.Trigger
+                            key={tab.value}
+                            icon={tab.icon}
+                            value={tab.value}
+                            isLast={index === coachTabs.length - 1}
+                        >
+                            {tab.label}
+                        </Tabs.Trigger>
+                    ))}
                 </>
             );
         }
     };
 
     return (
-        <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
-            {getTabs()}
-        </Tabs.List>
+        <Tabs.List className="flex rounded-medium gap-2">{getTabs()}</Tabs.List>
     );
 }
 
