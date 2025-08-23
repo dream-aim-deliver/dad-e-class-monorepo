@@ -40,7 +40,7 @@ import { IconQuiz } from 'packages/ui-kit/lib/components/icons/icon-quiz';
 import { LessonComponentButton } from './types';
 import LessonComponentsBar from './components/lesson-components-bar';
 import { Suspense, useEffect, useRef, useState } from 'react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { generateTempId } from './utils/generate-temp-id';
 import dynamic from 'next/dynamic';
@@ -105,7 +105,6 @@ function PreviewRenderer({
     );
 }
 
-// TODO: Translate
 export default function EditLesson({ lessonId }: EditLessonProps) {
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
@@ -135,12 +134,11 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     });
 
     const [isPreviewing, setIsPreviewing] = useState(false);
-
+    const editLessonsTranslations = useTranslations('pages.editLesson');
     const simpleComponentButtons: LessonComponentButton[] = [
         {
-            icon: <IconRichText 
-            />,
-            label: 'Rich Text',
+            icon: <IconRichText />,
+            label: editLessonsTranslations('richText'),
             onClick: () => {
                 const newComponent: RichTextElement = {
                     id: generateTempId(),
@@ -151,9 +149,8 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
             },
         },
         {
-            icon: <IconHeading 
-            size='6'/>,
-            label: 'Heading',
+            icon: <IconHeading size="6" />,
+            label: editLessonsTranslations('heading'),
             onClick: () => {
                 const newComponent: HeadingElement = {
                     id: generateTempId(),
@@ -166,7 +163,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             icon: <IconVideo />,
-            label: 'Video',
+            label: editLessonsTranslations('video'),
             onClick: () => {
                 const newComponent: VideoElement = {
                     id: generateTempId(),
@@ -178,7 +175,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             icon: <IconImage />,
-            label: 'Image',
+            label: editLessonsTranslations('image'),
             onClick: () => {
                 const newComponent: ImageElement = {
                     id: generateTempId(),
@@ -190,7 +187,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             icon: <IconImageGallery />,
-            label: 'Image Carousel',
+            label: editLessonsTranslations('imageCarousel'),
             onClick: () => {
                 const newComponent: ImageGallery = {
                     id: generateTempId(),
@@ -202,7 +199,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             icon: <IconLink />,
-            label: 'Link',
+            label: editLessonsTranslations('link'),
             onClick: () => {
                 const newComponent: LinksElement = {
                     id: generateTempId(),
@@ -214,7 +211,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             icon: <IconCloudDownload />,
-            label: 'Download Files',
+            label: editLessonsTranslations('downloadFile'),
             onClick: () => {
                 const newComponent: DownloadFilesElement = {
                     id: generateTempId(),
@@ -229,7 +226,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     const interactiveComponentButtons: LessonComponentButton[] = [
         {
             icon: <IconTextInput />,
-            label: 'Text Input',
+            label: editLessonsTranslations('textInput'),
             onClick: () => {
                 const newComponent: TextInputElement = {
                     id: generateTempId(),
@@ -241,7 +238,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             icon: <IconCloudUpload />,
-            label: 'Upload Files',
+            label: editLessonsTranslations('uploadFiles'),
             onClick: () => {
                 const newComponent: UploadFilesElement = {
                     id: generateTempId(),
@@ -254,7 +251,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             icon: <IconSingleChoice />,
-            label: 'Single Choice',
+            label: editLessonsTranslations('singleChoice'),
             onClick: () => {
                 const newComponent: SingleChoiceElement = {
                     id: generateTempId(),
@@ -268,7 +265,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             icon: <IconMultiChoice />,
-            label: 'Checklist',
+            label: editLessonsTranslations('checklist'),
             onClick: () => {
                 const newComponent: MultiCheckElement = {
                     id: generateTempId(),
@@ -282,7 +279,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             icon: <IconOneOutOfThree />,
-            label: '1 out of 3',
+            label: editLessonsTranslations('oneOutOfThree'),
             onClick: () => {
                 const newComponent: OneOutOfThreeElement = {
                     id: generateTempId(),
@@ -297,7 +294,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             icon: <IconQuiz />,
-            label: 'Quiz',
+            label: editLessonsTranslations('quiz'),
             onClick: () => {
                 const newComponent: QuizTypeOneElement = {
                     id: generateTempId(),
@@ -312,7 +309,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         },
         {
             icon: <IconCoachingSession />,
-            label: 'Coaching Session',
+            label: editLessonsTranslations('coachingSession'),
             onClick: () => {
                 // TODO: Implement coaching session component
             },
@@ -358,7 +355,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     return (
         <div className="flex flex-col gap-4 px-15">
             <EditHeader
-                title="Edit lesson"
+                title={editLessonsTranslations('editLessonTitle')}
                 onPreview={() => {
                     setIsPreviewing((prev) => !prev);
                 }}
@@ -370,7 +367,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
             {errorMessage && (
                 <DefaultError
                     locale={locale}
-                    title="Error saving the lesson"
+                    title={editLessonsTranslations('errorSaving')}
                     description={errorMessage}
                 />
             )}
@@ -392,7 +389,14 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                         />
                     }
                     editor={
-                        <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
+                        <Suspense
+                            fallback={
+                                <DefaultLoading
+                                    locale={locale}
+                                    variant="minimal"
+                                />
+                            }
+                        >
                             <EditLessonComponents
                                 lessonId={lessonId}
                                 components={components}

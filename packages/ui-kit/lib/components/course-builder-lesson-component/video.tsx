@@ -190,13 +190,15 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     const videoFile = elementInstance as VideoElement;
 
     return (
-        <section className="w-full">
-            <VideoPlayer
-                videoId={videoFile.file?.videoId ?? undefined}
-                thumbnailUrl={videoFile.file?.thumbnailUrl ?? undefined}
-                locale={locale}
-                className="aspect-video w-full"
-            />
+        <section className="w-full flex justify-center p-4 rounded-lg">
+            <div className="w-full max-w-[1000px]">
+                <VideoPlayer
+                    videoId={videoFile.file?.videoId ?? undefined}
+                    thumbnailUrl={videoFile.file?.thumbnailUrl ?? undefined}
+                    locale={locale}
+                    className="aspect-video w-full"
+                />
+            </div>
         </section>
     );
 }

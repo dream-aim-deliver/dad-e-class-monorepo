@@ -5,10 +5,19 @@ import { type IconProps, generateClassesForIcon } from './icon';
  * @usage <IconVideo />
  */
 export const IconVideo = (props: IconProps) => {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" className={generateClassesForIcon(props)} viewBox="0 0 20 20" fill="none">
-  <path d="M10 0C4.486 0 0 4.486 0 10C0 15.514 4.486 20 10 20C15.514 20 20 15.514 20 10C20 4.486 15.514 0 10 0ZM10 18C5.589 18 2 14.411 2 10C2 5.589 5.589 2 10 2C14.411 2 18 5.589 18 10C18 14.411 14.411 18 10 18Z" fill="#FAFAF9"/>
-  <path d="M7 15L15 10L7 5V15Z" fill="#FAFAF9"/>
-</svg>
-  );
+    return (
+        <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M12 2C6.486 2 2 6.486 2 12C2 17.514 6.486 22 12 22C17.514 22 22 17.514 22 12C22 6.486 17.514 2 12 2ZM12 20C7.589 20 4 16.411 4 12C4 7.589 7.589 4 12 4C16.411 4 20 7.589 20 12C20 16.411 16.411 20 12 20Z"
+                fill="#FAFAF9"
+            />
+            <path d="M9 17L17 12L9 7V17Z" fill="#FAFAF9" />
+        </svg>
+    );
 };

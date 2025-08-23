@@ -5,11 +5,10 @@ import {
     CourseGeneralInformationView,
     DefaultError,
     DefaultLoading,
-    SectionHeading,
     Tabs,
     useCourseForm,
 } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Suspense, useEffect, useState } from 'react';
 import EditCourseStructure from './edit-course-structure';
 import { useSaveStructure } from './hooks/save-hooks';
@@ -54,7 +53,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
     coursePresenter.present(courseResponse, courseViewModel);
 
     if (!courseViewModel) {
-        return <DefaultLoading locale={locale} variant='minimal'/>;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (courseViewModel.mode !== 'default') {
@@ -169,13 +168,15 @@ function useEditCourseState() {
         };
     };
 
+    const editCourseTranslations = useTranslations('pages.editCourse');
+
     const handleTabChange = (value: string) => {
         if (isEdited) {
             const confirmSwitch = confirm(
-                'You have unsaved changes. Are you sure you want to switch tabs?',
+                editCourseTranslations('confirmSwitch'),
             );
             if (!confirmSwitch) {
-                throw new Error('Tab switch cancelled due to unsaved changes.');
+                throw new Error(editCourseTranslations('tabSwitchCancelled'));
             }
         }
         setIsEdited(false);
@@ -251,22 +252,24 @@ function useCourseDetailsState({
 
     const saveDetailsMutation = trpc.saveCourseDetails.useMutation();
 
+    const editCourseTranslations = useTranslations('pages.editCourse');
+
     const saveCourseDetails = async () => {
         if (!courseVersion) return;
         if (!generalState.courseTitle) {
-            setErrorMessage('Course title is required');
+            setErrorMessage(editCourseTranslations('errorTitle'));
             return;
         }
         if (!generalState.serializeDescription()) {
-            setErrorMessage('Course description is required');
+            setErrorMessage(editCourseTranslations('errorDescription'));
             return;
         }
         if (Number.isNaN(generalState.duration)) {
-            setErrorMessage('Course duration is invalid');
+            setErrorMessage(editCourseTranslations('errorDuration'));
             return;
         }
         if (!courseImageUpload.courseImage) {
-            setErrorMessage('Course image is required');
+            setErrorMessage(editCourseTranslations('errorImage'));
             return;
         }
 
@@ -319,11 +322,12 @@ function EditCourseLayout({
     children,
 }: EditCourseLayoutProps) {
     const tabContentClass = 'mt-5';
+    const editCourseTranslations = useTranslations('pages.editCourse');
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 px-15">
             <EditHeader
-                title="Edit course"
+                title={editCourseTranslations('editCourseTitle')}
                 onPreview={onPreview}
                 onSave={onSave}
                 disablePreview={isEdited || isSaving}
@@ -340,28 +344,28 @@ function EditCourseLayout({
                         disabled={isSaving || isPreviewing}
                         isLast={false}
                     >
-                        General
+                        {editCourseTranslations('generalTab')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={TabTypes.IntroOutline}
                         disabled={isSaving || isPreviewing}
                         isLast={false}
                     >
-                        Intro & Outline
+                        {editCourseTranslations('introOutlineTab')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
                         value={TabTypes.CourseContent}
                         disabled={isSaving || isPreviewing}
                         isLast={true}
                     >
-                        Course Content
+                        {editCourseTranslations('courseContent')}
                     </Tabs.Trigger>
                 </Tabs.List>
                 {errorMessage && (
                     <DefaultError
                         locale={locale}
                         className={tabContentClass}
-                        title="Error saving the course"
+                        title={editCourseTranslations('errorSaving')}
                         description={errorMessage}
                     />
                 )}
@@ -380,7 +384,7 @@ function GeneralTabPreview({ course }: GeneralTabPreviewProps) {
 
     return (
         <div className="flex flex-col space-y-4">
-            <SectionHeading text={course.title} />
+            <h2> {course.title} </h2>
             <CourseGeneralInformationView
                 // These fields aren't utilized and are coming from a common model
                 title={''}
@@ -455,6 +459,7 @@ function EditCourseTabContent({
     editWrap,
 }: EditCourseTabContentProps) {
     const tabContentClass = 'mt-5';
+    const editCourseTranslations = useTranslations('pages.editCourse');
 
     return (
         <>
@@ -486,11 +491,17 @@ function EditCourseTabContent({
                 value={TabTypes.IntroOutline}
                 className={tabContentClass}
             >
-                <Suspense fallback={<DefaultLoading locale={locale} variant='minimal'/>}>
+                <Suspense
+                    fallback={
+                        <DefaultLoading locale={locale} variant="minimal" />
+                    }
+                >
                     <DefaultError
                         locale={locale}
-                        title="Not implemented yet"
-                        description="This feature is not implemented yet."
+                        title={editCourseTranslations('notImplementedTitle')}
+                        description={editCourseTranslations(
+                            'notImplementedTitle',
+                        )}
                     />
                 </Suspense>
             </Tabs.Content>
@@ -500,7 +511,11 @@ function EditCourseTabContent({
             >
                 {isPreviewing && <EnrolledCoursePreview courseSlug={slug} />}
                 {!isPreviewing && (
-                    <Suspense fallback={<DefaultLoading locale={locale} variant='minimal'/>}>
+                    <Suspense
+                        fallback={
+                            <DefaultLoading locale={locale} variant="minimal" />
+                        }
+                    >
                         <EditCourseStructure
                             slug={slug}
                             isEdited={isEdited}

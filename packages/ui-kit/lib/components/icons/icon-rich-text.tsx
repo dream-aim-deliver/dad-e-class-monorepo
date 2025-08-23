@@ -7,11 +7,8 @@ import { type IconProps, generateClassesForIcon } from './icon';
 export const IconRichText = (props: IconProps) => {
     return (
     
-  <svg 
-  xmlns="http://www.w3.org/2000/svg"
- viewBox="0 0 14 16"
-  className={generateClassesForIcon(props)}>
-  <path d="M0 4H2V2H5.252L2.68 14H0V16H8V14H5.748L8.32 2H12V4H14V0H0V4Z" />
-  </svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 8H7V6H10.252L7.68 18H5V20H13V18H10.748L13.32 6H17V8H19V4H5V8Z" fill="#FAFAF9"/>
+</svg>
     );
 };

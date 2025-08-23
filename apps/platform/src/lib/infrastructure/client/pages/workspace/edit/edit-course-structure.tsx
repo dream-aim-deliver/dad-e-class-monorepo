@@ -6,7 +6,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 import { ModuleEditor } from './components/module-editor';
 import { EditCourseContentProps } from './types';
@@ -53,6 +53,8 @@ export default function EditCourseStructure({
         setIsEdited,
     });
 
+    const editCourseTranslations = useTranslations('pages.editCourse');
+
     useEffect(() => {
         if (!courseStructureViewModel) return;
         if (courseStructureViewModel.mode !== 'default') return;
@@ -72,20 +74,20 @@ export default function EditCourseStructure({
         <EditLayout
             panel={
                 <>
-                    <span className="text-lg font-bold">Components</span>
+                    <h5> {editCourseTranslations('componentsTitle')} </h5>
                     <div className="flex flex-col gap-2">
                         <ComponentCard
-                            name="Module"
+                            name={editCourseTranslations('module')}
                             icon={<IconModule />}
                             onClick={moduleOperations.addModule}
                         />
                         <ComponentCard
-                            name="Lesson"
+                            name={editCourseTranslations('lesson')}
                             icon={<IconLesson />}
                             onClick={contentOperations.addLesson}
                         />
                         <ComponentCard
-                            name="Milestone"
+                            name={editCourseTranslations('milestone')}
                             icon={<IconMilestone />}
                             onClick={contentOperations.addMilestone}
                         />
