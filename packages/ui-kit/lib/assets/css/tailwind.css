@@ -678,6 +678,20 @@
   --ag-font-family: var(--font-figtree);
 }
 
+/* Page Entrance Animation */
+.page-content-entrance {
+  opacity: 0;
+  margin-top: 20px;
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    margin-top: 0;
+  }
+}
+
 .ag-root-wrapper {
   padding: 0 0.75rem; /* Horizontal padding for cells which includes their borders */
   border-bottom-left-radius: 0!important; /* No rounding of the bottom border for pagination panel integration */

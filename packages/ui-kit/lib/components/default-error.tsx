@@ -1,5 +1,5 @@
-import { TLocale, getDictionary } from "@maany_shr/e-class-translations";
-import Banner from "./banner";
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
+import Banner from './banner';
 
 interface DefaultErrorProps {
     locale: TLocale;
@@ -13,16 +13,26 @@ interface DefaultErrorProps {
 export default function DefaultError(props: DefaultErrorProps) {
     const dictionary = getDictionary(props.locale);
     const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? '';
-    const defaultDescription = dictionary.components.defaultError.description.replace('{contactEmail}', contactEmail);
+    const defaultDescription =
+        dictionary.components.defaultError.description.replace(
+            '{contactEmail}',
+            contactEmail,
+        );
 
-    return <Banner 
-        title={props.title || dictionary.components.defaultError.title}
-        description={props.description || defaultDescription}
-        style="error"
-        button={props.onRetry && {
-            onClick: props.onRetry,
-            label: dictionary.components.defaultError.retry,
-        }}
-        className={props.className}
-    />;
+    return (
+        <div className='px-20'>
+            <Banner
+                title={props.title || dictionary.components.defaultError.title}
+                description={props.description || defaultDescription}
+                style="error"
+                button={
+                    props.onRetry && {
+                        onClick: props.onRetry,
+                        label: dictionary.components.defaultError.retry,
+                    }
+                }
+                className={props.className}
+            />
+        </div>
+    );
 }

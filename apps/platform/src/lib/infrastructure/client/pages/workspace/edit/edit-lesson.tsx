@@ -138,7 +138,8 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
 
     const simpleComponentButtons: LessonComponentButton[] = [
         {
-            icon: <IconRichText />,
+            icon: <IconRichText 
+            />,
             label: 'Rich Text',
             onClick: () => {
                 const newComponent: RichTextElement = {
@@ -150,7 +151,8 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
             },
         },
         {
-            icon: <IconHeading />,
+            icon: <IconHeading 
+            size='6'/>,
             label: 'Heading',
             onClick: () => {
                 const newComponent: HeadingElement = {
@@ -354,7 +356,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     }
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 px-15">
             <EditHeader
                 title="Edit lesson"
                 onPreview={() => {

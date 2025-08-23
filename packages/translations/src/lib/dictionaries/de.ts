@@ -285,6 +285,9 @@ export const DE: TDictionary = {
       coaching: 'Coaching',
       howItWorks: 'Wie es funktioniert',
       about: 'Über uns',
+      dashboard: 'Dashboard',
+      yourProfile: 'Ihr Profil',
+      logout: 'Abmelden',
     },
     footer: {
       impressum: 'Impressum',

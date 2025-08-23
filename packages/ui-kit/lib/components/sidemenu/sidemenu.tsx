@@ -78,6 +78,7 @@ export const SideMenu: FC<SideMenuProps> = ({
                         imageUrl={profileImageUrl}
                         size={isCollapsed ? 'small' : 'large'}
                         className="rounded-full"
+                        fullName={userName}
                     />
                 </div>
                 {!isCollapsed && (

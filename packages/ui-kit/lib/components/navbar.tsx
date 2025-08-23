@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { getDictionary, isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { Button } from './button';
 import { Dropdown } from './dropdown';
 import { IconClose } from './icons/icon-close';
 import { IconHamburgerMenu } from './icons/icon-hamburger-menu';
 import { IconChat } from './icons/icon-chat';
+import { IconChevronDown } from './icons/icon-chevron-down';
 import { UserAvatar } from './avatar/user-avatar';
 
 interface NavbarProps extends isLocalAware {
   isLoggedIn: boolean;
   notificationCount?: number;
   onChangeLanguage?: (locale: string) => void;
+  onLogout?: () => void;
   children: React.ReactNode;
   logo?: React.ReactNode;
   userProfile?: React.ReactNode;
@@ -18,7 +20,92 @@ interface NavbarProps extends isLocalAware {
   userName?: string;
   logoSrc?: string;
   availableLocales: TLocale[];
+  router?: {
+    push: (url: string) => void;
+  };
 }
+
+interface WorkspaceHoverDropdownProps {
+  options: { label: string; value: string }[];
+  onSelectionChange: (selected: string) => void;
+  triggerText: string;
+  className?: string;
+  isMobile?: boolean;
+}
+
+const WorkspaceHoverDropdown: React.FC<WorkspaceHoverDropdownProps> = ({
+  options,
+  onSelectionChange,
+  triggerText,
+  className = '',
+  isMobile = false,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setIsOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setIsOpen(false);
+    }, 150); // Small delay to prevent flickering
+  };
+
+  const handleOptionClick = (value: string) => {
+    onSelectionChange(value);
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div 
+      ref={dropdownRef}
+      className={`relative ${className}`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Trigger */}
+      <div className={`flex items-center space-x-1 hover:text-button-primary-fill cursor-pointer ${isMobile ? 'text-sm' : ''}`}>
+        <span>{triggerText}</span>
+        <IconChevronDown classNames="w-4 h-4 fill-current" />
+      </div>
+
+      {/* Dropdown Content */}
+      {isOpen && (
+        <div className="absolute top-full left-0 mt-1 py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium shadow-lg z-50 min-w-[150px]">
+          {options.map((option, index) => (
+            <div key={option.value}>
+              {/* Add divider before logout */}
+              {option.value === 'logout' && (
+                <div className="h-[1px] bg-base-neutral-600 mx-2 my-1" />
+              )}
+              <div
+                className="py-2 px-4 cursor-pointer hover:bg-base-neutral-700 text-sm text-text-primary whitespace-nowrap"
+                onClick={() => handleOptionClick(option.value)}
+              >
+                {option.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 /**
  * A responsive Navbar component for the e-class platform.
@@ -56,6 +143,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   locale,
   notificationCount = 0,
   onChangeLanguage,
+  onLogout,
   children,
   userProfile,
   userProfileImageSrc,
@@ -63,6 +151,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   logo,
   logoSrc,
   availableLocales,
+  router,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dictionary = getDictionary(locale);
@@ -82,6 +171,32 @@ export const Navbar: React.FC<NavbarProps> = ({
     value: locale,
   }));
 
+  // Workspace dropdown options
+  const workspaceOptions = [
+    {
+      label: dictionary.components.navbar.dashboard,
+      value: 'dashboard',
+    },
+    {
+      label: dictionary.components.navbar.yourProfile,
+      value: 'yourProfile',
+    },
+    {
+      label: dictionary.components.navbar.logout,
+      value: 'logout',
+    },
+  ];
+
+  const handleWorkspaceSelection = (selected: string) => {
+    if (selected === 'dashboard') {
+      router?.push(`/${locale}/workspace`);
+    } else if (selected === 'yourProfile') {
+      router?.push(`/${locale}/profile`);
+    } else if (selected === 'logout' && onLogout) {
+      onLogout();
+    }
+  };
+
   const defaultUserProfile = (
     <div className="flex items-center space-x-2">
       <UserAvatar
@@ -90,11 +205,11 @@ export const Navbar: React.FC<NavbarProps> = ({
         fullName={userName}
         className="p-0 ml-3"
       />
-      <a href="/workspace">
-        <span className="hover:text-button-primary-fill cursor-pointer">
-          {dictionary.components.navbar.workspace}
-        </span>
-      </a>
+      <WorkspaceHoverDropdown
+        options={workspaceOptions}
+        onSelectionChange={handleWorkspaceSelection}
+        triggerText={dictionary.components.navbar.workspace}
+      />
     </div>
   );
 
@@ -178,11 +293,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                     className="ml-1"
                   />
                 )}
-                <a href="/workspace">
-                  <span className="hover:text-button-primary-fill cursor-pointer text-sm">
-                    {dictionary.components.navbar.workspace}
-                  </span>
-                </a>
+                <WorkspaceHoverDropdown
+                  options={workspaceOptions}
+                  onSelectionChange={handleWorkspaceSelection}
+                  triggerText={dictionary.components.navbar.workspace}
+                  isMobile={true}
+                />
               </div>
               <div className="relative flex items-center">
                 <IconChat size="6" classNames="cursor-pointer" />
