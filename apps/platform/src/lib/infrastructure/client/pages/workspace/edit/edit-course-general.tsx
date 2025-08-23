@@ -10,8 +10,7 @@ import {
     SectionHeading,
 } from '@maany_shr/e-class-ui-kit';
 import React, { useEffect, useState } from 'react';
-import { useCourseDetails } from './hooks/edit-details-hook';
-import { fileMetadata } from '@maany_shr/e-class-models';
+import { useCourseDetails } from './hooks/edit-details-hooks';
 
 export function EditCourseGeneralPreview({ slug }: { slug: string }) {
     const courseViewModel = useCourseDetails(slug);

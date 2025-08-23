@@ -3,10 +3,10 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
     CourseDetailsState,
+    CourseIntroductionForm,
     DefaultError,
     DefaultLoading,
     Tabs,
-    useCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import React, { Suspense, useState } from 'react';
@@ -17,13 +17,11 @@ import EnrolledCoursePreview from '../../course/enrolled-course/enrolled-course-
 import EditCourseGeneral, {
     EditCourseGeneralPreview,
 } from './edit-course-general';
-import { trpc } from '../../../trpc/client';
-import {
-    CourseImageUploadState,
-    useCourseImageUpload,
-} from '../../common/hooks/use-course-image-upload';
+import { CourseImageUploadState } from '../../common/hooks/use-course-image-upload';
 import EditCourseIntroOutline from './edit-course-intro-outline';
 import { CourseModule } from './types';
+import { useSaveDetails } from './hooks/edit-details-hooks';
+import { useSaveIntroduction } from './hooks/edit-introduction-hooks';
 
 interface EditCourseProps {
     slug: string;
@@ -37,6 +35,7 @@ enum TabTypes {
 
 export default function EditCourse({ slug }: EditCourseProps) {
     const locale = useLocale() as TLocale;
+
     const {
         activeTab,
         setActiveTab,
@@ -52,6 +51,26 @@ export default function EditCourse({ slug }: EditCourseProps) {
     const { courseVersion, setCourseVersion, errorMessage, setErrorMessage } =
         useCourseVersionState();
 
+    // General Tab State
+    const {
+        courseDetails,
+        courseImageUpload,
+        saveCourseDetails,
+        saveDetailsMutation,
+    } = useSaveDetails({
+        slug,
+        courseVersion,
+        setErrorMessage,
+    });
+
+    // Introduction Tab State
+    const { courseIntroduction } = useSaveIntroduction({
+        slug,
+        courseVersion,
+        setErrorMessage,
+    });
+
+    // Course Content Tab State
     const {
         modules,
         setModules,
@@ -62,17 +81,6 @@ export default function EditCourse({ slug }: EditCourseProps) {
         courseVersion,
         setCourseVersion,
         errorMessage,
-        setErrorMessage,
-    });
-
-    const {
-        courseDetails,
-        courseImageUpload,
-        saveCourseDetails,
-        saveDetailsMutation,
-    } = useCourseDetailsState({
-        slug,
-        courseVersion,
         setErrorMessage,
     });
 
@@ -112,6 +120,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
                 isEdited={isEdited}
                 setIsEdited={setIsEdited}
                 courseDetails={courseDetails}
+                courseIntroduction={courseIntroduction}
                 courseImageUpload={courseImageUpload}
                 modules={modules}
                 setModules={setModules}
@@ -173,67 +182,6 @@ function useCourseVersionState() {
         setCourseVersion,
         errorMessage,
         setErrorMessage,
-    };
-}
-
-function useCourseDetailsState({
-    slug,
-    courseVersion,
-    setErrorMessage,
-}: {
-    slug: string;
-    courseVersion: number | null;
-    setErrorMessage: (message: string | null) => void;
-}) {
-    const courseDetails = useCourseForm();
-
-    const courseImageUpload = useCourseImageUpload();
-
-    const saveDetailsMutation = trpc.saveCourseDetails.useMutation();
-
-    const validateCourseDetails = () => {
-        if (!courseDetails.courseTitle) {
-            setErrorMessage('Course title is required');
-            return false;
-        }
-        if (!courseDetails.serializeDescription()) {
-            setErrorMessage('Course description is required');
-            return false;
-        }
-        if (Number.isNaN(courseDetails.duration)) {
-            setErrorMessage('Course duration is invalid');
-            return false;
-        }
-        return true;
-    };
-
-    const utils = trpc.useUtils();
-
-    const saveCourseDetails = async () => {
-        if (!courseVersion) return;
-        if (!validateCourseDetails()) return;
-
-        setErrorMessage(null);
-        const result = await saveDetailsMutation.mutateAsync({
-            courseSlug: slug,
-            courseVersion: courseVersion,
-            title: courseDetails.courseTitle,
-            description: courseDetails.serializeDescription(),
-            selfStudyDuration: courseDetails.duration,
-            imageId: courseImageUpload.courseImage?.id,
-        });
-        if (!result.success) {
-            setErrorMessage(result.data.message);
-            return;
-        }
-        utils.getEnrolledCourseDetails.invalidate();
-    };
-
-    return {
-        courseDetails,
-        courseImageUpload,
-        saveCourseDetails,
-        saveDetailsMutation,
     };
 }
 
@@ -319,6 +267,7 @@ interface EditCourseTabContentProps {
     isEdited: boolean;
     setIsEdited: React.Dispatch<React.SetStateAction<boolean>>;
     courseDetails: CourseDetailsState;
+    courseIntroduction: CourseIntroductionForm;
     courseImageUpload: CourseImageUploadState;
     modules: CourseModule[];
     setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
@@ -342,6 +291,7 @@ function EditCourseTabContent({
     modules,
     setModules,
     setCourseVersion,
+    courseIntroduction,
     editWrap,
 }: EditCourseTabContentProps) {
     const tabContentClass = 'mt-5';
@@ -384,7 +334,12 @@ function EditCourseTabContent({
                 className={tabContentClass}
             >
                 <Suspense fallback={<DefaultLoading locale={locale} />}>
-                    <EditCourseIntroOutline />
+                    <EditCourseIntroOutline
+                        slug={slug}
+                        courseVersion={courseVersion}
+                        setCourseVersion={setCourseVersion}
+                        courseIntroduction={courseIntroduction}
+                    />
                 </Suspense>
             </Tabs.Content>
             <Tabs.Content
