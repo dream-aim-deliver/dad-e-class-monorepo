@@ -1,0 +1,337 @@
+import { useRef, useState } from 'react';
+import { InputField } from './input-field';
+import RichTextEditor from './rich-text-element/editor';
+import { Button } from './button';
+import { IconButton } from './icon-button';
+import { fileMetadata } from '@maany_shr/e-class-models';
+import { FilePreview } from './drag-and-drop-uploader/file-preview';
+import {
+    IconChevronDown,
+    IconChevronUp,
+    IconCloudUpload,
+    IconPlus,
+    IconTrashAlt,
+} from './icons';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { z } from 'zod';
+import { serialize } from './rich-text-element/serializer';
+
+type ImageFile = z.infer<typeof fileMetadata.FileMetadataImageSchema> | null;
+
+export interface AccordionBuilderItem {
+    title: string;
+    content: string;
+    icon: ImageFile;
+}
+
+interface AccordionBuilderItemProps extends isLocalAware {
+    item: AccordionBuilderItem;
+    setItem: (item: AccordionBuilderItem) => void;
+    onItemDelete: () => void;
+    onItemDown: () => void;
+    onItemUp: () => void;
+    orderNo: number;
+    totalItems: number;
+    onImageChange: (
+        metadata: fileMetadata.TFileUploadRequest,
+        signal: AbortSignal,
+    ) => Promise<ImageFile>;
+    onIconDelete: () => void;
+    onIconDownload: () => void;
+}
+
+function AccordionBuilderItem({
+    item,
+    setItem,
+    onItemDelete,
+    onItemDown,
+    onItemUp,
+    orderNo,
+    totalItems,
+    onImageChange,
+    onIconDelete,
+    onIconDownload,
+    locale,
+}: AccordionBuilderItemProps) {
+    const dictionary = getDictionary(locale);
+    const [icon, setIcon] = useState<ImageFile | null>(item.icon);
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const abortControllerRef = useRef<AbortController | null>(null);
+
+    const handleFileChange = async (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        const newFile = event.target.files?.[0];
+        if (newFile) {
+            // Create abort controller for this upload
+            const controller = new AbortController();
+            abortControllerRef.current = controller;
+
+            const metadata: fileMetadata.TFileMetadata = {
+                id: new Date().toISOString(),
+                name: newFile.name,
+                size: newFile.size,
+                category: 'image',
+                status: 'processing', // Set to processing initially
+                url: URL.createObjectURL(newFile),
+                thumbnailUrl: URL.createObjectURL(newFile),
+            };
+            setIcon(metadata);
+
+            try {
+                const request: fileMetadata.TFileUploadRequest = {
+                    id: metadata.id,
+                    file: newFile,
+                    name: newFile.name,
+                };
+                const imageMetadata = await onImageChange(
+                    request,
+                    controller.signal,
+                );
+                // Mark upload as available so preview shows image instead of loader
+                setIcon(imageMetadata);
+                setItem({
+                    ...item,
+                    icon: imageMetadata,
+                });
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    // Upload was cancelled, clean up
+                    setIcon(null);
+                }
+            } finally {
+                // Clear the abort controller reference
+                abortControllerRef.current = null;
+                setIcon(null);
+            }
+
+            // Reset file input so the same file can be uploaded again
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
+
+    const handleCancelUpload = () => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+        setIcon(null);
+    };
+
+    const shownIcon = icon ?? item.icon;
+
+    return (
+        <div className=" w-full p-4 text-text-secondary bg-base-neutral-800 border border-base-neutral-700 flex flex-col gap-4 rounded-md">
+            <div className="flex items-center justify-between overflow-x-auto text-button-primary-text ">
+                {/* Title and Icon */}
+                <div className="flex items-center md:gap-4 gap-2 flex-1 text-button-text-text">
+                    <span className="min-w-0 flex-shrink-0">
+                        <h4 className="md:text-3xl text-lg font-semibold">
+                            {orderNo}.
+                        </h4>
+                    </span>
+
+                    {!shownIcon && (
+                        <>
+                            <Button
+                                text={
+                                    dictionary.components.accordion
+                                        .uploadIconText
+                                }
+                                variant="text"
+                                size="small"
+                                hasIconLeft={true}
+                                iconLeft={<IconCloudUpload />}
+                                className="capitalize px-0"
+                                onClick={() => fileInputRef.current?.click()}
+                            />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                ref={fileInputRef}
+                                className="hidden"
+                            />
+                        </>
+                    )}
+                </div>
+
+                {/* Action Buttons */}
+                <IconButton
+                    icon={<IconTrashAlt />}
+                    onClick={() => onItemDelete()}
+                    size="medium"
+                    styles="text"
+                    title={dictionary.components.accordion.deleteText}
+                />
+            </div>
+            {shownIcon && (
+                <FilePreview
+                    uploadResponse={shownIcon}
+                    onDelete={() => shownIcon?.id && onIconDelete()}
+                    onDownload={() => shownIcon?.id && onIconDownload()}
+                    onCancel={handleCancelUpload}
+                    locale={locale}
+                    isDeletionAllowed
+                />
+            )}
+
+            <div className="flex flex-col transition-all duration-300 ease-in-out">
+                <label className="text-text-secondary md:text-xl leading-[150%] capitalize">
+                    {dictionary.components.accordion.visibleText}
+                </label>
+                <InputField
+                    inputText={
+                        dictionary.components.accordion.visiblePlaceholderText
+                    }
+                    className="w-full"
+                    value={item.title}
+                    setValue={(newValue) => {
+                        setItem({ ...item, title: newValue });
+                    }}
+                    type="text"
+                    id="visibleText"
+                />
+            </div>
+            <div className="w-full flex flex-col ">
+                <label className="text-text-secondary md:text-xl leading-[150%] capitalize">
+                    {dictionary.components.accordion.collapsedText}
+                </label>
+                <div className="w-full">
+                    <RichTextEditor
+                        key={`richText-${orderNo}`}
+                        initialValue={item.content}
+                        locale={locale}
+                        name="content"
+                        onChange={(newValue) =>
+                            setItem({ ...item, content: serialize(newValue) })
+                        }
+                        onLoseFocus={(value) => {}}
+                        placeholder={
+                            dictionary.components.accordion
+                                .collapsedPlaceholderText
+                        }
+                        onDeserializationError={(message, error) =>
+                            console.error('Deserialization error:', message)
+                        }
+                    />
+                </div>
+            </div>
+        </div>
+    );
+}
+
+interface AccordionBuilderProps extends isLocalAware {
+    items: AccordionBuilderItem[];
+    setItems: React.Dispatch<React.SetStateAction<AccordionBuilderItem[]>>;
+    onIconChange: (
+        image: fileMetadata.TFileUploadRequest,
+        signal: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    onUploadComplete: (
+        icon: fileMetadata.TFileMetadataImage,
+        index: number,
+    ) => void;
+    onIconDelete: (index: number) => void;
+    onIconDownload: (index: number) => void;
+}
+
+export function AccordionBuilder({
+    items,
+    setItems,
+    onIconChange,
+    onUploadComplete,
+    onIconDelete,
+    onIconDownload,
+    locale,
+}: AccordionBuilderProps) {
+    const dictionary = getDictionary(locale);
+    const handleAddAccordion = () => {
+        const newItem: AccordionBuilderItem = {
+            title: '',
+            content: '',
+            icon: null,
+        };
+        setItems([...items, newItem]);
+    };
+    const handleUpClick = (index: number) => {
+        if (index === 0) return;
+        const newItems = [...items];
+        const [movedItem] = newItems.splice(index, 1);
+        newItems.splice(index - 1, 0, movedItem);
+        setItems(newItems);
+    };
+    const handleDownClick = (index: number) => {
+        if (index === items.length - 1) return;
+        const newItems = [...items];
+        const [movedItem] = newItems.splice(index, 1);
+        newItems.splice(index + 1, 0, movedItem);
+        setItems(newItems);
+    };
+    const handleDeleteClick = (index: number) => {
+        const newItems = items.filter((_, i) => i != index);
+        setItems(newItems);
+    };
+
+    const handleIconUpload = async (
+        metadata: fileMetadata.TFileUploadRequest,
+        signal: AbortSignal,
+    ): Promise<fileMetadata.TFileMetadataImage> => {
+        return (await onIconChange(
+            metadata,
+            signal,
+        )) as fileMetadata.TFileMetadataImage;
+    };
+
+    return (
+        <div className="flex flex-col gap-4 w-full bg-card-fill p-4 rounded-lg border border-neutral-800">
+            <div className="w-full flex flex-col gap-4">
+                {items.map((item, index) => (
+                    <AccordionBuilderItem
+                        key={`accordion-item-${index}`}
+                        orderNo={index + 1}
+                        totalItems={items.length}
+                        item={item}
+                        setItem={(newItem) => {
+                            setItems((prevItems) =>
+                                prevItems.map((prevItem, i) => {
+                                    if (i === index) {
+                                        return newItem;
+                                    }
+                                    return prevItem;
+                                }),
+                            );
+                        }}
+                        onItemDelete={() => handleDeleteClick(index)}
+                        onItemUp={() => handleUpClick(index)}
+                        onItemDown={() => handleDownClick(index)}
+                        onImageChange={handleIconUpload}
+                        onIconDelete={() => {
+                            onIconDelete(index);
+                        }}
+                        onIconDownload={() => {
+                            onIconDownload(index);
+                        }}
+                        locale={locale}
+                    />
+                ))}
+            </div>
+            <div
+                className="flex items-center gap-2"
+                role="group"
+                aria-label="Add link divider"
+            >
+                <hr className="flex-grow border-t border-divider" />
+                <Button
+                    text={dictionary.components.accordion.addItemText}
+                    hasIconLeft
+                    iconLeft={<IconPlus />}
+                    onClick={handleAddAccordion}
+                    aria-label="Add link"
+                    variant="text"
+                />
+                <hr className="flex-grow border-t border-divider" />
+            </div>
+        </div>
+    );
+}

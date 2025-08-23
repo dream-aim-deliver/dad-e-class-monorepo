@@ -799,6 +799,20 @@ export const DictionarySchema = z.object({
       featuredImage: z.string(),
       removeCourse:z.string()
     }),
+    accordion: z.object({
+      accordionTitleText: z.string(),
+      accordionText: z.string(),
+      addItemText: z.string(),
+      visibleText: z.string(),
+      visiblePlaceholderText: z.string(),
+      collapsedText: z.string(),
+      collapsedPlaceholderText: z.string(),
+      checkboxText: z.string(),
+      uploadIconText: z.string(),
+      moveUpText: z.string(),
+      moveDownText: z.string(),
+      deleteText: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({

@@ -806,7 +806,21 @@ export const EN: TDictionary = {
       requirementsDescription: 'What is expected of the students to begin this course? Add the required courses below.',
       searchCoursesPlaceholder: 'Search Courses',
       featuredImage: 'Featured Image',
-      removeCourse:'Remove Course'
+      removeCourse: 'Remove Course'
+    },
+    accordion: {
+      accordionTitleText: 'accordion-title',
+      accordionText: 'Accordion',
+      addItemText: 'Add Item',
+      visibleText: 'Visible Text',
+      visiblePlaceholderText: 'Item Title (visible when collapsed)',
+      collapsedText: 'Collapsed Text',
+      collapsedPlaceholderText: 'Enter expanded text (visible only when expanded)',
+      checkboxText: 'Show list item numbers in public view',
+      uploadIconText: 'Upload Icon',
+      moveUpText: 'Move Up',
+      moveDownText: 'Move Down',
+      deleteText: 'Delete'
     },
   },
   pages: {

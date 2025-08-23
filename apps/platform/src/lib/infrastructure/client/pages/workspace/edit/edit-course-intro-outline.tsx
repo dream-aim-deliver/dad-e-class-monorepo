@@ -1,14 +1,22 @@
 import {
+    AccordionBuilder,
+    AccordionBuilderItem,
     CourseIntroductionForm,
     DefaultError,
     DefaultLoading,
     IntroductionForm,
+    SectionHeading,
 } from '@maany_shr/e-class-ui-kit';
 import { useCourseIntroduction } from './hooks/edit-introduction-hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
+import {
+    TFileUploadRequest,
+    TFileMetadataImage,
+} from 'packages/models/src/file-metadata';
+import { useAccordionIconUpload } from './hooks/use-accordion-icon-upload';
 
 interface EditCourseIntroOutlineProps {
     slug: string;
@@ -51,6 +59,11 @@ export default function EditCourseIntroOutline({
         setCourseVersion(introductionViewModel.data.courseVersion);
     }, [introductionViewModel]);
 
+    const [accordionBuilderItems, setAccordionBuilderItems] = useState<
+        AccordionBuilderItem[]
+    >([]);
+    const accordionIconUpload = useAccordionIconUpload(slug);
+
     if (!introductionViewModel) {
         return <DefaultLoading locale={locale} />;
     }
@@ -60,7 +73,7 @@ export default function EditCourseIntroOutline({
     }
 
     return (
-        <div>
+        <div className="flex flex-col gap-8">
             <IntroductionForm
                 locale={locale}
                 courseVersion={courseVersion}
@@ -71,6 +84,39 @@ export default function EditCourseIntroOutline({
                 onDownload={introductionVideoUpload.handleDownload}
                 videoFile={introductionVideoUpload.video}
                 uploadError={introductionVideoUpload.uploadError}
+            />
+            <SectionHeading text="Outline" />
+            <AccordionBuilder
+                items={accordionBuilderItems}
+                setItems={setAccordionBuilderItems}
+                onIconChange={accordionIconUpload.handleFileChange}
+                onUploadComplete={(icon, index) => {
+                    setAccordionBuilderItems((prevItems) => {
+                        const newItems = [...prevItems];
+                        newItems[index] = {
+                            ...newItems[index],
+                            icon,
+                        };
+                        return newItems;
+                    });
+                }}
+                onIconDelete={(index) => {
+                    setAccordionBuilderItems((prevItems) => {
+                        const newItems = [...prevItems];
+                        newItems[index] = {
+                            ...newItems[index],
+                            icon: null,
+                        };
+                        return newItems;
+                    });
+                }}
+                onIconDownload={(index) => {
+                    const item = accordionBuilderItems[index];
+                    if (item.icon) {
+                        // Trigger download for the icon
+                    }
+                }}
+                locale={'en'}
             />
         </div>
     );

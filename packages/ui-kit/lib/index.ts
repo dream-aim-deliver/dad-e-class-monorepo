@@ -152,3 +152,4 @@ export { DesignerComponent as LinksDesignerComponent } from './components/course
 export { type OneOutOfThreeData } from './components/out-of-three/one-out-of-three';
 export { validatorPerType } from './components/lesson/validators';
 export { IntroductionForm, useCourseIntroductionForm, type CourseIntroductionForm } from './components/introduction-form';
+export { AccordionBuilder, type AccordionBuilderItem } from './components/accordion-builder';
