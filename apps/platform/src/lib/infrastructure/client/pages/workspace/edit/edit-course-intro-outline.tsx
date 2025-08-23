@@ -16,7 +16,10 @@ import {
     TFileUploadRequest,
     TFileMetadataImage,
 } from 'packages/models/src/file-metadata';
-import { useAccordionIconUpload } from './hooks/use-accordion-icon-upload';
+import {
+    AccordionIconUploadState,
+    useAccordionIconUpload,
+} from './hooks/use-accordion-icon-upload';
 
 interface EditCourseIntroOutlineProps {
     slug: string;
@@ -25,6 +28,11 @@ interface EditCourseIntroOutlineProps {
     courseIntroduction: CourseIntroductionForm;
     introductionVideoUpload: IntroductionVideoUploadState;
     setIsEdited: (isEdited: boolean) => void;
+    outlineItems: AccordionBuilderItem[];
+    setOutlineItems: React.Dispatch<
+        React.SetStateAction<AccordionBuilderItem[]>
+    >;
+    accordionIconUpload: AccordionIconUploadState;
 }
 
 export default function EditCourseIntroOutline({
@@ -34,6 +42,9 @@ export default function EditCourseIntroOutline({
     courseIntroduction,
     introductionVideoUpload,
     setIsEdited,
+    outlineItems,
+    setOutlineItems,
+    accordionIconUpload,
 }: EditCourseIntroOutlineProps) {
     const locale = useLocale() as TLocale;
 
@@ -59,11 +70,6 @@ export default function EditCourseIntroOutline({
         setCourseVersion(introductionViewModel.data.courseVersion);
     }, [introductionViewModel]);
 
-    const [accordionBuilderItems, setAccordionBuilderItems] = useState<
-        AccordionBuilderItem[]
-    >([]);
-    const accordionIconUpload = useAccordionIconUpload(slug);
-
     if (!introductionViewModel) {
         return <DefaultLoading locale={locale} />;
     }
@@ -87,36 +93,15 @@ export default function EditCourseIntroOutline({
             />
             <SectionHeading text="Outline" />
             <AccordionBuilder
-                items={accordionBuilderItems}
-                setItems={setAccordionBuilderItems}
+                items={outlineItems}
+                setItems={setOutlineItems}
                 onIconChange={accordionIconUpload.handleFileChange}
-                onUploadComplete={(icon, index) => {
-                    setAccordionBuilderItems((prevItems) => {
-                        const newItems = [...prevItems];
-                        newItems[index] = {
-                            ...newItems[index],
-                            icon,
-                        };
-                        return newItems;
-                    });
-                }}
-                onIconDelete={(index) => {
-                    setAccordionBuilderItems((prevItems) => {
-                        const newItems = [...prevItems];
-                        newItems[index] = {
-                            ...newItems[index],
-                            icon: null,
-                        };
-                        return newItems;
-                    });
-                }}
                 onIconDownload={(index) => {
-                    const item = accordionBuilderItems[index];
-                    if (item.icon) {
-                        // Trigger download for the icon
-                    }
+                    const item = outlineItems[index];
+                    if (!item.icon) return;
+                    accordionIconUpload.handleDownload(item.icon);
                 }}
-                locale={'en'}
+                locale={locale}
             />
         </div>
     );

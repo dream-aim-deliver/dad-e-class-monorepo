@@ -8,27 +8,21 @@ import { useState } from 'react';
 import { trpc } from '../../../../trpc/client';
 
 export interface AccordionIconUploadState {
-    icon: fileMetadata.TFileMetadataImage | null;
     uploadError: string | undefined;
     handleFileChange: (
         uploadRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata>;
-    handleUploadComplete: (file: fileMetadata.TFileMetadataImage) => void;
-    handleDelete: (id: string) => void;
-    handleDownload: (id: string) => void;
+    handleDownload: (icon: fileMetadata.TFileMetadataImage) => void;
 }
 
 // Custom hook for icon upload logic
 export const useAccordionIconUpload = (
     slug: string,
 ): AccordionIconUploadState => {
-    const uploadMutation = trpc.uploadCourseImage.useMutation();
+    const uploadMutation = trpc.uploadAccordionIcon.useMutation();
     const verifyMutation = trpc.verifyFile.useMutation();
 
-    const [icon, setIcon] = useState<fileMetadata.TFileMetadataImage | null>(
-        null,
-    );
     const [uploadError, setUploadError] = useState<string | undefined>(
         undefined,
     );
@@ -46,6 +40,7 @@ export const useAccordionIconUpload = (
         // For mutations, we aren't able to abort them midway.
         // Hence, we check for abort signal before each step.
         const uploadResult = await uploadMutation.mutateAsync({
+            courseSlug: slug,
             name: uploadRequest.name,
             checksum,
             mimeType: uploadRequest.file.type,
@@ -105,27 +100,13 @@ export const useAccordionIconUpload = (
         }
     };
 
-    const handleUploadComplete = (file: fileMetadata.TFileMetadataImage) => {
-        setIcon(file);
-    };
-
-    const handleDelete = (id: string) => {
-        if (icon?.id === id) {
-            setIcon(null);
-        }
-    };
-
-    const handleDownload = async (id: string) => {
-        if (icon?.id !== id) return;
+    const handleDownload = async (icon: fileMetadata.TFileMetadataImage) => {
         downloadFile(icon.url, icon.name);
     };
 
     return {
-        icon,
         uploadError,
         handleFileChange,
-        handleUploadComplete,
-        handleDelete,
         handleDownload,
     };
 };

@@ -2,6 +2,7 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
+    AccordionBuilderItem,
     CourseDetailsState,
     CourseIntroductionForm,
     DefaultError,
@@ -23,6 +24,8 @@ import { CourseModule } from './types';
 import { useSaveDetails } from './hooks/edit-details-hooks';
 import { useSaveIntroduction } from './hooks/edit-introduction-hooks';
 import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
+import { useSaveOutline } from './hooks/edit-outline-hooks';
+import { AccordionIconUploadState } from './hooks/use-accordion-icon-upload';
 
 interface EditCourseProps {
     slug: string;
@@ -76,6 +79,19 @@ export default function EditCourse({ slug }: EditCourseProps) {
         setErrorMessage,
     });
 
+    // Outline Tab State
+    const {
+        outlineItems,
+        accordionIconUpload,
+        setOutlineItems,
+        saveCourseOutline,
+        isOutlineSaving,
+    } = useSaveOutline({
+        slug,
+        courseVersion,
+        setErrorMessage,
+    });
+
     // Course Content Tab State
     const {
         modules,
@@ -97,6 +113,7 @@ export default function EditCourse({ slug }: EditCourseProps) {
         }
         if (activeTab === TabTypes.IntroOutline) {
             result = await saveCourseIntroduction();
+            result = await saveCourseOutline();
         }
         if (activeTab === TabTypes.CourseContent) {
             result = await saveCourseStructure();
@@ -109,7 +126,8 @@ export default function EditCourse({ slug }: EditCourseProps) {
     const isSaving =
         isSavingCourseStructure ||
         saveDetailsMutation.isPending ||
-        isIntroductionSaving;
+        isIntroductionSaving ||
+        isOutlineSaving;
 
     return (
         <EditCourseLayout
@@ -135,6 +153,9 @@ export default function EditCourse({ slug }: EditCourseProps) {
                 courseIntroduction={courseIntroduction}
                 courseImageUpload={courseImageUpload}
                 introductionVideoUpload={introductionVideoUpload}
+                outlineItems={outlineItems}
+                setOutlineItems={setOutlineItems}
+                accordionIconUpload={accordionIconUpload}
                 modules={modules}
                 setModules={setModules}
                 setCourseVersion={setCourseVersion}
@@ -283,6 +304,11 @@ interface EditCourseTabContentProps {
     courseIntroduction: CourseIntroductionForm;
     courseImageUpload: CourseImageUploadState;
     introductionVideoUpload: IntroductionVideoUploadState;
+    outlineItems: AccordionBuilderItem[];
+    setOutlineItems: React.Dispatch<
+        React.SetStateAction<AccordionBuilderItem[]>
+    >;
+    accordionIconUpload: AccordionIconUploadState;
     modules: CourseModule[];
     setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
     courseVersion: number | null;
@@ -308,6 +334,9 @@ function EditCourseTabContent({
     courseIntroduction,
     editWrap,
     introductionVideoUpload,
+    outlineItems,
+    setOutlineItems,
+    accordionIconUpload,
 }: EditCourseTabContentProps) {
     const tabContentClass = 'mt-5';
 
@@ -368,6 +397,9 @@ function EditCourseTabContent({
                                 introductionVideoUpload.handleDelete,
                             ),
                         }}
+                        outlineItems={outlineItems}
+                        setOutlineItems={setOutlineItems}
+                        accordionIconUpload={accordionIconUpload}
                         setIsEdited={setIsEdited}
                     />
                 </Suspense>

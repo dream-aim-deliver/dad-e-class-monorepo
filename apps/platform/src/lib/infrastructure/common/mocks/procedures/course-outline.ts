@@ -6,6 +6,7 @@ const getCourseOutlineMock: useCaseModels.TGetCourseOutlineSuccessResponse['data
         items: [
             {
                 title: 'Matching',
+                icon: null,
                 description: JSON.stringify([
                     {
                         type: 'paragraph',
@@ -35,6 +36,7 @@ const getCourseOutlineMock: useCaseModels.TGetCourseOutlineSuccessResponse['data
             },
             {
                 title: 'Geführt zum Ziel',
+                icon: null,
                 description: JSON.stringify([
                     {
                         type: 'paragraph',
@@ -83,6 +85,7 @@ const getCourseOutlineMock: useCaseModels.TGetCourseOutlineSuccessResponse['data
             },
             {
                 title: 'Selbständig und Effizient',
+                icon: null,
                 description: JSON.stringify([
                     {
                         type: 'paragraph',
@@ -136,6 +139,7 @@ const getCourseOutlineMock: useCaseModels.TGetCourseOutlineSuccessResponse['data
             },
             {
                 title: 'KI & Partner',
+                icon: null,
                 description: JSON.stringify([
                     {
                         type: 'paragraph',
@@ -179,6 +183,7 @@ const getCourseOutlineMock: useCaseModels.TGetCourseOutlineSuccessResponse['data
             },
             {
                 title: 'Mehr Budget für andere Dinge',
+                icon: null,
                 description: JSON.stringify([
                     {
                         type: 'paragraph',
@@ -260,6 +265,20 @@ export const getCourseOutline = t.procedure
             return {
                 success: true,
                 data: getCourseOutlineMock,
+            };
+        },
+    );
+
+const saveCourseOutlineMock: useCaseModels.TSaveCourseOutlineSuccessResponse['data'] =
+    {};
+
+export const saveCourseOutline = t.procedure
+    .input(useCaseModels.SaveCourseOutlineRequestSchema)
+    .mutation(
+        async (): Promise<useCaseModels.TSaveCourseOutlineUseCaseResponse> => {
+            return {
+                success: true,
+                data: saveCourseOutlineMock,
             };
         },
     );

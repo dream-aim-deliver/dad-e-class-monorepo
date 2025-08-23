@@ -45,6 +45,7 @@ function OutlineAccordion({ courseSlug }: CourseOutlineProps) {
                 title: item.title,
                 content: item.description,
                 position: item.position,
+                iconImageUrl: item.icon?.downloadUrl,
             }))}
         />
     );

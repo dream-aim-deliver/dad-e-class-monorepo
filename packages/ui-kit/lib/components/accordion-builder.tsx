@@ -228,11 +228,6 @@ interface AccordionBuilderProps extends isLocalAware {
         image: fileMetadata.TFileUploadRequest,
         signal: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata>;
-    onUploadComplete: (
-        icon: fileMetadata.TFileMetadataImage,
-        index: number,
-    ) => void;
-    onIconDelete: (index: number) => void;
     onIconDownload: (index: number) => void;
 }
 
@@ -240,8 +235,6 @@ export function AccordionBuilder({
     items,
     setItems,
     onIconChange,
-    onUploadComplete,
-    onIconDelete,
     onIconDownload,
     locale,
 }: AccordionBuilderProps) {
@@ -307,7 +300,17 @@ export function AccordionBuilder({
                         onItemDown={() => handleDownClick(index)}
                         onImageChange={handleIconUpload}
                         onIconDelete={() => {
-                            onIconDelete(index);
+                            setItems((prevItems) =>
+                                prevItems.map((prevItem, i) => {
+                                    if (i === index) {
+                                        return {
+                                            ...prevItem,
+                                            icon: null,
+                                        };
+                                    }
+                                    return prevItem;
+                                }),
+                            );
                         }}
                         onIconDownload={() => {
                             onIconDownload(index);
