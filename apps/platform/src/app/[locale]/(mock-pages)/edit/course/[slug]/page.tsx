@@ -8,9 +8,14 @@ export default async function Page({
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const params = await paramsPromise;
+    const searchParams = await searchParamsPromise;
 
     const slug = params.slug;
-    // TODO: handle tab
+    let tab = searchParams.tab;
 
-    return <EditCourseServerComponent slug={slug} />;
+    if (!tab || Array.isArray(tab)) {
+        tab = undefined;
+    }
+
+    return <EditCourseServerComponent slug={slug} defaultTab={tab} />;
 }

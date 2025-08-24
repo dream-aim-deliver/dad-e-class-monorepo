@@ -13,10 +13,12 @@ import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 
 interface CourseServerComponentProps {
     slug: string;
+    defaultTab?: string;
 }
 
 export default async function EditCourseServerComponent({
     slug,
+    defaultTab,
 }: CourseServerComponentProps) {
     const courseAccessViewModel = await fetchCourseAccess(slug);
 
@@ -36,7 +38,7 @@ export default async function EditCourseServerComponent({
     return (
         <Suspense fallback={<DefaultLoadingWrapper />}>
             <HydrateClient>
-                <EditCourse slug={slug} />
+                <EditCourse slug={slug} defaultTab={defaultTab} />
             </HydrateClient>
         </Suspense>
     );
