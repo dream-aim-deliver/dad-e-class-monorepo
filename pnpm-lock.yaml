@@ -16,8 +16,8 @@ importers:
         specifier: ^0.9.9
         version: 0.9.9(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 0.0.2
-        version: 0.0.2(typescript@5.7.2)
+        specifier: 1.0.0
+        version: 1.0.0(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)(typescript@5.7.2)
       '@mux/mux-player-react':
         specifier: ^3.3.0
         version: 3.3.0(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1095,11 +1095,17 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
+  '@dream-aim-deliver/dad-cats@0.12.8':
+    resolution: {integrity: sha512-+w3M0zAMG5hqDCGgHnidnqNRlHBUoWCcx/GlFsKU+lpCkPMqKaeUzGqlAB8UTDFcvQwrQG+BE4dvnu1w3E0N5g==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-cats/0.12.8/b17f19cd45488e9d0b2d7d2082c4930961ac036c}
+
   '@dream-aim-deliver/dad-cats@0.9.9':
     resolution: {integrity: sha512-KLDt3b71Ie6aUNrwXw52yurc17FnmKRWUbvLv1xwvELuDlrBOmC5JYRPojj5zgUpy/5XkMscvYc+REXptWC2ow==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-cats/0.9.9/b70e01cad6b0edf03c1a6aadb5ca0c6821ffcbf1}
 
-  '@dream-aim-deliver/e-class-cms-rest@0.0.2':
-    resolution: {integrity: sha512-ArxOA4h93AupA0jt3HWU3iKC3e8F+yCfoIUt2uyHNZxzOMCteLyZJw8Hb+L1+BLyC/AKDgl79hbZne9oXk4M0A==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/0.0.2/f9824226d624c03acdc30c6bba41d37494ec632d}
+  '@dream-aim-deliver/dad-data-platform-sdk-ts@0.4.3':
+    resolution: {integrity: sha512-i4GquuvThW25R0adYOSd1+dSZTjWElpSM+W3CcfkqnMUxSfT4jp485mqH35XsX1RacMHluq3TrBKTEprwmG9iQ==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-data-platform-sdk-ts/0.4.3/7eca7ccc581e5c28e06f9e862c0df50b128a4305}
+
+  '@dream-aim-deliver/e-class-cms-rest@1.0.0':
+    resolution: {integrity: sha512-R1/df7fW3g/mAvPuoqLjIegPbQA4t3jQcGxvYc2HpYqIpn5BxJjdgieD3eEl1utq9szHY0r7ac6lQZYiah74Cg==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/1.0.0/71e1c53bc5d75102aae451e039b7d55f50102cbd}
 
   '@emnapi/core@1.3.1':
     resolution: {integrity: sha512-pVGjBIt1Y6gg3EJN8jTcfpP/+uuRksIo055oE/OBkDNcjZqVbfkWCksG1Jp4yZnj3iKWyWX8fdG/j6UDYPbFog==}
@@ -1302,8 +1308,8 @@ packages:
   '@fastify/ajv-compiler@4.0.2':
     resolution: {integrity: sha512-Rkiu/8wIjpsf46Rr+Fitd3HRP+VsxUFDDeag0hs9L0ksfnwx2g7SPQQTFL0E8Qv+rfXzQOxBJnjUB9ITUDjfWQ==}
 
-  '@fastify/autoload@6.0.3':
-    resolution: {integrity: sha512-/wM2pmI7jP2fGah3YuP14i9vuaijpD4gQYLiyd+eD7gUxpA3B4R6/0QIXQS2eJaYD9aIX4ZFRzPmrZsaetfcWw==}
+  '@fastify/cors@11.1.0':
+    resolution: {integrity: sha512-sUw8ed8wP2SouWZTIbA7V2OQtMNpLj2W6qJOYhNdcmINTu6gsxVYXjQiM9mdi8UUDlcoDDJ/W2syPo1WB2QjYA==}
 
   '@fastify/error@4.2.0':
     resolution: {integrity: sha512-RSo3sVDXfHskiBZKBPRgnQTtIqpi/7zhJOEmAxCiBcM7d0uwdGdxLlsCaLzGs8v8NnxIRlfG0N51p5yFaOentQ==}
@@ -1319,6 +1325,9 @@ packages:
 
   '@fastify/proxy-addr@5.0.0':
     resolution: {integrity: sha512-37qVVA1qZ5sgH7KpHkkC4z9SK6StIsIcOmpjvMPXNb3vx2GQxhZocogVYbr2PbbeLCQxYIPDok307xEvRZOzGA==}
+
+  '@fastify/rate-limit@10.3.0':
+    resolution: {integrity: sha512-eIGkG9XKQs0nyynatApA3EVrojHOuq4l6fhB4eeCk4PIOeadvOJz9/4w3vGI44Go17uaXOWEcPkaD8kuKm7g6Q==}
 
   '@fastify/sensible@6.0.3':
     resolution: {integrity: sha512-Iyn8698hp/e5+v8SNBBruTa7UfrMEP52R16dc9jMpqSyEcPsvWFQo+R6WwHCUnJiLIsuci2ZoEZ7ilrSSCPIVg==}
@@ -1468,6 +1477,25 @@ packages:
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [win32]
+
+  '@inversifyjs/common@1.5.0':
+    resolution: {integrity: sha512-Qj5BELk11AfI2rgZEAaLPmOftmQRLLmoCXgAjmaF0IngQN5vHomVT5ML7DZ3+CA5fgGcEVMcGbUDAun+Rz+oNg==}
+
+  '@inversifyjs/container@1.5.2':
+    resolution: {integrity: sha512-z0h5iwzA/Gv/1K1ZFHj4VAXpyShOez61g4vWMaWpY4gKidsIbnn01ArRbKbsTKzwW63DniAGMhtnUO+y3htcpQ==}
+    peerDependencies:
+      reflect-metadata: ~0.2.2
+
+  '@inversifyjs/core@4.0.0':
+    resolution: {integrity: sha512-uNK3aFEAn5mnQ1TbPqDDG/4BMNGPZ8Jb+cDW2ualjNCiMqtIDWP2gBQf0zahxSbZnc5iVrkk7ftjX3Raze8BLQ==}
+
+  '@inversifyjs/prototype-utils@0.1.0':
+    resolution: {integrity: sha512-lNz1yyajMRDXBHLvJsYYX81FcmeD15e5Qz1zAZ/3zeYTl+u7ZF/GxNRKJzNOloeMPMtuR8BnvzHA1SZxjR+J9w==}
+
+  '@inversifyjs/reflect-metadata-utils@1.1.0':
+    resolution: {integrity: sha512-jmuAuC3eL1GnFAYfJGJOMKRDL9q1mgzOyrban6zxfM8Yg1FUHsj25h27bW2G7p8X1Amvhg3MLkaOuogszkrofA==}
+    peerDependencies:
+      reflect-metadata: 0.2.2
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -1783,6 +1811,9 @@ packages:
   '@mole-inc/bin-wrapper@8.0.1':
     resolution: {integrity: sha512-sTGoeZnjI8N4KS+sW2AN95gDBErhAguvkw/tWdCjeM8bvxpz5lqrnd0vOJABA1A+Ic3zED7PYoLP/RANLgVotA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
+  '@mux/mux-node@12.6.1':
+    resolution: {integrity: sha512-aQ0wHR3rDShgOwPvSR1fAG3+m0oL4ISv0CbkSIqD0BzD9fROzVC5Xxm4v/NY6cRQ89H+hA2hIUCmWHQijvOfbw==}
 
   '@mux/mux-player-react@3.3.0':
     resolution: {integrity: sha512-S+P7shdph+Uj73emLiDoAfDKxHbbzQaqTHmndMXqsNhjfOF0ve7ZF7pLZOAV16UUwBrBDwOQwwmIFwd3wYgY+w==}
@@ -3199,6 +3230,9 @@ packages:
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
 
+  '@types/node-fetch@2.6.13':
+    resolution: {integrity: sha512-QGpRVpzSaUs30JBSGPjOg4Uveu384erbHBoT1zeONvyCfwQxIkUshLAOqN/k9EjGviPRmWTTe6aH2qySWKTVSw==}
+
   '@types/node-forge@1.3.11':
     resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
 
@@ -3567,6 +3601,10 @@ packages:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
     deprecated: Use your platform's native atob() and btoa() methods instead
 
+  abort-controller@3.0.0:
+    resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
+    engines: {node: '>=6.5'}
+
   abstract-logging@2.0.1:
     resolution: {integrity: sha512-2BjRTZxTPvheOvGbBslFSYOUkr+SjPtOnrLP33f+VIWLzezQpZcqVg7ja3L4dBXmzzgwT+a029jRx5PCi3JuiA==}
 
@@ -3618,6 +3656,10 @@ packages:
   agent-base@7.1.1:
     resolution: {integrity: sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==}
     engines: {node: '>= 14'}
+
+  agentkeepalive@4.6.0:
+    resolution: {integrity: sha512-kja8j7PjmncONqaTsB8fQ+wE2mSU2DJ9D4XKoJ5PFWIdRMa6SLSN1ff4mOr4jCbfRSsxR4keIiySJU0N9T5hIQ==}
+    engines: {node: '>= 8.0.0'}
 
   aggregate-error@3.1.0:
     resolution: {integrity: sha512-4I7Td01quW/RpocfNayFdFVk1qSuoh0E7JrbRJ16nH01HhKFQ88INq9Sd+nd72zqRySlr9BmDA8xlEJ6vJMrYA==}
@@ -4729,6 +4771,10 @@ packages:
     resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
 
+  dotenv@17.2.1:
+    resolution: {integrity: sha512-kQhDYKZecqnM0fCnzI5eIv5L4cAe/iRI+HqMbO/hbRdTAeXDG+M9FjipUxNfbARuEg4iHIbhnhs78BCHNbSxEQ==}
+    engines: {node: '>=12'}
+
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
@@ -4832,6 +4878,10 @@ packages:
 
   es-set-tostringtag@2.0.3:
     resolution: {integrity: sha512-3T8uNMC3OQTHkFUsFq8r/BwAXLHvU/9O9mE0fBc/MY5iq/8H7ncvO947LmYA6ldWw9Uh8Yhf25zu6n7nML5QWQ==}
+    engines: {node: '>= 0.4'}
+
+  es-set-tostringtag@2.1.0:
+    resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
     engines: {node: '>= 0.4'}
 
   es-shim-unscopables@1.0.2:
@@ -5046,6 +5096,10 @@ packages:
   etag@1.8.1:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
+
+  event-target-shim@5.0.1:
+    resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
+    engines: {node: '>=6'}
 
   eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
@@ -5304,9 +5358,20 @@ packages:
       vue-template-compiler:
         optional: true
 
+  form-data-encoder@1.7.2:
+    resolution: {integrity: sha512-qfqtYan3rxrnCk1VYaA4H+Ms9xdpPqvLZa6xmMgFvhO32x7/3J/ExcTd6qpxM0vH2GdMI+poehyBZvqfMTto8A==}
+
   form-data@4.0.1:
     resolution: {integrity: sha512-tzN8e4TX8+kkxGPK8D5u0FNmjPUjw3lwC9lSLxxoB/+GtsJG91CO8bSWy73APlgAZzZbXEYZJuxjkHH2w+Ezhw==}
     engines: {node: '>= 6'}
+
+  form-data@4.0.4:
+    resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
+    engines: {node: '>= 6'}
+
+  formdata-node@4.4.1:
+    resolution: {integrity: sha512-0iirZp3uVDjVGt9p49aTaqjk84TrglENEDuqfdlZQ1roC9CWlPk6Avf8EEnZNcAqPonwkG35x4n3ww/1THYAeQ==}
+    engines: {node: '>= 12.20'}
 
   forwarded@0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
@@ -5641,6 +5706,9 @@ packages:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
     engines: {node: '>=10.17.0'}
 
+  humanize-ms@1.2.1:
+    resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
+
   hyperdyperid@1.2.0:
     resolution: {integrity: sha512-Y93lCzHYgGWdrJ66yIktxiaGULYc6oGiABxhcO5AufBeOyoIdZF7bIfLaOrbM0iGIOXQQgxxRrFEnb+Y6w1n4A==}
     engines: {node: '>=10.18'}
@@ -5725,6 +5793,11 @@ packages:
 
   intl-messageformat@10.7.14:
     resolution: {integrity: sha512-mMGnE4E1otdEutV5vLUdCxRJygHB5ozUBxsPB5qhitewssrS/qGruq9bmvIRkkGsNeK5ZWLfYRld18UHGTIifQ==}
+
+  inversify@7.0.0-alpha.5:
+    resolution: {integrity: sha512-fl09CyoTZXUc26m0GK65Cxx8B3MNjVb2vhdD/o03Vn9yXGFiQuRInvc3WC64j4QZl2UtRD9kK3Spk1junADT8g==}
+    peerDependencies:
+      reflect-metadata: ~0.2.2
 
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
@@ -6198,6 +6271,9 @@ packages:
 
   joi@17.13.3:
     resolution: {integrity: sha512-otDA4ldcIx+ZXsKHWmp0YizCweVRZG96J10b0FevjfuncLO1oX59THoAmHkNubYJ+9gWsYsp5k8v4ib6oDv1fA==}
+
+  jose@4.15.9:
+    resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
 
   jose@5.10.0:
     resolution: {integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==}
@@ -6853,6 +6929,20 @@ packages:
 
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
+
+  node-domexception@1.0.0:
+    resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
+    engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
+
+  node-fetch@2.7.0:
+    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
 
   node-forge@1.3.1:
     resolution: {integrity: sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==}
@@ -8435,6 +8525,9 @@ packages:
     resolution: {integrity: sha512-FRKsF7cz96xIIeMZ82ehjC3xW2E+O2+v11udrDYewUbszngYhsGa8z6YUMMzO9QJZzzyd0nGGXnML/TReX6W8Q==}
     engines: {node: '>=16'}
 
+  tr46@0.0.3:
+    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
+
   tr46@3.0.0:
     resolution: {integrity: sha512-l7FvfAHlcmulp8kr+flpQZmVwtu7nfRV7NZujtN0OqES8EL4O4e0qqzL0DC5gAvx/ZC/9lk6rhcUwYvkBnBnYA==}
     engines: {node: '>=12'}
@@ -8915,6 +9008,13 @@ packages:
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
 
+  web-streams-polyfill@4.0.0-beta.3:
+    resolution: {integrity: sha512-QW95TCTaHmsYfHDybGMwO5IJIM93I/6vTRk+daHTWFPhwh+C8Cg7j7XyKrwrj8Ib6vYXe0ocYNrmzY4xAAN6ug==}
+    engines: {node: '>= 14'}
+
+  webidl-conversions@3.0.1:
+    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
+
   webidl-conversions@7.0.0:
     resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
     engines: {node: '>=12'}
@@ -9007,6 +9107,9 @@ packages:
   whatwg-url@14.1.0:
     resolution: {integrity: sha512-jlf/foYIKywAt3x/XWKZ/3rz8OSJPiWktjmk891alJUEjiVxKX9LEO92qH3hv4aJ0mN3MWPvGMCy8jQi95xK4w==}
     engines: {node: '>=18'}
+
+  whatwg-url@5.0.0:
+    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
 
   which-boxed-primitive@1.1.0:
     resolution: {integrity: sha512-Ei7Miu/AXe2JJ4iNF5j/UphAgRoma4trE6PtisM09bPygb3egMH3YLW/befsWb1A1AxvNSFidOFTB18XtnIIng==}
@@ -10021,6 +10124,33 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
+  '@dream-aim-deliver/dad-cats@0.12.8(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
+    dependencies:
+      axios: 1.7.9
+      axios-retry: 4.5.0(axios@1.7.9)
+      deep-equal-js: 0.2.2
+      pino: 9.7.0
+      vitest: 3.0.9(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      zod: 3.24.1
+    transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@types/debug'
+      - '@types/node'
+      - '@vitest/browser'
+      - '@vitest/ui'
+      - debug
+      - happy-dom
+      - jsdom
+      - less
+      - lightningcss
+      - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+
   '@dream-aim-deliver/dad-cats@0.9.9(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
     dependencies:
       axios: 1.7.9
@@ -10075,19 +10205,73 @@ snapshots:
       - supports-color
       - terser
 
-  '@dream-aim-deliver/e-class-cms-rest@0.0.2(typescript@5.7.2)':
+  '@dream-aim-deliver/dad-data-platform-sdk-ts@0.4.3(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
     dependencies:
-      '@fastify/autoload': 6.0.3
+      '@dream-aim-deliver/dad-cats': 0.12.8(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      '@mux/mux-node': 12.6.1
+      axios: 1.7.9
+      dotenv: 17.2.1
+      jsonwebtoken: 9.0.2
+      pino: 9.7.0
+      vitest: 3.0.9(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      zod: 3.24.1
+    transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@types/debug'
+      - '@types/node'
+      - '@vitest/browser'
+      - '@vitest/ui'
+      - debug
+      - encoding
+      - happy-dom
+      - jsdom
+      - less
+      - lightningcss
+      - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+
+  '@dream-aim-deliver/e-class-cms-rest@1.0.0(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)(typescript@5.7.2)':
+    dependencies:
+      '@dream-aim-deliver/dad-cats': 0.12.8(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      '@dream-aim-deliver/dad-data-platform-sdk-ts': 0.4.3(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      '@fastify/cors': 11.1.0
+      '@fastify/rate-limit': 10.3.0
       '@fastify/sensible': 6.0.3
       '@trpc/client': 11.4.3(@trpc/server@11.4.3(typescript@5.7.2))(typescript@5.7.2)
       '@trpc/server': 11.4.3(typescript@5.7.2)
+      dotenv: 17.2.1
       fastify: 5.2.2
       fastify-plugin: 5.0.1
+      inversify: 7.0.0-alpha.5(reflect-metadata@0.2.2)
       jsonwebtoken: 9.0.2
+      pino: 9.7.0
       reflect-metadata: 0.2.2
       superjson: 2.2.2
       zod: 3.24.1
     transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@types/debug'
+      - '@types/node'
+      - '@vitest/browser'
+      - '@vitest/ui'
+      - debug
+      - encoding
+      - happy-dom
+      - jsdom
+      - less
+      - lightningcss
+      - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
       - typescript
 
   '@emnapi/core@1.3.1':
@@ -10232,7 +10416,10 @@ snapshots:
       ajv-formats: 3.0.1(ajv@8.17.1)
       fast-uri: 3.0.3
 
-  '@fastify/autoload@6.0.3': {}
+  '@fastify/cors@11.1.0':
+    dependencies:
+      fastify-plugin: 5.0.1
+      toad-cache: 3.7.0
 
   '@fastify/error@4.2.0': {}
 
@@ -10250,6 +10437,12 @@ snapshots:
     dependencies:
       '@fastify/forwarded': 3.0.0
       ipaddr.js: 2.2.0
+
+  '@fastify/rate-limit@10.3.0':
+    dependencies:
+      '@lukeed/ms': 2.0.2
+      fastify-plugin: 5.0.1
+      toad-cache: 3.7.0
 
   '@fastify/sensible@6.0.3':
     dependencies:
@@ -10380,6 +10573,31 @@ snapshots:
 
   '@img/sharp-win32-x64@0.33.5':
     optional: true
+
+  '@inversifyjs/common@1.5.0': {}
+
+  '@inversifyjs/container@1.5.2(reflect-metadata@0.2.2)':
+    dependencies:
+      '@inversifyjs/common': 1.5.0
+      '@inversifyjs/core': 4.0.0(reflect-metadata@0.2.2)
+      '@inversifyjs/reflect-metadata-utils': 1.1.0(reflect-metadata@0.2.2)
+      reflect-metadata: 0.2.2
+
+  '@inversifyjs/core@4.0.0(reflect-metadata@0.2.2)':
+    dependencies:
+      '@inversifyjs/common': 1.5.0
+      '@inversifyjs/prototype-utils': 0.1.0
+      '@inversifyjs/reflect-metadata-utils': 1.1.0(reflect-metadata@0.2.2)
+    transitivePeerDependencies:
+      - reflect-metadata
+
+  '@inversifyjs/prototype-utils@0.1.0':
+    dependencies:
+      '@inversifyjs/common': 1.5.0
+
+  '@inversifyjs/reflect-metadata-utils@1.1.0(reflect-metadata@0.2.2)':
+    dependencies:
+      reflect-metadata: 0.2.2
 
   '@isaacs/cliui@8.0.2':
     dependencies:
@@ -10947,6 +11165,19 @@ snapshots:
       filenamify: 5.1.1
       got: 11.8.6
       os-filter-obj: 2.0.0
+
+  '@mux/mux-node@12.6.1':
+    dependencies:
+      '@types/node': 18.16.9
+      '@types/node-fetch': 2.6.13
+      abort-controller: 3.0.0
+      agentkeepalive: 4.6.0
+      form-data-encoder: 1.7.2
+      formdata-node: 4.4.1
+      jose: 4.15.9
+      node-fetch: 2.7.0
+    transitivePeerDependencies:
+      - encoding
 
   '@mux/mux-player-react@3.3.0(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
@@ -12867,6 +13098,11 @@ snapshots:
 
   '@types/mime@1.3.5': {}
 
+  '@types/node-fetch@2.6.13':
+    dependencies:
+      '@types/node': 18.16.9
+      form-data: 4.0.4
+
   '@types/node-forge@1.3.11':
     dependencies:
       '@types/node': 18.16.9
@@ -13400,6 +13636,10 @@ snapshots:
 
   abab@2.0.6: {}
 
+  abort-controller@3.0.0:
+    dependencies:
+      event-target-shim: 5.0.1
+
   abstract-logging@2.0.1: {}
 
   accepts@1.3.8:
@@ -13450,6 +13690,10 @@ snapshots:
       debug: 4.4.0
     transitivePeerDependencies:
       - supports-color
+
+  agentkeepalive@4.6.0:
+    dependencies:
+      humanize-ms: 1.2.1
 
   aggregate-error@3.1.0:
     dependencies:
@@ -14611,6 +14855,8 @@ snapshots:
 
   dotenv@16.4.7: {}
 
+  dotenv@17.2.1: {}
+
   dunder-proto@1.0.1:
     dependencies:
       call-bind-apply-helpers: 1.0.1
@@ -14757,6 +15003,13 @@ snapshots:
   es-set-tostringtag@2.0.3:
     dependencies:
       get-intrinsic: 1.2.4
+      has-tostringtag: 1.0.2
+      hasown: 2.0.2
+
+  es-set-tostringtag@2.1.0:
+    dependencies:
+      es-errors: 1.3.0
+      get-intrinsic: 1.2.7
       has-tostringtag: 1.0.2
       hasown: 2.0.2
 
@@ -15094,6 +15347,8 @@ snapshots:
   esutils@2.0.3: {}
 
   etag@1.8.1: {}
+
+  event-target-shim@5.0.1: {}
 
   eventemitter3@4.0.7: {}
 
@@ -15447,11 +15702,26 @@ snapshots:
     optionalDependencies:
       vue-template-compiler: 2.7.16
 
+  form-data-encoder@1.7.2: {}
+
   form-data@4.0.1:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
+
+  form-data@4.0.4:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      es-set-tostringtag: 2.1.0
+      hasown: 2.0.2
+      mime-types: 2.1.35
+
+  formdata-node@4.4.1:
+    dependencies:
+      node-domexception: 1.0.0
+      web-streams-polyfill: 4.0.0-beta.3
 
   forwarded@0.2.0: {}
 
@@ -15865,6 +16135,10 @@ snapshots:
 
   human-signals@2.1.0: {}
 
+  humanize-ms@1.2.1:
+    dependencies:
+      ms: 2.1.3
+
   hyperdyperid@1.2.0: {}
 
   i18n@0.15.1:
@@ -15944,6 +16218,13 @@ snapshots:
       '@formatjs/fast-memoize': 2.2.6
       '@formatjs/icu-messageformat-parser': 2.11.0
       tslib: 2.8.1
+
+  inversify@7.0.0-alpha.5(reflect-metadata@0.2.2):
+    dependencies:
+      '@inversifyjs/common': 1.5.0
+      '@inversifyjs/container': 1.5.2(reflect-metadata@0.2.2)
+      '@inversifyjs/core': 4.0.0(reflect-metadata@0.2.2)
+      reflect-metadata: 0.2.2
 
   ipaddr.js@1.9.1: {}
 
@@ -16627,6 +16908,8 @@ snapshots:
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
 
+  jose@4.15.9: {}
+
   jose@5.10.0: {}
 
   js-tokens@4.0.0: {}
@@ -17281,6 +17564,12 @@ snapshots:
 
   node-addon-api@7.1.1:
     optional: true
+
+  node-domexception@1.0.0: {}
+
+  node-fetch@2.7.0:
+    dependencies:
+      whatwg-url: 5.0.0
 
   node-forge@1.3.1: {}
 
@@ -19029,6 +19318,8 @@ snapshots:
     dependencies:
       tldts: 6.1.65
 
+  tr46@0.0.3: {}
+
   tr46@3.0.0:
     dependencies:
       punycode: 2.3.1
@@ -19701,6 +19992,10 @@ snapshots:
     dependencies:
       defaults: 1.0.4
 
+  web-streams-polyfill@4.0.0-beta.3: {}
+
+  webidl-conversions@3.0.1: {}
+
   webidl-conversions@7.0.0: {}
 
   webpack-dev-middleware@7.4.2(webpack@5.97.1(@swc/core@1.10.0(@swc/helpers@0.5.15))(esbuild@0.21.5)):
@@ -19828,6 +20123,11 @@ snapshots:
     dependencies:
       tr46: 5.0.0
       webidl-conversions: 7.0.0
+
+  whatwg-url@5.0.0:
+    dependencies:
+      tr46: 0.0.3
+      webidl-conversions: 3.0.1
 
   which-boxed-primitive@1.1.0:
     dependencies:
