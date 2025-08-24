@@ -25,10 +25,12 @@ export default function useClientSidePagination<T = any>({
         return () => window.removeEventListener('resize', checkScreenSize);
     }, []);
 
-    const effectiveItemsPerPage = !isClient 
+    const effectiveItemsPerPage = !isClient
         ? itemsPerPage2xl
-        : is2xl ? itemsPerPage2xl : itemsPerPage;
-    
+        : is2xl
+          ? itemsPerPage2xl
+          : itemsPerPage;
+
     const [displayedCount, setDisplayedCount] = useState(effectiveItemsPerPage);
 
     useEffect(() => {

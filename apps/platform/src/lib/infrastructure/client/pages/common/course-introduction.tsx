@@ -58,7 +58,9 @@ export default function CourseIntroduction({
 
     return (
         <div className="flex flex-col space-y-6">
-            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
+            <Suspense
+                fallback={<DefaultLoading locale={locale} variant="minimal" />}
+            >
                 <IntroductionBanner courseSlug={courseSlug} />
             </Suspense>
         </div>

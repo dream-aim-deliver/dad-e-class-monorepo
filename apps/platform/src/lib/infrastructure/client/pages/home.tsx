@@ -89,74 +89,74 @@ export default function Home() {
 
     return (
         <div className="flex flex-col items-center">
-            <div className='gap-4 px-30 mb-15'>
-            <Hero
-                locale={locale}
-                title={homePage.banner.title}
-                description={homePage.banner.description}
-                thumbnailUrl={homePage.banner.thumbnailUrl}
-                videoId={homePage.banner.videoId}
-            />
-            <Divider />
-            <Carousel locale={locale}>
-                {homePage.carousel.map((item: viewModels.TGeneralCard) => {
-                    const onClick = () => {
-                        router.push(item.buttonUrl);
-                    };
-                    return (
-                        <GeneralCard
-                            key={item.title}
-                            locale={locale}
-                            onButtonClick={onClick}
-                            {...item}
-                        />
-                    );
-                })}
-            </Carousel>
-            <Divider />
-            <Topics />
+            <div className="gap-4 px-30 mb-15">
+                <Hero
+                    locale={locale}
+                    title={homePage.banner.title}
+                    description={homePage.banner.description}
+                    thumbnailUrl={homePage.banner.thumbnailUrl}
+                    videoId={homePage.banner.videoId}
+                />
+                <Divider />
+                <Carousel locale={locale}>
+                    {homePage.carousel.map((item: viewModels.TGeneralCard) => {
+                        const onClick = () => {
+                            router.push(item.buttonUrl);
+                        };
+                        return (
+                            <GeneralCard
+                                key={item.title}
+                                locale={locale}
+                                onButtonClick={onClick}
+                                {...item}
+                            />
+                        );
+                    })}
+                </Carousel>
+                <Divider />
+                <Topics />
             </div>
             {/* Breakpoints might be adjusted here */}
-            <div className='bg-base-neutral-950 px-30 py-10 mb-15'>
-            <CoachingOnDemandBanner
-                title={homePage.coachingOnDemand.title}
-                description={homePage.coachingOnDemand.description}
-                images={
-                    <>
-                        <Image
-                            src={homePage.coachingOnDemand.mobileImageUrl}
-                            alt="Coaching on Demand"
-                            width={640}
-                            height={640}
-                            className="w-full h-auto sm:hidden"
-                            sizes="(max-width: 640px) 100vw, 0px"
-                        />
-                        <Image
-                            src={homePage.coachingOnDemand.tabletImageUrl}
-                            alt="Coaching on Demand"
-                            width={1024}
-                            height={1024}
-                            className="w-full h-auto max-sm:hidden lg:hidden"
-                            sizes="(min-width: 768px) and (max-width: 1023px) 100vw, 0px"
-                        />
-                        <Image
-                            src={homePage.coachingOnDemand.desktopImageUrl}
-                            alt="Coaching on Demand"
-                            width={1920}
-                            height={1080}
-                            className="w-full h-auto hidden lg:block"
-                            sizes="(min-width: 1024px) 100vw, 0px"
-                        />
-                    </>
-                }
-            />
+            <div className="bg-base-neutral-950 px-30 py-10 mb-15">
+                <CoachingOnDemandBanner
+                    title={homePage.coachingOnDemand.title}
+                    description={homePage.coachingOnDemand.description}
+                    images={
+                        <>
+                            <Image
+                                src={homePage.coachingOnDemand.mobileImageUrl}
+                                alt="Coaching on Demand"
+                                width={640}
+                                height={640}
+                                className="w-full h-auto sm:hidden"
+                                sizes="(max-width: 640px) 100vw, 0px"
+                            />
+                            <Image
+                                src={homePage.coachingOnDemand.tabletImageUrl}
+                                alt="Coaching on Demand"
+                                width={1024}
+                                height={1024}
+                                className="w-full h-auto max-sm:hidden lg:hidden"
+                                sizes="(min-width: 768px) and (max-width: 1023px) 100vw, 0px"
+                            />
+                            <Image
+                                src={homePage.coachingOnDemand.desktopImageUrl}
+                                alt="Coaching on Demand"
+                                width={1920}
+                                height={1080}
+                                className="w-full h-auto hidden lg:block"
+                                sizes="(min-width: 1024px) 100vw, 0px"
+                            />
+                        </>
+                    }
+                />
             </div>
-            <div className='w-full px-30'>
-            <HomeAccordion
-                title={homePage.accordion.title}
-                showNumbers={homePage.accordion.showNumbers}
-                items={homePage.accordion.items}
-            />
+            <div className="w-full px-30">
+                <HomeAccordion
+                    title={homePage.accordion.title}
+                    showNumbers={homePage.accordion.showNumbers}
+                    items={homePage.accordion.items}
+                />
             </div>
         </div>
     );

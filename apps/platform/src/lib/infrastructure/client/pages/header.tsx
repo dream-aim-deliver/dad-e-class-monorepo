@@ -18,9 +18,15 @@ interface HeaderProps {
     session: auth.TSession | null;
 }
 
-const NavLinks = ({ locale, pathname }: { locale: TLocale; pathname: string }) => {
+const NavLinks = ({
+    locale,
+    pathname,
+}: {
+    locale: TLocale;
+    pathname: string;
+}) => {
     const t = useTranslations('components.navbar');
-    
+
     // Route mapping for header navigation
     const routes = {
         offers: '/offers',
@@ -28,18 +34,18 @@ const NavLinks = ({ locale, pathname }: { locale: TLocale; pathname: string }) =
         howItWorks: '/how-it-works',
         about: '/about',
     };
-    
+
     // Check if current path matches a route (with or without locale prefix)
     const isActiveRoute = (route: string) => {
         const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '') || '/';
         const routeWithLocale = `/${locale}${route}`;
         return pathname === routeWithLocale || pathWithoutLocale === route;
     };
-    
+
     const getLinkClass = (route: string) => {
         const baseClass = 'cursor-pointer text-md transition-colors';
         const isActive = isActiveRoute(route);
-        return isActive 
+        return isActive
             ? `${baseClass} text-button-primary-fill font-semibold`
             : `${baseClass} text-text-primary hover:text-button-primary-hover-fill`;
     };
@@ -48,13 +54,19 @@ const NavLinks = ({ locale, pathname }: { locale: TLocale; pathname: string }) =
     return (
         <>
             <Link href="/offers">
-                <span className={getLinkClass(routes.offers)}>{t('offers')}</span>
+                <span className={getLinkClass(routes.offers)}>
+                    {t('offers')}
+                </span>
             </Link>
             <Link href="/coaching">
-                <span className={getLinkClass(routes.coaching)}>{t('coaching')}</span>
+                <span className={getLinkClass(routes.coaching)}>
+                    {t('coaching')}
+                </span>
             </Link>
             <Link href="/how-it-works">
-                <span className={getLinkClass(routes.howItWorks)}>{t('howItWorks')}</span>
+                <span className={getLinkClass(routes.howItWorks)}>
+                    {t('howItWorks')}
+                </span>
             </Link>
             <Link href="/about">
                 <span className={getLinkClass(routes.about)}>{t('about')}</span>

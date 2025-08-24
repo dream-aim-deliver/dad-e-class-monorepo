@@ -55,7 +55,9 @@ export default function CourseOutline({ courseSlug }: CourseOutlineProps) {
     return (
         <div className="flex flex-col space-y-6">
             <h2> Course content </h2>
-            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
+            <Suspense
+                fallback={<DefaultLoading locale={locale} variant="minimal" />}
+            >
                 <OutlineAccordion courseSlug={courseSlug} />
             </Suspense>
         </div>

@@ -3,10 +3,10 @@ import nextAuth from '../../config/auth/next-auth.config';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 export interface SidebarLayoutProps {
-    children: React.ReactNode,
+    children: React.ReactNode;
     params: {
-        locale: TLocale
-    }
+        locale: TLocale;
+    };
 }
 export default async function SidebarLayout(props: SidebarLayoutProps) {
     // Get session from NextAuth

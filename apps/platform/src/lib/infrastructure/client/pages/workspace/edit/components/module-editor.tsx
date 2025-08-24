@@ -26,7 +26,9 @@ export function ModuleEditor({
     const handleTitleChange = (value: string) => {
         onUpdate({ ...module, title: value });
     };
-    const editCourseTranslations = useTranslations('pages.editCourse.moduleEditor');
+    const editCourseTranslations = useTranslations(
+        'pages.editCourse.moduleEditor',
+    );
 
     return (
         <div className="flex flex-col gap-2">

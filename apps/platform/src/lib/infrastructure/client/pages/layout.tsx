@@ -31,7 +31,7 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
             isInitialMount.current = false;
             return;
         }
-        
+
         if (contentRef.current) {
             // Remove animation class
             contentRef.current.classList.remove('page-content-entrance');
@@ -51,7 +51,8 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
         useGetPlatformPresenter(setPlatformViewModel);
     platformPresenter.present(platformResponse, platformViewModel);
 
-    if (!platformViewModel) return <DefaultLoading locale={locale} variant="minimal" />;
+    if (!platformViewModel)
+        return <DefaultLoading locale={locale} variant="minimal" />;
     if (platformViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
     }

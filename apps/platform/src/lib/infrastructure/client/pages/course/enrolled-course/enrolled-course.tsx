@@ -247,7 +247,11 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                     <DefaultError locale={locale} />
                 </Tabs.Content>
                 <Tabs.Content value="assessment" className={tabContentClass}>
-                    <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
+                    <Suspense
+                        fallback={
+                            <DefaultLoading locale={locale} variant="minimal" />
+                        }
+                    >
                         <EnrolledCourseCompletedAssessment
                             courseSlug={props.courseSlug}
                         />

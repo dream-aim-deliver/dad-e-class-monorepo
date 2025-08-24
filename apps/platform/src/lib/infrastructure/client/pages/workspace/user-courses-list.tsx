@@ -26,17 +26,17 @@ export default function UserCoursesList() {
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const sessionDTO = useSession();
-    const session = sessionDTO.data
-    const sessionStatus = sessionDTO.status
+    const session = sessionDTO.data;
+    const sessionStatus = sessionDTO.status;
     const paginationTranslations = useTranslations(
         'components.paginationButton',
     );
-    if ( sessionStatus !== "authenticated" || session == null ) {
+    if (sessionStatus !== 'authenticated' || session == null) {
         // redirect to login page
-        router.push("/auth/login")
+        router.push('/auth/login');
     }
-    const userRoles = session?.user.roles
-    const isAdmin = userRoles?.includes("admin")
+    const userRoles = session?.user.roles;
+    const isAdmin = userRoles?.includes('admin');
     const [coursesResponse] = trpc.listUserCourses.useSuspenseQuery({});
     const [coursesViewModel, setCoursesViewModel] = useState<
         viewModels.TUserCourseListViewModel | undefined
@@ -186,7 +186,6 @@ export default function UserCoursesList() {
                             />
                         );
                     }
-                    
                 })}
             </CardListLayout>
             {hasMoreCourses && (
@@ -195,7 +194,7 @@ export default function UserCoursesList() {
                     text={paginationTranslations('loadMore')}
                     onClick={handleLoadMore}
                     size="medium"
-                    className='pt-10'
+                    className="pt-10"
                 />
             )}
         </div>
