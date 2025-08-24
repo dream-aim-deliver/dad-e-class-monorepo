@@ -4,6 +4,7 @@ import {
     FormElementType,
     LessonElement,
 } from '@maany_shr/e-class-ui-kit';
+import { extractId } from './generate-temp-id';
 
 type RequestComponent =
     useCaseModels.TSaveLessonComponentsRequest['components'][number];
@@ -17,7 +18,7 @@ function transformRichText(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'richText',
         order: order,
         text: component.content,
@@ -34,7 +35,7 @@ function transformHeading(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'heading',
         order: order,
         text: component.heading,
@@ -51,7 +52,7 @@ function transformTextInput(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'textInput',
         order: order,
         helperText: component.helperText,
@@ -68,7 +69,7 @@ function transformSingleChoice(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'singleChoice',
         order: order,
         title: component.title,
@@ -88,7 +89,7 @@ function transformMultipleChoice(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'multipleChoice',
         order: order,
         title: component.title,
@@ -116,7 +117,7 @@ function transformOneOutOfThree(
     });
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'oneOutOfThree',
         order: order,
         title: component.data.tableTitle,
@@ -137,7 +138,7 @@ function transformVideo(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'video',
         order: order,
         videoFileId: component.file!.id,
@@ -153,7 +154,7 @@ function transformImage(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'image',
         order: order,
         imageFileId: component.file!.id,
@@ -169,7 +170,7 @@ function transformImageCarousel(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'imageCarousel',
         order: order,
         imageFileIds: component.images!.map((image) => image.id),
@@ -185,7 +186,7 @@ function transformLinks(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'links',
         order: order,
         links: component.links.map((link) => ({
@@ -205,7 +206,7 @@ function transformDownloadFiles(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'downloadFiles',
         order: order,
         fileIds: component.files!.map((file) => file.id),
@@ -221,7 +222,7 @@ function transformUploadFiles(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'uploadFiles',
         order: order,
         description: component.description || '',
@@ -237,7 +238,7 @@ function transformQuizTypeOne(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'quizTypeOne',
         order: order,
         title: component.title,
@@ -259,7 +260,7 @@ function transformQuizTypeTwo(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'quizTypeTwo',
         order: order,
         title: component.title,
@@ -284,7 +285,7 @@ function transformQuizTypeThree(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'quizTypeThree',
         order: order,
         title: component.title,
@@ -306,7 +307,7 @@ function transformQuizTypeFour(
     }
 
     return {
-        id: component.id,
+        id: extractId(component.id),
         type: 'quizTypeFour',
         order: order,
         title: component.title,
