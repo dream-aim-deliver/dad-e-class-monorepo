@@ -31,6 +31,8 @@ import {
     CoachingSessionDesignerComponent,
     CoachingSessionElement,
     DefaultLoading,
+    AssignmentDesignerComponent,
+    TempAssignmentElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
@@ -1380,6 +1382,13 @@ function QuizTypeFourComponent({
     );
 }
 
+const getExampleLink = () => {
+    return {
+        title: 'New Link',
+        url: 'https://example.com',
+    };
+};
+
 function LinksComponent({
     lessonId,
     elementInstance,
@@ -1416,10 +1425,7 @@ function LinksComponent({
                     return component;
                 }
                 const updatedLinks = [...component.links];
-                updatedLinks.push({
-                    title: 'New Link',
-                    url: 'https://example.com',
-                });
+                updatedLinks.push(getExampleLink());
                 return { ...component, links: updatedLinks };
             }),
         );
@@ -1555,6 +1561,195 @@ function CoachingSessionComponent({
     );
 }
 
+function AssignmentComponent({
+    lessonId,
+    elementInstance,
+    setComponents,
+    locale,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+    validationError,
+}: LessonComponentProps) {
+    if (elementInstance.type !== CourseElementType.Assignment) return;
+
+    const onChange = (newAssignment: TempAssignmentElement): void => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, ...newAssignment };
+            }),
+        );
+    };
+
+    const handleUploadComplete = (file: fileMetadata.TFileMetadata): void => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Assignment) {
+                    return component;
+                }
+                const currentFiles = component.files ?? [];
+                return { ...component, files: [...currentFiles, file] };
+            }),
+        );
+    };
+
+    const handleFileDelete = (fileId: string): void => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Assignment) {
+                    return component;
+                }
+                const currentFiles = component.files ?? [];
+                return {
+                    ...component,
+                    files: currentFiles.filter((file) => file.id !== fileId),
+                };
+            }),
+        );
+    };
+
+    const handleFileDownload = (id: string): void => {
+        const file = elementInstance.files?.find((file) => file.id === id);
+        if (file) {
+            downloadFile(file.url, file.name);
+        }
+    };
+
+    const handleAddLink = () => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Assignment) {
+                    return component;
+                }
+                const currentLinks = component.links ?? [];
+                return {
+                    ...component,
+                    links: [...currentLinks, getExampleLink()],
+                };
+            }),
+        );
+    };
+
+    const handleDeleteLink = (index: number): void => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Assignment) {
+                    return component;
+                }
+                const currentLinks = component.links ?? [];
+                return {
+                    ...component,
+                    links: currentLinks.filter((_, i) => i !== index),
+                };
+            }),
+        );
+    };
+
+    const handleEditLink = (link: shared.TLink, index: number): void => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Assignment) {
+                    return component;
+                }
+                const currentLinks = component.links ?? [];
+                return {
+                    ...component,
+                    links: currentLinks.map((l, i) => (i === index ? link : l)),
+                };
+            }),
+        );
+    };
+
+    const handleDeleteLinkIcon = (index: number) => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                if (component.type !== CourseElementType.Assignment) {
+                    return component;
+                }
+                const currentLinks = component.links ?? [];
+                return {
+                    ...component,
+                    links: currentLinks.map((link, i) => {
+                        console.log(link, i, index);
+                        if (i === index) {
+                            return {
+                                ...link,
+                                icon: null,
+                            };
+                        }
+                        return link;
+                    }),
+                };
+            }),
+        );
+    };
+
+    const { handleFileChange: handleResourceFileChange } = useFileUpload({
+        lessonId,
+        componentType: 'assignmentResource',
+    });
+
+    const { handleFileChange: handleIconChange } = useFileUpload({
+        lessonId,
+        componentType: 'links',
+    });
+
+    const [linkEditIndex, setLinkEditIndex] = useState<number | null>(null);
+
+    return (
+        <AssignmentDesignerComponent
+            key={elementInstance.id}
+            elementInstance={elementInstance}
+            locale={locale}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            validationError={validationError}
+            onChange={onChange}
+            onFilesChange={handleResourceFileChange}
+            onImageChange={handleIconChange}
+            onDeleteIcon={handleDeleteLinkIcon}
+            onUploadComplete={handleUploadComplete}
+            onFileDelete={handleFileDelete}
+            onFileDownload={handleFileDownload}
+            onLinkDelete={handleDeleteLink}
+            onLinkEdit={(link, index) => {
+                handleEditLink(link, index);
+                setLinkEditIndex(null);
+            }}
+            linkEditIndex={linkEditIndex}
+            onClickEditLink={(index) => {
+                setLinkEditIndex(index);
+            }}
+            onClickAddLink={handleAddLink}
+            onLinkDiscard={() => {
+                setLinkEditIndex(null);
+            }}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
@@ -1573,6 +1768,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [CourseElementType.QuizTypeFour]: QuizTypeFourComponent,
     [CourseElementType.Links]: LinksComponent,
     [CourseElementType.CoachingSession]: CoachingSessionComponent,
+    [CourseElementType.Assignment]: AssignmentComponent,
     // Add other mappings as needed
 };
 

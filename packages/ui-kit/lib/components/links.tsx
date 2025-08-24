@@ -283,7 +283,10 @@ const LinkEdit: React.FC<LinkEditProps> = ({
                                 />
                                 {customIcon?.status === "available" && (
                                     <IconButton
-                                        onClick={() => onDeleteIcon?.(customIcon.id as string)}
+                                        onClick={() => {
+                                            onDeleteIcon?.(customIcon.id as string);
+                                            setCustomIcon(null);
+                                        }}
                                         icon={<IconTrashAlt />}
                                         styles="text"
                                         size="small"

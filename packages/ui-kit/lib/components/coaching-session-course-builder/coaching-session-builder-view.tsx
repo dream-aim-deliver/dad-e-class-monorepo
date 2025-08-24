@@ -46,10 +46,7 @@ export const CoachingSessionBuilderView: FC<CoachingSessionBuilderViewProps> = (
     selectedSession,
     locale
 }) => {
-    const dictionary = getDictionary(locale);
-    console.log(coachingSessionTypes);
-    console.log(selectedSession);
-    
+    const dictionary = getDictionary(locale);    
     return (
         <div className="flex flex-col gap-4 w-full items-start justify-center">
             {coachingSessionTypes.map((session) => (
