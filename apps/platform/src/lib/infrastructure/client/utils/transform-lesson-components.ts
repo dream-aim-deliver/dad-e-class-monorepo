@@ -221,7 +221,7 @@ function transformQuizTypeOne(
         options: component.options.map((option) => ({
             id: option.id,
             name: option.name,
-            isSelected: false,
+            correct: option.id === component.correctOptionId,
         })),
         imageFile: {
             ...component.imageFile,
@@ -253,6 +253,7 @@ function transformQuizTypeTwo(
             options: group.options.map((option) => ({
                 id: option.id,
                 name: option.name,
+                correct: option.id === group.correctOptionId,
             })),
             correctOptionId: group.correctOptionId,
         })),
@@ -279,7 +280,7 @@ function transformQuizTypeThree(
                 thumbnailUrl: option.imageFile.downloadUrl,
             },
             description: option.description,
-            correct: false,
+            correct: option.id === component.correctOptionId,
         })),
         correctOptionId: component.correctOptionId,
     };
