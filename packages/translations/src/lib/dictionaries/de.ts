@@ -938,6 +938,20 @@ export const DE: TDictionary = {
       successUpdatedBanner: 'Kurs erfolgreich aktualisiert!',
       recommendedSizeText: '(Empfohlene Bildgröße: 612 x 702 pixel für optimale Darstellungsqualität.)'
     },
+    accordion: {
+      accordionTitleText: 'Akkordeon-Titel',
+      accordionText: 'Akkordeon',
+      addItemText: 'Artikel hinzufügen',
+      visibleText: 'Sichtbarer Text',
+      visiblePlaceholderText: 'Artikeltitel (sichtbar, wenn reduziert)',
+      collapsedText: 'Reduzierter Text',
+      collapsedPlaceholderText: 'Erweiterten Text eingeben (nur sichtbar, wenn erweitert)',
+      checkboxText: 'Listenelementnummern in der öffentlichen Ansicht anzeigen',
+      uploadIconText: "Upload Symbol",
+      moveUpText: "Nach oben verschieben",
+      moveDownText: "Nach unten verschieben",
+      deleteText: "Löschen",
+    },
   },
   pages: {
     home: Home_DE,

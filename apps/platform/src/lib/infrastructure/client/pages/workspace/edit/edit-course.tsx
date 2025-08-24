@@ -2,23 +2,32 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
-    CourseGeneralInformationView,
+    AccordionBuilderItem,
+    CourseDetailsState,
+    CourseIntroductionForm,
     DefaultError,
     DefaultLoading,
     Tabs,
-    useCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import EditCourseStructure from './edit-course-structure';
 import { useSaveStructure } from './hooks/save-hooks';
 import EditHeader from './components/edit-header';
 import EnrolledCoursePreview from '../../course/enrolled-course/enrolled-course-preview';
-import EditCourseGeneral from './edit-course-general';
-import { trpc } from '../../../trpc/client';
-import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
-import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
-import { useCourseImageUpload } from '../../common/hooks/use-course-image-upload';
+import EditCourseGeneral, {
+    EditCourseGeneralPreview,
+} from './edit-course-general';
+import { CourseImageUploadState } from '../../common/hooks/use-course-image-upload';
+import EditCourseIntroOutline, {
+    CourseIntroOutlinePreview,
+} from './edit-course-intro-outline';
+import { CourseModule } from './types';
+import { useSaveDetails } from './hooks/edit-details-hooks';
+import { useSaveIntroduction } from './hooks/edit-introduction-hooks';
+import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
+import { useSaveOutline } from './hooks/edit-outline-hooks';
+import { AccordionIconUploadState } from './hooks/use-accordion-icon-upload';
 
 interface EditCourseProps {
     slug: string;
@@ -99,8 +108,46 @@ function EditCourseContent({
     } = useEditCourseState(defaultTab);
 
     const { courseVersion, setCourseVersion, errorMessage, setErrorMessage } =
-        useCourseVersionState(course.courseVersion);
+        useCourseVersionState();
 
+    // General Tab State
+    const {
+        courseDetails,
+        courseImageUpload,
+        saveCourseDetails,
+        saveDetailsMutation,
+    } = useSaveDetails({
+        slug,
+        courseVersion,
+        setErrorMessage,
+    });
+
+    // Introduction Tab State
+    const {
+        courseIntroduction,
+        introductionVideoUpload,
+        isIntroductionSaving,
+        saveCourseIntroduction,
+    } = useSaveIntroduction({
+        slug,
+        courseVersion,
+        setErrorMessage,
+    });
+
+    // Outline Tab State
+    const {
+        outlineItems,
+        accordionIconUpload,
+        setOutlineItems,
+        saveCourseOutline,
+        isOutlineSaving,
+    } = useSaveOutline({
+        slug,
+        courseVersion,
+        setErrorMessage,
+    });
+
+    // Course Content Tab State
     const {
         modules,
         setModules,
@@ -114,32 +161,31 @@ function EditCourseContent({
         setErrorMessage,
     });
 
-    const {
-        generalState,
-        courseImageUpload,
-        saveCourseDetails,
-        saveDetailsMutation,
-    } = useCourseDetailsState({
-        course,
-        slug,
-        courseVersion,
-        setErrorMessage,
-    });
-
     const handleSave = async () => {
+        let result;
         if (activeTab === TabTypes.General) {
-            await saveCourseDetails();
+            result = await saveCourseDetails();
+        }
+        if (activeTab === TabTypes.IntroOutline) {
+            result = await saveCourseIntroduction();
+            result = await saveCourseOutline();
         }
         if (activeTab === TabTypes.CourseContent) {
-            const result = await saveCourseStructure();
-            if (result) {
-                setIsEdited(false);
+            result = await saveCourseStructure();
+        }
+        if (result) {
+            setIsEdited(false);
+            if (activeTab !== TabTypes.CourseContent) {
+                window.location.reload();
             }
-            return;
         }
     };
 
-    const isSaving = isSavingCourseStructure || saveDetailsMutation.isPending;
+    const isSaving =
+        isSavingCourseStructure ||
+        saveDetailsMutation.isPending ||
+        isIntroductionSaving ||
+        isOutlineSaving;
 
     return (
         <EditCourseLayout
@@ -155,15 +201,20 @@ function EditCourseContent({
             defaultTab={defaultTab}
         >
             <EditCourseTabContent
-                course={course}
+                courseVersion={courseVersion}
                 activeTab={activeTab}
                 slug={slug}
                 locale={locale}
                 isPreviewing={isPreviewing}
                 isEdited={isEdited}
                 setIsEdited={setIsEdited}
-                generalState={generalState}
+                courseDetails={courseDetails}
+                courseIntroduction={courseIntroduction}
                 courseImageUpload={courseImageUpload}
+                introductionVideoUpload={introductionVideoUpload}
+                outlineItems={outlineItems}
+                setOutlineItems={setOutlineItems}
+                accordionIconUpload={accordionIconUpload}
                 modules={modules}
                 setModules={setModules}
                 setCourseVersion={setCourseVersion}
@@ -184,7 +235,6 @@ function useEditCourseState(defaultTab: TabTypes) {
             return fn(...args);
         };
     };
-
     const editCourseTranslations = useTranslations('pages.editCourse');
 
     const updateTabParameter = (newTabValue: string) => {
@@ -224,10 +274,8 @@ function useEditCourseState(defaultTab: TabTypes) {
     };
 }
 
-function useCourseVersionState(initialVersion: number) {
-    const [courseVersion, setCourseVersion] = useState<number | null>(
-        initialVersion,
-    );
+function useCourseVersionState() {
+    const [courseVersion, setCourseVersion] = useState<number | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     return {
@@ -235,89 +283,6 @@ function useCourseVersionState(initialVersion: number) {
         setCourseVersion,
         errorMessage,
         setErrorMessage,
-    };
-}
-
-function useCourseDetailsState({
-    course,
-    slug,
-    courseVersion,
-    setErrorMessage,
-}: {
-    course: viewModels.TEnrolledCourseDetailsSuccess;
-    slug: string;
-    courseVersion: number | null;
-    setErrorMessage: (message: string | null) => void;
-}) {
-    const transformCourseImage = (): fileMetadata.TFileMetadataImage | null => {
-        return course.imageFile
-            ? {
-                  ...course.imageFile,
-                  status: 'available',
-                  url: course.imageFile.downloadUrl,
-                  thumbnailUrl: course.imageFile.downloadUrl,
-              }
-            : null;
-    };
-
-    const generalState = useCourseForm({
-        courseTitle: course.title,
-        courseDescription: course.description,
-        duration: course.duration.selfStudy ?? undefined,
-    });
-
-    const courseImageUpload = useCourseImageUpload(transformCourseImage());
-
-    useEffect(() => {
-        const courseImage = transformCourseImage();
-        if (!courseImage) return;
-        courseImageUpload.handleUploadComplete(courseImage);
-    }, [course]);
-
-    const saveDetailsMutation = trpc.saveCourseDetails.useMutation();
-
-    const editCourseTranslations = useTranslations('pages.editCourse');
-
-    const saveCourseDetails = async () => {
-        if (!courseVersion) return;
-        if (!generalState.courseTitle) {
-            setErrorMessage(editCourseTranslations('errorTitle'));
-            return;
-        }
-        if (!generalState.serializeDescription()) {
-            setErrorMessage(editCourseTranslations('errorDescription'));
-            return;
-        }
-        if (Number.isNaN(generalState.duration)) {
-            setErrorMessage(editCourseTranslations('errorDuration'));
-            return;
-        }
-        if (!courseImageUpload.courseImage) {
-            setErrorMessage(editCourseTranslations('errorImage'));
-            return;
-        }
-
-        setErrorMessage(null);
-        const result = await saveDetailsMutation.mutateAsync({
-            courseSlug: slug,
-            courseVersion: courseVersion,
-            title: generalState.courseTitle,
-            description: generalState.serializeDescription(),
-            selfStudyDuration: generalState.duration,
-            imageId: courseImageUpload.courseImage?.id,
-        });
-        if (!result.success) {
-            setErrorMessage(result.data.message);
-            return;
-        }
-        window.location.reload();
-    };
-
-    return {
-        generalState,
-        courseImageUpload,
-        saveCourseDetails,
-        saveDetailsMutation,
     };
 }
 
@@ -349,7 +314,6 @@ function EditCourseLayout({
 }: EditCourseLayoutProps) {
     const tabContentClass = 'mt-5';
     const editCourseTranslations = useTranslations('pages.editCourse');
-
     return (
         <div className="flex flex-col gap-4 px-15">
             <EditHeader
@@ -373,7 +337,7 @@ function EditCourseLayout({
                         value={TabTypes.IntroOutline}
                         disabled={isSaving || isPreviewing}
                         isLast={false}
-                    >
+                        >
                         {editCourseTranslations('introOutlineTab')}
                     </Tabs.Trigger>
                     <Tabs.Trigger
@@ -398,69 +362,26 @@ function EditCourseLayout({
     );
 }
 
-interface GeneralTabPreviewProps {
-    course: viewModels.TEnrolledCourseDetailsSuccess;
-}
-
-function GeneralTabPreview({ course }: GeneralTabPreviewProps) {
-    const locale = useLocale() as TLocale;
-
-    return (
-        <div className="flex flex-col space-y-4">
-            <h2> {course.title} </h2>
-            <CourseGeneralInformationView
-                // These fields aren't utilized and are coming from a common model
-                title={''}
-                description={''}
-                showProgress={false}
-                language={{
-                    name: '',
-                    code: '',
-                }}
-                pricing={{
-                    fullPrice: 0,
-                    partialPrice: 0,
-                    currency: '',
-                }}
-                locale={locale}
-                longDescription={course.description}
-                duration={{
-                    video: course.duration.video ?? 0,
-                    coaching: course.duration.coaching ?? 0,
-                    selfStudy: course.duration.selfStudy ?? 0,
-                }}
-                rating={course.author.averageRating}
-                author={{
-                    name: course.author.name + ' ' + course.author.surname,
-                    image: course.author.avatarUrl ?? '',
-                }}
-                imageUrl={course.imageFile?.downloadUrl ?? ''}
-                students={course.students.map((student) => ({
-                    name: student.name,
-                    avatarUrl: student.avatarUrl ?? '',
-                }))}
-                totalStudentCount={course.studentCount}
-                onClickAuthor={() => {
-                    // Don't handle author click
-                }}
-            />
-        </div>
-    );
-}
-
 interface EditCourseTabContentProps {
     activeTab: TabTypes;
-    course: viewModels.TEnrolledCourseDetailsSuccess;
     slug: string;
     locale: TLocale;
     isPreviewing: boolean;
     isEdited: boolean;
-    setIsEdited: (edited: boolean) => void;
-    generalState: any;
-    courseImageUpload: any;
-    modules: any;
-    setModules: any;
-    setCourseVersion: any;
+    setIsEdited: React.Dispatch<React.SetStateAction<boolean>>;
+    courseDetails: CourseDetailsState;
+    courseIntroduction: CourseIntroductionForm;
+    courseImageUpload: CourseImageUploadState;
+    introductionVideoUpload: IntroductionVideoUploadState;
+    outlineItems: AccordionBuilderItem[];
+    setOutlineItems: React.Dispatch<
+        React.SetStateAction<AccordionBuilderItem[]>
+    >;
+    accordionIconUpload: AccordionIconUploadState;
+    modules: CourseModule[];
+    setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
+    courseVersion: number | null;
+    setCourseVersion: React.Dispatch<React.SetStateAction<number | null>>;
     editWrap: <T extends Array<any>, U>(
         fn: (...args: T) => U,
     ) => (...args: T) => U;
@@ -468,18 +389,23 @@ interface EditCourseTabContentProps {
 
 function EditCourseTabContent({
     activeTab,
+    courseVersion,
     slug,
-    course,
     locale,
     isPreviewing,
     isEdited,
     setIsEdited,
-    generalState,
+    courseDetails,
     courseImageUpload,
     modules,
     setModules,
     setCourseVersion,
+    courseIntroduction,
     editWrap,
+    introductionVideoUpload,
+    outlineItems,
+    setOutlineItems,
+    accordionIconUpload,
 }: EditCourseTabContentProps) {
     const tabContentClass = 'mt-5';
     const editCourseTranslations = useTranslations('pages.editCourse');
@@ -487,46 +413,69 @@ function EditCourseTabContent({
     return (
         <>
             <Tabs.Content value={TabTypes.General} className={tabContentClass}>
-                {isPreviewing && <GeneralTabPreview course={course} />}
+                {isPreviewing && <EditCourseGeneralPreview slug={slug} />}
                 {!isPreviewing && (
-                    <EditCourseGeneral
-                        slug={slug}
-                        courseForm={{
-                            ...generalState,
-                            setCourseTitle: editWrap(
-                                generalState.setCourseTitle,
-                            ),
-                            setCourseDescription: editWrap(
-                                generalState.setCourseDescription,
-                            ),
-                            setDuration: editWrap(generalState.setDuration),
-                        }}
-                        uploadImage={{
-                            ...courseImageUpload,
-                            handleDelete: editWrap(
-                                courseImageUpload.handleDelete,
-                            ),
-                        }}
-                    />
+                    <Suspense fallback={<DefaultLoading locale={locale} variant='minimal'/>}>
+                        <EditCourseGeneral
+                            courseVersion={courseVersion}
+                            setCourseVersion={setCourseVersion}
+                            setIsEdited={setIsEdited}
+                            slug={slug}
+                            courseForm={{
+                                ...courseDetails,
+                                setCourseTitle: editWrap(
+                                    courseDetails.setCourseTitle,
+                                ),
+                                setCourseDescription: editWrap(
+                                    courseDetails.setCourseDescription,
+                                ),
+                                setDuration: editWrap(
+                                    courseDetails.setDuration,
+                                ),
+                            }}
+                            uploadImage={{
+                                ...courseImageUpload,
+                                handleDelete: editWrap(
+                                    courseImageUpload.handleDelete,
+                                ),
+                            }}
+                        />
+                    </Suspense>
                 )}
             </Tabs.Content>
             <Tabs.Content
                 value={TabTypes.IntroOutline}
                 className={tabContentClass}
             >
-                <Suspense
-                    fallback={
-                        <DefaultLoading locale={locale} variant="minimal" />
-                    }
-                >
-                    <DefaultError
-                        locale={locale}
-                        title={editCourseTranslations('notImplementedTitle')}
-                        description={editCourseTranslations(
-                            'notImplementedTitle',
-                        )}
-                    />
-                </Suspense>
+                {isPreviewing && <CourseIntroOutlinePreview slug={slug} />}
+                {!isPreviewing && (
+                    <Suspense fallback={<DefaultLoading locale={locale} variant='minimal'/>}>
+                        <EditCourseIntroOutline
+                            slug={slug}
+                            courseVersion={courseVersion}
+                            setCourseVersion={setCourseVersion}
+                            courseIntroduction={{
+                                ...courseIntroduction,
+                                setIntroductionText: editWrap(
+                                    courseIntroduction.setIntroductionText,
+                                ),
+                            }}
+                            introductionVideoUpload={{
+                                ...introductionVideoUpload,
+                                handleUploadComplete: editWrap(
+                                    introductionVideoUpload.handleUploadComplete,
+                                ),
+                                handleDelete: editWrap(
+                                    introductionVideoUpload.handleDelete,
+                                ),
+                            }}
+                            outlineItems={outlineItems}
+                            setOutlineItems={setOutlineItems}
+                            accordionIconUpload={accordionIconUpload}
+                            setIsEdited={setIsEdited}
+                        />
+                    </Suspense>
+                )}
             </Tabs.Content>
             <Tabs.Content
                 value={TabTypes.CourseContent}
@@ -534,11 +483,7 @@ function EditCourseTabContent({
             >
                 {isPreviewing && <EnrolledCoursePreview courseSlug={slug} />}
                 {!isPreviewing && (
-                    <Suspense
-                        fallback={
-                            <DefaultLoading locale={locale} variant="minimal" />
-                        }
-                    >
+                    <Suspense fallback={<DefaultLoading locale={locale} variant='minimal'/>}>
                         <EditCourseStructure
                             slug={slug}
                             isEdited={isEdited}

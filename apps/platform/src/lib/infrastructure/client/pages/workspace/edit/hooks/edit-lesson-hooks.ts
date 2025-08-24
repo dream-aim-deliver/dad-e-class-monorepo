@@ -10,9 +10,8 @@ export function useLessonComponents(id: number) {
             {
                 refetchOnWindowFocus: false,
                 refetchOnReconnect: false,
-                refetchOnMount: false,
+                refetchOnMount: true,
                 retry: false,
-                staleTime: Infinity,
             },
         );
 

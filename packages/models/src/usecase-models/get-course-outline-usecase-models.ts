@@ -4,6 +4,7 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
+import { ImageFileSchema } from './common';
 
 export const GetCourseOutlineRequestSchema = z.object({
   courseSlug: z.string(),
@@ -16,6 +17,7 @@ export const GetCourseOutlineSuccessResponseSchema = BaseSuccessSchemaFactory(z.
     title: z.string(),
     description: z.string(),
     position: z.number().int().min(0),
+    icon: ImageFileSchema.nullable(),
   }))
 }));
 

@@ -321,6 +321,6 @@ export const getEnrolledCourseDetails = t.procedure
     .input(useCaseModels.GetEnrolledCourseDetailsRequestSchema)
     .query(
         async (): Promise<useCaseModels.TGetEnrolledCourseDetailsUseCaseResponse> => {
-            return getEnrolledCourseDetailsMock[3];
+            return getEnrolledCourseDetailsMock[0];
         },
     );
