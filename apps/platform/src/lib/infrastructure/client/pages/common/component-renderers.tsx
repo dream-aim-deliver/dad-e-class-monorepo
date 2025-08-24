@@ -1,4 +1,5 @@
 import {
+    assignment,
     fileMetadata,
     useCaseModels,
     viewModels,
@@ -31,6 +32,10 @@ import {
     UploadFilesElement,
     UploadFilesFormComponent,
     VideoFormComponent,
+    AssignmentFormComponent,
+    TempAssignmentElement,
+    CourseElementType,
+    downloadFile,
 } from '@maany_shr/e-class-ui-kit';
 import { FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
 import { JSX, useEffect, useMemo, useRef, useState } from 'react';
@@ -403,6 +408,26 @@ function CoachingSessionComponent({
     );
 }
 
+function AssignmentComponent({
+    formElement,
+    key,
+    locale,
+}: ComponentRendererProps) {
+    const element = formElement as TempAssignmentElement;
+    return (
+        <AssignmentFormComponent
+            key={key}
+            onFileDownload={(fileId) => {
+                const file = element.files?.find((f) => f.id === fileId);
+                if (!file) return;
+                downloadFile(file.url, file.name);
+            }}
+            elementInstance={formElement as TempAssignmentElement}
+            locale={locale}
+        />
+    );
+}
+
 export const typeToRendererMap: Record<
     string,
     (props: ComponentRendererProps) => JSX.Element | null
@@ -424,4 +449,5 @@ export const typeToRendererMap: Record<
     quizTypeFour: QuizTypeFourComponent,
     links: LinksComponent,
     coachingSession: CoachingSessionComponent,
+    assignment: AssignmentComponent,
 };

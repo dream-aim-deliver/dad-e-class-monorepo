@@ -127,6 +127,7 @@ export { default as QuizTypeThreeStudentView } from './components/quiz/quiz-type
 export { default as QuizTypeFourStudentView } from './components/quiz/quiz-type-four/quiz-type-four-student-view';
 
 export { FormComponent as LinksFormComponent } from './components/course-builder-lesson-component/links';
+export { FormComponent as AssignmentFormComponent } from './components/course-builder-lesson-component/assignment';
 
 export { CoachingSessionStudentView } from './components/coaching-session-course-builder/coaching-session-student-view';
 export { LessonCoachComponent } from './components/coaching-session-course-builder/lesson-coach-component';
