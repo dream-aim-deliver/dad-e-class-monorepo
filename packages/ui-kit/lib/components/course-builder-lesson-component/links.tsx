@@ -13,7 +13,6 @@ import { LinksElement } from './types';
 import { fileMetadata, shared } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { IconPlus } from '../icons/icon-plus';
-import { set } from 'zod';
 import { ElementValidator } from '../lesson/types';
 import DefaultError from '../default-error';
 

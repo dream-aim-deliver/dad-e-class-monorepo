@@ -12,17 +12,19 @@ import { getValidationError as getLinksValidationError } from "../course-builder
 import { getValidationError as getDownloadFilesValidationError } from "../course-builder-lesson-component/download-files-lesson";
 import { getValidationError as getUploadFilesValidationError } from "../course-builder-lesson-component/upload-files-lesson";
 import { getValidationError as getQuizValidationError } from "../course-builder-lesson-component/quiz";
+import { getValidationError as getCoachingSessionValidationError } from '../course-builder-lesson-component/coaching-session';
+import { getValidationError as getAssignmentValidationError } from '../course-builder-lesson-component/assignment';
 import { FormElementType } from "../pre-assessment/types";
 import { ElementValidator } from "./types";
 
 export const validatorPerType: Record<CourseElementType | FormElementType, ElementValidator> = {
-    [CourseElementType.CoachingSession]: () => undefined,
+    [CourseElementType.CoachingSession]: getCoachingSessionValidationError,
     [CourseElementType.ImageFile]: getImageValidationError,
     [CourseElementType.VideoFile]: getVideoValidationError,
     [CourseElementType.ImageGallery]: getImageGalleryValidationError,
     [CourseElementType.DownloadFiles]: getDownloadFilesValidationError,
     [CourseElementType.UploadFiles]: getUploadFilesValidationError,
-    [CourseElementType.Assignment]: () => undefined,
+    [CourseElementType.Assignment]: getAssignmentValidationError,
     [CourseElementType.QuizTypeOne]: getQuizValidationError,
     [CourseElementType.QuizTypeTwo]: getQuizValidationError,
     [CourseElementType.QuizTypeThree]: getQuizValidationError,

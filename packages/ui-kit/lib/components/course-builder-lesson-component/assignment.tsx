@@ -15,6 +15,7 @@ import {
 } from '../course-builder/types';
 import DesignerLayout from '../designer-layout';
 import { IconAssignment } from '../icons';
+import { ElementValidator } from '../lesson/types';
 
 /**
  * Course element template definition for a Coaching Session.
@@ -39,6 +40,24 @@ const assignmentElement: CourseElementTemplate = {
     designerComponent: DesignerComponent,
     // @ts-ignore
     formComponent: FormComponent,
+};
+
+export const getValidationError: ElementValidator = (props) => {
+    const { elementInstance, dictionary } = props;
+
+    if (elementInstance.type !== CourseElementType.Assignment)
+        return dictionary.components.lessons.typeValidationText;
+
+    // TODO: translate
+    if (!elementInstance.title || elementInstance.title.trim().length === 0) {
+        return "Please enter a title";
+    }
+
+    if (!elementInstance.description || elementInstance.description.trim().length === 0) {
+        return "Please enter a description";
+    }
+
+    return undefined;
 };
 
 /**
