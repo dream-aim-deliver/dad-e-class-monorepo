@@ -322,6 +322,46 @@ function transformQuizTypeFour(
     };
 }
 
+function transformCoachingSession(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'coachingSession' }> {
+    if (component.type !== CourseElementType.CoachingSession) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: extractId(component.id),
+        type: 'coachingSession',
+        order: order,
+        courseCoachingOfferingId: component.coachingSession!.id,
+    };
+}
+
+function transformAssignment(
+    component: LessonElement,
+    order: number,
+): Extract<RequestComponent, { type: 'assignment' }> {
+    if (component.type !== CourseElementType.Assignment) {
+        throw new Error('Invalid component type');
+    }
+
+    return {
+        id: extractId(component.id),
+        type: 'assignment',
+        order: order,
+        title: component.title,
+        description: component.description,
+        resourceIds: component.files?.map((res) => res.id) ?? [],
+        links:
+            component.links?.map((link) => ({
+                title: link.title,
+                url: link.url,
+                iconFileId: link.customIcon?.id || null,
+            })) ?? [],
+    };
+}
+
 const transformerPerType: Record<
     CourseElementType | FormElementType,
     (
@@ -329,19 +369,13 @@ const transformerPerType: Record<
         order: number,
     ) => useCaseModels.TSaveLessonComponentsRequest['components'][number]
 > = {
-    [CourseElementType.CoachingSession]: () => {
-        // TODO: Implement transformation for CoachingSession
-        throw new Error('Function not implemented.');
-    },
+    [CourseElementType.CoachingSession]: transformCoachingSession,
     [CourseElementType.ImageFile]: transformImage,
     [CourseElementType.VideoFile]: transformVideo,
     [CourseElementType.ImageGallery]: transformImageCarousel,
     [CourseElementType.DownloadFiles]: transformDownloadFiles,
     [CourseElementType.UploadFiles]: transformUploadFiles,
-    [CourseElementType.Assignment]: () => {
-        // TODO: Implement transformation for Assignment
-        throw new Error('Function not implemented.');
-    },
+    [CourseElementType.Assignment]: transformAssignment,
     [CourseElementType.QuizTypeOne]: transformQuizTypeOne,
     [CourseElementType.QuizTypeTwo]: transformQuizTypeTwo,
     [CourseElementType.QuizTypeThree]: transformQuizTypeThree,
