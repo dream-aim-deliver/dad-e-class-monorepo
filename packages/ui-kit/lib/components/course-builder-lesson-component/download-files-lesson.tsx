@@ -185,6 +185,7 @@ export function FormComponent({
                 elementInstance.files.length > 0 &&
                 elementInstance.files.map((file) => (
                     <FilePreview
+                        key={file.id}
                         locale={locale}
                         readOnly={true}
                         onDownload={() => handleDownload(file.id as string)}
