@@ -1571,8 +1571,6 @@ function AssignmentComponent({
     onDeleteClick,
     validationError,
 }: LessonComponentProps) {
-    if (elementInstance.type !== CourseElementType.Assignment) return;
-
     const onChange = (newAssignment: TempAssignmentElement): void => {
         setComponents((prevComponents) =>
             prevComponents.map((component) => {
@@ -1618,6 +1616,7 @@ function AssignmentComponent({
     };
 
     const handleFileDownload = (id: string): void => {
+        if (elementInstance.type !== CourseElementType.Assignment) return;
         const file = elementInstance.files?.find((file) => file.id === id);
         if (file) {
             downloadFile(file.url, file.name);
@@ -1720,7 +1719,7 @@ function AssignmentComponent({
     return (
         <AssignmentDesignerComponent
             key={elementInstance.id}
-            elementInstance={elementInstance}
+            elementInstance={elementInstance as TempAssignmentElement}
             locale={locale}
             onUpClick={onUpClick}
             onDownClick={onDownClick}
