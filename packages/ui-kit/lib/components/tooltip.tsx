@@ -51,15 +51,15 @@ function Tooltip({
 
   // Map positions to arrow classes
   const arrowClasses = {
-    top: 'bottom-[-7px] right-[10px] border-l-8 border-r-8 border-t-8 border-b-0 border-l-transparent border-r-transparent border-t-tooltip-background',
-    bottom: 'top-[-5px] right-[10px]  border-l-8 border-r-8 border-b-8 border-t-0 border-l-transparent border-r-transparent border-b-tooltip-background',
-    left: 'right-[-5px] top-1/2 -translate-y-1/2 border-t-8 border-b-8 border-l-8 border-r-0 border-t-transparent border-b-transparent border-l-tooltip-background',
-    right: 'left-[-5px] top-1/2 -translate-y-1/2 border-t-4 border-b-4 border-r-4 border-l-0 border-t-transparent border-b-transparent border-r-tooltip-background'
+    top: 'bottom-[-7px] right-[10px] border-l-8 border-r-8 border-t-8 border-b-0 border-l-transparent border-r-transparent border-t-base-neutral-700',
+    bottom: 'top-[-5px] right-[10px]  border-l-8 border-r-8 border-b-8 border-t-0 border-l-transparent border-r-transparent border-b-base-neutral-700',
+    left: 'right-[-5px] top-1/2 -translate-y-1/2 border-t-8 border-b-8 border-l-8 border-r-0 border-t-transparent border-b-transparent border-l-base-neutral-700',
+    right: 'left-[-5px] top-1/2 -translate-y-1/2 border-t-4 border-b-4 border-r-4 border-l-0 border-t-transparent border-b-transparent border-r-base-neutral-700'
   };
 
   // Calculate best position if set to auto, preferring top position when possible
   useEffect(() => {
-    if ((isVisible || isFocused) && tipPosition === 'auto' && tooltipRef.current && triggerRef.current) {
+    if (isVisible && tipPosition === 'auto' && tooltipRef.current && triggerRef.current) {
       const updatePosition = () => {
         if (!tooltipRef.current || !triggerRef.current) return;
         const tooltipRect = tooltipRef.current.getBoundingClientRect();
@@ -113,7 +113,8 @@ function Tooltip({
         window.removeEventListener('resize', updatePosition);
       };
     }
-  }, [isVisible, isFocused, tipPosition]);
+  }, [isVisible, tipPosition]);
+
 
   return (
     <div
@@ -125,24 +126,19 @@ function Tooltip({
       {/* Tooltip trigger element */}
       <div
         ref={triggerRef}
-        className="inline-flex relative gap-1 items-center text-sm leading-[150%] cursor-pointer"
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        tabIndex={0}
-        aria-describedby="tooltip-content"
-        role="button"
+        className="inline-flex relative gap-1 items-center leading-[150%]"
       >
         <span className="line-clamp-2 text-text-secondary">{text}</span>
         <div className='relative'>
           <IconInfoCircle size="4" classNames={cn('flex-shrink-0 text-text-secondary hover:text-text-primary')} />
           {/* Tooltip content */}
-          {(isVisible || isFocused) && (
+          {isVisible && (
             <div
               id="tooltip-content"
               ref={tooltipRef}
               className={cn(
-                'absolute z-10 p-4 w-64 max-w-xs text-xs  shadow-lg',
-                'bg-tooltip-background border border-tooltip-border',
+                'absolute z-[9999] p-4 w-64 max-w-xs text-xs shadow-lg rounded-md',
+                'bg-base-neutral-700',
                 'transition-opacity duration-200',
                 tipPosition !== 'auto' ? positionClasses[tipPosition] : positionClasses[position],
                 contentClassName

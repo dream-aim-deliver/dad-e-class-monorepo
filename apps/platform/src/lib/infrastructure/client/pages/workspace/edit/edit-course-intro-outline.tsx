@@ -11,9 +11,7 @@ import { useEffect } from 'react';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
-import {
-    AccordionIconUploadState,
-} from './hooks/use-accordion-icon-upload';
+import { AccordionIconUploadState } from './hooks/use-accordion-icon-upload';
 import CourseIntroduction from '../../common/course-introduction';
 import CourseOutline from '../../common/course-outline';
 import { useCourseOutline } from './hooks/edit-outline-hooks';
@@ -76,7 +74,7 @@ export default function EditCourseIntroOutline({
         }
         setIsEdited(false);
         setCourseVersion(introductionViewModel.data.courseVersion);
-    }, [introductionViewModel, courseIntroduction, introductionVideoUpload, setCourseVersion, setIsEdited]);
+    }, [introductionViewModel]);
 
     useEffect(() => {
         if (!outlineViewModel || outlineViewModel.mode !== 'default') return;
@@ -94,7 +92,7 @@ export default function EditCourseIntroOutline({
                     : null,
             })),
         );
-    }, [outlineViewModel, setOutlineItems]);
+    }, [outlineViewModel]);
 
     if (!introductionViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -103,7 +101,7 @@ export default function EditCourseIntroOutline({
     if (introductionViewModel.mode !== 'default') {
         return <DefaultError locale={locale} />;
     }
-    // TODO: Translate 
+    // TODO: Translate
     return (
         <div className="flex flex-col gap-8">
             <IntroductionForm
@@ -121,18 +119,20 @@ export default function EditCourseIntroOutline({
                 videoFile={introductionVideoUpload.video}
                 uploadError={introductionVideoUpload.uploadError}
             />
-            <h2>Outline</h2>
-            <AccordionBuilder
-                items={outlineItems}
-                setItems={setOutlineItems}
-                onIconChange={accordionIconUpload.handleFileChange}
-                onIconDownload={(index) => {
-                    const item = outlineItems[index];
-                    if (!item.icon) return;
-                    accordionIconUpload.handleDownload(item.icon);
-                }}
-                locale={locale}
-            />
+            <div className='flex flex-col gap-4'>
+                <h2>Outline</h2>
+                <AccordionBuilder
+                    items={outlineItems}
+                    setItems={setOutlineItems}
+                    onIconChange={accordionIconUpload.handleFileChange}
+                    onIconDownload={(index) => {
+                        const item = outlineItems[index];
+                        if (!item.icon) return;
+                        accordionIconUpload.handleDownload(item.icon);
+                    }}
+                    locale={locale}
+                />
+            </div>
         </div>
     );
 }

@@ -97,8 +97,10 @@ export const RenderElement = ({ attributes, children, element }: RenderElementPr
       return <h1 {...attributes} style={style} className="text-2xl font-bold">{children}</h1>;
     case "h2":
       return <h2 {...attributes} style={style} className="text-xl font-bold">{children}</h2>;
-    default:
+    case "paragraph":
       return <p {...attributes} style={style} className="text-base">{children}</p>;
+    default:
+      return <div {...attributes} style={style} className="text-base">{children}</div>;
   }
 };
 
@@ -165,7 +167,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = React.memo(
         <Slate editor={editor} initialValue={deserializedInitialValue} onChange={(value) => onChange?.(value)}>
 
           <div
-            className="bg-black text-text-primary border-0 w-full  min-w-0 min-h-40  focus:outline-none overflow-y-auto"
+            className="bg-black text-text-primary border-1 rounded-b-md border-input-stroke w-full  min-w-0 min-h-40  focus:outline-none overflow-y-auto"
             style={{ resize: "vertical" }}
           >
             <Toolbar locale={locale} />

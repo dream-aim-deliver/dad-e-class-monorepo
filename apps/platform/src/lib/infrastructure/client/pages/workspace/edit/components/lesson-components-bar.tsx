@@ -15,11 +15,11 @@ export default function LessonComponentsBar({
         <>
             <div className="flex flex-col gap-1">
                 <span className="text-lg font-bold">Simple</span>
-                <span className="text-sm text-text-secondary">
+                <span className="text-md text-text-secondary">
                     Used to present information.
                 </span>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 pb-3">
                 {simpleComponentButtons.map((button, index) => (
                     <ComponentCard
                         key={index}
@@ -29,9 +29,9 @@ export default function LessonComponentsBar({
                     />
                 ))}
             </div>
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col">
                 <span className="text-lg font-bold">Interactive</span>
-                <span className="text-sm text-text-secondary">
+                <span className="text-md text-text-secondary">
                     Require input from user.
                 </span>
             </div>

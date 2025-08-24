@@ -82,12 +82,12 @@ export default function Offers(props: OffersProps) {
                 <PackageList />
             </Suspense>
             <Divider className="my-12" />
-            <h2> text={t('coachingOnDemand')} </h2>
+            <h2> {t('coachingOnDemand')} </h2>
             <Suspense fallback={<CoachCardListSkeleton />}>
                 <OffersCoachList selectedTopics={selectedTopics} />
             </Suspense>
             <Divider className="my-12" />
-            <h2> text={t('haveNotFound')} </h2>
+            <h2> {t('haveNotFound')} </h2>
             <Suspense fallback={<CarouselSkeleton />}>
                 <Carousel />
             </Suspense>

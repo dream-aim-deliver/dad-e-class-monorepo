@@ -1,20 +1,18 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { InputField } from './input-field';
 import RichTextEditor from './rich-text-element/editor';
 import { Button } from './button';
-import { IconButton } from './icon-button';
+import { ContentControlButtons } from './course-builder/control-buttons';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { FilePreview } from './drag-and-drop-uploader/file-preview';
 import {
-    IconChevronDown,
-    IconChevronUp,
     IconCloudUpload,
     IconPlus,
-    IconTrashAlt,
 } from './icons';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { z } from 'zod';
 import { serialize } from './rich-text-element/serializer';
+import { Descendant } from 'slate';
 
 type ImageFile = z.infer<typeof fileMetadata.FileMetadataImageSchema> | null;
 
@@ -58,6 +56,10 @@ function AccordionBuilderItem({
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
+
+    const handleContentChange = useCallback((newValue: Descendant[]) => {
+        setItem({ ...item, content: serialize(newValue) });
+    }, [setItem, item]);
 
     const handleFileChange = async (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -124,9 +126,9 @@ function AccordionBuilderItem({
         <div className=" w-full p-4 text-text-secondary bg-base-neutral-800 border border-base-neutral-700 flex flex-col gap-4 rounded-md">
             <div className="flex items-center justify-between overflow-x-auto text-button-primary-text ">
                 {/* Title and Icon */}
-                <div className="flex items-center md:gap-4 gap-2 flex-1 text-button-text-text">
+                <div className="flex items-center md:gap-4 gap-2 flex-1 text-button-text-text overflow-hidden">
                     <span className="min-w-0 flex-shrink-0">
-                        <h4 className="md:text-3xl text-lg font-semibold">
+                        <h4 className="md:text-3xl text-lg text-action-default font-semibold">
                             {orderNo}.
                         </h4>
                     </span>
@@ -157,12 +159,12 @@ function AccordionBuilderItem({
                 </div>
 
                 {/* Action Buttons */}
-                <IconButton
-                    icon={<IconTrashAlt />}
-                    onClick={() => onItemDelete()}
-                    size="medium"
-                    styles="text"
-                    title={dictionary.components.accordion.deleteText}
+                <ContentControlButtons
+                    onMoveUp={() => onItemUp()}
+                    onMoveDown={() => onItemDown()}
+                    onDelete={() => onItemDelete()}
+                    isFirst={orderNo === 1}
+                    isLast={orderNo === totalItems}
                 />
             </div>
             {shownIcon && (
@@ -206,9 +208,7 @@ function AccordionBuilderItem({
                         initialValue={item.content}
                         locale={locale}
                         name="content"
-                        onChange={(newValue) =>
-                            setItem({ ...item, content: serialize(newValue) })
-                        }
+                        onChange={handleContentChange}
                         onLoseFocus={(value) => {
                             // The text is already saved on change
                         }}
@@ -244,13 +244,19 @@ export function AccordionBuilder({
     locale,
 }: AccordionBuilderProps) {
     const dictionary = getDictionary(locale);
-    const handleAddAccordion = () => {
+    const handleAddAccordion = (insertIndex?: number) => {
         const newItem: AccordionBuilderItem = {
             title: '',
             content: '',
             icon: null,
         };
-        setItems([...items, newItem]);
+        if (insertIndex !== undefined) {
+            const newItems = [...items];
+            newItems.splice(insertIndex + 1, 0, newItem);
+            setItems(newItems);
+        } else {
+            setItems([...items, newItem]);
+        }
     };
     const handleUpClick = (index: number) => {
         if (index === 0) return;
@@ -282,63 +288,83 @@ export function AccordionBuilder({
     };
 
     return (
-        <div className="flex flex-col gap-4 w-full bg-card-fill p-4 rounded-lg border border-neutral-800">
+        <div className="flex flex-col gap-4 w-full bg-card-fill p-4 rounded-lg border border-neutral-700">
             <div className="w-full flex flex-col gap-4">
                 {items.map((item, index) => (
-                    <AccordionBuilderItem
-                        key={`accordion-item-${index}`}
-                        orderNo={index + 1}
-                        totalItems={items.length}
-                        item={item}
-                        setItem={(newItem) => {
-                            setItems((prevItems) =>
-                                prevItems.map((prevItem, i) => {
-                                    if (i === index) {
-                                        return newItem;
-                                    }
-                                    return prevItem;
-                                }),
-                            );
-                        }}
-                        onItemDelete={() => handleDeleteClick(index)}
-                        onItemUp={() => handleUpClick(index)}
-                        onItemDown={() => handleDownClick(index)}
-                        onImageChange={handleIconUpload}
-                        onIconDelete={() => {
-                            setItems((prevItems) =>
-                                prevItems.map((prevItem, i) => {
-                                    if (i === index) {
-                                        return {
-                                            ...prevItem,
-                                            icon: null,
-                                        };
-                                    }
-                                    return prevItem;
-                                }),
-                            );
-                        }}
-                        onIconDownload={() => {
-                            onIconDownload(index);
-                        }}
-                        locale={locale}
-                    />
+                    <div key={`accordion-wrapper-${index}`} className="flex flex-col gap-4">
+                        <AccordionBuilderItem
+                            key={`accordion-item-${index}`}
+                            orderNo={index + 1}
+                            totalItems={items.length}
+                            item={item}
+                            setItem={(newItem) => {
+                                setItems((prevItems) =>
+                                    prevItems.map((prevItem, i) => {
+                                        if (i === index) {
+                                            return newItem;
+                                        }
+                                        return prevItem;
+                                    }),
+                                );
+                            }}
+                            onItemDelete={() => handleDeleteClick(index)}
+                            onItemUp={() => handleUpClick(index)}
+                            onItemDown={() => handleDownClick(index)}
+                            onImageChange={handleIconUpload}
+                            onIconDelete={() => {
+                                setItems((prevItems) =>
+                                    prevItems.map((prevItem, i) => {
+                                        if (i === index) {
+                                            return {
+                                                ...prevItem,
+                                                icon: null,
+                                            };
+                                        }
+                                        return prevItem;
+                                    }),
+                                );
+                            }}
+                            onIconDownload={() => {
+                                onIconDownload(index);
+                            }}
+                            locale={locale}
+                        />
+                        <div
+                            className="flex items-center gap-2"
+                            role="group"
+                            aria-label="Add link divider"
+                        >
+                            <hr className="flex-grow border-t border-divider" />
+                            <Button
+                                text={dictionary.components.accordion.addItemText}
+                                hasIconLeft
+                                iconLeft={<IconPlus />}
+                                onClick={() => handleAddAccordion(index)}
+                                aria-label="Add link"
+                                variant="text"
+                            />
+                            <hr className="flex-grow border-t border-divider" />
+                        </div>
+                    </div>
                 ))}
-            </div>
-            <div
-                className="flex items-center gap-2"
-                role="group"
-                aria-label="Add link divider"
-            >
-                <hr className="flex-grow border-t border-divider" />
-                <Button
-                    text={dictionary.components.accordion.addItemText}
-                    hasIconLeft
-                    iconLeft={<IconPlus />}
-                    onClick={handleAddAccordion}
-                    aria-label="Add link"
-                    variant="text"
-                />
-                <hr className="flex-grow border-t border-divider" />
+                {items.length === 0 && (
+                    <div
+                        className="flex items-center gap-2"
+                        role="group"
+                        aria-label="Add link divider"
+                    >
+                        <hr className="flex-grow border-t border-divider" />
+                        <Button
+                            text={dictionary.components.accordion.addItemText}
+                            hasIconLeft
+                            iconLeft={<IconPlus />}
+                            onClick={() => handleAddAccordion()}
+                            aria-label="Add link"
+                            variant="text"
+                        />
+                        <hr className="flex-grow border-t border-divider" />
+                    </div>
+                )}
             </div>
         </div>
     );
