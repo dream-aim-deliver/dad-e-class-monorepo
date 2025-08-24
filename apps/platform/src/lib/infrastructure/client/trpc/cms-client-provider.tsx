@@ -46,6 +46,12 @@ export default function CMSTRPCClientProviders({
                                 headers['Accept-Language'] = locale;
                             }
 
+                            // Add platform header
+                            if (process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME) {
+                                headers['x-eclass-Runtime'] =
+                                    process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
+                            }
+
                             return headers;
                         },
                     }),

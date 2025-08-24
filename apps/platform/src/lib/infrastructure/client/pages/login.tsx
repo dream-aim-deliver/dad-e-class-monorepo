@@ -38,8 +38,8 @@ const LoginPage = (props: LoginPageProps) => {
                 platform: props.platform,
                 // TODO: the logo URL is passed from the backend
                 platform_logo_public_url: 'mock',
-                // TODO: the platform is identified by its ID
-                platform_short_name: 'mock',
+                // TODO: the platform is identified by its ID ( Not in Auth0 Setup)
+                platform_short_name: process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_SHORT_NAME,
                 terms_and_conditions_title:
                     dictionary.pages.sso.termsAndConditions.title,
                 terms_and_conditions_content:
