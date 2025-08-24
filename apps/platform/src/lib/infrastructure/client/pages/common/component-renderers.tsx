@@ -40,10 +40,6 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { mockCoaches } from '../../../common/mocks/simple/coaches';
 import { simulateUploadFile } from '../../../common/mocks/simple/upload-file';
 
-interface LessonFormProps {
-    data: viewModels.TLessonComponentListSuccess;
-}
-
 export interface ComponentRendererProps {
     key: string;
     formElement: LessonElement;

@@ -1,7 +1,7 @@
-import { FC, useState } from "react";
-import { CoachingSessionTypes } from "../course-builder-lesson-component/types";
+import { FC } from "react";
+import { CoachingSession } from "../course-builder-lesson-component/types";
 import { RadioButton } from "../radio-button";
-import { getDictionary } from "@maany_shr/e-class-translations";
+import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 
 /**
  * A component that allows users to select a coaching session type from a list of options.
@@ -34,37 +34,34 @@ import { getDictionary } from "@maany_shr/e-class-translations";
  * />
  */
 
-export const CoachingSessionBuilderView: FC<CoachingSessionTypes> = ({
-    type,
-    id,
-    order,
-    coachingSessionTypes,
-    onChange,
-    locale,
-}) => {
-    const [selectedId, setSelectedId] = useState<number | null>(null);
-    const dictionary = getDictionary(locale);
+interface CoachingSessionBuilderViewProps extends isLocalAware {
+    selectedSession?: CoachingSession;
+    coachingSessionTypes: CoachingSession[];
+    onSessionChange: (session: CoachingSession) => void;
+}
 
-    const handleChange = (value: string) => {
-        const numValue = Number(value);
-        setSelectedId(numValue);
-        onChange({
-            type,
-            id,
-            order,
-            coachingOfferingTypeId: numValue,
-        });
-    };
+export const CoachingSessionBuilderView: FC<CoachingSessionBuilderViewProps> = ({
+    coachingSessionTypes,
+    onSessionChange,
+    selectedSession,
+    locale
+}) => {
+    const dictionary = getDictionary(locale);
+    console.log(coachingSessionTypes);
+    console.log(selectedSession);
+    
     return (
         <div className="flex flex-col gap-4 w-full items-start justify-center">
             {coachingSessionTypes.map((session) => (
                 <div key={session.id} className="flex gap-4 items-center">
                     <div className="w-fit flex items-center">
                         <RadioButton
-                            name={`coaching-session-${id}`}
+                            name={`coaching-session-${session.id}`}
                             value={String(session.id)}
-                            checked={selectedId === session.id}
-                            onChange={handleChange}
+                            checked={selectedSession?.id === session.id}
+                            onChange={() => {
+                                onSessionChange(session);
+                            }}
                             size="medium"
                         />
                     </div>

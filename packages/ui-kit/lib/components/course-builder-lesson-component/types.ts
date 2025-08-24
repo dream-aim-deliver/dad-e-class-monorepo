@@ -8,36 +8,16 @@ interface BaseCourseFormElement {
     required?: boolean;
 }
 
-export interface CoachingSessionElement extends BaseCourseFormElement {
-    type: CourseElementType.CoachingSession;
-    coachingSession?: {
-        id: number;
-        name: string;
-        duration: number;
-    }
+export interface CoachingSession {
+    id: number;
+    name: string;
+    duration: number;
 }
 
-export interface CoachingSessionTypes extends isLocalAware, BaseCourseFormElement {
-    order: number;
+export interface CoachingSessionElement extends BaseCourseFormElement {
     type: CourseElementType.CoachingSession;
-    coachingSessionTypes: {
-        id: number;
-        name: string;
-        duration: number;  // in minutes
-    }[];
-    onChange: (updatedData: {
-        type: CourseElementType.CoachingSession;
-        id: string;
-        order: number;
-        coachingOfferingTypeId: number;
-    }) => void;
-};
-
-export interface CoachingSessionStudentViewTypes extends isLocalAware, BaseCourseFormElement {
-    type: CourseElementType.CoachingSession;
-    children: React.ReactNode;
-    studentHadSessionBeforeInCourse: boolean;
-};
+    coachingSession?: CoachingSession;
+}
 
 export type QuizType = "quizTypeOne" | "quizTypeTwo" | "quizTypeThree" | "quizTypeFour";
 
@@ -156,7 +136,7 @@ export interface AssignmentBuilderViewTypes extends isLocalAware, BaseCourseForm
 };
 
 
-export type CoachingElement = CoachingSessionTypes | CoachingSessionStudentViewTypes;
+export type CoachingElement = CoachingSessionElement;
 
 export interface ImageElement extends BaseCourseFormElement {
     type: CourseElementType.ImageFile;

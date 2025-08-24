@@ -447,9 +447,9 @@ const listLessonComponentsMock: useCaseModels.TListLessonComponentsSuccessRespon
                 id: 'comp_017',
                 order: 17,
                 type: 'coachingSession',
-                courseCoachingOfferingId: 12345,
-                name: 'One-on-One React Mentorship Session',
-                duration: 60,
+                courseCoachingOfferingId: 2,
+                name: 'Quick sprint',
+                duration: 20,
             },
             // Assignment Component
             {
