@@ -142,14 +142,18 @@ const QuizTypeFourComponentSchema = BaseComponentSchema.extend({
 const CoachingSessionComponentSchema = BaseComponentSchema.extend({
   type: z.literal('coachingSession'),
   courseCoachingOfferingId: z.number().int(),
-  name: z.string(),
-  duration: z.number().int(),
 });
 
 const AssignmentComponentSchema = BaseComponentSchema.extend({
   type: z.literal('assignment'),
   title: z.string(),
   description: z.string(),
+  resourceIds: z.array(z.string()),
+  links: z.array(z.object({
+    title: z.string(),
+    url: z.string(),
+    iconFileId: z.string().nullable(),
+  })),
 });
 
 const ComponentSchema = z.discriminatedUnion('type', [
