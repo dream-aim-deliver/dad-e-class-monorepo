@@ -1,6 +1,9 @@
 'use client';
 
 import { TLocale } from '@maany_shr/e-class-translations';
+import { trpc } from '../../../trpc/client';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
 import {
     AccordionBuilderItem,
     CourseDetailsState,
