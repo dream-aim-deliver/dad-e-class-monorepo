@@ -32,7 +32,7 @@ import {
     CoachingSessionElement,
     DefaultLoading,
     AssignmentDesignerComponent,
-    TempAssignmentElement,
+    AssignmentElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
@@ -1571,7 +1571,7 @@ function AssignmentComponent({
     onDeleteClick,
     validationError,
 }: LessonComponentProps) {
-    const onChange = (newAssignment: TempAssignmentElement): void => {
+    const onChange = (newAssignment: AssignmentElement): void => {
         setComponents((prevComponents) =>
             prevComponents.map((component) => {
                 if (component.id !== elementInstance.id) {
@@ -1719,7 +1719,7 @@ function AssignmentComponent({
     return (
         <AssignmentDesignerComponent
             key={elementInstance.id}
-            elementInstance={elementInstance as TempAssignmentElement}
+            elementInstance={elementInstance as AssignmentElement}
             locale={locale}
             onUpClick={onUpClick}
             onDownClick={onDownClick}

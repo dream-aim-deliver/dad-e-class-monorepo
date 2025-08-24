@@ -1,6 +1,6 @@
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { FC } from 'react';
-import { TempAssignmentElement } from '../course-builder-lesson-component/types';
+import { AssignmentElement } from '../course-builder-lesson-component/types';
 import { IconAssignment } from '../icons/icon-assignment';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { LinkPreview } from '../links';
@@ -29,7 +29,7 @@ import { LinkPreview } from '../links';
  */
 
 interface AssignmentStudentView extends isLocalAware {
-    elementInstance: TempAssignmentElement;
+    elementInstance: AssignmentElement;
     onFileDownload: (fileId: string) => void;
 }
 

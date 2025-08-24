@@ -1,9 +1,9 @@
 import { FC } from 'react';
-import {
-    CoachingSessionElement,
-} from '../course-builder-lesson-component/types';
+import { CoachingSessionElement } from '../course-builder-lesson-component/types';
 import { CoachingSessionHeader } from './coaching-session-header';
-import { isLocalAware } from '@maany_shr/e-class-translations';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { getValidationError } from '../course-builder-lesson-component/coaching-session';
+import DefaultError from '../default-error';
 
 /**
  * A component that displays the student view of a coaching session.
@@ -30,14 +30,25 @@ interface CoachingSessionStudentViewProps extends isLocalAware {
 export const CoachingSessionStudentView: FC<
     CoachingSessionStudentViewProps
 > = ({ elementInstance, coachList, locale }) => {
-    if (!elementInstance.coachingSession) return null;
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={dictionary.components.lessons.elementValidationText}
+                description={validationError}
+            />
+        );
+    }
 
     // TODO: add book a coach text
     return (
         <div className="flex flex-col w-full gap-4 p-4 bg-card-fill border-1 border-card-stroke rounded-medium">
             <CoachingSessionHeader
-                name={elementInstance.coachingSession.name}
-                duration={elementInstance.coachingSession.duration}
+                name={elementInstance.coachingSession!.name}
+                duration={elementInstance.coachingSession!.duration}
                 locale={locale}
             />
             {coachList}

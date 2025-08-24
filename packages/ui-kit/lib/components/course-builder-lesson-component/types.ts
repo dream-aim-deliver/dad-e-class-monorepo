@@ -104,7 +104,7 @@ export interface UploadFilesElement extends BaseCourseFormElement {
     userComment?: string;
 }
 
-export interface TempAssignmentElement extends BaseCourseFormElement {
+export interface AssignmentElement extends BaseCourseFormElement {
     type: CourseElementType.Assignment;
     title: string;
     description: string;
