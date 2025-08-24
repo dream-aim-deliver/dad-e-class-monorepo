@@ -21,6 +21,8 @@ interface CourseRequirement {
 interface CourseFormProps extends isLocalAware {
     mode: 'create' | 'edit';
     // Controlled form values
+    courseVersion: number | null;
+
     image: fileMetadata.TFileMetadataImage | null;
     courseTitle: string;
     setCourseTitle: (title: string) => void;
@@ -55,7 +57,7 @@ interface CourseFormProps extends isLocalAware {
     };
 }
 
-export interface CourseFormState {
+export interface CourseDetailsState {
     courseTitle: string;
     courseSlug: string;
     courseDescription: Descendant[];
@@ -71,6 +73,7 @@ export interface CourseFormState {
 
     isDescriptionValid: () => boolean;
     serializeDescription: () => string;
+    parseDescription: (value: string) => void;
 }
 
 interface UseCourseInitialState {
@@ -84,7 +87,7 @@ interface UseCourseInitialState {
 // Hook for parent components to manage form state
 export function useCourseForm(
     initialState?: UseCourseInitialState,
-): CourseFormState {
+): CourseDetailsState {
     const [courseTitle, setCourseTitle] = useState(
         initialState?.courseTitle ?? '',
     );
@@ -143,6 +146,14 @@ export function useCourseForm(
         return content.length > 0;
     };
 
+    const parseDescription = (value: string) => {
+        const parsed = deserialize({
+            serializedData: value,
+            onError: console.error,
+        });
+        setCourseDescription(parsed);
+    };
+
     return {
         // Form values
         courseTitle,
@@ -163,6 +174,7 @@ export function useCourseForm(
         hasUserEditedSlug,
         isDescriptionValid,
         serializeDescription,
+        parseDescription,
     };
 }
 
@@ -172,6 +184,7 @@ export function CourseForm(props: CourseFormProps) {
     const {
         mode,
         locale,
+        courseVersion,
         // Controlled form values
         image,
         courseTitle,
@@ -240,7 +253,7 @@ export function CourseForm(props: CourseFormProps) {
                 <>
                     <div className="flex items-center gap-3 text-text-primary">
                         {renderCourseIcon()}
-                        <span>
+                                                <span>
                             {' '}
                             {
                                 dictionary.components.createCourseForm
@@ -303,6 +316,7 @@ export function CourseForm(props: CourseFormProps) {
                         </label>
                         <RichTextEditor
                             locale={locale}
+                            key={`course-description-${courseVersion}`} // Reset editor when course version changes
                             name="courseDescription"
                             placeholder={
                                 dictionary.components.courseIntroInformation
@@ -356,6 +370,7 @@ export function CourseForm(props: CourseFormProps) {
                             onUploadComplete={handleOnUploadComplete}
                             onDelete={onDelete}
                             onDownload={onDownload}
+                            isDeletionAllowed
                             className="mb-2"
                         />
                         <p className="text-text-secondary text-sm">

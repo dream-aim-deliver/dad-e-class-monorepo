@@ -99,7 +99,7 @@ export { BuyCoachingSessionBanner } from './components/buy-coaching-session-bann
 
 export { Breadcrumbs } from './components/breadcrumbs';
 export * from './components/dialog';
-export { CourseForm, useCourseForm, type CourseFormState } from './components/create-course-form';
+export { CourseForm, useCourseForm, type CourseDetailsState } from './components/course-form';
 export * from './utils/file-utils';
 
 export { LessonHeader } from './components/lesson-header';
@@ -154,6 +154,9 @@ export { DesignerComponent as QuizDesignerComponent } from './components/course-
 export { DesignerComponent as LinksDesignerComponent } from './components/course-builder-lesson-component/links';
 export { DesignerComponent as CoachingSessionDesignerComponent } from './components/course-builder-lesson-component/coaching-session';
 export { DesignerComponent as AssignmentDesignerComponent } from './components/course-builder-lesson-component/assignment';
+
+export { IntroductionForm, useCourseIntroductionForm, type CourseIntroductionForm } from './components/introduction-form';
+export { AccordionBuilder, type AccordionBuilderItem } from './components/accordion-builder';
 
 export { type OneOutOfThreeData } from './components/out-of-three/one-out-of-three';
 export { validatorPerType } from './components/lesson/validators';

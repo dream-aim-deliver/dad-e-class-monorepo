@@ -7,11 +7,11 @@ import {
     DefaultError,
     DefaultLoading,
     IconSave,
+    SectionHeading,
     useCourseForm,
-    uploadToS3,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
-import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import { Suspense, useEffect, useState } from 'react';
 import { trpc } from '../../trpc/client';
 import { useCreateCoursePresenter } from '../../hooks/use-create-course-presenter';
@@ -172,6 +172,7 @@ function CreateCourseContent(props: CreateCourseContentProps) {
 
             <CourseForm
                 mode="create"
+                courseVersion={null}
                 image={courseImage}
                 courseTitle={courseTitle}
                 setCourseTitle={setCourseTitle}

@@ -8,6 +8,7 @@ import {
     CourseIntroBanner,
     DefaultError,
     DefaultLoading,
+    SectionHeading,
 } from '@maany_shr/e-class-ui-kit';
 
 interface CourseIntroductionProps {
@@ -29,7 +30,7 @@ function IntroductionBanner({ courseSlug }: CourseIntroductionProps) {
     const locale = useLocale() as TLocale;
 
     if (!introductionViewModel) {
-        return <DefaultLoading locale={locale} variant="minimal" />;
+        return <DefaultLoading locale={locale} variant='minimal'/>;
     }
 
     if (introductionViewModel.mode !== 'default') {
@@ -41,12 +42,12 @@ function IntroductionBanner({ courseSlug }: CourseIntroductionProps) {
     return (
         <CourseIntroBanner
             description={introduction.text}
-            videoId={introduction.playbackId}
+            videoId={introduction.video.playbackId ?? ''}
             locale={locale}
             onErrorCallback={() => {
                 // TODO: Handle error case, e.g., show a toast or log the error
             }}
-            thumbnailUrl={introduction.thumbnailUrl ?? undefined}
+            thumbnailUrl={introduction.video.thumbnailUrl ?? undefined}
         />
     );
 }
@@ -58,9 +59,8 @@ export default function CourseIntroduction({
 
     return (
         <div className="flex flex-col space-y-6">
-            <Suspense
-                fallback={<DefaultLoading locale={locale} variant="minimal" />}
-            >
+            <SectionHeading text="Introduction" />
+            <Suspense fallback={<DefaultLoading locale={locale} variant='minimal'/>}>
                 <IntroductionBanner courseSlug={courseSlug} />
             </Suspense>
         </div>

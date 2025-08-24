@@ -32,5 +32,9 @@ export * from './list-lesson-components-usecase-models';
 export * from './save-course-structure-usecase-models';
 export * from './upload-lesson-component-file-usecase-models';
 export * from './save-lesson-components-usecase-models';
-
 export * from './save-course-details-usecase-models';
+export * from './upload-introduction-video-usecase-models';
+export * from './save-course-introduction-usecase-models';
+export * from './upload-accordion-icon-usecase-models';
+
+export * from './save-course-outline-usecase-models';

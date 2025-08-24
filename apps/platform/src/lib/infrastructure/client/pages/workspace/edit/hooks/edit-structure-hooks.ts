@@ -15,9 +15,8 @@ export function useCourseStructure(slug: string) {
         {
             refetchOnWindowFocus: false,
             refetchOnReconnect: false,
-            refetchOnMount: false,
+            refetchOnMount: true,
             retry: false,
-            staleTime: Infinity,
         },
     );
 
