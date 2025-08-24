@@ -26,7 +26,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
     const router = useRouter();
     const pathname = usePathname();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
-    
+
     // Extract locale from props (passed from layout)
     const locale = props.locale || 'en';
 
@@ -46,11 +46,11 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
         const isStudent = props.userRole === 'student';
         const baseRoutes = {
             '/': sidebarTranslations('dashboard'),
-            '/workspace/courses': isStudent 
-                ? sidebarTranslations('courses') 
+            '/workspace/courses': isStudent
+                ? sidebarTranslations('courses')
                 : sidebarTranslations('yourCourses'),
-            '/coaching': isStudent 
-                ? sidebarTranslations('coachingSessions') 
+            '/coaching': isStudent
+                ? sidebarTranslations('coachingSessions')
                 : sidebarTranslations('yourCoachingSessions'),
             '/calendar': sidebarTranslations('calendar'),
             '/workspace/students': sidebarTranslations('yourStudents'),
@@ -61,17 +61,17 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
 
         // Create mapping with and without locale prefix
         const routeMap: { [key: string]: string } = {};
-        
+
         Object.entries(baseRoutes).forEach(([path, label]) => {
             routeMap[path] = label; // Without locale prefix
             routeMap[`/${currentLocale}${path === '/' ? '' : path}`] = label; // With locale prefix
         });
-        
+
         return routeMap;
     };
 
     const routeToLabelMap = createRouteToLabelMap(locale);
-    
+
     const createMenuItems = (isStudent = false): MenuItem[][] => [
         [
             {
@@ -81,15 +81,15 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
             },
             {
                 icon: <IconCourse />,
-                label: isStudent 
-                    ? sidebarTranslations('courses') 
+                label: isStudent
+                    ? sidebarTranslations('courses')
                     : sidebarTranslations('yourCourses'),
                 onClick: () => router.push(routeMap.courses),
             },
             {
                 icon: <IconCoachingSession />,
-                label: isStudent 
-                    ? sidebarTranslations('coachingSessions') 
+                label: isStudent
+                    ? sidebarTranslations('coachingSessions')
                     : sidebarTranslations('yourCoachingSessions'),
                 onClick: () => router.push(routeMap.coachingSessions),
             },
@@ -148,13 +148,13 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
     // Sync activeItem with current pathname
     useEffect(() => {
         let currentLabel = routeToLabelMap[pathname];
-        
+
         // If no direct match, try to extract locale from pathname and match without it
         if (!currentLabel) {
             const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '');
             currentLabel = routeToLabelMap[pathWithoutLocale || '/'];
         }
-        
+
         if (currentLabel) {
             setActiveItem(currentLabel);
         }
@@ -179,7 +179,9 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
                 {createMenuItems(props.userRole === 'student').map(
                     (group, i) => (
                         <div key={i} className="flex flex-col w-full">
-                            {i > 0 && <div className="h-[1px] bg-divider my-2" />}
+                            {i > 0 && (
+                                <div className="h-[1px] bg-divider my-2" />
+                            )}
                             {group.map((item) => (
                                 <SideMenuItem
                                     key={item.label}
@@ -195,13 +197,10 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
                     ),
                 )}
             </SideMenu>
-            
+
             {/* Logout Loading Overlay */}
             {isLoggingOut && (
-                <DefaultLoading 
-                    locale={locale} 
-                    variant="overlay"
-                />
+                <DefaultLoading locale={locale} variant="overlay" />
             )}
         </>
     );

@@ -21,7 +21,6 @@ export function MilestoneItem({
     isFirst,
     isLast,
 }: MilestoneItemProps) {
-
     // TODO: Translate
     return (
         <div className="flex gap-4 items-center bg-card-fill border border-base-neutral-700 rounded-lg px-4 py-2">

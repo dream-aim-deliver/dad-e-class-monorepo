@@ -9,5 +9,9 @@ export default async function WorkspaceLayout({
     params: Promise<{ locale: string }>;
 }) {
     const params = await paramsPromise;
-    return <SidebarLayout params={{ ...params, locale: params.locale as TLocale }}>{children}</SidebarLayout>;
+    return (
+        <SidebarLayout params={{ ...params, locale: params.locale as TLocale }}>
+            {children}
+        </SidebarLayout>
+    );
 }
