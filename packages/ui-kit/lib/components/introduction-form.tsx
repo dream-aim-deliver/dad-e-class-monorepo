@@ -17,7 +17,7 @@ interface IntroductionProps extends isLocalAware {
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata>;
-    onUploadComplete: (file: fileMetadata.TFileMetadataVideo) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
     onDelete: (id: string) => void;
     onDownload: (id: string) => void;
     uploadError: string | undefined;
@@ -71,9 +71,11 @@ export function IntroductionForm(props: IntroductionProps) {
                     name="introduction"
                     placeholder="Write course introduction"
                     initialValue={props.introductionText}
-                    locale="en"
-                    onLoseFocus={() => {}}
-                    onDeserializationError={() => {}}
+                    locale={props.locale}
+                    onLoseFocus={() => {
+                        // The text is already saved on change
+                    }}
+                    onDeserializationError={console.error}
                     onChange={(value) => props.setIntroductionText(value)}
                 />
             </div>
@@ -87,7 +89,7 @@ export function IntroductionForm(props: IntroductionProps) {
                     variant="video"
                     onFilesChange={props.onFileChange}
                     onUploadComplete={props.onUploadComplete}
-                    locale="en"
+                    locale={props.locale}
                     type="single"
                     maxSize={15}
                     file={props.videoFile}

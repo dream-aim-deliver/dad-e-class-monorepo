@@ -171,6 +171,7 @@ function CreateCourseContent(props: CreateCourseContentProps) {
 
             <CourseForm
                 mode="create"
+                courseVersion={null}
                 image={courseImage}
                 courseTitle={courseTitle}
                 setCourseTitle={setCourseTitle}

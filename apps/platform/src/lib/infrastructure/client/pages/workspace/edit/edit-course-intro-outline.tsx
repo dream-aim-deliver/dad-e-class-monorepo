@@ -23,6 +23,7 @@ import {
 import CourseIntroduction from '../../common/course-introduction';
 import CourseOutline from '../../common/course-outline';
 import { useCourseOutline } from './hooks/edit-outline-hooks';
+import { fileMetadata } from '@maany_shr/e-class-models';
 
 interface EditCourseIntroOutlineProps {
     slug: string;
@@ -116,7 +117,11 @@ export default function EditCourseIntroOutline({
                 courseVersion={courseVersion}
                 {...courseIntroduction}
                 onFileChange={introductionVideoUpload.handleFileChange}
-                onUploadComplete={introductionVideoUpload.handleUploadComplete}
+                onUploadComplete={(file) =>
+                    introductionVideoUpload.handleUploadComplete(
+                        file as fileMetadata.TFileMetadataVideo,
+                    )
+                }
                 onDelete={introductionVideoUpload.handleDelete}
                 onDownload={introductionVideoUpload.handleDownload}
                 videoFile={introductionVideoUpload.video}

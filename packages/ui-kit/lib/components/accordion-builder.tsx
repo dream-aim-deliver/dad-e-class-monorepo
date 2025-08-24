@@ -96,7 +96,7 @@ function AccordionBuilderItem({
                     icon: imageMetadata,
                 });
             } catch (error) {
-                if (error.name === 'AbortError') {
+                if (error instanceof Error && error.name === 'AbortError') {
                     // Upload was cancelled, clean up
                     setIcon(null);
                 }
@@ -206,7 +206,9 @@ function AccordionBuilderItem({
                         onChange={(newValue) =>
                             setItem({ ...item, content: serialize(newValue) })
                         }
-                        onLoseFocus={(value) => {}}
+                        onLoseFocus={(value) => {
+                            // The text is already saved on change
+                        }}
                         placeholder={
                             dictionary.components.accordion
                                 .collapsedPlaceholderText
