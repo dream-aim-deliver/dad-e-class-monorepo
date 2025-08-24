@@ -253,7 +253,7 @@ export function CourseForm(props: CourseFormProps) {
                 <>
                     <div className="flex items-center gap-3 text-text-primary">
                         {renderCourseIcon()}
-                                                <span>
+                        <span>
                             {' '}
                             {
                                 dictionary.components.createCourseForm
@@ -334,6 +334,7 @@ export function CourseForm(props: CourseFormProps) {
                     </div>
 
                     {isEditMode && setDuration && (
+                        // TODO: Translate
                         <div className="flex flex-col gap-1">
                             <label className="text-sm md:text-md text-text-secondary">
                                 Estimated duration of self-study material

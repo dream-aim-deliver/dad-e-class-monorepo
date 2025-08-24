@@ -64,7 +64,7 @@ export function IntroductionForm(props: IntroductionProps) {
         <div className="flex flex-col gap-4">
             <SectionHeading text="Introduction" />
             <div className="flex flex-col gap-2">
-                <label htmlFor="introduction" className="text-text-secondary">
+                <label htmlFor="introduction" className="text-text-secondary text-sm lg:text-md">
                     Course introduction (600 characters max)
                 </label>
                 <RichTextEditor
@@ -80,10 +80,10 @@ export function IntroductionForm(props: IntroductionProps) {
                     onChange={(value) => props.setIntroductionText(value)}
                 />
             </div>
-            <div className="flex flex-col gap-2">
-                <label className="text-text-secondary">
+            <div className="flex flex-col gap-2 bg-card-fill border-1 border-card-stroke rounded-md p-4">
+                <h6 >
                     Introduction video
-                </label>
+                </h6>
                 <Uploader
                     onDownload={props.onDownload}
                     onDelete={props.onDelete}

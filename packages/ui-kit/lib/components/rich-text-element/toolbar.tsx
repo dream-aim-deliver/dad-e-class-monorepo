@@ -49,7 +49,7 @@ export default function Toolbar({ locale }: isLocalAware) {
     <div className=" min-h-14  flex flex-nowrap  text-text-primary  overflow-x-auto gap-4 bg-base-neutral-700 p-3">
       <div className="flex items-center space-x-2">
         <select
-          className="px-4 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-1"
+          className="px-4 py-2 border border-neutral-500 rounded-md focus:outline-none focus:ring-1"
           defaultValue={dictionary.components.richTextToolbar.paragraph}
           onChange={(e) => toggleBlock(editor as EditorType, e.target.value as ElementKey)}
         >

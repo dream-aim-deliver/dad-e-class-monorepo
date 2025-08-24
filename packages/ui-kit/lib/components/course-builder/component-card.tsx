@@ -14,7 +14,7 @@ export function ComponentCard({
             className="flex items-center gap-2 bg-base-neutral-800 border border-base-neutral-700 rounded-lg p-4 cursor-pointer"
             onClick={onClick}
         >
-            {icon}
+            <div className="flex items-center">{icon}</div>
             <span className="text-md text-text-primary">{name}</span>
         </div>
     );

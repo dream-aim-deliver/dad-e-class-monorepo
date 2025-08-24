@@ -30,7 +30,7 @@ export default function EditHeader({
     // TODO: Translate
     return (
         <div className="flex md:flex-row flex-col md:items-center justify-between gap-5">
-            <h1>Edit Lesson</h1>
+            <h1> Edit Course </h1>
             <div className="flex sm:flex-row flex-col sm:items-center gap-3">
                 <Button
                     variant="text"

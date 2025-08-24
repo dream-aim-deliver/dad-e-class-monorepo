@@ -87,13 +87,13 @@ function BuyCoachingSession({ offerings, onBuy, locale, currencyType }: BuyCoach
     }
 
     return (
-        <div className='min-auto border border-card-stroke rounded-medium bg-card-fill px-4 py-6 flex flex-col gap-6'>
+        <div className='min-auto border border-card-stroke rounded-medium bg-card-fill px-4 py-6 flex flex-col gap-4'>
             {/* Header */}
             <div className='flex flex-col gap-2'>
-                <h5 className='text-text-primary text-lg md:text-[1.5rem]'>
+                <h5 className="text-xl font-bold text-text-primary">
                     {dictionary.components.buyCoachingSession.title}
                 </h5>
-                <p className='text-text-secondary text-md md:text-xl leading-6 md:leading-[1.875rem]'>
+                <p className='text-text-secondary text-md md:text-lg'>
                     {dictionary.components.buyCoachingSession.description}
                 </p>
             </div>
@@ -103,7 +103,7 @@ function BuyCoachingSession({ offerings, onBuy, locale, currencyType }: BuyCoach
                 {offerings.map(offering => (
                     <div key={offering.id} className="flex justify-between items-center py-3 border-b border-divider">
                         <div className="flex flex-col gap-2">
-                            <h6 className="flex items-center gap-2 text-text-primary text-md md:text-lg">
+                            <h6 className="text-lg font-semibold text-text-primary">
                                 <Tooltip contentClassName='max-w-[200px]' text={offering.title} description={offering.content} />
                             </h6>
                             <div className='flex gap-2 items-center text-text-secondary'>

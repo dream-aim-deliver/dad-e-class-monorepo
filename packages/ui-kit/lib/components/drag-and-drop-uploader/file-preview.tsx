@@ -155,6 +155,8 @@ export const FilePreview = (props: FilePreviewProps) => {
         return <IconFile classNames="w-6 h-6 text-text-primary" />;
     };
 
+    // TODO: Translate uploadResponse
+
     return (
         <div
             className={cn(

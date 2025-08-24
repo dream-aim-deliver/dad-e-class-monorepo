@@ -121,7 +121,7 @@ export default function CategoryTopics({
             </Tabs.Content>
         );
     };
-
+    // TODO: Translate
     return (
         <Tabs.Root defaultTab="all" onValueChange={handleTabChange}>
             <Tabs.List>

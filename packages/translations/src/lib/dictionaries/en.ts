@@ -1044,7 +1044,7 @@ export const EN: TDictionary = {
       componentsTitle: 'Components',
       editCourseTitle: 'Edit Course',
       generalTab: 'General',
-      introOutlineTab: 'Intro Outline',
+      introOutlineTab: 'Intro & Outline',
       courseContent: 'Course Content',
       confirmSwitch: 'You have unsaved changes. Are you sure you want to switch tabs?',
       tabSwitchCancelled: 'Tab switch cancelled due to unsaved changes.',

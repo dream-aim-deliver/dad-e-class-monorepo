@@ -13,5 +13,9 @@ export default function Page({
     reset: () => void;
 }) {
     const locale = useLocale() as TLocale;
-    return <DefaultError locale={locale} onRetry={reset} />;
+    return (
+        <div className='px-15'>
+            <DefaultError locale={locale} onRetry={reset} />{' '}
+        </div>
+    );
 }
