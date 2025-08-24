@@ -1,6 +1,6 @@
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { AssignmentBuilderView } from "../assignment-course-builder/assignment-builder-view";
-import { AssignmentBuilderViewTypes, CreateAssignmentBuilderViewTypes } from "../course-builder-lesson-component/types";
+import { AssignmentBuilderViewTypes, CreateAssignmentBuilderViewTypes, TempAssignmentElement } from "../course-builder-lesson-component/types";
 import { CreateAssignmentBuilderView } from "../assignment-course-builder/create-assignment-builder-view";
 import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
 import DesignerLayout from "../designer-layout";
@@ -26,7 +26,8 @@ const assignmentElement: CourseElementTemplate = {
         label: "Assignment"
     },
     designerComponent: DesignerComponent,
-    formComponent: formComponent,
+    // @ts-ignore
+    formComponent: FormComponent,
 };
 
 /**
@@ -53,7 +54,7 @@ const assignmentElement: CourseElementTemplate = {
  * />
  */
 
-function DesignerComponent({
+export function DesignerComponent({
     elementInstance,
     onUpClick,
     onDownClick,
@@ -97,11 +98,17 @@ function DesignerComponent({
  * {formComponent({ elementInstance, locale: "en" })}
  */
 
-function formComponent({ elementInstance, locale }: FormComponentProps) {
+interface AssignmentFormProps extends FormComponentProps{
+    onFileDownload: (fileId: string) => void;
+}
+
+export function FormComponent({ elementInstance, locale, onFileDownload }: AssignmentFormProps) {
+    if (elementInstance.type !== CourseElementType.Assignment) return null;
     return (
         <AssignmentBuilderView
-            {...(elementInstance as AssignmentBuilderViewTypes)}
+            elementInstance={elementInstance as unknown as TempAssignmentElement}
             locale={locale}
+            onFileDownload={onFileDownload}
         />
     );
 };

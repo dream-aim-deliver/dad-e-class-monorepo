@@ -21,6 +21,7 @@ import {
     LinksElement,
     CoachingSessionElement,
     CourseElementType,
+    TempAssignmentElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
 
@@ -355,6 +356,24 @@ function transformCoachingSession(
     };
 }
 
+function transformAssignment(
+    component: Extract<useCaseModels.TLessonComponent, { type: 'assignment' }>,
+): TempAssignmentElement {
+    return {
+        type: LessonElementType.Assignment,
+        id: component.id,
+        title: component.title,
+        description: component.description,
+        files: component.resources.map((file) => ({
+            ...file,
+            status: 'available',
+            category: 'generic',
+            url: file.downloadUrl,
+        })),
+        links: component.links,
+    };
+}
+
 const transformers = {
     richText: transformRichText,
     heading: transformHeading,
@@ -373,7 +392,7 @@ const transformers = {
     quizTypeFour: transformQuizTypeFour,
     links: transformLinks,
     coachingSession: transformCoachingSession,
-    assignment: undefined,
+    assignment: transformAssignment,
 } as const;
 
 export function getLessonComponentsMap(

@@ -104,6 +104,14 @@ export interface UploadFilesElement extends BaseCourseFormElement {
     userComment?: string;
 }
 
+export interface TempAssignmentElement extends BaseCourseFormElement {
+    type: CourseElementType.Assignment;
+    title: string;
+    description: string;
+    files: fileMetadata.TFileMetadata[] | null;
+    links: shared.TLink[];
+}
+
 export interface CreateAssignmentBuilderViewTypes extends isLocalAware, BaseCourseFormElement {
     type: CourseElementType.Assignment;
     order: number;
