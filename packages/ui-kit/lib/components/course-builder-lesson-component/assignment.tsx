@@ -1,8 +1,6 @@
 import { getDictionary } from '@maany_shr/e-class-translations';
 import { AssignmentBuilderView } from '../assignment-course-builder/assignment-builder-view';
-import {
-    TempAssignmentElement,
-} from '../course-builder-lesson-component/types';
+import { AssignmentElement } from '../course-builder-lesson-component/types';
 import {
     CreateAssignmentBuilderView,
     CreateAssignmentProps,
@@ -16,6 +14,7 @@ import {
 import DesignerLayout from '../designer-layout';
 import { IconAssignment } from '../icons';
 import { ElementValidator } from '../lesson/types';
+import DefaultError from '../default-error';
 
 /**
  * Course element template definition for a Coaching Session.
@@ -50,11 +49,14 @@ export const getValidationError: ElementValidator = (props) => {
 
     // TODO: translate
     if (!elementInstance.title || elementInstance.title.trim().length === 0) {
-        return "Please enter a title";
+        return 'Please enter a title';
     }
 
-    if (!elementInstance.description || elementInstance.description.trim().length === 0) {
-        return "Please enter a description";
+    if (
+        !elementInstance.description ||
+        elementInstance.description.trim().length === 0
+    ) {
+        return 'Please enter a description';
     }
 
     return undefined;
@@ -116,7 +118,7 @@ export function DesignerComponent({
             validationError={validationError}
         >
             <CreateAssignmentBuilderView
-                elementInstance={elementInstance as TempAssignmentElement}
+                elementInstance={elementInstance as AssignmentElement}
                 locale={locale}
                 {...props}
             />
@@ -149,11 +151,23 @@ export function FormComponent({
     onFileDownload,
 }: AssignmentFormProps) {
     if (elementInstance.type !== CourseElementType.Assignment) return null;
+
+    const dictionary = getDictionary(locale);
+
+    const validationError = getValidationError({ elementInstance, dictionary });
+    if (validationError) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={dictionary.components.lessons.elementValidationText}
+                description={validationError}
+            />
+        );
+    }
+
     return (
         <AssignmentBuilderView
-            elementInstance={
-                elementInstance as unknown as TempAssignmentElement
-            }
+            elementInstance={elementInstance as unknown as AssignmentElement}
             locale={locale}
             onFileDownload={onFileDownload}
         />

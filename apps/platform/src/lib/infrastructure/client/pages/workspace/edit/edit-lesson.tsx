@@ -30,6 +30,9 @@ import {
     DefaultError,
     validatorPerType,
     LinksElement,
+    CoachingSessionElement,
+    IconAssignment,
+    AssignmentElement,
 } from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
 import EditLayout from './components/edit-layout';
@@ -311,7 +314,26 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
             icon: <IconCoachingSession />,
             label: editLessonsTranslations('coachingSession'),
             onClick: () => {
-                // TODO: Implement coaching session component
+                const newComponent: CoachingSessionElement = {
+                    id: generateTempId(),
+                    type: CourseElementType.CoachingSession,
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
+        },
+        {
+            icon: <IconAssignment />,
+            label: 'Assignment',
+            onClick: () => {
+                const newComponent: AssignmentElement = {
+                    id: generateTempId(),
+                    type: CourseElementType.Assignment,
+                    title: '',
+                    description: '',
+                    files: [],
+                    links: [],
+                };
+                setComponents((prev) => [...prev, newComponent]);
             },
         },
     ];

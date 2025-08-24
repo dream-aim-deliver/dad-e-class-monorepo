@@ -21,7 +21,7 @@ import {
     LinksElement,
     CoachingSessionElement,
     CourseElementType,
-    TempAssignmentElement,
+    AssignmentElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TAnswer } from 'packages/models/src/usecase-models';
 
@@ -358,7 +358,7 @@ function transformCoachingSession(
 
 function transformAssignment(
     component: Extract<useCaseModels.TLessonComponent, { type: 'assignment' }>,
-): TempAssignmentElement {
+): AssignmentElement {
     return {
         type: LessonElementType.Assignment,
         id: component.id,

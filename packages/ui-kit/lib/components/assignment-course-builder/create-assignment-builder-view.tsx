@@ -6,7 +6,7 @@ import Tooltip from '../tooltip';
 import { IconCloudUpload } from '../icons/icon-cloud-upload';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 import {
-    TempAssignmentElement,
+    AssignmentElement,
 } from '../course-builder-lesson-component/types';
 import { LinkEdit, LinkPreview } from '../links';
 import { IconPlus } from '../icons/icon-plus';
@@ -67,8 +67,8 @@ import { fileMetadata, shared } from '@maany_shr/e-class-models';
  */
 
 export interface CreateAssignmentProps extends isLocalAware {
-    elementInstance: TempAssignmentElement;
-    onChange: (newAssignment: TempAssignmentElement) => void;
+    elementInstance: AssignmentElement;
+    onChange: (newAssignment: AssignmentElement) => void;
     onFilesChange: (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,

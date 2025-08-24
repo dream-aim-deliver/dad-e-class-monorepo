@@ -33,7 +33,7 @@ import {
     UploadFilesFormComponent,
     VideoFormComponent,
     AssignmentFormComponent,
-    TempAssignmentElement,
+    AssignmentElement,
     CourseElementType,
     downloadFile,
 } from '@maany_shr/e-class-ui-kit';
@@ -413,7 +413,7 @@ function AssignmentComponent({
     key,
     locale,
 }: ComponentRendererProps) {
-    const element = formElement as TempAssignmentElement;
+    const element = formElement as AssignmentElement;
     return (
         <AssignmentFormComponent
             key={key}
@@ -422,7 +422,7 @@ function AssignmentComponent({
                 if (!file) return;
                 downloadFile(file.url, file.name);
             }}
-            elementInstance={formElement as TempAssignmentElement}
+            elementInstance={formElement as AssignmentElement}
             locale={locale}
         />
     );
