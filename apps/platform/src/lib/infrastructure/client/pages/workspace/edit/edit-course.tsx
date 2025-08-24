@@ -22,6 +22,7 @@ import { useCourseImageUpload } from '../../common/hooks/use-course-image-upload
 
 interface EditCourseProps {
     slug: string;
+    defaultTab?: string;
 }
 
 enum TabTypes {
@@ -30,7 +31,7 @@ enum TabTypes {
     CourseContent = 'course-content',
 }
 
-export default function EditCourse({ slug }: EditCourseProps) {
+export default function EditCourse({ slug, defaultTab }: EditCourseProps) {
     const locale = useLocale() as TLocale;
 
     const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery(
@@ -60,15 +61,30 @@ export default function EditCourse({ slug }: EditCourseProps) {
         return <DefaultError locale={locale} />;
     }
 
-    return <EditCourseContent slug={slug} course={courseViewModel.data} />;
+    return (
+        <EditCourseContent
+            slug={slug}
+            course={courseViewModel.data}
+            defaultTab={
+                Object.values(TabTypes).includes(defaultTab as TabTypes)
+                    ? (defaultTab as TabTypes)
+                    : TabTypes.General
+            }
+        />
+    );
 }
 
 interface EditCourseContentProps {
     slug: string;
     course: viewModels.TEnrolledCourseDetailsSuccess;
+    defaultTab: TabTypes;
 }
 
-function EditCourseContent({ slug, course }: EditCourseContentProps) {
+function EditCourseContent({
+    slug,
+    course,
+    defaultTab,
+}: EditCourseContentProps) {
     const locale = useLocale() as TLocale;
     const {
         activeTab,
@@ -80,7 +96,7 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
         handleTabChange,
         handlePreview,
         editWrap,
-    } = useEditCourseState();
+    } = useEditCourseState(defaultTab);
 
     const { courseVersion, setCourseVersion, errorMessage, setErrorMessage } =
         useCourseVersionState(course.courseVersion);
@@ -136,6 +152,7 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
             activeTab={activeTab}
             errorMessage={errorMessage}
             locale={locale}
+            defaultTab={defaultTab}
         >
             <EditCourseTabContent
                 course={course}
@@ -156,9 +173,9 @@ function EditCourseContent({ slug, course }: EditCourseContentProps) {
     );
 }
 
-function useEditCourseState() {
+function useEditCourseState(defaultTab: TabTypes) {
     const [isEdited, setIsEdited] = useState(false);
-    const [activeTab, setActiveTab] = useState<TabTypes>(TabTypes.General);
+    const [activeTab, setActiveTab] = useState<TabTypes>(defaultTab);
     const [isPreviewing, setIsPreviewing] = useState(false);
 
     const editWrap = <T extends Array<any>, U>(fn: (...args: T) => U) => {
@@ -298,6 +315,7 @@ function useCourseDetailsState({
 }
 
 interface EditCourseLayoutProps {
+    defaultTab: TabTypes;
     onPreview: () => void;
     onSave: () => Promise<void>;
     onTabChange: (value: string) => void;
@@ -320,6 +338,7 @@ function EditCourseLayout({
     errorMessage,
     locale,
     children,
+    defaultTab,
 }: EditCourseLayoutProps) {
     const tabContentClass = 'mt-5';
     const editCourseTranslations = useTranslations('pages.editCourse');
@@ -334,10 +353,7 @@ function EditCourseLayout({
                 isSaving={isSaving}
                 isPreviewing={isPreviewing}
             />
-            <Tabs.Root
-                defaultTab={TabTypes.General}
-                onValueChange={onTabChange}
-            >
+            <Tabs.Root defaultTab={defaultTab} onValueChange={onTabChange}>
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
                     <Tabs.Trigger
                         value={TabTypes.General}
