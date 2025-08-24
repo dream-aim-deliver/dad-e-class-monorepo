@@ -46,6 +46,15 @@ async function createServerHeaders(): Promise<Record<string, string>> {
         console.warn('Failed to get locale for server-side TRPC:', error);
     }
 
+    // Add platform header
+    try {
+        const platformName = process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
+        if (platformName) {
+            headers['x-eclass-runtime'] = "dev";
+        }
+    } catch (error) {
+        console.warn('Failed to get platform name for server-side TRPC:', error);
+    }
     return headers;
 }
 
@@ -61,7 +70,7 @@ const client = createTRPCClient<TAppRouter>({
     ],
 });
 
-export const trpc = createTRPCOptionsProxy({
+export const trpc: ReturnType<typeof createTRPCOptionsProxy<TAppRouter>> = createTRPCOptionsProxy({
     client: client,
     queryClient: getQueryClient,
 });
