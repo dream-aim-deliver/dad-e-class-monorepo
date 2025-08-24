@@ -187,6 +187,12 @@ function useEditCourseState(defaultTab: TabTypes) {
 
     const editCourseTranslations = useTranslations('pages.editCourse');
 
+    const updateTabParameter = (newTabValue: string) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('tab', newTabValue);
+        window.history.pushState({}, '', url.toString());
+    }
+
     const handleTabChange = (value: string) => {
         if (isEdited) {
             const confirmSwitch = confirm(
@@ -198,6 +204,7 @@ function useEditCourseState(defaultTab: TabTypes) {
         }
         setIsEdited(false);
         setActiveTab(value as TabTypes);
+        updateTabParameter(value);
     };
 
     const handlePreview = () => {
