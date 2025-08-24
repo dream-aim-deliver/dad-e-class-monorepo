@@ -1,13 +1,16 @@
-import { FC } from "react";
-import { TextInput } from "../text-input";
-import { getDictionary } from "@maany_shr/e-class-translations";
-import { TextAreaInput } from "../text-areaInput";
-import Tooltip from "../tooltip";
-import { IconCloudUpload } from "../icons/icon-cloud-upload";
-import { Uploader } from "../drag-and-drop-uploader/uploader";
-import { CreateAssignmentBuilderViewTypes } from "../course-builder-lesson-component/types";
-import { LinkEdit, LinkPreview } from "../links";
-import { IconPlus } from "../icons/icon-plus";
+import { FC } from 'react';
+import { TextInput } from '../text-input';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import { TextAreaInput } from '../text-areaInput';
+import Tooltip from '../tooltip';
+import { IconCloudUpload } from '../icons/icon-cloud-upload';
+import { Uploader } from '../drag-and-drop-uploader/uploader';
+import {
+    TempAssignmentElement,
+} from '../course-builder-lesson-component/types';
+import { LinkEdit, LinkPreview } from '../links';
+import { IconPlus } from '../icons/icon-plus';
+import { fileMetadata, shared } from '@maany_shr/e-class-models';
 
 /**
  * Component for building or editing an assignment in a course builder interface.
@@ -63,11 +66,31 @@ import { IconPlus } from "../icons/icon-plus";
  * />
  */
 
-export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> = ({
-    type,
-    id,
-    order,
-    assignmentData,
+export interface CreateAssignmentProps extends isLocalAware {
+    elementInstance: TempAssignmentElement;
+    onChange: (newAssignment: TempAssignmentElement) => void;
+    onFilesChange: (
+        file: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    onImageChange: (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => Promise<fileMetadata.TFileMetadata>;
+    onDeleteIcon: (index: number) => void;
+    onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
+    onFileDelete: (id: string) => void;
+    onFileDownload: (id: string) => void;
+    onLinkDelete: (index: number) => void;
+    onLinkEdit: (data: shared.TLink, index: number) => void;
+    onLinkDiscard: () => void;
+    linkEditIndex: number | null;
+    onClickEditLink: (index: number) => void;
+    onClickAddLink: () => void;
+}
+
+export const CreateAssignmentBuilderView: FC<CreateAssignmentProps> = ({
+    elementInstance,
     onChange,
     onFilesChange,
     onUploadComplete,
@@ -76,6 +99,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
     onLinkDelete,
     onLinkEdit,
     onClickAddLink,
+    onLinkDiscard,
     onImageChange,
     onDeleteIcon,
     locale,
@@ -85,22 +109,33 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
     const dictionary = getDictionary(locale);
 
     const handleTitleChange = (newTitle: string) =>
-        onChange({ type, id, order, assignmentData: { ...assignmentData, title: newTitle } });
+        onChange({
+            ...elementInstance,
+            title: newTitle,
+        });
 
     const handleDescriptionChange = (newDescription: string) =>
-        onChange({ type, id, order, assignmentData: { ...assignmentData, description: newDescription } });
+        onChange({
+            ...elementInstance,
+            description: newDescription,
+        });
 
     return (
         <div className="flex flex-col gap-4 items-start w-full">
             <div className="w-full">
                 <TextInput
-                    label={dictionary.components.assignment.assignmentBuilder.assignmentTitleText}
+                    label={
+                        dictionary.components.assignment.assignmentBuilder
+                            .assignmentTitleText
+                    }
                     inputField={{
                         id: 'assignment-title',
-                        className: "w-full",
-                        value: assignmentData.title,
+                        className: 'w-full',
+                        value: elementInstance.title,
                         setValue: handleTitleChange,
-                        inputText: dictionary.components.assignment.assignmentBuilder.titlePlaceholderText,
+                        inputText:
+                            dictionary.components.assignment.assignmentBuilder
+                                .titlePlaceholderText,
                     }}
                 />
             </div>
@@ -108,18 +143,27 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
             <div className="flex flex-col items-start gap-2 w-full">
                 <div className="flex gap-1 items-center">
                     <p className="text-sm text-text-secondary leading-[100%]">
-                        {dictionary.components.assignment.assignmentBuilder.assignmentDescriptionText}
+                        {
+                            dictionary.components.assignment.assignmentBuilder
+                                .assignmentDescriptionText
+                        }
                     </p>
                     <Tooltip
-                        text=''
-                        description={dictionary.components.assignment.assignmentBuilder.descriptionPlaceholderText}
+                        text=""
+                        description={
+                            dictionary.components.assignment.assignmentBuilder
+                                .descriptionPlaceholderText
+                        }
                     />
                 </div>
                 <div className="w-full">
                     <TextAreaInput
-                        value={assignmentData.description as string}
+                        value={elementInstance.description as string}
                         setValue={handleDescriptionChange}
-                        placeholder={dictionary.components.assignment.assignmentBuilder.descriptionPlaceholderText}
+                        placeholder={
+                            dictionary.components.assignment.assignmentBuilder
+                                .descriptionPlaceholderText
+                        }
                     />
                 </div>
             </div>
@@ -128,14 +172,17 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                 <div className="flex gap-1 items-start pb-2 border-b-1 border-divider w-full">
                     <IconCloudUpload classNames="text-text-primary" />
                     <p className="text-sm text-text-primary font-bold leading-[150%]">
-                        {dictionary.components.assignment.assignmentBuilder.addResourcesText}
+                        {
+                            dictionary.components.assignment.assignmentBuilder
+                                .addResourcesText
+                        }
                     </p>
                 </div>
 
                 <Uploader
                     type="multiple"
                     variant="generic"
-                    files={assignmentData.files ?? []}
+                    files={elementInstance.files ?? []}
                     maxFile={5}
                     onFilesChange={onFilesChange}
                     onDelete={onFileDelete}
@@ -147,7 +194,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                 />
 
                 <div className="flex flex-col items-center justify-center gap-[10px] w-full">
-                    {assignmentData.links?.map((link, index) =>
+                    {elementInstance.links?.map((link, index) =>
                         linkEditIndex === index ? (
                             <div className="flex flex-col w-full" key={index}>
                                 <LinkEdit
@@ -155,10 +202,17 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                                     initialTitle={link.title}
                                     initialUrl={link.url}
                                     initialCustomIcon={link.customIcon}
-                                    onSave={(title, url, customIcon) => onLinkEdit({ title, url, customIcon }, index)}
-                                    onDiscard={() => link.linkId && onLinkDelete(link.linkId)}
-                                    onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
-                                    onDeleteIcon={onDeleteIcon}
+                                    onSave={(title, url, customIcon) =>
+                                        onLinkEdit(
+                                            { title, url, customIcon },
+                                            index,
+                                        )
+                                    }
+                                    onDiscard={() => onLinkDiscard()}
+                                    onImageChange={(image, abortSignal) =>
+                                        onImageChange(image, abortSignal)
+                                    }
+                                    onDeleteIcon={() => onDeleteIcon(index)}
                                 />
                             </div>
                         ) : (
@@ -169,10 +223,10 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                                     url={link.url as string}
                                     customIcon={link.customIcon}
                                     onEdit={() => onClickEditLink(index)}
-                                    onDelete={() => link.linkId && onLinkDelete(link.linkId)}
+                                    onDelete={() => onLinkDelete(index)}
                                 />
                             </div>
-                        )
+                        ),
                     )}
                     <div className="flex items-center mt-4 w-full">
                         <div className="flex-grow border-t border-divider"></div>
@@ -182,7 +236,10 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentBuilderViewTypes> =
                         >
                             <IconPlus />
                             <span>
-                                {dictionary.components.assignment.replyPanel.addLinkText}
+                                {
+                                    dictionary.components.assignment.replyPanel
+                                        .addLinkText
+                                }
                             </span>
                         </span>
                         <div className="flex-grow border-t border-divider"></div>

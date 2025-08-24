@@ -153,6 +153,7 @@ export { DesignerComponent as OneOutOfThreeDesignerComponent } from './component
 export { DesignerComponent as QuizDesignerComponent } from './components/course-builder-lesson-component/quiz';
 export { DesignerComponent as LinksDesignerComponent } from './components/course-builder-lesson-component/links';
 export { DesignerComponent as CoachingSessionDesignerComponent } from './components/course-builder-lesson-component/coaching-session';
+export { DesignerComponent as AssignmentDesignerComponent } from './components/course-builder-lesson-component/assignment';
 
 export { type OneOutOfThreeData } from './components/out-of-three/one-out-of-three';
 export { validatorPerType } from './components/lesson/validators';

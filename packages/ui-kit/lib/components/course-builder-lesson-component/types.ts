@@ -112,38 +112,6 @@ export interface TempAssignmentElement extends BaseCourseFormElement {
     links: shared.TLink[];
 }
 
-export interface CreateAssignmentBuilderViewTypes extends isLocalAware, BaseCourseFormElement {
-    type: CourseElementType.Assignment;
-    order: number;
-    assignmentData: assignment.TAssignmentBaseWithId;
-    onChange: (updatedData: {
-        type: CourseElementType.Assignment;
-        id: string;
-        order: number;
-        assignmentData: assignment.TAssignmentBaseWithId;
-    }) => void;
-    onFilesChange: (file: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
-    onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
-    onDeleteIcon: (id: string) => void;
-    onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
-    onFileDelete: (id: string) => void;
-    onFileDownload: (id: string) => void;
-    onLinkDelete: (linkId: number) => void;
-    onLinkEdit: (data: shared.TLink, id: number) => void;
-    linkEditIndex: number | null;
-    onClickEditLink: (index: number) => void;
-    onClickAddLink: () => void;
-};
-
-export interface AssignmentBuilderViewTypes extends isLocalAware, BaseCourseFormElement {
-    type: CourseElementType.Assignment;
-    assignmentData: assignment.TAssignmentBaseWithId;
-    onFileDownload: (id: string) => void;
-    onFileCancel: (id: string) => void;
-    onFileDelete: (id: string) => void;
-};
-
-
 export type CoachingElement = CoachingSessionElement;
 
 export interface ImageElement extends BaseCourseFormElement {
@@ -161,6 +129,3 @@ export interface ImageGallery extends BaseCourseFormElement {
     type: CourseElementType.ImageGallery;
     images: ImageFileMetadata[] | null;
 }
-
-
-export type AssignmentElement = CreateAssignmentBuilderViewTypes | AssignmentBuilderViewTypes;
