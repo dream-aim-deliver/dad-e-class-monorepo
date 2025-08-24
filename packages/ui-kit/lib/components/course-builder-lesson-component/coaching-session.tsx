@@ -2,8 +2,7 @@ import { getDictionary } from "@maany_shr/e-class-translations";
 import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
 import { IconCoachingSession } from "../icons/icon-coaching-session";
 import { CoachingSessionBuilderView } from "../coaching-session-course-builder/coaching-session-builder-view";
-import { CoachingSessionStudentViewTypes, CoachingSessionTypes } from "./types";
-import { CoachingSessionStudentView } from "../coaching-session-course-builder/coaching-session-student-view";
+import { CoachingSession } from "./types";
 import DesignerLayout from "../designer-layout";
 
 /**
@@ -53,13 +52,21 @@ const coachingSessionElement: CourseElementTemplate = {
  * />
  */
 
-function DesignerComponent({
+interface CoachingSessionDesignerComponentProps extends DesignerComponentProps {
+    coachingSessionTypes: CoachingSession[];
+    onSessionChange: (session: CoachingSession) => void;
+}
+
+export function DesignerComponent({
     elementInstance,
+    coachingSessionTypes,
+    onSessionChange,
     onUpClick,
     onDownClick,
     onDeleteClick,
     locale,
-}: DesignerComponentProps) {
+    validationError,
+}: CoachingSessionDesignerComponentProps) {
     if (elementInstance.type !== CourseElementType.CoachingSession) return null;
     const dictionary = getDictionary(locale);
     return (
@@ -73,9 +80,12 @@ function DesignerComponent({
             onDeleteClick={() => onDeleteClick?.(elementInstance.id)}
             locale={locale}
             courseBuilder={true}
+            validationError={validationError}
         >
             <CoachingSessionBuilderView
-                {...(elementInstance as CoachingSessionTypes)}
+                selectedSession={elementInstance.coachingSession}
+                onSessionChange={onSessionChange}
+                coachingSessionTypes={coachingSessionTypes}
                 locale={locale}
             />
         </DesignerLayout>

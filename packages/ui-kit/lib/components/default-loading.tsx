@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 interface DefaultLoadingProps {
     locale: TLocale;
-    variant: 'minimal' | 'card' | 'overlay';
+    variant?: 'minimal' | 'card' | 'overlay';
 }
 
 /**
@@ -55,7 +55,7 @@ interface DefaultLoadingProps {
  */
 export default function DefaultLoading({
     locale,
-    variant
+    variant = 'minimal'
 }: DefaultLoadingProps) {
     const dictionary = getDictionary(locale).components.defaultLoading;
     const [mounted, setMounted] = useState(false);

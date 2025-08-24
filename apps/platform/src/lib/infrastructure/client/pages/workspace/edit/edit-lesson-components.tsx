@@ -28,12 +28,16 @@ import {
     VideoElement,
     LinksDesignerComponent,
     LinksElement,
+    CoachingSessionDesignerComponent,
+    CoachingSessionElement,
+    DefaultLoading,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { trpc } from '../../../trpc/client';
-import { fileMetadata, shared } from '@maany_shr/e-class-models';
+import { fileMetadata, shared, viewModels } from '@maany_shr/e-class-models';
 import { generateTempId } from './utils/generate-temp-id';
+import { useListCoachingOfferingsPresenter } from '../../../hooks/use-coaching-offerings-presenter';
 
 interface FileUploadProps {
     lessonId: number;
@@ -1493,6 +1497,64 @@ function LinksComponent({
     );
 }
 
+function CoachingSessionComponent({
+    elementInstance,
+    locale,
+    setComponents,
+    onUpClick,
+    onDownClick,
+    onDeleteClick,
+    validationError,
+}: LessonComponentProps) {
+    const [coachingOfferingsResponse] =
+        trpc.listCoachingOfferings.useSuspenseQuery({});
+    const [coachingOfferingsViewModel, setCoachingOfferingsViewModel] =
+        useState<viewModels.TCoachingOfferingListViewModel | undefined>(
+            undefined,
+        );
+    const { presenter } = useListCoachingOfferingsPresenter(
+        setCoachingOfferingsViewModel,
+    );
+    presenter.present(coachingOfferingsResponse, coachingOfferingsViewModel);
+
+    if (!coachingOfferingsViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (coachingOfferingsViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
+
+    return (
+        <CoachingSessionDesignerComponent
+            key={elementInstance.id}
+            elementInstance={elementInstance as CoachingSessionElement}
+            locale={locale}
+            onUpClick={onUpClick}
+            onDownClick={onDownClick}
+            onDeleteClick={onDeleteClick}
+            onSessionChange={(session) => {
+                setComponents((prevComponents) =>
+                    prevComponents.map((component) => {
+                        if (component.id !== elementInstance.id) {
+                            return component;
+                        }
+                        return { ...component, coachingSession: session };
+                    }),
+                );
+            }}
+            coachingSessionTypes={coachingOfferingsViewModel.data.offerings.map(
+                (offering) => ({
+                    id: offering.id as number,
+                    name: offering.name,
+                    duration: offering.duration,
+                }),
+            )}
+            validationError={validationError}
+        />
+    );
+}
+
 const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [FormElementType.RichText]: RichTextComponent,
     [FormElementType.HeadingText]: HeadingComponent,
@@ -1510,6 +1572,7 @@ const typeToRendererMap: Record<any, React.FC<LessonComponentProps>> = {
     [CourseElementType.QuizTypeThree]: QuizTypeThreeComponent,
     [CourseElementType.QuizTypeFour]: QuizTypeFourComponent,
     [CourseElementType.Links]: LinksComponent,
+    [CourseElementType.CoachingSession]: CoachingSessionComponent,
     // Add other mappings as needed
 };
 

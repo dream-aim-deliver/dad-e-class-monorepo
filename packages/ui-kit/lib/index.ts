@@ -151,6 +151,7 @@ export { DesignerComponent as MultiCheckDesignerComponent } from './components/l
 export { DesignerComponent as OneOutOfThreeDesignerComponent } from './components/lesson-components/one-out-of-three';
 export { DesignerComponent as QuizDesignerComponent } from './components/course-builder-lesson-component/quiz';
 export { DesignerComponent as LinksDesignerComponent } from './components/course-builder-lesson-component/links';
+export { DesignerComponent as CoachingSessionDesignerComponent } from './components/course-builder-lesson-component/coaching-session';
 
 export { type OneOutOfThreeData } from './components/out-of-three/one-out-of-three';
 export { validatorPerType } from './components/lesson/validators';
