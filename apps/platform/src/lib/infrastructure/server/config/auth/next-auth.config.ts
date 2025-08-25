@@ -1,5 +1,7 @@
 import { NextAuthResult } from 'next-auth';
 import { generateNextAuthConfig } from '@maany_shr/e-class-auth';
+import { getTRPCUrl } from '../../../common/utils/get-cms-query-client';
+import { getLocale } from 'next-intl/server';
 
 const auth0ClientID = process.env.AUTH_AUTH0_CLIENT_ID;
 const auth0ClientSecret = process.env.AUTH_AUTH0_CLIENT_SECRET;
@@ -34,5 +36,25 @@ const nextAuth: NextAuthResult = generateNextAuthConfig({
         error: '/en/auth/error', // TODO: Localization should be handled in middleware. See middleware.ts
     },
     useTestAccounts: useTestAccounts,
+    trpc: {
+        getTrpcUrl: () => getTRPCUrl(),
+        getPlatformHeaders: () => {
+            const headers: Record<string, string> = {};
+            // Add platform header
+            if (process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME) {
+                headers['x-eclass-runtime'] = process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
+            }
+            return headers;
+        },
+        getLocale: async () => {
+            try {
+                const locale = await getLocale();
+                return locale;
+            } catch (error) {
+                console.warn('Failed to get locale in auth:', error);
+                return undefined;
+            }
+        }
+    }
 });
 export default nextAuth;
