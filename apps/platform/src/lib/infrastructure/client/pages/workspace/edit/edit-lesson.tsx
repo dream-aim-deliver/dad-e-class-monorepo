@@ -33,6 +33,7 @@ import {
     CoachingSessionElement,
     IconAssignment,
     AssignmentElement,
+    Breadcrumbs,
 } from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
 import EditLayout from './components/edit-layout';
@@ -373,9 +374,38 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     if (lessonComponentsViewModel.mode !== 'default') {
         return <DefaultError locale={locale} />;
     }
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
     return (
         <div className="flex flex-col gap-4 px-15">
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => {
+                            // TODO: Implement navigation to home
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('workspace'),
+                        onClick: () => {
+                            // TODO: Implement navigation to workspace
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('courses'),
+                        onClick: () => {
+                            // TODO: Implement navigation to courses
+                        },
+                    },
+                    {
+                        label: editLessonsTranslations('editLessonTitle'),
+                        onClick: () => {
+                            // Nothing should happen on clicking the current page
+                        },
+                    },
+                ]}
+            />
             <EditHeader
                 title={editLessonsTranslations('editLessonTitle')}
                 onPreview={() => {

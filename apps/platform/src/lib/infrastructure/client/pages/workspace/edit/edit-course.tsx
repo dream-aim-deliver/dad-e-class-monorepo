@@ -6,6 +6,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
 import {
     AccordionBuilderItem,
+    Breadcrumbs,
     CourseDetailsState,
     CourseIntroductionForm,
     DefaultError,
@@ -317,8 +318,38 @@ function EditCourseLayout({
 }: EditCourseLayoutProps) {
     const tabContentClass = 'mt-5';
     const editCourseTranslations = useTranslations('pages.editCourse');
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+
     return (
         <div className="flex flex-col gap-4 px-15">
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => {
+                            // TODO: Implement navigation to home
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('workspace'),
+                        onClick: () => {
+                            // TODO: Implement navigation to workspace
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('courses'),
+                        onClick: () => {
+                            // TODO: Implement navigation to courses
+                        },
+                    },
+                    {
+                        label: editCourseTranslations('editCourseTitle'),
+                        onClick: () => {
+                            // Nothing should happen on clicking the current page
+                        },
+                    },
+                ]}
+            />
             <EditHeader
                 title={editCourseTranslations('editCourseTitle')}
                 onPreview={onPreview}
