@@ -2,7 +2,7 @@ import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
-    UnhandledErrorResponse,
+    UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -34,11 +34,11 @@ export default class SaveCourseStructurePresenter extends BasePresenter<
             schemas: {
                 responseModel:
                     useCaseModels.SaveCourseStructureUseCaseResponseSchema,
-                viewModel: viewModels.SaveCourseStructureViewModelSchema,
+                viewModel: viewModels.SaveCourseStructureViewModelSchema
             },
             middleware: SaveCourseStructureResponseMiddleware,
             viewUtilities: viewUtilities,
-            setViewModel: setViewModel,
+            setViewModel: setViewModel
         });
     }
 
@@ -51,8 +51,8 @@ export default class SaveCourseStructurePresenter extends BasePresenter<
         return {
             mode: 'default',
             data: {
-                ...response.data,
-            },
+                ...response.data
+            }
         };
     }
 
@@ -67,38 +67,35 @@ export default class SaveCourseStructurePresenter extends BasePresenter<
             return {
                 mode: 'conflict',
                 data: {
-                    // @ts-expect-error The factory doesn't provide proper typing for custom errors
-                    type: response.data.errorType,
                     message: response.data.message,
                     operation: response.data.operation,
                     context: response.data.context,
-                    trace: undefined,
-                    // @ts-expect-error The factory doesn't provide proper typing for custom errors
-                    courseVersion: response.data.courseVersion,
-                },
+                    // @ts-ignore
+                    courseVersion: response.data.courseVersion
+                }
             };
         }
         if (response.data.errorType === 'ValidationError') {
             return {
                 mode: 'invalid',
                 data: {
-                    type: response.data.errorType,
+
                     message: response.data.message,
                     operation: response.data.operation,
-                    context: response.data.context,
-                    trace: undefined,
-                },
+                    context: response.data.context
+
+                }
             };
         }
         return {
             mode: 'kaboom',
             data: {
-                type: response.data.errorType,
+
                 message: response.data.message,
                 operation: response.data.operation,
-                context: response.data.context,
-                trace: undefined,
-            },
+                context: response.data.context
+
+            }
         };
     }
 }

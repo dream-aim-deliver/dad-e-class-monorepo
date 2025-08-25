@@ -239,7 +239,7 @@ export const CourseGeneralInformationView: FC<
                 </div>
 
                 {/* Created by */}
-                {author && (
+                {/* {author && (
                     <div className="flex flex-col gap-4">
                         <h5 className="text-text-primary">
                             {
@@ -279,7 +279,7 @@ export const CourseGeneralInformationView: FC<
                             </div>
                         </div>
                     </div>
-                )}
+                )} */}
 
                 {/* Enrolled Students */}
                 <div className="flex items-center">
