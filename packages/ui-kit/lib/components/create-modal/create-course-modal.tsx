@@ -128,12 +128,12 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
     const tabs = [
         {
             value: CreateCourseModalTab.CREATE_NEW,
-            label: dictionary.startFromScratch
+            label: dictionary.startFromScratch,
         },
         {
             value: CreateCourseModalTab.DUPLICATE,
-            label: dictionary.duplicateCourse
-        }
+            label: dictionary.duplicateCourse,
+        },
     ];
 
     return (
@@ -146,7 +146,18 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                     {dictionary.descriptionCourse}
                 </p>
             </div>
-            <Tabs.Root
+            <div className="flex justify-center items-center px-6 py-8 w-full rounded-medium bg-base-neutral-800 border-[1px] border-base-neutral-700">
+                <Button
+                    className="w-full"
+                    variant="primary"
+                    size="big"
+                    text={dictionary.createNewCourse}
+                    onClick={props.onCreateNew}
+                    hasIconLeft
+                    iconLeft={<IconPlus size="6" />}
+                />
+            </div>
+            {/* <Tabs.Root
                 defaultTab={CreateCourseModalTab.CREATE_NEW}
                 defaultValue={activeTab}
                 onValueChange={(value) =>
@@ -156,7 +167,7 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
             >
                 <TabList className="mb-4">
                     {tabs.map((tab, index) => (
-                        <TabTrigger 
+                        <TabTrigger
                             key={tab.value}
                             value={tab.value}
                             isLast={index === tabs.length - 1}
@@ -219,7 +230,7 @@ export default function CreateCourseModal(props: CreateCourseModalProps) {
                             )}
                     </div>
                 </TabContent>
-            </Tabs.Root>
+            </Tabs.Root> */}
 
             <Button
                 className="w-full"
