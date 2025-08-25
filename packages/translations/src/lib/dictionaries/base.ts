@@ -19,6 +19,12 @@ export const DictionarySchema = z.object({
       title: z.string(),
       description: z.string(),
       retry: z.string(),
+      goBack: z.string(),
+    }),
+    defaultComingSoon: z.object({
+      title: z.string(),
+      description: z.string(),
+      goBack: z.string(),
     }),
     coachBanner: z.object({
       buttonText: z.string(),

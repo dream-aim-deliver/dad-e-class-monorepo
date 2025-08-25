@@ -24,6 +24,12 @@ export const DE: TDictionary = {
       title: 'Nicht gefunden',
       description: 'Die angeforderte Ressource konnte nicht gefunden werden.',
       retry: 'Wiederholen',
+      goBack: 'Zurück',
+    },
+    defaultComingSoon: {
+      title: 'Bald verfügbar',
+      description: 'Diese Seite befindet sich derzeit im Aufbau. Wir arbeiten daran und sie wird bald verfügbar sein!',
+      goBack: 'Zurück',
     },
     coachBanner: {
       buttonText: 'Coach werden',
