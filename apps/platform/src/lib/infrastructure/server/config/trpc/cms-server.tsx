@@ -50,7 +50,7 @@ async function createServerHeaders(): Promise<Record<string, string>> {
     try {
         const platformName = process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
         if (platformName) {
-            headers['x-eclass-runtime'] = "dev";
+            headers['x-eclass-runtime'] = platformName;
         }
     } catch (error) {
         console.warn('Failed to get platform name for server-side TRPC:', error);
