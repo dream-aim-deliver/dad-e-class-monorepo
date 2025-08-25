@@ -11,7 +11,7 @@ export const OffersPageCarouselSuccessSchema = GetOffersPageCarouselSuccessRespo
 export type TOffersPageCarouselSuccess = z.infer<typeof OffersPageCarouselSuccessSchema>;
 
 const OffersPageCarouselDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", OffersPageCarouselSuccessSchema)
-const OffersPageCarouselKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+const OffersPageCarouselKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
 
 export const OffersPageCarouselViewModelSchemaMap = {
     default: OffersPageCarouselDefaultViewModelSchema,

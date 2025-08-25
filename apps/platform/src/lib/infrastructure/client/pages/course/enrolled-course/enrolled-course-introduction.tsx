@@ -36,59 +36,102 @@ function EnrolledCourseIntroductionContent(
         return <DefaultError locale={locale} />;
     }
 
+    const hasValidProgress = progressViewModel?.mode === 'default';
+    
     return (
         <div className="flex flex-col space-y-10">
-            <CourseGeneralInformationView
-                // These fields aren't utilized and are coming from a common model
-                title={''}
-                description={''}
-                showProgress={progressViewModel !== undefined}
-                language={{
-                    name: '',
-                    code: '',
-                }}
-                pricing={{
-                    fullPrice: 0,
-                    partialPrice: 0,
-                    currency: '',
-                }}
-                locale={locale}
-                longDescription={courseViewModel.data.description}
-                duration={{
-                    video: courseViewModel.data.duration.video ?? 0,
-                    coaching: courseViewModel.data.duration.coaching ?? 0,
-                    selfStudy: courseViewModel.data.duration.selfStudy ?? 0,
-                }}
-                rating={courseViewModel.data.author.averageRating}
-                author={{
-                    name:
-                        courseViewModel.data.author.name +
-                        ' ' +
-                        courseViewModel.data.author.surname,
-                    image: courseViewModel.data.author.avatarUrl ?? '',
-                }}
-                progress={progressViewModel?.data.progressPercent}
-                imageUrl={courseViewModel.data.imageFile?.downloadUrl ?? ''}
-                students={courseViewModel.data.students.map((student) => ({
-                    name: student.name,
-                    avatarUrl: student.avatarUrl ?? '',
-                }))}
-                totalStudentCount={courseViewModel.data.studentCount}
-                onClickAuthor={() => {
-                    router.push(
-                        `/coaches/${courseViewModel.data.author.username}`,
-                    );
-                }}
-                onClickResume={() => {
-                    tabContext.setActiveTab(StudentCourseTab.STUDY);
-                }}
-                onClickReview={() => {
-                    // TODO: add a callback
-                    console.log(
-                        'This would trigger a popup to review the course',
-                    );
-                }}
-            />
+            {hasValidProgress ? (
+                <CourseGeneralInformationView
+                    // These fields aren't utilized and are coming from a common model
+                    title={''}
+                    description={''}
+                    showProgress={true}
+                    language={{
+                        name: '',
+                        code: '',
+                    }}
+                    pricing={{
+                        fullPrice: 0,
+                        partialPrice: 0,
+                        currency: '',
+                    }}
+                    locale={locale}
+                    longDescription={courseViewModel.data.description}
+                    duration={{
+                        video: courseViewModel.data.duration.video ?? 0,
+                        coaching: courseViewModel.data.duration.coaching ?? 0,
+                        selfStudy: courseViewModel.data.duration.selfStudy ?? 0,
+                    }}
+                    rating={courseViewModel.data.author.averageRating}
+                    author={{
+                        name:
+                            courseViewModel.data.author.name +
+                            ' ' +
+                            courseViewModel.data.author.surname,
+                        image: courseViewModel.data.author.avatarUrl ?? '',
+                    }}
+                    progress={progressViewModel.data.progressPercent}
+                    imageUrl={courseViewModel.data.imageFile?.downloadUrl ?? ''}
+                    students={courseViewModel.data.students.map((student) => ({
+                        name: student.name,
+                        avatarUrl: student.avatarUrl ?? '',
+                    }))}
+                    totalStudentCount={courseViewModel.data.studentCount}
+                    onClickResume={() => {
+                        tabContext?.setActiveTab(StudentCourseTab.STUDY);
+                    }}
+                    onClickReview={() => {
+                        // TODO: Implement review functionality
+                    }}
+                    onClickAuthor={() => {
+                        router.push(
+                            `/coaches/${courseViewModel.data.author.username}`,
+                        );
+                    }}
+                />
+            ) : (
+                <CourseGeneralInformationView
+                    // These fields aren't utilized and are coming from a common model
+                    title={''}
+                    description={''}
+                    showProgress={false}
+                    language={{
+                        name: '',
+                        code: '',
+                    }}
+                    pricing={{
+                        fullPrice: 0,
+                        partialPrice: 0,
+                        currency: '',
+                    }}
+                    locale={locale}
+                    longDescription={courseViewModel.data.description}
+                    duration={{
+                        video: courseViewModel.data.duration.video ?? 0,
+                        coaching: courseViewModel.data.duration.coaching ?? 0,
+                        selfStudy: courseViewModel.data.duration.selfStudy ?? 0,
+                    }}
+                    rating={courseViewModel.data.author.averageRating}
+                    author={{
+                        name:
+                            courseViewModel.data.author.name +
+                            ' ' +
+                            courseViewModel.data.author.surname,
+                        image: courseViewModel.data.author.avatarUrl ?? '',
+                    }}
+                    imageUrl={courseViewModel.data.imageFile?.downloadUrl ?? ''}
+                    students={courseViewModel.data.students.map((student) => ({
+                        name: student.name,
+                        avatarUrl: student.avatarUrl ?? '',
+                    }))}
+                    totalStudentCount={courseViewModel.data.studentCount}
+                    onClickAuthor={() => {
+                        router.push(
+                            `/coaches/${courseViewModel.data.author.username}`,
+                        );
+                    }}
+                />
+            )}
             <CourseIntroduction courseSlug={props.courseSlug} />
             <CourseOutline courseSlug={props.courseSlug} />
         </div>

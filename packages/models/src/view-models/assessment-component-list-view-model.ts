@@ -11,7 +11,7 @@ export const AssessmentComponentListSuccessSchema = ListAssessmentComponentsSucc
 export type TAssessmentComponentListSuccess = z.infer<typeof AssessmentComponentListSuccessSchema>;
 
 const AssessmentComponentListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", AssessmentComponentListSuccessSchema);
-const AssessmentComponentListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const AssessmentComponentListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const AssessmentComponentListViewModelSchemaMap = {
     default: AssessmentComponentListDefaultViewModelSchema,

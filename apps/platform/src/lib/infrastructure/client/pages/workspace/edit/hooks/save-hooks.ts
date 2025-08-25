@@ -69,7 +69,6 @@ export function useSaveStructure({
             setErrorMessage(
                 saveTranslations('courseUpdateError'),
             );
-            // @ts-expect-error The factory doesn't provide proper typing for custom errors
             setCourseVersion(saveCourseStructureViewModel.data.courseVersion);
         }
     }, [saveCourseStructureViewModel, saveCourseStructureMutation.isSuccess]);
@@ -177,7 +176,6 @@ export function useSaveLesson({
             setErrorMessage(
                 saveTranslations('courseLessonUpdateError'),
             );
-            // @ts-expect-error The factory doesn't provide proper typing for custom errors
             setCourseVersion(saveLessonViewModel.data.courseVersion);
         }
     }, [saveLessonViewModel, saveLessonMutation.isSuccess]);

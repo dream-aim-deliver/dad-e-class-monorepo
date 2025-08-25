@@ -21,12 +21,12 @@ const OffersPagePackageListDefaultViewModelSchema =
 const OffersPagePackageListKaboomViewModelSchema =
     BaseDiscriminatedViewModeSchemaFactory(
         'kaboom',
-        BaseErrorDataSchemaFactory(),
+        BaseErrorDataSchemaFactory(z.object({}), z.object({})),
     );
 const OffersPagePackageListNotFoundViewModelSchema =
     BaseDiscriminatedViewModeSchemaFactory(
         'not-found',
-        BaseErrorDataSchemaFactory(),
+        BaseErrorDataSchemaFactory(z.object({}), z.object({})),
     );
 
 export const OffersPagePackageListViewModelSchemaMap = {

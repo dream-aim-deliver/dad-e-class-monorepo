@@ -11,7 +11,7 @@ export const CourseOutlineSuccessSchema = GetCourseOutlineSuccessResponseSchema.
 export type TCourseOutlineSuccess = z.infer<typeof CourseOutlineSuccessSchema>;
 
 const CourseOutlineDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CourseOutlineSuccessSchema);
-const CourseOutlineKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const CourseOutlineKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const CourseOutlineViewModelSchemaMap = {
     default: CourseOutlineDefaultViewModelSchema,

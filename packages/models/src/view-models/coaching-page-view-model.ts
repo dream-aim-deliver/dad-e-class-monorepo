@@ -11,7 +11,7 @@ export const CoachingPageSuccessSchema = GetCoachingPageSuccessResponseSchema.sh
 export type TCoachingPageSuccess = z.infer<typeof CoachingPageSuccessSchema>;
 
 const CoachingPageDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CoachingPageSuccessSchema)
-const CoachingPageKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+const CoachingPageKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
 
 export const CoachingPageViewModelSchemaMap = {
     default: CoachingPageDefaultViewModelSchema,

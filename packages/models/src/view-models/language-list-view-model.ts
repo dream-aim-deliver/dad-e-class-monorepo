@@ -15,7 +15,7 @@ export const LanguageListSuccessSchema = z.object({
 export type TLanguageListSuccess = z.infer<typeof LanguageListSuccessSchema>;
 
 const LanguageListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", LanguageListSuccessSchema)
-const LanguageListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+const LanguageListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
 
 export const LanguageListViewModelSchemaMap = {
     default: LanguageListDefaultViewModelSchema,

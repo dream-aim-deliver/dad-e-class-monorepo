@@ -11,11 +11,11 @@ export const SaveLessonComponentsSuccessSchema = SaveLessonComponentsSuccessResp
 export type TSaveLessonComponentsSuccess = z.infer<typeof SaveLessonComponentsSuccessSchema>;
 
 const SaveLessonComponentsDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", SaveLessonComponentsSuccessSchema);
-const SaveLessonComponentInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory());
+const SaveLessonComponentInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 const SaveLessonComponentConflictViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("conflict", BaseErrorDataSchemaFactory(z.object({
     courseVersion: z.number(),
-})));
-const SaveLessonComponentsKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+}), z.object({})));
+const SaveLessonComponentsKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const SaveLessonComponentsViewModelSchemaMap = {
     default: SaveLessonComponentsDefaultViewModelSchema,

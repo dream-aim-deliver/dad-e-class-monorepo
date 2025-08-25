@@ -11,8 +11,8 @@ export const LessonComponentListSuccessSchema = ListLessonComponentsSuccessRespo
 export type TLessonComponentListSuccess = z.infer<typeof LessonComponentListSuccessSchema>;
 
 const LessonComponentListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", LessonComponentListSuccessSchema);
-const LessonComponentListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory());
-const LessonComponentListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const LessonComponentListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
+const LessonComponentListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const LessonComponentListViewModelSchemaMap = {
     default: LessonComponentListDefaultViewModelSchema,

@@ -4,6 +4,7 @@ import {
     Badge,
     Button,
     CourseProgressBar,
+    DefaultError,
     Dropdown,
     IconCertification,
     StarRating,
@@ -28,6 +29,12 @@ export default function EnrolledCourseHeading({
     currentRole,
     courseSlug,
 }: EnrolledCourseHeadingProps) {
+    const locale = useLocale() as TLocale;
+    
+    if (courseViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
+    
     const hasProgress =
         studentProgressViewModel?.mode === 'default' &&
         studentProgressViewModel.data.progressPercent !== undefined;
@@ -35,7 +42,6 @@ export default function EnrolledCourseHeading({
         studentProgressViewModel?.mode === 'default' &&
         studentProgressViewModel.data.isCompleted;
 
-    const locale = useLocale() as TLocale;
     const router = useRouter();
 
     const renderProgress = () => {

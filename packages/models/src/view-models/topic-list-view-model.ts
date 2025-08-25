@@ -15,7 +15,7 @@ export const TopicListSuccessSchema = z.object({
 export type TTopicListSuccess = z.infer<typeof TopicListSuccessSchema>;
 
 const TopicListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", TopicListSuccessSchema)
-const TopicListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+const TopicListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
 
 export const TopicListViewModelSchemaMap = {
     default: TopicListDefaultViewModelSchema,

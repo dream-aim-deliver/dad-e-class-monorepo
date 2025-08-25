@@ -11,7 +11,7 @@ export const CourseIntroductionSuccessSchema = GetCourseIntroductionSuccessRespo
 export type TCourseIntroductionSuccess = z.infer<typeof CourseIntroductionSuccessSchema>;
 
 const CourseIntroductionDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CourseIntroductionSuccessSchema);
-const CourseIntroductionKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const CourseIntroductionKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const CourseIntroductionViewModelSchemaMap = {
     default: CourseIntroductionDefaultViewModelSchema,

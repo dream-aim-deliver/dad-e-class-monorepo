@@ -11,8 +11,8 @@ export const CreateCourseSuccessSchema = CreateCourseSuccessResponseSchema.shape
 export type TCreateCourseSuccess = z.infer<typeof CreateCourseSuccessSchema>;
 
 const CreateCourseDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CreateCourseSuccessSchema);
-const CreateCourseInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory());
-const CreateCourseKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const CreateCourseInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
+const CreateCourseKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const CreateCourseViewModelSchemaMap = {
     default: CreateCourseDefaultViewModelSchema,

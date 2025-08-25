@@ -22,7 +22,7 @@ export const TopicsByCategorySuccessSchema = z.object({
 export type TTopicsByCategorySuccess = z.infer<typeof TopicsByCategorySuccessSchema>;
 
 const TopicsByCategoryDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", TopicsByCategorySuccessSchema)
-const TopicsByCategoryKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+const TopicsByCategoryKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
 
 export const TopicsByCategoryViewModelSchemaMap = {
     default: TopicsByCategoryDefaultViewModelSchema,

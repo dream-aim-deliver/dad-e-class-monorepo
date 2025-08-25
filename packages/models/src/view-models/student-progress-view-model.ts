@@ -11,7 +11,7 @@ export const StudentProgressSuccessSchema = GetStudentProgressSuccessResponseSch
 export type TStudentProgressSuccess = z.infer<typeof StudentProgressSuccessSchema>;
 
 const StudentProgressDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", StudentProgressSuccessSchema);
-const StudentProgressKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const StudentProgressKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const StudentProgressViewModelSchemaMap = {
     default: StudentProgressDefaultViewModelSchema,

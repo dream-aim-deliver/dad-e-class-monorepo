@@ -11,8 +11,8 @@ export const CoachingOfferingListSuccessSchema = ListCoachingOfferingsSuccessRes
 export type TCoachingOfferingListSuccess = z.infer<typeof CoachingOfferingListSuccessSchema>;
 
 const CoachingOfferingListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CoachingOfferingListSuccessSchema)
-const CoachingOfferingListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const CoachingOfferingListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory())
+const CoachingOfferingListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
+const CoachingOfferingListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
 
 export const CoachingOfferingListViewModelSchemaMap = {
     default: CoachingOfferingListDefaultViewModelSchema,
