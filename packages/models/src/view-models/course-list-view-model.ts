@@ -13,8 +13,8 @@ export const CourseListSuccessSchema = ListCoursesSuccessResponseSchema.shape.da
 export type TCourseListSuccess = z.infer<typeof CourseListSuccessSchema>;
 
 const CourseListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CourseListSuccessSchema)
-const CourseListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const CourseListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory())
+const CourseListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
+const CourseListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
 
 export const CourseListViewModelSchemaMap = {
     default: CourseListDefaultViewModelSchema,

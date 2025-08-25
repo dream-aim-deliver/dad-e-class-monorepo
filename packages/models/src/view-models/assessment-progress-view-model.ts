@@ -11,8 +11,8 @@ export const AssessmentProgressSuccessSchema = SubmitAssessmentProgressSuccessRe
 export type TAssessmentProgressSuccess = z.infer<typeof AssessmentProgressSuccessSchema>;
 
 const AssessmentProgressDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", AssessmentProgressSuccessSchema);
-const AssessmentProgressKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
-const AssessmentProgressInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory());
+const AssessmentProgressKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
+const AssessmentProgressInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const AssessmentProgressViewModelSchemaMap = {
     default: AssessmentProgressDefaultViewModelSchema,

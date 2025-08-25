@@ -13,9 +13,9 @@ export const CourseAccessSuccessSchema = GetCourseAccessSuccessResponseSchema.sh
 export type TCourseAccessSuccess = z.infer<typeof CourseAccessSuccessSchema>;
 
 const CourseAccessDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CourseAccessSuccessSchema);
-const CourseAccessKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
-const CourseAccessNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory());
-const CourseAccessUnautheticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory());
+const CourseAccessKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
+const CourseAccessNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
+const CourseAccessUnautheticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const CourseAccessViewModelSchemaMap = {
     default: CourseAccessDefaultViewModelSchema,

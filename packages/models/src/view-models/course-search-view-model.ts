@@ -11,8 +11,8 @@ export const CourseSearchSuccessSchema = SearchCoursesSuccessResponseSchema.shap
 export type TCourseSearchSuccess = z.infer<typeof CourseSearchSuccessSchema>;
 
 const CourseSearchDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CourseSearchSuccessSchema);
-const CourseSearchNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory());
-const CourseSearchKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const CourseSearchNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
+const CourseSearchKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const CourseSearchViewModelSchemaMap = {
     default: CourseSearchDefaultViewModelSchema,

@@ -11,8 +11,8 @@ export const CourseShortSuccessSchema = GetCourseShortSuccessResponseSchema.shap
 export type TCourseShortSuccess = z.infer<typeof CourseShortSuccessSchema>;
 
 const CourseShortDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CourseShortSuccessSchema);
-const CourseShortNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory());
-const CourseShortKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const CourseShortNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
+const CourseShortKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const CourseShortViewModelSchemaMap = {
     default: CourseShortDefaultViewModelSchema,

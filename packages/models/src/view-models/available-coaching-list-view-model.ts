@@ -11,9 +11,9 @@ export const AvailableCoachingListSuccessSchema = ListAvailableCoachingsSuccessR
 export type TAvailableCoachingListSuccess = z.infer<typeof AvailableCoachingListSuccessSchema>;
 
 const AvailableCoachingListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", AvailableCoachingListSuccessSchema)
-const AvailableCoachingListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const AvailableCoachingListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory())
-const AvailableCoachingListUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory());
+const AvailableCoachingListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
+const AvailableCoachingListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
+const AvailableCoachingListUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const AvailableCoachingListViewModelSchemaMap = {
     default: AvailableCoachingListDefaultViewModelSchema,

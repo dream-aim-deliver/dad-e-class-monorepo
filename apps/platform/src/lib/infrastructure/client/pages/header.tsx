@@ -1,7 +1,7 @@
 'use client';
 
 import { auth, viewModels } from '@maany_shr/e-class-models';
-import { Navbar } from '@maany_shr/e-class-ui-kit';
+import { DefaultError, Navbar } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
@@ -100,6 +100,10 @@ export default function Header({
             setIsLoggingOut(false);
         }
     };
+
+    if (platformViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
 
     return (
         <Navbar

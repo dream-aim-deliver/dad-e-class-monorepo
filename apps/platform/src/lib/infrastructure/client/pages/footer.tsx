@@ -2,6 +2,7 @@
 
 import { viewModels } from '@maany_shr/e-class-models';
 import {
+    DefaultError,
     Footer as FooterComponent,
     RichTextRenderer,
 } from '@maany_shr/e-class-ui-kit';
@@ -56,6 +57,10 @@ export default function Footer({
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
         router.push(newUrl);
     };
+
+    if (platformViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
 
     return (
         <FooterComponent

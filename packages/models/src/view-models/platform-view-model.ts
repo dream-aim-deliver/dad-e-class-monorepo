@@ -16,7 +16,7 @@ export const PlatformSuccessSchema = z.object({
 export type TPlatformSuccess = z.infer<typeof PlatformSuccessSchema>;
 
 const PlatformDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", PlatformSuccessSchema)
-const PlatformKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+const PlatformKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
 
 export const PlatformViewModelSchemaMap = {
     default: PlatformDefaultViewModelSchema,

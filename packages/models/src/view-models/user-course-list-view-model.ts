@@ -11,8 +11,8 @@ export const UserCourseListSuccessSchema = ListUserCoursesSuccessResponseSchema.
 export type TUserCourseListSuccess = z.infer<typeof UserCourseListSuccessSchema>;
 
 const UserCourseListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", UserCourseListSuccessSchema);
-const UserCourseListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory());
-const UserCourseListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const UserCourseListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
+const UserCourseListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const UserCourseListViewModelSchemaMap = {
     default: UserCourseListDefaultViewModelSchema,

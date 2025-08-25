@@ -11,10 +11,10 @@ export const EnrolledCourseDetailsSuccessSchema = GetEnrolledCourseDetailsSucces
 export type TEnrolledCourseDetailsSuccess = z.infer<typeof EnrolledCourseDetailsSuccessSchema>;
 
 const EnrolledCourseDetailsDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", EnrolledCourseDetailsSuccessSchema);
-const EnrolledCourseDetailsKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
-const EnrolledCourseDetailsNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory());
-const EnrolledCourseDetailsUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory());
-const EnrolledCourseDetailsForbiddenViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("forbidden", BaseErrorDataSchemaFactory());
+const EnrolledCourseDetailsKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
+const EnrolledCourseDetailsNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
+const EnrolledCourseDetailsUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
+const EnrolledCourseDetailsForbiddenViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("forbidden", BaseErrorDataSchemaFactory(z.object({}), z.object({})));
 
 export const EnrolledCourseDetailsViewModelSchemaMap = {
     default: EnrolledCourseDetailsDefaultViewModelSchema,

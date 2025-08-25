@@ -11,7 +11,7 @@ export const OffersPageOutlineSuccessSchema = GetOffersPageOutlineSuccessRespons
 export type TOffersPageOutlineSuccess = z.infer<typeof OffersPageOutlineSuccessSchema>;
 
 const OffersPageOutlineDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", OffersPageOutlineSuccessSchema)
-const OffersPageOutlineKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+const OffersPageOutlineKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(z.object({}), z.object({})))
 
 export const OffersPageOutlineViewModelSchemaMap = {
     default: OffersPageOutlineDefaultViewModelSchema,
