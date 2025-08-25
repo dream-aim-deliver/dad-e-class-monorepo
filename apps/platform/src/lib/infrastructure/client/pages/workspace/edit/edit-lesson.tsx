@@ -112,6 +112,8 @@ function PreviewRenderer({
 export default function EditLesson({ lessonId }: EditLessonProps) {
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
+    const editLessonsTranslations = useTranslations('pages.editLesson');
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
     const lessonComponentsViewModel = useLessonComponents(lessonId);
 
@@ -138,7 +140,6 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     });
 
     const [isPreviewing, setIsPreviewing] = useState(false);
-    const editLessonsTranslations = useTranslations('pages.editLesson');
     const simpleComponentButtons: LessonComponentButton[] = [
         {
             icon: <IconRichText />,
@@ -374,7 +375,6 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     if (lessonComponentsViewModel.mode !== 'default') {
         return <DefaultError locale={locale} />;
     }
-    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
     return (
         <div className="flex flex-col gap-4 px-15">
