@@ -365,6 +365,9 @@ export const DE: TDictionary = {
     milestone: {
       milestoneText: 'Meilenstein',
     },
+    moduleContent: {
+      addLessonsOrMilestonesText: 'Lektionen oder Meilensteine ​​hinzufügen',
+    },
     courseOutline: {
       title: 'Kursübersicht',
       optionalText: 'Optional',
@@ -403,6 +406,8 @@ export const DE: TDictionary = {
       deleteText: "Löschen",
       downloadText: "Herunterladen",
       maxFilesText: "Maximale Anzahl an Dateien",
+      processingText: "Verarbeitung...",
+      fileUploadFailedText: "Datei-Upload fehlgeschlagen",
       uploadImage: {
         choseImages: "Bilder auswählen",
         description: "oder ziehen Sie Bilder per Drag & Drop hierher",
@@ -683,7 +688,7 @@ export const DE: TDictionary = {
       quizTypeOne: {
         headingText: 'Der Student entscheidet sich selbst',
         radioButtonText: 'Text der Optionsschaltfläche',
-         validationErrors: {
+        validationErrors: {
           wrongElementType: 'Falscher Elementtyp',
           titleRequired: 'Titel darf nicht leer sein',
           descriptionRequired: 'Beschreibung darf nicht leer sein',
@@ -936,7 +941,9 @@ export const DE: TDictionary = {
       slug: "Slug",
       successCreatedBanner: 'Kurs erfolgreich erstellt! Weiterleitung...',
       successUpdatedBanner: 'Kurs erfolgreich aktualisiert!',
-      recommendedSizeText: '(Empfohlene Bildgröße: 612 x 702 pixel für optimale Darstellungsqualität.)'
+      recommendedSizeText: '(Empfohlene Bildgröße: 612 x 702 pixel für optimale Darstellungsqualität.)',
+      estimatedDurationText: 'Geschätzte Dauer des Selbststudiums (Minuten)',
+      durationPlaceholderText: 'Dauer in Minuten',
     },
     accordion: {
       accordionTitleText: 'Akkordeon-Titel',
@@ -951,6 +958,66 @@ export const DE: TDictionary = {
       moveUpText: "Nach oben verschieben",
       moveDownText: "Nach unten verschieben",
       deleteText: "Löschen",
+    },
+    useCourseImageUpload: {
+      uploadCredentialsError: 'Upload-Anmeldeinformationen konnten nicht abgerufen werden',
+      verifyImageError: 'Der Bild-Upload konnte nicht verifiziert werden.',
+      uploadAbortError: 'Der Datei-Upload wurde abgebrochen',
+      uploadFailedError: 'Das Hochladen des Bildes ist fehlgeschlagen. Bitte versuchen Sie es erneut.',
+    },
+    editHeader: {
+      editCourseText: 'Kurs bearbeiten',
+      savingText: 'Sparen...',
+      saveDraftText: 'Entwurf speichern',
+      previewText: 'Vorschau',
+      hidePreviewText: 'Vorschau ausblenden',
+      saveToPreviewText: 'Zur Vorschau speichern',
+    },
+    lessonComponentBar: {
+      simpleText: 'Einfach',
+      presentInformationText: 'Wird zur Darstellung von Informationen verwendet.',
+      interactiveText: 'Interaktiv',
+      requireInputText: 'Eingabe vom Benutzer erforderlich.',
+    },
+    lessonItem: {
+      lessonTitleText: 'Titel der Lektion',
+      extraTrainingText: 'Zusätzliches Training',
+      editText: 'Bearbeiten',
+      saveToEditText: 'Zum Bearbeiten speichern',
+    },
+    editDetailsHooks: {
+      courseTitleValidationText: 'Der Kurstitel ist erforderlich',
+      courseDescriptionValidationText: 'Eine Kursbeschreibung ist erforderlich',
+      courseDurationValidationText: 'Die Kursdauer ist ungültig',
+    },
+    editOutlineHooks: {
+      outlineCountValidationText: 'Mindestens ein Gliederungselement ist erforderlich',
+      TitleAndContentValidationText: 'Alle Gliederungselemente müssen einen Titel und Inhalt haben',
+    },
+    editIntroductionHooks: {
+      courseIntroductionValidationText: 'Eine Kurseinführung ist erforderlich',
+    },
+    saveHooks: {
+      courseUpdateError: 'Der Kurs wurde von einem anderen Benutzer aktualisiert. Bitte aktualisieren Sie die Seite, um die neuesten Änderungen zu sehen, oder klicken Sie auf Speichern, um sie zu überschreiben.',
+      failToSaveCourseError: 'Fehler beim Speichern des Kurses',
+      courseSlugOrVersionError: 'Kurs-Slug oder -Version ist nicht festgelegt',
+      unknownCourseError: 'Unbekannter Fehler beim Speichern des Kurses',
+      courseLessonUpdateError: 'Die Kurslektion wurde von einem anderen Benutzer aktualisiert. Bitte aktualisieren Sie die Seite, um die neuesten Änderungen zu sehen, oder klicken Sie auf Speichern, um sie zu überschreiben.',
+      failToSaveLessonError: 'Fehler beim Speichern der Lektion',
+      unknownLessonError: 'Unbekannter Fehler beim Speichern der Lektion',
+    },
+    introductionForm: {
+      introductionText: 'Einführung',
+      courseIntroductionText: 'Kursbeschreibung (max. 600 Zeichen)',
+      courseIntroductionPlaceholderText: 'Kursbeschreibung eingeben',
+      introductionVideoText: 'Einführungsvideo',
+    },
+    assignmentLesson: {
+      titleValidationText: 'Bitte geben Sie einen Titel ein',
+      descriptionValidationText: 'Bitte geben Sie eine Beschreibung ein',
+    },
+    coachingSessionLesson: {
+      coachingSessionCountValidationText: 'Bitte wählen Sie eine Coaching-Sitzung aus',
     },
   },
   pages: {
@@ -1061,6 +1128,20 @@ export const DE: TDictionary = {
       moduleEditor: {
         moduleTitle: 'Modultitel',
       },
+    },
+    edit: {
+      lesson: {
+        invalidLessonId: 'Ungültige Lektionen-ID',
+      },
+    },
+    editCourseIntroOutline: {
+      outlineText: 'Gliederung',
+    },
+    courseOutline: {
+      courseContent: 'Kursinhalte',
+    },
+    categoryTopics: {
+      allText: 'Alle',
     },
   },
 };

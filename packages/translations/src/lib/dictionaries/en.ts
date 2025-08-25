@@ -362,6 +362,9 @@ export const EN: TDictionary = {
     milestone: {
       milestoneText: 'Milestone',
     },
+    moduleContent: {
+      addLessonsOrMilestonesText: 'Add lessons or milestones',
+    },
     courseOutline: {
       title: 'Course Outline',
       optionalText: 'Optional',
@@ -400,6 +403,8 @@ export const EN: TDictionary = {
       deleteText: 'Delete',
       downloadText: 'Download',
       maxFilesText: 'Maximum file limit reached',
+      processingText: 'Processing...',
+      fileUploadFailedText: 'File upload failed',
       uploadImage: {
         choseImages: 'Choose images',
         description: 'or drag and drop images here',
@@ -923,7 +928,7 @@ export const EN: TDictionary = {
       descriptionValidationText: 'Description should not be empty',
       metadataValidationText: 'Invalid file metadata: missing required properties',
       urlValidationText: 'Invalid file URL format',
-   
+
     },
     courseIntroBanner: {
       title: 'Couse Introduction'
@@ -933,7 +938,9 @@ export const EN: TDictionary = {
       slug: 'Slug',
       successCreatedBanner: 'Course created successfully! Redirecting...',
       successUpdatedBanner: 'Course updated successfully!',
-      recommendedSizeText: '(Recommended image size: 612 x 702 pixels for optimal display quality.)'
+      recommendedSizeText: '(Recommended image size: 612 x 702 pixels for optimal display quality.)',
+      estimatedDurationText: 'Estimated duration of self-study material (minutes)',
+      durationPlaceholderText: 'Duration in minutes',
     },
     accordion: {
       accordionTitleText: 'accordion-title',
@@ -948,6 +955,66 @@ export const EN: TDictionary = {
       moveUpText: 'Move Up',
       moveDownText: 'Move Down',
       deleteText: 'Delete'
+    },
+    useCourseImageUpload: {
+      uploadCredentialsError: 'Failed to get upload credentials',
+      verifyImageError: 'Failed to verify image upload',
+      uploadAbortError: 'File upload was aborted',
+      uploadFailedError: 'Failed to upload image. Please try again.',
+    },
+    editHeader: {
+      editCourseText: 'Edit Course',
+      savingText: 'Saving...',
+      saveDraftText: 'Save draft',
+      previewText: 'Preview',
+      hidePreviewText: 'Hide preview',
+      saveToPreviewText: 'Save to preview',
+    },
+    lessonComponentBar: {
+      simpleText: 'Simple',
+      presentInformationText: 'Used to present information.',
+      interactiveText: 'Interactive',
+      requireInputText: 'Require input from user.',
+    },
+    lessonItem: {
+      lessonTitleText: 'Lesson title',
+      extraTrainingText: 'Extra training',
+      editText: 'Edit',
+      saveToEditText: 'Save to edit',
+    },
+    editDetailsHooks: {
+      courseTitleValidationText: 'Course title is required',
+      courseDescriptionValidationText: 'Course description is required',
+      courseDurationValidationText: 'Course duration is invalid',
+    },
+    editOutlineHooks: {
+      outlineCountValidationText: 'At least one outline item is required',
+      TitleAndContentValidationText: 'All outline items must have a title and content',
+    },
+    editIntroductionHooks: {
+      courseIntroductionValidationText: 'Course introduction is required',
+    },
+    saveHooks: {
+      courseUpdateError: 'The course has been updated by another user. Please refresh the page to see the latest changes or click save to overwrite them.',
+      failToSaveCourseError: 'Failed to save course',
+      courseSlugOrVersionError: 'Course slug or version is not set',
+      unknownCourseError: 'Unknown error occurred while saving the course',
+      courseLessonUpdateError: 'The course lesson has been updated by another user. Please refresh the page to see the latest changes or click save to overwrite them.',
+      failToSaveLessonError: 'Failed to save lesson',
+      unknownLessonError: 'Unknown error occurred while saving the lesson',
+    },
+    introductionForm: {
+      introductionText: 'Introduction',
+      courseIntroductionText: 'Course introduction (600 characters max)',
+      courseIntroductionPlaceholderText: 'Write course introduction',
+      introductionVideoText: 'Introduction video',
+    },
+    assignmentLesson: {
+      titleValidationText: 'Please enter a title',
+      descriptionValidationText: 'Please enter a description',
+    },
+    coachingSessionLesson: {
+      coachingSessionCountValidationText: 'Please select a coaching session',
     },
   },
   pages: {
@@ -1058,6 +1125,20 @@ export const EN: TDictionary = {
       moduleEditor: {
         moduleTitle: 'Module Title',
       },
+    },
+    edit: {
+      lesson: {
+        invalidLessonId: 'Invalid lesson ID',
+      },
+    },
+    editCourseIntroOutline: {
+      outlineText: 'Outline',
+    },
+    courseOutline: {
+      courseContent: 'Course content',
+    },
+    categoryTopics: {
+      allText: 'All',
     },
   },
 };

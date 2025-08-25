@@ -47,16 +47,15 @@ export const getValidationError: ElementValidator = (props) => {
     if (elementInstance.type !== CourseElementType.Assignment)
         return dictionary.components.lessons.typeValidationText;
 
-    // TODO: translate
     if (!elementInstance.title || elementInstance.title.trim().length === 0) {
-        return 'Please enter a title';
+        return dictionary.components.assignmentLesson.titleValidationText;
     }
 
     if (
         !elementInstance.description ||
         elementInstance.description.trim().length === 0
     ) {
-        return 'Please enter a description';
+        return dictionary.components.assignmentLesson.descriptionValidationText;
     }
 
     return undefined;

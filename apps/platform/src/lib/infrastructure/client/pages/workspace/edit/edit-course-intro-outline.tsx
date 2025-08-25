@@ -8,7 +8,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useCourseIntroduction } from './hooks/edit-introduction-hooks';
 import { useEffect } from 'react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
 import { AccordionIconUploadState } from './hooks/use-accordion-icon-upload';
@@ -52,6 +52,9 @@ export default function EditCourseIntroOutline({
     accordionIconUpload,
 }: EditCourseIntroOutlineProps) {
     const locale = useLocale() as TLocale;
+    const editCourseIntroOutlineTranslations = useTranslations(
+        'pages.editCourseIntroOutline',
+    );
 
     const introductionViewModel = useCourseIntroduction(slug);
     const outlineViewModel = useCourseOutline(slug);
@@ -101,7 +104,7 @@ export default function EditCourseIntroOutline({
     if (introductionViewModel.mode !== 'default') {
         return <DefaultError locale={locale} />;
     }
-    // TODO: Translate
+
     return (
         <div className="flex flex-col gap-8">
             <IntroductionForm
@@ -119,8 +122,8 @@ export default function EditCourseIntroOutline({
                 videoFile={introductionVideoUpload.video}
                 uploadError={introductionVideoUpload.uploadError}
             />
-            <div className='flex flex-col gap-4'>
-                <h2>Outline</h2>
+            <div className="flex flex-col gap-4">
+                <h2>{editCourseIntroOutlineTranslations('outlineText')}</h2>
                 <AccordionBuilder
                     items={outlineItems}
                     setItems={setOutlineItems}

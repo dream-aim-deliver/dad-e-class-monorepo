@@ -1,22 +1,26 @@
 import { ComponentCard } from '@maany_shr/e-class-ui-kit';
 import { LessonComponentButton } from '../types';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 
 interface LessonComponentsBarProps {
     simpleComponentButtons: LessonComponentButton[];
     interactiveComponentButtons: LessonComponentButton[];
+    locale: TLocale;
 }
 
-// TODO: Translate
 export default function LessonComponentsBar({
     simpleComponentButtons,
     interactiveComponentButtons,
+    locale,
 }: LessonComponentsBarProps) {
+    const dictionary = getDictionary(locale);
+
     return (
         <>
             <div className="flex flex-col gap-1">
-                <span className="text-lg font-bold">Simple</span>
+                <span className="text-lg font-bold">{dictionary.components.lessonComponentBar.simpleText}</span>
                 <span className="text-md text-text-secondary">
-                    Used to present information.
+                    {dictionary.components.lessonComponentBar.presentInformationText}
                 </span>
             </div>
             <div className="flex flex-col gap-2 pb-3">
@@ -30,9 +34,9 @@ export default function LessonComponentsBar({
                 ))}
             </div>
             <div className="flex flex-col">
-                <span className="text-lg font-bold">Interactive</span>
+                <span className="text-lg font-bold">{dictionary.components.lessonComponentBar.interactiveText}</span>
                 <span className="text-md text-text-secondary">
-                    Require input from user.
+                    {dictionary.components.lessonComponentBar.requireInputText}
                 </span>
             </div>
             <div className="flex flex-col gap-2">

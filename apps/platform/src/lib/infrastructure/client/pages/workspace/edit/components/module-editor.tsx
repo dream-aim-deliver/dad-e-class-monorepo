@@ -22,6 +22,7 @@ export function ModuleEditor({
     isLast,
     onLessonTitleChange,
     onLessonExtraTrainingChange,
+    locale,
 }: ModuleEditorProps) {
     const handleTitleChange = (value: string) => {
         onUpdate({ ...module, title: value });
@@ -78,6 +79,7 @@ export function ModuleEditor({
                             isExtraTraining,
                         )
                     }
+                    locale={locale}
                 />
             )}
         </div>

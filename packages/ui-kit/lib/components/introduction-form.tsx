@@ -6,7 +6,7 @@ import { deserialize, serialize } from './rich-text-element/serializer';
 import { Descendant } from 'slate';
 import { useEffect, useState } from 'react';
 import DefaultError from './default-error';
-import { isLocalAware } from '@maany_shr/e-class-translations';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 interface IntroductionProps extends isLocalAware {
     courseVersion: number | null;
@@ -55,22 +55,23 @@ export const useCourseIntroductionForm = (): CourseIntroductionForm => {
 export function IntroductionForm(props: IntroductionProps) {
     const [editorKey, setEditorKey] = useState(0);
 
+    const dictionary = getDictionary(props.locale);
+
     useEffect(() => {
         setEditorKey((prevKey) => prevKey + 1);
     }, [props.courseVersion]);
 
-    // TODO: Translate
     return (
         <div className="flex flex-col gap-4">
-            <SectionHeading text="Introduction" />
+            <SectionHeading text={dictionary.components.introductionForm.introductionText} />
             <div className="flex flex-col gap-2">
                 <label htmlFor="introduction" className="text-text-secondary text-sm lg:text-md">
-                    Course introduction (600 characters max)
+                    {dictionary.components.introductionForm.courseIntroductionText}
                 </label>
                 <RichTextEditor
                     key={`introduction-${editorKey}`}
                     name="introduction"
-                    placeholder="Write course introduction"
+                    placeholder={dictionary.components.introductionForm.courseIntroductionPlaceholderText}
                     initialValue={props.introductionText}
                     locale={props.locale}
                     onLoseFocus={() => {
@@ -82,7 +83,7 @@ export function IntroductionForm(props: IntroductionProps) {
             </div>
             <div className="flex flex-col gap-2 bg-card-fill border-1 border-card-stroke rounded-md p-4">
                 <h6 >
-                    Introduction video
+                    {dictionary.components.introductionForm.introductionVideoText}
                 </h6>
                 <Uploader
                     onDownload={props.onDownload}

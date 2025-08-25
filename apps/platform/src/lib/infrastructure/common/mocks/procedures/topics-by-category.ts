@@ -125,6 +125,130 @@ const topicsByCategoryMock: useCaseModels.TListTopicsByCategorySuccessResponse['
         },
     };
 
+const topicsByCategoryMockGerman: useCaseModels.TListTopicsByCategorySuccessResponse['data'] =
+    {
+        topicsByCategory: {
+            'Design & Kreativ': [
+                {
+                    name: 'Grafik- und Visualdesign',
+                    slug: 'graphic-and-visual-design',
+                },
+                {
+                    name: 'Branding und Identität',
+                    slug: 'branding-and-identity',
+                },
+                {
+                    name: 'Typografie, Layout und Komposition',
+                    slug: 'typography-layout-and-composition',
+                },
+                {
+                    name: 'Key Visual Erstellung',
+                    slug: 'key-visual-creation',
+                },
+                {
+                    name: 'Verpackung und Printdesign',
+                    slug: 'packaging-and-print-design',
+                },
+                {
+                    name: 'Visuelles Storytelling',
+                    slug: 'visual-storytelling',
+                },
+                {
+                    name: 'Kreative und Art Direction',
+                    slug: 'creative-and-art-direction',
+                },
+                {
+                    name: 'Infografiken und Datenvisualisierung',
+                    slug: 'infographics-and-data-visualization',
+                },
+            ],
+
+            'Digital & Technologie': [
+                {
+                    name: 'Webdesign und Entwicklung',
+                    slug: 'web-design-and-development',
+                },
+                {
+                    name: 'UI/UX Design',
+                    slug: 'ui-ux-design',
+                },
+                {
+                    name: 'Digitale Inhalte und Social Media Strategie',
+                    slug: 'digital-content-and-social-media-strategy',
+                },
+                {
+                    name: 'Motion Design und Animation',
+                    slug: 'motion-design-and-animation',
+                },
+                {
+                    name: 'Prompting und KI-Tools',
+                    slug: 'prompting-and-ai-tools',
+                },
+            ],
+
+            'Medien & Produktion': [
+                {
+                    name: 'Film und Kinematographie',
+                    slug: 'film-and-cinematography',
+                },
+                {
+                    name: 'Sound Design und Bearbeitung',
+                    slug: 'sound-design-and-editing',
+                },
+                {
+                    name: 'Fotografie und Bearbeitung',
+                    slug: 'photography-and-editing',
+                },
+                {
+                    name: 'Motion Design und Animation',
+                    slug: 'motion-design-and-animation',
+                },
+                {
+                    name: 'Visuelles Storytelling',
+                    slug: 'visual-storytelling',
+                },
+            ],
+            'Strategie & Business': [
+                {
+                    name: 'Strategie und Konzeptentwicklung',
+                    slug: 'strategy-and-concept-development',
+                },
+                {
+                    name: 'Ganzheitliche Konzeptentwicklung',
+                    slug: 'holistic-concept-development',
+                },
+                {
+                    name: 'Werbekampagnen',
+                    slug: 'advertising-campaigns',
+                },
+                {
+                    name: 'Kampagnenentwicklung',
+                    slug: 'campaign-development',
+                },
+                {
+                    name: 'Cross-Channel Marketing',
+                    slug: 'cross-channel-marketing',
+                },
+                {
+                    name: 'Ideenfindung und Brainstorming',
+                    slug: 'idea-generation-and-brainstorming',
+                },
+                {
+                    name: 'Copywriting und Content-Erstellung',
+                    slug: 'copywriting-and-content-creation',
+                },
+                {
+                    name: 'Geschäftsplanung und Finanzierung',
+                    slug: 'business-planning-and-financing',
+                },
+                {
+                    name: 'Pitching und Präsentationsfähigkeiten',
+                    slug: 'pitching-and-presentation-skills',
+                },
+            ],
+        },
+    };
+
 export const listTopicsByCategory = t.procedure
     .input(useCaseModels.ListTopicsByCategoryRequestSchema)
     .query(

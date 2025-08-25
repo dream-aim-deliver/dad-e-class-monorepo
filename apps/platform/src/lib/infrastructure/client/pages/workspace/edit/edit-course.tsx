@@ -326,6 +326,7 @@ function EditCourseLayout({
                 disablePreview={isEdited || isSaving}
                 isSaving={isSaving}
                 isPreviewing={isPreviewing}
+                locale={locale}
             />
             <Tabs.Root defaultTab={defaultTab} onValueChange={onTabChange}>
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">

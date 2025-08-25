@@ -17,6 +17,22 @@ const coachingPageMock: useCaseModels.TGetCoachingPageSuccessResponse['data'] =
         },
     };
 
+const coachingPageMockGerman: useCaseModels.TGetCoachingPageSuccessResponse['data'] = 
+    {
+        title: 'Auf Sie zugeschnittene Coachings.',
+        description:
+            'Suchen Sie einen Austausch auf Augenhöhe oder möchten Sie neue Fähigkeiten erlernen? Benötigen Sie Unterstützung bei der Auswahl der richtigen Tools oder Beratung für Ihr Projekt? Unsere Branchenexperten unterstützen Sie gerne beim Erfolg. Wählen Sie das passende Coaching für sich: zum Beispiel einen Action Sprint, wenn unsere Profis die Umsetzung übernehmen, oder ein Ping-Pong für schnelles, zielgerichtetes Feedback.',
+        banner: {
+            title: 'Teilen Sie Ihre Fähigkeiten und verdienen Sie: Beginnen Sie jetzt mit dem Coaching',
+            description:
+                'Teilen Sie Ihr Fachwissen leidenschaftlich gerne und unterstützen Sie andere dabei, ihre Karriere voranzutreiben und gleichzeitig Geld zu verdienen? Werden Sie Teil unserer Coach-Community und leisten Sie einen echten Beitrag – ob Sie Ihren eigenen Kurs erstellen oder Einzelcoaching anbieten möchten – Sie haben die Freiheit, Ihren Beitrag zu leisten und sich weiterzuentwickeln. Wagen Sie den Sprung und nutzen Sie Ihre Fähigkeiten noch heute!',
+            buttonText: 'Werden Sie Trainer',
+            buttonLink: '/become-a-coach',
+            imageUrl:
+                'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+        },
+    };
+
 export const getCoachingPage = t.procedure
     .input(useCaseModels.GetCoachingPageRequestSchema)
     .query<useCaseModels.TGetCoachingPageSuccessResponse>(() => {

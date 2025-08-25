@@ -4,6 +4,7 @@ import { trpc } from '../../../../trpc/client';
 import { useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useIntroductionVideoUpload } from './use-introduction-video-upload';
+import { useTranslations } from 'next-intl';
 
 export function useCourseIntroduction(slug: string) {
     const [introductionResponse] = trpc.getCourseIntroduction.useSuspenseQuery({
@@ -20,7 +21,6 @@ export function useCourseIntroduction(slug: string) {
     return introductionViewModel;
 }
 
-// TODO: Tranlate error message
 export function useSaveIntroduction({
     slug,
     courseVersion,
@@ -36,10 +36,12 @@ export function useSaveIntroduction({
 
     const saveIntroductionMutation = trpc.saveCourseIntroduction.useMutation();
 
+    const editIntroductionTranslations = useTranslations('components.editIntroductionHooks');
+
     const saveCourseIntroduction = async () => {
         if (!courseVersion) return;
         if (!courseIntroduction.introductionText) {
-            setErrorMessage('Course introduction text is required');
+            setErrorMessage(editIntroductionTranslations('courseIntroductionValidationText'));
             return;
         }
 

@@ -12,6 +12,7 @@ import { LessonElement } from '@maany_shr/e-class-ui-kit';
 import { transformLessonComponents } from '../../../../utils/transform-lesson-components';
 import { set } from 'zod';
 import { transformLessonToRequest } from '../utils/lesson-to-request';
+import { useTranslations } from 'next-intl';
 
 interface SaveStructureProps {
     slug: string;
@@ -21,7 +22,6 @@ interface SaveStructureProps {
     setErrorMessage: (message: string | null) => void;
 }
 
-// TODO: Translate error messages
 export function useSaveStructure({
     slug,
     courseVersion,
@@ -29,6 +29,8 @@ export function useSaveStructure({
     errorMessage,
     setErrorMessage,
 }: SaveStructureProps) {
+    const saveTranslations = useTranslations('components.saveHooks');
+
     const [modules, setModules] = useState<CourseModule[]>([]);
     const saveCourseStructureMutation = trpc.saveCourseStructure.useMutation();
     const [saveCourseStructureViewModel, setSaveCourseStructureViewModel] =
@@ -65,7 +67,7 @@ export function useSaveStructure({
             saveCourseStructureViewModel?.mode === 'conflict'
         ) {
             setErrorMessage(
-                `The course has been updated by another user. Please refresh the page to see the latest changes or click save to overwrite them.`,
+                saveTranslations('courseUpdateError'),
             );
             // @ts-expect-error The factory doesn't provide proper typing for custom errors
             setCourseVersion(saveCourseStructureViewModel.data.courseVersion);
@@ -76,7 +78,7 @@ export function useSaveStructure({
         if (saveCourseStructureMutation.isError) {
             setErrorMessage(
                 saveCourseStructureMutation.error?.message ||
-                    'Failed to save course',
+                saveTranslations('failToSaveCourseError'),
             );
         }
     }, [
@@ -86,7 +88,7 @@ export function useSaveStructure({
 
     const saveCourseStructure = useCallback(async () => {
         if (courseVersion === null) {
-            setErrorMessage('Course slug or version is not set');
+            setErrorMessage(saveTranslations('courseSlugOrVersionError'));
             return;
         }
 
@@ -105,7 +107,7 @@ export function useSaveStructure({
             const errorMessage =
                 error instanceof Error
                     ? error.message
-                    : 'Unknown error occurred while saving the course';
+                    : saveTranslations('unknownCourseError');
             setErrorMessage(errorMessage);
             throw error;
         }
@@ -127,7 +129,6 @@ interface SaveLessonProps {
     setErrorMessage: (message: string | null) => void;
 }
 
-// TODO: Translate error messages
 export function useSaveLesson({
     lessonId,
     courseVersion,
@@ -135,6 +136,8 @@ export function useSaveLesson({
     errorMessage,
     setErrorMessage,
 }: SaveLessonProps) {
+    const saveTranslations = useTranslations('components.saveHooks');
+
     const [components, setComponents] = useState<LessonElement[]>([]);
 
     const saveLessonMutation = trpc.saveLessonComponents.useMutation();
@@ -172,7 +175,7 @@ export function useSaveLesson({
             saveLessonViewModel?.mode === 'conflict'
         ) {
             setErrorMessage(
-                `The courselesson has been updated by another user. Please refresh the page to see the latest changes or click save to overwrite them.`,
+                saveTranslations('courseLessonUpdateError'),
             );
             // @ts-expect-error The factory doesn't provide proper typing for custom errors
             setCourseVersion(saveLessonViewModel.data.courseVersion);
@@ -182,14 +185,14 @@ export function useSaveLesson({
     useEffect(() => {
         if (saveLessonMutation.isError) {
             setErrorMessage(
-                saveLessonMutation.error?.message || 'Failed to save lesson',
+                saveLessonMutation.error?.message || saveTranslations('failToSaveLessonError'),
             );
         }
     }, [saveLessonMutation.isError, saveLessonMutation.error]);
 
     const saveLesson = useCallback(async () => {
         if (courseVersion === null) {
-            setErrorMessage('Course slug or version is not set');
+            setErrorMessage(saveTranslations('courseSlugOrVersionError'));
             return;
         }
 
@@ -210,7 +213,7 @@ export function useSaveLesson({
             const errorMessage =
                 error instanceof Error
                     ? error.message
-                    : 'Unknown error occurred while saving the lesson';
+                    : saveTranslations('unknownLessonError');
             setErrorMessage(errorMessage);
             throw error;
         }

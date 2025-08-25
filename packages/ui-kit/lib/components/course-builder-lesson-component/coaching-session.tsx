@@ -41,9 +41,8 @@ export const getValidationError: ElementValidator = (props) => {
     if (elementInstance.type !== CourseElementType.CoachingSession)
         return dictionary.components.lessons.typeValidationText;
 
-    // TODO: translate
     if (!elementInstance.coachingSession)
-        return 'Please select a coaching session';
+        return dictionary.components.coachingSessionLesson.coachingSessionCountValidationText;
 
     return undefined;
 };

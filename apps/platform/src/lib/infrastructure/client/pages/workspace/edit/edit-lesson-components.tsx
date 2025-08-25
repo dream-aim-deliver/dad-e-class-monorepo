@@ -35,7 +35,7 @@ import {
     AssignmentElement,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { trpc } from '../../../trpc/client';
 import { fileMetadata, shared, viewModels } from '@maany_shr/e-class-models';
 import { generateTempId } from './utils/generate-temp-id';
@@ -52,6 +52,8 @@ const useFileUpload = ({
     componentType,
     setFile,
 }: FileUploadProps) => {
+    const editLessonTranslations = useTranslations('components.useCourseImageUpload');
+
     const uploadMutation = trpc.uploadLessonComponentFile.useMutation();
     const verifyMutation = trpc.verifyFile.useMutation();
 
@@ -80,7 +82,7 @@ const useFileUpload = ({
             size: uploadRequest.file.size,
         });
         if (!uploadResult.success) {
-            throw new Error('Failed to get upload credentials');
+            throw new Error(editLessonTranslations('uploadCredentialsError'));
         }
 
         if (abortSignal?.aborted) {
@@ -101,7 +103,7 @@ const useFileUpload = ({
             fileId: uploadResult.data.file.id,
         });
         if (!verifyResult.success) {
-            throw new Error('Failed to verify image upload');
+            throw new Error(editLessonTranslations('verifyImageError'));
         }
 
         return {
@@ -124,11 +126,10 @@ const useFileUpload = ({
             return await uploadImage(uploadRequest, abortSignal);
         } catch (error) {
             if (error instanceof AbortError) {
-                console.warn('File upload was aborted');
+                console.warn(editLessonTranslations('uploadAbortError'));
             } else {
                 console.error('File upload failed:', error);
-                // TODO: Translate error message
-                setUploadError('Failed to upload image. Please try again.');
+                setUploadError(editLessonTranslations('uploadFailedError'));
             }
             throw error;
         }

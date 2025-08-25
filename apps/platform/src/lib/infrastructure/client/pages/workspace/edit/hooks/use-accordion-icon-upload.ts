@@ -6,6 +6,7 @@ import {
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { trpc } from '../../../../trpc/client';
+import { useTranslations } from 'next-intl';
 
 export interface AccordionIconUploadState {
     uploadError: string | undefined;
@@ -20,6 +21,12 @@ export interface AccordionIconUploadState {
 export const useAccordionIconUpload = (
     slug: string,
 ): AccordionIconUploadState => {
+    const useAccordionIconUploadTranslations = useTranslations('components.useCourseImageUpload');
+    const uploadCredentialsError = useAccordionIconUploadTranslations('uploadCredentialsError');
+    const verifyImageError = useAccordionIconUploadTranslations('verifyImageError');
+    const uploadAbortError = useAccordionIconUploadTranslations('uploadAbortError');
+    const uploadFailedError = useAccordionIconUploadTranslations('uploadFailedError');
+
     const uploadMutation = trpc.uploadAccordionIcon.useMutation();
     const verifyMutation = trpc.verifyFile.useMutation();
 
@@ -35,8 +42,6 @@ export const useAccordionIconUpload = (
             throw new AbortError();
         }
 
-        // TODO: Translate error messages
-
         const checksum = await calculateMd5(uploadRequest.file);
 
         // For mutations, we aren't able to abort them midway.
@@ -49,7 +54,7 @@ export const useAccordionIconUpload = (
             size: uploadRequest.file.size,
         });
         if (!uploadResult.success) {
-            throw new Error('Failed to get upload credentials');
+            throw new Error(uploadCredentialsError);
         }
 
         if (abortSignal?.aborted) {
@@ -70,7 +75,7 @@ export const useAccordionIconUpload = (
             fileId: uploadResult.data.file.id,
         });
         if (!verifyResult.success) {
-            throw new Error('Failed to verify image upload');
+            throw new Error(verifyImageError);
         }
 
         return {
@@ -92,11 +97,10 @@ export const useAccordionIconUpload = (
             return await uploadVideo(uploadRequest, abortSignal);
         } catch (error) {
             if (error instanceof AbortError) {
-                console.warn('File upload was aborted');
+                console.warn(uploadAbortError);
             } else {
                 console.error('File upload failed:', error);
-                // TODO: Translate error message
-                setUploadError('Failed to upload image. Please try again.');
+                setUploadError(uploadFailedError);
             }
             throw error;
         }

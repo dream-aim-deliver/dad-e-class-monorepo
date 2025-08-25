@@ -106,6 +106,111 @@ const topicsMock: useCaseModels.TListTopicsSuccessResponse['data'] = {
     ],
 };
 
+const topicsMockGerman: useCaseModels.TListTopicsSuccessResponse['data'] = {
+    topics: [
+        {
+            name: 'Branding und Identität',
+            slug: 'branding-and-identity',
+        },
+        {
+            name: 'Grafik- und Visualdesign',
+            slug: 'graphic-and-visual-design',
+        },
+        {
+            name: 'Motion Design und Animation',
+            slug: 'motion-design-and-animation',
+        },
+        {
+            name: 'Sound Design und Bearbeitung',
+            slug: 'sound-design-and-editing',
+        },
+        {
+            name: 'Digitale Inhalte und Social Media Strategie',
+            slug: 'digital-content-and-social-media-strategy',
+        },
+        {
+            name: 'Webdesign und Entwicklung',
+            slug: 'web-design-and-development',
+        },
+        {
+            name: 'UI/UX Design',
+            slug: 'ui-ux-design',
+        },
+        {
+            name: 'Visuelles Storytelling',
+            slug: 'visual-storytelling',
+        },
+        {
+            name: 'Werbekampagnen',
+            slug: 'advertising-campaigns',
+        },
+        {
+            name: 'Key Visual Erstellung',
+            slug: 'key-visual-creation',
+        },
+        {
+            name: 'Ganzheitliche Konzeptentwicklung',
+            slug: 'holistic-concept-development',
+        },
+        {
+            name: 'Fotografie und Bearbeitung',
+            slug: 'photography-and-editing',
+        },
+        {
+            name: 'Prompting und KI-Tools',
+            slug: 'prompting-and-ai-tools',
+        },
+        {
+            name: 'Ideenfindung und Brainstorming',
+            slug: 'idea-generation-and-brainstorming',
+        },
+        {
+            name: 'Copywriting und Content-Erstellung',
+            slug: 'copywriting-and-content-creation',
+        },
+        {
+            name: 'Strategie und Konzeptentwicklung',
+            slug: 'strategy-and-concept-development',
+        },
+        {
+            name: 'Kreative und Art Direction',
+            slug: 'creative-and-art-direction',
+        },
+        {
+            name: 'Geschäftsplanung und Finanzierung',
+            slug: 'business-planning-and-financing',
+        },
+        {
+            name: 'Pitching und Präsentationsfähigkeiten',
+            slug: 'pitching-and-presentation-skills',
+        },
+        {
+            name: 'Typografie, Layout und Komposition',
+            slug: 'typography-layout-and-composition',
+        },
+        {
+            name: 'Cross-Channel Marketing',
+            slug: 'cross-channel-marketing',
+        },
+        {
+            name: 'Kampagnenentwicklung',
+            slug: 'campaign-development',
+        },
+        {
+            name: 'Infografiken und Datenvisualisierung',
+            slug: 'infographics-and-data-visualization',
+        },
+        {
+            name: 'Verpackung und Printdesign',
+            slug: 'packaging-and-print-design',
+        },
+        {
+            name: 'Film und Kinematographie',
+            slug: 'film-and-cinematography',
+        },
+    ],
+};
+
 const topicsCriticalError: useCaseModels.TGetHomePageUseCaseErrorResponse = {
     success: false,
     data: {
@@ -122,6 +227,28 @@ const topicsAuthError: useCaseModels.TGetHomePageUseCaseErrorResponse = {
     data: {
         errorType: 'AuthenticationError',
         message: 'You are not authorized to access this resource',
+        operation: 'getTopics',
+        context: {},
+        trace: undefined,
+    },
+};
+
+const topicsCriticalErrorGerman: useCaseModels.TGetHomePageUseCaseErrorResponse = {
+    success: false,
+    data: {
+        errorType: 'NotFound',
+        message: 'Themen nicht gefunden',
+        operation: 'getTopics',
+        context: {},
+        trace: undefined,
+    },
+};
+
+const topicsAuthErrorGerman: useCaseModels.TGetHomePageUseCaseErrorResponse = {
+    success: false,
+    data: {
+        errorType: 'AuthenticationError',
+        message: 'Sie sind nicht berechtigt, auf diese Ressource zuzugreifen',
         operation: 'getTopics',
         context: {},
         trace: undefined,

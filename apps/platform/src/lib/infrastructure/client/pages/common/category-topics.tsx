@@ -8,7 +8,7 @@ import {
     FilterSwitch,
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 const CONTENT_CLASS_NAME = 'mt-8';
@@ -25,6 +25,7 @@ export default function CategoryTopics({
     filterText,
 }: CategoryTopicsProps) {
     const locale = useLocale() as TLocale;
+    const categoryTopicsTranslations = useTranslations('pages.categoryTopics');
 
     // Data fetching and presentation logic
     const [topicsByCategoryResponse] =
@@ -121,12 +122,11 @@ export default function CategoryTopics({
             </Tabs.Content>
         );
     };
-    // TODO: Translate
     return (
         <Tabs.Root defaultTab="all" onValueChange={handleTabChange}>
             <Tabs.List>
                 <Tabs.Trigger value="all" isLast={categories.length === 0}>
-                    All
+                    {categoryTopicsTranslations('allText')}
                 </Tabs.Trigger>
                 {categories.map((category, index) =>
                     renderCategoryTab(category, index, categories.length),
