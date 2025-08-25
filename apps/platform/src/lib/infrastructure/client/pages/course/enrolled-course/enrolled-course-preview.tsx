@@ -3,6 +3,7 @@ import {
     CourseOutlineAccordion,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
     Divider,
     LessonHeader,
 } from '@maany_shr/e-class-ui-kit';
@@ -133,6 +134,10 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
 
     const currentModule = getCurrentModule();
     const currentLesson = getCurrentLesson();
+
+    if (transformedModules.length === 0) {
+        return <DefaultNotFound locale={locale} description="Course is empty." />;
+    }
 
     return (
         <div className="flex flex-col w-full gap-6 md:flex-row">

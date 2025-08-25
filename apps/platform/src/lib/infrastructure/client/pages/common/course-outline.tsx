@@ -6,6 +6,7 @@ import {
     DefaultAccordion,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
 import { useGetCourseOutlinePresenter } from '../../hooks/use-course-outline-presenter';
 import { trpc } from '../../trpc/cms-client';
@@ -36,6 +37,10 @@ function OutlineAccordion({ courseSlug }: CourseOutlineProps) {
     }
 
     const outline = outlineViewModel.data;
+
+    if (outline.items.length === 0) {
+        return <DefaultNotFound locale={locale} description="The course doesn't have an outline." />;
+    }
 
     return (
         <DefaultAccordion
