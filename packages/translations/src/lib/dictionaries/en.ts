@@ -6,7 +6,7 @@ import { Offers_EN } from '../pages/offers/offers-en';
 import { Coaching_EN } from '../pages/coaching/coaching-en';
 
 
-export const EN: TDictionary = {
+export const EN: TDictionary = {  
   components: {
     paginationButton: {
       loadMore: 'Load more...',
@@ -24,6 +24,12 @@ export const EN: TDictionary = {
       title: 'Not Found',
       description: 'Could not find the requested resource.',
       retry: 'Retry',
+      goBack: 'Go back',
+    },
+    defaultComingSoon: {
+      title: 'Coming soon',
+      description: 'This page is currently under construction. We’re working on it and it will be available soon!',
+      goBack: 'Go back',
     },
     coachBanner: {
       buttonText: 'Become a Coach',
