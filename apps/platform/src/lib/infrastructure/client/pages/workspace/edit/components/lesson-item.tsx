@@ -7,6 +7,7 @@ import {
     InputField,
 } from '@maany_shr/e-class-ui-kit';
 import { CourseLesson } from '../types';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 
 interface LessonItemProps {
     lesson: CourseLesson;
@@ -17,6 +18,7 @@ interface LessonItemProps {
     isLast: boolean;
     onTitleChange: (newTitle: string) => void;
     onExtraTrainingChange: (isExtraTraining: boolean) => void;
+    locale: TLocale;
 }
 
 export function LessonItem({
@@ -28,15 +30,16 @@ export function LessonItem({
     isLast,
     onTitleChange,
     onExtraTrainingChange,
+    locale,
 }: LessonItemProps) {
-    // TODO: Translate
+    const dictionary = getDictionary(locale);
     return (
         <div className="flex flex-col gap-4 bg-card-fill border border-base-neutral-700 rounded-lg p-4">
             <div className="flex gap-4 items-center w-full">
                 <IconLesson />
                 <InputField
                     value={lesson.title || ''}
-                    inputText="Lesson title"
+                    inputText={dictionary.components.lessonItem.lessonTitleText}
                     setValue={(value) => {
                         onTitleChange(value);
                     }}
@@ -52,7 +55,7 @@ export function LessonItem({
             </div>
             <CheckBox
                 name=""
-                label="Extra training"
+                label={dictionary.components.lessonItem.extraTrainingText}
                 value=""
                 checked={lesson.isExtraTraining}
                 onChange={() => onExtraTrainingChange(!lesson.isExtraTraining)}
@@ -61,7 +64,7 @@ export function LessonItem({
             />
             <Button
                 variant="secondary"
-                text={lesson.id ? 'Edit' : 'Save to edit'}
+                text={lesson.id ? dictionary.components.lessonItem.editText : dictionary.components.lessonItem.saveToEditText}
                 disabled={lesson.id === undefined}
                 iconLeft={<IconEdit />}
                 hasIconLeft

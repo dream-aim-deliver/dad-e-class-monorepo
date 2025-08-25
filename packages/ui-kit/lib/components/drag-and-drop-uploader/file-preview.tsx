@@ -78,7 +78,7 @@ export const FilePreview = (props: FilePreviewProps) => {
     const [thumbnailError, setThumbnailError] = useState(false);
     const [thumbnailLoading, setThumbnailLoading] = useState(true);
     if (uploadResponse?.status === 'unavailable') {
-        return <FeedBackMessage type="error" message="File upload failed" />;
+        return <FeedBackMessage type="error" message={dictionary.components.uploadingSection.fileUploadFailedText} />;
     }
 
     /**
@@ -155,8 +155,6 @@ export const FilePreview = (props: FilePreviewProps) => {
         return <IconFile classNames="w-6 h-6 text-text-primary" />;
     };
 
-    // TODO: Translate uploadResponse
-
     return (
         <div
             className={cn(
@@ -197,7 +195,7 @@ export const FilePreview = (props: FilePreviewProps) => {
                 {uploadResponse?.status === 'processing' ? (
                     props.readOnly ? (
                         <span className="text-sm text-text-secondary">
-                            Processing...
+                            {dictionary.components.uploadingSection.processingText}
                         </span>
                     ) : (
                         // Only show the Button if 'onCancel' exists in props

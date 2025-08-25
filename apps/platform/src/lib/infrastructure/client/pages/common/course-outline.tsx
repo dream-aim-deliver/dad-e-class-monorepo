@@ -1,7 +1,7 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../trpc/client';
 import { Suspense, useState } from 'react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
     DefaultAccordion,
@@ -52,10 +52,11 @@ function OutlineAccordion({ courseSlug }: CourseOutlineProps) {
 
 export default function CourseOutline({ courseSlug }: CourseOutlineProps) {
     const locale = useLocale() as TLocale;
+    const courseOutlineTranslations = useTranslations('pages.courseOutline');
 
     return (
         <div className="flex flex-col space-y-6">
-            <h2> Course content </h2>
+            <h2>{courseOutlineTranslations('courseContent')}</h2>
             <Suspense
                 fallback={<DefaultLoading locale={locale} variant="minimal" />}
             >

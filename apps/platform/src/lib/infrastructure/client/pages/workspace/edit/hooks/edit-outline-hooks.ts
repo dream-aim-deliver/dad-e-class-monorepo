@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseOutlinePresenter } from '../../../../hooks/use-course-outline-presenter';
 import { useAccordionIconUpload } from './use-accordion-icon-upload';
+import { useTranslations } from 'next-intl';
 
 export function useCourseOutline(slug: string) {
     const [outlineResponse] = trpc.getCourseOutline.useSuspenseQuery({
@@ -18,7 +19,6 @@ export function useCourseOutline(slug: string) {
     return outlineViewModel;
 }
 
-// TODO: Translate error messages
 export function useSaveOutline({
     slug,
     courseVersion,
@@ -35,10 +35,12 @@ export function useSaveOutline({
     const accordionIconUpload = useAccordionIconUpload(slug);
     const saveOutlineMutation = trpc.saveCourseOutline.useMutation();
 
+    const editOutlineTranslations = useTranslations('components.editOutlineHooks');
+
     const saveCourseOutline = async () => {
         if (!courseVersion) return;
         if (accordionBuilderItems.length < 1) {
-            setErrorMessage('At least one outline item is required');
+            setErrorMessage(editOutlineTranslations('outlineCountValidationText'));
             return;
         }
         const requestItems: useCaseModels.TSaveCourseOutlineRequest['items'] =
@@ -47,7 +49,7 @@ export function useSaveOutline({
             const item = accordionBuilderItems[i];
             if (!item.title || !item.content) {
                 setErrorMessage(
-                    'All outline items must have a title and content',
+                    editOutlineTranslations('TitleAndContentValidationText'),
                 );
                 return;
             }

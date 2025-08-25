@@ -1,3 +1,4 @@
+import { getDictionary } from '@maany_shr/e-class-translations';
 import { ContentType, ModuleContentProps } from '../types';
 import { LessonItem } from './lesson-item';
 import { MilestoneItem } from './milestone-item';
@@ -9,16 +10,17 @@ export function ModuleContent({
     onDeleteContent,
     onLessonTitleChange,
     onLessonExtraTrainingChange,
+    locale,
 }: ModuleContentProps) {
     const isEmpty = content.length === 0;
+    const dictionary = getDictionary(locale);
 
-    // TODO: Translate
     return (
         <div className="flex flex-col gap-2 ml-4">
             {isEmpty && (
                 <div className=" flex flex-col gap-2 bg-card-fill border border-base-neutral-700 rounded-lg p-4">
                     <span className="text-text-secondary">
-                        Add lessons or milestones
+                        {dictionary.components.moduleContent.addLessonsOrMilestonesText}
                     </span>
                 </div>
             )}
@@ -33,6 +35,7 @@ export function ModuleContent({
                             onDelete={() => onDeleteContent(index)}
                             isFirst={index === 0}
                             isLast={index === content.length - 1}
+                            locale={locale}
                         />
                     );
                 }
@@ -55,6 +58,7 @@ export function ModuleContent({
                                     isExtraTraining,
                                 )
                             }
+                            locale={locale}
                         />
                     );
                 }

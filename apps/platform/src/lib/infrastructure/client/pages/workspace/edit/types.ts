@@ -1,3 +1,5 @@
+import { TLocale } from "@maany_shr/e-class-translations";
+
 export enum ContentType {
     Lesson = 'lesson',
     Milestone = 'milestone',
@@ -40,6 +42,7 @@ export interface ModuleContentProps {
         lessonIndex: number,
         extraTraining: boolean,
     ) => void;
+    locale: TLocale;
 }
 
 export interface ModuleEditorProps {
@@ -60,6 +63,7 @@ export interface ModuleEditorProps {
         index: number,
         isExtraTraining: boolean,
     ) => void;
+    locale: TLocale;
 }
 
 export interface LessonComponentButton {

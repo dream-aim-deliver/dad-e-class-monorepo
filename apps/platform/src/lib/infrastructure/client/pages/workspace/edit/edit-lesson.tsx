@@ -385,6 +385,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                 disablePreview={false}
                 isSaving={isSaving}
                 isPreviewing={isPreviewing}
+                locale={locale}
             />
             {errorMessage && (
                 <DefaultError
@@ -408,6 +409,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                             interactiveComponentButtons={
                                 interactiveComponentButtons
                             }
+                            locale={locale}
                         />
                     }
                     editor={

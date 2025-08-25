@@ -6,6 +6,7 @@ import {
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { trpc } from '../../../../trpc/client';
+import { useTranslations } from 'next-intl';
 
 export interface IntroductionVideoUploadState {
     video: fileMetadata.TFileMetadataVideo | null;
@@ -23,6 +24,12 @@ export interface IntroductionVideoUploadState {
 export const useIntroductionVideoUpload = (
     slug: string,
 ): IntroductionVideoUploadState => {
+    const useIntroductionVideoUploadTranslations = useTranslations('components.useCourseImageUpload');
+    const uploadCredentialsError = useIntroductionVideoUploadTranslations('uploadCredentialsError');
+    const verifyImageError = useIntroductionVideoUploadTranslations('verifyImageError');
+    const uploadAbortError = useIntroductionVideoUploadTranslations('uploadAbortError');
+    const uploadFailedError = useIntroductionVideoUploadTranslations('uploadFailedError');
+
     const uploadMutation = trpc.uploadIntroductionVideo.useMutation();
     const verifyMutation = trpc.verifyFile.useMutation();
 
@@ -53,7 +60,7 @@ export const useIntroductionVideoUpload = (
             size: uploadRequest.file.size,
         });
         if (!uploadResult.success) {
-            throw new Error('Failed to get upload credentials');
+            throw new Error(uploadCredentialsError);
         }
 
         if (abortSignal?.aborted) {
@@ -74,7 +81,7 @@ export const useIntroductionVideoUpload = (
             fileId: uploadResult.data.file.id,
         });
         if (!verifyResult.success) {
-            throw new Error('Failed to verify image upload');
+            throw new Error(verifyImageError);
         }
 
         return {
@@ -96,11 +103,10 @@ export const useIntroductionVideoUpload = (
             return await uploadVideo(uploadRequest, abortSignal);
         } catch (error) {
             if (error instanceof AbortError) {
-                console.warn('File upload was aborted');
+                console.warn(uploadAbortError);
             } else {
                 console.error('File upload failed:', error);
-                // TODO: Translate error message
-                setUploadError('Failed to upload image. Please try again.');
+                setUploadError(uploadFailedError);
             }
             throw error;
         }

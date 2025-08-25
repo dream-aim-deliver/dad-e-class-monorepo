@@ -4,6 +4,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../../hooks/use-enrolled-course-details-presenter';
 import { useCourseForm } from '@maany_shr/e-class-ui-kit';
 import { useCourseImageUpload } from '../../../common/hooks/use-course-image-upload';
+import { useTranslations } from 'next-intl';
 
 export function useCourseDetails(slug: string) {
     const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery(
@@ -27,7 +28,6 @@ export function useCourseDetails(slug: string) {
     return courseViewModel;
 }
 
-// TODO: Translate error messages
 export function useSaveDetails({
     slug,
     courseVersion,
@@ -43,17 +43,19 @@ export function useSaveDetails({
 
     const saveDetailsMutation = trpc.saveCourseDetails.useMutation();
 
+    const editDetailsTranslations = useTranslations('components.editDetailsHooks');
+
     const validateCourseDetails = () => {
         if (!courseDetails.courseTitle) {
-            setErrorMessage('Course title is required');
+            setErrorMessage(editDetailsTranslations('courseTitleValidationText'));
             return false;
         }
         if (!courseDetails.serializeDescription()) {
-            setErrorMessage('Course description is required');
+            setErrorMessage(editDetailsTranslations('courseDescriptionValidationText'));
             return false;
         }
         if (Number.isNaN(courseDetails.duration)) {
-            setErrorMessage('Course duration is invalid');
+            setErrorMessage(editDetailsTranslations('courseDurationValidationText'));
             return false;
         }
         return true;

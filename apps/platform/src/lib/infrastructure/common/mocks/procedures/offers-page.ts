@@ -64,6 +64,69 @@ const offersPageCarouselMock: useCaseModels.TGetOffersPageCarouselSuccessRespons
         ],
     };
 
+const offersPageOutlineMockGerman: useCaseModels.TGetOffersPageOutlineSuccessResponse['data'] =
+    {
+        title: 'Angebote speziell für Sie',
+        description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    };
+
+const offersPageCarouselMockGerman: useCaseModels.TGetOffersPageCarouselSuccessResponse['data'] =
+    {
+        items: [
+            {
+                title: 'Entdecken Sie erstaunliche Reiseziele',
+                description:
+                    'Erkunden Sie atemberaubende Landschaften und versteckte Juwelen auf der ganzen Welt. Von unberührten Stränden bis zu imposanten Bergen – Abenteuer erwartet Sie an jeder Ecke.',
+                badge: 'Empfohlen',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
+                buttonText: 'Entdecken beginnen',
+                buttonUrl: '/destinations',
+            },
+            {
+                title: 'Meistern Sie heute neue Fähigkeiten',
+                description:
+                    'Schließen Sie sich Tausenden von Lernenden an, die ihre Karriere mit unseren umfassenden Online-Kursen vorantreiben. Expertenlehrer und praktische Projekte inklusive.',
+                badge: 'Beliebt',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop',
+                buttonText: 'Kurse durchsuchen',
+                buttonUrl: '/courses',
+            },
+            {
+                title: 'Köstliche Rezepte einfach gemacht',
+                description:
+                    'Verwandeln Sie Ihre Küche in ein kulinarisches Paradies mit unseren Schritt-für-Schritt-Rezepten. Von schnellen Wochentagsessen bis hin zu beeindruckenden Wochenend-Leckereien.',
+                badge: null,
+                imageUrl:
+                    'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
+                buttonText: 'Rezepte ansehen',
+                buttonUrl: '/recipes',
+            },
+            {
+                title: 'Steigern Sie Ihre Produktivität',
+                description:
+                    'Optimieren Sie Ihren Arbeitsablauf mit leistungsstarken Tools und Techniken. Lernen Sie, wie erfolgreiche Fachkräfte ihre Zeit verwalten und jeden Tag mehr erreichen.',
+                badge: 'Neu',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=600&fit=crop',
+                buttonText: 'Loslegen',
+                buttonUrl: '/productivity',
+            },
+            {
+                title: 'Verbinden Sie sich mit der Natur',
+                description:
+                    'Entfliehen Sie dem Trubel des Stadtlebens. Entdecken Sie friedliche Wanderwege, Campingplätze und Outdoor-Aktivitäten, die Ihre Seele erfrischen.',
+                badge: 'Trending',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop',
+                buttonText: 'Wege finden',
+                buttonUrl: '/outdoor',
+            },
+        ],
+    };
+
 export const getOffersPageOutline = t.procedure
     .input(useCaseModels.GetOffersPageOutlineRequestSchema)
     .query(

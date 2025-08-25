@@ -134,6 +134,7 @@ export default function EditCourseStructure({
                             isExtraTraining,
                         );
                     }}
+                    locale={locale}
                 />
             ))}
         />

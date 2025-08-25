@@ -372,6 +372,9 @@ export const DictionarySchema = z.object({
     milestone: z.object({
       milestoneText: z.string(),
     }),
+    moduleContent: z.object({
+      addLessonsOrMilestonesText: z.string(),
+    }),
     courseOutline: z.object({
       title: z.string(),
       optionalText: z.string(),
@@ -410,6 +413,8 @@ export const DictionarySchema = z.object({
       deleteText: z.string(),
       downloadText: z.string(),
       maxFilesText: z.string(),
+      processingText: z.string(),
+      fileUploadFailedText: z.string(),
       uploadImage: z.object({
         choseImages: z.string(),
         description: z.string(),
@@ -930,6 +935,8 @@ export const DictionarySchema = z.object({
       successCreatedBanner: z.string(),
       successUpdatedBanner: z.string(),
       recommendedSizeText: z.string(),
+      estimatedDurationText: z.string(),
+      durationPlaceholderText: z.string(),
     }),
     accordion: z.object({
       accordionTitleText: z.string(),
@@ -944,6 +951,66 @@ export const DictionarySchema = z.object({
       moveUpText: z.string(),
       moveDownText: z.string(),
       deleteText: z.string(),
+    }),
+    useCourseImageUpload: z.object({
+      uploadCredentialsError: z.string(),
+      verifyImageError: z.string(),
+      uploadAbortError: z.string(),
+      uploadFailedError: z.string(),
+    }),
+    editHeader: z.object({
+      editCourseText: z.string(),
+      savingText: z.string(),
+      saveDraftText: z.string(),
+      previewText: z.string(),
+      hidePreviewText: z.string(),
+      saveToPreviewText: z.string(),
+    }),
+    lessonComponentBar: z.object({
+      simpleText: z.string(),
+      presentInformationText: z.string(),
+      interactiveText: z.string(),
+      requireInputText: z.string(),
+    }),
+    lessonItem: z.object({
+      lessonTitleText: z.string(),
+      extraTrainingText: z.string(),
+      editText: z.string(),
+      saveToEditText: z.string(),
+    }),
+    editDetailsHooks: z.object({
+      courseTitleValidationText: z.string(),
+      courseDescriptionValidationText: z.string(),
+      courseDurationValidationText: z.string(),
+    }),
+    editOutlineHooks: z.object({
+      outlineCountValidationText: z.string(),
+      TitleAndContentValidationText: z.string(),
+    }),
+    editIntroductionHooks: z.object({
+      courseIntroductionValidationText: z.string(),
+    }),
+    saveHooks: z.object({
+      courseUpdateError: z.string(),
+      failToSaveCourseError: z.string(),
+      courseSlugOrVersionError: z.string(),
+      unknownCourseError: z.string(),
+      courseLessonUpdateError: z.string(),
+      failToSaveLessonError: z.string(),
+      unknownLessonError: z.string(),
+    }),
+    introductionForm: z.object({
+      introductionText: z.string(),
+      courseIntroductionText: z.string(),
+      courseIntroductionPlaceholderText: z.string(),
+      introductionVideoText: z.string(),
+    }),
+    assignmentLesson: z.object({
+      titleValidationText: z.string(),
+      descriptionValidationText: z.string(),
+    }),
+    coachingSessionLesson: z.object({
+      coachingSessionCountValidationText: z.string(),
     }),
   }),
   pages: z.object({
@@ -1097,8 +1164,22 @@ export const DictionarySchema = z.object({
       notImplementedTitle: z.string(),
       notImplementedDescription: z.string(),
       moduleEditor: z.object({
-        moduleTitle: z.string(),        
+        moduleTitle: z.string(),
       }),
+    }),
+    edit: z.object({
+      lesson: z.object({
+        invalidLessonId: z.string(),
+      }),
+    }),
+    editCourseIntroOutline: z.object({
+      outlineText: z.string(),
+    }),
+    courseOutline: z.object({
+      courseContent: z.string(),
+    }),
+    categoryTopics: z.object({
+      allText: z.string(),
     }),
   }),
 });

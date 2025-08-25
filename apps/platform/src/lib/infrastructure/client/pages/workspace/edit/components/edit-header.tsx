@@ -1,3 +1,4 @@
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import {
     Button,
     IconEyeShow,
@@ -12,6 +13,7 @@ interface EditHeaderProps {
     disablePreview: boolean;
     isSaving: boolean;
     isPreviewing?: boolean;
+    locale: TLocale;
 }
 
 export default function EditHeader({
@@ -20,17 +22,21 @@ export default function EditHeader({
     disablePreview,
     isSaving,
     isPreviewing = false,
+    locale,
 }: EditHeaderProps) {
-    const previewButtonText = isPreviewing
-        ? 'Hide preview'
-        : disablePreview
-          ? 'Save to preview'
-          : 'Preview';
+    const dictionary = getDictionary(locale);
 
-    // TODO: Translate
+    const previewButtonText = isPreviewing
+        ? dictionary.components.editHeader.hidePreviewText
+        : disablePreview
+            ? dictionary.components.editHeader.saveToPreviewText
+            : dictionary.components.editHeader.previewText;
+
     return (
         <div className="flex md:flex-row flex-col md:items-center justify-between gap-5">
-            <h1> Edit Course </h1>
+            <h1>
+                {dictionary.components.editHeader.editCourseText}
+            </h1>
             <div className="flex sm:flex-row flex-col sm:items-center gap-3">
                 <Button
                     variant="text"
@@ -45,7 +51,7 @@ export default function EditHeader({
                     variant="primary"
                     iconLeft={<IconSave />}
                     hasIconLeft
-                    text={isSaving ? 'Saving...' : 'Save draft'}
+                    text={isSaving ? dictionary.components.editHeader.savingText : dictionary.components.editHeader.saveDraftText}
                     onClick={onSave}
                     disabled={isSaving || isPreviewing}
                 />
