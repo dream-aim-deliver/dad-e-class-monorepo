@@ -13,11 +13,11 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { viewModels } from '@maany_shr/e-class-models';
 import { Suspense, useEffect, useState } from 'react';
-import { trpc } from '../../trpc/client';
 import { useCreateCoursePresenter } from '../../hooks/use-create-course-presenter';
 import { useRouter } from 'next/navigation';
 import { useGetCourseShortPresenter } from '../../hooks/use-course-short-presenter';
 import { useCourseImageUpload } from '../common/hooks/use-course-image-upload';
+import { trpc } from '../../trpc/cms-client';
 
 const useCreateCourse = () => {
     const router = useRouter();
@@ -34,6 +34,7 @@ const useCreateCourse = () => {
     useEffect(() => {
         if (createMutation.isSuccess) {
             createCoursePresenter.present(
+                // @ts-ignore
                 createMutation.data,
                 createCourseViewModel,
             );
@@ -210,6 +211,7 @@ function CreateCourseWithDuplication({
     const { presenter: duplicationCoursePresenter } =
         useGetCourseShortPresenter(setDuplicationCourseViewModel);
     duplicationCoursePresenter.present(
+        // @ts-ignore
         duplicationCourseResponse,
         duplicationCourseViewModel,
     );
