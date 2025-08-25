@@ -2,6 +2,7 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
+    Breadcrumbs,
     Button,
     CourseForm,
     DefaultError,
@@ -91,6 +92,8 @@ interface CreateCourseContentProps {
 
 function CreateCourseContent(props: CreateCourseContentProps) {
     const locale = useLocale() as TLocale;
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const pageTranslations = useTranslations('pages.createCourse');
 
     const {
         courseTitle,
@@ -158,6 +161,28 @@ function CreateCourseContent(props: CreateCourseContentProps) {
 
     return (
         <div className="flex flex-col gap-4 px-30">
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => {
+                            // TODO: Implement navigation to home
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('courses'),
+                        onClick: () => {
+                            // TODO: Implement navigation to courses
+                        },
+                    },
+                    {
+                        label: pageTranslations('createTitle'),
+                        onClick: () => {
+                            // Nothing should happen on clicking the current page
+                        },
+                    },
+                ]}
+            />
             <div className="flex w-full items-center justify-between">
                 <h1> {createCourseTranslations('createTitle')} </h1>
                 <Button

@@ -33,6 +33,7 @@ import {
     CoachingSessionElement,
     IconAssignment,
     AssignmentElement,
+    Breadcrumbs,
 } from '@maany_shr/e-class-ui-kit';
 import EditHeader from './components/edit-header';
 import EditLayout from './components/edit-layout';
@@ -111,6 +112,8 @@ function PreviewRenderer({
 export default function EditLesson({ lessonId }: EditLessonProps) {
     const locale = useLocale() as TLocale;
     const dictionary = getDictionary(locale);
+    const editLessonsTranslations = useTranslations('pages.editLesson');
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
     const lessonComponentsViewModel = useLessonComponents(lessonId);
 
@@ -137,7 +140,6 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
     });
 
     const [isPreviewing, setIsPreviewing] = useState(false);
-    const editLessonsTranslations = useTranslations('pages.editLesson');
     const simpleComponentButtons: LessonComponentButton[] = [
         {
             icon: <IconRichText />,
@@ -376,6 +378,34 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
 
     return (
         <div className="flex flex-col gap-4 px-15">
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => {
+                            // TODO: Implement navigation to home
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('workspace'),
+                        onClick: () => {
+                            // TODO: Implement navigation to workspace
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('courses'),
+                        onClick: () => {
+                            // TODO: Implement navigation to courses
+                        },
+                    },
+                    {
+                        label: editLessonsTranslations('editLessonTitle'),
+                        onClick: () => {
+                            // Nothing should happen on clicking the current page
+                        },
+                    },
+                ]}
+            />
             <EditHeader
                 title={editLessonsTranslations('editLessonTitle')}
                 onPreview={() => {
