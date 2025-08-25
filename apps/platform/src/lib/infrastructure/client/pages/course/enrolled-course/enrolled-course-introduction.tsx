@@ -86,8 +86,8 @@ function EnrolledCourseIntroductionContent(
                     );
                 }}
             />
-            {/* <CourseIntroduction courseSlug={props.courseSlug} />
-            <CourseOutline courseSlug={props.courseSlug} /> */}
+            {/* <CourseIntroduction courseSlug={props.courseSlug} /> */}
+            <CourseOutline courseSlug={props.courseSlug} />
         </div>
     );
 }

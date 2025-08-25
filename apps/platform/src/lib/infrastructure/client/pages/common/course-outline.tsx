@@ -1,5 +1,4 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../../trpc/client';
 import { Suspense, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -9,6 +8,7 @@ import {
     DefaultLoading,
 } from '@maany_shr/e-class-ui-kit';
 import { useGetCourseOutlinePresenter } from '../../hooks/use-course-outline-presenter';
+import { trpc } from '../../trpc/cms-client';
 
 interface CourseOutlineProps {
     courseSlug: string;
@@ -22,6 +22,7 @@ function OutlineAccordion({ courseSlug }: CourseOutlineProps) {
         viewModels.TCourseOutlineViewModel | undefined
     >(undefined);
     const { presenter } = useGetCourseOutlinePresenter(setOutlineViewModel);
+    // @ts-ignore
     presenter.present(outlineResponse, outlineViewModel);
 
     const locale = useLocale() as TLocale;
