@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,9 +13,9 @@ export const AvailableCoachingListSuccessSchema = ListAvailableCoachingsSuccessR
 export type TAvailableCoachingListSuccess = z.infer<typeof AvailableCoachingListSuccessSchema>;
 
 const AvailableCoachingListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", AvailableCoachingListSuccessSchema)
-const AvailableCoachingListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const AvailableCoachingListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory())
-const AvailableCoachingListUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory());
+const AvailableCoachingListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
+const AvailableCoachingListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
+const AvailableCoachingListUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const AvailableCoachingListViewModelSchemaMap = {
     default: AvailableCoachingListDefaultViewModelSchema,

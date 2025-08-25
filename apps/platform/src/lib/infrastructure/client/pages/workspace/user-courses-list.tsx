@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { trpc } from '../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListUserCoursesPresenter } from '../../hooks/use-user-courses-presenter';
 import { useSession } from 'next-auth/react';
@@ -21,6 +20,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { useRouter } from 'next/navigation';
+import { trpc } from '../../trpc/cms-client';
 
 export default function UserCoursesList() {
     const locale = useLocale() as TLocale;
@@ -38,6 +38,7 @@ export default function UserCoursesList() {
     const userRoles = session?.user.roles;
     const isAdmin = userRoles?.includes('admin');
     const [coursesResponse] = trpc.listUserCourses.useSuspenseQuery({});
+    console.log(coursesResponse);
     const [coursesViewModel, setCoursesViewModel] = useState<
         viewModels.TUserCourseListViewModel | undefined
     >(undefined);
@@ -111,7 +112,7 @@ export default function UserCoursesList() {
                         currency: '',
                         fullPrice: 0,
                     };
-                    if (course.role === 'owner' || isAdmin) {
+                    if (course.role === 'course_creator' || isAdmin) {
                         const stateToStatus: Record<string, CourseStatus> = {
                             draft: 'draft',
                             review: 'under-review',

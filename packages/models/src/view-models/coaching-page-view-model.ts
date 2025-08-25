@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,7 +13,7 @@ export const CoachingPageSuccessSchema = GetCoachingPageSuccessResponseSchema.sh
 export type TCoachingPageSuccess = z.infer<typeof CoachingPageSuccessSchema>;
 
 const CoachingPageDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CoachingPageSuccessSchema)
-const CoachingPageKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+const CoachingPageKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
 
 export const CoachingPageViewModelSchemaMap = {
     default: CoachingPageDefaultViewModelSchema,

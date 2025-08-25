@@ -66,7 +66,6 @@ export const mockRouter = t.router({
     getCourseIntroduction,
     getCourseOutline,
     listAssessmentProgresses,
-    listUserCourses,
     searchCourses,
     uploadCourseImage,
     verifyFile,

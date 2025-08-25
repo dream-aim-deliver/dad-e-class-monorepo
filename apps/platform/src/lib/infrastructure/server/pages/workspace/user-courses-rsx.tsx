@@ -1,9 +1,9 @@
-import { HydrateClient, prefetch, trpc } from '../../config/trpc/server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
 import UserCourses from '../../../client/pages/workspace/user-courses';
+import { HydrateClient, prefetch, trpc } from '../../config/trpc/cms-server';
 
 export default async function UserCoursesServerComponent() {
     const session = await getSession();

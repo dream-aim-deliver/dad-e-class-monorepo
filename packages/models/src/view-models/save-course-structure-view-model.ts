@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,11 +13,11 @@ export const SaveCourseStructureSuccessSchema = SaveCourseStructureSuccessRespon
 export type TSaveCourseStructureSuccess = z.infer<typeof SaveCourseStructureSuccessSchema>;
 
 const SaveCourseStructureDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", SaveCourseStructureSuccessSchema);
-const SaveCourseStructureInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory());
-const SaveCourseStructureConflictViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("conflict", BaseErrorDataSchemaFactory(z.object({
+const SaveCourseStructureInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
+const SaveCourseStructureConflictViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("conflict", BaseErrorDataSchemaFactory(BaseErrorDataSchema.extend({
     courseVersion: z.number(),
-})));
-const SaveCourseStructureKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+}), BaseErrorContextSchema));
+const SaveCourseStructureKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const SaveCourseStructureViewModelSchemaMap = {
     default: SaveCourseStructureDefaultViewModelSchema,

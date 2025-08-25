@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,7 +13,7 @@ export const OffersPageOutlineSuccessSchema = GetOffersPageOutlineSuccessRespons
 export type TOffersPageOutlineSuccess = z.infer<typeof OffersPageOutlineSuccessSchema>;
 
 const OffersPageOutlineDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", OffersPageOutlineSuccessSchema)
-const OffersPageOutlineKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+const OffersPageOutlineKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
 
 export const OffersPageOutlineViewModelSchemaMap = {
     default: OffersPageOutlineDefaultViewModelSchema,
