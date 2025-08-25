@@ -2,7 +2,7 @@ import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
-    UnhandledErrorResponse,
+    UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -30,11 +30,11 @@ export default class SearchCoursesPresenter extends BasePresenter<
         super({
             schemas: {
                 responseModel: useCaseModels.SearchCoursesUseCaseResponseSchema,
-                viewModel: viewModels.CourseSearchViewModelSchema,
+                viewModel: viewModels.CourseSearchViewModelSchema
             },
             middleware: SearchCoursesResponseMiddleware,
             viewUtilities: viewUtilities,
-            setViewModel: setViewModel,
+            setViewModel: setViewModel
         });
     }
 
@@ -47,8 +47,8 @@ export default class SearchCoursesPresenter extends BasePresenter<
         return {
             mode: 'default',
             data: {
-                ...response.data,
-            },
+                ...response.data
+            }
         };
     }
 
@@ -62,23 +62,23 @@ export default class SearchCoursesPresenter extends BasePresenter<
             return {
                 mode: 'not-found',
                 data: {
-                    type: response.data.errorType,
+
                     message: response.data.message,
                     operation: response.data.operation,
-                    context: response.data.context,
-                    trace: undefined,
-                },
+                    context: response.data.context
+
+                }
             };
         }
         return {
             mode: 'kaboom',
             data: {
-                type: response.data.errorType,
+
                 message: response.data.message,
                 operation: response.data.operation,
-                context: response.data.context,
-                trace: undefined,
-            },
+                context: response.data.context
+
+            }
         };
     }
 }

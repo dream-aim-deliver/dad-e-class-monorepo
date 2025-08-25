@@ -1,16 +1,12 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { createGetCourseAccessPresenter } from '../presenter/get-course-access-presenter';
-import {
-    HydrateClient,
-    getQueryClient,
-    prefetch,
-    trpc,
-} from '../config/trpc/server';
 import { notFound, redirect } from 'next/navigation';
 import AssessmentForm from '../../client/pages/course/assessment-form';
 import EnrolledCourse from '../../client/pages/course/enrolled-course/enrolled-course';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
+import { getQueryClient, trpc, prefetch } from '../config/trpc/cms-server';
+import { trpc as trpcMock, HydrateClient, prefetch as prefetchMock } from '../config/trpc/server';
 
 interface CourseServerComponentProps {
     slug: string;
@@ -24,18 +20,22 @@ export default async function CourseServerComponent({
     tab,
 }: CourseServerComponentProps) {
     const courseAccessViewModel = await fetchCourseAccess(slug);
+    if (courseAccessViewModel.mode !== 'default') {
+        throw new Error(courseAccessViewModel.data.message);
+    }
 
     handleAccessModes(courseAccessViewModel);
 
     const { highestRole, roles, isAssessmentCompleted } =
         courseAccessViewModel.data;
-    validateUserRole(highestRole);
+    const highestRoleParsed = highestRole ?? 'visitor';
+    validateUserRole(highestRoleParsed);
 
-    if (highestRole === 'visitor') {
+    if (highestRoleParsed === 'visitor') {
         return renderVisitorView(slug);
     }
 
-    const currentRole = role ?? highestRole;
+    const currentRole = role ?? highestRoleParsed;
     validateRoleAccess(currentRole, roles);
 
     if (shouldShowAssessment(currentRole, isAssessmentCompleted)) {
@@ -62,6 +62,7 @@ async function fetchCourseAccess(
         courseAccessViewModel = viewModel;
     });
 
+    // @ts-ignore
     await presenter.present(courseAccessResponse, courseAccessViewModel);
 
     if (!courseAccessViewModel) {
@@ -114,8 +115,8 @@ function shouldShowAssessment(
 }
 
 async function renderAssessmentForm(slug: string) {
-    await prefetch(
-        trpc.listAssessmentComponents.queryOptions({
+    await prefetchMock(
+        trpcMock.listAssessmentComponents.queryOptions({
             courseSlug: slug,
         }),
     );
@@ -134,29 +135,29 @@ async function prefetchIntroductionData(
     currentRole: string,
 ): Promise<void> {
     const promises = [
-        prefetch(
-            trpc.getEnrolledCourseDetails.queryOptions({
-                courseSlug: slug,
-            }),
-        ),
+        // prefetch(
+        //     trpc.getEnrolledCourseDetails.queryOptions({
+        //         courseSlug: slug,
+        //     }),
+        // ),
     ];
 
-    if (currentRole === 'student') {
-        promises.push(
-            prefetch(
-                trpc.getStudentProgress.queryOptions({
-                    courseSlug: slug,
-                }),
-            ),
-            prefetch(
-                trpc.listIncludedCoachingSessions.queryOptions({
-                    courseSlug: slug,
-                }),
-            ),
-        );
-    }
+    // if (currentRole === 'student') {
+    //     promises.push(
+    //         prefetchMock(
+    //             trpcMock.getStudentProgress.queryOptions({
+    //                 courseSlug: slug,
+    //             }),
+    //         ),
+    //         prefetchMock(
+    //             trpcMock.listIncludedCoachingSessions.queryOptions({
+    //                 courseSlug: slug,
+    //             }),
+    //         ),
+    //     );
+    // }
 
-    await Promise.all(promises);
+    await Promise.all([]);
 }
 
 function renderEnrolledCourse({

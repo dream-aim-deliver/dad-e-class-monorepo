@@ -75,7 +75,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 language: 'English',
                 salesCount: 2134,
                 fullDuration: 3600, // 60 hours
-                role: 'owner' as const,
+                role: 'course_creator' as const,
             },
             {
                 id: 4,
@@ -170,7 +170,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 language: 'English',
                 salesCount: 1289,
                 fullDuration: 2880, // 48 hours
-                role: 'owner' as const,
+                role: 'course_creator' as const,
             },
             {
                 id: 8,
@@ -265,7 +265,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 language: 'Japanese',
                 salesCount: 2089,
                 fullDuration: 3240, // 54 hours
-                role: 'owner' as const,
+                role: 'course_creator' as const,
             },
             {
                 id: 12,
@@ -360,7 +360,7 @@ const listUserCoursesMock: useCaseModels.TListUserCoursesSuccessResponse['data']
                 language: 'French',
                 salesCount: 987,
                 fullDuration: 3000, // 50 hours
-                role: 'owner' as const,
+                role: 'course_creator' as const,
             },
             {
                 id: 16,

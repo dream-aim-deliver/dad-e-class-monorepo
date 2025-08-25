@@ -32,7 +32,7 @@ function EnrolledCourseIntroductionContent(
     const tabContext = useTabContext();
     const router = useRouter();
 
-    if (courseViewModel.mode !== 'default') {
+    if (courseViewModel.mode !== 'default' || (progressViewModel && progressViewModel.mode !== 'default')) {
         return <DefaultError locale={locale} />;
     }
 
@@ -61,13 +61,10 @@ function EnrolledCourseIntroductionContent(
                 }}
                 rating={courseViewModel.data.author.averageRating}
                 author={{
-                    name:
-                        courseViewModel.data.author.name +
-                        ' ' +
-                        courseViewModel.data.author.surname,
-                    image: courseViewModel.data.author.avatarUrl ?? '',
+                    name: '',
+                    image: '',
                 }}
-                progress={progressViewModel?.data.progressPercent}
+                progress={progressViewModel?.data.progressPercent ?? 0}
                 imageUrl={courseViewModel.data.imageFile?.downloadUrl ?? ''}
                 students={courseViewModel.data.students.map((student) => ({
                     name: student.name,
@@ -89,8 +86,8 @@ function EnrolledCourseIntroductionContent(
                     );
                 }}
             />
-            <CourseIntroduction courseSlug={props.courseSlug} />
-            <CourseOutline courseSlug={props.courseSlug} />
+            {/* <CourseIntroduction courseSlug={props.courseSlug} />
+            <CourseOutline courseSlug={props.courseSlug} /> */}
         </div>
     );
 }

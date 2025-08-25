@@ -2,7 +2,7 @@ import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
-    UnhandledErrorResponse,
+    UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -34,11 +34,11 @@ export default class CourseIntroductionPresenter extends BasePresenter<
             schemas: {
                 responseModel:
                     useCaseModels.GetCourseIntroductionUseCaseResponseSchema,
-                viewModel: viewModels.CourseIntroductionViewModelSchema,
+                viewModel: viewModels.CourseIntroductionViewModelSchema
             },
             middleware: GetCourseIntroductionResponseMiddleware,
             viewUtilities: viewUtilities,
-            setViewModel: setViewModel,
+            setViewModel: setViewModel
         });
     }
 
@@ -51,8 +51,8 @@ export default class CourseIntroductionPresenter extends BasePresenter<
         return {
             mode: 'default',
             data: {
-                ...response.data,
-            },
+                ...response.data
+            }
         };
     }
 
@@ -65,12 +65,12 @@ export default class CourseIntroductionPresenter extends BasePresenter<
         return {
             mode: 'kaboom',
             data: {
-                type: response.data.errorType,
+
                 message: response.data.message,
                 operation: response.data.operation,
-                context: response.data.context,
-                trace: undefined,
-            },
+                context: response.data.context
+
+            }
         };
     }
 }

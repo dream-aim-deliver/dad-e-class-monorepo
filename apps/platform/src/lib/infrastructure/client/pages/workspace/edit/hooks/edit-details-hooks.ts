@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { trpc } from '../../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../../hooks/use-enrolled-course-details-presenter';
 import { useCourseForm } from '@maany_shr/e-class-ui-kit';
 import { useCourseImageUpload } from '../../../common/hooks/use-course-image-upload';
 import { useTranslations } from 'next-intl';
+import { trpc } from '../../../../trpc/cms-client';
+import { trpc as trpcMock } from '../../../../trpc/client';
 
 export function useCourseDetails(slug: string) {
     const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery(
@@ -23,6 +24,7 @@ export function useCourseDetails(slug: string) {
     >(undefined);
     const { presenter: coursePresenter } =
         useGetEnrolledCourseDetailsPresenter(setCourseViewModel);
+    // @ts-ignore
     coursePresenter.present(courseResponse, courseViewModel);
 
     return courseViewModel;
@@ -41,7 +43,7 @@ export function useSaveDetails({
 
     const courseImageUpload = useCourseImageUpload();
 
-    const saveDetailsMutation = trpc.saveCourseDetails.useMutation();
+    const saveDetailsMutation = trpcMock.saveCourseDetails.useMutation();
 
     const editDetailsTranslations = useTranslations('components.editDetailsHooks');
 

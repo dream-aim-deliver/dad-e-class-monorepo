@@ -230,6 +230,7 @@ const topicsAuthError: useCaseModels.TGetHomePageUseCaseErrorResponse = {
         operation: 'getTopics',
         context: {},
         trace: undefined,
+        statusCode: 403,
     },
 };
 
@@ -252,6 +253,7 @@ const topicsAuthErrorGerman: useCaseModels.TGetHomePageUseCaseErrorResponse = {
         operation: 'getTopics',
         context: {},
         trace: undefined,
+        statusCode: 403,
     },
 };
 

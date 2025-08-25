@@ -10,7 +10,6 @@ import { CourseModule } from '../types';
 import { useSaveLessonComponentsPresenter } from '../../../../hooks/use-save-lesson-components-presenter';
 import { LessonElement } from '@maany_shr/e-class-ui-kit';
 import { transformLessonComponents } from '../../../../utils/transform-lesson-components';
-import { set } from 'zod';
 import { transformLessonToRequest } from '../utils/lesson-to-request';
 import { useTranslations } from 'next-intl';
 
@@ -69,7 +68,6 @@ export function useSaveStructure({
             setErrorMessage(
                 saveTranslations('courseUpdateError'),
             );
-            // @ts-expect-error The factory doesn't provide proper typing for custom errors
             setCourseVersion(saveCourseStructureViewModel.data.courseVersion);
         }
     }, [saveCourseStructureViewModel, saveCourseStructureMutation.isSuccess]);
@@ -177,7 +175,6 @@ export function useSaveLesson({
             setErrorMessage(
                 saveTranslations('courseLessonUpdateError'),
             );
-            // @ts-expect-error The factory doesn't provide proper typing for custom errors
             setCourseVersion(saveLessonViewModel.data.courseVersion);
         }
     }, [saveLessonViewModel, saveLessonMutation.isSuccess]);

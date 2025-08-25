@@ -38,10 +38,12 @@ export default function UserCoursesList() {
     const userRoles = session?.user.roles;
     const isAdmin = userRoles?.includes('admin');
     const [coursesResponse] = trpc.listUserCourses.useSuspenseQuery({});
+    console.log(coursesResponse);
     const [coursesViewModel, setCoursesViewModel] = useState<
         viewModels.TUserCourseListViewModel | undefined
     >(undefined);
     const { presenter } = useListUserCoursesPresenter(setCoursesViewModel);
+    // @ts-ignore
     presenter.present(coursesResponse, coursesViewModel);
 
     const courses = useMemo(() => {
@@ -98,8 +100,8 @@ export default function UserCoursesList() {
                         name: course.language,
                     };
                     const author = {
-                        name: course.author.name + ' ' + course.author.surname,
-                        image: course.author.avatarUrl ?? '',
+                        name: '',
+                        image: '',
                     };
                     const duration = {
                         selfStudy: course.fullDuration,

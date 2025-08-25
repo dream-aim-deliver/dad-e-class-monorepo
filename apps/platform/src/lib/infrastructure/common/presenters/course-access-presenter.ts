@@ -2,7 +2,7 @@ import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
-    UnhandledErrorResponse,
+    UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -22,7 +22,7 @@ const roleHierarchy: Record<useCaseModels.TCourseRole, number> = {
     visitor: 0,
     student: 1,
     coach: 2,
-    admin: 3,
+    admin: 3
 };
 
 export default class CourseAccessPresenter extends BasePresenter<
@@ -39,11 +39,11 @@ export default class CourseAccessPresenter extends BasePresenter<
             schemas: {
                 responseModel:
                     useCaseModels.GetCourseAccessUseCaseResponseSchema,
-                viewModel: viewModels.CourseAccessViewModelSchema,
+                viewModel: viewModels.CourseAccessViewModelSchema
             },
             middleware: GetCourseAccessResponseMiddleware,
             viewUtilities: viewUtilities,
-            setViewModel: setViewModel,
+            setViewModel: setViewModel
         });
     }
 
@@ -64,8 +64,8 @@ export default class CourseAccessPresenter extends BasePresenter<
             mode: 'default',
             data: {
                 ...response.data,
-                highestRole,
-            },
+                highestRole
+            }
         };
     }
 
@@ -79,35 +79,35 @@ export default class CourseAccessPresenter extends BasePresenter<
             return {
                 mode: 'not-found',
                 data: {
-                    type: response.data.errorType,
+
                     message: response.data.message,
                     operation: response.data.operation,
-                    context: response.data.context,
-                    trace: undefined,
-                },
+                    context: response.data.context
+
+                }
             };
         }
         if (response.data.errorType === 'AuthenticationError') {
             return {
                 mode: 'unauthenticated',
                 data: {
-                    type: response.data.errorType,
+
                     message: response.data.message,
                     operation: response.data.operation,
-                    context: response.data.context,
-                    trace: undefined,
-                },
+                    context: response.data.context
+
+                }
             };
         }
         return {
             mode: 'kaboom',
             data: {
-                type: response.data.errorType,
+
                 message: response.data.message,
                 operation: response.data.operation,
-                context: response.data.context,
-                trace: undefined,
-            },
+                context: response.data.context
+
+            }
         };
     }
 }
