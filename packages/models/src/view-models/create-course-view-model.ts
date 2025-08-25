@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,8 +13,8 @@ export const CreateCourseSuccessSchema = CreateCourseSuccessResponseSchema.shape
 export type TCreateCourseSuccess = z.infer<typeof CreateCourseSuccessSchema>;
 
 const CreateCourseDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CreateCourseSuccessSchema);
-const CreateCourseInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory());
-const CreateCourseKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const CreateCourseInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
+const CreateCourseKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const CreateCourseViewModelSchemaMap = {
     default: CreateCourseDefaultViewModelSchema,

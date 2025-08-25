@@ -3,16 +3,18 @@ import {
     CourseOutlineAccordion,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
     Divider,
     LessonHeader,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { Suspense, useState } from 'react';
-import { trpc } from '../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
 import { useListLessonComponentsPresenter } from '../../../hooks/use-lesson-components-presenter';
 import LessonForm from './lesson-form';
+import { trpc } from '../../../trpc/cms-client';
+import { trpc as trpcMock } from '../../../trpc/client';
 
 interface EnrolledCoursePreviewProps {
     courseSlug: string;
@@ -21,7 +23,7 @@ interface EnrolledCoursePreviewProps {
 function CoursePreviewLesson(props: { lessonId: number }) {
     const locale = useLocale() as TLocale;
 
-    const [componentsResponse] = trpc.listLessonComponents.useSuspenseQuery({
+    const [componentsResponse] = trpcMock.listLessonComponents.useSuspenseQuery({
         lessonId: props.lessonId,
     });
     const [componentsViewModel, setLessonComponentsViewModel] = useState<
@@ -56,6 +58,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     const { presenter } = useGetCourseStructurePresenter(
         setCourseStructureViewModel,
     );
+    // @ts-ignore
     presenter.present(courseStructureResponse, courseStructureViewModel);
 
     const [activeModuleIndex, setActiveModuleIndex] = useState<
@@ -125,14 +128,20 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
 
     const transformedModules = modules.map((module) => ({
         ...module,
+        order: module.position,
         lessons: module.lessons.map((lesson) => ({
             ...lesson,
+            order: lesson.position,
             optional: lesson.extraTraining,
         })),
     }));
 
     const currentModule = getCurrentModule();
     const currentLesson = getCurrentLesson();
+
+    if (transformedModules.length === 0) {
+        return <DefaultNotFound locale={locale} description="Course is empty." />;
+    }
 
     return (
         <div className="flex flex-col w-full gap-6 md:flex-row">
@@ -147,10 +156,10 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                 {currentModule && currentLesson && (
                     <>
                         <LessonHeader
-                            currentModule={currentModule.order}
+                            currentModule={currentModule.position}
                             totalModules={modules.length}
                             moduleTitle={currentModule.title}
-                            currentLesson={currentLesson.order}
+                            currentLesson={currentLesson.position}
                             totalLessons={currentModule.lessons.length}
                             lessonTitle={currentLesson.title}
                             areNotesAvailable={false}

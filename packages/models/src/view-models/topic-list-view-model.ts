@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -15,7 +17,7 @@ export const TopicListSuccessSchema = z.object({
 export type TTopicListSuccess = z.infer<typeof TopicListSuccessSchema>;
 
 const TopicListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", TopicListSuccessSchema)
-const TopicListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+const TopicListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
 
 export const TopicListViewModelSchemaMap = {
     default: TopicListDefaultViewModelSchema,

@@ -1,5 +1,4 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../../trpc/client';
 import { Suspense, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -7,8 +6,10 @@ import {
     DefaultAccordion,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
 import { useGetCourseOutlinePresenter } from '../../hooks/use-course-outline-presenter';
+import { trpc } from '../../trpc/cms-client';
 
 interface CourseOutlineProps {
     courseSlug: string;
@@ -22,6 +23,7 @@ function OutlineAccordion({ courseSlug }: CourseOutlineProps) {
         viewModels.TCourseOutlineViewModel | undefined
     >(undefined);
     const { presenter } = useGetCourseOutlinePresenter(setOutlineViewModel);
+    // @ts-ignore
     presenter.present(outlineResponse, outlineViewModel);
 
     const locale = useLocale() as TLocale;
@@ -35,6 +37,10 @@ function OutlineAccordion({ courseSlug }: CourseOutlineProps) {
     }
 
     const outline = outlineViewModel.data;
+
+    if (outline.items.length === 0) {
+        return <DefaultNotFound locale={locale} description="The course doesn't have an outline." />;
+    }
 
     return (
         <DefaultAccordion

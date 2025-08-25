@@ -16,7 +16,6 @@ import {
     Tabs,
 } from '@maany_shr/e-class-ui-kit';
 import { Suspense, useEffect, useMemo, useState } from 'react';
-import { trpc } from '../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
 import { useLocale, useTranslations } from 'next-intl';
@@ -28,6 +27,8 @@ import { useRouter } from 'next/navigation';
 import { CoachCourseTab, StudentCourseTab } from '../../../utils/course-tabs';
 import EnrolledCourseCompletedAssessment from './enrolled-course-completed-assessment';
 import EnrolledCoursePreview from './enrolled-course-preview';
+import { trpc } from '../../../trpc/cms-client';
+// import { trpc as trpcMock } from '../../../trpc/client';
 
 interface EnrolledCourseProps {
     roles: string[];
@@ -162,6 +163,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     >(undefined);
     const { presenter: coursePresenter } =
         useGetEnrolledCourseDetailsPresenter(setCourseViewModel);
+    // @ts-ignore
     coursePresenter.present(courseResponse, courseViewModel);
 
     const locale = useLocale() as TLocale;
@@ -263,34 +265,34 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
 }
 
 export function ProgressEnrolledCourse(props: EnrolledCourseProps) {
-    const [studentProgressResponse] = trpc.getStudentProgress.useSuspenseQuery({
-        courseSlug: props.courseSlug,
-    });
-    const [studentProgressViewModel, setStudentProgressViewModel] = useState<
-        viewModels.TStudentProgressViewModel | undefined
-    >(undefined);
-    const { presenter: progressPresenter } = useGetStudentProgressPresenter(
-        setStudentProgressViewModel,
-    );
-    progressPresenter.present(
-        studentProgressResponse,
-        studentProgressViewModel,
-    );
+    // const [studentProgressResponse] = trpcMock.getStudentProgress.useSuspenseQuery({
+    //     courseSlug: props.courseSlug,
+    // });
+    // const [studentProgressViewModel, setStudentProgressViewModel] = useState<
+    //     viewModels.TStudentProgressViewModel | undefined
+    // >(undefined);
+    // const { presenter: progressPresenter } = useGetStudentProgressPresenter(
+    //     setStudentProgressViewModel,
+    // );
+    // progressPresenter.present(
+    //     studentProgressResponse,
+    //     studentProgressViewModel,
+    // );
 
-    const locale = useLocale() as TLocale;
+    // const locale = useLocale() as TLocale;
 
-    if (!studentProgressViewModel) {
-        return <DefaultLoading locale={locale} variant="minimal" />;
-    }
+    // if (!studentProgressViewModel) {
+    //     return <DefaultLoading locale={locale} variant="minimal" />;
+    // }
 
-    if (studentProgressViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
-    }
+    // if (studentProgressViewModel.mode !== 'default') {
+    //     return <DefaultError locale={locale} />;
+    // }
 
     return (
         <EnrolledCourseContent
             {...props}
-            studentProgressViewModel={studentProgressViewModel}
+            //studentProgressViewModel={studentProgressViewModel}
         />
     );
 }

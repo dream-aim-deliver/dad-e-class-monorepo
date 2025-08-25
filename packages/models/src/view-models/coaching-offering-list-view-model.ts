@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,8 +13,8 @@ export const CoachingOfferingListSuccessSchema = ListCoachingOfferingsSuccessRes
 export type TCoachingOfferingListSuccess = z.infer<typeof CoachingOfferingListSuccessSchema>;
 
 const CoachingOfferingListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CoachingOfferingListSuccessSchema)
-const CoachingOfferingListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
-const CoachingOfferingListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory())
+const CoachingOfferingListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
+const CoachingOfferingListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
 
 export const CoachingOfferingListViewModelSchemaMap = {
     default: CoachingOfferingListDefaultViewModelSchema,

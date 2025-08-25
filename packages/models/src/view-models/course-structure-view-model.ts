@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,7 +13,7 @@ export const CourseStructureSuccessSchema = GetCourseStructureSuccessResponseSch
 export type TCourseStructureSuccess = z.infer<typeof CourseStructureSuccessSchema>;
 
 const CourseStructureDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CourseStructureSuccessSchema);
-const CourseStructureKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const CourseStructureKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const CourseStructureViewModelSchemaMap = {
     default: CourseStructureDefaultViewModelSchema,

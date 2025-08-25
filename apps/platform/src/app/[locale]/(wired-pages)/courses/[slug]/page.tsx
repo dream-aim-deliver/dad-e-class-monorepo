@@ -1,4 +1,4 @@
-import CourseServerComponent from '../../../../../lib/infrastructure/server/pages/course-rsx';
+import CourseServerComponent from '../../../../../lib/infrastructure/server/pages/course-rsc';
 
 export default async function Page({
     params: paramsPromise,

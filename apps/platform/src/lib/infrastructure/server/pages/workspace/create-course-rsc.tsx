@@ -3,30 +3,35 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
-import UserCourses from '../../../client/pages/workspace/user-courses';
+import CreateCourse from '../../../client/pages/workspace/create-course';
 
-export default async function UserCoursesServerComponent() {
+interface CreateCourseServerComponentProps {
+    duplicationCourseSlug?: string;
+}
+
+export default async function CreateCourseServerComponent(
+    props: CreateCourseServerComponentProps,
+) {
     const session = await getSession();
 
     if (!session || !session.user) {
         redirect('/auth/login');
     }
 
-    const roles = session.user.roles;
-    const isVisitor = !roles || (roles.length === 1 && roles[0] === 'visitor');
-
-    if (isVisitor) {
+    if (!session.user.roles?.includes('admin')) {
         // TODO: fill in localized error message
         throw new Error();
     }
 
-    await Promise.all([prefetch(trpc.listUserCourses.queryOptions({}))]);
+    // TODO: possibly prefetch duplication course
 
     return (
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <UserCourses roles={roles} />
+                    <CreateCourse
+                        duplicationCourseSlug={props.duplicationCourseSlug}
+                    />
                 </Suspense>
             </HydrateClient>
         </>

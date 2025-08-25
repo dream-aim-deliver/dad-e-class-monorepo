@@ -2,7 +2,7 @@ import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
-    UnhandledErrorResponse,
+    UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -32,11 +32,11 @@ export default class StudentProgressPresenter extends BasePresenter<
             schemas: {
                 responseModel:
                     useCaseModels.GetStudentProgressUseCaseResponseSchema,
-                viewModel: viewModels.StudentProgressViewModelSchema,
+                viewModel: viewModels.StudentProgressViewModelSchema
             },
             middleware: GetStudentProgressResponseMiddleware,
             viewUtilities: viewUtilities,
-            setViewModel: setViewModel,
+            setViewModel: setViewModel
         });
     }
 
@@ -49,8 +49,8 @@ export default class StudentProgressPresenter extends BasePresenter<
         return {
             mode: 'default',
             data: {
-                ...response.data,
-            },
+                ...response.data
+            }
         };
     }
 
@@ -63,12 +63,12 @@ export default class StudentProgressPresenter extends BasePresenter<
         return {
             mode: 'kaboom',
             data: {
-                type: response.data.errorType,
+
                 message: response.data.message,
                 operation: response.data.operation,
-                context: response.data.context,
-                trace: undefined,
-            },
+                context: response.data.context
+
+            }
         };
     }
 }

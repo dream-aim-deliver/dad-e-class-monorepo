@@ -1,38 +1,32 @@
-import { HydrateClient, prefetch, trpc } from '../../config/trpc/server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
-import CreateCourse from '../../../client/pages/workspace/create-course';
+import UserCourses from '../../../client/pages/workspace/user-courses';
+import { HydrateClient, prefetch, trpc } from '../../config/trpc/cms-server';
 
-interface CreateCourseServerComponentProps {
-    duplicationCourseSlug?: string;
-}
-
-export default async function CreateCourseServerComponent(
-    props: CreateCourseServerComponentProps,
-) {
+export default async function UserCoursesServerComponent() {
     const session = await getSession();
 
     if (!session || !session.user) {
         redirect('/auth/login');
     }
 
-    if (!session.user.roles?.includes('admin')) {
+    const roles = session.user.roles;
+    const isVisitor = !roles || (roles.length === 1 && roles[0] === 'visitor');
+
+    if (isVisitor) {
         // TODO: fill in localized error message
         throw new Error();
     }
 
-    // TODO: possible prefetch duplication course
     await Promise.all([prefetch(trpc.listUserCourses.queryOptions({}))]);
 
     return (
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <CreateCourse
-                        duplicationCourseSlug={props.duplicationCourseSlug}
-                    />
+                    <UserCourses roles={roles} />
                 </Suspense>
             </HydrateClient>
         </>

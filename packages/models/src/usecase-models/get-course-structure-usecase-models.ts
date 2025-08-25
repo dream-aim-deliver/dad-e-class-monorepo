@@ -16,11 +16,11 @@ export const GetCourseStructureSuccessResponseSchema = BaseSuccessSchemaFactory(
   modules: z.array(z.object({
     id: z.number(),
     title: z.string(),
-    order: z.number(),
+    position: z.number(),
     lessons: z.array(z.object({
       id: z.number(),
       title: z.string(),
-      order: z.number(),
+      position: z.number(),
       extraTraining: z.boolean(),
     })),
     milestones: z.array(z.object({

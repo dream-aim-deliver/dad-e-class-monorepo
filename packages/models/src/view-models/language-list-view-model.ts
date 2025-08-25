@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -15,7 +17,7 @@ export const LanguageListSuccessSchema = z.object({
 export type TLanguageListSuccess = z.infer<typeof LanguageListSuccessSchema>;
 
 const LanguageListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", LanguageListSuccessSchema)
-const LanguageListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory())
+const LanguageListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
 
 export const LanguageListViewModelSchemaMap = {
     default: LanguageListDefaultViewModelSchema,

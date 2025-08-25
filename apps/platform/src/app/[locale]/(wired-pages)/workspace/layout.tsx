@@ -1,7 +1,7 @@
-import SidebarLayout from '../../../../../../src/lib/infrastructure/server/pages/layouts/sidebar-layout';
+import SidebarLayout from '../../../../lib/infrastructure/server/pages/layouts/sidebar-layout';
 import { TLocale } from '@maany_shr/e-class-translations';
 
-export default async function CourseLayout({
+export default async function WorkspaceLayout({
     children,
     params: paramsPromise,
 }: {

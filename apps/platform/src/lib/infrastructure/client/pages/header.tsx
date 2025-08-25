@@ -101,6 +101,8 @@ export default function Header({
         }
     };
 
+    if (platformViewModel.mode !== 'default') return null;
+
     return (
         <Navbar
             isLoggedIn={!!session}

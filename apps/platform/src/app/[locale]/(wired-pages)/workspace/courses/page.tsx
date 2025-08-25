@@ -1,4 +1,4 @@
-import UserCoursesServerComponent from '../../../../../lib/infrastructure/server/pages/workspace/user-courses-rsx';
+import UserCoursesServerComponent from '../../../../../lib/infrastructure/server/pages/workspace/user-courses-rsc';
 
 export default async function Page({
     searchParams: searchParamsPromise,

@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,10 +13,10 @@ export const EnrolledCourseDetailsSuccessSchema = GetEnrolledCourseDetailsSucces
 export type TEnrolledCourseDetailsSuccess = z.infer<typeof EnrolledCourseDetailsSuccessSchema>;
 
 const EnrolledCourseDetailsDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", EnrolledCourseDetailsSuccessSchema);
-const EnrolledCourseDetailsKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
-const EnrolledCourseDetailsNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory());
-const EnrolledCourseDetailsUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory());
-const EnrolledCourseDetailsForbiddenViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("forbidden", BaseErrorDataSchemaFactory());
+const EnrolledCourseDetailsKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
+const EnrolledCourseDetailsNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
+const EnrolledCourseDetailsUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
+const EnrolledCourseDetailsForbiddenViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("forbidden", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const EnrolledCourseDetailsViewModelSchemaMap = {
     default: EnrolledCourseDetailsDefaultViewModelSchema,

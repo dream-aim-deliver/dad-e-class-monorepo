@@ -39,6 +39,7 @@ export const getCourseAccess = t.procedure
                             'Could not authenticate user for course access',
                         operation: 'getCourseAccess',
                         context: {},
+                        statusCode: 403,
                     },
                 };
             }

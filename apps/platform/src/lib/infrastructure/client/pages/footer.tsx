@@ -57,6 +57,8 @@ export default function Footer({
         router.push(newUrl);
     };
 
+    if (platformViewModel.mode !== 'default') return null;
+
     return (
         <FooterComponent
             availableLocales={availableLocales}

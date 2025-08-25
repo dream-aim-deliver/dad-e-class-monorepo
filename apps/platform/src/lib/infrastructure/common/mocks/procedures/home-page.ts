@@ -362,6 +362,7 @@ const homePageAuthError: useCaseModels.TGetHomePageUseCaseErrorResponse = {
         operation: 'getHomePage',
         context: {},
         trace: undefined,
+        statusCode: 403,
     },
 };
 

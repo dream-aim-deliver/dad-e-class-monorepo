@@ -3,7 +3,7 @@ import {
     BasePresenter,
     ExtractStatusModel,
     TBaseResponseResponseMiddleware,
-    UnhandledErrorResponse,
+    UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -35,11 +35,11 @@ export default class OffersPageCarouselPresenter extends BasePresenter<
             schemas: {
                 responseModel:
                     useCaseModels.GetOffersPageCarouselUseCaseResponseSchema,
-                viewModel: viewModels.OffersPageCarouselViewModelSchema,
+                viewModel: viewModels.OffersPageCarouselViewModelSchema
             },
             middleware: GetOffersPageCarouselResponseMiddleware,
             viewUtilities: viewUtilities,
-            setViewModel: setViewModel,
+            setViewModel: setViewModel
         });
     }
 
@@ -52,8 +52,8 @@ export default class OffersPageCarouselPresenter extends BasePresenter<
         return {
             mode: 'default',
             data: {
-                ...response.data,
-            },
+                ...response.data
+            }
         };
     }
     presentError(
@@ -65,12 +65,12 @@ export default class OffersPageCarouselPresenter extends BasePresenter<
         return {
             mode: 'kaboom',
             data: {
-                type: response.data.errorType,
+
                 message: response.data.message,
                 operation: response.data.operation,
-                context: response.data.context,
-                trace: undefined,
-            },
+                context: response.data.context
+
+            }
         };
     }
 }

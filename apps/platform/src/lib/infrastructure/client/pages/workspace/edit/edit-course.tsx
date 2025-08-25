@@ -1,7 +1,6 @@
 'use client';
 
 import { TLocale } from '@maany_shr/e-class-translations';
-import { trpc } from '../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
 import {
@@ -31,6 +30,7 @@ import { useSaveIntroduction } from './hooks/edit-introduction-hooks';
 import { IntroductionVideoUploadState } from './hooks/use-introduction-video-upload';
 import { useSaveOutline } from './hooks/edit-outline-hooks';
 import { AccordionIconUploadState } from './hooks/use-accordion-icon-upload';
+import { trpc } from '../../../trpc/cms-client';
 
 interface EditCourseProps {
     slug: string;
@@ -63,6 +63,7 @@ export default function EditCourse({ slug, defaultTab }: EditCourseProps) {
     >(undefined);
     const { presenter: coursePresenter } =
         useGetEnrolledCourseDetailsPresenter(setCourseViewModel);
+    // @ts-ignore
     coursePresenter.present(courseResponse, courseViewModel);
 
     if (!courseViewModel) {

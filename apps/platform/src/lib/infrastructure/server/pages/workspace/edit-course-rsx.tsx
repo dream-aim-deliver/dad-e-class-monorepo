@@ -21,14 +21,18 @@ export default async function EditCourseServerComponent({
     defaultTab,
 }: CourseServerComponentProps) {
     const courseAccessViewModel = await fetchCourseAccess(slug);
+    if (courseAccessViewModel.mode !== 'default') {
+        throw new Error(courseAccessViewModel.data.message);
+    }
 
     handleAccessModes(courseAccessViewModel);
 
     const { highestRole, roles, isAssessmentCompleted } =
         courseAccessViewModel.data;
-    validateUserRole(highestRole);
+    const highestRoleParsed = highestRole ?? 'visitor';
+    validateUserRole(highestRoleParsed);
 
-    if (highestRole !== 'admin') {
+    if (highestRoleParsed !== 'admin') {
         // TODO: localize this error message
         throw new Error('Access denied: Admin role required');
     }
