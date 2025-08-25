@@ -10,10 +10,12 @@ export default function NotFound() {
     const dictionary = getDictionary(locale);
     const router = useRouter();
     return (
+        <div className="w-full px-30 mb-15">
         <DefaultNotFound
             locale={locale}
             onRetry={() => router.push(`/${locale}`)}
             buttonLabel={dictionary.components.defaultNotFound.goBack}
         />
+        </div>
     );
 }
