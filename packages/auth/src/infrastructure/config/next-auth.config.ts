@@ -2,11 +2,14 @@ import NextAuth, { NextAuthConfig, NextAuthResult } from "next-auth";
 import Auth0, { Auth0Profile } from "next-auth/providers/auth0"
 import { TAuthProviderProfileDTO } from "../../core/dto/auth-provider-dto";
 import { DefaultJWT } from "next-auth/jwt"
-import { role, platform } from "@maany_shr/e-class-models"
+import { role } from "@maany_shr/e-class-models"
 import { Account } from "next-auth"
 import { extractPlatformSpecificRoles, TEST_ACCOUNTS } from "../utils";
 import CredentialsProvider from "next-auth/providers/credentials";
-
+import { createTRPCClient, httpBatchLink } from '@trpc/client';
+import { TAppRouter } from '@dream-aim-deliver/e-class-cms-rest';
+import superjson from 'superjson';
+import { TEClassRole } from "@dream-aim-deliver/e-class-cms-rest/lib/core";
 /**
  * Generates the NextAuth configuration object.
  *
@@ -35,9 +38,15 @@ export const generateNextAuthConfig = (config: {
     pages: {
         signIn: string,
         error: string,
+    },
+    trpc: {
+        getTrpcUrl: () => string,
+        getPlatformHeaders: () => Record<string, string>,
+        getLocale?: () => string | undefined | Promise<string | undefined>
     }
 }
 ): NextAuthResult => {
+
     const credentialsProvider = CredentialsProvider({
         name: 'Credentials',
         credentials: {
@@ -100,8 +109,6 @@ export const generateNextAuthConfig = (config: {
         ],
         callbacks: {
             jwt: async ({ token, user, account, profile }) => {
-                console.log('JWT Debug: ', token);
-                console.log('User Debug: ', user);
                 if (user) {
                     token.user = user;
                 }
@@ -111,20 +118,84 @@ export const generateNextAuthConfig = (config: {
                 return token;
             },
             session: async ({ session, token }) => {
-                console.log('Session Debug: ', session);
-                console.log('Token Debug: ', token);
+                const defaultSessionRoles: ("visitor" | "student" | "coach" | "admin")[] = ["visitor", "student"]
+                // TODO: remove if not critical to the UI
                 const platformId = process.env.E_CLASS_PLATFORM_ID;
                 if (!platformId) {
                     throw new Error("CRITICAL! Configuration Error: Platform ID not found in the environment variables");
                 }
-                // TODO: how is this actually supposed to be handled?
+                // TODO: how is this actually supposed to be handled? [A: can be obtained from the backend now, look at listUserRoles for example. ]
                 session.platform = platformId;
 
+                // Get the token for authorization
                 const nextAuthToken = token as DefaultJWT & {
                     user: TAuthProviderProfileDTO,
                     account: Account
                 }
 
+                // Create TRPC client with authorization header
+                const trpcClient = createTRPCClient<TAppRouter>({
+                    links: [
+                        httpBatchLink({
+                            transformer: superjson,
+                            url: config.trpc.getTrpcUrl(),
+                            async headers() {
+                                const headers: Record<string, string> = config.trpc.getPlatformHeaders();
+                                
+                                // Add Authorization header if we have an ID token
+                                if (nextAuthToken.account?.id_token) {
+                                    headers['Authorization'] = `Bearer ${nextAuthToken.account.id_token}`;
+                                } else {
+                                    console.warn('[Auth TRPC] ⚠️ Missing ID token in NextAuth session callback', {
+                                        hasAccount: !!nextAuthToken.account,
+                                        accountKeys: nextAuthToken.account ? Object.keys(nextAuthToken.account) : [],
+                                        hasAccessToken: !!nextAuthToken.account?.access_token
+                                    });
+                                }
+                                
+                                // Add Accept-Language header if locale is available
+                                const locale = await config.trpc.getLocale?.();
+                                if (locale) {
+                                    headers['Accept-Language'] = locale;
+                                } else {
+                                    console.warn('[Auth TRPC] ⚠️ No locale available for NextAuth TRPC client');
+                                }
+                                
+                                return headers;
+                            },
+                        }),
+                    ],
+                });
+
+                try {
+                    console.log("[Auth Session] 🚀 Requesting User Roles for session callback");
+                    const userRolesDTO = await trpcClient.listUserRoles.query({});
+                    console.log("[Auth Session] 📦 User Roles Response:", JSON.stringify(userRolesDTO, null, 2));
+                    if(userRolesDTO.success && userRolesDTO.data) {
+                        const allowedRoles = ["visitor", "student", "coach", "admin"] as const;
+                        // The response has data.roles, not data as an array
+                        const roles = (userRolesDTO.data as any).roles as TEClassRole[];
+                        if (Array.isArray(roles)) {
+                            session.user.roles = roles.filter(
+                                (role): role is typeof allowedRoles[number] => allowedRoles.includes(role as any)
+                            );
+                        }
+                    } else {
+                        session.user.roles = defaultSessionRoles
+                    }
+                    
+                } catch (error) {
+                    console.error('[Auth Session] ❌ Failed to fetch user roles in session callback:', error);
+                    if (error instanceof Error) {
+                        console.error('[Auth Session] Error details:', {
+                            message: error.message,
+                            stack: error.stack?.slice(0, 500)
+                        });
+                    }
+                    session.user.roles = defaultSessionRoles 
+                }
+
+                // CRITICAL [WE SHOULD REMOVE THIS AND PROXY VIA A SERVER SIDE CACHE/ROUTE]: Set the tokens on the session so they're available client-side
                 session.user.accessToken = nextAuthToken.account.access_token;
                 session.user.idToken = nextAuthToken.account.id_token;
 
@@ -135,29 +206,13 @@ export const generateNextAuthConfig = (config: {
                 session.user.image = nextAuthToken.user.image;
                 session.user.id = nextAuthToken.user.externalID;
 
-                const roles = nextAuthToken.user.roles;
-                const platformSpecificRoles = extractPlatformSpecificRoles(roles, platformId);
-
-                if (session.user.roles === undefined || session.user.roles.length === 0) {
-                    session.user.roles = ['visitor'];
-                }
-                const RoleSchema = role.RoleSchema;
-
-                platformSpecificRoles.forEach(role => {
-                    const isValidRole = RoleSchema.safeParse(role);
-                    if (!isValidRole.success) {
-                        console.error(`Invalid role ${role}. Check the role configuration. Accepted values are ${RoleSchema.options.values}`);
-                    } else {
-                        if (!session.user.roles?.includes(role))
-                            session.user.roles?.push(role);
-                    }
+                console.log('[Auth Session] ✅ Session prepared with:', {
+                    hasIdToken: !!session.user.idToken,
+                    hasAccessToken: !!session.user.accessToken,
+                    roles: session.user.roles,
+                    userId: session.userId
                 });
-                // THIS IS A TEMPORARY WAY TO CONTROL ROLES FOR BUILDING THE UI
-                session.user.roles = ["visitor", "student", "coach", "admin"]
-                // TODO: Enable this to align the session expiry with the token expiry, currently session_expiry < token_expiry
-                // if (nextAuthToken.account.expires_at) {
-                //     session.expires = new Date((nextAuthToken.account.expires_at) * 1000).toISOString() as unknown as (Date & string);
-                // }
+
                 return session;
             }
         }
