@@ -22,7 +22,7 @@ export const EN: TDictionary = {
     },
     defaultNotFound: {
       title: 'Not Found',
-      description: 'Could not find the requested resource.',
+      description: 'Sorry, the page you are looking for does not exist or may have been moved.',
       retry: 'Retry',
       goBack: 'Go back',
     },
