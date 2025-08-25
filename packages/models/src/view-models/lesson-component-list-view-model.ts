@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,8 +13,8 @@ export const LessonComponentListSuccessSchema = ListLessonComponentsSuccessRespo
 export type TLessonComponentListSuccess = z.infer<typeof LessonComponentListSuccessSchema>;
 
 const LessonComponentListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", LessonComponentListSuccessSchema);
-const LessonComponentListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory());
-const LessonComponentListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const LessonComponentListNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
+const LessonComponentListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const LessonComponentListViewModelSchemaMap = {
     default: LessonComponentListDefaultViewModelSchema,

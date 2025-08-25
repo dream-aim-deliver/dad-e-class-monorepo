@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,8 +13,8 @@ export const CourseSearchSuccessSchema = SearchCoursesSuccessResponseSchema.shap
 export type TCourseSearchSuccess = z.infer<typeof CourseSearchSuccessSchema>;
 
 const CourseSearchDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CourseSearchSuccessSchema);
-const CourseSearchNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory());
-const CourseSearchKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const CourseSearchNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
+const CourseSearchKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const CourseSearchViewModelSchemaMap = {
     default: CourseSearchDefaultViewModelSchema,

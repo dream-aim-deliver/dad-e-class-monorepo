@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,7 +13,7 @@ export const AssessmentProgressListSuccessSchema = ListAssessmentProgressesSucce
 export type TAssessmentProgressListSuccess = z.infer<typeof AssessmentProgressListSuccessSchema>;
 
 const AssessmentProgressListDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", AssessmentProgressListSuccessSchema);
-const AssessmentProgressListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const AssessmentProgressListKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const AssessmentProgressListViewModelSchemaMap = {
     default: AssessmentProgressListDefaultViewModelSchema,
