@@ -38,7 +38,6 @@ export default function UserCoursesList() {
     const userRoles = session?.user.roles;
     const isAdmin = userRoles?.includes('admin');
     const [coursesResponse] = trpc.listUserCourses.useSuspenseQuery({});
-    console.log(coursesResponse);
     const [coursesViewModel, setCoursesViewModel] = useState<
         viewModels.TUserCourseListViewModel | undefined
     >(undefined);

@@ -192,7 +192,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const handleWorkspaceSelection = (selected: string) => {
     if (selected === 'dashboard') {
-      router?.push(`/${locale}/workspace`);
+      router?.push(`/${locale}/workspace/courses`);
     } else if (selected === 'yourProfile') {
       router?.push(`/${locale}/profile`);
     } else if (selected === 'logout' && onLogout) {

@@ -23,8 +23,7 @@ export default async function CreateCourseServerComponent(
         throw new Error();
     }
 
-    // TODO: possible prefetch duplication course
-    await Promise.all([prefetch(trpc.listUserCourses.queryOptions({}))]);
+    // TODO: possibly prefetch duplication course
 
     return (
         <>
