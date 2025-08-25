@@ -1,4 +1,4 @@
-import CreateCourseServerComponent from '../../../../../lib/infrastructure/server/pages/workspace/create-course-rsx';
+import CreateCourseServerComponent from '../../../../../lib/infrastructure/server/pages/workspace/create-course-rsc';
 
 export default async function Page({
     searchParams: searchParamsPromise,
