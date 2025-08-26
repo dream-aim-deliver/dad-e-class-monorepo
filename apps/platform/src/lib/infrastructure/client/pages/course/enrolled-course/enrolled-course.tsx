@@ -155,6 +155,7 @@ interface EnrolledCourseContentProps extends EnrolledCourseProps {
 }
 
 export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery({
         courseSlug: props.courseSlug,
     });
@@ -209,7 +210,6 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     }
 
     const tabContentClass = 'mt-10';
-    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
     return (
         <div className="flex flex-col space-y-4">
@@ -217,19 +217,27 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 items={[
                     {
                         label: breadcrumbsTranslations('home'),
-                        onClick: () => {},
+                        onClick: () => {
+                            // TODO: Implement navigation to home
+                        },
                     },
                     {
                         label: breadcrumbsTranslations('workspace'),
-                        onClick: () => {},
+                        onClick: () => {
+                            // TODO: Implement navigation to workspace
+                        },
                     },
                     {
                         label: breadcrumbsTranslations('courses'),
-                        onClick: () => {},
+                        onClick: () => {
+                            // TODO: Implement navigation to courses
+                        },
                     },
                     {
                         label: courseViewModel.data.title,
-                        onClick: () => {},
+                        onClick: () => {
+                            // Nothing should happen on clicking the current page
+                        },
                     },
                 ]}
             />
