@@ -14,6 +14,7 @@ import {
     IconNotes,
     IconStudent,
     Tabs,
+    Breadcrumbs,
 } from '@maany_shr/e-class-ui-kit';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { trpc } from '../../../trpc/client';
@@ -208,9 +209,30 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     }
 
     const tabContentClass = 'mt-10';
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
     return (
         <div className="flex flex-col space-y-4">
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => {},
+                    },
+                    {
+                        label: breadcrumbsTranslations('workspace'),
+                        onClick: () => {},
+                    },
+                    {
+                        label: breadcrumbsTranslations('courses'),
+                        onClick: () => {},
+                    },
+                    {
+                        label: courseViewModel.data.title,
+                        onClick: () => {},
+                    },
+                ]}
+            />
             <EnrolledCourseHeading
                 courseViewModel={courseViewModel}
                 studentProgressViewModel={props.studentProgressViewModel}
