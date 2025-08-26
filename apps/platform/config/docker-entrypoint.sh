@@ -4,12 +4,12 @@ log() {
 }
 
 log "Generating ecosystem.config.js"
-j2 apps/platform/config/ecosystem.config.js.j2 > /opt/dadai/app/ecosystem.config.cjs
+j2 apps/platform/config/ecosystem.config.js.j2 > /opt/dadai/app/ecosystem.config.js
 echo "=================== /opt/dadai/app/ecosystem.config.j2 ==================="
-cat /opt/dadai/app/ecosystem.config.cjs
+cat /opt/dadai/app/ecosystem.config.js
 
 log "Starting pm2"
-npx pm2 start ecosystem.config.cjs --daemon
+npx pm2 start ecosystem.config.js --daemon
 
 log "Building Apache configuration files."
 j2 apps/platform/config/httpd.conf.j2 | sed '/^\s*$/d' > /etc/httpd/conf/httpd.conf

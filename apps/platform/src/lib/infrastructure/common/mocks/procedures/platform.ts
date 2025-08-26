@@ -14,7 +14,7 @@ const platformMock: useCaseModels.TGetPlatformSuccessResponse['data'] = {
                 type: 'paragraph',
                 children: [
                     {
-                        text: '© 2024 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • hi@justdoad.ai',
+                        text: '© 2025 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • hi@justdoad.ai',
                     },
                 ],
             },
