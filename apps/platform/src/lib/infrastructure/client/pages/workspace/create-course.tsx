@@ -151,9 +151,10 @@ function CreateCourseContent(props: CreateCourseContentProps) {
         });
     };
 
-    const isSubmitDisabled = isSuccess || isCreating;
     const errorMessage =
         validationError ?? uploadError ?? getSubmitErrorMessage();
+    const hasBeenCreated = isSuccess && !errorMessage;
+    const isSubmitDisabled = hasBeenCreated || isCreating;
 
     const createCourseTranslations = useTranslations('pages.createCourse');
 
@@ -187,7 +188,7 @@ function CreateCourseContent(props: CreateCourseContentProps) {
                 onDownload={handleDownload}
                 locale={locale}
                 errorMessage={errorMessage}
-                hasSuccess={isSuccess}
+                hasSuccess={hasBeenCreated}
                 duplicationCourse={props.duplicationCourse}
             />
         </div>
