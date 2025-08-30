@@ -20,7 +20,7 @@ export default async function CreateCourseServerComponent(
 
     if (!session.user.roles?.includes('admin')) {
         // TODO: fill in localized error message
-        throw new Error();
+        throw new Error('You do not have permission to access this page');
     }
 
     // TODO: possibly prefetch duplication course
