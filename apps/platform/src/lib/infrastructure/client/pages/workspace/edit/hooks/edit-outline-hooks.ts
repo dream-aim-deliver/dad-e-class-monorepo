@@ -69,7 +69,10 @@ export function useSaveOutline({
             items: requestItems,
         });
         if (!result.success) {
-            // setErrorMessage(result.data.message);
+            // TODO: Fix typing
+            if ('message' in result.data) {
+                setErrorMessage(result.data.message as string);
+            }
             return;
         }
         return result;

@@ -46,38 +46,9 @@ enum TabTypes {
 export default function EditCourse({ slug, defaultTab }: EditCourseProps) {
     const locale = useLocale() as TLocale;
 
-    const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery(
-        {
-            courseSlug: slug,
-        },
-        {
-            refetchOnWindowFocus: false,
-            refetchOnReconnect: false,
-            refetchOnMount: false,
-            retry: false,
-            staleTime: Infinity,
-        },
-    );
-    const [courseViewModel, setCourseViewModel] = useState<
-        viewModels.TEnrolledCourseDetailsViewModel | undefined
-    >(undefined);
-    const { presenter: coursePresenter } =
-        useGetEnrolledCourseDetailsPresenter(setCourseViewModel);
-    // @ts-ignore
-    coursePresenter.present(courseResponse, courseViewModel);
-
-    if (!courseViewModel) {
-        return <DefaultLoading locale={locale} variant="minimal" />;
-    }
-
-    if (courseViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
-    }
-
     return (
         <EditCourseContent
             slug={slug}
-            course={courseViewModel.data}
             defaultTab={
                 Object.values(TabTypes).includes(defaultTab as TabTypes)
                     ? (defaultTab as TabTypes)
@@ -89,13 +60,11 @@ export default function EditCourse({ slug, defaultTab }: EditCourseProps) {
 
 interface EditCourseContentProps {
     slug: string;
-    course: viewModels.TEnrolledCourseDetailsSuccess;
     defaultTab: TabTypes;
 }
 
 function EditCourseContent({
     slug,
-    course,
     defaultTab,
 }: EditCourseContentProps) {
     const locale = useLocale() as TLocale;
