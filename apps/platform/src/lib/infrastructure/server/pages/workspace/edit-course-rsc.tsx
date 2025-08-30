@@ -1,15 +1,10 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { createGetCourseAccessPresenter } from '../../presenter/get-course-access-presenter';
-import {
-    HydrateClient,
-    getQueryClient,
-    prefetch,
-    trpc,
-} from '../../config/trpc/server';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import EditCourse from '../../../client/pages/workspace/edit/edit-course';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
+import { getQueryClient, HydrateClient, trpc } from '../../config/trpc/cms-server';
 
 interface CourseServerComponentProps {
     slug: string;
@@ -32,9 +27,9 @@ export default async function EditCourseServerComponent({
     const highestRoleParsed = highestRole ?? 'visitor';
     validateUserRole(highestRoleParsed);
 
-    if (highestRoleParsed !== 'admin') {
+    if (highestRoleParsed !== 'admin' && highestRoleParsed !== 'course_creator') {
         // TODO: localize this error message
-        throw new Error('Access denied: Admin role required');
+        throw new Error('You can\'t edit this course');
     }
 
     // TODO: prefetch any necessary data
@@ -62,6 +57,7 @@ async function fetchCourseAccess(
         courseAccessViewModel = viewModel;
     });
 
+    // @ts-ignore
     await presenter.present(courseAccessResponse, courseAccessViewModel);
 
     if (!courseAccessViewModel) {
