@@ -39,6 +39,17 @@ interface UploadToS3Params {
     abortSignal?: AbortSignal;
 }
 
+/**
+ * Maps form field keys from camelCase to the expected S3 form field names.
+ * NOTE: This is a small workaround until the backend sends the keys formatted properly.
+ */
+export const formFieldsKeyMap: Record<string, string> = {
+    xAmzAlgorithm: "x-amz-algorithm",
+    xAmzCredential: "x-amz-credential",
+    xAmzDate: "x-amz-date",
+    xAmzSignature: "x-amz-signature"
+};
+
 export async function uploadToS3({
     file,
     storageUrl,
@@ -49,7 +60,8 @@ export async function uploadToS3({
 }: UploadToS3Params): Promise<void> {
     const formData = new FormData();
     Object.entries(formFields).forEach(([key, value]) => {
-        formData.append(key, value);
+        const mappedKey = formFieldsKeyMap[key] || key; // remap if known, otherwise keep original
+        formData.append(mappedKey, value as string);
     });
     formData.append('key', objectName);
     formData.append('Content-Type', file.type);
@@ -64,7 +76,7 @@ export async function uploadToS3({
     });
 
     if (!response.ok) {
-        throw new Error('Failed to upload file to storage');
+        throw new Error(`Failed to upload file to storage. Response dump: ${await response.text()}`);
     }
 }
 

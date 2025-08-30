@@ -2,6 +2,7 @@ import {
     AbortError,
     calculateMd5,
     downloadFile,
+    uploadToS3,
 } from '@maany_shr/e-class-ui-kit';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
@@ -31,7 +32,7 @@ export const useCourseImageUpload = (
     const uploadFailedError = useCourseImageUploadTranslations('uploadFailedError');
 
     const uploadMutation = trpc.uploadCourseImage.useMutation();
-    const verifyMutation = trpc.verifyFile.useMutation();
+    const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [courseImage, setCourseImage] =
         useState<fileMetadata.TFileMetadataImage | null>(initialImage);
@@ -66,14 +67,14 @@ export const useCourseImageUpload = (
         }
 
         // Comment out to test without the storage running
-        // await uploadToS3({
-        //     file: uploadRequest.file,
-        //     checksum,
-        //     storageUrl: uploadResult.data.storageUrl,
-        //     objectName: uploadResult.data.file.objectName,
-        //     formFields: uploadResult.data.formFields,
-        //     abortSignal,
-        // });
+        await uploadToS3({
+            file: uploadRequest.file,
+            checksum,
+            storageUrl: uploadResult.data.storageUrl,
+            objectName: uploadResult.data.file.objectName,
+            formFields: uploadResult.data.formFields,
+            abortSignal,
+        });
 
         const verifyResult = await verifyMutation.mutateAsync({
             fileId: uploadResult.data.file.id,
