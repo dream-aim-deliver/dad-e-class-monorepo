@@ -47,16 +47,16 @@ export const uploadCourseImage = t.procedure
         },
     );
 
-const verifyFileMock: useCaseModels.TVerifyFileSuccessResponse['data'] = {
+const getDownloadUrlMock: useCaseModels.TVerifyFileSuccessResponse['data'] = {
     downloadUrl:
         'https://plus.unsplash.com/premium_photo-1754432777426-46d9027859cf?q=80&w=1025&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 };
 
-export const verifyFile = t.procedure
+export const getDownloadUrl = t.procedure
     .input(useCaseModels.VerifyFileRequestSchema)
     .mutation(async (): Promise<useCaseModels.TVerifyFileUseCaseResponse> => {
         return {
             success: true,
-            data: verifyFileMock,
+            data: getDownloadUrlMock,
         };
     });

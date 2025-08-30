@@ -31,7 +31,7 @@ export const useIntroductionVideoUpload = (
     const uploadFailedError = useIntroductionVideoUploadTranslations('uploadFailedError');
 
     const uploadMutation = trpc.uploadIntroductionVideo.useMutation();
-    const verifyMutation = trpc.verifyFile.useMutation();
+    const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [video, setVideo] = useState<fileMetadata.TFileMetadataVideo | null>(
         null,

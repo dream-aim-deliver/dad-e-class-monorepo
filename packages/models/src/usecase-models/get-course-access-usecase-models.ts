@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import {
   BaseDiscriminatedErrorTypeSchemaFactory,
-    BaseErrorDiscriminatedUnionSchemaFactory,
-    BaseStatusDiscriminatedUnionSchemaFactory,
-    BaseSuccessSchemaFactory
+  BaseErrorDiscriminatedUnionSchemaFactory,
+  BaseStatusDiscriminatedUnionSchemaFactory,
+  BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
 
 export const GetCourseAccessRequestSchema = z.object({
@@ -27,7 +27,7 @@ const GetCourseAccessUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSch
   ForbiddenError: BaseDiscriminatedErrorTypeSchemaFactory({
     type: 'ForbiddenError',
     schema: z.object({
-        trace: z.string().optional(),
+      trace: z.string().optional(),
     }),
   }),
 });

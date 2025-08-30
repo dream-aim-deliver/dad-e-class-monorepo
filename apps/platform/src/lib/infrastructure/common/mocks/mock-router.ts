@@ -28,7 +28,7 @@ import { listUserCourses } from './procedures/user-courses';
 import { searchCourses } from './procedures/courses';
 import { createCourse } from './procedures/create-course';
 import { getCourseShort } from './procedures/course-short';
-import { uploadCourseImage, verifyFile } from './procedures/course-image';
+import { uploadCourseImage, getDownloadUrl } from './procedures/course-image';
 import { getCourseStructure } from './procedures/course-structure';
 import { listLessonComponents } from './procedures/lesson-components';
 import { saveCourseStructure } from './procedures/course-structure';
@@ -66,7 +66,7 @@ export const mockRouter = t.router({
     listAssessmentProgresses,
     searchCourses,
     uploadCourseImage,
-    verifyFile,
+    getDownloadUrl,
     createCourse,
     getCourseShort,
     getCourseStructure,
