@@ -5,6 +5,7 @@ import { useCourseForm } from '@maany_shr/e-class-ui-kit';
 import { useCourseImageUpload } from '../../../common/hooks/use-course-image-upload';
 import { useTranslations } from 'next-intl';
 import { trpc } from '../../../../trpc/cms-client';
+import { idToNumber } from '../utils/id-to-number';
 
 export function useCourseDetails(slug: string) {
     const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery(
@@ -67,20 +68,19 @@ export function useSaveDetails({
         if (!validateCourseDetails()) return;
 
         setErrorMessage(null);
-        let imageId = courseImageUpload.courseImage?.id ? parseInt(courseImageUpload.courseImage?.id) : undefined;
-        if (Number.isNaN(imageId)) {
-            imageId = undefined;
-        }
         const result = await saveDetailsMutation.mutateAsync({
             courseSlug: slug,
             courseVersion: courseVersion,
             title: courseDetails.courseTitle,
             description: courseDetails.serializeDescription(),
             selfStudyDuration: courseDetails.duration,
-            imageId: imageId,
+            imageId: idToNumber(courseImageUpload.courseImage?.id),
         });
         if (!result.success) {
-            // setErrorMessage(result.data.message);
+            // TODO: Fix typing
+            if ('message' in result.data) {
+                setErrorMessage(result.data.message as string);
+            }
             return;
         }
         return result;

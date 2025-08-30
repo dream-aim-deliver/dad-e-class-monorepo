@@ -1,10 +1,11 @@
 import { useCourseIntroductionForm } from '@maany_shr/e-class-ui-kit';
 import { useGetCourseIntroductionPresenter } from '../../../../hooks/use-course-introduction-presenter';
-import { trpc } from '../../../../trpc/client';
 import { useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useIntroductionVideoUpload } from './use-introduction-video-upload';
 import { useTranslations } from 'next-intl';
+import { trpc } from '../../../../trpc/cms-client';
+import { idToNumber } from '../utils/id-to-number';
 
 export function useCourseIntroduction(slug: string) {
     const [introductionResponse] = trpc.getCourseIntroduction.useSuspenseQuery({
@@ -16,6 +17,7 @@ export function useCourseIntroduction(slug: string) {
     const { presenter } = useGetCourseIntroductionPresenter(
         setIntroductionViewModel,
     );
+    // @ts-ignore
     presenter.present(introductionResponse, introductionViewModel);
 
     return introductionViewModel;
@@ -50,10 +52,13 @@ export function useSaveIntroduction({
             courseSlug: slug,
             courseVersion: courseVersion,
             text: courseIntroduction.serializeIntroductionText(),
-            videoId: introductionVideoUpload.video?.id ?? null,
+            videoId: idToNumber(introductionVideoUpload.video?.id),
         });
         if (!result.success) {
-            setErrorMessage(result.data.message);
+            // TODO: Fix typing
+            if ('message' in result.data) {
+                setErrorMessage(result.data.message as string);
+            }
             return;
         }
         return result;

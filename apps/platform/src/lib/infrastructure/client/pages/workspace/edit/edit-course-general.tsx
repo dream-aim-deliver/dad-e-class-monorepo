@@ -88,7 +88,7 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
         const course = courseViewModel.data;
         props.courseForm.setCourseTitle(course.title);
         props.courseForm.parseDescription(course.description);
-        props.courseForm.setDuration(course.duration?.coaching ?? undefined);
+        props.courseForm.setDuration(course.duration?.selfStudy ?? undefined);
         props.setCourseVersion(course.courseVersion);
         if (course.imageFile) {
             props.uploadImage.handleUploadComplete({
