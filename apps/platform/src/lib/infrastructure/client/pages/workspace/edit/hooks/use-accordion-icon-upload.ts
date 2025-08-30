@@ -28,7 +28,7 @@ export const useAccordionIconUpload = (
     const uploadFailedError = useAccordionIconUploadTranslations('uploadFailedError');
 
     const uploadMutation = trpc.uploadAccordionIcon.useMutation();
-    const verifyMutation = trpc.verifyFile.useMutation();
+    const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [uploadError, setUploadError] = useState<string | undefined>(
         undefined,

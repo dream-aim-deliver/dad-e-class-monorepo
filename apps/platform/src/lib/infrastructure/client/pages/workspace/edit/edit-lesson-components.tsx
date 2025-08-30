@@ -55,7 +55,7 @@ const useFileUpload = ({
     const editLessonTranslations = useTranslations('components.useCourseImageUpload');
 
     const uploadMutation = trpc.uploadLessonComponentFile.useMutation();
-    const verifyMutation = trpc.verifyFile.useMutation();
+    const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [uploadError, setUploadError] = useState<string | undefined>(
         undefined,
