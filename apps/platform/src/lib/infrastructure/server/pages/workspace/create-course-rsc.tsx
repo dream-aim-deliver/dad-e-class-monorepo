@@ -1,4 +1,4 @@
-import { HydrateClient, prefetch, trpc } from '../../config/trpc/server';
+import { HydrateClient } from '../../config/trpc/server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
