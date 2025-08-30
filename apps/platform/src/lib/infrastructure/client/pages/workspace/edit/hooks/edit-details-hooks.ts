@@ -5,7 +5,6 @@ import { useCourseForm } from '@maany_shr/e-class-ui-kit';
 import { useCourseImageUpload } from '../../../common/hooks/use-course-image-upload';
 import { useTranslations } from 'next-intl';
 import { trpc } from '../../../../trpc/cms-client';
-import { trpc as trpcMock } from '../../../../trpc/client';
 
 export function useCourseDetails(slug: string) {
     const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery(
@@ -43,7 +42,7 @@ export function useSaveDetails({
 
     const courseImageUpload = useCourseImageUpload();
 
-    const saveDetailsMutation = trpcMock.saveCourseDetails.useMutation();
+    const saveDetailsMutation = trpc.saveCourseDetails.useMutation();
 
     const editDetailsTranslations = useTranslations('components.editDetailsHooks');
 
@@ -68,16 +67,20 @@ export function useSaveDetails({
         if (!validateCourseDetails()) return;
 
         setErrorMessage(null);
+        let imageId = courseImageUpload.courseImage?.id ? parseInt(courseImageUpload.courseImage?.id) : undefined;
+        if (Number.isNaN(imageId)) {
+            imageId = undefined;
+        }
         const result = await saveDetailsMutation.mutateAsync({
             courseSlug: slug,
             courseVersion: courseVersion,
             title: courseDetails.courseTitle,
             description: courseDetails.serializeDescription(),
             selfStudyDuration: courseDetails.duration,
-            imageId: courseImageUpload.courseImage?.id,
+            imageId: imageId,
         });
         if (!result.success) {
-            setErrorMessage(result.data.message);
+            // setErrorMessage(result.data.message);
             return;
         }
         return result;

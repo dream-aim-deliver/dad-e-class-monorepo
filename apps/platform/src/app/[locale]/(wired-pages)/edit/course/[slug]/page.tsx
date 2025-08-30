@@ -1,4 +1,4 @@
-import EditCourseServerComponent from '../../../../../../lib/infrastructure/server/pages/workspace/edit-course-rsx';
+import EditCourseServerComponent from '../../../../../../lib/infrastructure/server/pages/workspace/edit-course-rsc';
 
 export default async function Page({
     params: paramsPromise,
