@@ -22,7 +22,8 @@ const roleHierarchy: Record<useCaseModels.TCourseRole, number> = {
     visitor: 0,
     student: 1,
     coach: 2,
-    admin: 3
+    course_creator: 3,
+    admin: 4
 };
 
 export default class CourseAccessPresenter extends BasePresenter<
