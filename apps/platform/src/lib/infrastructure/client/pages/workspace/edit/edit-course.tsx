@@ -444,7 +444,7 @@ function EditCourseTabContent({
                                 ),
                             }}
                             outlineItems={outlineItems}
-                            setOutlineItems={setOutlineItems}
+                            setOutlineItems={editWrap(setOutlineItems)}
                             accordionIconUpload={accordionIconUpload}
                             setIsEdited={setIsEdited}
                         />
