@@ -15,7 +15,7 @@ export type TGetCourseIntroductionRequest = z.infer<typeof GetCourseIntroduction
 export const GetCourseIntroductionSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
   courseVersion: z.number(),
   text: z.string(),
-  video: VideoFileSchema,
+  video: VideoFileSchema.nullable(),
 }));
 
 export type TGetCourseIntroductionSuccessResponse = z.infer<typeof GetCourseIntroductionSuccessResponseSchema>;

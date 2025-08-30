@@ -1,10 +1,10 @@
 import { AccordionBuilderItem } from '@maany_shr/e-class-ui-kit';
-import { trpc } from '../../../../trpc/client';
 import { useState } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseOutlinePresenter } from '../../../../hooks/use-course-outline-presenter';
 import { useAccordionIconUpload } from './use-accordion-icon-upload';
 import { useTranslations } from 'next-intl';
+import { trpc } from '../../../../trpc/cms-client';
 
 export function useCourseOutline(slug: string) {
     const [outlineResponse] = trpc.getCourseOutline.useSuspenseQuery({
@@ -14,6 +14,7 @@ export function useCourseOutline(slug: string) {
         viewModels.TCourseOutlineViewModel | undefined
     >(undefined);
     const { presenter } = useGetCourseOutlinePresenter(setOutlineViewModel);
+    // @ts-ignore
     presenter.present(outlineResponse, outlineViewModel);
 
     return outlineViewModel;
@@ -33,7 +34,7 @@ export function useSaveOutline({
     >([]);
 
     const accordionIconUpload = useAccordionIconUpload(slug);
-    const saveOutlineMutation = trpc.saveCourseOutline.useMutation();
+    const saveOutlineMutation = trpc.saveCourseIntroductionOutline.useMutation();
 
     const editOutlineTranslations = useTranslations('components.editOutlineHooks');
 
@@ -68,7 +69,7 @@ export function useSaveOutline({
             items: requestItems,
         });
         if (!result.success) {
-            setErrorMessage(result.data.message);
+            // setErrorMessage(result.data.message);
             return;
         }
         return result;
