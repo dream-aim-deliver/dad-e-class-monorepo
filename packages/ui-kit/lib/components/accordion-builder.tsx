@@ -5,10 +5,7 @@ import { Button } from './button';
 import { ContentControlButtons } from './course-builder/control-buttons';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { FilePreview } from './drag-and-drop-uploader/file-preview';
-import {
-    IconCloudUpload,
-    IconPlus,
-} from './icons';
+import { IconCloudUpload, IconPlus } from './icons';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { z } from 'zod';
 import { serialize } from './rich-text-element/serializer';
@@ -57,9 +54,12 @@ function AccordionBuilderItem({
     const fileInputRef = useRef<HTMLInputElement>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
 
-    const handleContentChange = useCallback((newValue: Descendant[]) => {
-        setItem({ ...item, content: serialize(newValue) });
-    }, [setItem, item]);
+    const handleContentChange = useCallback(
+        (newValue: Descendant[]) => {
+            setItem({ ...item, content: serialize(newValue) });
+        },
+        [setItem, item],
+    );
 
     const handleFileChange = async (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -173,7 +173,7 @@ function AccordionBuilderItem({
                         onDelete: (id: string) => {
                             onIconDelete();
                             setIcon(null);
-                        }
+                        },
                     }}
                     onDownload={(id: string) => onIconDownload()}
                     onCancel={handleCancelUpload}
@@ -292,7 +292,10 @@ export function AccordionBuilder({
         <div className="flex flex-col gap-4 w-full bg-card-fill p-4 rounded-lg border border-neutral-700">
             <div className="w-full flex flex-col gap-4">
                 {items.map((item, index) => (
-                    <div key={`accordion-wrapper-${index}`} className="flex flex-col gap-4">
+                    <div
+                        key={`accordion-wrapper-${index}`}
+                        className="flex flex-col gap-4"
+                    >
                         <AccordionBuilderItem
                             key={`accordion-item-${index}`}
                             orderNo={index + 1}
@@ -330,22 +333,27 @@ export function AccordionBuilder({
                             }}
                             locale={locale}
                         />
-                        <div
-                            className="flex items-center gap-2"
-                            role="group"
-                            aria-label="Add link divider"
-                        >
-                            <hr className="flex-grow border-t border-divider" />
-                            <Button
-                                text={dictionary.components.accordion.addItemText}
-                                hasIconLeft
-                                iconLeft={<IconPlus />}
-                                onClick={() => handleAddAccordion(index)}
-                                aria-label="Add link"
-                                variant="text"
-                            />
-                            <hr className="flex-grow border-t border-divider" />
-                        </div>
+                        {index === items.length - 1 && (
+                            <div
+                                className="flex items-center gap-2"
+                                role="group"
+                                aria-label="Add link divider"
+                            >
+                                <hr className="flex-grow border-t border-divider" />
+                                <Button
+                                    text={
+                                        dictionary.components.accordion
+                                            .addItemText
+                                    }
+                                    hasIconLeft
+                                    iconLeft={<IconPlus />}
+                                    onClick={() => handleAddAccordion(index)}
+                                    aria-label="Add link"
+                                    variant="text"
+                                />
+                                <hr className="flex-grow border-t border-divider" />
+                            </div>
+                        )}
                     </div>
                 ))}
                 {items.length === 0 && (
