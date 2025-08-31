@@ -90,6 +90,6 @@ export function useSaveDetails({
         courseDetails,
         courseImageUpload,
         saveCourseDetails,
-        saveDetailsMutation,
+        isDetailsSaving: saveDetailsMutation.isPending,
     };
 }

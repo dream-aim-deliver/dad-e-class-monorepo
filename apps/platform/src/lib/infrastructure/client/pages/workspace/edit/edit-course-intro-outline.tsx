@@ -97,6 +97,7 @@ export default function EditCourseIntroOutline({
                     : null,
             })),
         );
+        setIsEdited(false);
     }, [outlineViewModel]);
 
     if (!introductionViewModel) {

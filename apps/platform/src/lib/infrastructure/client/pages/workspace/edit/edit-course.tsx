@@ -10,6 +10,7 @@ import {
     DefaultError,
     DefaultLoading,
     Tabs,
+    useTabContext,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import React, { Suspense, useEffect, useState } from 'react';
@@ -88,7 +89,7 @@ function EditCourseContent({
         courseDetails,
         courseImageUpload,
         saveCourseDetails,
-        saveDetailsMutation,
+        isDetailsSaving,
     } = useSaveDetails({
         slug,
         courseVersion,
@@ -156,7 +157,7 @@ function EditCourseContent({
 
     const isSaving =
         isSavingCourseStructure ||
-        saveDetailsMutation.isPending ||
+        isDetailsSaving ||
         isIntroductionSaving ||
         isOutlineSaving;
 
@@ -171,7 +172,6 @@ function EditCourseContent({
             activeTab={activeTab}
             errorMessage={errorMessage}
             locale={locale}
-            defaultTab={defaultTab}
         >
             <EditCourseTabContent
                 courseVersion={courseVersion}
@@ -192,6 +192,7 @@ function EditCourseContent({
                 setModules={setModules}
                 setCourseVersion={setCourseVersion}
                 editWrap={editWrap}
+                defaultTab={defaultTab}
             />
         </EditCourseLayout>
     );
@@ -260,7 +261,6 @@ function useCourseVersionState() {
 }
 
 interface EditCourseLayoutProps {
-    defaultTab: TabTypes;
     onPreview: () => void;
     onSave: () => Promise<void>;
     onTabChange: (value: string) => void;
@@ -283,7 +283,6 @@ function EditCourseLayout({
     errorMessage,
     locale,
     children,
-    defaultTab,
 }: EditCourseLayoutProps) {
     const tabContentClass = 'mt-5';
     const editCourseTranslations = useTranslations('pages.editCourse');
@@ -298,7 +297,7 @@ function EditCourseLayout({
                 isPreviewing={isPreviewing}
                 locale={locale}
             />
-            <Tabs.Root defaultTab={defaultTab} onValueChange={onTabChange}>
+            <Tabs.Root defaultTab={TabTypes.General} onValueChange={onTabChange}>
                 <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2">
                     <Tabs.Trigger
                         value={TabTypes.General}
@@ -359,6 +358,7 @@ interface EditCourseTabContentProps {
     editWrap: <T extends Array<any>, U>(
         fn: (...args: T) => U,
     ) => (...args: T) => U;
+    defaultTab: TabTypes;
 }
 
 function EditCourseTabContent({
@@ -380,9 +380,16 @@ function EditCourseTabContent({
     outlineItems,
     setOutlineItems,
     accordionIconUpload,
+    defaultTab
 }: EditCourseTabContentProps) {
     const tabContentClass = 'mt-5';
     const editCourseTranslations = useTranslations('pages.editCourse');
+
+    const { setActiveTab } = useTabContext();
+
+    useEffect(() => {
+        setActiveTab(defaultTab);
+    }, [defaultTab]);
 
     return (
         <>
