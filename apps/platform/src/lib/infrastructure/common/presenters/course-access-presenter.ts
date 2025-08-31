@@ -76,7 +76,7 @@ export default class CourseAccessPresenter extends BasePresenter<
             TGetCourseAccessResponseMiddleware
         >,
     ): viewModels.TCourseAccessViewModel {
-        if (response.data.errorType === 'NotFound') {
+        if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {

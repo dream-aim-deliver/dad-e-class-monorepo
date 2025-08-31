@@ -60,7 +60,7 @@ export default class UserCoursesPresenter extends BasePresenter<
             TListUserCoursesResponseMiddleware
         >,
     ): viewModels.TUserCourseListViewModel {
-        if (response.data.errorType === 'NotFound') {
+        if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {

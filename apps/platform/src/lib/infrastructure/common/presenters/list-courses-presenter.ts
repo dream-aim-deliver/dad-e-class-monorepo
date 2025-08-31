@@ -57,7 +57,7 @@ export default class ListCoursesPresenter extends BasePresenter<
             TListCoursesResponseMiddleware
         >,
     ): viewModels.TCourseListViewModel {
-        if (response.data.errorType === 'NotFound') {
+        if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {
