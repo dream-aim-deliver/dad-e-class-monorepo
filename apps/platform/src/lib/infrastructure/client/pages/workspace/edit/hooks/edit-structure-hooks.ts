@@ -1,4 +1,3 @@
-import { trpc } from '../../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../../hooks/use-course-structure-presenter';
 import { useState } from 'react';
@@ -8,6 +7,7 @@ import {
     CourseMilestone,
     CourseModule,
 } from '../types';
+import { trpc } from '../../../../trpc/cms-client';
 
 export function useCourseStructure(slug: string) {
     const [courseStructureResponse] = trpc.getCourseStructure.useSuspenseQuery(
@@ -27,7 +27,7 @@ export function useCourseStructure(slug: string) {
     const { presenter } = useGetCourseStructurePresenter(
         setCourseStructureViewModel,
     );
-
+    // @ts-ignore
     presenter.present(courseStructureResponse, courseStructureViewModel);
 
     return courseStructureViewModel;
