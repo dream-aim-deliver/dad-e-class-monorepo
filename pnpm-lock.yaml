@@ -16,8 +16,8 @@ importers:
         specifier: ^0.13.0
         version: 0.13.0(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 2.2.2
-        version: 2.2.2(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)(typescript@5.7.2)
+        specifier: 2.2.3
+        version: 2.2.3(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)(typescript@5.7.2)
       '@mux/mux-player-react':
         specifier: ^3.3.0
         version: 3.3.0(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -317,8 +317,8 @@ importers:
   packages/auth:
     dependencies:
       '@dream-aim-deliver/e-class-cms-rest':
-        specifier: 1.0.2
-        version: 1.0.2(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)(typescript@5.7.2)
+        specifier: 2.2.3
+        version: 2.2.3(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)(typescript@5.7.2)
       '@maany_shr/e-class-models':
         specifier: workspace:*
         version: link:../models
@@ -1104,23 +1104,14 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@dream-aim-deliver/dad-cats@0.12.8':
-    resolution: {integrity: sha512-+w3M0zAMG5hqDCGgHnidnqNRlHBUoWCcx/GlFsKU+lpCkPMqKaeUzGqlAB8UTDFcvQwrQG+BE4dvnu1w3E0N5g==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-cats/0.12.8/b17f19cd45488e9d0b2d7d2082c4930961ac036c}
-
   '@dream-aim-deliver/dad-cats@0.13.0':
     resolution: {integrity: sha512-KRDfAKp38EkOwIEUfHPwfwv6P+1nTObhEaD10/D/ay6UGVWB8UNelhnSQTnX6erkMFBx84OS8oUvAK5nzJDOEg==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-cats/0.13.0/f7036237d550dfb162fea5772d8edbf83860df2f}
-
-  '@dream-aim-deliver/dad-data-platform-sdk-ts@0.4.3':
-    resolution: {integrity: sha512-i4GquuvThW25R0adYOSd1+dSZTjWElpSM+W3CcfkqnMUxSfT4jp485mqH35XsX1RacMHluq3TrBKTEprwmG9iQ==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-data-platform-sdk-ts/0.4.3/7eca7ccc581e5c28e06f9e862c0df50b128a4305}
 
   '@dream-aim-deliver/dad-data-platform-sdk-ts@0.5.1':
     resolution: {integrity: sha512-UlBnZv7WVgDX7NSvGpUbfTfPlC0aaT3sJgqh1mGUIeEd1T/LtJIzJSIdvRDR65vTQ9IzeohxddIbqvgujABwUw==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/dad-data-platform-sdk-ts/0.5.1/f736f89ed71e6153160612c5b32ceb3e9607d778}
 
-  '@dream-aim-deliver/e-class-cms-rest@1.0.2':
-    resolution: {integrity: sha512-j3QHLZ0fS7Y8F5Ot/bL4bUBPeSiaLnMAxiHWlJSTY3aC0A7T7LaGbhjxifjM2yDbkDYlU//M3casrh18KOu0qw==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/1.0.2/794f1b876959fb5c3c74e247ee2fd7446bd9a497}
-
-  '@dream-aim-deliver/e-class-cms-rest@2.2.2':
-    resolution: {integrity: sha512-nLtXmuusP83mqFh7AxhaYNIbOu1iVJvtv45Ix8YEzQ7U6/M7fNqS3GzJbbbiho1QNOZQeSlF758v7BVYFj1i7Q==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/2.2.2/67f64186617a1d29da3ca25fabf116b6467c4aa7}
+  '@dream-aim-deliver/e-class-cms-rest@2.2.3':
+    resolution: {integrity: sha512-qrXjYKoxuNjy5rrpblxudh+LTsBIQonL4ehzTPkUsbDSYwnaixv0YAfZBxOFCtTI1NUiXZXhKnDEqcE8r3paLg==, tarball: https://npm.pkg.github.com/download/@dream-aim-deliver/e-class-cms-rest/2.2.3/979034efdcccdc0064b5f6b1f9ecdfac163ed554}
 
   '@emnapi/core@1.3.1':
     resolution: {integrity: sha512-pVGjBIt1Y6gg3EJN8jTcfpP/+uuRksIo055oE/OBkDNcjZqVbfkWCksG1Jp4yZnj3iKWyWX8fdG/j6UDYPbFog==}
@@ -10139,175 +10130,40 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@dream-aim-deliver/dad-cats@0.12.8(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
-    dependencies:
-      axios: 1.7.9
-      axios-retry: 4.5.0(axios@1.7.9)
-      deep-equal-js: 0.2.2
-      pino: 9.7.0
-      vitest: 3.0.9(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
-      zod: 3.24.1
-    transitivePeerDependencies:
-      - '@edge-runtime/vm'
-      - '@types/debug'
-      - '@types/node'
-      - '@vitest/browser'
-      - '@vitest/ui'
-      - debug
-      - happy-dom
-      - jsdom
-      - less
-      - lightningcss
-      - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
-  '@dream-aim-deliver/dad-cats@0.12.8(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
-    dependencies:
-      axios: 1.7.9
-      axios-retry: 4.5.0(axios@1.7.9)
-      deep-equal-js: 0.2.2
-      pino: 9.7.0
-      vitest: 3.0.9(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
-      zod: 3.24.1
-    transitivePeerDependencies:
-      - '@edge-runtime/vm'
-      - '@types/debug'
-      - '@types/node'
-      - '@vitest/browser'
-      - '@vitest/ui'
-      - debug
-      - happy-dom
-      - jsdom
-      - less
-      - lightningcss
-      - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
   '@dream-aim-deliver/dad-cats@0.13.0(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
     dependencies:
-      axios: 1.7.9
-      axios-retry: 4.5.0(axios@1.7.9)
-      deep-equal-js: 0.2.2
-      pino: 9.7.0
-      vitest: 3.0.9(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
-      zod: 3.24.1
-    transitivePeerDependencies:
-      - '@edge-runtime/vm'
-      - '@types/debug'
-      - '@types/node'
-      - '@vitest/browser'
-      - '@vitest/ui'
-      - debug
-      - happy-dom
-      - jsdom
-      - less
-      - lightningcss
-      - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
-  '@dream-aim-deliver/dad-cats@0.13.0(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
-    dependencies:
-      axios: 1.7.9
-      axios-retry: 4.5.0(axios@1.7.9)
-      deep-equal-js: 0.2.2
-      pino: 9.7.0
-      vitest: 3.0.9(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
-      zod: 3.24.1
-    transitivePeerDependencies:
-      - '@edge-runtime/vm'
-      - '@types/debug'
-      - '@types/node'
-      - '@vitest/browser'
-      - '@vitest/ui'
-      - debug
-      - happy-dom
-      - jsdom
-      - less
-      - lightningcss
-      - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
-  '@dream-aim-deliver/dad-data-platform-sdk-ts@0.4.3(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
-    dependencies:
-      axios: 1.7.9
-      axios-retry: 4.5.0(axios@1.7.9)
-      deep-equal-js: 0.2.2
-      pino: 9.7.0
-      vitest: 3.0.9(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
-      zod: 3.24.1
-    transitivePeerDependencies:
-      - '@edge-runtime/vm'
-      - '@types/debug'
-      - '@types/node'
-      - '@vitest/browser'
-      - '@vitest/ui'
-      - debug
-      - happy-dom
-      - jsdom
-      - less
-      - lightningcss
-      - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
-  '@dream-aim-deliver/dad-cats@0.13.0(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
-    dependencies:
-      axios: 1.7.9
-      axios-retry: 4.5.0(axios@1.7.9)
-      deep-equal-js: 0.2.2
-      pino: 9.7.0
-      vitest: 3.0.9(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
-      zod: 3.24.1
-    transitivePeerDependencies:
-      - '@edge-runtime/vm'
-      - '@types/debug'
-      - '@types/node'
-      - '@vitest/browser'
-      - '@vitest/ui'
-      - debug
-      - happy-dom
-      - jsdom
-      - less
-      - lightningcss
-      - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
-  '@dream-aim-deliver/dad-data-platform-sdk-ts@0.4.3(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
-    dependencies:
-      '@dream-aim-deliver/dad-cats': 0.12.8(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      '@dream-aim-deliver/dad-cats': 0.12.8(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
       '@mux/mux-node': 12.6.1
       axios: 1.7.9
-      dotenv: 17.2.1
-      jsonwebtoken: 9.0.2
+      axios-retry: 4.5.0(axios@1.7.9)
+      deep-equal-js: 0.2.2
+      pino: 9.7.0
+      vitest: 3.0.9(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      zod: 3.24.1
+    transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@types/debug'
+      - '@types/node'
+      - '@vitest/browser'
+      - '@vitest/ui'
+      - debug
+      - happy-dom
+      - jsdom
+      - less
+      - lightningcss
+      - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+
+  '@dream-aim-deliver/dad-cats@0.13.0(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
+    dependencies:
+      axios: 1.7.9
+      axios-retry: 4.5.0(axios@1.7.9)
+      deep-equal-js: 0.2.2
       pino: 9.7.0
       vitest: 3.0.9(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
       zod: 3.24.1
@@ -10318,7 +10174,6 @@ snapshots:
       - '@vitest/browser'
       - '@vitest/ui'
       - debug
-      - encoding
       - happy-dom
       - jsdom
       - less
@@ -10361,10 +10216,40 @@ snapshots:
       - supports-color
       - terser
 
-  '@dream-aim-deliver/e-class-cms-rest@1.0.2(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)(typescript@5.7.2)':
+  '@dream-aim-deliver/dad-data-platform-sdk-ts@0.5.1(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
     dependencies:
-      '@dream-aim-deliver/dad-cats': 0.12.8(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
-      '@dream-aim-deliver/dad-data-platform-sdk-ts': 0.4.3(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      '@dream-aim-deliver/dad-cats': 0.13.0(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      '@mux/mux-node': 12.6.1
+      axios: 1.7.9
+      dotenv: 17.2.1
+      jsonwebtoken: 9.0.2
+      pino: 9.7.0
+      vitest: 3.0.9(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      zod: 3.24.1
+    transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@types/debug'
+      - '@types/node'
+      - '@vitest/browser'
+      - '@vitest/ui'
+      - debug
+      - encoding
+      - happy-dom
+      - jsdom
+      - less
+      - lightningcss
+      - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+
+  '@dream-aim-deliver/e-class-cms-rest@2.2.3(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)(typescript@5.7.2)':
+    dependencies:
+      '@dream-aim-deliver/dad-cats': 0.13.0(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      '@dream-aim-deliver/dad-data-platform-sdk-ts': 0.5.1(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
       '@fastify/cors': 11.1.0
       '@fastify/rate-limit': 10.3.0
       '@fastify/sensible': 6.0.3
@@ -10400,10 +10285,10 @@ snapshots:
       - terser
       - typescript
 
-  '@dream-aim-deliver/e-class-cms-rest@2.2.2(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)(typescript@5.7.2)':
+  '@dream-aim-deliver/e-class-cms-rest@2.2.3(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)(typescript@5.7.2)':
     dependencies:
-      '@dream-aim-deliver/dad-cats': 0.12.9(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
-      '@dream-aim-deliver/dad-data-platform-sdk-ts': 0.5.1(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      '@dream-aim-deliver/dad-cats': 0.13.0(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      '@dream-aim-deliver/dad-data-platform-sdk-ts': 0.5.1(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
       '@fastify/cors': 11.1.0
       '@fastify/rate-limit': 10.3.0
       '@fastify/sensible': 6.0.3
@@ -13574,14 +13459,6 @@ snapshots:
       magic-string: 0.30.17
     optionalDependencies:
       vite: 5.4.11(@types/node@18.16.9)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
-
-  '@vitest/mocker@3.0.9(vite@5.4.11(@types/node@22.17.0)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0))':
-    dependencies:
-      '@vitest/spy': 3.0.9
-      estree-walker: 3.0.3
-      magic-string: 0.30.17
-    optionalDependencies:
-      vite: 5.4.11(@types/node@22.17.0)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
 
   '@vitest/pretty-format@2.0.5':
     dependencies:
@@ -20051,7 +19928,7 @@ snapshots:
   vitest@3.0.9(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0):
     dependencies:
       '@vitest/expect': 3.0.9
-      '@vitest/mocker': 3.0.9(vite@5.4.11(@types/node@22.17.0)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0))
+      '@vitest/mocker': 3.0.9(vite@5.4.11(@types/node@18.16.9)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0))
       '@vitest/pretty-format': 3.2.4
       '@vitest/runner': 3.0.9
       '@vitest/snapshot': 3.0.9
