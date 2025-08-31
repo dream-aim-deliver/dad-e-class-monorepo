@@ -346,7 +346,7 @@ const homePageSuccess: useCaseModels.TGetHomePageSuccessResponse = {
 const homePageCriticalError: useCaseModels.TGetHomePageUseCaseErrorResponse = {
     success: false,
     data: {
-        errorType: 'NotFound',
+        errorType: 'NotFoundError',
         message: 'Home page not found',
         operation: 'getHomePage',
         context: {},

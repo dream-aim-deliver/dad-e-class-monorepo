@@ -11,7 +11,7 @@ const getCourseAccessErrorMock: useCaseModels.TGetCourseAccessUseCaseErrorRespon
     {
         success: false,
         data: {
-            errorType: 'NotFound',
+            errorType: 'NotFoundError',
             message: 'Course not found',
             operation: 'getCourseAccess',
             context: {},
