@@ -35,7 +35,7 @@ interface EditCourseIntroOutlineProps {
 
 export function CourseIntroOutlinePreview({ slug }: { slug: string }) {
     return (
-        <div>
+        <div className="flex flex-col gap-8">
             <CourseIntroduction courseSlug={slug} />
             <CourseOutline courseSlug={slug} />
         </div>
