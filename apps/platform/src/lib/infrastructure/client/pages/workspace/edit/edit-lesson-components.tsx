@@ -33,6 +33,7 @@ import {
     DefaultLoading,
     AssignmentDesignerComponent,
     AssignmentElement,
+    uploadToS3,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
@@ -90,14 +91,14 @@ const useFileUpload = ({
         }
 
         // Comment out to test without the storage running
-        // await uploadToS3({
-        //     file: uploadRequest.file,
-        //     checksum,
-        //     storageUrl: uploadResult.data.storageUrl,
-        //     objectName: uploadResult.data.file.objectName,
-        //     formFields: uploadResult.data.formFields,
-        //     abortSignal,
-        // });
+        await uploadToS3({
+            file: uploadRequest.file,
+            checksum,
+            storageUrl: uploadResult.data.storageUrl,
+            objectName: uploadResult.data.file.objectName,
+            formFields: uploadResult.data.formFields,
+            abortSignal,
+        });
 
         const verifyResult = await verifyMutation.mutateAsync({
             fileId: uploadResult.data.file.id,
