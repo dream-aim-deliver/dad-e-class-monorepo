@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { trpc } from '../../../../trpc/client';
+import { trpc as trpcMock } from '../../../../trpc/client';
+import { trpc } from '../../../../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useSaveCourseStructurePresenter } from '../../../../hooks/use-save-course-structure-presenter';
 import {
@@ -31,7 +32,7 @@ export function useSaveStructure({
     const saveTranslations = useTranslations('components.saveHooks');
 
     const [modules, setModules] = useState<CourseModule[]>([]);
-    const saveCourseStructureMutation = trpc.saveCourseStructure.useMutation();
+    const saveCourseStructureMutation = trpcMock.saveCourseStructure.useMutation();
     const [saveCourseStructureViewModel, setSaveCourseStructureViewModel] =
         useState<viewModels.TSaveCourseStructureViewModel | undefined>(
             undefined,
@@ -150,6 +151,7 @@ export function useSaveLesson({
     useEffect(() => {
         if (saveLessonMutation.isSuccess) {
             saveLessonPresenter.present(
+                // @ts-ignore
                 saveLessonMutation.data,
                 saveLessonViewModel,
             );
