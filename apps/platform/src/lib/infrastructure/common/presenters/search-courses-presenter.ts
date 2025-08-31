@@ -58,7 +58,7 @@ export default class SearchCoursesPresenter extends BasePresenter<
             TSearchCoursesResponseMiddleware
         >,
     ): viewModels.TCourseSearchViewModel {
-        if (response.data.errorType === 'NotFound') {
+        if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {

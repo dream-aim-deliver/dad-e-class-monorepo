@@ -57,7 +57,7 @@ export default class CoachesPresenter extends BasePresenter<
             TListCoachesResponseMiddleware
         >,
     ): viewModels.TCoachListViewModel {
-        if (response.data.errorType === 'NotFound') {
+        if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {

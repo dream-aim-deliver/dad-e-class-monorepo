@@ -62,7 +62,7 @@ export default class LessonComponentsPresenter extends BasePresenter<
             TListLessonComponentsResponseMiddleware
         >,
     ): viewModels.TLessonComponentListViewModel {
-        if (response.data.errorType === 'NotFound') {
+        if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {

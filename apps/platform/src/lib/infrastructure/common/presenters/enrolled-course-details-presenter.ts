@@ -62,7 +62,7 @@ export default class EnrolledCourseDetailsPresenter extends BasePresenter<
             TGetEnrolledCourseDetailsResponseMiddleware
         >,
     ): viewModels.TEnrolledCourseDetailsViewModel {
-        if (response.data.errorType === 'NotFound') {
+        if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {
