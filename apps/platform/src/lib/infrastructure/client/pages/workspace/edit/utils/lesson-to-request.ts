@@ -5,6 +5,7 @@ import {
     LessonElement,
 } from '@maany_shr/e-class-ui-kit';
 import { extractId } from './generate-temp-id';
+import { idToNumber } from './id-to-number';
 
 type RequestComponent =
     useCaseModels.TSaveLessonComponentsRequest['components'][number];
@@ -20,7 +21,7 @@ function transformRichText(
     return {
         id: extractId(component.id),
         type: 'richText',
-        order: order,
+        position: order,
         text: component.content,
         includeInMaterials: false,
     };
@@ -37,7 +38,7 @@ function transformHeading(
     return {
         id: extractId(component.id),
         type: 'heading',
-        order: order,
+        position: order,
         text: component.heading,
         size: component.headingType as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6',
     };
@@ -54,7 +55,7 @@ function transformTextInput(
     return {
         id: extractId(component.id),
         type: 'textInput',
-        order: order,
+        position: order,
         helperText: component.helperText,
         required: component.required ?? false,
     };
@@ -71,9 +72,10 @@ function transformSingleChoice(
     return {
         id: extractId(component.id),
         type: 'singleChoice',
-        order: order,
+        position: order,
         title: component.title,
-        options: component.options.map((option) => ({
+        options: component.options.map((option, index) => ({
+            id: String(index + 1),
             name: option.name,
         })),
         required: component.required ?? false,
@@ -91,9 +93,10 @@ function transformMultipleChoice(
     return {
         id: extractId(component.id),
         type: 'multipleChoice',
-        order: order,
+        position: order,
         title: component.title,
-        options: component.options.map((option) => ({
+        options: component.options.map((option, index) => ({
+            id: String(index + 1),
             name: option.name,
         })),
         required: component.required ?? false,
@@ -119,11 +122,12 @@ function transformOneOutOfThree(
     return {
         id: extractId(component.id),
         type: 'oneOutOfThree',
-        order: order,
+        position: order,
         title: component.data.tableTitle,
-        columns: Array.from(columnSet).map((name) => ({ name })),
-        rows: component.data.rows.map((row) => ({
+        columns: Array.from(columnSet).map((name, index) => ({ name, id: String(index + 1) })),
+        rows: component.data.rows.map((row, index) => ({
             name: row.rowTitle,
+            id: String(index + 1),
         })),
         required: component.required ?? false,
     };
@@ -140,8 +144,8 @@ function transformVideo(
     return {
         id: extractId(component.id),
         type: 'video',
-        order: order,
-        videoFileId: component.file!.id,
+        position: order,
+        videoFileId: idToNumber(component.file!.id)!,
     };
 }
 
@@ -156,8 +160,8 @@ function transformImage(
     return {
         id: extractId(component.id),
         type: 'image',
-        order: order,
-        imageFileId: component.file!.id,
+        position: order,
+        imageFileId: idToNumber(component.file!.id)!,
     };
 }
 
@@ -172,8 +176,8 @@ function transformImageCarousel(
     return {
         id: extractId(component.id),
         type: 'imageCarousel',
-        order: order,
-        imageFileIds: component.images!.map((image) => image.id),
+        position: order,
+        imageFileIds: component.images!.map((image) => idToNumber(image.id)!),
     };
 }
 
@@ -188,12 +192,13 @@ function transformLinks(
     return {
         id: extractId(component.id),
         type: 'links',
-        order: order,
+        position: order,
         links: component.links.map((link) => ({
             title: link.title,
             url: link.url,
-            iconFileId: link.customIcon?.id || null,
+            iconFileId: idToNumber(link.customIcon?.id),
         })),
+        includeInMaterials: true,
     };
 }
 
@@ -208,8 +213,8 @@ function transformDownloadFiles(
     return {
         id: extractId(component.id),
         type: 'downloadFiles',
-        order: order,
-        fileIds: component.files!.map((file) => file.id),
+        position: order,
+        fileIds: component.files!.map((file) => idToNumber(file.id)!),
     };
 }
 
@@ -224,7 +229,7 @@ function transformUploadFiles(
     return {
         id: extractId(component.id),
         type: 'uploadFiles',
-        order: order,
+        position: order,
         description: component.description || '',
     };
 }
@@ -240,14 +245,15 @@ function transformQuizTypeOne(
     return {
         id: extractId(component.id),
         type: 'quizTypeOne',
-        order: order,
+        position: order,
         title: component.title,
         description: component.description,
-        imageFileId: component.imageFile!.id,
-        options: component.options.map((option) => ({
+        imageFileId: idToNumber(component.imageFile!.id)!,
+        options: component.options.map((option,index) => ({
+            id: String(index + 1),
             name: option.name,
-            isCorrect: option.correct || false,
         })),
+        correctOptionId: String(component.options.findIndex((option) => option.correct) + 1),
     };
 }
 
@@ -262,16 +268,18 @@ function transformQuizTypeTwo(
     return {
         id: extractId(component.id),
         type: 'quizTypeTwo',
-        order: order,
+        position: order,
         title: component.title,
         description: component.description,
-        imageFileId: component.imageFile!.id,
-        groups: component.groups.map((group) => ({
+        imageFileId: idToNumber(component.imageFile!.id)!,
+        groups: component.groups.map((group, index) => ({
+            id: String(index + 1),
             title: group.title,
-            options: group.options.map((option) => ({
+            options: group.options.map((option, index) => ({
+                id: String(index + 1),
                 name: option.name,
-                isCorrect: option.correct || false,
             })),
+            correctOptionId: String(group.options.findIndex((option) => option.correct) + 1),
         })),
     };
 }
@@ -287,14 +295,15 @@ function transformQuizTypeThree(
     return {
         id: extractId(component.id),
         type: 'quizTypeThree',
-        order: order,
+        position: order,
         title: component.title,
         description: component.description,
-        options: component.options.map((option) => ({
-            imageFileId: option.imageFile!.id,
+        options: component.options.map((option, index) => ({
+            id: String(index + 1),
+            imageFileId: idToNumber(option.imageFile!.id)!,
             description: option.description,
-            isCorrect: option.correct,
         })),
+        correctOptionId: String(component.options.findIndex((option) => option.correct) + 1),
     };
 }
 
@@ -309,11 +318,12 @@ function transformQuizTypeFour(
     return {
         id: extractId(component.id),
         type: 'quizTypeFour',
-        order: order,
+        position: order,
         title: component.title,
         description: component.description,
-        options: component.images.map((image) => ({
-            imageFileId: image.imageFile!.id,
+        options: component.images.map((image, index) => ({
+            id: String(index + 1),
+            imageFileId: idToNumber(image.imageFile!.id)!,
             description:
                 component.labels.find(
                     (label) => label.letter === image.correctLetter,
@@ -333,7 +343,7 @@ function transformCoachingSession(
     return {
         id: extractId(component.id),
         type: 'coachingSession',
-        order: order,
+        position: order,
         courseCoachingOfferingId: component.coachingSession!.id,
     };
 }
@@ -346,18 +356,25 @@ function transformAssignment(
         throw new Error('Invalid component type');
     }
 
+    const fileIds = [];
+    for (const file of component.files ?? []) {
+        const id = idToNumber(file.id);
+        if (!id) continue;
+        fileIds.push(id);
+    }
+
     return {
         id: extractId(component.id),
         type: 'assignment',
-        order: order,
+        position: order,
         title: component.title,
         description: component.description,
-        resourceIds: component.files?.map((res) => res.id) ?? [],
+        fileIds: fileIds,
         links:
             component.links?.map((link) => ({
                 title: link.title,
                 url: link.url,
-                iconFileId: link.customIcon?.id || null,
+                iconFileId: idToNumber(link.customIcon?.id),
             })) ?? [],
     };
 }

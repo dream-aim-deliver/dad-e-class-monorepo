@@ -1,5 +1,5 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../../../../trpc/client';
+import { trpc } from '../../../../trpc/cms-client';
 import { useState } from 'react';
 import { useListLessonComponentsPresenter } from '../../../../hooks/use-lesson-components-presenter';
 
@@ -23,6 +23,7 @@ export function useLessonComponents(id: number) {
         setLessonComponentsViewModel,
     );
 
+    // @ts-ignore
     presenter.present(lessonComponentsResponse, lessonComponentsViewModel);
 
     return lessonComponentsViewModel;
