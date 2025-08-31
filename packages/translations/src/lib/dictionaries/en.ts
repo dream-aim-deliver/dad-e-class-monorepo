@@ -1141,7 +1141,7 @@ export const EN: TDictionary = {
       outlineText: 'Outline',
     },
     courseOutline: {
-      courseContent: 'Course content',
+      courseContent: 'Outline',
     },
     categoryTopics: {
       allText: 'All',
