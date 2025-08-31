@@ -54,14 +54,17 @@ export function useSaveOutline({
                 );
                 return;
             }
+            let iconId = null;
+            if (item.icon) {
+                iconId = String(item.icon.id);
+            }
             requestItems.push({
                 title: item.title,
                 description: item.content,
                 position: i + 1,
-                iconId: item.icon?.id ?? null,
+                iconId: iconId,
             });
         }
-
         setErrorMessage(null);
         const result = await saveOutlineMutation.mutateAsync({
             courseSlug: slug,

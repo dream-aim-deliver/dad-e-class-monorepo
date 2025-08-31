@@ -170,7 +170,10 @@ function AccordionBuilderItem({
                     uploadResponse={shownIcon}
                     deletion={{
                         isAllowed: true,
-                        onDelete: (id: string) => onIconDelete()
+                        onDelete: (id: string) => {
+                            onIconDelete();
+                            setIcon(null);
+                        }
                     }}
                     onDownload={(id: string) => onIconDownload()}
                     onCancel={handleCancelUpload}
