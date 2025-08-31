@@ -60,7 +60,7 @@ export default class CourseShortPresenter extends BasePresenter<
             TGetCourseShortResponseMiddleware
         >,
     ): viewModels.TCourseShortViewModel {
-        if (response.data.errorType === 'NotFound') {
+        if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {

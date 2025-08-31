@@ -60,11 +60,10 @@ export default class AvailableCoachingsPresenter extends BasePresenter<
             TListAvailableCoachingsResponseMiddleware
         >,
     ): viewModels.TAvailableCoachingListViewModel {
-        if (response.data.errorType === 'NotFound') {
+        if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {
-
                     message: response.data.message,
                     operation: response.data.operation,
                     context: response.data.context

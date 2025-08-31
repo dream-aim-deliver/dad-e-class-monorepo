@@ -60,7 +60,7 @@ export default class OffersPagePackagesPresenter extends BasePresenter<
             TGetOffersPagePackagesResponseMiddleware
         >,
     ): viewModels.TOffersPagePackageListViewModel {
-        if (response.data.errorType === 'NotFound') {
+        if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {

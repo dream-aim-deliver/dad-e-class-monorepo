@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "zod": "^3.24.1",
-        "@dream-aim-deliver/dad-cats": "^0.12.8"
+        "@dream-aim-deliver/dad-cats": "^0.13.0"
     },
     "publishConfig": {
         "access": "public"
