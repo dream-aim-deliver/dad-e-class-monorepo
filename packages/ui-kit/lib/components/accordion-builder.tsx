@@ -160,8 +160,6 @@ function AccordionBuilderItem({
 
                 {/* Action Buttons */}
                 <ContentControlButtons
-                    onMoveUp={() => onItemUp()}
-                    onMoveDown={() => onItemDown()}
                     onDelete={() => onItemDelete()}
                     isFirst={orderNo === 1}
                     isLast={orderNo === totalItems}

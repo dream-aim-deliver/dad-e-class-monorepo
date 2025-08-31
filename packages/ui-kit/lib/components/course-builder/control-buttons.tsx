@@ -6,8 +6,8 @@ import { IconPlus } from "../icons/icon-plus";
 import { IconTrashAlt } from "../icons/icon-trash-alt";
 
 interface ContentControlButtonsProps {
-    onMoveUp: () => void;
-    onMoveDown: () => void;
+    onMoveUp?: () => void;
+    onMoveDown?: () => void;
     onDelete: () => void;
     isExpanded?: boolean;
     onExpand?: () => void;
@@ -34,22 +34,22 @@ export function ContentControlButtons({
                     onClick={() => onDelete()}
                     className="px-0"
                 />
-                <Button
+                {onMoveUp && <Button
                     variant="text"
                     iconLeft={<IconChevronUp />}
                     hasIconLeft
                     onClick={() => onMoveUp()}
                     disabled={isFirst}
                     className="px-0"
-                />
-                <Button
+                />}
+                {onMoveDown && <Button
                     variant="text"
                     iconLeft={<IconChevronDown />}
                     hasIconLeft
                     onClick={() => onMoveDown()}
                     disabled={isLast}
                     className="px-0"
-                />
+                />}
                 {onExpand && (
                     <Button
                         variant="text"

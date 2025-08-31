@@ -42,12 +42,12 @@ function IntroductionBanner({ courseSlug }: CourseIntroductionProps) {
     return (
         <CourseIntroBanner
             description={introduction.text}
-            videoId={introduction.video.playbackId ?? ''}
+            videoId={introduction.video?.playbackId ?? ''}
             locale={locale}
             onErrorCallback={() => {
                 // TODO: Handle error case, e.g., show a toast or log the error
             }}
-            thumbnailUrl={introduction.video.thumbnailUrl ?? undefined}
+            thumbnailUrl={introduction.video?.thumbnailUrl ?? undefined}
         />
     );
 }
