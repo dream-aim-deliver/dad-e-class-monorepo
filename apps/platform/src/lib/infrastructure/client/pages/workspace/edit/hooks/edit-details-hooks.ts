@@ -56,8 +56,13 @@ export function useSaveDetails({
             setErrorMessage(editDetailsTranslations('courseDescriptionValidationText'));
             return false;
         }
-        if (Number.isNaN(courseDetails.duration)) {
+        if (!courseDetails.duration || Number.isNaN(courseDetails.duration) || courseDetails.duration <= 0) {
             setErrorMessage(editDetailsTranslations('courseDurationValidationText'));
+            return false;
+        }
+        if (!courseImageUpload.courseImage) {
+            // TODO: translate
+            setErrorMessage('Course image is required');
             return false;
         }
         return true;
