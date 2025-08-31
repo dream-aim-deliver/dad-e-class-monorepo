@@ -59,6 +59,7 @@ export { Outline } from './components/outline';
 export { default as FilterSwitch } from './components/filter-switch';
 export * from './components/text';
 export { Tabs } from './components/tabs/tab';
+export { useTabContext } from './components/tabs/tab-context';
 export { default as CardListLayout } from './components/card-list-layout';
 export { CourseCardListSkeleton } from './components/skeletons/courses-skeleton';
 export { CoachCardListSkeleton } from './components/skeletons/coaches-skeleton';
