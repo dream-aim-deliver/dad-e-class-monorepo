@@ -14,7 +14,6 @@ import { useGetCourseStructurePresenter } from '../../../hooks/use-course-struct
 import { useListLessonComponentsPresenter } from '../../../hooks/use-lesson-components-presenter';
 import LessonForm from './lesson-form';
 import { trpc } from '../../../trpc/cms-client';
-import { trpc as trpcMock } from '../../../trpc/client';
 
 interface EnrolledCoursePreviewProps {
     courseSlug: string;
@@ -23,7 +22,7 @@ interface EnrolledCoursePreviewProps {
 function CoursePreviewLesson(props: { lessonId: number }) {
     const locale = useLocale() as TLocale;
 
-    const [componentsResponse] = trpcMock.listLessonComponents.useSuspenseQuery({
+    const [componentsResponse] = trpc.listLessonComponents.useSuspenseQuery({
         lessonId: props.lessonId,
     });
     const [componentsViewModel, setLessonComponentsViewModel] = useState<
@@ -32,6 +31,7 @@ function CoursePreviewLesson(props: { lessonId: number }) {
     const { presenter } = useListLessonComponentsPresenter(
         setLessonComponentsViewModel,
     );
+    // @ts-ignore
     presenter.present(componentsResponse, componentsViewModel);
 
     if (!componentsViewModel) {

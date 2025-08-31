@@ -57,7 +57,7 @@ export function getRequestFromModules(modules: CourseModule[]): RequestModules {
             title: courseModule.title || '',
             lessons: [],
             milestones: [],
-            order: moduleIndex + 1,
+            position: moduleIndex + 1,
         };
 
         for (
@@ -77,12 +77,12 @@ export function getRequestFromModules(modules: CourseModule[]): RequestModules {
                     id: item.id,
                     title: item.title || '',
                     isExtraTraining: item.isExtraTraining,
-                    order: order,
+                    position: order,
                 });
             } else if (item.type === ContentType.Milestone) {
                 requestModule.milestones.push({
                     id: item.id,
-                    order: order,
+                    position: order,
                 });
             }
         }

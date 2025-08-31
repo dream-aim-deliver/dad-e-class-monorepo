@@ -13,19 +13,19 @@ export const SaveCourseStructureRequestSchema = z.object({
     z.object({
       id: z.number().optional(),
       title: z.string(),
-      order: z.number(),
+      position: z.number(),
       lessons: z.array(
         z.object({
           id: z.number().optional(),
           title: z.string(),
           isExtraTraining: z.boolean(),
-          order: z.number(),
+          position: z.number(),
         }),
       ),
       milestones: z.array(
         z.object({
           id: z.number().optional(),
-          order: z.number(),
+          position: z.number(),
         }),
       ),
     }),
