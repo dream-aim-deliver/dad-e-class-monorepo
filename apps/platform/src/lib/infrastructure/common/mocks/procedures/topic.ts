@@ -214,7 +214,7 @@ const topicsMockGerman: useCaseModels.TListTopicsSuccessResponse['data'] = {
 const topicsCriticalError: useCaseModels.TGetHomePageUseCaseErrorResponse = {
     success: false,
     data: {
-        errorType: 'NotFound',
+        errorType: 'NotFoundError',
         message: 'Topics not found',
         operation: 'getTopics',
         context: {},
@@ -237,7 +237,7 @@ const topicsAuthError: useCaseModels.TGetHomePageUseCaseErrorResponse = {
 const topicsCriticalErrorGerman: useCaseModels.TGetHomePageUseCaseErrorResponse = {
     success: false,
     data: {
-        errorType: 'NotFound',
+        errorType: 'NotFoundError',
         message: 'Themen nicht gefunden',
         operation: 'getTopics',
         context: {},
