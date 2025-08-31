@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { trpc as trpcMock } from '../../../../trpc/client';
 import { trpc } from '../../../../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useSaveCourseStructurePresenter } from '../../../../hooks/use-save-course-structure-presenter';
@@ -32,7 +31,7 @@ export function useSaveStructure({
     const saveTranslations = useTranslations('components.saveHooks');
 
     const [modules, setModules] = useState<CourseModule[]>([]);
-    const saveCourseStructureMutation = trpcMock.saveCourseStructure.useMutation();
+    const saveCourseStructureMutation = trpc.saveCourseStructure.useMutation();
     const [saveCourseStructureViewModel, setSaveCourseStructureViewModel] =
         useState<viewModels.TSaveCourseStructureViewModel | undefined>(
             undefined,
@@ -44,6 +43,7 @@ export function useSaveStructure({
     useEffect(() => {
         if (saveCourseStructureMutation.isSuccess) {
             saveCourseStructurePresenter.present(
+                // @ts-ignore
                 saveCourseStructureMutation.data,
                 saveCourseStructureViewModel,
             );
@@ -100,7 +100,7 @@ export function useSaveStructure({
                 modules: getRequestFromModules(modules),
             });
 
-            return result;
+            return result.success;
         } catch (error) {
             // TODO: Handle custom error types with localization
             const errorMessage =
@@ -206,7 +206,7 @@ export function useSaveLesson({
                 components: requestComponents,
             });
 
-            return result;
+            return result.success;
         } catch (error) {
             // TODO: Handle custom error types with localization
             const errorMessage =
