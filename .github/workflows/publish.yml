@@ -23,11 +23,11 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
       - name: Install Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 23
           registry-url: https://registry.npmjs.org/
 
       - name: Change dependency versions to 'workspace:*'
@@ -48,6 +48,8 @@ jobs:
       - name: Prepare packages
         run: pnpm exec nx --no-cloud run-many -t build
         env:
+          'NEXTAUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
+          'NEXTAUTH_URL': 'https://example.com'
           'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
           'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
           'AUTH_AUTH0_CLIENT_ID': ${{ secrets.AUTH_AUTH0_CLIENT_ID }}
@@ -149,11 +151,6 @@ jobs:
           pnpm exec playwright install --with-deps
         shell: bash
 
-      - name: Build platform
-        run: |
-          pnpm nx run platform:build --no-cloud
-        shell: bash
-
       - name: Docker meta (platform)
         id: meta-platform
         uses: docker/metadata-action@v5
@@ -190,4 +187,23 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: false
           sbom: false
-     
+        env:
+          AUTH_SECRET: "Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvKifF90jRIH8="
+          NEXTAUTH_SECRET: "Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK"
+          NEXTAUTH_URL: "https://example.com"
+          AUTH_ENABLE_TEST_ACCOUNTS: "true"
+          AUTH_AUTH0_CLIENT_ID: ${{ secrets.AUTH_AUTH0_CLIENT_ID }}
+          AUTH_AUTH0_CLIENT_SECRET: ${{ secrets.AUTH_AUTH0_CLIENT_SECRET }}
+          AUTH_AUTH0_ISSUER: ${{ secrets.AUTH_AUTH0_ISSUER }}
+          AUTH_AUTH0_AUTHORIZATION_URL:  ${{ secrets.AUTH_AUTH0_AUTHORIZATION_URL }}
+          AUTH_AUTH0_ROLES_CLAIM: ${{ secrets.AUTH_AUTH0_ROLES_CLAIM_KEY }}
+          AUTH_AUTH0_ROLES_CLAIM_KEY: ${{ vars.E_CLASS_PLATFORM_ID }}
+          E_CLASS_PLATFORM_SHORT_NAME: "dev"
+          NEXT_PUBLIC_E_CLASS_PLATFORM_SHORT_NAME: "dev"
+          E_CLASS_PLATFORM_NAME: "E-Class Dev Platform"
+          NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: "E-Class Dev Platform"
+          E_CLASS_DEV_MODE: "true"
+          E_CLASS_PLATFORM_ID: "1"
+          NEXT_PUBLIC_E_CLASS_PLATFORM_URL: "http://localhost:3000"
+          NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL: "https://static.wixstatic.com/media/9fe096_91d65ad491464eff8da1c0b2973b3f79~mv2.png/v1/fill/w_110,h_110,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/BA_Kreis_pos_500px.png"
+              
