@@ -8,6 +8,7 @@ import { ModuleContent } from './module-content';
 import { useTranslations } from 'next-intl';
 
 export function ModuleEditor({
+    index,
     module,
     onUpdate,
     onDelete,
@@ -57,6 +58,7 @@ export function ModuleEditor({
             </div>
             {isExpanded && (
                 <ModuleContent
+                    moduleIndex={index}
                     content={module.content}
                     onMoveContentUp={(contentIndex) =>
                         onMoveContentUp(contentIndex)
