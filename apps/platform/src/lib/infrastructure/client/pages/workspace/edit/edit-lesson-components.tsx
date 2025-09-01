@@ -321,7 +321,7 @@ function VideoComponent({
                 onUpClick={onUpClick}
                 onDownClick={onDownClick}
                 onDeleteClick={onDeleteClick}
-                maxSize={15} // TODO: tweak file size
+                maxSize={2000000} // TODO: tweak file size
                 onVideoUpload={onVideoUpload}
                 onUploadComplete={handleUploadComplete}
                 onFileDelete={handleDelete}
@@ -405,7 +405,7 @@ function ImageComponent({
                 onUpClick={onUpClick}
                 onDownClick={onDownClick}
                 onDeleteClick={onDeleteClick}
-                maxSize={15} // TODO: tweak file size
+                maxSize={2000000} // TODO: tweak file size
                 onImageUpload={onImageUpload}
                 onUploadComplete={handleUploadComplete}
                 onFileDelete={handleDelete}
@@ -516,7 +516,7 @@ function ImageGalleryComponent({
                 onUploadComplete={handleUploadComplete}
                 onFileDelete={handleDelete}
                 onFileDownload={handleDownload}
-                maxSize={15} // TODO: tweak file size
+                maxSize={2000000} // TODO: tweak file size
                 validationError={validationError}
             />
             {uploadError && (
@@ -612,7 +612,7 @@ function DownloadFilesComponent({
                 onUploadComplete={handleUploadComplete}
                 onFileDelete={handleDelete}
                 onFileDownload={handleDownload}
-                maxSize={15} // TODO: tweak file size
+                maxSize={2000000} // TODO: tweak file size
                 validationError={validationError}
             />
             {uploadError && (

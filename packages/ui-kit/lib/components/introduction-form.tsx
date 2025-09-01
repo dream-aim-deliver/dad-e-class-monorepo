@@ -93,7 +93,7 @@ export function IntroductionForm(props: IntroductionProps) {
                     onUploadComplete={props.onUploadComplete}
                     locale={props.locale}
                     type="single"
-                    maxSize={15}
+                    maxSize={2000000}
                     file={props.videoFile}
                     isDeletionAllowed
                 />
