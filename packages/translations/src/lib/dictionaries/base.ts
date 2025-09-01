@@ -297,6 +297,7 @@ export const DictionarySchema = z.object({
       dashboard: z.string(),
       yourProfile: z.string(),
       logout: z.string(),
+      yourCourses:z.string(),
     }),
     footer: z.object({
       impressum: z.string(),
@@ -847,6 +848,10 @@ export const DictionarySchema = z.object({
       home: z.string(),
       workspace: z.string(),
       courses: z.string(),
+      createCourse: z.string(),
+      editCourse: z.string(),
+      editLesson: z.string(),
+      newCourse: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1181,6 +1186,9 @@ export const DictionarySchema = z.object({
     categoryTopics: z.object({
       allText: z.string(),
     }),
+    userCoursesList: z.object({
+      emptyState: z.string(),
+    })
   }),
 });
 

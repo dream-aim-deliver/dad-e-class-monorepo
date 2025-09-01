@@ -17,14 +17,14 @@ export const DE: TDictionary = {
     },
     defaultError: {
       title: 'Etwas ist schiefgelaufen',
-      description: 'Ein kritischer Fehler ist aufgetreten. Bitte versuchen Sie, die Seite neu zu laden. Falls das Problem weiterhin besteht, kontaktieren Sie uns bitte unter {contactEmail}.',
+      description: 'Ein kritischer Fehler ist aufgetreten. Bitte versuchen Sie, die Seite neu zu laden. Falls das Problem weiterhin besteht, kontaktieren Sie uns bitte unter.',
       retry: 'Wiederholen',
     },
     defaultNotFound: {
-      title: 'Nicht gefunden',
+      title: 'Seite nicht gefunden',
       description: 'Entschuldigung, die von Ihnen gesuchte Seite existiert nicht oder wurde möglicherweise verschoben.',
       retry: 'Wiederholen',
-      goBack: 'Zurück',
+      goBack: 'Zur Startseite',
     },
     defaultComingSoon: {
       title: 'Bald verfügbar',
@@ -294,6 +294,7 @@ export const DE: TDictionary = {
       dashboard: 'Dashboard',
       yourProfile: 'Ihr Profil',
       logout: 'Abmelden',
+      yourCourses: 'Ihre Kurse',
     },
     footer: {
       impressum: 'Impressum',
@@ -860,6 +861,10 @@ export const DE: TDictionary = {
       home: 'Startseite',
       workspace: 'Arbeitsbereich',
       courses: 'Kurse',
+      createCourse: 'Kurs erstellen',
+      editCourse: 'Kurs bearbeiten',
+      editLesson: 'Lektion bearbeiten',
+      newCourse: 'Neuer Kurs',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -1148,6 +1153,9 @@ export const DE: TDictionary = {
     },
     categoryTopics: {
       allText: 'Alle',
+    },
+    userCoursesList: {
+      emptyState: 'Sie haben noch keine Kurse.',
     },
   },
 };

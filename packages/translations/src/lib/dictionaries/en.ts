@@ -17,14 +17,14 @@ export const EN: TDictionary = {
     },
     defaultError: {
       title: 'Something went wrong',
-      description: 'A critical error occurred. Please try reloading the page. If the issue persists, please contact us at {contactEmail}.',
+      description: 'A critical error occurred. Please try reloading the page. If the issue persists, please contact us.',
       retry: 'Retry',
     },
     defaultNotFound: {
-      title: 'Not Found',
+      title: 'Page Not Found',
       description: 'Sorry, the page you are looking for does not exist or may have been moved.',
       retry: 'Retry',
-      goBack: 'Go back',
+      goBack: 'Go to Homepage',
     },
     defaultComingSoon: {
       title: 'Coming soon',
@@ -291,6 +291,7 @@ export const EN: TDictionary = {
       dashboard: 'Dashboard',
       yourProfile: 'Your Profile',
       logout: 'Logout',
+      yourCourses: 'Your Courses',
     },
     footer: {
       impressum: 'Impressum',
@@ -855,7 +856,11 @@ export const EN: TDictionary = {
     breadcrumbs: {
       home: 'Home',
       workspace: 'Workspace',
-      courses: 'Courses',
+      courses: 'Your courses',
+      createCourse: 'Create course',
+      editCourse: 'Edit course',
+      editLesson: 'Edit lesson',
+      newCourse: 'New Course',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1146,5 +1151,8 @@ export const EN: TDictionary = {
     categoryTopics: {
       allText: 'All',
     },
+    userCoursesList: {
+      emptyState: 'You don’t have any courses yet.',
+    },  
   },
 };

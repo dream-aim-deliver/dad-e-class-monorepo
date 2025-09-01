@@ -5,6 +5,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useGetEnrolledCourseDetailsPresenter } from '../../../hooks/use-enrolled-course-details-presenter';
 import {
     AccordionBuilderItem,
+    Breadcrumbs,
     CourseDetailsState,
     CourseIntroductionForm,
     DefaultError,
@@ -13,6 +14,7 @@ import {
     useTabContext,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import React, { Suspense, useEffect, useState } from 'react';
 import EditCourseStructure from './edit-course-structure';
 import { useSaveStructure } from './hooks/save-hooks';
@@ -172,6 +174,7 @@ function EditCourseContent({
             activeTab={activeTab}
             errorMessage={errorMessage}
             locale={locale}
+            courseDetails={courseDetails}
         >
             <EditCourseTabContent
                 courseVersion={courseVersion}
@@ -270,6 +273,7 @@ interface EditCourseLayoutProps {
     activeTab: TabTypes;
     errorMessage: string | null;
     locale: TLocale;
+    courseDetails: CourseDetailsState;
     children: React.ReactNode;
 }
 
@@ -282,12 +286,44 @@ function EditCourseLayout({
     isPreviewing,
     errorMessage,
     locale,
+    courseDetails,
     children,
 }: EditCourseLayoutProps) {
     const tabContentClass = 'mt-5';
     const editCourseTranslations = useTranslations('pages.editCourse');
+    const breadcrumbTranslations = useTranslations('components.breadcrumbs');
+    const router = useRouter();
+
+    const breadcrumbItems = [
+        {
+            label: breadcrumbTranslations('home'),
+            onClick: () => router.push('/'),
+        },
+        {
+            label: breadcrumbTranslations('workspace'),
+            onClick: () => router.push('/workspace'),
+        },
+        {
+            label: breadcrumbTranslations('courses'),
+            onClick: () => router.push('/workspace/courses'),
+        },
+        {
+            label: courseDetails.courseTitle,
+            onClick: () => {
+                // TODO: implement navigation
+            },
+        },
+        {
+            label: breadcrumbTranslations('editCourse'),
+            onClick: () => {
+                // Nothing should happen on clicking the current page
+            },
+        },
+    ];
+
     return (
         <div className="flex flex-col gap-4 px-15">
+            <Breadcrumbs items={breadcrumbItems} />
             <EditHeader
                 title={editCourseTranslations('editCourseTitle')}
                 onPreview={onPreview}

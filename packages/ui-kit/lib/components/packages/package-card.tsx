@@ -119,7 +119,7 @@ export const PackageCard = ({
                     <div className="group relative">
                         <h4 
                             ref={titleRef}
-                            className="text-text-primary text-xl lg:text-3xl font-bold leading-[120%] line-clamp-2"
+                            className="text-text-primary line-clamp-2"
                         >
                             {title}
                         </h4>
@@ -149,7 +149,7 @@ export const PackageCard = ({
                         }
                     </div>
                 </div>
-                <p className="text-text-secondary text-md lg:text-xl leading-[150%]">
+                <p className="text-text-secondary text-md lg:text-lg leading-[150%]">
                     {description}
                 </p>
                 <div className="flex flex-col pt-4 gap-4">

@@ -177,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   // Workspace dropdown options
   const workspaceOptions = [
     {
-      label: dictionary.components.navbar.dashboard,
+      label: dictionary.components.navbar.yourCourses, // TODO: Change for Dashboard title
       value: 'dashboard',
     },
     {

@@ -30,9 +30,9 @@ export const PackageCardList: React.FC<PackageCardListProps> = ({
     const dictionary = getDictionary(locale);
     return (
         <div className="flex flex-col gap-[60px]">
-            <p className="text-2xl text-text-primary font-bold leading-[110%]">
+            <h3 className="leading-[110%]">
                 {dictionary.components.packages.ourPackagesText}
-            </p>
+            </h3>
             <div className="flex gap-4 flex-wrap">
                 {children}
             </div>
