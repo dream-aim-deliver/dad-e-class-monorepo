@@ -96,6 +96,7 @@ export default function EditCourseStructure({
             }
             editor={modules.map((module, index) => (
                 <ModuleEditor
+                    index={index}
                     key={`module-${index}`}
                     module={module}
                     onUpdate={(updatedModule) =>
