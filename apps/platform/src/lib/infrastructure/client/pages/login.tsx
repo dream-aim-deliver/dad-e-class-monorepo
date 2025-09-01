@@ -3,6 +3,7 @@ import React, { Suspense } from 'react';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
+import { DefaultLoading } from '@maany_shr/e-class-ui-kit';
 
 interface LoginPageProps {
     platform: string;
@@ -151,7 +152,7 @@ const LoginPageWithSuspense = (props: LoginPageProps) => {
     const dictionary = getDictionary(props.locale);
 
     return (
-        <Suspense fallback={<div>{dictionary.pages.login.loading}</div>}>
+        <Suspense fallback={<DefaultLoading locale={props.locale} variant="minimal" />}>
             <LoginPage {...props} />
         </Suspense>
     );

@@ -237,7 +237,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
             <div className="w-full max-w-[1000px]">
                 {/* Featured image */}
                 <img
-                    className="w-full h-64 sm:h-72 md:h-80 lg:h-96 object-cover rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-base-neutral-700 mb-6"
+                    className="max-w-[700px] object-cover rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-base-neutral-700 mb-6 mx-auto block"
                     src={imageElements[currentIndex].url}
                     alt={`Image ${currentIndex + 1}`}
                 />

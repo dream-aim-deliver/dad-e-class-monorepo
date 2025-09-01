@@ -140,7 +140,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     const currentLesson = getCurrentLesson();
 
     if (transformedModules.length === 0) {
-        return <DefaultNotFound locale={locale} description="Course is empty." />;
+        return <DefaultError locale={locale} description="Course is empty." />;
     }
 
     return (

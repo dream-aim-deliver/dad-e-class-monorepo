@@ -28,6 +28,7 @@ export default function UserCoursesList() {
     const sessionDTO = useSession();
     const session = sessionDTO.data;
     const sessionStatus = sessionDTO.status;
+    const emptyStateTranslations = useTranslations('pages.userCoursesList');
     const paginationTranslations = useTranslations(
         'components.paginationButton',
     );
@@ -74,7 +75,13 @@ export default function UserCoursesList() {
     }
 
     if (displayedCourses.length === 0) {
-        return <DefaultNotFound locale={locale} />;
+        return (
+            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                <p className="text-text-primary text-md">
+                    {emptyStateTranslations('emptyState')}
+                </p>
+            </div>
+        );
     }
 
     const onCourseVisit = (courseSlug: string) => {

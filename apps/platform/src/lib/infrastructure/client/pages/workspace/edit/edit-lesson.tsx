@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    Breadcrumbs,
     CourseElementType,
     DefaultLoading,
     DownloadFilesElement,
@@ -44,6 +45,7 @@ import { LessonComponentButton } from './types';
 import LessonComponentsBar from './components/lesson-components-bar';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { generateTempId } from './utils/generate-temp-id';
 import dynamic from 'next/dynamic';
@@ -138,6 +140,34 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
 
     const [isPreviewing, setIsPreviewing] = useState(false);
     const editLessonsTranslations = useTranslations('pages.editLesson');
+    const breadcrumbTranslations = useTranslations('components.breadcrumbs');
+    const router = useRouter();
+
+    const breadcrumbItems = [
+        {
+            label: breadcrumbTranslations('home'),
+            onClick: () => router.push('/'),
+        },
+        {
+            label: breadcrumbTranslations('workspace'),
+            onClick: () => router.push('/workspace'),
+        },
+        {
+            label: breadcrumbTranslations('courses'),
+            onClick: () => router.push('/workspace/courses'),
+        },
+        {
+            label: breadcrumbTranslations('editCourse'),
+            onClick: () => router.back(),
+        },
+        {
+            label: breadcrumbTranslations('editLesson'),
+            onClick: () => {
+                // Nothing should happen on clicking the current page
+            },
+        },
+    ];
+
     const simpleComponentButtons: LessonComponentButton[] = [
         {
             icon: <IconRichText />,
@@ -376,6 +406,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
 
     return (
         <div className="flex flex-col gap-4 px-15">
+            <Breadcrumbs items={breadcrumbItems} />
             <EditHeader
                 title={editLessonsTranslations('editLessonTitle')}
                 onPreview={() => {
