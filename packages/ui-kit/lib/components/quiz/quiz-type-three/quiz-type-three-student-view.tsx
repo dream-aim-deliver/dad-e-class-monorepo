@@ -76,7 +76,7 @@ const QuizTypeThreeStudentView: FC<QuizTypeThreeStudentViewProps> = ({
       imageId: opt.imageFile?.id ?? '',
       imageThumbnailUrl: opt.imageFile?.thumbnailUrl ?? '',
       description: opt.description,
-      correct: opt.id === elementInstance.correctOptionId,
+      correct: opt.correct ?? opt.id === elementInstance.correctOptionId,
       selected: false,
     })));
     setCorrectIndex(elementInstance.options.findIndex(opt => opt.id === elementInstance.correctOptionId));

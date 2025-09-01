@@ -75,7 +75,7 @@ const QuizTypeOneStudentView: FC<QuizTypeOneStudentViewProps> = ({
   useEffect(() => {
     setOptions(elementInstance.options.map(opt => ({ 
       id: opt.id,
-      correct: opt.id === elementInstance.correctOptionId,
+      correct: opt.correct ?? opt.id === elementInstance.correctOptionId,
       optionText: opt.name,
       selected: false,
      })));
