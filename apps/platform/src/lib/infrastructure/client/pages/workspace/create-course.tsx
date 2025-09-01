@@ -2,12 +2,12 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
+    Breadcrumbs,
     Button,
     CourseForm,
     DefaultError,
     DefaultLoading,
     IconSave,
-    SectionHeading,
     useCourseForm,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
@@ -157,9 +157,39 @@ function CreateCourseContent(props: CreateCourseContentProps) {
     const isSubmitDisabled = hasBeenCreated || isCreating;
 
     const createCourseTranslations = useTranslations('pages.createCourse');
+    const breadcrumbTranslations = useTranslations('components.breadcrumbs');
+    const router = useRouter();
+
+    const breadcrumbItems = [
+        {
+            label: breadcrumbTranslations('home'),
+            onClick: () => router.push('/'),
+        },
+        {
+            label: breadcrumbTranslations('workspace'),
+            onClick: () => router.push('/workspace'),
+        },
+        {
+            label: breadcrumbTranslations('courses'),
+            onClick: () => router.push('/workspace/courses'),
+        },
+        {
+            label: courseTitle || breadcrumbTranslations('newCourse'),
+            onClick: () => {
+                // TODO: implement navigation
+            },
+        },
+        {
+            label: breadcrumbTranslations('createCourse'),
+            onClick: () => {
+                // Nothing should happen on clicking the current page
+            },
+        },
+    ];
 
     return (
         <div className="flex flex-col gap-4 px-30">
+            <Breadcrumbs items={breadcrumbItems} />
             <div className="flex w-full items-center justify-between">
                 <h1> {createCourseTranslations('createTitle')} </h1>
                 <Button

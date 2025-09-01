@@ -39,7 +39,7 @@ function OutlineAccordion({ courseSlug }: CourseOutlineProps) {
     const outline = outlineViewModel.data;
 
     if (outline.items.length === 0) {
-        return <DefaultNotFound locale={locale} description="The course doesn't have an outline." />;
+        return <DefaultError locale={locale} description="The course doesn't have an outline." />;
     }
 
     return (
