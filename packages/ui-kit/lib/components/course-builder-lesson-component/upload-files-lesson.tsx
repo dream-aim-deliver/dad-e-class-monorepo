@@ -245,6 +245,7 @@ export function FormComponent({
                 type="multiple"
                 variant="generic"
                 files={files as any}
+                maxSize={50} // 50MB
                 maxFile={5}
                 onFilesChange={handleFilesUpload as any}
                 onUploadComplete={handleUploadComplete}
