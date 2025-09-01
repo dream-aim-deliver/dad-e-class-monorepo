@@ -11,6 +11,7 @@ export function ModuleContent({
     onLessonTitleChange,
     onLessonExtraTrainingChange,
     locale,
+    moduleIndex,
 }: ModuleContentProps) {
     const isEmpty = content.length === 0;
     const dictionary = getDictionary(locale);
@@ -28,7 +29,7 @@ export function ModuleContent({
                 if (item.type === ContentType.Milestone) {
                     return (
                         <MilestoneItem
-                            key={`milestone-${item.id ?? index}`}
+                            key={`milestone-${moduleIndex}-${index}`}
                             milestone={item}
                             onMoveUp={() => onMoveContentUp(index)}
                             onMoveDown={() => onMoveContentDown(index)}
@@ -42,7 +43,7 @@ export function ModuleContent({
                 if (item.type === ContentType.Lesson) {
                     return (
                         <LessonItem
-                            key={`lesson-${item.id ?? index}`}
+                            key={`lesson-${moduleIndex}-${index}`}
                             lesson={item}
                             onMoveUp={() => onMoveContentUp(index)}
                             onMoveDown={() => onMoveContentDown(index)}

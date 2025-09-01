@@ -33,6 +33,7 @@ export interface EditCourseContentProps {
 }
 
 export interface ModuleContentProps {
+    moduleIndex: number;
     content: (CourseLesson | CourseMilestone)[];
     onMoveContentUp: (contentIndex: number) => void;
     onMoveContentDown: (contentIndex: number) => void;
@@ -46,6 +47,7 @@ export interface ModuleContentProps {
 }
 
 export interface ModuleEditorProps {
+    index: number;
     module: CourseModule;
     onUpdate: (updatedModule: CourseModule) => void;
     onDelete: () => void;
