@@ -190,7 +190,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentProps> = ({
                     onUploadComplete={onUploadComplete}
                     locale={locale}
                     className="w-full"
-                    maxSize={5}
+                    maxSize={50} // 50 MB
                 />
 
                 <div className="flex flex-col items-center justify-center gap-[10px] w-full">

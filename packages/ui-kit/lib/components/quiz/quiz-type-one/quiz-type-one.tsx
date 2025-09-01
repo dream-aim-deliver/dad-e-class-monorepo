@@ -217,7 +217,7 @@ const QuizTypeOne: FC<QuizTypeOneProps> = ({
                     onUploadComplete={(file) => onUploadComplete(file, 0)}
                     locale={locale}
                     className="w-full"
-                    maxSize={5}
+                    maxSize={50} // 50MB
                     isDeletionAllowed={true}
                 />
                 {/* error */}
