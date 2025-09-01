@@ -159,7 +159,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                             currentModule={currentModule.position}
                             totalModules={modules.length}
                             moduleTitle={currentModule.title}
-                            currentLesson={currentLesson.position}
+                            currentLesson={(activeLessonIndex ?? 0) + 1}
                             totalLessons={currentModule.lessons.length}
                             lessonTitle={currentLesson.title}
                             areNotesAvailable={false}
