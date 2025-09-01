@@ -196,6 +196,7 @@ function transformDownloadFiles(
             category: 'generic', // TODO: find a way to pass category
             url: file.downloadUrl,
             status: 'available',
+            thumbnailUrl: file.downloadUrl,
         })),
     };
 }
