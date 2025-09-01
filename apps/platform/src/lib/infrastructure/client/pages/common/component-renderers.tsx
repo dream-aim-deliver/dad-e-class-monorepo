@@ -191,14 +191,17 @@ function DownloadFilesComponent({
     key,
     locale,
 }: ComponentRendererProps) {
+    if (formElement.type !== CourseElementType.DownloadFiles) return null;
     return (
         <DownloadFilesFormComponent
             key={key}
             elementInstance={formElement as CourseElement}
             locale={locale}
             onDownload={(id) => {
-                // TODO: Implement download logic
-                // Integrate from create course
+                const file = formElement.files?.find((file) => file.id === id);
+                if (file) {
+                    downloadFile(file.url, file.name);
+                }
             }}
         />
     );
