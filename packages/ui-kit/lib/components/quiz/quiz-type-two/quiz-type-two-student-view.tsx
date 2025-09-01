@@ -84,10 +84,6 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
 
     // State to manage the quiz groups and their options
     const [groups, setGroups] = useState<QuizGroup[]>([]);
-    const [selectedIndexes, setSelectedIndexes] = useState<(number | null)[]>(
-        [],
-    );
-    const [correctIndexes, setCorrectIndexes] = useState<number[]>([]);
     const [checked, setChecked] = useState<boolean>(false);
     const [isCorrect, setIsCorrect] = useState<boolean>(false);
     const [showingSolution, setShowingSolution] = useState<boolean>(false);
@@ -97,19 +93,11 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
             groupTitle: group.title,
             options: group.options.map((opt) => ({
                 optionText: opt.name,
-                correct: opt.id === group.correctOptionId,
+                correct: opt.correct ?? opt.id === group.correctOptionId,
                 selected: false, // Initialize as not selected
             })),
         }));
         setGroups(mappedGroups);
-
-        // Find correct indexes for each group
-        const corrIndexes = elementInstance.groups.map((group) =>
-            group.options.findIndex(
-                (opt) => opt.id === group.correctOptionId,
-            ),
-        );
-        setCorrectIndexes(corrIndexes);
     }, [elementInstance]);
 
     // Handlers
@@ -120,12 +108,8 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
                 ...opt,
                 selected: gi === groupIdx ? oi === optionIdx : opt.selected,
             })),
-        }));
-        setGroups(newGroups);
+        }));        setGroups(newGroups);
 
-        setSelectedIndexes((prev) =>
-            prev.map((val, idx) => (idx === groupIdx ? optionIdx : val)),
-        );
         setChecked(false);
         setIsCorrect(false);
         setShowingSolution(false);
@@ -133,11 +117,11 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
 
     // function to handle check answer
     const handleCheckAnswer = () => {
-        if (selectedIndexes.some((idx) => idx === -1)) return;
-        const allCorrect = groups.every((group, gi) => {
-            const selIdx = selectedIndexes[gi];
-            if (selIdx === null || selIdx === -1) return false;
-            return group.options[selIdx]?.correct;
+        const allCorrect = groups.every((group) => {
+            return group.options.every((opt) => {
+                if (!opt.correct && !opt.selected) return true;
+                return opt.selected && opt.correct;
+            });
         });
         setIsCorrect(allCorrect);
         setChecked(true);
@@ -161,7 +145,6 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
             options: group.options.map((opt) => ({ ...opt, selected: false })),
         }));
         setGroups(newGroups);
-        setSelectedIndexes(groups.map(() => -1));
         setChecked(false);
         setIsCorrect(false);
         setShowingSolution(false);
@@ -217,9 +200,8 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
                             <div className="flex flex-col gap-3 justify-start w-full">
                                 {group.options.map((choice, optionIdx) => {
                                     const isSelected = showingSolution
-                                        ? optionIdx === correctIndexes[groupIdx]
-                                        : optionIdx ===
-                                          selectedIndexes[groupIdx];
+                                        ? choice.correct
+                                        : choice.selected;
 
                                     return (
                                         <div
@@ -245,8 +227,7 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
                                             />
                                             {!showingSolution &&
                                                 checked &&
-                                                optionIdx ===
-                                                    selectedIndexes[groupIdx] &&
+                                                choice.selected &&
                                                 (choice.correct ? (
                                                     <Badge
                                                         variant="successprimary"
@@ -347,7 +328,7 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
                 {!checked && !showingSolution && (
                     <Button
                         onClick={handleCheckAnswer}
-                        disabled={selectedIndexes.some((idx) => idx === -1)}
+                        disabled={groups.some((group) => group.options.every((opt) => !opt.selected))}
                         text={dictionary.components.quiz.checkAnswerText}
                     />
                 )}
