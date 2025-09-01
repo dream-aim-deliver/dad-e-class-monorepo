@@ -42,7 +42,7 @@ function CoursePreviewLesson(props: { lessonId: number }) {
         return <DefaultError locale={locale} />;
     }
 
-    return <LessonForm data={componentsViewModel.data} />;
+    return <LessonForm key={`lesson-preview-${props.lessonId}`} data={componentsViewModel.data} />;
 }
 
 function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
