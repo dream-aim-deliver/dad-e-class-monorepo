@@ -11,6 +11,7 @@ export function getModulesFromResponse(
 ): CourseModule[] {
     return viewModel.modules.map((module) => {
         const content: (CourseLesson | CourseMilestone)[] = [];
+        
         module.lessons.forEach((lesson) => {
             content.push({
                 type: ContentType.Lesson,
@@ -19,17 +20,21 @@ export function getModulesFromResponse(
                 isExtraTraining: lesson.extraTraining,
             });
         });
+        
         module.milestones.forEach((milestone) => {
             const precedingLessonIndex = content.findIndex(
                 (item) =>
                     item.type === ContentType.Lesson &&
                     item.id === milestone.precedingLessonId,
             );
-            content.splice(precedingLessonIndex + 1, 0, {
-                type: ContentType.Milestone,
-                id: milestone.id,
-            });
+            if (precedingLessonIndex !== -1) {
+                content.splice(precedingLessonIndex + 1, 0, {
+                    type: ContentType.Milestone,
+                    id: milestone.id,
+                });
+            }
         });
+        
         return {
             ...module,
             content,
