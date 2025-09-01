@@ -270,7 +270,7 @@ const QuizTypeFour: FC<QuizTypeFourProps> = ({
                                         }
                                         locale={locale}
                                         className="w-full"
-                                        maxSize={5}
+                                        maxSize={50} // 50MB
                                         isDeletionAllowed
                                     />
                                 </div>
