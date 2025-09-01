@@ -53,7 +53,9 @@ const useFileUpload = ({
     componentType,
     setFile,
 }: FileUploadProps) => {
-    const editLessonTranslations = useTranslations('components.useCourseImageUpload');
+    const editLessonTranslations = useTranslations(
+        'components.useCourseImageUpload',
+    );
 
     const uploadMutation = trpc.uploadLessonComponentFile.useMutation();
     const verifyMutation = trpc.getDownloadUrl.useMutation();
@@ -429,36 +431,23 @@ function ImageGalleryComponent({
     onDeleteClick,
     validationError,
 }: LessonComponentProps) {
-    const updateComponent = (
-        comp: LessonElement,
-        updated: Partial<LessonElement>,
-    ): LessonElement => {
-        if (comp.type !== CourseElementType.ImageGallery) return comp;
-        if (updated.type !== CourseElementType.ImageGallery) return comp;
-        if (comp.id === elementInstance.id) {
-            return { ...comp, ...updated };
-        }
-        return comp;
-    };
-
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
         if (elementInstance.type !== CourseElementType.ImageGallery) return;
-        const existingImages = elementInstance.images
-            ? [...elementInstance.images]
-            : [];
-
-        const updatedImages = [
-            ...existingImages,
-            file as fileMetadata.TFileMetadataImage,
-        ];
-
         setComponents((prevComponents) =>
-            prevComponents.map((component) =>
-                updateComponent(component, {
-                    type: CourseElementType.ImageGallery,
-                    images: updatedImages,
-                }),
-            ),
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.ImageGallery)
+                    return component;
+                if (component.id !== elementInstance.id) return component;
+                const existingImages = component.images
+                    ? [...component.images]
+                    : [];
+
+                const updatedImages = [
+                    ...existingImages,
+                    file as fileMetadata.TFileMetadataImage,
+                ];
+                return { ...component, images: updatedImages };
+            }),
         );
     };
 
@@ -472,18 +461,17 @@ function ImageGalleryComponent({
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
 
     const handleDelete = (imageId: string) => {
-        const filteredImages =
-            elementInstance.images?.filter(
-                (image: any) => image.id !== imageId,
-            ) ?? null;
-
         setComponents((prevComponents) =>
-            prevComponents.map((component) =>
-                updateComponent(component, {
-                    type: CourseElementType.ImageGallery,
-                    images: filteredImages,
-                }),
-            ),
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.ImageGallery)
+                    return component;
+                if (component.id !== elementInstance.id) return component;
+                const filteredImages =
+                    component.images?.filter(
+                        (image: any) => image.id !== imageId,
+                    ) ?? null;
+                return { ...component, images: filteredImages };
+            }),
         );
     };
 
@@ -536,36 +524,22 @@ function DownloadFilesComponent({
     onDeleteClick,
     validationError,
 }: LessonComponentProps) {
-    const updateComponent = (
-        comp: LessonElement,
-        updated: Partial<LessonElement>,
-    ): LessonElement => {
-        if (comp.type !== CourseElementType.DownloadFiles) return comp;
-        if (updated.type !== CourseElementType.DownloadFiles) return comp;
-        if (comp.id === elementInstance.id) {
-            return { ...comp, ...updated };
-        }
-        return comp;
-    };
-
     const setFile = (file: fileMetadata.TFileMetadata | null) => {
         if (elementInstance.type !== CourseElementType.DownloadFiles) return;
-        const existingFiles = elementInstance.files
-            ? [...elementInstance.files]
-            : [];
-
-        const updatedFiles = [
-            ...existingFiles,
-            file as fileMetadata.TFileMetadata,
-        ];
-
         setComponents((prevComponents) =>
-            prevComponents.map((component) =>
-                updateComponent(component, {
-                    type: CourseElementType.DownloadFiles,
-                    files: updatedFiles,
-                }),
-            ),
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.DownloadFiles)
+                    return component;
+                if (component.id !== elementInstance.id) return component;
+                const existingFiles = component.files
+                    ? [...component.files]
+                    : [];
+                const updatedFiles = [
+                    ...existingFiles,
+                    file as fileMetadata.TFileMetadata,
+                ];
+                return { ...component, files: updatedFiles };
+            }),
         );
     };
 
@@ -586,17 +560,18 @@ function DownloadFilesComponent({
     };
 
     const handleDelete = (fileId: string) => {
-        const filteredFiles =
-            elementInstance.files?.filter((file: any) => file.id !== fileId) ??
-            null;
-
         setComponents((prevComponents) =>
-            prevComponents.map((component) =>
-                updateComponent(component, {
-                    type: CourseElementType.DownloadFiles,
-                    files: filteredFiles,
-                }),
-            ),
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.DownloadFiles)
+                    return component;
+                if (component.id !== elementInstance.id) return component;
+                const filteredFiles =
+                    component.files?.filter(
+                        (file: any) => file.id !== fileId,
+                    ) ?? null;
+
+                return { ...component, files: filteredFiles };
+            }),
         );
     };
 
