@@ -17,18 +17,18 @@ export const EN: TDictionary = {
     },
     defaultError: {
       title: 'Something went wrong',
-      description: 'A critical error occurred. Please try reloading the page. If the issue persists, please contact us.',
+      description: 'A critical error occurred. Please try reloading the page. If the issue persists, contact us at {contactEmail}.',
       retry: 'Retry',
     },
     defaultNotFound: {
-      title: 'Page Not Found',
-      description: 'Sorry, the page you are looking for does not exist or may have been moved.',
+      title: 'Not Found',
+      description: 'Sorry, the page you’re looking for doesn’t exist or may have been moved.',
       retry: 'Retry',
       goBack: 'Go to Homepage',
     },
     defaultComingSoon: {
       title: 'Coming soon',
-      description: 'This page is currently under construction. We’re working on it and it will be available soon!',
+      description: 'This page is under construction. We’re working on it and it will be available soon!',
       goBack: 'Go back',
     },
     coachBanner: {
@@ -171,7 +171,7 @@ export const EN: TDictionary = {
       professional: 'Professional',
     },
     generalCard: {
-      buttonText: 'Find the right offer',
+      buttonText: 'Find the right offer.',
       placeHolderText: 'No image available',
     },
     profileInfo: {
@@ -179,9 +179,9 @@ export const EN: TDictionary = {
       name: 'Name',
       namePlaceholder: 'John',
       surname: 'Surname',
-      surnamePlaceholder: 'Doe',
+      surnamePlaceholder: 'Wayne',
       email: 'Email',
-      emailPlaceholder: 'johndoe@gmail.com',
+      emailPlaceholder: 'johnwayne@gmail.com',
       phoneNumber: 'Phone Number',
       phoneNumberPlaceholder: '+44 1234567890',
       password: 'Password',
@@ -193,7 +193,7 @@ export const EN: TDictionary = {
       companyUID: 'Company UID (VAT) (optional)',
       companyUIDPlaceholder: 'e.g. CHE123456789',
       address: 'Address',
-      addressPlaceholder: 'Hermetschloostrasse 70, 8048 Zürich',
+      addressPlaceholder: 'Examplestreet 70, 8002 Zürich',
       profilePicture: 'Profile Picture',
       platformPreferences: 'Platform Preference',
       platformPP: 'Languages spoken fluently (C1 and above)',
@@ -216,7 +216,7 @@ export const EN: TDictionary = {
       portfolioWebsitePlaceholder: 'https://wimlanz.ch/',
 
       associatedCompanyName: 'Company Name (optional)',
-      associatedCompanyNAMEPlaceholder: 'Bewerbeagentur',
+      associatedCompanyNAMEPlaceholder: 'My Company',
       associatedCompanyRole: 'Role (optional)',
       associatedCompanyPlaceholder: 'Senior DevOps Engineer',
       associatedCompanyIndustry: 'Industry (optional)',
@@ -550,9 +550,9 @@ export const EN: TDictionary = {
       readLess: 'Read less',
     },
     moduleCompletionModal: {
-      moduleCompletedText: 'Module completed, well done!',
+      moduleCompletedText: 'Module complete – awesome job!',
       moduleText: 'Module',
-      descriptionText: 'Keep going, you’re doing great!',
+      descriptionText: 'Keep going – you’re doing great!',
       goToNextModuleText: 'Go to next module',
     },
     courseCompletionModal: {
