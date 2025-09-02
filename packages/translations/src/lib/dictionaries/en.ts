@@ -17,11 +17,11 @@ export const EN: TDictionary = {
     },
     defaultError: {
       title: 'Something went wrong',
-      description: 'A critical error occurred. Please try reloading the page. If the issue persists, contact us at {contactEmail}.',
+      description: 'A critical error occurred. Please try reloading the page. If the issue persists, contact us at{contactEmail}.',
       retry: 'Retry',
     },
     defaultNotFound: {
-      title: 'Not found',
+      title: 'Not Found',
       description: 'Sorry, the page you’re looking for doesn’t exist or may have been moved.',
       retry: 'Retry',
       goBack: 'Go to Homepage',
