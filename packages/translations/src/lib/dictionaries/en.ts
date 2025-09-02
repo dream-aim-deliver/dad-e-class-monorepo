@@ -325,7 +325,7 @@ export const EN: TDictionary = {
       courseCreatorText: 'Course Creator',
     },
     coachingSessionCard: {
-      durationText: 'min',
+      durationText: 'min.',
       createdByText: 'Created by',
       courseText: 'Course',
       groupText: 'Group',
@@ -755,7 +755,7 @@ export const EN: TDictionary = {
       usefulLinks: 'Useful links',
       validateLink: 'url link required',
       validateTitle: 'title required',
-      notesValidation: "This group has no coach yet. Choose your favourite coach and send her the coupon. She will become this group's coach.",
+      notesValidation: "This group has no coach yet. Choose your preferred coach and send them the coupon. They will become this group’s coach.",
       customIcon: "custom icon",
       includeInMaterials: "Include links in course material tab",
       publishNotes: 'Publish notes',
