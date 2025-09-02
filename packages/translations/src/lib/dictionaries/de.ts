@@ -106,9 +106,9 @@ export const DE: TDictionary = {
     },
     courseCard: {
       courseEmptyState: {
-        message: 'Du hast noch keine Angebote gekauft',
-        buttonText: 'Angebote kaufen',
-        message2: 'Keine verfügbaren Angebote',
+        message: 'Du hast noch keine Kurse gekauft',
+        buttonText: 'Kurse kaufen',
+        message2: 'Keine verfügbaren Kurse',
       },
       createdBy: 'Erstellt von',
       you: 'Du',
@@ -133,7 +133,7 @@ export const DE: TDictionary = {
       coachingIncluded: 'Coaching enthalten',
       packageCourseSelectorTitle: 'Kaufe das gesamte Paket oder wähle nur die Kurse aus, die du benötigst',
       packageCourseSelectorDescription: 'Mit diesem Paket kannst du nur bestimmte Kurse auswählen oder das gesamte Paket erwerben, um maximal zu sparen.',
-      packageCourseSelectorButton: 'Ausgewählte Angebote kaufen',
+      packageCourseSelectorButton: 'Ausgewählte Kurse kaufen',
       saveText: 'speichern',
     },
     reviewModal: {
@@ -417,20 +417,20 @@ export const DE: TDictionary = {
       fileUploadFailedText: "Datei-Upload fehlgeschlagen",
       uploadImage: {
         choseImages: "Bilder auswählen",
-        description: "oder Bilder per Drag & Drop reinziehen",
+        description: "oder Bilder per Drag & Drop hierher ziehen",
       },
       uploadFile: {
         choseFiles: "Dateien auswählen",
-        description: "oder Dateien per Drag & Drop reinziehen",
+        description: "oder Dateien per Drag & Drop hierher ziehen",
       },
       uploadVideo: {
         choseVideos: "Videos auswählen",
-        description: "oder Videos per Drag & Drop reinziehen",
+        description: "oder Videos per Drag & Drop hierher ziehen",
 
       },
     },
     formRenderer: {
-      title: 'Bedarfsanalyse',
+      title: 'Leistungsbewertung vor dem Kurs',
       alertText: 'Sobald du deine Antwort abgeschickt hast, kannst du keine Änderungen mehr vornehmen. Bitte überprüfe sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
       submitText: 'Antwort senden',
       requiredText: 'Erforderlich',
@@ -489,10 +489,10 @@ export const DE: TDictionary = {
       coachingSessionFilter: 'Coaching-Sitzig',
       minimumCoachingSessionsPlaceholder: 'z.B. 5',
       maximumCoachingSessionsPlaceholder: 'z.B. 50',
-      coursesBoughtFilter: 'Angebot gekauft',
+      coursesBoughtFilter: 'Kurs gekauft',
       minimumCoursesBoughtPlaceholder: 'z.B. 1',
       maximumCoursesBoughtPlaceholder: 'z.B. 20',
-      coursesCreatedFilter: 'Angebot erstellt',
+      coursesCreatedFilter: 'Kurs erstellt',
       minimumCoursesCreatedPlaceholder: 'z.B. 0',
       maximumCoursesCreatedPlaceholder: 'z.B. 10',
       lastAccessFilter: 'Letzter Zugriff',
