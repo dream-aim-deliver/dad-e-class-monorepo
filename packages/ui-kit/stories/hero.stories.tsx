@@ -25,9 +25,9 @@ type Story = StoryObj<typeof Hero>;
 
 export const Default: Story = {
   args: {
-    title: "Platform's Title, short and powerful",
+    title: "Become your own ad agency.",
     description:
-      'Platform introduction. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. ',
+      ' Finally: the solution for companies and teams who want to invest in visibility – not agency fees. With JUST DO AD you gain the skills to design and launch your own advertising: branding, campaigns, websites, videos, and content. Hands-on, step by step, tailored to your needs – with as much or as little support as you choose. ',
     videoId: 'Eg3DPdKFxUjak00azanz8VpGV4uATNjwELeTpVIxM2tM',
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
@@ -38,9 +38,9 @@ export const Default: Story = {
 export const LongTitle: Story = {
   args: {
     title:
-      'Discover the Power of Online Learning with Our Comprehensive Courses',
+      'Discover the Power of Online Learning with Our Comprehensive Offers',
     description:
-      'Unlock your potential and advance your career with our expert-led courses.',
+      'Unlock your potential and advance your career with our expert-led offers.',
     videoId: 'cQ800mkpB7VwoUjUUgtxXs4j5P6iEuafZkkjnAahuRek',
     thumbnailUrl:
       'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png',
