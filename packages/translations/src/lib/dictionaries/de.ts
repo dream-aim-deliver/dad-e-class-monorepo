@@ -70,8 +70,8 @@ export const DE: TDictionary = {
       ratingColumn: 'Bewertung',
       platformColumn: 'Plattform',
       coachingSessionsColumn: '# Coaching-Sitzungen',
-      coursesBoughtColumn: 'Gekaufte Kurse',
-      coursesCreatedColumn: 'Erstellte Kurse',
+      coursesBoughtColumn: 'Gekaufte Angebote',
+      coursesCreatedColumn: 'Erstellte Angebote',
       lastAccessColumn: 'Letzter Zugriff',
       sendNotificationNoUsersError: 'Fehler: Keine Benutzer ausgewählt, um Benachrichtigung zu senden',
       sendingNotifications: 'Sende Benachrichtigungen an %{count} ausgewählte Benutzer',
@@ -106,9 +106,9 @@ export const DE: TDictionary = {
     },
     courseCard: {
       courseEmptyState: {
-        message: 'Du hast noch keine Kurse gekauft',
-        buttonText: 'Kurse kaufen',
-        message2: 'Keine verfügbaren Kurse',
+        message: 'Du hast noch keine Angebote gekauft',
+        buttonText: 'Angebote kaufen',
+        message2: 'Keine verfügbaren Angebote',
       },
       createdBy: 'Erstellt von',
       you: 'Du',
@@ -133,8 +133,8 @@ export const DE: TDictionary = {
       coachingIncluded: 'Coaching enthalten',
       packageCourseSelectorTitle: 'Kaufe das gesamte Paket oder wähle nur die Kurse aus, die du benötigst',
       packageCourseSelectorDescription: 'Mit diesem Paket kannst du nur bestimmte Kurse auswählen oder das gesamte Paket erwerben, um maximal zu sparen.',
-      packageCourseSelectorButton: 'Ausgewählte Kurse kaufen',
-      saveText: 'Speichern',
+      packageCourseSelectorButton: 'Ausgewählte Angebote kaufen',
+      saveText: 'speichern',
     },
     reviewModal: {
       coachingTitle: 'Wie würdest du deinen Coach bewerten?',
@@ -430,7 +430,7 @@ export const DE: TDictionary = {
       },
     },
     formRenderer: {
-      title: 'Leistungsbewertung vor dem Kurs',
+      title: 'Bedarfsanalyse',
       alertText: 'Sobald du deine Antwort abgeschickt hast, kannst du keine Änderungen mehr vornehmen. Bitte überprüfe sie daher sorgfältig. Das Ausfüllen dieses Formulars ist erforderlich, um mit dem Kurs beginnen zu können.',
       submitText: 'Antwort senden',
       requiredText: 'Erforderlich',
@@ -489,10 +489,10 @@ export const DE: TDictionary = {
       coachingSessionFilter: 'Coaching-Sitzig',
       minimumCoachingSessionsPlaceholder: 'z.B. 5',
       maximumCoachingSessionsPlaceholder: 'z.B. 50',
-      coursesBoughtFilter: 'Kurs gekauft',
+      coursesBoughtFilter: 'Angebot gekauft',
       minimumCoursesBoughtPlaceholder: 'z.B. 1',
       maximumCoursesBoughtPlaceholder: 'z.B. 20',
-      coursesCreatedFilter: 'Kurs erstellt',
+      coursesCreatedFilter: 'Angebot erstellt',
       minimumCoursesCreatedPlaceholder: 'z.B. 0',
       maximumCoursesCreatedPlaceholder: 'z.B. 10',
       lastAccessFilter: 'Letzter Zugriff',
@@ -546,7 +546,7 @@ export const DE: TDictionary = {
       goToNextModuleText: 'Gehen zum nächsten Modul',
     },
     courseCompletionModal: {
-      courseCompletedText: 'Kurs abgeschlossen, gut gemacht!',
+      courseCompletedText: 'Geschafft – gut gemacht!',
       completedOnText: 'Abgeschlossen am',
       atText: 'bei',
       downloadCertificateText: 'Zertifikat herunterladen',
@@ -945,7 +945,7 @@ export const DE: TDictionary = {
       urlValidationText: 'Ungültiges Datei-URL-Format',
     },
     courseIntroBanner: {
-      title: 'Kurseinführung'
+      title: 'Was dich erwartet'
     },
     createCourseForm: {
       duplicating: 'Duplizieren',
@@ -1146,7 +1146,7 @@ export const DE: TDictionary = {
       },
     },
     editCourseIntroOutline: {
-      outlineText: 'Gliederung',
+      outlineText: 'Details zum Angebot',
     },
     courseOutline: {
       courseContent: 'Gliederung',
