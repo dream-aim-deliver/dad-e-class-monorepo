@@ -21,7 +21,7 @@ export const EN: TDictionary = {
       retry: 'Retry',
     },
     defaultNotFound: {
-      title: 'Not Found',
+      title: 'Not found',
       description: 'Sorry, the page you’re looking for doesn’t exist or may have been moved.',
       retry: 'Retry',
       goBack: 'Go to Homepage',
