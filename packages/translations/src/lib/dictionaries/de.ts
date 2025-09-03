@@ -416,15 +416,15 @@ export const DE: TDictionary = {
       fileUploadFailedText: "Datei-Upload fehlgeschlagen",
       uploadImage: {
         choseImages: "Bilder auswählen",
-        description: "oder Bilder per Drag & Drop hierher ziehen",
+        description: "oder Bilder per Drag & Drop reinziehen",
       },
       uploadFile: {
         choseFiles: "Dateien auswählen",
-        description: "oder Dateien per Drag & Drop hierher ziehen",
+        description: "oder Dateien per Drag & Drop reinziehen",
       },
       uploadVideo: {
         choseVideos: "Videos auswählen",
-        description: "oder Videos per Drag & Drop hierher ziehen",
+        description: "oder Videos per Drag & Drop reinziehen",
 
       },
     },
