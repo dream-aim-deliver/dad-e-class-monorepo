@@ -17,7 +17,7 @@ export const EN: TDictionary = {
     },
     defaultError: {
       title: 'Something went wrong',
-      description: 'A critical error occurred. Please try reloading the page. If the issue persists, contact us at{contactEmail}.',
+      description: 'A critical error occurred. Please try reloading the page. If the issue persists, contact us at {contactEmail}.',
       retry: 'Retry',
     },
     defaultNotFound: {
