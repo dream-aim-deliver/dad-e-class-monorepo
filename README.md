@@ -112,10 +112,7 @@ Add the following line:
 127.0.0.1 minio
 ```
 
-```bash
 Save and exit
-```
-
 
 ### Starting the Services
 
