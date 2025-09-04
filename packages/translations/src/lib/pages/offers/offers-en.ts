@@ -1,23 +1,23 @@
 import { TDictionary } from "../../dictionaries/base";
 
 export const Offers_EN: TDictionary["pages"]["offers"] = {
-  filterByTopic: "Filter by Topic",
+  filterByTopic: "Filter by topic",
   chooseCategory: "What's your goal?",
-  ourCourses: "Our Courses",
+  ourCourses: "Our Offers",
   ourPackages: "Our Packages",
   coachingIncluded: "Coaching Included",
   coachingOnDemand: "Coaching on demand",
   haveNotFound: "Haven't found what you're looking for?",
   coursesNotFound: {
-    title: "No courses found",
-    description: "Couldn't find any courses matching your criteria. Please try adjusting your filters or check back later.",
+    title: "No offers found",
+    description: "We couldn’t find any offers matching your criteria. Try adjusting your filters – or tell us what you’d like to see. We’d love your feedback!",
   },
   coachesNotFound: {
     title: "No coaches found",
-    description: "Couldn't find any coaches matching your criteria. Please try adjusting your filters or check back later.",
+    description: "No coaches matched your criteria. Try different filters – or get in touch and let us know what kind of support you’re looking for.",
   },
   packagesNotFound: {
     title: "No packages found",
-    description: "Please check back later.",
+    description: "There are currently no packages available. Please check back soon – or share with us what kind of offers you’d like.",
   }
 }
