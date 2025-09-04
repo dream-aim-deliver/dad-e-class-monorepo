@@ -72,48 +72,210 @@ These targets are either [inferred automatically](https://nx.dev/concepts/inferr
 
 [More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
-## Add new projects
+## Running the Development Environment (Docker Compose)
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+### Prerequisites
+- Docker and Docker Compose installed
+- DAD Github PAT with `read:packages` scope
 
-Use the plugin's generator to create new projects.
+### Login to the Github Docker Registry
+```bash
+echo $DAD_GITHUB_PAT | docker login ghcr.io -u USERNAME --password-stdin
+```
+### Host Configuration
 
-To generate a new application, use:
+To make `http://minio` resolve to your local machine, you need to add an entry to your system’s hosts file.
 
-```sh
-npx nx g @nx/next:app demo
+#### macOS / Linux
+Edit the `/etc/hosts` file (requires sudo):
+
+```bash
+sudo nano /etc/hosts
+```
+Add the following line:
+
+```plaintext
+127.0.0.1 minio
 ```
 
-To generate a new library, use:
+Save and exit
 
-```sh
-npx nx g @nx/react:lib mylib
+#### Windows
+Edit the `C:\Windows\System32\drivers\etc\hosts` file (requires admin privileges):
+
+```bash
+notepad C:\Windows\System32\drivers\etc\hosts
+```
+Add the following line:
+
+```plaintext
+127.0.0.1 minio
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+```bash
+Save and exit
+```
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
+### Starting the Services
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```bash
+# Build and start all services in detached mode
+docker compose up -d
+```
 
-## Install Nx Console
+This command will start the following services:
+- **PostgreSQL** - Relational database
+- **MongoDB** - Document database
+- **MinIO** - S3-compatible object storage
+- **CMS FastAPI** - Backend API service
+- **CMS REST** - Frontend application
+- **Adminer** - Database management UI
+- **Mongo Express** - MongoDB management UI
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+### Monitoring Services
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```bash
+# View logs from all services
+docker compose logs -f
 
-## Useful links
+# View logs from specific services
+docker compose logs -f cms-fastapi
+docker compose logs -f cms-rest
+```
 
-Learn more:
+### Service Endpoints
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/next?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Once all services are running, you can access:
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+| Service       | URL                   | Credentials       | Description                     |
+|---------------|-----------------------|-------------------|---------------------------------|
+| CMS FastAPI   | http://localhost:8000 | -                 | Backend REST API & Swagger docs |
+| CMS REST      | http://localhost:5173 | -                 | Frontend application            |
+| Adminer       | http://localhost:8080 | postgres/postgres | PostgreSQL management           |
+| MinIO Console | http://localhost:9091 | minio/minio123    | Object storage console          |
+| Mongo Express | http://localhost:8082 | admin/admin123    | MongoDB management              |
+
+### Managing the Environment
+
+```bash
+# Stop all services (preserves data)
+docker compose down
+
+# Stop services and remove volumes (clean slate)
+docker compose down -v
+
+# Rebuild specific service
+docker compose up --build cms-fastapi
+
+# View service status
+docker compose ps
+```
+
+### Initializing the Platform
+
+After all services are running, you need to initialize the platform data before developing your NextJS application.
+
+#### Method 1: Using Swagger UI (Recommended)
+
+1. Open the FastAPI Swagger documentation at <http://localhost:8000/docs>
+2. Locate the `POST /initializePlatform` endpoint
+3. Click "Try it out"
+4. Use the following request body (or customize as needed):
+
+**NOTE**: Make sure to use the correct name. It should mimic the value of the `E_CLASS_PLATFORM_NAME` in your NextJS setup.
+
+```json
+{
+  "request": {
+    "type": "public",
+    "context": {
+      "platformLanguageId": 0,
+      "platformId": 0,
+      "userRoles": [],
+      "expires": 0,
+      "digest": "string"
+    },
+    "platform": {
+      "name": "E-Class Dev Platform",
+      "accentColor": "orange",
+      "font": "sans-serif",
+      "hasOnlyFreeCourses": true,
+      "public": true,
+      "footerContent": "[{\"type\":\"paragraph\",\"children\":[{\"text\":\"© 2025 JUST DO AD GmbH • Hermetschloostrasse 70, 8048 Zürich • hi@justdoad.ai\"}]}]",
+      "currency": "CHF",
+      "domainName": "http://localhost:3000"
+    },
+    "languages": [
+      "en", "de"
+    ]
+  }
+}
+```
+
+5. Click "Execute"
+
+#### What This Does
+
+This initialization endpoint will:
+- Create default user roles in the system
+- Set up supported languages (English and German)
+- Create the platform with your specified configuration
+- Generate platform-language associations
+- Provide sample icons and background images for the UI
+
+### Start the Platform
+
+```bash
+# Start the platform services
+pnpm nx run platform:dev
+```
+
+Then, open your browser and navigate to <http://localhost:3000> to access the platform.
+
+### Login
+
+You **MUST** log in via the SSO Provider ( AUTH 0 ). Please do not use the test accounts.
+
+### Assign Roles
+
+You may need to make yourself coach/admin depending on the page you are building.
+1. Open the FastAPI Swagger documentation at <http://localhost:8000/docs>
+2. Locate the `POST /api/va/user/attach` endpoint
+3. Click "Try it out"
+4. Use the following request body (or customize as needed):
+
+#### Assign Coach Role
+```json
+{
+  "filter": {
+    "byId": {
+      "field": "id",
+      "type": "number",
+      "op": "eq",
+      "value": 1
+    }
+  },
+  "operationType": "attach",
+  "relationship": "roles",
+  "relatedId": 3
+}
+```
+
+#### Assign Admin Role
+
+```
+{
+  "filter": {
+    "byId": {
+      "field": "id",
+      "type": "number",
+      "op": "eq",
+      "value": 1
+    }
+  },
+  "operationType": "attach",
+  "relationship": "roles",
+  "relatedId": 4
+}
+```
