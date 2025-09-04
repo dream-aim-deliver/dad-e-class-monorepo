@@ -1030,6 +1030,12 @@ export const DE: TDictionary = {
     coachingSessionLesson: {
       coachingSessionCountValidationText: 'Bitte wähle eine Coaching-Sitzung',
     },
+    stepper: {
+      nextButton: 'Nächsti:',
+      backButton: 'Zurück',
+      publishButton: 'Ja, Päckli veröffentliche',
+      noPublishButton: 'Nei, zrugg gah',
+    },
   },
   pages: {
     home: Home_DE,

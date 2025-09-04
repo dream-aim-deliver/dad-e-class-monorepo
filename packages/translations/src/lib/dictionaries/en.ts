@@ -1027,6 +1027,12 @@ export const EN: TDictionary = {
     coachingSessionLesson: {
       coachingSessionCountValidationText: 'Please select a coaching session',
     },
+   stepper: {
+      nextButton: 'Next:',
+      backButton: 'Back',
+      publishButton: 'Yes, publish package',
+      noPublishButton: 'No, go back',
+    },
   },
   pages: {
     home: Home_EN,
