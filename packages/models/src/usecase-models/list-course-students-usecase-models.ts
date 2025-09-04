@@ -20,6 +20,7 @@ export const ListCourseStudentsSuccessResponseSchema = BaseSuccessSchemaFactory(
         courseTitle: z.string(),
         courseSlug: z.string(),
         courseImageUrl: z.string().nullable(),
+        isStudentOfCoach: z.boolean(),
         lastAssignmentCoach: z.object({
             coachId: z.number(),
             coachFullName: z.string().nullable(),
