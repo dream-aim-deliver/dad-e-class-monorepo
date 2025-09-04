@@ -324,7 +324,7 @@ export const DE: TDictionary = {
     },
     sideMenu: {
       studentText: 'Studierende',
-      coachText: 'Trainer',
+      coachText: 'Coach',
       courseCreatorText: 'Kurs-Creator',
     },
     coachingSessionCard: {
@@ -333,7 +333,7 @@ export const DE: TDictionary = {
       courseText: 'Kurs',
       groupText: 'Gruppe',
       joinMeetingText: 'Sitzung beitreten',
-      studentText: 'Studentin',
+      studentText: 'Studierende',
       hoursLeftToEditText: 'Stunden übrig, um das Ereignis zu bearbeiten',
       rescheduleText: 'Umbuchen',
       cancelText: 'Stornieren',
@@ -1068,7 +1068,7 @@ export const DE: TDictionary = {
         assessment: "Vorkurs-Formular",
         preview: "Kurs-Vorschau",
         students: "Studenten",
-        coaches: "Coaches",
+        coaches: "Coach",
         groups: "Gruppen",
       },
     },

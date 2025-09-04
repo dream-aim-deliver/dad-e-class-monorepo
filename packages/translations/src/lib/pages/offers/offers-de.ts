@@ -2,22 +2,22 @@ import { TDictionary } from '../../dictionaries/base';
 
 export const Offers_DE: TDictionary['pages']['offers'] = {
   filterByTopic: 'Nach Thema filtern',
-  chooseCategory: 'Was ist Ihr Ziel?',
-  ourCourses: 'Unsere Kurse',
+  chooseCategory: 'Was ist dein Ziel?',
+  ourCourses: 'Unsere Angebote',
   ourPackages: 'Unsere Pakete',
   coachingIncluded: 'Coaching inklusive',
-  coachingOnDemand: 'Coaching auf Abruf',
-  haveNotFound: 'Haben Sie nicht gefunden, wonach Sie suchen?',
+  coachingOnDemand: 'Coaching bei Bedarf',
+  haveNotFound: 'Noch nicht gefunden, wonach du suchst?',
   coursesNotFound: {
-    title: "Keine Kurse gefunden",
-    description: "Es konnten keine Kurse gefunden werden, die Ihren Kriterien entsprechen. Bitte passen Sie Ihre Filter an oder schauen Sie später noch einmal vorbei.",
+    title: "Keine Angebote gefunden",
+    description: "Wir konnten keine passenden Angebote finden. Passe deine Filter an – oder sag uns, was dir fehlt. Wir freunen uns auf dein Feedback.",
   },
   coachesNotFound: {
     title: "Keine Coaches gefunden",
-    description: "Es konnten keine Coaches gefunden werden, die Ihren Kriterien entsprechen. Bitte passen Sie Ihre Filter an oder schauen Sie später noch einmal vorbei.",
+    description: "Leider keine passenden Coaches gefunden. Probiere andere Filter – oder melde dich bei uns und sag, welche Unterstützung du suchst.",
   },
   packagesNotFound: {
     title: "Keine Pakete gefunden",
-    description: "Bitte schauen Sie später noch einmal vorbei.",
+    description: "Momentan sind keine Pakete verfügbar. Schau bald wieder vorbei – oder teile uns mit, welche Angebote dich interessieren würden.",
   }
 };
