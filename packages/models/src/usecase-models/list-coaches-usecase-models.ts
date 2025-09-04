@@ -7,7 +7,8 @@ import {
 import { DefaultPaginationSchema } from '../utils/pagination';
 
 export const ListCoachesRequestSchema = DefaultPaginationSchema.extend({
-    skillSlugs: z.array(z.string()).optional(),
+    skillSlugs: z.array(z.string()).optional().nullable(),
+    courseSlug: z.string().optional().nullable(),
 });
 export type TListCoachesRequest = z.infer<typeof ListCoachesRequestSchema>;
 
