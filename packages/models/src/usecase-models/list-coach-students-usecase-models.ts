@@ -1,0 +1,43 @@
+import { z } from "zod";
+import { DefaultPaginationSchema } from "../utils/pagination";
+import { AssignmentStatusEnumSchema } from "../assignment";
+import {
+    BaseErrorDiscriminatedUnionSchemaFactory,
+    BaseStatusDiscriminatedUnionSchemaFactory,
+    BaseSuccessSchemaFactory,
+} from '@dream-aim-deliver/dad-cats';
+
+
+
+export const ListCoachStudentsRequestSchema = DefaultPaginationSchema.extend({});
+export type TListCoachesRequest = z.infer<typeof ListCoachStudentsRequestSchema>;
+
+
+export const ListCoachStudentsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
+    students: z.array(z.object({
+        studentId: z.number(),
+        fullName: z.string(),
+        avatarUrl: z.string().nullable(),
+        coachingSessionCount: z.number(),
+        courses: z.array(z.object({
+            courseTitle: z.string(),
+            courseSlug: z.string(),
+            courseImageUrl: z.string().nullable(),
+            lastAssignment: z.object({
+                assignmentId: z.string(),
+                assignmentTile: z.string(),
+                assignmentStatus: AssignmentStatusEnumSchema
+            }).optional().nullable(),
+        }))
+    })),
+}));
+export type TListCoachStudentsSuccessResponse = z.infer<typeof ListCoachStudentsSuccessResponseSchema>;
+
+const ListCoachStudentsUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
+export type TListCoachStudentsUseCaseErrorResponse = z.infer<typeof ListCoachStudentsUseCaseErrorResponseSchema>;
+
+export const ListCoachStudentsUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
+    ListCoachStudentsSuccessResponseSchema,
+    ListCoachStudentsUseCaseErrorResponseSchema,
+]);
+export type TListCoachStudentsUseCaseResponse = z.infer<typeof ListCoachStudentsUseCaseResponseSchema>;
