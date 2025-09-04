@@ -43,50 +43,79 @@ export function StepperList({ children }: StepperListProps) {
     const circleRadius = circleDiameter / 1; // Radius used for offsetting the line from container edges
 
     useEffect(() => {
-        if (!containerRef.current) return;
+        const calculateProgress = () => {
+            if (!containerRef.current) return;
 
-        const containerWidth = containerRef.current.offsetWidth;
+            const container = containerRef.current;
+            const stepElements = container.querySelectorAll('[data-step-item]');
+            
+            if (stepElements.length === 0 || totalSteps <= 1) {
+                setProgressWidth(0);
+                return;
+            }
 
-        // Maximum width available for the progress line, accounting for circle sizes at both ends
-        const lineMaxWidth = containerWidth - circleDiameter;
+            // Get the first and last step positions
+            const firstStep = stepElements[0] as HTMLElement;
+            const lastStep = stepElements[stepElements.length - 1] as HTMLElement;
+            
+            // Find the circle elements within each step to get their exact positions
+            const firstCircle = firstStep.querySelector('[data-step-circle]') as HTMLElement;
+            const lastCircle = lastStep.querySelector('[data-step-circle]') as HTMLElement;
+            
+            if (!firstCircle || !lastCircle) return;
+            
+            const firstStepCenter = firstStep.offsetLeft + (firstStep.offsetWidth / 2);
+            const lastStepCenter = lastStep.offsetLeft + (lastStep.offsetWidth / 2);
+            
+            // Calculate the total distance between first and last steps
+            const totalDistance = lastStepCenter - firstStepCenter;
+            
+            // Calculate progress based on current step
+            const progress = (currentStep - 1) / (totalSteps - 1);
+            const baseWidth = totalDistance * progress;
+            
+            // Add a small offset to ensure the line goes slightly behind the current step
+            const offset = 8; // Adjust this value to control how much further the line extends
+            const newWidth = Math.max(0, baseWidth + offset);
 
-        let newWidth = ((currentStep - 1) / (totalSteps - 1)) * lineMaxWidth;
+            setProgressWidth(newWidth);
+        };
 
-        const margin = 12;
+        // Initial calculation
+        calculateProgress();
 
-        // Prevent progress line from exceeding max width minus margin
-        if (newWidth > lineMaxWidth - margin) {
-            newWidth = lineMaxWidth - margin;
-        }
+        // Recalculate on window resize
+        const handleResize = () => {
+            setTimeout(calculateProgress, 0); // Allow DOM to update
+        };
 
-        setProgressWidth(newWidth);
+        window.addEventListener('resize', handleResize);
+        
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, [currentStep, totalSteps]);
 
     return (
         <div
             ref={containerRef}
-            className="relative flex items-center justify-between w-full"
-            style={{ minWidth: '300px' }}
+            className="relative flex items-start justify-between w-full min-w-0 overflow-hidden"
         >
             {/* Base line behind the steps with reduced opacity */}
             <div
-                className="absolute h-1 bg-action-default opacity-20"
+                className="absolute h-1 bg-action-default opacity-20 top-3 sm:top-[14px] -translate-y-1/2"
                 style={{
-                    top: '25%',
                     left: circleRadius,
                     right: circleRadius,
-                    transform: 'translateY(-50%)',
                 }}
             />
 
             {/* Progress line that grows as steps advance */}
             <div
-                className="absolute h-1 bg-action-default transition-all duration-300"
+                className="absolute h-1 bg-action-default transition-all duration-300 top-3 sm:top-[14px] -translate-y-1/2"
                 style={{
-                    top: '25%',
                     left: circleRadius,
                     width: progressWidth,
-                    transform: 'translateY(-50%)',
                 }}
             />
 

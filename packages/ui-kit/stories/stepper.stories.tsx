@@ -198,7 +198,7 @@ const meta: Meta<typeof Stepper.Root> = {
     title: 'Components/Stepper',
     component: Stepper.Root,
     parameters: {
-        layout: 'centered',
+        layout: 'fullscreen',
     },
     tags: ['autodocs'],
 };
@@ -216,12 +216,12 @@ const Template = (args: {
     totalSteps: number;
     locale: 'en' | 'de';
 }) => (
-    <div className="w-full px-6 flex justify-center">
+    <div className="w-full px-6 py-4 flex justify-center">
         <Stepper.Root
             defaultStep={args.defaultStep}
             totalSteps={args.totalSteps}
         >
-            <div className="w-[1200px] flex flex-col gap-8">
+            <div className="w-full flex flex-col gap-8">
                 {/* Stepper list (header) */}
                 <Stepper.List>
                     {steps.map(({ step, description }) => (
