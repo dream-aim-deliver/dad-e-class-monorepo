@@ -162,3 +162,6 @@ export { AccordionBuilder, type AccordionBuilderItem } from './components/accord
 
 export { type OneOutOfThreeData } from './components/out-of-three/one-out-of-three';
 export { validatorPerType } from './components/lesson/validators';
+
+export { PackageCmsCard } from './components/packages/package-cms-card';
+export { PackageCmsCardList } from './components/packages/package-cms-card-list';
