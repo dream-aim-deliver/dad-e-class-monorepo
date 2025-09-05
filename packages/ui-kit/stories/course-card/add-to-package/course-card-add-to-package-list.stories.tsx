@@ -119,7 +119,7 @@ export const DefaultView: Story = {
     render: (args) => <RenderCourseList {...args} />,
 };
 
-export const NoCoursesIncluded: Story = {
+export const AllCoursesIncluded: Story = {
     args: {
         locale: 'en',
         courses: mockCourses3,
@@ -128,7 +128,7 @@ export const NoCoursesIncluded: Story = {
     render: (args) => <RenderCourseList {...args} />,
 };
 
-export const AllCoursesIncluded: Story = {
+export const NoCoursesIncluded: Story = {
     args: {
         locale: 'en',
         courses: mockCourses3,
