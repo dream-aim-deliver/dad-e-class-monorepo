@@ -33,14 +33,16 @@ interface StepperListProps {
  * @returns {JSX.Element} A visual container with a horizontal progress indicator and step items.
  */
 
+// Constants for stepper visual styling
+const circleDiameter = 28;
+const circleRadius = circleDiameter / 2;
+const progressLineOffset = 8; // Additional offset for progress line extension
+
 export function StepperList({ children }: StepperListProps) {
     const { currentStep, totalSteps } = useStepperContext();
 
     const containerRef = useRef<HTMLDivElement>(null);
     const [progressWidth, setProgressWidth] = useState(0);
-
-    const circleDiameter = 28;
-    const circleRadius = circleDiameter / 1; // Radius used for offsetting the line from container edges
 
     useEffect(() => {
         const calculateProgress = () => {
@@ -74,9 +76,8 @@ export function StepperList({ children }: StepperListProps) {
             const progress = (currentStep - 1) / (totalSteps - 1);
             const baseWidth = totalDistance * progress;
             
-            // Add a small offset to ensure the line goes slightly behind the current step
-            const offset = 8; // Adjust this value to control how much further the line extends
-            const newWidth = Math.max(0, baseWidth + offset);
+            // Add offset to ensure the line extends slightly beyond the current step
+            const newWidth = Math.max(0, baseWidth + progressLineOffset);
 
             setProgressWidth(newWidth);
         };

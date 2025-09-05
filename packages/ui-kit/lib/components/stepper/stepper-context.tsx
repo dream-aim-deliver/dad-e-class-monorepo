@@ -65,7 +65,7 @@ export interface StepperProviderProps {
  * ```
  *
  * @param {Object} props - StepperProvider props.
- * @param {number} props.defaultStep - The initial active step (1-based index recommended).
+ * @param {number} props.defaultStep - The initial active step (1-based index).
  * @param {number} props.totalSteps - Total number of steps in the stepper flow.
  * @param {(step: number) => void} [props.onStepChange] - Optional callback invoked when step changes.
  * @param {React.ReactNode} props.children - Nested children that will have access to the stepper context.
