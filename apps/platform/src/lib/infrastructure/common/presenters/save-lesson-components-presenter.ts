@@ -62,7 +62,6 @@ export default class LessonComponentsPresenter extends BasePresenter<
             TSaveLessonComponentsResponseMiddleware
         >,
     ): viewModels.TSaveLessonComponentsViewModel {
-        // TODO: Get rid of ignores after fixing typing
         if (response.data.errorType === 'ConflictError') {
             return {
                 mode: 'conflict',
@@ -70,7 +69,6 @@ export default class LessonComponentsPresenter extends BasePresenter<
                     message: response.data.message,
                     operation: response.data.operation,
                     context: response.data.context,
-                    // @ts-ignore
                     courseVersion: response.data.courseVersion
                 }
             };
