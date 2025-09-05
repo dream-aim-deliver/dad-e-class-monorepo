@@ -8,7 +8,7 @@ import { AssignmentStatusEnumSchema } from '../assignment';
 
 
 export const ListCourseStudentsRequestSchema = z.object({
-    courseSlugs: z.array(z.string()).optional().nullable(),
+    courseSlug: z.string(),
 });
 export type TListCourseStudentsRequest = z.infer<typeof ListCourseStudentsRequestSchema>;
 
