@@ -1,41 +1,63 @@
-import React from "react";
-import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+import React from 'react';
+import { isLocalAware } from '@maany_shr/e-class-translations';
 
-export interface PackageCardListProps extends isLocalAware{
-    children: React.ReactNode
+export interface PackageCardListProps extends isLocalAware {
+    children: React.ReactNode;
 }
 
 /**
- * A container component that displays a list of package cards with a localized heading.
- * It wraps the children elements (typically PackageCard components) and provides consistent spacing and styling.
+ * `PackageCardList` is a layout component for displaying a list of package cards
+ * in a responsive grid. It handles responsive visibility for certain cards and
+ * ensures proper accessibility roles (`list` and `listitem`) for screen readers.
  *
- * @param children The package card components or any React nodes to be displayed within the list.
- * @param locale The locale for translation and localization purposes (e.g., "en" for English, "de" for German).
+ * Features:
+ * - Renders children in a grid layout (1 column on small screens, up to 3 columns on large screens).
+ * - Automatically hides the 3rd card on small/medium screens and shows it on large screens.
+ * - Supports localization via the `locale` prop inherited from `isLocalAware`.
  *
- * @example
+ * Props:
+ * @param {React.ReactNode} children - The package cards or elements to display.
+ * @param {string} [locale] - Optional locale string to support localized content.
+ *
+ * Example usage:
+ * ```tsx
  * <PackageCardList locale="en">
- *   <PackageCard {...package1Props} />
- *   <PackageCard {...package2Props} />
+ *   <PackageCard title="Basic Plan" price="$10" />
+ *   <PackageCard title="Pro Plan" price="$20" />
+ *   <PackageCard title="Enterprise Plan" price="$50" />
  * </PackageCardList>
+ * ```
  *
- * @remarks
- * - The heading text is localized based on the provided `locale`.
- * - Children are displayed in a flexible, wrapped layout with gaps between items.
+ * Notes:
+ * - Each child should have a unique `key` prop for optimal React performance.
+ * - The component automatically converts children into an array to manage layout logic.
  */
 
-export const PackageCardList: React.FC<PackageCardListProps> = ({ 
-    children ,
-    locale
+export const PackageCardList: React.FC<PackageCardListProps> = ({
+    children,
+    locale,
 }) => {
-    const dictionary = getDictionary(locale);
+    const childrenArray = React.Children.toArray(children);
     return (
-        <div className="flex flex-col gap-[60px]">
-            <h3 className="leading-[110%]">
-                {dictionary.components.packages.ourPackagesText}
-            </h3>
-            <div className="flex gap-4 flex-wrap">
-                {children}
+        <div className="flex flex-col gap-4 justify-center items-center">
+            <div
+                className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"
+                role="list"
+            >
+                {childrenArray.map((child, index) => (
+                    <div
+                        key={(child as any)?.key ?? `package-card-${index}`}
+                        role="listitem"
+                        className={
+                            index === 2
+                                ? 'hidden lg:block' // Hide 3rd card on small/medium, show on large
+                                : ''
+                        }
+                    >
+                        {child}
+                    </div>
+                ))}
             </div>
         </div>
-    )
-}
+    );
+};
