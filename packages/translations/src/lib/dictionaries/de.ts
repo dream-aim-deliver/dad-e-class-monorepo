@@ -28,7 +28,7 @@ export const DE: TDictionary = {
     },
     defaultComingSoon: {
       title: 'Bald verfügbar',
-      description: 'Diese Seite entsteht gerade. Sie wird bald verfügbar sein!',
+      description: 'Diese Seite entsteht gerade. Sie wird bald verfügbar sein!', // Guidelines: informal 'Du' - but here 'Sie' refers to the page, not the user
       goBack: 'Zurück',
     },
     coachBanner: {
@@ -84,7 +84,7 @@ export const DE: TDictionary = {
       sendNotification: 'Benachrichtigung senden',
       hideActions: 'Aktionen ausblenden',
       all: 'Alle',
-      students: 'Studenten',
+      students: 'Studierende', // Guidelines: gender-neutral wording
       coaches: 'Coaches',
       courseCreators: 'Kurs-Creators',
       admin: 'Admin',
@@ -294,7 +294,7 @@ export const DE: TDictionary = {
       dashboard: 'Dashboard',
       yourProfile: 'Dein Profil',
       logout: 'Abmelden',
-      yourCourses: 'Ihre Kurse',
+      yourCourses: 'Deine Kurse', // Guidelines: informal 'Du' instead of formal 'Sie/Ihre'
     },
     footer: {
       impressum: 'Impressum',
@@ -693,7 +693,7 @@ export const DE: TDictionary = {
       typeThreeText: 'Typ 3',
       typeFourText: 'Typ 4',
       quizTypeOne: {
-        headingText: 'Der Student wählt eine korrekte Antwort von vielen',
+        headingText: 'Wähle eine korrekte Antwort von vielen', // Guidelines: gender-neutral, informal 'Du'
         radioButtonText: 'Text der Optionsschaltfläche',
         validationErrors: {
           wrongElementType: 'Falscher Elementtyp',
@@ -706,9 +706,9 @@ export const DE: TDictionary = {
         },
       },
       quizTypeTwo: {
-        headingText: 'Der Student muss für jede Gruppe die richtige Wahl treffen',
+        headingText: 'Für jede Gruppe die richtige Wahl treffen', // Guidelines: gender-neutral, informal 'Du'
         uploadImageText: 'Bild hochladen (erforderlich)',
-        errorText: 'Sie sollten wissen, was die richtige Antwort ist',
+        errorText: 'Du solltest wissen, was die richtige Antwort ist', // Guidelines: informal 'Du' instead of formal 'Sie'
         groupTitleText: 'Titel der Gruppe',
         radioButtonText: 'Text der Optionsschaltfläche',
         validationErrors: {
@@ -724,7 +724,7 @@ export const DE: TDictionary = {
         },
       },
       quizTypeThree: {
-        headingText: 'Der Student entscheidet sich für eine der 2 Bilder',
+        headingText: 'Entscheide dich für eines der 2 Bilder', // Guidelines: gender-neutral, informal 'Du'
         choiceDescriptionText: 'Beschreibung der Option',
         validationErrors: {
           wrongElementType: 'Falscher Elementtyp',
@@ -737,7 +737,7 @@ export const DE: TDictionary = {
         },
       },
       quizTypeFour: {
-        headingText: 'Der Student muss den gesamten Text allen Bildern zuordnen',
+        headingText: 'Ordne den gesamten Text allen Bildern zu', // Guidelines: gender-neutral, informal 'Du'
         choiceDescriptionText: 'Beschreibung der Option',
         correctLetterText: 'Richtiges Zeichen',
         validationErrors: {
@@ -773,7 +773,7 @@ export const DE: TDictionary = {
       back: "Zurück",
       editCoachNotes: "Coach Notizen bearbeiten",
       exploreCourses: "Kurse erkunden",
-      description: "Hinweis: Jede von Ihnen vorgenommene Änderung sendet eine Benachrichtigung an alle Studierenden in dieser Gruppe. Bitte überprüfen Sie diese sorgfältig, bevor Sie sie veröffentlichen.",
+      description: "Hinweis: Jede von dir vorgenommene Änderung sendet eine Benachrichtigung an alle Studierenden in dieser Gruppe. Bitte überprüfe diese sorgfältig, bevor du sie veröffentlichst.", // Guidelines: informal 'Du' instead of formal 'Sie/Ihnen'
     },
     buyCoachingSessionBanner: {
       coachBadge: 'Coach',
@@ -825,7 +825,7 @@ export const DE: TDictionary = {
       courseSection: 'Kurs',
       moduleSection: 'Modul',
       lessonSection: 'Lektion',
-      studentSection: 'Studenten',
+      studentSection: 'Studierende', // Guidelines: gender-neutral wording
       groupSection: 'Gruppe',
       titlePlaceholder: 'Nach Titel suchen...',
       coursePlaceholder: 'Nach Kurs suchen...',
@@ -873,7 +873,7 @@ export const DE: TDictionary = {
       briefDescriptionPlaceholder: 'Füge eine kurze Beschreibung des Kurses hinzu...',
       estimatedDuration: 'Geschätzte Dauer in Stunden',
       requirements: 'Anforderungen',
-      requirementsDescription: 'Was wird von den Studierenden erwartet, um diesen Kurs zu beginnen? Füge unten die erforderlichen Kurse hinzu.',
+      requirementsDescription: 'Was wird von den Studierenden erwartet, um diesen Kurs zu beginnen? Füge unten die erforderlichen Kurse hinzu.', // Guidelines: already uses gender-neutral 'Studierende'
       searchCoursesPlaceholder: 'Kurse suchen',
       featuredImage: 'Vorschaubild',
       removeCourse: 'Kurs entfernen'
@@ -1054,20 +1054,20 @@ export const DE: TDictionary = {
       },
       roleDropdown: {
         viewAs: "Ansehen als",
-        student: "Student",
+        student: "Studierende", // Guidelines: gender-neutral wording
         coach: "Coach",
-        creator: "Kurs-Ersteller",
+        creator: "Kurs-Creator",
         admin: "Admin",
       },
       tabs: {
         introduction: "Einführung",
         study: "Studium",
         assignments: "Aufgaben",
-        notes: "Ihre Notizen",
+        notes: "Deine Notizen", // Guidelines: informal 'Du' instead of formal 'Sie/Ihre'
         material: "Material",
         assessment: "Vorkurs-Formular",
         preview: "Kurs-Vorschau",
-        students: "Studenten",
+        students: "Studierende", // Guidelines: gender-neutral wording
         coaches: "Coach",
         groups: "Gruppen",
       },
@@ -1094,7 +1094,7 @@ export const DE: TDictionary = {
       coachingSessions: "Coaching-Sitzungen",
       yourCoachingSessions: "Deine Coaching-Sitzungen",
       calendar: "Kalender",
-      yourStudents: "Deine Studenten",
+      yourStudents: "Deine Studierenden", // Guidelines: gender-neutral wording
       yourReviews: "Deine Bewertungen",
       yourProfile: "Dein Profil",
       orderPayments: "Bestellungen & Zahlungen",
@@ -1155,7 +1155,7 @@ export const DE: TDictionary = {
       allText: 'Alle',
     },
     userCoursesList: {
-      emptyState: 'Sie haben noch keine Kurse.',
+      emptyState: 'Du hast noch keine Kurse.', // Guidelines: informal 'Du' instead of formal 'Sie'
     },
   },
 };

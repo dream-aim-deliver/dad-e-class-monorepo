@@ -427,7 +427,7 @@ export const EN: TDictionary = {
     },
     formRenderer: {
       title: 'Pre-Assessment',
-      alertText: 'Once you submit your response, you won’t be able to make changes, so please review it carefully. Completing this form is required to begin the course.',
+      alertText: 'Once you submit your response, you won\'t be able to make changes, so please review it carefully. Complete this form to begin your course.', // Guidelines: friendlier, more direct tone
       submitText: 'send reply',
       requiredText: 'required',
       fieldRequired: 'This field is required',
@@ -683,7 +683,7 @@ export const EN: TDictionary = {
       hideSolutionText: 'Hide solution',
       checkAnswerText: 'Check answer',
       clearText: 'Clear',
-      errorText: "You need to define what's the correct answer",
+      errorText: "Please define the correct answer", // Guidelines: friendlier, more direct tone
       typeOneText: "Type 1",
       typeTwoText: "Type 2",
       typeThreeText: "Type 3",
@@ -704,7 +704,7 @@ export const EN: TDictionary = {
       quizTypeTwo: {
         headingText: 'Student has to choose the right choice for each group',
         uploadImageText: 'Upload Image (Required)',
-        errorText: "You need to define what's the correct answer",
+        errorText: "Please define the correct answer", // Guidelines: friendlier, more direct tone
         groupTitleText: 'Group title',
         radioButtonText: 'Radio button text',
         validationErrors: {

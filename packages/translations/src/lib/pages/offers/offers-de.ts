@@ -10,7 +10,7 @@ export const Offers_DE: TDictionary['pages']['offers'] = {
   haveNotFound: 'Noch nicht gefunden, wonach du suchst?',
   coursesNotFound: {
     title: "Keine Angebote gefunden",
-    description: "Wir konnten keine passenden Angebote finden. Passe deine Filter an – oder sag uns, was dir fehlt. Wir freunen uns auf dein Feedback.",
+    description: "Wir konnten keine passenden Angebote finden. Passe deine Filter an – oder sag uns, was dir fehlt. Wir freuen uns auf dein Feedback.", // Fixed typo: 'freunen' → 'freuen'
   },
   coachesNotFound: {
     title: "Keine Coaches gefunden",
