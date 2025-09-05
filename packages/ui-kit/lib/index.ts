@@ -165,3 +165,5 @@ export { validatorPerType } from './components/lesson/validators';
 
 export { PackageCmsCard } from './components/packages/package-cms-card';
 export { PackageCmsCardList } from './components/packages/package-cms-card-list';
+export { CourseCardAddToPackage } from './components/course-card/add-to-package/course-card-add-to-package';
+export { CourseCardAddToPackageList } from './components/course-card/add-to-package/course-card-add-to-package-list';
