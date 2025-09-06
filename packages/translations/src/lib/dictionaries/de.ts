@@ -318,7 +318,7 @@ export const DE: TDictionary = {
       purchasePackageText: 'Kaufpaket',
       detailsText: 'Details',
       placeHolderText: 'Kein Bild verfügbar',
-      coursesText: 'Kurse',
+      coursesText: 'Angebote',
       saveText: 'Speichern',
       archivedBadge: 'Archiviert',
       editButton: 'Bearbeiten',
