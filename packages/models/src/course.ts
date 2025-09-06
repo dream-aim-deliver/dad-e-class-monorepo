@@ -26,7 +26,7 @@ export const CourseMetadataSchema = z.object({
     rating: z.number(),
     author: z.object({
         name: z.string(),
-        image: z.string(),
+        image: z.string().optional(),
     }),
     language: LanguageSchema,
 })
