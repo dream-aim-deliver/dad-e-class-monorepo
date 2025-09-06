@@ -10,6 +10,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { useListTopicsPresenter } from '../../hooks/use-topics-presenter';
 
 const CONTENT_CLASS_NAME = 'mt-8';
 
@@ -39,29 +40,61 @@ export default function CategoryTopics({
     );
     presenter.present(topicsByCategoryResponse, topicsByCategoryViewModel);
 
+    const [topicsResponse] = trpc.listTopics.useSuspenseQuery({});
+    const [topicsViewModel, setTopicsViewModel] = useState<
+        viewModels.TTopicListViewModel | undefined
+    >(undefined);
+    const { presenter: topicsPresenter } =
+        useListTopicsPresenter(setTopicsViewModel);
+    topicsPresenter.present(topicsResponse, topicsViewModel);
+
     // Validation and derived state
-    const isViewModelValid =
+    const isMapViewModelValid =
         topicsByCategoryViewModel &&
         topicsByCategoryViewModel.mode === 'default';
 
+    const isTopicsViewModelValid =
+        topicsViewModel && topicsViewModel.mode === 'default';
+
     const categories = useMemo(() => {
-        if (!isViewModelValid) return [];
+        if (!isMapViewModelValid) return [];
         return topicsByCategoryViewModel.data.categories.map((c) => c.name);
-    }, [isViewModelValid, topicsByCategoryViewModel]);
+    }, [isMapViewModelValid, topicsByCategoryViewModel]);
 
     const allTopics = useMemo(() => {
-        if (!isViewModelValid) return [];
+        if (!isMapViewModelValid || !isTopicsViewModelValid) return [];
 
-        const topics = Object.values(
+        const existingSlugs = new Set<string>();
+        const topics: viewModels.TMatrixTopic[] = [];
+
+        for (const category of Object.values(
             topicsByCategoryViewModel.data.categories,
-        ).reduce<Set<viewModels.TMatrixTopic>>((acc, category) => {
-            category.topics.forEach((topic) => {
-                acc.add(topic);
-            });
-            return acc;
-        }, new Set<viewModels.TMatrixTopic>());
-        return Array.from(topics);
-    }, [isViewModelValid, topicsByCategoryViewModel]);
+        )) {
+            for (const topic of category.topics) {
+                if (!existingSlugs.has(topic.slug)) {
+                    topics.push(topic);
+                    existingSlugs.add(topic.slug);
+                }
+            }
+        }
+
+        for (const topic of topicsViewModel.data.topics) {
+            if (!existingSlugs.has(topic.slug)) {
+                topics.push({
+                    name: topic.name,
+                    slug: topic.slug,
+                });
+                existingSlugs.add(topic.slug);
+            }
+        }
+
+        return topics;
+    }, [
+        isMapViewModelValid,
+        isTopicsViewModelValid,
+        topicsByCategoryViewModel,
+        topicsViewModel,
+    ]);
 
     // URL synchronization
     // TODO: Validate whether this is truly necessary
@@ -72,12 +105,15 @@ export default function CategoryTopics({
     }, [selectedTopics]);
 
     // Loading state
-    if (!topicsByCategoryViewModel) {
+    if (!topicsByCategoryViewModel || !topicsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     // Error state
-    if (topicsByCategoryViewModel.mode === 'kaboom') {
+    if (
+        topicsByCategoryViewModel.mode === 'kaboom' ||
+        topicsViewModel.mode === 'kaboom'
+    ) {
         return <DefaultError locale={locale} />;
     }
 
