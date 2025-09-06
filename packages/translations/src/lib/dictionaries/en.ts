@@ -6,7 +6,7 @@ import { Offers_EN } from '../pages/offers/offers-en';
 import { Coaching_EN } from '../pages/coaching/coaching-en';
 
 
-export const EN: TDictionary = {  
+export const EN: TDictionary = {
   components: {
     paginationButton: {
       loadMore: 'Load more...',
@@ -291,7 +291,7 @@ export const EN: TDictionary = {
       dashboard: 'Dashboard',
       yourProfile: 'Your Profile',
       logout: 'Logout',
-      yourCourses: 'Your Courses',
+      yourCourses: 'Your Offers',
     },
     footer: {
       impressum: 'Impressum',
@@ -856,7 +856,7 @@ export const EN: TDictionary = {
     breadcrumbs: {
       home: 'Home',
       workspace: 'Workspace',
-      courses: 'Your courses',
+      courses: 'Your offers',
       createCourse: 'Create course',
       editCourse: 'Edit course',
       editLesson: 'Edit lesson',
@@ -1070,7 +1070,7 @@ export const EN: TDictionary = {
       },
     },
     userCourses: {
-      yourCourses: 'Your Courses',
+      yourCourses: 'Your offers',
       createCourse: 'Create a course',
       becomeCourseCreator: 'Become a course creator',
     },
@@ -1087,7 +1087,7 @@ export const EN: TDictionary = {
     sidebarLayout: {
       dashboard: "Dashboard",
       courses: "Courses",
-      yourCourses: "Your Courses",
+      yourCourses: "Your offers",
       coachingSessions: "Coaching Sessions",
       yourCoachingSessions: "Your Coaching Sessions",
       calendar: "Calendar",
@@ -1122,7 +1122,7 @@ export const EN: TDictionary = {
       componentsTitle: 'Components',
       editCourseTitle: 'Edit Course',
       generalTab: 'General',
-      introOutlineTab: 'Intro & Outline',
+      introOutlineTab: 'Intro & Details',
       courseContent: 'Course Content',
       confirmSwitch: 'You have unsaved changes. Are you sure you want to switch tabs?',
       tabSwitchCancelled: 'Tab switch cancelled due to unsaved changes.',
@@ -1146,13 +1146,13 @@ export const EN: TDictionary = {
       outlineText: 'Offer Details',
     },
     courseOutline: {
-      courseContent: 'Outline',
+      courseContent: 'Details',
     },
     categoryTopics: {
       allText: 'All',
     },
     userCoursesList: {
-      emptyState: 'You don’t have any courses yet.',
-    },  
+      emptyState: 'You don’t have any offers yet.',
+    },
   },
 };
