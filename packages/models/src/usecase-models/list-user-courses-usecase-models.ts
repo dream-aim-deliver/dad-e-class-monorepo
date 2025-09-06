@@ -24,8 +24,8 @@ const BaseCourseSchema = z.object({
     averageRating: z.number(),
     reviewCount: z.number(),
     author: z.object({
-        name: z.string(),
-        surname: z.string(),
+        name: z.string().nullable(),
+        surname: z.string().nullable(),
         username: z.string(),
         avatarUrl: z.string().nullable(),
     }),

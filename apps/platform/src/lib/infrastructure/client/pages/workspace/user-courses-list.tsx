@@ -21,6 +21,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { useRouter } from 'next/navigation';
 import { trpc } from '../../trpc/cms-client';
+import { getAuthorDisplayName } from '../../utils/get-author-display-name';
 
 export default function UserCoursesList() {
     const locale = useLocale() as TLocale;
@@ -107,7 +108,12 @@ export default function UserCoursesList() {
                         name: course.language,
                     };
                     const author = {
-                        name: course.author.name,
+                        name: getAuthorDisplayName(
+                            course.author.name,
+                            course.author.surname,
+                            locale,
+                        ),
+                        username: course.author.username,
                         image: course.author.avatarUrl ?? undefined,
                     };
                     const duration = {

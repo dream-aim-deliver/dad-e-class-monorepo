@@ -20,8 +20,8 @@ export const ListCoursesSuccessResponseSchema = BaseSuccessSchemaFactory(z.objec
         reviewCount: z.number(),
         author: z.object({
             username: z.string(),
-            name: z.string(),
-            surname: z.string(),
+            name: z.string().nullable(),
+            surname: z.string().nullable(),
             avatarUrl: z.string().nullable(),
         }),
         topicSlugs: z.array(z.string()),
