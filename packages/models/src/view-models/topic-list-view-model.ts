@@ -12,6 +12,7 @@ export const TopicListSuccessSchema = z.object({
         id: z.number(),
         name: z.string(),
         url: z.string(),
+        slug: z.string(),
     }))
 });
 

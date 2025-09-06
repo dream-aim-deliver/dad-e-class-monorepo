@@ -50,6 +50,7 @@ export default class TopicsPresenter extends BasePresenter<
                 topics: response.data.topics.map((topic) => ({
                     id: topic.id,
                     name: topic.name,
+                    slug: topic.slug,
                     url: `/offers?topics=${topic.slug}`
                 }))
             }
