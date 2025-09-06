@@ -1,10 +1,11 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 
-const topicsByCategoryMock: useCaseModels.TListTopicsByCategorySuccessResponse['data'] =
-    {
-        topicsByCategory: {
-            'Design & Creative': [
+const topicsByCategoryMock: useCaseModels.TListTopicsByCategorySuccessResponse['data'] = {
+    categories: [
+        {
+            name: 'Design & Creative',
+            topics: [
                 {
                     name: 'Graphic and Visual Design',
                     slug: 'graphic-and-visual-design',
@@ -38,8 +39,10 @@ const topicsByCategoryMock: useCaseModels.TListTopicsByCategorySuccessResponse['
                     slug: 'infographics-and-data-visualization',
                 },
             ],
-
-            'Digital & Technology': [
+        },
+        {
+            name: 'Digital & Technology',
+            topics: [
                 {
                     name: 'Web Design and Development',
                     slug: 'web-design-and-development',
@@ -61,8 +64,10 @@ const topicsByCategoryMock: useCaseModels.TListTopicsByCategorySuccessResponse['
                     slug: 'prompting-and-ai-tools',
                 },
             ],
-
-            'Media & Production': [
+        },
+        {
+            name: 'Media & Production',
+            topics: [
                 {
                     name: 'Film and Cinematography',
                     slug: 'film-and-cinematography',
@@ -84,7 +89,10 @@ const topicsByCategoryMock: useCaseModels.TListTopicsByCategorySuccessResponse['
                     slug: 'visual-storytelling',
                 },
             ],
-            'Strategy & Business': [
+        },
+        {
+            name: 'Strategy & Business',
+            topics: [
                 {
                     name: 'Strategy and Concept Development',
                     slug: 'strategy-and-concept-development',
@@ -123,12 +131,14 @@ const topicsByCategoryMock: useCaseModels.TListTopicsByCategorySuccessResponse['
                 },
             ],
         },
-    };
+    ],
+};
 
-const topicsByCategoryMockGerman: useCaseModels.TListTopicsByCategorySuccessResponse['data'] =
-    {
-        topicsByCategory: {
-            'Design & Kreativ': [
+const topicsByCategoryMockGerman: useCaseModels.TListTopicsByCategorySuccessResponse['data'] = {
+    categories: [
+        {
+            name: 'Design & Kreativ',
+            topics: [
                 {
                     name: 'Grafik- und Visualdesign',
                     slug: 'graphic-and-visual-design',
@@ -162,8 +172,10 @@ const topicsByCategoryMockGerman: useCaseModels.TListTopicsByCategorySuccessResp
                     slug: 'infographics-and-data-visualization',
                 },
             ],
-
-            'Digital & Technologie': [
+        },
+        {
+            name: 'Digital & Technologie',
+            topics: [
                 {
                     name: 'Webdesign und Entwicklung',
                     slug: 'web-design-and-development',
@@ -185,8 +197,10 @@ const topicsByCategoryMockGerman: useCaseModels.TListTopicsByCategorySuccessResp
                     slug: 'prompting-and-ai-tools',
                 },
             ],
-
-            'Medien & Produktion': [
+        },
+        {
+            name: 'Medien & Produktion',
+            topics: [
                 {
                     name: 'Film und Kinematographie',
                     slug: 'film-and-cinematography',
@@ -208,7 +222,10 @@ const topicsByCategoryMockGerman: useCaseModels.TListTopicsByCategorySuccessResp
                     slug: 'visual-storytelling',
                 },
             ],
-            'Strategie & Business': [
+        },
+        {
+            name: 'Strategie & Business',
+            topics: [
                 {
                     name: 'Strategie und Konzeptentwicklung',
                     slug: 'strategy-and-concept-development',
@@ -247,7 +264,8 @@ const topicsByCategoryMockGerman: useCaseModels.TListTopicsByCategorySuccessResp
                 },
             ],
         },
-    };
+    ],
+};
 
 export const listTopicsByCategory = t.procedure
     .input(useCaseModels.ListTopicsByCategoryRequestSchema)

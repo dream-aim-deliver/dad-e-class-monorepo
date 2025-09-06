@@ -46,23 +46,21 @@ export default function CategoryTopics({
 
     const categories = useMemo(() => {
         if (!isViewModelValid) return [];
-        return Object.keys(topicsByCategoryViewModel.data.topicsByCategory);
+        return topicsByCategoryViewModel.data.categories.map((c) => c.name);
     }, [isViewModelValid, topicsByCategoryViewModel]);
 
     const allTopics = useMemo(() => {
         if (!isViewModelValid) return [];
 
-        return Object.values(topicsByCategoryViewModel.data.topicsByCategory)
-            .flat()
-            .reduce<viewModels.TMatrixTopic[]>((acc, topic) => {
-                const isTopicAlreadyAdded = acc.find(
-                    (t) => t.slug === topic.slug,
-                );
-                if (!isTopicAlreadyAdded) {
-                    acc.push(topic);
-                }
-                return acc;
-            }, []);
+        const topics = Object.values(
+            topicsByCategoryViewModel.data.categories,
+        ).reduce<Set<viewModels.TMatrixTopic>>((acc, category) => {
+            category.topics.forEach((topic) => {
+                acc.add(topic);
+            });
+            return acc;
+        }, new Set<viewModels.TMatrixTopic>());
+        return Array.from(topics);
     }, [isViewModelValid, topicsByCategoryViewModel]);
 
     // URL synchronization
@@ -104,8 +102,11 @@ export default function CategoryTopics({
     );
 
     const renderCategoryContent = (category: string) => {
-        const topics =
-            topicsByCategoryViewModel.data.topicsByCategory[category];
+        const categoryItem = topicsByCategoryViewModel.data.categories.find(
+            (c) => c.name === category,
+        );
+        if (!categoryItem) return null;
+        const topics = categoryItem.topics || [];
 
         return (
             <Tabs.Content

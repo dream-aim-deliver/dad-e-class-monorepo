@@ -9,12 +9,17 @@ import { DefaultPaginationSchema } from '../utils/pagination';
 export const ListTopicsByCategoryRequestSchema = DefaultPaginationSchema.extend({});
 export type TListTopicsByCategoryRequest = z.infer<typeof ListTopicsByCategoryRequestSchema>;
 
-const ListTopicsByCategorySuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
+const TopicItemSchema = z.object({
+    name: z.string(),
+    slug: z.string(),
+});
+
+export const ListTopicsByCategorySuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
     // Relationship between category name and its topics
-    topicsByCategory: z.record(z.string(), z.object({
+    categories: z.object({
         name: z.string(),
-        slug: z.string(),
-    }).array())
+        topics: z.array(TopicItemSchema),
+    }).array(),
 }));
 
 export type TListTopicsByCategorySuccessResponse = z.infer<typeof ListTopicsByCategorySuccessResponseSchema>;
