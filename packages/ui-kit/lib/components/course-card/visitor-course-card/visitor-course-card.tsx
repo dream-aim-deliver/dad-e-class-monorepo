@@ -5,17 +5,18 @@ import { CourseCreator } from '../course-creator';
 import { StarRating } from '../../star-rating';
 import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import RichTextRenderer from '../../rich-text-element/renderer';
 
 // Extend the existing type with the properties we need that aren't in TCourseMetadata
 export interface VisitorCourseCardProps extends course.TCourseMetadata {
-  reviewCount: number;
-  sessions: number;
-  sales: number;
-  onDetails?: () => void;
-  onBuy?: () => void;
-  onClickUser?: () => void;
-  coachingIncluded?: boolean;
-  locale: TLocale
+    reviewCount: number;
+    sessions: number;
+    sales: number;
+    onDetails?: () => void;
+    onBuy?: () => void;
+    onClickUser?: () => void;
+    coachingIncluded?: boolean;
+    locale: TLocale;
 }
 
 /**
@@ -53,121 +54,140 @@ export interface VisitorCourseCardProps extends course.TCourseMetadata {
  * />
  */
 export const VisitorCourseCard: React.FC<VisitorCourseCardProps> = ({
-  title,
-  description,
-  rating,
-  reviewCount,
-  pricing,
-  author,
-  language,
-  sessions,
-  duration,
-  sales,
-  imageUrl,
-  locale,
-  coachingIncluded = false,
-  onDetails,
-  onClickUser,
-  onBuy
+    title,
+    description,
+    rating,
+    reviewCount,
+    pricing,
+    author,
+    language,
+    sessions,
+    duration,
+    sales,
+    imageUrl,
+    locale,
+    coachingIncluded = false,
+    onDetails,
+    onClickUser,
+    onBuy,
 }) => {
-  const [isImageError, setIsImageError] = React.useState(false);
-  const dictionary = getDictionary(locale);
+    const [isImageError, setIsImageError] = React.useState(false);
+    const dictionary = getDictionary(locale);
 
-  // Calculate total course duration in minutes and convert to hours
-  const totalDurationInMinutes = (duration as any).video as number + (duration as any).coaching as number + (duration as any).selfStudy as number;
-  const totalDurationInHours = totalDurationInMinutes / 60;
-  // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
-  const formattedDuration = Number.isInteger(totalDurationInHours)
-    ? totalDurationInHours.toString()
-    : totalDurationInHours.toFixed(2);
+    // Calculate total course duration in minutes and convert to hours
+    const totalDurationInMinutes = (((((duration as any).video as number) +
+        (duration as any).coaching) as number) +
+        (duration as any).selfStudy) as number;
+    const totalDurationInHours = totalDurationInMinutes / 60;
+    // Format the number: show as integer if it's a whole number, otherwise show with 2 decimal places
+    const formattedDuration = Number.isInteger(totalDurationInHours)
+        ? totalDurationInHours.toString()
+        : totalDurationInHours.toFixed(2);
 
-  const handleImageError = () => {
-    setIsImageError(true);
-  };
+    const handleImageError = () => {
+        setIsImageError(true);
+    };
 
-  const shouldShowPlaceholder = !imageUrl || isImageError;
+    const shouldShowPlaceholder = !imageUrl || isImageError;
 
-  const pricingValue = coachingIncluded ? `${(pricing as any).currency} ${(pricing as any).fullPrice}` : `${dictionary.components.courseCard.fromButton} ${(pricing as any).currency} ${(pricing as any).partialPrice}`;
-  return (
-    <div className="w-full mx-auto">
-      <div className="flex flex-col w-auto h-[600px] rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
-        <div className="relative flex-shrink-0">
-          {shouldShowPlaceholder ? (
-            // Placeholder for broken image (matching CoachBanner styling)
-            <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
-              <span className="text-text-secondary text-md">
-                {dictionary.components.coachBanner.placeHolderText}
-              </span>
+    const pricingValue = coachingIncluded
+        ? `${(pricing as any).currency} ${(pricing as any).fullPrice}`
+        : `${dictionary.components.courseCard.fromButton} ${(pricing as any).currency} ${(pricing as any).partialPrice}`;
+    return (
+        <div className="w-full mx-auto">
+            <div className="flex flex-col w-auto h-[600px] rounded-medium border border-card-stroke bg-card-fill overflow-hidden transition-transform hover:scale-[1.02]">
+                <div className="relative flex-shrink-0">
+                    {shouldShowPlaceholder ? (
+                        // Placeholder for broken image (matching CoachBanner styling)
+                        <div className="w-full h-[200px] bg-base-neutral-700 flex items-center justify-center">
+                            <span className="text-text-secondary text-md">
+                                {
+                                    dictionary.components.coachBanner
+                                        .placeHolderText
+                                }
+                            </span>
+                        </div>
+                    ) : (
+                        <img
+                            loading="lazy"
+                            src={imageUrl}
+                            alt={title}
+                            className="w-full h-[200px] object-cover"
+                            onError={handleImageError}
+                        />
+                    )}
+                </div>
+
+                <div className="flex flex-col flex-1 p-4 gap-4">
+                    <div className="flex flex-col gap-2 flex-shrink-0">
+                        <div className="group relative">
+                            <h6
+                                title={title}
+                                className="text-md font-bold text-text-primary line-clamp-1 text-start"
+                            >
+                                {title}
+                            </h6>
+                        </div>
+
+                        <div className="flex gap-1 items-end">
+                            <StarRating
+                                totalStars={5}
+                                rating={rating as number}
+                            />
+                            <span className="text-xs text-text-primary leading-[100%]">
+                                {rating}
+                            </span>
+                            <span className="text-xs text-text-secondary leading-[100%]">
+                                ({reviewCount})
+                            </span>
+                        </div>
+
+                        <CourseCreator
+                            creatorName={author?.name as string}
+                            imageUrl={author?.image}
+                            you={false}
+                            locale={locale as TLocale}
+                            onClickUser={onClickUser}
+                        />
+
+                        <CourseStats
+                            locale={locale as TLocale}
+                            language={(language as any).name as string}
+                            sessions={sessions}
+                            duration={`${formattedDuration}  ${dictionary.components.courseCard.hours}`}
+                            sales={sales}
+                        />
+                    </div>
+
+                    {description && (
+                        <RichTextRenderer
+                            content={description}
+                            onDeserializationError={console.error}
+                            className="text-sm text-text-secondary text-start line-clamp-3 flex-1 min-h-0"
+                        />
+                    )}
+
+                    <div className="flex flex-col gap-2 flex-shrink-0 mt-auto">
+                        <Button
+                            className=""
+                            variant={'secondary'}
+                            size={'medium'}
+                            onClick={onDetails}
+                            text={
+                                dictionary.components.courseCard
+                                    .detailsCourseButton
+                            }
+                        />
+                        <Button
+                            className=""
+                            variant={'primary'}
+                            size={'medium'}
+                            onClick={onBuy}
+                            text={`${dictionary.components.courseCard.buyButton} (${pricingValue})`}
+                        />
+                    </div>
+                </div>
             </div>
-          ) : (
-            <img
-              loading="lazy"
-              src={imageUrl}
-              alt={title}
-              className="w-full h-[200px] object-cover"
-              onError={handleImageError}
-            />
-          )}
         </div>
-
-        <div className="flex flex-col flex-1 p-4 gap-4">
-          <div className="flex flex-col gap-2 flex-shrink-0">
-            <div className="group relative">
-              <h6
-                title={title}
-                className="text-md font-bold text-text-primary line-clamp-1 text-start"
-              >
-                {title}
-              </h6>
-            </div>
-
-            <div className="flex gap-1 items-end">
-              <StarRating totalStars={5} rating={rating as number} />
-              <span className="text-xs text-text-primary leading-[100%]">
-                {rating}
-              </span>
-              <span className="text-xs text-text-secondary leading-[100%]">
-                ({reviewCount})
-              </span>
-            </div>
-
-            <CourseCreator creatorName={author?.name as string} imageUrl={author?.image} you={false} locale={locale as TLocale} onClickUser={onClickUser} />
-
-            <CourseStats
-              locale={locale as TLocale}
-              language={(language as any).name as string}
-              sessions={sessions}
-              duration={`${formattedDuration}  ${dictionary.components.courseCard.hours}`}
-              sales={sales}
-            />
-          </div>
-
-          {description && (
-            <div className="flex-1 min-h-0">
-              <p className="text-sm leading-[150%] text-text-secondary text-start line-clamp-3">
-                {description}
-              </p>
-            </div>
-          )}
-
-          <div className="flex flex-col gap-2 flex-shrink-0 mt-auto">
-            <Button
-              className=""
-              variant={'secondary'}
-              size={'medium'}
-              onClick={onDetails}
-              text={dictionary.components.courseCard.detailsCourseButton}
-            />
-            <Button
-              className=""
-              variant={'primary'}
-              size={'medium'}
-              onClick={onBuy}
-              text={`${dictionary.components.courseCard.buyButton} (${pricingValue})`}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+    );
 };
