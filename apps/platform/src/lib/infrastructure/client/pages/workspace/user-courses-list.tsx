@@ -107,8 +107,8 @@ export default function UserCoursesList() {
                         name: course.language,
                     };
                     const author = {
-                        name: '',
-                        image: '',
+                        name: course.author.name,
+                        image: course.author.avatarUrl ?? undefined,
                     };
                     const duration = {
                         selfStudy: course.fullDuration,
