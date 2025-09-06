@@ -78,7 +78,7 @@ describe('CourseCardAddToPackage', () => {
 
         // Button
         expect(
-            screen.getByRole('button', { name: /Remove/i }),
+            screen.getByRole('button', { name: /Add to Package/i }),
         ).toBeInTheDocument();
     });
 
@@ -137,14 +137,14 @@ describe('CourseCardAddToPackage', () => {
         // Re-render with updated props to reflect toggle state
         rerender(<CourseCardAddToPackage {...baseProps} courseAdded={true} />);
         expect(
-            screen.getByRole('button', { name: /Add to Package/i }),
+            screen.getByRole('button', { name: /Remove/i }),
         ).toBeInTheDocument();
     });
 
     it('renders localized texts in German locale', () => {
         render(<CourseCardAddToPackage {...baseProps} locale="de" />);
         expect(
-            screen.getByRole('button', { name: /Entfernen/i }),
+            screen.getByRole('button', { name: /Zum Paket hinzufügen/i }),
         ).toBeInTheDocument();
     });
 });

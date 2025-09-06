@@ -51,8 +51,10 @@ const RenderCourseList = ({
             const newSet = new Set(prev);
             if (newSet.has(title)) {
                 newSet.delete(title);
+                console.log(`Course removed: ${title}`, Array.from(newSet));
             } else {
                 newSet.add(title);
+                console.log(`Course added: ${title}`, Array.from(newSet));
             }
             return newSet;
         });

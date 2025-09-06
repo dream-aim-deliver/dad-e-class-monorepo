@@ -50,7 +50,14 @@ function CourseCardAddToPackageStory({
     const [added, setAdded] = useState(initialAdded);
 
     const handleAddOrRemove = () => {
-        setAdded((prev) => !prev);
+        setAdded((prev) => {
+            const newValue = !prev;
+            console.log(
+                `Course ${newValue ? 'added' : 'removed'}: ${sampleCourseData.title}`,
+                { courseAdded: newValue }
+            );
+            return newValue;
+        });
     };
 
     return (
