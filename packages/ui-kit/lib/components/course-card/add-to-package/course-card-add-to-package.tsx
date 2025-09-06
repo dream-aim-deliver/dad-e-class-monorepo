@@ -84,8 +84,8 @@ export const CourseCardAddToPackage: React.FC<CourseCardAddToPackageProps> = ({
     const [isImageError, setIsImageError] = useState(false);
 
     const addOrRemoveButtonText = courseAdded
-        ? dictionary.components.courseCard.addToPackageButton
-        : dictionary.components.courseCard.removeButton;
+        ? dictionary.components.courseCard.removeButton
+        : dictionary.components.courseCard.addToPackageButton;
 
     const handleImageError = () => {
         setIsImageError(true);

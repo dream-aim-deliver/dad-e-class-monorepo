@@ -114,7 +114,7 @@ export function CourseCardAddToPackageList({
         return childrenArray.filter(
             (child): child is ReactElement<CourseCardProps> =>
                 isValidElement<CourseCardProps>(child) &&
-                child.props.courseAdded === false,
+                child.props.courseAdded === true,
         );
     }, [childrenArray]);
 
@@ -124,7 +124,7 @@ export function CourseCardAddToPackageList({
         return childrenArray.filter(
             (child): child is ReactElement<CourseCardProps> =>
                 isValidElement<CourseCardProps>(child) &&
-                child.props.courseAdded === true &&
+                child.props.courseAdded === false &&
                 (child.props.title.toLowerCase().includes(searchLower) ||
                     child.props.author?.name
                         .toLowerCase()

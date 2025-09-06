@@ -67,15 +67,15 @@ const MockCard = ({
     <div>
         <span>{title}</span>
         <span>{author.name}</span>
-        <span>{courseAdded ? 'Add' : 'Remove'}</span>
+        <span>{courseAdded ? 'Remove' : 'Add'}</span>
     </div>
 );
 
 describe('CourseCardAddToPackageList', () => {
     const courses: MockCardProps[] = [
-        { title: 'Course A', author: { name: 'John' }, courseAdded: false },
-        { title: 'Course B', author: { name: 'Jane' }, courseAdded: true },
-        { title: 'React Course', author: { name: 'Ana' }, courseAdded: true },
+        { title: 'Course A', author: { name: 'John' }, courseAdded: true },
+        { title: 'Course B', author: { name: 'Jane' }, courseAdded: false },
+        { title: 'React Course', author: { name: 'Ana' }, courseAdded: false },
     ];
 
     const renderWithChildren = () =>
@@ -109,7 +109,7 @@ describe('CourseCardAddToPackageList', () => {
                 <MockCard
                     title="Course B"
                     author={{ name: 'Jane' }}
-                    courseAdded={true}
+                    courseAdded={false}
                 />
             </CourseCardAddToPackageList>,
         );
