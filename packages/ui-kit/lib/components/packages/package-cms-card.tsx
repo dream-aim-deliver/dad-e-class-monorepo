@@ -3,10 +3,10 @@ import { Badge } from '../badge';
 import { Button } from '../button';
 import { IconClock } from '../icons/icon-clock';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { TEClassPackage } from 'packages/models/src/eclass-package';
+import { eClassPackage } from '@maany_shr/e-class-models';
 import { IconEdit, IconTrashAlt } from '../icons';
 
-interface PackageCmsBaseCardProps extends TEClassPackage, isLocalAware {
+interface PackageCmsBaseCardProps extends eClassPackage.TEClassPackage, isLocalAware {
     courseCount: number;
     onClickEdit: () => void;
 }
@@ -43,7 +43,7 @@ export type PackageCmsCardProps =
  *
  * ## Common Props
  * Inherited from:
- * - `TEClassPackage` — e-class package details (`imageUrl`, `title`, `description`, `duration`, `pricing`)
+ * - `eClassPackage.TEClassPackage` — e-class package details (`imageUrl`, `title`, `description`, `duration`, `pricing`)
  * - `isLocalAware` — locale for translations (`locale`)
  *
  * Additional:
@@ -108,7 +108,7 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
     const [isTruncated, setIsTruncated] = useState(false);
 
     // Helper function to format duration in hours and minutes
-    const formatDuration = (duration?: number): string => {
+    const formatDuration = (duration: number | undefined): string => {
         if (!duration || duration <= 0) return '0m';
         if (duration > 59) {
             const hours = Math.floor(duration / 60);
@@ -217,15 +217,17 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                 <p className="text-text-secondary lg:text-lg">{description}</p>
 
                 {/* Prices */}
-                <div className="flex gap-2 items-center">
-                    <h6 className="text-text-primary lg:text-lg">
-                        {pricing.currency} {pricing.fullPrice}
-                    </h6>
-                    <p className="text-feedback-success-primary lg:text-md text-sm font-important">
-                        {dictionary.saveText} {pricing.currency}{' '}
-                        {pricing.partialPrice}
-                    </p>
-                </div>
+                {pricing && (
+                    <div className="flex gap-2 items-center">
+                        <h6 className="text-text-primary lg:text-lg">
+                            {pricing.currency} {pricing.fullPrice}
+                        </h6>
+                        <p className="text-feedback-success-primary lg:text-md text-sm font-important">
+                            {dictionary.saveText} {pricing.currency}{' '}
+                            {pricing.partialPrice}
+                        </p>
+                    </div>
+                )}
 
                 {/* Buttons */}
                 <div className="flex flex-row w-full justify-center gap-4">
