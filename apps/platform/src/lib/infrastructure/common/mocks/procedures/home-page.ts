@@ -262,8 +262,8 @@ const accordionMockData: useCaseModels.TGetHomePageSuccessResponse['data']['acco
 const homePageMock: useCaseModels.TGetHomePageSuccessResponse['data'] = {
     banner: {
         description:
-            'Platform introduction. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu.',
-        title: "Simply create good advertising yourself.",
+            'Finally: the solution for companies and teams who want to invest in visibility – not agency fees. With JUST DO AD you gain the skills to design and launch your own advertising: branding, campaigns, websites, videos, and content. Hands-on, step by step, tailored to your needs – with as much or as little support as you choose.',
+        title: "Become your own ad agency.",
         videoId: 'o017yCZbw87zC9xDoy1Bl02FsbCBXuSdx6xPbkF01sW02IU',
         thumbnailUrl:
             'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748006627/hb-thumb_eabema.png',

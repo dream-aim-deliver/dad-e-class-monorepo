@@ -294,7 +294,7 @@ export const DE: TDictionary = {
       dashboard: 'Dashboard',
       yourProfile: 'Dein Profil',
       logout: 'Abmelden',
-      yourCourses: 'Deine Kurse', // Guidelines: informal 'Du' instead of formal 'Sie/Ihre'
+      yourCourses: 'Deine Angebote',
     },
     footer: {
       impressum: 'Impressum',
@@ -860,7 +860,7 @@ export const DE: TDictionary = {
     breadcrumbs: {
       home: 'Startseite',
       workspace: 'Arbeitsbereich',
-      courses: 'Kurse',
+      courses: 'Deine Angebote',
       createCourse: 'Kurs erstellen',
       editCourse: 'Kurs bearbeiten',
       editLesson: 'Lektion bearbeiten',
@@ -1073,7 +1073,7 @@ export const DE: TDictionary = {
       },
     },
     userCourses: {
-      yourCourses: 'Deine Kurse',
+      yourCourses: 'Deine Angebote',
       createCourse: 'Einen Kurs erstellen',
       becomeCourseCreator: 'Kurs-Creator werden',
     },
@@ -1090,7 +1090,7 @@ export const DE: TDictionary = {
     sidebarLayout: {
       dashboard: "Dashboard",
       courses: "Kurse",
-      yourCourses: "Deine Kurse",
+      yourCourses: "Deine Angebote",
       coachingSessions: "Coaching-Sitzungen",
       yourCoachingSessions: "Deine Coaching-Sitzungen",
       calendar: "Kalender",
@@ -1125,7 +1125,7 @@ export const DE: TDictionary = {
       componentsTitle: 'Komponenten',
       editCourseTitle: 'Kurs bearbeiten',
       generalTab: 'Allgemein',
-      introOutlineTab: 'Intro & Übersicht',
+      introOutlineTab: 'Intro & Details',
       courseContent: 'Kursinhalte',
       confirmSwitch: 'Es gibt ungespeicherte Änderungen. Möchtest du wirklich den Tab wechseln?',
       tabSwitchCancelled: 'Tab-Wechsel wurde wegen ungespeicherter Änderungen abgebrochen.',
@@ -1149,13 +1149,13 @@ export const DE: TDictionary = {
       outlineText: 'Details zum Angebot',
     },
     courseOutline: {
-      courseContent: 'Gliederung',
+      courseContent: 'Details',
     },
     categoryTopics: {
       allText: 'Alle',
     },
     userCoursesList: {
-      emptyState: 'Du hast noch keine Kurse.', // Guidelines: informal 'Du' instead of formal 'Sie'
+      emptyState: 'Du hast noch keine Angebote.'
     },
   },
 };
