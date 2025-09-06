@@ -43,7 +43,7 @@ export const Default: Story = {
     locale: 'de',
   },
 
-  render: () => {
+  render: (args) => {
     const Wrapper = () => {
       const [showArchived, setShowArchived] = React.useState(false);
       const toggleShowArchived = () => setShowArchived((prev) => !prev);
@@ -51,12 +51,14 @@ export const Default: Story = {
       const cards = [
         {
           ...baseProps,
+          locale: args.locale,
           status: 'published',
           key: '1',
           onClickArchive: () => alert('Archive clicked'),
         },
         {
           ...baseProps,
+          locale: args.locale,
           title: 'Advanced TypeScript',
           description:
             'Deep dive into TypeScript for large-scale applications.',
@@ -71,6 +73,7 @@ export const Default: Story = {
         },
         {
           ...baseProps,
+          locale: args.locale,
           title: 'Node.js Mastery',
           description: 'Master backend development with Node.js and Express.',
           duration: 120,
@@ -81,6 +84,7 @@ export const Default: Story = {
         },
         {
           ...baseProps,
+          locale: args.locale,
           title: 'UI/UX Design Essentials',
           description:
             'Learn design principles and tools for modern applications.',
@@ -103,7 +107,7 @@ export const Default: Story = {
 
       return (
         <PackageCmsCardList
-          locale="en"
+          locale={args.locale}
           packageCount={filteredCards.length}
           showArchived={showArchived}
           onClickCheckbox={toggleShowArchived}
@@ -125,7 +129,7 @@ export const EmptyState: Story = {
     locale: 'de',
   },
 
-  render: () => {
+  render: (args) => {
     const Wrapper = () => {
       const [showArchived, setShowArchived] = React.useState(false);
       const toggleShowArchived = () => setShowArchived((prev) => !prev);
@@ -134,7 +138,7 @@ export const EmptyState: Story = {
 
       return (
         <PackageCmsCardList
-          locale="en"
+          locale={args.locale}
           packageCount={filteredCards.length}
           showArchived={showArchived}
           onClickCheckbox={toggleShowArchived}
