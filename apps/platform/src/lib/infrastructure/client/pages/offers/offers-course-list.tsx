@@ -15,6 +15,7 @@ import { trpc } from '../../trpc/client';
 import { useListCoursesPresenter } from '../../hooks/use-list-courses-presenter';
 import { useRouter } from 'next/navigation';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
+import { getAuthorDisplayName } from '../../utils/get-author-display-name';
 
 interface OffersCourseHeadingProps {
     coachingIncluded: boolean;
@@ -146,10 +147,11 @@ export function OffersCourseList({
                             }}
                             imageUrl={course.imageUrl ?? ''}
                             author={{
-                                name:
-                                    course.author.name +
-                                    ' ' +
+                                name: getAuthorDisplayName(
+                                    course.author.name,
                                     course.author.surname,
+                                    locale,
+                                ),
                                 image: course.author.avatarUrl ?? '',
                             }}
                             pricing={{
