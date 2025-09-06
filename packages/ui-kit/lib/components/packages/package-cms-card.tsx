@@ -190,7 +190,7 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
 
                     {/* Duration & Courses Badges */}
                     <div className="flex flex-row gap-2">
-                        {(duration as number) > 0 && (
+                        {duration && duration > 0 && (
                             <Badge
                                 hasIconLeft
                                 iconLeft={<IconClock size="4" />}
@@ -219,11 +219,11 @@ export const PackageCmsCard = (props: PackageCmsCardProps) => {
                 {/* Prices */}
                 <div className="flex gap-2 items-center">
                     <h6 className="text-text-primary lg:text-lg">
-                        {(pricing as any).currency} {(pricing as any).fullPrice}
+                        {pricing.currency} {pricing.fullPrice}
                     </h6>
                     <p className="text-feedback-success-primary lg:text-md text-sm font-important">
-                        {dictionary.saveText} {(pricing as any).currency}{' '}
-                        {(pricing as any).partialPrice}
+                        {dictionary.saveText} {pricing.currency}{' '}
+                        {pricing.partialPrice}
                     </p>
                 </div>
 
