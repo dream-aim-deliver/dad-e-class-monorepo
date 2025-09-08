@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import {
   BaseDiscriminatedErrorTypeSchemaFactory,
-    BaseErrorDiscriminatedUnionSchemaFactory,
-    BaseStatusDiscriminatedUnionSchemaFactory,
-    BaseSuccessSchemaFactory
+  BaseErrorDiscriminatedUnionSchemaFactory,
+  BaseStatusDiscriminatedUnionSchemaFactory,
+  BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
 import { ImageFileSchema } from './common';
 
@@ -37,7 +37,9 @@ export const GetEnrolledCourseDetailsSuccessResponseSchema = BaseSuccessSchemaFa
     name: z.string(),
     avatarUrl: z.string().nullable()
   })),
-  studentCount: z.number().int()
+  studentCount: z.number().int(),
+  categoryId: z.number().nullable(),
+  topicIds: z.array(z.number()).nullable(),
 }));
 
 export type TGetEnrolledCourseDetailsSuccessResponse = z.infer<typeof GetEnrolledCourseDetailsSuccessResponseSchema>;
@@ -47,7 +49,7 @@ const GetEnrolledCourseDetailsUseCaseErrorResponseSchema = BaseErrorDiscriminate
   ForbiddenError: BaseDiscriminatedErrorTypeSchemaFactory({
     type: 'ForbiddenError',
     schema: z.object({
-        trace: z.string().optional(),
+      trace: z.string().optional(),
     }),
   }),
 });
