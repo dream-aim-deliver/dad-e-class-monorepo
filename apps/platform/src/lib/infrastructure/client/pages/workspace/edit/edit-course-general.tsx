@@ -143,9 +143,9 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     ) {
         return <DefaultError locale={locale} />;
     }
-
+    
     return (
-        <div className='w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke'>
+        <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke">
             <CourseForm
                 mode="edit"
                 courseVersion={props.courseVersion}
@@ -170,10 +170,20 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
             />
             <Dropdown
                 type="multiple-choice-and-search"
+                defaultValue={props.courseForm.topicIds?.map((id) =>
+                    id.toString(),
+                )}
                 text={{
                     multiText: 'Topics',
                 }}
-                onSelectionChange={() => {}}
+                onSelectionChange={(selectedValues) => {
+                    if (!selectedValues || typeof selectedValues === 'string') {
+                        props.courseForm.setTopicIds([]);
+                        return;
+                    }
+                    const values = selectedValues.map((id) => parseInt(id, 10));
+                    props.courseForm.setTopicIds(values);
+                }}
                 options={topicsViewModel?.data.topics.map((topic) => ({
                     value: topic.id.toString(),
                     label: topic.name,
@@ -182,6 +192,7 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
             />
             <Dropdown
                 type="simple"
+                defaultValue={props.courseForm.categoryId?.toString()}
                 text={{
                     simpleText: 'Select category',
                 }}
@@ -191,7 +202,17 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
                         label: category.name,
                     }),
                 )}
-                onSelectionChange={() => {}}
+                onSelectionChange={(selectedValue) => {
+                    if (!selectedValue || Array.isArray(selectedValue)) {
+                        props.courseForm.setCategoryId(undefined);
+                        return;
+                    }
+                    const value = selectedValue
+                        ? parseInt(selectedValue, 10)
+                        : undefined;
+                    props.courseForm.setCategoryId(value);
+                }}
+                absolutePosition={false}
             />
         </div>
     );
