@@ -12,7 +12,9 @@ export const SaveCourseDetailsRequestSchema = z.object({
   description: z.string().optional(),
   selfStudyDuration: z.number().optional(),
   imageId: z.string().optional(),
-  // TODO: add other fields for editing
+  categoryId: z.number().optional(),
+  topicIds: z.array(z.number()).optional(),
+  requirementsIds: z.array(z.number()).optional(),
 });
 
 export type TSaveCourseDetailsRequest = z.infer<typeof SaveCourseDetailsRequestSchema>;
