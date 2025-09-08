@@ -21,6 +21,7 @@ export interface DropdownProps {
     multiText?: string;
   };
   position?: 'top' | 'bottom';
+  absolutePosition?: boolean;
 }
 
 /**
@@ -81,6 +82,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   defaultValue,
   text,
   position = 'bottom',
+  absolutePosition = true,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -185,6 +187,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
       : true,
   );
 
+  const dropdownClassName = cn(
+    'mt-2',
+    absolutePosition && 'z-50 absolute w-full',
+    absolutePosition && position === 'bottom' ? 'mt-2' : absolutePosition && 'bottom-12',
+  )
+
   return (
     <div ref={dropdownRef} className={clsx('relative', className)}>
       {/* Dropdown Button */}
@@ -217,7 +225,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
       {/* Dropdown Content */}
       {isOpen && (
-        <div className={cn('z-50 absolute w-full', position === 'bottom' ? 'mt-2' : 'bottom-12')}>
+        <div className={dropdownClassName}>
           {/* Simple Dropdown */}
           {type === 'simple' && (
             <div className="py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium w-full">

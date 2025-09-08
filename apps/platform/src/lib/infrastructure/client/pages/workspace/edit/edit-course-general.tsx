@@ -7,16 +7,20 @@ import {
     CourseGeneralInformationView,
     DefaultError,
     DefaultLoading,
+    Dropdown,
 } from '@maany_shr/e-class-ui-kit';
 import React, { useEffect, useState } from 'react';
 import { useCourseDetails } from './hooks/edit-details-hooks';
+import { trpc } from '../../../trpc/cms-client';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useListTopicsPresenter } from '../../../hooks/use-topics-presenter';
 
 export function EditCourseGeneralPreview({ slug }: { slug: string }) {
     const courseViewModel = useCourseDetails(slug);
     const locale = useLocale() as TLocale;
 
     if (!courseViewModel) {
-        return <DefaultLoading locale={locale} variant='minimal'/>;
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
     if (courseViewModel.mode !== 'default') {
@@ -81,6 +85,18 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     const locale = useLocale() as TLocale;
 
     const courseViewModel = useCourseDetails(props.slug);
+
+    const [topicsResponse] = trpc.listTopics.useSuspenseQuery({});
+    const [categoriesResponse] = trpc.listCategories.useSuspenseQuery({});
+    const [topicsViewModel, setTopicsViewModel] = useState<
+        viewModels.TTopicListViewModel | undefined
+    >(undefined);
+    const { presenter: topicsPresenter } =
+        useListTopicsPresenter(setTopicsViewModel);
+    // @ts-ignore
+    topicsPresenter.present(topicsResponse, topicsViewModel);
+    // const [categoriesViewModel, setCategoriesViewModel] = useState<viewModels.CategoryListViewModelSchema | undefined>(undefined);
+
     const [isFormLoading, setIsFormLoading] = useState(true);
 
     useEffect(() => {
@@ -102,36 +118,50 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
         props.setIsEdited(false);
     }, [courseViewModel]);
 
-    if (!courseViewModel || isFormLoading) {
-        return <DefaultLoading locale={locale} variant='minimal'/>;
+    if (!courseViewModel || isFormLoading || !topicsViewModel) {
+        return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
-    if (courseViewModel.mode !== 'default') {
+    if (courseViewModel.mode !== 'default' || topicsViewModel.mode !== 'default') {
         return <DefaultError locale={locale} />;
     }
 
     return (
-        <CourseForm
-            mode="edit"
-            courseVersion={props.courseVersion}
-            image={props.uploadImage.courseImage}
-            courseTitle={props.courseForm.courseTitle}
-            setCourseTitle={props.courseForm.setCourseTitle}
-            courseSlug={props.courseForm.courseSlug}
-            setCourseSlug={props.courseForm.setCourseSlug}
-            courseDescription={props.courseForm.courseDescription}
-            setCourseDescription={props.courseForm.setCourseDescription}
-            duration={props.courseForm.duration}
-            setDuration={props.courseForm.setDuration}
-            onAddRequirement={props.courseForm.onAddRequirement}
-            onRemoveRequirement={props.courseForm.onRemoveRequirement}
-            onFileChange={props.uploadImage.handleFileChange}
-            onUploadComplete={props.uploadImage.handleUploadComplete}
-            onDelete={props.uploadImage.handleDelete}
-            onDownload={props.uploadImage.handleDownload}
-            locale={locale}
-            errorMessage={props.uploadImage.uploadError}
-            hasSuccess={false}
-        />
+        <>
+            <CourseForm
+                mode="edit"
+                courseVersion={props.courseVersion}
+                image={props.uploadImage.courseImage}
+                courseTitle={props.courseForm.courseTitle}
+                setCourseTitle={props.courseForm.setCourseTitle}
+                courseSlug={props.courseForm.courseSlug}
+                setCourseSlug={props.courseForm.setCourseSlug}
+                courseDescription={props.courseForm.courseDescription}
+                setCourseDescription={props.courseForm.setCourseDescription}
+                duration={props.courseForm.duration}
+                setDuration={props.courseForm.setDuration}
+                onAddRequirement={props.courseForm.onAddRequirement}
+                onRemoveRequirement={props.courseForm.onRemoveRequirement}
+                onFileChange={props.uploadImage.handleFileChange}
+                onUploadComplete={props.uploadImage.handleUploadComplete}
+                onDelete={props.uploadImage.handleDelete}
+                onDownload={props.uploadImage.handleDownload}
+                locale={locale}
+                errorMessage={props.uploadImage.uploadError}
+                hasSuccess={false}
+            />
+            <Dropdown
+                type="multiple-choice-and-search"
+                text={{
+                    multiText: 'Select topics',
+                }}
+                onSelectionChange={() => {}}
+                options={topicsViewModel?.data.topics.map((topic) => ({
+                    value: topic.id.toString(),
+                    label: topic.name,
+                }))}
+                absolutePosition={false}
+            />
+        </>
     );
 }

@@ -9,6 +9,7 @@ import {
 
 export const TopicListSuccessSchema = z.object({
     topics: z.array(z.object({
+        id: z.number(),
         name: z.string(),
         url: z.string(),
     }))

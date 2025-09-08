@@ -11,6 +11,7 @@ export type TListTopicsRequest = z.infer<typeof ListTopicsRequestSchema>;
 
 const ListTopicsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
     topics: z.array(z.object({
+        id: z.number(),
         name: z.string(),
         slug: z.string(),
     }))
