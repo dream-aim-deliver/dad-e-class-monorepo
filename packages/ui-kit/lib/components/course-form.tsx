@@ -64,12 +64,16 @@ export interface CourseDetailsState {
     duration?: number;
     requirements?: CourseRequirement[];
     hasUserEditedSlug: boolean;
+    categoryId?: number;
+    topicIds?: number[];
     setCourseTitle: (title: string) => void;
     setCourseSlug: (slug: string) => void;
     setCourseDescription: (description: Descendant[]) => void;
     setDuration: (duration: number | undefined) => void;
     onAddRequirement: (requirement: CourseRequirement) => void;
     onRemoveRequirement: (requirementId: number) => void;
+    setCategoryId: (id: number | undefined) => void;
+    setTopicIds: (ids: number[]) => void;
 
     isDescriptionValid: () => boolean;
     serializeDescription: () => string;
@@ -108,6 +112,8 @@ export function useCourseForm(
     const [requirements, setRequirements] = useState<CourseRequirement[]>(
         initialState?.requirements ?? [],
     );
+    const [categoryId, setCategoryId] = useState<number | undefined>(undefined);
+    const [topicIds, setTopicIds] = useState<number[]>([]);
     const [hasUserEditedSlug, setHasEditedCourseSlug] = useState(false);
 
     const serializeDescription = () => serialize(courseDescription);
@@ -161,6 +167,8 @@ export function useCourseForm(
         courseDescription,
         duration,
         requirements,
+        categoryId,
+        topicIds,
 
         // Form handlers
         setCourseTitle: handleCourseTitleChange,
@@ -169,6 +177,8 @@ export function useCourseForm(
         setDuration,
         onAddRequirement: handleAddRequirement,
         onRemoveRequirement: handleRemoveRequirement,
+        setCategoryId,
+        setTopicIds,
 
         // Utilities
         hasUserEditedSlug,
@@ -336,10 +346,16 @@ export function CourseForm(props: CourseFormProps) {
                     {isEditMode && setDuration && (
                         <div className="flex flex-col gap-1">
                             <label className="text-sm md:text-md text-text-secondary">
-                                {dictionary.components.createCourseForm.estimatedDurationText}
+                                {
+                                    dictionary.components.createCourseForm
+                                        .estimatedDurationText
+                                }
                             </label>
                             <InputField
-                                inputText={dictionary.components.createCourseForm.durationPlaceholderText}
+                                inputText={
+                                    dictionary.components.createCourseForm
+                                        .durationPlaceholderText
+                                }
                                 type="number"
                                 min={0}
                                 value={duration.toString()}
