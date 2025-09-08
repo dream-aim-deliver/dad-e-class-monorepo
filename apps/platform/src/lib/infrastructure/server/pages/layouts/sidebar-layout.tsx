@@ -24,7 +24,7 @@ export default async function SidebarLayout(props: SidebarLayoutProps) {
                         userName={session.user.name || 'Your Majesty'}
                         userRole={
                             session.user.roles?.includes('admin')
-                                ? 'coach'
+                                ? 'admin'
                                 : session.user.roles?.includes('coach')
                                   ? 'coach'
                                   : session.user.roles?.includes('student')
