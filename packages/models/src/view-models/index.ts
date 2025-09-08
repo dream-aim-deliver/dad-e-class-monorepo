@@ -29,3 +29,4 @@ export * from './lesson-component-list-view-model';
 export * from './save-course-structure-view-model';
 export * from './save-lesson-component-view-model';
 export * from './category-list-view-model';
+export * from './platform-language-view-model';
