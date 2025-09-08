@@ -248,7 +248,7 @@ export function CourseForm(props: CourseFormProps) {
     const isEditMode = mode === 'edit';
 
     return (
-        <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke">
+        <div className="w-full flex flex-col gap-4">
             {duplicationCourse && (
                 <>
                     <div className="flex items-center gap-3 text-text-primary">

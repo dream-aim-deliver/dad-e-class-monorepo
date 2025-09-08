@@ -14,6 +14,7 @@ import { useCourseDetails } from './hooks/edit-details-hooks';
 import { trpc } from '../../../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListTopicsPresenter } from '../../../hooks/use-topics-presenter';
+import { useListCategoriesPresenter } from '../../../hooks/use-categories-presenter';
 
 export function EditCourseGeneralPreview({ slug }: { slug: string }) {
     const courseViewModel = useCourseDetails(slug);
@@ -87,7 +88,6 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     const courseViewModel = useCourseDetails(props.slug);
 
     const [topicsResponse] = trpc.listTopics.useSuspenseQuery({});
-    const [categoriesResponse] = trpc.listCategories.useSuspenseQuery({});
     const [topicsViewModel, setTopicsViewModel] = useState<
         viewModels.TTopicListViewModel | undefined
     >(undefined);
@@ -95,7 +95,16 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
         useListTopicsPresenter(setTopicsViewModel);
     // @ts-ignore
     topicsPresenter.present(topicsResponse, topicsViewModel);
-    // const [categoriesViewModel, setCategoriesViewModel] = useState<viewModels.CategoryListViewModelSchema | undefined>(undefined);
+
+    const [categoriesResponse] = trpc.listCategories.useSuspenseQuery({});
+    const [categoriesViewModel, setCategoriesViewModel] = useState<
+        viewModels.TCategoryListViewModel | undefined
+    >(undefined);
+    const { presenter: categoriesPresenter } = useListCategoriesPresenter(
+        setCategoriesViewModel,
+    );
+    // @ts-ignore
+    categoriesPresenter.present(categoriesResponse, categoriesViewModel);
 
     const [isFormLoading, setIsFormLoading] = useState(true);
 
@@ -118,16 +127,25 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
         props.setIsEdited(false);
     }, [courseViewModel]);
 
-    if (!courseViewModel || isFormLoading || !topicsViewModel) {
+    if (
+        !courseViewModel ||
+        isFormLoading ||
+        !topicsViewModel ||
+        !categoriesViewModel
+    ) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
-    if (courseViewModel.mode !== 'default' || topicsViewModel.mode !== 'default') {
+    if (
+        courseViewModel.mode !== 'default' ||
+        topicsViewModel.mode !== 'default' ||
+        categoriesViewModel.mode !== 'default'
+    ) {
         return <DefaultError locale={locale} />;
     }
 
     return (
-        <>
+        <div className='w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke'>
             <CourseForm
                 mode="edit"
                 courseVersion={props.courseVersion}
@@ -153,7 +171,7 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
             <Dropdown
                 type="multiple-choice-and-search"
                 text={{
-                    multiText: 'Select topics',
+                    multiText: 'Topics',
                 }}
                 onSelectionChange={() => {}}
                 options={topicsViewModel?.data.topics.map((topic) => ({
@@ -162,6 +180,19 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
                 }))}
                 absolutePosition={false}
             />
-        </>
+            <Dropdown
+                type="simple"
+                text={{
+                    simpleText: 'Select category',
+                }}
+                options={categoriesViewModel?.data.categories.map(
+                    (category) => ({
+                        value: category.id.toString(),
+                        label: category.name,
+                    }),
+                )}
+                onSelectionChange={() => {}}
+            />
+        </div>
     );
 }
