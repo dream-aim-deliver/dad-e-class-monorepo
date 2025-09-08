@@ -5,7 +5,6 @@ import {
     FormComponentProps,
 } from '../course-builder/types';
 import { getDictionary } from '@maany_shr/e-class-translations';
-import { IconQuiz } from '../icons/icon-quiz';
 import { LinkEdit, LinkPreview } from '../links';
 import DesignerLayout from '../designer-layout';
 import { IconLink } from '../icons/icon-link';
@@ -15,6 +14,7 @@ import { useState } from 'react';
 import { IconPlus } from '../icons/icon-plus';
 import { ElementValidator } from '../lesson/types';
 import DefaultError from '../default-error';
+import { CheckBox } from '../checkbox';
 
 export const getValidationError: ElementValidator = (props) => {
     const { elementInstance, dictionary } = props;
@@ -65,6 +65,7 @@ interface LinkDesignerComponentProps extends DesignerComponentProps {
     onLinkEdit: (data: shared.TLink, index: number) => void;
     onDeleteIcon: (index: number) => void;
     onClickAddLink: () => void;
+    onIncludeInMaterialsChange: (value: boolean) => void;
 }
 
 export function DesignerComponent({
@@ -80,6 +81,7 @@ export function DesignerComponent({
     onDeleteIcon,
     onClickAddLink,
     validationError,
+    onIncludeInMaterialsChange,
 }: LinkDesignerComponentProps) {
     if (elementInstance.type !== CourseElementType.Links) return null;
 
@@ -98,6 +100,19 @@ export function DesignerComponent({
             courseBuilder={true}
             validationError={validationError}
         >
+            <CheckBox
+                name={`include-in-materials-${elementInstance.id}`}
+                value={elementInstance.id}
+                checked={elementInstance.includeInMaterials}
+                withText
+                label="Include links in course material tab"
+                onChange={() =>
+                    onIncludeInMaterialsChange(
+                        !elementInstance.includeInMaterials,
+                    )
+                }
+                className="mb-2"
+            />
             <div className="flex flex-col items-center justify-center gap-[10px] w-full">
                 {elementInstance.links?.map((link, index) =>
                     linkEditIndex === index ? (

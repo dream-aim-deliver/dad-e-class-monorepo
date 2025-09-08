@@ -23,7 +23,7 @@ function transformRichText(
         type: 'richText',
         position: order,
         text: component.content,
-        includeInMaterials: false,
+        includeInMaterials: component.includeInMaterials ?? false,
     };
 }
 
@@ -198,7 +198,7 @@ function transformLinks(
             url: link.url,
             iconFileId: idToNumber(link.customIcon?.id),
         })),
-        includeInMaterials: true,
+        includeInMaterials: component.includeInMaterials ?? false,
     };
 }
 

@@ -80,6 +80,7 @@ const LinkSchema = z.object({
 export const RichTextSchema = BaseComponent.extend({
     type: z.literal('richText'),
     text: z.string(),
+    includeInMaterials: z.boolean(),
 });
 
 const HeadingSchema = BaseComponent.extend({

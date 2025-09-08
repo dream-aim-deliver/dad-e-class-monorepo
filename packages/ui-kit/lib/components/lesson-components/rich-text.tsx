@@ -16,6 +16,7 @@ import { deserialize, serialize } from '../rich-text-element/serializer';
 import { getDictionary } from '@maany_shr/e-class-translations';
 import { ElementValidator } from '../lesson/types';
 import DefaultError from '../default-error';
+import { CheckBox } from '../checkbox';
 
 /**
  * Template for the rich text form element
@@ -59,6 +60,7 @@ const richTextElement: FormElementTemplate = {
 
 interface RichTextDesignerComponentProps extends DesignerComponentProps {
     onContentChange: (value: string) => void;
+    onIncludeInMaterialsChange: (value: boolean) => void;
 }
 
 export const getValidationError: ElementValidator = (props) => {
@@ -89,6 +91,7 @@ export function DesignerComponent({
     onContentChange,
     validationError,
     isCourseBuilder,
+    onIncludeInMaterialsChange,
 }: RichTextDesignerComponentProps) {
     if (elementInstance.type !== FormElementType.RichText) return null;
     const dictionary = getDictionary(locale);
@@ -127,6 +130,14 @@ export function DesignerComponent({
             validationError={validationError}
             courseBuilder={isCourseBuilder}
         >
+            <CheckBox
+                name={`include-in-materials-${elementInstance.id}`}
+                value={elementInstance.id}
+                checked={elementInstance.includeInMaterials}
+                withText
+                label="Include rich text in course material tab"
+                onChange={() => onIncludeInMaterialsChange(!elementInstance.includeInMaterials)}
+            />
             <RichTextEditor
                 name={`rich-text-${elementInstance.id}`}
                 initialValue={content}
