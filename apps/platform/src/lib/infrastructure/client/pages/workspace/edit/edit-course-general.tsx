@@ -114,6 +114,8 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
         props.courseForm.setCourseTitle(course.title);
         props.courseForm.parseDescription(course.description);
         props.courseForm.setDuration(course.duration?.selfStudy ?? undefined);
+        props.courseForm.setCategoryId(course.categoryId ?? undefined);
+        props.courseForm.setTopicIds(course.topicIds ?? []);
         props.setCourseVersion(course.courseVersion);
         if (course.imageFile) {
             props.uploadImage.handleUploadComplete({
@@ -143,7 +145,7 @@ export default function EditCourseGeneral(props: EditCourseGeneralProps) {
     ) {
         return <DefaultError locale={locale} />;
     }
-    
+
     return (
         <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke">
             <CourseForm
