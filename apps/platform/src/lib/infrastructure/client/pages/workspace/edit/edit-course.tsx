@@ -449,6 +449,12 @@ function EditCourseTabContent({
                                 setDuration: editWrap(
                                     courseDetails.setDuration,
                                 ),
+                                setCategoryId: editWrap(
+                                    courseDetails.setCategoryId,
+                                ),
+                                setTopicIds: editWrap(
+                                    courseDetails.setTopicIds,
+                                ),
                             }}
                             uploadImage={{
                                 ...courseImageUpload,

@@ -80,6 +80,10 @@ export function useSaveDetails({
             description: courseDetails.serializeDescription(),
             selfStudyDuration: courseDetails.duration,
             imageId: idToNumber(courseImageUpload.courseImage?.id),
+            // @ts-ignore
+            categoryId: courseDetails.categoryId,
+            // @ts-ignore
+            topicIds: courseDetails.topicIds,
         });
         if (!result.success) {
             // TODO: Fix typing
