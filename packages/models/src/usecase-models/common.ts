@@ -77,7 +77,7 @@ const LinkSchema = z.object({
     iconFile: ImageFileSchema.nullable(),
 });
 
-const RichTextSchema = BaseComponent.extend({
+export const RichTextSchema = BaseComponent.extend({
     type: z.literal('richText'),
     text: z.string(),
 });
@@ -131,7 +131,7 @@ const ImageCarouselSchema = BaseComponent.extend({
     imageFiles: z.array(ImageFileSchema),
 });
 
-const LinksSchema = BaseComponent.extend({
+export const LinksSchema = BaseComponent.extend({
     type: z.literal('links'),
     links: z.array(LinkSchema),
     includeInMaterials: z.boolean(),
@@ -141,7 +141,7 @@ const DownloadFileSchema = FileSchema.extend({
     thumbnailUrl: z.string().nullable(),
 });
 
-const DownloadFilesSchema = BaseComponent.extend({
+export const DownloadFilesSchema = BaseComponent.extend({
     type: z.literal('downloadFiles'),
     files: z.array(DownloadFileSchema),
 });

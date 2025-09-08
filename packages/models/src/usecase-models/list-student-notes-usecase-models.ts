@@ -21,7 +21,9 @@ export const ListStudentNotesSuccessResponseSchema = BaseSuccessSchemaFactory(z.
             title: z.string(),
             notes: z.string()  // rich text
         })),
-    }))
+        lessonCount: z.number(),
+    })),
+    moduleCount: z.number(),
 }));
 export type TListStudentNotesSuccessResponse = z.infer<typeof ListStudentNotesSuccessResponseSchema>;
 
