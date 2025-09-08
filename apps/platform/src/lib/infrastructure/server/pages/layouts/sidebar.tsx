@@ -33,6 +33,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
     const routeMap = {
         dashboard: '/workspace/dashboard',
         courses: '/workspace/courses',
+        preCourseAssessment: '/workspace/pre-course-assessment',
         coachingSessions: '/workspace/coaching',
         calendar: '/workspace/calendar',
         students: '/workspace/students',
@@ -57,6 +58,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
             '/workspace/reviews': sidebarTranslations('yourReviews'),
             '/profile': sidebarTranslations('yourProfile'),
             '/orders': sidebarTranslations('orderPayments'),
+            '/workspace/pre-course-assessment': 'Pre-Course Assessment',
         };
 
         // Create mapping with and without locale prefix
@@ -72,75 +74,89 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
 
     const routeToLabelMap = createRouteToLabelMap(locale);
 
-    const createMenuItems = (isStudent = false): MenuItem[][] => [
-        [
-            {
-                icon: <IconDashboard />,
-                label: sidebarTranslations('dashboard'),
-                onClick: () => router.push(routeMap.dashboard),
-            },
-            {
-                icon: <IconCourse />,
-                label: isStudent
-                    ? sidebarTranslations('courses')
-                    : sidebarTranslations('yourCourses'),
-                onClick: () => router.push(routeMap.courses),
-            },
-            {
-                icon: <IconCoachingSession />,
-                label: isStudent
-                    ? sidebarTranslations('coachingSessions')
-                    : sidebarTranslations('yourCoachingSessions'),
-                onClick: () => router.push(routeMap.coachingSessions),
-            },
-            {
-                icon: <IconCalendarAlt />,
-                label: sidebarTranslations('calendar'),
-                onClick: () => router.push(routeMap.calendar),
-            },
-            ...(!isStudent
-                ? [
-                      {
-                          icon: <IconGroup />,
-                          label: sidebarTranslations('yourStudents'),
-                          onClick: () => router.push(routeMap.students),
-                      },
-                      {
-                          icon: <IconStar />,
-                          label: sidebarTranslations('yourReviews'),
-                          onClick: () => router.push(routeMap.reviews),
-                      },
-                  ]
-                : []),
-        ],
-        [
-            {
-                icon: <IconAccountInformation />,
-                label: sidebarTranslations('yourProfile'),
-                onClick: () => router.push(routeMap.profile),
-            },
-            {
-                icon: <IconSales />,
-                label: sidebarTranslations('orderPayments'),
-                onClick: () => router.push(routeMap.orderPayments),
-            },
-        ],
-        [
-            {
-                icon: <IconLogOut />,
-                label: sidebarTranslations('logout'),
-                onClick: async () => {
-                    try {
-                        setIsLoggingOut(true);
-                        await signOut({ callbackUrl: `/${locale}/` });
-                    } catch (error) {
-                        console.error('Logout failed:', error);
-                        setIsLoggingOut(false);
-                    }
+    const createMenuItems = (): MenuItem[][] => {
+        const isStudent = props.userRole === 'student';
+        const isAdmin = props.userRole === 'admin';
+        return [
+            [
+                {
+                    icon: <IconDashboard />,
+                    label: sidebarTranslations('dashboard'),
+                    onClick: () => router.push(routeMap.dashboard),
                 },
-            },
-        ],
-    ];
+                {
+                    icon: <IconCourse />,
+                    label: isStudent
+                        ? sidebarTranslations('courses')
+                        : sidebarTranslations('yourCourses'),
+                    onClick: () => router.push(routeMap.courses),
+                },
+                ...(isAdmin
+                    ? [
+                          {
+                              icon: <IconStar />,
+                              label: 'Pre-Course Assessment',
+                              onClick: () =>
+                                  router.push(routeMap.preCourseAssessment),
+                          },
+                      ]
+                    : []),
+                {
+                    icon: <IconCoachingSession />,
+                    label: isStudent
+                        ? sidebarTranslations('coachingSessions')
+                        : sidebarTranslations('yourCoachingSessions'),
+                    onClick: () => router.push(routeMap.coachingSessions),
+                },
+                {
+                    icon: <IconCalendarAlt />,
+                    label: sidebarTranslations('calendar'),
+                    onClick: () => router.push(routeMap.calendar),
+                },
+                ...(!isStudent
+                    ? [
+                          {
+                              icon: <IconGroup />,
+                              label: sidebarTranslations('yourStudents'),
+                              onClick: () => router.push(routeMap.students),
+                          },
+                          {
+                              icon: <IconStar />,
+                              label: sidebarTranslations('yourReviews'),
+                              onClick: () => router.push(routeMap.reviews),
+                          },
+                      ]
+                    : []),
+            ],
+            [
+                {
+                    icon: <IconAccountInformation />,
+                    label: sidebarTranslations('yourProfile'),
+                    onClick: () => router.push(routeMap.profile),
+                },
+                {
+                    icon: <IconSales />,
+                    label: sidebarTranslations('orderPayments'),
+                    onClick: () => router.push(routeMap.orderPayments),
+                },
+            ],
+            [
+                {
+                    icon: <IconLogOut />,
+                    label: sidebarTranslations('logout'),
+                    onClick: async () => {
+                        try {
+                            setIsLoggingOut(true);
+                            await signOut({ callbackUrl: `/${locale}/` });
+                        } catch (error) {
+                            console.error('Logout failed:', error);
+                            setIsLoggingOut(false);
+                        }
+                    },
+                },
+            ],
+        ];
+    };
 
     const [isCollapsed, setIsCollapsed] = useState(props.isCollapsed || false);
     const [activeItem, setActiveItem] = useState('');
@@ -176,26 +192,22 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
                 isCollapsed={isCollapsed}
                 onClickToggle={handleToggle}
             >
-                {createMenuItems(props.userRole === 'student').map(
-                    (group, i) => (
-                        <div key={i} className="flex flex-col w-full">
-                            {i > 0 && (
-                                <div className="h-[1px] bg-divider my-2" />
-                            )}
-                            {group.map((item) => (
-                                <SideMenuItem
-                                    key={item.label}
-                                    item={{
-                                        ...item,
-                                        isActive: item.label === activeItem,
-                                    }}
-                                    onClickItem={handleItemClick}
-                                    isCollapsed={isCollapsed}
-                                />
-                            ))}
-                        </div>
-                    ),
-                )}
+                {createMenuItems().map((group, i) => (
+                    <div key={i} className="flex flex-col w-full">
+                        {i > 0 && <div className="h-[1px] bg-divider my-2" />}
+                        {group.map((item) => (
+                            <SideMenuItem
+                                key={item.label}
+                                item={{
+                                    ...item,
+                                    isActive: item.label === activeItem,
+                                }}
+                                onClickItem={handleItemClick}
+                                isCollapsed={isCollapsed}
+                            />
+                        ))}
+                    </div>
+                ))}
             </SideMenu>
 
             {/* Logout Loading Overlay */}

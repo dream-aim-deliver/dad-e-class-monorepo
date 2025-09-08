@@ -12,7 +12,7 @@ import { cn } from '../../utils/style-utils';
 
 export interface SideMenuProps extends isLocalAware {
     userName: string;
-    userRole: Exclude<TRole, 'admin' | 'visitor'> | 'courseCreator';
+    userRole: Exclude<TRole, 'visitor'> | 'courseCreator';
     profileImageUrl?: string;
     children: React.ReactNode;
     rating?: { score: number; count: number };
