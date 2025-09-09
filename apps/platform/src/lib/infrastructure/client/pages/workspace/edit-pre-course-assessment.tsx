@@ -2,18 +2,38 @@
 
 import {
     Button,
+    ComponentCard,
     DefaultError,
     DefaultLoading,
+    FormElement,
+    FormElementType,
+    HeadingElement,
+    IconHeading,
+    IconMultiChoice,
+    IconOneOutOfThree,
+    IconRichText,
+    IconSingleChoice,
+    IconTextInput,
+    LessonElement,
+    MultiCheckElement,
+    OneOutOfThreeElement,
+    RichTextElement,
     SectionHeading,
+    SingleChoiceElement,
+    SubsectionHeading,
+    TextInputElement,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/client';
 import { useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetPlatformLanguagePresenter } from '../../hooks/use-platform-language-presenter';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { LessonComponentButton } from './edit/types';
+import { generateTempId } from './edit/utils/generate-temp-id';
+import EditLessonComponents from './edit/edit-lesson-components';
 
-export function usePlatformLanguage() {
+function usePlatformLanguage() {
     const [
         platformLanguageResponse,
         {
@@ -48,7 +68,7 @@ interface UsePreCourseAssessmentToggleProps {
     setError: (error: string | undefined) => void;
 }
 
-export function usePreCourseAssessmentToggle({
+function usePreCourseAssessmentToggle({
     platformLanguageViewModel,
     refetchPlatformLanguage,
     setError,
@@ -83,7 +103,7 @@ interface PreCourseAssessmentDisabledCardProps {
     isPending: boolean;
 }
 
-export function PreCourseAssessmentDisabledCard({
+function PreCourseAssessmentDisabledCard({
     onEnable,
     isPending,
 }: PreCourseAssessmentDisabledCardProps) {
@@ -109,7 +129,7 @@ interface PreCourseAssessmentEnabledControlsProps {
     isPending: boolean;
 }
 
-export function PreCourseAssessmentEnabledControls({
+function PreCourseAssessmentEnabledControls({
     onDisable,
     isPending,
 }: PreCourseAssessmentEnabledControlsProps) {
@@ -121,6 +141,131 @@ export function PreCourseAssessmentEnabledControls({
             onClick={onDisable}
             disabled={isPending}
         />
+    );
+}
+
+function PreCourseAssessmentFormBuilder() {
+    // TODO: fetch components
+    const editLessonsTranslations = useTranslations('pages.editLesson');
+
+    const [components, setComponents] = useState<LessonElement[]>([]);
+
+    const componentButtons: LessonComponentButton[] = [
+        {
+            icon: <IconRichText />,
+            label: editLessonsTranslations('richText'),
+            onClick: () => {
+                const newComponent: RichTextElement = {
+                    id: generateTempId(),
+                    type: FormElementType.RichText,
+                    content: '',
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
+        },
+        {
+            icon: <IconHeading size="6" />,
+            label: editLessonsTranslations('heading'),
+            onClick: () => {
+                const newComponent: HeadingElement = {
+                    id: generateTempId(),
+                    type: FormElementType.HeadingText,
+                    heading: '',
+                    headingType: 'h1', // Default to h1
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
+        },
+        {
+            icon: <IconTextInput />,
+            label: editLessonsTranslations('textInput'),
+            onClick: () => {
+                const newComponent: TextInputElement = {
+                    id: generateTempId(),
+                    type: FormElementType.TextInput,
+                    helperText: '',
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
+        },
+        {
+            icon: <IconSingleChoice />,
+            label: editLessonsTranslations('singleChoice'),
+            onClick: () => {
+                const newComponent: SingleChoiceElement = {
+                    id: generateTempId(),
+                    type: FormElementType.SingleChoice,
+                    title: '',
+                    options: [],
+                    required: false,
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
+        },
+        {
+            icon: <IconMultiChoice />,
+            label: editLessonsTranslations('checklist'),
+            onClick: () => {
+                const newComponent: MultiCheckElement = {
+                    id: generateTempId(),
+                    type: FormElementType.MultiCheck,
+                    title: '',
+                    options: [],
+                    required: false,
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
+        },
+        {
+            icon: <IconOneOutOfThree />,
+            label: editLessonsTranslations('oneOutOfThree'),
+            onClick: () => {
+                const newComponent: OneOutOfThreeElement = {
+                    id: generateTempId(),
+                    type: FormElementType.OneOutOfThree,
+                    data: {
+                        tableTitle: '',
+                        rows: [],
+                    },
+                };
+                setComponents((prev) => [...prev, newComponent]);
+            },
+        },
+    ];
+
+    const [validationErrors, elementValidationErrors] = useState<
+        Map<string, string | undefined>
+    >(new Map());
+
+    // Currently dummy IDs and version since pre-course assessment is not tied to a course.
+    // If components that require uploads are included in the pre-course assessment,
+    // corresponding upload handlers need to be implemented.
+    return (
+        <div className="flex flex-col lg:flex-row gap-4">
+            <div className="text-text-primary flex flex-col gap-2 lg:w-[260px] w-full">
+                <SubsectionHeading text="Components" />
+                {componentButtons.map((button, index) => (
+                    <ComponentCard
+                        key={index}
+                        name={button.label}
+                        icon={button.icon}
+                        onClick={button.onClick}
+                    />
+                ))}
+            </div>
+            <div className="flex-1 flex flex-col gap-4 min-w-0">
+                <EditLessonComponents
+                    lessonId={-1} // Dummy ID for pre-course assessment
+                    components={components}
+                    setComponents={setComponents}
+                    courseVersion={-1} // Dummy version for pre-course assessment
+                    setCourseVersion={() => {
+                        // No-op for pre-course assessment
+                    }}
+                    validationErrors={validationErrors}
+                />
+            </div>
+        </div>
     );
 }
 
@@ -154,7 +299,7 @@ export function PreCourseAssessmentContent({
     const isEnabled = platformLanguageViewModel.data.enablePreCourseAssessment;
 
     return (
-        <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-3 border-1 border-card-stroke">
+        <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke">
             <div className="w-full flex sm:flex-row gap-2 flex-col sm:gap-0 justify-between items-start sm:items-center">
                 <SectionHeading text="Pre-course assessment form" />
                 {isEnabled && (
@@ -176,6 +321,8 @@ export function PreCourseAssessmentContent({
                     isPending={isTogglePending}
                 />
             )}
+
+            {isEnabled && <PreCourseAssessmentFormBuilder />}
         </div>
     );
 }
