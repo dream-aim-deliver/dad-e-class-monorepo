@@ -11,7 +11,6 @@ interface Step {
 interface StepperControlsProps extends isLocalAware {
     steps: Step[];
     onPublish?: () => void;
-    onGoBack?: () => void;
 }
 
 /**
@@ -36,11 +35,10 @@ interface StepperControlsProps extends isLocalAware {
  * />
  * ```
  *
- * @param {Object} props - Component props.
- * @param {Array<{ step: number, description: string }>} props.steps - Step metadata used to display the next step's description.
- * @param {string} props.locale - Locale identifier used for translations (e.g., "en-US").
- * @param {() => void} [props.onPublish] - Optional callback fired when the final step's primary button is clicked.
- * @param {() => void} [props.onGoBack] - Optional callback fired when the "Back" button is clicked (not currently used in code).
+ * @param props - Component props.
+ * @param props.steps - Step metadata used to display the next step's description.
+ * @param props.locale - Locale identifier used for translations (e.g., "en-US").
+ * @param props.onPublish - Optional callback fired when the final step's primary button is clicked.
  *
  * @returns {JSX.Element} Rendered control buttons for navigating steps.
  */
