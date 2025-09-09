@@ -22,6 +22,7 @@ import {
     SectionHeading,
     SingleChoiceElement,
     SubsectionHeading,
+    Tabs,
     TextInputElement,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/client';
@@ -159,11 +160,17 @@ function PreCourseAssessmentEnabledControls({
     );
 }
 
-function PreCourseAssessmentFormBuilder() {
+interface PreCourseAssessmentTabProps {
+    components: LessonElement[];
+    setComponents: React.Dispatch<React.SetStateAction<LessonElement[]>>;
+}
+
+function PreCourseAssessmentFormBuilder({
+    components,
+    setComponents,
+}: PreCourseAssessmentTabProps) {
     // TODO: fetch components
     const editLessonsTranslations = useTranslations('pages.editLesson');
-
-    const [components, setComponents] = useState<LessonElement[]>([]);
 
     const componentButtons: LessonComponentButton[] = [
         {
@@ -284,6 +291,34 @@ function PreCourseAssessmentFormBuilder() {
     );
 }
 
+function PreCourseAssessmentTabs() {
+    const [components, setComponents] = useState<LessonElement[]>([]);
+
+    return (
+        <Tabs.Root defaultTab="simple">
+            <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2 mb-4">
+                <Tabs.Trigger value="simple" isLast={false}>
+                    Form Builder
+                </Tabs.Trigger>
+                <Tabs.Trigger value="interactive" isLast={true}>
+                    Preview
+                </Tabs.Trigger>
+            </Tabs.List>
+
+            <Tabs.Content value="simple">
+                <PreCourseAssessmentFormBuilder
+                    components={components}
+                    setComponents={setComponents}
+                />
+            </Tabs.Content>
+
+            <Tabs.Content value="interactive">
+                <span>Preview Stub</span>
+            </Tabs.Content>
+        </Tabs.Root>
+    );
+}
+
 interface PreCourseAssessmentContentProps {
     platformLanguageViewModel:
         | viewModels.TPlatformLanguageViewModel
@@ -339,7 +374,7 @@ export function PreCourseAssessmentContent({
                 />
             )}
 
-            {isEnabled && <PreCourseAssessmentFormBuilder />}
+            {isEnabled && <PreCourseAssessmentTabs />}
         </div>
     );
 }
