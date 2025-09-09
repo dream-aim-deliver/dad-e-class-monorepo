@@ -42,12 +42,6 @@ importers:
       '@trpc/tanstack-react-query':
         specifier: ^11.1.2
         version: 11.4.3(@tanstack/react-query@5.81.5(react@19.0.0))(@trpc/client@11.4.3(@trpc/server@11.4.3(typescript@5.7.2))(typescript@5.7.2))(@trpc/server@11.4.3(typescript@5.7.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.2)
-      '@types/crypto-js':
-        specifier: ^4.2.2
-        version: 4.2.2
-      crypto-js:
-        specifier: ^4.2.0
-        version: 4.2.0
       i18n:
         specifier: ^0.15.1
         version: 0.15.1
@@ -72,6 +66,9 @@ importers:
       server:
         specifier: link:@trpc/next-layout/server
         version: link:@trpc/next-layout/server
+      spark-md5:
+        specifier: ^3.0.2
+        version: 3.0.2
       superjson:
         specifier: ^2.2.2
         version: 2.2.2
@@ -202,6 +199,9 @@ importers:
       '@types/react-dom':
         specifier: 19.0.2
         version: 19.0.2(@types/react@19.0.2)
+      '@types/spark-md5':
+        specifier: ^3.0.5
+        version: 3.0.5
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.24.0
         version: 8.24.0(@typescript-eslint/parser@8.24.0(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2))(eslint@9.16.0(jiti@2.4.1))(typescript@5.7.2)
@@ -339,7 +339,7 @@ importers:
     dependencies:
       '@dream-aim-deliver/dad-cats':
         specifier: ^0.13.0
-        version: 0.13.0(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+        version: 0.13.0(@types/node@22.17.0)(@vitest/ui@2.1.8(vitest@2.1.8))(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
       zod:
         specifier: ^3.24.1
         version: 3.24.1
@@ -3170,9 +3170,6 @@ packages:
   '@types/cookie@0.6.0':
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
 
-  '@types/crypto-js@4.2.2':
-    resolution: {integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==}
-
   '@types/doctrine@0.0.9':
     resolution: {integrity: sha512-eOIHzCUSH7SMfonMG1LsC2f8vxBFtho6NGBznK41R84YzPuvSBzrhEps33IsQiOW9+VL6NQ9DbjQJznk/S4uRA==}
 
@@ -3288,6 +3285,9 @@ packages:
 
   '@types/sockjs@0.3.36':
     resolution: {integrity: sha512-MK9V6NzAS1+Ud7JV9lJLFqW85VbC9dq3LmwZCuBe4wBDgKC0Kj/jd8Xl+nSviU+Qc3+m7umHHyHg//2KSa0a0Q==}
+
+  '@types/spark-md5@3.0.5':
+    resolution: {integrity: sha512-lWf05dnD42DLVKQJZrDHtWFidcLrHuip01CtnC2/S6AMhX4t9ZlEUj4iuRlAnts0PQk7KESOqKxeGE/b6sIPGg==}
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
@@ -8174,6 +8174,9 @@ packages:
     resolution: {integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==}
     engines: {node: '>= 8'}
 
+  spark-md5@3.0.2:
+    resolution: {integrity: sha512-wcFzz9cDfbuqe0FZzfi2or1sgyIrsDwmPwfZC4hiNidPdPINjeUwNfv5kldczoEAcjl9Y1L3SM7Uz2PUEQzxQw==}
+
   spawn-wrap@2.0.0:
     resolution: {integrity: sha512-EeajNjfN9zMnULLwhZZQU3GWBoFNkbngTUPfaawT4RkMiviTxcX0qfhVbGey39mfctfDHkWtuecgQ8NJcyQWHg==}
     engines: {node: '>=8'}
@@ -10157,13 +10160,13 @@ snapshots:
       - supports-color
       - terser
 
-  '@dream-aim-deliver/dad-cats@0.13.0(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
+  '@dream-aim-deliver/dad-cats@0.13.0(@types/node@22.17.0)(@vitest/ui@2.1.8(vitest@2.1.8))(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
     dependencies:
       axios: 1.7.9
       axios-retry: 4.5.0(axios@1.7.9)
       deep-equal-js: 0.2.2
       pino: 9.7.0
-      vitest: 3.0.9(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      vitest: 3.0.9(@types/node@22.17.0)(@vitest/ui@2.1.8(vitest@2.1.8))(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
       zod: 3.24.1
     transitivePeerDependencies:
       - '@edge-runtime/vm'
@@ -10216,13 +10219,13 @@ snapshots:
 
   '@dream-aim-deliver/dad-data-platform-sdk-ts@0.5.2(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)':
     dependencies:
-      '@dream-aim-deliver/dad-cats': 0.13.0(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      '@dream-aim-deliver/dad-cats': 0.13.0(@types/node@22.17.0)(@vitest/ui@2.1.8(vitest@2.1.8))(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
       '@mux/mux-node': 12.6.1
       axios: 1.7.9
       dotenv: 17.2.1
       jsonwebtoken: 9.0.2
       pino: 9.7.0
-      vitest: 3.0.9(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      vitest: 3.0.9(@types/node@22.17.0)(@vitest/ui@2.1.8(vitest@2.1.8))(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
       zod: 3.24.1
     transitivePeerDependencies:
       - '@edge-runtime/vm'
@@ -13064,8 +13067,6 @@ snapshots:
 
   '@types/cookie@0.6.0': {}
 
-  '@types/crypto-js@4.2.2': {}
-
   '@types/doctrine@0.0.9': {}
 
   '@types/eslint-scope@3.7.7':
@@ -13204,6 +13205,8 @@ snapshots:
   '@types/sockjs@0.3.36':
     dependencies:
       '@types/node': 18.16.9
+
+  '@types/spark-md5@3.0.5': {}
 
   '@types/stack-utils@2.0.3': {}
 
@@ -13442,14 +13445,6 @@ snapshots:
     optionalDependencies:
       vite: 5.4.11(@types/node@18.16.9)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
 
-  '@vitest/mocker@2.1.8(vite@5.4.11(@types/node@22.17.0)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0))':
-    dependencies:
-      '@vitest/spy': 2.1.8
-      estree-walker: 3.0.3
-      magic-string: 0.30.14
-    optionalDependencies:
-      vite: 5.4.11(@types/node@22.17.0)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
-
   '@vitest/mocker@3.0.9(vite@5.4.11(@types/node@18.16.9)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0))':
     dependencies:
       '@vitest/spy': 3.0.9
@@ -13517,7 +13512,7 @@ snapshots:
       sirv: 3.0.0
       tinyglobby: 0.2.10
       tinyrainbow: 1.2.0
-      vitest: 2.1.8(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
+      vitest: 2.1.8(@types/node@18.16.9)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0)
 
   '@vitest/utils@2.0.5':
     dependencies:
@@ -18987,6 +18982,8 @@ snapshots:
 
   source-map@0.7.4: {}
 
+  spark-md5@3.0.2: {}
+
   spawn-wrap@2.0.0:
     dependencies:
       foreground-child: 2.0.0
@@ -19852,7 +19849,7 @@ snapshots:
   vitest@2.1.8(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0):
     dependencies:
       '@vitest/expect': 2.1.8
-      '@vitest/mocker': 2.1.8(vite@5.4.11(@types/node@22.17.0)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0))
+      '@vitest/mocker': 2.1.8(vite@5.4.11(@types/node@18.16.9)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0))
       '@vitest/pretty-format': 2.1.8
       '@vitest/runner': 2.1.8
       '@vitest/snapshot': 2.1.8
@@ -19923,7 +19920,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@3.0.9(@types/node@22.17.0)(@vitest/ui@2.1.8)(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0):
+  vitest@3.0.9(@types/node@22.17.0)(@vitest/ui@2.1.8(vitest@2.1.8))(jsdom@25.0.1)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0):
     dependencies:
       '@vitest/expect': 3.0.9
       '@vitest/mocker': 3.0.9(vite@5.4.11(@types/node@18.16.9)(less@4.1.3)(lightningcss@1.28.2)(sass@1.82.0)(stylus@0.64.0)(terser@5.37.0))

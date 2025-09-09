@@ -1,25 +1,46 @@
-import CryptoJS from 'crypto-js';
+import SparkMD5 from 'spark-md5';
 
 export async function calculateMd5(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
+        const chunkSize = 2 * 1024 * 1024; // 2MB chunks
+        const spark = new SparkMD5.ArrayBuffer();
         const reader = new FileReader();
+        let currentChunk = 0;
+        const chunks = Math.ceil(file.size / chunkSize);
 
         reader.onload = function (event) {
             if (!event.target || !event.target.result) {
                 reject(new Error('Failed to read file'));
                 return;
             }
-            const arrayBuffer = event.target.result as ArrayBuffer;
-            const wordArray = CryptoJS.lib.WordArray.create(arrayBuffer);
-            const hash = CryptoJS.MD5(wordArray);
-            resolve(CryptoJS.enc.Base64.stringify(hash));
+            
+            spark.append(event.target.result as ArrayBuffer);
+            currentChunk++;
+
+            if (currentChunk < chunks) {
+                loadNext();
+            } else {
+                // Get the computed hash
+                const rawHash = spark.end();
+                // Convert hex string to base64 to match the original output format
+                const hexArray = rawHash.match(/\w{2}/g)!;
+                const byteArray = hexArray.map(hex => parseInt(hex, 16));
+                const base64Hash = Buffer.from(byteArray).toString('base64');
+                resolve(base64Hash);
+            }
         };
 
         reader.onerror = function (error) {
             reject(error);
         };
 
-        reader.readAsArrayBuffer(file);
+        function loadNext() {
+            const start = currentChunk * chunkSize;
+            const end = Math.min(start + chunkSize, file.size);
+            reader.readAsArrayBuffer(file.slice(start, end));
+        }
+
+        loadNext();
     });
 }
 
