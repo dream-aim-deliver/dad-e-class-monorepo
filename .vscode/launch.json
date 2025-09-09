@@ -15,6 +15,12 @@
         "internalConsoleOptions": "openOnSessionStart",
         "console": "internalConsole",
         "cwd": "${workspaceFolder}/apps/platform/"
+      },
+      {
+        "name": "Chrome: Launch Platform",
+        "type": "chrome",
+        "request": "launch",
+        "url": "http://localhost:3000",
       }
     ]
   }
