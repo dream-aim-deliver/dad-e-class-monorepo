@@ -73,18 +73,28 @@ export default function EditPreCourseAssessment() {
                     </span>
                     <Button
                         variant="primary"
-                        text="Enable form"
+                        text={
+                            togglePreCourseAssessmentMutation.isPending
+                                ? 'Enabling form...'
+                                : 'Enable form'
+                        }
                         className="w-min"
                         size="small"
                         onClick={() => onTogglePreCourseAssessment(true)}
+                        disabled={togglePreCourseAssessmentMutation.isPending}
                     />
                 </div>
             )}
             {isEnabled && (
                 <Button
                     variant="text"
-                    text="Disable"
+                    text={
+                        togglePreCourseAssessmentMutation.isPending
+                            ? 'Disabling...'
+                            : 'Disable'
+                    }
                     onClick={() => onTogglePreCourseAssessment(false)}
+                    disabled={togglePreCourseAssessmentMutation.isPending}
                 />
             )}
         </div>
