@@ -33,6 +33,7 @@ type ImageFileMetadata = fileMetadata.TFileMetadata & { category: 'image' };
 export interface LinksElement extends BaseCourseFormElement {
     type: CourseElementType.Links;
     links: shared.TLink[];
+    includeInMaterials?: boolean;
 }
 
 export interface QuizTypeOneElement extends BaseCourseFormElement {

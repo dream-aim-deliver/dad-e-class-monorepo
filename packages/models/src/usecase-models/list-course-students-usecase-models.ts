@@ -8,7 +8,7 @@ import { AssignmentStatusEnumSchema } from '../assignment';
 
 
 export const ListCourseStudentsRequestSchema = z.object({
-    courseSlugs: z.array(z.string()).optional().nullable(),
+    courseSlug: z.string(),
 });
 export type TListCourseStudentsRequest = z.infer<typeof ListCourseStudentsRequestSchema>;
 
@@ -20,6 +20,7 @@ export const ListCourseStudentsSuccessResponseSchema = BaseSuccessSchemaFactory(
         courseTitle: z.string(),
         courseSlug: z.string(),
         courseImageUrl: z.string().nullable(),
+        isStudentOfCoach: z.boolean(),
         lastAssignmentCoach: z.object({
             coachId: z.number(),
             coachFullName: z.string().nullable(),

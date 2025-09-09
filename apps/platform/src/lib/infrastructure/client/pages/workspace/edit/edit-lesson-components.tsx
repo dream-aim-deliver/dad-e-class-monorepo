@@ -192,10 +192,22 @@ function RichTextComponent({
         );
     };
 
+    const onIncludeInMaterialsChange = (value: boolean) => {
+        setComponents((prev) =>
+            prev.map((comp) =>
+                updateComponent(comp, {
+                    type: FormElementType.RichText,
+                    includeInMaterials: value,
+                }),
+            ),
+        );
+    };
+
     return (
         <RichTextDesignerComponent
             elementInstance={elementInstance as RichTextElement}
             locale={locale}
+            onIncludeInMaterialsChange={onIncludeInMaterialsChange}
             onUpClick={onUpClick}
             onDownClick={onDownClick}
             onDeleteClick={onDeleteClick}
@@ -1456,6 +1468,20 @@ function LinksComponent({
         );
     };
 
+    const onIncludeInMaterialsChange = (value: boolean) => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) => {
+                if (component.type !== CourseElementType.Links) {
+                    return component;
+                }
+                if (component.id !== elementInstance.id) {
+                    return component;
+                }
+                return { ...component, includeInMaterials: value };
+            }),
+        );
+    };
+
     const { uploadError, handleFileChange } = useFileUpload({
         lessonId,
         componentType: 'links',
@@ -1476,6 +1502,7 @@ function LinksComponent({
             onDeleteIcon={onDeleteIcon}
             onClickAddLink={onAddLink}
             validationError={validationError}
+            onIncludeInMaterialsChange={onIncludeInMaterialsChange}
         />
     );
 }

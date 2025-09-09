@@ -32,6 +32,7 @@ function transformRichText(
         type: LessonElementType.RichText,
         id: component.id,
         content: component.text,
+        includeInMaterials: component.includeInMaterials,
     };
 }
 
@@ -337,6 +338,7 @@ function transformLinks(
                   }
                 : undefined,
         })),
+        includeInMaterials: component.includeInMaterials,
     };
 }
 

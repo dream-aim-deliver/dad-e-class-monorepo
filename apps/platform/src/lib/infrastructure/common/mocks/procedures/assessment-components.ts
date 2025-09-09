@@ -13,6 +13,7 @@ const mockThreeComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
             },
             {
                 id: 'comp_002',
+                includeInMaterials: true,
                 order: 2,
                 type: 'richText',
                 text: JSON.stringify([
@@ -70,6 +71,7 @@ const mockFiveComponents: useCaseModels.TListAssessmentComponentsSuccessResponse
                 id: 'comp_102',
                 order: 2,
                 type: 'richText',
+                includeInMaterials: false,
                 text: JSON.stringify([
                     {
                         type: 'paragraph',
@@ -172,6 +174,7 @@ const mockSevenComponents: useCaseModels.TListAssessmentComponentsSuccessRespons
             },
             {
                 id: 'comp_202',
+                includeInMaterials: false,
                 order: 2,
                 type: 'richText',
                 text: JSON.stringify([

@@ -163,4 +163,11 @@ export { AccordionBuilder, type AccordionBuilderItem } from './components/accord
 export { type OneOutOfThreeData } from './components/out-of-three/one-out-of-three';
 export { validatorPerType } from './components/lesson/validators';
 
+
 export { Stepper } from './components/stepper/stepper';
+
+export { PackageCmsCard } from './components/packages/package-cms-card';
+export { PackageCmsCardList } from './components/packages/package-cms-card-list';
+export { CourseCardAddToPackage } from './components/course-card/add-to-package/course-card-add-to-package';
+export { CourseCardAddToPackageList } from './components/course-card/add-to-package/course-card-add-to-package-list';
+

@@ -6,7 +6,7 @@ import { Offers_EN } from '../pages/offers/offers-en';
 import { Coaching_EN } from '../pages/coaching/coaching-en';
 
 
-export const EN: TDictionary = {  
+export const EN: TDictionary = {
   components: {
     paginationButton: {
       loadMore: 'Load more...',
@@ -135,6 +135,15 @@ export const EN: TDictionary = {
       packageCourseSelectorDescription: 'With this package, you can select only specific courses or purchase the entire package for maximum savings.',
       packageCourseSelectorButton: 'Purchase Selected Offers',
       saveText: 'save',
+      addToPackageButton: 'Add to package',
+      removeButton: 'Remove',
+      searchCourse: 'Search course',
+      emptyState: 'No course has been included yet.',
+      searchButton: 'Search',
+      noFoundLabel: 'No courses found...',
+      includeCoursesTitle: 'Include courses',
+      includedCoursesCount: 'Included courses',
+      allCoursesTitle: 'All courses',
     },
     reviewModal: {
       coachingTitle: 'How would you rate this coach?',
@@ -291,7 +300,7 @@ export const EN: TDictionary = {
       dashboard: 'Dashboard',
       yourProfile: 'Your Profile',
       logout: 'Logout',
-      yourCourses: 'Your Courses',
+      yourCourses: 'Your Offers',
     },
     footer: {
       impressum: 'Impressum',
@@ -317,7 +326,14 @@ export const EN: TDictionary = {
       placeHolderText: 'No image available',
       coursesText: 'offers',
       saveText: 'save',
-      ourPackagesText: 'Our packages',
+      archivedBadge: 'Archived',
+      editButton: 'Edit',
+      publishButton: 'Publish',
+      archiveButton: 'Archive',
+      emptyState: 'No packages yet.',
+      allPackagesText: 'All packages',
+      showArchivedText: 'Show archived',
+      createPackageButton: 'Create Package',
     },
     sideMenu: {
       studentText: 'Student',
@@ -427,7 +443,7 @@ export const EN: TDictionary = {
     },
     formRenderer: {
       title: 'Pre-Assessment',
-      alertText: 'Once you submit your response, you won’t be able to make changes, so please review it carefully. Completing this form is required to begin the course.',
+      alertText: 'Once you submit your response, you won\'t be able to make changes, so please review it carefully. Complete this form to begin your course.', // Guidelines: friendlier, more direct tone
       submitText: 'send reply',
       requiredText: 'required',
       fieldRequired: 'This field is required',
@@ -683,7 +699,7 @@ export const EN: TDictionary = {
       hideSolutionText: 'Hide solution',
       checkAnswerText: 'Check answer',
       clearText: 'Clear',
-      errorText: "You need to define what's the correct answer",
+      errorText: "Please define the correct answer", // Guidelines: friendlier, more direct tone
       typeOneText: "Type 1",
       typeTwoText: "Type 2",
       typeThreeText: "Type 3",
@@ -704,7 +720,7 @@ export const EN: TDictionary = {
       quizTypeTwo: {
         headingText: 'Student has to choose the right choice for each group',
         uploadImageText: 'Upload Image (Required)',
-        errorText: "You need to define what's the correct answer",
+        errorText: "Please define the correct answer", // Guidelines: friendlier, more direct tone
         groupTitleText: 'Group title',
         radioButtonText: 'Radio button text',
         validationErrors: {
@@ -856,7 +872,7 @@ export const EN: TDictionary = {
     breadcrumbs: {
       home: 'Home',
       workspace: 'Workspace',
-      courses: 'Your courses',
+      courses: 'Your offers',
       createCourse: 'Create course',
       editCourse: 'Edit course',
       editLesson: 'Edit lesson',
@@ -1076,7 +1092,7 @@ export const EN: TDictionary = {
       },
     },
     userCourses: {
-      yourCourses: 'Your Courses',
+      yourCourses: 'Your offers',
       createCourse: 'Create a course',
       becomeCourseCreator: 'Become a course creator',
     },
@@ -1093,7 +1109,7 @@ export const EN: TDictionary = {
     sidebarLayout: {
       dashboard: "Dashboard",
       courses: "Courses",
-      yourCourses: "Your Courses",
+      yourCourses: "Your offers",
       coachingSessions: "Coaching Sessions",
       yourCoachingSessions: "Your Coaching Sessions",
       calendar: "Calendar",
@@ -1128,7 +1144,7 @@ export const EN: TDictionary = {
       componentsTitle: 'Components',
       editCourseTitle: 'Edit Course',
       generalTab: 'General',
-      introOutlineTab: 'Intro & Outline',
+      introOutlineTab: 'Intro & Details',
       courseContent: 'Course Content',
       confirmSwitch: 'You have unsaved changes. Are you sure you want to switch tabs?',
       tabSwitchCancelled: 'Tab switch cancelled due to unsaved changes.',
@@ -1152,13 +1168,13 @@ export const EN: TDictionary = {
       outlineText: 'Offer Details',
     },
     courseOutline: {
-      courseContent: 'Outline',
+      courseContent: 'Details',
     },
     categoryTopics: {
       allText: 'All',
     },
     userCoursesList: {
-      emptyState: 'You don’t have any courses yet.',
-    },  
+      emptyState: 'You don’t have any offers yet.',
+    },
   },
 };

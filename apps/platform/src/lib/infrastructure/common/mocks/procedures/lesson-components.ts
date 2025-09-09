@@ -11,6 +11,7 @@ const listLessonComponentsMock: useCaseModels.TListLessonComponentsSuccessRespon
                 id: 'comp_001',
                 order: 1,
                 type: 'richText',
+                includeInMaterials: true,
                 text: JSON.stringify([
                     {
                         type: 'paragraph',

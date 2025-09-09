@@ -45,6 +45,7 @@ export interface BaseFormElement {
 export interface RichTextElement extends BaseFormElement {
     type: FormElementType.RichText;
     content: string;
+    includeInMaterials?: boolean;
 }
 
 /**

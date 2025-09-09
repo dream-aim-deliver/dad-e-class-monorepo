@@ -77,9 +77,10 @@ const LinkSchema = z.object({
     iconFile: ImageFileSchema.nullable(),
 });
 
-const RichTextSchema = BaseComponent.extend({
+export const RichTextSchema = BaseComponent.extend({
     type: z.literal('richText'),
     text: z.string(),
+    includeInMaterials: z.boolean(),
 });
 
 const HeadingSchema = BaseComponent.extend({
@@ -131,7 +132,7 @@ const ImageCarouselSchema = BaseComponent.extend({
     imageFiles: z.array(ImageFileSchema),
 });
 
-const LinksSchema = BaseComponent.extend({
+export const LinksSchema = BaseComponent.extend({
     type: z.literal('links'),
     links: z.array(LinkSchema),
     includeInMaterials: z.boolean(),
@@ -141,7 +142,7 @@ const DownloadFileSchema = FileSchema.extend({
     thumbnailUrl: z.string().nullable(),
 });
 
-const DownloadFilesSchema = BaseComponent.extend({
+export const DownloadFilesSchema = BaseComponent.extend({
     type: z.literal('downloadFiles'),
     files: z.array(DownloadFileSchema),
 });
@@ -152,19 +153,19 @@ const UploadFilesSchema = BaseComponent.extend({
 });
 
 const QuizOptionWithImageSchema = z.object({
-  id: z.number(),
-  imageFile: ImageFileSchema,
-  description: z.string(),
+    id: z.number(),
+    imageFile: ImageFileSchema,
+    description: z.string(),
 });
 
 const QuizGroupSchema = z.object({
-  id: z.number(),
-  title: z.string(),
-  options: z.array(z.object({
     id: z.number(),
-    name: z.string(),
-  })),
-  correctOptionId: z.number(),
+    title: z.string(),
+    options: z.array(z.object({
+        id: z.number(),
+        name: z.string(),
+    })),
+    correctOptionId: z.number(),
 });
 
 const QuizTypeOneSchema = BaseComponent.extend({
@@ -245,3 +246,34 @@ export const LessonComponentSchema = z.discriminatedUnion('type', [
 
 export type TAssessmentComponent = z.infer<typeof AssessmentComponentSchema>;
 export type TLessonComponent = z.infer<typeof LessonComponentSchema>;
+
+
+export const CourseReviewSchema = z.object({
+    id: z.number(),
+    rating: z.number().min(1).max(5),
+    comment: z.string(),
+    createdAt: z.string().datetime(),
+    student: z.object({
+        id: z.number(),
+        firstName: z.string(),
+        lastName: z.string(),
+        avatarFile: ImageFileSchema.nullable(),
+    }),
+});
+
+
+export const EClassPackagePricingSchema = z.object({
+    fullPrice: z.number(),
+    partialPrice: z.number(),
+    currency: z.string(),
+})
+export type TEClassPackagePricing = z.infer<typeof EClassPackagePricingSchema>
+
+
+export const EClassPackageSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    imageUrl: z.string(),
+    pricing: EClassPackagePricingSchema,
+    duration: z.number(),  // in minutes
+})
