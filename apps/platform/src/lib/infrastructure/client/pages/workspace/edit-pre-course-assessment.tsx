@@ -12,6 +12,7 @@ import {
     IconMultiChoice,
     IconOneOutOfThree,
     IconRichText,
+    IconSave,
     IconSingleChoice,
     IconTextInput,
     LessonElement,
@@ -126,21 +127,35 @@ function PreCourseAssessmentDisabledCard({
 
 interface PreCourseAssessmentEnabledControlsProps {
     onDisable: () => void;
+    onSave: () => void;
     isPending: boolean;
+    isSaving: boolean;
 }
 
 function PreCourseAssessmentEnabledControls({
     onDisable,
+    onSave,
     isPending,
+    isSaving,
 }: PreCourseAssessmentEnabledControlsProps) {
     return (
-        <Button
-            variant="text"
-            className="text-sm p-0 m-0"
-            text={isPending ? 'Disabling...' : 'Disable'}
-            onClick={onDisable}
-            disabled={isPending}
-        />
+        <div className="flex flex-row gap-4">
+            <Button
+                variant="primary"
+                hasIconLeft
+                iconLeft={<IconSave />}
+                text={isSaving ? 'Saving...' : 'Save'}
+                onClick={onSave}
+                disabled={isSaving || isPending}
+            />
+            <Button
+                variant="text"
+                className="text-sm p-0 m-0"
+                text={isPending ? 'Disabling...' : 'Disable'}
+                onClick={onDisable}
+                disabled={isPending || isSaving}
+            />
+        </div>
     );
 }
 
@@ -306,6 +321,8 @@ export function PreCourseAssessmentContent({
                     <PreCourseAssessmentEnabledControls
                         onDisable={() => onToggle(false)}
                         isPending={isTogglePending}
+                        onSave={() => {}}
+                        isSaving={false}
                     />
                 )}
             </div>
