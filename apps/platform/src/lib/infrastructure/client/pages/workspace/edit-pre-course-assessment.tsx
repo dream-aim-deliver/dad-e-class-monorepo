@@ -26,7 +26,7 @@ import {
     TextInputElement,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetPlatformLanguagePresenter } from '../../hooks/use-platform-language-presenter';
 import { useLocale, useTranslations } from 'next-intl';
@@ -34,6 +34,8 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { LessonComponentButton } from './edit/types';
 import { generateTempId } from './edit/utils/generate-temp-id';
 import EditLessonComponents from './edit/edit-lesson-components';
+import { useListAssessmentComponentsPresenter } from '../../hooks/use-assessment-components-presenter';
+import { transformLessonComponents } from '../../utils/transform-lesson-components';
 
 function usePlatformLanguage() {
     const [
@@ -292,7 +294,34 @@ function PreCourseAssessmentFormBuilder({
 }
 
 function PreCourseAssessmentTabs() {
+    const locale = useLocale() as TLocale;
+
+    const [componentsResponse] =
+        trpc.listPreCourseAssessmentComponents.useSuspenseQuery({});
+    const [componentsViewModel, setComponentsViewModel] = useState<
+        viewModels.TAssessmentComponentListViewModel | undefined
+    >(undefined);
+    const { presenter } = useListAssessmentComponentsPresenter(
+        setComponentsViewModel,
+    );
+    presenter.present(componentsResponse, componentsViewModel);
+
+    useEffect(() => {
+        if (!componentsViewModel || componentsViewModel.mode !== 'default')
+            return;
+        const responseComponents = componentsViewModel.data.components;
+        setComponents(transformLessonComponents(responseComponents));
+    }, [componentsViewModel]);
+
     const [components, setComponents] = useState<LessonElement[]>([]);
+
+    if (!componentsViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (componentsViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
 
     return (
         <Tabs.Root defaultTab="simple">
