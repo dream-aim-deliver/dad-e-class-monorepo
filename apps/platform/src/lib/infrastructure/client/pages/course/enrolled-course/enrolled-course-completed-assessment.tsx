@@ -22,11 +22,7 @@ export default function EnrolledCourseCompletedAssessment(
 ) {
     const locale = useLocale() as TLocale;
 
-    const [componentsResponse] = trpc.listAssessmentComponents.useSuspenseQuery(
-        {
-            courseSlug: props.courseSlug,
-        },
-    );
+    const [componentsResponse] = trpc.listPreCourseAssessmentComponents.useSuspenseQuery({});
     const [componentsViewModel, setComponentsViewModel] = useState<
         viewModels.TAssessmentComponentListViewModel | undefined
     >(undefined);

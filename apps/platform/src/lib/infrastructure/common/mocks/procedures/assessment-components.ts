@@ -314,3 +314,19 @@ export const listAssessmentComponents = t.procedure
             };
         },
     );
+
+const saveAssessmentComponentsMock: useCaseModels.TSaveAssessmentComponentsSuccessResponse['data'] =
+{
+    components: [],
+};
+
+export const saveAssessmentComponents = t.procedure
+    .input(useCaseModels.SaveAssessmentComponentsRequestSchema)
+    .mutation(
+        async (): Promise<useCaseModels.TSaveAssessmentComponentsUseCaseResponse> => {
+            return {
+                success: true,
+                data: saveAssessmentComponentsMock,
+            };
+        },
+    );

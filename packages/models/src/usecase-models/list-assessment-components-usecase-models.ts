@@ -7,7 +7,6 @@ import {
 import { AssessmentComponentSchema } from './common';
 
 export const ListAssessmentComponentsRequestSchema = z.object({
-  courseSlug: z.string(),
 });
 
 export type TListAssessmentComponentsRequest = z.infer<typeof ListAssessmentComponentsRequestSchema>;
