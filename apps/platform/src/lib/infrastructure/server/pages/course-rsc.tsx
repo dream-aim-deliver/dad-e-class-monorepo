@@ -116,9 +116,7 @@ function shouldShowAssessment(
 
 async function renderAssessmentForm(slug: string) {
     await prefetchMock(
-        trpcMock.listAssessmentComponents.queryOptions({
-            courseSlug: slug,
-        }),
+        trpcMock.listPreCourseAssessmentComponents.queryOptions({}),
     );
 
     return (

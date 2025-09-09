@@ -277,3 +277,197 @@ export const EClassPackageSchema = z.object({
     pricing: EClassPackagePricingSchema,
     duration: z.number(),  // in minutes
 })
+const BaseComponentRequestSchema = z.object({
+    id: z.string().optional().nullable(), // Doesn't exist if the component is new
+    position: z.number().int(),
+});
+
+// Simple
+const RichTextComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('richText'),
+    text: z.string(),
+    includeInMaterials: z.boolean(),
+});
+
+const HeadingComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('heading'),
+    text: z.string(),
+    size: z.enum(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
+});
+
+const VideoComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('video'),
+    videoFileId: z.number().int(),
+});
+
+const ImageComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('image'),
+    imageFileId: z.number().int(),
+});
+
+const ImageCarouselComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('imageCarousel'),
+    imageFileIds: z.array(z.number().int()),
+});
+
+const DownloadFilesComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('downloadFiles'),
+    fileIds: z.array(z.number().int()),
+});
+
+const LinksComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('links'),
+    links: z.array(z.object({
+        title: z.string(),
+        url: z.string(),
+        iconFileId: z.number().int().nullable().optional(),
+    })),
+    includeInMaterials: z.boolean(),
+});
+
+// Interactive
+const TextInputComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('textInput'),
+    helperText: z.string(),
+    required: z.boolean(),
+});
+
+const SingleChoiceComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('singleChoice'),
+    title: z.string(),
+    options: z.array(z.object({
+        id: z.string(),
+        name: z.string(),
+    })),
+    required: z.boolean(),
+});
+
+const MultipleChoiceComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('multipleChoice'),
+    title: z.string(),
+    options: z.array(z.object({
+        id: z.string(),
+        name: z.string(),
+    })),
+    required: z.boolean(),
+});
+
+const OneOutOfThreeComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('oneOutOfThree'),
+    title: z.string(),
+    columns: z.array(z.object({
+        id: z.string(),
+        name: z.string(),
+    })),
+    rows: z.array(z.object({
+        id: z.string(),
+        name: z.string(),
+    })),
+    required: z.boolean(),
+});
+
+const UploadFilesComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('uploadFiles'),
+    description: z.string(),
+});
+
+const QuizTypeOneComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('quizTypeOne'),
+    title: z.string(),
+    description: z.string(),
+    imageFileId: z.number().int(),
+    options: z.array(z.object({
+        id: z.string(),
+        name: z.string(),
+    })),
+    correctOptionId: z.string(),
+});
+
+const QuizTypeTwoComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('quizTypeTwo'),
+    title: z.string(),
+    description: z.string(),
+    imageFileId: z.number().int(),
+    groups: z.array(z.object({
+        id: z.string(),
+        title: z.string(),
+        options: z.array(z.object({
+            id: z.string(),
+            name: z.string(),
+        })),
+        correctOptionId: z.string(),
+    })),
+});
+
+const QuizTypeThreeComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('quizTypeThree'),
+    title: z.string(),
+    description: z.string(),
+    options: z.array(z.object({
+        id: z.string(),
+        imageFileId: z.number().int(),
+        description: z.string(),
+    })).max(2),
+    correctOptionId: z.string(),
+});
+
+const QuizTypeFourComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('quizTypeFour'),
+    title: z.string(),
+    description: z.string(),
+    options: z.array(z.object({
+        id: z.string(),
+        imageFileId: z.number().int(),
+        description: z.string(),
+    })),
+});
+
+const CoachingSessionComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('coachingSession'),
+    courseCoachingOfferingId: z.number().int(),
+});
+
+const AssignmentComponentRequestSchema = BaseComponentRequestSchema.extend({
+    type: z.literal('assignment'),
+    title: z.string(),
+    description: z.string(),
+    fileIds: z.array(z.number().int()),
+    links: z.array(z.object({
+        title: z.string(),
+        url: z.string(),
+        iconFileId: z.number().int().nullable().optional(),
+    })),
+});
+
+export const AssessmentComponentRequestSchema = z.discriminatedUnion('type', [
+    RichTextComponentRequestSchema,
+    HeadingComponentRequestSchema,
+    SingleChoiceComponentRequestSchema,
+    MultipleChoiceComponentRequestSchema,
+    TextInputComponentRequestSchema,
+    OneOutOfThreeComponentRequestSchema,
+]);
+
+export const LessonComponentRequestSchema = z.discriminatedUnion('type', [
+    RichTextComponentRequestSchema,
+    HeadingComponentRequestSchema,
+    SingleChoiceComponentRequestSchema,
+    MultipleChoiceComponentRequestSchema,
+    TextInputComponentRequestSchema,
+    OneOutOfThreeComponentRequestSchema,
+    VideoComponentRequestSchema,
+    ImageComponentRequestSchema,
+    ImageCarouselComponentRequestSchema,
+    LinksComponentRequestSchema,
+    DownloadFilesComponentRequestSchema,
+    UploadFilesComponentRequestSchema,
+    QuizTypeOneComponentRequestSchema,
+    QuizTypeTwoComponentRequestSchema,
+    QuizTypeThreeComponentRequestSchema,
+    QuizTypeFourComponentRequestSchema,
+    CoachingSessionComponentRequestSchema,
+    AssignmentComponentRequestSchema,
+]);
+
+export type TAssessmentComponentRequest = z.infer<typeof AssessmentComponentRequestSchema>;
+export type TLessonComponentRequest = z.infer<typeof LessonComponentRequestSchema>;

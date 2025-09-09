@@ -39,6 +39,7 @@ import { uploadIntroductionVideo } from './procedures/introduction-video';
 import { uploadAccordionIcon } from './procedures/accordion-icon';
 import { getPlatformLanguage } from './procedures/platform-language';
 import { togglePreCourseAssessment } from './procedures/pre-course-assessment';
+import { saveAssessmentComponents } from './procedures/assessment-components';
 import {
     getCourseIntroduction,
     saveCourseIntroduction,
@@ -59,7 +60,7 @@ export const mockRouter = t.router({
     listCoachingOfferings,
     listAvailableCoachings,
     getCourseAccess,
-    listAssessmentComponents,
+    listPreCourseAssessmentComponents: listAssessmentComponents,
     submitAssessmentProgress,
     getStudentProgress,
     listIncludedCoachingSessions,
@@ -83,6 +84,7 @@ export const mockRouter = t.router({
     saveCourseOutline,
     getPlatformLanguage,
     togglePreCourseAssessment,
+    savePreCourseAssessmentComponents: saveAssessmentComponents,
 });
 
 export type MockRouter = typeof mockRouter;
