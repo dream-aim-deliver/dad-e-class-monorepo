@@ -27,7 +27,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/client';
 import { useEffect, useState } from 'react';
-import { viewModels } from '@maany_shr/e-class-models';
+import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useGetPlatformLanguagePresenter } from '../../hooks/use-platform-language-presenter';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -36,6 +36,7 @@ import { generateTempId } from './edit/utils/generate-temp-id';
 import EditLessonComponents from './edit/edit-lesson-components';
 import { useListAssessmentComponentsPresenter } from '../../hooks/use-assessment-components-presenter';
 import { transformLessonComponents } from '../../utils/transform-lesson-components';
+import { transformLessonToRequest } from './edit/utils/lesson-to-request';
 
 function usePlatformLanguage() {
     const [
@@ -293,7 +294,10 @@ function PreCourseAssessmentFormBuilder({
     );
 }
 
-function PreCourseAssessmentTabs() {
+function PreCourseAssessmentTabs({
+    components,
+    setComponents,
+}: PreCourseAssessmentTabProps) {
     const locale = useLocale() as TLocale;
 
     const [componentsResponse] =
@@ -312,8 +316,6 @@ function PreCourseAssessmentTabs() {
         const responseComponents = componentsViewModel.data.components;
         setComponents(transformLessonComponents(responseComponents));
     }, [componentsViewModel]);
-
-    const [components, setComponents] = useState<LessonElement[]>([]);
 
     if (!componentsViewModel) {
         return <DefaultLoading locale={locale} />;
@@ -358,7 +360,7 @@ interface PreCourseAssessmentContentProps {
     error: string | undefined;
 }
 
-export function PreCourseAssessmentContent({
+function PreCourseAssessmentContent({
     platformLanguageViewModel,
     onToggle,
     isTogglePending,
@@ -366,6 +368,17 @@ export function PreCourseAssessmentContent({
     error,
 }: PreCourseAssessmentContentProps) {
     const locale = useLocale() as TLocale;
+    const [components, setComponents] = useState<LessonElement[]>([]);
+    const saveComponentsMutation =
+        trpc.savePreCourseAssessmentComponents.useMutation();
+
+    const onSaveComponents = async () => {
+        const transformedComponents = transformLessonToRequest(components);
+        const response = await saveComponentsMutation.mutateAsync({
+            components:
+                transformedComponents as useCaseModels.TAssessmentComponentRequest[],
+        });
+    };
 
     if (!platformLanguageViewModel || isPlatformRefetching) {
         return <DefaultLoading locale={locale} />;
@@ -385,8 +398,8 @@ export function PreCourseAssessmentContent({
                     <PreCourseAssessmentEnabledControls
                         onDisable={() => onToggle(false)}
                         isPending={isTogglePending}
-                        onSave={() => {}}
-                        isSaving={false}
+                        onSave={onSaveComponents}
+                        isSaving={saveComponentsMutation.isPending}
                     />
                 )}
             </div>
@@ -403,7 +416,12 @@ export function PreCourseAssessmentContent({
                 />
             )}
 
-            {isEnabled && <PreCourseAssessmentTabs />}
+            {isEnabled && (
+                <PreCourseAssessmentTabs
+                    components={components}
+                    setComponents={setComponents}
+                />
+            )}
         </div>
     );
 }
