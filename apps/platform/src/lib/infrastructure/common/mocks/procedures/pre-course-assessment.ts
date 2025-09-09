@@ -6,7 +6,7 @@ const togglePreCourseAssessmentMock: useCaseModels.TTogglePreCourseAssessmentSuc
 
 export const togglePreCourseAssessment = t.procedure
     .input(useCaseModels.TogglePreCourseAssessmentRequestSchema)
-    .query(
+    .mutation(
         async (): Promise<useCaseModels.TTogglePreCourseAssessmentUseCaseResponse> => {
             return {
                 success: true,
