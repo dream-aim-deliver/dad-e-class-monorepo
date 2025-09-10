@@ -94,12 +94,12 @@ export default function Home() {
                     locale={locale}
                     title={homePage.banner.title}
                     description={homePage.banner.description}
-                    thumbnailUrl={homePage.banner.thumbnailUrl}
-                    videoId={homePage.banner.videoId}
+                    thumbnailUrl={homePage.banner.thumbnailUrl ?? ''}
+                    videoId={homePage.banner.videoId ?? ''}
                 />
                 <Divider />
                 <Carousel locale={locale}>
-                    {homePage.carousel.map((item: viewModels.TGeneralCard) => {
+                    {homePage.carousel.map((item) => {
                         const onClick = () => {
                             router.push(item.buttonUrl);
                         };
@@ -109,6 +109,7 @@ export default function Home() {
                                 locale={locale}
                                 onButtonClick={onClick}
                                 {...item}
+                                imageUrl={item.imageUrl ?? ''}
                             />
                         );
                     })}
@@ -123,30 +124,42 @@ export default function Home() {
                     description={homePage.coachingOnDemand.description}
                     images={
                         <>
-                            <Image
-                                src={homePage.coachingOnDemand.mobileImageUrl}
-                                alt="Coaching on Demand"
-                                width={640}
-                                height={640}
-                                className="w-full h-auto sm:hidden"
-                                sizes="(max-width: 640px) 100vw, 0px"
-                            />
-                            <Image
-                                src={homePage.coachingOnDemand.tabletImageUrl}
-                                alt="Coaching on Demand"
-                                width={1024}
-                                height={1024}
-                                className="w-full h-auto max-sm:hidden lg:hidden"
-                                sizes="(min-width: 768px) and (max-width: 1023px) 100vw, 0px"
-                            />
-                            <Image
-                                src={homePage.coachingOnDemand.desktopImageUrl}
-                                alt="Coaching on Demand"
-                                width={1920}
-                                height={1080}
-                                className="w-full h-auto hidden lg:block"
-                                sizes="(min-width: 1024px) 100vw, 0px"
-                            />
+                            {homePage.coachingOnDemand.mobileImageUrl && (
+                                <Image
+                                    src={
+                                        homePage.coachingOnDemand.mobileImageUrl
+                                    }
+                                    alt="Coaching on Demand"
+                                    width={640}
+                                    height={640}
+                                    className="w-full h-auto sm:hidden"
+                                />
+                            )}
+                            {homePage.coachingOnDemand.tabletImageUrl && (
+                                <Image
+                                    src={
+                                        homePage.coachingOnDemand.tabletImageUrl
+                                    }
+                                    alt="Coaching on Demand"
+                                    width={1024}
+                                    height={1024}
+                                    className="w-full h-auto max-sm:hidden lg:hidden"
+                                    sizes="(min-width: 768px) and (max-width: 1023px) 100vw, 0px"
+                                />
+                            )}
+                            {homePage.coachingOnDemand.desktopImageUrl && (
+                                <Image
+                                    src={
+                                        homePage.coachingOnDemand
+                                            .desktopImageUrl
+                                    }
+                                    alt="Coaching on Demand"
+                                    width={1920}
+                                    height={1080}
+                                    className="w-full h-auto hidden lg:block"
+                                    sizes="(min-width: 1024px) 100vw, 0px"
+                                />
+                            )}
                         </>
                     }
                 />
@@ -155,7 +168,10 @@ export default function Home() {
                 <HomeAccordion
                     title={homePage.accordion.title}
                     showNumbers={homePage.accordion.showNumbers}
-                    items={homePage.accordion.items}
+                    items={homePage.accordion.items.map((item) => ({
+                        ...item,
+                        iconImageUrl: item.iconImageUrl ?? '',
+                    }))}
                 />
             </div>
         </div>
