@@ -23,7 +23,6 @@ export const uploadCourseImage = t.procedure
         async (
             ctx,
         ): Promise<useCaseModels.TUploadCourseImageUseCaseResponse> => {
-            console.log(ctx.input);
             if (
                 ctx.input.mimeType !== 'image/jpeg' &&
                 ctx.input.mimeType !== 'image/png'
