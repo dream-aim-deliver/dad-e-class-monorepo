@@ -7,7 +7,7 @@ import superjson from 'superjson';
 
 export function getTRPCUrl() {
     const base =
-        process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL ?? 'http:localhost:3000';
+        process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL ?? 'http://localhost:3000';
     return `${base}/api/trpc`;
 }
 
