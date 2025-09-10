@@ -40,3 +40,5 @@ export * from './list-categories-usecase-models';
 export * from './toggle-pre-course-assessment-usecase-models';
 export * from './get-platform-language-usecase-models';
 export * from './save-assessment-components-usecase-models';
+
+export * from './list-course-students-usecase-models';
