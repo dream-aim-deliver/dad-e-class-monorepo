@@ -10,7 +10,7 @@ import {
 
 
 export const ListCoachStudentsRequestSchema = DefaultPaginationSchema.extend({});
-export type TListCoachesRequest = z.infer<typeof ListCoachStudentsRequestSchema>;
+export type TListCoachStudentsRequest = z.infer<typeof ListCoachStudentsRequestSchema>;
 
 
 export const ListCoachStudentsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
@@ -25,7 +25,7 @@ export const ListCoachStudentsSuccessResponseSchema = BaseSuccessSchemaFactory(z
             courseImageUrl: z.string().nullable(),
             lastAssignment: z.object({
                 assignmentId: z.string(),
-                assignmentTile: z.string(),
+                assignmentTitle: z.string(),
                 assignmentStatus: AssignmentStatusEnumSchema
             }).optional().nullable(),
         }))
