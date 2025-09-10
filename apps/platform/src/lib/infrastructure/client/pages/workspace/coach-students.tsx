@@ -75,7 +75,7 @@ export default function CoachStudents(props: CoachStudentsProps) {
         const students = studentsViewModel.data.students;
 
         // Start with search results if search is active, otherwise use all students
-        let baseStudents = searchResults !== undefined ? searchResults : students;
+        const baseStudents = searchResults !== undefined ? searchResults : students;
         let filtered = [...baseStudents];
 
         // Filter by student name (only if not already searching - search handles this)
