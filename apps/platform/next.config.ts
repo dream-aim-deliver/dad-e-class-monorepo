@@ -22,6 +22,12 @@ const nextConfig: NextConfig = {
                 // The path for mock data. Should be configured with environment variables in production.
                 hostname: 'res.cloudinary.com',
             },
+            {
+                protocol: 'http',
+                // The path for local MinIO server. Should be configured with environment variables in production.
+                hostname: 'localhost',
+                port: '9000',
+            }
         ],
     },
 };
