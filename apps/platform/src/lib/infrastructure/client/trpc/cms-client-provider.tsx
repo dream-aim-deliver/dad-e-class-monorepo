@@ -27,29 +27,13 @@ export default function CMSTRPCClientProviders({
     const locale = useLocale();
 
     // Debug logging for session state
-    console.log('[TRPC Provider] Session status:', status);
-    console.log('[TRPC Provider] Session data:', {
-        hasSession: !!session,
-        hasUser: !!session?.user,
-        hasIdToken: !!session?.user?.idToken,
-        userId: session?.user?.id,
-        locale
-    });
 
     const trpcClient = useMemo(
         () => {
-            console.log('[TRPC Client] Creating new TRPC client with:', {
-                hasIdToken: !!session?.user?.idToken,
-                tokenLength: session?.user?.idToken?.length || 0,
-                locale,
-                sessionStatus: status
-            });
+            // Creating new TRPC client
 
             // Wait for session to be determined (not loading) before setting up auth
             const isSessionReady = status !== 'loading';
-            if (!isSessionReady) {
-                console.log('[TRPC Client] ⏳ Session still loading, creating client without auth');
-            }
 
             return trpc.createClient({
                 links: [
@@ -63,9 +47,7 @@ export default function CMSTRPCClientProviders({
                             if (isSessionReady && session?.user?.idToken) {
                                 headers['Authorization'] =
                                     `Bearer ${session.user.idToken}`;
-                                console.log('[TRPC Headers] ✅ Authorization header added');
-                            } else if (!isSessionReady) {
-                                console.log('[TRPC Headers] ⏳ Skipping auth header - session still loading');
+                                // Authorization header added
                             } else if (!session?.user?.idToken) {
                                 console.warn('[TRPC Headers] ⚠️ Missing Authorization header - no idToken found', {
                                     hasSession: !!session,
@@ -78,7 +60,7 @@ export default function CMSTRPCClientProviders({
                             // Add locale header
                             if (locale) {
                                 headers['Accept-Language'] = locale;
-                                console.log('[TRPC Headers] ✅ Accept-Language header added:', locale);
+                                // Accept-Language header added
                             } else {
                                 console.warn('[TRPC Headers] ⚠️ Missing Accept-Language header');
                             }
@@ -92,7 +74,7 @@ export default function CMSTRPCClientProviders({
                                 console.warn('[TRPC Headers] ⚠️ Missing platform header');
                             }
 
-                            console.log('[TRPC Headers] Final headers:', Object.keys(headers));
+                            // Final headers
                             return headers;
                         },
                     }),

@@ -247,11 +247,7 @@ export const addCourseCoach = t.procedure
             if (!existingCoach) {
                 // Add coach to the course
                 courseCoachesMockData[courseSlug].coaches.push(coachToAdd);
-            } else {
-                console.log(`Coach ${coachToAdd.username} is already in course ${courseSlug}`);
             }
-        } else {
-            console.log(`Coach with ID ${coachId} not found in available coaches`);
         }
 
         return {
@@ -299,12 +295,8 @@ export const removeCourseCoach = t.procedure
             const finalLength = courseCoachesMockData[courseSlug].coaches.length;
 
             if (initialLength > finalLength) {
-                console.log(`Removed coach ${coachId} from course ${courseSlug}`);
-            } else {
-                console.log(`Coach ${coachId} not found in course ${courseSlug}`);
+                // Coach removed
             }
-        } else {
-            console.log(`Course ${courseSlug} not found`);
         }
 
         return {

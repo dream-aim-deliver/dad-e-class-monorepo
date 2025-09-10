@@ -251,9 +251,6 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
             setIsAddModalOpen(true);
 
             // Error is automatically shown via addCoachViewModel in the UI
-        } else {
-            console.log('Coach successfully added:', result.addedCoach);
-            // Success - modal stays closed, coach is added to UI
         }
     };
 
@@ -274,7 +271,6 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                 // Could show a server-specific error message (e.g., "Permission denied")
             }
         } else if (result.removedCoach) {
-            console.log('Coach successfully removed with data:', result.removedCoach);
             // State is already updated by the hook callback, no need for refetch here
         }
     };
@@ -424,11 +420,9 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                             locale,
                             onClickViewProfile: () => {
                                 // Navigate to coach profile or show modal
-                                console.log('View coach profile:', coach.username);
                             },
                             onClickCourse: (slug: string) => {
                                 // Navigate to course page
-                                console.log('Navigate to course:', slug);
                             }
                         };
 

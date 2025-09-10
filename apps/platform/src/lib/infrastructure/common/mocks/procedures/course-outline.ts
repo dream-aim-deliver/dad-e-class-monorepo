@@ -278,7 +278,6 @@ export const saveCourseOutline = t.procedure
         async (
             ctx,
         ): Promise<useCaseModels.TSaveCourseOutlineUseCaseResponse> => {
-            console.log(ctx.input);
             return {
                 success: true,
                 data: saveCourseOutlineMock,
