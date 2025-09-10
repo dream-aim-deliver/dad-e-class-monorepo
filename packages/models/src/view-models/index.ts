@@ -7,7 +7,6 @@ export * from './topics-by-category-view-model';
 export * from './course-list-view-model';
 export * from './offers-page-package-list-view-model';
 export * from './coach-list-view-model';
-export * from './offers-page-carousel-view-model';
 export * from './coaching-page-view-model';
 export * from './coaching-offering-list-view-model';
 export * from './available-coaching-list-view-model';
