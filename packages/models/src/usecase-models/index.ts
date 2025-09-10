@@ -38,3 +38,5 @@ export * from './save-course-introduction-usecase-models';
 export * from './upload-accordion-icon-usecase-models';
 
 export * from './save-course-outline-usecase-models';
+export * from './add-course-coach-usecase-models';
+export * from './remove-course-coach-usecase-models';

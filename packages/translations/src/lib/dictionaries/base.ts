@@ -1125,6 +1125,18 @@ export const DictionarySchema = z.object({
         coaches: z.string(),
         groups: z.string(),
       }),
+      enrolledCoaches: z.object({
+        title: z.string(),
+        addCoachButton: z.string(),
+        searchPlaceholder: z.string(),
+        sortByLabel: z.string(),
+        sortBySessionsHighToLow: z.string(),
+        sortBySessionsLowToHigh: z.string(),
+        sortByDropdownText: z.string(),
+        loadMoreButton: z.string(),
+        noCoachesAssigned: z.string(),
+        noCoachesFound: z.string(),
+      }),
     }),
     userCourses: z.object({
       yourCourses: z.string(),

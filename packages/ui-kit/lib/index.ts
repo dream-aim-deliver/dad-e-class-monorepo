@@ -9,6 +9,7 @@ export { DummySkills, type DummySkillsProps } from './components/dummy-skills';
 export { IconButton, type IconButtonProps } from './components/icon-button';
 export { CheckBox, type CheckBoxProps } from './components/checkbox';
 export { InputField, type InputFieldProps } from './components/input-field';
+export { SearchInput, type SearchInputProps } from './components/search-input';
 export { TextInput, type TextInputProps } from './components/text-input';
 export {
   FeedBackMessage,

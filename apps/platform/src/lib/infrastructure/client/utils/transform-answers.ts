@@ -124,11 +124,6 @@ export function transformFormAnswers(
                 );
                 throw error;
             }
-        } else {
-            // Skip elements that don't need answer transformation (like richText, heading)
-            console.log(
-                `Skipping answer transformation for element type: ${element.type}`,
-            );
         }
     }
 
