@@ -37,6 +37,7 @@ export * from './coach-students-view-model';
 export * from './course-materials-view-model';
 export * from './student-notes-view-model';
 export * from './lesson-note-view-model';
+export * from './coach-mutation-view-model';
 
 export * from './student-coaching-sessions-list-view-model';
 export * from './create-coaching-session-review-view-model';
