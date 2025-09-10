@@ -4,7 +4,6 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
-import { ListCoachesRequestSchema } from './list-coaches-usecase-models';
 
 // Extract the coach schema from list-coaches-usecase-models for reuse
 const CoachSchema = z.object({
