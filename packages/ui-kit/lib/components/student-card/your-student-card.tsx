@@ -91,7 +91,7 @@ export const YourStudentCard = ({
     });
 
     return (
-        <div className="flex flex-col md:p-4 p-2 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:w-[22rem]">
+        <div className="flex flex-col md:p-4 p-2 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
             {/* Avatar, student name & Badge */}
             <div className="flex flex-row items-center gap-3 mb-2">
                 <UserAvatar

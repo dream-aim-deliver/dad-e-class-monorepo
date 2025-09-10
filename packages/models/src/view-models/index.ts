@@ -33,3 +33,4 @@ export * from './platform-language-view-model';
 export * from './assessment-component-view-model';
 
 export * from './course-students-list-view-model';
+export * from './coach-students-view-model';

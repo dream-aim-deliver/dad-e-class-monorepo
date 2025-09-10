@@ -42,3 +42,4 @@ export * from './get-platform-language-usecase-models';
 export * from './save-assessment-components-usecase-models';
 
 export * from './list-course-students-usecase-models';
+export * from './list-coach-students-usecase-models';
