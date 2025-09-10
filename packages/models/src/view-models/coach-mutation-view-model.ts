@@ -15,10 +15,12 @@ export type TAddCoachSuccess = z.infer<typeof AddCoachSuccessSchema>;
 
 const AddCoachSuccessViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("success", AddCoachSuccessSchema);
 const AddCoachErrorViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("error", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
+const AddCoachKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const AddCoachViewModelSchemaMap = {
     success: AddCoachSuccessViewModelSchema,
     error: AddCoachErrorViewModelSchema,
+    kaboom: AddCoachKaboomViewModelSchema,
 };
 export type TAddCoachViewModelSchemaMap = typeof AddCoachViewModelSchemaMap;
 export const AddCoachViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(AddCoachViewModelSchemaMap);
@@ -30,10 +32,12 @@ export type TRemoveCoachSuccess = z.infer<typeof RemoveCoachSuccessSchema>;
 
 const RemoveCoachSuccessViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("success", RemoveCoachSuccessSchema);
 const RemoveCoachErrorViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("error", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
+const RemoveCoachKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const RemoveCoachViewModelSchemaMap = {
     success: RemoveCoachSuccessViewModelSchema,
     error: RemoveCoachErrorViewModelSchema,
+    kaboom: RemoveCoachKaboomViewModelSchema,
 };
 export type TRemoveCoachViewModelSchemaMap = typeof RemoveCoachViewModelSchemaMap;
 export const RemoveCoachViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(RemoveCoachViewModelSchemaMap);

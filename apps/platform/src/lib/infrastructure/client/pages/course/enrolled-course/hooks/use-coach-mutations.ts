@@ -40,12 +40,13 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
                 coachId: getCoachNumericId(coachId)
             });
 
-            // Use presenter to transform the result
-            addCoachPresenter.present(result, addCoachViewModel);
+            // Use presenter to transform the result (this updates state asynchronously)
+            await addCoachPresenter.present(result, addCoachViewModel);
 
-            // Handle the presented result
-            if (addCoachViewModel?.mode === 'success') {
-                const addedCoach = addCoachViewModel.data.addedCoach;
+            // Since presenter updates the state, we need to handle the result directly
+            // Let's check the mutation result instead of relying on state
+            if (result.success) {
+                const addedCoach = result.data.addedCoach;
                 if (addedCoach && onCoachAdded) {
                     onCoachAdded(addedCoach);
                 }
@@ -53,16 +54,15 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
                     success: true,
                     addedCoach: addedCoach
                 };
-            } else if (addCoachViewModel?.mode === 'error') {
-                const errorMessage = addCoachViewModel.data.message;
+            } else {
+                // Handle error case from result directly
+                const errorMessage = result.data?.message || 'Failed to add coach';
                 return { 
                     success: false, 
                     errorType: 'mutation_error', 
                     message: errorMessage 
                 };
             }
-
-            return { success: false };
         } catch (error) {
             console.error('Failed to add coach:', error);
             const errorMessage = 'Failed to add coach. Please try again.';
@@ -85,12 +85,13 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
                 coachId: getCoachNumericId(coachId)
             });
 
-            // Use presenter to transform the result
-            removeCoachPresenter.present(result, removeCoachViewModel);
+            // Use presenter to transform the result (this updates state asynchronously)
+            await removeCoachPresenter.present(result, removeCoachViewModel);
 
-            // Handle the presented result
-            if (removeCoachViewModel?.mode === 'success') {
-                const removedCoach = removeCoachViewModel.data.removedCoach;
+            // Since presenter updates the state, we need to handle the result directly
+            // Let's check the mutation result instead of relying on state
+            if (result.success) {
+                const removedCoach = result.data.removedCoach;
                 if (removedCoach && onCoachRemoved) {
                     onCoachRemoved(removedCoach.username);
                 }
@@ -98,16 +99,15 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
                     success: true,
                     removedCoach: removedCoach
                 };
-            } else if (removeCoachViewModel?.mode === 'error') {
-                const errorMessage = removeCoachViewModel.data.message;
+            } else {
+                // Handle error case from result directly
+                const errorMessage = result.data?.message || 'Failed to remove coach';
                 return { 
                     success: false, 
                     errorType: 'mutation_error', 
                     message: errorMessage 
                 };
             }
-
-            return { success: false };
         } catch (error) {
             console.error('Failed to remove coach:', error);
             const errorMessage = 'Failed to remove coach. Please try again.';

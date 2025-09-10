@@ -59,12 +59,28 @@ export class AddCoachPresenter extends BasePresenter<
             TAddCourseCoachResponseMiddleware
         >,
     ): viewModels.TAddCoachViewModel {
-        // You can add specific error type handling here based on errorType
-        // For now, treating all errors as generic errors
+        // Simple error handling - just error vs kaboom
+        const errorType = response.data.errorType;
+        const errorMessage = response.data.message || 'Failed to add coach';
+
+        // For add coach, most errors are unexpected since the operation is simple
+        // Only use 'error' for business logic issues, 'kaboom' for system issues
+        if (errorType === 'UnknownError' || !errorType) {
+            return {
+                mode: 'kaboom',
+                data: {
+                    message: errorMessage,
+                    operation: response.data.operation || 'addCourseCoach',
+                    context: response.data.context || {}
+                }
+            };
+        }
+
+        // All other errors are treated as normal business errors
         return {
             mode: 'error',
             data: {
-                message: response.data.message || 'Failed to add coach',
+                message: errorMessage,
                 operation: response.data.operation || 'addCourseCoach',
                 context: response.data.context || {}
             }
@@ -123,12 +139,28 @@ export class RemoveCoachPresenter extends BasePresenter<
             TRemoveCourseCoachResponseMiddleware
         >,
     ): viewModels.TRemoveCoachViewModel {
-        // You can add specific error type handling here based on errorType
-        // For now, treating all errors as generic errors
+        // Simple error handling - just error vs kaboom
+        const errorType = response.data.errorType;
+        const errorMessage = response.data.message || 'Failed to remove coach';
+
+        // For remove coach, most errors are unexpected since the operation is simple
+        // Only use 'error' for business logic issues, 'kaboom' for system issues
+        if (errorType === 'UnknownError' || !errorType) {
+            return {
+                mode: 'kaboom',
+                data: {
+                    message: errorMessage,
+                    operation: response.data.operation || 'removeCourseCoach',
+                    context: response.data.context || {}
+                }
+            };
+        }
+
+        // All other errors are treated as normal business errors
         return {
             mode: 'error',
             data: {
-                message: response.data.message || 'Failed to remove coach',
+                message: errorMessage,
                 operation: response.data.operation || 'removeCourseCoach',
                 context: response.data.context || {}
             }
