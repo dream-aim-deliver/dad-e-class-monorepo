@@ -1087,6 +1087,18 @@ export const DE: TDictionary = {
         coaches: "Coach",
         groups: "Gruppen",
       },
+      enrolledCoaches: {
+        title: 'Coaches',
+        addCoachButton: 'Coach hinzufügen',
+        searchPlaceholder: 'Eingeschriebene Coaches suchen...',
+        sortByLabel: 'Sortieren nach',
+        sortBySessionsHighToLow: 'Sitzungen (Hoch zu Niedrig)',
+        sortBySessionsLowToHigh: 'Sitzungen (Niedrig zu Hoch)',
+        sortByDropdownText: 'Sortieren nach...',
+        loadMoreButton: 'Mehr laden...',
+        noCoachesAssigned: 'Diesem Kurs sind noch keine Coaches zugewiesen.',
+        noCoachesFound: 'Keine Coaches gefunden, die deiner Suche entsprechen.',
+      },
     },
     userCourses: {
       yourCourses: 'Deine Angebote',
