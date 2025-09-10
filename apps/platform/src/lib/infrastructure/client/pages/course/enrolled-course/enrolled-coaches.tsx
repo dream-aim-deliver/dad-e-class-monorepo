@@ -238,40 +238,21 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         const result = await addCoach(coachId);
 
         if (!result.success) {
-            // Handle different error types from presenter
-            if (result.errorType === 'network_error') {
-                console.error('Network error adding coach:', result.message);
-                // Network errors might benefit from retry logic
-            } else if (result.errorType === 'mutation_error') {
-                console.error('Server error adding coach:', result.message);
-                // Server errors are displayed via the view model UI above
-            }
-
-            // Reopen modal if there was an error
             setIsAddModalOpen(true);
 
-            // Error is automatically shown via addCoachViewModel in the UI
         }
     };
 
     const handleRemoveCoach = async (coachId: string) => {
-        // Clear any previous errors
         clearError();
 
         // Perform backend operation - hook will handle state updates directly
         const result = await removeCoach(coachId);
 
+        // Note: Current mock always succeeds, but we keep minimal error handling for future real API
         if (!result.success) {
-            // Handle different error types from presenter
-            if (result.errorType === 'network_error') {
-                console.error('Network error removing coach:', result.message);
-                // Could show a network-specific error message or retry logic
-            } else if (result.errorType === 'mutation_error') {
-                console.error('Server error removing coach:', result.message);
-                // Could show a server-specific error message (e.g., "Permission denied")
-            }
-        } else if (result.removedCoach) {
-            // State is already updated by the hook callback, no need for refetch here
+            console.error('Error removing coach:', result.message);
+            // Error details are shown via removeCoachViewModel in the UI
         }
     };
 
@@ -292,6 +273,17 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
 
     if (courseCoachesViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
+    }
+
+    // Check for mutation errors and show as full page errors
+    if (addCoachViewModel?.mode === 'error' || addCoachViewModel?.mode === 'kaboom') {
+        const errorMessage = addCoachViewModel.data.message;
+        return <DefaultError locale={locale} description={errorMessage} />;
+    }
+
+    if (removeCoachViewModel?.mode === 'error' || removeCoachViewModel?.mode === 'kaboom') {
+        const errorMessage = removeCoachViewModel.data.message;
+        return <DefaultError locale={locale} description={errorMessage} />;
     }
 
     if (coaches.length === 0) {
@@ -365,31 +357,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                 </div>
             )}
 
-            {/* Error Display - Using Presenter View Models */}
-            {(addCoachViewModel?.mode === 'error' || removeCoachViewModel?.mode === 'error') && (
-                <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4 mb-4">
-                    <h4 className="text-red-400 font-medium mb-2">Operation Failed</h4>
-                    <p className="text-red-300 text-sm">
-                        {addCoachViewModel?.mode === 'error' ? addCoachViewModel.data.message :
-                            removeCoachViewModel?.mode === 'error' ? removeCoachViewModel.data.message :
-                                'An unexpected error occurred'}
-                    </p>
-                    <div className="mt-2 text-xs text-red-400">
-                        <p>Operation: {
-                            addCoachViewModel?.mode === 'error' ? addCoachViewModel.data.operation :
-                                removeCoachViewModel?.mode === 'error' ? removeCoachViewModel.data.operation :
-                                    'Unknown'
-                        }</p>
-                    </div>
-                    <Button
-                        variant="text"
-                        size="small"
-                        text="Dismiss"
-                        onClick={clearError}
-                        className="mt-2 text-red-400 hover:text-red-300"
-                    />
-                </div>
-            )}
+
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {isSearchLoading ? (
@@ -462,15 +430,15 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
             {/* Add Coach Modal */}
             {isAddModalOpen && (
                 <div className="top-0 left-0 w-full h-full fixed bg-black/30 z-50 flex items-center justify-center p-4">
-                <AddCoachModal
-                    locale={locale}
-                    onClose={() => {
-                        setIsAddModalOpen(false);
-                    }}
-                    onAdd={handleAddCoach}
-                    content={availableCoaches}
-                    addedCoachIds={addedCoachIds}
-                />
+                    <AddCoachModal
+                        locale={locale}
+                        onClose={() => {
+                            setIsAddModalOpen(false);
+                        }}
+                        onAdd={handleAddCoach}
+                        content={availableCoaches}
+                        addedCoachIds={addedCoachIds}
+                    />
                 </div>
             )}
         </div>
