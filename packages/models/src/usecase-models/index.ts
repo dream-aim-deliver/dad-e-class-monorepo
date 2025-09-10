@@ -49,3 +49,5 @@ export * from './upload-lesson-progress-file-usecase-models';
 
 export * from './list-course-materials-usecase-models';
 export * from './list-student-notes-usecase-models';
+export * from './add-course-coach-usecase-models';
+export * from './remove-course-coach-usecase-models';

@@ -37,3 +37,4 @@ export * from './coach-students-view-model';
 export * from './course-materials-view-model';
 export * from './student-notes-view-model';
 export * from './lesson-note-view-model';
+export * from './coach-mutation-view-model';

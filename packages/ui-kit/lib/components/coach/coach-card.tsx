@@ -7,6 +7,7 @@ import { IconLanguage } from '../icons/icon-language';
 import { IconCoachingSession } from '../icons/icon-coaching-session';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import SkillBadges from '../skill-badges';
+import { IconAccountInformation, IconTrashAlt } from '../icons';
 
 interface Course {
   image: string;
@@ -26,37 +27,56 @@ export interface CoachCardDetails {
   totalRatings: number;
 }
 
-export interface CoachCardProps {
+type BaseCoachCardProps = {
   cardDetails?: CoachCardDetails;
-  byCourseCreator?: boolean;
-  onClickViewProfile?: () => void;
-  onClickBookSession?: () => void;
   onClickCourse?: (slug: string) => void;
   className?: string;
   locale: TLocale;
-}
+};
+
+type CoachVariantProps = BaseCoachCardProps & {
+  variant: 'coach';
+  onClickViewProfile: () => void;
+};
+
+type CourseCreatorVariantProps = BaseCoachCardProps & {
+  variant: 'courseCreator';
+  onClickViewProfile: () => void;
+  onClickRemoveFromCourse: () => void;
+};
+
+type DefaultVariantProps = BaseCoachCardProps & {
+  variant?: "student" | undefined;
+  onClickViewProfile: () => void;
+  onClickBookSession: () => void;
+};
+
+export type CoachCardProps = CoachVariantProps | CourseCreatorVariantProps | DefaultVariantProps;
 
 /**
  * 
  * @props {CoachCardProps} props - The component props.
  * @props {CoachCardDetails} props.cardDetails - The details of the coach to be displayed.
- * @props {boolean} [props.byCourseCreator] - Indicates if the card is for a course creator.
- * @props {() => void} [props.onClickViewProfile] - Callback function for viewing the coach's profile.
- * @props {() => void} [props.onClickBookSession] - Callback function for booking a session with the coach.
+ * @props {'coach'} props.variant - Coach variant shows only view profile button.
+ * @props {'courseCreator'} props.variant - Course creator variant shows view profile and remove from course buttons.
+ * @props {'default' | undefined} props.variant - Default variant shows view profile and book session buttons.
+ * @props {() => void} props.onClickViewProfile - Callback function for viewing the coach's profile.
+ * @props {() => void} [props.onClickBookSession] - Callback function for booking a session (default variant only).
+ * @props {() => void} [props.onClickRemoveFromCourse] - Callback function for removing coach from course (courseCreator variant only).
  * @props {string} [props.className] - Additional class names for styling.
  * @props {TLocale} props.locale - The locale for translations.
  *
- * @returns {JSX.Element} A card displaying the coach's details, including their name, image, languages, session count, skills, description, and courses.
+ * @returns {JSX.Element} A card displaying the coach's details with variant-specific action buttons.
  * */
 
-const CoachCard: FC<CoachCardProps> = ({
-  cardDetails,
-  onClickViewProfile,
-  onClickBookSession,
-  onClickCourse,
-  className,
-  locale
-}) => {
+const CoachCard: FC<CoachCardProps> = (props) => {
+  const { cardDetails, onClickCourse, className, locale, variant = 'student' } = props;
+
+  // Type-safe extraction of variant-specific props
+  const onClickViewProfile = props.onClickViewProfile;
+  const onClickBookSession = variant === 'student' || !variant ? (props as DefaultVariantProps).onClickBookSession : undefined;
+  const onClickRemoveFromCourse = variant === 'courseCreator' ? (props as CourseCreatorVariantProps).onClickRemoveFromCourse : undefined;
+
   if (!cardDetails) return null; // Prevents errors if cardDetails is undefined
 
   const dictionary = getDictionary(locale);
@@ -131,18 +151,33 @@ const CoachCard: FC<CoachCardProps> = ({
 
       {/* Card Footer */}
       <div className="flex flex-col gap-2">
+        {variant === 'courseCreator'  && (
+          <Button
+            variant="secondary"
+            size="medium"
+            hasIconLeft
+            iconLeft={<IconTrashAlt />}
+            onClick={onClickRemoveFromCourse}
+            text="Remove from Course"
+          />
+        )}
+        
         <Button
-          variant="secondary"
+          variant={variant === 'student' ? "secondary" : "primary"}
           size="medium"
+          hasIconLeft={variant !== 'student'}
+          iconLeft={<IconAccountInformation />}
           onClick={onClickViewProfile}
           text={dictionary.components.coachCard.viewProfile}
         />
-        <Button
-          variant="primary"
-          size="medium"
-          onClick={onClickBookSession}
-          text={dictionary.components.coachCard.bookSession}
-        />
+        {variant === 'student' && onClickBookSession && (
+          <Button
+            variant="primary"
+            size="medium"
+            onClick={onClickBookSession}
+            text={dictionary.components.coachCard.bookSession}
+          />
+        )}
       </div>
     </div>
   );
