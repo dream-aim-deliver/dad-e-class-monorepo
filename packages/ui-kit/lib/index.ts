@@ -9,6 +9,7 @@ export { DummySkills, type DummySkillsProps } from './components/dummy-skills';
 export { IconButton, type IconButtonProps } from './components/icon-button';
 export { CheckBox, type CheckBoxProps } from './components/checkbox';
 export { InputField, type InputFieldProps } from './components/input-field';
+export { SearchInput, type SearchInputProps } from './components/search-input';
 export { TextInput, type TextInputProps } from './components/text-input';
 export {
   FeedBackMessage,
@@ -93,6 +94,7 @@ export { StudentCard } from './components/student-card/student-card';
 export { StudentCardList } from './components/student-card/student-card-list';
 export { YourStudentCard } from './components/student-card/your-student-card';
 export { YourStudentCardList } from './components/student-card/your-student-card-list';
+export { StudentCardFilterModal, type StudentCardFilterModel } from './components/student-card/student-card-filter-modal';
 
 export { AddCoachModal } from './components/add-coach-modal';
 export { BookSessionWith } from './components/book-session-with-banner';

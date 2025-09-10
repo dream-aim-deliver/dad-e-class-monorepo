@@ -33,7 +33,7 @@ export function YourStudentCardList({
 
     if (isEmpty) {
         return (
-            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:max-w-[22rem]">
                 <p className="text-text-primary text-md">
                     {dictionary.emptyState}
                 </p>
@@ -42,8 +42,8 @@ export function YourStudentCardList({
     }
 
     return (
-        <div className="flex flex-col justify-center items-center">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="flex flex-col justify-center items-center w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
                 {Array.isArray(children) ? (
                     children.map((child, index) => (
                         <div

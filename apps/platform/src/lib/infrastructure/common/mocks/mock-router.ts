@@ -41,6 +41,7 @@ import {
     getCourseIntroduction,
     saveCourseIntroduction,
 } from './procedures/course-introduction';
+import { listCoachStudents } from './procedures/coach-students';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -79,6 +80,7 @@ export const mockRouter = t.router({
     saveCourseIntroduction,
     uploadAccordionIcon,
     saveCourseOutline,
+    listCoachStudents,
 });
 
 export type MockRouter = typeof mockRouter;
