@@ -164,8 +164,8 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     // Sorting function
     const sortCoaches = useCallback((coaches: any[]) => {
         return [...coaches].sort((a, b) => {
-            let aVal = a.coachingSessionCount;
-            let bVal = b.coachingSessionCount;
+            const aVal = a.coachingSessionCount;
+            const bVal = b.coachingSessionCount;
             const result = sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
             return result;
         });
