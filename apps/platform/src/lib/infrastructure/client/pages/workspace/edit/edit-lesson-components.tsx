@@ -1694,7 +1694,6 @@ function AssignmentComponent({
                 return {
                     ...component,
                     links: currentLinks.map((link, i) => {
-                        console.log(link, i, index);
                         if (i === index) {
                             return {
                                 ...link,
