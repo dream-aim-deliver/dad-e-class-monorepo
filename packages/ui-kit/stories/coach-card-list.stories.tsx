@@ -7,20 +7,24 @@ import CardListLayout from '../lib/components/card-list-layout';
 interface CoachListProps {
   title?: string;
   coaches: CoachCardDetails[];
+  variant?: 'coach' | 'courseCreator' | 'default';
   onClickBookSession?: () => void;
   onClickViewProfile?: () => void;
+  onClickRemoveFromCourse?: () => void;
   onClickCourse?: (slug: string) => void;
   locale: TLocale;
 }
 
 // CoachList component
-function CoachList({ 
-  coaches, 
-  title, 
-  onClickBookSession, 
-  onClickViewProfile, 
+function CoachList({
+  coaches,
+  title,
+  variant = 'default',
+  onClickBookSession,
+  onClickViewProfile,
+  onClickRemoveFromCourse,
   onClickCourse,
-  locale 
+  locale
 }: CoachListProps) {
   return (
     <div className="flex flex-col gap-10">
@@ -31,9 +35,11 @@ function CoachList({
         {coaches.map((coach, index) => (
           <CoachCard
             key={`${coach.coachName}-${index}`}
+            variant={variant}
             cardDetails={coach}
-            onClickBookSession={onClickBookSession}
+            onClickBookSession={variant === 'default' ? onClickBookSession : undefined}
             onClickViewProfile={onClickViewProfile}
+            onClickRemoveFromCourse={variant === 'courseCreator' ? onClickRemoveFromCourse : undefined}
             onClickCourse={onClickCourse}
             locale={locale}
           />
@@ -51,9 +57,14 @@ const meta: Meta<typeof CoachList> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    title: { 
+    title: {
       control: 'text',
       description: 'Title for the coach list section'
+    },
+    variant: {
+      control: 'select',
+      options: ['default', 'coach', 'courseCreator'],
+      description: 'Card variant determining which buttons to show'
     },
     locale: {
       control: 'select',
@@ -65,11 +76,15 @@ const meta: Meta<typeof CoachList> = {
     },
     onClickBookSession: {
       action: 'book-session-clicked',
-      description: 'Callback when book session button is clicked'
+      description: 'Callback when book session button is clicked (default variant)'
     },
     onClickViewProfile: {
-      action: 'view-profile-clicked', 
+      action: 'view-profile-clicked',
       description: 'Callback when view profile button is clicked'
+    },
+    onClickRemoveFromCourse: {
+      action: 'remove-from-course-clicked',
+      description: 'Callback when remove from course button is clicked (courseCreator variant)'
     },
     onClickCourse: {
       action: 'course-clicked',
@@ -140,8 +155,8 @@ const sampleCoaches: CoachCardDetails[] = [
         title: 'Agile Product Management',
         slug: 'agile-product-management'
       },
-      { 
-        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', 
+      {
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'Leadership Skills',
         slug: 'leadership-skills'
       },
@@ -206,8 +221,8 @@ const sampleCoaches: CoachCardDetails[] = [
         title: 'Introduction to DevOps',
         slug: 'intro-devops'
       },
-      { 
-        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg', 
+      {
+        image: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
         title: 'AWS for Developers',
         slug: 'aws-for-developers'
       },
@@ -361,6 +376,44 @@ export const EmptyState: Story = {
     docs: {
       description: {
         story: 'Coach list with empty coaches array to test empty state handling.'
+      }
+    }
+  }
+};
+
+/**
+ * Coach variant - Shows only view profile buttons
+ */
+export const CoachVariant: Story = {
+  args: {
+    coaches: sampleCoaches.slice(0, 4),
+    variant: 'coach',
+    locale: 'en',
+    title: 'Available Coaches',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Coach list with coach variant showing only view profile buttons for each coach.'
+      }
+    }
+  }
+};
+
+/**
+ * Course Creator variant - Shows view profile and remove from course buttons
+ */
+export const CourseCreatorVariant: Story = {
+  args: {
+    coaches: sampleCoaches.slice(0, 3),
+    variant: 'courseCreator',
+    locale: 'en',
+    title: 'Course Instructors',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Coach list with courseCreator variant showing view profile and remove from course buttons.'
       }
     }
   }
