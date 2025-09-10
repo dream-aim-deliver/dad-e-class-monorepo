@@ -4,6 +4,29 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
+import { ListCoachesRequestSchema } from './list-coaches-usecase-models';
+
+// Extract the coach schema from list-coaches-usecase-models for reuse
+const CoachSchema = z.object({
+    username: z.string(),
+    name: z.string(),
+    surname: z.string(),
+    languages: z.array(z.string()),
+    avatarUrl: z.string().nullable(),
+    coachingSessionCount: z.number(),
+    skills: z.array(z.object({
+        name: z.string(),
+        slug: z.string(),
+    })),
+    averageRating: z.number().nullable(),
+    reviewCount: z.number(),
+    bio: z.string(),
+    coursesTaught: z.array(z.object({
+        title: z.string(),
+        slug: z.string(),
+        imageUrl: z.string().nullable(),
+    })),
+});
 
 export const RemoveCourseCoachRequestSchema = z.object({
     coachId: z.number(),
@@ -11,7 +34,9 @@ export const RemoveCourseCoachRequestSchema = z.object({
 });
 export type TRemoveCourseCoachRequest = z.infer<typeof RemoveCourseCoachRequestSchema>;
 
-export const RemoveCourseCoachSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({}));
+export const RemoveCourseCoachSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
+    removedCoach: CoachSchema.nullable(),
+}));
 export type TRemoveCourseCoachSuccessResponse = z.infer<typeof RemoveCourseCoachSuccessResponseSchema>;
 
 const RemoveCourseCoachUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});

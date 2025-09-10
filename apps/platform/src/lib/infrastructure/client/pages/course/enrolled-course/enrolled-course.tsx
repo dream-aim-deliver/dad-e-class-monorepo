@@ -27,6 +27,7 @@ import { useRouter } from 'next/navigation';
 import { CoachCourseTab, StudentCourseTab } from '../../../utils/course-tabs';
 import EnrolledCourseCompletedAssessment from './enrolled-course-completed-assessment';
 import EnrolledCoursePreview from './enrolled-course-preview';
+import EnrolledCoaches from './enrolled-coaches';
 import { trpc } from '../../../trpc/cms-client';
 import EnrolledCourseStudents from './enrolled-course-students';
 // import { trpc as trpcMock } from '../../../trpc/client';
@@ -155,6 +156,7 @@ interface EnrolledCourseContentProps extends EnrolledCourseProps {
     studentProgressViewModel?: viewModels.TStudentProgressViewModel;
 }
 
+
 export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     const [courseResponse] = trpc.getEnrolledCourseDetails.useSuspenseQuery({
         courseSlug: props.courseSlug,
@@ -162,6 +164,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     const [courseViewModel, setCourseViewModel] = useState<
         viewModels.TEnrolledCourseDetailsViewModel | undefined
     >(undefined);
+
     const { presenter: coursePresenter } =
         useGetEnrolledCourseDetailsPresenter(setCourseViewModel);
     // @ts-ignore
@@ -249,6 +252,21 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 <Tabs.Content value="assignments" className={tabContentClass}>
                     <DefaultError locale={locale} />
                 </Tabs.Content>
+                <Tabs.Content
+                    value={CoachCourseTab.COACHES}
+                    className={tabContentClass}
+                >
+                    <Suspense
+                        fallback={
+                            <DefaultLoading locale={locale} variant="minimal" />
+                        }
+                    >
+                        <EnrolledCoaches
+                            courseSlug={props.courseSlug}
+                            currentRole={props.currentRole}
+                        />
+                    </Suspense>
+                </Tabs.Content>
                 <Tabs.Content value="notes" className={tabContentClass}>
                     <DefaultError locale={locale} />
                 </Tabs.Content>
@@ -299,7 +317,7 @@ export function ProgressEnrolledCourse(props: EnrolledCourseProps) {
     return (
         <EnrolledCourseContent
             {...props}
-            //studentProgressViewModel={studentProgressViewModel}
+        //studentProgressViewModel={studentProgressViewModel}
         />
     );
 }

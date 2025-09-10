@@ -45,3 +45,6 @@ export * from './list-course-students-usecase-models';
 export * from './list-coach-students-usecase-models';
 export * from './submit-lesson-progresses-usecase-models';
 export * from './upload-lesson-progress-file-usecase-models';
+
+export * from './add-course-coach-usecase-models';
+export * from './remove-course-coach-usecase-models';

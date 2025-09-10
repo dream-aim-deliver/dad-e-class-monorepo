@@ -95,6 +95,9 @@ export default function EnrolledCourseHeading({
                 case 'coach':
                     label = courseTranslations('roleDropdown.coach');
                     break;
+                case 'course_creator':
+                    label = courseTranslations('roleDropdown.creator');
+                    break;
                 case 'creator':
                     label = courseTranslations('roleDropdown.creator');
                     break;
