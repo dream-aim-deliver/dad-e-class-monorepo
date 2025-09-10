@@ -1087,6 +1087,12 @@ export const DE: TDictionary = {
         coaches: "Coach",
         groups: "Gruppen",
       },
+      students: {
+        students: "Studenten",
+        allStudents: "Alle Studierenden",
+        yourStudents: "Deine Studierenden",
+        searchPlaceholder: "Suche",
+      },
     },
     userCourses: {
       yourCourses: 'Deine Angebote',
