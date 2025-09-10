@@ -5,7 +5,6 @@ import {
     ComponentCard,
     DefaultError,
     DefaultLoading,
-    FormElement,
     FormElementType,
     HeadingElement,
     IconHeading,
@@ -24,19 +23,37 @@ import {
     SubsectionHeading,
     Tabs,
     TextInputElement,
+    validatorPerType,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/client';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useGetPlatformLanguagePresenter } from '../../hooks/use-platform-language-presenter';
 import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { LessonComponentButton } from './edit/types';
 import { generateTempId } from './edit/utils/generate-temp-id';
-import EditLessonComponents from './edit/edit-lesson-components';
 import { useListAssessmentComponentsPresenter } from '../../hooks/use-assessment-components-presenter';
 import { transformLessonComponents } from '../../utils/transform-lesson-components';
 import { transformLessonToRequest } from './edit/utils/lesson-to-request';
+import dynamic from 'next/dynamic';
+import {
+    ComponentRendererProps,
+    typeToRendererMap,
+} from '../common/component-renderers';
+
+const LoadingComponent = () => {
+    const locale = useLocale() as TLocale;
+    return <DefaultLoading locale={locale} variant="minimal" />;
+};
+
+const EditLessonComponents = dynamic(
+    () => import('./edit/edit-lesson-components'),
+    {
+        loading: LoadingComponent,
+        ssr: false,
+    },
+);
 
 function usePlatformLanguage() {
     const [
@@ -166,11 +183,13 @@ function PreCourseAssessmentEnabledControls({
 interface PreCourseAssessmentTabProps {
     components: LessonElement[];
     setComponents: React.Dispatch<React.SetStateAction<LessonElement[]>>;
+    validationErrors: Map<string, string | undefined>;
 }
 
 function PreCourseAssessmentFormBuilder({
     components,
     setComponents,
+    validationErrors,
 }: PreCourseAssessmentTabProps) {
     // TODO: fetch components
     const editLessonsTranslations = useTranslations('pages.editLesson');
@@ -258,10 +277,6 @@ function PreCourseAssessmentFormBuilder({
         },
     ];
 
-    const [validationErrors, elementValidationErrors] = useState<
-        Map<string, string | undefined>
-    >(new Map());
-
     // Currently dummy IDs and version since pre-course assessment is not tied to a course.
     // If components that require uploads are included in the pre-course assessment,
     // corresponding upload handlers need to be implemented.
@@ -294,14 +309,54 @@ function PreCourseAssessmentFormBuilder({
     );
 }
 
+function PreviewRenderer({
+    components,
+    elementProgress,
+}: {
+    components: LessonElement[];
+    elementProgress: React.RefObject<Map<string, LessonElement>>;
+}) {
+    const locale = useLocale() as TLocale;
+
+    const renderComponent = (formElement: LessonElement) => {
+        const props: ComponentRendererProps = {
+            formElement,
+            elementProgress,
+            locale,
+            key: `component-${formElement.id}`,
+        };
+
+        const renderer = typeToRendererMap[formElement.type];
+        if (renderer) {
+            return renderer(props);
+        }
+        return null;
+    };
+
+    return (
+        <div className="flex flex-col gap-4">
+            {components.map(renderComponent)}
+        </div>
+    );
+}
+
 function PreCourseAssessmentTabs({
     components,
     setComponents,
+    validationErrors,
 }: PreCourseAssessmentTabProps) {
     const locale = useLocale() as TLocale;
 
     const [componentsResponse] =
-        trpc.listPreCourseAssessmentComponents.useSuspenseQuery({});
+        trpc.listPreCourseAssessmentComponents.useSuspenseQuery(
+            {},
+            {
+                refetchOnWindowFocus: false,
+                refetchOnReconnect: false,
+                refetchOnMount: true,
+                retry: false,
+            },
+        );
     const [componentsViewModel, setComponentsViewModel] = useState<
         viewModels.TAssessmentComponentListViewModel | undefined
     >(undefined);
@@ -317,6 +372,8 @@ function PreCourseAssessmentTabs({
         setComponents(transformLessonComponents(responseComponents));
     }, [componentsViewModel]);
 
+    const elementProgress = useRef(new Map<string, LessonElement>());
+
     if (!componentsViewModel) {
         return <DefaultLoading locale={locale} />;
     }
@@ -326,25 +383,29 @@ function PreCourseAssessmentTabs({
     }
 
     return (
-        <Tabs.Root defaultTab="simple">
+        <Tabs.Root defaultTab="form">
             <Tabs.List className="flex overflow-auto bg-base-neutral-800 rounded-medium gap-2 mb-4">
-                <Tabs.Trigger value="simple" isLast={false}>
+                <Tabs.Trigger value="form" isLast={false}>
                     Form Builder
                 </Tabs.Trigger>
-                <Tabs.Trigger value="interactive" isLast={true}>
+                <Tabs.Trigger value="preview" isLast={true}>
                     Preview
                 </Tabs.Trigger>
             </Tabs.List>
 
-            <Tabs.Content value="simple">
+            <Tabs.Content value="form">
                 <PreCourseAssessmentFormBuilder
                     components={components}
                     setComponents={setComponents}
+                    validationErrors={validationErrors}
                 />
             </Tabs.Content>
 
-            <Tabs.Content value="interactive">
-                <span>Preview Stub</span>
+            <Tabs.Content value="preview">
+                <PreviewRenderer
+                    components={components}
+                    elementProgress={elementProgress}
+                />
             </Tabs.Content>
         </Tabs.Root>
     );
@@ -357,7 +418,7 @@ interface PreCourseAssessmentContentProps {
     onToggle: (enable: boolean) => void;
     isTogglePending: boolean;
     isPlatformRefetching: boolean;
-    error: string | undefined;
+    toggleError: string | undefined;
 }
 
 function PreCourseAssessmentContent({
@@ -365,19 +426,53 @@ function PreCourseAssessmentContent({
     onToggle,
     isTogglePending,
     isPlatformRefetching,
-    error,
+    toggleError,
 }: PreCourseAssessmentContentProps) {
     const locale = useLocale() as TLocale;
+    const dictionary = getDictionary(locale);
+
     const [components, setComponents] = useState<LessonElement[]>([]);
+
+    const [validationErrors, setElementValidationErrors] = useState<
+        Map<string, string | undefined>
+    >(new Map());
+
     const saveComponentsMutation =
         trpc.savePreCourseAssessmentComponents.useMutation();
+    const [saveError, setSaveError] = useState<string | undefined>(undefined);
+
+    const validateComponents = () => {
+        const newErrors = new Map<string, string | undefined>();
+        components.forEach((component) => {
+            const validate = validatorPerType[component.type];
+            if (validate) {
+                const error = validate({
+                    elementInstance: component,
+                    dictionary,
+                });
+                if (error) {
+                    newErrors.set(component.id, error);
+                }
+            }
+        });
+        setElementValidationErrors(newErrors);
+        return newErrors.size === 0;
+    };
 
     const onSaveComponents = async () => {
+        if (!validateComponents()) {
+            return;
+        }
         const transformedComponents = transformLessonToRequest(components);
         const response = await saveComponentsMutation.mutateAsync({
             components:
                 transformedComponents as useCaseModels.TAssessmentComponentRequest[],
         });
+        if (response.success) {
+            setComponents(transformLessonComponents(response.data.components));
+        } else {
+            setSaveError('Failed to save components. Please try again.');
+        }
     };
 
     if (!platformLanguageViewModel || isPlatformRefetching) {
@@ -389,6 +484,7 @@ function PreCourseAssessmentContent({
     }
 
     const isEnabled = platformLanguageViewModel.data.enablePreCourseAssessment;
+    const error = toggleError ?? saveError;
 
     return (
         <div className="w-full p-4 bg-card-fill rounded-md flex flex-col gap-4 border-1 border-card-stroke">
@@ -417,17 +513,22 @@ function PreCourseAssessmentContent({
             )}
 
             {isEnabled && (
-                <PreCourseAssessmentTabs
-                    components={components}
-                    setComponents={setComponents}
-                />
+                <Suspense fallback={<DefaultLoading locale={locale} />}>
+                    <PreCourseAssessmentTabs
+                        components={components}
+                        setComponents={setComponents}
+                        validationErrors={validationErrors}
+                    />
+                </Suspense>
             )}
         </div>
     );
 }
 
 export default function EditPreCourseAssessment() {
-    const [error, setError] = useState<string | undefined>(undefined);
+    const [toggleError, setToggleError] = useState<string | undefined>(
+        undefined,
+    );
 
     const {
         platformLanguageViewModel,
@@ -439,7 +540,7 @@ export default function EditPreCourseAssessment() {
         usePreCourseAssessmentToggle({
             platformLanguageViewModel,
             refetchPlatformLanguage,
-            setError,
+            setError: setToggleError,
         });
 
     // Success state
@@ -449,7 +550,7 @@ export default function EditPreCourseAssessment() {
             onToggle={onTogglePreCourseAssessment}
             isTogglePending={isPending}
             isPlatformRefetching={isRefetchingPlatformLanguage}
-            error={error}
+            toggleError={toggleError}
         />
     );
 }
