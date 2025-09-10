@@ -40,9 +40,9 @@ export function StudentCardList({ children, locale }: StudentCardListProps) {
     }
 
     return (
-        <div className="flex flex-col gap-4 justify-center items-center">
+        <div className="flex flex-col gap-4 justify-center items-center w-full">
             <div
-                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"
+                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 w-full"
                 role="list"
             >
                 {Array.isArray(children) ? (

@@ -9,6 +9,7 @@ export { DummySkills, type DummySkillsProps } from './components/dummy-skills';
 export { IconButton, type IconButtonProps } from './components/icon-button';
 export { CheckBox, type CheckBoxProps } from './components/checkbox';
 export { InputField, type InputFieldProps } from './components/input-field';
+export { SearchInput, type SearchInputProps } from './components/search-input';
 export { TextInput, type TextInputProps } from './components/text-input';
 export {
   FeedBackMessage,
@@ -39,6 +40,7 @@ export { Carousel } from './components/carousel/carousel';
 export { GeneralCard } from './components/carousel/general-card';
 export { Divider } from './components/divider';
 export { CarouselSkeleton } from './components/skeletons/carousel-skeleton'
+export { StudentCardListSkeleton } from './components/skeletons/students-skeleton';
 
 export { ReviewSnippet } from './components/review/review-snippet';
 export { default as CreateCourseModal } from './components/create-modal/create-course-modal';
