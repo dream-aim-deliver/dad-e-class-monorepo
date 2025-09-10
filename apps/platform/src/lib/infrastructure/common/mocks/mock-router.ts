@@ -4,7 +4,6 @@ import { listLanguages } from './procedures/language';
 import { getHomePage } from './procedures/home-page';
 import { listTopics } from './procedures/topic';
 import {
-    getOffersPageCarousel,
     getOffersPageOutline,
 } from './procedures/offers-page';
 import { listTopicsByCategory } from './procedures/topics-by-category';
@@ -51,7 +50,6 @@ export const mockRouter = t.router({
     getHomePage,
     listTopics,
     getOffersPageOutline,
-    getOffersPageCarousel,
     listTopicsByCategory,
     listCourses,
     listOffersPagePackages,

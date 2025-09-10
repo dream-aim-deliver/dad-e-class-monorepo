@@ -1,7 +1,6 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../trpc/client';
 import { useState } from 'react';
-import { useGetOffersPageCarouselPresenter } from '../../hooks/use-offers-page-carousel-presenter';
 import {
     CarouselSkeleton,
     DefaultError,
@@ -24,30 +23,17 @@ const Carousel = dynamic(
     },
 );
 
-export default function OffersCarousel() {
-    const [carouselResponse] = trpc.getOffersPageCarousel.useSuspenseQuery({});
-    const [carouselViewModel, setCarouselViewModel] = useState<
-        viewModels.TOffersPageCarouselViewModel | undefined
-    >(undefined);
-    const { presenter } =
-        useGetOffersPageCarouselPresenter(setCarouselViewModel);
-    presenter.present(carouselResponse, carouselViewModel);
+interface OffersCarouselProps {
+    items: viewModels.TOffersPageOutlineSuccess['items'];
+}
+
+export default function OffersCarousel({ items }: OffersCarouselProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
 
-    if (!carouselViewModel) {
-        return <DefaultLoading locale={locale} variant="minimal" />;
-    }
-
-    if (carouselViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
-    }
-
-    const carousel = carouselViewModel.data;
-
     return (
         <Carousel locale={locale}>
-            {carousel.items.map((item) => {
+            {items.map((item) => {
                 const onClick = () => {
                     router.push(item.buttonUrl);
                 };

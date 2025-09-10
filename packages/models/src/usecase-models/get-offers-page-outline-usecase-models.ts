@@ -11,6 +11,14 @@ export type TGetOffersPageOutlineRequest = z.infer<typeof GetOffersPageOutlineRe
 export const GetOffersPageOutlineSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
     title: z.string(),
     description: z.string(),
+    items: z.array(z.object({
+        title: z.string(),
+        description: z.string(),
+        badge: z.string().nullable(),
+        imageUrl: z.string().nullable(),
+        buttonText: z.string(),
+        buttonUrl: z.string(),
+    })),
 }));
 
 export type TGetOffersPageOutlineSuccessResponse = z.infer<typeof GetOffersPageOutlineSuccessResponseSchema>;
