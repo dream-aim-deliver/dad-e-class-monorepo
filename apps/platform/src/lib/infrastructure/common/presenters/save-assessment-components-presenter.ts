@@ -64,11 +64,9 @@ export default class AssessmentComponentsPresenter extends BasePresenter<
         return {
             mode: 'kaboom',
             data: {
-                type: response.data.errorType,
                 message: response.data.message,
                 operation: response.data.operation,
                 context: response.data.context,
-                trace: undefined,
             },
         };
     }
