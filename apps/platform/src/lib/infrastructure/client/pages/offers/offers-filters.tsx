@@ -17,6 +17,7 @@ export default function OffersFilters({
             selectedTopics={selectedTopics}
             setSelectedTopics={setSelectedTopics}
             filterText={t('filterByTopic')}
+            chooseCategoryText={t('chooseCategory')}
         />
     );
 }

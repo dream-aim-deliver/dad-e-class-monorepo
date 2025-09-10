@@ -61,10 +61,10 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
                 title={coachingPage.title}
                 description={coachingPage.description}
             />
-            <h2> {t('chooseCategory')} </h2>
             <CategoryTopics
                 selectedTopics={selectedTopics}
                 setSelectedTopics={setSelectedTopics}
+                chooseCategoryText={t('chooseCategory')}
                 filterText={t('filterByTopic')}
             />
             <div className="flex flex-col lg:flex-row space-y-5 lg:space-y-0 lg:space-x-5">
