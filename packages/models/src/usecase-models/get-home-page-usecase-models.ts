@@ -9,17 +9,17 @@ export const GetHomePageRequestSchema = z.object({});
 
 export type TGetHomePageRequest = z.infer<typeof GetHomePageRequestSchema>;
 
-const GetHomePageSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
+export const GetHomePageSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
     banner: z.object({
         title: z.string(),
         description: z.string(),
-        videoId: z.string(),
-        thumbnailUrl: z.string(),
+        videoId: z.string().nullable(),
+        thumbnailUrl: z.string().nullable(),
     }),
     carousel: z.array(z.object({
         title: z.string(),
         description: z.string(),
-        imageUrl: z.string(),
+        imageUrl: z.string().nullable(),
         buttonText: z.string(),
         buttonUrl: z.string(),
         badge: z.string().optional(),
@@ -27,9 +27,9 @@ const GetHomePageSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
     coachingOnDemand: z.object({
         title: z.string(),
         description: z.string(),
-        desktopImageUrl: z.string(),
-        tabletImageUrl: z.string(),
-        mobileImageUrl: z.string(),
+        desktopImageUrl: z.string().nullable(),
+        tabletImageUrl: z.string().nullable(),
+        mobileImageUrl: z.string().nullable(),
     }),
     accordion: z.object({
         title: z.string(),
@@ -38,7 +38,7 @@ const GetHomePageSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
             title: z.string(),
             content: z.string(),
             position: z.number(),
-            iconImageUrl: z.string(),
+            iconImageUrl: z.string().nullable(),
         })),
     }),
 }));
