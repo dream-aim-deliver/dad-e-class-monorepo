@@ -18,12 +18,14 @@ interface CategoryTopicsProps {
     selectedTopics: string[];
     setSelectedTopics: (selectedTopics: string[]) => void;
     filterText: string;
+    chooseCategoryText: string;
 }
 
 export default function CategoryTopics({
     selectedTopics,
     setSelectedTopics,
     filterText,
+    chooseCategoryText,
 }: CategoryTopicsProps) {
     const locale = useLocale() as TLocale;
     const categoryTopicsTranslations = useTranslations('pages.categoryTopics');
@@ -159,27 +161,33 @@ export default function CategoryTopics({
             </Tabs.Content>
         );
     };
+
+    if (categories.length === 0 && allTopics.length === 0) return null;
+
     return (
-        <Tabs.Root defaultTab="all" onValueChange={handleTabChange}>
-            <Tabs.List>
-                <Tabs.Trigger value="all" isLast={categories.length === 0}>
-                    {categoryTopicsTranslations('allText')}
-                </Tabs.Trigger>
-                {categories.map((category, index) =>
-                    renderCategoryTab(category, index, categories.length),
-                )}
-            </Tabs.List>
+        <div className="flex flex-col gap-4">
+            <h2>{chooseCategoryText}</h2>
+            <Tabs.Root defaultTab="all" onValueChange={handleTabChange}>
+                <Tabs.List>
+                    <Tabs.Trigger value="all" isLast={categories.length === 0}>
+                        {categoryTopicsTranslations('allText')}
+                    </Tabs.Trigger>
+                    {categories.map((category, index) =>
+                        renderCategoryTab(category, index, categories.length),
+                    )}
+                </Tabs.List>
 
-            <Tabs.Content value="all" className={CONTENT_CLASS_NAME}>
-                <FilterSwitch
-                    selectedTopics={selectedTopics}
-                    setSelectedTopics={setSelectedTopics}
-                    title={filterText}
-                    list={allTopics}
-                />
-            </Tabs.Content>
+                <Tabs.Content value="all" className={CONTENT_CLASS_NAME}>
+                    <FilterSwitch
+                        selectedTopics={selectedTopics}
+                        setSelectedTopics={setSelectedTopics}
+                        title={filterText}
+                        list={allTopics}
+                    />
+                </Tabs.Content>
 
-            {categories.map(renderCategoryContent)}
-        </Tabs.Root>
+                {categories.map(renderCategoryContent)}
+            </Tabs.Root>
+        </div>
     );
 }
