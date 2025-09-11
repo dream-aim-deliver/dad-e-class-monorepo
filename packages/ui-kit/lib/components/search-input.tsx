@@ -60,11 +60,9 @@ export function SearchInput<T>({
         (q: string) => {
             const currentItems = itemsRef.current;
             if (q.trim() === '') {
-                console.log('SearchInput returning all items:', currentItems.length);
                 onResults(currentItems);
             } else {
                 const results = fuse.search(q).map((result) => result.item);
-                console.log('SearchInput fuzzy search results:', results.length, results);
                 onResults(results);
             }
         },
