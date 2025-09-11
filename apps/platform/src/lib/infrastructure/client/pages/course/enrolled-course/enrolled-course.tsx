@@ -27,6 +27,7 @@ import { useRouter } from 'next/navigation';
 import { CoachCourseTab, StudentCourseTab } from '../../../utils/course-tabs';
 import EnrolledCourseCompletedAssessment from './enrolled-course-completed-assessment';
 import EnrolledCoursePreview from './enrolled-course-preview';
+import EnrolledCourseMaterial from './enrolled-course-material';
 import { trpc } from '../../../trpc/cms-client';
 import EnrolledCourseStudents from './enrolled-course-students';
 // import { trpc as trpcMock } from '../../../trpc/client';
@@ -252,8 +253,11 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 <Tabs.Content value="notes" className={tabContentClass}>
                     <DefaultError locale={locale} />
                 </Tabs.Content>
-                <Tabs.Content value="material" className={tabContentClass}>
-                    <DefaultError locale={locale} />
+                                <Tabs.Content value="material" className={tabContentClass}>
+                    <EnrolledCourseMaterial
+                        currentRole={props.currentRole}
+                        courseSlug={props.courseSlug}
+                    />
                 </Tabs.Content>
                 <Tabs.Content value="assessment" className={tabContentClass}>
                     <Suspense
@@ -299,7 +303,7 @@ export function ProgressEnrolledCourse(props: EnrolledCourseProps) {
     return (
         <EnrolledCourseContent
             {...props}
-            //studentProgressViewModel={studentProgressViewModel}
+        //studentProgressViewModel={studentProgressViewModel}
         />
     );
 }
