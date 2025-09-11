@@ -31,7 +31,8 @@ export default function CoachStudents(props: CoachStudentsProps) {
 
     // Filter states
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-    const [appliedFilters, setAppliedFilters] = useState<StudentCardFilterModel>({});
+    const [appliedFilters, setAppliedFilters] =
+        useState<StudentCardFilterModel>({});
     const [filteredStudents, setFilteredStudents] = useState<
         viewModels.TCoachStudentsSuccess['students'] | undefined
     >(undefined);
@@ -50,7 +51,7 @@ export default function CoachStudents(props: CoachStudentsProps) {
         pagination: {
             page: 1,
             pageSize: 20,
-        }
+        },
     });
 
     const [studentsViewModel, setStudentsViewModel] = useState<
@@ -75,37 +76,54 @@ export default function CoachStudents(props: CoachStudentsProps) {
         const students = studentsViewModel.data.students;
 
         // Start with search results if search is active, otherwise use all students
-        const baseStudents = searchResults !== undefined ? searchResults : students;
+        const baseStudents =
+            searchResults !== undefined ? searchResults : students;
         let filtered = [...baseStudents];
 
         // Filter by student name (only if not already searching - search handles this)
-        if (appliedFilters.studentName && appliedFilters.studentName.trim() && searchQuery.trim() === '') {
+        if (
+            appliedFilters.studentName &&
+            appliedFilters.studentName.trim() &&
+            searchQuery.trim() === ''
+        ) {
             const searchTerm = appliedFilters.studentName.toLowerCase().trim();
-            filtered = filtered.filter(student =>
-                student.fullName.toLowerCase().includes(searchTerm)
+            filtered = filtered.filter((student) =>
+                student.fullName.toLowerCase().includes(searchTerm),
             );
         }
 
         // Filter by course name
         if (appliedFilters.courseName && appliedFilters.courseName.trim()) {
             const searchTerm = appliedFilters.courseName.toLowerCase().trim();
-            filtered = filtered.filter(student =>
-                student.courses.some(course =>
-                    course.courseTitle.toLowerCase().includes(searchTerm)
-                )
+            filtered = filtered.filter((student) =>
+                student.courses.some((course) =>
+                    course.courseTitle.toLowerCase().includes(searchTerm),
+                ),
             );
         }
 
         // Filter by assignment status
-        if (appliedFilters.assignmentStatus && appliedFilters.assignmentStatus.length > 0) {
-            filtered = filtered.filter(student => {
-                return student.courses.some(course => {
-                    if (!course.lastAssignment && appliedFilters.assignmentStatus!.includes('no-assignment')) {
+        if (
+            appliedFilters.assignmentStatus &&
+            appliedFilters.assignmentStatus.length > 0
+        ) {
+            filtered = filtered.filter((student) => {
+                return student.courses.some((course) => {
+                    if (
+                        !course.lastAssignment &&
+                        appliedFilters.assignmentStatus!.includes(
+                            'no-assignment',
+                        )
+                    ) {
                         return true;
                     }
                     if (course.lastAssignment) {
-                        const status = mapAssignmentStatusToCourseStatus(course.lastAssignment.assignmentStatus);
-                        return appliedFilters.assignmentStatus!.includes(status);
+                        const status = mapAssignmentStatusToCourseStatus(
+                            course.lastAssignment.assignmentStatus,
+                        );
+                        return appliedFilters.assignmentStatus!.includes(
+                            status,
+                        );
                     }
                     return false;
                 });
@@ -147,7 +165,9 @@ export default function CoachStudents(props: CoachStudentsProps) {
         setSearchResults(undefined);
     };
 
-    const handleSearchResults = (results: viewModels.TCoachStudentsSuccess['students']) => {
+    const handleSearchResults = (
+        results: viewModels.TCoachStudentsSuccess['students'],
+    ) => {
         setSearchResults(results);
     };
 
@@ -160,10 +180,14 @@ export default function CoachStudents(props: CoachStudentsProps) {
 
     // Check if any filters or search are active
     const hasActiveFiltersOrSearch =
-        Object.keys(appliedFilters).some(key => {
+        Object.keys(appliedFilters).some((key) => {
             const value = appliedFilters[key as keyof StudentCardFilterModel];
-            return Array.isArray(value) ? value.length > 0 : value && value.toString().trim() !== '';
+            return Array.isArray(value)
+                ? value.length > 0
+                : value && value.toString().trim() !== '';
         }) || searchQuery.trim() !== '';
+
+    const router = useRouter();
 
     return (
         <div className="flex flex-col space-y-2">
@@ -171,9 +195,7 @@ export default function CoachStudents(props: CoachStudentsProps) {
                 items={[
                     {
                         label: breadcrumbsTranslations('home'),
-                        onClick: () => {
-                            // TODO: Implement navigation to home
-                        },
+                        onClick: () => router.push('/'),
                     },
                     {
                         label: breadcrumbsTranslations('workspace'),
@@ -190,7 +212,7 @@ export default function CoachStudents(props: CoachStudentsProps) {
                 ]}
             />
             <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
-                <div className="flex flex-col">
+                <div className="flex flex-col mb-4">
                     <h1>{pageTranslations('yourStudents')}</h1>
                     {hasActiveFiltersOrSearch && (
                         <Button
@@ -200,14 +222,18 @@ export default function CoachStudents(props: CoachStudentsProps) {
                             text={pageTranslations('clearAllFilters')}
                             className="self-start mt-1"
                             hasIconLeft
-                            iconLeft={<IconClose/>}
+                            iconLeft={<IconClose />}
                         />
                     )}
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
                     <div className="w-full sm:w-64">
                         <SearchInput
-                            items={studentsViewModel?.mode === 'default' ? studentsViewModel.data.students : []}
+                            items={
+                                studentsViewModel?.mode === 'default'
+                                    ? studentsViewModel.data.students
+                                    : []
+                            }
                             keys={['fullName']}
                             onResults={handleSearchResults}
                             onQueryChange={handleSearchQueryChange}
@@ -226,7 +252,13 @@ export default function CoachStudents(props: CoachStudentsProps) {
                 </div>
             </div>
             <CoachStudentsList
-                students={filteredStudents !== undefined ? filteredStudents : (studentsViewModel?.mode === 'default' ? studentsViewModel.data.students : [])}
+                students={
+                    filteredStudents !== undefined
+                        ? filteredStudents
+                        : studentsViewModel?.mode === 'default'
+                          ? studentsViewModel.data.students
+                          : []
+                }
                 isLoading={isFetching}
                 error={error}
             />
