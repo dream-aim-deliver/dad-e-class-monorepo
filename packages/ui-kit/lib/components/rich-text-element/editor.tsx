@@ -42,6 +42,7 @@ const RenderLeaf = ({ attributes, children, leaf }: RenderLeafProps) => {
     <span
       {...attributes}
       className={[
+        "whitespace-pre-wrap",
         leaf.bold && "font-bold",
         leaf.italic && "italic",
         leaf.underline && "underline",
@@ -106,9 +107,9 @@ export const RenderElement = ({ attributes, children, element }: RenderElementPr
     case "h6":
       return <h6 {...attributes} style={style} className="text-sm font-bold">{children}</h6>;
     case "paragraph":
-      return <p {...attributes} style={style} className="text-base">{children}</p>;
+      return <p {...attributes} style={style} className="text-base whitespace-pre-wrap">{children}</p>;
     default:
-      return <div {...attributes} style={style} className="text-base">{children}</div>;
+      return <div {...attributes} style={style} className="text-base whitespace-pre-wrap">{children}</div>;
   }
 };
 

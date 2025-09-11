@@ -100,9 +100,19 @@ const RenderElement = ({ attributes, children, element }: {
     case "h6":
       return <h6 {...attributes} style={style} className="text-sm font-bold">{children}</h6>;
     case "paragraph":
-      return <p {...attributes} style={style} className="text-base">{children}</p>;
+      // Check if paragraph is empty (only contains empty text)
+      const isEmpty = element.children?.length === 1 && element.children[0].text === "";
+      return (
+        <p 
+          {...attributes} 
+          style={style} 
+          className={`text-base whitespace-pre-wrap ${isEmpty ? "min-h-[1.5em]" : ""}`}
+        >
+          {children}
+        </p>
+      );
     default:
-      return <div {...attributes} style={style} className="text-base">{children}</div>;
+      return <div {...attributes} style={style} className="text-base whitespace-pre-wrap">{children}</div>;
   }
 };
 
@@ -147,7 +157,7 @@ const LeafNode = ({ leaf }: { leaf: any }) => {
   if (leaf.superscript) content = <sup>{content}</sup>;
   if (leaf.subscript) content = <sub>{content}</sub>;
 
-  return <span>{content}</span>;
+  return <span className="whitespace-pre-wrap">{content}</span>;
 };
 
 export default RichTextRenderer;
