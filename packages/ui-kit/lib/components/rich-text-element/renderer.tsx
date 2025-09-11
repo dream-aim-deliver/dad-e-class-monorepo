@@ -99,7 +99,7 @@ const RenderElement = ({ attributes, children, element }: {
       return <h5 {...attributes} style={style} className="text-md font-bold">{children}</h5>;
     case "h6":
       return <h6 {...attributes} style={style} className="text-sm font-bold">{children}</h6>;
-    case "paragraph":
+    case "paragraph": {
       // Check if paragraph is empty (only contains empty text)
       const isEmpty = element.children?.length === 1 && element.children[0].text === "";
       return (
@@ -111,6 +111,7 @@ const RenderElement = ({ attributes, children, element }: {
           {children}
         </p>
       );
+    }
     default:
       return <div {...attributes} style={style} className="text-base whitespace-pre-wrap">{children}</div>;
   }
