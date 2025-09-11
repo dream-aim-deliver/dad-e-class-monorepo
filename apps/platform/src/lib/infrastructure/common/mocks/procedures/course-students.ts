@@ -12,16 +12,17 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 courseSlug: 'intro-to-economics',
                 courseImageUrl: 'https://example.com/course-image1.jpg',
                 isStudentOfCoach: true,
+                courseCompletionDate: '2023-12-15T10:30:00Z',
                 lastAssignmentCoach: {
                     coachId: 101,
                     coachFullName: 'Jane Coach',
-                    coachingSessionCount: 5,
+                    coachingSessionCount: 0,
                     avatarUrl: 'https://randomuser.me/api/portraits/women/2.jpg',
                 },
                 lastAssignment: {
                     assignmentId: 'assign-123',
-                    assignmentTile: 'Assignment 1',
-                    assignmentStatus: 'Passed',
+                    assignmentTitle: 'Assignment 1',
+                    assignmentStatus: 'course-completed',
                 },
             },
             {
@@ -32,6 +33,7 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 courseSlug: 'microeconomics-basics',
                 courseImageUrl: 'https://example.com/course-image2.jpg',
                 isStudentOfCoach: false,
+                courseCompletionDate: null,
                 lastAssignmentCoach: {
                     coachId: 102,
                     coachFullName: 'Bob Trainer',
@@ -40,8 +42,8 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 },
                 lastAssignment: {
                     assignmentId: 'assign-124',
-                    assignmentTile: 'Assignment 2',
-                    assignmentStatus: 'AwaitingForLongTime',
+                    assignmentTitle: 'Assignment 2',
+                    assignmentStatus: 'long-wait',
                 },
             },
             {
@@ -52,16 +54,17 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 courseSlug: 'macroeconomics-fundamentals',
                 courseImageUrl: null,
                 isStudentOfCoach: true,
+                courseCompletionDate: '2023-11-20T14:45:00Z',
                 lastAssignmentCoach: {
                     coachId: 101,
                     coachFullName: 'Jane Coach',
-                    coachingSessionCount: 7,
+                    coachingSessionCount: 0,
                     avatarUrl: 'https://randomuser.me/api/portraits/women/2.jpg',
                 },
                 lastAssignment: {
                     assignmentId: 'assign-125',
-                    assignmentTile: 'Assignment 3',
-                    assignmentStatus: 'Passed',
+                    assignmentTitle: 'Assignment 3',
+                    assignmentStatus: 'course-completed',
                 },
             },
             {
@@ -72,17 +75,14 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 courseSlug: 'economic-policy-analysis',
                 courseImageUrl: 'https://example.com/course-image3.jpg',
                 isStudentOfCoach: false,
+                courseCompletionDate: null,
                 lastAssignmentCoach: {
                     coachId: 103,
                     coachFullName: null,
                     coachingSessionCount: 2,
                     avatarUrl: null,
                 },
-                lastAssignment: {
-                    assignmentId: 'assign-126',
-                    assignmentTile: 'Assignment 4',
-                    assignmentStatus: 'Passed',
-                },
+                lastAssignment: null,
             },
             {
                 studentId: 5,
@@ -92,16 +92,17 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 courseSlug: 'statistics-for-economists',
                 courseImageUrl: 'https://example.com/course-image4.jpg',
                 isStudentOfCoach: true,
+                courseCompletionDate: null,
                 lastAssignmentCoach: {
                     coachId: 104,
                     coachFullName: 'Emma Coach',
-                    coachingSessionCount: 6,
+                    coachingSessionCount: 0,
                     avatarUrl: 'https://randomuser.me/api/portraits/women/7.jpg',
                 },
                 lastAssignment: {
                     assignmentId: 'assign-127',
-                    assignmentTile: 'Assignment 5',
-                    assignmentStatus: 'AwaitingReview',
+                    assignmentTitle: 'Assignment 5',
+                    assignmentStatus: 'waiting-feedback',
                 },
             },
             {
@@ -112,6 +113,7 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 courseSlug: 'financial-economics',
                 courseImageUrl: null,
                 isStudentOfCoach: false,
+                courseCompletionDate: '2023-12-01T09:15:00Z',
                 lastAssignmentCoach: {
                     coachId: 105,
                     coachFullName: 'Liam Trainer',
@@ -120,8 +122,8 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 },
                 lastAssignment: {
                     assignmentId: 'assign-128',
-                    assignmentTile: 'Assignment 6',
-                    assignmentStatus: 'Passed',
+                    assignmentTitle: 'Assignment 6',
+                    assignmentStatus: 'course-completed',
                 },
             },
             {
@@ -132,16 +134,17 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 courseSlug: 'behavioral-economics',
                 courseImageUrl: 'https://example.com/course-image5.jpg',
                 isStudentOfCoach: true,
+                courseCompletionDate: '2024-02-05T11:30:00Z',
                 lastAssignmentCoach: {
                     coachId: 106,
                     coachFullName: 'Olivia Coach',
-                    coachingSessionCount: 5,
+                    coachingSessionCount: 0,
                     avatarUrl: 'https://randomuser.me/api/portraits/women/8.jpg',
                 },
                 lastAssignment: {
                     assignmentId: 'assign-129',
-                    assignmentTile: 'Assignment 7',
-                    assignmentStatus: 'Passed',
+                    assignmentTitle: 'Assignment 7',
+                    assignmentStatus: 'course-completed',
                 },
             },
             {
@@ -152,17 +155,14 @@ const listCourseStudentsMock: Record<string, useCaseModels.TListCourseStudentsSu
                 courseSlug: 'development-economics',
                 courseImageUrl: 'https://example.com/course-image6.jpg',
                 isStudentOfCoach: false,
+                courseCompletionDate: null,
                 lastAssignmentCoach: {
                     coachId: 107,
                     coachFullName: null,
-                    coachingSessionCount: 2,
+                    coachingSessionCount: 0,
                     avatarUrl: null,
                 },
-                lastAssignment: {
-                    assignmentId: 'assign-130',
-                    assignmentTile: 'Assignment 8',
-                    assignmentStatus: 'AwaitingReview',
-                },
+                lastAssignment: null,
             },
         ],
     },
