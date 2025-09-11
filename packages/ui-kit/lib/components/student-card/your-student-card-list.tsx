@@ -43,7 +43,7 @@ export function YourStudentCardList({
 
     return (
         <div className="flex flex-col justify-center items-center w-full">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 w-full">
                 {Array.isArray(children) ? (
                     children.map((child, index) => (
                         <div
