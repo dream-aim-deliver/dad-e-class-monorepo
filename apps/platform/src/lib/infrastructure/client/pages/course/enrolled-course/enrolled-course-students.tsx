@@ -101,26 +101,21 @@ export function CourseStudents(
     // Helper to render student cards (extracted to avoid duplication)
     const renderStudentCards = (students: viewModels.TCourseStudentsListSuccess['students']) => {
         return students.map((student, index) => {
-            let status = "no-assignment" as StudentCardProps["status"];
+            // Determine status based on whether assignment exists and its status
+            let status: StudentCardProps["status"] = "no-assignment";
             let assignmentTitle: string | undefined;
-            let completedCourseDate: Date = new Date();
+            let completedCourseDate: Date | undefined;
 
+            // If there's a last assignment, use its status directly
             if (student.lastAssignment) {
-                switch (student.lastAssignment.assignmentStatus) {
-                    case "AwaitingReview":
-                        status = "waiting-feedback";
-                        assignmentTitle = student.lastAssignment.assignmentTile;
-                        break;
-                    case "AwaitingForLongTime":
-                        status = "long-wait";
-                        assignmentTitle = student.lastAssignment.assignmentTile;
-                        break;
-                    case "Passed":
-                        status = "course-completed";
-                        // Use real backend date if available, else fallback to current date
-                        completedCourseDate = new Date();
-                        break;
-                }
+                status = student.lastAssignment.assignmentStatus;
+                assignmentTitle = student.lastAssignment.assignmentTitle;
+            }
+            // If no assignment, status remains "no-assignment"
+
+            // If course is completed, use the completion date from the model
+            if (status === "course-completed" && student.courseCompletionDate) {
+                completedCourseDate = new Date(student.courseCompletionDate);
             }
 
             const commonProps = {
@@ -146,17 +141,17 @@ export function CourseStudents(
                         {...commonProps}
                         key={key}
                         status={status}
-                        assignmentTitle={assignmentTitle!} // definitely assigned here
+                        assignmentTitle={assignmentTitle!}
                         onViewAssignment={() => alert(`View Assignment: ${assignmentTitle}`)}
                     />
                 );
             }
 
-            if (status === "course-completed") {
+            if (status === "course-completed" && completedCourseDate) {
                 return <StudentCard {...commonProps} key={key} status={status} completedCourseDate={completedCourseDate} />;
             }
 
-            // for 'no-assignment' status
+            // for 'no-assignment' status (when lastAssignment is null)
             return <StudentCard {...commonProps} key={key} status="no-assignment" />;
         });
     };

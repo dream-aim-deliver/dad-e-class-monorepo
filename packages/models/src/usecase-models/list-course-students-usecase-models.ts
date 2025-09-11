@@ -4,8 +4,12 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
-import { AssignmentStatusEnumSchema } from '../assignment';
 
+export const CourseAssignmentStatusEnumSchema = z.enum([
+    'waiting-feedback',
+    'long-wait',
+    'course-completed',
+]);
 
 export const ListCourseStudentsRequestSchema = z.object({
     courseSlug: z.string(),
@@ -21,6 +25,7 @@ export const ListCourseStudentsSuccessResponseSchema = BaseSuccessSchemaFactory(
         courseSlug: z.string(),
         courseImageUrl: z.string().nullable(),
         isStudentOfCoach: z.boolean(),
+        courseCompletionDate: z.string().datetime({ offset: true }).nullable(),
         lastAssignmentCoach: z.object({
             coachId: z.number(),
             coachFullName: z.string().nullable(),
@@ -29,9 +34,9 @@ export const ListCourseStudentsSuccessResponseSchema = BaseSuccessSchemaFactory(
         }),
         lastAssignment: z.object({
             assignmentId: z.string(),
-            assignmentTile: z.string(),
-            assignmentStatus: AssignmentStatusEnumSchema
-        }),
+            assignmentTitle: z.string(),
+            assignmentStatus: CourseAssignmentStatusEnumSchema,
+        }).nullable(),
     }))
 }));
 export type TListCourseStudentsSuccessResponse = z.infer<typeof ListCourseStudentsSuccessResponseSchema>;
