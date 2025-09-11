@@ -107,7 +107,7 @@ const CardTemplate = ({
 
     // --- Logging all state after update ---
     useEffect(() => {
-        // eslint-disable-next-line no-console
+         
         console.log("AssignmentCard state:", {
             files,
             links,
