@@ -190,7 +190,7 @@ export function FormComponent({ elementInstance, locale }: FormComponentProps) {
     const videoFile = elementInstance as VideoElement;
 
     return (
-        <section className="w-full flex justify-center p-4 rounded-lg">
+        <section className="w-full flex justify-start p-4 rounded-lg">
             <div className="w-full max-w-[1000px]">
                 <VideoPlayer
                     videoId={videoFile.file?.videoId ?? undefined}
