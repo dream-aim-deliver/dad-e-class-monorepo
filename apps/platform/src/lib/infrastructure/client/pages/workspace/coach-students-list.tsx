@@ -64,19 +64,19 @@ function LoadingSkeleton({ locale }: { locale: TLocale }) {
         <YourStudentCardList locale={locale}>
             {Array.from({ length: 6 }, (_, i) => (
                 <div key={i} className="animate-pulse">
-                    <div className="flex flex-col md:p-4 p-2 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:w-[22rem] h-64">
+                    <div className="flex flex-col md:p-4 p-2 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full h-64">
                         <div className="flex flex-row items-center gap-3 mb-2">
-                            <div className="w-10 h-10 bg-gray-200 rounded-full flex-shrink-0"></div>
+                            <div className="w-10 h-10 bg-neutral-800 border border-neutral-700 rounded-full flex-shrink-0"></div>
                             <div className="flex flex-col gap-1 flex-1">
-                                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                                <div className="h-4 bg-neutral-800 border border-neutral-700 rounded w-3/4"></div>
+                                <div className="h-3 bg-neutral-800 border border-neutral-700 rounded w-1/2"></div>
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <div className="h-16 bg-gray-200 rounded"></div>
-                            <div className="h-16 bg-gray-200 rounded"></div>
+                            <div className="h-16 bg-neutral-800 border border-neutral-700 rounded"></div>
+                            <div className="h-16 bg-neutral-800 border border-neutral-700 rounded"></div>
                         </div>
-                        <div className="h-8 bg-gray-200 rounded mt-auto"></div>
+                        <div className="h-8 bg-neutral-800 border border-neutral-700 rounded mt-auto"></div>
                     </div>
                 </div>
             ))}
