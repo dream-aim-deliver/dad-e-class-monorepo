@@ -104,6 +104,7 @@ function EditCourseContent({
         introductionVideoUpload,
         isIntroductionSaving,
         saveCourseIntroduction,
+        uploadProgress: introductionUploadProgress,
     } = useSaveIntroduction({
         slug,
         courseVersion,
@@ -114,6 +115,7 @@ function EditCourseContent({
     const {
         outlineItems,
         accordionIconUpload,
+        accordionUploadProgress,
         setOutlineItems,
         saveCourseOutline,
         isOutlineSaving,
@@ -188,9 +190,11 @@ function EditCourseContent({
                 courseIntroduction={courseIntroduction}
                 courseImageUpload={courseImageUpload}
                 introductionVideoUpload={introductionVideoUpload}
+                introductionUploadProgress={introductionUploadProgress}
                 outlineItems={outlineItems}
                 setOutlineItems={setOutlineItems}
                 accordionIconUpload={accordionIconUpload}
+                accordionUploadProgress={accordionUploadProgress}
                 modules={modules}
                 setModules={setModules}
                 setCourseVersion={setCourseVersion}
@@ -382,11 +386,13 @@ interface EditCourseTabContentProps {
     courseIntroduction: CourseIntroductionForm;
     courseImageUpload: CourseImageUploadState;
     introductionVideoUpload: IntroductionVideoUploadState;
+    introductionUploadProgress?: number;
     outlineItems: AccordionBuilderItem[];
     setOutlineItems: React.Dispatch<
         React.SetStateAction<AccordionBuilderItem[]>
     >;
     accordionIconUpload: AccordionIconUploadState;
+    accordionUploadProgress?: number;
     modules: CourseModule[];
     setModules: React.Dispatch<React.SetStateAction<CourseModule[]>>;
     courseVersion: number | null;
@@ -413,9 +419,11 @@ function EditCourseTabContent({
     courseIntroduction,
     editWrap,
     introductionVideoUpload,
+    introductionUploadProgress,
     outlineItems,
     setOutlineItems,
     accordionIconUpload,
+    accordionUploadProgress,
     defaultTab
 }: EditCourseTabContentProps) {
     const tabContentClass = 'mt-5';
@@ -492,9 +500,11 @@ function EditCourseTabContent({
                                     introductionVideoUpload.handleDelete,
                                 ),
                             }}
+                            introductionUploadProgress={introductionUploadProgress}
                             outlineItems={outlineItems}
                             setOutlineItems={editWrap(setOutlineItems)}
                             accordionIconUpload={accordionIconUpload}
+                            accordionUploadProgress={accordionUploadProgress}
                             setIsEdited={setIsEdited}
                         />
                     </Suspense>

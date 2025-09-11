@@ -119,6 +119,7 @@ interface QuizTypeOneProps {
     onFileDownload: (id: string) => void;
     onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
     uploadError: string | null;
+    uploadProgress?: number;
 }
 
 const QuizTypeOne: FC<QuizTypeOneProps> = ({
@@ -130,6 +131,7 @@ const QuizTypeOne: FC<QuizTypeOneProps> = ({
     onFileChange,
     onUploadComplete,
     uploadError,
+    uploadProgress,
 }) => {
     const dictionary = getDictionary(locale);
 
@@ -220,6 +222,7 @@ const QuizTypeOne: FC<QuizTypeOneProps> = ({
                         className="w-full"
                         maxSize={50} // 50MB
                         isDeletionAllowed={true}
+                        uploadProgress={uploadProgress}
                     />
                     {!element.imageFile && (
                         <p className="text-sm text-text-secondary ml-5">

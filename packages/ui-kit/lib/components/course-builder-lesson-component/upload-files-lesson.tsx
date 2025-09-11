@@ -160,6 +160,8 @@ export interface UploadFilesFormProps extends FormComponentProps {
     files: fileMetadata.TFileMetadata[] | null;
     /** Callback function triggered when student comment changes */
     onStudentCommentChange?: (newValue: string) => void;
+    /** Current upload progress percentage (0-100) */
+    uploadProgress?: number;
 }
 
 /**
@@ -184,6 +186,7 @@ export function FormComponent({
     onFileDownload,
     onStudentCommentChange,
     files,
+    uploadProgress,
 }: UploadFilesFormProps) {
     if (elementInstance.type !== CourseElementType.UploadFiles) return null;
 
@@ -253,6 +256,7 @@ export function FormComponent({
                 onDownload={handleFileDownload}
                 locale={locale}
                 isDeletionAllowed={true} // Allow deletion of uploaded files
+                uploadProgress={uploadProgress}
             />
             <div className="w-full flex flex-col gap-2">
                 <p className="text-sm md:text-md text-text-secondary flex gap-1 items-center">

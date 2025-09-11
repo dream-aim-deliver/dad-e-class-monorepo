@@ -1,6 +1,6 @@
 import SparkMD5 from 'spark-md5';
 
-export async function calculateMd5(file: File): Promise<string> {
+export async function calculateMd5(file: File, onProgress?: (percentage: number) => void): Promise<string> {
     return new Promise((resolve, reject) => {
         const chunkSize = 2 * 1024 * 1024; // 2MB chunks
         const spark = new SparkMD5.ArrayBuffer();
@@ -16,6 +16,12 @@ export async function calculateMd5(file: File): Promise<string> {
             
             spark.append(event.target.result as ArrayBuffer);
             currentChunk++;
+
+            // Report progress
+            if (onProgress) {
+                const percentage = Math.round((currentChunk / chunks) * 100);
+                onProgress(percentage);
+            }
 
             if (currentChunk < chunks) {
                 loadNext();
@@ -58,6 +64,7 @@ interface UploadToS3Params {
     storageUrl: string;
     formFields: Record<string, string>;
     abortSignal?: AbortSignal;
+    onProgress?: (percentage: number) => void;
 }
 
 /**
@@ -78,6 +85,7 @@ export async function uploadToS3({
     checksum,
     formFields,
     abortSignal,
+    onProgress,
 }: UploadToS3Params): Promise<void> {
     const formData = new FormData();
     Object.entries(formFields).forEach(([key, value]) => {
@@ -87,18 +95,47 @@ export async function uploadToS3({
     formData.append('key', objectName);
     formData.append('Content-Type', file.type);
     formData.append('Content-MD5', checksum);
-
     formData.append('file', file);
 
-    const response = await fetch(storageUrl, {
-        method: 'POST',
-        body: formData,
-        signal: abortSignal,
-    });
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        
+        // Track upload progress
+        if (onProgress) {
+            xhr.upload.addEventListener('progress', (event) => {
+                if (event.lengthComputable) {
+                    const percentage = Math.round((event.loaded / event.total) * 100);
+                    onProgress(percentage);
+                }
+            });
+        }
 
-    if (!response.ok) {
-        throw new Error(`Failed to upload file to storage. Response dump: ${await response.text()}`);
-    }
+        // Handle completion
+        xhr.addEventListener('load', () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve();
+            } else {
+                reject(new Error(`Failed to upload file to storage. Status: ${xhr.status}, Response: ${xhr.responseText}`));
+            }
+        });
+
+        // Handle errors
+        xhr.addEventListener('error', () => {
+            reject(new Error('Network error during upload'));
+        });
+
+        // Handle abort
+        if (abortSignal) {
+            abortSignal.addEventListener('abort', () => {
+                xhr.abort();
+                reject(new AbortError());
+            });
+        }
+
+        // Send the request
+        xhr.open('POST', storageUrl);
+        xhr.send(formData);
+    });
 }
 
 export async function downloadFile(url: string, name: string) {

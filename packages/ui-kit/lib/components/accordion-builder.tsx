@@ -33,6 +33,7 @@ interface AccordionBuilderItemProps extends isLocalAware {
     ) => Promise<ImageFile>;
     onIconDelete: () => void;
     onIconDownload: () => void;
+    uploadProgress?: number;
 }
 
 function AccordionBuilderItem({
@@ -46,6 +47,7 @@ function AccordionBuilderItem({
     onImageChange,
     onIconDelete,
     onIconDownload,
+    uploadProgress,
     locale,
 }: AccordionBuilderItemProps) {
     const dictionary = getDictionary(locale);
@@ -167,7 +169,10 @@ function AccordionBuilderItem({
             </div>
             {shownIcon && (
                 <FilePreview
-                    uploadResponse={shownIcon}
+                    uploadResponse={{
+                        ...shownIcon,
+                        uploadProgress: shownIcon.status === 'processing' ? uploadProgress : undefined
+                    }}
                     deletion={{
                         isAllowed: true,
                         onDelete: (id: string) => {
@@ -235,6 +240,7 @@ interface AccordionBuilderProps extends isLocalAware {
         signal: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata>;
     onIconDownload: (index: number) => void;
+    uploadProgress?: number;
 }
 
 export function AccordionBuilder({
@@ -242,6 +248,7 @@ export function AccordionBuilder({
     setItems,
     onIconChange,
     onIconDownload,
+    uploadProgress,
     locale,
 }: AccordionBuilderProps) {
     const dictionary = getDictionary(locale);
@@ -331,6 +338,7 @@ export function AccordionBuilder({
                             onIconDownload={() => {
                                 onIconDownload(index);
                             }}
+                            uploadProgress={uploadProgress}
                             locale={locale}
                         />
                         {index === items.length - 1 && (

@@ -144,6 +144,7 @@ interface QuizTypeTwoProps {
     onFileDownload: (id: string) => void;
     onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
     uploadError: string | null;
+    uploadProgress?: number;
 }
 
 const QuizTypeTwo: FC<QuizTypeTwoProps> = ({
@@ -155,6 +156,7 @@ const QuizTypeTwo: FC<QuizTypeTwoProps> = ({
     onFileDownload,
     onUploadComplete,
     uploadError,
+    uploadProgress,
 }) => {
     const dictionary = getDictionary(locale);
 
@@ -274,7 +276,8 @@ const QuizTypeTwo: FC<QuizTypeTwoProps> = ({
                         className="w-full"
                         maxSize={50} // 50MB
                         isDeletionAllowed
-                    />
+                        uploadProgress={uploadProgress}
+                />
                     {!element.imageFile && (
                         <p className="text-sm text-text-secondary ml-5">
                             {' '}

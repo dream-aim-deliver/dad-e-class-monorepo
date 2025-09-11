@@ -87,6 +87,7 @@ export interface CreateAssignmentProps extends isLocalAware {
     linkEditIndex: number | null;
     onClickEditLink: (index: number) => void;
     onClickAddLink: () => void;
+    uploadProgress?: number;
 }
 
 export const CreateAssignmentBuilderView: FC<CreateAssignmentProps> = ({
@@ -105,6 +106,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentProps> = ({
     locale,
     linkEditIndex,
     onClickEditLink,
+    uploadProgress,
 }) => {
     const dictionary = getDictionary(locale);
 
@@ -191,6 +193,7 @@ export const CreateAssignmentBuilderView: FC<CreateAssignmentProps> = ({
                     locale={locale}
                     className="w-full"
                     maxSize={50} // 50 MB
+                    uploadProgress={uploadProgress}
                 />
 
                 <div className="flex flex-col items-center justify-center gap-[10px] w-full">

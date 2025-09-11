@@ -87,6 +87,37 @@ export const FilePreview = (props: FilePreviewProps) => {
     const getFilePreviewElement = () => {
         // For files in processing state
         if (uploadResponse?.status === 'processing') {
+            // If we have progress, show progress bar instead of spinner
+            if (uploadResponse.uploadProgress !== undefined) {
+                return (
+                    <div className="flex flex-col items-center justify-center gap-0.5">
+                        <div className="w-5 h-5 relative">
+                            <svg className="w-5 h-5 transform -rotate-90" viewBox="0 0 24 24">
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    fill="none"
+                                    className="text-base-neutral-700"
+                                />
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    fill="none"
+                                    strokeDasharray={`${2 * Math.PI * 10}`}
+                                    strokeDashoffset={`${2 * Math.PI * 10 * (1 - uploadResponse.uploadProgress / 100)}`}
+                                    className="text-base-neutral-300 transition-all duration-300"
+                                />
+                            </svg>
+                        </div>
+                    </div>
+                );
+            }
             return (
                 <div className="select-none pointer-events-none">
                     <IconLoaderSpinner classNames="w-6 h-6 animate-spin text-text-primary" />
@@ -170,8 +201,29 @@ export const FilePreview = (props: FilePreviewProps) => {
             <div className="flex flex-col flex-1 w-full gap-1 truncate">
                 {uploadResponse?.status === 'processing' ? (
                     <>
-                        <div className="h-[1.2rem] w-full bg-divider rounded-small border border-divider animate-pulse bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] bg-[length:200%_100%] bg-no-repeat bg-left" />
-                        <div className="h-3 w-16 bg-divider rounded-small border border-divider animate-pulse bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] bg-[length:200%_100%] bg-no-repeat bg-left" />
+                        <span
+                            title={uploadResponse.name}
+                            className="text-sm font-medium text-text-primary truncate"
+                        >
+                            {uploadResponse.name}
+                        </span>
+                        {uploadResponse.uploadProgress !== undefined ? (
+                            <div className="flex items-center gap-2">
+                                <div className="flex-1 h-1 bg-base-neutral-700 rounded-full overflow-hidden">
+                                    <div 
+                                        className="h-full bg-primary-500 transition-all duration-300"
+                                        style={{ width: `${uploadResponse.uploadProgress}%` }}
+                                    />
+                                </div>
+                                <span className="text-xs text-text-secondary">
+                                    {uploadResponse.uploadProgress}%
+                                </span>
+                            </div>
+                        ) : (
+                            <span className="text-xs text-text-secondary">
+                                {dictionary.components.uploadingSection.uploadingText}...
+                            </span>
+                        )}
                     </>
                 ) : (
                     <>

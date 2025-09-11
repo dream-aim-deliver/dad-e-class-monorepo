@@ -70,6 +70,7 @@ interface QuizDesignerComponentProps extends DesignerComponentProps {
     onFileDownload: (id: string) => void;
     onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
     uploadError: string | null;
+    uploadProgress?: number;
 }
 
 const getQuizType = (elementInstance: CourseElement): QuizType | undefined => {
@@ -101,6 +102,7 @@ export function DesignerComponent({
     onFileDownload,
     onUploadComplete,
     uploadError,
+    uploadProgress,
     validationError,
 }: QuizDesignerComponentProps) {
     const quizType = getQuizType(elementInstance);
@@ -157,6 +159,7 @@ export function DesignerComponent({
                         onFileDownload={onFileDownload}
                         onUploadComplete={onUploadComplete}
                         uploadError={uploadError}
+                        uploadProgress={uploadProgress}
                     />
                 )}
                 {quizType === 'quizTypeTwo' && (
@@ -169,6 +172,7 @@ export function DesignerComponent({
                         onFileDownload={onFileDownload}
                         onUploadComplete={onUploadComplete}
                         uploadError={uploadError}
+                        uploadProgress={uploadProgress}
                     />
                 )}
                 {quizType === 'quizTypeThree' && (
@@ -181,6 +185,7 @@ export function DesignerComponent({
                         onFileDownload={onFileDownload}
                         onUploadComplete={onUploadComplete}
                         uploadError={uploadError}
+                        uploadProgress={uploadProgress}
                     />
                 )}
                 {quizType === 'quizTypeFour' && (
@@ -193,6 +198,7 @@ export function DesignerComponent({
                         onFileDownload={onFileDownload}
                         onUploadComplete={onUploadComplete}
                         uploadError={uploadError}
+                        uploadProgress={uploadProgress}
                     />
                 )}
             </div>

@@ -132,6 +132,7 @@ interface QuizTypeFourProps {
     onFileDownload: (id: string) => void;
     onUploadComplete: (file: fileMetadata.TFileMetadata, index: number) => void;
     uploadError: string | null;
+    uploadProgress?: number;
 }
 
 const QuizTypeFour: FC<QuizTypeFourProps> = ({
@@ -142,6 +143,7 @@ const QuizTypeFour: FC<QuizTypeFourProps> = ({
     onFileDelete,
     onFileDownload,
     onUploadComplete,
+    uploadProgress,
 }) => {
     const dictionary = getDictionary(locale);
 
@@ -272,6 +274,7 @@ const QuizTypeFour: FC<QuizTypeFourProps> = ({
                                         className="w-full"
                                         maxSize={50} // 50MB
                                         isDeletionAllowed
+                                        uploadProgress={uploadProgress}
                                     />
                                     {!element.images[idx]?.imageFile && (
                                         <p className="text-sm text-text-secondary">

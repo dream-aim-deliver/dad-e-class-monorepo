@@ -87,7 +87,9 @@ export const getValidationError: ElementValidator = (props) => {
 
 interface AssignmentDesignerComponentProps
     extends Omit<CreateAssignmentProps, 'elementInstance'>,
-        DesignerComponentProps {}
+        DesignerComponentProps {
+    uploadProgress?: number;
+}
 
 export function DesignerComponent({
     elementInstance,
@@ -96,6 +98,7 @@ export function DesignerComponent({
     onDeleteClick,
     locale,
     validationError,
+    uploadProgress,
     ...props
 }: AssignmentDesignerComponentProps) {
     if (elementInstance.type !== CourseElementType.Assignment) return null;
@@ -119,6 +122,7 @@ export function DesignerComponent({
             <CreateAssignmentBuilderView
                 elementInstance={elementInstance as AssignmentElement}
                 locale={locale}
+                uploadProgress={uploadProgress}
                 {...props}
             />
         </DesignerLayout>

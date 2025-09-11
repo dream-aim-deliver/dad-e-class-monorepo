@@ -107,6 +107,8 @@ function CreateCourseContent(props: CreateCourseContentProps) {
     const { createCourse, isCreating, isSuccess, getSubmitErrorMessage } =
         useCreateCourse();
 
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+
     const {
         courseImage,
         uploadError,
@@ -114,7 +116,7 @@ function CreateCourseContent(props: CreateCourseContentProps) {
         handleUploadComplete,
         handleDelete,
         handleDownload,
-    } = useCourseImageUpload();
+    } = useCourseImageUpload(null, setUploadProgress);
 
     const [validationError, setValidationError] = useState<string | undefined>(
         undefined,
@@ -220,6 +222,7 @@ function CreateCourseContent(props: CreateCourseContentProps) {
                 errorMessage={errorMessage}
                 hasSuccess={hasBeenCreated}
                 duplicationCourse={props.duplicationCourse}
+                uploadProgress={uploadProgress}
             />
         </div>
     );
