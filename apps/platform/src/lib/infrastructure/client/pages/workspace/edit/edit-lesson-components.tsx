@@ -158,6 +158,7 @@ interface LessonComponentProps {
     onDownClick: (id: string) => void;
     onDeleteClick: (id: string) => void;
     validationError?: string | undefined;
+    hasMaterials?: boolean;
 }
 
 function RichTextComponent({
@@ -168,6 +169,7 @@ function RichTextComponent({
     onDownClick,
     onDeleteClick,
     validationError,
+    hasMaterials,
 }: LessonComponentProps) {
     const updateComponent = (
         comp: LessonElement,
@@ -207,7 +209,9 @@ function RichTextComponent({
         <RichTextDesignerComponent
             elementInstance={elementInstance as RichTextElement}
             locale={locale}
-            onIncludeInMaterialsChange={onIncludeInMaterialsChange}
+            onIncludeInMaterialsChange={
+                hasMaterials ? onIncludeInMaterialsChange : undefined
+            }
             onUpClick={onUpClick}
             onDownClick={onDownClick}
             onDeleteClick={onDeleteClick}
@@ -1782,6 +1786,7 @@ interface EditLessonComponentsProps {
     courseVersion: number | null;
     setCourseVersion: React.Dispatch<React.SetStateAction<number | null>>;
     validationErrors: Map<string, string | undefined>;
+    hasMaterials?: boolean;
 }
 
 export default function EditLessonComponents({
@@ -1791,6 +1796,7 @@ export default function EditLessonComponents({
     courseVersion,
     setCourseVersion,
     validationErrors,
+    hasMaterials = true,
 }: EditLessonComponentsProps) {
     const onUpClick = (id: string) => {
         setComponents((prev) => {
@@ -1841,6 +1847,7 @@ export default function EditLessonComponents({
                         onDownClick={onDownClick}
                         onDeleteClick={onDeleteClick}
                         validationError={validationErrors.get(component.id)}
+                        hasMaterials={hasMaterials}
                     />
                 );
             })}
