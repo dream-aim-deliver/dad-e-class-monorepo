@@ -1,4 +1,4 @@
-import { HydrateClient, prefetch, trpc } from '../config/trpc/server';
+import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import Offers from '../../client/pages/offers/offers';

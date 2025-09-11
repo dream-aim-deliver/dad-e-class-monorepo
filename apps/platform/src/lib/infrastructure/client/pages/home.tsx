@@ -1,5 +1,5 @@
 'use client';
-import { trpc } from '../trpc/client';
+import { trpc } from '../trpc/cms-client';
 import { useLocale, useTranslations } from 'next-intl';
 import {
     CarouselSkeleton,
@@ -42,6 +42,7 @@ function Topics() {
     >(undefined);
     const { presenter: topicsPresenter } =
         useListTopicsPresenter(setTopicsViewModel);
+    // @ts-ignore
     topicsPresenter.present(topicsResponse, topicsViewModel);
 
     if (!topicsViewModel) {
@@ -73,6 +74,7 @@ export default function Home() {
     >(undefined);
     const { presenter: homePagePresenter } =
         useGetHomePagePresenter(setHomePageViewModel);
+    // @ts-ignore
     homePagePresenter.present(homePageResponse, homePageViewModel);
 
     const router = useRouter();
