@@ -255,7 +255,7 @@ const QuizTypeFour: FC<QuizTypeFourProps> = ({
                                     />
                                 </div>
                                 {/* ImageUploader and delete button */}
-                                <div className="flex items-center md:w-1/2 w-full">
+                                <div className="flex flex-col items-center md:w-1/2 w-full gap-1">
                                     <Uploader
                                         type="single"
                                         variant="image"
@@ -273,6 +273,14 @@ const QuizTypeFour: FC<QuizTypeFourProps> = ({
                                         maxSize={50} // 50MB
                                         isDeletionAllowed
                                     />
+                                    {!element.images[idx]?.imageFile && (
+                                        <p className="text-sm text-text-secondary">
+                                            {
+                                                dictionary.components.quiz
+                                                    .smallImageRecommendedSize
+                                            }
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                             <div className="flex items-center">

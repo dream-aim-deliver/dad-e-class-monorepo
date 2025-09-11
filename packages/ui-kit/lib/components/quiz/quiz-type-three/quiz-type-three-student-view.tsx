@@ -166,7 +166,7 @@ const QuizTypeThreeStudentView: FC<QuizTypeThreeStudentViewProps> = ({
                     loading="lazy"
                     src={choice.imageThumbnailUrl}
                     alt={`Quiz Option ${index + 1}`}
-                    className="rounded-medium w-full h-[153px] object-cover"
+                    className="rounded-medium w-full max-h-[25rem] object-cover"
                     onError={() => handleImageError(index)}
                   />
                 )}

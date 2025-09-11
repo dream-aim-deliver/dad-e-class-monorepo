@@ -47,7 +47,7 @@ const RenderLeaf = ({ attributes, children, leaf }: RenderLeafProps) => {
         leaf.underline && "underline",
         leaf.strikethrough && "line-through",
         leaf.code && "text-black text-sm font-mono bg-gray-200 px-1 py-0.5 rounded",
-        leaf.highlight && "bg-yellow-200 text-black border border-yellow-600 px-1",
+        leaf.highlight && "bg-base-brand-500 text-black border px-1",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -83,7 +83,7 @@ export const RenderElement = ({ attributes, children, element }: RenderElementPr
       );
     case "block-quote":
       return (
-        <blockquote {...attributes} style={style} className="border-l-2 border-gray-300 pl-2 text-gray-500 italic">
+        <blockquote {...attributes} style={style} className="border-l-2 border-base-brand-400 pl-2 text-base-brand-400 italic">
           {children}
         </blockquote>
       );

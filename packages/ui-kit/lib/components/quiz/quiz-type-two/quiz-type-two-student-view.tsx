@@ -183,7 +183,7 @@ const QuizTypeTwoStudentView: FC<QuizTypeTwoStudentViewProps> = ({
                         loading="lazy"
                         src={thumbnailUrl}
                         alt={elementInstance.title}
-                        className="rounded w-full h-[280px] object-cover"
+                        className="rounded w-full max-h-[30rem] object-cover"
                         onError={handleImageError}
                     />
                 )}

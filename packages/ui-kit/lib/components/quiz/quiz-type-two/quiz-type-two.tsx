@@ -259,21 +259,31 @@ const QuizTypeTwo: FC<QuizTypeTwoProps> = ({
             </div>
             <div className="flex flex-col gap-[18px]">
                 {/* Image Uploader */}
-                <Uploader
-                    type="single"
-                    variant="image"
-                    file={element.imageFile}
-                    onFilesChange={(file, abortSignal) =>
-                        onFileChange(file, abortSignal)
-                    }
-                    onDelete={(id) => onFileDelete(id, 0)}
-                    onDownload={(id) => onFileDownload(id)}
-                    onUploadComplete={(file) => onUploadComplete(file, 0)}
-                    locale={locale}
-                    className="w-full"
-                    maxSize={50} // 50MB
-                    isDeletionAllowed
-                />
+                <div className="flex flex-col gap-1">
+                    <Uploader
+                        type="single"
+                        variant="image"
+                        file={element.imageFile}
+                        onFilesChange={(file, abortSignal) =>
+                            onFileChange(file, abortSignal)
+                        }
+                        onDelete={(id) => onFileDelete(id, 0)}
+                        onDownload={(id) => onFileDownload(id)}
+                        onUploadComplete={(file) => onUploadComplete(file, 0)}
+                        locale={locale}
+                        className="w-full"
+                        maxSize={50} // 50MB
+                        isDeletionAllowed
+                    />
+                    {!element.imageFile && (
+                        <p className="text-sm text-text-secondary ml-5">
+                            {' '}
+                            {
+                                dictionary.components.quiz.imageRecommendedSize
+                            }{' '}
+                        </p>
+                    )}
+                </div>
                 {/* error */}
                 {uploadError && (
                     <Banner

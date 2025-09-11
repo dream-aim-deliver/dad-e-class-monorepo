@@ -214,7 +214,7 @@ const QuizTypeThree: FC<QuizTypeThreeProps> = ({
                                     handleChoiceDescriptionChange(index, value)
                                 }
                             />
-                            <div className="w-full flex items-center justify-center">
+                            <div className="w-full flex flex-col items-center justify-center gap-2">
                                 <Uploader
                                     type="single"
                                     variant="image"
@@ -232,6 +232,14 @@ const QuizTypeThree: FC<QuizTypeThreeProps> = ({
                                     maxSize={50} // 50MB
                                     isDeletionAllowed
                                 />
+                                {!option.imageFile && (
+                                    <p className="text-sm text-text-secondary">
+                                        {
+                                            dictionary.components.quiz
+                                                .smallImageRecommendedSize
+                                        }
+                                    </p>
+                                )}
                             </div>
                         </div>
                         {index !== element.options.length - 1 && (
