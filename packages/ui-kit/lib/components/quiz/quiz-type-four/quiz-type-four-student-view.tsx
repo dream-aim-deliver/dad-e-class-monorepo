@@ -181,7 +181,7 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({
                     <img
                       src={image.imageFile?.thumbnailUrl ?? undefined}
                       alt={`Quiz Illustration ${index + 1}`}
-                      className="rounded w-full h-[153px] object-cover"
+                      className="rounded w-full max-h-[25rem] object-cover"
                       onError={() => handleImageError(index)}
                       loading="lazy"
                     />

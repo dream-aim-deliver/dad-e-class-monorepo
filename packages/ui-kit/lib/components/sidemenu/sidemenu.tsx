@@ -82,8 +82,8 @@ export const SideMenu: FC<SideMenuProps> = ({
                     />
                 </div>
                 {!isCollapsed && (
-                    <div className="flex flex-col items-start gap-2 justify-center">
-                        <p className="text-text-primary text-md font-bold leading-[100%]">
+                    <div className="flex flex-col items-start gap-2 justify-center min-w-0 flex-1">
+                        <p className="text-text-primary text-md font-bold leading-[100%] truncate w-full">
                             {userName}
                         </p>
                         <div className="flex gap-2">

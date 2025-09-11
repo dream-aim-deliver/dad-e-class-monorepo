@@ -704,6 +704,8 @@ export const EN: TDictionary = {
       typeTwoText: "Type 2",
       typeThreeText: "Type 3",
       typeFourText: "Type 4",
+      imageRecommendedSize: '(Recommended image size: 1522 x 488 pixels)',
+      smallImageRecommendedSize: '(Recommended image size: 742 x 400 pixels)',
       quizTypeOne: {
         headingText: 'Student picks one correct answer out of many choices',
         radioButtonText: 'Radio button text',

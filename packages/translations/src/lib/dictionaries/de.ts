@@ -708,6 +708,8 @@ export const DE: TDictionary = {
       typeTwoText: 'Typ 2',
       typeThreeText: 'Typ 3',
       typeFourText: 'Typ 4',
+      imageRecommendedSize: '(Empfohlene Bildgröße: 1522 x 488 Pixel)',
+      smallImageRecommendedSize: '(Empfohlene Bildgröße: 742 x 400 pixel)',
       quizTypeOne: {
         headingText: 'Wähle eine korrekte Antwort von vielen', // Guidelines: gender-neutral, informal 'Du'
         radioButtonText: 'Text der Optionsschaltfläche',

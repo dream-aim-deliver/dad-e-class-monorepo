@@ -75,7 +75,7 @@ const RenderElement = ({ attributes, children, element }: {
       );
     case "block-quote":
       return (
-        <blockquote {...attributes} style={style} className="border-l-2 border-gray-300 pl-2 text-gray-500 italic">
+        <blockquote {...attributes} style={style} className="border-l-2 border-base-brand-400 text-base-brand-400  pl-2 italic">
           {children}
         </blockquote>
       );
@@ -91,8 +91,10 @@ const RenderElement = ({ attributes, children, element }: {
       return <h1 {...attributes} style={style} className="text-2xl font-bold">{children}</h1>;
     case "h2":
       return <h2 {...attributes} style={style} className="text-xl font-bold">{children}</h2>;
+    case "paragraph":
+      return <p {...attributes} style={style} className="text-base">{children}</p>;
     default:
-      return <span {...attributes} style={style} className="text-base">{children}</span>;
+      return <div {...attributes} style={style} className="text-base">{children}</div>;
   }
 };
 
@@ -133,7 +135,7 @@ const LeafNode = ({ leaf }: { leaf: any }) => {
   if (leaf.underline) content = <u>{content}</u>;
   if (leaf.strikethrough) content = <del>{content}</del>;
   if (leaf.code) content = <code>{content}</code>;
-  if (leaf.highlight) content = <mark>{content}</mark>;
+  if (leaf.highlight) content = <mark className="bg-base-brand-500 text-black border px-1">{content}</mark>;
   if (leaf.superscript) content = <sup>{content}</sup>;
   if (leaf.subscript) content = <sub>{content}</sub>;
 

@@ -695,6 +695,8 @@ export const DictionarySchema = z.object({
       typeTwoText: z.string(),
       typeThreeText: z.string(),
       typeFourText: z.string(),
+      imageRecommendedSize: z.string(),
+      smallImageRecommendedSize: z.string(),
       quizTypeOne: z.object({
         headingText: z.string(),
         radioButtonText: z.string(),
