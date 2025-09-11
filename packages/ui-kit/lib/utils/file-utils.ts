@@ -31,7 +31,17 @@ export async function calculateMd5(file: File, onProgress?: (percentage: number)
                 // Convert hex string to base64 to match the original output format
                 const hexArray = rawHash.match(/\w{2}/g)!;
                 const byteArray = hexArray.map(hex => parseInt(hex, 16));
-                const base64Hash = Buffer.from(byteArray).toString('base64');
+                
+                // Cross-platform base64 encoding
+                let base64Hash: string;
+                if (typeof Buffer !== 'undefined') {
+                    // Node.js environment
+                    base64Hash = Buffer.from(byteArray).toString('base64');
+                } else {
+                    // Browser environment
+                    const uint8Array = new Uint8Array(byteArray);
+                    base64Hash = btoa(String.fromCharCode(...uint8Array));
+                }
                 resolve(base64Hash);
             }
         };
