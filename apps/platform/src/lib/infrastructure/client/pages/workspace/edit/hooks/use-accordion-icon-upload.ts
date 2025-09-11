@@ -21,6 +21,7 @@ export interface AccordionIconUploadState {
 // Custom hook for icon upload logic
 export const useAccordionIconUpload = (
     slug: string,
+    onProgressUpdate?: (progress: number) => void,
 ): AccordionIconUploadState => {
     const useAccordionIconUploadTranslations = useTranslations('components.useCourseImageUpload');
     const uploadCredentialsError = useAccordionIconUploadTranslations('uploadCredentialsError');
@@ -43,7 +44,10 @@ export const useAccordionIconUpload = (
             throw new AbortError();
         }
 
-        const checksum = await calculateMd5(uploadRequest.file);
+        // Track MD5 calculation progress (0-30% of total)
+        const checksum = await calculateMd5(uploadRequest.file, (md5Progress) => {
+            onProgressUpdate?.(Math.round(md5Progress * 0.3));
+        });
 
         // For mutations, we aren't able to abort them midway.
         // Hence, we check for abort signal before each step.
@@ -63,6 +67,7 @@ export const useAccordionIconUpload = (
         }
 
         // Comment out to test without the storage running
+        // Track upload progress (30-100% of total)
         await uploadToS3({
             file: uploadRequest.file,
             checksum,
@@ -70,6 +75,9 @@ export const useAccordionIconUpload = (
             objectName: uploadResult.data.file.objectName,
             formFields: uploadResult.data.formFields,
             abortSignal,
+            onProgress: (uploadProgress) => {
+                onProgressUpdate?.(30 + Math.round(uploadProgress * 0.7));
+            },
         });
 
         const verifyResult = await verifyMutation.mutateAsync({

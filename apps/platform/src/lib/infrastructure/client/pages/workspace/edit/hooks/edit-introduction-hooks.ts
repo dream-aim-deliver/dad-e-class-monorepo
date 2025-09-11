@@ -34,7 +34,8 @@ export function useSaveIntroduction({
 }) {
     const courseIntroduction = useCourseIntroductionForm();
 
-    const introductionVideoUpload = useIntroductionVideoUpload(slug);
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+    const introductionVideoUpload = useIntroductionVideoUpload(slug, setUploadProgress);
 
     const saveIntroductionMutation = trpc.saveCourseIntroduction.useMutation();
 
@@ -69,5 +70,6 @@ export function useSaveIntroduction({
         introductionVideoUpload,
         saveCourseIntroduction,
         isIntroductionSaving: saveIntroductionMutation.isPending,
+        uploadProgress,
     };
 }

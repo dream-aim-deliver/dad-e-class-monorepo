@@ -46,12 +46,14 @@ interface FileUploadProps {
     lessonId: number;
     componentType: string;
     setFile?: (file: fileMetadata.TFileMetadata | null) => void;
+    onProgressUpdate?: (progress: number) => void;
 }
 
 const useFileUpload = ({
     lessonId,
     componentType,
     setFile,
+    onProgressUpdate,
 }: FileUploadProps) => {
     const editLessonTranslations = useTranslations(
         'components.useCourseImageUpload',
@@ -72,7 +74,10 @@ const useFileUpload = ({
             throw new AbortError();
         }
 
-        const checksum = await calculateMd5(uploadRequest.file);
+        // Track MD5 calculation progress (0-30% of total)
+        const checksum = await calculateMd5(uploadRequest.file, (md5Progress) => {
+            onProgressUpdate?.(Math.round(md5Progress * 0.3));
+        });
 
         // For mutations, we aren't able to abort them midway.
         // Hence, we check for abort signal before each step.
@@ -93,6 +98,7 @@ const useFileUpload = ({
         }
 
         // Comment out to test without the storage running
+        // Track upload progress (30-100% of total)
         await uploadToS3({
             file: uploadRequest.file,
             checksum,
@@ -100,6 +106,9 @@ const useFileUpload = ({
             objectName: uploadResult.data.file.objectName,
             formFields: uploadResult.data.formFields,
             abortSignal,
+            onProgress: (uploadProgress) => {
+                onProgressUpdate?.(30 + Math.round(uploadProgress * 0.7));
+            },
         });
 
         const verifyResult = await verifyMutation.mutateAsync({
@@ -279,6 +288,8 @@ function VideoComponent({
     onDeleteClick,
     validationError,
 }: LessonComponentProps) {
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+    
     const updateComponent = (
         comp: LessonElement,
         updated: Partial<LessonElement>,
@@ -304,6 +315,7 @@ function VideoComponent({
 
     const handleDelete = () => {
         setFile(null);
+        setUploadProgress(undefined);
     };
 
     const { uploadError, handleFileChange, handleUploadComplete } =
@@ -311,6 +323,7 @@ function VideoComponent({
             lessonId,
             componentType: 'video',
             setFile,
+            onProgressUpdate: setUploadProgress,
         });
 
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
@@ -325,10 +338,15 @@ function VideoComponent({
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ): Promise<fileMetadata.TFileMetadataVideo> => {
-        return (await handleFileChange(
+        // Set initial progress when starting upload
+        setUploadProgress(0);
+        const result = (await handleFileChange(
             fileRequest,
             abortSignal,
         )) as fileMetadata.TFileMetadataVideo;
+        // Clear progress when done
+        setUploadProgress(undefined);
+        return result;
     };
 
     return (
@@ -345,6 +363,7 @@ function VideoComponent({
                 onFileDelete={handleDelete}
                 onFileDownload={handleDownload}
                 validationError={validationError}
+                uploadProgress={uploadProgress}
             />
             {uploadError && (
                 <DefaultError locale={locale} description={uploadError} />
@@ -363,6 +382,8 @@ function ImageComponent({
     onDeleteClick,
     validationError,
 }: LessonComponentProps) {
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+    
     const updateComponent = (
         comp: LessonElement,
         updated: Partial<LessonElement>,
@@ -388,6 +409,7 @@ function ImageComponent({
 
     const handleDelete = () => {
         setFile(null);
+        setUploadProgress(undefined);
     };
 
     const { uploadError, handleFileChange, handleUploadComplete } =
@@ -395,6 +417,7 @@ function ImageComponent({
             lessonId,
             componentType: 'image',
             setFile,
+            onProgressUpdate: setUploadProgress,
         });
 
     if (elementInstance.type !== CourseElementType.ImageFile) return null;
@@ -409,10 +432,15 @@ function ImageComponent({
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ): Promise<fileMetadata.TFileMetadataImage> => {
-        return (await handleFileChange(
+        // Set initial progress when starting upload
+        setUploadProgress(0);
+        const result = (await handleFileChange(
             fileRequest,
             abortSignal,
         )) as fileMetadata.TFileMetadataImage;
+        // Clear progress when done
+        setUploadProgress(undefined);
+        return result;
     };
 
     return (
@@ -429,6 +457,7 @@ function ImageComponent({
                 onFileDelete={handleDelete}
                 onFileDownload={handleDownload}
                 validationError={validationError}
+                uploadProgress={uploadProgress}
             />
             {uploadError && (
                 <DefaultError locale={locale} description={uploadError} />
@@ -467,11 +496,13 @@ function ImageGalleryComponent({
         );
     };
 
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
     const { uploadError, handleFileChange, handleUploadComplete } =
         useFileUpload({
             lessonId,
             componentType: 'image',
             setFile,
+            onProgressUpdate: setUploadProgress,
         });
 
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
@@ -522,6 +553,7 @@ function ImageGalleryComponent({
                 onFileDownload={handleDownload}
                 maxSize={50} // 50MB
                 validationError={validationError}
+                uploadProgress={uploadProgress}
             />
             {uploadError && (
                 <DefaultError locale={locale} description={uploadError} />
@@ -559,11 +591,13 @@ function DownloadFilesComponent({
         );
     };
 
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
     const { uploadError, handleFileChange, handleUploadComplete } =
         useFileUpload({
             lessonId,
             componentType: 'downloadFiles',
             setFile,
+            onProgressUpdate: setUploadProgress,
         });
 
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
@@ -605,6 +639,7 @@ function DownloadFilesComponent({
                 onFileDownload={handleDownload}
                 maxSize={100} // 100MB
                 validationError={validationError}
+                uploadProgress={uploadProgress}
             />
             {uploadError && (
                 <DefaultError locale={locale} description={uploadError} />
@@ -996,11 +1031,13 @@ function QuizTypeOneComponent({
         );
     };
 
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
     const { uploadError, handleFileChange, handleUploadComplete } =
         useFileUpload({
             lessonId,
             componentType: 'quizTypeOne',
             setFile,
+            onProgressUpdate: setUploadProgress,
         });
 
     if (elementInstance.type !== CourseElementType.QuizTypeOne) return null;
@@ -1029,6 +1066,7 @@ function QuizTypeOneComponent({
             onUploadComplete={handleUploadComplete}
             uploadError={uploadError ?? null}
             validationError={validationError}
+            uploadProgress={uploadProgress}
         />
     );
 }
@@ -1090,11 +1128,13 @@ function QuizTypeTwoComponent({
         );
     };
 
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
     const { uploadError, handleFileChange, handleUploadComplete } =
         useFileUpload({
             lessonId,
             componentType: 'quizTypeTwo',
             setFile,
+            onProgressUpdate: setUploadProgress,
         });
 
     if (elementInstance.type !== CourseElementType.QuizTypeTwo) return null;
@@ -1123,6 +1163,7 @@ function QuizTypeTwoComponent({
             onUploadComplete={handleUploadComplete}
             uploadError={uploadError ?? null}
             validationError={validationError}
+            uploadProgress={uploadProgress}
         />
     );
 }
@@ -1207,6 +1248,8 @@ function QuizTypeThreeComponent({
         );
     };
 
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+
     const handleUploadComplete = (
         file: fileMetadata.TFileMetadata,
         index: number,
@@ -1217,6 +1260,7 @@ function QuizTypeThreeComponent({
     const { uploadError, handleFileChange } = useFileUpload({
         lessonId,
         componentType: 'quizTypeThree',
+        onProgressUpdate: setUploadProgress,
     });
 
     if (elementInstance.type !== CourseElementType.QuizTypeThree) return null;
@@ -1247,6 +1291,7 @@ function QuizTypeThreeComponent({
             onUploadComplete={handleUploadComplete}
             uploadError={uploadError ?? null}
             validationError={validationError}
+            uploadProgress={uploadProgress}
         />
     );
 }
@@ -1338,9 +1383,11 @@ function QuizTypeFourComponent({
         setFile(file, index);
     };
 
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
     const { uploadError, handleFileChange } = useFileUpload({
         lessonId,
         componentType: 'quizTypeFour',
+        onProgressUpdate: setUploadProgress,
     });
 
     if (elementInstance.type !== CourseElementType.QuizTypeFour) return null;
@@ -1371,6 +1418,7 @@ function QuizTypeFourComponent({
             onUploadComplete={handleUploadComplete}
             uploadError={uploadError ?? null}
             validationError={validationError}
+            uploadProgress={uploadProgress}
         />
     );
 }
@@ -1712,9 +1760,11 @@ function AssignmentComponent({
         );
     };
 
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
     const { handleFileChange: handleResourceFileChange } = useFileUpload({
         lessonId,
         componentType: 'assignmentResource',
+        onProgressUpdate: setUploadProgress,
     });
 
     const { handleFileChange: handleIconChange } = useFileUpload({
@@ -1753,6 +1803,7 @@ function AssignmentComponent({
             onLinkDiscard={() => {
                 setLinkEditIndex(null);
             }}
+            uploadProgress={uploadProgress}
         />
     );
 }

@@ -21,6 +21,7 @@ interface IntroductionProps extends isLocalAware {
     onDelete: (id: string) => void;
     onDownload: (id: string) => void;
     uploadError: string | undefined;
+    uploadProgress?: number;
 }
 
 export interface CourseIntroductionForm {
@@ -96,6 +97,7 @@ export function IntroductionForm(props: IntroductionProps) {
                     maxSize={2000000}
                     file={props.videoFile}
                     isDeletionAllowed
+                    uploadProgress={props.uploadProgress}
                 />
                 {props.uploadError && (
                     <DefaultError

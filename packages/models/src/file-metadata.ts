@@ -20,6 +20,7 @@ export const FileMetadataBaseSchema = z.object({
     size: z.number(),
     status: FileStatusEnumSchema,
     category: FileCategoryEnumSchema,
+    uploadProgress: z.number().min(0).max(100).optional(),
 });
 
 export const FileMetadataVideoSchema = FileMetadataBaseSchema.extend({

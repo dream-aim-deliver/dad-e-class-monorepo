@@ -67,6 +67,8 @@ export interface DownloadFilesDesignerProps extends BaseDesignerComponentProps {
     maxFiles?: number;
     /** Maximum file size allowed in megabytes (default: 5MB) */
     maxSize?: number;
+    /** Current upload progress percentage (0-100) */
+    uploadProgress?: number;
 }
 
 /**
@@ -97,6 +99,7 @@ export function DesignerComponent({
     validationError,
     maxFiles = 5,
     maxSize = 15, // Default to 15MB
+    uploadProgress,
 }: DownloadFilesDesignerProps) {
     if (elementInstance.type !== CourseElementType.DownloadFiles) return null;
     const dictionary = getDictionary(locale);
@@ -140,6 +143,7 @@ export function DesignerComponent({
                 onDownload={handleFileDownload}
                 locale={locale}
                 maxSize={maxSize}
+                uploadProgress={uploadProgress}
             />
         </DesignerLayout>
     );

@@ -89,6 +89,8 @@ interface ImageGalleryEditProps extends DesignerComponentProps {
     onFileDelete: (id: string) => void;
     /** Callback function to handle file download */
     onFileDownload: (id: string) => void;
+    /** Current upload progress percentage (0-100) */
+    uploadProgress?: number;
 }
 
 /**
@@ -105,7 +107,7 @@ interface ImageGalleryEditProps extends DesignerComponentProps {
  * @param onFileDownload - Callback for file downloads
  * @param onFileDelete - Callback for file deletion
  */
-export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize }: ImageGalleryEditProps) {
+export function DesignerComponent({ elementInstance, locale, onUpClick, onDownClick, onDeleteClick, onImageUpload, onUploadComplete, onFileDownload, onFileDelete, maxSize, uploadProgress }: ImageGalleryEditProps) {
     if (elementInstance.type !== CourseElementType.ImageGallery) return null;
     const dictionary = getDictionary(locale);
 
@@ -143,6 +145,7 @@ export function DesignerComponent({ elementInstance, locale, onUpClick, onDownCl
                 locale={locale}
                 maxSize={maxSize}
                 isDeletionAllowed={true}
+                uploadProgress={uploadProgress}
             />
         </DesignerLayout>
     );

@@ -33,7 +33,8 @@ export function useSaveOutline({
         AccordionBuilderItem[]
     >([]);
 
-    const accordionIconUpload = useAccordionIconUpload(slug);
+    const [accordionUploadProgress, setAccordionUploadProgress] = useState<number | undefined>(undefined);
+    const accordionIconUpload = useAccordionIconUpload(slug, setAccordionUploadProgress);
     const saveOutlineMutation = trpc.saveCourseIntroductionOutline.useMutation();
 
     const editOutlineTranslations = useTranslations('components.editOutlineHooks');
@@ -85,6 +86,7 @@ export function useSaveOutline({
         outlineItems: accordionBuilderItems,
         setOutlineItems: setAccordionBuilderItems,
         accordionIconUpload,
+        accordionUploadProgress,
         saveCourseOutline,
         isOutlineSaving: saveOutlineMutation.isPending,
     };

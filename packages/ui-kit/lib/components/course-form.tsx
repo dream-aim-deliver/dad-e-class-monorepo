@@ -55,6 +55,7 @@ interface CourseFormProps extends isLocalAware {
         title: string;
         imageUrl?: string;
     };
+    uploadProgress?: number;
 }
 
 export interface CourseDetailsState {
@@ -387,6 +388,7 @@ export function CourseForm(props: CourseFormProps) {
                             onDownload={onDownload}
                             isDeletionAllowed
                             className="mb-2"
+                            uploadProgress={props.uploadProgress}
                         />
                         <p className="text-text-secondary text-sm">
                             {

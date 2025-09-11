@@ -51,6 +51,7 @@ interface CommonUploaderProps extends isLocalAware {
     ) => Promise<fileMetadata.TFileMetadata>;
     onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
     isDeletionAllowed?: boolean;
+    uploadProgress?: number;
 }
 
 /**
@@ -86,6 +87,7 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
         onUploadComplete,
         locale,
         isDeletionAllowed = true,
+        uploadProgress,
     } = props;
 
     const [uploadingFiles, setUploadingFiles] = useState<
@@ -278,25 +280,32 @@ export const Uploader: React.FC<UploaderProps> = (props) => {
         <div className={cn('flex flex-col w-full gap-4', className)}>
             {allFiles.length > 0 && (
                 <div className="flex flex-col gap-4 w-full">
-                    {allFiles.map((file) => (
-                        <div key={file.id}>
-                            <FilePreview
-                                uploadResponse={file}
-                                deletion={
-                                    isDeletionAllowed
-                                        ? {
-                                              isAllowed: true,
-                                              onDelete: () => onDelete(file.id as string),
-                                          }
-                                        : { isAllowed: false }
-                                }
-                                onDownload={onDownload}
-                                onCancel={handleCancelUpload}
-                                locale={locale}
-                                readOnly={false}
-                            />
-                        </div>
-                    ))}
+                    {allFiles.map((file) => {
+                        // Add uploadProgress to files that are being uploaded
+                        const fileWithProgress = uploadingFiles.some(f => f.id === file.id) && uploadProgress !== undefined
+                            ? { ...file, uploadProgress }
+                            : file;
+                        
+                        return (
+                            <div key={file.id}>
+                                <FilePreview
+                                    uploadResponse={fileWithProgress}
+                                    deletion={
+                                        isDeletionAllowed
+                                            ? {
+                                                  isAllowed: true,
+                                                  onDelete: () => onDelete(file.id as string),
+                                              }
+                                            : { isAllowed: false }
+                                    }
+                                    onDownload={onDownload}
+                                    onCancel={handleCancelUpload}
+                                    locale={locale}
+                                    readOnly={false}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
             )}
 

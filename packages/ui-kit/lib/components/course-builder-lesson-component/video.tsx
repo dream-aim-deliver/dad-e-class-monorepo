@@ -88,6 +88,8 @@ interface VideoFileEditProps extends DesignerComponentProps {
     onFileDelete: () => void;
     /** Callback function to handle file download */
     onFileDownload: () => void;
+    /** Current upload progress percentage (0-100) */
+    uploadProgress?: number;
 }
 
 /**
@@ -118,6 +120,7 @@ export function DesignerComponent({
     onFileDownload,
     maxSize,
     validationError,
+    uploadProgress,
 }: VideoFileEditProps) {
     if (elementInstance.type !== CourseElementType.VideoFile) return null;
     const dictionary = getDictionary(locale);
@@ -158,6 +161,7 @@ export function DesignerComponent({
                 locale={locale}
                 maxSize={maxSize}
                 isDeletionAllowed={true}
+                uploadProgress={uploadProgress}
             />
         </DesignerLayout>
     );

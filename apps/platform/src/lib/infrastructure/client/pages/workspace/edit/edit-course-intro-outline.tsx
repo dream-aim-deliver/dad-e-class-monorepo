@@ -25,12 +25,14 @@ interface EditCourseIntroOutlineProps {
     setCourseVersion: (version: number | null) => void;
     courseIntroduction: CourseIntroductionForm;
     introductionVideoUpload: IntroductionVideoUploadState;
+    introductionUploadProgress?: number;
     setIsEdited: (isEdited: boolean) => void;
     outlineItems: AccordionBuilderItem[];
     setOutlineItems: React.Dispatch<
         React.SetStateAction<AccordionBuilderItem[]>
     >;
     accordionIconUpload: AccordionIconUploadState;
+    accordionUploadProgress?: number;
 }
 
 export function CourseIntroOutlinePreview({ slug }: { slug: string }) {
@@ -48,10 +50,12 @@ export default function EditCourseIntroOutline({
     setCourseVersion,
     courseIntroduction,
     introductionVideoUpload,
+    introductionUploadProgress,
     setIsEdited,
     outlineItems,
     setOutlineItems,
     accordionIconUpload,
+    accordionUploadProgress,
 }: EditCourseIntroOutlineProps) {
     const locale = useLocale() as TLocale;
     const editCourseIntroOutlineTranslations = useTranslations(
@@ -124,6 +128,7 @@ export default function EditCourseIntroOutline({
                 onDownload={introductionVideoUpload.handleDownload}
                 videoFile={introductionVideoUpload.video}
                 uploadError={introductionVideoUpload.uploadError}
+                uploadProgress={introductionUploadProgress}
             />
             <div className="flex flex-col gap-4">
                 <h2>{editCourseIntroOutlineTranslations('outlineText')}</h2>
@@ -136,6 +141,7 @@ export default function EditCourseIntroOutline({
                         if (!item.icon) return;
                         accordionIconUpload.handleDownload(item.icon);
                     }}
+                    uploadProgress={accordionUploadProgress}
                     locale={locale}
                 />
             </div>
