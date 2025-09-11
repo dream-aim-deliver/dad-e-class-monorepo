@@ -30,7 +30,7 @@ export default defineConfig({
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     cwd: workspaceRoot,
-    timeout: 1000 * 60 * 2, // 2 minutes
+    timeout: 1000 * 60 * 5, // 5 minutes
   },
   projects: [
     {
