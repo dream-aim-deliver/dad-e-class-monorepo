@@ -1,7 +1,7 @@
 'use client';
 
 import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { useGetCoachingPagePresenter } from '../../hooks/use-coaching-page-presenter';
 import { Suspense, useState } from 'react';
 import {
@@ -39,6 +39,7 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
     >(undefined);
 
     const { presenter } = useGetCoachingPagePresenter(setCoachingPageViewModel);
+    // @ts-ignore
     presenter.present(coachingPageResponse, coachingPageViewModel);
 
     const sessionDTO = useSession();
