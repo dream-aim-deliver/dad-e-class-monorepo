@@ -332,7 +332,7 @@ function VideoComponent({
     };
 
     return (
-        <div className="flex flex-col gap-4 p-4 bg-card-fill border border-base-neutral-700 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+        <div className="flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-200">
             <VideoDesignerComponent
                 elementInstance={elementInstance as VideoElement}
                 locale={locale}
