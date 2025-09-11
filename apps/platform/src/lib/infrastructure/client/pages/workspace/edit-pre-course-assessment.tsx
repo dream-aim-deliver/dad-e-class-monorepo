@@ -304,6 +304,7 @@ function PreCourseAssessmentFormBuilder({
                         // No-op for pre-course assessment
                     }}
                     validationErrors={validationErrors}
+                    hasMaterials={false}
                 />
             </div>
         </div>

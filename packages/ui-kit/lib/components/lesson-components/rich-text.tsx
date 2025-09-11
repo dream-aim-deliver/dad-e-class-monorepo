@@ -60,7 +60,7 @@ const richTextElement: FormElementTemplate = {
 
 interface RichTextDesignerComponentProps extends DesignerComponentProps {
     onContentChange: (value: string) => void;
-    onIncludeInMaterialsChange: (value: boolean) => void;
+    onIncludeInMaterialsChange?: (value: boolean) => void;
 }
 
 export const getValidationError: ElementValidator = (props) => {
@@ -130,14 +130,20 @@ export function DesignerComponent({
             validationError={validationError}
             courseBuilder={isCourseBuilder}
         >
-            <CheckBox
-                name={`include-in-materials-${elementInstance.id}`}
-                value={elementInstance.id}
-                checked={elementInstance.includeInMaterials}
-                withText
-                label="Include rich text in course material tab"
-                onChange={() => onIncludeInMaterialsChange(!elementInstance.includeInMaterials)}
-            />
+            {onIncludeInMaterialsChange && (
+                <CheckBox
+                    name={`include-in-materials-${elementInstance.id}`}
+                    value={elementInstance.id}
+                    checked={elementInstance.includeInMaterials}
+                    withText
+                    label="Include rich text in course material tab"
+                    onChange={() =>
+                        onIncludeInMaterialsChange(
+                            !elementInstance.includeInMaterials,
+                        )
+                    }
+                />
+            )}
             <RichTextEditor
                 name={`rich-text-${elementInstance.id}`}
                 initialValue={content}
