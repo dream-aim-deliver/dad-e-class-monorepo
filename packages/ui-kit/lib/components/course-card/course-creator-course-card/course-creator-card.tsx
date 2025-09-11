@@ -179,13 +179,13 @@ export const CourseCreatorCard: React.FC<CourseCreatorCardProps> = ({
                             </div>
                         )}
 
-                        <CourseCreator
+                        {author?.name && <CourseCreator
                             creatorName={author.name}
                             imageUrl={author.image}
                             locale={locale as TLocale}
                             you={true}
                             onClickUser={onClickUser}
-                        />
+                        />}
 
                         <CourseStats
                             locale={locale as TLocale}
