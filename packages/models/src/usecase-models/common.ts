@@ -1,26 +1,26 @@
 import { z } from "zod";
 
-const BaseAnswer = z.object({
+const BaseProgress = z.object({
     componentId: z.string(),
     type: z.string(),
 });
 
-const TextInputAnswer = BaseAnswer.extend({
+const TextInputProgress = BaseProgress.extend({
     type: z.literal('textInput'),
     answer: z.string(),
 });
 
-const SingleChoiceAnswer = BaseAnswer.extend({
+const SingleChoiceProgress = BaseProgress.extend({
     type: z.literal('singleChoice'),
     answerId: z.string(),
 });
 
-const MultipleChoiceAnswer = BaseAnswer.extend({
+const MultipleChoiceProgress = BaseProgress.extend({
     type: z.literal('multipleChoice'),
     answerIds: z.array(z.string()),
 });
 
-const OneOutOfThreeAnswer = BaseAnswer.extend({
+const OneOutOfThreeProgress = BaseProgress.extend({
     type: z.literal('oneOutOfThree'),
     answers: z.array(z.object({
         rowId: z.string(),
@@ -28,13 +28,26 @@ const OneOutOfThreeAnswer = BaseAnswer.extend({
     }))
 });
 
-export const AnswerSchema = z.discriminatedUnion('type', [
-    TextInputAnswer,
-    SingleChoiceAnswer,
-    MultipleChoiceAnswer,
-    OneOutOfThreeAnswer,
+const UploadFilesProgress = BaseProgress.extend({
+    type: z.literal('uploadFiles'),
+    filesIds: z.array(z.number()),
+});
+
+export const PreCourseAssessmentProgressSchema = z.discriminatedUnion('type', [
+    TextInputProgress,
+    SingleChoiceProgress,
+    MultipleChoiceProgress,
+    OneOutOfThreeProgress,
 ]);
-export type TAnswer = z.infer<typeof AnswerSchema>;
+export type TPreCourseAssessmentProgress = z.infer<typeof PreCourseAssessmentProgressSchema>;
+
+export const LessonProgressSchema = z.discriminatedUnion('type', [
+    TextInputProgress,
+    SingleChoiceProgress,
+    MultipleChoiceProgress,
+    OneOutOfThreeProgress,
+    UploadFilesProgress,
+]);
 
 const BaseComponent = z.object({
     id: z.string(),

@@ -99,7 +99,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                     isError={hasViewModelError || submitMutation.isError}
                     isLoading={submitMutation.isPending}
                     onSubmit={(formValues) => {
-                        const answers: useCaseModels.TAnswer[] =
+                        const answers: useCaseModels.TPreCourseAssessmentProgress[] =
                             transformFormAnswers(formValues);
                         submitMutation.mutate({
                             answers,
