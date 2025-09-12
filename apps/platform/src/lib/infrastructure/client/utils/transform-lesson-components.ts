@@ -23,7 +23,7 @@ import {
     CourseElementType,
     AssignmentElement,
 } from '@maany_shr/e-class-ui-kit';
-import { TAnswer } from 'packages/models/src/usecase-models';
+import { TPreCourseAssessmentProgress } from 'packages/models/src/usecase-models';
 
 function transformRichText(
     component: Extract<useCaseModels.TLessonComponent, { type: 'richText' }>,
@@ -453,7 +453,7 @@ export function transformLessonComponents(
 
 const applyTextInputProgress = (
     element: TextInputElement,
-    answer: TAnswer,
+    answer: TPreCourseAssessmentProgress,
 ): void => {
     if (answer.type === 'textInput') {
         element.content = answer.answer;
@@ -462,7 +462,7 @@ const applyTextInputProgress = (
 
 const applySingleChoiceProgress = (
     element: SingleChoiceElement,
-    answer: TAnswer,
+    answer: TPreCourseAssessmentProgress,
 ): void => {
     if (answer.type === 'singleChoice') {
         element.options.forEach((option) => {
@@ -473,7 +473,7 @@ const applySingleChoiceProgress = (
 
 const applyMultiCheckProgress = (
     element: MultiCheckElement,
-    answer: TAnswer,
+    answer: TPreCourseAssessmentProgress,
 ): void => {
     if (answer.type === 'multipleChoice') {
         element.options.forEach((option) => {
@@ -486,7 +486,7 @@ const applyMultiCheckProgress = (
 
 const applyOneOutOfThreeProgress = (
     element: OneOutOfThreeElement,
-    answer: TAnswer,
+    answer: TPreCourseAssessmentProgress,
 ): void => {
     if (answer.type === 'oneOutOfThree') {
         for (const row of element.data.rows) {
@@ -501,7 +501,7 @@ const applyOneOutOfThreeProgress = (
 
 const progressAppliers: Record<
     FormElementType | CourseElementType,
-    ((element: any, answer: TAnswer) => void) | undefined
+    ((element: any, answer: TPreCourseAssessmentProgress) => void) | undefined
 > = {
     [FormElementType.TextInput]: applyTextInputProgress,
     [FormElementType.SingleChoice]: applySingleChoiceProgress,
@@ -525,7 +525,7 @@ const progressAppliers: Record<
 
 export function applyProgressToElements(
     elements: LessonElement[],
-    answers: TAnswer[],
+    answers: TPreCourseAssessmentProgress[],
 ): void {
     const answersMap = new Map(
         answers.map((answer) => [answer.componentId, answer]),
@@ -545,7 +545,7 @@ export function applyProgressToElements(
 
 export function transformLessonComponentsWithProgress(
     components: useCaseModels.TLessonComponent[],
-    answers: TAnswer[],
+    answers: TPreCourseAssessmentProgress[],
 ): LessonElement[] {
     const elements = transformLessonComponents(components);
     applyProgressToElements(elements, answers);

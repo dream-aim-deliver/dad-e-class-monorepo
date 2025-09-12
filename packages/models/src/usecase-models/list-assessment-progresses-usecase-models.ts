@@ -4,7 +4,7 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { AnswerSchema } from './common';
+import { PreCourseAssessmentProgressSchema } from './common';
 
 export const ListAssessmentProgressesRequestSchema = z.object({
   courseSlug: z.string(),
@@ -14,7 +14,7 @@ export const ListAssessmentProgressesRequestSchema = z.object({
 export type TListAssessmentProgressesRequest = z.infer<typeof ListAssessmentProgressesRequestSchema>;
 
 export const ListAssessmentProgressesSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
-  progress: z.array(AnswerSchema)
+  progress: z.array(PreCourseAssessmentProgressSchema)
 }));
 
 export type TListAssessmentProgressesSuccessResponse = z.infer<typeof ListAssessmentProgressesSuccessResponseSchema>;
