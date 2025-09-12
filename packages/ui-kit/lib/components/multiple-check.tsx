@@ -7,7 +7,7 @@ import { Button } from './button';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 export type optionsType = {
-    id?: number;
+    id?: string;
     name: string;
     isSelected: boolean;
 }

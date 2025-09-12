@@ -10,7 +10,7 @@ import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { IconError, IconSuccess } from "../../icons";
 
 export interface QuizOption {
-  id: number;
+  id: string;
   optionText: string;
   correct: boolean;
   selected: boolean;

@@ -12,10 +12,10 @@ interface OneOutOfThreeData {
   tableTitle: string;
 
   rows: {
-    id?: number;
+    id?: string;
     rowTitle: string;
     columns: {
-      id?: number;
+      id?: string;
       columnTitle: string;
       selected: boolean;
     }[];

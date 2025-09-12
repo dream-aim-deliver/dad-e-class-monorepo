@@ -42,11 +42,11 @@ export interface QuizTypeOneElement extends BaseCourseFormElement {
     description: string;
     imageFile: ImageFileMetadata | null;
     options: {
-        id: number;
+        id: string;
         name: string;
         correct?: boolean;
     }[];
-    correctOptionId?: number;
+    correctOptionId?: string;
 }
 
 export interface QuizTypeTwoElement extends BaseCourseFormElement {
@@ -55,14 +55,14 @@ export interface QuizTypeTwoElement extends BaseCourseFormElement {
     description: string;
     imageFile: ImageFileMetadata | null;
     groups: {
-        id: number;
+        id: string;
         title: string;
         options: {
-            id: number;
+            id: string;
             name: string;
             correct?: boolean;
         }[];
-        correctOptionId?: number;
+        correctOptionId?: string;
     }[];
 }
 
@@ -71,12 +71,12 @@ export interface QuizTypeThreeElement extends BaseCourseFormElement {
     title: string;
     description: string;
     options: {
-        id: number;
+        id: string;
         imageFile: ImageFileMetadata | null;
         description: string;
         correct: boolean;
     }[];
-    correctOptionId?: number;
+    correctOptionId?: string;
 }
 
 export interface QuizTypeFourElement extends BaseCourseFormElement {

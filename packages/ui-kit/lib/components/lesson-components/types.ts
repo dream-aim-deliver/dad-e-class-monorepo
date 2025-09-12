@@ -86,7 +86,7 @@ export interface TextInputElement extends BaseFormElement {
  * ```
  */
 export interface ChoiceOption {
-    id?: number;
+    id?: string;
     name: string;
     isSelected: boolean;
 }

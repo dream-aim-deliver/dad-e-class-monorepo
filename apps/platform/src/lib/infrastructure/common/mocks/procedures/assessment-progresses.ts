@@ -7,7 +7,7 @@ const mockFirst: useCaseModels.TListAssessmentProgressesSuccessResponse['data'] 
             {
                 componentId: 'comp_003',
                 type: 'singleChoice',
-                answerId: 4,
+                answerId: '4',
             },
         ],
     };
@@ -18,7 +18,7 @@ const mockSecond: useCaseModels.TListAssessmentProgressesSuccessResponse['data']
             {
                 componentId: 'comp_104',
                 type: 'multipleChoice',
-                answerIds: [1, 2, 3, 5],
+                answerIds: ['1', '2', '3', '5'],
             },
             {
                 componentId: 'comp_105',
@@ -72,20 +72,20 @@ const mockThird: useCaseModels.TListAssessmentProgressesSuccessResponse['data'] 
                 componentId: 'comp_204',
                 type: 'oneOutOfThree',
                 answers: [
-                    { rowId: 1, columnId: 1 },
-                    { rowId: 2, columnId: 2 },
-                    { rowId: 3, columnId: 3 },
+                    { rowId: '1', columnId: '1' },
+                    { rowId: '2', columnId: '2' },
+                    { rowId: '3', columnId: '3' },
                 ],
             },
             {
                 componentId: 'comp_205',
                 type: 'singleChoice',
-                answerId: 1,
+                answerId: '1',
             },
             {
                 componentId: 'comp_207',
                 type: 'multipleChoice',
-                answerIds: [1, 2, 3, 6],
+                answerIds: ['1', '2', '3', '6'],
             },
         ],
     };
