@@ -5,10 +5,10 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { AnswerSchema } from './common';
+import { PreCourseAssessmentProgressSchema } from './common';
 
 export const SubmitAssessmentProgressRequestSchema = z.object({
-  answers: z.array(AnswerSchema),
+  answers: z.array(PreCourseAssessmentProgressSchema),
   courseSlug: z.string(),
   studentId: z.string().optional(),
 });
