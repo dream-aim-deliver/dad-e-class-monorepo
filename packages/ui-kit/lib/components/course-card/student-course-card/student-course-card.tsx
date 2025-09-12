@@ -8,6 +8,7 @@ import { CourseActions } from './course-actions';
 import { StarRating } from '../../star-rating';
 import { course } from '@maany_shr/e-class-models';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import RichTextRenderer from '../../rich-text-element/renderer';
 
 export type TCourseMetadata = z.infer<typeof course.CourseMetadataSchema>;
 
@@ -166,9 +167,7 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
           </div>
 
           {studyProgress === 'yet-to-start' && description && (
-            <p className="text-sm leading-[150%] text-text-secondary text-start">
-              {description}
-            </p>
+            <RichTextRenderer content={description} onDeserializationError={console.error} className="text-sm leading-[150%] text-text-secondary text-start" />
           )}
 
           {studyProgress === 'in-progress' && (
