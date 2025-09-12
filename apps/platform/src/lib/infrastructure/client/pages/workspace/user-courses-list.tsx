@@ -126,7 +126,7 @@ export default function UserCoursesList() {
                         currency: '',
                         fullPrice: 0,
                     };
-                    if (course.role === 'course_creator' || isAdmin) {
+                    if (course.role === 'course_creator') {
                         const stateToStatus: Record<string, CourseStatus> = {
                             draft: 'draft',
                             review: 'under-review',
