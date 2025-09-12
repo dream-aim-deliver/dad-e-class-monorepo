@@ -920,12 +920,12 @@ const quizTypeInitializers: Record<string, () => LessonElement> = {
         imageFile: null,
         groups: [
             {
-                id: 0,
+                id: '0',
                 title: '',
                 options: [],
             },
             {
-                id: 1,
+                id: '1',
                 title: '',
                 options: [],
             },
@@ -938,13 +938,13 @@ const quizTypeInitializers: Record<string, () => LessonElement> = {
         description: '',
         options: [
             {
-                id: 0,
+                id: '0',
                 imageFile: null,
                 description: '',
                 correct: false,
             },
             {
-                id: 1,
+                id: '1',
                 imageFile: null,
                 description: '',
                 correct: false,

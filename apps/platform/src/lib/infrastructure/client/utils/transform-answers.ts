@@ -43,7 +43,7 @@ function transformSingleChoiceAnswer(
 function transformMultiCheckAnswer(
     element: MultiCheckElement,
 ): Extract<useCaseModels.TAnswer, { type: 'multipleChoice' }> {
-    const answerIds: number[] = [];
+    const answerIds: string[] = [];
 
     for (const option of element.options) {
         if (option.isSelected && option.id) {
@@ -67,7 +67,7 @@ function transformMultiCheckAnswer(
 function transformOneOutOfThreeAnswer(
     element: OneOutOfThreeElement,
 ): Extract<useCaseModels.TAnswer, { type: 'oneOutOfThree' }> {
-    const answers: Array<{ rowId: number; columnId: number }> = [];
+    const answers: Array<{ rowId: string; columnId: string }> = [];
 
     for (const row of element.data.rows) {
         const selectedColumn = row.columns.find((col) => col.selected);

@@ -53,6 +53,8 @@ function transformSingleChoice(
         { type: 'singleChoice' }
     >,
 ): SingleChoiceElement {
+    const selectedId = component.progress?.answerId;
+
     return {
         type: LessonElementType.SingleChoice,
         id: component.id,
@@ -60,7 +62,7 @@ function transformSingleChoice(
         options: component.options.map((option) => ({
             id: option.id,
             name: option.name,
-            isSelected: false,
+            isSelected: selectedId !== undefined && option.id === selectedId,
         })),
         required: component.required,
     };
@@ -76,11 +78,14 @@ function transformMultipleChoice(
         type: LessonElementType.MultiCheck,
         id: component.id,
         title: component.title,
-        options: component.options.map((option) => ({
-            id: option.id,
-            name: option.name,
-            isSelected: false,
-        })),
+        options: component.options.map((option) => {
+            const isSelected = component.progress?.answerIds.includes(option.id);
+            return {
+                id: option.id,
+                name: option.name,
+                isSelected: isSelected ?? false,
+            };
+        }),
         required: component.required,
     };
 }
@@ -102,26 +107,32 @@ function transformOneOutOfThree(
         { type: 'oneOutOfThree' }
     >,
 ): OneOutOfThreeElement {
-    const columns = component.columns.map((column) => ({
-        id: column.id,
-        columnTitle: column.name,
-        selected: false,
-    }));
-
     return {
         type: LessonElementType.OneOutOfThree,
         id: component.id,
         data: {
             tableTitle: component.title,
-            rows: component.rows.map((row) => ({
-                id: row.id,
-                rowTitle: row.name,
-                columns: structuredClone(columns),
-            })),
+            rows: component.rows.map((row) => {
+                const columns = component.columns.map((column) => {
+                    const isSelected = component.progress?.answers.some(
+                        (a) => a.rowId === row.id && a.columnId === column.id,
+                    );
+                    return {
+                        id: column.id,
+                        columnTitle: column.name,
+                        selected: isSelected || false,
+                    };
+                });
+                return {
+                    id: row.id,
+                    rowTitle: row.name,
+                    columns: columns,
+                };
+            }),
         },
         required: component.required,
     };
-}
+};
 
 function transformVideo(
     component: Extract<useCaseModels.TLessonComponent, { type: 'video' }>,
@@ -209,7 +220,13 @@ function transformUploadFiles(
         type: LessonElementType.UploadFiles,
         id: component.id,
         description: component.description,
-        files: null,
+        files: component.progress?.files.map((file) => ({
+            ...file,
+            url: file.downloadUrl,
+            status: 'available',
+            thumbnailUrl: file.downloadUrl,
+            category: 'generic',
+        })) ?? null,
     };
 }
 
@@ -331,11 +348,11 @@ function transformLinks(
             url: link.url,
             customIcon: link.iconFile
                 ? {
-                      ...link.iconFile,
-                      status: 'available',
-                      url: link.iconFile?.downloadUrl,
-                      thumbnailUrl: link.iconFile?.downloadUrl,
-                  }
+                    ...link.iconFile,
+                    status: 'available',
+                    url: link.iconFile?.downloadUrl,
+                    thumbnailUrl: link.iconFile?.downloadUrl,
+                }
                 : undefined,
         })),
         includeInMaterials: component.includeInMaterials,
