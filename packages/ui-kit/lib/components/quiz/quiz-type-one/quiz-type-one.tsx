@@ -167,7 +167,7 @@ const QuizTypeOne: FC<QuizTypeOneProps> = ({
     };
 
     const handleAddChoice = () => {
-        const newOption = { id: 0, name: '' };
+        const newOption = { id: '0', name: '' };
         handleChange({ options: [...element.options, newOption] });
     };
 

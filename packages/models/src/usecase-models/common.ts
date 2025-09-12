@@ -12,19 +12,19 @@ const TextInputAnswer = BaseAnswer.extend({
 
 const SingleChoiceAnswer = BaseAnswer.extend({
     type: z.literal('singleChoice'),
-    answerId: z.number(),
+    answerId: z.string(),
 });
 
 const MultipleChoiceAnswer = BaseAnswer.extend({
     type: z.literal('multipleChoice'),
-    answerIds: z.array(z.number()),
+    answerIds: z.array(z.string()),
 });
 
 const OneOutOfThreeAnswer = BaseAnswer.extend({
     type: z.literal('oneOutOfThree'),
     answers: z.array(z.object({
-        rowId: z.number(),
-        columnId: z.number(),
+        rowId: z.string(),
+        columnId: z.string(),
     }))
 });
 
@@ -35,6 +35,7 @@ export const AnswerSchema = z.discriminatedUnion('type', [
     OneOutOfThreeAnswer,
 ]);
 export type TAnswer = z.infer<typeof AnswerSchema>;
+
 const BaseComponent = z.object({
     id: z.string(),
     order: z.number(),
@@ -42,7 +43,7 @@ const BaseComponent = z.object({
 });
 
 const OptionSchema = z.object({
-    id: z.number(),
+    id: z.string(),
     name: z.string(),
 });
 
@@ -93,6 +94,9 @@ const TextInputSchema = BaseComponent.extend({
     type: z.literal('textInput'),
     helperText: z.string(),
     required: z.boolean(),
+    progress: z.object({
+        answer: z.string(),
+    }).optional(),
 });
 
 const SingleChoiceSchema = BaseComponent.extend({
@@ -100,6 +104,9 @@ const SingleChoiceSchema = BaseComponent.extend({
     title: z.string(),
     options: z.array(OptionSchema),
     required: z.boolean(),
+    progress: z.object({
+        answerId: z.string(),
+    }).optional(),
 });
 
 const MultipleChoiceSchema = BaseComponent.extend({
@@ -107,6 +114,9 @@ const MultipleChoiceSchema = BaseComponent.extend({
     title: z.string(),
     options: z.array(OptionSchema),
     required: z.boolean(),
+    progress: z.object({
+        answerIds: z.array(z.string()),
+    }).optional(),
 });
 
 const OneOutOfThreeSchema = BaseComponent.extend({
@@ -115,6 +125,12 @@ const OneOutOfThreeSchema = BaseComponent.extend({
     columns: z.array(OptionSchema),
     rows: z.array(OptionSchema),
     required: z.boolean(),
+    progress: z.object({
+        answers: z.array(z.object({
+            rowId: z.string(),
+            columnId: z.string(),
+        }))
+    }).optional(),
 });
 
 const VideoSchema = BaseComponent.extend({
@@ -150,22 +166,25 @@ export const DownloadFilesSchema = BaseComponent.extend({
 const UploadFilesSchema = BaseComponent.extend({
     type: z.literal('uploadFiles'),
     description: z.string(),
+    progress: z.object({
+        files: FileSchema.array(),
+    }).optional(),
 });
 
 const QuizOptionWithImageSchema = z.object({
-    id: z.number(),
+    id: z.string(),
     imageFile: ImageFileSchema,
     description: z.string(),
 });
 
 const QuizGroupSchema = z.object({
-    id: z.number(),
+    id: z.string(),
     title: z.string(),
     options: z.array(z.object({
-        id: z.number(),
+        id: z.string(),
         name: z.string(),
     })),
-    correctOptionId: z.number(),
+    correctOptionId: z.string(),
 });
 
 const QuizTypeOneSchema = BaseComponent.extend({
@@ -174,7 +193,7 @@ const QuizTypeOneSchema = BaseComponent.extend({
     description: z.string(),
     imageFile: ImageFileSchema,
     options: z.array(OptionSchema),
-    correctOptionId: z.number(),
+    correctOptionId: z.string(),
 });
 
 const QuizTypeTwoSchema = BaseComponent.extend({
@@ -190,7 +209,7 @@ const QuizTypeThreeSchema = BaseComponent.extend({
     title: z.string(),
     description: z.string(),
     options: z.array(QuizOptionWithImageSchema),
-    correctOptionId: z.number(),
+    correctOptionId: z.string(),
 });
 
 const QuizTypeFourSchema = BaseComponent.extend({
@@ -205,6 +224,7 @@ const CoachingSessionSchema = BaseComponent.extend({
     courseCoachingOfferingId: z.number(),
     name: z.string(),
     duration: z.number(), // minutes
+    // TODO: add progress field
 });
 
 const AssignmentSchema = BaseComponent.extend({

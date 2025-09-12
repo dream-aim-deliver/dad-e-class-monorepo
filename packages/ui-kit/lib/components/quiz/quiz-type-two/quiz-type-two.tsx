@@ -215,7 +215,7 @@ const QuizTypeTwo: FC<QuizTypeTwoProps> = ({
             if (i !== groupIdx) return grp;
             return {
                 ...grp,
-                options: [...grp.options, { id: 0, name: '', correct: false }],
+                options: [...grp.options, { id: '0', name: '', correct: false }],
             };
         });
         handleChange({ groups: updatedGroups });
