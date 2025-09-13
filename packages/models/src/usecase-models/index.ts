@@ -51,3 +51,7 @@ export * from './list-course-materials-usecase-models';
 export * from './list-student-notes-usecase-models';
 export * from './add-course-coach-usecase-models';
 export * from './remove-course-coach-usecase-models';
+
+export * from './get-public-course-details-usecase-models';
+export * from './list-course-reviews-usecase-models';
+export * from './get-course-packages-usecase-models';

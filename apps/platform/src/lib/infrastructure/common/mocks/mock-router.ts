@@ -50,6 +50,9 @@ import { listCoachStudents } from './procedures/coach-students';
 import { uploadLessonProgressFile } from './procedures/lesson-progress-file';
 import { listCourseMaterials } from './procedures/course-materials';
 import { listStudentNotes } from './procedures/course-notes';
+import { getPublicCourseDetails } from './procedures/get-public-course-detail';
+import { listCourseReviews } from './procedures/course-reviews';
+import { getCoursePackages } from './procedures/course-packages';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -99,6 +102,9 @@ export const mockRouter = t.router({
     uploadLessonProgressFile,
     listCourseMaterials,
     listStudentNotes,
+    getPublicCourseDetails,
+    listCourseReviews,
+    getCoursePackages,
 });
 
 export type MockRouter = typeof mockRouter;

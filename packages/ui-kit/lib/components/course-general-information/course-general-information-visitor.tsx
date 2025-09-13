@@ -206,7 +206,7 @@ export const CourseGeneralInformationVisitor: FC<
         };
 
         return (
-            <div className="flex w-full max-w-full overflow-hidden md:gap-15 gap-4 px-4 py-6 flex-col md:flex-row flex-wrap min-w-0">
+            <div className="flex w-full max-w-full overflow-hidden md:gap-15 gap-4 px-4  flex-col md:flex-row flex-wrap min-w-0">
                 <div className="flex flex-col basis-full md:flex-1 gap-4 md:gap-6 md:pt-9 items-start order-1 md:order-2 min-w-0">
                     {/* Title & rating */}
                     <h1 className="text-text-primary"> {title} </h1>
