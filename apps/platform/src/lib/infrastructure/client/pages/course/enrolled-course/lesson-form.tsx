@@ -67,6 +67,21 @@ export default function LessonForm({
                     answer: element.content,
                 });
             }
+            if (element.type === 'singleChoice') {
+                const answerId = element.options.find((opt) => opt.isSelected)?.id;
+
+                if (!answerId) {
+                    if (element.required) {
+                        throw new Error('Please select an option for all required single choice questions before submitting.');
+                    }
+                    return;
+                }
+                progress.push({
+                    componentId: element.id,
+                    type: 'singleChoice',
+                    answerId: answerId,
+                });
+            }
         }
 
         submitProgressMutation.mutateAsync({
