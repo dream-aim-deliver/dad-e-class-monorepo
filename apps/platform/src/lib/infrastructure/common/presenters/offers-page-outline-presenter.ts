@@ -1,4 +1,4 @@
-dimport { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     ExtractStatusModel,
