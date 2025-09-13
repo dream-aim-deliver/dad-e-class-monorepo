@@ -1,8 +1,11 @@
+
 "use client";
 
-import { CourseGeneralInformationVisitor, CourseIntroBanner, DefaultAccordion, ReviewSnippet, PackageCardList, PackageCard, StarRating, Dropdown } from '@maany_shr/e-class-ui-kit';
+import { CourseGeneralInformationVisitor, CourseIntroBanner, DefaultAccordion, ReviewSnippet, PackageCardList, PackageCard, StarRating, Dropdown, Button } from '@maany_shr/e-class-ui-kit';
+import Image from 'next/image';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import OffersCarousel from '../offers/offers-carousel';
 
 interface VisitorPageProps {
@@ -11,16 +14,18 @@ interface VisitorPageProps {
     outlineData: viewModels.TCourseOutlineSuccess;
     reviews: viewModels.TCourseReviewsSuccess['reviews'];
     packagesData: viewModels.TCoursePackagesSuccess['packages'];
-    offersCarouselData: viewModels.TOffersPageCarouselViewModel;
+    offersCarouselData: viewModels.TOffersPageOutlineViewModel;
+    locale: string;
 }
 
 export default function VisitorPage({ courseData,
-     introductionData,
+    introductionData,
     outlineData, reviews,
     packagesData,
     offersCarouselData,
-
+    locale
 }: VisitorPageProps) {
+    const t = useTranslations('pages.course.visitor');
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
 
     const handleCoachingIncludedChange = (coachingIncluded: boolean) => {
@@ -106,65 +111,65 @@ export default function VisitorPage({ courseData,
                     ? "This course has prerequisites that you should complete first."
                     : "No prerequisites required."
                 }
-                locale="en"
+                locale={locale as "en" | "de"}
             />
             {/* Course Introduction Banner */}
             <CourseIntroBanner
                 description={introductionData.text}
                 videoId={introductionData.video?.playbackId || ''}
                 thumbnailUrl={introductionData.video?.thumbnailUrl || undefined}
-                locale="en"
+                locale={locale}
                 onErrorCallback={handleErrorCallback}
             />
 
             {/* Course Outline Section */}
             <div className="w-full flex flex-col gap-6">
-            
-                    <h2 className="md:text-4xl text-2xl  text-text-primary">
-                        Course Outline
-                    </h2>
-              
-<div className="p-6 bg-card-fill border border-card-stroke rounded-medium">
-                <DefaultAccordion
-                    items={outlineData.items.map(item => ({
-                        title: item.title,
-                        content: item.description,
-                        position: item.position,
-                        iconImageUrl: item.icon?.downloadUrl || undefined,
-                    }))}
-                    showNumbers={true}
-                    className="w-full"
-                />
+
+                <h2 className="md:text-4xl text-2xl  text-text-primary">
+                    {t('courseOutlineTitle')}
+                </h2>
+
+                <div className="p-6 bg-card-fill border border-card-stroke rounded-medium">
+                    <DefaultAccordion
+                        items={outlineData.items.map(item => ({
+                            title: item.title,
+                            content: item.description,
+                            position: item.position,
+                            iconImageUrl: item.icon?.downloadUrl || undefined,
+                        }))}
+                        showNumbers={true}
+                        className="w-full"
+                    />
                 </div>
             </div>
 
             {/* Course Reviews Section */}
             <div className="w-full flex flex-col gap-6">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:items-center gap-2">
+                    <div className="flex flex-col sm:flex-row  sm:items-center gap-2">
                         <h3 className="md:text-3xl text-2xl text-text-primary">
-                            Course Reviews
+                            {t('courseReviewsTitle')}
                         </h3>
                         <div className="flex flex-row items-center gap-2">
                             <h6 className="text-text-primary">{courseData.averageRating}</h6>
                             <StarRating totalStars={5} size="4" rating={courseData.averageRating} />
                             <p className="text-text-secondary text-xs">
-                                {courseData.reviewCount} reviews
+                                {courseData.reviewCount} {t('reviewsCount')}
                             </p>
                         </div>
                     </div>
                     <div className="flex gap-1 items-center">
-                    <label className="md:text-md text-sm text-text-primary">Sort by</label>
-                    <Dropdown
-                        type="simple"
-                        options={[
-                            { label: 'Newest', value: 'newest' },
-                            { label: 'Oldest', value: 'oldest' },
-                        ]}
-                        onSelectionChange={(selected) => setSortOrder(selected as 'newest' | 'oldest')}
-                        text={{ simpleText: 'Sort by' }}
-                        defaultValue="newest"
-                    />
+                        <label className="md:text-md text-sm text-text-primary">{t('sortByLabel')}</label>
+                        <Dropdown
+                            type="simple"
+                            options={[
+                                { label: t('newest'), value: 'newest' },
+                                { label: t('oldest'), value: 'oldest' },
+                            ]}
+                            onSelectionChange={(selected) => setSortOrder(selected as 'newest' | 'oldest')}
+                            text={{ simpleText: t('sortByLabel') }}
+                            defaultValue="newest"
+                        />
                     </div>
                 </div>
 
@@ -182,7 +187,7 @@ export default function VisitorPage({ courseData,
                                 rating={review.rating}
                                 reviewerName={`${review.student.firstName} ${review.student.lastName}`}
                                 reviewerAvatarUrl={review.student.avatarFile?.downloadUrl || ''}
-                                locale="en"
+                                locale={locale}
                             />
                         ))}
                 </div>
@@ -193,14 +198,14 @@ export default function VisitorPage({ courseData,
                 <div className="w-full flex flex-col gap-6">
                     <div className="flex flex-col gap-4">
                         <h3 className="md:text-3xl text-2xl text-text-primary">
-                            Also included in
+                            {t('alsoIncludedIn')}
                         </h3>
                         <p className="text-text-primary md:text-xl text-md">
-                           Learn more while saving. You can get this course included in the following bundles:
+                            {t('alsoIncludedDescription')}
                         </p>
                     </div>
 
-                    <PackageCardList locale="en">
+                    <PackageCardList locale={locale}>
                         {packagesData.map(pkg => (
                             <PackageCard
                                 key={pkg.id}
@@ -208,7 +213,7 @@ export default function VisitorPage({ courseData,
                                 courseCount={pkg.courseCount}
                                 onClickPurchase={() => handlePackagePurchase(pkg.id)}
                                 onClickDetails={() => handlePackageDetails(pkg.id)}
-                                locale="en"
+                                locale={locale}
                             />
                         ))}
                     </PackageCardList>
@@ -217,27 +222,37 @@ export default function VisitorPage({ courseData,
 
             {/* Offers Carousel Section */}
             <div className="flex flex-col justify-center gap-10">
-                 <h2 className="md:text-4xl text-2xl  text-text-primary text-center">
-                        Haven't found what your were looking for?
-                    </h2>
-            <OffersCarousel data={offersCarouselData} />
+                <h2 className="md:text-4xl text-2xl  text-text-primary text-center">
+                    {t('notFoundTitle')}
+                </h2>
+                <OffersCarousel items={offersCarouselData?.data?.items || []} />
             </div>
-         <div className="flex sm:flex-row flex-col items-center gap-10">
-            <Image
-                src="/path/to/image.jpg"
-                alt="Descriptive alt text"
-                layout="responsive"
-                width={475}
-                height={275}
-                className="max-w-[475px] rounded-medium"
-            />
-            <div  className="flex flex-col gap-4">
-                <h2 className="md:text-4xl text-2xl  text-base-white">Turn Your Expertise into Earnings</h2>
-                <p className="md:text-lg text-md text-base-white">Have the skills? Become a coach and inspire others! Share your knowledge, teach this course, and earn while making a difference. Join our community of experts.</p>
-                <Button text="Become a Coach" size="medium"/>
-                    
-               
-            </div>
+            <div className="flex sm:flex-row flex-col items-center gap-10">
+                <div className="flex-shrink-0 max-w-[475px] h-[275px]">
+                    <Image
+                        src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=475&h=275&fit=crop&crop=face"
+                        alt="Become a coach and share your knowledge"
+                        width={475}
+                        height={275}
+                        className="rounded-medium w-full h-full object-cover"
+                    />
+                </div>
+                <div className="flex flex-col gap-4">
+                    <h2 className="md:text-4xl text-2xl  text-base-white">{t('becomeCoachTitle')}</h2>
+                    <p className="md:text-lg text-md text-base-white">{t('becomeCoachDescription')}</p>
+                    <div>
+                    <Button
+                        onClick={() => {
+                            // TODO: Implement become coach logic
+                            console.log('Become coach button clicked');
+                        }}
+                        className="!w-auto"
+                        text={t('becomeCoachButton')}
+                        size="big"
+                    />
+</div>
+
+                </div>
 
             </div>
         </div>
