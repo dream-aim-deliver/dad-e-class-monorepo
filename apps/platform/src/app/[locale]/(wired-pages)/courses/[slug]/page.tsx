@@ -1,10 +1,11 @@
+import { TLocale } from '@maany_shr/e-class-translations';
 import CourseServerComponent from '../../../../../lib/infrastructure/server/pages/course-rsc';
 
 export default async function Page({
     params: paramsPromise,
     searchParams: searchParamsPromise,
 }: {
-    params: Promise<{ locale: string; slug: string }>;
+    params: Promise<{ locale: TLocale; slug: string }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const params = await paramsPromise;
