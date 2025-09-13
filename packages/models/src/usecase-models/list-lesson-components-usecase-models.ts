@@ -8,6 +8,7 @@ import { LessonComponentSchema } from './common';
 
 export const ListLessonComponentsRequestSchema = z.object({
   lessonId: z.number(),
+  withProgress: z.boolean().optional(),
 });
 
 export type TListLessonComponentsRequest = z.infer<typeof ListLessonComponentsRequestSchema>;
