@@ -292,7 +292,7 @@ export function ProgressEnrolledCourse(props: EnrolledCourseProps) {
     return (
         <EnrolledCourseContent
             {...props}
-            //studentProgressViewModel={studentProgressViewModel}
+        //studentProgressViewModel={studentProgressViewModel}
         />
     );
 }
