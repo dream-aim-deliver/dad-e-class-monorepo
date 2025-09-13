@@ -208,7 +208,7 @@ export function FormComponent({
     };
 
     const [value, setValue] = useState<Descendant[]>(
-        deserialize({ serializedData: '', onError: onDeserializationError }),
+        deserialize({ serializedData: elementInstance.content ?? '', onError: onDeserializationError }),
     );
 
     const onLoseFocus = () => {

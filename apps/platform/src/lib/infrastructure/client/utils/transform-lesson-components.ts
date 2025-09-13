@@ -98,6 +98,7 @@ function transformTextInput(
         id: component.id,
         helperText: component.helperText,
         required: component.required,
+        content: component.progress?.answer,
     };
 }
 
