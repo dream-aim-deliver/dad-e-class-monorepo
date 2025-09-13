@@ -39,6 +39,10 @@ export * from './student-notes-view-model';
 export * from './lesson-note-view-model';
 export * from './coach-mutation-view-model';
 
+export * from './public-course-details-view-model';
+export * from './course-reviews-view-model';
+export * from './course-packages-view-model';
+
 export * from './student-coaching-sessions-list-view-model';
 export * from './create-coaching-session-review-view-model';
 export * from './unschedule-coaching-session-view-model';
