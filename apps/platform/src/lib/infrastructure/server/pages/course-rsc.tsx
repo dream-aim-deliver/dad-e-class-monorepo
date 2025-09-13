@@ -1,5 +1,6 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { createGetCourseAccessPresenter } from '../presenter/get-course-access-presenter';
+import { createGetOffersPageCarouselPresenter } from '../presenter/get-offers-page-carousel-presenter';
+import { createGetPublicCourseDetailsPresenter } from '../presenter/get-public-course-details-presenter';
 import { notFound, redirect } from 'next/navigation';
 import AssessmentForm from '../../client/pages/course/assessment-form';
 import EnrolledCourse from '../../client/pages/course/enrolled-course/enrolled-course';
@@ -7,17 +8,26 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import { getQueryClient, trpc, prefetch } from '../config/trpc/cms-server';
 import { trpc as trpcMock, HydrateClient, prefetch as prefetchMock } from '../config/trpc/server';
+import VisitorPage from '../../client/pages/course/visitor-page';
+import { createGetCourseAccessPresenter } from '../presenter/get-course-access-presenter';
+import MockTRPCClientProviders from '../../client/trpc/mock-client-providers';
+import { createListCourseReviewsPresenter } from '../presenter/list-course-reviews-presenter';
+import { createGetCourseIntroductionPresenter } from '../presenter/get-course-introduction-presenter';
+import { createGetCourseOutlinePresenter } from '../presenter/get-course-outline-presenter';
+import { createGetCoursePackagesPresenter } from '../presenter/get-course-packages-presenter';
+import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
+
 
 interface CourseServerComponentProps {
     slug: string;
     role?: string;
-    tab?: string;
+    tab?: string
 }
 
 export default async function CourseServerComponent({
     slug,
     role,
-    tab,
+    tab
 }: CourseServerComponentProps) {
     const courseAccessViewModel = await fetchCourseAccess(slug);
     if (courseAccessViewModel.mode !== 'default') {
@@ -51,7 +61,7 @@ export default async function CourseServerComponent({
 async function fetchCourseAccess(
     slug: string,
 ): Promise<viewModels.TCourseAccessViewModel> {
-    const queryOptions = trpc.getCourseAccess.queryOptions({
+    const queryOptions = trpcMock.getCourseAccess.queryOptions({
         courseSlug: slug,
     });
     const queryClient = getQueryClient();
@@ -62,14 +72,12 @@ async function fetchCourseAccess(
         courseAccessViewModel = viewModel;
     });
 
-    // @ts-ignore
     await presenter.present(courseAccessResponse, courseAccessViewModel);
 
     if (!courseAccessViewModel) {
         // TODO: would we need to localize these error messages?
         throw new Error('Failed to load course access data');
     }
-
     return courseAccessViewModel;
 }
 
@@ -183,6 +191,167 @@ function renderEnrolledCourse({
     );
 }
 
-function renderVisitorView(slug: string) {
-    return <div>Visitor View</div>;
+async function renderVisitorView(slug: string) {
+    // Fetch all required data for visitor view serially
+    const { courseDetails: visitorData,
+        courseIntroduction: introductionData,
+        offersCarousel: offersCarouselData,
+        outline: outlineData, reviews: reviewsData,
+        packages: packagesData
+    } = await fetchVisitorCourseData(slug);
+
+ if (visitorData?.mode !== 'default' ||
+        introductionData?.mode !== 'default' ||
+        outlineData?.mode !== 'default' ||
+        reviewsData?.mode !== 'default' ||
+        packagesData?.mode !== 'default' ||
+        offersCarouselData?.mode !== 'default') {
+        // Instead of returning <DefaultError />, throw an error
+        return <DefaultError locale="en" />;
+    }
+    return (
+        <MockTRPCClientProviders>
+            <Suspense fallback={<DefaultLoadingWrapper />}>
+                <VisitorPage
+                    courseData={visitorData.data}
+                    introductionData={introductionData.data as viewModels.TCourseIntroductionSuccess}
+                    outlineData={outlineData.data as viewModels.TCourseOutlineSuccess}
+                    reviews={reviewsData.data.reviews}
+                    packagesData={packagesData.data.packages}
+                    offersCarouselData={offersCarouselData}
+                />
+            </Suspense>
+        </MockTRPCClientProviders>
+    );
+}
+async function fetchVisitorCourseData(slug: string) {
+    const queryClient = await getQueryClient();
+
+    //   TODO: 1. GetPublicCourseDetails - MOCK endpoint (no real backend available)
+    const courseDetailsPromise = (async () => {
+        const courseDetailsQuery = trpcMock.getPublicCourseDetails.queryOptions({
+            courseSlug: slug,
+        });
+        const courseDetailsResponse = await queryClient.fetchQuery(courseDetailsQuery);
+
+        let courseDetailViewModel: viewModels.TPublicCourseDetailsViewModel | undefined;
+
+        const presenter = createGetPublicCourseDetailsPresenter((viewModel) => {
+            courseDetailViewModel = viewModel;
+        });
+        await presenter.present(courseDetailsResponse, courseDetailViewModel);
+     
+
+        return courseDetailViewModel;
+    })();
+
+
+    const courseIntroductionPromise = (async () => {
+        const courseIntroductionQuery = trpcMock.getCourseIntroduction.queryOptions({
+            courseSlug: slug,
+        });
+        const courseIntroductionResponse = await queryClient.fetchQuery(courseIntroductionQuery);
+
+        let courseIntroductionViewModel: viewModels.TCourseIntroductionViewModel | undefined;
+        const presenter = createGetCourseIntroductionPresenter((viewModel) => {
+            courseIntroductionViewModel = viewModel;
+        });
+        await presenter.present(courseIntroductionResponse, courseIntroductionViewModel);
+    
+
+        return courseIntroductionViewModel;
+    })();
+
+    // 3. GetCourseOutline - MOCK endpoint (using mock for visitor access)
+    const courseOutlinePromise = (async () => {
+        const courseOutlineQuery = trpcMock.getCourseOutline.queryOptions({
+            courseSlug: slug,
+        });
+        const courseOutlineResponse = await queryClient.fetchQuery(courseOutlineQuery);
+
+        let courseOutlineViewModel: viewModels.TCourseOutlineViewModel | undefined;
+        const presenter = createGetCourseOutlinePresenter((viewModel) => {
+            courseOutlineViewModel = viewModel;
+        });
+        await presenter.present(courseOutlineResponse, courseOutlineViewModel);
+       
+
+        return courseOutlineViewModel;
+    })();
+
+    // 4. ListCourseReviews - MOCK endpoint
+    const courseReviewsPromise = (async () => {
+        const courseReviewsQuery = trpcMock.listCourseReviews.queryOptions({
+            courseSlug: slug,
+        });
+        const courseReviewsResponse = await queryClient.fetchQuery(courseReviewsQuery);
+
+        let courseReviewsViewModel: viewModels.TCourseReviewsViewModel | undefined;
+        const presenter = createListCourseReviewsPresenter((viewModel) => {
+            courseReviewsViewModel = viewModel;
+        });
+        await presenter.present(courseReviewsResponse, courseReviewsViewModel);
+       
+
+        return courseReviewsViewModel;
+    })();
+
+    // 5. GetCoursePackages - MOCK endpoint
+    const coursePackagesPromise = (async () => {
+        const coursePackagesQuery = trpcMock.getCoursePackages.queryOptions({
+            courseSlug: slug,
+        });
+        const coursePackagesResponse = await queryClient.fetchQuery(coursePackagesQuery);
+
+        let coursePackagesViewModel: viewModels.TCoursePackagesViewModel | undefined;
+        const presenter = createGetCoursePackagesPresenter((viewModel) => {
+            coursePackagesViewModel = viewModel;
+        });
+        await presenter.present(coursePackagesResponse, coursePackagesViewModel);
+        
+
+        return coursePackagesViewModel;
+    })();
+
+    // 6. GetOffersPageCarousel - REAL backend endpoint
+    const offersCarouselPromise = (async () => {
+        const offersCarouselQuery = trpc.getOffersPageCarousel.queryOptions({});
+        const offersCarouselResponse = await queryClient.fetchQuery(offersCarouselQuery);
+
+        let offersCarouselViewModel: viewModels.TOffersPageCarouselViewModel | undefined;
+        const presenter = createGetOffersPageCarouselPresenter((viewModel) => {
+            offersCarouselViewModel = viewModel;
+        });
+        await presenter.present(offersCarouselResponse, offersCarouselViewModel);
+
+
+        return offersCarouselViewModel;
+    })();
+
+    // Execute all promises in parallel
+    const [
+        courseDetailsViewModel,
+        courseIntroductionViewModel,
+        courseOutlineViewModel,
+        courseReviewsViewModel,
+        coursePackagesViewModel,
+        offersCarouselViewModel,
+    ] = await Promise.all([
+        courseDetailsPromise,
+        courseIntroductionPromise,
+        courseOutlinePromise,
+        courseReviewsPromise,
+        coursePackagesPromise,
+        offersCarouselPromise,
+    ]);
+
+    // Combine and return transformed view models
+    return {
+        courseDetails: courseDetailsViewModel,
+        courseIntroduction: courseIntroductionViewModel,
+        outline: courseOutlineViewModel,
+        reviews: courseReviewsViewModel,
+        packages: coursePackagesViewModel,
+        offersCarousel: offersCarouselViewModel,
+    };
 }
