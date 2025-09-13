@@ -82,6 +82,45 @@ export default function LessonForm({
                     answerId: answerId,
                 });
             }
+            if (element.type === 'multiCheck') {
+                const selectedOptionIds = element.options
+                    .filter((opt) => opt.isSelected && opt.id !== undefined)
+                    .map((opt) => opt.id!);
+
+                if (selectedOptionIds.length === 0) {
+                    if (element.required) {
+                        throw new Error('Please select at least one option for all required multiple choice questions before submitting.');
+                    }
+                    return;
+                }
+                progress.push({
+                    componentId: element.id,
+                    type: 'multipleChoice',
+                    answerIds: selectedOptionIds,
+                });
+            }
+            if (element.type === 'oneOutOfThree') {
+                const answers: { rowId: string; columnId: string }[] = [];
+                for (const row of element.data.rows) {
+                    if (row.id === undefined) continue;
+                    const selectedOption = row.columns.find((col) => col.selected);
+                    if (selectedOption?.id === undefined) continue;
+                    if (selectedOption) {
+                        answers.push({ rowId: row.id, columnId: selectedOption.id });
+                    }
+                }
+                if (answers.length !== 3) {
+                    if (element.required) {
+                        throw new Error('Please select one option from each row for all required questions before submitting.');
+                    }
+                    return;
+                }
+                progress.push({
+                    componentId: element.id,
+                    type: 'oneOutOfThree',
+                    answers: answers,
+                });
+            }
         }
 
         submitProgressMutation.mutateAsync({
