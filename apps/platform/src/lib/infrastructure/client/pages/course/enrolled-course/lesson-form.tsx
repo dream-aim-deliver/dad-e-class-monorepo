@@ -1,5 +1,5 @@
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
-import { FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
+import { Button, FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
 import { useMemo, useRef } from 'react';
 import { getLessonComponentsMap } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
@@ -8,12 +8,19 @@ import {
     ComponentRendererProps,
     typeToRendererMap,
 } from '../../common/component-renderers';
+import { trpc } from '../../../trpc/client';
 
 interface LessonFormProps {
+    lessonId: number;
     data: viewModels.TLessonComponentListSuccess;
+    enableSubmit?: boolean;
 }
 
-export default function LessonForm({ data }: LessonFormProps) {
+export default function LessonForm({
+    lessonId,
+    data,
+    enableSubmit = false,
+}: LessonFormProps) {
     const components = data.components;
     const locale = useLocale() as TLocale;
 
@@ -22,6 +29,7 @@ export default function LessonForm({ data }: LessonFormProps) {
     }, [components]);
 
     const elementProgress = useRef(new Map([...formElements]));
+    const submitProgressMutation = trpc.submitLessonProgresses.useMutation();
     // When implementing student submission, this will be used to track progress
 
     const renderComponent = (component: useCaseModels.TLessonComponent) => {
@@ -43,9 +51,34 @@ export default function LessonForm({ data }: LessonFormProps) {
         }
     };
 
+    const submitProgress = async () => {
+        const progress: useCaseModels.TLessonProgress[] = [];
+        for (const [_, element] of elementProgress.current) {
+            if (element.type === 'textInput') {
+                if (!element.content || element.content.trim() === '') {
+                    if (element.required) {
+                        throw new Error('Please fill in all required text inputs before submitting.');
+                    }
+                    return;
+                }
+                progress.push({
+                    componentId: element.id,
+                    type: 'textInput',
+                    answer: element.content,
+                });
+            }
+        }
+
+        submitProgressMutation.mutateAsync({
+            lessonId: lessonId,
+            progress: progress,
+        });
+    };
+
     return (
         <div className="flex flex-col gap-4 w-full">
             {components.map(renderComponent)}
+            <Button variant="primary" text="Submit" onClick={submitProgress} />
         </div>
     );
 }

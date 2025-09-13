@@ -39,11 +39,12 @@ import { uploadAccordionIcon } from './procedures/accordion-icon';
 import { getPlatformLanguage } from './procedures/platform-language';
 import { togglePreCourseAssessment } from './procedures/pre-course-assessment';
 import { saveAssessmentComponents } from './procedures/assessment-components';
+import { submitLessonProgresses } from './procedures/lesson-progresses';
 import {
     getCourseIntroduction,
     saveCourseIntroduction,
 } from './procedures/course-introduction';
-import {listCourseStudents} from "./procedures/course-students";
+import { listCourseStudents } from "./procedures/course-students";
 import { listCoachStudents } from './procedures/coach-students';
 
 export const mockRouter = t.router({
@@ -87,6 +88,7 @@ export const mockRouter = t.router({
     savePreCourseAssessmentComponents: saveAssessmentComponents,
     listCourseStudents,
     listCoachStudents,
+    submitLessonProgresses,
 });
 
 export type MockRouter = typeof mockRouter;
