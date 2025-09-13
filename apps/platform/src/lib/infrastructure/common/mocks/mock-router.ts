@@ -129,7 +129,7 @@ export const mockRouter = t.router({
     listNotifications,
     markNotificationsAsRead,
     listCoachCoachingSessions,
-    createNotification
+    createNotification,
 });
 
 export type MockRouter = typeof mockRouter;
