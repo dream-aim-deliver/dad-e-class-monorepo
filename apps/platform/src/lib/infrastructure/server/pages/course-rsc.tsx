@@ -1,5 +1,5 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { createGetOffersPageCarouselPresenter } from '../presenter/get-offers-page-carousel-presenter';
+import { createGetOffersPageOutlinePresenter } from '../presenter/get-offers-page-outline-presenter';
 import { createGetPublicCourseDetailsPresenter } from '../presenter/get-public-course-details-presenter';
 import { notFound, redirect } from 'next/navigation';
 import AssessmentForm from '../../client/pages/course/assessment-form';
@@ -20,12 +20,14 @@ import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
 
 interface CourseServerComponentProps {
     slug: string;
+    locale: string;
     role?: string;
     tab?: string
 }
 
 export default async function CourseServerComponent({
     slug,
+    locale,
     role,
     tab
 }: CourseServerComponentProps) {
@@ -42,7 +44,7 @@ export default async function CourseServerComponent({
     validateUserRole(highestRoleParsed);
 
     if (highestRoleParsed === 'visitor') {
-        return renderVisitorView(slug);
+        return renderVisitorView(slug, locale);
     }
 
     const currentRole = role ?? highestRoleParsed;
@@ -191,7 +193,7 @@ function renderEnrolledCourse({
     );
 }
 
-async function renderVisitorView(slug: string) {
+async function renderVisitorView(slug: string, locale: string) {
     // Fetch all required data for visitor view serially
     const { courseDetails: visitorData,
         courseIntroduction: introductionData,
@@ -200,14 +202,13 @@ async function renderVisitorView(slug: string) {
         packages: packagesData
     } = await fetchVisitorCourseData(slug);
 
- if (visitorData?.mode !== 'default' ||
+    if (visitorData?.mode !== 'default' ||
         introductionData?.mode !== 'default' ||
         outlineData?.mode !== 'default' ||
         reviewsData?.mode !== 'default' ||
         packagesData?.mode !== 'default' ||
         offersCarouselData?.mode !== 'default') {
-        // Instead of returning <DefaultError />, throw an error
-        return <DefaultError locale="en" />;
+        throw new Error('Failed to load visitor course data');
     }
     return (
         <MockTRPCClientProviders>
@@ -219,6 +220,7 @@ async function renderVisitorView(slug: string) {
                     reviews={reviewsData.data.reviews}
                     packagesData={packagesData.data.packages}
                     offersCarouselData={offersCarouselData}
+                    locale={locale}
                 />
             </Suspense>
         </MockTRPCClientProviders>
@@ -240,7 +242,7 @@ async function fetchVisitorCourseData(slug: string) {
             courseDetailViewModel = viewModel;
         });
         await presenter.present(courseDetailsResponse, courseDetailViewModel);
-     
+
 
         return courseDetailViewModel;
     })();
@@ -257,7 +259,7 @@ async function fetchVisitorCourseData(slug: string) {
             courseIntroductionViewModel = viewModel;
         });
         await presenter.present(courseIntroductionResponse, courseIntroductionViewModel);
-    
+
 
         return courseIntroductionViewModel;
     })();
@@ -274,7 +276,7 @@ async function fetchVisitorCourseData(slug: string) {
             courseOutlineViewModel = viewModel;
         });
         await presenter.present(courseOutlineResponse, courseOutlineViewModel);
-       
+
 
         return courseOutlineViewModel;
     })();
@@ -291,7 +293,7 @@ async function fetchVisitorCourseData(slug: string) {
             courseReviewsViewModel = viewModel;
         });
         await presenter.present(courseReviewsResponse, courseReviewsViewModel);
-       
+
 
         return courseReviewsViewModel;
     })();
@@ -308,22 +310,21 @@ async function fetchVisitorCourseData(slug: string) {
             coursePackagesViewModel = viewModel;
         });
         await presenter.present(coursePackagesResponse, coursePackagesViewModel);
-        
+
 
         return coursePackagesViewModel;
     })();
 
-    // 6. GetOffersPageCarousel - REAL backend endpoint
+    // 6. GetOffersPageOutline - MOCK endpoint (consistent with other course data)
     const offersCarouselPromise = (async () => {
-        const offersCarouselQuery = trpc.getOffersPageCarousel.queryOptions({});
+        const offersCarouselQuery = trpcMock.getOffersPageOutline.queryOptions({});
         const offersCarouselResponse = await queryClient.fetchQuery(offersCarouselQuery);
 
-        let offersCarouselViewModel: viewModels.TOffersPageCarouselViewModel | undefined;
-        const presenter = createGetOffersPageCarouselPresenter((viewModel) => {
+        let offersCarouselViewModel: viewModels.TOffersPageOutlineViewModel | undefined;
+        const presenter = createGetOffersPageOutlinePresenter((viewModel) => {
             offersCarouselViewModel = viewModel;
         });
         await presenter.present(offersCarouselResponse, offersCarouselViewModel);
-
 
         return offersCarouselViewModel;
     })();

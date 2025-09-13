@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
                 // The path for mock data. Should be configured with environment variables in production.
                 hostname: 'res.cloudinary.com',
             },
+            {
+                protocol: 'https',
+                hostname: 'images.unsplash.com',
+            },
             ...(process.env.MINIO_HOSTNAME ? [{
                 protocol: (process.env.MINIO_PROTOCOL || 'http') as 'http' | 'https',
                 hostname: process.env.MINIO_HOSTNAME,
