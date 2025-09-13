@@ -13,17 +13,22 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
 import { useListLessonComponentsPresenter } from '../../../hooks/use-lesson-components-presenter';
 import LessonForm from './lesson-form';
-import { trpc } from '../../../trpc/cms-client';
+import { trpc } from '../../../trpc/client';
 
 interface EnrolledCoursePreviewProps {
     courseSlug: string;
+    enableSubmit?: boolean;
 }
 
-function CoursePreviewLesson(props: { lessonId: number }) {
+function CoursePreviewLesson(props: {
+    lessonId: number;
+    enableSubmit?: boolean;
+}) {
     const locale = useLocale() as TLocale;
 
     const [componentsResponse] = trpc.listLessonComponents.useSuspenseQuery({
         lessonId: props.lessonId,
+        withProgress: props.enableSubmit ?? false,
     });
     const [componentsViewModel, setLessonComponentsViewModel] = useState<
         viewModels.TLessonComponentListViewModel | undefined
@@ -42,7 +47,14 @@ function CoursePreviewLesson(props: { lessonId: number }) {
         return <DefaultError locale={locale} />;
     }
 
-    return <LessonForm key={`lesson-preview-${props.lessonId}`} data={componentsViewModel.data} />;
+    return (
+        <LessonForm
+            key={`lesson-preview-${props.lessonId}`}
+            lessonId={props.lessonId}
+            data={componentsViewModel.data}
+            enableSubmit={props.enableSubmit}
+        />
+    );
 }
 
 function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
@@ -179,7 +191,10 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                                 />
                             }
                         >
-                            <CoursePreviewLesson lessonId={currentLesson.id} />
+                            <CoursePreviewLesson
+                                lessonId={currentLesson.id}
+                                enableSubmit={props.enableSubmit}
+                            />
                         </Suspense>
                     </>
                 )}
@@ -190,13 +205,17 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
 
 export default function EnrolledCoursePreview({
     courseSlug,
+    enableSubmit,
 }: EnrolledCoursePreviewProps) {
     const locale = useLocale() as TLocale;
     return (
         <Suspense
             fallback={<DefaultLoading locale={locale} variant="minimal" />}
         >
-            <CoursePreviewContent courseSlug={courseSlug} />
+            <CoursePreviewContent
+                courseSlug={courseSlug}
+                enableSubmit={enableSubmit}
+            />
         </Suspense>
     );
 }

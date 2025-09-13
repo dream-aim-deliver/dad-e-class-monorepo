@@ -48,6 +48,7 @@ export const LessonProgressSchema = z.discriminatedUnion('type', [
     OneOutOfThreeProgress,
     UploadFilesProgress,
 ]);
+export type TLessonProgress = z.infer<typeof LessonProgressSchema>;
 
 const BaseComponent = z.object({
     id: z.string(),

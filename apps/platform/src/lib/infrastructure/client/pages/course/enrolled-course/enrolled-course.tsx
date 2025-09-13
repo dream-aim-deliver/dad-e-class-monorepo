@@ -243,6 +243,9 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                         courseSlug={props.courseSlug}
                     />
                 </Tabs.Content>
+                <Tabs.Content value="study" className={tabContentClass}>
+                    <EnrolledCoursePreview courseSlug={props.courseSlug} enableSubmit />
+                </Tabs.Content>
                 <Tabs.Content value="assignments" className={tabContentClass}>
                     <DefaultError locale={locale} />
                 </Tabs.Content>
