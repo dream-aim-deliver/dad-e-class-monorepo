@@ -16,11 +16,12 @@ import { createGetCourseIntroductionPresenter } from '../presenter/get-course-in
 import { createGetCourseOutlinePresenter } from '../presenter/get-course-outline-presenter';
 import { createGetCoursePackagesPresenter } from '../presenter/get-course-packages-presenter';
 import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 
 interface CourseServerComponentProps {
     slug: string;
-    locale: string;
+    locale: TLocale;
     role?: string;
     tab?: string
 }
@@ -193,7 +194,7 @@ function renderEnrolledCourse({
     );
 }
 
-async function renderVisitorView(slug: string, locale: string) {
+async function renderVisitorView(slug: string, locale: TLocale) {
     // Fetch all required data for visitor view serially
     const { courseDetails: visitorData,
         courseIntroduction: introductionData,
@@ -202,23 +203,20 @@ async function renderVisitorView(slug: string, locale: string) {
         packages: packagesData
     } = await fetchVisitorCourseData(slug);
 
-    if (visitorData?.mode !== 'default' ||
-        introductionData?.mode !== 'default' ||
-        outlineData?.mode !== 'default' ||
-        reviewsData?.mode !== 'default' ||
-        packagesData?.mode !== 'default' ||
-        offersCarouselData?.mode !== 'default') {
-        throw new Error('Failed to load visitor course data');
+    // Ensure all required view models exist
+    if (!visitorData || !introductionData || !outlineData || !reviewsData || !packagesData || !offersCarouselData) {
+        throw new Error('Failed to load course data');
     }
+
     return (
         <MockTRPCClientProviders>
             <Suspense fallback={<DefaultLoadingWrapper />}>
                 <VisitorPage
-                    courseData={visitorData.data}
-                    introductionData={introductionData.data as viewModels.TCourseIntroductionSuccess}
-                    outlineData={outlineData.data as viewModels.TCourseOutlineSuccess}
-                    reviews={reviewsData.data.reviews}
-                    packagesData={packagesData.data.packages}
+                    courseData={visitorData}
+                    introductionData={introductionData}
+                    outlineData={outlineData}
+                    reviewsData={reviewsData}
+                    packagesData={packagesData}
                     offersCarouselData={offersCarouselData}
                     locale={locale}
                 />
