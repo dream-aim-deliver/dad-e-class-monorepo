@@ -164,6 +164,8 @@ export { DesignerComponent as AssignmentDesignerComponent } from './components/c
 
 export { IntroductionForm, useCourseIntroductionForm, type CourseIntroductionForm } from './components/introduction-form';
 export { AccordionBuilder, type AccordionBuilderItem } from './components/accordion-builder';
+export {LessonNoteStudentView , type LessonNoteStudentViewType} from './components/lesson-note/lesson-note-student-view';
+export {LessonNoteView , type LessonNoteViewType} from './components/lesson-note/lesson-note-view';
 
 export { type OneOutOfThreeData } from './components/out-of-three/one-out-of-three';
 export { validatorPerType } from './components/lesson/validators';
