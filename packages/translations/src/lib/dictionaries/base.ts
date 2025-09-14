@@ -1125,6 +1125,12 @@ export const DictionarySchema = z.object({
         coaches: z.string(),
         groups: z.string(),
       }),
+      courseNotes: z.object({
+        yourNotes: z.string(),
+        downloading: z.string(),
+        downloadNotes: z.string(),
+        downloadFailed: z.string(),
+      }),
     }),
     userCourses: z.object({
       yourCourses: z.string(),

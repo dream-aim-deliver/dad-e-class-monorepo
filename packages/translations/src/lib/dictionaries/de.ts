@@ -1093,6 +1093,12 @@ export const DE: TDictionary = {
         coaches: "Coach",
         groups: "Gruppen",
       },
+      courseNotes: {
+        yourNotes: 'Deine Notizen',
+        downloading: 'Wird heruntergeladen...',
+        downloadNotes: 'Notizen herunterladen',
+        downloadFailed: 'PDF konnte nicht erstellt werden: {error}. Bitte versuche es erneut.',
+      },
     },
     userCourses: {
       yourCourses: 'Deine Angebote',

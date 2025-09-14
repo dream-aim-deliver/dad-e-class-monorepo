@@ -1090,6 +1090,12 @@ export const EN: TDictionary = {
         coaches: "Coaches",
         groups: "Groups",
       },
+      courseNotes: {
+        yourNotes: 'Your notes',
+        downloading: 'Downloading...',
+        downloadNotes: 'Download notes',
+        downloadFailed: 'Failed to generate PDF: {error}. Please try again.',
+      },
     },
     userCourses: {
       yourCourses: 'Your offers',

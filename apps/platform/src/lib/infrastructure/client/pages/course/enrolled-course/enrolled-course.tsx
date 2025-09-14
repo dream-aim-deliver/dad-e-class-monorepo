@@ -28,6 +28,7 @@ import { CoachCourseTab, StudentCourseTab } from '../../../utils/course-tabs';
 import EnrolledCourseCompletedAssessment from './enrolled-course-completed-assessment';
 import EnrolledCoursePreview from './enrolled-course-preview';
 import { trpc } from '../../../trpc/cms-client';
+import EnrolledCourseNotes from './enrolled-course-notes';
 // import { trpc as trpcMock } from '../../../trpc/client';
 
 interface EnrolledCourseProps {
@@ -242,8 +243,11 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 <Tabs.Content value="assignments" className={tabContentClass}>
                     <DefaultError locale={locale} />
                 </Tabs.Content>
-                <Tabs.Content value="notes" className={tabContentClass}>
-                    <DefaultError locale={locale} />
+                <Tabs.Content value={StudentCourseTab.NOTES} className={tabContentClass}>
+                    <EnrolledCourseNotes 
+                        courseSlug={props.courseSlug} 
+                        currentRole={props.currentRole}
+                    />
                 </Tabs.Content>
                 <Tabs.Content value="material" className={tabContentClass}>
                     <DefaultError locale={locale} />
