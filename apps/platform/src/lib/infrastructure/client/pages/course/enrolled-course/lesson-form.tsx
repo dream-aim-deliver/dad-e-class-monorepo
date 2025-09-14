@@ -1,5 +1,10 @@
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
-import { Button, FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
+import {
+    Button,
+    FormElement,
+    IconSave,
+    LessonElement,
+} from '@maany_shr/e-class-ui-kit';
 import { useMemo, useRef } from 'react';
 import { getLessonComponentsMap } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
@@ -16,6 +21,120 @@ interface LessonFormProps {
     enableSubmit?: boolean;
 }
 
+const transformTextInput = (
+    element: LessonElement,
+): useCaseModels.TLessonProgress | undefined => {
+    if (element.type !== 'textInput') {
+        throw new Error('Invalid element type for text input transformation');
+    }
+    const isContentEmpty = !element.content || element.content.trim() === '';
+    if (isContentEmpty) {
+        if (element.required) {
+            throw new Error(
+                'Please fill in all required text inputs before submitting.',
+            );
+        }
+        return undefined;
+    }
+    return {
+        componentId: element.id,
+        type: 'textInput',
+        answer: element.content!,
+    };
+};
+
+const transformSingleChoice = (
+    element: LessonElement,
+): useCaseModels.TLessonProgress | undefined => {
+    if (element.type !== 'singleChoice') {
+        throw new Error(
+            'Invalid element type for single choice transformation',
+        );
+    }
+    const answerId = element.options.find((opt) => opt.isSelected)?.id;
+    if (!answerId) {
+        if (element.required) {
+            throw new Error(
+                'Please select an option for all required single choice questions before submitting.',
+            );
+        }
+        return undefined;
+    }
+    return {
+        componentId: element.id,
+        type: 'singleChoice',
+        answerId: answerId,
+    };
+};
+
+const transformMultiCheck = (
+    element: LessonElement,
+): useCaseModels.TLessonProgress | undefined => {
+    if (element.type !== 'multiCheck') {
+        throw new Error(
+            'Invalid element type for multiple choice transformation',
+        );
+    }
+    const selectedOptionIds = element.options
+        .filter((opt) => opt.isSelected && opt.id !== undefined)
+        .map((opt) => opt.id!);
+    if (selectedOptionIds.length === 0) {
+        if (element.required) {
+            throw new Error(
+                'Please select at least one option for all required multiple choice questions before submitting.',
+            );
+        }
+        return undefined;
+    }
+    return {
+        componentId: element.id,
+        type: 'multipleChoice',
+        answerIds: selectedOptionIds,
+    };
+};
+
+const transformOneOutOfThree = (
+    element: LessonElement,
+): useCaseModels.TLessonProgress | undefined => {
+    if (element.type !== 'oneOutOfThree') {
+        throw new Error(
+            'Invalid element type for one out of three transformation',
+        );
+    }
+    const answers: { rowId: string; columnId: string }[] = [];
+    for (const row of element.data.rows) {
+        if (row.id === undefined) continue;
+        const selectedOption = row.columns.find((col) => col.selected);
+        if (selectedOption?.id === undefined) continue;
+        if (selectedOption) {
+            answers.push({ rowId: row.id, columnId: selectedOption.id });
+        }
+    }
+    if (answers.length !== 3) {
+        if (element.required) {
+            throw new Error(
+                'Please select one option from each row for all required questions before submitting.',
+            );
+        }
+        return undefined;
+    }
+    return {
+        componentId: element.id,
+        type: 'oneOutOfThree',
+        answers: answers,
+    };
+};
+
+const typeToProgressTransformers: Record<
+    string,
+    (element: LessonElement) => useCaseModels.TLessonProgress | undefined
+> = {
+    textInput: transformTextInput,
+    singleChoice: transformSingleChoice,
+    multiCheck: transformMultiCheck,
+    oneOutOfThree: transformOneOutOfThree,
+};
+
 export default function LessonForm({
     lessonId,
     data,
@@ -26,6 +145,16 @@ export default function LessonForm({
 
     const formElements: Map<string, LessonElement> = useMemo(() => {
         return getLessonComponentsMap(components);
+    }, [components]);
+
+    const hasInteractiveElements = useMemo(() => {
+        const interactiveTypes = Object.keys(typeToProgressTransformers);
+        for (const component of components) {
+            if (interactiveTypes.includes(component.type)) {
+                return true;
+            }
+        }
+        return false;
     }, [components]);
 
     const elementProgress = useRef(new Map([...formElements]));
@@ -54,72 +183,15 @@ export default function LessonForm({
     const submitProgress = async () => {
         const progress: useCaseModels.TLessonProgress[] = [];
         for (const [_, element] of elementProgress.current) {
-            if (element.type === 'textInput') {
-                if (!element.content || element.content.trim() === '') {
-                    if (element.required) {
-                        throw new Error('Please fill in all required text inputs before submitting.');
-                    }
-                    return;
-                }
-                progress.push({
-                    componentId: element.id,
-                    type: 'textInput',
-                    answer: element.content,
-                });
-            }
-            if (element.type === 'singleChoice') {
-                const answerId = element.options.find((opt) => opt.isSelected)?.id;
-
-                if (!answerId) {
-                    if (element.required) {
-                        throw new Error('Please select an option for all required single choice questions before submitting.');
-                    }
-                    return;
-                }
-                progress.push({
-                    componentId: element.id,
-                    type: 'singleChoice',
-                    answerId: answerId,
-                });
-            }
-            if (element.type === 'multiCheck') {
-                const selectedOptionIds = element.options
-                    .filter((opt) => opt.isSelected && opt.id !== undefined)
-                    .map((opt) => opt.id!);
-
-                if (selectedOptionIds.length === 0) {
-                    if (element.required) {
-                        throw new Error('Please select at least one option for all required multiple choice questions before submitting.');
-                    }
-                    return;
-                }
-                progress.push({
-                    componentId: element.id,
-                    type: 'multipleChoice',
-                    answerIds: selectedOptionIds,
-                });
-            }
-            if (element.type === 'oneOutOfThree') {
-                const answers: { rowId: string; columnId: string }[] = [];
-                for (const row of element.data.rows) {
-                    if (row.id === undefined) continue;
-                    const selectedOption = row.columns.find((col) => col.selected);
-                    if (selectedOption?.id === undefined) continue;
-                    if (selectedOption) {
-                        answers.push({ rowId: row.id, columnId: selectedOption.id });
-                    }
-                }
-                if (answers.length !== 3) {
-                    if (element.required) {
-                        throw new Error('Please select one option from each row for all required questions before submitting.');
-                    }
-                    return;
-                }
-                progress.push({
-                    componentId: element.id,
-                    type: 'oneOutOfThree',
-                    answers: answers,
-                });
+            try {
+                const transformer = typeToProgressTransformers[element.type];
+                if (!transformer) continue;
+                const elementProgress = transformer(element);
+                if (!elementProgress) continue;
+                progress.push(elementProgress);
+            } catch (error) {
+                // TODO: Set error state
+                return;
             }
         }
 
@@ -129,10 +201,22 @@ export default function LessonForm({
         });
     };
 
+    const isSubmitting = submitProgressMutation.isPending;
+
     return (
         <div className="flex flex-col gap-4 w-full">
             {components.map(renderComponent)}
-            <Button variant="primary" text="Submit" onClick={submitProgress} />
+            {enableSubmit && hasInteractiveElements && (
+                <Button
+                    className="sticky bottom-4"
+                    variant="primary"
+                    text={isSubmitting ? 'Submitting...' : 'Submit'}
+                    disabled={isSubmitting}
+                    onClick={submitProgress}
+                    hasIconLeft
+                    iconLeft={<IconSave />}
+                />
+            )}
         </div>
     );
 }
