@@ -30,6 +30,7 @@ import EnrolledCoursePreview from './enrolled-course-preview';
 import EnrolledCourseMaterial from './enrolled-course-material';
 import { trpc } from '../../../trpc/cms-client';
 import EnrolledCourseStudents from './enrolled-course-students';
+import EnrolledCourseNotes from './enrolled-course-notes';
 // import { trpc as trpcMock } from '../../../trpc/client';
 
 interface EnrolledCourseProps {
@@ -250,8 +251,11 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                 <Tabs.Content value="assignments" className={tabContentClass}>
                     <DefaultError locale={locale} />
                 </Tabs.Content>
-                <Tabs.Content value="notes" className={tabContentClass}>
-                    <DefaultError locale={locale} />
+                <Tabs.Content value={StudentCourseTab.NOTES} className={tabContentClass}>
+                    <EnrolledCourseNotes 
+                        courseSlug={props.courseSlug} 
+                        currentRole={props.currentRole}
+                    />
                 </Tabs.Content>
                                 <Tabs.Content value="material" className={tabContentClass}>
                     <EnrolledCourseMaterial

@@ -322,7 +322,7 @@ export const DictionarySchema = z.object({
       dashboard: z.string(),
       yourProfile: z.string(),
       logout: z.string(),
-      yourCourses:z.string(),
+      yourCourses: z.string(),
     }),
     cmsNavbar: z.object({
       manageUsers: z.string(),
@@ -1175,6 +1175,12 @@ export const DictionarySchema = z.object({
       }),
       materials: z.object({
         noMaterialsAvailable: z.string(),
+      }),
+      courseNotes: z.object({
+        yourNotes: z.string(),
+        downloading: z.string(),
+        downloadNotes: z.string(),
+        downloadFailed: z.string(),
       }),
     }),
     userCourses: z.object({

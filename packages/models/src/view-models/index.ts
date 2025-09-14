@@ -34,6 +34,8 @@ export * from './assessment-component-view-model';
 export * from './course-students-list-view-model';
 export * from './coach-students-view-model';
 export * from './course-materials-view-model';
+export * from './student-notes-view-model';
+
 export * from './student-coaching-sessions-list-view-model';
 export * from './create-coaching-session-review-view-model';
 export * from './unschedule-coaching-session-view-model';
