@@ -486,7 +486,7 @@ export type TAction = z.infer<typeof ActionSchema>;
 
 export const NotificationSchema = z.object({
     message: z.string(),
-    action: ActionSchema,
+    action: ActionSchema.optional().nullable(),
     timestamp: z.string().datetime({ offset: true }),
     isRead: z.boolean(),
 });
