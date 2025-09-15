@@ -228,6 +228,7 @@ function transformUploadFiles(
             thumbnailUrl: file.downloadUrl,
             category: 'generic',
         })) ?? null,
+        userComment: component.progress?.comment,
     };
 }
 

@@ -44,6 +44,7 @@ import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { mockCoaches } from '../../../common/mocks/simple/coaches';
 import { simulateUploadFile } from '../../../common/mocks/simple/upload-file';
+import { useFileUploadContext } from '../course/utils/file-upload';
 
 export interface ComponentRendererProps {
     key: string;
@@ -226,18 +227,17 @@ function UploadFilesComponent({
         });
     }, [files]);
 
+    const {
+        uploadFile,
+        downloadFile,
+        uploadError,
+    } = useFileUploadContext();
+
     const onFilesUpload = async (
         fileRequest: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ): Promise<fileMetadata.TFileMetadata | null> => {
-        // TODO: Implement real file upload logic
-
-        // Simulate file upload logic; for the preview we might want to leave this as is
-        const mockFile = await simulateUploadFile(fileRequest.file);
-
-        if (abortSignal?.aborted) return null;
-
-        return mockFile;
+        return uploadFile(fileRequest, element.id, abortSignal);
     };
 
     return (
@@ -251,7 +251,7 @@ function UploadFilesComponent({
                 setFiles((prev) => prev.filter((file) => file.id !== id));
             }}
             onFileDownload={(id) => {
-                // TODO: Implement download logic
+                downloadFile(id);
             }}
             onUploadComplete={(fileMetadata) => {
                 setFiles((prev) => {

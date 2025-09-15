@@ -30,7 +30,8 @@ const OneOutOfThreeProgress = BaseProgress.extend({
 
 const UploadFilesProgress = BaseProgress.extend({
     type: z.literal('uploadFiles'),
-    filesIds: z.array(z.number()),
+    fileIds: z.array(z.number()),
+    comment: z.string().optional(),
 });
 
 export const PreCourseAssessmentProgressSchema = z.discriminatedUnion('type', [
@@ -182,6 +183,7 @@ const UploadFilesSchema = BaseComponent.extend({
     description: z.string(),
     progress: z.object({
         files: FileSchema.array(),
+        comment: z.string().optional(),
     }).optional(),
 });
 
