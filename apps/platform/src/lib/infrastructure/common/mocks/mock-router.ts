@@ -44,6 +44,7 @@ import {
     getCourseIntroduction,
     saveCourseIntroduction,
 } from './procedures/course-introduction';
+import { uploadLessonProgressFile } from './procedures/lesson-progress-file';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -85,6 +86,7 @@ export const mockRouter = t.router({
     togglePreCourseAssessment,
     savePreCourseAssessmentComponents: saveAssessmentComponents,
     submitLessonProgresses,
+    uploadLessonProgressFile,
 });
 
 export type MockRouter = typeof mockRouter;

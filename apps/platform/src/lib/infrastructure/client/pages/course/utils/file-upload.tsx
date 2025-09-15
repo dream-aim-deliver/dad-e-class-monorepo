@@ -59,7 +59,7 @@ export const useRealFileUpload = (
     const editLessonTranslations = useTranslations(
         'components.useCourseImageUpload',
     );
-    const uploadMutation = trpc.uploadLessonComponentFile.useMutation();
+    const uploadMutation = trpc.uploadLessonProgressFile.useMutation();
     const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [uploadError, setUploadError] = useState<string | undefined>();
@@ -80,8 +80,7 @@ export const useRealFileUpload = (
 
             const uploadResult = await uploadMutation.mutateAsync({
                 lessonId: config.lessonId,
-                componentType: 'uploadFiles',
-                // componentId: config.componentId,
+                componentId: componentId,
                 name: uploadRequest.name,
                 checksum,
                 mimeType: uploadRequest.file.type,
