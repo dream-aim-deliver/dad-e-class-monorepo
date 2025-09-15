@@ -56,6 +56,7 @@ import {
 import { useLessonComponents } from './hooks/edit-lesson-hooks';
 import { transformLessonComponents } from '../../../utils/transform-lesson-components';
 import { useSaveLesson } from './hooks/save-hooks';
+import { FileUploadProvider } from '../../course/utils/file-upload';
 
 interface EditLessonProps {
     lessonId: number;
@@ -96,17 +97,24 @@ function PreviewRenderer({
             keyString: `component-${formElement.id}`,
         };
 
-        const renderer = typeToRendererMap[formElement.type];
-        if (renderer) {
-            return renderer(props);
+        const ComponentRenderer = typeToRendererMap[formElement.type];
+        if (ComponentRenderer) {
+            return (
+                <ComponentRenderer
+                    key={`component-renderer-${formElement.id}`}
+                    {...props}
+                />
+            );
         }
         return null;
     };
 
     return (
-        <div className="flex flex-col gap-4">
-            {components.map(renderComponent)}
-        </div>
+        <FileUploadProvider mode="mock" config={{ lessonId: 0 }}>
+            <div className="flex flex-col gap-4">
+                {components.map(renderComponent)}
+            </div>
+        </FileUploadProvider>
     );
 }
 
