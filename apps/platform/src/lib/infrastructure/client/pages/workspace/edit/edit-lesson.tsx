@@ -93,7 +93,7 @@ function PreviewRenderer({
             formElement,
             elementProgress,
             locale,
-            key: `component-${formElement.id}`,
+            keyString: `component-${formElement.id}`,
         };
 
         const renderer = typeToRendererMap[formElement.type];
