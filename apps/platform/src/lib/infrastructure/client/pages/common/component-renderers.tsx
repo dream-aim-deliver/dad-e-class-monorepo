@@ -47,7 +47,7 @@ import { simulateUploadFile } from '../../../common/mocks/simple/upload-file';
 import { useFileUploadContext } from '../course/utils/file-upload';
 
 export interface ComponentRendererProps {
-    key: string;
+    keyString: string;
     formElement: LessonElement;
     elementProgress: React.RefObject<Map<string, LessonElement>>;
     locale: TLocale;
@@ -55,7 +55,7 @@ export interface ComponentRendererProps {
 
 function RichTextComponent({
     formElement,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -69,7 +69,7 @@ function RichTextComponent({
 
 function HeadingComponent({
     formElement,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -84,7 +84,7 @@ function HeadingComponent({
 function TextInputComponent({
     formElement,
     elementProgress,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -102,7 +102,7 @@ function TextInputComponent({
 function SingleChoiceComponent({
     formElement,
     elementProgress,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -120,7 +120,7 @@ function SingleChoiceComponent({
 function MultiCheckComponent({
     formElement,
     elementProgress,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -138,7 +138,7 @@ function MultiCheckComponent({
 function OneOutOfThreeComponent({
     formElement,
     elementProgress,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -153,7 +153,7 @@ function OneOutOfThreeComponent({
     );
 }
 
-function VideoComponent({ formElement, key, locale }: ComponentRendererProps) {
+function VideoComponent({ formElement, keyString: key, locale }: ComponentRendererProps) {
     return (
         <VideoFormComponent
             key={key}
@@ -163,7 +163,7 @@ function VideoComponent({ formElement, key, locale }: ComponentRendererProps) {
     );
 }
 
-function ImageComponent({ formElement, locale, key }: ComponentRendererProps) {
+function ImageComponent({ formElement, locale, keyString: key }: ComponentRendererProps) {
     return (
         <ImageFormComponent
             key={key}
@@ -175,7 +175,7 @@ function ImageComponent({ formElement, locale, key }: ComponentRendererProps) {
 
 function ImageCarouselComponent({
     formElement,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -189,7 +189,7 @@ function ImageCarouselComponent({
 
 function DownloadFilesComponent({
     formElement,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     if (formElement.type !== CourseElementType.DownloadFiles) return null;
@@ -210,7 +210,7 @@ function DownloadFilesComponent({
 
 function UploadFilesComponent({
     formElement,
-    key,
+    keyString: key,
     locale,
     elementProgress,
 }: ComponentRendererProps) {
@@ -273,7 +273,7 @@ function UploadFilesComponent({
 
 function QuizTypeOneComponent({
     formElement,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -293,7 +293,7 @@ function QuizTypeOneComponent({
 
 function QuizTypeTwoComponent({
     formElement,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -313,7 +313,7 @@ function QuizTypeTwoComponent({
 
 function QuizTypeThreeComponent({
     formElement,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -333,7 +333,7 @@ function QuizTypeThreeComponent({
 
 function QuizTypeFourComponent({
     formElement,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -351,7 +351,7 @@ function QuizTypeFourComponent({
     );
 }
 
-function LinksComponent({ formElement, key, locale }: ComponentRendererProps) {
+function LinksComponent({ formElement, keyString: key, locale }: ComponentRendererProps) {
     return (
         <LinksFormComponent
             key={key}
@@ -396,7 +396,7 @@ function CourseCoachList() {
 
 function CoachingSessionComponent({
     formElement,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     return (
@@ -411,7 +411,7 @@ function CoachingSessionComponent({
 
 function AssignmentComponent({
     formElement,
-    key,
+    keyString: key,
     locale,
 }: ComponentRendererProps) {
     const element = formElement as AssignmentElement;

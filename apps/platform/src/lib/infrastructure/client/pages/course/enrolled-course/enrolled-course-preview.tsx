@@ -26,10 +26,17 @@ function CoursePreviewLesson(props: {
 }) {
     const locale = useLocale() as TLocale;
 
-    const [componentsResponse] = trpc.listLessonComponents.useSuspenseQuery({
-        lessonId: props.lessonId,
-        withProgress: props.enableSubmit ?? false,
-    });
+    const [componentsResponse, { isPending }] =
+        trpc.listLessonComponents.useSuspenseQuery(
+            {
+                lessonId: props.lessonId,
+                withProgress: props.enableSubmit ?? false,
+            },
+            {
+                staleTime: 0,
+                refetchOnMount: true,
+            },
+        );
     const [componentsViewModel, setLessonComponentsViewModel] = useState<
         viewModels.TLessonComponentListViewModel | undefined
     >(undefined);
@@ -39,7 +46,7 @@ function CoursePreviewLesson(props: {
     // @ts-ignore
     presenter.present(componentsResponse, componentsViewModel);
 
-    if (!componentsViewModel) {
+    if (!componentsViewModel || isPending) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
