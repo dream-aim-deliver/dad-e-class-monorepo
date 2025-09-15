@@ -4,26 +4,18 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
+import { DefaultPaginationSchema } from '../utils/pagination';
 import { ScheduledCoachingSessionStatusSchema } from './common';
 
-export const ListStudentCoachingSessionsRequestSchema = z.object({
+export const ListStudentCoachingSessionsRequestSchema = DefaultPaginationSchema.extend({
     studentId: z.number(),
 });
 export type TListStudentCoachingSessionsRequest = z.infer<typeof ListStudentCoachingSessionsRequestSchema>;
 
-const BaseCoachingSessionSchema = z.object({
+const CoachingSessionSchema = z.object({
     id: z.number(),
     coachingOfferingTitle: z.string(),
     coachingOfferingDuration: z.number(),  // minutes
-    status: ScheduledCoachingSessionStatusSchema,
-});
-
-export const AvailableCoachingSessionSchema = BaseCoachingSessionSchema.extend({
-    status: z.literal('unscheduled'),
-});
-export type TAvailableCoachingSession = z.infer<typeof AvailableCoachingSessionSchema>;
-
-export const UpcomingCoachingSessionSchema = BaseCoachingSessionSchema.extend({
     status: z.literal('scheduled'),
     startTime: z.string().datetime({ offset: true }),
     endTime: z.string().datetime({ offset: true }),
@@ -40,43 +32,10 @@ export const UpcomingCoachingSessionSchema = BaseCoachingSessionSchema.extend({
     }).optional().nullable(),
     meetingUrl: z.string().nullable(),
 });
-export type TUpcomingCoachingSession = z.infer<typeof UpcomingCoachingSessionSchema>;
-
-export const EndedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
-    status: z.literal('completed'),
-    startTime: z.string().datetime({ offset: true }),
-    endTime: z.string().datetime({ offset: true }),
-    coach: z.object({
-        name: z.string().nullable(),
-        surname: z.string().nullable(),
-        username: z.string(),
-        avatarUrl: z.string().nullable(),
-    }),
-    course: z.object({
-        id: z.number(),
-        title: z.string(),
-        slug: z.string(),
-    }).optional().nullable(),
-    review: z.object({
-        rating: z.number().min(1).max(5),
-        comment: z.string().optional().nullable(),
-    }).optional().nullable(),
-});
-export type TEndedCoachingSession = z.infer<typeof EndedCoachingSessionSchema>;
-
-export const StudentCoachingSessionSchema = z.discriminatedUnion(
-    'status',
-    [
-        AvailableCoachingSessionSchema,
-        UpcomingCoachingSessionSchema,
-        EndedCoachingSessionSchema
-    ]
-)
-export type TStudentCoachingSession = z.infer<typeof StudentCoachingSessionSchema>;
 
 
 export const ListStudentCoachingSessionsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
-    sessions: StudentCoachingSessionSchema.array(),
+    sessions: CoachingSessionSchema.array(),
 }));
 
 export type TListStudentCoachingSessionsSuccessResponse = z.infer<typeof ListStudentCoachingSessionsSuccessResponseSchema>;
