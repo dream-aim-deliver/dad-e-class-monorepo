@@ -477,3 +477,19 @@ export const ScheduledCoachingSessionStatusSchema = z.enum(['scheduled', 'comple
 
 export type TScheduledCoachingSessionStatus = z.infer<typeof ScheduledCoachingSessionStatusSchema>;
 
+export const ActionSchema = z.object({
+    title: z.string(),
+    url: z.string(),
+});
+
+export type TAction = z.infer<typeof ActionSchema>;
+
+export const NotificationSchema = z.object({
+    message: z.string(),
+    action: ActionSchema,
+    timestamp: z.string().datetime({ offset: true }),
+    isRead: z.boolean(),
+});
+
+export type TNotification = z.infer<typeof NotificationSchema>;
+
