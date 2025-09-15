@@ -114,7 +114,7 @@ export function CourseStudents(
             // If no assignment, status remains "no-assignment"
 
             // If course is completed, use the completion date from the model
-            if (status === "course-completed" && student.courseCompletionDate) {
+            if (student.courseCompletionDate) {
                 completedCourseDate = new Date(student.courseCompletionDate);
             }
 
@@ -147,8 +147,8 @@ export function CourseStudents(
                 );
             }
 
-            if (status === "course-completed" && completedCourseDate) {
-                return <StudentCard {...commonProps} key={key} status={status} completedCourseDate={completedCourseDate} />;
+            if (completedCourseDate) {
+                return <StudentCard {...commonProps} key={key} status="course-completed" completedCourseDate={completedCourseDate} />;
             }
 
             // for 'no-assignment' status (when lastAssignment is null)
