@@ -5,7 +5,6 @@ import {
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
 import { DefaultPaginationSchema } from '../utils/pagination';
-import { ScheduledCoachingSessionStatusSchema } from './common';
 
 export const ListStudentCoachingSessionsRequestSchema = DefaultPaginationSchema.extend({
     studentId: z.number(),
