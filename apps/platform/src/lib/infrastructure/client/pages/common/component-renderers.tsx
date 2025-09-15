@@ -227,11 +227,7 @@ function UploadFilesComponent({
         });
     }, [files]);
 
-    const {
-        uploadFile,
-        downloadFile,
-        uploadError,
-    } = useFileUploadContext();
+    const { uploadFile, uploadError } = useFileUploadContext();
 
     const onFilesUpload = async (
         fileRequest: fileMetadata.TFileUploadRequest,
@@ -251,7 +247,9 @@ function UploadFilesComponent({
                 setFiles((prev) => prev.filter((file) => file.id !== id));
             }}
             onFileDownload={(id) => {
-                downloadFile(id);
+                const file = files.find((file) => file.id === id);
+                if (!file) return;
+                downloadFile(file.url, file.name);
             }}
             onUploadComplete={(fileMetadata) => {
                 setFiles((prev) => {

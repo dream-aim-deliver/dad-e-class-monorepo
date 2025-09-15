@@ -3,7 +3,11 @@ import { createContext, ReactNode, useContext, useState } from 'react';
 import { simulateUploadFile } from '../../../../common/mocks/simple/upload-file';
 import { useTranslations } from 'next-intl';
 import { trpc } from '../../../trpc/client';
-import { AbortError, calculateMd5, uploadToS3 } from '@maany_shr/e-class-ui-kit';
+import {
+    AbortError,
+    calculateMd5,
+    uploadToS3,
+} from '@maany_shr/e-class-ui-kit';
 
 export interface FileUploadConfig {
     lessonId: number;
@@ -15,7 +19,6 @@ export interface FileUploadService {
         componentId: string,
         abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata | null>;
-    downloadFile: (fileId: string) => void;
     uploadError?: string;
 }
 
@@ -44,108 +47,99 @@ export const useMockFileUpload = (): FileUploadService => {
         return mockFile;
     };
 
-    const downloadFile = async (fileId: string) => {
-        // Simulate file download in mock mode
-    };
-
     return {
         uploadFile,
-        downloadFile,
         uploadError: undefined,
     };
 };
 
-export const useRealFileUpload = (config: FileUploadConfig): FileUploadService => {
-  const editLessonTranslations = useTranslations('components.useCourseImageUpload');
-  const uploadMutation = trpc.uploadLessonComponentFile.useMutation();
-  const verifyMutation = trpc.getDownloadUrl.useMutation();
+export const useRealFileUpload = (
+    config: FileUploadConfig,
+): FileUploadService => {
+    const editLessonTranslations = useTranslations(
+        'components.useCourseImageUpload',
+    );
+    const uploadMutation = trpc.uploadLessonComponentFile.useMutation();
+    const verifyMutation = trpc.getDownloadUrl.useMutation();
 
-  const [uploadError, setUploadError] = useState<string | undefined>();
+    const [uploadError, setUploadError] = useState<string | undefined>();
 
-  const uploadFile = async (
-    uploadRequest: fileMetadata.TFileUploadRequest,
-    componentId: string,
-    abortSignal?: AbortSignal,
-  ): Promise<fileMetadata.TFileMetadata | null> => {
-    setUploadError(undefined);
+    const uploadFile = async (
+        uploadRequest: fileMetadata.TFileUploadRequest,
+        componentId: string,
+        abortSignal?: AbortSignal,
+    ): Promise<fileMetadata.TFileMetadata | null> => {
+        setUploadError(undefined);
 
-    try {
-      if (abortSignal?.aborted) {
-        throw new AbortError();
-      }
+        try {
+            if (abortSignal?.aborted) {
+                throw new AbortError();
+            }
 
-      const checksum = await calculateMd5(uploadRequest.file);
+            const checksum = await calculateMd5(uploadRequest.file);
 
-      const uploadResult = await uploadMutation.mutateAsync({
-        lessonId: config.lessonId,
-        componentType: 'uploadFiles',
-        // componentId: config.componentId,
-        name: uploadRequest.name,
-        checksum,
-        mimeType: uploadRequest.file.type,
-        size: uploadRequest.file.size,
-      });
+            const uploadResult = await uploadMutation.mutateAsync({
+                lessonId: config.lessonId,
+                componentType: 'uploadFiles',
+                // componentId: config.componentId,
+                name: uploadRequest.name,
+                checksum,
+                mimeType: uploadRequest.file.type,
+                size: uploadRequest.file.size,
+            });
 
-      if (!uploadResult.success) {
-        throw new Error(editLessonTranslations('uploadCredentialsError'));
-      }
+            if (!uploadResult.success) {
+                throw new Error(
+                    editLessonTranslations('uploadCredentialsError'),
+                );
+            }
 
-      if (abortSignal?.aborted) {
-        throw new AbortError();
-      }
+            if (abortSignal?.aborted) {
+                throw new AbortError();
+            }
 
-      await uploadToS3({
-        file: uploadRequest.file,
-        checksum,
-        storageUrl: uploadResult.data.storageUrl,
-        objectName: uploadResult.data.file.objectName,
-        formFields: uploadResult.data.formFields,
-        abortSignal,
-      });
+            await uploadToS3({
+                file: uploadRequest.file,
+                checksum,
+                storageUrl: uploadResult.data.storageUrl,
+                objectName: uploadResult.data.file.objectName,
+                formFields: uploadResult.data.formFields,
+                abortSignal,
+            });
 
-      const verifyResult = await verifyMutation.mutateAsync({
-        fileId: uploadResult.data.file.id,
-      });
+            const verifyResult = await verifyMutation.mutateAsync({
+                fileId: uploadResult.data.file.id,
+            });
 
-      if (!verifyResult.success) {
-        throw new Error(editLessonTranslations('verifyImageError'));
-      }
+            if (!verifyResult.success) {
+                throw new Error(editLessonTranslations('verifyImageError'));
+            }
 
-      return {
-        id: uploadResult.data.file.id,
-        name: uploadResult.data.file.name,
-        url: verifyResult.data.downloadUrl,
-        thumbnailUrl: verifyResult.data.downloadUrl,
-        size: uploadResult.data.file.size,
-        category: uploadResult.data.file.category,
-        status: 'available',
-      } as fileMetadata.TFileMetadata;
-    } catch (error) {
-      if (error instanceof AbortError) {
-        console.warn(editLessonTranslations('uploadAbortError'));
-      } else {
-        console.error('Real file upload failed:', error);
-        setUploadError(editLessonTranslations('uploadFailedError'));
-      }
-      throw error;
-    }
-  };
+            return {
+                id: uploadResult.data.file.id,
+                name: uploadResult.data.file.name,
+                url: verifyResult.data.downloadUrl,
+                thumbnailUrl: verifyResult.data.downloadUrl,
+                size: uploadResult.data.file.size,
+                category: uploadResult.data.file.category,
+                status: 'available',
+            } as fileMetadata.TFileMetadata;
+        } catch (error) {
+            if (error instanceof AbortError) {
+                console.warn(editLessonTranslations('uploadAbortError'));
+            } else {
+                console.error('Real file upload failed:', error);
+                setUploadError(editLessonTranslations('uploadFailedError'));
+            }
+            throw error;
+        }
+    };
 
-  const downloadFile = async (fileId: string): Promise<string> => {
-    const result = await verifyMutation.mutateAsync({ fileId });
-    if (!result.success) {
-      throw new Error('Failed to get download URL');
-    }
-    return result.data.downloadUrl;
-  };
-
-  return {
-    uploadFile,
-    downloadFile,
-    uploadError,
-  };
+    return {
+        uploadFile,
+        uploadError,
+    };
 };
-
 
 export const FileUploadProvider: React.FC<FileUploadProviderProps> = ({
     children,
