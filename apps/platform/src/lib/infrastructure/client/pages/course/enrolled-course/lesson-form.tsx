@@ -147,7 +147,7 @@ const transformFileUpload = (
         fileIds: element.files.map((file) => idToNumber(file.id)!),
         comment: element.userComment,
     };
-}
+};
 
 const typeToProgressTransformers: Record<
     string,
@@ -192,15 +192,21 @@ export default function LessonForm({
             | undefined;
         if (!formElement) return null;
 
-        const propsWithoutKey: Omit<ComponentRendererProps, 'key'> = {
+        const props: ComponentRendererProps = {
             formElement,
             elementProgress,
             locale,
+            keyString: `component-${component.id}`,
         };
 
         const ComponentRenderer = typeToRendererMap[formElement.type];
         if (ComponentRenderer) {
-            return <ComponentRenderer key={`component-${component.id}`} {...propsWithoutKey} />;
+            return (
+                <ComponentRenderer
+                    key={`component-renderer-${component.id}`}
+                    {...props}
+                />
+            );
         }
     };
 
