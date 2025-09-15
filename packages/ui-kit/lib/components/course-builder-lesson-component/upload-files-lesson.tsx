@@ -203,7 +203,7 @@ export function FormComponent({
         );
     }
 
-    const [comment, setComment] = useState<string>('');
+    const [comment, setComment] = useState<string>(elementInstance.userComment || '');
     const handleStudentComment = (newValue: string) => {
         setComment(newValue);
         if (onStudentCommentChange) {

@@ -14,6 +14,8 @@ import {
     typeToRendererMap,
 } from '../../common/component-renderers';
 import { trpc } from '../../../trpc/client';
+import { FileUploadProvider } from '../utils/file-upload';
+import { idToNumber } from '../../workspace/edit/utils/id-to-number';
 
 interface LessonFormProps {
     lessonId: number;
@@ -125,6 +127,28 @@ const transformOneOutOfThree = (
     };
 };
 
+const transformFileUpload = (
+    element: LessonElement,
+): useCaseModels.TLessonProgress | undefined => {
+    if (element.type !== 'uploadFiles') {
+        throw new Error('Invalid element type for file upload transformation');
+    }
+    if (!element.files || element.files.length === 0) {
+        if (element.required) {
+            throw new Error(
+                'Please upload at least one file for all required file upload components before submitting.',
+            );
+        }
+        return undefined;
+    }
+    return {
+        componentId: element.id,
+        type: 'uploadFiles',
+        fileIds: element.files.map((file) => idToNumber(file.id)!),
+        comment: element.userComment,
+    };
+}
+
 const typeToProgressTransformers: Record<
     string,
     (element: LessonElement) => useCaseModels.TLessonProgress | undefined
@@ -133,6 +157,7 @@ const typeToProgressTransformers: Record<
     singleChoice: transformSingleChoice,
     multiCheck: transformMultiCheck,
     oneOutOfThree: transformOneOutOfThree,
+    uploadFiles: transformFileUpload,
 };
 
 export default function LessonForm({
@@ -167,16 +192,15 @@ export default function LessonForm({
             | undefined;
         if (!formElement) return null;
 
-        const props: ComponentRendererProps = {
+        const propsWithoutKey: Omit<ComponentRendererProps, 'key'> = {
             formElement,
             elementProgress,
             locale,
-            key: `component-${component.id}`,
         };
 
-        const renderer = typeToRendererMap[formElement.type];
-        if (renderer) {
-            return renderer(props);
+        const ComponentRenderer = typeToRendererMap[formElement.type];
+        if (ComponentRenderer) {
+            return <ComponentRenderer key={`component-${component.id}`} {...propsWithoutKey} />;
         }
     };
 
@@ -204,19 +228,24 @@ export default function LessonForm({
     const isSubmitting = submitProgressMutation.isPending;
 
     return (
-        <div className="flex flex-col gap-4 w-full">
-            {components.map(renderComponent)}
-            {enableSubmit && hasInteractiveElements && (
-                <Button
-                    className="sticky bottom-4"
-                    variant="primary"
-                    text={isSubmitting ? 'Submitting...' : 'Submit'}
-                    disabled={isSubmitting}
-                    onClick={submitProgress}
-                    hasIconLeft
-                    iconLeft={<IconSave />}
-                />
-            )}
-        </div>
+        <FileUploadProvider
+            mode={enableSubmit ? 'real' : 'mock'}
+            config={{ lessonId: lessonId }}
+        >
+            <div className="flex flex-col gap-4 w-full">
+                {components.map(renderComponent)}
+                {enableSubmit && hasInteractiveElements && (
+                    <Button
+                        className="sticky bottom-4"
+                        variant="primary"
+                        text={isSubmitting ? 'Submitting...' : 'Submit'}
+                        disabled={isSubmitting}
+                        onClick={submitProgress}
+                        hasIconLeft
+                        iconLeft={<IconSave />}
+                    />
+                )}
+            </div>
+        </FileUploadProvider>
     );
 }
