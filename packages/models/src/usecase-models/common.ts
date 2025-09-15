@@ -471,3 +471,9 @@ export const LessonComponentRequestSchema = z.discriminatedUnion('type', [
 
 export type TAssessmentComponentRequest = z.infer<typeof AssessmentComponentRequestSchema>;
 export type TLessonComponentRequest = z.infer<typeof LessonComponentRequestSchema>;
+
+
+export const ScheduledCoachingSessionStatusSchema = z.enum(['scheduled', 'completed', 'canceled']);
+
+export type TScheduledCoachingSessionStatus = z.infer<typeof ScheduledCoachingSessionStatusSchema>;
+
