@@ -17,8 +17,8 @@ const CoachingSessionSchema = z.object({
     coachingOfferingTitle: z.string(),
     coachingOfferingDuration: z.number(),  // minutes
     status: ScheduledCoachingSessionStatusSchema,
-    startTime: z.string(),
-    endTime: z.string(),
+    startTime: z.string().datetime({ offset: true }),
+    endTime: z.string().datetime({ offset: true }),
     coach: z.object({
         name: z.string().nullable(),
         surname: z.string().nullable(),
