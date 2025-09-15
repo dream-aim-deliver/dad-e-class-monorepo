@@ -6,8 +6,8 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 import { CoachingSessionStatusSchema } from './common';
 
-export const ListStudentCoachingSessionsRequestSchema = z.object({});
-export type TListStudentCoachingSessionsRequest = z.infer<typeof ListStudentCoachingSessionsRequestSchema>;
+export const ListCoachCoachingSessionsRequestSchema = z.object({});
+export type TListCoachCoachingSessionsRequest = z.infer<typeof ListCoachCoachingSessionsRequestSchema>;
 
 const BaseCoachingSessionSchema = z.object({
     id: z.number(),
@@ -25,7 +25,7 @@ export const UpcomingCoachingSessionSchema = BaseCoachingSessionSchema.extend({
     status: z.union([z.literal('requested'), z.literal('scheduled')]),
     startTime: z.string().datetime({ offset: true }),
     endTime: z.string().datetime({ offset: true }),
-    coach: z.object({
+    student: z.object({
         name: z.string().nullable(),
         surname: z.string().nullable(),
         username: z.string(),
@@ -44,7 +44,7 @@ export const EndedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
     status: z.literal('completed'),
     startTime: z.string().datetime({ offset: true }),
     endTime: z.string().datetime({ offset: true }),
-    coach: z.object({
+    student: z.object({
         name: z.string().nullable(),
         surname: z.string().nullable(),
         username: z.string(),
@@ -62,7 +62,7 @@ export const EndedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
 });
 export type TEndedCoachingSession = z.infer<typeof EndedCoachingSessionSchema>;
 
-export const StudentCoachingSessionSchema = z.discriminatedUnion(
+export const CoachCoachingSessionSchema = z.discriminatedUnion(
     'status',
     [
         AvailableCoachingSessionSchema,
@@ -70,21 +70,21 @@ export const StudentCoachingSessionSchema = z.discriminatedUnion(
         EndedCoachingSessionSchema
     ]
 )
-export type TStudentCoachingSession = z.infer<typeof StudentCoachingSessionSchema>;
+export type TCoachCoachingSession = z.infer<typeof CoachCoachingSessionSchema>;
 
 
-export const ListStudentCoachingSessionsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
-    sessions: StudentCoachingSessionSchema.array(),
+export const ListCoachCoachingSessionsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
+    sessions: CoachCoachingSessionSchema.array(),
 }));
 
-export type TListStudentCoachingSessionsSuccessResponse = z.infer<typeof ListStudentCoachingSessionsSuccessResponseSchema>;
+export type TListCoachCoachingSessionsSuccessResponse = z.infer<typeof ListCoachCoachingSessionsSuccessResponseSchema>;
 
-const ListStudentCoachingSessionsUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
-export type TListStudentCoachingSessionsUseCaseErrorResponse = z.infer<typeof ListStudentCoachingSessionsUseCaseErrorResponseSchema>;
+const ListCoachCoachingSessionsUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
+export type TListCoachCoachingSessionsUseCaseErrorResponse = z.infer<typeof ListCoachCoachingSessionsUseCaseErrorResponseSchema>;
 
-export const ListStudentCoachingSessionsUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
-    ListStudentCoachingSessionsSuccessResponseSchema,
-    ListStudentCoachingSessionsUseCaseErrorResponseSchema,
+export const ListCoachCoachingSessionsUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
+    ListCoachCoachingSessionsSuccessResponseSchema,
+    ListCoachCoachingSessionsUseCaseErrorResponseSchema,
 ]);
 
-export type TListStudentCoachingSessionsUseCaseResponse = z.infer<typeof ListStudentCoachingSessionsUseCaseResponseSchema>;
+export type TListCoachCoachingSessionsUseCaseResponse = z.infer<typeof ListCoachCoachingSessionsUseCaseResponseSchema>;

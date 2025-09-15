@@ -473,9 +473,9 @@ export type TAssessmentComponentRequest = z.infer<typeof AssessmentComponentRequ
 export type TLessonComponentRequest = z.infer<typeof LessonComponentRequestSchema>;
 
 
-export const ScheduledCoachingSessionStatusSchema = z.enum(['unscheduled', 'scheduled', 'completed', 'canceled']);
+export const CoachingSessionStatusSchema = z.enum(['unscheduled', 'requested', 'scheduled', 'completed', 'canceled']);
 
-export type TScheduledCoachingSessionStatus = z.infer<typeof ScheduledCoachingSessionStatusSchema>;
+export type TCoachingSessionStatus = z.infer<typeof CoachingSessionStatusSchema>;
 
 export const ActionSchema = z.object({
     title: z.string(),
