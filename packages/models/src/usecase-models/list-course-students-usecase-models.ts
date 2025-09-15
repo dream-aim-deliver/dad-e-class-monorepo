@@ -4,12 +4,7 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory,
 } from '@dream-aim-deliver/dad-cats';
-
-export const CourseAssignmentStatusEnumSchema = z.enum([
-    'waiting-feedback',
-    'long-wait',
-    'course-completed',
-]);
+import { CourseAssignmentStatusEnumSchema } from './common';
 
 export const ListCourseStudentsRequestSchema = z.object({
     courseSlug: z.string(),

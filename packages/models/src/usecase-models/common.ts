@@ -493,3 +493,10 @@ export const NotificationSchema = z.object({
 
 export type TNotification = z.infer<typeof NotificationSchema>;
 
+
+
+export const CourseAssignmentStatusEnumSchema = z.enum([
+    'waiting-feedback',
+    'long-wait',
+    'course-completed',
+]);
