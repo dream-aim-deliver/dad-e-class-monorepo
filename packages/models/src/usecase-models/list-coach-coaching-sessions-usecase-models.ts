@@ -16,11 +16,6 @@ const BaseCoachingSessionSchema = z.object({
     status: CoachingSessionStatusSchema,
 });
 
-export const AvailableCoachingSessionSchema = BaseCoachingSessionSchema.extend({
-    status: z.literal('unscheduled'),
-});
-export type TAvailableCoachingSession = z.infer<typeof AvailableCoachingSessionSchema>;
-
 export const UpcomingCoachingSessionSchema = BaseCoachingSessionSchema.extend({
     status: z.union([z.literal('requested'), z.literal('scheduled')]),
     startTime: z.string().datetime({ offset: true }),
@@ -65,7 +60,6 @@ export type TEndedCoachingSession = z.infer<typeof EndedCoachingSessionSchema>;
 export const CoachCoachingSessionSchema = z.discriminatedUnion(
     'status',
     [
-        AvailableCoachingSessionSchema,
         UpcomingCoachingSessionSchema,
         EndedCoachingSessionSchema
     ]
