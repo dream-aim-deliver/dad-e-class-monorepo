@@ -41,3 +41,4 @@ export * from './toggle-pre-course-assessment-usecase-models';
 export * from './get-platform-language-usecase-models';
 export * from './save-assessment-components-usecase-models';
 export * from './submit-lesson-progresses-usecase-models';
+export * from './upload-lesson-progress-file-usecase-models';
