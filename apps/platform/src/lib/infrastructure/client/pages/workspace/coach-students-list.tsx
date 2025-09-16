@@ -119,6 +119,8 @@ export default function CoachStudentsList({ students, isLoading, error }: CoachS
 
     const studentCards = displayedStudents.map((student) => {
         const courses: CourseAssignment[] = student.courses.map((course) => {
+            let completedCourseDate: Date | undefined;
+            
             if (!course.lastAssignment) {
                 return {
                     courseName: course.courseTitle,
@@ -133,7 +135,12 @@ export default function CoachStudentsList({ students, isLoading, error }: CoachS
 
             const status = mapAssignmentStatusToCourseStatus(course.lastAssignment.assignmentStatus);
             
-            if (status === 'course-completed') {
+            // If course is completed, use the completion date from the model
+            if (course.lastAssignment.assignmentStatus === 'Passed') {
+                completedCourseDate = new Date(); // TODO: Get actual completion date from backend
+            }
+
+            if (completedCourseDate) {
                 return {
                     courseName: course.courseTitle,
                     courseImageUrl: course.courseImageUrl || '',
@@ -141,7 +148,7 @@ export default function CoachStudentsList({ students, isLoading, error }: CoachS
                         console.log(`Navigate to course: ${course.courseSlug}`);
                     },
                     status: 'course-completed' as const,
-                    completedCourseDate: new Date(), // TODO: Get actual completion date from backend
+                    completedCourseDate: completedCourseDate,
                 };
             }
 
