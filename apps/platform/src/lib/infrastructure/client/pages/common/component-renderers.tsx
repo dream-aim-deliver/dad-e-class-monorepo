@@ -153,7 +153,11 @@ function OneOutOfThreeComponent({
     );
 }
 
-function VideoComponent({ formElement, keyString: key, locale }: ComponentRendererProps) {
+function VideoComponent({
+    formElement,
+    keyString: key,
+    locale,
+}: ComponentRendererProps) {
     return (
         <VideoFormComponent
             key={key}
@@ -163,7 +167,11 @@ function VideoComponent({ formElement, keyString: key, locale }: ComponentRender
     );
 }
 
-function ImageComponent({ formElement, locale, keyString: key }: ComponentRendererProps) {
+function ImageComponent({
+    formElement,
+    locale,
+    keyString: key,
+}: ComponentRendererProps) {
     return (
         <ImageFormComponent
             key={key}
@@ -221,8 +229,12 @@ function UploadFilesComponent({
     );
 
     useEffect(() => {
+        const progressElement = elementProgress.current.get(
+            element.id,
+        ) as UploadFilesElement;
+        if (!progressElement) return;
         elementProgress.current.set(element.id, {
-            ...element,
+            ...progressElement,
             files: files,
         });
     }, [files]);
@@ -262,8 +274,12 @@ function UploadFilesComponent({
                 });
             }}
             onStudentCommentChange={(comment) => {
-                elementProgress.current.set(element.id, {
-                    ...element,
+                const progressElement = elementProgress.current.get(
+                    formElement.id,
+                ) as UploadFilesElement;
+                if (!progressElement) return;
+                elementProgress.current.set(progressElement.id, {
+                    ...progressElement,
                     userComment: comment,
                 });
             }}
@@ -351,7 +367,11 @@ function QuizTypeFourComponent({
     );
 }
 
-function LinksComponent({ formElement, keyString: key, locale }: ComponentRendererProps) {
+function LinksComponent({
+    formElement,
+    keyString: key,
+    locale,
+}: ComponentRendererProps) {
     return (
         <LinksFormComponent
             key={key}
