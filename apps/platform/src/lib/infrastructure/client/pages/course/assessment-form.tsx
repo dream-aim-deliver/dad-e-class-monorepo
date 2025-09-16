@@ -54,6 +54,22 @@ export default function AssessmentForm(props: AssessmentFormProps) {
 
     const submitMutation = trpc.submitAssessmentProgress.useMutation({});
 
+    const getIsFormDisabled = () => {
+        return (
+            componentsViewModel?.mode === 'default' &&
+            componentsViewModel.data.components.length === 0
+        );
+    };
+
+    useEffect(() => {
+        if (getIsFormDisabled()) {
+            submitMutation.mutate({
+                progress: [],
+                courseSlug: props.courseSlug,
+            });
+        }
+    }, [componentsViewModel]);
+
     useEffect(() => {
         if (submitMutation.isSuccess) {
             submitPresenter.present(
@@ -69,7 +85,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         }
     }, [submitAssessmentViewModel]);
 
-    if (!componentsViewModel) {
+    if (!componentsViewModel || getIsFormDisabled()) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 

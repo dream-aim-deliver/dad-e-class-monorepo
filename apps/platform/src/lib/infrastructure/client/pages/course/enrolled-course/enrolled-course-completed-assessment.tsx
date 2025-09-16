@@ -6,6 +6,7 @@ import {
     DefaultLoading,
     SubmissionRenderer,
     FormElement,
+    DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
 import { transformLessonComponents } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
@@ -47,6 +48,16 @@ export default function EnrolledCourseCompletedAssessment(
 
     if (progressViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
+    }
+
+    if (progressViewModel.data.components.length === 0) {
+        return (
+            <DefaultNotFound
+                locale={locale}
+                title="Pre course assessment progress not found"
+                description="No submitted pre course assessment found for this course."
+            />
+        );
     }
 
     return <SubmissionRenderer elements={formElements} locale={locale} />;
