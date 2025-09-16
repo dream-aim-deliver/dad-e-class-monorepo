@@ -120,7 +120,7 @@ export default function CoachStudentsList({ students, isLoading, error }: CoachS
     const studentCards = displayedStudents.map((student) => {
         const courses: CourseAssignment[] = student.courses.map((course) => {
             let completedCourseDate: Date | undefined;
-            let status: string = 'no-assignment';
+            let status = 'no-assignment';
             let assignmentTitle: string | undefined;
             
             // If there's a last assignment, use its status directly
