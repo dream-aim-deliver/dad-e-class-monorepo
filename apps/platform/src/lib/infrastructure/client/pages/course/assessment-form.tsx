@@ -25,11 +25,10 @@ export default function AssessmentForm(props: AssessmentFormProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.assessmentForm');
 
-    const [componentsResponse] = trpc.listPreCourseAssessmentComponents.useSuspenseQuery(
-        {
+    const [componentsResponse] =
+        trpc.listPreCourseAssessmentComponents.useSuspenseQuery({
             courseSlug: props.courseSlug,
-        },
-    );
+        });
     const [componentsViewModel, setComponentsViewModel] = useState<
         viewModels.TAssessmentComponentListViewModel | undefined
     >(undefined);
@@ -99,10 +98,10 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                     isError={hasViewModelError || submitMutation.isError}
                     isLoading={submitMutation.isPending}
                     onSubmit={(formValues) => {
-                        const answers: useCaseModels.TPreCourseAssessmentProgress[] =
+                        const progress: useCaseModels.TPreCourseAssessmentProgress[] =
                             transformFormAnswers(formValues);
                         submitMutation.mutate({
-                            answers,
+                            progress,
                             courseSlug: props.courseSlug,
                         });
                     }}
