@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { DefaultPaginationSchema } from "../utils/pagination";
-import { AssignmentStatusEnumSchema } from "../assignment";
+import { CourseAssignmentStatusEnumSchema } from './common';
 import {
     BaseErrorDiscriminatedUnionSchemaFactory,
     BaseStatusDiscriminatedUnionSchemaFactory,
@@ -23,10 +23,11 @@ export const ListCoachStudentsSuccessResponseSchema = BaseSuccessSchemaFactory(z
             courseTitle: z.string(),
             courseSlug: z.string(),
             courseImageUrl: z.string().nullable(),
+            courseCompletionDate: z.string().datetime({ offset: true }).nullable(),
             lastAssignment: z.object({
                 assignmentId: z.string(),
                 assignmentTitle: z.string(),
-                assignmentStatus: AssignmentStatusEnumSchema
+                assignmentStatus: CourseAssignmentStatusEnumSchema
             }).optional().nullable(),
         }))
     })),
