@@ -261,6 +261,7 @@ export default function CoachStudents(props: CoachStudentsProps) {
                 }
                 isLoading={isFetching}
                 error={error}
+                hasActiveFiltersOrSearch={hasActiveFiltersOrSearch}
             />
 
             {/* Filter Modal */}
