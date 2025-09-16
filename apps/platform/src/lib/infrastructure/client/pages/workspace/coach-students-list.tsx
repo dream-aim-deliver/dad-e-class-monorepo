@@ -120,24 +120,30 @@ export default function CoachStudentsList({ students, isLoading, error }: CoachS
     const studentCards = displayedStudents.map((student) => {
         const courses: CourseAssignment[] = student.courses.map((course) => {
             let completedCourseDate: Date | undefined;
+            let status: string = 'no-assignment';
+            let assignmentTitle: string | undefined;
             
+            // If there's a last assignment, use its status directly
+            if (course.lastAssignment) {
+                status = mapAssignmentStatusToCourseStatus(course.lastAssignment.assignmentStatus);
+                assignmentTitle = course.lastAssignment.assignmentTitle;
+            }
+            // If no assignment, status remains "no-assignment"
+
+            // If course is completed, use the completion date from the model
+            if (course.courseCompletionDate) {
+                completedCourseDate = new Date(course.courseCompletionDate);
+            }
+
             if (!course.lastAssignment) {
                 return {
                     courseName: course.courseTitle,
                     courseImageUrl: course.courseImageUrl || '',
                     onClickCourse: () => {
                         // TODO: Navigate to course
-                        console.log(`Navigate to course: ${course.courseSlug}`);
                     },
                     status: 'no-assignment' as const,
                 };
-            }
-
-            const status = mapAssignmentStatusToCourseStatus(course.lastAssignment.assignmentStatus);
-            
-            // If course is completed, use the completion date from the model
-            if (course.lastAssignment.assignmentStatus === 'Passed') {
-                completedCourseDate = new Date(); // TODO: Get actual completion date from backend
             }
 
             if (completedCourseDate) {
@@ -145,7 +151,7 @@ export default function CoachStudentsList({ students, isLoading, error }: CoachS
                     courseName: course.courseTitle,
                     courseImageUrl: course.courseImageUrl || '',
                     onClickCourse: () => {
-                        console.log(`Navigate to course: ${course.courseSlug}`);
+                        // TODO: Navigate to course
                     },
                     status: 'course-completed' as const,
                     completedCourseDate: completedCourseDate,
@@ -156,13 +162,12 @@ export default function CoachStudentsList({ students, isLoading, error }: CoachS
                 courseName: course.courseTitle,
                 courseImageUrl: course.courseImageUrl || '',
                 onClickCourse: () => {
-                    console.log(`Navigate to course: ${course.courseSlug}`);
+                    // TODO: Navigate to course
                 },
                 status: status,
-                assignmentTitle: course.lastAssignment.assignmentTitle,
+                assignmentTitle: assignmentTitle!,
                 onViewAssignment: () => {
                     // TODO: Navigate to assignment
-                    console.log(`View assignment: ${course.lastAssignment!.assignmentId}`);
                 },
             } as CourseAssignment;
         });
@@ -176,7 +181,6 @@ export default function CoachStudentsList({ students, isLoading, error }: CoachS
                 coachingSessionsLeft={student.coachingSessionCount > 0 ? student.coachingSessionCount : undefined}
                 onStudentDetails={() => {
                     // TODO: Navigate to student details
-                    console.log(`View student details: ${student.studentId}`);
                 }}
                 courses={courses}
             />
