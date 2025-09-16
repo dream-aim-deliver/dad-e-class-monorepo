@@ -1100,6 +1100,7 @@ export const DE: TDictionary = {
         allStudents: "Alle Studierenden",
         yourStudents: "Deine Studierenden",
         searchPlaceholder: "Suche",
+        noStudentsFound: 'Keine Lernenden gefunden...',
       },
     },
     userCourses: {

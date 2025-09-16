@@ -98,6 +98,38 @@ export function CourseStudents(
         return <DefaultError locale={locale} />;
     }
 
+    // Helper to render content based on students and search state
+    const renderStudentContent = (students: viewModels.TCourseStudentsListSuccess['students'], displayedStudents: viewModels.TCourseStudentsListSuccess['students'], hasMore: boolean, handleLoadMore: () => void) => {
+        // If there's a search query and no results, show "No students found"
+        if (searchQuery.trim() !== '' && students.length === 0) {
+            return (
+                <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem] animate-pulse">
+                    <p className="text-text-primary text-md">
+                        {courseStudentsTranslations('noStudentsFound')}
+                    </p>
+                </div>
+            );
+        }
+
+        // Otherwise, render the student list (which will show "No students yet" if empty)
+        return (
+            <>
+                <StudentCardList locale={locale}>
+                    {renderStudentCards(displayedStudents)}
+                </StudentCardList>
+                {hasMore && (
+                    <div className="flex justify-center items-center w-full mt-6">
+                        <Button
+                            variant="text"
+                            text={paginationTranslations('loadMore')}
+                            onClick={handleLoadMore}
+                        />
+                    </div>
+                )}
+            </>
+        );
+    };
+
     // Helper to render student cards (extracted to avoid duplication)
     const renderStudentCards = (students: viewModels.TCourseStudentsListSuccess['students']) => {
         return students.map((student, index) => {
@@ -197,20 +229,7 @@ export function CourseStudents(
                 {isSearchLoading ? (
                     <StudentCardListSkeleton cardCount={displayedAllStudents.length || 6} />
                 ) : (
-                    <>
-                        <StudentCardList locale={locale}>
-                            {renderStudentCards(displayedAllStudents)}
-                        </StudentCardList>
-                        {hasMoreAllStudents && (
-                            <div className="flex justify-center items-center w-full mt-6">
-                                <Button
-                                    variant="text"
-                                    text={paginationTranslations('loadMore')}
-                                    onClick={handleLoadMoreAllStudents}
-                                />
-                            </div>
-                        )}
-                    </>
+                    renderStudentContent(filteredAllStudents, displayedAllStudents, hasMoreAllStudents, handleLoadMoreAllStudents)
                 )}
             </Tabs.Content>
 
@@ -218,20 +237,7 @@ export function CourseStudents(
                 {isSearchLoading ? (
                     <StudentCardListSkeleton cardCount={displayedYourStudents.length || 6} />
                 ) : (
-                    <>
-                        <StudentCardList locale={locale}>
-                            {renderStudentCards(displayedYourStudents)}
-                        </StudentCardList>
-                        {hasMoreYourStudents && (
-                            <div className="flex justify-center items-center w-full mt-6">
-                                <Button
-                                    variant="text"
-                                    text={paginationTranslations('loadMore')}
-                                    onClick={handleLoadMoreYourStudents}
-                                />
-                            </div>
-                        )}
-                    </>
+                    renderStudentContent(filteredYourStudents, displayedYourStudents, hasMoreYourStudents, handleLoadMoreYourStudents)
                 )}
             </Tabs.Content>
         </Tabs.Root >

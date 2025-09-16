@@ -1097,6 +1097,7 @@ export const EN: TDictionary = {
         allStudents: "All students",
         yourStudents: "Your students",
         searchPlaceholder: "Search",
+        noStudentsFound: "No students found...",
       },
     },
     userCourses: {
