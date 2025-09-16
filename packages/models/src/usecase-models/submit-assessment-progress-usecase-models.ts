@@ -1,14 +1,13 @@
 import { z } from 'zod';
 import {
-  BaseDiscriminatedErrorTypeSchemaFactory,
-    BaseErrorDiscriminatedUnionSchemaFactory,
-    BaseStatusDiscriminatedUnionSchemaFactory,
-    BaseSuccessSchemaFactory
+  BaseErrorDiscriminatedUnionSchemaFactory,
+  BaseStatusDiscriminatedUnionSchemaFactory,
+  BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
 import { PreCourseAssessmentProgressSchema } from './common';
 
 export const SubmitAssessmentProgressRequestSchema = z.object({
-  answers: z.array(PreCourseAssessmentProgressSchema),
+  progress: z.array(PreCourseAssessmentProgressSchema),
   courseSlug: z.string(),
   studentId: z.string().optional(),
 });
@@ -19,14 +18,7 @@ export const SubmitAssessmentProgressSuccessResponseSchema = BaseSuccessSchemaFa
 
 export type TSubmitAssessmentProgressSuccessResponse = z.infer<typeof SubmitAssessmentProgressSuccessResponseSchema>;
 
-const SubmitAssessmentProgressUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({
-  DuplicateError: BaseDiscriminatedErrorTypeSchemaFactory({
-    type: 'DuplicateError',
-    schema: z.object({
-        trace: z.string().optional(),
-    }),
-  }),
-});
+const SubmitAssessmentProgressUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
 export type TSubmitAssessmentProgressUseCaseErrorResponse = z.infer<typeof SubmitAssessmentProgressUseCaseErrorResponseSchema>;
 
 export const SubmitAssessmentProgressUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
