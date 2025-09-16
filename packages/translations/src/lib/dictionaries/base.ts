@@ -1167,6 +1167,7 @@ export const DictionarySchema = z.object({
       tryAgain: z.string(),
       noStudents: z.string(),
       noStudentsDescription: z.string(),
+      noStudentsFound: z.string(),
       filter: z.string(),
       clearAllFilters: z.string(),
       search: z.string(),

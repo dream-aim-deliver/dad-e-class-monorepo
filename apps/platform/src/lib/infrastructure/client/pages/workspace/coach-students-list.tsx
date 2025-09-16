@@ -44,6 +44,7 @@ interface CoachStudentsListProps {
     students: viewModels.TCoachStudentsSuccess['students'];
     isLoading: boolean;
     error: any;
+    hasActiveFiltersOrSearch?: boolean;
 }
 
 function mapAssignmentStatusToCourseStatus(status: string): CourseAssignment['status'] {
@@ -86,7 +87,7 @@ function LoadingSkeleton({ locale }: { locale: TLocale }) {
 
 function ErrorState({ locale, error }: { locale: TLocale; error: any }) {
     const pageTranslations = useTranslations('pages.coachStudents');
-    
+
     return (
         <div className="text-center py-12">
             <div className="text-red-600 mb-2">{pageTranslations('loadError')}</div>
@@ -95,7 +96,21 @@ function ErrorState({ locale, error }: { locale: TLocale; error: any }) {
     );
 }
 
-export default function CoachStudentsList({ students, isLoading, error }: CoachStudentsListProps) {
+function EmptyState({ locale, hasActiveFiltersOrSearch }: { locale: TLocale; hasActiveFiltersOrSearch?: boolean }) {
+    const pageTranslations = useTranslations('pages.coachStudents');
+
+    if (hasActiveFiltersOrSearch) {
+        return (
+            <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem] animate-pulse">
+                    <p className="text-text-primary text-md">{pageTranslations('noStudentsFound')}</p>
+            </div>
+        );
+    }
+
+    return <YourStudentCardList locale={locale}>{[]}</YourStudentCardList>;
+}
+
+export default function CoachStudentsList({ students, isLoading, error, hasActiveFiltersOrSearch }: CoachStudentsListProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('components.paginationButton');
 
@@ -114,7 +129,7 @@ export default function CoachStudentsList({ students, isLoading, error }: CoachS
     }
 
     if (!students || students.length === 0) {
-        return <YourStudentCardList locale={locale}>{[]}</YourStudentCardList>;
+        return <EmptyState locale={locale} hasActiveFiltersOrSearch={hasActiveFiltersOrSearch} />;
     }
 
     const studentCards = displayedStudents.map((student) => {

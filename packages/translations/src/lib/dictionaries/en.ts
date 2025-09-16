@@ -1132,6 +1132,7 @@ export const EN: TDictionary = {
       tryAgain: 'Please try again',
       noStudents: 'You don\'t have any students yet',
       noStudentsDescription: 'Students will appear here once they enroll in your courses',
+      noStudentsFound: 'No students found...',
       filter: 'Filter',
       clearAllFilters: 'Clear All Filters',
       search: 'Search',

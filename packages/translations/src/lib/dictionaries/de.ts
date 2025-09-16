@@ -1135,6 +1135,7 @@ export const DE: TDictionary = {
       tryAgain: 'Bitte versuchen Sie es erneut',
       noStudents: 'Du hast noch keine Schüler',
       noStudentsDescription: 'Schüler werden hier angezeigt, sobald sie sich für deine Kurse anmelden',
+      noStudentsFound: 'Keine Schüler gefunden...',
       filter: 'filtern',
       clearAllFilters: 'Alle Filter löschen',
       search: 'Suchen',
