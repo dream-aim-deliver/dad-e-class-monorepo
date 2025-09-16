@@ -64,6 +64,7 @@ export { default as CardListLayout } from './components/card-list-layout';
 export { CourseCardListSkeleton } from './components/skeletons/courses-skeleton';
 export { CoachCardListSkeleton } from './components/skeletons/coaches-skeleton';
 export { PackageCard } from './components/packages/package-card';
+export { PackageCardList } from './components/packages/package-card-list';
 export { default as CoachCard } from './components/coach/coach-card';
 export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';
 
@@ -78,6 +79,7 @@ export { lessonElements } from './components/lesson/element-core';
 
 export * from './components/icons';
 export { CourseGeneralInformationView } from './components/course-general-information/course-general-information-view';
+export { CourseGeneralInformationVisitor } from './components/course-general-information/course-general-information-visitor';
 export { CourseProgressBar } from './components/course-progress-bar';
 
 export { StarRating } from './components/star-rating';

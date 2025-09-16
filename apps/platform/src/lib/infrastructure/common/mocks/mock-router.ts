@@ -43,6 +43,9 @@ import {
     getCourseIntroduction,
     saveCourseIntroduction,
 } from './procedures/course-introduction';
+import { getPublicCourseDetails } from './procedures/get-public-course-detail';
+import { listCourseReviews } from './procedures/course-reviews';
+import { getCoursePackages } from './procedures/course-packages';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -83,6 +86,9 @@ export const mockRouter = t.router({
     getPlatformLanguage,
     togglePreCourseAssessment,
     savePreCourseAssessmentComponents: saveAssessmentComponents,
+    getPublicCourseDetails,
+    listCourseReviews,
+    getCoursePackages,
 });
 
 export type MockRouter = typeof mockRouter;

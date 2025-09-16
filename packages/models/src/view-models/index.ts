@@ -31,3 +31,7 @@ export * from './category-list-view-model';
 export * from './platform-language-view-model';
 
 export * from './assessment-component-view-model';
+
+export * from './public-course-details-view-model';
+export * from './course-reviews-view-model';
+export * from './course-packages-view-model';
