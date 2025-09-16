@@ -10,7 +10,16 @@ export const UnscheduleCoachingSessionRequestSchema = z.object({
 });
 export type TUnscheduleCoachingSessionRequest = z.infer<typeof UnscheduleCoachingSessionRequestSchema>;
 
-export const UnscheduleCoachingSessionSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({}));
+const UnscheduledCoachingSessionSchema = z.object({
+    id: z.number(),
+    coachingOfferingTitle: z.string(),
+    coachingOfferingDuration: z.number(),  // minutes
+    status: z.literal('unscheduled'),
+});
+
+export const UnscheduleCoachingSessionSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
+    coachingSession: UnscheduledCoachingSessionSchema,
+}));
 
 export type TUnscheduleCoachingSessionSuccessResponse = z.infer<typeof UnscheduleCoachingSessionSuccessResponseSchema>;
 
