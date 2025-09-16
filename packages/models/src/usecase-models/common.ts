@@ -247,6 +247,12 @@ export const LessonComponentSchema = z.discriminatedUnion('type', [
 export type TAssessmentComponent = z.infer<typeof AssessmentComponentSchema>;
 export type TLessonComponent = z.infer<typeof LessonComponentSchema>;
 
+export const CourseAssignmentStatusEnumSchema = z.enum([
+    'waiting-feedback',
+    'long-wait',
+    'course-completed',
+]);
+
 
 export const CourseReviewSchema = z.object({
     id: z.number(),
