@@ -11,13 +11,52 @@ const listCourseMaterialsMock: useCaseModels.TListCourseMaterialsSuccessResponse
                 {
                     id: 'lesson-1',
                     position: 1,
-                    title: 'Introduction to React',
+                    title: 'Introduction to React with All Material Types',
                     materials: [
                         {
                             type: 'richText',
                             id: 'material-1',
                             title: 'Course Overview',
-                            content: '<p>Welcome to the React course! This material contains important information about the course structure.</p>'
+                            text: JSON.stringify([
+                                {
+                                    type: 'paragraph',
+                                    children: [
+                                        { text: 'Welcome to the React course! ' },
+                                        { text: 'This material contains important information', bold: true },
+                                        { text: ' about the course structure.' }
+                                    ]
+                                },
+                                {
+                                    type: 'paragraph',
+                                    children: [
+                                        { text: 'Here are the key topics we will cover:' }
+                                    ]
+                                },
+                                {
+                                    type: 'bulleted-list',
+                                    children: [
+                                        {
+                                            type: 'list-item',
+                                            children: [{ text: 'Components and Props' }]
+                                        },
+                                        {
+                                            type: 'list-item',
+                                            children: [{ text: 'State Management' }]
+                                        },
+                                        {
+                                            type: 'list-item',
+                                            children: [{ text: 'Hooks and Lifecycle' }]
+                                        }
+                                    ]
+                                },
+                                {
+                                    type: 'paragraph',
+                                    children: [
+                                        { text: 'Make sure to complete all assignments and participate in discussions.' }
+                                    ]
+                                }
+                            ]),
+                            includeInMaterials: true
                         },
                         {
                             type: 'links',
@@ -33,6 +72,41 @@ const listCourseMaterialsMock: useCaseModels.TListCourseMaterialsSuccessResponse
                                     title: 'React GitHub',
                                     url: 'https://github.com/facebook/react',
                                     description: 'React source code repository'
+                                },
+                                {
+                                    title: 'React Tutorial',
+                                    url: 'https://react.dev/learn',
+                                    description: 'Interactive React tutorial'
+                                }
+                            ],
+                            includeInMaterials: true
+                        },
+                        {
+                            type: 'downloadFiles',
+                            id: 'material-3',
+                            title: 'Project Files and Resources',
+                            files: [
+                                {
+                                    id: 'file-1',
+                                    name: 'starter-project.zip',
+                                    size: 1024000,
+                                    downloadUrl: '/downloads/starter-project.zip',
+                                    
+                                    thumbnailUrl: null
+                                },
+                                {
+                                    id: 'file-2',
+                                    name: 'environment-setup.pdf',
+                                    size: 512000,
+                                    downloadUrl: '/downloads/environment-setup.pdf',
+                                    thumbnailUrl: null
+                                },
+                                {
+                                    id: 'file-3',
+                                    name: 'cheatsheet.pdf',
+                                    size: 256000,
+                                    downloadUrl: '/downloads/cheatsheet.pdf',
+                                    thumbnailUrl: null
                                 }
                             ]
                         }
@@ -44,25 +118,49 @@ const listCourseMaterialsMock: useCaseModels.TListCourseMaterialsSuccessResponse
                     title: 'Setting Up Your Environment',
                     materials: [
                         {
-                            type: 'downloadFiles',
-                            id: 'material-3',
-                            title: 'Project Files',
-                            files: [
+                            type: 'richText',
+                            id: 'material-4',
+                            title: 'Development Environment Setup',
+                            text: JSON.stringify([
                                 {
-                                    id: 'file-1',
-                                    name: 'starter-project.zip',
-                                    size: 1024000,
-                                    downloadUrl: '/downloads/starter-project.zip',
-                                    mimeType: 'application/zip'
+                                    type: 'heading',
+                                    level: 1,
+                                    children: [{ text: 'Setting Up Your Development Environment' }]
                                 },
                                 {
-                                    id: 'file-2',
-                                    name: 'environment-setup.pdf',
-                                    size: 512000,
-                                    downloadUrl: '/downloads/environment-setup.pdf',
-                                    mimeType: 'application/pdf'
+                                    type: 'paragraph',
+                                    children: [
+                                        { text: 'Before we start coding, you need to set up your development environment. This guide will walk you through the process.' }
+                                    ]
+                                },
+                                {
+                                    type: 'heading',
+                                    level: 2,
+                                    children: [{ text: 'Prerequisites' }]
+                                },
+                                {
+                                    type: 'numbered-list',
+                                    children: [
+                                        {
+                                            type: 'list-item',
+                                            children: [{ text: 'Node.js (version 18 or higher)' }]
+                                        },
+                                        {
+                                            type: 'list-item',
+                                            children: [{ text: 'npm or yarn package manager' }]
+                                        },
+                                        {
+                                            type: 'list-item',
+                                            children: [{ text: 'Git for version control' }]
+                                        },
+                                        {
+                                            type: 'list-item',
+                                            children: [{ text: 'A code editor (VS Code recommended)' }]
+                                        }
+                                    ]
                                 }
-                            ]
+                            ]),
+                            includeInMaterials: true
                         }
                     ]
                 }
@@ -81,9 +179,54 @@ const listCourseMaterialsMock: useCaseModels.TListCourseMaterialsSuccessResponse
                     materials: [
                         {
                             type: 'richText',
-                            id: 'material-4',
-                            title: 'Component Theory',
-                            content: '<h2>Understanding Components</h2><p>Components are the building blocks of React applications...</p>'
+                            id: 'material-5',
+                            title: 'Understanding Components',
+                            text: JSON.stringify([
+                                {
+                                    type: 'paragraph',
+                                    children: [
+                                        { text: 'Components are the building blocks of React applications. They allow you to split the UI into independent, reusable pieces.' }
+                                    ]
+                                },
+                                {
+                                    type: 'heading',
+                                    level: 2,
+                                    children: [{ text: 'Types of Components' }]
+                                },
+                                {
+                                    type: 'bulleted-list',
+                                    children: [
+                                        {
+                                            type: 'list-item',
+                                            children: [
+                                                { text: 'Functional Components', italic: true },
+                                                { text: ' - Modern way to write components using functions' }
+                                            ]
+                                        },
+                                        {
+                                            type: 'list-item',
+                                            children: [
+                                                { text: 'Class Components', italic: true },
+                                                { text: ' - Traditional way using ES6 classes' }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]),
+                            includeInMaterials: true
+                        },
+                        {
+                            type: 'links',
+                            id: 'material-6',
+                            title: 'Component Resources',
+                            links: [
+                                {
+                                    title: 'React Components Guide',
+                                    url: 'https://react.dev/learn/your-first-component',
+                                    description: 'Learn about React components'
+                                }
+                            ],
+                            includeInMaterials: true
                         }
                     ]
                 }
