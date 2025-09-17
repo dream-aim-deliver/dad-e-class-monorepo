@@ -98,16 +98,16 @@ export const CourseMaterialsAccordion: React.FC<CourseMaterialsAccordionProps> =
     <Accordion
       className={cn("flex flex-col gap-6")}
       type="multiple"
-      defaultValue={[modules[0]?.title]}
+      defaultValue={modules?.[0]?.id ? [modules[0].id] : []}
     >
       {modules?.map((module, moduleIndex) => (
         <AccordionItem
           key={module.id}
-          value={module.title}
+          value={module.id!}
           className="bg-card-fill border border-card-stroke px-6 py-4 rounded-medium"
         >
           <AccordionTrigger
-            value={module.title}
+            value={module.id!}
             className="w-full"
             expandIcon={<span title={dictionary.components.courseMaterialsAccordion.expand} className="text-button-text-text"><IconChevronUp size="6" /></span>}
             collapseIcon={<span title={dictionary.components.courseMaterialsAccordion.collapse} className="text-button-text-text"><IconChevronDown size="6" /></span>}
@@ -123,7 +123,7 @@ export const CourseMaterialsAccordion: React.FC<CourseMaterialsAccordionProps> =
           </AccordionTrigger>
 
           <AccordionContent
-            value={module.title}
+            value={module.id!}
             className=" pt-4"
           >
             {/* Lessons Accordion within Module */}
@@ -131,16 +131,16 @@ export const CourseMaterialsAccordion: React.FC<CourseMaterialsAccordionProps> =
               <Accordion
                 type="multiple"
                 className="flex flex-col gap-4"
-                defaultValue={moduleIndex === 0 ? [module.lessons[0]?.title] : undefined}
+                defaultValue={moduleIndex === 0 && module.lessons?.[0]?.id ? [module.lessons[0].id] : undefined}
               >
-                {module.lessons.map((lesson, lessonIndex) => (
+                {module.lessons?.map((lesson, lessonIndex) => (
                   <AccordionItem
                     key={lesson.id}
-                    value={lesson.title}
+                    value={lesson.id!}
                     className="bg-base-neutral-800 p-4 rounded-medium border border-base-neutral-700"
                   >
                     <AccordionTrigger
-                      value={lesson.title}
+                      value={lesson.id!}
                       expandIcon={<span title={dictionary.components.courseMaterialsAccordion.expand} className="text-button-text-text"><IconChevronUp size="5" /></span>}
                       collapseIcon={<span title={dictionary.components.courseMaterialsAccordion.collapse} className="text-button-text-text"><IconChevronDown size="5" /></span>}
                     >
@@ -155,7 +155,7 @@ export const CourseMaterialsAccordion: React.FC<CourseMaterialsAccordionProps> =
                       </div>
                     </AccordionTrigger>
                     <AccordionContent
-                      value={lesson.title}
+                      value={lesson.id!}
                     >
 
                       <hr className='bg-divider my-4' />
