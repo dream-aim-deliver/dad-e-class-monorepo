@@ -199,13 +199,10 @@ const CourseMaterialsAccordion: React.FC<{
                   >
                     <AccordionTrigger
                       value={lesson.title}
-                      
-                      iconSize="5"
                       expandIcon={<IconChevronUp size="5" classNames="text-button-primary-text" />}
                       collapseIcon={<IconChevronDown size="5" classNames="text-button-primary-text" />}
                     >
                       <div className="flex items-center gap-4 flex-1">
-              
                         <h5 className="text-text-primary md:text-[24px] text-lg">
                           {lesson.title}
                         </h5>

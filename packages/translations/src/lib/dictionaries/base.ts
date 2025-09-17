@@ -992,6 +992,15 @@ export const DictionarySchema = z.object({
       moveDownText: z.string(),
       deleteText: z.string(),
     }),
+    courseMaterialsAccordion: z.object({
+      expand: z.string(),
+      collapse: z.string(),
+      usefulLinks: z.string(),
+      downloadFiles: z.string(),
+      module: z.string(),
+      lesson: z.string(),
+      noMaterials: z.string(),
+    }),
     useCourseImageUpload: z.object({
       uploadCredentialsError: z.string(),
       verifyImageError: z.string(),
@@ -1153,6 +1162,9 @@ export const DictionarySchema = z.object({
         yourStudents: z.string(),
         searchPlaceholder: z.string(),
         noStudentsFound: z.string(),
+      }),
+      materials: z.object({
+        noMaterialsAvailable: z.string(),
       }),
     }),
     userCourses: z.object({

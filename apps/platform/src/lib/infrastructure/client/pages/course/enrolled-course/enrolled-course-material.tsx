@@ -1,7 +1,7 @@
 'use client';
 
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import {
     DefaultError,
     DefaultLoading,
@@ -21,6 +21,7 @@ interface EnrolledCourseMaterialProps {
 function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
     const { courseSlug, currentRole } = props;
     const locale = useLocale() as TLocale;
+    const dictionary = getDictionary(locale);
 
     // Fetch course materials using TRPC
     const [courseMaterialsResponse] = trpc.listCourseMaterials.useSuspenseQuery({
@@ -45,7 +46,7 @@ function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
     if (courseMaterialsViewModel.mode === 'kaboom' || courseMaterialsViewModel.mode === 'not-found') {
         return <DefaultError locale={locale} />;
     }
-    
+
     if (currentRole !== 'student') {
         return <DefaultError locale={locale} />;
     }
@@ -54,11 +55,11 @@ function EnrolledCourseMaterialContent(props: EnrolledCourseMaterialProps) {
         <div className="flex flex-col space-y-6">
 
             {courseMaterialsViewModel.data.moduleCount === 0 ? (
-                <div className="p-6 border border-gray-200 rounded-lg text-center">
-                    <p className="text-gray-600">No materials available yet.</p>
+                <div className=" text-center">
+                    <p className="text-text-primary">{dictionary.pages.course.materials.noMaterialsAvailable}</p>
                 </div>
             ) : (
-                <CourseMaterialsAccordion courseMaterials={courseMaterialsViewModel.data} />
+                <CourseMaterialsAccordion data={courseMaterialsViewModel.data} locale={locale} />
             )}
         </div>
     );
@@ -69,9 +70,9 @@ export default function EnrolledCourseMaterial(props: EnrolledCourseMaterialProp
 
     return (
         <MockTRPCClientProviders>
-        <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
-            <EnrolledCourseMaterialContent {...props} />
-        </Suspense>
+            <Suspense fallback={<DefaultLoading locale={locale} variant="minimal" />}>
+                <EnrolledCourseMaterialContent {...props} />
+            </Suspense>
         </MockTRPCClientProviders>
     );
 }

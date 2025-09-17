@@ -1,7 +1,40 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 
-const listCourseMaterialsMock: useCaseModels.TListCourseMaterialsSuccessResponse['data'] = {
+/**
+ * Mock data structure for course materials - matches the CourseMaterialsAccordion component interface
+ */
+type CourseMaterialsData = {
+  modules: Array<{
+    id: string;
+    position: number;
+    title: string;
+    lessons: Array<{
+      id: string;
+      position: number;
+      title: string;
+      materials?: Array<{
+        id: string;
+        type: string;
+        text?: string;
+        links?: Array<{
+          title: string;
+          url: string;
+        }>;
+        files?: Array<{
+          id: string;
+          name: string;
+          downloadUrl: string;
+          size?: number;
+        }>;
+      }>;
+    }>;
+    lessonCount: number;
+  }>;
+  moduleCount: number;
+};
+
+const listCourseMaterialsMock: CourseMaterialsData = {
     modules: [
         {
             id: 'module-1',
@@ -16,7 +49,6 @@ const listCourseMaterialsMock: useCaseModels.TListCourseMaterialsSuccessResponse
                         {
                             type: 'richText',
                             id: 'material-1',
-                            title: 'Course Overview',
                             text: JSON.stringify([
                                 {
                                     type: 'paragraph',
@@ -55,58 +87,47 @@ const listCourseMaterialsMock: useCaseModels.TListCourseMaterialsSuccessResponse
                                         { text: 'Make sure to complete all assignments and participate in discussions.' }
                                     ]
                                 }
-                            ]),
-                            includeInMaterials: true
+                            ])
                         },
                         {
                             type: 'links',
                             id: 'material-2',
-                            title: 'Useful Resources',
                             links: [
                                 {
                                     title: 'React Documentation',
-                                    url: 'https://react.dev',
-                                    description: 'Official React documentation'
+                                    url: 'https://react.dev'
                                 },
                                 {
                                     title: 'React GitHub',
-                                    url: 'https://github.com/facebook/react',
-                                    description: 'React source code repository'
+                                    url: 'https://github.com/facebook/react'
                                 },
                                 {
                                     title: 'React Tutorial',
-                                    url: 'https://react.dev/learn',
-                                    description: 'Interactive React tutorial'
+                                    url: 'https://react.dev/learn'
                                 }
-                            ],
-                            includeInMaterials: true
+                            ]
                         },
                         {
                             type: 'downloadFiles',
                             id: 'material-3',
-                            title: 'Project Files and Resources',
                             files: [
                                 {
                                     id: 'file-1',
                                     name: 'starter-project.zip',
                                     size: 1024000,
-                                    downloadUrl: '/downloads/starter-project.zip',
-                                    
-                                    thumbnailUrl: null
+                                    downloadUrl: '/downloads/starter-project.zip'
                                 },
                                 {
                                     id: 'file-2',
                                     name: 'environment-setup.pdf',
                                     size: 512000,
-                                    downloadUrl: '/downloads/environment-setup.pdf',
-                                    thumbnailUrl: null
+                                    downloadUrl: '/downloads/environment-setup.pdf'
                                 },
                                 {
                                     id: 'file-3',
                                     name: 'cheatsheet.pdf',
                                     size: 256000,
-                                    downloadUrl: '/downloads/cheatsheet.pdf',
-                                    thumbnailUrl: null
+                                    downloadUrl: '/downloads/cheatsheet.pdf'
                                 }
                             ]
                         }
@@ -120,7 +141,6 @@ const listCourseMaterialsMock: useCaseModels.TListCourseMaterialsSuccessResponse
                         {
                             type: 'richText',
                             id: 'material-4',
-                            title: 'Development Environment Setup',
                             text: JSON.stringify([
                                 {
                                     type: 'heading',
@@ -159,8 +179,7 @@ const listCourseMaterialsMock: useCaseModels.TListCourseMaterialsSuccessResponse
                                         }
                                     ]
                                 }
-                            ]),
-                            includeInMaterials: true
+                            ])
                         }
                     ]
                 }
@@ -180,7 +199,6 @@ const listCourseMaterialsMock: useCaseModels.TListCourseMaterialsSuccessResponse
                         {
                             type: 'richText',
                             id: 'material-5',
-                            title: 'Understanding Components',
                             text: JSON.stringify([
                                 {
                                     type: 'paragraph',
@@ -212,21 +230,17 @@ const listCourseMaterialsMock: useCaseModels.TListCourseMaterialsSuccessResponse
                                         }
                                     ]
                                 }
-                            ]),
-                            includeInMaterials: true
+                            ])
                         },
                         {
                             type: 'links',
                             id: 'material-6',
-                            title: 'Component Resources',
                             links: [
                                 {
                                     title: 'React Components Guide',
-                                    url: 'https://react.dev/learn/your-first-component',
-                                    description: 'Learn about React components'
+                                    url: 'https://react.dev/learn/your-first-component'
                                 }
-                            ],
-                            includeInMaterials: true
+                            ]
                         }
                     ]
                 }
@@ -258,7 +272,7 @@ export const listCourseMaterials = t.procedure
             // Return mock data for all other courses
             return {
                 success: true,
-                data: listCourseMaterialsMock,
+                data: listCourseMaterialsMock as any,
             };
         },
     );
