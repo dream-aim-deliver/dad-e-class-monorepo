@@ -243,12 +243,35 @@ const CoachingSessionSchema = BaseComponent.extend({
     // TODO: add progress field
 });
 
+const AssignmentSenderSchema = z.object({
+  id: z.number(),
+  username: z.string(),
+  name: z.string().optional().nullable(),
+  surname: z.string().optional().nullable(),
+  avatarUrl: z.string().optional().nullable(),
+  role: z.string(),
+});
+
+const AssignmentReplySchema = z.object({
+  sentAt: z.number(),
+  comment: z.string(),
+  files: z.array(FileSchema),
+  links: z.array(LinkSchema),
+  sender: AssignmentSenderSchema,
+});
+
+const AssignmentProgressSchema = z.object({
+  passed: z.boolean(),
+  lastActivity: AssignmentReplySchema.optional().nullable(),
+});
+
 const AssignmentSchema = BaseComponent.extend({
     type: z.literal('assignment'),
     title: z.string(),
     description: z.string(),
     resources: z.array(DownloadFileSchema),
     links: z.array(LinkSchema),
+    progress: AssignmentProgressSchema.optional().nullable(),
 });
 
 export const AssessmentComponentSchema = z.discriminatedUnion('type', [

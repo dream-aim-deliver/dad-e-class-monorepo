@@ -93,7 +93,7 @@ export interface QuizTypeFourElement extends BaseCourseFormElement {
     }[];
 }
 
-export type DownloadFilesElement =  {
+export type DownloadFilesElement = {
     type: CourseElementType.DownloadFiles;
     files: fileMetadata.TFileMetadata[] | null;
 } & BaseCourseFormElement;
@@ -105,12 +105,38 @@ export interface UploadFilesElement extends BaseCourseFormElement {
     userComment?: string;
 }
 
+interface AssignmentReply {
+    sentAt: number;
+    comment: string;
+    files: fileMetadata.TFileMetadata[];
+    links: shared.TLink[];
+    sender: {
+        id: string;
+        username: string;
+        name?: string;
+        surname?: string;
+        avatarUrl?: string;
+        role: 'coach' | 'student';
+    }
+}
+
+export enum AssignmentStatus {
+    NotStarted,
+    AwaitingReview,
+    AwaitingReviewLongTime,
+    Passed
+}
+
 export interface AssignmentElement extends BaseCourseFormElement {
     type: CourseElementType.Assignment;
     title: string;
     description: string;
     files: fileMetadata.TFileMetadata[] | null;
     links: shared.TLink[];
+    progress?: {
+        status: AssignmentStatus;
+        lastReply?: AssignmentReply;
+    }
 }
 
 export type CoachingElement = CoachingSessionElement;

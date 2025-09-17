@@ -33,7 +33,7 @@ export const AssignmentReplySenderSchema = z.discriminatedUnion('role', [
 export type TAssignmentReplySender = z.infer<typeof AssignmentReplySenderSchema>;
 
 export const BaseAssignmentReplySchema = z.object({
-    timestamp: z.string().datetime({ offset: true }),
+    timestamp: z.number(),
     sender: AssignmentReplySenderSchema,
 });
 

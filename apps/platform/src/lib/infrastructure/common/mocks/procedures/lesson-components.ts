@@ -534,6 +534,39 @@ const listLessonComponentsMock: useCaseModels.TListLessonComponentsSuccessRespon
                     iconFile: null,
                 },
             ],
+            progress: {
+                passed: false,
+                lastActivity: {
+                    sentAt: Date.now(),
+                    comment: 'I finished the add/delete functionality. Working on edit feature now!',
+                    files: [
+                        {
+                            id: 'file_001',
+                            name: 'Initial_Todo_App_Screenshot.png',
+                            size: 24576,
+                            category: 'image',
+                            downloadUrl:
+                                'https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+                        },
+                    ],
+                    links: [
+                        {
+                            title: 'My GitHub Repository',
+                            url: 'https://github.com/username/todo-app-react',
+                            iconFile: null,
+                        },
+                    ],
+                    sender: {
+                        id: 12,
+                        username: 'johndoe',
+                        name: 'John',
+                        surname: 'Doe',
+                        avatarUrl:
+                            'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80',
+                        role: 'student',
+                    },
+                },
+            },
         },
     ],
 };

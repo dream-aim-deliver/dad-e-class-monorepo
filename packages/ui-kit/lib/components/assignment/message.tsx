@@ -9,20 +9,7 @@ import { LinkEdit, LinkPreview } from '../links';
 
 export interface MessageProps extends isLocalAware {
     reply: assignment.TAssignmentReplyWithId;
-    linkEditIndex: number;
     onFileDownload: (id: string) => void;
-    onFileDelete: (id: number, fileId: string) => void;
-    onLinkDelete: (id: number, linkId: number) => void;
-    onImageChange: (
-        fileRequest: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal,
-    ) => Promise<fileMetadata.TFileMetadata>;
-    onChange: (
-        files: fileMetadata.TFileMetadata[],
-        links: shared.TLinkWithId[],
-        linkEditIndex: number,
-    ) => void;
-    onDeleteIcon: (id: string) => void;
 }
 
 /**
@@ -66,19 +53,13 @@ export interface MessageProps extends isLocalAware {
 
 export const Message: FC<MessageProps> = ({
     reply,
-    linkEditIndex,
     onFileDownload,
-    onFileDelete,
-    onLinkDelete,
-    onChange,
-    onImageChange,
-    onDeleteIcon,
     locale,
 }) => {
     const dictionary = getDictionary(locale);
 
     // components/FormattedDateTime.js
-    const formatDateTime = (timestamp?: string) => {
+    const formatDateTime = (timestamp?: number) => {
         if (!timestamp) return null; // Handle case where timestamp is empty or undefined
         const date = new Date(timestamp);
         const formattedDate = date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
@@ -87,23 +68,11 @@ export const Message: FC<MessageProps> = ({
     };
     const formattedDateTime = formatDateTime(reply.timestamp);
 
-    const handleSaveLink = (data: shared.TLinkWithId, index: number) => {
-        if (reply.type !== 'resources') return;
-        const updatedLinks = [...(reply as any).links as shared.TLinkWithId[]];
-        updatedLinks[index] = data;
-        onChange((reply as any).files as fileMetadata.TFileMetadata[], updatedLinks, -1);
-    };
-
-    const handleOnClickLinkEdit = (index: number) => {
-        if (reply.type !== 'resources') return;
-        onChange((reply as any).files as fileMetadata.TFileMetadata[], (reply as any).links as shared.TLinkWithId[], index);
-    };
-
     const messageBubble = (
         <div
             className={cn(
                 'flex flex-col gap-2 p-2 border-1 rounded-tl-medium rounded-tr-medium min-w-0 flex-1',
-(reply.sender as any).isCurrentUser
+                (reply.sender as any).isCurrentUser
                     ? ' rounded-br-none rounded-bl-medium bg-base-neutral-700 border-base-neutral-600'
                     : 'rounded-br-medium rounded-bl-none bg-base-neutral-800 border-base-neutral-700',
             )}
@@ -137,57 +106,32 @@ export const Message: FC<MessageProps> = ({
                         {(reply as any).comment as string}
                     </p>
                     <div className="w-full h-[1px] bg-base-neutral-500" />
-                    {((reply as any).files as fileMetadata.TFileMetadata[]).map((file, index) => (
-                        <FilePreview
-                            key={index}
-                            uploadResponse={file}
-                            deletion={{
-                                isAllowed: true,
-                                onDelete: () =>
-                                    onFileDelete((reply as any).replyId as number, file.id as string),
-                            }}
-                            onDownload={() => onFileDownload(file.id as string)}
-                            locale={locale}
-                            onCancel={() =>
-                                onFileDelete((reply as any).replyId as number, file.id as string)
-                            }
-                            readOnly={!(reply.sender as any).isCurrentUser}
-                        />
-                    ))}
-                    {((reply as any).links as shared.TLinkWithId[]).map((link, index) =>
-                        linkEditIndex === index ? (
-                            <div className="flex flex-col w-full" key={index}>
-                                <LinkEdit
-                                    locale={locale}
-                                    initialTitle={link.title}
-                                    initialUrl={link.url}
-                                    initialCustomIcon={link.customIcon}
-                                    onSave={(title, url, customIcon) =>
-                                        handleSaveLink(
-                                            { title, url, customIcon },
-                                            index,
-                                        )
-                                    }
-                                    onDiscard={() =>
-                                        onLinkDelete((reply as any).replyId as number, link.linkId as number)
-                                    }
-                                    onImageChange={(image, abortSignal) =>
-                                        onImageChange(image, abortSignal)
-                                    }
-                                    onDeleteIcon={onDeleteIcon}
-                                />
-                            </div>
-                        ) : (
-                            <div className="flex flex-col w-full" key={index}>
+                    {((reply as any).files as fileMetadata.TFileMetadata[]).map(
+                        (file, index) => (
+                            <FilePreview
+                                key={index}
+                                uploadResponse={file}
+                                deletion={{
+                                    isAllowed: false,
+                                }}
+                                onDownload={() =>
+                                    onFileDownload(file.id as string)
+                                }
+                                locale={locale}
+                                readOnly={!(reply.sender as any).isCurrentUser}
+                            />
+                        ),
+                    )}
+                    {((reply as any).links as shared.TLinkWithId[]).map(
+                        (link, index) => (
+                            <div className="flex flex-col w-full" key={`link-${index}`}>
                                 <LinkPreview
-                                    preview={(reply.sender as any).isCurrentUser}
+                                    preview={
+                                        (reply.sender as any).isCurrentUser
+                                    }
                                     title={link.title as string}
                                     url={link.url as string}
                                     customIcon={link.customIcon}
-                                    onEdit={() => handleOnClickLinkEdit(index)}
-                                    onDelete={() =>
-                                        onLinkDelete((reply as any).replyId as number, link.linkId as number)
-                                    }
                                 />
                             </div>
                         ),
