@@ -1002,6 +1002,15 @@ export const EN: TDictionary = {
       moveDownText: 'Move Down',
       deleteText: 'Delete'
     },
+    courseMaterialsAccordion: {
+      expand: 'Expand',
+      collapse: 'Collapse',
+      usefulLinks: 'Useful Links:',
+      downloadFiles: 'Download Files:',
+      module: 'Module',
+      lesson: 'Lesson',
+      noMaterials: 'No materials available for this lesson.',
+    },
     useCourseImageUpload: {
       uploadCredentialsError: 'Failed to get upload credentials',
       verifyImageError: 'Failed to verify image upload',
@@ -1118,6 +1127,9 @@ export const EN: TDictionary = {
         yourStudents: "Your students",
         searchPlaceholder: "Search",
         noStudentsFound: "No students found...",
+      },
+      materials: {
+        noMaterialsAvailable: "No materials available yet.",
       },
     },
     userCourses: {

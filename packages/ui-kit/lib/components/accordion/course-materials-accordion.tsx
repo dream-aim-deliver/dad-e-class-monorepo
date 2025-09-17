@@ -1,4 +1,6 @@
 import React from 'react';
+import { isLocalAware } from '@maany_shr/e-class-translations';
+import { getDictionary } from '@maany_shr/e-class-translations';
 import {
   Accordion,
   AccordionItem,
@@ -12,16 +14,51 @@ import RichTextRenderer from '../rich-text-element/renderer';
 import { LinkPreview } from '../links';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { IconCloudDownload } from '../icons';
-import { TListCourseMaterialsSuccessResponse } from 'packages/models/src/usecase-models';
-import { isLocalAware } from '@maany_shr/e-class-translations';
+
+/**
+ * Props for the CourseMaterialsAccordion component
+ */
+interface CourseMaterialsAccordionProps extends isLocalAware {
+  /** The course materials data containing modules and module count */
+  data: {
+    modules: Array<{
+      id: string;
+      position: number;
+      title: string;
+      lessons: Array<{
+        id: string;
+        position: number;
+        title: string;
+        materials?: Array<{
+          id: string;
+          type: string;
+          text?: string;
+          links?: Array<{
+            title: string;
+            url: string;
+          }>;
+          files?: Array<{
+            id: string;
+            name: string;
+            downloadUrl: string;
+            size?: number;
+          }>;
+        }>;
+      }>;
+      lessonCount: number;
+    }>;
+    moduleCount: number;
+  };
+}
 
 /**
  * CourseMaterialsAccordion Component - Displays course modules with lessons and materials
  * based on the actual course materials data structure.
  */
-export const CourseMaterialsAccordion: React.FC<TListCourseMaterialsSuccessResponse & isLocalAware> = (props) => {
-  const { data,locale } = props;
+export const CourseMaterialsAccordion: React.FC<CourseMaterialsAccordionProps> = (props) => {
+  const { data, locale } = props;
   const { modules, moduleCount } = data;
+  const dictionary = getDictionary(locale);
   const renderMaterial = (material: any) => {
     switch (material.type) {
       case 'richText':
@@ -39,7 +76,7 @@ export const CourseMaterialsAccordion: React.FC<TListCourseMaterialsSuccessRespo
       case 'links':
         return (
           <div key={material.id}>
-            <p className="font-important md:text-md text-sm text-text-primary">Useful Links:</p>
+            <p className="font-important md:text-md text-sm text-text-primary">{dictionary.components.courseMaterialsAccordion.usefulLinks}</p>
             <div className="p-4 border border-card-stroke rounded-medium">
               {material.links?.map((link: any, idx: number) => (
                 <LinkPreview
@@ -55,7 +92,7 @@ export const CourseMaterialsAccordion: React.FC<TListCourseMaterialsSuccessRespo
       case 'downloadFiles':
         return (
           <div key={material.id}>
-            <span className="flex items-center gap-2"><IconCloudDownload classNames='text-text-primary' /> <p className="font-important md:text-md text-sm text-text-primary">Download Files:</p></span>
+            <span className="flex items-center gap-2"><IconCloudDownload classNames='text-text-primary' /> <p className="font-important md:text-md text-sm text-text-primary">{dictionary.components.courseMaterialsAccordion.downloadFiles}</p></span>
             <div className="p-4 border border-card-stroke rounded-medium">
               {material.files?.map((file: any, idx: number) => (
                 <FilePreview
@@ -97,15 +134,15 @@ export const CourseMaterialsAccordion: React.FC<TListCourseMaterialsSuccessRespo
           <AccordionTrigger
             value={module.title}
             className="w-ful"
-            expandIcon={<span title="Expand" className="text-button-text-text"><IconChevronUp size="6" /></span>}
-            collapseIcon={<span title="Collapse" className="text-button-text-text"><IconChevronDown size="6" /></span>}
+            expandIcon={<span title={dictionary.components.courseMaterialsAccordion.expand} className="text-button-text-text"><IconChevronUp size="6" /></span>}
+            collapseIcon={<span title={dictionary.components.courseMaterialsAccordion.collapse} className="text-button-text-text"><IconChevronDown size="6" /></span>}
           >
             <div className="flex items-center gap-4 flex-1">
               <h4 className="text-base-white md:text-2xl text-xl font-semibold">
                 {module.title}
               </h4>
               <span className="text-text-secondary text-bottom font-medium">
-                {module.position}/{moduleCount} module
+                {module.position}/{moduleCount} {dictionary.components.courseMaterialsAccordion.module}
               </span>
             </div>
           </AccordionTrigger>
@@ -129,8 +166,8 @@ export const CourseMaterialsAccordion: React.FC<TListCourseMaterialsSuccessRespo
                   >
                     <AccordionTrigger
                       value={lesson.title}
-                      expandIcon={<span title="Expand" className="text-button-text-text"><IconChevronUp size="5" /></span>}
-                      collapseIcon={<span title="Collapse" className="text-button-text-text"><IconChevronDown size="5" /></span>}
+                      expandIcon={<span title={dictionary.components.courseMaterialsAccordion.expand} className="text-button-text-text"><IconChevronUp size="5" /></span>}
+                      collapseIcon={<span title={dictionary.components.courseMaterialsAccordion.collapse} className="text-button-text-text"><IconChevronDown size="5" /></span>}
                     >
                       <div className="flex items-center gap-4 flex-1">
 
@@ -138,7 +175,7 @@ export const CourseMaterialsAccordion: React.FC<TListCourseMaterialsSuccessRespo
                           {lesson.title}
                         </h5>
                         <span className="text-text-secondary text-bottom font-medium">
-                          {lesson.position}/{module.lessonCount} Lesson
+                          {lesson.position}/{module.lessonCount} {dictionary.components.courseMaterialsAccordion.lesson}
                         </span>
                       </div>
                     </AccordionTrigger>
@@ -152,7 +189,7 @@ export const CourseMaterialsAccordion: React.FC<TListCourseMaterialsSuccessRespo
                         {lesson.materials?.map((material) => renderMaterial(material))}
                         {(!lesson.materials || lesson.materials.length === 0) && (
                           <div className="text-text-secondary">
-                            No materials available for this lesson.
+                            {dictionary.components.courseMaterialsAccordion.noMaterials}
                           </div>
                         )}
                       </div>

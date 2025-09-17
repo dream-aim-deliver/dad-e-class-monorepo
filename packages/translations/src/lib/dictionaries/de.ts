@@ -1005,6 +1005,15 @@ export const DE: TDictionary = {
       moveDownText: "Nach unten verschieben",
       deleteText: "Löschen",
     },
+    courseMaterialsAccordion: {
+      expand: 'Erweitern',
+      collapse: 'Zusammenklappen',
+      usefulLinks: 'Nützliche Links:',
+      downloadFiles: 'Dateien herunterladen:',
+      module: 'Modul',
+      lesson: 'Lektion',
+      noMaterials: 'Keine Materialien für diese Lektion verfügbar.',
+    },
     useCourseImageUpload: {
       uploadCredentialsError: 'Upload-Anmeldeinformationen konnten nicht abgerufen werden',
       verifyImageError: 'Der Bild-Upload konnte nicht verifiziert werden.',
@@ -1121,6 +1130,9 @@ export const DE: TDictionary = {
         yourStudents: "Deine Studierenden",
         searchPlaceholder: "Suche",
         noStudentsFound: 'Keine Lernenden gefunden...',
+      },
+      materials: {
+        noMaterialsAvailable: "Noch keine Materialien verfügbar.",
       },
     },
     userCourses: {
