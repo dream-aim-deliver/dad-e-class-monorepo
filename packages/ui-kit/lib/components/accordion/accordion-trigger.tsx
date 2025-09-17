@@ -55,7 +55,7 @@ const AccordionTrigger = forwardRef<HTMLDivElement, AccordionTriggerProps>(
 
     // Default icons if none provided
     const defaultExpandIcon = <IconMinus  classNames="text-button-text-text" />;
-    const defaultCollapseIcon = <IconPlus  className="text-button-text-text" />;
+    const defaultCollapseIcon = <IconPlus  classNames="text-button-text-text" />;
 
     // Use provided icons or defaults
     const expandIconElement = expandIcon || defaultExpandIcon;

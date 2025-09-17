@@ -1,6 +1,7 @@
 import React from 'react';
 import { isLocalAware } from '@maany_shr/e-class-translations';
 import { getDictionary } from '@maany_shr/e-class-translations';
+import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import {
   Accordion,
   AccordionItem,
@@ -15,40 +16,14 @@ import { LinkPreview } from '../links';
 import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { IconCloudDownload } from '../icons';
 
+
+
 /**
  * Props for the CourseMaterialsAccordion component
  */
 interface CourseMaterialsAccordionProps extends isLocalAware {
   /** The course materials data containing modules and module count */
-  data: {
-    modules: Array<{
-      id: string;
-      position: number;
-      title: string;
-      lessons: Array<{
-        id: string;
-        position: number;
-        title: string;
-        materials?: Array<{
-          id: string;
-          type: string;
-          text?: string;
-          links?: Array<{
-            title: string;
-            url: string;
-          }>;
-          files?: Array<{
-            id: string;
-            name: string;
-            downloadUrl: string;
-            size?: number;
-          }>;
-        }>;
-      }>;
-      lessonCount: number;
-    }>;
-    moduleCount: number;
-  };
+  data: viewModels.TCourseMaterialsListSuccess;
 }
 
 /**
@@ -59,7 +34,7 @@ export const CourseMaterialsAccordion: React.FC<CourseMaterialsAccordionProps> =
   const { data, locale } = props;
   const { modules, moduleCount } = data;
   const dictionary = getDictionary(locale);
-  const renderMaterial = (material: any) => {
+  const renderMaterial = (material: useCaseModels.TCourseMaterial) => {
     switch (material.type) {
       case 'richText':
         return (
@@ -108,7 +83,7 @@ export const CourseMaterialsAccordion: React.FC<CourseMaterialsAccordionProps> =
                   onDownload={(id) => window.open(file.downloadUrl, '_blank')}
                   deletion={{ isAllowed: false }}
                   readOnly={true}
-                  locale="en"
+                  locale={locale}
                 />
               ))}
             </div>
@@ -133,7 +108,7 @@ export const CourseMaterialsAccordion: React.FC<CourseMaterialsAccordionProps> =
         >
           <AccordionTrigger
             value={module.title}
-            className="w-ful"
+            className="w-full"
             expandIcon={<span title={dictionary.components.courseMaterialsAccordion.expand} className="text-button-text-text"><IconChevronUp size="6" /></span>}
             collapseIcon={<span title={dictionary.components.courseMaterialsAccordion.collapse} className="text-button-text-text"><IconChevronDown size="6" /></span>}
           >
