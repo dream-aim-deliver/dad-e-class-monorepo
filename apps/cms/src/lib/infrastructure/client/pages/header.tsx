@@ -25,11 +25,11 @@ const NavLinks = ({
     locale: TLocale;
     pathname: string;
 }) => {
-    const t = useTranslations('components.navbar');
+    const t = useTranslations('components.cmsNavbar');
 
     // Route mapping for header navigation
     const routes = {
-        offers: '/offers',
+        manageUsers: '/users',
         coaching: '/coaching',
         howItWorks: '/how-it-works',
         about: '/about',
@@ -53,23 +53,10 @@ const NavLinks = ({
     // TODO: possibly use Link from Next.js
     return (
         <>
-            <Link href="/offers">
-                <span className={getLinkClass(routes.offers)}>
-                    {t('offers')}
+            <Link href="/users">
+                <span className={getLinkClass(routes.manageUsers)}>
+                    {t('manageUsers')}
                 </span>
-            </Link>
-            <Link href="/coaching">
-                <span className={getLinkClass(routes.coaching)}>
-                    {t('coaching')}
-                </span>
-            </Link>
-            <Link href="/how-it-works">
-                <span className={getLinkClass(routes.howItWorks)}>
-                    {t('howItWorks')}
-                </span>
-            </Link>
-            <Link href="/about">
-                <span className={getLinkClass(routes.about)}>{t('about')}</span>
             </Link>
         </>
     );
