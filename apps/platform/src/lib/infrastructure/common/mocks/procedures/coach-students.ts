@@ -16,8 +16,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-1',
                         assignmentTitle: 'Create a photo composition',
-                        assignmentStatus: 'AwaitingReview'
-                    }
+                        assignmentStatus: 'waiting-feedback'
+                    },
+                    courseCompletionDate: null,
                 },
                 {
                     courseTitle: 'TypeScript Fundamentals',
@@ -26,8 +27,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-2',
                         assignmentTitle: 'Build a TypeScript project',
-                        assignmentStatus: 'Passed'
-                    }
+                        assignmentStatus: 'course-completed'
+                    },
+                    courseCompletionDate: null,
                 }
             ]
         },
@@ -44,8 +46,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-3',
                         assignmentTitle: 'JavaScript algorithms',
-                        assignmentStatus: 'AwaitingForLongTime'
-                    }
+                        assignmentStatus: 'long-wait'
+                    },
+                    courseCompletionDate: null
                 }
             ]
         },
@@ -62,8 +65,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-4',
                         assignmentTitle: 'Design wireframes',
-                        assignmentStatus: 'AwaitingReview'
-                    }
+                        assignmentStatus: 'waiting-feedback'
+                    },
+                    courseCompletionDate: null,
                 },
                 {
                     courseTitle: 'Digital Marketing Basics',
@@ -72,8 +76,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-5',
                         assignmentTitle: 'Create marketing plan',
-                        assignmentStatus: 'Passed'
-                    }
+                        assignmentStatus: 'course-completed'
+                    },
+                    courseCompletionDate: null,
                 }
             ]
         },
@@ -87,7 +92,8 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     courseTitle: 'Python for Beginners',
                     courseSlug: 'python-beginners',
                     courseImageUrl: null,
-                    lastAssignment: null
+                    lastAssignment: null,
+                    courseCompletionDate: null,
                 }
             ]
         },
@@ -104,8 +110,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-6',
                         assignmentTitle: 'Data analysis project',
-                        assignmentStatus: 'AwaitingReview'
-                    }
+                        assignmentStatus: 'waiting-feedback'
+                    },
+                    courseCompletionDate: null,
                 },
                 {
                     courseTitle: 'Machine Learning Basics',
@@ -114,8 +121,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-7',
                         assignmentTitle: 'Build ML model',
-                        assignmentStatus: 'AwaitingForLongTime'
-                    }
+                        assignmentStatus: 'long-wait'
+                    },
+                    courseCompletionDate: null,
                 },
                 {
                     courseTitle: 'Statistics for Data Science',
@@ -124,8 +132,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-8',
                         assignmentTitle: 'Statistical analysis',
-                        assignmentStatus: 'Passed'
-                    }
+                        assignmentStatus: 'course-completed'
+                    },
+                    courseCompletionDate: null,
                 }
             ]
         },
@@ -142,8 +151,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-1',
                         assignmentTitle: 'Create a photo composition',
-                        assignmentStatus: 'AwaitingReview'
-                    }
+                        assignmentStatus: 'waiting-feedback'
+                    },
+                    courseCompletionDate: null,
                 },
                 {
                     courseTitle: 'TypeScript Fundamentals',
@@ -152,8 +162,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-2',
                         assignmentTitle: 'Build a TypeScript project',
-                        assignmentStatus: 'Passed'
-                    }
+                        assignmentStatus: 'course-completed'
+                    },
+                    courseCompletionDate: null,
                 }
             ]
         },
@@ -170,8 +181,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-1',
                         assignmentTitle: 'Create a photo composition',
-                        assignmentStatus: 'AwaitingReview'
-                    }
+                        assignmentStatus: 'waiting-feedback'
+                    },
+                    courseCompletionDate: null,
                 },
                 {
                     courseTitle: 'TypeScript Fundamentals',
@@ -180,8 +192,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-2',
                         assignmentTitle: 'Build a TypeScript project',
-                        assignmentStatus: 'Passed'
-                    }
+                        assignmentStatus: 'course-completed'
+                    },
+                    courseCompletionDate: null,
                 }
             ]
         },
@@ -198,8 +211,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-1',
                         assignmentTitle: 'Create a photo composition',
-                        assignmentStatus: 'AwaitingReview'
-                    }
+                        assignmentStatus: 'waiting-feedback'
+                    },
+                    courseCompletionDate: null,
                 },
                 {
                     courseTitle: 'TypeScript Fundamentals',
@@ -208,8 +222,9 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     lastAssignment: {
                         assignmentId: 'assignment-2',
                         assignmentTitle: 'Build a TypeScript project',
-                        assignmentStatus: 'Passed'
-                    }
+                        assignmentStatus: 'course-completed'
+                    },
+                    courseCompletionDate: null,
                 }
             ]
         },
@@ -223,7 +238,8 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     courseTitle: 'Python for Beginners',
                     courseSlug: 'python-beginners',
                     courseImageUrl: null,
-                    lastAssignment: null
+                    lastAssignment: null,
+                    courseCompletionDate: null
                 }
             ]
         },
@@ -237,7 +253,8 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     courseTitle: 'Python for Beginners',
                     courseSlug: 'python-beginners',
                     courseImageUrl: null,
-                    lastAssignment: null
+                    lastAssignment: null,
+                    courseCompletionDate: null
                 }
             ]
         },
@@ -251,7 +268,8 @@ const coachStudentsMock: useCaseModels.TListCoachStudentsSuccessResponse['data']
                     courseTitle: 'Python for Beginners',
                     courseSlug: 'python-beginners',
                     courseImageUrl: null,
-                    lastAssignment: null
+                    lastAssignment: null,
+                    courseCompletionDate: null
                 }
             ]
         },
