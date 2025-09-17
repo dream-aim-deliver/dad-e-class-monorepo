@@ -22,6 +22,7 @@ import {
     CoachingSessionElement,
     CourseElementType,
     AssignmentElement,
+    AssignmentStatus,
 } from '@maany_shr/e-class-ui-kit';
 import { TPreCourseAssessmentProgress } from 'packages/models/src/usecase-models';
 
@@ -386,6 +387,24 @@ function transformCoachingSession(
 function transformAssignment(
     component: Extract<useCaseModels.TLessonComponent, { type: 'assignment' }>,
 ): AssignmentElement {
+    const getReplyRole = (): 'student' | 'coach' => {
+        if (component.progress?.lastActivity?.sender.role === 'student') {
+            return 'student';
+        }
+        return 'coach';
+    };
+
+    const getStatus = (): AssignmentStatus => {
+        if (!component.progress?.lastActivity) {
+            return AssignmentStatus.NotStarted;
+        }
+        if (component.progress.passed) {
+            return AssignmentStatus.Passed;
+        }
+        // TODO: Add logic to determine if it's been a long time since last activity
+        return AssignmentStatus.AwaitingReview;
+    }
+
     return {
         type: LessonElementType.Assignment,
         id: component.id,
@@ -398,6 +417,28 @@ function transformAssignment(
             url: file.downloadUrl,
         })),
         links: component.links,
+        progress: component.progress ? {
+            status: getStatus(),
+            lastReply: component.progress.lastActivity ? {
+                sentAt: component.progress.lastActivity.sentAt,
+                comment: component.progress.lastActivity.comment,
+                files: component.progress.lastActivity.files.map((file) => ({
+                    ...file,
+                    status: 'available',
+                    category: 'generic',
+                    url: file.downloadUrl,
+                })),
+                links: component.progress.lastActivity.links,
+                sender: {
+                    id: component.progress.lastActivity.sender.id.toString(),
+                    username: component.progress.lastActivity.sender.username,
+                    name: component.progress.lastActivity.sender.name ?? undefined,
+                    surname: component.progress.lastActivity.sender.surname ?? undefined,
+                    avatarUrl: component.progress.lastActivity.sender.avatarUrl ?? undefined,
+                    role: getReplyRole(),
+                },
+            } : undefined,
+        } : undefined,
     };
 }
 
