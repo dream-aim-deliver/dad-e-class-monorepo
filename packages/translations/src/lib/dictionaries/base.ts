@@ -324,6 +324,9 @@ export const DictionarySchema = z.object({
       logout: z.string(),
       yourCourses:z.string(),
     }),
+    cmsNavbar: z.object({
+      manageUsers: z.string(),
+    }),
     footer: z.object({
       impressum: z.string(),
       privacyPolicy: z.string(),

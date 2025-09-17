@@ -321,6 +321,9 @@ export const DE: TDictionary = {
       logout: 'Abmelden',
       yourCourses: 'Deine Angebote',
     },
+    cmsNavbar: {
+      manageUsers: 'Benutzer verwalten',
+    },
     footer: {
       impressum: 'Impressum',
       privacyPolicy: 'Datenschutzrichtlinie',

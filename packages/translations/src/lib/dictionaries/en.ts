@@ -318,6 +318,9 @@ export const EN: TDictionary = {
       logout: 'Logout',
       yourCourses: 'Your Offers',
     },
+    cmsNavbar: {
+      manageUsers: 'Manage Users',
+    },
     footer: {
       impressum: 'Impressum',
       privacyPolicy: 'Privacy Policy',
