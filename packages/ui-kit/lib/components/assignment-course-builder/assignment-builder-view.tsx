@@ -9,6 +9,7 @@ import { FilePreview } from '../drag-and-drop-uploader/file-preview';
 import { LinkPreview } from '../links';
 import { Message } from '../assignment/message';
 import { Badge } from '../badge';
+import { fileMetadata } from '@maany_shr/e-class-models';
 
 /**
  * Displays a summary view of the assignment, including title, description, attached files, and resource links.
@@ -35,7 +36,7 @@ import { Badge } from '../badge';
 
 interface AssignmentStudentView extends isLocalAware {
     elementInstance: AssignmentElement;
-    onFileDownload: (fileId: string) => void;
+    onFileDownload: (fileMetadata: fileMetadata.TFileMetadata) => void;
 }
 
 export const AssignmentBuilderView: FC<AssignmentStudentView> = ({
@@ -109,9 +110,7 @@ export const AssignmentBuilderView: FC<AssignmentStudentView> = ({
                             locale={locale}
                             readOnly={true}
                             deletion={{ isAllowed: false }}
-                            onDownload={() =>
-                                file.id && onFileDownload(file.id)
-                            }
+                            onDownload={() => file.id && onFileDownload(file)}
                         />
                     ))}
                     {elementInstance.links?.map((link, index) => (
@@ -136,10 +135,11 @@ export const AssignmentBuilderView: FC<AssignmentStudentView> = ({
                             reply={{
                                 replyId: 0,
                                 comment: lastReply.comment,
-                                type: 'text',
+                                type: 'resources',
                                 timestamp: lastReply.sentAt,
                                 sender: {
                                     id: lastReply.sender.id,
+                                    // TODO: Handle translation for anonymous user
                                     name:
                                         lastReply.sender.name ??
                                         'Anonymous User',
@@ -148,6 +148,11 @@ export const AssignmentBuilderView: FC<AssignmentStudentView> = ({
                                     image: lastReply.sender.avatarUrl ?? '',
                                     isCurrentUser: false,
                                 },
+                                files: lastReply.files,
+                                links: lastReply.links.map((link) => ({
+                                    linkId: 0,
+                                    ...link,
+                                })),
                             }}
                             onFileDownload={onFileDownload}
                             locale={locale}

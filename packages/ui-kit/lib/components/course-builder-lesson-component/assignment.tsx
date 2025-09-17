@@ -15,6 +15,7 @@ import DesignerLayout from '../designer-layout';
 import { IconAssignment } from '../icons';
 import { ElementValidator } from '../lesson/types';
 import DefaultError from '../default-error';
+import { fileMetadata } from '@maany_shr/e-class-models';
 
 /**
  * Course element template definition for a Coaching Session.
@@ -141,7 +142,7 @@ export function DesignerComponent({
  */
 
 interface AssignmentFormProps extends FormComponentProps {
-    onFileDownload: (fileId: string) => void;
+    onFileDownload: (fileMetadata: fileMetadata.TFileMetadata) => void;
 }
 
 export function FormComponent({

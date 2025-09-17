@@ -9,7 +9,7 @@ import { LinkEdit, LinkPreview } from '../links';
 
 export interface MessageProps extends isLocalAware {
     reply: assignment.TAssignmentReplyWithId;
-    onFileDownload: (id: string) => void;
+    onFileDownload: (fileMetadata: fileMetadata.TFileMetadata) => void;
 }
 
 /**
@@ -68,6 +68,40 @@ export const Message: FC<MessageProps> = ({
     };
     const formattedDateTime = formatDateTime(reply.timestamp);
 
+    const getResources = () => {
+        if (reply.type !== 'resources') return null;
+        const hasFiles = reply.files && reply.files.length > 0;
+        const hasLinks = reply.links && reply.links.length > 0;
+        if (!hasFiles && !hasLinks) return null;
+        return (
+            <>
+                <div className="w-full h-[1px] bg-base-neutral-500" />
+                {reply.files?.map((file, index) => (
+                    <FilePreview
+                        key={index}
+                        uploadResponse={file}
+                        deletion={{
+                            isAllowed: false,
+                        }}
+                        onDownload={() => onFileDownload(file)}
+                        locale={locale}
+                        readOnly={!(reply.sender as any).isCurrentUser}
+                    />
+                ))}
+                {reply.links?.map((link, index) => (
+                    <div className="flex flex-col w-full" key={`link-${index}`}>
+                        <LinkPreview
+                            preview={(reply.sender as any).isCurrentUser}
+                            title={link.title as string}
+                            url={link.url as string}
+                            customIcon={link.customIcon}
+                        />
+                    </div>
+                ))}
+            </>
+        );
+    };
+
     const messageBubble = (
         <div
             className={cn(
@@ -103,39 +137,9 @@ export const Message: FC<MessageProps> = ({
             ) : (
                 <div className="flex flex-col gap-2">
                     <p className="text-sm text-text-primary leading-[150%]">
-                        {(reply as any).comment as string}
+                        {reply.comment}
                     </p>
-                    <div className="w-full h-[1px] bg-base-neutral-500" />
-                    {((reply as any).files as fileMetadata.TFileMetadata[]).map(
-                        (file, index) => (
-                            <FilePreview
-                                key={index}
-                                uploadResponse={file}
-                                deletion={{
-                                    isAllowed: false,
-                                }}
-                                onDownload={() =>
-                                    onFileDownload(file.id as string)
-                                }
-                                locale={locale}
-                                readOnly={!(reply.sender as any).isCurrentUser}
-                            />
-                        ),
-                    )}
-                    {((reply as any).links as shared.TLinkWithId[]).map(
-                        (link, index) => (
-                            <div className="flex flex-col w-full" key={`link-${index}`}>
-                                <LinkPreview
-                                    preview={
-                                        (reply.sender as any).isCurrentUser
-                                    }
-                                    title={link.title as string}
-                                    url={link.url as string}
-                                    customIcon={link.customIcon}
-                                />
-                            </div>
-                        ),
-                    )}
+                    {getResources()}
                 </div>
             )}
         </div>

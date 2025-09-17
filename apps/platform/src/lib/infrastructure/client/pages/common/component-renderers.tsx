@@ -438,9 +438,7 @@ function AssignmentComponent({
     return (
         <AssignmentFormComponent
             key={key}
-            onFileDownload={(fileId) => {
-                const file = element.files?.find((f) => f.id === fileId);
-                if (!file) return;
+            onFileDownload={(file) => {
                 downloadFile(file.url, file.name);
             }}
             elementInstance={formElement as AssignmentElement}
