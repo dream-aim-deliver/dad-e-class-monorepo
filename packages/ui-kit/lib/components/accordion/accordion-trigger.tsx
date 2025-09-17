@@ -1,37 +1,65 @@
 import { forwardRef, ReactNode, useContext } from "react";
 import { AccordionContext } from "./accordion";
-import { IconPlus } from "../icons/icon-plus";
-import { IconMinus } from "../icons/icon-minus";
 import { cn } from "../../utils/style-utils";
+import { IconMinus, IconPlus } from "../icons";
+
+/**
+ * Icon component type for custom expand/collapse icons
+ * Supports both component references and JSX elements
+ */
+export type AccordionIconComponent = React.ReactElement;
 
 /**
  * AccordionTrigger Component
- * 
+ *
  * This component serves as a trigger for toggling an accordion section.
- * It displays a clickable header with an optional numbering system and an icon
- * that indicates whether the section is expanded or collapsed.
- * 
+ * It displays a clickable header with customizable icons for expanded/collapsed states.
+ *
  * @component
  * @param {Object} props - Component properties
  * @param {ReactNode} props.children - Content inside the accordion trigger
  * @param {string} props.value - The unique value associated with the accordion section
  * @param {string} [props.className] - Additional CSS classes for styling
+ * @param {boolean} [props.showIcon] - Whether to show icons (default: true)
+ * @param {string} [props.iconSize] - Size of the icon (default: "6")
+ * @param {AccordionIconComponent} [props.expandIcon] - Custom icon for expanded state (default: IconChevronUp)
+ * @param {AccordionIconComponent} [props.collapseIcon] - Custom icon for collapsed state (default: IconChevronDown)
  * @returns {JSX.Element | null} The rendered AccordionTrigger component
  */
 interface AccordionTriggerProps {
   children: ReactNode;
   value: string;
   className?: string;
+  showIcon?: boolean;
+  expandIcon?: AccordionIconComponent;
+  collapseIcon?: AccordionIconComponent;
 }
 
 const AccordionTrigger = forwardRef<HTMLDivElement, AccordionTriggerProps>(
-  ({ children, value, className }, ref) => {
+  ({
+    children,
+    value,
+    className,
+    showIcon = true,
+    expandIcon,
+    collapseIcon
+  }, ref) => {
     const context = useContext(AccordionContext);
 
     if (!context) {
       console.warn("AccordionTrigger must be used within an Accordion.");
       return null;
     }
+
+    const isExpanded = context.value.includes(value);
+
+    // Default icons if none provided
+    const defaultExpandIcon = <IconMinus  classNames="text-button-text-text" />;
+    const defaultCollapseIcon = <IconPlus  className="text-button-text-text" />;
+
+    // Use provided icons or defaults
+    const expandIconElement = expandIcon || defaultExpandIcon;
+    const collapseIconElement = collapseIcon || defaultCollapseIcon;
 
     return (
       <div
@@ -47,13 +75,11 @@ const AccordionTrigger = forwardRef<HTMLDivElement, AccordionTriggerProps>(
           {children}
         </div>
 
-        <div className="flex items-center gap-4">
-          {!context.value.includes(value) ? (
-            <IconPlus size="6" classNames="text-button-text-text ml-4" />
-          ) : (
-            <IconMinus size="6" classNames="text-button-text-text ml-4" />
-          )}
-        </div>
+        {showIcon && (
+          <div className="flex items-center gap-4">
+            {isExpanded ? expandIconElement : collapseIconElement}
+          </div>
+        )}
       </div>
     );
   }
