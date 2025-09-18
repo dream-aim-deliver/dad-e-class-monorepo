@@ -1068,6 +1068,9 @@ export const EN: TDictionary = {
       publishButton: 'Yes, publish package',
       noPublishButton: 'No, go back',
     },
+    platformCard: {
+      emptyState: 'No platforms yet.',
+    },
   },
   pages: {
     home: Home_EN,

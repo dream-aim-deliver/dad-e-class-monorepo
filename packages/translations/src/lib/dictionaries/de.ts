@@ -1071,6 +1071,9 @@ export const DE: TDictionary = {
       publishButton: 'Ja, Paket veröffentlichen',
       noPublishButton: 'Nein, zurückgehen',
     },
+    platformCard: {
+      emptyState: 'Noch keine Plattformen.',
+    },
   },
   pages: {
     home: Home_DE,
