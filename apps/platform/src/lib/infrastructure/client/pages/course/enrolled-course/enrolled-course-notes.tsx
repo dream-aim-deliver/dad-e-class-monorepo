@@ -35,6 +35,7 @@ function EnrolledCourseNotesContent(
 
     presenter.present(courseNotesResponse, courseNotesViewModel);
 
+    // TODO: Style PDF
     // Download notes functionality
     const downloadNotesAsPDF = async () => {
         if (!courseNotesViewModel || courseNotesViewModel.mode !== "default" || !notesContainerRef.current) {
@@ -132,7 +133,7 @@ function EnrolledCourseNotesContent(
     return (
         <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between p-2">
-                <h2 className="text-primary text-3xl font-bold">{t('yourNotes')}</h2>
+                <h2>{t('yourNotes')}</h2>
                 <Button
                     variant="secondary"
                     size="medium"

@@ -14,8 +14,6 @@ import { cn } from '../../utils/style-utils';
 import RichTextRenderer from '../rich-text-element/renderer';
 import { Button } from '../button';
 
-
-
 /**
  * Props for the CourseNotesAccordion component
  */
@@ -30,14 +28,16 @@ interface CourseNotesAccordionProps extends isLocalAware {
  * CourseNotesAccordion Component - Displays course modules with lessons and materials
  * based on the actual course materials data structure.
  */
-export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (props) => {
+export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (
+    props,
+) => {
     const { data, locale, onClickViewLesson, onDeserializationError } = props;
     const { modules, moduleCount } = data;
     const dictionary = getDictionary(locale);
 
     return (
         <Accordion
-            className={cn("flex flex-col gap-6")}
+            className={cn('flex flex-col gap-6')}
             type="multiple"
             defaultValue={modules?.[0]?.id ? [modules[0].id] : []}
         >
@@ -50,26 +50,51 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (props)
                     <AccordionTrigger
                         value={module.id!}
                         className="w-full"
-                        expandIcon={<span title={dictionary.components.courseMaterialsAccordion.expand} className="text-button-text-text"><IconChevronUp size="6" /></span>}
-                        collapseIcon={<span title={dictionary.components.courseMaterialsAccordion.collapse} className="text-button-text-text"><IconChevronDown size="6" /></span>}
+                        expandIcon={
+                            <span
+                                title={
+                                    dictionary.components
+                                        .courseMaterialsAccordion.expand
+                                }
+                                className="text-button-text-text"
+                            >
+                                <IconChevronUp size="6" />
+                            </span>
+                        }
+                        collapseIcon={
+                            <span
+                                title={
+                                    dictionary.components
+                                        .courseMaterialsAccordion.collapse
+                                }
+                                className="text-button-text-text"
+                            >
+                                <IconChevronDown size="6" />
+                            </span>
+                        }
                     >
                         <div className="flex items-center gap-4 flex-1">
                             <h4 className="text-base-white md:text-2xl text-xl font-semibold">
-                                {module.title}
+                                {
+                                    dictionary.components
+                                        .courseMaterialsAccordion.module
+                                }{' '}
+                                {module.position} - {module.title}
                             </h4>
                         </div>
                     </AccordionTrigger>
 
-                    <AccordionContent
-                        value={module.id!}
-                        className=" pt-4"
-                    >
+                    <AccordionContent value={module.id!} className=" pt-4">
                         {/* Lessons Accordion within Module */}
-                        <div className="ml-6">
+                        <div className="flex">
                             <Accordion
                                 type="multiple"
                                 className="flex flex-col gap-4"
-                                defaultValue={moduleIndex === 0 && module.lessons?.[0]?.id ? [module.lessons[0].id] : undefined}
+                                defaultValue={
+                                    moduleIndex === 0 && module.lessons?.[0]?.id
+                                        ? [module.lessons[0].id]
+                                        : undefined
+                                }
                             >
                                 {module.lessons?.map((lesson, lessonIndex) => (
                                     <AccordionItem
@@ -79,31 +104,76 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (props)
                                     >
                                         <AccordionTrigger
                                             value={lesson.id!}
-                                            expandIcon={<span title={dictionary.components.courseMaterialsAccordion.expand} className="text-button-text-text"><IconChevronUp size="5" /></span>}
-                                            collapseIcon={<span title={dictionary.components.courseMaterialsAccordion.collapse} className="text-button-text-text"><IconChevronDown size="5" /></span>}
+                                            expandIcon={
+                                                <span
+                                                    title={
+                                                        dictionary.components
+                                                            .courseMaterialsAccordion
+                                                            .expand
+                                                    }
+                                                    className="text-button-text-text"
+                                                >
+                                                    <IconChevronUp size="5" />
+                                                </span>
+                                            }
+                                            collapseIcon={
+                                                <span
+                                                    title={
+                                                        dictionary.components
+                                                            .courseMaterialsAccordion
+                                                            .collapse
+                                                    }
+                                                    className="text-button-text-text"
+                                                >
+                                                    <IconChevronDown size="5" />
+                                                </span>
+                                            }
                                         >
                                             <div className="flex items-center gap-4 flex-1 justify-between">
-
-                                                <h5 className="text-text-primary md:text-[24px] text-lg">
-                                                    {dictionary.components.courseMaterialsAccordion.lesson} {lesson.position} - {lesson.title}
+                                                <h5>
+                                                    {
+                                                        dictionary.components
+                                                            .courseMaterialsAccordion
+                                                            .lesson
+                                                    }{' '}
+                                                    {modules
+                                                        .slice(0, moduleIndex)
+                                                        .reduce(
+                                                            (sum, mod) =>
+                                                                sum +
+                                                                (mod.lessonCount ?? 0),
+                                                            0,
+                                                        ) +
+                                                        (lesson.position ?? 0)}{' '}
+                                                    - {lesson.title}
                                                 </h5>
                                                 <Button
                                                     variant="text"
-                                                    text={dictionary.components.lessonNotes.viewLessonText}
-                                                    onClick={() => onClickViewLesson(lesson.id!)}
+                                                    text={
+                                                        dictionary.components
+                                                            .lessonNotes
+                                                            .viewLessonText
+                                                    }
+                                                    onClick={() =>
+                                                        onClickViewLesson(
+                                                            lesson.id!,
+                                                        )
+                                                    }
                                                     size="small"
                                                 />
                                             </div>
                                         </AccordionTrigger>
-                                        <AccordionContent
-                                            value={lesson.id!}
-                                        >
-
-                                            <hr className='bg-divider my-4' />
+                                        <AccordionContent value={lesson.id!}>
+                                            <hr className="border-divider my-4" />
                                             <div className="text-text-secondary leading-[150%]">
-                                                {lesson.notes &&
-                                                    <RichTextRenderer content={lesson.notes} onDeserializationError={onDeserializationError} />
-                                                }
+                                                {lesson.notes && (
+                                                    <RichTextRenderer
+                                                        content={lesson.notes}
+                                                        onDeserializationError={
+                                                            onDeserializationError
+                                                        }
+                                                    />
+                                                )}
                                             </div>
                                         </AccordionContent>
                                     </AccordionItem>
