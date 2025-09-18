@@ -1,3 +1,5 @@
+'use client';
+
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { IconButton } from "./icon-button";
 import { IconClose } from "./icons/icon-close";

@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+'use client';
+
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import Fuse, { FuseOptionKey } from 'fuse.js';
 import { InputField } from './input-field';
 import { IconSearch } from './icons/icon-search';

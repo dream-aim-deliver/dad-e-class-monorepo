@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useRef } from 'react';
 import { DragAndDrop } from './drag-and-drop';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';

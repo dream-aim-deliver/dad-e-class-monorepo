@@ -1,3 +1,5 @@
+'use client';
+
 import {InputField} from "../input-field";
 import  { FC, useState } from "react";
 import HeaderAdmin from "./header-admin";

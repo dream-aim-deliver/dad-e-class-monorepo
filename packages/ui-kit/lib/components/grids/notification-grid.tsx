@@ -1,3 +1,4 @@
+'use client';
 import { notification } from '@maany_shr/e-class-models';
 import { AllCommunityModule, IRowNode, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';

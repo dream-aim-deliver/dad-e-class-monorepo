@@ -1,3 +1,5 @@
+'use client';
+
 import { Badge } from '../../badge';
 import Banner from '../../banner';
 import { Button } from '../../button';

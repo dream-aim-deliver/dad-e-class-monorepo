@@ -1,3 +1,5 @@
+'use client';
+
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { StarRating } from '../star-rating';
 import { UserAvatar } from '../avatar/user-avatar';

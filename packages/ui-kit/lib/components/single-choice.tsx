@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from "react";
 import { RadioButton } from './radio-button';
 import { Button } from "./button";

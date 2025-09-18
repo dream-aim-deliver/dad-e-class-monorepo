@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { DateInput } from '../date-input';
 import { Button } from '../button';

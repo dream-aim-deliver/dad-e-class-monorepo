@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
 import { Badge } from '../badge';
 import { Button } from '../button';

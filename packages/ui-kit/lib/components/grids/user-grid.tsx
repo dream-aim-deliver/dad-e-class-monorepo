@@ -1,3 +1,4 @@
+'use client';
 import { AgGridReact } from 'ag-grid-react';
 import { RefObject, useState, useCallback, useMemo, useEffect } from 'react';
 import { BaseGrid } from './base-grid';

@@ -1,3 +1,5 @@
+'use client';
+
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { cn } from '../../utils/style-utils';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';

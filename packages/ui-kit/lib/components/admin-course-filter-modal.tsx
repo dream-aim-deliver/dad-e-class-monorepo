@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { DateInput } from './date-input';
 import { Button } from './button';

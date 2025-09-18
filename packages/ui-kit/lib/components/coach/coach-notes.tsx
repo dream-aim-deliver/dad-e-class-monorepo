@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import RichTextEditor from '../rich-text-element/editor';
 import { Descendant, Node } from 'slate';

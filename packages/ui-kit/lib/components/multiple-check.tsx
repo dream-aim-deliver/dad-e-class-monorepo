@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { CheckBox } from './checkbox';
 import { InputField } from './input-field';

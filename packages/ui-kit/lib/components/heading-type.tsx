@@ -1,3 +1,5 @@
+'use client';
+
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { ReactNode, useState } from "react";
 import { InputField } from "./input-field";

@@ -1,3 +1,4 @@
+'use client';
 import { FC, useState, useMemo } from 'react';
 import { cn } from '../../utils/style-utils';
 

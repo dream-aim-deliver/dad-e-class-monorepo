@@ -1,3 +1,4 @@
+'use client';
 import { useEffect, useState } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Button } from './button';

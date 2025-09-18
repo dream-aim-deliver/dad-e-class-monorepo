@@ -1,3 +1,5 @@
+'use client';
+
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { FC, useEffect } from "react";
 import { ModulePagination } from "./module-pagination";

@@ -1,3 +1,5 @@
+'use client';
+
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { Uploader } from './drag-and-drop-uploader/uploader';
 import RichTextEditor from './rich-text-element/editor';

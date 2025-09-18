@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef, useState, useCallback } from 'react';
 import { InputField } from './input-field';
 import RichTextEditor from './rich-text-element/editor';

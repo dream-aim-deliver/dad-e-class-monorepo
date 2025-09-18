@@ -1,3 +1,5 @@
+'use client';
+
 import MuxPlayer from '@mux/mux-player-react';
 import { useEffect, useState } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';

@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { IconSingleChoice } from '../icons/icon-single-choice';
 import {

@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { language } from '@maany_shr/e-class-models';
 import { Button } from './button';

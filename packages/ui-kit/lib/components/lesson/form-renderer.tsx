@@ -1,3 +1,5 @@
+'use client';
+
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { lessonElements } from './element-core';
 import { useRef, useState } from 'react';

@@ -1,3 +1,5 @@
+'use client';
+
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { useMemo, useState } from 'react';
 import { IconButton } from './icon-button';

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { ReactNode } from 'react';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { CheckBox } from '../checkbox';
