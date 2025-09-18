@@ -27,7 +27,7 @@ const CoachSchema = z.object({
 });
 
 export const RemoveCourseCoachRequestSchema = z.object({
-    coachId: z.number(),
+    coachId: z.string().min(1),
     courseSlug: z.string(),
 });
 export type TRemoveCourseCoachRequest = z.infer<typeof RemoveCourseCoachRequestSchema>;

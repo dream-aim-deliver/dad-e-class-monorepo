@@ -6,6 +6,8 @@ import {
     CourseProgressBar,
     Dropdown,
     IconCertification,
+    IconEdit,
+    IconTrashAlt,
     StarRating,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
@@ -125,9 +127,40 @@ export default function EnrolledCourseHeading({
     if (courseViewModel.mode !== 'default') return null;
 
     return (
-        <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:justify-between md:items-center">
-            <div className="flex flex-col space-y-3">
-                <h1> {courseViewModel.data.title} </h1>
+        <div className="flex flex-col space-y-4">
+            {/* Title and Buttons Row */}
+            <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <div className="flex-1">
+                    <h1 className="text-left"> {courseViewModel.data.title} </h1>
+                </div>
+                <div className="flex flex-wrap gap-2 items-center justify-end">
+                    {currentRole === "admin" && (
+                        <Button
+                            variant="text"
+                            hasIconLeft
+                            iconLeft={<IconTrashAlt />}
+                            text={courseTranslations('archiveCourseButton')}
+                            size="medium"
+                            onClick={() => {
+                                //TODO: Implement course deletion
+                            }} />
+                    )}
+                    {(currentRole === "admin" || currentRole === "course_creator") && (
+                        <Button
+                            variant="secondary"
+                            hasIconLeft
+                            iconLeft={<IconEdit />}
+                            size="medium"
+                            text={courseTranslations('editCourseButton')}
+                            onClick={() => {
+                                //TODO: Implement course editing
+                            }} />
+                    )}
+                </div>
+            </div>
+
+            
+            <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                 <div className="flex space-x-2 items-center">
                     <StarRating
                         totalStars={5}
@@ -140,24 +173,24 @@ export default function EnrolledCourseHeading({
                         ({courseViewModel.data.reviewCount})
                     </span>
                 </div>
-            </div>
-            <div className="flex flex-col space-y-4 items-start md:items-end">
-                {renderProgress()}
-                {roleOptions.length > 1 && (
-                    <div className="flex space-x-3 items-center">
-                        <span className="text-text-secondary">
-                            {courseTranslations('roleDropdown.viewAs')}
-                        </span>
-                        <Dropdown
-                            type="simple"
-                            className="w-fit"
-                            options={roleOptions}
-                            defaultValue={currentRole}
-                            text={{}}
-                            onSelectionChange={onRoleChange}
-                        />
-                    </div>
-                )}
+                <div className="flex flex-col space-y-4 items-start md:items-end">
+                    {renderProgress()}
+                    {roleOptions.length > 1 && (
+                        <div className="flex space-x-3 items-center">
+                            <span className="text-text-secondary">
+                                {courseTranslations('roleDropdown.viewAs')}
+                            </span>
+                            <Dropdown
+                                type="simple"
+                                className="w-fit"
+                                options={roleOptions}
+                                defaultValue={currentRole}
+                                text={{}}
+                                onSelectionChange={onRoleChange}
+                            />
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
