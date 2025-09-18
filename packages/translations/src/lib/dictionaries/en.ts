@@ -1101,6 +1101,7 @@ export const EN: TDictionary = {
       completedPanel: {
         badgeText: 'Completed',
         downloadCertificate: 'Download Certificate',
+        accessDeniedError: 'Access denied for current role',
       },
       roleDropdown: {
         viewAs: "View as",

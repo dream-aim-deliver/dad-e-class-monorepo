@@ -248,9 +248,10 @@ export default function EnrolledCourseStudents(
     props: EnrolledCourseStudentsProps
 ) {
     const locale = useLocale() as TLocale;
+    const courseTranslations = useTranslations('pages.course');
 
     if (props.currentRole === 'student' || props.currentRole === 'visitor')
-        throw new Error('Access denied for current role');
+        throw new Error(courseTranslations('completedPanel.accessDeniedError'));
     return (
         <MockTRPCClientProviders>
             <Suspense

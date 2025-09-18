@@ -1136,6 +1136,7 @@ export const DictionarySchema = z.object({
       completedPanel: z.object({
         badgeText: z.string(),
         downloadCertificate: z.string(),
+        accessDeniedError: z.string(),
       }),
       roleDropdown: z.object({
         viewAs: z.string(),
