@@ -1058,6 +1058,9 @@ export const DictionarySchema = z.object({
       publishButton: z.string(),
       noPublishButton: z.string(),
     }),
+    platformCard: z.object({
+      emptyState: z.string(),
+    })
   }),
   pages: z.object({
     sso: z.object({
