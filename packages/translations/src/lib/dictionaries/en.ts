@@ -1168,6 +1168,8 @@ export const EN: TDictionary = {
         noCoachesAssigned: 'No coaches assigned to this course yet.',
         noCoachesFound: 'No coaches found matching your search.',
       },
+      archiveCourseButton: 'Archive Course',
+      editCourseButton: 'Edit Course',
     },
     userCourses: {
       yourCourses: 'Your offers',

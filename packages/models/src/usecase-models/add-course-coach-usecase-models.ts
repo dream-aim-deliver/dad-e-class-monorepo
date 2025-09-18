@@ -28,7 +28,7 @@ const CoachSchema = z.object({
 });
 
 export const AddCourseCoachRequestSchema = z.object({
-    coachId: z.number().min(1).int(),
+    coachId: z.string().min(1),
     courseSlug: z.string().min(1),
 });
 export type TAddCourseCoachRequest = z.infer<typeof AddCourseCoachRequestSchema>;
