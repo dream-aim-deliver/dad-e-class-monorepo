@@ -215,6 +215,7 @@ After all services are running, you need to initialize the platform data before 
 #### What This Does
 
 This initialization endpoint will:
+
 - Create default user roles in the system
 - Set up supported languages (English and German)
 - Create the platform with your specified configuration
