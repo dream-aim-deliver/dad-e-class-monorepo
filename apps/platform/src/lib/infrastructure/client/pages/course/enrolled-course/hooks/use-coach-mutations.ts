@@ -1,19 +1,8 @@
 import { useState } from 'react';
 import { trpc as trpcMock } from '../../../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useAddCoachPresenter, useRemoveCoachPresenter } from '../../../../hooks/use-coach-mutations-presenter';
 
-// Create a simple mapping function for usernames to numeric IDs
-const getCoachNumericId = (username: string): number => {
-    // Simple hash function to convert usernames to consistent numeric IDs
-    let hash = 0;
-    for (let i = 0; i < username.length; i++) {
-        const char = username.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
-    }
-    return Math.abs(hash);
-};
+import { useAddCoachPresenter, useRemoveCoachPresenter } from '../../../../hooks/use-coach-mutations-presenter';
 
 export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<void>, onCoachAdded?: (coach: any) => void, onCoachRemoved?: (coachUsername: string) => void) {
 
@@ -37,7 +26,7 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
             // Perform the backend operation
             const result = await addCoachMutation.mutateAsync({
                 courseSlug,
-                coachId: getCoachNumericId(coachId)
+                coachId
             });
 
             // Use presenter to transform the result (this updates state asynchronously)
@@ -56,10 +45,9 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
                 };
             } else {
                 // Handle error case from result directly
-                const errorMessage = result.data?.message || 'Failed to add coach';
+                const errorMessage = result.data?.message;
                 return { 
-                    success: false, 
-                    errorType: 'mutation_error', 
+                    success: false,  
                     message: errorMessage 
                 };
             }
@@ -67,8 +55,7 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
             console.error('Failed to add coach:', error);
             const errorMessage = 'Failed to add coach. Please try again.';
             return { 
-                success: false, 
-                errorType: 'network_error', 
+                success: false,
                 message: errorMessage 
             };
         }
@@ -82,7 +69,7 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
             // Perform backend operation
             const result = await removeCoachMutation.mutateAsync({
                 courseSlug,
-                coachId: getCoachNumericId(coachId)
+                coachId
             });
 
             // Use presenter to transform the result (this updates state asynchronously)
@@ -104,7 +91,6 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
                 const errorMessage = result.data?.message || 'Failed to remove coach';
                 return { 
                     success: false, 
-                    errorType: 'mutation_error', 
                     message: errorMessage 
                 };
             }
@@ -113,7 +99,6 @@ export function useCoachMutations(courseSlug: string, onRefetch?: () => Promise<
             const errorMessage = 'Failed to remove coach. Please try again.';
             return { 
                 success: false, 
-                errorType: 'network_error', 
                 message: errorMessage 
             };
         }
