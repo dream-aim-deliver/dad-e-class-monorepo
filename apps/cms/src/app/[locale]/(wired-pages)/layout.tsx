@@ -50,21 +50,6 @@ export default async function RootLayout({
     children: React.ReactNode;
     params: Promise<{ locale: string }>;
 }) {
-    // const queryOptions = trpc.listLanguages.queryOptions({});
-    // const queryClient = getQueryClient();
-    // const languagesResponse = await queryClient.fetchQuery(queryOptions);
-    // let languagesViewModel: viewModels.TLanguageListViewModel | undefined;
-    // const presenter = createGetLanguagesPresenter((viewModel) => {
-    //     languagesViewModel = viewModel;
-    // });
-    // await presenter.present(languagesResponse, languagesViewModel);
-    // if (!languagesViewModel || languagesViewModel.mode !== 'default') {
-    //     throw Error(
-    //         languagesViewModel?.data?.message ||
-    //             'Unknown error happened while loading languages',
-    //     );
-    // }
-    
     // Theme configuration - change this variable to switch themes
     // Available themes: 'just-do-add', 'job-brand-me', 'bewerbeagentur', 'cms'
     const THEME = 'cms';
@@ -73,11 +58,7 @@ export default async function RootLayout({
             {
                 languageCode: 'en',
                 name: 'English',
-            },
-            {
-                languageCode: 'de',
-                name: 'German',
-            },
+            }
         ],
     };
 
