@@ -106,7 +106,8 @@ export default async function RootLayout({
 
     const messages = await getMessages({ locale });
 
-    // Perform authentication
+    // Authentication is handled in middleware.ts
+    // Only authenticated users with admin role can reach this point
     const authGateway = new NextAuthGateway(nextAuth);
     const sessionDTO = await authGateway.getSession();
     let session: auth.TSession | null = null;
