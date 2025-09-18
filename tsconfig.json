@@ -1,24 +1,27 @@
 {
-  "extends": "./tsconfig.base.json",
-  "files": [],
-  "references": [
-    {
-      "path": "./packages/translations"
-    },
-    {
-      "path": "./packages/ui-kit"
-    },
-    {
-      "path": "./packages/models"
-    },
-    {
-      "path": "./apps/platform-e2e"
-    },
-    {
-      "path": "./apps/platform"
-    },
-    {
-      "path": "./packages/auth"
-    }
-  ]
+    "extends": "./tsconfig.base.json",
+    "files": [],
+    "references": [
+        {
+            "path": "./packages/translations"
+        },
+        {
+            "path": "./packages/ui-kit"
+        },
+        {
+            "path": "./packages/models"
+        },
+        {
+            "path": "./apps/platform-e2e"
+        },
+        {
+            "path": "./apps/platform"
+        },
+        {
+            "path": "./packages/auth"
+        },
+        {
+            "path": "./apps/cms"
+        }
+    ]
 }
