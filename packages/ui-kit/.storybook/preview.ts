@@ -6,9 +6,9 @@ export const decorators = [
   withThemeByClassName({
     themes: {
       justDoAdd: 'theme-just-do-add',
-      jobRadandMe: 'theme-Job-rand-me',
-      Bewerbeagentur: 'theme-Bewerbeagentur',
-      CMS: 'theme-Cms',
+      jobBrandandMe: 'theme-job-brand-and-me',
+      Bewerbeagentur: 'theme-bewerbeagentur',
+      CMS: 'theme-cms',
     },
     defaultTheme: 'justDoAdd',
   }),
