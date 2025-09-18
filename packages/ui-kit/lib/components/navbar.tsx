@@ -24,12 +24,12 @@ interface NavbarProps extends isLocalAware {
   userName?: string;
   logoSrc?: string;
   availableLocales: TLocale[];
-  router?: {
-    push: (url: string) => void;
-  };
+  dropdownOptions?: { label: string; value: string }[];
+  onDropdownSelection?: (selected: string) => void;
+  dropdownTriggerText?: string;
 }
 
-interface WorkspaceHoverDropdownProps {
+interface NavBarDropdownProps {
   options: { label: string; value: string }[];
   onSelectionChange: (selected: string) => void;
   triggerText: string;
@@ -37,7 +37,7 @@ interface WorkspaceHoverDropdownProps {
   isMobile?: boolean;
 }
 
-const WorkspaceHoverDropdown: React.FC<WorkspaceHoverDropdownProps> = ({
+const NavBarDropdown: React.FC<NavBarDropdownProps> = ({
   options,
   onSelectionChange,
   triggerText,
@@ -84,14 +84,14 @@ const WorkspaceHoverDropdown: React.FC<WorkspaceHoverDropdownProps> = ({
     >
       {/* Trigger */}
       <div className={`flex items-center space-x-1 hover:text-button-primary-fill cursor-pointer ${isMobile ? 'text-sm' : ''}`}>
-        <span>{triggerText}</span>
+        {triggerText && <span>{triggerText}</span>}
         <IconChevronDown classNames="w-4 h-4 fill-current" />
       </div>
 
       {/* Dropdown Content */}
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-1 py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium shadow-lg z-50 min-w-[150px]">
-          {options.map((option, index) => (
+      {isOpen && options.length > 0 && (
+        <div className="absolute top-full right-0 mt-1 py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium shadow-lg z-50 min-w-[150px]">
+          {options.map((option) => (
             <div key={option.value}>
               {/* Add divider before logout */}
               {option.value === 'logout' && (
@@ -125,6 +125,9 @@ const WorkspaceHoverDropdown: React.FC<WorkspaceHoverDropdownProps> = ({
  * @param logoSrc The URL of the platform's logo.
  * @param logo Optional React node to render as the logo, which can be an image or any other element.
  * @param availableLocales An array of available locales for the language dropdown.
+ * @param dropdownOptions Optional array of dropdown menu options with label and value properties.
+ * @param onDropdownSelection Optional callback function triggered when a dropdown option is selected. Receives the selected value as an argument.
+ * @param dropdownTriggerText Optional text to display as the dropdown trigger. Can be an empty string to show only the chevron icon.
  *
  * @example
  * <Navbar
@@ -137,6 +140,13 @@ const WorkspaceHoverDropdown: React.FC<WorkspaceHoverDropdownProps> = ({
  *   userName="John Doe"
  *   logoSrc="https://example.com/logo.png"
  *   availableLocales={['en', 'de']}
+ *   dropdownOptions={[
+ *     { label: "Dashboard", value: "dashboard" },
+ *     { label: "Profile", value: "profile" },
+ *     { label: "Logout", value: "logout" }
+ *   ]}
+ *   onDropdownSelection={(selected) => console.log("Dropdown selection:", selected)}
+ *   dropdownTriggerText="Workspace"
  * >
  *   <a href="/courses">Courses</a>
  *   <a href="/profile">Profile</a>
@@ -156,7 +166,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   logo,
   logoSrc,
   availableLocales,
-  router,
+  dropdownOptions = [],
+  onDropdownSelection,
+  dropdownTriggerText = '',
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dictionary = getDictionary(locale);
@@ -176,29 +188,11 @@ export const Navbar: React.FC<NavbarProps> = ({
     value: locale,
   }));
 
-  // Workspace dropdown options
-  const workspaceOptions = [
-    {
-      label: dictionary.components.navbar.yourCourses, // TODO: Change for Dashboard title
-      value: 'dashboard',
-    },
-    {
-      label: dictionary.components.navbar.yourProfile,
-      value: 'yourProfile',
-    },
-    {
-      label: dictionary.components.navbar.logout,
-      value: 'logout',
-    },
-  ];
-
-  const handleWorkspaceSelection = (selected: string) => {
-    if (selected === 'dashboard') {
-      router?.push(`/${locale}/workspace/courses`);
-    } else if (selected === 'yourProfile') {
-      router?.push(`/${locale}/profile`);
-    } else if (selected === 'logout' && onLogout) {
+  const handleDropdownSelection = (selected: string) => {
+    if (selected === 'logout' && onLogout) {
       onLogout();
+    } else if (onDropdownSelection) {
+      onDropdownSelection(selected);
     }
   };
 
@@ -210,10 +204,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         fullName={userName}
         className="p-0 ml-3"
       />
-      <WorkspaceHoverDropdown
-        options={workspaceOptions}
-        onSelectionChange={handleWorkspaceSelection}
-        triggerText={dictionary.components.navbar.workspace}
+      <NavBarDropdown
+        options={dropdownOptions}
+        onSelectionChange={handleDropdownSelection}
+        triggerText={dropdownTriggerText}
       />
     </div>
   );
@@ -298,10 +292,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                     className="ml-1"
                   />
                 )}
-                <WorkspaceHoverDropdown
-                  options={workspaceOptions}
-                  onSelectionChange={handleWorkspaceSelection}
-                  triggerText={dictionary.components.navbar.workspace}
+                <NavBarDropdown
+                  options={dropdownOptions}
+                  onSelectionChange={handleDropdownSelection}
+                  triggerText={dropdownTriggerText}
                   isMobile={true}
                 />
               </div>

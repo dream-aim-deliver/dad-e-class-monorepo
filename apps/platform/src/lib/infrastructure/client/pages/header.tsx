@@ -85,6 +85,7 @@ export default function Header({
     const pathname = usePathname();
     const router = useRouter();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const t = useTranslations('components.navbar');
 
     const changeLanguage = (newLocale: string) => {
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
@@ -99,6 +100,31 @@ export default function Header({
             console.error('Logout failed:', error);
             setIsLoggingOut(false);
         }
+    };
+
+    // Platform-specific dropdown options
+    const dropdownOptions = [
+        {
+            label: t('yourCourses'), // TODO: Change for Dashboard title
+            value: 'dashboard',
+        },
+        {
+            label: t('yourProfile'),
+            value: 'yourProfile',
+        },
+        {
+            label: t('logout'),
+            value: 'logout',
+        },
+    ];
+
+    const handleDropdownSelection = (selected: string) => {
+        if (selected === 'dashboard') {
+            router.push(`/${locale}/workspace/courses`);
+        } else if (selected === 'yourProfile') {
+            router.push(`/${locale}/profile`);
+        }
+        // logout is handled by the Navbar component itself
     };
 
     if (platformViewModel.mode !== 'default') return null;
@@ -123,7 +149,9 @@ export default function Header({
             isLoggingOut={isLoggingOut}
             userName={session?.user.name}
             userProfileImageSrc={session?.user.image}
-            router={router}
+            dropdownOptions={dropdownOptions}
+            onDropdownSelection={handleDropdownSelection}
+            dropdownTriggerText={t('workspace')}
         >
             <NavLinks locale={locale} pathname={pathname} />
         </Navbar>

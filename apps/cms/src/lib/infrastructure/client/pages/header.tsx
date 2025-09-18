@@ -7,7 +7,6 @@ import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 interface HeaderProps {
@@ -63,7 +62,6 @@ const NavLinks = ({
 };
 
 export default function Header({
-    platformViewModel,
     availableLocales,
     locale,
     session,
@@ -72,7 +70,8 @@ export default function Header({
     const pathname = usePathname();
     const router = useRouter();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
-
+    const t = useTranslations('components.cmsNavbar');
+    const tPlatformNavbar = useTranslations('components.navbar');
     const changeLanguage = (newLocale: string) => {
         const newUrl = pathname.replace(`/${locale}`, `/${newLocale}`);
         router.push(newUrl);
@@ -88,7 +87,23 @@ export default function Header({
         }
     };
 
-    if (platformViewModel.mode !== 'default') return null;
+    // CMS-specific dropdown options
+    const dropdownOptions = [
+        {
+            label: t('manageUsers'),
+            value: 'manageUsers',
+        },
+        {
+            label: tPlatformNavbar('logout'),
+            value: 'logout',
+        },
+    ];
+    
+    const handleDropdownSelection = (selected: string) => {
+        if (selected === 'manageUsers') {
+            router.push(`/${locale}/users`);
+        }
+    };
 
     return (
         <Navbar
@@ -96,21 +111,16 @@ export default function Header({
             availableLocales={availableLocales}
             locale={locale}
             logo={
-                <Image
-                    priority
-                    src={platformViewModel.data.logoUrl}
-                    alt={platformViewModel.data.name}
-                    width={48}
-                    height={48}
-                    className="w-auto h-full"
-                />
+                <span className="text-xl font-semibold">E-Class CMS</span>
             }
             onChangeLanguage={changeLanguage}
             onLogout={handleLogout}
             isLoggingOut={isLoggingOut}
             userName={session?.user.name}
             userProfileImageSrc={session?.user.image}
-            router={router}
+            dropdownOptions={dropdownOptions}
+            onDropdownSelection={handleDropdownSelection}
+            dropdownTriggerText={""}
         >
             <NavLinks locale={locale} pathname={pathname} />
         </Navbar>
