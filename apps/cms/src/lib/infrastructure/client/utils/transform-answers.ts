@@ -10,7 +10,7 @@ import {
 
 function transformTextInputAnswer(
     element: TextInputElement,
-): Extract<useCaseModels.TAnswer, { type: 'textInput' }> {
+): Extract<useCaseModels.TPreCourseAssessmentProgress, { type: 'textInput' }> {
     if (!element.content) {
         throw new Error(`Text input element ${element.id} is missing content`);
     }
@@ -24,7 +24,7 @@ function transformTextInputAnswer(
 
 function transformSingleChoiceAnswer(
     element: SingleChoiceElement,
-): Extract<useCaseModels.TAnswer, { type: 'singleChoice' }> {
+): Extract<useCaseModels.TPreCourseAssessmentProgress, { type: 'singleChoice' }> {
     const answerId = element.options.find((option) => option.isSelected)?.id;
 
     if (answerId === undefined) {
@@ -42,8 +42,8 @@ function transformSingleChoiceAnswer(
 
 function transformMultiCheckAnswer(
     element: MultiCheckElement,
-): Extract<useCaseModels.TAnswer, { type: 'multipleChoice' }> {
-    const answerIds: number[] = [];
+): Extract<useCaseModels.TPreCourseAssessmentProgress, { type: 'multipleChoice' }> {
+    const answerIds: string[] = [];
 
     for (const option of element.options) {
         if (option.isSelected && option.id) {
@@ -66,8 +66,8 @@ function transformMultiCheckAnswer(
 
 function transformOneOutOfThreeAnswer(
     element: OneOutOfThreeElement,
-): Extract<useCaseModels.TAnswer, { type: 'oneOutOfThree' }> {
-    const answers: Array<{ rowId: number; columnId: number }> = [];
+): Extract<useCaseModels.TPreCourseAssessmentProgress, { type: 'oneOutOfThree' }> {
+    const answers: Array<{ rowId: string; columnId: string }> = [];
 
     for (const row of element.data.rows) {
         const selectedColumn = row.columns.find((col) => col.selected);
@@ -106,8 +106,8 @@ const answerTransformers = {
 
 export function transformFormAnswers(
     formValues: Record<string, LessonElement>,
-): useCaseModels.TAnswer[] {
-    const answers: useCaseModels.TAnswer[] = [];
+): useCaseModels.TPreCourseAssessmentProgress[] {
+    const answers: useCaseModels.TPreCourseAssessmentProgress[] = [];
 
     for (const element of Object.values(formValues)) {
         const transformer =

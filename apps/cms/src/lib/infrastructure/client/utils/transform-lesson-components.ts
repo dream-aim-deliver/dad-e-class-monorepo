@@ -23,7 +23,7 @@ import {
     CourseElementType,
     AssignmentElement,
 } from '@maany_shr/e-class-ui-kit';
-import { TAnswer } from 'packages/models/src/usecase-models';
+import { TPreCourseAssessmentProgress } from 'packages/models/src/usecase-models';
 
 function transformRichText(
     component: Extract<useCaseModels.TLessonComponent, { type: 'richText' }>,
@@ -53,6 +53,8 @@ function transformSingleChoice(
         { type: 'singleChoice' }
     >,
 ): SingleChoiceElement {
+    const selectedId = component.progress?.answerId;
+
     return {
         type: LessonElementType.SingleChoice,
         id: component.id,
@@ -60,7 +62,7 @@ function transformSingleChoice(
         options: component.options.map((option) => ({
             id: option.id,
             name: option.name,
-            isSelected: false,
+            isSelected: selectedId !== undefined && option.id === selectedId,
         })),
         required: component.required,
     };
@@ -76,11 +78,14 @@ function transformMultipleChoice(
         type: LessonElementType.MultiCheck,
         id: component.id,
         title: component.title,
-        options: component.options.map((option) => ({
-            id: option.id,
-            name: option.name,
-            isSelected: false,
-        })),
+        options: component.options.map((option) => {
+            const isSelected = component.progress?.answerIds.includes(option.id);
+            return {
+                id: option.id,
+                name: option.name,
+                isSelected: isSelected ?? false,
+            };
+        }),
         required: component.required,
     };
 }
@@ -93,6 +98,7 @@ function transformTextInput(
         id: component.id,
         helperText: component.helperText,
         required: component.required,
+        content: component.progress?.answer,
     };
 }
 
@@ -102,26 +108,32 @@ function transformOneOutOfThree(
         { type: 'oneOutOfThree' }
     >,
 ): OneOutOfThreeElement {
-    const columns = component.columns.map((column) => ({
-        id: column.id,
-        columnTitle: column.name,
-        selected: false,
-    }));
-
     return {
         type: LessonElementType.OneOutOfThree,
         id: component.id,
         data: {
             tableTitle: component.title,
-            rows: component.rows.map((row) => ({
-                id: row.id,
-                rowTitle: row.name,
-                columns: structuredClone(columns),
-            })),
+            rows: component.rows.map((row) => {
+                const columns = component.columns.map((column) => {
+                    const isSelected = component.progress?.answers.some(
+                        (a) => a.rowId === row.id && a.columnId === column.id,
+                    );
+                    return {
+                        id: column.id,
+                        columnTitle: column.name,
+                        selected: isSelected || false,
+                    };
+                });
+                return {
+                    id: row.id,
+                    rowTitle: row.name,
+                    columns: columns,
+                };
+            }),
         },
         required: component.required,
     };
-}
+};
 
 function transformVideo(
     component: Extract<useCaseModels.TLessonComponent, { type: 'video' }>,
@@ -209,7 +221,14 @@ function transformUploadFiles(
         type: LessonElementType.UploadFiles,
         id: component.id,
         description: component.description,
-        files: null,
+        files: component.progress?.files.map((file) => ({
+            ...file,
+            url: file.downloadUrl,
+            status: 'available',
+            thumbnailUrl: file.downloadUrl,
+            category: 'generic',
+        })) ?? null,
+        userComment: component.progress?.comment,
     };
 }
 
@@ -331,11 +350,11 @@ function transformLinks(
             url: link.url,
             customIcon: link.iconFile
                 ? {
-                      ...link.iconFile,
-                      status: 'available',
-                      url: link.iconFile?.downloadUrl,
-                      thumbnailUrl: link.iconFile?.downloadUrl,
-                  }
+                    ...link.iconFile,
+                    status: 'available',
+                    url: link.iconFile?.downloadUrl,
+                    thumbnailUrl: link.iconFile?.downloadUrl,
+                }
                 : undefined,
         })),
         includeInMaterials: component.includeInMaterials,
@@ -436,7 +455,7 @@ export function transformLessonComponents(
 
 const applyTextInputProgress = (
     element: TextInputElement,
-    answer: TAnswer,
+    answer: TPreCourseAssessmentProgress,
 ): void => {
     if (answer.type === 'textInput') {
         element.content = answer.answer;
@@ -445,7 +464,7 @@ const applyTextInputProgress = (
 
 const applySingleChoiceProgress = (
     element: SingleChoiceElement,
-    answer: TAnswer,
+    answer: TPreCourseAssessmentProgress,
 ): void => {
     if (answer.type === 'singleChoice') {
         element.options.forEach((option) => {
@@ -456,7 +475,7 @@ const applySingleChoiceProgress = (
 
 const applyMultiCheckProgress = (
     element: MultiCheckElement,
-    answer: TAnswer,
+    answer: TPreCourseAssessmentProgress,
 ): void => {
     if (answer.type === 'multipleChoice') {
         element.options.forEach((option) => {
@@ -469,7 +488,7 @@ const applyMultiCheckProgress = (
 
 const applyOneOutOfThreeProgress = (
     element: OneOutOfThreeElement,
-    answer: TAnswer,
+    answer: TPreCourseAssessmentProgress,
 ): void => {
     if (answer.type === 'oneOutOfThree') {
         for (const row of element.data.rows) {
@@ -484,7 +503,7 @@ const applyOneOutOfThreeProgress = (
 
 const progressAppliers: Record<
     FormElementType | CourseElementType,
-    ((element: any, answer: TAnswer) => void) | undefined
+    ((element: any, answer: TPreCourseAssessmentProgress) => void) | undefined
 > = {
     [FormElementType.TextInput]: applyTextInputProgress,
     [FormElementType.SingleChoice]: applySingleChoiceProgress,
@@ -508,7 +527,7 @@ const progressAppliers: Record<
 
 export function applyProgressToElements(
     elements: LessonElement[],
-    answers: TAnswer[],
+    answers: TPreCourseAssessmentProgress[],
 ): void {
     const answersMap = new Map(
         answers.map((answer) => [answer.componentId, answer]),
@@ -528,7 +547,7 @@ export function applyProgressToElements(
 
 export function transformLessonComponentsWithProgress(
     components: useCaseModels.TLessonComponent[],
-    answers: TAnswer[],
+    answers: TPreCourseAssessmentProgress[],
 ): LessonElement[] {
     const elements = transformLessonComponents(components);
     applyProgressToElements(elements, answers);

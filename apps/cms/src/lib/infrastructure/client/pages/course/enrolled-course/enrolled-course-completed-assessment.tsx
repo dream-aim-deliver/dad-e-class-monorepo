@@ -1,14 +1,14 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../../trpc/client';
-import { useListAssessmentComponentsPresenter } from '../../../hooks/use-assessment-components-presenter';
 import { useMemo, useState } from 'react';
 import {
     DefaultError,
     DefaultLoading,
     SubmissionRenderer,
     FormElement,
+    DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
-import { transformLessonComponentsWithProgress } from '../../../utils/transform-lesson-components';
+import { transformLessonComponents } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useListAssessmentProgressesPresenter } from '../../../hooks/use-assessment-progresses-presenter';
@@ -22,14 +22,6 @@ export default function EnrolledCourseCompletedAssessment(
 ) {
     const locale = useLocale() as TLocale;
 
-    const [componentsResponse] = trpc.listPreCourseAssessmentComponents.useSuspenseQuery({});
-    const [componentsViewModel, setComponentsViewModel] = useState<
-        viewModels.TAssessmentComponentListViewModel | undefined
-    >(undefined);
-    const { presenter: assessmentsPresenter } =
-        useListAssessmentComponentsPresenter(setComponentsViewModel);
-    assessmentsPresenter.present(componentsResponse, componentsViewModel);
-
     const [progressResponse] = trpc.listAssessmentProgresses.useSuspenseQuery({
         courseSlug: props.courseSlug,
     });
@@ -41,31 +33,31 @@ export default function EnrolledCourseCompletedAssessment(
     progressPresenter.present(progressResponse, progressViewModel);
 
     const formElements: FormElement[] = useMemo(() => {
-        if (!componentsViewModel || componentsViewModel.mode !== 'default') {
-            return [];
-        }
         if (!progressViewModel || progressViewModel.mode !== 'default') {
             return [];
         }
 
-        const components = componentsViewModel.data.components;
-        const progress = progressViewModel.data.progress;
+        const components = progressViewModel.data.components;
 
-        return transformLessonComponentsWithProgress(
-            components,
-            progress,
-        ) as FormElement[];
-    }, [componentsViewModel, progressViewModel]);
+        return transformLessonComponents(components) as FormElement[];
+    }, [progressViewModel]);
 
-    if (!componentsViewModel || !progressViewModel) {
+    if (!progressViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
-    if (
-        componentsViewModel.mode === 'kaboom' ||
-        progressViewModel.mode === 'kaboom'
-    ) {
+    if (progressViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
+    }
+
+    if (progressViewModel.data.components.length === 0) {
+        return (
+            <DefaultNotFound
+                locale={locale}
+                title="Pre course assessment progress not found"
+                description="No submitted pre course assessment found for this course."
+            />
+        );
     }
 
     return <SubmissionRenderer elements={formElements} locale={locale} />;

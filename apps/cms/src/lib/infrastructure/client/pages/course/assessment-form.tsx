@@ -25,11 +25,10 @@ export default function AssessmentForm(props: AssessmentFormProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.assessmentForm');
 
-    const [componentsResponse] = trpc.listPreCourseAssessmentComponents.useSuspenseQuery(
-        {
+    const [componentsResponse] =
+        trpc.listPreCourseAssessmentComponents.useSuspenseQuery({
             courseSlug: props.courseSlug,
-        },
-    );
+        });
     const [componentsViewModel, setComponentsViewModel] = useState<
         viewModels.TAssessmentComponentListViewModel | undefined
     >(undefined);
@@ -55,6 +54,22 @@ export default function AssessmentForm(props: AssessmentFormProps) {
 
     const submitMutation = trpc.submitAssessmentProgress.useMutation({});
 
+    const getIsFormDisabled = () => {
+        return (
+            componentsViewModel?.mode === 'default' &&
+            componentsViewModel.data.components.length === 0
+        );
+    };
+
+    useEffect(() => {
+        if (getIsFormDisabled()) {
+            submitMutation.mutate({
+                progress: [],
+                courseSlug: props.courseSlug,
+            });
+        }
+    }, [componentsViewModel]);
+
     useEffect(() => {
         if (submitMutation.isSuccess) {
             submitPresenter.present(
@@ -70,7 +85,7 @@ export default function AssessmentForm(props: AssessmentFormProps) {
         }
     }, [submitAssessmentViewModel]);
 
-    if (!componentsViewModel) {
+    if (!componentsViewModel || getIsFormDisabled()) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
@@ -99,10 +114,10 @@ export default function AssessmentForm(props: AssessmentFormProps) {
                     isError={hasViewModelError || submitMutation.isError}
                     isLoading={submitMutation.isPending}
                     onSubmit={(formValues) => {
-                        const answers: useCaseModels.TAnswer[] =
+                        const progress: useCaseModels.TPreCourseAssessmentProgress[] =
                             transformFormAnswers(formValues);
                         submitMutation.mutate({
-                            answers,
+                            progress,
                             courseSlug: props.courseSlug,
                         });
                     }}
