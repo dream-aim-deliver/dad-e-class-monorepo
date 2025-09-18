@@ -2,7 +2,7 @@ import { TLocale } from "@maany_shr/e-class-translations";
 import { useLocale, useTranslations } from "next-intl";
 import { trpc } from "../../../trpc/client";
 import { Suspense, useRef, useState } from "react";
-import { Button, DefaultLoading, IconCloudDownload, LessonNoteStudentView, LessonNoteView } from "@maany_shr/e-class-ui-kit";
+import { Button, CourseNotesAccordion, DefaultLoading, IconCloudDownload } from "@maany_shr/e-class-ui-kit";
 import MockTRPCClientProviders from "../../../trpc/mock-client-providers";
 import { viewModels } from "@maany_shr/e-class-models";
 import { useListStudentNotesPresenter } from "../../../hooks/use-list-student-notes-presenter";
@@ -139,27 +139,12 @@ function EnrolledCourseNotesContent(
                 />
             </div>
             <div ref={notesContainerRef} className="flex flex-col gap-6">
-                {courseNotesViewModel.data.modules.map((module) => (
-                    <LessonNoteStudentView
-                        key={`lesson-note-student-view-${module.id}`}
-                        id={1}
-                        ModuleNumber={module.position}
-                        ModuleTitle={module.title}
-                        locale={locale}
-                    >
-                        {module.lessons.map((lesson) => (
-                            <LessonNoteView
-                                key={`lesson-note-view-${lesson.id}`}
-                                lessonNumber={lesson.position}
-                                lessonTitle={lesson.title}
-                                lessonDescription={lesson.notes}
-                                onClickViewLesson={() => alert(`View lesson ${lesson.position} clicked`)}
-                                locale={locale}
-                                onDeserializationError={(message, error) => console.error(message, error)}
-                            />
-                        ))}
-                    </LessonNoteStudentView>
-                ))}
+                <CourseNotesAccordion
+                    data={courseNotesViewModel.data}
+                    onDeserializationError={(message, error) => console.error(message, error)}
+                    onClickViewLesson={(lessonId) => alert(`View lesson ${lessonId} clicked`)}
+                    locale={locale}
+                />
             </div>
         </div>
     )

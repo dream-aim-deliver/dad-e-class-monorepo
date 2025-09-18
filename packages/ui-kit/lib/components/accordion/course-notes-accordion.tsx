@@ -1,0 +1,121 @@
+import React from 'react';
+import { isLocalAware } from '@maany_shr/e-class-translations';
+import { getDictionary } from '@maany_shr/e-class-translations';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    Accordion,
+    AccordionItem,
+    AccordionTrigger,
+    AccordionContent,
+} from './index';
+import { IconChevronUp } from '../icons/icon-chevron-up';
+import { IconChevronDown } from '../icons/icon-chevron-down';
+import { cn } from '../../utils/style-utils';
+import RichTextRenderer from '../rich-text-element/renderer';
+import { Button } from '../button';
+
+
+
+/**
+ * Props for the CourseNotesAccordion component
+ */
+interface CourseNotesAccordionProps extends isLocalAware {
+    /** The course materials data containing modules and module count */
+    data: viewModels.TStudentNotesSuccess;
+    onClickViewLesson: (lessonId: string) => void;
+    onDeserializationError: (message: string, error: Error) => void;
+}
+
+/**
+ * CourseNotesAccordion Component - Displays course modules with lessons and materials
+ * based on the actual course materials data structure.
+ */
+export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (props) => {
+    const { data, locale, onClickViewLesson, onDeserializationError } = props;
+    const { modules, moduleCount } = data;
+    const dictionary = getDictionary(locale);
+
+    return (
+        <Accordion
+            className={cn("flex flex-col gap-6")}
+            type="multiple"
+            defaultValue={modules?.[0]?.id ? [modules[0].id] : []}
+        >
+            {modules?.map((module, moduleIndex) => (
+                <AccordionItem
+                    key={module.id}
+                    value={module.id!}
+                    className="bg-card-fill border border-card-stroke px-6 py-4 rounded-medium"
+                >
+                    <AccordionTrigger
+                        value={module.id!}
+                        className="w-full"
+                        expandIcon={<span title={dictionary.components.courseMaterialsAccordion.expand} className="text-button-text-text"><IconChevronUp size="6" /></span>}
+                        collapseIcon={<span title={dictionary.components.courseMaterialsAccordion.collapse} className="text-button-text-text"><IconChevronDown size="6" /></span>}
+                    >
+                        <div className="flex items-center gap-4 flex-1">
+                            <h4 className="text-base-white md:text-2xl text-xl font-semibold">
+                                {module.title}
+                            </h4>
+                            <span className="text-text-secondary text-bottom font-medium">
+                                {module.position}/{moduleCount} {dictionary.components.courseMaterialsAccordion.module}
+                            </span>
+                        </div>
+                    </AccordionTrigger>
+
+                    <AccordionContent
+                        value={module.id!}
+                        className=" pt-4"
+                    >
+                        {/* Lessons Accordion within Module */}
+                        <div className="ml-6">
+                            <Accordion
+                                type="multiple"
+                                className="flex flex-col gap-4"
+                                defaultValue={moduleIndex === 0 && module.lessons?.[0]?.id ? [module.lessons[0].id] : undefined}
+                            >
+                                {module.lessons?.map((lesson, lessonIndex) => (
+                                    <AccordionItem
+                                        key={lesson.id}
+                                        value={lesson.id!}
+                                        className="bg-base-neutral-800 p-4 rounded-medium border border-base-neutral-700"
+                                    >
+                                        <AccordionTrigger
+                                            value={lesson.id!}
+                                            expandIcon={<span title={dictionary.components.courseMaterialsAccordion.expand} className="text-button-text-text"><IconChevronUp size="5" /></span>}
+                                            collapseIcon={<span title={dictionary.components.courseMaterialsAccordion.collapse} className="text-button-text-text"><IconChevronDown size="5" /></span>}
+                                        >
+                                            <div className="flex items-center gap-4 flex-1 justify-between">
+
+                                                <h5 className="text-text-primary md:text-[24px] text-lg">
+                                                    {dictionary.components.courseMaterialsAccordion.lesson} {lesson.position} - {lesson.title}
+                                                </h5>
+                                                <Button
+                                                    variant="text"
+                                                    text={dictionary.components.lessonNotes.viewLessonText}
+                                                    onClick={() => onClickViewLesson(lesson.id!)}
+                                                    size="small"
+                                                />
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent
+                                            value={lesson.id!}
+                                        >
+
+                                            <hr className='bg-divider my-4' />
+                                            <div className="text-text-secondary leading-[150%]">
+                                                {lesson.notes &&
+                                                    <RichTextRenderer content={lesson.notes} onDeserializationError={onDeserializationError} />
+                                                }
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
+                            </Accordion>
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+            ))}
+        </Accordion>
+    );
+};
