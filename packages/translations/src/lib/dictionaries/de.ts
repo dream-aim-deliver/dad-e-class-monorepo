@@ -1220,5 +1220,11 @@ export const DE: TDictionary = {
     userCoursesList: {
       emptyState: 'Du hast noch keine Angebote.'
     },
+    studentCoachingSessions: {
+      yourCoachingSessions: 'Ihre Coaching-Sitzungen',
+      upcoming: 'Demnächst',
+      ended: 'Beendet',
+      available: 'Verfügbar',
+    }
   },
 };

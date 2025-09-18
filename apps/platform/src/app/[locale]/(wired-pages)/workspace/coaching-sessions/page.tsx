@@ -1,4 +1,4 @@
-import UserCoursesServerComponent from '../../../../../lib/infrastructure/server/pages/workspace/user-courses-rsc';
+import CoachingSessionsServerComponent from 'apps/platform/src/lib/infrastructure/server/pages/workspace/coaching-sessions-rsc';
 
 export default async function Page({
     searchParams: searchParamsPromise,
@@ -8,5 +8,5 @@ export default async function Page({
     const searchParams = await searchParamsPromise;
     // TODO: handle searchParams if needed
 
-    return <UserCoursesServerComponent />;
+    return <CoachingSessionsServerComponent />;
 }
