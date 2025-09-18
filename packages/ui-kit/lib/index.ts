@@ -174,6 +174,7 @@ export { PackageCmsCard } from './components/packages/package-cms-card';
 export { PackageCmsCardList } from './components/packages/package-cms-card-list';
 export { CourseCardAddToPackage } from './components/course-card/add-to-package/course-card-add-to-package';
 export { CourseCardAddToPackageList } from './components/course-card/add-to-package/course-card-add-to-package-list';
+export { CourseNotesAccordion } from './components/accordion/course-notes-accordion';
 
 export { Stepper } from './components/stepper/stepper';
 export { CourseMaterialsAccordion } from "./components/accordion/course-materials-accordion";
