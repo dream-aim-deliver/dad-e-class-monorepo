@@ -7,6 +7,9 @@
     "tags": [],
     "// targets": "to see all targets run: nx show project auth --web",
     "targets": {
+      "test": {
+        "dependsOn": ["models:build"]
+      },
       "nx-release-publish": {
         "executor": "@nx/js:release-publish",
         "options": {
