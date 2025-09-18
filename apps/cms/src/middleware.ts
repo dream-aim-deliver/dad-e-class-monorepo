@@ -2,7 +2,6 @@ import createMiddleware from 'next-intl/middleware';
 import { i18nConfig } from '@maany_shr/e-class-translations';
 import AuthContext from './lib/infrastructure/server/config/auth/next-auth.config';
 import { NextRequest, NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 
 const auth = AuthContext.auth;
 
@@ -27,11 +26,8 @@ export default async function middleware(req: NextRequest) {
     const isAccessDeniedPage = pathname.includes('/auth/access-denied');
 
     if (!isPublicRoute) {
-        // Get the session token
-        const token = await getToken({
-            req,
-            secret: process.env.NEXTAUTH_SECRET
-        });
+        // Get the session with TRPC-fetched roles using NextAuth's auth function
+        const session = await auth();
 
         // Extract locale from pathname
         const pathnameLocale = i18nConfig.locales.find(
@@ -40,7 +36,7 @@ export default async function middleware(req: NextRequest) {
         const locale = pathnameLocale || i18nConfig.defaultLocale;
 
         // Check if user is authenticated
-        if (!token) {
+        if (!session) {
             // Redirect to login page
             const loginUrl = new URL(`/${locale}/auth/login`, req.url);
             loginUrl.searchParams.set('callbackUrl', pathname);
@@ -49,13 +45,26 @@ export default async function middleware(req: NextRequest) {
 
         // Check if user has admin role (but skip this check for access-denied page)
         if (!isAccessDeniedPage) {
-            const userRoles = (token as any)?.user?.roles || [];
+            // Debug: Log the session structure to verify TRPC roles
+            console.log('[Middleware Debug] Full session structure:', JSON.stringify(session, null, 2));
+            console.log('[Middleware Debug] session.user:', JSON.stringify(session?.user, null, 2));
+            console.log('[Middleware Debug] session.user.roles:', session?.user?.roles);
+
+            const userRoles = session?.user?.roles || [];
+            console.log('[Middleware Debug] Extracted userRoles:', userRoles);
+            console.log('[Middleware Debug] userRoles type:', typeof userRoles);
+            console.log('[Middleware Debug] userRoles isArray:', Array.isArray(userRoles));
+
             const isAdmin = userRoles.includes('admin');
+            console.log('[Middleware Debug] isAdmin:', isAdmin);
 
             if (!isAdmin) {
+                console.log('[Middleware Debug] Redirecting to access denied - user roles:', userRoles);
                 // Redirect to access denied page
                 const accessDeniedUrl = new URL(`/${locale}/auth/access-denied`, req.url);
                 return NextResponse.redirect(accessDeniedUrl);
+            } else {
+                console.log('[Middleware Debug] Admin access granted!');
             }
         }
     }
