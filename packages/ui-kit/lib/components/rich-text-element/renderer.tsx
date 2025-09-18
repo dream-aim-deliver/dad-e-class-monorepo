@@ -86,7 +86,7 @@ const RenderElement = ({ attributes, children, element }: {
     case "unordered-list":
       return <ul {...attributes} style={style} className="list-disc pl-5">{children}</ul>;
     case "list-item":
-      return <li {...attributes} style={style}>{children}</li>;
+      return <li {...attributes} style={style} className="ml-4">{children}</li>;
     case "h1":
       return <h1 {...attributes} style={style} className="text-3xl font-bold">{children}</h1>;
     case "h2":

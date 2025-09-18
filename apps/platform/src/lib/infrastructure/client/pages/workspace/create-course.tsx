@@ -1,6 +1,6 @@
 'use client';
 
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import {
     Breadcrumbs,
     Button,
@@ -92,6 +92,7 @@ interface CreateCourseContentProps {
 
 function CreateCourseContent(props: CreateCourseContentProps) {
     const locale = useLocale() as TLocale;
+    const dictionary = getDictionary(locale);
 
     const {
         courseTitle,
@@ -197,7 +198,11 @@ function CreateCourseContent(props: CreateCourseContentProps) {
                 <Button
                     variant="primary"
                     onClick={handleCreateCourse}
-                    text={createCourseTranslations('saveDraftButton')}
+                    text={
+                        isCreating
+                            ? dictionary.components.editHeader.savingText
+                            : createCourseTranslations('saveDraftButton')
+                    }
                     hasIconLeft
                     iconLeft={<IconSave />}
                     disabled={isSubmitDisabled}
