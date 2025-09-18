@@ -45,6 +45,7 @@ const buttonStyles = cva(baseButtonStyles, {
 
 export interface ButtonProps extends VariantProps<typeof buttonStyles> {
   text?: string;
+  children?: ReactNode;
   onClick?: () => void;
   className?: string;
   disabled?: boolean;
@@ -88,6 +89,7 @@ export interface ButtonProps extends VariantProps<typeof buttonStyles> {
 
 export const Button: FC<ButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
   text,
+  children,
   onClick,
   className,
   disabled,
@@ -126,7 +128,7 @@ export const Button: FC<ButtonProps & React.ButtonHTMLAttributes<HTMLButtonEleme
           {iconLeft}
         </span>
       )}
-      <span className="truncate">{text}</span>
+      <span className="truncate">{text || children}</span>
       {hasIconRight && iconRight && (
         <span
           className={cn(
