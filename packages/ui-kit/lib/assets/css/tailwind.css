@@ -314,7 +314,7 @@
   --ag-font-family: var(--font-nunito);
 }
 
-.theme-Job-rand-me {
+.theme-job-brand-me {
   --radius-small: 0.375rem;
   --radius-medium: 0.5rem;
   --radius-big: 0.75rem;
@@ -437,7 +437,7 @@
   --ag-font-family: var(--font-roboto);
 }
 
-.theme-Bewerbeagentur {
+.theme-bewerbeagentur {
   --radius-small: 0.375rem;
   --radius-medium: 0.5rem;
   --radius-big: 0.75rem;
@@ -560,7 +560,7 @@
   --ag-font-family: var(--font-raleway);
 }
 
-.theme-Cms {
+.theme-cms {
   --radius-small: 0.375rem;
   --radius-medium: 0.5rem;
   --radius-big: 0.75rem;
