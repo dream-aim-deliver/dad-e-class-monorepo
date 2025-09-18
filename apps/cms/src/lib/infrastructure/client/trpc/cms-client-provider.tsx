@@ -2,7 +2,6 @@
 
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, useMemo } from 'react';
-import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
 import {
     getQueryClient,
     getTRPCUrl,
@@ -62,36 +61,20 @@ export default function CMSTRPCClientProviders({
                             if (isSessionReady && session?.user?.idToken) {
                                 headers['Authorization'] =
                                     `Bearer ${session.user.idToken}`;
-                                console.log('[TRPC Headers] ✅ Authorization header added');
-                            } else if (!isSessionReady) {
-                                console.log('[TRPC Headers] ⏳ Skipping auth header - session still loading');
-                            } else if (!session?.user?.idToken) {
-                                console.warn('[TRPC Headers] ⚠️ Missing Authorization header - no idToken found', {
-                                    hasSession: !!session,
-                                    hasUser: !!session?.user,
-                                    sessionStatus: status,
-                                    isAuthenticated: status === 'authenticated'
-                                });
                             }
 
                             // Add locale header
                             if (locale) {
                                 headers['Accept-Language'] = locale;
-                                console.log('[TRPC Headers] ✅ Accept-Language header added:', locale);
-                            } else {
-                                console.warn('[TRPC Headers] ⚠️ Missing Accept-Language header');
                             }
 
                             // Add platform header
                             if (process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME) {
                                 headers['x-eclass-Runtime'] =
                                     process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
-                                console.log('[TRPC Headers] ✅ Platform header added:', process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME);
                             } else {
                                 console.warn('[TRPC Headers] ⚠️ Missing platform header');
                             }
-
-                            console.log('[TRPC Headers] Final headers:', Object.keys(headers));
                             return headers;
                         },
                     }),
@@ -104,7 +87,6 @@ export default function CMSTRPCClientProviders({
     // Handle potential errors in TRPC provider setup
     try {
         return (
-            <ThemeProvider>
                 <trpc.Provider client={trpcClient} queryClient={queryClient}>
                     <QueryClientProvider client={queryClient}>
                         {children}
@@ -113,18 +95,17 @@ export default function CMSTRPCClientProviders({
                         )}
                     </QueryClientProvider>
                 </trpc.Provider>
-            </ThemeProvider>
         );
     } catch (error) {
         console.error('[TRPC Provider] Failed to initialize TRPC provider:', error);
         // Fallback: render children without TRPC (will cause hook errors but app won't crash completely)
         return (
-            <ThemeProvider>
+            <>
                 <div style={{ color: 'red', padding: '1rem' }}>
-                    TRPC Provider Error - Check console for details
+                    Connection Error - Check console for details
                 </div>
                 {children}
-            </ThemeProvider>
+            </>
         );
     }
 }
