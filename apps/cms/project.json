@@ -6,9 +6,5 @@
   "implicitDependencies": ["ui-kit", "models", "translations"],
   "tags": [],
   "// targets": "to see all targets run: nx show project cms --web",
-  "targets": {
-    "build": {
-      "dependsOn": ["models:build", "ui-kit:build", "translations:build", "auth:build"]
-    }
-  }
+  "targets": {}
 }
