@@ -63,7 +63,7 @@ services:
 
 
   cms-rest:
-    image: ghcr.io/dream-aim-deliver/e-class-cms-rest:2.4.3
+    image: ghcr.io/dream-aim-deliver/e-class-cms-rest:2.4.4
     container_name: e-class-cms-rest
     depends_on:
       - cms-fastapi
