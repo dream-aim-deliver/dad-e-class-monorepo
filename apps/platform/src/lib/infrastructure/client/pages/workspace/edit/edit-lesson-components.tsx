@@ -444,7 +444,7 @@ function ImageComponent({
     };
 
     return (
-        <div className="flex flex-col w-full gap-4 p-10 bg-card-fill border border-base-neutral-700 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+        <div className="flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-200">
             <ImageDesignerComponent
                 elementInstance={elementInstance as ImageElement}
                 locale={locale}
@@ -540,7 +540,7 @@ function ImageGalleryComponent({
     };
 
     return (
-        <div className="flex flex-col w-full gap-4 p-4 bg-card-fill border border-base-neutral-700 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+        <div className="flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-200">
             <ImageGalleryDesignerComponent
                 elementInstance={elementInstance}
                 locale={locale}
