@@ -12,7 +12,7 @@ import {
     Dropdown,
 } from '@maany_shr/e-class-ui-kit';
 import { Suspense, useState, useEffect, useMemo, useCallback } from 'react';
-import { viewModels } from '@maany_shr/e-class-models';
+import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useListCourseCoachesPresenter } from '../../../hooks/use-course-coaches-presenter';
 import { useListCoachesPresenter } from '../../../hooks/use-coaches-presenter';
 import { useLocale, useTranslations } from 'next-intl';
@@ -22,10 +22,12 @@ import useClientSidePagination from '../../../utils/use-client-side-pagination';
 import MockTRPCClientProviders from '../../../trpc/mock-client-providers';
 import { useCoachMutations } from './hooks/use-coach-mutations';
 
+
 interface EnrolledCoachesProps {
     courseSlug: string;
     currentRole: string;
 }
+type Coach = useCaseModels.TListCoachesSuccessResponse['data']['coaches'][0];
 
 function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     const locale = useLocale() as TLocale;
@@ -69,9 +71,9 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         return availableCoaches.map((coach) => ({
             id: coach.username,
             coachName: `${coach.name} ${coach.surname}`,
-            coachAvatarUrl: coach.avatarUrl,
-            totalRating: coach.reviewCount,
-            rating: coach.averageRating,
+            coachAvatarUrl: coach.avatarUrl || '',
+            totalRating: coach.reviewCount ,
+            rating: coach.averageRating || 0,
         }));
     }, [availableCoaches]);
 
@@ -106,7 +108,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     }, [serverCoaches, localAddedCoaches]);
 
     // State for filtered coaches from search
-    const [filteredCoaches, setFilteredCoaches] = useState<any[]>([]);
+    const [filteredCoaches, setFilteredCoaches] = useState<Coach[]>([]);
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -114,7 +116,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     const [sortOrder, setSortOrder] = useState('desc');
 
     // Sorting function
-    const sortCoaches = useCallback((coaches: any[]) => {
+    const sortCoaches = useCallback((coaches: Coach[]) => {
         return [...coaches].sort((a, b) => {
             const aVal = a.coachingSessionCount;
             const bVal = b.coachingSessionCount;
@@ -304,9 +306,9 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                             coachImage: coach.avatarUrl || undefined,
                             languages: coach.languages,
                             sessionCount: coach.coachingSessionCount,
-                            skills: (coach.skills as any[]).map((skill) => skill.name), // Map skill objects to names
+                            skills: coach.skills.map((skill) => skill.name), // Map skill objects to names
                             description: coach.bio,
-                            courses: (coach.coursesTaught as any[]).map((course) => ({
+                            courses: coach.coursesTaught.map((course) => ({
                                 image: course.imageUrl || '',
                                 title: course.title,
                                 slug: course.slug,
@@ -319,7 +321,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                             cardDetails: baseCardDetails,
                             locale,
                             onClickViewProfile: () => {
-                               // TODO:Navigate to coach profile or show modal
+                                // TODO:Navigate to coach profile or show modal
                             },
                             onClickCourse: (slug: string) => {
                                 // TODO: Navigate to course page
@@ -361,7 +363,19 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
 
             {/* Add Coach Modal */}
             {isAddModalOpen && (
-                <div className="top-0 left-0 w-full h-full fixed bg-black/30 z-50 flex items-center justify-center p-4">
+                <div
+                 className="top-0 left-0 w-full h-full fixed bg-black/30 z-50 flex items-center justify-center p-4"
+                  onClick={(e) => {
+                        if (e.target === e.currentTarget) {
+                            setIsAddModalOpen(false);
+                        }
+                    }}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Escape') {
+                            setIsAddModalOpen(false);
+                        }
+                    }}
+                    tabIndex={-1}>
                     <AddCoachModal
                         locale={locale}
                         onClose={() => {
