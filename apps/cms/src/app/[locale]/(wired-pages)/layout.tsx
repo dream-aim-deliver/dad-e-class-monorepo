@@ -14,7 +14,8 @@ import {
 } from '../../../lib/infrastructure/server/utils/language-mapping';
 import Layout from '../../../lib/infrastructure/client/pages/layout';
 import CMSTRPCClientProviders from '../../../lib/infrastructure/client/trpc/cms-client-provider';
-import { ThemeProvider } from '@maany_shr/e-class-ui-kit';
+
+
 
 export const metadata = {
     title: 'Welcome to Platform',
@@ -63,7 +64,10 @@ export default async function RootLayout({
     //             'Unknown error happened while loading languages',
     //     );
     // }
-
+    
+    // Theme configuration - change this variable to switch themes
+    // Available themes: 'just-do-add', 'job-brand-me', 'bewerbeagentur', 'cms'
+    const THEME = 'cms';
     const { languages } = {
         languages: [
             {
@@ -113,9 +117,8 @@ export default async function RootLayout({
     return (
         <html lang={locale}>
             <body
-                className={`${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
+                className={`theme theme-${THEME} ${nunito.variable} ${roboto.variable} ${raleway.variable} ${figtree.variable}`}
             >
-                <ThemeProvider>
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
                         <CMSTRPCClientProviders>
@@ -125,7 +128,6 @@ export default async function RootLayout({
                         </CMSTRPCClientProviders>
                     </NextIntlClientProvider>
                 </SessionProvider>
-                </ThemeProvider>
             </body>
         </html>
     );
