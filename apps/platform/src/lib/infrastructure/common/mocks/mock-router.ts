@@ -45,6 +45,7 @@ import {
 } from './procedures/course-introduction';
 import {listCourseStudents} from "./procedures/course-students";
 import { listCoachStudents } from './procedures/coach-students';
+import { listStudentCoachingSessions } from './procedures/student-coaching-sessions';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -87,6 +88,7 @@ export const mockRouter = t.router({
     savePreCourseAssessmentComponents: saveAssessmentComponents,
     listCourseStudents,
     listCoachStudents,
+    listStudentCoachingSessions,
 });
 
 export type MockRouter = typeof mockRouter;
