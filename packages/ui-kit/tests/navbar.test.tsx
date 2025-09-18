@@ -112,7 +112,7 @@ describe('Navbar Component', () => {
 
   it('renders user profile and workspace when logged in', () => {
     render(
-      <Navbar isLoggedIn={true} locale="en" availableLocales={['en', 'de']}>
+      <Navbar isLoggedIn={true} locale="en" availableLocales={['en', 'de']} dropdownTriggerText="Workspace">
         <a href="/home">Home</a>
       </Navbar>
     );
@@ -187,6 +187,7 @@ describe('Navbar Component', () => {
         locale="de"
         onChangeLanguage={vi.fn()}
         availableLocales={['en', 'de']}
+        dropdownTriggerText="Arbeitsbereich"
       >
         <a href="/home">Home</a>
       </Navbar>
