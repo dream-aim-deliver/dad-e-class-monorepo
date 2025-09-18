@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   main:
-    runs-on: [self-hosted, org-gh-runner]
+    runs-on: ubuntu-latest
     environment: CI
     steps:
       - name: Checkout
