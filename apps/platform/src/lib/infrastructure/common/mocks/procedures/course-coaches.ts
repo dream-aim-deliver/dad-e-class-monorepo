@@ -212,24 +212,12 @@ export const addCourseCoach = t.procedure
 
         await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
 
-        // For mock purposes, treat coachId as a hashed value that we need to reverse-lookup
-        // This is a temporary solution until the backend schema is finalized
+        // Now coachId is the username directly
         let coachToAdd: useCaseModels.TListCoachesSuccessResponse['data']['coaches'][0] | undefined;
 
-        // Helper function to hash usernames (same as in component)
-        const hashUsername = (username: string): number => {
-            let hash = 0;
-            for (let i = 0; i < username.length; i++) {
-                const char = username.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return Math.abs(hash);
-        };
-
-        // Search through all course mock data to find the coach by matching hash
+        // Search through all course mock data to find the coach by username
         for (const courseData of Object.values(courseCoachesMockData)) {
-            coachToAdd = courseData.coaches.find(coach => hashUsername(coach.username) === coachId);
+            coachToAdd = courseData.coaches.find(coach => coach.username === coachId);
             if (coachToAdd) break;
         }
 
@@ -266,30 +254,19 @@ export const removeCourseCoach = t.procedure
 
         await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
 
-        // Helper function to hash usernames (same as in component)
-        const hashUsername = (username: string): number => {
-            let hash = 0;
-            for (let i = 0; i < username.length; i++) {
-                const char = username.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return Math.abs(hash);
-        };
-
-        // Find coach by hashed ID and remove from course
+        // Now coachId is the username directly
         let removedCoach: useCaseModels.TListCoachesSuccessResponse['data']['coaches'][0] | undefined;
-        
+
         if (courseCoachesMockData[courseSlug]) {
             const initialLength = courseCoachesMockData[courseSlug].coaches.length;
 
             // Find the coach before removing
             removedCoach = courseCoachesMockData[courseSlug].coaches.find(
-                coach => hashUsername(coach.username) === coachId
+                coach => coach.username === coachId
             );
 
             courseCoachesMockData[courseSlug].coaches = courseCoachesMockData[courseSlug].coaches.filter(
-                coach => hashUsername(coach.username) !== coachId
+                coach => coach.username !== coachId
             );
 
             const finalLength = courseCoachesMockData[courseSlug].coaches.length;

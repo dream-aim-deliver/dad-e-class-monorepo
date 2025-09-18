@@ -74,16 +74,6 @@ export const getCourseAccess = t.procedure
                 };
             }
 
-            if (slug === 'reactjs') {
-                return {
-                    success: true,
-                    data: {
-                        roles: ['visitor', 'student', 'coach', 'admin', 'course_creator'],
-                        isAssessmentCompleted: null,
-                    },
-                };
-            }
-
             if (slug === 'admin-course') {
                 return {
                     success: true,

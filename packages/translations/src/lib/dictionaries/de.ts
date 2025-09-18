@@ -1163,8 +1163,10 @@ export const DE: TDictionary = {
         sortByDropdownText: 'Sortieren nach...',
         loadMoreButton: 'Mehr laden...',
         noCoachesAssigned: 'Diesem Kurs sind noch keine Coaches zugewiesen.',
-        noCoachesFound: 'Keine Coaches gefunden, die deiner Suche entsprechen.',
+        noCoachesFound: 'Keine Coaches gefunden, die deiner Suche entsprechen.'
       },
+      archiveCourseButton: 'Kurs archivieren',
+      editCourseButton: 'Kurs bearbeiten',
     },
     userCourses: {
       yourCourses: 'Deine Angebote',

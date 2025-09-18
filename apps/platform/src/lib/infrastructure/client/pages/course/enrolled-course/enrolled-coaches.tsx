@@ -14,6 +14,7 @@ import {
 import { Suspense, useState, useEffect, useMemo, useCallback } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCourseCoachesPresenter } from '../../../hooks/use-course-coaches-presenter';
+import { useListCoachesPresenter } from '../../../hooks/use-coaches-presenter';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc as trpcMock } from '../../../trpc/client';
@@ -30,96 +31,53 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.course.enrolledCoaches');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [addedCoachIds, setAddedCoachIds] = useState<string[]>([]);
+    const [localAddedCoaches, setLocalAddedCoaches] = useState<string[]>([]);
 
     // Fetch course-specific coaches data using TRPC Mock Client
     const [courseCoachesResponse, { refetch: refetchCoaches }] = trpcMock.listCourseCoaches.useSuspenseQuery({
         courseSlug: props.courseSlug
     });
 
+    // Fetch available coaches data using TRPC Mock Client
+    const [availableCoachesResponse] = trpcMock.listCoaches.useSuspenseQuery({});
+
     // Set up presenter for transforming the response to view model
     const [courseCoachesViewModel, setCourseCoachesViewModel] = useState<
         viewModels.TCoachListViewModel | undefined
     >(undefined);
+    const [availableCoachesViewModel, setAvailableCoachesViewModel] = useState<
+        viewModels.TCoachListViewModel | undefined
+    >(undefined);
 
-    // Local state to track added coaches for immediate UI updates (optimistic updates)
-    const [localAddedCoaches, setLocalAddedCoaches] = useState<string[]>([]);
+    // Set up presenters
+    const { presenter: courseCoachesPresenter } = useListCourseCoachesPresenter(setCourseCoachesViewModel);
+    const { presenter: availableCoachesPresenter } = useListCoachesPresenter(setAvailableCoachesViewModel);
 
-    const { presenter } = useListCourseCoachesPresenter(setCourseCoachesViewModel);
+    courseCoachesPresenter.present(courseCoachesResponse, courseCoachesViewModel);
+    availableCoachesPresenter.present(availableCoachesResponse, availableCoachesViewModel);
+
+    // Get available coaches from the presenter (this has the full coach data structure)
+    const availableCoaches = useMemo(() => {
+        if (availableCoachesViewModel?.mode === 'default') {
+            return availableCoachesViewModel.data.coaches;
+        }
+        return [];
+    }, [availableCoachesViewModel]);
+
+    // Map available coaches to CoachContent format for AddCoachModal
+    const mappedAvailableCoaches = useMemo(() => {
+        return availableCoaches.map((coach) => ({
+            id: coach.username,
+            coachName: `${coach.name} ${coach.surname}`,
+            coachAvatarUrl: coach.avatarUrl,
+            totalRating: coach.reviewCount,
+            rating: coach.averageRating,
+        }));
+    }, [availableCoaches]);
 
 
-    presenter.present(courseCoachesResponse, courseCoachesViewModel);
 
-
-    // Get coaches data from view model
     const serverCoaches = courseCoachesViewModel?.mode === 'default' ? courseCoachesViewModel.data.coaches : [];
-
-    // Mock data for available coaches to add - using usernames that match the mock data
-    const availableCoaches = [
-        {
-            id: 'sarah_creative',
-            coachName: 'Dr. Sarah Johnson',
-            coachAvatarUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            totalRating: 89,
-            rating: 4.8,
-        },
-        {
-            id: 'sophia_type',
-            coachName: 'Sophia Anderson',
-            coachAvatarUrl: '',
-            totalRating: 134,
-            rating: 4.9,
-        },
-        {
-            id: 'maria_color',
-            coachName: 'Maria Rodriguez',
-            coachAvatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            totalRating: 76,
-            rating: 4.7,
-        },
-        {
-            id: 'james_ux',
-            coachName: 'James Wilson',
-            coachAvatarUrl: '',
-            totalRating: 103,
-            rating: 4.8,
-        },
-        {
-            id: 'david_ux',
-            coachName: 'David Chen',
-            coachAvatarUrl: '',
-            totalRating: 156,
-            rating: 4.9,
-        },
-        {
-            id: 'lisa_ai',
-            coachName: 'Lisa Park',
-            coachAvatarUrl: '',
-            totalRating: 0,
-            rating: 0,
-        },
-        {
-            id: 'michael_pitch',
-            coachName: 'Michael Davis',
-            coachAvatarUrl: '',
-            totalRating: 95,
-            rating: 4.7,
-        },
-        {
-            id: 'alex_social',
-            coachName: 'Alex Thompson',
-            coachAvatarUrl: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            totalRating: 112,
-            rating: 4.6,
-        },
-        {
-            id: 'emma_sound',
-            coachName: 'Emma Williams',
-            coachAvatarUrl: '',
-            totalRating: 67,
-            rating: 4.9,
-        },
-    ];
 
     // Combine server coaches with locally added coaches for immediate UI update
     const coaches = useMemo(() => {
@@ -129,29 +87,23 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         localAddedCoaches.forEach(coachId => {
             const alreadyExists = baseCoaches.some(coach => coach.username === coachId);
             if (!alreadyExists) {
-                const availableCoach = availableCoaches.find(ac => ac.id === coachId);
+                // Find the full coach data from availableCoaches instead of reconstructing from mappedAvailableCoaches
+                const availableCoach = availableCoaches.find(ac => ac.username === coachId);
                 if (availableCoach) {
-                    // Create a mock coach object that matches the expected structure
-                    const mockCoach = {
-                        username: coachId,
-                        name: availableCoach.coachName.split(' ')[0] || 'Unknown',
-                        surname: availableCoach.coachName.split(' ').slice(1).join(' ') || 'Coach',
-                        languages: ['English'],
-                        avatarUrl: availableCoach.coachAvatarUrl || null,
-                        coachingSessionCount: 0,
-                        skills: [{ name: 'General Coaching', slug: 'general-coaching' }],
-                        averageRating: availableCoach.rating,
-                        reviewCount: availableCoach.totalRating,
-                        bio: `${availableCoach.coachName} is a professional coach.`,
-                        coursesTaught: []
-                    };
-                    baseCoaches.push(mockCoach);
+                    baseCoaches.push(availableCoach);
                 }
             }
         });
 
         return baseCoaches;
     }, [serverCoaches, localAddedCoaches, availableCoaches]);
+
+    // Derive addedCoachIds from server coaches and locally added coach ids so the UI reflects newly added coaches immediately
+    const addedCoachIds = useMemo(() => {
+        const serverIds = serverCoaches.map(coach => coach.username);
+        const allIds = Array.from(new Set([...serverIds, ...localAddedCoaches]));
+        return allIds;
+    }, [serverCoaches, localAddedCoaches]);
 
     // State for filtered coaches from search
     const [filteredCoaches, setFilteredCoaches] = useState<any[]>([]);
@@ -187,14 +139,6 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         });
     }, [sortOrder, sortCoaches]);
 
-    // Update addedCoachIds when coaches data changes
-    useEffect(() => {
-        if (coaches.length > 0) {
-            const coachIds = coaches.map(coach => coach.username);
-            setAddedCoachIds(coachIds);
-        }
-    }, [coaches]);
-
     // Use the coach mutations hook with callbacks for direct state updates
     const {
         addCoach,
@@ -205,24 +149,19 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         removeCoachViewModel
     } = useCoachMutations(
         props.courseSlug,
-        // No longer need refetch - we're doing direct state updates!
         undefined,
-        // Callback when coach is added - update state directly
         (addedCoach) => {
             setLocalAddedCoaches(prev => [...prev, addedCoach.username]);
-            setAddedCoachIds(prev => [...prev, addedCoach.username]);
         },
-        // Callback when coach is removed - update state directly
         (removedCoachUsername) => {
             setLocalAddedCoaches(prev => prev.filter(id => id !== removedCoachUsername));
-            setAddedCoachIds(prev => prev.filter(id => id !== removedCoachUsername));
         }
     );
 
     // Handler functions with enhanced error handling using presenter
     const handleAddCoach = async (coachId: string) => {
-        // Find the coach from available coaches
-        const coachToAdd = availableCoaches.find(coach => coach.id === coachId);
+        // Find the coach from available coaches (full data)
+        const coachToAdd = availableCoaches.find(coach => coach.username === coachId);
         if (!coachToAdd) {
             console.error('Coach not found in available coaches:', coachId);
             return;
@@ -231,25 +170,20 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         // Clear any previous errors
         clearError();
 
-        // Close modal immediately for better UX
         setIsAddModalOpen(false);
 
-        // Perform the backend operation - hook will handle state updates directly
         const result = await addCoach(coachId);
 
         if (!result.success) {
             setIsAddModalOpen(true);
-
         }
     };
 
     const handleRemoveCoach = async (coachId: string) => {
         clearError();
 
-        // Perform backend operation - hook will handle state updates directly
         const result = await removeCoach(coachId);
 
-        // Note: Current mock always succeeds, but we keep minimal error handling for future real API
         if (!result.success) {
             console.error('Error removing coach:', result.message);
             // Error details are shown via removeCoachViewModel in the UI
@@ -365,8 +299,6 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                 ) : (
                     displayedCoaches.map((coach) => {
                         const isCoach = props.currentRole === "coach";
-                        const canRemoveCoaches = props.currentRole === "admin" || props.currentRole === "courseCreator";
-
                         const baseCardDetails = {
                             coachName: `${coach.name} ${coach.surname}`,
                             coachImage: coach.avatarUrl || undefined,
@@ -387,10 +319,10 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                             cardDetails: baseCardDetails,
                             locale,
                             onClickViewProfile: () => {
-                                // Navigate to coach profile or show modal
+                               // TODO:Navigate to coach profile or show modal
                             },
                             onClickCourse: (slug: string) => {
-                                // Navigate to course page
+                                // TODO: Navigate to course page
                             }
                         };
 
@@ -436,7 +368,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                             setIsAddModalOpen(false);
                         }}
                         onAdd={handleAddCoach}
-                        content={availableCoaches}
+                        content={mappedAvailableCoaches}
                         addedCoachIds={addedCoachIds}
                     />
                 </div>

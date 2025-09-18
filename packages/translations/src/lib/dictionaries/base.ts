@@ -1197,6 +1197,8 @@ export const DictionarySchema = z.object({
         noCoachesAssigned: z.string(),
         noCoachesFound: z.string(),
       }),
+      archiveCourseButton: z.string(),
+      editCourseButton: z.string(),
     }),
     userCourses: z.object({
       yourCourses: z.string(),
