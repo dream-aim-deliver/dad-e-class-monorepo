@@ -57,9 +57,6 @@ export const CourseNotesAccordion: React.FC<CourseNotesAccordionProps> = (props)
                             <h4 className="text-base-white md:text-2xl text-xl font-semibold">
                                 {module.title}
                             </h4>
-                            <span className="text-text-secondary text-bottom font-medium">
-                                {module.position}/{moduleCount} {dictionary.components.courseMaterialsAccordion.module}
-                            </span>
                         </div>
                     </AccordionTrigger>
 
