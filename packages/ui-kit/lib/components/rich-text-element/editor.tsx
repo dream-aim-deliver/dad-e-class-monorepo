@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from "react";
 import { createEditor } from "slate";
 import { withHistory } from "slate-history";

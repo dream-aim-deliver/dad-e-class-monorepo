@@ -1,3 +1,5 @@
+'use client';
+
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { useState } from 'react';
 import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';

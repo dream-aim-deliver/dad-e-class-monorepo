@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { IconButton } from '../icon-button';
 import { IconCloudDownload } from '../icons/icon-cloud-download';

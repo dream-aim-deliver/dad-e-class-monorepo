@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef } from 'react';
 import { Badge } from './badge';
 import { Button } from './button';

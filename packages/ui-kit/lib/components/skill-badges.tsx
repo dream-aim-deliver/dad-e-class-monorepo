@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Badge } from './badge';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';

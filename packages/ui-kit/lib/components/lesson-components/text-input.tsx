@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { IconRichText } from '../icons/icon-rich-text';
 import { RichTextEditor as TextInputEditor } from '../rich-text-element/editor';

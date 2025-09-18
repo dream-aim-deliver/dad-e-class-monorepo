@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useRef, useEffect, useState } from 'react';
 import { IconButton } from './icon-button';
 import { IconCalendarAvailability } from './icons/icon-calendar-availability';

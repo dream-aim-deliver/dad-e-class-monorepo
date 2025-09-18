@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./button"
 import { IconPaste } from "./icons/icon-paste";

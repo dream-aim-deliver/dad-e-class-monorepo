@@ -1,3 +1,5 @@
+'use client';
+
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { eClassPackage } from '@maany_shr/e-class-models';
 import { Badge } from './badge';

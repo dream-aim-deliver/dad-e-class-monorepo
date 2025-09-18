@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, ReactNode, useContext } from "react";
 import { AccordionContext } from "./accordion";
 import { cn } from "../../utils/style-utils";

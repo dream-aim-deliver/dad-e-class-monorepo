@@ -1,3 +1,4 @@
+'use client';
 import { TLocale, getDictionary } from "@maany_shr/e-class-translations";
 import { IconLoaderSpinner } from "./icons/icon-loader-spinner";
 import { createPortal } from 'react-dom';

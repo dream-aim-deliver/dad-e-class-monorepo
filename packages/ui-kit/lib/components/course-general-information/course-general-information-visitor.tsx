@@ -1,3 +1,5 @@
+'use client';
+
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TCourseMetadata } from 'packages/models/src/course';
 import { UserAvatar } from '../avatar/user-avatar';

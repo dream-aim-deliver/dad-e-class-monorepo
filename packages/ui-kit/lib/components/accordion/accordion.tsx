@@ -1,4 +1,4 @@
-'use-client';
+'use client';
 import { useState, createContext, forwardRef, ReactNode } from "react";
 import { cn } from "../../utils/style-utils";
 

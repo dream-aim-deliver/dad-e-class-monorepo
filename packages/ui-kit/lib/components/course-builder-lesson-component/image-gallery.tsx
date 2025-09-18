@@ -1,3 +1,4 @@
+'use client';
 import { CourseElementTemplate, CourseElementType, DesignerComponentProps, FormComponentProps } from "../course-builder/types";
 import { getDictionary } from "@maany_shr/e-class-translations";
 import { IconImageGallery } from "../icons/icon-image-gallery";

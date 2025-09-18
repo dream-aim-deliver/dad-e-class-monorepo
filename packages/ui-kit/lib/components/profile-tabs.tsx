@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Tabs, TabList, TabTrigger, TabContent } from './tabs/tab';
 import { ProfileInfo } from './profile/profile-info';

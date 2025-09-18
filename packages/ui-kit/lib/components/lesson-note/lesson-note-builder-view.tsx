@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, useState } from "react";
 import RichTextEditor from "../rich-text-element/editor";
 import { IconNotes } from "../icons/icon-notes";

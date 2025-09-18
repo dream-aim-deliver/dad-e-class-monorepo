@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { getDictionary } from '@maany_shr/e-class-translations';
 import { Uploader } from './drag-and-drop-uploader/uploader';

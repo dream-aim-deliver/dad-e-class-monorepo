@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { IconInfoCircle } from './icons/icon-infocircle';
 import { cn } from '../utils/style-utils';

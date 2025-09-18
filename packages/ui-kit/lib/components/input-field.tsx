@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, ReactNode, useState } from 'react';
 import { cn } from '../utils/style-utils';
 
