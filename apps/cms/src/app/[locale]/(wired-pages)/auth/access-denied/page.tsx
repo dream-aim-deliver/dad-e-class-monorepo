@@ -43,7 +43,7 @@ export default function AccessDeniedPage() {
                     <p className="text-text-secondary mb-8">
                         {session?.user?.email ? (
                             <>
-                                Sorry <strong>{session.user.email}</strong>, you don't have permission to access the CMS.
+                                Sorry <strong>{session.user.email}</strong>, you don&apos;t have permission to access the CMS.
                                 <br />
                                 <br />
                                 Admin role is required to access this area.
