@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
 import { HydrateClient, prefetch, trpc } from '../../config/trpc/server';
 import StudentCoachingSessions from '../../../client/pages/workspace/student-coaching-sessions';
+import CoachCoachingSessions from '../../../client/pages/workspace/coach-coaching-sessions';
 
 export default async function CoachingSessionsServerComponent() {
     const session = await getSession();
@@ -14,14 +15,25 @@ export default async function CoachingSessionsServerComponent() {
 
     const roles = session.user.roles;
     if (roles && roles.includes('coach')) {
-        return "";
-    } else if (roles && roles.includes('student')) {
-        await Promise.all([prefetch(trpc.listStudentCoachingSessions.queryOptions({}))]);
+        await Promise.all([prefetch(trpc.listCoachCoachingSessions.queryOptions({}))]);
+
         return (
             <>
                 <HydrateClient>
                     <Suspense fallback={<DefaultLoadingWrapper />}>
-                       <StudentCoachingSessions />
+                        <CoachCoachingSessions />
+                    </Suspense>
+                </HydrateClient>
+            </>
+        );
+    } else if (roles && roles.includes('student')) {
+        await Promise.all([prefetch(trpc.listStudentCoachingSessions.queryOptions({}))]);
+
+        return (
+            <>
+                <HydrateClient>
+                    <Suspense fallback={<DefaultLoadingWrapper />}>
+                        <StudentCoachingSessions />
                     </Suspense>
                 </HydrateClient>
             </>
