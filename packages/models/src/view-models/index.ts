@@ -7,6 +7,7 @@ export * from './offers-page-outline-view-model';
 export * from './topics-by-category-view-model';
 export * from './course-list-view-model';
 export * from './offers-page-package-list-view-model';
+export * from './coach-coaching-sessions-view-model';
 export * from './coach-list-view-model';
 export * from './coaching-page-view-model';
 export * from './coaching-offering-list-view-model';
@@ -57,3 +58,5 @@ export * from './create-coaching-session-review-view-model';
 export * from './unschedule-coaching-session-view-model';
 export * from './upcoming-coaching-sessions-list-view-model';
 export * from './notifications-view-model';
+
+export * from "./coach-coaching-sessions-view-model";
