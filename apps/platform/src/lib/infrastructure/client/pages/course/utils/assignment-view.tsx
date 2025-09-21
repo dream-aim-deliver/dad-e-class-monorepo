@@ -1,4 +1,14 @@
-import React from 'react';
+import {
+    Button,
+    DefaultLoading,
+    Dialog,
+    DialogContent,
+    DialogTrigger,
+} from '@maany_shr/e-class-ui-kit';
+import React, { Suspense } from 'react';
+import AssignmentContent from '../enrolled-course/assignment-content';
+import { useLocale } from 'next-intl';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 export interface AssignmentViewServiceConfig {
     studentId: number;
@@ -33,11 +43,33 @@ export const usePreviewAssignmentView = (): AssignmentViewService => {
 export const useStudyAssignmentView = (
     config: AssignmentViewServiceConfig,
 ): AssignmentViewService => {
+    const locale = useLocale() as TLocale;
+
     const getComponent = (assignmentId: string): React.ReactNode | null => {
         return (
-            <div>
-                Assignment {assignmentId} for student {config.studentId}
-            </div>
+            <Dialog
+                open={undefined}
+                onOpenChange={() => {
+                    // This function is called when the dialog is opened or closed
+                }}
+                defaultOpen={false}
+            >
+                <DialogTrigger asChild className="w-full">
+                    <Button text="View" variant="secondary" />
+                </DialogTrigger>
+                <DialogContent
+                    showCloseButton
+                    closeOnOverlayClick
+                    closeOnEscape
+                >
+                    <Suspense fallback={<DefaultLoading locale={locale} />}>
+                        <AssignmentContent
+                            assignmentId={assignmentId}
+                            studentId={config.studentId}
+                        />
+                    </Suspense>
+                </DialogContent>
+            </Dialog>
         );
     };
 
