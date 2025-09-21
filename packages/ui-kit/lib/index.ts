@@ -171,3 +171,4 @@ export { CourseCardAddToPackageList } from './components/course-card/add-to-pack
 export { Stepper } from './components/stepper/stepper';
 
 export { AssignmentModalContent } from './components/assignment/assignment-modal-content';
+export { Message } from './components/assignment/message';

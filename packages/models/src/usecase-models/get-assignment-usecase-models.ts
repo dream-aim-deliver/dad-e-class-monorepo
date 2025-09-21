@@ -34,6 +34,7 @@ const AssignmentReply = z.object({
   links: z.array(LinkItemSchema),
   sender: AssignmentSender,
 });
+export type TAssignmentReply = z.infer<typeof AssignmentReply>;
 
 const AssignmentProgressData = z.object({
   passedDetails: AssignmentPassedData.optional(),
