@@ -422,6 +422,7 @@ function transformAssignment(
                     status: 'available',
                     category: 'generic',
                     url: file.downloadUrl,
+                    thumbnailUrl: file.downloadUrl,
                 })),
                 links: component.progress.lastActivity.links,
                 sender: {

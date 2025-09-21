@@ -441,6 +441,7 @@ function AssignmentComponent({
             onFileDownload={(file) => {
                 downloadFile(file.url, file.name);
             }}
+            viewButton={<div>Hello World</div>}
             elementInstance={formElement as AssignmentElement}
             locale={locale}
         />
