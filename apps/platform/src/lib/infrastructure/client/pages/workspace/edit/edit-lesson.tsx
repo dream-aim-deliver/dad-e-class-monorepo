@@ -57,6 +57,7 @@ import { useLessonComponents } from './hooks/edit-lesson-hooks';
 import { transformLessonComponents } from '../../../utils/transform-lesson-components';
 import { useSaveLesson } from './hooks/save-hooks';
 import { FileUploadProvider } from '../../course/utils/file-upload';
+import { AssignmentViewProvider } from '../../course/utils/assignment-view';
 
 interface EditLessonProps {
     lessonId: number;
@@ -110,11 +111,13 @@ function PreviewRenderer({
     };
 
     return (
-        <FileUploadProvider mode="mock" config={{ lessonId: 0 }}>
-            <div className="flex flex-col gap-4">
-                {components.map(renderComponent)}
-            </div>
-        </FileUploadProvider>
+        <AssignmentViewProvider mode="study" config={{ studentId: 0 }}>
+            <FileUploadProvider mode="mock" config={{ lessonId: 0 }}>
+                <div className="flex flex-col gap-4">
+                    {components.map(renderComponent)}
+                </div>
+            </FileUploadProvider>
+        </AssignmentViewProvider>
     );
 }
 

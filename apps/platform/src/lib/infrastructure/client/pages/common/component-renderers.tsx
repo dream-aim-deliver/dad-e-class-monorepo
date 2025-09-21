@@ -45,6 +45,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { mockCoaches } from '../../../common/mocks/simple/coaches';
 import { simulateUploadFile } from '../../../common/mocks/simple/upload-file';
 import { useFileUploadContext } from '../course/utils/file-upload';
+import { useAssignmentView } from '../course/utils/assignment-view';
 
 export interface ComponentRendererProps {
     keyString: string;
@@ -435,13 +436,15 @@ function AssignmentComponent({
     locale,
 }: ComponentRendererProps) {
     const element = formElement as AssignmentElement;
+    const viewService = useAssignmentView();
+
     return (
         <AssignmentFormComponent
             key={key}
             onFileDownload={(file) => {
                 downloadFile(file.url, file.name);
             }}
-            viewButton={<div>Hello World</div>}
+            viewButton={viewService.getComponent(element.id)}
             elementInstance={formElement as AssignmentElement}
             locale={locale}
         />
