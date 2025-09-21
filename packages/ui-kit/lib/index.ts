@@ -202,3 +202,5 @@ export { CoachStudentInteractionCard } from './components/coach-student-interact
 export { UserAvatar } from './components/avatar/user-avatar';
 export { CoachingSessionList } from "./components/coaching-sessions/coaching-session-list"
 export { ConfirmationModal } from './components/confirmation-modal';
+
+export { AssignmentModalContent } from './components/assignment/assignment-modal-content';
