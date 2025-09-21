@@ -66,6 +66,7 @@ import { markNotificationsAsRead } from './procedures/mark-notifications-as-read
 import { listCoachCoachingSessions } from './procedures/coach-coaching-session';
 import { createNotification } from './procedures/create-notification';
 import { getAssignment } from './procedures/assignment';
+import { sendAssignmentReply } from './procedures/assignment-reply';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -132,6 +133,7 @@ export const mockRouter = t.router({
     listCoachCoachingSessions,
     createNotification,
     getAssignment,
+    sendAssignmentReply,
 });
 
 export type MockRouter = typeof mockRouter;
