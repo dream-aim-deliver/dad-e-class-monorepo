@@ -77,3 +77,4 @@ export * from './submit-lesson-progresses-usecase-models';
 export * from './upload-lesson-progress-file-usecase-models';
 export * from './get-assignment-usecase-models';
 export * from './send-assignment-reply-usecase-models';
+export * from './pass-assignment-usecase-models';
