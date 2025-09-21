@@ -204,3 +204,4 @@ export { CoachingSessionList } from "./components/coaching-sessions/coaching-ses
 export { ConfirmationModal } from './components/confirmation-modal';
 
 export { AssignmentModalContent } from './components/assignment/assignment-modal-content';
+export { Message } from './components/assignment/message';
