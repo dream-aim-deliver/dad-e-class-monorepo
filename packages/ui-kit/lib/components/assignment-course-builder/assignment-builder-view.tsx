@@ -108,7 +108,7 @@ export const AssignmentBuilderView: FC<AssignmentStudentView> = ({
                 <div className="flex flex-col gap-2 items-start w-full">
                     {elementInstance.files?.map((file, index) => (
                         <FilePreview
-                            key={index}
+                            key={`file-preview-${index}`}
                             uploadResponse={file}
                             locale={locale}
                             readOnly={true}
@@ -117,7 +117,7 @@ export const AssignmentBuilderView: FC<AssignmentStudentView> = ({
                         />
                     ))}
                     {elementInstance.links?.map((link, index) => (
-                        <div className="flex flex-col w-full" key={index}>
+                        <div className="flex flex-col w-full" key={`link-preview-${index}`}>
                             <LinkPreview
                                 preview={false}
                                 title={link.title as string}
