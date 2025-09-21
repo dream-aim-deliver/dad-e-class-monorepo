@@ -4,13 +4,14 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
+import { LinkItemRequestSchema } from './common';
 
 export const SendAssignmentReplyRequestSchema = z.object({
   assignmentId: z.string(),
   studentId: z.number(),
   comment: z.string(),
   fileIds: z.array(z.number()),
-  links: z.array(z.string()),
+  links: z.array(LinkItemRequestSchema),
 });
 
 export type TSendAssignmentReplyRequest = z.infer<typeof SendAssignmentReplyRequestSchema>;
