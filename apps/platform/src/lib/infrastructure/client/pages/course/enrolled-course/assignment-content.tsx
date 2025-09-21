@@ -9,6 +9,7 @@ import {
     AssignmentStatus,
     DefaultError,
     DefaultLoading,
+    downloadFile,
 } from '@maany_shr/e-class-ui-kit';
 
 interface AssignmentContentProps {
@@ -43,10 +44,29 @@ export default function AssignmentContent({
     const assignment = assignmentViewModel.data;
 
     return (
-        <div className="p-4">
+        <div className="p-4 flex flex-col gap-4">
             <AssignmentModalContent
-                resources={[]}
-                links={[]}
+                resources={assignment.resources.map((file) => ({
+                    id: file.id,
+                    name: file.name,
+                    size: file.size,
+                    category: 'generic', // TODO: find a way to pass category
+                    url: file.downloadUrl,
+                    status: 'available',
+                    thumbnailUrl: file.downloadUrl,
+                }))}
+                links={assignment.links.map((link) => ({
+                    title: link.title,
+                    url: link.url,
+                    customIcon: link.iconFile
+                        ? {
+                              ...link.iconFile,
+                              status: 'available',
+                              url: link.iconFile?.downloadUrl,
+                              thumbnailUrl: link.iconFile?.downloadUrl,
+                          }
+                        : undefined,
+                }))}
                 locale={locale}
                 title={assignment.title}
                 course={{
@@ -60,11 +80,16 @@ export default function AssignmentContent({
                 onClickGroup={() => {
                     // TODO: navigate to group workspace
                 }}
-                student={assignment.progress?.student && {
-                    name: assignment.progress.student.name ?? 'Anonymous User',
-                    avatarUrl: assignment.progress.student.avatarUrl ?? undefined,
-                    isYou: false,
-                }}
+                student={
+                    assignment.progress?.student && {
+                        name:
+                            assignment.progress.student.name ??
+                            'Anonymous User',
+                        avatarUrl:
+                            assignment.progress.student.avatarUrl ?? undefined,
+                        isYou: false,
+                    }
+                }
                 onClickUser={() => {
                     // TODO: navigate to student profile
                 }}
@@ -72,6 +97,9 @@ export default function AssignmentContent({
                 lessonPosition={assignment.lesson.position}
                 status={AssignmentStatus.NotStarted}
                 description={assignment.description}
+                onFileDownload={(file) => {
+                    downloadFile(file.url, file.name);
+                }}
             />
         </div>
     );
