@@ -373,13 +373,15 @@ const DownloadFilesComponentRequestSchema = BaseComponentRequestSchema.extend({
     fileIds: z.array(z.number().int()),
 });
 
+export const LinkItemRequestSchema = z.object({
+    title: z.string(),
+    url: z.string(),
+    iconFileId: z.number().int().nullable().optional(),
+});
+
 const LinksComponentRequestSchema = BaseComponentRequestSchema.extend({
     type: z.literal('links'),
-    links: z.array(z.object({
-        title: z.string(),
-        url: z.string(),
-        iconFileId: z.number().int().nullable().optional(),
-    })),
+    links: z.array(LinkItemRequestSchema),
     includeInMaterials: z.boolean(),
 });
 
