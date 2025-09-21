@@ -75,3 +75,4 @@ export * from "./unschedule-coaching-session-usecase-models";
 export * from "./create-notification-usecase-models";
 export * from './submit-lesson-progresses-usecase-models';
 export * from './upload-lesson-progress-file-usecase-models';
+export * from './get-assignment-usecase-models';
