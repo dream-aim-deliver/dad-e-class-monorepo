@@ -87,7 +87,7 @@ export const ImageFileSchema = FileSchema.extend({
     category: z.literal('image'),
 });
 
-const LinkSchema = z.object({
+export const LinkItemSchema = z.object({
     title: z.string(),
     url: z.string(),
     iconFile: ImageFileSchema.nullable(),
@@ -165,7 +165,7 @@ const ImageCarouselSchema = BaseComponent.extend({
 
 export const LinksSchema = BaseComponent.extend({
     type: z.literal('links'),
-    links: z.array(LinkSchema),
+    links: z.array(LinkItemSchema),
     includeInMaterials: z.boolean(),
 });
 
@@ -256,7 +256,7 @@ const AssignmentReplySchema = z.object({
   sentAt: z.number(),
   comment: z.string(),
   files: z.array(FileSchema),
-  links: z.array(LinkSchema),
+  links: z.array(LinkItemSchema),
   sender: AssignmentSenderSchema,
 });
 
@@ -270,7 +270,7 @@ const AssignmentSchema = BaseComponent.extend({
     title: z.string(),
     description: z.string(),
     resources: z.array(DownloadFileSchema),
-    links: z.array(LinkSchema),
+    links: z.array(LinkItemSchema),
     progress: AssignmentProgressSchema.optional().nullable(),
 });
 
