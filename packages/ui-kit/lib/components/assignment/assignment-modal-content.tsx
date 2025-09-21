@@ -6,6 +6,8 @@ import { Badge } from '../badge';
 import { Button } from '../button';
 import { UserAvatar } from '../avatar/user-avatar';
 import { IconGroup } from '../icons/icon-group';
+import { FilePreview } from '../drag-and-drop-uploader/file-preview';
+import { LinkPreview } from '../links';
 
 interface AssignmentHeaderProps extends isLocalAware {
     title: string;
@@ -176,32 +178,60 @@ interface AssignmentModalContentProps
         AssignmentHeaderProps {
     resources: fileMetadata.TFileMetadata[];
     links: shared.TLink[];
+    onFileDownload: (fileMetadata: fileMetadata.TFileMetadata) => void;
 }
 
 export function AssignmentModalContent({
     resources,
     links,
     locale,
+    onFileDownload,
     ...props
 }: AssignmentModalContentProps) {
     const dictionary = getDictionary(locale);
 
-    return <div className="flex flex-col gap-4">
-        {/* Assignment Icon & Label */}
-        <div className="flex items-center gap-2">
-            <span className="p-1 bg-base-neutral-700 rounded-small">
-                <IconAssignment size="4" classNames="text-text-primary" />
-            </span>
-            <p className="text-sm font-bold text-text-primary leading-[150%]">
-                {
-                    dictionary.components.assignment.assignmentModal
-                        .assignmentText
-                }
-            </p>
+    return (
+        <div className="flex flex-col gap-4">
+            {/* Assignment Icon & Label */}
+            <div className="flex items-center gap-2">
+                <span className="p-1 bg-base-neutral-700 rounded-small">
+                    <IconAssignment size="4" classNames="text-text-primary" />
+                </span>
+                <p className="text-sm font-bold text-text-primary leading-[150%]">
+                    {
+                        dictionary.components.assignment.assignmentModal
+                            .assignmentText
+                    }
+                </p>
+            </div>
+
+            <div className="w-full h-[1px] bg-divider" />
+
+            <AssignmentHeader {...props} locale={locale} />
+
+            {resources.map((file, index) => (
+                <FilePreview
+                    key={`file-preview-${index}`}
+                    uploadResponse={file}
+                    locale={locale}
+                    readOnly={true}
+                    deletion={{ isAllowed: false }}
+                    onDownload={() => onFileDownload(file)}
+                />
+            ))}
+            
+            {links.map((link, index) => (
+                <div
+                    className="flex flex-col w-full"
+                    key={`link-preview-${index}`}
+                >
+                    <LinkPreview
+                        preview={false}
+                        title={link.title as string}
+                        url={link.url as string}
+                    />
+                </div>
+            ))}
         </div>
-
-        <div className="w-full h-[1px] bg-divider" />
-
-        <AssignmentHeader {...props} locale={locale} />
-    </div>;
+    );
 }
