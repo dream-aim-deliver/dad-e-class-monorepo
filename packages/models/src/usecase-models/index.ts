@@ -43,3 +43,4 @@ export * from './save-assessment-components-usecase-models';
 export * from './submit-lesson-progresses-usecase-models';
 export * from './upload-lesson-progress-file-usecase-models';
 export * from './get-assignment-usecase-models';
+export * from './send-assignment-reply-usecase-models';
