@@ -10,6 +10,7 @@ import { LinkPreview } from '../links';
 import { Message } from '../assignment/message';
 import { Badge } from '../badge';
 import { fileMetadata } from '@maany_shr/e-class-models';
+import { Button } from '../button';
 
 /**
  * Displays a summary view of the assignment, including title, description, attached files, and resource links.
@@ -37,11 +38,13 @@ import { fileMetadata } from '@maany_shr/e-class-models';
 interface AssignmentStudentView extends isLocalAware {
     elementInstance: AssignmentElement;
     onFileDownload: (fileMetadata: fileMetadata.TFileMetadata) => void;
+    viewButton?: React.ReactNode;
 }
 
 export const AssignmentBuilderView: FC<AssignmentStudentView> = ({
     elementInstance,
     onFileDownload,
+    viewButton,
     locale,
 }) => {
     const dictionary = getDictionary(locale);
@@ -160,6 +163,7 @@ export const AssignmentBuilderView: FC<AssignmentStudentView> = ({
                     </div>
                 )}
             </div>
+            {viewButton}
         </div>
     );
 };
