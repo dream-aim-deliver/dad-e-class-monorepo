@@ -6,7 +6,10 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 import { FileSchema, LinkItemSchema } from './common';
 
-export const GetAssignmentRequestSchema = z.object({});
+export const GetAssignmentRequestSchema = z.object({
+  assignmentId: z.string(),
+  studentId: z.number().optional(),
+});
 
 export type TGetAssignmentRequest = z.infer<typeof GetAssignmentRequestSchema>;
 
