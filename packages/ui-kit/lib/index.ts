@@ -200,3 +200,5 @@ export { ReviewModal } from './components/review/review-modal';
 export { CancelCoachingSessionModal } from './components/coaching-sessions/cancel-coaching-session-modal';
 export { CoachingSessionList } from "./components/coaching-sessions/coaching-session-list"
 export { ConfirmationModal } from './components/confirmation-modal';
+
+export { AssignmentModalContent } from './components/assignment/assignment-modal-content';
