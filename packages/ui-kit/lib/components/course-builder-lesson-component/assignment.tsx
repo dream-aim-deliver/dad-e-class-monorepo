@@ -147,12 +147,14 @@ export function DesignerComponent({
 
 interface AssignmentFormProps extends FormComponentProps {
     onFileDownload: (fileMetadata: fileMetadata.TFileMetadata) => void;
+    viewButton?: React.ReactNode;
 }
 
 export function FormComponent({
     elementInstance,
     locale,
     onFileDownload,
+    viewButton,
 }: AssignmentFormProps) {
     if (elementInstance.type !== CourseElementType.Assignment) return null;
 
@@ -174,6 +176,7 @@ export function FormComponent({
             elementInstance={elementInstance as unknown as AssignmentElement}
             locale={locale}
             onFileDownload={onFileDownload}
+            viewButton={viewButton}
         />
     );
 }
