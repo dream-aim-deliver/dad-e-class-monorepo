@@ -954,6 +954,7 @@ export const EN: TDictionary = {
       editLesson: 'Edit lesson',
       newCourse: 'New Course',
       coachingSessions: 'Coaching Sessions',
+      dashboard: 'Dashboard'
     },
     courseIntroInformation: {
       generalInformation: 'General Information',

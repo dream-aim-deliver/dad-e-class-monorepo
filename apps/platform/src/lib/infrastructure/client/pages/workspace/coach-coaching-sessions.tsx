@@ -468,7 +468,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             },
                         },
                         {
-                            label: breadcrumbsTranslations('coachingSessions'),
+                            label: breadcrumbsTranslations('dashboard'),
                             onClick: () => {
                                 // Nothing should happen on clicking the current page
                             },
