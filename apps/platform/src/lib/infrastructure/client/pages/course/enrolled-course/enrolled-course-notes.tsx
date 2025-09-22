@@ -85,10 +85,14 @@ function EnrolledCourseNotesContent(
             });
 
             // Generate PDF from the wrapper with the cloned content
+            const imageType: "jpeg" | "png" | "webp" | undefined = "jpeg";
+            const margin: [number, number, number, number] = [0.5, 0.5, 0.5, 0.5];
+            const orientation: "portrait" | "landscape" | undefined = "portrait";
+
             const options = {
-                margin: [0.5, 0.5, 0.5, 0.5],
+                margin: margin,
                 filename: `course-notes-${courseSlug}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
+                image: { type: imageType, quality: 0.98 },
                 html2canvas: {
                     scale: 3,
                     useCORS: true,
@@ -99,7 +103,7 @@ function EnrolledCourseNotesContent(
                 jsPDF: {
                     unit: 'in',
                     format: 'a4',
-                    orientation: 'portrait',
+                    orientation: orientation,
                 },
             };
 
@@ -155,7 +159,7 @@ export default function EnrolledCourseNotes(
 ) {
     const locale = useLocale() as TLocale;
 
-    if(props.currentRole === 'student') {
+    if (props.currentRole === 'student') {
         return (
             <MockTRPCClientProviders>
                 <Suspense
