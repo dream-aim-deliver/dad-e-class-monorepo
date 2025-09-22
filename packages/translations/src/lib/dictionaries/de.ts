@@ -1323,6 +1323,10 @@ export const DE: TDictionary = {
       confirmDecline: "Ablehnung bestätigen",
       confirmDeclineMessage: "Bitte gib einen Grund für die Ablehnung dieser Sitzungsanfrage an:",
       decline: "Ablehnen",
+      roleCoach: "Coach",
+      roleStudent: "Studierende",
+      selectRole: "Rolle auswählen",
+      coachingSessions: "Coaching-Sitzungen",
     },
     editLesson: {
       richText: 'Formatierter Text',
