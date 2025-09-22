@@ -1,59 +1,59 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "jsx": "preserve",
-    "allowJs": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "jsx": "preserve",
+        "allowJs": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "incremental": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "types": ["jest", "node"]
+    },
+    "include": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.js",
+        "**/*.jsx",
+        "../../apps/platform/.next/types/**/*.ts",
+        "../../dist/apps/platform/.next/types/**/*.ts",
+        "../../eslint.config.js",
+        "next-env.d.ts",
+        ".next/types/**/*.ts",
+        "postcss.config.mjs",
+        "eslint.config.mjs",
+        "src/lib/infrastructure/server/config/auth/next-auth.config.ts",
+        "../../packages/auth/src/infrastructure/gateway/next-auth-gateway.ts"
     ],
-    "types": [
-      "jest",
-      "node"
+    "exclude": [
+        "node_modules",
+        "jest.config.ts",
+        "**/*.spec.ts",
+        "**/*.test.ts"
     ],
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.js",
-    "**/*.jsx",
-    "../../apps/platform/.next/types/**/*.ts",
-    "../../dist/apps/platform/.next/types/**/*.ts",
-    "../../eslint.config.js",
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "postcss.config.mjs",
-    "eslint.config.mjs",
-      "src/lib/infrastructure/server/config/auth/next-auth.config.ts",
-      "../../packages/auth/src/infrastructure/gateway/next-auth-gateway.ts",
-  ],
-  "exclude": [
-    "node_modules",
-    "jest.config.ts",
-    "**/*.spec.ts",
-    "**/*.test.ts"
-  ],
-  "references": [
-    {
-      "path": "../../packages/models"
-    },
-    {
-      "path": "../../packages/ui-kit"
-    },
-    {
-      "path": "../../packages/translations"
-    },
-    {
-      "path": "../../packages/auth"
-    }
-  ]
+    "references": [
+        {
+            "path": "../cms"
+        },
+        {
+            "path": "../../packages/auth"
+        },
+        {
+            "path": "../../packages/ui-kit"
+        },
+        {
+            "path": "../../packages/models"
+        },
+        {
+            "path": "../../packages/translations"
+        }
+    ]
 }
