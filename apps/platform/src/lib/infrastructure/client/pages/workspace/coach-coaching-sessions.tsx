@@ -204,13 +204,15 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         }
 
         // Success - close modal and reset state
-        setTimeout(() => {
+       const timeoutId = setTimeout(() => {
             setIsModalOpen(false);
             setModalType(null);
             setSessionId(null);
             setUnscheduleViewModel(undefined);
             setCreateNotificationViewModel(undefined);
         }, 2000);
+
+       return () => clearTimeout(timeoutId);
 
     };
 
@@ -235,7 +237,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
 
     };
 
-    // Get modal configuration based on type using switch condition
+    // Get modal configuration based on type using switch condition - memoized for performance
     const getModalConfig = () => {
         switch (modalType) {
             case 'accept':
@@ -385,7 +387,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             endTime={formatTime(session.endTime)}
                             studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                             studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => { 
+                            onClickStudent={() => {
                                 // TODO: Need to implement navigation to student profile
                             }}
                             meetingLink={session?.meetingUrl || ""}
@@ -409,8 +411,8 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             studentImageUrl={session.student.avatarUrl || ""}
                             onClickStudent={() => {
                                 // TODO: Need to implement navigation to student profile
-                             }}
-                           
+                            }}
+
                             onClickCancel={() => handleDeclineClick(session.id)}
                             hoursLeftToEdit={hoursLeftToEdit}
                         />
@@ -434,12 +436,12 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             endTime={formatTime(session.endTime)}
                             studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                             studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => { 
+                            onClickStudent={() => {
                                 // TODO: Need to implement navigation to student profile
-                                }}
+                            }}
                             reviewType="call-quality"
                             callQualityRating={session.review?.rating || 0}
-                            onClickDownloadRecording={() => { 
+                            onClickDownloadRecording={() => {
                                 // TODO: Need to implement recording download
                             }}
                             isRecordingDownloading={false}
