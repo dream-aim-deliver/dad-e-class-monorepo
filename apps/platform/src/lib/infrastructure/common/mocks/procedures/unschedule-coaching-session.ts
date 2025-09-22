@@ -9,7 +9,7 @@ export const unscheduleCoachingSession = t.procedure
 
         // Get the original session data
         const originalSession = getSessionById(coachingSessionId);
-        
+
         // In a mock environment, we'll assume the session always exists
         // Update the session status to unscheduled
         updateSessionStatus(coachingSessionId, 'unscheduled');
