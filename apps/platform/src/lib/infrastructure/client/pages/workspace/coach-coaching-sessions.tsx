@@ -3,24 +3,67 @@
 import { TLocale } from "@maany_shr/e-class-translations";
 import { useLocale, useTranslations } from "next-intl";
 import { useState, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../trpc/client";
 import { viewModels, useCaseModels } from "@maany_shr/e-class-models";
 import { useListCoachCoachingSessionsPresenter } from "../../hooks/use-list-coach-coaching-sessions-presenter";
-import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button } from "@maany_shr/e-class-ui-kit";
+import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, ConfirmationModal } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
+import { useScheduleCoachingSessionPresenter } from "../../hooks/use-schedule-coaching-session-presenter";
+import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
+import { useCreateNotificationPresenter } from "../../hooks/use-create-notification-presenter";
+import { useCheckTimeLeft } from "../../../hooks/use-check-time-left";
+
 
 export default function CoachCoachingSessions() {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.coachCoachingSessions');
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
-    const [studentCoachingSessionsResponse] = trpc.listCoachCoachingSessions.useSuspenseQuery({});
+    // Get current tab from URL or default to 'upcoming'
+    const currentTab = (searchParams.get('tab') as 'upcoming' | 'ended') || 'upcoming';
+
+    const [studentCoachingSessionsResponse] = trpc.listCoachCoachingSessions.useSuspenseQuery({}, {
+        refetchInterval: 2 * 60 * 1000,
+    });
+
+    const scheduleMutation = trpc.scheduleCoachingSession.useMutation();
+    const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation();
+    const createNotificationMutation = trpc.createNotification.useMutation();
 
     const [studentCoachingSessionsViewModel, setStudentCoachingSessionsViewModel] = useState<
         viewModels.TCoachCoachingSessionsViewModel | undefined
     >(undefined);
 
+    const [scheduleViewModel, setScheduleViewModel] = useState<
+        viewModels.TScheduleCoachingSessionViewModel | undefined
+    >(undefined);
+
+    const [unscheduleViewModel, setUnscheduleViewModel] = useState<
+        viewModels.TUnscheduleCoachingSessionViewModel | undefined
+    >(undefined);
+
+    const [createNotificationViewModel, setCreateNotificationViewModel] = useState<
+        viewModels.TCreateNotificationViewModel | undefined
+    >(undefined);
+
     const { presenter } = useListCoachCoachingSessionsPresenter(
         setStudentCoachingSessionsViewModel,
     );
+
+    const { presenter: schedulePresenter } = useScheduleCoachingSessionPresenter(
+        setScheduleViewModel,
+    );
+
+    const { presenter: unschedulePresenter } = useUnscheduleCoachingSessionPresenter(
+        setUnscheduleViewModel,
+    );
+
+    const { presenter: createNotificationPresenter } = useCreateNotificationPresenter(
+        setCreateNotificationViewModel,
+    );
+
 
     presenter.present(studentCoachingSessionsResponse, studentCoachingSessionsViewModel);
 
@@ -60,11 +103,143 @@ export default function CoachCoachingSessions() {
         items: endedSessions,
     });
 
+    // Unified modal state for accept/decline functionality
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalType, setModalType] = useState<'accept' | 'decline'>('accept');
+    const [sessionId, setSessionId] = useState<number | null>(null);
+
+    const handleAcceptClick = (sessionId: number) => {
+        setSessionId(sessionId);
+        setModalType('accept');
+        setIsModalOpen(true);
+    };
+
+    const handleDeclineClick = (sessionId: number) => {
+        setSessionId(sessionId);
+        setModalType('decline');
+        setIsModalOpen(true);
+    };
+
+    const handleConfirmAccept = async () => {
+        if (!sessionId) return;
+
+
+        const result = await scheduleMutation.mutateAsync({ coachingSessionId: sessionId });
+
+        // Present the result using the presenter
+        schedulePresenter.present(result, scheduleViewModel);
+
+        // Check if the presentation resulted in an error
+        if (scheduleViewModel && scheduleViewModel.mode === 'kaboom') {
+            // Error occurred, don't close modal - let user see the error
+            return;
+        }
+
+        // Success - show success banner for 2 seconds before closing
+        setTimeout(() => {
+            setIsModalOpen(false);
+            setModalType(null);
+            setSessionId(null);
+            setScheduleViewModel(undefined);
+        }, 2000);
+
+
+    };
+
+    const handleConfirmDecline = async () => {
+        if (!sessionId) return;
+
+        // Step 1: Unschedule the coaching session
+        const unscheduleResult = await unscheduleMutation.mutateAsync({
+            coachingSessionId: sessionId
+        });
+
+        // Present the unschedule result
+        unschedulePresenter.present(unscheduleResult, unscheduleViewModel);
+
+        // Check if unschedule was successful
+        if (unscheduleViewModel && unscheduleViewModel.mode === 'kaboom') {
+            return;
+        }
+
+        // Step 2: Create notification (only if unschedule was successful)
+        if (unscheduleViewModel && unscheduleViewModel.mode === 'default') {
+            // Get the session details for notification
+            const session = allSessions.find(s => s.id === sessionId);
+            if (session) {
+                const notificationResult = await createNotificationMutation.mutateAsync({
+                    message: "",
+                    actionTitle: "View Details",
+                    actionUrl: `/coaching-session/${sessionId}`,
+                    senderId: 1, // TODO: Get actual coach ID
+                    receiverId: 1, // TODO: Get actual student ID - session.student doesn't have id property
+                });
+
+                // Present the notification result
+                createNotificationPresenter.present(notificationResult, createNotificationViewModel);
+
+            }
+        }
+
+        // Success - close modal and reset state
+        setTimeout(() => {
+            setIsModalOpen(false);
+            setModalType(null);
+            setSessionId(null);
+            setUnscheduleViewModel(undefined);
+            setCreateNotificationViewModel(undefined);
+        }, 2000);
+
+    };
+
+    // Unified confirm handler using switch condition
+    const handleConfirm = async () => {
+        if (!sessionId || !modalType) return;
+
+        switch (modalType) {
+            case 'accept':
+                await handleConfirmAccept();
+                break;
+            case 'decline':
+                await handleConfirmDecline();
+                break;
+        }
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setModalType(null);
+        setSessionId(null);
+
+    };
+
+    // Get modal configuration based on type using switch condition
+    const getModalConfig = () => {
+        switch (modalType) {
+            case 'accept':
+                return {
+                    title: t('confirmAcceptance'),
+                    message: t('confirmAcceptanceMessage'),
+                    confirmText: t('accept'),
+                    isLoading: scheduleMutation.isPending,
+                    viewModel: scheduleViewModel
+                };
+            case 'decline':
+                return {
+                    title: t('confirmDecline'),
+                    message: t('confirmDeclineMessage'),
+                    confirmText: t('decline'),
+                    isLoading: unscheduleMutation.isPending,
+                    viewModel: unscheduleViewModel
+                };
+        }
+    };
+
     if (!studentCoachingSessionsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
-    if (studentCoachingSessionsViewModel.mode !== 'default') {
+    if (studentCoachingSessionsViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
     }
 
@@ -80,7 +255,7 @@ export default function CoachCoachingSessions() {
             return (
                 <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                     <p className="text-text-primary text-md">
-                        No sessions found
+                        {t('noSessionsFound')}
                     </p>
                 </div>
             );
@@ -96,7 +271,7 @@ export default function CoachCoachingSessions() {
                     <div className="flex justify-center items-center w-full mt-6">
                         <Button
                             variant="text"
-                            text={"loadMore"}
+                            text={t('loadMore')}
                             onClick={handleLoadMore}
                         />
                     </div>
@@ -107,6 +282,8 @@ export default function CoachCoachingSessions() {
 
     // Helper to render session cards (extracted to avoid duplication)
     const renderSessionCards = (sessions: useCaseModels.TListCoachCoachingSessionsSuccessResponse['data']['sessions']) => {
+
+
         return sessions.map((session) => {
             // Helper function to format time from ISO string
             const formatTime = (isoString: string) => {
@@ -117,6 +294,12 @@ export default function CoachCoachingSessions() {
                     hour12: true
                 });
             };
+
+            // Create start DateTime for time calculations
+            const startDateTime = new Date(session.startTime);
+            const isMeetingLink = useCheckTimeLeft(startDateTime, { minutes: 10 });
+            const isJoiningEnabled = useCheckTimeLeft(startDateTime, { hours: 24 });
+
             if (session.status === 'requested') {
                 // For requested sessions (upcoming tab)
                 return (
@@ -127,38 +310,78 @@ export default function CoachCoachingSessions() {
                         status="requested"
                         title={session.coachingOfferingTitle}
                         duration={session.coachingOfferingDuration}
-                        date={new Date(session.startTime)}
+                        date={startDateTime}
                         startTime={formatTime(session.startTime)}
                         endTime={formatTime(session.endTime)}
                         studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                         studentImageUrl={session.student.avatarUrl || ""}
                         onClickStudent={() => { }}
-                        onClickAccept={() => { }}
-                        onClickDecline={() => { }}
-                        onClickSuggestAnotherDate={() => { }}
+                        onClickAccept={() => handleAcceptClick(session.id)}
+                        onClickDecline={() => handleDeclineClick(session.id)}
                     />
                 );
             }
 
             if (session.status === 'scheduled') {
-                // For scheduled sessions (upcoming tab)
-                return (
-                    <CoachingSessionCard
-                        key={session.id}
-                        locale={locale}
-                        userType="coach"
-                        status="upcoming-locked"
-                        title={session.coachingOfferingTitle}
-                        duration={session.coachingOfferingDuration}
-                        date={new Date(session.startTime)}
-                        startTime={formatTime(session.startTime)}
-                        endTime={formatTime(session.endTime)}
-                        studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
-                        studentImageUrl={session.student.avatarUrl || ""}
-                        onClickStudent={() => { }}
-                        onClickJoinMeeting={() => { }}
-                    />
-                );
+                if (isJoiningEnabled) {
+                    return (
+                        <CoachingSessionCard
+                            key={session.id}
+                            locale={locale}
+                            userType="coach"
+                            status="upcoming-locked"
+                            title={session.coachingOfferingTitle}
+                            duration={session.coachingOfferingDuration}
+                            date={startDateTime}
+                            startTime={formatTime(session.startTime)}
+                            endTime={formatTime(session.endTime)}
+                            studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
+                            studentImageUrl={session.student.avatarUrl || ""}
+                            onClickStudent={() => { }}
+                            onClickJoinMeeting={() => { }}
+                        />
+                    );
+                } else if (isMeetingLink) {
+                    return (
+                        <CoachingSessionCard
+                            key={session.id}
+                            locale={locale}
+                            userType="coach"
+                            status="ongoing"
+                            title={session.coachingOfferingTitle}
+                            duration={session.coachingOfferingDuration}
+                            date={startDateTime}
+                            startTime={formatTime(session.startTime)}
+                            endTime={formatTime(session.endTime)}
+                            studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
+                            studentImageUrl={session.student.avatarUrl || ""}
+                            onClickStudent={() => { }}
+                            meetingLink={session?.meetingUrl || ""}
+                            onClickJoinMeeting={() => { }}
+                        />
+                    );
+                } else {
+                    const hoursLeftToEdit = Math.floor((startDateTime.getTime() - Date.now()) / (1000 * 60 * 60));
+                    return (
+                        <CoachingSessionCard
+                            key={session.id}
+                            locale={locale}
+                            userType="coach"
+                            status="upcoming-editable"
+                            title={session.coachingOfferingTitle}
+                            duration={session.coachingOfferingDuration}
+                            date={startDateTime}
+                            startTime={formatTime(session.startTime)}
+                            endTime={formatTime(session.endTime)}
+                            studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
+                            studentImageUrl={session.student.avatarUrl || ""}
+                            onClickStudent={() => { }}
+                            onClickReschedule={() => { }}
+                            onClickCancel={() => handleDeclineClick(session.id)}
+                            hoursLeftToEdit={hoursLeftToEdit}
+                        />
+                    );
+                }
             }
 
             if (session.status === 'completed') {
@@ -172,7 +395,7 @@ export default function CoachCoachingSessions() {
                             status="ended"
                             title={session.coachingOfferingTitle}
                             duration={session.coachingOfferingDuration}
-                            date={new Date(session.startTime)}
+                            date={startDateTime}
                             startTime={formatTime(session.startTime)}
                             endTime={formatTime(session.endTime)}
                             studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
@@ -192,31 +415,48 @@ export default function CoachCoachingSessions() {
     };
 
     return (
-        <Tabs.Root defaultTab="upcoming">
-            <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
-                <div className="w-full flex gap-4 items-center justify-between" >
-                    <p className="text-2xl font-semibold text-white" >
-                        yourCoachingSessions
-                    </p>
-                    <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
-                        <Tabs.Trigger value="upcoming" isLast={false}>
-                            upcoming
-                        </Tabs.Trigger>
-                        <Tabs.Trigger value="ended" isLast={false}>
-                            ended
-                        </Tabs.Trigger>
-                    </Tabs.List>
+        <>
+            <Tabs.Root defaultTab="upcoming">
+                <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
+                    <div className="w-full flex gap-4 items-center justify-between" >
+                        <p className="text-2xl font-semibold text-white" >
+                            {t('yourCoachingSessions')}
+                        </p>
+                        <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
+                            <Tabs.Trigger value="upcoming" isLast={false}>
+                                {t('upcoming')}
+                            </Tabs.Trigger>
+                            <Tabs.Trigger value="ended" isLast={false}>
+                                {t('ended')}
+                            </Tabs.Trigger>
+                        </Tabs.List>
+                    </div>
                 </div>
-            </div>
-            <Tabs.Content value="upcoming" className="mt-10">
-                {renderSessionContent(upcomingSessions, displayedUpcomingSessions, hasMoreUpcomingSessions, handleLoadMoreUpcomingSessions)}
-            </Tabs.Content>
+                <Tabs.Content value="upcoming" className="mt-10">
+                    {renderSessionContent(upcomingSessions, displayedUpcomingSessions, hasMoreUpcomingSessions, handleLoadMoreUpcomingSessions)}
+                </Tabs.Content>
 
-            <Tabs.Content value="ended" className="mt-10">
-                {renderSessionContent(endedSessions, displayedEndedSessions, hasMoreEndedSessions, handleLoadMoreEndedSessions)}
-            </Tabs.Content>
+                <Tabs.Content value="ended" className="mt-10">
+                    {renderSessionContent(endedSessions, displayedEndedSessions, hasMoreEndedSessions, handleLoadMoreEndedSessions)}
+                </Tabs.Content>
 
 
-        </Tabs.Root >
+            </Tabs.Root>
+
+            {/* Unified Accept/Decline Modal using Switch Condition */}
+            <ConfirmationModal
+                type={modalType}
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                onConfirm={handleConfirm}
+                title={getModalConfig()?.title}
+                message={getModalConfig()?.message}
+                confirmText={getModalConfig()?.confirmText}
+                isLoading={getModalConfig()?.isLoading}
+                viewModel={getModalConfig()?.viewModel}
+                locale={locale}
+
+            />
+        </>
     );
 }

@@ -133,15 +133,6 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
           />
           <div className="flex gap-[9px] justify-between">
             <Button
-              onClick={props.onClickReschedule}
-              variant="primary"
-              size="small"
-              hasIconLeft
-              className="w-full"
-              iconLeft={<IconCalendarAlt size="5" />}
-              text={dictionary.components.coachingSessionCard.rescheduleText}
-            />
-            <Button
               onClick={props.onClickCancel}
               variant="secondary"
               size="small"
@@ -223,14 +214,6 @@ export const CoachAction: React.FC<CoachActionProps> = (props) => {
               onClick={props.onClickAccept}
             />
           </div>
-          <Button
-            variant="text"
-            text={dictionary.components.coachingSessionCard.suggestAnotherDateText}
-            className="max-w-full"
-            hasIconLeft
-            iconLeft={<IconCalendarAlt size="6" />}
-            onClick={props.onClickSuggestAnotherDate}
-          />
         </div>
       );
 
