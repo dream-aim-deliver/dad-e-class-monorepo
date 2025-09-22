@@ -215,7 +215,7 @@ export const DictionarySchema = z.object({
       month: z.string(),
       week: z.string(),
       today: z.string(),
-      availabilityManagement: z.object ({
+      availabilityManagement: z.object({
         minText: z.string(),
         repeatsEveryText: z.string(),
         cancelThisSlotText: z.string(),
@@ -1354,6 +1354,10 @@ export const DictionarySchema = z.object({
       confirmDecline: z.string(),
       confirmDeclineMessage: z.string(),
       decline: z.string(),
+      roleCoach: z.string(),
+      roleStudent: z.string(),
+      selectRole: z.string(),
+      coachingSessions: z.string(),
     }),
     editLesson: z.object({
       richText: z.string(),

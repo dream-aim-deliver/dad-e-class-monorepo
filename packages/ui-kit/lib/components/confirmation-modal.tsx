@@ -29,7 +29,6 @@ interface DeclineModalProps extends BaseModalProps {
     confirmText: string;
     type: 'decline';
     declineReasonPlaceholder?: string;
-    declineReason?: string;
 }
 
 type ModalProps = AcceptanceModalProps | DeclineModalProps;
@@ -85,7 +84,7 @@ export const ConfirmationModal: React.FC<ModalProps> = ({
                                 <IconButton
                                     size="medium"
                                     styles="primary"
-                                    icon={<IconLoaderSpinner />}
+                                    icon={<IconLoaderSpinner classNames='animate-spin' />}
                                     disabled={true}
                                 />
                             ) : (
