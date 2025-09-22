@@ -10,9 +10,7 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { Suspense, useState } from 'react';
 import { useListCourseMaterialsPresenter } from '../../../hooks/use-list-course-materials-presenter';
-import { trpc } from '../../../trpc/client';
-import MockTRPCClientProviders from '../../../trpc/mock-client-providers';
-
+import { trpc } from '../../../trpc/cms-client';
 interface EnrolledCourseMaterialProps {
     currentRole: string;
     courseSlug: string;
@@ -82,12 +80,10 @@ export default function EnrolledCourseMaterial(
     const locale = useLocale() as TLocale;
 
     return (
-        <MockTRPCClientProviders>
             <Suspense
                 fallback={<DefaultLoading locale={locale} variant="minimal" />}
             >
                 <EnrolledCourseMaterialContent {...props} />
             </Suspense>
-        </MockTRPCClientProviders>
     );
 }
