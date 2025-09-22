@@ -1,5 +1,5 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
-import { t } from '../../../../../../../cms/src/lib/infrastructure/common/mocks/trpc-setup';
+import { t } from '../trpc-setup';
 
 export const createNotification = t.procedure
     .input(useCaseModels.CreateNotificationRequestSchema)
