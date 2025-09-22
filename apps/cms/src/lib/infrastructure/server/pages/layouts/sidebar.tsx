@@ -34,7 +34,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
         dashboard: '/workspace/dashboard',
         courses: '/workspace/courses',
         preCourseAssessment: '/workspace/pre-course-assessment',
-        coachingSessions: '/workspace/coaching-sessions',
+        coachingSessions: '/workspace/coaching',
         calendar: '/workspace/calendar',
         students: '/workspace/students',
         reviews: '/workspace/reviews',
