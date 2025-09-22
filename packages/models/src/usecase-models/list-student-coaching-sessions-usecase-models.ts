@@ -21,8 +21,8 @@ export const AvailableCoachingSessionSchema = BaseCoachingSessionSchema.extend({
 });
 export type TAvailableCoachingSession = z.infer<typeof AvailableCoachingSessionSchema>;
 
-export const UpcomingCoachingSessionSchema = BaseCoachingSessionSchema.extend({
-    status: z.union([z.literal('requested'), z.literal('scheduled')]),
+export const RequestedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
+    status: z.literal('requested'),
     startTime: z.string().datetime({ offset: true }),
     endTime: z.string().datetime({ offset: true }),
     coach: z.object({
@@ -38,7 +38,29 @@ export const UpcomingCoachingSessionSchema = BaseCoachingSessionSchema.extend({
     }).optional().nullable(),
     meetingUrl: z.string().nullable(),
 });
-export type TUpcomingCoachingSession = z.infer<typeof UpcomingCoachingSessionSchema>;
+export type TRequestedCoachingSession = z.infer<typeof RequestedCoachingSessionSchema>;
+
+export const ScheduledCoachingSessionSchema = BaseCoachingSessionSchema.extend({
+    status: z.literal('scheduled'),
+    startTime: z.string().datetime({ offset: true }),
+    endTime: z.string().datetime({ offset: true }),
+    coach: z.object({
+        name: z.string().nullable(),
+        surname: z.string().nullable(),
+        username: z.string(),
+        avatarUrl: z.string().nullable(),
+    }),
+    course: z.object({
+        id: z.number(),
+        title: z.string(),
+        slug: z.string(),
+    }).optional().nullable(),
+    meetingUrl: z.string().nullable(),
+});
+export type TScheduledCoachingSession = z.infer<typeof ScheduledCoachingSessionSchema>;
+
+// For backward compatibility, create a union type for upcoming sessions
+export type TUpcomingCoachingSession = TRequestedCoachingSession | TScheduledCoachingSession;
 
 export const EndedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
     status: z.literal('completed'),
@@ -66,7 +88,8 @@ export const StudentCoachingSessionSchema = z.discriminatedUnion(
     'status',
     [
         AvailableCoachingSessionSchema,
-        UpcomingCoachingSessionSchema,
+        RequestedCoachingSessionSchema,
+        ScheduledCoachingSessionSchema,
         EndedCoachingSessionSchema
     ]
 )

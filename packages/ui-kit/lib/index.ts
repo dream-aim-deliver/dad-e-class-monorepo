@@ -175,3 +175,6 @@ export { CourseCardAddToPackageList } from './components/course-card/add-to-pack
 
 export { Stepper } from './components/stepper/stepper';
 export { CourseMaterialsAccordion } from "./components/accordion/course-materials-accordion";
+
+export { CoachingSessionList } from './components/coaching-sessions/coaching-session-list';
+export { CoachingSessionCard } from './components/coaching-sessions/coaching-session-card';

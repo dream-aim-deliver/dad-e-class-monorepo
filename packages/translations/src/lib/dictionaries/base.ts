@@ -890,6 +890,7 @@ export const DictionarySchema = z.object({
       editCourse: z.string(),
       editLesson: z.string(),
       newCourse: z.string(),
+      coachingSessions: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1270,7 +1271,13 @@ export const DictionarySchema = z.object({
     }),
     userCoursesList: z.object({
       emptyState: z.string(),
-    })
+    }),
+    studentCoachingSessions: z.object({
+      yourCoachingSessions: z.string(),
+      upcoming: z.string(),
+      ended: z.string(),
+      available: z.string(),
+    }),
   }),
 });
 

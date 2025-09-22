@@ -903,6 +903,7 @@ export const DE: TDictionary = {
       editCourse: 'Kurs bearbeiten',
       editLesson: 'Lektion bearbeiten',
       newCourse: 'Neuer Kurs',
+      coachingSessions: 'Coaching-Sitzungen',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -1238,6 +1239,12 @@ export const DE: TDictionary = {
     },
     userCoursesList: {
       emptyState: 'Du hast noch keine Angebote.'
+    },
+    studentCoachingSessions: {
+      yourCoachingSessions: 'Ihre Coaching-Sitzungen',
+      upcoming: 'Demnächst',
+      ended: 'Beendet',
+      available: 'Verfügbar',
     },
   },
 };

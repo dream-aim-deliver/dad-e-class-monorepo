@@ -899,6 +899,7 @@ export const EN: TDictionary = {
       editCourse: 'Edit course',
       editLesson: 'Edit lesson',
       newCourse: 'New Course',
+      coachingSessions: 'Coaching Sessions',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1235,6 +1236,12 @@ export const EN: TDictionary = {
     },
     userCoursesList: {
       emptyState: 'You don’t have any offers yet.',
+    },
+    studentCoachingSessions: {
+      yourCoachingSessions: 'Your coaching sessions',
+      upcoming: 'Upcoming',
+      ended: 'Ended',
+      available: 'Available',
     },
   },
 };
