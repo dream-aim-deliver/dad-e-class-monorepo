@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../../trpc/client";
 import { viewModels, useCaseModels } from "@maany_shr/e-class-models";
 import { useListCoachCoachingSessionsPresenter } from "../../hooks/use-list-coach-coaching-sessions-presenter";
-import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, ConfirmationModal } from "@maany_shr/e-class-ui-kit";
+import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, ConfirmationModal, Breadcrumbs, Dropdown } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { useScheduleCoachingSessionPresenter } from "../../hooks/use-schedule-coaching-session-presenter";
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
@@ -15,15 +15,37 @@ import { useCreateNotificationPresenter } from "../../hooks/use-create-notificat
 import { useCheckTimeLeft } from "../../../hooks/use-check-time-left";
 
 
-export default function CoachCoachingSessions() {
+interface CoachCoachingSessionsProps {
+    role?: string;
+}
+
+export default function CoachCoachingSessions({ role: initialRole }: CoachCoachingSessionsProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.coachCoachingSessions');
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    // Get current tab from URL or default to 'upcoming'
-    const currentTab = (searchParams.get('tab') as 'upcoming' | 'ended') || 'upcoming';
+    // Role options for the dropdown
+    const roleOptions = [
+        { label: t('roleCoach'), value: 'coach' },
+        { label: t('roleStudent'), value: 'student' }
+    ];
 
+    // Current role state - use initialRole from server if provided, otherwise from search params
+    const [currentRole, setCurrentRole] = useState(
+        initialRole || searchParams.get('role') || 'coach'
+    );
+
+    // Handle role change and update search params
+    const onRoleChange = (selected: string | string[] | null) => {
+        const roleValue = selected as string;
+
+        setCurrentRole(roleValue);
+        const newSearchParams = new URLSearchParams(searchParams.toString());
+        newSearchParams.set('role', roleValue);
+        router.push(`?${newSearchParams.toString()}`);
+    };
     const [studentCoachingSessionsResponse] = trpc.listCoachCoachingSessions.useSuspenseQuery({}, {
         refetchInterval: 2 * 60 * 1000,
     });
@@ -105,7 +127,7 @@ export default function CoachCoachingSessions() {
 
     // Unified modal state for accept/decline functionality
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalType, setModalType] = useState<'accept' | 'decline'>('accept');
+    const [modalType, setModalType] = useState<'accept' | 'decline' | null>('accept');
     const [sessionId, setSessionId] = useState<number | null>(null);
 
     const handleAcceptClick = (sessionId: number) => {
@@ -232,6 +254,14 @@ export default function CoachCoachingSessions() {
                     isLoading: unscheduleMutation.isPending,
                     viewModel: unscheduleViewModel
                 };
+            default:
+                return {
+                    title: '',
+                    message: '',
+                    confirmText: '',
+                    isLoading: false,
+                    viewModel: undefined
+                };
         }
     };
 
@@ -355,7 +385,9 @@ export default function CoachCoachingSessions() {
                             endTime={formatTime(session.endTime)}
                             studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                             studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => { }}
+                            onClickStudent={() => { 
+                                // TODO: Need to implement navigation to student profile
+                            }}
                             meetingLink={session?.meetingUrl || ""}
                             onClickJoinMeeting={() => { }}
                         />
@@ -375,8 +407,10 @@ export default function CoachCoachingSessions() {
                             endTime={formatTime(session.endTime)}
                             studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                             studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => { }}
-                            onClickReschedule={() => { }}
+                            onClickStudent={() => {
+                                // TODO: Need to implement navigation to student profile
+                             }}
+                           
                             onClickCancel={() => handleDeclineClick(session.id)}
                             hoursLeftToEdit={hoursLeftToEdit}
                         />
@@ -400,10 +434,14 @@ export default function CoachCoachingSessions() {
                             endTime={formatTime(session.endTime)}
                             studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                             studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => { }}
+                            onClickStudent={() => { 
+                                // TODO: Need to implement navigation to student profile
+                                }}
                             reviewType="call-quality"
                             callQualityRating={session.review?.rating || 0}
-                            onClickDownloadRecording={() => { }}
+                            onClickDownloadRecording={() => { 
+                                // TODO: Need to implement recording download
+                            }}
                             isRecordingDownloading={false}
                         />
                     );
@@ -415,7 +453,38 @@ export default function CoachCoachingSessions() {
     };
 
     return (
-        <>
+        <div className="w-full h-full flex flex-col gap-4"  >
+            <div className="w-full flex justify-between items-center " >
+                <Breadcrumbs
+                    items={[
+                        {
+                            label: breadcrumbsTranslations('home'),
+                            onClick: () => router.push('/'),
+                        },
+                        {
+                            label: breadcrumbsTranslations('workspace'),
+                            onClick: () => {
+                                // TODO: Implement navigation to workspace
+                            },
+                        },
+                        {
+                            label: breadcrumbsTranslations('coachingSessions'),
+                            onClick: () => {
+                                // Nothing should happen on clicking the current page
+                            },
+                        },
+                    ]}
+                />
+
+                <Dropdown
+                    type="simple"
+                    className="w-fit"
+                    options={roleOptions}
+                    defaultValue={currentRole}
+                    text={{ simpleText: t('selectRole') }}
+                    onSelectionChange={onRoleChange}
+                />
+            </div>
             <Tabs.Root defaultTab="upcoming">
                 <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
                     <div className="w-full flex gap-4 items-center justify-between" >
@@ -445,18 +514,17 @@ export default function CoachCoachingSessions() {
 
             {/* Unified Accept/Decline Modal using Switch Condition */}
             <ConfirmationModal
-                type={modalType}
+                type={modalType || 'accept'}
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 onConfirm={handleConfirm}
-                title={getModalConfig()?.title}
-                message={getModalConfig()?.message}
-                confirmText={getModalConfig()?.confirmText}
-                isLoading={getModalConfig()?.isLoading}
-                viewModel={getModalConfig()?.viewModel}
+                title={getModalConfig().title}
+                message={getModalConfig().message}
+                confirmText={getModalConfig().confirmText}
+                isLoading={getModalConfig().isLoading}
+                viewModel={getModalConfig().viewModel}
                 locale={locale}
-
             />
-        </>
+        </div>
     );
 }

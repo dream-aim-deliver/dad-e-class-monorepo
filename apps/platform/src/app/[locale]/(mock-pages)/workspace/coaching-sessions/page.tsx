@@ -6,7 +6,7 @@ export default async function Page({
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const searchParams = await searchParamsPromise;
-    // TODO: handle searchParams if needed
+    const role = (searchParams.role as string) || 'coach';
 
-    return <CoachingSessionsServerComponent />;
+    return <CoachingSessionsServerComponent role={role} />;
 }

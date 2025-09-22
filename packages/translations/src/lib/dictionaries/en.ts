@@ -1319,6 +1319,10 @@ export const EN: TDictionary = {
       confirmDecline: "Confirm Decline",
       confirmDeclineMessage: "Please provide a reason for declining this session request:",
       decline: "Decline",
+      roleCoach: "Coach",
+      roleStudent: "Student",
+      selectRole: "Select Role",
+      coachingSessions: "Coaching Sessions",
     },
     editLesson: {
       richText: "Rich Text",
