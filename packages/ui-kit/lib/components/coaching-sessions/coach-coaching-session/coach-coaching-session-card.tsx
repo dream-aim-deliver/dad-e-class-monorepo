@@ -111,7 +111,7 @@ export const CoachCoachingSessionCard: React.FC<CoachCoachingSessionCardProps> =
   const dictionary = getDictionary(props.locale);
 
   return (
-    <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-auto max-w-[24rem]">
+    <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke basis-0 bg-card-fill w-auto">
       <div className="flex gap-4 items-center justify-between">
         <p
           title={props.title}

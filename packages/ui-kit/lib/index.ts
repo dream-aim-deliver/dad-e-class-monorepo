@@ -195,9 +195,10 @@ export { WeeklyCalendar, WeeklyHeader } from './components/calendar/weekly-calen
 export * from './components/calendar/calendar-cards';
 export { type CoachingSessionData } from './components/available-coaching-sessions/available-coaching-sessions';
 export { CoachingAvailabilityCard } from './components/available-coaching-sessions/coaching-availability-card';
-export { CoachingSessionList } from './components/coaching-sessions/coaching-session-list';
 
 export { ReviewModal } from './components/review/review-modal';
 export { CancelCoachingSessionModal } from './components/coaching-sessions/cancel-coaching-session-modal';
 export { CoachStudentInteractionCard } from './components/coach-student-interaction-card';
 export { UserAvatar } from './components/avatar/user-avatar';
+export { CoachingSessionList } from "./components/coaching-sessions/coaching-session-list"
+export { ConfirmationModal } from './components/confirmation-modal';
