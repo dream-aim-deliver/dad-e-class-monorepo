@@ -957,6 +957,7 @@ export const DE: TDictionary = {
       editCourse: 'Kurs bearbeiten',
       editLesson: 'Lektion bearbeiten',
       newCourse: 'Neuer Kurs',
+      coachingSessions: 'Coaching-Sitzungen',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -1293,6 +1294,10 @@ export const DE: TDictionary = {
       confirmDecline: "Ablehnung bestätigen",
       confirmDeclineMessage: "Bitte gib einen Grund für die Ablehnung dieser Sitzungsanfrage an:",
       decline: "Ablehnen",
+      roleCoach: "Coach",
+      roleStudent: "Studierende",
+      selectRole: "Rolle auswählen",
+      coachingSessions: "Coaching-Sitzungen",
     },
     editLesson: {
       richText: 'Formatierter Text',

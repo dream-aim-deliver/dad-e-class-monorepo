@@ -175,7 +175,6 @@ type CoachUpcomingEditableCard = BaseCardSharedProps & {
     studentName: string;
     studentImageUrl: string;
     onClickStudent: () => void;
-    onClickReschedule: () => void;
     onClickCancel: () => void;
 };
 

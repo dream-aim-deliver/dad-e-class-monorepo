@@ -5,7 +5,11 @@ import getSession from '../../config/auth/get-session';
 import { HydrateClient, prefetch, trpc } from '../../config/trpc/server';
 import CoachCoachingSessions from '../../../client/pages/workspace/coach-coaching-sessions';
 
-export default async function CoachingSessionsServerComponent() {
+interface CoachingSessionsServerComponentProps {
+    role?: string;
+}
+
+export default async function CoachingSessionsServerComponent(props: CoachingSessionsServerComponentProps) {
     const session = await getSession();
 
     if (!session || !session.user) {
@@ -13,19 +17,22 @@ export default async function CoachingSessionsServerComponent() {
     }
 
     const roles = session.user.roles;
-    if (roles && roles.includes('coach')) {
+    const userRole = props.role || 'coach'; // Get role from props or default to coach
+
+    // Only allow coach role - return empty for any other role
+    if (roles && roles.includes('coach') && userRole === 'coach') {
         await Promise.all([prefetch(trpc.listCoachCoachingSessions.queryOptions({}))]);
 
         return (
             <>
                 <HydrateClient>
                     <Suspense fallback={<DefaultLoadingWrapper />}>
-                       <CoachCoachingSessions />
+                       <CoachCoachingSessions role={userRole} />
                     </Suspense>
                 </HydrateClient>
             </>
         );
     } else {
-        return "";
+        return null; // Return null instead of empty string for student role
     }
 }

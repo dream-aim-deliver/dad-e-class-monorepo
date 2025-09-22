@@ -944,6 +944,7 @@ export const DictionarySchema = z.object({
       editCourse: z.string(),
       editLesson: z.string(),
       newCourse: z.string(),
+      coachingSessions: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1325,6 +1326,10 @@ export const DictionarySchema = z.object({
       confirmDecline: z.string(),
       confirmDeclineMessage: z.string(),
       decline: z.string(),
+      roleCoach: z.string(),
+      roleStudent: z.string(),
+      selectRole: z.string(),
+      coachingSessions: z.string(),
     }),
     editLesson: z.object({
       richText: z.string(),
