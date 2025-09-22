@@ -89,6 +89,27 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
 
     presenter.present(studentCoachingSessionsResponse, studentCoachingSessionsViewModel);
 
+    // Helper functions for navigation and actions
+    const handleStudentClick = (studentId: number) => {
+        // TODO: Implement navigation to student profile
+        console.log('Navigate to student profile:', studentId);
+    };
+
+    const handleJoinMeeting = (meetingUrl: string) => {
+        if (meetingUrl) {
+            window.open(meetingUrl, '_blank');
+        }
+    };
+
+    const handleDownloadRecording = (sessionId: number) => {
+        // TODO: Implement recording download
+        console.log('Download recording for session:', sessionId);
+    };
+
+    // Time-based hooks for session management
+    const isJoiningEnabled = useCheckTimeLeft(new Date(), { hours: 24 });
+    const isMeetingLink = useCheckTimeLeft(new Date(), { minutes: 10 });
+
     // Get all sessions from the view model
     const allSessions = useMemo(() => {
         if (!studentCoachingSessionsViewModel || studentCoachingSessionsViewModel.mode !== 'default') {
@@ -204,7 +225,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
         }
 
         // Success - close modal and reset state
-       const timeoutId = setTimeout(() => {
+        const timeoutId = setTimeout(() => {
             setIsModalOpen(false);
             setModalType(null);
             setSessionId(null);
@@ -212,7 +233,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
             setCreateNotificationViewModel(undefined);
         }, 2000);
 
-       return () => clearTimeout(timeoutId);
+        return () => clearTimeout(timeoutId);
 
     };
 
@@ -315,7 +336,6 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
     // Helper to render session cards (extracted to avoid duplication)
     const renderSessionCards = (sessions: useCaseModels.TListCoachCoachingSessionsSuccessResponse['data']['sessions']) => {
 
-
         return sessions.map((session) => {
             // Helper function to format time from ISO string
             const formatTime = (isoString: string) => {
@@ -329,8 +349,6 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
 
             // Create start DateTime for time calculations
             const startDateTime = new Date(session.startTime);
-            const isMeetingLink = useCheckTimeLeft(startDateTime, { minutes: 10 });
-            const isJoiningEnabled = useCheckTimeLeft(startDateTime, { hours: 24 });
 
             if (session.status === 'requested') {
                 // For requested sessions (upcoming tab)
@@ -347,7 +365,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                         endTime={formatTime(session.endTime)}
                         studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                         studentImageUrl={session.student.avatarUrl || ""}
-                        onClickStudent={() => { }}
+                        onClickStudent={() => handleStudentClick(session.id)}
                         onClickAccept={() => handleAcceptClick(session.id)}
                         onClickDecline={() => handleDeclineClick(session.id)}
                     />
@@ -369,8 +387,8 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             endTime={formatTime(session.endTime)}
                             studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                             studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => { }}
-                            onClickJoinMeeting={() => { }}
+                            onClickStudent={() => handleStudentClick(session.id)}
+                            onClickJoinMeeting={() => handleJoinMeeting(session?.meetingUrl || "")}
                         />
                     );
                 } else if (isMeetingLink) {
@@ -387,11 +405,9 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             endTime={formatTime(session.endTime)}
                             studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                             studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => {
-                                // TODO: Need to implement navigation to student profile
-                            }}
+                            onClickStudent={() => handleStudentClick(session.id)}
                             meetingLink={session?.meetingUrl || ""}
-                            onClickJoinMeeting={() => { }}
+                            onClickJoinMeeting={() => handleJoinMeeting(session?.meetingUrl || "")}
                         />
                     );
                 } else {
@@ -409,9 +425,7 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             endTime={formatTime(session.endTime)}
                             studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                             studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => {
-                                // TODO: Need to implement navigation to student profile
-                            }}
+                            onClickStudent={() => handleStudentClick(session.id)}
 
                             onClickCancel={() => handleDeclineClick(session.id)}
                             hoursLeftToEdit={hoursLeftToEdit}
@@ -436,14 +450,10 @@ export default function CoachCoachingSessions({ role: initialRole }: CoachCoachi
                             endTime={formatTime(session.endTime)}
                             studentName={`${session.student.name || ''} ${session.student.surname || ''}`.trim() || session.student.username}
                             studentImageUrl={session.student.avatarUrl || ""}
-                            onClickStudent={() => {
-                                // TODO: Need to implement navigation to student profile
-                            }}
+                            onClickStudent={() => handleStudentClick(session.id)}
                             reviewType="call-quality"
                             callQualityRating={session.review?.rating || 0}
-                            onClickDownloadRecording={() => {
-                                // TODO: Need to implement recording download
-                            }}
+                            onClickDownloadRecording={() => handleDownloadRecording(session.id)}
                             isRecordingDownloading={false}
                         />
                     );
