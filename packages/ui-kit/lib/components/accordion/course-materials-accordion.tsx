@@ -165,7 +165,7 @@ export const CourseMaterialsAccordion: React.FC<
 
                     <AccordionContent value={module.id!} className="pt-4">
                         {/* Lessons Accordion within Module */}
-                        <div className="flex">
+                        <div>
                             <Accordion
                                 type="multiple"
                                 className="flex flex-col gap-4"
