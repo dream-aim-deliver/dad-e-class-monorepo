@@ -887,6 +887,7 @@ export const DictionarySchema = z.object({
       editCourse: z.string(),
       editLesson: z.string(),
       newCourse: z.string(),
+      coachingSessions: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),

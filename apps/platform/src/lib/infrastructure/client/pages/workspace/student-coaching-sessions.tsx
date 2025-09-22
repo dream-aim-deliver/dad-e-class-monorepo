@@ -6,12 +6,15 @@ import { useState, useMemo } from "react";
 import { trpc } from "../../trpc/client";
 import { viewModels } from "@maany_shr/e-class-models";
 import { useListStudentCoachingSessionsPresenter } from "../../hooks/use-list-student-coaching-sessions-presenter";
-import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button } from "@maany_shr/e-class-ui-kit";
+import { useListCoachesPresenter } from "../../hooks/use-coaches-presenter";
+import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
+import { useRouter } from "next/navigation";
 
 export default function StudentCoachingSessions() {
     const locale = useLocale() as TLocale;
 
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const coachingSessionTranslations = useTranslations(
         'pages.studentCoachingSessions',
     );
@@ -21,6 +24,7 @@ export default function StudentCoachingSessions() {
     );
 
     const [activeTab, setActiveTab] = useState<string>('upcoming');
+    const router = useRouter();
 
     const [studentCoachingSessionsResponse] = trpc.listStudentCoachingSessions.useSuspenseQuery({});
 
@@ -28,11 +32,23 @@ export default function StudentCoachingSessions() {
         viewModels.TStudentCoachingSessionsListViewModel | undefined
     >(undefined);
 
+    // For the available tab - coaches data
+    const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
+        pastStudentCoaches: true,
+    });
+
+    const [coachesViewModel, setCoachesViewModel] = useState<
+        viewModels.TCoachListViewModel | undefined
+    >(undefined);
+
     const { presenter } = useListStudentCoachingSessionsPresenter(
         setStudentCoachingSessionsViewModel,
     );
 
+    const { presenter: coachesPresenter } = useListCoachesPresenter(setCoachesViewModel);
+
     presenter.present(studentCoachingSessionsResponse, studentCoachingSessionsViewModel);
+    coachesPresenter.present(coachesResponse, coachesViewModel);
 
     // Get all sessions from the view model
     const allSessions = useMemo(() => {
@@ -51,9 +67,37 @@ export default function StudentCoachingSessions() {
         return allSessions.filter(session => session.status === 'completed');
     }, [allSessions]);
 
-    const availableSessions = useMemo(() => {
+    // Filter unscheduled sessions for Available tab
+    const unscheduledSessions = useMemo(() => {
         return allSessions.filter(session => session.status === 'unscheduled');
     }, [allSessions]);
+
+    // For available tab - get coaches data
+    const availableCoaches = useMemo(() => {
+        if (!coachesViewModel || coachesViewModel.mode !== 'default') {
+            return [];
+        }
+        return coachesViewModel.data.coaches;
+    }, [coachesViewModel]);
+
+    // Transform unscheduled sessions to AvailableCoachingSessions format
+    const availableCoachingSessionsData = useMemo(() => {
+        // Group sessions by title and duration, count occurrences
+        const sessionGroups = unscheduledSessions.reduce((acc, session) => {
+            const key = `${session.coachingOfferingTitle}-${session.coachingOfferingDuration}`;
+            if (!acc[key]) {
+                acc[key] = {
+                    title: session.coachingOfferingTitle,
+                    time: session.coachingOfferingDuration,
+                    numberOfSessions: 0
+                };
+            }
+            acc[key].numberOfSessions += 1;
+            return acc;
+        }, {} as Record<string, { title: string; time: number; numberOfSessions: number }>);
+
+        return Object.values(sessionGroups);
+    }, [unscheduledSessions]);
 
     // Pagination for upcoming sessions
     const {
@@ -73,22 +117,109 @@ export default function StudentCoachingSessions() {
         items: endedSessions,
     });
 
-    // Pagination for available sessions
+    // Pagination for available coaches
     const {
-        displayedItems: displayedAvailableSessions,
-        hasMoreItems: hasMoreAvailableSessions,
-        handleLoadMore: handleLoadMoreAvailableSessions,
+        displayedItems: displayedAvailableCoaches,
+        hasMoreItems: hasMoreAvailableCoaches,
+        handleLoadMore: handleLoadMoreAvailableCoaches,
     } = useClientSidePagination({
-        items: availableSessions,
+        items: availableCoaches,
     });
 
-    if (!studentCoachingSessionsViewModel) {
+    if (!studentCoachingSessionsViewModel || !coachesViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
-    if (studentCoachingSessionsViewModel.mode !== 'default') {
+    if (studentCoachingSessionsViewModel.mode !== 'default' || coachesViewModel.mode !== 'default') {
         return <DefaultError locale={locale} />;
     }
+
+    // Helper to render available coaches content with two-column layout
+    const renderAvailableCoachesContent = () => {
+        return (
+            <div className="flex flex-col lg:flex-row gap-6 w-full">
+                {/* Left side - Available Coaching Sessions */}
+                <div className="lg:w-1/4">
+                    <AvailableCoachingSessions
+                        locale={locale}
+                        text="These are the sessions you purchased and were't included in a course. You can use them at any time with any coach."
+                        availableCoachingSessionsData={availableCoachingSessionsData}
+                        onClickBuyMoreSessions={() => {
+                            // TODO: Implement buy more sessions functionality
+                            console.log('Buy more sessions clicked');
+                        }}
+                        hideButton={availableCoachingSessionsData.length === 0}
+                    />
+                </div>
+
+                {/* Right side - Available Coaches */}
+                <div className="lg:w-3/4">
+                    {availableCoaches.length === 0 ? (
+                        <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                            <p className="text-text-primary text-md">
+                                No coaches found
+                            </p>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="flex items-center gap-4 mb-4">
+                                <h3 className="text-lg font-semibold text-white">
+                                    Your past coaches
+                                </h3>
+                                <Button
+                                    variant="text"
+                                    text="View all coaches"
+                                    onClick={() => router.push('/coaches')}
+                                />
+                            </div>
+                            <CardListLayout className="md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2">
+                                {displayedAvailableCoaches.map((coach) => (
+                                    <CoachCard
+                                        key={`coach-${coach.username}`}
+                                        locale={locale}
+                                        cardDetails={{
+                                            coachName: coach.name + ' ' + coach.surname,
+                                            coachImage: coach.avatarUrl ?? undefined,
+                                            languages: coach.languages,
+                                            sessionCount: coach.coachingSessionCount,
+                                            description: coach.bio,
+                                            courses: coach.coursesTaught.map((course) => ({
+                                                title: course.title,
+                                                image: course.imageUrl ?? '',
+                                                slug: course.slug,
+                                            })),
+                                            skills: coach.skills.map((skill) => skill.name),
+                                            rating: coach.averageRating ?? 0,
+                                            totalRatings: coach.reviewCount,
+                                        }}
+                                        onClickViewProfile={() => {
+                                            router.push(`/coaches/${coach.username}`);
+                                        }}
+                                        onClickCourse={(courseSlug: string) => {
+                                            router.push(`/courses/${courseSlug}`);
+                                        }}
+                                        onClickBookSession={() => {
+                                            // TODO: Implement booking session navigation
+                                            console.log('Book session with coach:', coach.username);
+                                        }}
+                                    />
+                                ))}
+                            </CardListLayout>
+                            {hasMoreAvailableCoaches && (
+                                <div className="flex justify-center items-center w-full mt-6">
+                                    <Button
+                                        variant="text"
+                                        text={paginationTranslations('loadMore')}
+                                        onClick={handleLoadMoreAvailableCoaches}
+                                    />
+                                </div>
+                            )}
+                        </>
+                    )}
+                </div>
+            </div>
+        );
+    };
 
     // Helper to render content based on sessions and pagination state
     const renderSessionContent = (
@@ -141,20 +272,6 @@ export default function StudentCoachingSessions() {
             };
 
             // Map based on session status
-            if (session.status === 'unscheduled') {
-                // For unscheduled sessions (available tab)
-                return (
-                    <CoachingSessionCard
-                        key={session.id}
-                        locale={locale}
-                        userType="student"
-                        status="to-be-defined"
-                        title={session.coachingOfferingTitle}
-                        duration={session.coachingOfferingDuration}
-                    />
-                );
-            }
-
             if (session.status === 'requested') {
                 // For requested sessions (upcoming tab)
                 return (
@@ -258,6 +375,27 @@ export default function StudentCoachingSessions() {
     };
 
     return (
+        <div className="flex flex-col space-y-2">
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => router.push('/'),
+                    },
+                    {
+                        label: breadcrumbsTranslations('workspace'),
+                        onClick: () => {
+                            // TODO: Implement navigation to workspace
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('coachingSessions'),
+                        onClick: () => {
+                            // Nothing should happen on clicking the current page
+                        },
+                    },
+                ]}
+            />
         <Tabs.Root defaultTab="upcoming" onValueChange={setActiveTab}>
             <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4" >
                 <div className="w-full flex gap-4 items-center justify-between" >
@@ -286,8 +424,9 @@ export default function StudentCoachingSessions() {
             </Tabs.Content>
 
             <Tabs.Content value="available" className="mt-10">
-                {renderSessionContent(availableSessions, displayedAvailableSessions, hasMoreAvailableSessions, handleLoadMoreAvailableSessions)}
+                {renderAvailableCoachesContent()}
             </Tabs.Content>
         </Tabs.Root >
+        </div>
     );
 }

@@ -900,6 +900,7 @@ export const DE: TDictionary = {
       editCourse: 'Kurs bearbeiten',
       editLesson: 'Lektion bearbeiten',
       newCourse: 'Neuer Kurs',
+      coachingSessions: 'Coaching-Sitzungen',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',

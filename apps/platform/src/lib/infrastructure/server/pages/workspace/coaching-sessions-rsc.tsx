@@ -16,6 +16,13 @@ export default async function CoachingSessionsServerComponent() {
 
     if(roles && (roles.includes('coach'))) {
         // Render coach-specific content
+        return (
+            <MockTRPCClientProviders>
+                <Suspense fallback={<DefaultLoadingWrapper />}>
+                    <StudentCoachingSessions />
+                </Suspense>
+            </MockTRPCClientProviders>
+        )
     } else if (roles && (roles.includes('student'))) {
         return (
             <MockTRPCClientProviders>
