@@ -91,7 +91,13 @@ export const ConfirmationModal: React.FC<ModalProps> = ({
                                 <Button
                                     variant="primary"
                                     text={confirmText}
-                                    onClick={() => type === 'decline' ? onConfirm?.(declineReason) : onConfirm?.()}
+                                    onClick={() => {
+                                        if (type === 'decline') {
+                                            (onConfirm as (reason: string) => void)?.(declineReason);
+                                        } else {
+                                            (onConfirm as () => void)?.();
+                                        }
+                                    }}
                                     disabled={isLoading}
                                 />
                             )}
