@@ -22,8 +22,8 @@ export const CoachingSessionList: React.FC<CoachingSessionListProps> = ({
 }) => {
 
   return (
-    <div className="flex flex-col gap-4  justify-center items-center">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="w-full flex flex-col gap-4  justify-center items-center">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {children}
       </div>
     </div>

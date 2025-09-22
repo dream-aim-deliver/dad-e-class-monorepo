@@ -195,3 +195,4 @@ export { CoachingAvailabilityCard } from './components/available-coaching-sessio
 
 export {CoachingSessionList} from "./components/coaching-sessions/coaching-session-list"
 export {CoachingSessionCard} from "./components/coaching-sessions/coaching-session-card"
+export { ConfirmationModal } from './components/confirmation-modal';

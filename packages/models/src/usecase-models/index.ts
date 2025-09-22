@@ -63,3 +63,6 @@ export * from './add-availability-usecase-models';
 
 
 export * from "./list-coach-coaching-sessions-usecase-models";
+export * from "./schedule-coaching-session-usecase-models";
+export * from "./unschedule-coaching-session-usecase-models";
+export * from "./create-notification-usecase-models";

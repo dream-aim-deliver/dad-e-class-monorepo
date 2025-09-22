@@ -9,13 +9,13 @@ const coachCoachingSessionsMock: useCaseModels.TListCoachCoachingSessionsSuccess
             coachingOfferingTitle: 'One-on-one React Review',
             coachingOfferingDuration: 30,
             status: 'scheduled',
-            startTime: '2025-09-20T10:00:00+00:00',
-            endTime: '2025-09-20T10:30:00+00:00',
+            startTime: '2025-09-25T15:00:00+00:00', // 3 days from now (beyond 24 hours, within scheduled status)
+            endTime: '2025-09-25T15:30:00+00:00',
             student: {
                 name: 'Alice',
                 surname: 'Johnson',
                 username: 'alice.j',
-                avatarUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b647?auto=format&fit=crop&w=256&q=80',
+                avatarUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=256&q=80',
             },
             course: {
                 id: 201,
@@ -59,7 +59,7 @@ const coachCoachingSessionsMock: useCaseModels.TListCoachCoachingSessionsSuccess
                 name: 'Carol',
                 surname: 'Davis',
                 username: 'carol.d',
-                avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=256&q=80',
+                avatarUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=256&q=80',
             },
             course: null,
             review: {
@@ -80,7 +80,7 @@ const coachCoachingSessionsMock: useCaseModels.TListCoachCoachingSessionsSuccess
             student: {
                 name: null,
                 surname: null,
-                username: 'guest.user',
+                username: 'john',
                 avatarUrl: null,
             },
             course: {
@@ -91,14 +91,14 @@ const coachCoachingSessionsMock: useCaseModels.TListCoachCoachingSessionsSuccess
             meetingUrl: null,
         },
 
-        // canceled session
+        
         {
             id: 105,
             coachingOfferingTitle: 'Canceled Session Example',
             coachingOfferingDuration: 20,
             status: 'scheduled',
-            startTime: '2025-07-01T12:00:00+00:00',
-            endTime: '2025-07-01T12:20:00+00:00',
+            startTime: '2025-09-26T10:00:00+00:00', // 4 days from now (beyond 24 hours, within scheduled status)
+            endTime: '2025-09-26T10:20:00+00:00',
             student: {
                 name: 'Eva',
                 surname: 'Martinez',

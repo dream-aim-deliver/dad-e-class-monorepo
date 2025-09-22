@@ -2,9 +2,8 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
-import CoachStudents from '../../../client/pages/workspace/coach-students';
 import { HydrateClient, prefetch, trpc } from '../../config/trpc/server';
-import CoachCoachingSessions from '../../../client/pages/workspace/coach-coaching-session';
+import CoachCoachingSessions from '../../../client/pages/workspace/coach-coaching-sessions';
 
 export default async function CoachingSessionsServerComponent() {
     const session = await getSession();
@@ -21,7 +20,7 @@ export default async function CoachingSessionsServerComponent() {
             <>
                 <HydrateClient>
                     <Suspense fallback={<DefaultLoadingWrapper />}>
-                       <CoachCoachingSessions  roles={roles} />
+                       <CoachCoachingSessions />
                     </Suspense>
                 </HydrateClient>
             </>

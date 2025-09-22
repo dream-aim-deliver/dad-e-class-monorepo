@@ -237,7 +237,6 @@ type CoachRequestedCard = BaseCardSharedProps & {
     onClickStudent: () => void;
     onClickAccept: () => void;
     onClickDecline: () => void;
-    onClickSuggestAnotherDate: () => void;
 };
 
 /**
@@ -255,7 +254,6 @@ type CoachRescheduledCard = BaseCardSharedProps & {
     onClickStudent: () => void;
     onClickAccept: () => void;
     onClickDecline: () => void;
-    onClickSuggestAnotherDate: () => void;
 };
 
 /**
