@@ -189,3 +189,7 @@ export { ReviewModal } from './components/review/review-modal';
 export { CancelCoachingSessionModal } from './components/coaching-sessions/cancel-coaching-session-modal';
 export { TeachCourseBanner } from './components/teach-course-banner';
 
+
+
+export { CoachingSessionList } from './components/coaching-sessions/coaching-session-list';
+export { CoachingSessionCard } from './components/coaching-sessions/coaching-session-card';
