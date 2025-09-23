@@ -84,8 +84,8 @@ services:
       - RATE_LIMIT_SKIP_ON_SUCCESS=false
       - RATE_LIMIT_BAN_LIMIT=
       - RATE_LIMIT_REDIS_URL=
-      - AUTH0_ISSUER=<ask_maany_for_this>
-      - AUTH0_AUDIENCE=<ask_maany_for_this>
+      - AUTH0_ISSUER=https://sso.devmaany.com/
+      - AUTH0_AUDIENCE=4DEJu3ddyA6G7J2UHqkFejXjovFkeqJE
       - SUPPORTED_E_CLASS_PLATFORMS=dev,mock,prod,just-do-ad
       - DAD_DATA_PLATFORM_SCHEME=http
       - DAD_DATA_PLATFORM_HOST=cms-fastapi
