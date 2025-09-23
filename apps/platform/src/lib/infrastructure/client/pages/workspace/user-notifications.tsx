@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListNotificationsPresenter } from '../../hooks/use-notifications-presenter';
 import { useSession } from 'next-auth/react';
@@ -22,12 +22,22 @@ export default function UserNotifications() {
     const [viewModel, setViewModel] = useState<viewModels.TNotificationsViewModel | null>(null);
     const { presenter } = useListNotificationsPresenter(setViewModel);
 
-    // Get a valid user ID
-    const getUserId = (): number => {
+    // URL validation helper
+    const isValidUrl = useCallback((url: string): boolean => {
+        try {
+            const urlObj = new URL(url);
+            return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+        } catch {
+            return false;
+        }
+    }, []);
+
+    // Get a valid user ID - memoized for performance
+    const getUserId = useCallback((): number => {
         if (!session?.user?.id) return 1;
         const parsed = parseInt(String(session.user.id), 10);
         return isNaN(parsed) ? 1 : parsed;
-    };
+    }, [session?.user?.id]);
 
     // TRPC queries
     const [notificationsResponse, { refetch: refetchNotifications }] = trpc.listNotifications.useSuspenseQuery({
@@ -46,9 +56,8 @@ export default function UserNotifications() {
 
     // Present the data when available
     useEffect(() => {
-        if (notificationsResponse) {
-            // @ts-ignore
-            presenter.present(notificationsResponse, viewModel);
+        if (notificationsResponse && presenter) {
+            presenter.present(notificationsResponse, viewModel ?? undefined);
         }
     }, [notificationsResponse, presenter, viewModel]);
 
@@ -66,8 +75,8 @@ export default function UserNotifications() {
     if (viewModel.mode === 'default') {
         const notifications = viewModel.data.notifications;
 
-        // Convert notifications to Activity components
-        const activityComponents = notifications.map((notification) => (
+        // Convert notifications to Activity components - memoized for performance
+        const activityComponents = useMemo(() => notifications.map((notification) => (
             <Activity
                 key={notification.id}
                 message={notification.message}
@@ -79,12 +88,12 @@ export default function UserNotifications() {
                 layout="horizontal"
                 locale={locale}
                 onClickActivity={(url: string) => () => {
-                    if (url && url !== '#') {
-                        window.open(url, '_blank');
+                    if (url && url !== '#' && isValidUrl(url)) {
+                        window.open(url, '_blank', 'noopener,noreferrer');
                     }
                 }}
             />
-        ));
+        )), [notifications, locale, isValidUrl]);
 
         const handleMarkAllAsRead = () => {
             const unreadNotificationIds = notifications
@@ -98,10 +107,9 @@ export default function UserNotifications() {
             }
         };
 
-        const handleViewAll = () => {
+        const handleViewAll = useCallback(() => {
             // TODO: Navigate to full notifications page
-            alert('Navigate to full notifications page');
-        };
+        }, []);
 
         return (
             <div className="w-full">

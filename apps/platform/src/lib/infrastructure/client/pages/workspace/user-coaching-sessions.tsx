@@ -61,14 +61,12 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
     }, [router, locale]);
 
     const handleEndedClick = useCallback(() => {
-        // Show alert and redirect to full coaching sessions page
-        alert('Redirecting to the coaching sessions page to view ended sessions.');
+        // TODO: Navigate to coaching sessions page with ended filter
         handleViewAllCoachingSessions();
     }, [handleViewAllCoachingSessions]);
 
     const handleAvailableClick = useCallback(() => {
-        // Show alert and redirect to full coaching sessions page
-        alert('Redirecting to the coaching sessions page to view available sessions.');
+        // TODO: Navigate to coaching sessions page with available filter
         handleViewAllCoachingSessions();
     }, [handleViewAllCoachingSessions]);
 
