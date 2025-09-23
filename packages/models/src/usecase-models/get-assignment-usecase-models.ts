@@ -26,6 +26,7 @@ const AssignmentPassedData = z.object({
   passedAt: z.number(), // timestamp
   sender: AssignmentSender,
 });
+export type TAssignmentPassedData = z.infer<typeof AssignmentPassedData>;
 
 const AssignmentReply = z.object({
   sentAt: z.number(),
