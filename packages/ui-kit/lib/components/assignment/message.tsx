@@ -61,7 +61,7 @@ export const Message: FC<MessageProps> = ({
     // components/FormattedDateTime.js
     const formatDateTime = (timestamp?: number) => {
         if (!timestamp) return null; // Handle case where timestamp is empty or undefined
-        const date = new Date(timestamp);
+        const date = new Date(timestamp * 1000); // Convert seconds to milliseconds
         const formattedDate = date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
         const formattedTime = date.toTimeString().split(' ')[0].slice(0, 5); // 'HH:MM'
         return { formattedDate, formattedTime };

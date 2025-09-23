@@ -50,8 +50,7 @@ export default function AssignmentContent({
     }
 
     if (
-        assignmentViewModel.mode !== 'default' ||
-        !assignmentViewModel.data.progress
+        assignmentViewModel.mode !== 'default'
     ) {
         return <DefaultError locale={locale} />;
     }
