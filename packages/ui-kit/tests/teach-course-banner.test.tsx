@@ -7,8 +7,6 @@ vi.mock('@maany_shr/e-class-translations', () => ({
   getDictionary: (locale: string) => ({
     components: {
       teachCourseBanner: {
-        title: locale === 'en' ? 'Turn Your Expertise into Earnings' : 'Verwandeln Sie Ihr Fachwissen in Einkommen',
-        description: locale === 'en' ? 'Have the skills? Become a coach and inspire others! Share your knowledge, teach this course, and earn while making a difference. Join our community of experts.' : 'Haben Sie die Fähigkeiten? Werden Sie Coach und inspirieren Sie andere! Teilen Sie Ihr Wissen, unterrichten Sie diesen Kurs und verdienen Sie dabei einen Unterschied. Treten Sie unserer Experten-Community bei.',
         teachButtonText: locale === 'en' ? 'Teach this course' : 'Diesen Kurs unterrichten',
         placeHolderText: locale === 'en' ? 'Image not available' : 'Bild nicht verfügbar',
       },
@@ -35,6 +33,8 @@ describe('TeachCourseBanner', () => {
   const defaultProps = {
     locale: 'en' as 'en' | 'de',
     imageUrl: 'https://img.lalr.co/cms/2018/08/16181927/Mini-pig.jpg?r=4_3',
+    title: 'Turn Your Expertise into Earnings',
+    description: 'Have the skills? Become a coach and inspire others! Share your knowledge, teach this course, and earn while making a difference. Join our community of experts.',
     onClick: vi.fn(),
   };
 
@@ -45,7 +45,7 @@ describe('TeachCourseBanner', () => {
   });
 
   it('renders with correct German title', () => {
-    render(<TeachCourseBanner {...defaultProps} locale="de" />);
+    render(<TeachCourseBanner {...defaultProps} locale="de" title="Verwandeln Sie Ihr Fachwissen in Einkommen" />);
     const title = screen.getByText('Verwandeln Sie Ihr Fachwissen in Einkommen');
     expect(title).toBeInTheDocument();
   });
@@ -59,7 +59,7 @@ describe('TeachCourseBanner', () => {
   });
 
   it('displays German description text', () => {
-    render(<TeachCourseBanner {...defaultProps} locale="de" />);
+    render(<TeachCourseBanner {...defaultProps} locale="de" description="Haben Sie die Fähigkeiten? Werden Sie Coach und inspirieren Sie andere! Teilen Sie Ihr Wissen, unterrichten Sie diesen Kurs und verdienen Sie dabei einen Unterschied. Treten Sie unserer Experten-Community bei." />);
     const description = screen.getByText(
       'Haben Sie die Fähigkeiten? Werden Sie Coach und inspirieren Sie andere! Teilen Sie Ihr Wissen, unterrichten Sie diesen Kurs und verdienen Sie dabei einen Unterschied. Treten Sie unserer Experten-Community bei.'
     );

@@ -1085,8 +1085,6 @@ export const DictionarySchema = z.object({
       emptyState: z.string(),
     })
     teachCourseBanner: z.object({
-      title: z.string(),
-      description: z.string(),
       placeHolderText: z.string(),
       teachButtonText: z.string(),
     })
