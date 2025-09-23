@@ -4,8 +4,7 @@ import {
     Breadcrumbs,
     Button,
 } from '@maany_shr/e-class-ui-kit';
-import { useLocale, useTranslations } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { useCallback } from 'react';
 import UserCoursesList from './user-courses-list';
@@ -16,31 +15,26 @@ interface UserDashboardProps {
     roles: string[];
 }
 
-export default function UserDashboard(props: UserDashboardProps) {
-    const userRoles = props.roles;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+export default function UserDashboard({ roles }: UserDashboardProps) {
     const { data: session } = useSession();
 
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
     const handleEditProfile = useCallback(() => {
-        alert('Edit Profile');
+        // TODO: Implement proper navigation or modal for editing profile
     }, []);
 
     const handleViewCalendar = useCallback(() => {
-        alert('View Calendar');
+        // TODO: Implement proper navigation to calendar view
     }, []);
 
-    const getDisplayName = () => {
-        if (session?.user) {
-            const { name } = session.user;
-            if (name) {
-                return `${name}`;
-            } else if (name) {
-                return name;
-            }
+    const getDisplayName = useCallback(() => {
+        if (session?.user?.name) {
+            return session.user.name;
         }
         return 'Student';
-    };
+    }, [session?.user?.name]);
 
     return (
         <div className="min-h-screen text-white">
