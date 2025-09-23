@@ -10,10 +10,7 @@ import { useSession } from 'next-auth/react';
 import { useCallback } from 'react';
 import UserCoursesList from './user-courses-list';
 import UserCoachingSessions from './user-coaching-sessions';
-<<<<<<< HEAD
 import UserNotifications from './user-notifications';
-=======
->>>>>>> f5312223 (feat: Implement user dashboard and upcoming coaching sessions features)
 
 interface UserDashboardProps {
     roles: string[];
@@ -93,7 +90,6 @@ export default function UserDashboard(props: UserDashboardProps) {
                         </div>
                     </div>
                 </div>
-<<<<<<< HEAD
                 <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
                     <div className="xl:col-span-3 lg:col-span-2 space-y-6">
                         <UserCoursesList />
@@ -103,10 +99,6 @@ export default function UserDashboard(props: UserDashboardProps) {
                         <UserNotifications />
                     </div>
                 </div>
-=======
-                <UserCoursesList />
-                <UserCoachingSessions />
->>>>>>> f5312223 (feat: Implement user dashboard and upcoming coaching sessions features)
             </div>
         </div>
     );
