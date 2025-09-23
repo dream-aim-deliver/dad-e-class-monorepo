@@ -1,3 +1,4 @@
+"use client";
 import { TLocale } from "@maany_shr/e-class-translations";
 import { useLocale, useTranslations } from "next-intl";
 import { trpc } from "../../../trpc/client";
