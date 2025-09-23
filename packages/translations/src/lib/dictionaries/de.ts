@@ -1097,6 +1097,12 @@ export const DE: TDictionary = {
     platformCard: {
       emptyState: 'Noch keine Plattformen.',
     },
+    teachCourseBanner: {
+      title: 'Verwandeln Sie Ihr Fachwissen in Einkommen',
+      description: 'Haben Sie die Fähigkeiten? Werden Sie Coach und inspirieren Sie andere! Teilen Sie Ihr Wissen, unterrichten Sie diesen Kurs und verdienen Sie dabei einen Unterschied. Treten Sie unserer Experten-Community bei.',
+      placeHolderText: 'Bild nicht verfügbar',
+      teachButtonText: 'Diesen Kurs unterrichten',
+    },
   },
   pages: {
     home: Home_DE,

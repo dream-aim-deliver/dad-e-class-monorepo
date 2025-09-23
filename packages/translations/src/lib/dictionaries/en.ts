@@ -1094,6 +1094,12 @@ export const EN: TDictionary = {
     platformCard: {
       emptyState: 'No platforms yet.',
     },
+    teachCourseBanner: {
+      title: 'Turn Your Expertise Into Earnings',
+      description: 'Have the skills? Become a coach and inspire others! Share your knowledge, teach this course, and earn while making a difference. Join our community of experts.',
+      placeHolderText: 'Image not available',
+      teachButtonText: 'Teach this course',
+    },
   },
   pages: {
     home: Home_EN,

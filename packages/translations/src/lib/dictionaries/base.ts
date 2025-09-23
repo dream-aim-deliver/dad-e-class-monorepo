@@ -1084,6 +1084,12 @@ export const DictionarySchema = z.object({
     platformCard: z.object({
       emptyState: z.string(),
     })
+    teachCourseBanner: z.object({
+      title: z.string(),
+      description: z.string(),
+      placeHolderText: z.string(),
+      teachButtonText: z.string(),
+    })
   }),
   pages: z.object({
     sso: z.object({
