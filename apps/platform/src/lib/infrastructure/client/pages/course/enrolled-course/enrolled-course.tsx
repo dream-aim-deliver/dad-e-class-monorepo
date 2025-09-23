@@ -252,12 +252,12 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                     <DefaultError locale={locale} />
                 </Tabs.Content>
                 <Tabs.Content value={StudentCourseTab.NOTES} className={tabContentClass}>
-                    <EnrolledCourseNotes 
-                        courseSlug={props.courseSlug} 
+                    <EnrolledCourseNotes
+                        courseSlug={props.courseSlug}
                         currentRole={props.currentRole}
                     />
                 </Tabs.Content>
-                                <Tabs.Content value="material" className={tabContentClass}>
+                <Tabs.Content value="material" className={tabContentClass}>
                     <EnrolledCourseMaterial
                         currentRole={props.currentRole}
                         courseSlug={props.courseSlug}
