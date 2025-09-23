@@ -58,6 +58,7 @@ import { transformLessonComponents } from '../../../utils/transform-lesson-compo
 import { useSaveLesson } from './hooks/save-hooks';
 import { FileUploadProvider } from '../../course/utils/file-upload';
 import { AssignmentViewProvider } from '../../course/utils/assignment-view';
+import { useSession } from 'next-auth/react';
 
 interface EditLessonProps {
     lessonId: number;

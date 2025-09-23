@@ -16,6 +16,7 @@ import {
 import { trpc } from '../../../trpc/client';
 import { FileUploadProvider } from '../utils/file-upload';
 import { idToNumber } from '../../workspace/edit/utils/id-to-number';
+import { AssignmentViewProvider } from '../utils/assignment-view';
 
 interface LessonFormProps {
     lessonId: number;
@@ -235,24 +236,26 @@ export default function LessonForm({
     const isSubmitting = submitProgressMutation.isPending;
 
     return (
-        <FileUploadProvider
-            mode={enableSubmit ? 'real' : 'mock'}
-            config={{ lessonId: lessonId }}
-        >
-            <div className="flex flex-col gap-4 w-full">
-                {components.map(renderComponent)}
-                {enableSubmit && hasInteractiveElements && (
-                    <Button
-                        className='mx-auto'
-                        variant="primary"
-                        text={isSubmitting ? dictionary.pages.course.study.submitting : dictionary.pages.course.study.submit}
-                        disabled={isSubmitting}
-                        onClick={submitProgress}
-                        hasIconLeft
-                        iconLeft={<IconSave />}
-                    />
-                )}
-            </div>
-        </FileUploadProvider>
+        <AssignmentViewProvider mode={enableSubmit ? 'study' : 'preview'} config={{ studentId: 1 }}>
+            <FileUploadProvider
+                mode={enableSubmit ? 'real' : 'mock'}
+                config={{ lessonId: lessonId }}
+            >
+                <div className="flex flex-col gap-4 w-full">
+                    {components.map(renderComponent)}
+                    {enableSubmit && hasInteractiveElements && (
+                        <Button
+                            className="sticky bottom-4"
+                            variant="primary"
+                            text={isSubmitting ? dictionary.pages.course.study.submitting : dictionary.pages.course.study.submit}
+                            disabled={isSubmitting}
+                            onClick={submitProgress}
+                            hasIconLeft
+                            iconLeft={<IconSave />}
+                        />
+                    )}
+                </div>
+            </FileUploadProvider>
+        </AssignmentViewProvider>
     );
 }
