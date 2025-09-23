@@ -34,6 +34,8 @@ export { Navbar } from './components/navbar';
 export { Footer } from './components/footer';
 
 export { NotificationGrid } from './components/grids/notification-grid';
+export { Activity } from './components/notifications/activity';
+export { RecentActivity } from './components/notifications/recent-activity';
 export { UserGrid } from './components/grids/user-grid';
 export { Hero } from './components/home-banner/hero';
 export { Carousel } from './components/carousel/carousel';
