@@ -1,4 +1,4 @@
-import { TDictionary } from './base';
+﻿import { TDictionary } from './base';
 import { Home_EN } from '../pages/home/home-en';
 import { Login_EN } from '../pages/login/login-en';
 import { SSO_EN } from '../pages/sso/sso-en';
@@ -22,13 +22,13 @@ export const EN: TDictionary = {
     },
     defaultNotFound: {
       title: 'Not found',
-      description: 'Sorry, the page you’re looking for doesn’t exist or may have been moved.',
+      description: 'Sorry, the page youâ€™re looking for doesnâ€™t exist or may have been moved.',
       retry: 'Retry',
       goBack: 'Go to Homepage',
     },
     defaultComingSoon: {
       title: 'Coming soon',
-      description: 'This page is under construction. We’re working on it and it will be available soon!',
+      description: 'This page is under construction. Weâ€™re working on it and it will be available soon!',
       goBack: 'Go back',
     },
     coachBanner: {
@@ -264,13 +264,13 @@ export const EN: TDictionary = {
       password: 'Password',
       changePassword: 'Change Password',
       date: 'Date',
-      checkboxtext1: 'I’m acting on behalf of a company',
+      checkboxtext1: 'Iâ€™m acting on behalf of a company',
       companyName: 'Company Name',
       companyNamePlaceholder: 'e.g. Acme',
       companyUID: 'Company UID (VAT) (optional)',
       companyUIDPlaceholder: 'e.g. CHE123456789',
       address: 'Address',
-      addressPlaceholder: 'Examplestreet 70, 8002 Zürich',
+      addressPlaceholder: 'Examplestreet 70, 8002 ZÃ¼rich',
       profilePicture: 'Profile Picture',
       platformPreferences: 'Platform Preference',
       platformPP: 'Languages spoken fluently (C1 and above)',
@@ -644,13 +644,13 @@ export const EN: TDictionary = {
       readLess: 'Read less',
     },
     moduleCompletionModal: {
-      moduleCompletedText: 'Module complete – awesome job!',
+      moduleCompletedText: 'Module complete â€“ awesome job!',
       moduleText: 'Module',
-      descriptionText: 'Keep going – you’re doing great!',
+      descriptionText: 'Keep going â€“ youâ€™re doing great!',
       goToNextModuleText: 'Go to next module',
     },
     courseCompletionModal: {
-      courseCompletedText: 'Well done – you’ve completed it!',
+      courseCompletedText: 'Well done â€“ youâ€™ve completed it!',
       completedOnText: 'Completed on',
       atText: 'at',
       downloadCertificateText: 'Download certificate',
@@ -851,7 +851,7 @@ export const EN: TDictionary = {
       usefulLinks: 'Useful links',
       validateLink: 'url link required',
       validateTitle: 'title required',
-      notesValidation: "This group has no coach yet. Choose your preferred coach and send them the coupon. They will become this group’s coach.",
+      notesValidation: "This group has no coach yet. Choose your preferred coach and send them the coupon. They will become this groupâ€™s coach.",
       customIcon: "custom icon",
       includeInMaterials: "Include links in course material tab",
       publishNotes: 'Publish notes',
@@ -959,6 +959,7 @@ export const EN: TDictionary = {
       editLesson: 'Edit lesson',
       newCourse: 'New Course',
       coachingSessions: 'Coaching Sessions',
+      dashboard: 'Dashboard',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',

@@ -91,6 +91,7 @@ export { StarRating } from './components/star-rating';
 export { Dropdown } from './components/dropdown';
 export { CoachingSessionTracker } from './components/coaching-session-tracker/coaching-session-tracker';
 export { CoachingSessionItem } from './components/coaching-session-tracker/coaching-session-item';
+export { CoachingSessionCard } from './components/coaching-sessions/coaching-session-card';
 export { CourseIntroBanner } from './components/course-intro-banner';
 
 export { DefaultAccordion } from './components/accordion/default-accordion';

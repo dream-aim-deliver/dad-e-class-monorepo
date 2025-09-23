@@ -55,3 +55,4 @@ export * from './coach-availability-view-model';
 export * from './student-coaching-sessions-list-view-model';
 export * from './create-coaching-session-review-view-model';
 export * from './unschedule-coaching-session-view-model';
+export * from './upcoming-coaching-sessions-list-view-model';
