@@ -6,7 +6,7 @@ const sendAssignmentReplyMock: useCaseModels.TSendAssignmentReplySuccessResponse
 
 export const sendAssignmentReply = t.procedure
     .input(useCaseModels.SendAssignmentReplyRequestSchema)
-    .query(
+    .mutation(
         async (): Promise<useCaseModels.TSendAssignmentReplyUseCaseResponse> => {
             return {
                 success: true,

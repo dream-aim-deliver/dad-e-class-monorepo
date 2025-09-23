@@ -53,7 +53,7 @@ export const useMockFileUpload = (): FileUploadService => {
     };
 };
 
-export const useRealFileUpload = (
+export const useRealProgressUpload = (
     config: FileUploadConfig,
 ): FileUploadService => {
     const editLessonTranslations = useTranslations(
@@ -146,7 +146,7 @@ export const FileUploadProvider: React.FC<FileUploadProviderProps> = ({
     config,
 }) => {
     const mockService = useMockFileUpload();
-    const realService = useRealFileUpload(config);
+    const realService = useRealProgressUpload(config);
 
     const uploadService = mode === 'mock' ? mockService : realService;
 

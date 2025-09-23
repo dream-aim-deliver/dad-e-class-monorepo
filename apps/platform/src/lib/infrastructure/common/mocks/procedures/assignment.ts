@@ -266,7 +266,7 @@ const passAssignmentMock: useCaseModels.TPassAssignmentSuccessResponse['data'] =
 
 export const passAssignment = t.procedure
     .input(useCaseModels.PassAssignmentRequestSchema)
-    .query(
+    .mutation(
         async (): Promise<useCaseModels.TPassAssignmentUseCaseResponse> => {
             return {
                 success: true,
