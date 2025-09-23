@@ -71,6 +71,7 @@ export const mockRouter = t.router({
     getOffersPageOutline,
     listTopicsByCategory,
     listCourses,
+    listUserCourses,
     listOffersPagePackages,
     listCoaches,
     listCourseCoaches,
