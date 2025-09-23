@@ -14,17 +14,7 @@ export default async function CoachingSessionsServerComponent() {
 
     const roles = session.user.roles;
     if (roles && roles.includes('coach')) {
-        // return "";
-        await Promise.all([prefetch(trpc.listStudentCoachingSessions.queryOptions({}))]);
-        return (
-            <>
-                <HydrateClient>
-                    <Suspense fallback={<DefaultLoadingWrapper />}>
-                       <StudentCoachingSessions />
-                    </Suspense>
-                </HydrateClient>
-            </>
-        );
+        return "";
     } else if (roles && roles.includes('student')) {
         await Promise.all([prefetch(trpc.listStudentCoachingSessions.queryOptions({}))]);
         return (

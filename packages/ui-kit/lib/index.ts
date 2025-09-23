@@ -178,3 +178,5 @@ export { CourseMaterialsAccordion } from "./components/accordion/course-material
 
 export { CoachingSessionList } from './components/coaching-sessions/coaching-session-list';
 export { CoachingSessionCard } from './components/coaching-sessions/coaching-session-card';
+
+export { ReviewModal } from './components/review/review-modal';

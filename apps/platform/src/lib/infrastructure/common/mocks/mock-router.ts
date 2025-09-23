@@ -49,6 +49,8 @@ import { listCoachStudents } from './procedures/coach-students';
 import { uploadLessonProgressFile } from './procedures/lesson-progress-file';
 import { listCourseMaterials } from './procedures/course-materials';
 import { listStudentCoachingSessions } from './procedures/student-coaching-sessions';
+import { createCoachingSessionReview } from './procedures/create-coaching-session-review';
+import { unscheduleCoachingSession } from './procedures/unschedule-coaching-session';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -95,6 +97,8 @@ export const mockRouter = t.router({
     uploadLessonProgressFile,
     listCourseMaterials,
     listStudentCoachingSessions,
+    createCoachingSessionReview,
+    unscheduleCoachingSession,
 });
 
 export type MockRouter = typeof mockRouter;

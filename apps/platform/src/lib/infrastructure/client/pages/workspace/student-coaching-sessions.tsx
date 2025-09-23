@@ -7,14 +7,16 @@ import { trpc } from "../../trpc/client";
 import { viewModels } from "@maany_shr/e-class-models";
 import { useListStudentCoachingSessionsPresenter } from "../../hooks/use-list-student-coaching-sessions-presenter";
 import { useListCoachesPresenter } from "../../hooks/use-coaches-presenter";
-import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions } from "@maany_shr/e-class-ui-kit";
+import { useCreateCoachingSessionReviewPresenter } from "../../hooks/use-create-coaching-session-review-presenter";
+import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
+import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions, ReviewModal } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { useRouter } from "next/navigation";
+import { useCheckTimeLeft } from "../../../hooks/use-check-time-left";
 
 export default function StudentCoachingSessions() {
     const locale = useLocale() as TLocale;
 
-    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const coachingSessionTranslations = useTranslations(
         'pages.studentCoachingSessions',
     );
@@ -27,10 +29,26 @@ export default function StudentCoachingSessions() {
     const router = useRouter();
 
     const [studentCoachingSessionsResponse] = trpc.listStudentCoachingSessions.useSuspenseQuery({});
+    const utils = trpc.useUtils();
+
+    const createReviewMutation = trpc.createCoachingSessionReview.useMutation();
+    const unscheduleMutation = trpc.unscheduleCoachingSession.useMutation();
 
     const [studentCoachingSessionsViewModel, setStudentCoachingSessionsViewModel] = useState<
         viewModels.TStudentCoachingSessionsListViewModel | undefined
     >(undefined);
+
+    const [createReviewViewModel, setCreateReviewViewModel] = useState<
+        viewModels.TCreateCoachingSessionReviewViewModel | undefined
+    >(undefined);
+
+    const [unscheduleViewModel, setUnscheduleViewModel] = useState<
+        viewModels.TUnscheduleCoachingSessionViewModel | undefined
+    >(undefined);
+
+    // Time-based hooks for session management
+    const isJoiningEnabled = useCheckTimeLeft(new Date(), { hours: 24 });
+    const isMeetingLink = useCheckTimeLeft(new Date(), { minutes: 10 });
 
     // For the available tab - coaches data
     const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({
@@ -46,6 +64,14 @@ export default function StudentCoachingSessions() {
     );
 
     const { presenter: coachesPresenter } = useListCoachesPresenter(setCoachesViewModel);
+
+    const { presenter: createReviewPresenter } = useCreateCoachingSessionReviewPresenter(
+        setCreateReviewViewModel,
+    );
+
+    const { presenter: unschedulePresenter } = useUnscheduleCoachingSessionPresenter(
+        setUnscheduleViewModel,
+    );
 
     presenter.present(studentCoachingSessionsResponse, studentCoachingSessionsViewModel);
     coachesPresenter.present(coachesResponse, coachesViewModel);
@@ -66,59 +92,13 @@ export default function StudentCoachingSessions() {
         return allSessions.filter((session): session is ScheduledSession => session.status !== 'unscheduled');
     }, [allSessions]);
 
-    // Helper to compute UI status based on domain status and time logic
-    const computeUIStatus = (session: ScheduledSession) => {
-        switch (session.status) {
-            case 'requested':
-                return 'requested' as const;
-
-            case 'completed':
-                return 'completed' as const;
-
-            case 'scheduled': {
-                const now = new Date();
-                const sessionStart = new Date(session.startTime);
-                const sessionEnd = new Date(session.endTime);
-                const hoursUntilStart = (sessionStart.getTime() - now.getTime()) / (1000 * 60 * 60);
-
-                // If session is currently happening (between start and end time)
-                if (now >= sessionStart && now <= sessionEnd) {
-                    return 'ongoing' as const;
-                }
-
-                // If session starts in more than 24 hours, allow editing
-                if (hoursUntilStart > 24) {
-                    return 'upcoming-editable' as const;
-                }
-
-                // If session starts in 24 hours or less, lock from editing
-                if (hoursUntilStart > 0) {
-                    return 'upcoming-locked' as const;
-                }
-
-                // If session is in the past but status is still 'scheduled', treat as ongoing
-                // This handles edge cases where session status hasn't been updated to completed
-                return 'ongoing' as const;
-            }
-        }
-    };
-
-    // Filter sessions by status for each tab (using computed UI status)
+    // Filter sessions by status for each tab
     const upcomingSessions = useMemo(() => {
-        return scheduledSessions.filter(session => {
-            const uiStatus = computeUIStatus(session);
-            return uiStatus === 'requested' ||
-                uiStatus === 'ongoing' ||
-                uiStatus === 'upcoming-editable' ||
-                uiStatus === 'upcoming-locked';
-        });
+        return scheduledSessions.filter(session => session.status === 'scheduled' || session.status === 'requested');
     }, [scheduledSessions]);
 
     const endedSessions = useMemo(() => {
-        return scheduledSessions.filter(session => {
-            const uiStatus = computeUIStatus(session);
-            return uiStatus === 'completed';
-        });
+        return scheduledSessions.filter(session => session.status === 'completed');
     }, [scheduledSessions]);
 
     // Filter unscheduled sessions for Available tab
@@ -180,6 +160,151 @@ export default function StudentCoachingSessions() {
         items: availableCoaches,
     });
 
+    // Review modal state
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [reviewSessionId, setReviewSessionId] = useState<number | null>(null);
+    const [reviewSubmitted, setReviewSubmitted] = useState(false);
+
+    // Review handlers
+    const handleReviewClick = (sessionId: number) => {
+        setReviewSessionId(sessionId);
+        setIsReviewModalOpen(true);
+        setReviewSubmitted(false);
+        setCreateReviewViewModel(undefined);
+    };
+
+    const handleReviewSubmit = async (rating: number, review: string, neededMoreTime: boolean) => {
+        if (!reviewSessionId) return;
+
+        const result = await createReviewMutation.mutateAsync({
+            coachingSessionId: reviewSessionId,
+            rating,
+            notes: review || null,
+            neededMoreTime,
+        });
+
+        // Present the result using the presenter
+        createReviewPresenter.present(result, createReviewViewModel);
+
+        // Check if the presentation resulted in an error
+        if (createReviewViewModel && createReviewViewModel.mode === 'kaboom') {
+            // Error occurred, don't proceed with success actions
+            return;
+        }
+
+        // Success - update UI state and invalidate cache
+        setReviewSubmitted(true);
+        // Invalidate and refetch the sessions to show the updated review
+        // This is IMPORTANT: It refreshes the UI so the session card shows 
+        // "has review" instead of "add review" and displays the new review data
+        utils.listStudentCoachingSessions.invalidate();
+        // Note: Modal will stay open in success state until user clicks "Close" button
+    };
+
+    const handleReviewSkip = () => {
+        setIsReviewModalOpen(false);
+        setReviewSessionId(null);
+        setReviewSubmitted(false);
+        setCreateReviewViewModel(undefined);
+    };
+
+    const handleReviewClose = () => {
+        setIsReviewModalOpen(false);
+        setReviewSessionId(null);
+        setReviewSubmitted(false);
+        setCreateReviewViewModel(undefined);
+    };
+
+    // Cancel handler - just unschedule the session
+    const handleCancel = async (sessionId: number) => {
+        const response = await unscheduleMutation.mutateAsync({
+            coachingSessionId: sessionId,
+        });
+        
+        // Present the response to the view model
+        unschedulePresenter.present(response, unscheduleViewModel);
+
+        // Check if the presentation resulted in an error
+        if (unscheduleViewModel && unscheduleViewModel.mode === 'kaboom') {
+            // Error occurred, don't proceed with success actions
+            return;
+        }
+        
+        // Invalidate and refetch the sessions list to reflect the change
+        utils.listStudentCoachingSessions.invalidate();
+    };
+
+    // Reschedule handler - unschedule and redirect to coach calendar
+    const handleReschedule = async (sessionId: number, coachUsername: string) => {
+        const response = await unscheduleMutation.mutateAsync({
+            coachingSessionId: sessionId,
+        });
+        
+        // Present the response to the view model
+        unschedulePresenter.present(response, unscheduleViewModel);
+
+        // Check if the presentation resulted in an error
+        if (unscheduleViewModel && unscheduleViewModel.mode === 'kaboom') {
+            // Error occurred, don't proceed with success actions
+            return;
+        }
+        
+        // Invalidate and refetch the sessions list to reflect the change
+        utils.listStudentCoachingSessions.invalidate();
+        
+        // Redirect to the coach's calendar page
+        router.push(`/coaches/${coachUsername}`);
+    };
+
+    // Navigation handlers
+    const handleViewCoachProfile = (coachUsername: string) => {
+        router.push(`/coaches/${coachUsername}`);
+    };
+
+    const handleViewCourse = (courseSlug: string) => {
+        router.push(`/courses/${courseSlug}`);
+    };
+
+    const handleViewAllCoaches = () => {
+        router.push('/coaches');
+    };
+
+    const handleNavigateHome = () => {
+        router.push('/');
+    };
+
+    const handleNavigateWorkspace = () => {
+        // TODO: Implement navigation to workspace
+    };
+
+    const handleNavigateCoachingSessions = () => {
+        // Nothing should happen on clicking the current page
+    };
+
+    // Session action handlers
+    const handleCreatorClick = (coachUsername: string) => {
+        router.push(`/coaches/${coachUsername}`);
+    };
+
+    const handleJoinMeeting = (meetingUrl: string) => {
+        window.open(meetingUrl, '_blank');
+    };
+
+    const handleDownloadRecording = (sessionId: number) => {
+        // TODO: Implement download recording functionality
+        console.log('Download recording for session:', sessionId);
+    };
+
+    const handleBookSession = (coachUsername: string) => {
+        // TODO: Implement booking session navigation
+        router.push(`/coaches/${coachUsername}`);
+    };
+
+    const handleBuyMoreSessions = () => {
+        // TODO: Implement buy more sessions functionality
+        console.log('Buy more sessions clicked');
+    };
+
     if (!studentCoachingSessionsViewModel || !coachesViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
@@ -196,12 +321,9 @@ export default function StudentCoachingSessions() {
                 <div className="lg:w-1/4">
                     <AvailableCoachingSessions
                         locale={locale}
-                        text="These are the sessions you purchased and were't included in a course. You can use them at any time with any coach."
+                        text={coachingSessionTranslations('availableSessionsDescription')}
                         availableCoachingSessionsData={availableCoachingSessionsData}
-                        onClickBuyMoreSessions={() => {
-                            // TODO: Implement buy more sessions functionality
-                            console.log('Buy more sessions clicked');
-                        }}
+                        onClickBuyMoreSessions={handleBuyMoreSessions}
                         hideButton={availableCoachingSessionsData.length === 0}
                     />
                 </div>
@@ -211,19 +333,19 @@ export default function StudentCoachingSessions() {
                     {availableCoaches.length === 0 ? (
                         <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                             <p className="text-text-primary text-md">
-                                No coaches found
+                                {coachingSessionTranslations('noCoachesFound')}
                             </p>
                         </div>
                     ) : (
                         <>
                             <div className="flex items-center gap-4 mb-4">
                                 <h3 className="text-lg font-semibold text-white">
-                                    Your past coaches
+                                    {coachingSessionTranslations('yourPastCoaches')}
                                 </h3>
                                 <Button
                                     variant="text"
-                                    text="View all coaches"
-                                    onClick={() => router.push('/coaches')}
+                                    text={coachingSessionTranslations('viewAllCoaches')}
+                                    onClick={handleViewAllCoaches}
                                 />
                             </div>
                             <CardListLayout className="md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2">
@@ -246,16 +368,9 @@ export default function StudentCoachingSessions() {
                                             rating: coach.averageRating ?? 0,
                                             totalRatings: coach.reviewCount,
                                         }}
-                                        onClickViewProfile={() => {
-                                            router.push(`/coaches/${coach.username}`);
-                                        }}
-                                        onClickCourse={(courseSlug: string) => {
-                                            router.push(`/courses/${courseSlug}`);
-                                        }}
-                                        onClickBookSession={() => {
-                                            // TODO: Implement booking session navigation
-                                            console.log('Book session with coach:', coach.username);
-                                        }}
+                                        onClickViewProfile={() => handleViewCoachProfile(coach.username)}
+                                        onClickCourse={(courseSlug: string) => handleViewCourse(courseSlug)}
+                                        onClickBookSession={() => handleBookSession(coach.username)}
                                     />
                                 ))}
                             </CardListLayout>
@@ -287,7 +402,7 @@ export default function StudentCoachingSessions() {
             return (
                 <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                     <p className="text-text-primary text-md">
-                        No sessions found
+                        {coachingSessionTranslations('noSessionsFound')}
                     </p>
                 </div>
             );
@@ -325,8 +440,8 @@ export default function StudentCoachingSessions() {
                 });
             };
 
-            // Get computed UI status
-            const uiStatus = computeUIStatus(session);
+            // Create start DateTime for time calculations
+            const startDateTime = new Date(session.startTime);
 
             // Common properties for all session cards (excluding key)
             const commonProps = {
@@ -334,87 +449,74 @@ export default function StudentCoachingSessions() {
                 userType: 'student' as const,
                 title: session.coachingOfferingTitle,
                 duration: session.coachingOfferingDuration,
-                date: new Date(session.startTime),
+                date: startDateTime,
                 startTime: formatTime(session.startTime),
                 endTime: formatTime(session.endTime),
                 creatorName: `${session.coach.name || ''} ${session.coach.surname || ''}`.trim() || session.coach.username,
                 creatorImageUrl: session.coach.avatarUrl || '',
-                onClickCreator: () => console.log('Creator clicked:', session.coach.username),
+                onClickCreator: () => handleCreatorClick(session.coach.username),
                 courseName: session.course?.title,
-                onClickCourse: session.course ? () => console.log('Course clicked:', session.course!.slug) : undefined,
+                onClickCourse: session.course ? () => handleViewCourse(session.course!.slug) : undefined,
             };
 
-            // Render based on computed UI status
-            if (uiStatus === 'requested') {
+            if (session.status === 'requested') {
                 return (
                     <CoachingSessionCard
                         key={session.id}
                         {...commonProps}
                         status="requested"
-                        onClickCancel={() => console.log('Cancel clicked for session:', session.id)}
+                        onClickCancel={() => handleCancel(session.id)}
                     />
                 );
             }
 
-            if (uiStatus === 'ongoing') {
-                let meetingUrl: string | null = null;
-                if ('meetingUrl' in session) {
-                    meetingUrl = session.meetingUrl;
+            if (session.status === 'scheduled') {
+                if (isJoiningEnabled) {
+                    let meetingUrl: string | null = null;
+                    if ('meetingUrl' in session) {
+                        meetingUrl = session.meetingUrl;
+                    }
+
+                    return (
+                        <CoachingSessionCard
+                            key={session.id}
+                            {...commonProps}
+                            status="upcoming-locked"
+                            onClickJoinMeeting={() => handleJoinMeeting(meetingUrl!)}
+                        />
+                    );
+                } else if (isMeetingLink) {
+                    let meetingUrl: string | null = null;
+                    if ('meetingUrl' in session) {
+                        meetingUrl = session.meetingUrl;
+                    }
+
+                    return (
+                        <CoachingSessionCard
+                            key={session.id}
+                            {...commonProps}
+                            status="ongoing"
+                            meetingLink={meetingUrl || ''}
+                            onClickJoinMeeting={() => handleJoinMeeting(meetingUrl!)}
+                        />
+                    );
+                } else {
+                    const hoursLeftToEdit = Math.max(0, Math.floor((startDateTime.getTime() - Date.now()) / (1000 * 60 * 60)) - 24);
+
+                    return (
+                        <CoachingSessionCard
+                            key={session.id}
+                            {...commonProps}
+                            status="upcoming-editable"
+                            hoursLeftToEdit={hoursLeftToEdit}
+                            onClickReschedule={() => handleReschedule(session.id, session.coach.username)}
+                            onClickCancel={() => handleCancel(session.id)}
+                        />
+                    );
                 }
-
-                return (
-                    <CoachingSessionCard
-                        key={session.id}
-                        {...commonProps}
-                        status="ongoing"
-                        meetingLink={meetingUrl || ''}
-                        onClickJoinMeeting={() => {
-                            if (meetingUrl) {
-                                window.open(meetingUrl, '_blank');
-                            }
-                        }}
-                    />
-                );
             }
 
-            if (uiStatus === 'upcoming-editable') {
-                const now = new Date();
-                const sessionStart = new Date(session.startTime);
-                const hoursLeftToEdit = Math.max(0, Math.floor((sessionStart.getTime() - now.getTime()) / (1000 * 60 * 60)) - 24);
-
-                return (
-                    <CoachingSessionCard
-                        key={session.id}
-                        {...commonProps}
-                        status="upcoming-editable"
-                        hoursLeftToEdit={hoursLeftToEdit}
-                        onClickReschedule={() => console.log('Reschedule clicked for session:', session.id)}
-                        onClickCancel={() => console.log('Cancel clicked for session:', session.id)}
-                    />
-                );
-            }
-
-            if (uiStatus === 'upcoming-locked') {
-                let meetingUrl: string | null = null;
-                if ('meetingUrl' in session) {
-                    meetingUrl = session.meetingUrl;
-                }
-
-                return (
-                    <CoachingSessionCard
-                        key={session.id}
-                        {...commonProps}
-                        status="upcoming-locked"
-                        onClickJoinMeeting={() => {
-                            if (meetingUrl) {
-                                window.open(meetingUrl, '_blank');
-                            }
-                        }}
-                    />
-                );
-            }
-
-            if (uiStatus === 'completed') {
+            if (session.status === 'completed') {
                 // For completed sessions (ended tab)
                 const hasReview = session.status === 'completed' && session.review;
                 if (hasReview) {
@@ -426,7 +528,7 @@ export default function StudentCoachingSessions() {
                             hasReview={true}
                             reviewText={session.review!.comment || ''}
                             rating={session.review!.rating}
-                            onClickDownloadRecording={() => console.log('Download recording for session:', session.id)}
+                            onClickDownloadRecording={() => handleDownloadRecording(session.id)}
                             isRecordingDownloading={false}
                         />
                     );
@@ -437,15 +539,14 @@ export default function StudentCoachingSessions() {
                             {...commonProps}
                             status="ended"
                             hasReview={false}
-                            onClickReviewCoachingSession={() => console.log('Review session:', session.id)}
-                            onClickDownloadRecording={() => console.log('Download recording for session:', session.id)}
+                            onClickReviewCoachingSession={() => handleReviewClick(session.id)}
+                            onClickDownloadRecording={() => handleDownloadRecording(session.id)}
                             isRecordingDownloading={false}
                         />
                     );
                 }
             }
 
-            // Catch-all case for unhandled UI statuses
             return null;
         }).filter(Boolean);
     };
@@ -455,20 +556,16 @@ export default function StudentCoachingSessions() {
             <Breadcrumbs
                 items={[
                     {
-                        label: breadcrumbsTranslations('home'),
-                        onClick: () => router.push('/'),
+                        label: coachingSessionTranslations('home'),
+                        onClick: handleNavigateHome,
                     },
                     {
-                        label: breadcrumbsTranslations('workspace'),
-                        onClick: () => {
-                            // TODO: Implement navigation to workspace
-                        },
+                        label: coachingSessionTranslations('workspace'),
+                        onClick: handleNavigateWorkspace,
                     },
                     {
-                        label: breadcrumbsTranslations('coachingSessions'),
-                        onClick: () => {
-                            // Nothing should happen on clicking the current page
-                        },
+                        label: coachingSessionTranslations('coachingSessions'),
+                        onClick: handleNavigateCoachingSessions,
                     },
                 ]}
             />
@@ -503,6 +600,22 @@ export default function StudentCoachingSessions() {
                     {renderAvailableCoachesContent()}
                 </Tabs.Content>
             </Tabs.Root >
+
+            {/* Review Modal */}
+            {isReviewModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-10 flex items-center justify-center z-50">
+                    <ReviewModal
+                        locale={locale}
+                        modalType="coaching"
+                        onClose={handleReviewClose}
+                        onSubmit={handleReviewSubmit}
+                        onSkip={handleReviewSkip}
+                        isLoading={createReviewMutation.isPending}
+                        isError={createReviewViewModel?.mode === 'kaboom'}
+                        submitted={reviewSubmitted}
+                    />
+                </div>
+            )}
         </div>
     );
 }
