@@ -3,6 +3,7 @@ import { useGetAssignmentPresenter } from '../../../hooks/use-assignment-present
 import { trpc } from '../../../trpc/client';
 import {
     fileMetadata,
+    shared,
     useCaseModels,
     viewModels,
 } from '@maany_shr/e-class-models';
@@ -15,8 +16,10 @@ import {
     DefaultLoading,
     downloadFile,
     Message,
+    ReplyPanel,
 } from '@maany_shr/e-class-ui-kit';
 import { useSession } from 'next-auth/react';
+import { useRealProgressUpload } from '../utils/file-upload';
 
 interface AssignmentContentProps {
     assignmentId: string;
@@ -30,7 +33,9 @@ export default function AssignmentContent({
     const locale = useLocale() as TLocale;
     const session = useSession();
 
-    const [assignmentResponse] = trpc.getAssignment.useSuspenseQuery({
+    const [assignmentResponse, {
+        refetch: refetchAssignment,
+    }] = trpc.getAssignment.useSuspenseQuery({
         assignmentId,
         studentId,
     });
@@ -55,10 +60,7 @@ export default function AssignmentContent({
 
     return (
         <div className="p-4 flex flex-col gap-4">
-            <AssignmentModalWrapper
-                assignment={assignment}
-                locale={locale}
-            />
+            <AssignmentModalWrapper assignment={assignment} locale={locale} />
             {assignment.progress && (
                 <RepliesList
                     replies={assignment.progress.replies}
@@ -66,8 +68,186 @@ export default function AssignmentContent({
                     locale={locale}
                 />
             )}
+            <AssignmentInteraction
+                studentId={studentId}
+                assignmentId={assignmentId}
+                assignment={assignment}
+                refetchAssignment={refetchAssignment}
+            />
         </div>
     );
+}
+
+interface AssignmentInteractionProps {
+    studentId: number;
+    assignmentId: string;
+    assignment: viewModels.TAssignmentSuccess;
+    refetchAssignment: () => void;
+}
+
+function AssignmentInteraction({
+    studentId,
+    assignmentId,
+    assignment,
+    refetchAssignment,
+}: AssignmentInteractionProps) {
+    const locale = useLocale() as TLocale;
+    // TODO: Check if the user is a student or coach (studentId matches session user ID)
+    const session = useSession();
+
+    const sendReplyMutation = trpc.sendAssignmentReply.useMutation();
+    const passAssignmentMutation = trpc.passAssignment.useMutation();
+
+    const [comment, setComment] = useState<string>('');
+    const [files, setFiles] = useState<fileMetadata.TFileMetadata[]>([]);
+    const [links, setLinks] = useState<shared.TLinkWithId[]>([]);
+
+    const [linkEditIndex, setLinkEditIndex] = useState<number | null>(null);
+
+    const { uploadFile, uploadError } = useRealProgressUpload({
+        lessonId: assignment.lesson.id,
+    });
+
+    const onFileDownload = (id: string) => {
+        const file = files.find((f) => f.id === id);
+        if (!file) return;
+        downloadFile(file.url, file.name);
+    };
+
+    const onFileDelete = (fileId: string) => {
+        setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
+    };
+
+    const onFileChange = async (
+        file: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ): Promise<fileMetadata.TFileMetadata> => {
+        const result = await uploadFile(file, assignmentId, abortSignal);
+        if (!result) {
+            // TODO: translate error message
+            throw new Error('File upload failed');
+        }
+        return result;
+    };
+
+    const onUploadComplete = (file: fileMetadata.TFileMetadata) => {
+        setFiles((prevFiles) => [...prevFiles, file]);
+    };
+
+    const onLinkDelete = (index: number) => {
+        setLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
+        setLinkEditIndex(null);
+    };
+
+    const onDeleteIcon = (index: number) => {
+        setLinks((prevLinks) =>
+            prevLinks.map((link, i) =>
+                i === index ? { ...link, customIcon: undefined } : link,
+            ),
+        );
+    };
+
+    const onClickEditLink = (index: number) => {
+        setLinkEditIndex(index);
+    };
+
+    const onCreateLink = () => {
+        setLinks((prevLinks) => [...prevLinks, getExampleLink()]);
+    };
+
+    const onSaveLink = (link: shared.TLinkWithId, index: number) => {
+        setLinks((prevLinks) =>
+            prevLinks.map((l, i) => (i === index ? link : l)),
+        );
+        setLinkEditIndex(null);
+    };
+
+    const onLinkDiscard = () => {
+        setLinkEditIndex(null);
+    };
+
+    const onClickSendMessage = async () => {
+        sendReplyMutation.mutate(
+            {
+                assignmentId,
+                studentId,
+                comment: comment,
+                fileIds: files.map((f) => Number(f.id)),
+                links: links.map((l) => ({
+                    title: l.title,
+                    url: l.url,
+                    iconFileId: Number(l.customIcon?.id),
+                })),
+            },
+            {
+                onSuccess: () => {
+                    // Reset the form state
+                    setComment('');
+                    setFiles([]);
+                    setLinks([]);
+                    refetchAssignment();
+                },
+                onError: (error) => {
+                    // TODO: set error state and display to the user
+                },
+            },
+        );
+    };
+
+    const onClickMarkAsPassed = async () => {
+        passAssignmentMutation.mutate(
+            {
+                assignmentId,
+                studentId,
+            },
+            {
+                onSuccess: () => {
+                    refetchAssignment();
+                },
+                onError: (error) => {
+                    // TODO: set error state and display to the user
+                },
+            },
+        );
+    };
+
+    const isSending =
+        sendReplyMutation.isPending || passAssignmentMutation.isPending;
+
+    // TODO: display uploadError somewhere in the UI
+    return (
+        <ReplyPanel
+            role="coach"
+            comment={comment}
+            files={files}
+            links={links}
+            linkEditIndex={linkEditIndex}
+            onChangeComment={setComment}
+            onFileDownload={onFileDownload}
+            onFileDelete={onFileDelete}
+            onFilesChange={onFileChange}
+            onImageChange={onFileChange}
+            onDeleteIcon={onDeleteIcon}
+            onUploadComplete={onUploadComplete}
+            onCreateLink={onSaveLink}
+            onClickEditLink={onClickEditLink}
+            onLinkDelete={onLinkDelete}
+            onLinkDiscard={onLinkDiscard}
+            onClickAddLink={onCreateLink}
+            locale={locale}
+            onClickSendMessage={onClickSendMessage}
+            onClickMarkAsPassed={onClickMarkAsPassed}
+            isSending={isSending}
+        />
+    );
+}
+
+function getExampleLink() {
+    return {
+        linkId: Date.now(), // Unique ID for the link
+        title: 'New Link',
+        url: 'https://example.com',
+    };
 }
 
 interface AssignmentModalWrapperProps {

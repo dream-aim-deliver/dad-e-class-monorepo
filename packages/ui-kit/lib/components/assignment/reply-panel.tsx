@@ -13,22 +13,24 @@ import { IconPlus } from "../icons/icon-plus";
 export interface ReplyPanelProps extends isLocalAware {
     role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
     comment: string;
-    linkEditIndex: number;
+    linkEditIndex: number | null;
     files: fileMetadata.TFileMetadata[];
     links: shared.TLinkWithId[];
-    sender: assignment.TAssignmentReplySender;
     onChangeComment: (comment: string) => void;
     onFileDownload: (id: string) => void;
     onFileDelete: (fileId: string) => void;
-    onLinkDelete: (linkId: number, index: number) => void;
+    onLinkDelete: (index: number) => void;
+    onLinkDiscard: (index: number) => void;
     onFilesChange: (file: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
     onImageChange: (fileRequest: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
-    onDeleteIcon: (id: string) => void;
+    onDeleteIcon: (index: number) => void;
     onUploadComplete: (file: fileMetadata.TFileMetadata) => void;
     onCreateLink: (data: shared.TLinkWithId, index: number) => void;
     onClickEditLink: (index: number) => void;
     onClickAddLink: () => void;
-    onClickSendMessage: (reply: assignment.TAssignmentReply) => void;
+    onClickSendMessage: () => void;
+    onClickMarkAsPassed: () => void;
+    isSending?: boolean;
 };
 
 /**
@@ -89,7 +91,6 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
     files,
     links,
     linkEditIndex,
-    sender,
     onChangeComment,
     onFileDownload,
     onFileDelete,
@@ -102,37 +103,14 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
     onImageChange,
     onDeleteIcon,
     onClickSendMessage,
-    locale
+    onClickMarkAsPassed,
+    locale,
+    isSending,
 }) => {
     const dictionary = getDictionary(locale);
 
-    const handleSubmit = (type: 'text' | 'resources' | 'passed') => {
-        const timestamp = new Date().toISOString(); // Zod expects ISO format
-
-        if (type === 'passed') {
-            onClickSendMessage({
-                type: 'passed',
-                timestamp,
-                sender
-            });
-        } else if (type === 'resources') {
-            onClickSendMessage({
-                type: 'resources',
-                comment,
-                files,
-                links,
-                timestamp,
-                sender
-            });
-        } else {
-            onClickSendMessage({
-                type: 'text',
-                comment,
-                timestamp,
-                sender
-            });
-        }
-    };
+    const isFormInvalid = !comment && files.length === 0 && links.length === 0;
+    // TODO: Implement spinning indicator during sending
 
     return (
         <div className="flex flex-col gap-[27px] p-4 bg-base-neutral-800 border-1 border-base-neutral-700 rounded-medium">
@@ -151,7 +129,8 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                             iconLeft={<IconAssignmentPassed />}
                             hasIconLeft
                             text={dictionary.components.assignment.replyPanel.markAsPassedText}
-                            onClick={() => handleSubmit('passed')}
+                            onClick={onClickMarkAsPassed}
+                            disabled={isSending}
                         />
                     )}
                 </div>
@@ -179,9 +158,9 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                                         initialUrl={link.url as string}
                                         initialCustomIcon={link.customIcon}
                                         onSave={(title, url, customIcon) => onCreateLink({ title, url, customIcon, linkId: link.linkId as number }, index)}
-                                        onDiscard={() => onLinkDelete(link.linkId as number, index)}
+                                        onDiscard={() => onLinkDelete(index)}
                                         onImageChange={(image, abortSignal) => onImageChange(image, abortSignal)}
-                                        onDeleteIcon={onDeleteIcon}
+                                        onDeleteIcon={() => onDeleteIcon(index)}
                                     />
                                 </div>
                             ) : (
@@ -192,7 +171,7 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                                         url={link.url as string}
                                         customIcon={link.customIcon}
                                         onEdit={() => onClickEditLink(index)}
-                                        onDelete={() => onLinkDelete(link.linkId as number, index)}
+                                        onDelete={() => onLinkDelete(index)}
                                     />
                                 </div>
                             )
@@ -235,8 +214,8 @@ export const ReplyPanel: FC<ReplyPanelProps> = ({
                     size='medium'
                     variant="primary"
                     text={dictionary.components.assignment.replyPanel.sendMessageText}
-                    onClick={() => handleSubmit(files.length > 0 || links.length > 0 ? 'resources' : 'text')}
-                    disabled={!comment && files.length === 0 && links.length === 0}
+                    onClick={onClickSendMessage}
+                    disabled={isFormInvalid || isSending}
                 />
             </div>
         </div>
