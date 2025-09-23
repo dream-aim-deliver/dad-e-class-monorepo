@@ -20,7 +20,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
 import { useRouter } from 'next/navigation';
-import { trpc } from '../../trpc/cms-client';
+import { trpc } from '../../trpc/client';
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
 
 export default function UserCoursesList() {

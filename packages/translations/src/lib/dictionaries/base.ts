@@ -950,7 +950,7 @@ export const DictionarySchema = z.object({
       editLesson: z.string(),
       newCourse: z.string(),
       coachingSessions: z.string(),
-
+      dashboard: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
