@@ -181,3 +181,5 @@ export { CourseNotesAccordion } from './components/accordion/course-notes-accord
 
 export { Stepper } from './components/stepper/stepper';
 export { CourseMaterialsAccordion } from "./components/accordion/course-materials-accordion";
+export { TeachCourseBanner } from './components/teach-course-banner';
+
