@@ -10,6 +10,7 @@ import { useSession } from 'next-auth/react';
 import { useCallback } from 'react';
 import UserCoursesList from './user-courses-list';
 import UserCoachingSessions from './user-coaching-sessions';
+import UserNotifications from './user-notifications';
 
 interface UserDashboardProps {
     roles: string[];
@@ -89,8 +90,15 @@ export default function UserDashboard(props: UserDashboardProps) {
                         </div>
                     </div>
                 </div>
-                <UserCoursesList />
-                <UserCoachingSessions />
+                <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
+                    <div className="xl:col-span-3 lg:col-span-2 space-y-6">
+                        <UserCoursesList />
+                        <UserCoachingSessions />
+                    </div>
+                    <div className="xl:col-span-1 lg:col-span-1">
+                        <UserNotifications />
+                    </div>
+                </div>
             </div>
         </div>
     );
