@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useGetAssignmentPresenter } from '../../../hooks/use-assignment-presenter';
 import { trpc } from '../../../trpc/client';
 import {
@@ -16,6 +16,7 @@ import {
     downloadFile,
     Message,
 } from '@maany_shr/e-class-ui-kit';
+import { useSession } from 'next-auth/react';
 
 interface AssignmentContentProps {
     assignmentId: string;
@@ -27,6 +28,7 @@ export default function AssignmentContent({
     studentId,
 }: AssignmentContentProps) {
     const locale = useLocale() as TLocale;
+    const session = useSession();
 
     const [assignmentResponse] = trpc.getAssignment.useSuspenseQuery({
         assignmentId,
@@ -42,7 +44,10 @@ export default function AssignmentContent({
         return <DefaultLoading locale={locale} />;
     }
 
-    if (assignmentViewModel.mode !== 'default') {
+    if (
+        assignmentViewModel.mode !== 'default' ||
+        !assignmentViewModel.data.progress
+    ) {
         return <DefaultError locale={locale} />;
     }
 
@@ -56,7 +61,11 @@ export default function AssignmentContent({
                     downloadFile(file.url, file.name);
                 }}
             />
-            {renderReplies(assignment.progress?.replies, locale)}
+            {assignment.progress && <RepliesList
+                replies={assignment.progress.replies}
+                passedDetails={assignment.progress.passedDetails}
+                locale={locale}
+            />}
         </div>
     );
 }
@@ -128,44 +137,61 @@ function transformLinks(links: viewModels.TAssignmentSuccess['links']) {
     }));
 }
 
-// Render replies as Message components
-function renderReplies(
-    replies: useCaseModels.TAssignmentReply[] | undefined,
-    locale: TLocale,
-) {
-    if (!replies) return null;
+interface RepliesListProps {
+    replies: useCaseModels.TAssignmentReply[];
+    passedDetails: useCaseModels.TAssignmentPassedData | undefined;
+    locale: TLocale;
+}
 
-    return replies.map((reply, index) => (
-        <Message
-            key={`reply-${index}`}
-            reply={transformReplyData(reply, index)}
-            onFileDownload={(file) => {
-                downloadFile(file.url, file.name);
-            }}
-            locale={locale}
-        />
-    ));
+// Render replies as Message components
+function RepliesList({ replies, passedDetails, locale }: RepliesListProps) {
+    const messageComponents: React.ReactNode[] = useMemo(() => {
+        const components = replies.map((reply, index) => (
+            <Message
+                key={`reply-${index}`}
+                reply={{
+                    replyId: index,
+                    ...transformReplyData(reply, locale),
+                }}
+                onFileDownload={(file) => {
+                    downloadFile(file.url, file.name);
+                }}
+                locale={locale}
+            />
+        ));
+        if (passedDetails) {
+            components.push(
+                <Message
+                    key={`reply-passed`}
+                    reply={{
+                        replyId: replies.length,
+                        timestamp: passedDetails.passedAt,
+                        type: 'passed',
+                        sender: transformReplySender(passedDetails.sender, locale),
+                    }}
+                    onFileDownload={(file) => {
+                        downloadFile(file.url, file.name);
+                    }}
+                    locale={locale}
+                />,
+            );
+        }
+        return components;
+    }, [replies, locale, passedDetails]);
+
+    return messageComponents;
 }
 
 // Transform reply data for Message component
 function transformReplyData(
     reply: useCaseModels.TAssignmentReply,
-    index: number,
+    locale: TLocale,
 ) {
     return {
-        replyId: index,
         type: 'resources' as const,
         comment: reply.comment,
         timestamp: reply.sentAt,
-        sender: {
-            id: reply.sender.id.toString(),
-            // TODO: Handle translation for anonymous user
-            name: reply.sender.name ?? 'Anonymous User',
-            email: '',
-            role: reply.sender.role as 'student' | 'coach',
-            image: reply.sender.avatarUrl ?? '',
-            isCurrentUser: false,
-        },
+        sender: transformReplySender(reply.sender, locale),
         files: reply.files.map((file: any) => ({
             ...file,
             category: 'generic' as const,
@@ -185,5 +211,21 @@ function transformReplyData(
                   }
                 : undefined,
         })),
+    };
+}
+
+function transformReplySender(
+    sender: useCaseModels.TAssignmentReply['sender'],
+    locale: TLocale,
+) {
+    // TODO: Handle translation for anonymous user
+    // TODO: Determine if the sender is the current user
+    return {
+        id: sender.id.toString(),
+        name: sender.name ?? 'Anonymous User',
+        email: '',
+        role: sender.role as 'student' | 'coach',
+        image: sender.avatarUrl ?? '',
+        isCurrentUser: false,
     };
 }
