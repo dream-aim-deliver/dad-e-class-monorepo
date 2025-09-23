@@ -60,8 +60,11 @@ import { listStudentCoachingSessions } from './procedures/student-coaching-sessi
 import { createCoachingSessionReview } from './procedures/create-coaching-session-review';
 import { unscheduleCoachingSession } from './procedures/unschedule-coaching-session';
 import { listUpcomingStudentCoachingSessions } from './procedures/upcoming-student-coaching-sessions';
+<<<<<<< HEAD
 import { listNotifications } from './procedures/list-notifications';
 import { markNotificationsAsRead } from './procedures/mark-notifications-as-read';
+=======
+>>>>>>> f5312223 (feat: Implement user dashboard and upcoming coaching sessions features)
 
 export const mockRouter = t.router({
     getPlatform,
@@ -122,8 +125,11 @@ export const mockRouter = t.router({
     createCoachingSessionReview,
     unscheduleCoachingSession,
     listUpcomingStudentCoachingSessions,
+<<<<<<< HEAD
     listNotifications,
     markNotificationsAsRead,
+=======
+>>>>>>> f5312223 (feat: Implement user dashboard and upcoming coaching sessions features)
 });
 
 export type MockRouter = typeof mockRouter;
