@@ -57,6 +57,8 @@ import { getPublicCourseDetails } from './procedures/get-public-course-detail';
 import { listCourseReviews } from './procedures/course-reviews';
 import { getCoursePackages } from './procedures/course-packages';
 import { listStudentCoachingSessions } from './procedures/student-coaching-sessions';
+import { createCoachingSessionReview } from './procedures/create-coaching-session-review';
+import { unscheduleCoachingSession } from './procedures/unschedule-coaching-session';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -113,6 +115,8 @@ export const mockRouter = t.router({
     listCourseReviews,
     getCoursePackages,
     listStudentCoachingSessions,
+    createCoachingSessionReview,
+    unscheduleCoachingSession,
 });
 
 export type MockRouter = typeof mockRouter;
