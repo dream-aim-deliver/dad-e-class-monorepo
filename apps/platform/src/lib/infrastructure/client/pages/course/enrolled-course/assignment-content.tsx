@@ -55,55 +55,68 @@ export default function AssignmentContent({
 
     return (
         <div className="p-4 flex flex-col gap-4">
-            <AssignmentModalContent
-                {...getAssignmentModalProps(assignment, locale)}
-                onFileDownload={(file) => {
-                    downloadFile(file.url, file.name);
-                }}
-            />
-            {assignment.progress && <RepliesList
-                replies={assignment.progress.replies}
-                passedDetails={assignment.progress.passedDetails}
+            <AssignmentModalWrapper
+                assignment={assignment}
                 locale={locale}
-            />}
+            />
+            {assignment.progress && (
+                <RepliesList
+                    replies={assignment.progress.replies}
+                    passedDetails={assignment.progress.passedDetails}
+                    locale={locale}
+                />
+            )}
         </div>
     );
 }
 
-function getAssignmentModalProps(
-    assignment: viewModels.TAssignmentSuccess,
-    locale: TLocale,
-) {
-    return {
-        resources: transformResources(assignment.resources),
-        links: transformLinks(assignment.links),
-        locale,
-        title: assignment.title,
-        course: {
-            title: assignment.course.title,
-            imageUrl: assignment.course.imageUrl,
-        },
-        onClickCourse: () => {
-            // TODO: navigate to course by slug
-        },
-        group: undefined,
-        onClickGroup: () => {
-            // TODO: navigate to group workspace
-        },
-        student: assignment.progress?.student && {
-            // TODO: translate 'Anonymous User'
-            name: assignment.progress.student.name ?? 'Anonymous User',
-            avatarUrl: assignment.progress.student.avatarUrl ?? undefined,
-            isYou: false,
-        },
-        onClickUser: () => {
-            // TODO: navigate to student profile
-        },
-        modulePosition: assignment.module.position,
-        lessonPosition: assignment.lesson.position,
-        status: AssignmentStatus.NotStarted,
-        description: assignment.description,
-    };
+interface AssignmentModalWrapperProps {
+    assignment: viewModels.TAssignmentSuccess;
+    locale: TLocale;
+}
+
+function AssignmentModalWrapper({
+    assignment,
+    locale,
+}: AssignmentModalWrapperProps) {
+    return (
+        <AssignmentModalContent
+            resources={transformResources(assignment.resources)}
+            links={transformLinks(assignment.links)}
+            locale={locale}
+            title={assignment.title}
+            course={{
+                title: assignment.course.title,
+                imageUrl: assignment.course.imageUrl,
+            }}
+            onClickCourse={() => {
+                // TODO: navigate to course by slug
+            }}
+            group={undefined}
+            onClickGroup={() => {
+                // TODO: navigate to group workspace
+            }}
+            student={
+                assignment.progress?.student && {
+                    // TODO: translate 'Anonymous User'
+                    name: assignment.progress.student.name ?? 'Anonymous User',
+                    avatarUrl:
+                        assignment.progress.student.avatarUrl ?? undefined,
+                    isYou: false,
+                }
+            }
+            onClickUser={() => {
+                // TODO: navigate to student profile
+            }}
+            modulePosition={assignment.module.position}
+            lessonPosition={assignment.lesson.position}
+            status={AssignmentStatus.NotStarted}
+            description={assignment.description}
+            onFileDownload={(file) => {
+                downloadFile(file.url, file.name);
+            }}
+        />
+    );
 }
 
 // Transform resources to the expected format
@@ -167,7 +180,10 @@ function RepliesList({ replies, passedDetails, locale }: RepliesListProps) {
                         replyId: replies.length,
                         timestamp: passedDetails.passedAt,
                         type: 'passed',
-                        sender: transformReplySender(passedDetails.sender, locale),
+                        sender: transformReplySender(
+                            passedDetails.sender,
+                            locale,
+                        ),
                     }}
                     onFileDownload={(file) => {
                         downloadFile(file.url, file.name);
