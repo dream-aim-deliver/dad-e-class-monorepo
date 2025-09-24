@@ -2,15 +2,14 @@ import { NextAuthResult } from 'next-auth';
 import { generateNextAuthConfig } from '@maany_shr/e-class-auth';
 import { getTRPCUrl } from '../../../common/utils/get-cms-query-client';
 import { getLocale } from 'next-intl/server';
+import env from '../env';
 
-const auth0ClientID = process.env.AUTH_AUTH0_CLIENT_ID;
-const auth0ClientSecret = process.env.AUTH_AUTH0_CLIENT_SECRET;
-const auth0Issuer = process.env.AUTH_AUTH0_ISSUER;
-const auth0AuthorizationUrl = process.env.AUTH_AUTH0_AUTHORIZATION_URL;
-const auth0RolesClaimKey = process.env.AUTH_AUTH0_ROLES_CLAIM_KEY;
-const useTestAccounts =
-    process.env.AUTH_ENABLE_TEST_ACCOUNTS?.trim().toLocaleLowerCase() ===
-    'true';
+const auth0ClientID = env.AUTH_AUTH0_CLIENT_ID;
+const auth0ClientSecret = env.AUTH_AUTH0_CLIENT_SECRET;
+const auth0Issuer = env.AUTH_AUTH0_ISSUER;
+const auth0AuthorizationUrl = env.AUTH_AUTH0_AUTHORIZATION_URL;
+const auth0RolesClaimKey = env.AUTH_AUTH0_ROLES_CLAIM_KEY;
+const useTestAccounts = env.AUTH_ENABLE_TEST_ACCOUNTS;
 
 if (
     !auth0ClientID ||
@@ -40,8 +39,8 @@ const nextAuth: NextAuthResult = generateNextAuthConfig({
         getPlatformHeaders: () => {
             const headers: Record<string, string> = {};
             // Add platform header
-            if (process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME) {
-                headers['x-eclass-runtime'] = process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
+            if (env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME) {
+                headers['x-eclass-runtime'] = env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
             }
             return headers;
         },
