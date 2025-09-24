@@ -1,5 +1,5 @@
-import HomeServerComponent from '../../../lib/infrastructure/server/pages/home-rsc';
+import ListPlatformsServerComponent from '../../../lib/infrastructure/server/pages/list-platforms-rsc';
 
 export default async function Index() {
-    return <HomeServerComponent />;
+    return <ListPlatformsServerComponent />;
 }
