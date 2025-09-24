@@ -29,7 +29,6 @@ const nextAuth: NextAuthResult = generateNextAuthConfig({
         clientSecret: auth0ClientSecret,
         issuer: auth0Issuer,
         authorizationUrl: auth0AuthorizationUrl,
-        rolesClaimKey: auth0RolesClaimKey,
     },
     pages: {
         signIn: '/en/auth/login', // TODO: Localization should be handled in middleware. See middleware.ts

@@ -10,10 +10,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 interface HeaderProps {
-    platformViewModel: viewModels.TPlatformViewModel;
     availableLocales: TLocale[];
     locale: TLocale;
-    // TODO: implement session context
     session: auth.TSession | null;
 }
 
@@ -29,9 +27,6 @@ const NavLinks = ({
     // Route mapping for header navigation
     const routes = {
         manageUsers: '/users',
-        coaching: '/coaching',
-        howItWorks: '/how-it-works',
-        about: '/about',
     };
 
     // Check if current path matches a route (with or without locale prefix)
@@ -49,15 +44,12 @@ const NavLinks = ({
             : `${baseClass} text-text-primary hover:text-button-primary-hover-fill`;
     };
 
-    // TODO: possibly use Link from Next.js
     return (
-        <>
-            <Link href="/users">
-                <span className={getLinkClass(routes.manageUsers)}>
-                    {t('manageUsers')}
-                </span>
-            </Link>
-        </>
+        <Link href="/users">
+            <span className={getLinkClass(routes.manageUsers)}>
+                {t('manageUsers')}
+            </span>
+        </Link>
     );
 };
 
@@ -98,7 +90,7 @@ export default function Header({
             value: 'logout',
         },
     ];
-    
+
     const handleDropdownSelection = (selected: string) => {
         if (selected === 'manageUsers') {
             router.push(`/${locale}/users`);
@@ -110,9 +102,7 @@ export default function Header({
             isLoggedIn={!!session}
             availableLocales={availableLocales}
             locale={locale}
-            logo={
-                <span className="text-xl font-semibold">E-Class CMS</span>
-            }
+            logo={<span className="text-xl font-semibold">E-Class CMS</span>}
             onChangeLanguage={changeLanguage}
             onLogout={handleLogout}
             isLoggingOut={isLoggingOut}
@@ -120,7 +110,7 @@ export default function Header({
             userProfileImageSrc={session?.user.image}
             dropdownOptions={dropdownOptions}
             onDropdownSelection={handleDropdownSelection}
-            dropdownTriggerText={""}
+            dropdownTriggerText={''}
         >
             <NavLinks locale={locale} pathname={pathname} />
         </Navbar>

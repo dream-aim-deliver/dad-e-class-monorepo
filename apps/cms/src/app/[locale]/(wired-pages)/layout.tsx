@@ -13,8 +13,8 @@ import {
     localeToLanguageCode,
 } from '../../../lib/infrastructure/server/utils/language-mapping';
 import Layout from '../../../lib/infrastructure/client/pages/layout';
-import CMSTRPCClientProviders from '../../../lib/infrastructure/client/trpc/cms-client-provider';
-
+// import env to validate 
+import serverEnv from '../../../lib/infrastructure/server/config/env';
 
 
 export const metadata = {
@@ -62,7 +62,7 @@ export default async function RootLayout({
         ],
     };
 
-    // Check if platform's languages are supported
+    // Check if cms's languages are supported
     const availableLocales: TLocale[] = [];
     for (const language of languages) {
         const availableLocale = languageCodeToLocale[language.languageCode];
@@ -70,7 +70,7 @@ export default async function RootLayout({
             availableLocales.push(availableLocale);
         } else {
             // TODO: might be a soft error
-            throw new Error('A platform language is not supported');
+            throw new Error('CMS language is not supported: ' + language.languageCode);
         }
     }
 
@@ -103,11 +103,9 @@ export default async function RootLayout({
             >
                 <SessionProvider session={session}>
                     <NextIntlClientProvider locale={locale} messages={messages}>
-                        <CMSTRPCClientProviders>
                             <Layout availableLocales={availableLocales}>
                                 {children}
                             </Layout>
-                        </CMSTRPCClientProviders>
                     </NextIntlClientProvider>
                 </SessionProvider>
             </body>

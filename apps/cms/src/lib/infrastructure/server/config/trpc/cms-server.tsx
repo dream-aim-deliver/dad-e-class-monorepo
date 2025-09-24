@@ -14,6 +14,7 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import superjson from 'superjson';
 import nextAuth from '../auth/next-auth.config';
 import { getLocale } from 'next-intl/server';
+import env from '../env';
 
 export const getQueryClient = cache(makeQueryClient);
 
@@ -48,7 +49,7 @@ async function createServerHeaders(): Promise<Record<string, string>> {
 
     // Add platform header
     try {
-        const platformName = process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
+        const platformName = env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
         if (platformName) {
             headers['x-eclass-runtime'] = platformName;
         }

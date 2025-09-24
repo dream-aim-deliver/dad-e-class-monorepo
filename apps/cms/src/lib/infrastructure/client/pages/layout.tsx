@@ -1,10 +1,7 @@
 'use client';
 
-import { trpc } from '../trpc/client';
 import Header from './header';
-import { useState, useEffect, useRef } from 'react';
-import { viewModels } from '@maany_shr/e-class-models';
-import { useGetPlatformPresenter } from '../hooks/use-platform-presenter';
+import { useEffect, useRef } from 'react';
 import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
@@ -14,9 +11,10 @@ import { usePathname } from 'next/navigation';
 interface LayoutProps {
     children: React.ReactNode;
     availableLocales: TLocale[];
+    backgroundImageUrl?: string;
 }
 
-export default function Layout({ children, availableLocales }: LayoutProps) {
+export default function Layout({ children, availableLocales, backgroundImageUrl }: LayoutProps) {
     const locale = useLocale() as TLocale;
     const sessionDTO = useSession();
     const session = sessionDTO.data;
@@ -42,33 +40,19 @@ export default function Layout({ children, availableLocales }: LayoutProps) {
         }
     }, [pathname]);
 
-    const [platformResponse] = trpc.getPlatform.useSuspenseQuery({});
-    const [platformViewModel, setPlatformViewModel] = useState<
-        viewModels.TPlatformViewModel | undefined
-    >(undefined);
-    const { presenter: platformPresenter } =
-        useGetPlatformPresenter(setPlatformViewModel);
-    platformPresenter.present(platformResponse, platformViewModel);
-
-    if (!platformViewModel)
-        return <DefaultLoading locale={locale} variant="minimal" />;
-    if (platformViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
-    }
-
+    
     return (
         <div
             className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center"
             style={{
                 // Temporary linear gradient to match the Figma. Should be uploaded this dark.
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${platformViewModel.data.backgroundImageUrl})`,
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${backgroundImageUrl})`,
                 backgroundSize: '100% auto',
                 // TODO: have a fallback color
                 backgroundColor: '#141414',
             }}
         >
             <Header
-                platformViewModel={platformViewModel}
                 availableLocales={availableLocales}
                 locale={locale}
                 session={session}

@@ -16,7 +16,6 @@ export type TSessionUser = z.infer<typeof SessionUserSchema>;
 
 export const SessionSchema = z.object({
     user: SessionUserSchema,
-    platform: z.string(), // ID of the platform
     expires: z.string(),
 });
 

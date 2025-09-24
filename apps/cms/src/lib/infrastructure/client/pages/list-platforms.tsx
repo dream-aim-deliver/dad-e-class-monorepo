@@ -16,6 +16,7 @@ import { useState } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-home-page-presenter';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
 import { useRouter } from 'next/navigation';
+import env from '../config/env';
 
 const Carousel = dynamic(
     () =>
@@ -69,7 +70,7 @@ export default function ListPlatforms() {
         <div className="flex flex-col items-center">
                 <PlatformCardList locale={locale}>
                     <PlatformCard
-                        imageUrl={process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL}
+                        imageUrl={env.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL}
                         platformName={'Bewerbeagentur Mock'}
                         courseCount={10} 
                         onClickManage={function (): void {
