@@ -895,7 +895,7 @@ export const EN: TDictionary = {
     breadcrumbs: {
       home: 'Home',
       workspace: 'Workspace',
-      courses: 'Your offers',
+      courses: 'Courses',
       students: 'Students',
       createCourse: 'Create course',
       editCourse: 'Edit course',
