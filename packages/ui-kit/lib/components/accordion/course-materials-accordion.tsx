@@ -223,7 +223,7 @@ export const CourseMaterialsAccordion: React.FC<
                                         </AccordionTrigger>
                                         <AccordionContent value={lesson.id!}>
                                             <hr className="border-divider my-4" />
-                                            <div className="flex flex-col gap-4">
+                                            <div className="flex flex-col gap-4 pb-6">
                                                 {lesson.materials?.map(
                                                     (material) =>
                                                         renderMaterial(
