@@ -116,13 +116,6 @@ export const generateNextAuthConfig = (config: {
             },
             session: async ({ session, token }) => {
                 const defaultSessionRoles: ("visitor" | "student" | "coach" | "admin")[] = ["visitor", "student"]
-                // // TODO: remove if not critical to the UI
-                // const platformId = process.env.E_CLASS_PLATFORM_ID;
-                // if (!platformId) {
-                //     throw new Error("CRITICAL! Configuration Error: Platform ID not found in the environment variables");
-                // }
-                // // TODO: how is this actually supposed to be handled? [A: can be obtained from the backend now, look at listUserRoles for example. ]
-                // session.platform = platformId;
 
                 // Get the token for authorization
                 const nextAuthToken = token as DefaultJWT & {

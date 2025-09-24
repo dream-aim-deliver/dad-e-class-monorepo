@@ -13,6 +13,7 @@ import { httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
 import { useSession } from 'next-auth/react';
 import { useLocale } from 'next-intl';
+import env from '../config/env';
 
 interface ClientProvidersProps {
     children: ReactNode;
@@ -83,10 +84,10 @@ export default function CMSTRPCClientProviders({
                             }
 
                             // Add platform header
-                            if (process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME) {
+                            if (env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME) {
                                 headers['x-eclass-Runtime'] =
-                                    process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
-                                console.log('[TRPC Headers] ✅ Platform header added:', process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME);
+                                    env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
+                                console.log('[TRPC Headers] ✅ Platform header added:', env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME);
                             } else {
                                 console.warn('[TRPC Headers] ⚠️ Missing platform header');
                             }
