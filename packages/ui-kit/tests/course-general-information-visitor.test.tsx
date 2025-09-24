@@ -59,7 +59,6 @@ describe('CourseGeneralInformationVisitor', () => {
         totalRating: 120,
         ownerRating: 4,
         ownerTotalRating: 50,
-        requirementsDetails: 'Some requirements',
         locale: mockLocale,
         onClickBook: mockOnClickBook,
         onClickBuyCourse: mockOnClickBuyCourse,
