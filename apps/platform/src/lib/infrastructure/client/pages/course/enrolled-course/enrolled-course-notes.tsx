@@ -1,10 +1,9 @@
 "use client";
 import { TLocale } from "@maany_shr/e-class-translations";
 import { useLocale, useTranslations } from "next-intl";
-import { trpc } from "../../../trpc/client";
+import { trpc } from "../../../trpc/cms-client";
 import { Suspense, useRef, useState } from "react";
 import { Button, CourseNotesAccordion, DefaultLoading, IconCloudDownload } from "@maany_shr/e-class-ui-kit";
-import MockTRPCClientProviders from "../../../trpc/mock-client-providers";
 import { viewModels } from "@maany_shr/e-class-models";
 import { useListStudentNotesPresenter } from "../../../hooks/use-list-student-notes-presenter";
 import html2pdf from "html2pdf.js";
@@ -33,6 +32,7 @@ function EnrolledCourseNotesContent(
 
     const { presenter } = useListStudentNotesPresenter(setCourseNotesViewModel);
 
+    //@ts-ignore
     presenter.present(courseNotesResponse, courseNotesViewModel);
 
     // TODO: Style PDF
@@ -481,13 +481,11 @@ export default function EnrolledCourseNotes(
 
     if (props.currentRole === 'student') {
         return (
-            <MockTRPCClientProviders>
-                <Suspense
-                    fallback={<DefaultLoading locale={locale} variant="minimal" />}
-                >
-                    <EnrolledCourseNotesContent {...props} />
-                </Suspense>
-            </MockTRPCClientProviders>
+            <Suspense
+                fallback={<DefaultLoading locale={locale} variant="minimal" />}
+            >
+                <EnrolledCourseNotesContent {...props} />
+            </Suspense>
         )
     } else {
         throw new Error('Access denied for current role');
