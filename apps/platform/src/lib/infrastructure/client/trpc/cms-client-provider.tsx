@@ -8,7 +8,7 @@ import {
     getTRPCUrl,
 } from '../../common/utils/get-cms-query-client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { trpc } from '../trpc/client';
+import { trpc } from '../trpc/cms-client';
 import { httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
 import { useSession } from 'next-auth/react';
