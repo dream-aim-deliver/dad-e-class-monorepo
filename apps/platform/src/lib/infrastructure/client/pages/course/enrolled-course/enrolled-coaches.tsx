@@ -22,7 +22,6 @@ import useClientSidePagination from '../../../utils/use-client-side-pagination';
 import MockTRPCClientProviders from '../../../trpc/mock-client-providers';
 import { useCoachMutations } from './hooks/use-coach-mutations';
 
-
 interface EnrolledCoachesProps {
     courseSlug: string;
     currentRole: string;
@@ -36,12 +35,15 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     const [localAddedCoaches, setLocalAddedCoaches] = useState<string[]>([]);
 
     // Fetch course-specific coaches data using TRPC Mock Client
-    const [courseCoachesResponse, { refetch: refetchCoaches }] = trpcMock.listCourseCoaches.useSuspenseQuery({
-        courseSlug: props.courseSlug
-    });
+    const [courseCoachesResponse, { refetch: refetchCoaches }] =
+        trpcMock.listCourseCoaches.useSuspenseQuery({
+            courseSlug: props.courseSlug,
+        });
 
     // Fetch available coaches data using TRPC Mock Client
-    const [availableCoachesResponse] = trpcMock.listCoaches.useSuspenseQuery({});
+    const [availableCoachesResponse] = trpcMock.listCoaches.useSuspenseQuery(
+        {},
+    );
 
     // Set up presenter for transforming the response to view model
     const [courseCoachesViewModel, setCourseCoachesViewModel] = useState<
@@ -52,11 +54,21 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     >(undefined);
 
     // Set up presenters
-    const { presenter: courseCoachesPresenter } = useListCourseCoachesPresenter(setCourseCoachesViewModel);
-    const { presenter: availableCoachesPresenter } = useListCoachesPresenter(setAvailableCoachesViewModel);
+    const { presenter: courseCoachesPresenter } = useListCourseCoachesPresenter(
+        setCourseCoachesViewModel,
+    );
+    const { presenter: availableCoachesPresenter } = useListCoachesPresenter(
+        setAvailableCoachesViewModel,
+    );
 
-    courseCoachesPresenter.present(courseCoachesResponse, courseCoachesViewModel);
-    availableCoachesPresenter.present(availableCoachesResponse, availableCoachesViewModel);
+    courseCoachesPresenter.present(
+        courseCoachesResponse,
+        courseCoachesViewModel,
+    );
+    availableCoachesPresenter.present(
+        availableCoachesResponse,
+        availableCoachesViewModel,
+    );
 
     // Get available coaches from the presenter (this has the full coach data structure)
     const availableCoaches = useMemo(() => {
@@ -72,25 +84,30 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
             id: coach.username,
             coachName: `${coach.name} ${coach.surname}`,
             coachAvatarUrl: coach.avatarUrl || '',
-            totalRating: coach.reviewCount ,
+            totalRating: coach.reviewCount,
             rating: coach.averageRating || 0,
         }));
     }, [availableCoaches]);
 
-
-
-    const serverCoaches = courseCoachesViewModel?.mode === 'default' ? courseCoachesViewModel.data.coaches : [];
+    const serverCoaches =
+        courseCoachesViewModel?.mode === 'default'
+            ? courseCoachesViewModel.data.coaches
+            : [];
 
     // Combine server coaches with locally added coaches for immediate UI update
     const coaches = useMemo(() => {
         const baseCoaches = [...serverCoaches];
 
         // Add locally added coaches that aren't already in the server data
-        localAddedCoaches.forEach(coachId => {
-            const alreadyExists = baseCoaches.some(coach => coach.username === coachId);
+        localAddedCoaches.forEach((coachId) => {
+            const alreadyExists = baseCoaches.some(
+                (coach) => coach.username === coachId,
+            );
             if (!alreadyExists) {
                 // Find the full coach data from availableCoaches instead of reconstructing from mappedAvailableCoaches
-                const availableCoach = availableCoaches.find(ac => ac.username === coachId);
+                const availableCoach = availableCoaches.find(
+                    (ac) => ac.username === coachId,
+                );
                 if (availableCoach) {
                     baseCoaches.push(availableCoach);
                 }
@@ -102,8 +119,10 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
 
     // Derive addedCoachIds from server coaches and locally added coach ids so the UI reflects newly added coaches immediately
     const addedCoachIds = useMemo(() => {
-        const serverIds = serverCoaches.map(coach => coach.username);
-        const allIds = Array.from(new Set([...serverIds, ...localAddedCoaches]));
+        const serverIds = serverCoaches.map((coach) => coach.username);
+        const allIds = Array.from(
+            new Set([...serverIds, ...localAddedCoaches]),
+        );
         return allIds;
     }, [serverCoaches, localAddedCoaches]);
 
@@ -116,14 +135,17 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     const [sortOrder, setSortOrder] = useState('desc');
 
     // Sorting function
-    const sortCoaches = useCallback((coaches: Coach[]) => {
-        return [...coaches].sort((a, b) => {
-            const aVal = a.coachingSessionCount;
-            const bVal = b.coachingSessionCount;
-            const result = sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
-            return result;
-        });
-    }, [sortOrder]);
+    const sortCoaches = useCallback(
+        (coaches: Coach[]) => {
+            return [...coaches].sort((a, b) => {
+                const aVal = a.coachingSessionCount;
+                const bVal = b.coachingSessionCount;
+                const result = sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+                return result;
+            });
+        },
+        [sortOrder],
+    );
 
     // Update filtered coaches whenever coaches data changes
     useEffect(() => {
@@ -135,7 +157,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     }, [coaches, searchQuery, sortCoaches]);
 
     useEffect(() => {
-        setFilteredCoaches(prev => {
+        setFilteredCoaches((prev) => {
             const sorted = sortCoaches(prev);
             return sorted;
         });
@@ -148,22 +170,26 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         isLoading: isMutating,
         clearError,
         addCoachViewModel,
-        removeCoachViewModel
+        removeCoachViewModel,
     } = useCoachMutations(
         props.courseSlug,
         undefined,
         (addedCoach) => {
-            setLocalAddedCoaches(prev => [...prev, addedCoach.username]);
+            setLocalAddedCoaches((prev) => [...prev, addedCoach.username]);
         },
         (removedCoachUsername) => {
-            setLocalAddedCoaches(prev => prev.filter(id => id !== removedCoachUsername));
-        }
+            setLocalAddedCoaches((prev) =>
+                prev.filter((id) => id !== removedCoachUsername),
+            );
+        },
     );
 
     // Handler functions with enhanced error handling using presenter
     const handleAddCoach = async (coachId: string) => {
         // Find the coach from available coaches (full data)
-        const coachToAdd = availableCoaches.find(coach => coach.username === coachId);
+        const coachToAdd = availableCoaches.find(
+            (coach) => coach.username === coachId,
+        );
         if (!coachToAdd) {
             console.error('Coach not found in available coaches:', coachId);
             return;
@@ -193,7 +219,11 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     };
 
     // Use client-side pagination - call this hook consistently on every render
-    const { displayedItems: displayedCoaches, hasMoreItems, handleLoadMore } = useClientSidePagination({
+    const {
+        displayedItems: displayedCoaches,
+        hasMoreItems,
+        handleLoadMore,
+    } = useClientSidePagination({
         items: filteredCoaches,
         itemsPerPage: 6,
         itemsPerPage2xl: 9,
@@ -204,7 +234,12 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     }
 
     if (courseCoachesViewModel.mode === 'not-found') {
-        return <DefaultError locale={locale} description={t('noCoachesAssigned')} />;
+        return (
+            <DefaultError
+                locale={locale}
+                description={t('noCoachesAssigned')}
+            />
+        );
     }
 
     if (courseCoachesViewModel.mode === 'kaboom') {
@@ -212,35 +247,124 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
     }
 
     // Check for mutation errors and show as full page errors
-    if (addCoachViewModel?.mode === 'error' || addCoachViewModel?.mode === 'kaboom') {
+    if (
+        addCoachViewModel?.mode === 'error' ||
+        addCoachViewModel?.mode === 'kaboom'
+    ) {
         const errorMessage = addCoachViewModel.data.message;
         return <DefaultError locale={locale} description={errorMessage} />;
     }
 
-    if (removeCoachViewModel?.mode === 'error' || removeCoachViewModel?.mode === 'kaboom') {
+    if (
+        removeCoachViewModel?.mode === 'error' ||
+        removeCoachViewModel?.mode === 'kaboom'
+    ) {
         const errorMessage = removeCoachViewModel.data.message;
         return <DefaultError locale={locale} description={errorMessage} />;
     }
 
-    if (coaches.length === 0) {
-        return (
-            <div className="text-center py-8">
-                <p className="text-accent-500">{t('noCoachesAssigned')}</p>
-            </div>
-        );
-    }
 
-    if (filteredCoaches.length === 0) {
+    // Helper to render content based on coaches and search state
+    const renderCoachContent = (coaches: Coach[], displayedCoaches: Coach[], hasMore: boolean, handleLoadMore: () => void) => {
+        // If there's a search query and no results, show "No coaches found"
+        if (searchQuery.trim() !== '' && coaches.length === 0) {
+            return (
+                <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem] animate-pulse">
+                    <p className="text-text-primary text-md">
+                        {t('noCoachesFound')}
+                    </p>
+                </div>
+            );
+        }
+
+        // If there are no coaches at all (and no search), show "No coaches assigned"
+        if (coaches.length === 0) {
+            return (
+                <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
+                    <p className="text-text-primary text-md">
+                        {t('noCoachesAssigned')}
+                    </p>
+                </div>
+            );
+        }
+
+        // Otherwise, render the coach grid
         return (
-            <div className="text-center py-8">
-                <p className="text-accent-500">{t('noCoachesFound')}</p>
-            </div>
+            <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {isSearchLoading ? (
+                        <CoachCardListSkeleton
+                            cardCount={displayedCoaches.length || 6}
+                        />
+                    ) : (
+                        displayedCoaches.map((coach) => {
+                            const isCoach = props.currentRole === 'coach';
+                            const baseCardDetails = {
+                                coachName: `${coach.name} ${coach.surname}`,
+                                coachImage: coach.avatarUrl || undefined,
+                                languages: coach.languages,
+                                sessionCount: coach.coachingSessionCount,
+                                skills: coach.skills.map((skill) => skill.name), // Map skill objects to names
+                                description: coach.bio,
+                                courses: coach.coursesTaught.map((course) => ({
+                                    image: course.imageUrl || '',
+                                    title: course.title,
+                                    slug: course.slug,
+                                })),
+                                rating: coach.averageRating || 0,
+                                totalRatings: coach.reviewCount,
+                            };
+
+                            const baseProps = {
+                                cardDetails: baseCardDetails,
+                                locale,
+                                onClickViewProfile: () => {
+                                    // TODO:Navigate to coach profile or show modal
+                                },
+                                onClickCourse: (slug: string) => {
+                                    // TODO: Navigate to course page
+                                },
+                            };
+
+                            return (
+                                <CoachCard
+                                    key={coach.username}
+                                    {...(isCoach
+                                        ? {
+                                              ...baseProps,
+                                              variant: 'coach' as const,
+                                          }
+                                        : {
+                                              ...baseProps,
+                                              variant: 'courseCreator' as const,
+                                              onClickRemoveFromCourse: () => {
+                                                  handleRemoveCoach(coach.username);
+                                              },
+                                          })}
+                                />
+                            );
+                        })
+                    )}
+                </div>
+
+                {hasMore && (
+                    <div className="flex justify-center mt-8">
+                        <Button
+                            variant="text"
+                            size="medium"
+                            onClick={handleLoadMore}
+                            text={t('loadMoreButton')}
+                        />
+                    </div>
+                )}
+            </>
         );
-    }
+    };
+
     return (
         <div className="space-y-6">
             <header className="flex justify-between items-center">
-                <h2 className="text-base-white">{t('title')}</h2>
+                <h2>{t('title')}</h2>
                 <Button
                     hasIconLeft
                     iconLeft={<IconPlus />}
@@ -255,7 +379,7 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
             <hr className="h-px bg-divider w-full border-0" />
 
             {/* Search Coaches */}
-            {props.currentRole !== "coach" && (
+            {props.currentRole !== 'coach' && coaches.length > 0 && (
                 <div className="flex flex-col md:flex-row  gap-2 p-2 bg-card-fill rounded-medium border border-card-stroke">
                     <div className="flex-1">
                         <SearchInput
@@ -273,12 +397,20 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                         />
                     </div>
                     <div className="flex gap-2 items-center">
-                        <label className="text-sm md:text-md text-base-white">{t('sortByLabel')}</label>
+                        <label className="text-sm md:text-md text-base-white">
+                            {t('sortByLabel')}
+                        </label>
                         <Dropdown
                             type="simple"
                             options={[
-                                { label: t('sortBySessionsHighToLow'), value: 'sessions-desc' },
-                                { label: t('sortBySessionsLowToHigh'), value: 'sessions-asc' },
+                                {
+                                    label: t('sortBySessionsHighToLow'),
+                                    value: 'sessions-desc',
+                                },
+                                {
+                                    label: t('sortBySessionsLowToHigh'),
+                                    value: 'sessions-asc',
+                                },
                             ]}
                             defaultValue={`sessions-${sortOrder}`}
                             onSelectionChange={(selected) => {
@@ -293,79 +425,13 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                 </div>
             )}
 
-
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {isSearchLoading ? (
-                    <CoachCardListSkeleton cardCount={displayedCoaches.length || 6} />
-                ) : (
-                    displayedCoaches.map((coach) => {
-                        const isCoach = props.currentRole === "coach";
-                        const baseCardDetails = {
-                            coachName: `${coach.name} ${coach.surname}`,
-                            coachImage: coach.avatarUrl || undefined,
-                            languages: coach.languages,
-                            sessionCount: coach.coachingSessionCount,
-                            skills: coach.skills.map((skill) => skill.name), // Map skill objects to names
-                            description: coach.bio,
-                            courses: coach.coursesTaught.map((course) => ({
-                                image: course.imageUrl || '',
-                                title: course.title,
-                                slug: course.slug,
-                            })),
-                            rating: coach.averageRating || 0,
-                            totalRatings: coach.reviewCount,
-                        };
-
-                        const baseProps = {
-                            cardDetails: baseCardDetails,
-                            locale,
-                            onClickViewProfile: () => {
-                                // TODO:Navigate to coach profile or show modal
-                            },
-                            onClickCourse: (slug: string) => {
-                                // TODO: Navigate to course page
-                            }
-                        };
-
-                        return (
-                            <CoachCard
-                                key={coach.username}
-                                {...(isCoach
-                                    ? {
-                                        ...baseProps,
-                                        variant: "coach" as const
-                                    }
-                                    : {
-                                        ...baseProps,
-                                        variant: "courseCreator" as const,
-                                        onClickRemoveFromCourse: () => {
-                                            handleRemoveCoach(coach.username);
-                                        }
-                                    }
-                                )}
-                            />
-                        );
-                    })
-                )}
-            </div>
-
-            {hasMoreItems && (
-                <div className="flex justify-center mt-8">
-                    <Button
-                        variant="text"
-                        size="medium"
-                        onClick={handleLoadMore}
-                        text={t('loadMoreButton')}
-                    />
-                </div>
-            )}
+            {renderCoachContent(filteredCoaches, displayedCoaches, hasMoreItems, handleLoadMore)}
 
             {/* Add Coach Modal */}
             {isAddModalOpen && (
                 <div
-                 className="top-0 left-0 w-full h-full fixed bg-black/30 z-50 flex items-center justify-center p-4"
-                  onClick={(e) => {
+                    className="top-0 left-0 w-full h-full fixed bg-black/30 z-50 flex items-center justify-center p-4"
+                    onClick={(e) => {
                         if (e.target === e.currentTarget) {
                             setIsAddModalOpen(false);
                         }
@@ -375,7 +441,8 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                             setIsAddModalOpen(false);
                         }
                     }}
-                    tabIndex={-1}>
+                    tabIndex={-1}
+                >
                     <AddCoachModal
                         locale={locale}
                         onClose={() => {
