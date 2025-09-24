@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -19,14 +19,15 @@ function isUpcomingSession(session: useCaseModels.TUpcomingCoachingSession): ses
     return session.status === 'scheduled';
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
-    const t = useTranslations('pages.userCoursesList');
     const router = useRouter();
     const locale = useLocale() as TLocale;
     const [viewModel, setViewModel] = useState<viewModels.TUpcomingCoachingSessionsListViewModel | null>(null);
-    const [activeTab, setActiveTab] = useState<string>('upcoming');
 
     const { presenter } = useListUpcomingCoachingSessionsPresenter(setViewModel);
+
+    const [activeTab, setActiveTab] = useState<string>('upcoming');
 
     const {
         data: upcomingSessionsResponse,
@@ -162,7 +163,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                                         // TODO: Implement meeting join functionality
                                     }}
                                     onClickCourse={session.course ? () => {
-                                        router.push(`/${locale}/course/${session.course!.slug}`);
+                                        router.push(`/${locale}/course/${session.course?.slug || ''}`);
                                     } : undefined}
                                 />
                             ))}
@@ -173,7 +174,7 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                                 No upcoming sessions
                             </h3>
                             <p className="text-gray-400 mb-4">
-                                You don't have any upcoming coaching sessions scheduled.
+                                You don&apos;t have any upcoming coaching sessions scheduled.
                             </p>
                             <Button
                                 variant="primary"

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListUserCoursesPresenter } from '../../hooks/use-user-courses-presenter';
 import { useSession } from 'next-auth/react';
@@ -33,19 +33,27 @@ export default function UserCoursesList() {
     const paginationTranslations = useTranslations(
         'components.paginationButton',
     );
-    if (sessionStatus !== 'authenticated' || session == null) {
-        // redirect to login page
-        router.push('/auth/login');
-    }
+    // Handle authentication redirect in useEffect to prevent infinite re-renders
+    useEffect(() => {
+        if (sessionStatus !== 'authenticated' || session == null) {
+            router.push('/auth/login');
+        }
+    }, [sessionStatus, session, router]);
     const userRoles = session?.user.roles;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
     const isAdmin = userRoles?.includes('admin');
     const [coursesResponse] = trpc.listUserCourses.useSuspenseQuery({});
     const [coursesViewModel, setCoursesViewModel] = useState<
         viewModels.TUserCourseListViewModel | undefined
     >(undefined);
     const { presenter } = useListUserCoursesPresenter(setCoursesViewModel);
-    // @ts-ignore
-    presenter.present(coursesResponse, coursesViewModel);
+    
+    // Present data when available
+    useEffect(() => {
+        if (coursesResponse && presenter) {
+            presenter.present(coursesResponse, coursesViewModel);
+        }
+    }, [coursesResponse, presenter, coursesViewModel]);
 
     const courses = useMemo(() => {
         if (!coursesViewModel || coursesViewModel.mode !== 'default') {

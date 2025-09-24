@@ -39,6 +39,12 @@ export default function UserNotifications() {
         return isNaN(parsed) ? 1 : parsed;
     }, [session?.user?.id]);
 
+    // Handle view all callback at top level
+    const handleViewAll = useCallback(() => {
+        // TODO: Navigate to full notifications page
+        console.log('Navigate to full notifications page - implement navigation');
+    }, []);
+
     // TRPC queries
     const [notificationsResponse, { refetch: refetchNotifications }] = trpc.listNotifications.useSuspenseQuery({
         userId: getUserId(),
@@ -47,6 +53,31 @@ export default function UserNotifications() {
             page: 1
         }
     });
+
+    // Memoize activity components at top level
+    const activityComponents = useMemo(() => {
+        if (!viewModel || viewModel.mode !== 'default') return [];
+        
+        const notifications = viewModel.data.notifications;
+        return notifications.map((notification) => (
+            <Activity
+                key={notification.id}
+                message={notification.message}
+                action={notification.action || { title: 'View', url: '#' }}
+                timestamp={notification.timestamp}
+                isRead={notification.isRead}
+                platformName="E-Class"
+                recipients={1}
+                layout="horizontal"
+                locale={locale}
+                onClickActivity={(url: string) => () => {
+                    if (url && url !== '#' && isValidUrl(url)) {
+                        window.open(url, '_blank', 'noopener,noreferrer');
+                    }
+                }}
+            />
+        ));
+    }, [viewModel, locale, isValidUrl]);
 
     const markAsReadMutation = trpc.markNotificationsAsRead.useMutation({
         onSuccess: () => {
@@ -75,26 +106,6 @@ export default function UserNotifications() {
     if (viewModel.mode === 'default') {
         const notifications = viewModel.data.notifications;
 
-        // Convert notifications to Activity components - memoized for performance
-        const activityComponents = useMemo(() => notifications.map((notification) => (
-            <Activity
-                key={notification.id}
-                message={notification.message}
-                action={notification.action || { title: 'View', url: '#' }}
-                timestamp={notification.timestamp}
-                isRead={notification.isRead}
-                platformName="E-Class"
-                recipients={1}
-                layout="horizontal"
-                locale={locale}
-                onClickActivity={(url: string) => () => {
-                    if (url && url !== '#' && isValidUrl(url)) {
-                        window.open(url, '_blank', 'noopener,noreferrer');
-                    }
-                }}
-            />
-        )), [notifications, locale, isValidUrl]);
-
         const handleMarkAllAsRead = () => {
             const unreadNotificationIds = notifications
                 .filter(n => !n.isRead)
@@ -107,9 +118,7 @@ export default function UserNotifications() {
             }
         };
 
-        const handleViewAll = useCallback(() => {
-            // TODO: Navigate to full notifications page
-        }, []);
+
 
         return (
             <div className="w-full">
