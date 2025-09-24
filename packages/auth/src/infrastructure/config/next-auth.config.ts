@@ -2,9 +2,8 @@ import NextAuth, { NextAuthConfig, NextAuthResult } from "next-auth";
 import Auth0, { Auth0Profile } from "next-auth/providers/auth0"
 import { TAuthProviderProfileDTO } from "../../core/dto/auth-provider-dto";
 import { DefaultJWT } from "next-auth/jwt"
-import { role } from "@maany_shr/e-class-models"
 import { Account } from "next-auth"
-import { extractPlatformSpecificRoles, TEST_ACCOUNTS } from "../utils";
+import { TEST_ACCOUNTS } from "../utils";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { TAppRouter } from '@dream-aim-deliver/e-class-cms-rest';
@@ -32,7 +31,6 @@ export const generateNextAuthConfig = (config: {
         clientSecret: string;
         issuer: string;
         authorizationUrl: string;
-        rolesClaimKey: string;
     },
     useTestAccounts: boolean,
     pages: {
@@ -84,11 +82,11 @@ export const generateNextAuthConfig = (config: {
                     url: config.auth0.authorizationUrl,
                 },
                 profile: (profile: Auth0Profile) => {
-                    const ROLES_CLAIM = process.env.AUTH_AUTH0_ROLES_CLAIM_KEY
-                    let roles: role.TRole[] = ['visitor']; // default role
-                    if (ROLES_CLAIM && profile[ROLES_CLAIM]) {
-                        roles = profile[ROLES_CLAIM];
-                    }
+                    // const ROLES_CLAIM = config.auth0.rolesClaimKey;
+                    // let roles: role.TRole[] = ['visitor']; // default role
+                    // if (ROLES_CLAIM && profile[ROLES_CLAIM]) {
+                    //     roles = profile[ROLES_CLAIM];
+                    // }
                     // extract relevant fields from the Auth0 profile to populate the AuthProfile object
                     // the returned object is passed to the jwt callback as the user object
                     return {
@@ -102,7 +100,6 @@ export const generateNextAuthConfig = (config: {
                         sid: profile.sid,
                         issuer: profile.iss,
                         expires: profile.exp,
-                        roles: roles,
                     } as TAuthProviderProfileDTO;
                 }
             })
@@ -119,13 +116,13 @@ export const generateNextAuthConfig = (config: {
             },
             session: async ({ session, token }) => {
                 const defaultSessionRoles: ("visitor" | "student" | "coach" | "admin")[] = ["visitor", "student"]
-                // TODO: remove if not critical to the UI
-                const platformId = process.env.E_CLASS_PLATFORM_ID;
-                if (!platformId) {
-                    throw new Error("CRITICAL! Configuration Error: Platform ID not found in the environment variables");
-                }
-                // TODO: how is this actually supposed to be handled? [A: can be obtained from the backend now, look at listUserRoles for example. ]
-                session.platform = platformId;
+                // // TODO: remove if not critical to the UI
+                // const platformId = process.env.E_CLASS_PLATFORM_ID;
+                // if (!platformId) {
+                //     throw new Error("CRITICAL! Configuration Error: Platform ID not found in the environment variables");
+                // }
+                // // TODO: how is this actually supposed to be handled? [A: can be obtained from the backend now, look at listUserRoles for example. ]
+                // session.platform = platformId;
 
                 // Get the token for authorization
                 const nextAuthToken = token as DefaultJWT & {
