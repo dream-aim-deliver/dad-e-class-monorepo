@@ -1,8 +1,7 @@
 
 "use client";
 
-import { CourseGeneralInformationVisitor, CourseIntroBanner, DefaultAccordion, ReviewSnippet, PackageCardList, PackageCard, StarRating, Dropdown, Button, DefaultError } from '@maany_shr/e-class-ui-kit';
-import Image from 'next/image';
+import { CourseGeneralInformationVisitor, CourseIntroBanner, DefaultAccordion, ReviewSnippet, PackageCardList, PackageCard, StarRating, Dropdown, Button, DefaultError, TeachCourseBanner, Breadcrumbs } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -27,6 +26,7 @@ export default function VisitorPage({ courseData,
     locale
 }: VisitorPageProps) {
     const t = useTranslations('pages.course.visitor');
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
 
     const handleCoachingIncludedChange = (coachingIncluded: boolean) => {
@@ -47,7 +47,6 @@ export default function VisitorPage({ courseData,
     const handleClickRequiredCourse = (slug: string) => {
         // TODO: Implement navigation to required course
         console.log('Navigate to required course:', slug);
-        window.location.href = `/en/courses/${slug}`;
     };
 
     const handleErrorCallback = (message: string, error: any) => {
@@ -241,7 +240,27 @@ export default function VisitorPage({ courseData,
     };
 
     return (
-        <div className="flex flex-col gap-30 px-15">
+        <div className="w-full flex flex-col gap-6 px-15">
+            <div className="w-full pl-4">
+            <Breadcrumbs
+                            items={[
+                                {
+                                    label: breadcrumbsTranslations('courses'),
+                                    onClick: () => {
+                                        // TODO: Implement navigation to home
+                                    },
+                                },
+                                {
+                                    label: courseData?.mode === 'default' ? courseData.data.title : '',
+                                    onClick: () => {
+                                        // TODO: Implement navigation to workspace
+                                    },
+                                }
+                            ]}
+            />
+            </div>
+        <div className="flex flex-col gap-30 ">
+            
             {/* Course General Information */}
             {renderCourseData()}
 
@@ -301,32 +320,18 @@ export default function VisitorPage({ courseData,
                 {renderOffersData()}
             </div>
 
-            <div className="flex sm:flex-row flex-col items-center gap-10">
-                <div className="flex-shrink-0 max-w-[475px] h-[275px]">
-                    <Image
-                        src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=475&h=275&fit=crop&crop=face"
-                        alt="Become a coach and share your knowledge"
-                        width={475}
-                        height={275}
-                        className="rounded-medium w-full h-full object-cover"
-                    />
-                </div>
-                <div className="flex flex-col gap-4">
-                    <h2 className="md:text-4xl text-2xl  text-base-white">{t('becomeCoachTitle')}</h2>
-                    <p className="md:text-lg text-md text-base-white">{t('becomeCoachDescription')}</p>
-                    <div>
-                        <Button
-                            onClick={() => {
-                                // TODO: Implement become coach logic
-                                console.log('Become coach button clicked');
-                            }}
-                            className="!w-auto"
-                            text={t('becomeCoachButton')}
-                            size="big"
-                        />
-                    </div>
-                </div>
-            </div>
+            <TeachCourseBanner
+                locale={locale}
+                imageUrl="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=475&h=275&fit=crop&crop=face"
+                title={t('becomeCoachTitle')}
+                description={t('becomeCoachDescription')}
+                onClick={() => {
+                    // TODO: Implement become coach logic
+                    console.log('Become coach button clicked');
+                }}
+                buttonText={t('becomeCoachButton')}
+            />
+        </div>
         </div>
     );
 }
