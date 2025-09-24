@@ -61,7 +61,7 @@ function Topics() {
     return <TopicList list={topics} title={t('topicsTitle')} />;
 }
 
-export default function Home() {
+export default function ListPlatforms() {
     const locale = useLocale() as TLocale;
 
 

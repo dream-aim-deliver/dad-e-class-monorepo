@@ -1,9 +1,9 @@
-import Home from '../../client/pages/home';
+import ListPlatforms from '../../client/pages/list-platforms';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 
-export default async function HomeServerComponent() {
+export default async function ListPlatformsServerComponent() {
     // await Promise.all([
     //     prefetch(trpc.getHomePage.queryOptions({})),
     //     prefetch(trpc.listTopics.queryOptions({})),
@@ -13,7 +13,7 @@ export default async function HomeServerComponent() {
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <Home />
+                    <ListPlatforms />
                 </Suspense>
             </HydrateClient>
         </>
