@@ -99,7 +99,6 @@ const meta: Meta<typeof CourseGeneralInformationVisitor> = {
             alert(`Navigate to course: ${slug}`),
         imageUrl:
             'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
-        requirementsDetails: 'Basic JavaScript knowledge required.',
     },
 };
 
@@ -115,14 +114,12 @@ export const OneRequirement: Story = {
                 slug: 'js-basics',
             },
         ],
-        requirementsDetails: 'Basic JavaScript knowledge required.',
     },
 };
 
 export const NoRequirements: Story = {
     args: {
         requiredCourses: [],
-        requirementsDetails: '',
     },
 };
 

@@ -1,12 +1,27 @@
+'use client';
 
-"use client";
-
-import { CourseGeneralInformationVisitor, CourseIntroBanner, DefaultAccordion, ReviewSnippet, PackageCardList, PackageCard, StarRating, Dropdown, Button, DefaultError, TeachCourseBanner, Breadcrumbs } from '@maany_shr/e-class-ui-kit';
+import {
+    CourseGeneralInformationVisitor,
+    CourseIntroBanner,
+    DefaultAccordion,
+    ReviewSnippet,
+    PackageCardList,
+    PackageCard,
+    StarRating,
+    Dropdown,
+    Button,
+    DefaultError,
+    TeachCourseBanner,
+    Breadcrumbs,
+} from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import OffersCarousel from '../offers/offers-carousel';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { trpc } from '../../trpc/cms-client';
+import { useGetCoachingPagePresenter } from '../../hooks/use-coaching-page-presenter';
+import { useRouter } from 'next/navigation';
 
 interface VisitorPageProps {
     courseData: viewModels.TPublicCourseDetailsViewModel;
@@ -18,16 +33,35 @@ interface VisitorPageProps {
     locale: TLocale;
 }
 
-export default function VisitorPage({ courseData,
+export default function VisitorPage({
+    courseData,
     introductionData,
-    outlineData, reviewsData,
+    outlineData,
+    reviewsData,
     packagesData,
     offersCarouselData,
-    locale
+    locale,
 }: VisitorPageProps) {
     const t = useTranslations('pages.course.visitor');
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const router = useRouter();
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+
+    const [coachingPageResponse] = trpc.getCoachingPage.useSuspenseQuery({});
+    const [coachingPageViewModel, setCoachingPageViewModel] = useState<
+        viewModels.TCoachingPageViewModel | undefined
+    >(undefined);
+
+    const { presenter } = useGetCoachingPagePresenter(setCoachingPageViewModel);
+    // @ts-ignore
+    presenter.present(coachingPageResponse, coachingPageViewModel);
+
+    // Handle coaching page loading and error states
+    if (!coachingPageViewModel) {
+        // We'll continue with the page render but without banner data
+    } else if (coachingPageViewModel.mode === 'kaboom') {
+        // We'll continue with the page render but without banner data
+    }
 
     const handleCoachingIncludedChange = (coachingIncluded: boolean) => {
         // TODO: Implement coaching included logic
@@ -72,7 +106,7 @@ export default function VisitorPage({ courseData,
                     <CourseGeneralInformationVisitor
                         title={courseData.data.title}
                         longDescription={courseData.data.description}
-                        language={{ code: "en", name: "English" }}
+                        language={{ code: 'en', name: 'English' }}
                         description={''}
                         duration={{
                             video: courseData.data.duration?.video || 0,
@@ -91,9 +125,11 @@ export default function VisitorPage({ courseData,
                         rating={courseData.data.averageRating}
                         totalRating={courseData.data.reviewCount}
                         ownerRating={courseData.data.author.averageRating}
-                        ownerTotalRating={Math.floor(courseData.data.author.averageRating * 10)}
+                        ownerTotalRating={Math.floor(
+                            courseData.data.author.averageRating * 10,
+                        )}
                         imageUrl={courseData.data.imageFile?.downloadUrl || ''}
-                        coaches={courseData.data.coaches.map(coach => ({
+                        coaches={courseData.data.coaches.map((coach) => ({
                             name: coach.name,
                             avatarUrl: coach.avatarUrl || '',
                         }))}
@@ -102,16 +138,14 @@ export default function VisitorPage({ courseData,
                         onCoachingIncludedChange={handleCoachingIncludedChange}
                         onClickBook={handleClickBook}
                         onClickBuyCourse={handleClickBuyCourse}
-                        requiredCourses={courseData.data.requirements.map(req => ({
-                            image: '', // Could be enhanced to fetch course images
-                            courseTitle: req.courseName,
-                            slug: req.courseSlug,
-                        }))}
+                        requiredCourses={courseData.data.requirements.map(
+                            (req) => ({
+                                image: '', // Could be enhanced to fetch course images
+                                courseTitle: req.courseName,
+                                slug: req.courseSlug,
+                            }),
+                        )}
                         onClickRequiredCourse={handleClickRequiredCourse}
-                        requirementsDetails={courseData.data.requirements.length > 0
-                            ? "This course has prerequisites that you should complete first."
-                            : "No prerequisites required."
-                        }
                         locale={locale}
                     />
                 );
@@ -129,7 +163,10 @@ export default function VisitorPage({ courseData,
                     <CourseIntroBanner
                         description={introductionData.data.text}
                         videoId={introductionData.data.video?.playbackId || ''}
-                        thumbnailUrl={introductionData.data.video?.thumbnailUrl || undefined}
+                        thumbnailUrl={
+                            introductionData.data.video?.thumbnailUrl ||
+                            undefined
+                        }
                         locale={locale}
                         onErrorCallback={handleErrorCallback}
                     />
@@ -147,11 +184,12 @@ export default function VisitorPage({ courseData,
                 return (
                     <div className="p-6 bg-card-fill border border-card-stroke rounded-medium">
                         <DefaultAccordion
-                            items={outlineData.data.items.map(item => ({
+                            items={outlineData.data.items.map((item) => ({
                                 title: item.title,
                                 content: item.description,
                                 position: item.position,
-                                iconImageUrl: item.icon?.downloadUrl || undefined,
+                                iconImageUrl:
+                                    item.icon?.downloadUrl || undefined,
                             }))}
                             showNumbers={true}
                             className="w-full"
@@ -173,16 +211,21 @@ export default function VisitorPage({ courseData,
                         {reviewsData.data.reviews
                             .sort((a, b) =>
                                 sortOrder === 'newest'
-                                    ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                                    : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+                                    ? new Date(b.createdAt).getTime() -
+                                      new Date(a.createdAt).getTime()
+                                    : new Date(a.createdAt).getTime() -
+                                      new Date(b.createdAt).getTime(),
                             )
-                            .map(review => (
+                            .map((review) => (
                                 <ReviewSnippet
                                     key={review.id}
                                     reviewText={review.comment}
                                     rating={review.rating}
                                     reviewerName={`${review.student.firstName} ${review.student.lastName}`}
-                                    reviewerAvatarUrl={review.student.avatarFile?.downloadUrl || ''}
+                                    reviewerAvatarUrl={
+                                        review.student.avatarFile
+                                            ?.downloadUrl || ''
+                                    }
                                     locale={locale}
                                 />
                             ))}
@@ -210,13 +253,17 @@ export default function VisitorPage({ courseData,
                             </p>
                         </div>
                         <PackageCardList locale={locale}>
-                            {packagesData.data.packages.map(pkg => (
+                            {packagesData.data.packages.map((pkg) => (
                                 <PackageCard
                                     key={pkg.id}
                                     {...pkg}
                                     courseCount={pkg.courseCount}
-                                    onClickPurchase={() => handlePackagePurchase(pkg.id)}
-                                    onClickDetails={() => handlePackageDetails(pkg.id)}
+                                    onClickPurchase={() =>
+                                        handlePackagePurchase(pkg.id)
+                                    }
+                                    onClickDetails={() =>
+                                        handlePackageDetails(pkg.id)
+                                    }
                                     locale={locale}
                                 />
                             ))}
@@ -242,96 +289,116 @@ export default function VisitorPage({ courseData,
     return (
         <div className="w-full flex flex-col gap-6 px-15">
             <div className="w-full pl-4">
-            <Breadcrumbs
-                            items={[
-                                {
-                                    label: breadcrumbsTranslations('courses'),
-                                    onClick: () => {
-                                        // TODO: Implement navigation to home
-                                    },
-                                },
-                                {
-                                    label: courseData?.mode === 'default' ? courseData.data.title : '',
-                                    onClick: () => {
-                                        // TODO: Implement navigation to workspace
-                                    },
-                                }
-                            ]}
-            />
+                <Breadcrumbs
+                    items={[
+                        {
+                            label: breadcrumbsTranslations('courses'),
+                            onClick: () => {
+                                // TODO: Implement navigation to courses visitor
+                            },
+                        },
+                        {
+                            label:
+                                courseData?.mode === 'default'
+                                    ? courseData.data.title
+                                    : '',
+                            onClick: () => {
+                                // Nothing should happen on clicking the current page
+                            },
+                        },
+                    ]}
+                />
             </div>
-        <div className="flex flex-col gap-30 ">
-            
-            {/* Course General Information */}
-            {renderCourseData()}
+            <div className="flex flex-col gap-30 ">
+                {/* Course General Information */}
+                {renderCourseData()}
 
-            {/* Course Introduction Banner */}
-            {renderIntroductionData()}
+                {/* Course Introduction Banner */}
+                {renderIntroductionData()}
 
-            {/* Course Outline Section */}
-            <div className="w-full flex flex-col gap-6">
-                <h2 className="md:text-4xl text-2xl  text-text-primary">
-                    {t('courseOutlineTitle')}
-                </h2>
-                {renderOutlineData()}
-            </div>
-
-            {/* Course Reviews Section */}
-            <div className="w-full flex flex-col gap-6">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div className="flex flex-col sm:flex-row  sm:items-center gap-2">
-                        <h3 className="md:text-3xl text-2xl text-text-primary">
-                            {t('courseReviewsTitle')}
-                        </h3>
-                        {courseData?.mode === 'default' && (
-                            <div className="flex flex-row items-center gap-2">
-                                <h6 className="text-text-primary">{courseData.data.averageRating}</h6>
-                                <StarRating totalStars={5} size="4" rating={courseData.data.averageRating} />
-                                <p className="text-text-secondary text-xs">
-                                    {courseData.data.reviewCount} {t('reviewsCount')}
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                    <div className="flex gap-1 items-center">
-                        <label className="md:text-md text-sm text-text-primary">{t('sortByLabel')}</label>
-                        <Dropdown
-                            type="simple"
-                            options={[
-                                { label: t('newest'), value: 'newest' },
-                                { label: t('oldest'), value: 'oldest' },
-                            ]}
-                            onSelectionChange={(selected) => setSortOrder(selected as 'newest' | 'oldest')}
-                            text={{ simpleText: t('sortByLabel') }}
-                            defaultValue="newest"
-                        />
-                    </div>
+                {/* Course Outline Section */}
+                <div className="w-full flex flex-col gap-6">
+                    <h2 className="md:text-4xl text-2xl  text-text-primary">
+                        {t('courseOutlineTitle')}
+                    </h2>
+                    {renderOutlineData()}
                 </div>
-                {renderReviewsData()}
+
+                {/* Course Reviews Section */}
+                <div className="w-full flex flex-col gap-6">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div className="flex flex-col sm:flex-row  sm:items-center gap-2">
+                            <h3 className="md:text-3xl text-2xl text-text-primary">
+                                {t('courseReviewsTitle')}
+                            </h3>
+                            {courseData?.mode === 'default' && (
+                                <div className="flex flex-row items-center gap-2">
+                                    <h6 className="text-text-primary">
+                                        {courseData.data.averageRating}
+                                    </h6>
+                                    <StarRating
+                                        totalStars={5}
+                                        size="4"
+                                        rating={courseData.data.averageRating}
+                                    />
+                                    <p className="text-text-secondary text-xs">
+                                        {courseData.data.reviewCount}{' '}
+                                        {t('reviewsCount')}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex gap-1 items-center">
+                            <label className="md:text-md text-sm text-text-primary">
+                                {t('sortByLabel')}
+                            </label>
+                            <Dropdown
+                                type="simple"
+                                options={[
+                                    { label: t('newest'), value: 'newest' },
+                                    { label: t('oldest'), value: 'oldest' },
+                                ]}
+                                onSelectionChange={(selected) =>
+                                    setSortOrder(
+                                        selected as 'newest' | 'oldest',
+                                    )
+                                }
+                                text={{ simpleText: t('sortByLabel') }}
+                                defaultValue="newest"
+                            />
+                        </div>
+                    </div>
+                    {renderReviewsData()}
+                </div>
+
+                {/* Course Packages Section */}
+                {renderPackagesData()}
+
+                {/* Offers Carousel Section */}
+                <div className="flex flex-col justify-center gap-10">
+                    <h2 className="md:text-4xl text-2xl  text-text-primary text-center">
+                        {t('notFoundTitle')}
+                    </h2>
+                    {renderOffersData()}
+                </div>
+
+                {coachingPageViewModel &&
+                    coachingPageViewModel.mode !== 'kaboom' &&
+                    (() => {
+                        const coachingPage = coachingPageViewModel.data;
+                        return (
+                            <TeachCourseBanner
+                                locale={locale}
+                                title={coachingPage.banner.title}
+                                description={coachingPage.banner.description}
+                                imageUrl={coachingPage.banner.imageUrl ?? ''}
+                                onClick={() => {
+                                    router.push(coachingPage.banner.buttonLink);
+                                }}
+                            />
+                        );
+                    })()}
             </div>
-
-            {/* Course Packages Section */}
-            {renderPackagesData()}
-
-            {/* Offers Carousel Section */}
-            <div className="flex flex-col justify-center gap-10">
-                <h2 className="md:text-4xl text-2xl  text-text-primary text-center">
-                    {t('notFoundTitle')}
-                </h2>
-                {renderOffersData()}
-            </div>
-
-            <TeachCourseBanner
-                locale={locale}
-                imageUrl="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=475&h=275&fit=crop&crop=face"
-                title={t('becomeCoachTitle')}
-                description={t('becomeCoachDescription')}
-                onClick={() => {
-                    // TODO: Implement become coach logic
-                    console.log('Become coach button clicked');
-                }}
-                buttonText={t('becomeCoachButton')}
-            />
-        </div>
         </div>
     );
 }

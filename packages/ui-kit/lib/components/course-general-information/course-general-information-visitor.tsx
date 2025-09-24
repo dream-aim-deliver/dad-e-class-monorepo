@@ -36,7 +36,7 @@ export interface CourseGeneralInformationVisitorProps
     totalRating: number;
     ownerRating: number;
     ownerTotalRating: number;
-    requirementsDetails: string;
+    requirementsDetails?: string;
     requiredCourses: RequiredCourse[];
     onClickRequiredCourse: (slug: string) => void;
 }
@@ -136,6 +136,7 @@ export const CourseGeneralInformationVisitor: FC<
     ownerTotalRating,
     totalCoachesCount,
     requiredCourses,
+    requirementsDetails,
     coachingIncluded: initialCoachingIncluded = true,
 }) => {
         const dictionary = getDictionary(locale);
@@ -144,11 +145,11 @@ export const CourseGeneralInformationVisitor: FC<
             initialCoachingIncluded,
         );
 
-        const requirementsDetails =
-            requiredCourses.length > 0
+        const finalRequirementsDetails = requirementsDetails ||
+            (requiredCourses.length > 0
                 ? dictionary.components.courseGeneralInformationView
                     .requirementsDetails
-                : dictionary.components.courseGeneralInformationView.noRequirements;
+                : dictionary.components.courseGeneralInformationView.noRequirements);
 
         useEffect(() => {
             setCoachingIncluded(initialCoachingIncluded);
@@ -389,7 +390,7 @@ export const CourseGeneralInformationVisitor: FC<
                                     .requirementsTitle
                             }
                         </h6>
-                        <p className="text-text-secondary">{requirementsDetails}</p>
+                        <p className="text-text-secondary">{finalRequirementsDetails}</p>
                         <div className="flex flex-wrap gap-3">
                             {requiredCourses.map((course) => (
                                 <Button
