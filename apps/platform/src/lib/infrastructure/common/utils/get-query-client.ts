@@ -4,10 +4,10 @@ import {
     defaultShouldDehydrateQuery,
 } from '@tanstack/react-query';
 import superjson from 'superjson';
+import env from '../../client/config/env';
 
 export function getTRPCUrl() {
-    const base =
-        process.env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL ?? 'http://localhost:3000';
+    const base = env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL;
     return `${base}/api/trpc`;
 }
 
