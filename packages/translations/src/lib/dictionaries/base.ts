@@ -1077,7 +1077,7 @@ export const DictionarySchema = z.object({
     }),
     platformCard: z.object({
       emptyState: z.string(),
-    })
+    }),
     teachCourseBanner: z.object({
       placeHolderText: z.string(),
       teachButtonText: z.string(),
