@@ -57,11 +57,7 @@ const LoginPage = (props: LoginPageProps) => {
 
     if (props.isProduction) {
         handleAuth0();
-        return (
-            <div className="flex text-white w-full items-center justify-center ">
-                {dictionary.pages.login.loading}
-            </div>
-        );
+        return <DefaultLoading locale={props.locale} variant="minimal" />;
     }
 
     return (

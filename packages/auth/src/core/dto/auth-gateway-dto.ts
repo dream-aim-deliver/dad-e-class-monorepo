@@ -66,10 +66,3 @@ export const GetRolesErrorDTO = z.object({
         context: z.any(),
     })
 })
-
-export const GetRolesDTOSchema = z.discriminatedUnion("success", [
-    GetRolesSuccessDTO,
-    GetRolesErrorDTO,
-])
-
-export type TGetRolesDTO = z.infer<typeof GetRolesDTOSchema>

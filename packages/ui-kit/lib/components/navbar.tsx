@@ -258,22 +258,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             />
           </a>
         )}
-        <div className="relative">
-          <Dropdown
-            type="simple"
-            options={languageOptions}
-            onSelectionChange={(selected) => {
-              if (
-                typeof selected === 'string' &&
-                availableLocales.includes(selected as TLocale)
-              ) {
-                handleLocaleChange(selected as TLocale);
-              }
-            }}
-            text={{ simpleText: '' }}
-            defaultValue={locale}
-          />
-        </div>
+        {availableLocales && availableLocales.length > 1 && 
+          <div className="relative">
+            <Dropdown
+              type="simple"
+              options={languageOptions}
+              onSelectionChange={(selected) => {
+                if (
+                  typeof selected === 'string' &&
+                  availableLocales.includes(selected as TLocale)
+                ) {
+                  handleLocaleChange(selected as TLocale);
+                }
+              }}
+              text={{ simpleText: '' }}
+              defaultValue={locale}
+            />
+          </div>
+        }
       </div>
 
       {/* Mobile Menu Button (Small Screens) */}
