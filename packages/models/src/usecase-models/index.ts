@@ -6,6 +6,7 @@ export * from './get-offers-page-outline-usecase-models';
 export * from './list-topics-by-category-usecase-models';
 export * from './list-courses-usecase-models';
 export * from './list-offers-page-packages-usecase-models';
+export * from './list-platforms-usecase-models';
 export * from './list-coaches-usecase-models';
 export * from './get-coaching-page-usecase-models';
 export * from './list-coaching-offerings-usecase-models';
