@@ -5,7 +5,7 @@ import {
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
 
-export type TListPlatformsPresenterUtilities = {};
+export type TListPlatformsPresenterUtilities = object;
 
 export const ListPlatformsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
