@@ -25,20 +25,20 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(({ ch
         if (!context) throw new Error("AccordionContent must be used within Accordion")
 
         const isOpen = context.value.includes(value)
-        const [height, setHeight] = useState<number>(0)
+        const [maxHeight, setMaxHeight] = useState<string>('0px')
         const contentRef = useRef<HTMLDivElement>(null)
 
         useEffect(() => {
-            const updateHeight = () => {
+            const updateMaxHeight = () => {
                 if (contentRef.current) {
-                    const newHeight = isOpen ? contentRef.current.scrollHeight : 0
-                    setHeight(newHeight)
+                    const newMaxHeight = isOpen ? `${contentRef.current.scrollHeight}px` : '0px'
+                    setMaxHeight(newMaxHeight)
                 }
             }
 
-            updateHeight()
+            updateMaxHeight()
 
-            const resizeObserver = new ResizeObserver(updateHeight)
+            const resizeObserver = new ResizeObserver(updateMaxHeight)
             if (contentRef.current) {
                 resizeObserver.observe(contentRef.current)
             }
@@ -51,8 +51,8 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(({ ch
         return (
             <div
                 ref={ref}
-                className="overflow-hidden w-full h-auto transition-all duration-100 ease-in-out"
-                style={{ height }}
+                className="overflow-hidden w-full transition-all duration-100 ease-in-out"
+                style={{ maxHeight }}
             >
                 <div ref={contentRef} className={cn("", className)}>
                     {children}
