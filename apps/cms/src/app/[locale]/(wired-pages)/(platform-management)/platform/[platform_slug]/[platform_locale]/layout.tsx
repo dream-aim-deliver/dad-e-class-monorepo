@@ -6,15 +6,20 @@ export default async function PlatformLayout({
     params: paramsPromise,
 }: {
     children: React.ReactNode;
-    params: Promise<{ platformLocale: string; platformSlug: string }>;
+    params: Promise<{ platform_locale: string; platform_slug: string }>;
 }) {
     const params = await paramsPromise;
-    const platformLocale = params.platformLocale as TLocale;
-    const platformSlug = params.platformSlug;
+    const platformLocale = params.platform_locale as TLocale;
+    const platformSlug = params.platform_slug;
     
     return (
         <div>
-            <CMSTRPCClientProviders>
+            <CMSTRPCClientProviders
+                platformContext={{
+                    platformSlug,
+                    platformLanguageCode: platformLocale
+                }}
+            >
             <h1>Platform Layout</h1>
             <p>Locale: {platformLocale}</p>
             <p>Platform Slug: {platformSlug}</p>
