@@ -41,17 +41,17 @@ const LoginPage = (props: LoginPageProps) => {
                 // TODO: the logo URL is passed from the backend
                 platform_logo_public_url: 'mock',
                 // TODO: the platform is identified by its ID ( Not in Auth0 Setup)
-                platform_short_name: env.NEXT_PUBLIC_E_CLASS_PLATFORM_SHORT_NAME,
+                platform_short_name: env.NEXT_PUBLIC_E_CLASS_RUNTIME,
                 terms_and_conditions_title:
                     dictionary.pages.sso.termsAndConditions.title,
                 terms_and_conditions_content:
                     dictionary.pages.sso.termsAndConditions.content,
                 terms_and_conditions_confirmation_text:
                     dictionary.pages.sso.termsAndConditions.confirmationText,
-                privacy_policy_url: `${env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL}/${props.locale}/privacy-policy`,
-                terms_of_use_url: `${env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL}/${props.locale}/terms-of-use`,
-                rules_url: `${env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL}/${props.locale}/rules`,
-                courses_information_url: `${env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL}/${props.locale}/courses-information`,
+                privacy_policy_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/privacy-policy`,
+                terms_of_use_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/terms-of-use`,
+                rules_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/rules`,
+                courses_information_url: `${env.NEXT_PUBLIC_APP_URL}/${props.locale}/courses-information`,
             },
         );
     };

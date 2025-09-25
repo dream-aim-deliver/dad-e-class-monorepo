@@ -27,8 +27,8 @@ const nextAuth: NextAuthResult = generateNextAuthConfig({
         getPlatformHeaders: () => {
             const headers: Record<string, string> = {};
             // Add platform header
-            if (env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME) {
-                headers['x-eclass-runtime'] = env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
+            if (env.NEXT_PUBLIC_E_CLASS_RUNTIME) {
+                headers['x-eclass-runtime'] = env.NEXT_PUBLIC_E_CLASS_RUNTIME;
             }
             return headers;
         },

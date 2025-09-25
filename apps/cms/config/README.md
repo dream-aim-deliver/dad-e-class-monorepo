@@ -32,7 +32,7 @@ docker run -d --name e-class-cms \
     -e AUTH_AUTH0_AUTHORIZATION_URL=<https://your-tenant.auth0.com/authorize> \
     -e E_CLASS_PLATFORM_ID=<1> \
     -e E_CLASS_DEV_MODE=<true> \
-    -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
+    -e NEXT_PUBLIC_APP_URL=<http://localhost:3000> \
     -e NEXT_PUBLIC_E_CLASS_CMS_REST_URL=<http://localhost:5173> \
     -e NEXT_PUBLIC_CONTACT_EMAIL=<example@mail.com> \
     -p 80:80 -p 443:443 \
@@ -55,7 +55,7 @@ docker run -d --name e-class-cms \
     -e AUTH_AUTH0_AUTHORIZATION_URL=<https://your-tenant.auth0.com/authorize> \
     -e E_CLASS_PLATFORM_ID=<1> \
     -e E_CLASS_DEV_MODE=<true> \
-    -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
+    -e NEXT_PUBLIC_APP_URL=<http://localhost:3000> \
     -e NEXT_PUBLIC_CONTACT_EMAIL=<example@mail.com> \
     -p 80:80 -p 443:443 \
     -p 3000:3000 \
@@ -76,7 +76,7 @@ You must set the following environment variables to run the container:
 | NEXTAUTH_SECRET                         | The secret key used for encrypting NextAuth.js session |
 | E_CLASS_PLATFORM_ID                     | Identifier for the platform instance                   |
 | E_CLASS_DEV_MODE                        | Boolean flag to enable development mode                |
-| NEXT_PUBLIC_E_CLASS_PLATFORM_URL        | Public URL where the platform is accessible            |
+| NEXT_PUBLIC_APP_URL        | Public URL where the platform is accessible            |
 | NEXT_PUBLIC_CONTACT_EMAIL               | Contact email address displayed in error messages
 | HTTPD_ENABLE_SSL                        | Boolean flag to enable SSL in HTTP server              |
 | HTTPD_ENABLE_LOGS                       | Boolean flag to enable HTTP server logs                |

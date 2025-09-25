@@ -49,9 +49,9 @@ async function createServerHeaders(): Promise<Record<string, string>> {
 
     // Add platform header
     try {
-        const platformName = env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
-        if (platformName) {
-            headers['x-eclass-runtime'] = platformName;
+        const platformSlug = env.NEXT_PUBLIC_E_CLASS_RUNTIME;
+        if (platformSlug) {
+            headers['x-eclass-runtime'] = platformSlug;
         }
     } catch (error) {
         console.warn('Failed to get platform name for server-side TRPC:', error);
