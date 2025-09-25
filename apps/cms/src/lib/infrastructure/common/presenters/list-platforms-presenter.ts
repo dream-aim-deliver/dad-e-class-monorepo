@@ -53,7 +53,7 @@ export default class ListPlatformsPresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListPlatformsUseCaseErrorResponse,
+            useCaseModels.TListPlatformsErrorResponse,
             TListPlatformsResponseMiddleware
         >,
     ): viewModels.TPlatformListViewModel {
