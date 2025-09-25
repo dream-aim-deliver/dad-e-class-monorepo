@@ -5,6 +5,7 @@ import {
     CarouselSkeleton,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
     PlatformCard,
     PlatformCardList,
     TopicList,
@@ -15,7 +16,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-home-page-presenter';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
-import { useRouter } from 'next/navigation';
+import { useListPlatformsPresenter } from '../hooks/use-list-platforms-presenter';
 import env from '../config/env';
 
 const Carousel = dynamic(
@@ -65,20 +66,54 @@ function Topics() {
 export default function ListPlatforms() {
     const locale = useLocale() as TLocale;
 
+    const [platformsResponse, { refetch }] = trpc.listPlatforms.useSuspenseQuery({});
+    const [platformsViewModel, setPlatformsViewModel] = useState<
+        viewModels.TPlatformListViewModel | undefined
+    >(undefined);
+    const { presenter } = useListPlatformsPresenter(setPlatformsViewModel);
+    // @ts-ignore
+    presenter.present(platformsResponse, platformsViewModel);
+
+    if (!platformsViewModel) {
+        return <DefaultLoading locale={locale} variant="minimal" />;
+    }
+
+    if (platformsViewModel.mode === 'not-found') {
+        return <DefaultNotFound locale={locale} />;
+    }
+
+    if (platformsViewModel.mode === 'kaboom') {
+        return (
+            <DefaultError
+                locale={locale}
+                onRetry={() => {
+                    refetch();
+                }}
+            />
+        );
+    }
+
+    const platforms = platformsViewModel.data.platforms;
+
+    const onClickManage = (platformId: number, platformName: string) => {
+        // TODO: Navigate to platform management page
+        console.log(`Managing platform ${platformId}: ${platformName}`);
+    };
 
     return (
         <div className="flex flex-col items-center">
-                <PlatformCardList locale={locale}>
+            <PlatformCardList locale={locale}>
+                {platforms.map((platform) => (
                     <PlatformCard
-                        imageUrl={env.NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL}
-                        platformName={'Bewerbeagentur Mock'}
-                        courseCount={10} 
-                        onClickManage={function (): void {
-                            throw new Error('Function not implemented.');
-                        }} 
-                        locale={locale}/>
-                </PlatformCardList>
-            
+                        key={platform.id}
+                        imageUrl={platform.logoUrl || ''}
+                        platformName={platform.name}
+                        courseCount={platform.courseCount}
+                        onClickManage={() => onClickManage(platform.id, platform.name)}
+                        locale={locale}
+                    />
+                ))}
+            </PlatformCardList>
         </div>
     );
 }
