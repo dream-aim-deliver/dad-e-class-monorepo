@@ -4,7 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import EditCourse from '../../../client/pages/workspace/edit/edit-course';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
-import { getQueryClient, HydrateClient, trpc } from '../../config/trpc/cms-server';
+import { getQueryClient, HydrateClient, getServerTRPC } from '../../config/trpc/cms-server';
 
 interface CourseServerComponentProps {
     slug: string;
@@ -46,6 +46,7 @@ export default async function EditCourseServerComponent({
 async function fetchCourseAccess(
     slug: string,
 ): Promise<viewModels.TCourseAccessViewModel> {
+    const trpc = getServerTRPC();
     const queryOptions = trpc.getCourseAccess.queryOptions({
         courseSlug: slug,
     });

@@ -14,16 +14,19 @@ import { useSession } from 'next-auth/react';
 import { useLocale } from 'next-intl';
 import env from '../config/env';
 
+interface PlatformContext {
+    platformSlug: string;
+    platformLanguageCode: string;
+}
+
 interface ClientProvidersProps {
     children: ReactNode;
-    platformSlug?: string;
-    platformLanguageCode?: string;
+    platformContext?: PlatformContext;
 }
 
 export default function CMSTRPCClientProviders({
     children,
-    platformSlug,
-    platformLanguageCode
+    platformContext
 }: ClientProvidersProps) {
     const queryClient = getQueryClient();
     const { data: session, status } = useSession();
@@ -73,12 +76,18 @@ export default function CMSTRPCClientProviders({
                                 headers['Accept-Language'] = locale;
                             }
 
-                            // Add platform header
-                            if (env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME) {
-                                headers['x-eclass-Runtime'] =
-                                    env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
+                            // Add runtime header
+                            if (env.NEXT_PUBLIC_E_CLASS_RUNTIME) {
+                                headers['x-eclass-runtime'] =
+                                    env.NEXT_PUBLIC_E_CLASS_RUNTIME;
                             } else {
-                                console.warn('[TRPC Headers] ⚠️ Missing platform header');
+                                console.warn('[TRPC Headers] ⚠️ Missing runtime header');
+                            }
+
+                            // Add dynamic platform context headers (both must be present together)
+                            if (platformContext?.platformSlug && platformContext?.platformLanguageCode) {
+                                headers['x-eclass-platform-runtime'] = platformContext.platformSlug;
+                                headers['x-eclass-platform-language'] = platformContext.platformLanguageCode;
                             }
                             return headers;
                         },
@@ -86,7 +95,7 @@ export default function CMSTRPCClientProviders({
                 ],
             });
         },
-        [session?.user?.idToken, locale, status], // Recreate client when session or locale changes
+        [session?.user?.idToken, locale, status, platformContext], // Recreate client when session, locale, or platform context changes
     );
 
     // Handle potential errors in TRPC provider setup

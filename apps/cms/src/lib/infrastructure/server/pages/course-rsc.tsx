@@ -5,7 +5,7 @@ import AssessmentForm from '../../client/pages/course/assessment-form';
 import EnrolledCourse from '../../client/pages/course/enrolled-course/enrolled-course';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
-import { getQueryClient, trpc, prefetch } from '../config/trpc/cms-server';
+import { getQueryClient, getServerTRPC, prefetch } from '../config/trpc/cms-server';
 import { trpc as trpcMock, HydrateClient, prefetch as prefetchMock } from '../config/trpc/server';
 
 interface CourseServerComponentProps {
@@ -51,6 +51,7 @@ export default async function CourseServerComponent({
 async function fetchCourseAccess(
     slug: string,
 ): Promise<viewModels.TCourseAccessViewModel> {
+    const trpc = getServerTRPC();
     const queryOptions = trpc.getCourseAccess.queryOptions({
         courseSlug: slug,
     });

@@ -3,7 +3,7 @@ import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
 import UserCourses from '../../../client/pages/workspace/user-courses';
-import { HydrateClient, prefetch, trpc } from '../../config/trpc/cms-server';
+import { HydrateClient, prefetch, getServerTRPC } from '../../config/trpc/cms-server';
 
 export default async function UserCoursesServerComponent() {
     const session = await getSession();
@@ -20,6 +20,7 @@ export default async function UserCoursesServerComponent() {
         throw new Error();
     }
 
+    // const trpc = getServerTRPC();
     // await Promise.all([prefetch(trpc.listUserCourses.queryOptions({}))]);
 
     return (
