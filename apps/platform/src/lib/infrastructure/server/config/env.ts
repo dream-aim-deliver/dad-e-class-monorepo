@@ -8,8 +8,6 @@ const serverEnvSchema = clientEnvSchema.merge(z.object({
     AUTH_AUTH0_CLIENT_SECRET: z.string().min(1),
     AUTH_AUTH0_ISSUER: z.string().url(),
     AUTH_AUTH0_AUTHORIZATION_URL: z.string().url(),
-    AUTH_AUTH0_ROLES_CLAIM: z.string().min(1),
-    AUTH_AUTH0_ROLES_CLAIM_KEY: z.string().min(1),
     E_CLASS_DEV_MODE: z.boolean(),
     S3_HOSTNAME: z.string().min(1),
     S3_PORT: z.string().min(1),
@@ -34,8 +32,6 @@ const runtimeEnv = {
     AUTH_AUTH0_CLIENT_SECRET: process.env.AUTH_AUTH0_CLIENT_SECRET,
     AUTH_AUTH0_ISSUER: process.env.AUTH_AUTH0_ISSUER,
     AUTH_AUTH0_AUTHORIZATION_URL: process.env.AUTH_AUTH0_AUTHORIZATION_URL,
-    AUTH_AUTH0_ROLES_CLAIM: process.env.AUTH_AUTH0_ROLES_CLAIM,
-    AUTH_AUTH0_ROLES_CLAIM_KEY: process.env.AUTH_AUTH0_ROLES_CLAIM_KEY,
     E_CLASS_DEV_MODE:
         process.env.E_CLASS_DEV_MODE?.trim().toLowerCase() === 'true',
     S3_HOSTNAME: process.env.S3_HOSTNAME,

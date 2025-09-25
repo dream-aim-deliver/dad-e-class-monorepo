@@ -64,6 +64,5 @@ jobs:
           'AUTH_AUTH0_CLIENT_SECRET': ${{ secrets.AUTH_AUTH0_CLIENT_SECRET }}
           'AUTH_AUTH0_ISSUER': ${{ secrets.AUTH_AUTH0_ISSUER }}
           'AUTH_AUTH0_AUTHORIZATION_URL': ${{ secrets.AUTH_AUTH0_AUTHORIZATION_URL }}
-          'AUTH_AUTH0_ROLES_CLAIM_KEY': ${{ secrets.AUTH_AUTH0_ROLES_CLAIM_KEY }}
           'E_CLASS_PLATFORM_ID': ${{ vars.E_CLASS_PLATFORM_ID }}
           'E_CLASS_DEV_MODE': 'true'

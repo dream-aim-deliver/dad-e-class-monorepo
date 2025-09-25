@@ -8,20 +8,8 @@ const auth0ClientID = env.AUTH_AUTH0_CLIENT_ID;
 const auth0ClientSecret = env.AUTH_AUTH0_CLIENT_SECRET;
 const auth0Issuer = env.AUTH_AUTH0_ISSUER;
 const auth0AuthorizationUrl = env.AUTH_AUTH0_AUTHORIZATION_URL;
-const auth0RolesClaimKey = env.AUTH_AUTH0_ROLES_CLAIM_KEY;
 const useTestAccounts = env.AUTH_ENABLE_TEST_ACCOUNTS;
 
-if (
-    !auth0ClientID ||
-    !auth0ClientSecret ||
-    !auth0Issuer ||
-    !auth0AuthorizationUrl ||
-    !auth0RolesClaimKey
-) {
-    throw new Error(
-        'Missing required environment variables for Auth0 configuration. Please make sure to set the following environment variables: AUTH_AUTH0_CLIENT_ID, AUTH_AUTH0_CLIENT_SECRET, AUTH_AUTH0_ISSUER, AUTH_AUTH0_AUTHORIZATION_URL, AUTH_AUTH0_ROLES_CLAIM_KEY',
-    );
-}
 const nextAuth: NextAuthResult = generateNextAuthConfig({
     auth0: {
         clientId: auth0ClientID,
