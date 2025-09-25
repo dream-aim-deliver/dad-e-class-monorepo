@@ -5,7 +5,8 @@ import {
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
 
-export type TListPlatformsPresenterUtilities = object;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type TListPlatformsPresenterUtilities = {};
 
 export const ListPlatformsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
