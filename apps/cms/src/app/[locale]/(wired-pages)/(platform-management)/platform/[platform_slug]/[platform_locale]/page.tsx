@@ -1,5 +1,8 @@
 
-import { getServerTRPC } from '../../../../../../../lib/infrastructure/server/config/trpc/cms-server';
+import { Suspense } from 'react';
+import PlatformManagement from '../../../../../../../lib/infrastructure/client/pages/platform-management';
+import DefaultLoadingWrapper from '../../../../../../../lib/infrastructure/client/wrappers/default-loading';
+import { HydrateClient, getServerTRPC } from '../../../../../../../lib/infrastructure/server/config/trpc/cms-server';
 
 export default async function Page({
     params: paramsPromise,
@@ -18,8 +21,11 @@ export default async function Page({
     // Get platform-aware TRPC proxy - single line, always works!
     const trpc = getServerTRPC(params);
 
-    // Example: Use trpc for data fetching with platform headers automatically included
-    // await prefetch(trpc.someQuery.query({ ... }));
+    // Optional: Prefetch data for better performance
+    // await Promise.all([
+    //     prefetch(trpc.listTopics.queryOptions({})),
+    //     prefetch(trpc.listCategories.queryOptions({})),
+    // ]);
 
     const platformSlug = params.platform_slug;
     const platformLocale = params.platform_locale;
@@ -30,10 +36,13 @@ export default async function Page({
     }
 
     return (
-        <div>
-            <h1>Platform Page - {platformSlug}</h1>
-            <p>Locale: {platformLocale}</p>
-            {tab && <p>Tab: {tab}</p>}
-        </div>
+        <HydrateClient>
+            <Suspense fallback={<DefaultLoadingWrapper />}>
+                <PlatformManagement
+                    platformSlug={platformSlug}
+                    platformLocale={platformLocale}
+                />
+            </Suspense>
+        </HydrateClient>
     )
 }
