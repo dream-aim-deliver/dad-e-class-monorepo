@@ -175,6 +175,23 @@ jobs:
             org.opencontainers.image.title=E-Class Platform
             org.opencontainers.image.description=Production-ready NextJS Application for E-Class Platforms
             org.opencontainers.image.vendor=Dad AI
+
+      - name: Docker meta (cms)
+        id: meta-cms
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository_owner }}/e-class-cms
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.title=E-Class CMS
+            org.opencontainers.image.description=Production-ready NextJS CMS Application for E-Class Content Management
+            org.opencontainers.image.vendor=Dad AI
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -191,6 +208,33 @@ jobs:
           tags: ${{ steps.meta-platform.outputs.tags }}
           labels: ${{ steps.meta-platform.outputs.labels }}
           file: ./apps/platform/Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
+          sbom: false
+        env:
+          AUTH_SECRET: "Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvKifF90jRIH8="
+          NEXTAUTH_SECRET: "Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK"
+          NEXTAUTH_URL: "https://example.com"
+          AUTH_ENABLE_TEST_ACCOUNTS: "true"
+          AUTH_AUTH0_CLIENT_ID: ${{ secrets.AUTH_AUTH0_CLIENT_ID }}
+          AUTH_AUTH0_CLIENT_SECRET: ${{ secrets.AUTH_AUTH0_CLIENT_SECRET }}
+          AUTH_AUTH0_ISSUER: ${{ secrets.AUTH_AUTH0_ISSUER }}
+          AUTH_AUTH0_AUTHORIZATION_URL:  ${{ secrets.AUTH_AUTH0_AUTHORIZATION_URL }}
+          S3_HOSTNAME: "localhost"
+          S3_PORT: "9000"
+          S3_PROTOCOL: "http"
+          E_CLASS_DEV_MODE: "true"
+
+      - name: Build and push cms
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta-cms.outputs.tags }}
+          labels: ${{ steps.meta-cms.outputs.labels }}
+          file: ./apps/cms/Dockerfile
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
