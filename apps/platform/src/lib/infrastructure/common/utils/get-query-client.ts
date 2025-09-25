@@ -7,7 +7,7 @@ import superjson from 'superjson';
 import env from '../../client/config/env';
 
 export function getTRPCUrl() {
-    const base = env.NEXT_PUBLIC_E_CLASS_PLATFORM_URL;
+    const base = env.NEXT_PUBLIC_APP_URL;
     return `${base}/api/trpc`;
 }
 

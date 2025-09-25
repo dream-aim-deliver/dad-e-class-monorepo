@@ -180,7 +180,7 @@ After all services are running, you need to initialize the platform data before 
 3. Click "Try it out"
 4. Use the following request body (or customize as needed):
 
-**NOTE**: Make sure to use the correct name. It should mimic the value of the `E_CLASS_PLATFORM_NAME` in your NextJS setup.
+**NOTE**: Make sure to use the correct name. It should mimic the value of the `NEXT_PUBLIC_E_CLASS_PLATFORM_NAME` in your NextJS setup.
 
 ```json
 {
@@ -195,6 +195,7 @@ After all services are running, you need to initialize the platform data before 
     },
     "platform": {
       "name": "E-Class Dev Platform",
+      "slug": "eclass-dev",
       "accentColor": "orange",
       "font": "sans-serif",
       "hasOnlyFreeCourses": true,
