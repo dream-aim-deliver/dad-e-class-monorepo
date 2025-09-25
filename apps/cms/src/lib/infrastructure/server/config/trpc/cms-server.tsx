@@ -64,7 +64,7 @@ async function createServerHeaders(platformContext?: PlatformContext): Promise<R
 
     // Add dynamic platform context headers (both must be present together)
     if (platformContext?.platformSlug && platformContext?.platformLanguageCode) {
-        headers['x-eclass-platform-runtime'] = platformContext.platformSlug;
+        headers['x-eclass-platform'] = platformContext.platformSlug;
         headers['x-eclass-platform-language'] = platformContext.platformLanguageCode;
     }
 
