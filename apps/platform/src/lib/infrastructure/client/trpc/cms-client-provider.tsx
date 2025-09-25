@@ -85,7 +85,7 @@ export default function CMSTRPCClientProviders({
 
                             // Add platform header
                             if (env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME) {
-                                headers['x-eclass-Runtime'] =
+                                headers['x-eclass-runtime'] =
                                     env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME;
                                 console.log('[TRPC Headers] ✅ Platform header added:', env.NEXT_PUBLIC_E_CLASS_PLATFORM_NAME);
                             } else {
