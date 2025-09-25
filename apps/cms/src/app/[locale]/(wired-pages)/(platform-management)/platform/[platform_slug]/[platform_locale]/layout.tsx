@@ -20,9 +20,6 @@ export default async function PlatformLayout({
                     platformLanguageCode: platformLocale
                 }}
             >
-            <h1>Platform Layout</h1>
-            <p>Locale: {platformLocale}</p>
-            <p>Platform Slug: {platformSlug}</p>
             {children}
             </CMSTRPCClientProviders>
         </div>
