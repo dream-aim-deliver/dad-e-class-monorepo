@@ -30,7 +30,6 @@ docker run -d --name e-class-platform \
     -e AUTH_AUTH0_CLIENT_SECRET=<your_auth0_client_secret> \
     -e AUTH_AUTH0_ISSUER=<https://your-tenant.auth0.com> \
     -e AUTH_AUTH0_AUTHORIZATION_URL=<https://your-tenant.auth0.com/authorize> \
-    -e AUTH_AUTH0_ROLES_CLAIM_KEY=<https://your-app.com/roles> \
     -e E_CLASS_DEV_MODE=<true> \
     -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
     -e NEXT_PUBLIC_E_CLASS_CMS_REST_URL=<http://localhost:5173> \
@@ -53,7 +52,6 @@ docker run -d --name e-class-platform \
     -e AUTH_AUTH0_CLIENT_SECRET=<your_auth0_client_secret> \
     -e AUTH_AUTH0_ISSUER=<https://your-tenant.auth0.com> \
     -e AUTH_AUTH0_AUTHORIZATION_URL=<https://your-tenant.auth0.com/authorize> \
-    -e AUTH_AUTH0_ROLES_CLAIM_KEY=<https://your-app.com/roles> \
     -e E_CLASS_DEV_MODE=<true> \
     -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
     -e NEXT_PUBLIC_CONTACT_EMAIL=<example@mail.com> \
@@ -73,7 +71,6 @@ You must set the following environment variables to run the container:
 | AUTH_AUTH0_CLIENT_SECRET                | The client secret for your Auth0 application           |
 | AUTH_AUTH0_ISSUER                       | The Auth0 domain URL that issues tokens                |
 | AUTH_AUTH0_AUTHORIZATION_URL            | The URL for Auth0 authorization endpoint               |
-| AUTH_AUTH0_ROLES_CLAIM_KEY              | The JWT claim key used to determine user roles         |
 | NEXTAUTH_SECRET                         | The secret key used for encrypting NextAuth.js session |
 | S3_HOSTNAME                             | Hostname for S3-compatible storage service             |
 | S3_PORT                                 | Port for S3-compatible storage service                 |
