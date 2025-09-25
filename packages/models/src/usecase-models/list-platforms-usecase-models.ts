@@ -14,6 +14,8 @@ export type TListPlatformsRequest = z.infer<typeof ListPlatformsRequestSchema>;
 
 export const PlatformItemSchema = z.object({
     id: z.number(),
+    slug: z.string(),
+    defaultLanguageCode: z.string().nullable(),
     logoUrl: z.string().nullable(),
     name: z.string(),
     courseCount: z.number(),

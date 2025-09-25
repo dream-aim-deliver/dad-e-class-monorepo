@@ -2,34 +2,23 @@
 import { trpc } from '../trpc/cms-client';
 import { useLocale, useTranslations } from 'next-intl';
 import {
-    CarouselSkeleton,
     DefaultError,
     DefaultLoading,
     DefaultNotFound,
     PlatformCard,
     PlatformCardList,
-    TopicList,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import dynamic from 'next/dynamic';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { useListPlatformsPresenter } from '../hooks/use-list-platforms-presenter';
-
-const Carousel = dynamic(
-    () =>
-        import('../wrappers/carousel-wrapper').then(
-            (mod) => mod.CarouselWrapper,
-        ),
-    {
-        ssr: false,
-        loading: () => <CarouselSkeleton />,
-    },
-);
+import { useRouter } from 'next/navigation';
 
 
 export default function ListPlatforms() {
     const locale = useLocale() as TLocale;
+    const router = useRouter();
 
     const [platformsResponse, { refetch }] = trpc.listPlatforms.useSuspenseQuery({});
     const [platformsViewModel, setPlatformsViewModel] = useState<
@@ -60,9 +49,8 @@ export default function ListPlatforms() {
 
     const platforms = platformsViewModel.data.platforms;
 
-    const onClickManage = (platformId: number, platformName: string) => {
-        // TODO: Navigate to platform management page
-        console.log(`Managing platform ${platformId}: ${platformName}`);
+    const onClickManage = (platformSlug: string, platformLanguage: string) => {
+        router.push(`/platform/${platformSlug}/${platformLanguage}`);
     };
 
     return (
@@ -74,7 +62,7 @@ export default function ListPlatforms() {
                         imageUrl={platform.logoUrl || ''}
                         platformName={platform.name}
                         courseCount={platform.courseCount}
-                        onClickManage={() => onClickManage(platform.id, platform.name)}
+                        onClickManage={() => onClickManage(platform.slug, platform.defaultLanguageCode || 'en')}
                         locale={locale}
                     />
                 ))}

@@ -207,11 +207,4 @@ jobs:
           S3_HOSTNAME: "localhost"
           S3_PORT: "9000"
           S3_PROTOCOL: "http"
-          E_CLASS_PLATFORM_SHORT_NAME: "dev"
-          NEXT_PUBLIC_E_CLASS_PLATFORM_SHORT_NAME: "dev"
-          E_CLASS_PLATFORM_NAME: "E-Class Dev Platform"
-          NEXT_PUBLIC_E_CLASS_PLATFORM_NAME: "E-Class Dev Platform"
           E_CLASS_DEV_MODE: "true"
-          NEXT_PUBLIC_E_CLASS_PLATFORM_URL: "http://localhost:3000"
-          NEXT_PUBLIC_E_CLASS_PLATFORM_LOGO_URL: "https://static.wixstatic.com/media/9fe096_91d65ad491464eff8da1c0b2973b3f79~mv2.png/v1/fill/w_110,h_110,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/BA_Kreis_pos_500px.png"
-              

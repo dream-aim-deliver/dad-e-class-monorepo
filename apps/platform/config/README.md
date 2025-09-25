@@ -31,7 +31,7 @@ docker run -d --name e-class-platform \
     -e AUTH_AUTH0_ISSUER=<https://your-tenant.auth0.com> \
     -e AUTH_AUTH0_AUTHORIZATION_URL=<https://your-tenant.auth0.com/authorize> \
     -e E_CLASS_DEV_MODE=<true> \
-    -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
+    -e NEXT_PUBLIC_APP_URL=<http://localhost:3000> \
     -e NEXT_PUBLIC_E_CLASS_CMS_REST_URL=<http://localhost:5173> \
     -e NEXT_PUBLIC_CONTACT_EMAIL=<example@mail.com> \
     -p 80:80 -p 443:443 \
@@ -53,7 +53,7 @@ docker run -d --name e-class-platform \
     -e AUTH_AUTH0_ISSUER=<https://your-tenant.auth0.com> \
     -e AUTH_AUTH0_AUTHORIZATION_URL=<https://your-tenant.auth0.com/authorize> \
     -e E_CLASS_DEV_MODE=<true> \
-    -e NEXT_PUBLIC_E_CLASS_PLATFORM_URL=<http://localhost:3000> \
+    -e NEXT_PUBLIC_APP_URL=<http://localhost:3000> \
     -e NEXT_PUBLIC_CONTACT_EMAIL=<example@mail.com> \
     -p 80:80 -p 443:443 \
     -p 3000:3000 \
@@ -76,7 +76,7 @@ You must set the following environment variables to run the container:
 | S3_PORT                                 | Port for S3-compatible storage service                 |
 | S3_PROTOCOL                             | Protocol (http/https) for S3-compatible storage        |
 | E_CLASS_DEV_MODE                        | Boolean flag to enable development mode                |
-| NEXT_PUBLIC_E_CLASS_PLATFORM_URL        | Public URL where the platform is accessible            |
+| NEXT_PUBLIC_APP_URL        | Public URL where the platform is accessible            |
 | NEXT_PUBLIC_CONTACT_EMAIL               | Contact email address displayed in error messages
 | HTTPD_ENABLE_SSL                        | Boolean flag to enable SSL in HTTP server              |
 | HTTPD_ENABLE_LOGS                       | Boolean flag to enable HTTP server logs                |
