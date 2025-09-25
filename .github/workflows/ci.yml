@@ -64,5 +64,9 @@ jobs:
           'AUTH_AUTH0_CLIENT_SECRET': ${{ secrets.AUTH_AUTH0_CLIENT_SECRET }}
           'AUTH_AUTH0_ISSUER': ${{ secrets.AUTH_AUTH0_ISSUER }}
           'AUTH_AUTH0_AUTHORIZATION_URL': ${{ secrets.AUTH_AUTH0_AUTHORIZATION_URL }}
-          'E_CLASS_PLATFORM_ID': ${{ vars.E_CLASS_PLATFORM_ID }}
+          'NEXTAUTH_URL': 'https://example.com'
+          'NEXTAUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
+          'S3_HOSTNAME': 'localhost'
+          'S3_PORT': '9000'
+          'S3_PROTOCOL': 'http'
           'E_CLASS_DEV_MODE': 'true'
