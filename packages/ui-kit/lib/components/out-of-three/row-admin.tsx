@@ -1,8 +1,9 @@
 import {InputField} from "../input-field";
 import {RadioButton} from "../radio-button";
 import  { FC } from "react";
+import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 
-interface RowHeaderProps {
+interface RowHeaderProps extends isLocalAware {
   row: {
     rowTitle: string;
     columns: { columnTitle: string; selected: boolean }[];
@@ -19,7 +20,9 @@ const RowHeader: FC<RowHeaderProps> = ({
   disabled=false,
   onRowTitleChange,
   onSelectColumn,
+  locale,
 }) => {
+  const dictionary = getDictionary(locale);
   // Always show 3 columns, fill with defaults if missing
   const columns = [0, 1, 2].map(i =>
     row.columns[i] ?? { columnTitle: "", selected: false }
@@ -29,7 +32,7 @@ const RowHeader: FC<RowHeaderProps> = ({
     <div className="flex gap-2 items-center w-full">
       <div className="flex-1">
         <InputField
-          inputText="Row Title"
+          inputText={dictionary.components.oneOutOfThreeLesson.rowTitle}
           value={row.rowTitle}
           setValue={(value) => onRowTitleChange(rowIndex, value)}
         />

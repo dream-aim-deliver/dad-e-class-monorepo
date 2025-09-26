@@ -483,7 +483,7 @@ export const EN: TDictionary = {
       addChoice: "Add choice",
       multiChoice: "Multi choice",
       singleChoice: "Single choice",
-      oneOutOfThree: "one out of three",
+      oneOutOfThree: "One out of three",
       heading: "Heading",
       textInput: 'Text input',
       richText: 'Rich text',
@@ -931,6 +931,9 @@ export const EN: TDictionary = {
       rowCountValidationText: 'There should be at least one row',
       rowTitleValidationText: 'No row title should be empty',
       columnTitleValidationText: 'No column title should be empty',
+      tableTitle: 'Table Title',
+      rowTitle: 'Row Title',
+      columnTitle: 'Column Title',
     },
     richTextLesson: {
       textContentValidationText: 'Text content should not be empty',
@@ -1146,6 +1149,10 @@ export const EN: TDictionary = {
         downloading: 'Downloading...',
         downloadNotes: 'Download notes',
         downloadFailed: 'Failed to generate PDF: {error}. Please try again.',
+      },
+      study: {
+        submit: 'Submit',
+        submitting: 'Submitting...',
       },
     },
     userCourses: {

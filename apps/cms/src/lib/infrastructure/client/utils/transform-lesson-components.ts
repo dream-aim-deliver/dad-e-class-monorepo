@@ -116,7 +116,7 @@ function transformOneOutOfThree(
             rows: component.rows.map((row) => {
                 const columns = component.columns.map((column) => {
                     const isSelected = component.progress?.answers.some(
-                        (a) => a.rowId === row.id && a.columnId === column.id,
+                        (a) => a.rowId === row.id && a.columnId === column.id
                     );
                     return {
                         id: column.id,
@@ -130,6 +130,7 @@ function transformOneOutOfThree(
                     columns: columns,
                 };
             }),
+            columns: []
         },
         required: component.required,
     };

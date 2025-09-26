@@ -935,6 +935,9 @@ export const DE: TDictionary = {
       rowCountValidationText: 'Es sollte mindestens eine Zeile geben',
       rowTitleValidationText: 'Kein Zeilentitel sollte leer sein',
       columnTitleValidationText: 'Kein Spaltentitel sollte leer sein',
+      tableTitle: 'Tabellentitel',
+      rowTitle: 'Zeilentitel',
+      columnTitle: 'Spaltentitel',
     },
     richTextLesson: {
       textContentValidationText: 'Der Textinhalt sollte nicht leer sein',
@@ -1149,6 +1152,10 @@ export const DE: TDictionary = {
         downloading: 'Wird heruntergeladen...',
         downloadNotes: 'Notizen herunterladen',
         downloadFailed: 'PDF konnte nicht erstellt werden: {error}. Bitte versuche es erneut.',
+      },
+      study: {
+        submit: 'Absenden',
+        submitting: 'Wird gesendet...',
       },
     },
     userCourses: {

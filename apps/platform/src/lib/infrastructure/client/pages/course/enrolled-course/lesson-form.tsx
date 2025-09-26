@@ -8,7 +8,7 @@ import {
 import { useMemo, useRef } from 'react';
 import { getLessonComponentsMap } from '../../../utils/transform-lesson-components';
 import { useLocale } from 'next-intl';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import {
     ComponentRendererProps,
     typeToRendererMap,
@@ -167,6 +167,7 @@ export default function LessonForm({
 }: LessonFormProps) {
     const components = data.components;
     const locale = useLocale() as TLocale;
+    const dictionary = getDictionary(locale);
 
     const formElements: Map<string, LessonElement> = useMemo(() => {
         return getLessonComponentsMap(components);
@@ -242,9 +243,9 @@ export default function LessonForm({
                 {components.map(renderComponent)}
                 {enableSubmit && hasInteractiveElements && (
                     <Button
-                        className="sticky bottom-4"
+                        className='mx-auto'
                         variant="primary"
-                        text={isSubmitting ? 'Submitting...' : 'Submit'}
+                        text={isSubmitting ? dictionary.pages.course.study.submitting : dictionary.pages.course.study.submit}
                         disabled={isSubmitting}
                         onClick={submitProgress}
                         hasIconLeft

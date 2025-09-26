@@ -1,12 +1,14 @@
 import {InputField} from "../input-field";
 import React, { FC } from "react";
+import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 
-interface HeaderAdminProps {
+interface HeaderAdminProps extends isLocalAware {
   headers: { columnTitle: string; selected: boolean }[];
   onHeaderChange: (index: number, value: string) => void;
 }
 
-const HeaderAdmin: FC<HeaderAdminProps> = ({ headers, onHeaderChange }) => {
+const HeaderAdmin: FC<HeaderAdminProps> = ({ headers, onHeaderChange, locale }) => {
+  const dictionary = getDictionary(locale);
   // Always show 3 columns, fill with defaults if missing
   const columns = [0, 1, 2].map(i =>
     headers[i] ?? { columnTitle: "", selected: false }
@@ -18,7 +20,7 @@ const HeaderAdmin: FC<HeaderAdminProps> = ({ headers, onHeaderChange }) => {
       {columns.map((header, index) => (
         <div className="flex-1" key={index}>
           <InputField
-            inputText="Column Title"
+            inputText={dictionary.components.oneOutOfThreeLesson.columnTitle}
             value={header.columnTitle}
             setValue={(value) => onHeaderChange(index, value)}
           />
