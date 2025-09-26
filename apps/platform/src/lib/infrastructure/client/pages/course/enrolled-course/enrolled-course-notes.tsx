@@ -46,45 +46,363 @@ function EnrolledCourseNotesContent(
         try {
             await new Promise(resolve => setTimeout(resolve, 100)); // wait for rendering
 
-            // Clone the container to avoid affecting main UI
-            const original = notesContainerRef.current;
-            const clone = original.cloneNode(true) as HTMLElement;
+            // We'll build the content directly from the view model data
 
-            // Remove buttons from clone (no interactive UI controls in PDF)
-            clone.querySelectorAll('button').forEach(btn => btn.remove());
-
-            // Create a wrapper for the clone (for A4 width, padding, background)
+            // Create a wrapper for the clone with proper PDF styling
             const wrapper = document.createElement('div');
             wrapper.style.width = '794px'; // A4 width in pixels
             wrapper.style.margin = '0 auto';
-            wrapper.style.padding = '20px';
+            wrapper.style.padding = '20px 30px'; // Reduced padding
             wrapper.style.backgroundColor = '#ffffff';
             wrapper.style.color = '#000000';
-            wrapper.style.fontFamily = '"Figtree", sans-serif';
+            wrapper.style.fontFamily = '"Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+            wrapper.style.lineHeight = '1.6';
 
             // Add header in the PDF
-            const header = document.createElement('h2');
+            const header = document.createElement('h1');
             header.textContent = t('yourNotes');
-            header.style.fontSize = '32px';
-            header.style.fontWeight = 'bold';
-            header.style.marginBottom = '32px';
+            header.style.fontSize = '24px'; // Smaller font
+            header.style.fontWeight = '700';
+            header.style.marginTop = '0'; // Remove top margin
+            header.style.marginBottom = '20px'; // Reduced bottom margin
             header.style.color = '#000000';
-            header.style.fontFamily = 'inherit';
+            header.style.borderBottom = '2px solid #f59f0b5d';
+            header.style.paddingBottom = '12px'; // Reduced padding
 
             wrapper.appendChild(header);
-            wrapper.appendChild(clone);
 
-            // Optionally fix font sizes/colors for module and lesson titles in clone
-            clone.querySelectorAll('.text-xl').forEach(el => {
-                (el as HTMLElement).style.fontSize = '20px';
-                (el as HTMLElement).style.fontWeight = 'bold';
-                (el as HTMLElement).style.color = '#000';
-            });
-            clone.querySelectorAll('.text-lg').forEach(el => {
-                (el as HTMLElement).style.fontSize = '18px';
-                (el as HTMLElement).style.fontWeight = 'bold';
-                (el as HTMLElement).style.color = '#000';
-            });
+            // COMPLETELY RESTRUCTURE THE CONTENT FOR PDF
+            // Access the data directly from the view model instead of trying to parse DOM
+            const modulesContainer = document.createElement('div');
+
+            // Debug: Let's see what data we have
+            console.log('CourseNotesViewModel data:', courseNotesViewModel.data);
+
+            if (courseNotesViewModel.mode === 'default' && courseNotesViewModel.data.modules) {
+                courseNotesViewModel.data.modules.forEach((module) => {
+                    console.log('Processing module:', module.title, 'with', module.lessons?.length, 'lessons');
+                    const moduleDiv = document.createElement('div');
+                    moduleDiv.style.marginBottom = '4px';
+                    moduleDiv.style.marginTop = '0'; // Ensure no top margin
+
+                    // Module title
+                    const titleDiv = document.createElement('h2');
+                    titleDiv.textContent = `Module ${module.position} - ${module.title}`;
+                    titleDiv.style.fontSize = '20px'; // Slightly smaller
+                    titleDiv.style.fontWeight = '600';
+                    titleDiv.style.color = '#000000';
+                    titleDiv.style.marginTop = '0';
+                    titleDiv.style.marginBottom = '0';
+                    titleDiv.style.borderLeft = '4px solid #f59f0bb4';
+                    titleDiv.style.paddingLeft = '16px';
+                    moduleDiv.appendChild(titleDiv);
+
+                    // Process lessons
+                    if (module.lessons) {
+                        module.lessons.forEach((lesson, lessonIndex) => {
+                            console.log('Processing lesson:', lesson.title, 'Notes available:', !!lesson.notes, typeof lesson.notes);
+
+                            const lessonDiv = document.createElement('div');
+                            // Check if this is the last lesson in the module
+                            const isLastLesson = lessonIndex === (module.lessons?.length ?? 0) - 1;
+                            lessonDiv.style.marginBottom = isLastLesson ? '0px' : '4px'; // No margin for last lesson
+                            lessonDiv.style.marginTop = '0'; // Ensure no top margin
+                            lessonDiv.style.marginLeft = '16px'; // Slightly reduced indentation
+
+                            // Lesson title
+                            const lessonTitleDiv = document.createElement('h3');
+                            const lessonNumber = courseNotesViewModel.data.modules
+                                .slice(0, courseNotesViewModel.data.modules.indexOf(module))
+                                .reduce((sum, mod) => sum + (mod.lessonCount ?? 0), 0) + (lesson.position ?? lessonIndex + 1);
+                            lessonTitleDiv.textContent = `Lesson ${lessonNumber} - ${lesson.title}`;
+                            lessonTitleDiv.style.fontSize = '16px'; // Smaller font
+                            lessonTitleDiv.style.fontWeight = '600';
+                            lessonTitleDiv.style.color = '#000000';
+                            lessonTitleDiv.style.marginTop = '0';
+                            lessonTitleDiv.style.marginBottom = '8px'; 
+                            lessonDiv.appendChild(lessonTitleDiv);
+
+                            // Lesson content/notes - Try both view model and DOM
+                            if (lesson.notes) {
+                                console.log('Found notes in view model for lesson:', lesson.title);
+                                const contentDiv = document.createElement('div');
+                                contentDiv.style.fontSize = '14px';
+                                contentDiv.style.color = '#000000';
+                                contentDiv.style.lineHeight = '1.6';
+                                contentDiv.style.marginLeft = '20px'; // Indented from lesson title
+                                contentDiv.style.marginTop = '4px'; // Small gap from lesson title
+                                contentDiv.style.marginBottom = '0';
+                                contentDiv.style.paddingTop = '8px'; // Top padding for separation
+                                contentDiv.style.borderTop = '1px solid #f59f0b5d'; // Subtle top border
+                                contentDiv.style.paddingLeft = '0'; // No left padding needed
+
+                                // If notes is a string, parse it, otherwise use it directly
+                                if (typeof lesson.notes === 'string') {
+                                    try {
+                                        const parsedNotes = JSON.parse(lesson.notes);
+                                        // Render the rich text content with full formatting support
+                                        if (Array.isArray(parsedNotes)) {
+                                            parsedNotes.forEach((node: any) => {
+                                                if (node.type === 'paragraph' && node.children) {
+                                                    const p = document.createElement('p');
+                                                    p.style.margin = '0';
+                                                    p.style.padding = '0';
+                                                    p.style.color = 'black';
+
+                                                    node.children.forEach((child: any) => {
+                                                        if (child.text) {
+                                                            const span = document.createElement('span');
+                                                            span.textContent = child.text;
+                                                            if (child.bold) span.style.fontWeight = '700';
+                                                            if (child.italic) span.style.fontStyle = 'italic';
+                                                            if (child.underline) span.style.textDecoration = 'underline';
+                                                            if (child.code) {
+                                                                span.style.fontFamily = 'monospace';
+                                                                span.style.backgroundColor = '#f1f5f9';
+                                                                span.style.padding = '2px 4px';
+                                                                span.style.borderRadius = '2px';
+                                                            }
+                                                            p.appendChild(span);
+                                                        }
+                                                    });
+                                                    contentDiv.appendChild(p);
+                                                } else if (node.type === 'bulleted-list' || node.type === 'unordered-list') {
+                                                    const ul = document.createElement('ul');
+                                                    ul.style.listStyleType = 'disc';
+                                                    ul.style.paddingLeft = '16px';
+                                                    ul.style.margin = '0';
+                                                    ul.style.color = 'black';
+
+                                                    if (node.children) {
+                                                        node.children.forEach((listItem: any) => {
+                                                            if (listItem.type === 'list-item') {
+                                                                const li = document.createElement('li');
+                                                                li.style.margin = '0';
+                                                                li.style.padding = '0';
+                                                                li.style.color = 'black';
+
+                                                                if (listItem.children) {
+                                                                    listItem.children.forEach((child: any) => {
+                                                                        if (child.text) {
+                                                                            const span = document.createElement('span');
+                                                                            span.textContent = child.text;
+                                                                            if (child.bold) span.style.fontWeight = '700';
+                                                                            if (child.italic) span.style.fontStyle = 'italic';
+                                                                            li.appendChild(span);
+                                                                        }
+                                                                    });
+                                                                }
+                                                                ul.appendChild(li);
+                                                            }
+                                                        });
+                                                    }
+                                                    contentDiv.appendChild(ul);
+                                                } else if (node.type === 'numbered-list') {
+                                                    const ol = document.createElement('ol');
+                                                    ol.style.listStyleType = 'decimal';
+                                                    ol.style.paddingLeft = '16px';
+                                                    ol.style.margin = '0';
+                                                    ol.style.color = 'black';
+
+                                                    if (node.children) {
+                                                        node.children.forEach((listItem: any) => {
+                                                            if (listItem.type === 'list-item') {
+                                                                const li = document.createElement('li');
+                                                                li.style.margin = '0';
+                                                                li.style.padding = '0';
+                                                                li.style.color = 'black';
+
+                                                                if (listItem.children) {
+                                                                    listItem.children.forEach((child: any) => {
+                                                                        if (child.text) {
+                                                                            const span = document.createElement('span');
+                                                                            span.textContent = child.text;
+                                                                            if (child.bold) span.style.fontWeight = '700';
+                                                                            if (child.italic) span.style.fontStyle = 'italic';
+                                                                            li.appendChild(span);
+                                                                        }
+                                                                    });
+                                                                }
+                                                                ol.appendChild(li);
+                                                            }
+                                                        });
+                                                    }
+                                                    contentDiv.appendChild(ol);
+                                                } else if (node.type === 'link') {
+                                                    const a = document.createElement('a');
+                                                    a.href = node.url || '#';
+                                                    a.textContent = node.children?.[0]?.text || node.url;
+                                                    a.style.color = '#3b82f6';
+                                                    a.style.textDecoration = 'underline';
+                                                    contentDiv.appendChild(a);
+                                                } else if (node.type === 'block-quote') {
+                                                    const blockquote = document.createElement('blockquote');
+                                                    blockquote.style.borderLeft = '3px solid #e2e8f0';
+                                                    blockquote.style.paddingLeft = '12px';
+                                                    blockquote.style.fontStyle = 'italic';
+                                                    blockquote.style.margin = '0';
+                                                    blockquote.style.color = 'black';
+
+                                                    if (node.children) {
+                                                        node.children.forEach((child: any) => {
+                                                            if (child.text) {
+                                                                blockquote.textContent += child.text;
+                                                            }
+                                                        });
+                                                    }
+                                                    contentDiv.appendChild(blockquote);
+                                                } else if (node.type?.startsWith('h')) {
+                                                    // Handle headings (h1, h2, h3, etc.)
+                                                    const heading = document.createElement(node.type);
+                                                    heading.style.fontWeight = '600';
+                                                    heading.style.margin = '0';
+                                                    heading.style.color = 'black';
+
+                                                    if (node.children) {
+                                                        node.children.forEach((child: any) => {
+                                                            if (child.text) {
+                                                                heading.textContent += child.text;
+                                                            }
+                                                        });
+                                                    }
+                                                    contentDiv.appendChild(heading);
+                                                }
+                                            });
+                                        } else {
+                                            contentDiv.textContent = lesson.notes;
+                                        }
+                                    } catch {
+                                        // If parsing fails, just show as plain text
+                                        contentDiv.textContent = lesson.notes;
+                                    }
+                                } else {
+                                    contentDiv.textContent = 'No notes available';
+                                }
+
+                                lessonDiv.appendChild(contentDiv);
+                            } else {
+                                // Try to get notes from DOM as fallback
+                                console.log('No notes in view model, trying to extract from DOM for lesson:', lesson.title);
+
+                                // Try to find this lesson in the actual DOM
+                                const original = notesContainerRef.current;
+                                if (original) {
+                                    // Look for lesson content in the accordion structure
+                                    const lessonElements = original.querySelectorAll('h5');
+                                    let foundContentElement: HTMLElement | null = null;
+
+                                    lessonElements.forEach(h5Element => {
+                                        if (h5Element.textContent?.includes(lesson.title || '')) {
+                                            // Find the content area for this lesson
+                                            const accordionItem = h5Element.closest('[role="region"]') ||
+                                                                h5Element.closest('[data-radix-collapsible-content]') ||
+                                                                h5Element.closest('div');
+
+                                            if (accordionItem) {
+                                                const contentArea = accordionItem.querySelector('[class*="text-text-secondary"]') ||
+                                                                  accordionItem.querySelector('div:last-child');
+                                                if (contentArea && contentArea.textContent?.trim()) {
+                                                    const clonedElement = contentArea.cloneNode(true);
+                                                    if (clonedElement instanceof HTMLElement) {
+                                                        foundContentElement = clonedElement;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    if (foundContentElement) {
+                                        console.log('Found content in DOM for lesson:', lesson.title);
+                                        const contentDiv = document.createElement('div');
+                                        const htmlElement = foundContentElement as HTMLElement;
+
+                                        // Copy the content with all formatting preserved
+                                        contentDiv.innerHTML = htmlElement.innerHTML;
+
+                                        contentDiv.style.fontSize = '14px';
+                                        contentDiv.style.color = '#000000';
+                                        contentDiv.style.lineHeight = '1.6';
+                                        contentDiv.style.marginLeft = '20px'; // Indented from lesson title
+                                        contentDiv.style.marginTop = '4px'; // Small gap from lesson title
+                                        contentDiv.style.marginBottom = '0';
+                                        contentDiv.style.paddingTop = '8px'; // Top padding for separation
+                                        contentDiv.style.borderTop = '1px solid #e5e5e5'; // Subtle top border
+                                        contentDiv.style.paddingLeft = '0'; // No left padding needed
+
+                                        // Clean up any remaining interactive elements but preserve formatting
+                                        contentDiv.querySelectorAll('button').forEach(btn => btn.remove());
+                                        contentDiv.querySelectorAll('svg').forEach(svg => svg.remove());
+
+                                        // Ensure rich text formatting is preserved for PDF
+                                        contentDiv.querySelectorAll('p').forEach(p => {
+                                            (p as HTMLElement).style.margin = '0';
+                                            (p as HTMLElement).style.padding = '0';
+                                            (p as HTMLElement).style.color = 'black';
+                                        });
+                                        contentDiv.querySelectorAll('strong, b').forEach(strong => {
+                                            (strong as HTMLElement).style.fontWeight = '700';
+                                            (strong as HTMLElement).style.color = 'black';
+                                        });
+                                        contentDiv.querySelectorAll('em, i').forEach(em => {
+                                            (em as HTMLElement).style.fontStyle = 'italic';
+                                            (em as HTMLElement).style.color = 'black';
+                                        });
+                                        contentDiv.querySelectorAll('u').forEach(u => {
+                                            (u as HTMLElement).style.textDecoration = 'underline';
+                                            (u as HTMLElement).style.color = 'black';
+                                        });
+                                        contentDiv.querySelectorAll('ul').forEach(ul => {
+                                            (ul as HTMLElement).style.listStyleType = 'disc';
+                                            (ul as HTMLElement).style.paddingLeft = '16px';
+                                            (ul as HTMLElement).style.margin = '0';
+                                            (ul as HTMLElement).style.color = 'black';
+                                        });
+                                        contentDiv.querySelectorAll('ol').forEach(ol => {
+                                            (ol as HTMLElement).style.listStyleType = 'decimal';
+                                            (ol as HTMLElement).style.paddingLeft = '16px';
+                                            (ol as HTMLElement).style.margin = '0';
+                                            (ol as HTMLElement).style.color = 'black';
+                                        });
+                                        contentDiv.querySelectorAll('li').forEach(li => {
+                                            (li as HTMLElement).style.margin = '0';
+                                            (li as HTMLElement).style.padding = '0';
+                                            (li as HTMLElement).style.color = 'black';
+                                        });
+                                        contentDiv.querySelectorAll('a').forEach(link => {
+                                            (link as HTMLElement).style.color = '#3b82f6';
+                                            (link as HTMLElement).style.textDecoration = 'underline';
+                                        });
+                                        contentDiv.querySelectorAll('blockquote').forEach(bq => {
+                                            (bq as HTMLElement).style.borderLeft = '3px solid #e2e8f0';
+                                            (bq as HTMLElement).style.paddingLeft = '12px';
+                                            (bq as HTMLElement).style.fontStyle = 'italic';
+                                            (bq as HTMLElement).style.margin = '0';
+                                            (bq as HTMLElement).style.color = 'black';
+                                        });
+
+                                        lessonDiv.appendChild(contentDiv);
+                                    } else {
+                                        // Still no content found
+                                        const noNotesDiv = document.createElement('div');
+                                        noNotesDiv.textContent = 'No notes available for this lesson';
+                                        noNotesDiv.style.fontSize = '14px';
+                                        noNotesDiv.style.color = '#000000';
+                                        noNotesDiv.style.fontStyle = 'italic';
+                                        noNotesDiv.style.marginLeft = '16px';
+                                        lessonDiv.appendChild(noNotesDiv);
+                                    }
+                                }
+                            }
+
+                            moduleDiv.appendChild(lessonDiv);
+                        });
+                    }
+
+                    modulesContainer.appendChild(moduleDiv);
+                });
+            }
+
+            wrapper.appendChild(modulesContainer);
 
             // Generate PDF from the wrapper with the cloned content
             const imageType: "jpeg" | "png" | "webp" | undefined = "jpeg";
@@ -96,7 +414,7 @@ function EnrolledCourseNotesContent(
                 filename: `course-notes-${courseSlug}.pdf`,
                 image: { type: imageType, quality: 0.98 },
                 html2canvas: {
-                    scale: 3,
+                    scale: 2,
                     useCORS: true,
                     letterRendering: true,
                     backgroundColor: '#ffffff',
