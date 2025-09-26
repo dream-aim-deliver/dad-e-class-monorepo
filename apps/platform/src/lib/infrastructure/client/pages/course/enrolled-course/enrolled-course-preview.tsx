@@ -6,7 +6,8 @@ import {
     DefaultLoading,
     DefaultNotFound,
     Divider,
-    IconNotes,
+    IconEyeHide,
+    IconEyeShow,
     LessonHeader,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
@@ -173,13 +174,13 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
         <div className="flex flex-col w-full gap-6">
             {/* Show/Hide Notes button - only for students with enableSubmit */}
             {props.enableSubmit && currentLesson && (
-                <div className="flex justify-start">
+                <div className="flex justify-end">
                     <Button
                         variant="secondary"
                         size="medium"
                         text={showNotes ? t('hideNotesText') : t('showNotesText')}
                         hasIconLeft
-                        iconLeft={<IconNotes />}
+                        iconLeft={showNotes ? <IconEyeHide /> : <IconEyeShow />}
                         onClick={() => setShowNotes(!showNotes)}
                     />
                 </div>
