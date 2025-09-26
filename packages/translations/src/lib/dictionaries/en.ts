@@ -498,6 +498,8 @@ export const EN: TDictionary = {
       viewLessonText: 'View lesson',
       saveNotesText: 'Save notes',
       notesNotSavedText: 'Notes not saved',
+      showNotesText: 'Show Notes',
+      hideNotesText: 'Hide Notes',
     },
     coachingSessionCourseBuilder: {
       profileText: 'Profile',

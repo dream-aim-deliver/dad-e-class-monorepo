@@ -466,7 +466,9 @@ function EnrolledCourseNotesContent(
                 <CourseNotesAccordion
                     data={courseNotesViewModel.data}
                     onDeserializationError={(message, error) => console.error(message, error)}
-                    onClickViewLesson={(lessonId) => alert(`View lesson ${lessonId} clicked`)}
+                    onClickViewLesson={() => {
+                        // No-op: View lesson functionality not implemented in notes view
+                    }}
                     locale={locale}
                 />
             </div>
