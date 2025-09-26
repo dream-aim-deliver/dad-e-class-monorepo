@@ -90,7 +90,7 @@ const NavBarDropdown: React.FC<NavBarDropdownProps> = ({
 
       {/* Dropdown Content */}
       {isOpen && options.length > 0 && (
-        <div className="absolute top-full right-0 mt-1 py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium shadow-lg z-50 min-w-[150px]">
+        <div className="absolute top-full right-0 mt-3 py-2 bg-base-neutral-800 border-[1px] border-base-neutral-700 rounded-medium shadow-lg z-50 min-w-[150px]">
           {options.map((option) => (
             <div key={option.value}>
               {/* Add divider before logout */}

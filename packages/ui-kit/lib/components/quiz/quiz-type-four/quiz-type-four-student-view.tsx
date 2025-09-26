@@ -6,7 +6,7 @@ import { Button } from "../../button";
 import { IconCheck } from "../../icons/icon-check";
 import { IconClose } from "../../icons/icon-close";
 import { InputField } from "../../input-field";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useMemo } from "react";
 import { QuizTypeFourElement } from "../../course-builder-lesson-component/types";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 import { IconError, IconSuccess } from "../../icons";
@@ -59,7 +59,29 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({
   locale,
 }) => {
   const dictionary = getDictionary(locale);
-  
+
+  // Deterministic shuffle function based on quiz ID for consistent randomization
+  const shuffleArray = (array: number[], seed: string): number[] => {
+    const result = [...array];
+    let seedNum = 0;
+    for (let i = 0; i < seed.length; i++) {
+      seedNum += seed.charCodeAt(i);
+    }
+
+    for (let i = result.length - 1; i > 0; i--) {
+      seedNum = (seedNum * 9301 + 49297) % 233280;
+      const j = Math.floor((seedNum / 233280) * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  };
+
+  // Create randomized indices for images only (deterministic based on quiz ID)
+  const shuffledImageIndices = useMemo(() => {
+    const imageIndices = Array.from({ length: elementInstance.images.length }, (_, i) => i);
+    return shuffleArray(imageIndices, elementInstance.id + "_images");
+  }, [elementInstance.id, elementInstance.images.length]);
+
   // State
   const [userInputs, setUserInputs] = useState<string[]>(Array(elementInstance.images.length).fill(""));
   const [checked, setChecked] = useState(false);
@@ -141,7 +163,7 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({
         {/* Labels/Descriptions */}
         <div className="flex items-center justify-start basis-2/5">
           <div className="flex flex-col gap-6 justify-start">
-            {elementInstance.labels?.map((label, index) => (
+            {elementInstance.labels.map((label, index) => (
               <div key={index} className="flex gap-4 items-center">
                 <div className="flex items-center justify-center min-w-[40px] min-h-[40px] bg-divider border-[1px] border-checkbox-stroke rounded-[8px]">
                   <p className="text-[20px] text-text-primary leading-[120%] font-bold">
@@ -160,18 +182,19 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({
 
         {/* Images and answer inputs */}
         <div className="grid grid-cols-2 gap-4 basis-3/5">
-          {elementInstance.images.map((image, index) => {
-            const userValue = userInputs[index];
+          {shuffledImageIndices.map((imageIndex) => {
+            const image = elementInstance.images[imageIndex];
+            const userValue = userInputs[imageIndex]; // Use original imageIndex for user inputs
             const correctValue = image.correctLetter;
             const showCorrect = showingSolution;
             const inputValue = showCorrect ? correctValue : userValue;
 
             // Determine if placeholder should be shown
             const shouldShowPlaceholder =
-              !image.imageFile?.thumbnailUrl || imageErrors[index];
+              !image.imageFile?.thumbnailUrl || imageErrors[imageIndex];
 
             return (
-              <div key={index} className="flex flex-col gap-2 items-center">
+              <div key={imageIndex} className="flex flex-col gap-2 items-center">
                 <div className="relative w-full">
                   {shouldShowPlaceholder ? (
                     <div className="w-full h-[153px] bg-base-neutral-700 flex items-center justify-center rounded">
@@ -182,9 +205,9 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({
                   ) : (
                     <img
                       src={image.imageFile?.thumbnailUrl ?? undefined}
-                      alt={`Quiz Illustration ${index + 1}`}
+                      alt={`Quiz Illustration ${imageIndex + 1}`}
                       className="rounded w-full max-h-[25rem] object-cover"
-                      onError={() => handleImageError(index)}
+                      onError={() => handleImageError(imageIndex)}
                       loading="lazy"
                     />
                   )}
@@ -195,7 +218,7 @@ const QuizTypeFourStudentView: FC<QuizTypeFourStudentViewProps> = ({
                       inputText="e.g. A"
                       className="w-[80px] border-[1px] border-card-stroke text-text-primary"
                       value={inputValue}
-                      setValue={(value) => handleInputChange(index, value)}
+                      setValue={(value) => handleInputChange(imageIndex, value)}
                       state={checked || showingSolution ? "disabled" : "placeholder"}
                     />
                   </div>

@@ -61,7 +61,7 @@ const RenderElement = ({ attributes, children, element }: {
         <a
           {...attributes}
           href={element.url}
-          className="text-button-text-text underline"
+          className="text-button-text-text underline cursor-pointer"
           target="_blank"
           rel="noopener noreferrer"
           onClick={(event) => {

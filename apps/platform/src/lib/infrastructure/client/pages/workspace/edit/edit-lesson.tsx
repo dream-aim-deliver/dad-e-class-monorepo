@@ -328,6 +328,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
                     data: {
                         tableTitle: '',
                         rows: [],
+                        columns: []
                     },
                 };
                 setComponents((prev) => [...prev, newComponent]);
