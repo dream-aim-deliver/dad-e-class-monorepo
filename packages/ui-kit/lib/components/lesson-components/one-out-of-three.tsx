@@ -113,6 +113,11 @@ export function DesignerComponent({
     );
     const [data, setData] = useState<OneOutOfThreeData>({
         tableTitle: elementInstance.data.tableTitle,
+        columns: elementInstance.data.columns || (elementInstance.data.rows[0]?.columns || [
+            { columnTitle: '', selected: false },
+            { columnTitle: '', selected: false },
+            { columnTitle: '', selected: false }
+        ]),
         rows: elementInstance.data.rows,
     });
     const handleRequiredChange = () => {
@@ -180,6 +185,11 @@ export function FormComponent({
 
     const oneOutOfThreeData: OneOutOfThreeData = {
         tableTitle: elementInstance.data.tableTitle,
+        columns: elementInstance.data.columns || (elementInstance.data.rows[0]?.columns || [
+            { columnTitle: '', selected: false },
+            { columnTitle: '', selected: false },
+            { columnTitle: '', selected: false }
+        ]),
         rows: elementInstance.data.rows,
     };
     const handleChange = (updatedData: OneOutOfThreeData) => {
@@ -204,6 +214,11 @@ function ViewComponent({ elementInstance }: { elementInstance: FormElement }) {
     if (elementInstance.type !== FormElementType.OneOutOfThree) return null;
     const oneOutOfThreeData: OneOutOfThreeData = {
         tableTitle: elementInstance.data.tableTitle,
+        columns: elementInstance.data.columns || (elementInstance.data.rows[0]?.columns || [
+            { columnTitle: '', selected: false },
+            { columnTitle: '', selected: false },
+            { columnTitle: '', selected: false }
+        ]),
         rows: elementInstance.data.rows,
     };
     return (

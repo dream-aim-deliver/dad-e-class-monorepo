@@ -271,6 +271,7 @@ function PreCourseAssessmentFormBuilder({
                     data: {
                         tableTitle: '',
                         rows: [],
+                        columns: []
                     },
                 };
                 setComponents((prev) => [...prev, newComponent]);

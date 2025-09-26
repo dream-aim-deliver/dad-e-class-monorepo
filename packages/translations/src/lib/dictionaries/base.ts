@@ -916,6 +916,9 @@ export const DictionarySchema = z.object({
       rowCountValidationText: z.string(),
       rowTitleValidationText: z.string(),
       columnTitleValidationText: z.string(),
+      tableTitle: z.string(),
+      rowTitle: z.string(),
+      columnTitle: z.string(),
     }),
     richTextLesson: z.object({
       textContentValidationText: z.string(),
@@ -1176,6 +1179,10 @@ export const DictionarySchema = z.object({
         downloadNotes: z.string(),
         downloadFailed: z.string(),
       }),
+      study: z.object({
+        submit: z.string(),
+        submitting: z.string(),
+      })
     }),
     userCourses: z.object({
       yourCourses: z.string(),

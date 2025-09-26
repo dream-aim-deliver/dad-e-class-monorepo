@@ -12,7 +12,11 @@ import { IconButton } from "../icon-button";
 
 interface OneOutOfThreeData {
   tableTitle: string;
-
+  columns: {
+    id?: string;
+    columnTitle: string;
+    selected: boolean;
+  }[];
   rows: {
     id?: string;
     rowTitle: string;
@@ -31,7 +35,20 @@ interface OneOutOfThreeProps extends isLocalAware {
 
 const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
   const dictionary = getDictionary(locale);
-  
+
+  // Ensure data has the required columns property for backward compatibility
+  if (data && !data.columns) {
+    // Initialize columns from first row or create empty columns
+    const initialColumns = data.rows[0]?.columns || [
+      { columnTitle: "", selected: false },
+      { columnTitle: "", selected: false },
+      { columnTitle: "", selected: false }
+    ];
+    // Update data to include columns property
+    onUpdate({ ...data, columns: initialColumns });
+    return null; // Let the component re-render with the updated data
+  }
+
   // Change table title
   const handleTableTitleChange = (value: string) => {
     if (!data) return;
@@ -45,11 +62,21 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
     onUpdate({ ...data, rows: updatedRows });
   };
 
-  // Change column header (all rows' column titles must stay in sync)
+  // Change column header (update both data.columns and sync to all rows)
   const handleHeaderChange = (colIndex: number, value: string) => {
     if (!data) return;
+
+    // Update the main columns array (ensure 3 columns)
+    const updatedColumns = [0, 1, 2].map(i =>
+      data.columns[i] ?? { columnTitle: "", selected: false }
+    );
+    updatedColumns[colIndex] = {
+      columnTitle: value,
+      selected: updatedColumns[colIndex]?.selected ?? false,
+    };
+
+    // Update all rows to sync with the new column title
     const updatedRows = data.rows.map(row => {
-      // Ensure 3 columns
       const columns = [0, 1, 2].map(i =>
         row.columns[i] ?? { columnTitle: "", selected: false }
       );
@@ -59,7 +86,8 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
       };
       return { ...row, columns };
     });
-    onUpdate({ ...data, rows: updatedRows });
+
+    onUpdate({ ...data, columns: updatedColumns, rows: updatedRows });
   };
   
 
@@ -98,13 +126,16 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
   // Add a new row with same columns structure
   const addRow = () => {
     if (!data) return;
-    const columnTemplates = data.rows[0]?.columns || [];
+    // Use data.columns as template instead of data.rows[0]?.columns
+    const columnTemplates = data.columns || [];
+    // Ensure 3 columns
+    const columns = [0, 1, 2].map(i => ({
+      columnTitle: columnTemplates[i]?.columnTitle || "",
+      selected: false,
+    }));
     const newRow = {
       rowTitle: "",
-      columns: columnTemplates.map(col => ({
-        columnTitle: col.columnTitle,
-        selected: false,
-      })),
+      columns,
     };
     onUpdate({ ...data, rows: [...data.rows, newRow] });
   };
@@ -114,13 +145,14 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
       <div className="flex flex-col gap-4 w-full">
         <div className="flex flex-col gap-[15px] mt-4">
           <InputField
-            inputText="Table Title"
-            value={data?.tableTitle || " "}
+            inputText={dictionary.components.oneOutOfThreeLesson.tableTitle}
+            value={data?.tableTitle || ""}
             setValue={(value) => handleTableTitleChange(value)}
           />
           <HeaderAdmin
-            headers={data?.rows[0]?.columns || []}
+            headers={data?.columns || []}
             onHeaderChange={handleHeaderChange}
+            locale={locale}
           />
           {data?.rows && data.rows.length > 0 && data.rows.map((row, rowIndex) => (
             <div key={rowIndex} className="flex items-center gap-2 w-full">
@@ -130,6 +162,7 @@ const OneOutOfThree: FC<OneOutOfThreeProps> = ({ data, onUpdate,locale }) => {
                   rowIndex={rowIndex}
                   onRowTitleChange={handleRowTitleChange}
                   onSelectColumn={handleSelectColumn}
+                  locale={locale}
                 />
               </div>
               <IconButton
@@ -169,8 +202,18 @@ export interface OneOutOfThreePreviewProps  {
    onChange,
    required,
  }) => {
+   // Ensure data has columns property for backward compatibility
+   const dataWithColumns = data.columns ? data : {
+     ...data,
+     columns: data.rows[0]?.columns || [
+       { columnTitle: "", selected: false },
+       { columnTitle: "", selected: false },
+       { columnTitle: "", selected: false }
+     ]
+   };
+
    // We need to keep track of selected columns for each row if displayOnly is false
-   const [rows, setRows] = useState(data.rows);
+   const [rows, setRows] = useState(dataWithColumns.rows);
  
    const handleChange = (rowIdx: number, colIdx: number) => {
      if (displayOnly) return; // Do nothing if displayOnly is true
@@ -191,7 +234,8 @@ export interface OneOutOfThreePreviewProps  {
      if (onChange) {
        // Create a new OneOutOfThreeData object with updated rows
        const updatedData: OneOutOfThreeData = {
-         tableTitle: data.tableTitle,
+         tableTitle: dataWithColumns.tableTitle,
+         columns: dataWithColumns.columns,
          rows: updatedRows
        };
        onChange(updatedData);
@@ -204,7 +248,7 @@ export interface OneOutOfThreePreviewProps  {
      <div className="flex flex-col gap-4">
        <div className="flex flex-col gap-4">
          <p className="text-[24px] text-text-primary font-bold leading-[120%]">
-           {data.tableTitle}
+           {dataWithColumns.tableTitle}
            {required && <span className="text-feedback-error-primary ml-1 text-sm">*</span>}
          </p>
          <div className="h-[1px] bg-divider" />
@@ -212,7 +256,7 @@ export interface OneOutOfThreePreviewProps  {
            {/* Headers */}
            <div className="grid grid-cols-[repeat(4,_1fr)_0.2fr] gap-2 w-full">
              <div className="flex items-center justify-center"></div>
-             {data.rows[0]?.columns.map((col, idx) => (
+             {dataWithColumns.columns.map((col, idx) => (
                <div key={idx} className="flex items-center justify-center">
                  <p className="md:text-lg text-text-primary text-sm leading-[150%] text-center">
                    {col.columnTitle}

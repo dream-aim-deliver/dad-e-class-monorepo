@@ -113,6 +113,11 @@ function transformOneOutOfThree(
         id: component.id,
         data: {
             tableTitle: component.title,
+            columns: component.columns.map((column) => ({
+                id: column.id,
+                columnTitle: column.name,
+                selected: false
+            })),
             rows: component.rows.map((row) => {
                 const columns = component.columns.map((column) => {
                     const isSelected = component.progress?.answers.some(

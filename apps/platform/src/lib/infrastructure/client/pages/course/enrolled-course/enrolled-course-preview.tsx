@@ -169,7 +169,7 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
                 modules={transformedModules}
                 activeLessonId={currentLesson?.id}
                 onLessonClick={handleLessonClick}
-                className="lg:w-[343px] md:w-[280px] w-full"
+                className="sticky top-30 bottom-30 h-fit overflow-y-auto lg:w-[343px] md:w-[280px] w-full"
             />
             <div className="flex-1 min-w-0">
                 {currentModule && currentLesson && (
