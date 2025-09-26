@@ -507,6 +507,8 @@ export const DE: TDictionary = {
       viewLessonText: 'Lektion ansehen',
       saveNotesText: 'Notizen speichern',
       notesNotSavedText: 'Notizen nicht gespeichert',
+      showNotesText: 'Notizen anzeigen',
+      hideNotesText: 'Notizen verbergen',
     },
     coachingSessionCourseBuilder: {
       profileText: 'Profil',

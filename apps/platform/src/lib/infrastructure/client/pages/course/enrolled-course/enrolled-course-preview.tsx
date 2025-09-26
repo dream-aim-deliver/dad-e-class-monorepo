@@ -1,18 +1,21 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
+    Button,
     CourseOutlineAccordion,
     DefaultError,
     DefaultLoading,
     DefaultNotFound,
     Divider,
+    IconNotes,
     LessonHeader,
 } from '@maany_shr/e-class-ui-kit';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Suspense, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCourseStructurePresenter } from '../../../hooks/use-course-structure-presenter';
 import { useListLessonComponentsPresenter } from '../../../hooks/use-lesson-components-presenter';
 import LessonForm from './lesson-form';
+import LessonNotesPanel from './lesson-notes-panel';
 import { trpc } from '../../../trpc/client';
 
 interface EnrolledCoursePreviewProps {
@@ -67,6 +70,10 @@ function CoursePreviewLesson(props: {
 function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     const { courseSlug } = props;
     const locale = useLocale() as TLocale;
+    const t = useTranslations('components.lessonNotes');
+
+    // State for showing/hiding notes panel (only for students with enableSubmit)
+    const [showNotes, setShowNotes] = useState(false);
 
     const [courseStructureResponse] = trpc.getCourseStructure.useSuspenseQuery({
         courseSlug,
@@ -163,47 +170,68 @@ function CoursePreviewContent(props: EnrolledCoursePreviewProps) {
     }
 
     return (
-        <div className="flex flex-col w-full gap-6 md:flex-row">
-            <CourseOutlineAccordion
-                locale={locale}
-                modules={transformedModules}
-                activeLessonId={currentLesson?.id}
-                onLessonClick={handleLessonClick}
-                className="sticky top-30 bottom-30 h-fit overflow-y-auto lg:w-[343px] md:w-[280px] w-full"
-            />
-            <div className="flex-1 min-w-0">
-                {currentModule && currentLesson && (
-                    <>
-                        <LessonHeader
-                            currentModule={currentModule.position}
-                            totalModules={modules.length}
-                            moduleTitle={currentModule.title}
-                            currentLesson={(activeLessonIndex ?? 0) + 1}
-                            totalLessons={currentModule.lessons.length}
-                            lessonTitle={currentLesson.title}
-                            areNotesAvailable={false}
-                            onClickPrevious={handlePreviousLesson}
-                            onClickNext={handleNextLesson}
-                            onClick={() => {
-                                // This function handles opening notes. As they aren't available in preview mode, it's left empty.
-                            }}
-                            locale={locale}
-                        />
-                        <Divider className="my-6" />
-                        <Suspense
-                            fallback={
-                                <DefaultLoading
-                                    locale={locale}
-                                    variant="minimal"
-                                />
-                            }
-                        >
-                            <CoursePreviewLesson
-                                lessonId={currentLesson.id}
-                                enableSubmit={props.enableSubmit}
+        <div className="flex flex-col w-full gap-6">
+            {/* Show/Hide Notes button - only for students with enableSubmit */}
+            {props.enableSubmit && currentLesson && (
+                <div className="flex justify-start">
+                    <Button
+                        variant="secondary"
+                        size="medium"
+                        text={showNotes ? t('hideNotesText') : t('showNotesText')}
+                        hasIconLeft
+                        iconLeft={<IconNotes />}
+                        onClick={() => setShowNotes(!showNotes)}
+                    />
+                </div>
+            )}
+
+            <div className={`flex flex-col w-full gap-6 ${showNotes ? 'lg:flex-row' : 'md:flex-row'}`}>
+                <CourseOutlineAccordion
+                    locale={locale}
+                    modules={transformedModules}
+                    activeLessonId={currentLesson?.id}
+                    onLessonClick={handleLessonClick}
+                    className="sticky top-30 bottom-30 h-fit overflow-y-auto lg:w-[343px] md:w-[280px] w-full"
+                />
+                <div className="flex-1 min-w-0">
+                    {currentModule && currentLesson && (
+                        <>
+                            <LessonHeader
+                                currentModule={currentModule.position}
+                                totalModules={modules.length}
+                                moduleTitle={currentModule.title}
+                                currentLesson={(activeLessonIndex ?? 0) + 1}
+                                totalLessons={currentModule.lessons.length}
+                                lessonTitle={currentLesson.title}
+                                areNotesAvailable={false}
+                                onClickPrevious={handlePreviousLesson}
+                                onClickNext={handleNextLesson}
+                                onClick={() => {
+                                    // This function handles opening notes. As they aren't available in preview mode, it's left empty.
+                                }}
+                                locale={locale}
                             />
-                        </Suspense>
-                    </>
+                            <Divider className="my-6" />
+                            <Suspense
+                                fallback={
+                                    <DefaultLoading
+                                        locale={locale}
+                                        variant="minimal"
+                                    />
+                                }
+                            >
+                                <CoursePreviewLesson
+                                    lessonId={currentLesson.id}
+                                    enableSubmit={props.enableSubmit}
+                                />
+                            </Suspense>
+                        </>
+                    )}
+                </div>
+
+                {/* Lesson Notes Panel - only shown when notes are visible and for students */}
+                {showNotes && props.enableSubmit && currentLesson && (
+                    <LessonNotesPanel lessonId={currentLesson.id} />
                 )}
             </div>
         </div>
