@@ -71,6 +71,7 @@ export { PlatformCardList } from './components/platform-cards/platform-card-list
 export { PackageCardList } from './components/packages/package-card-list';
 export { default as CoachCard } from './components/coach/coach-card';
 export { AvailableCoachingSessions } from './components/available-coaching-sessions/available-coaching-sessions';
+export { AvailableCoachingSessionCard } from './components/available-coaching-sessions/available-coaching-session-card';
 
 export { FormElementRenderer } from './components/lesson/form-renderer';
 export { SubmissionElementsRenderer as SubmissionRenderer } from './components/lesson/submission-renderer';
@@ -188,4 +189,4 @@ export { TeachCourseBanner } from './components/teach-course-banner';
 export { MonthlyCalendar } from './components/calendar/monthly-calendar';
 export { WeeklyCalendar, WeeklyHeader } from './components/calendar/weekly-calendar';
 export * from './components/calendar/calendar-cards';
-export { CoachingSessionData } from './components/available-coaching-sessions/available-coaching-sessions';
+export { type CoachingSessionData } from './components/available-coaching-sessions/available-coaching-sessions';
