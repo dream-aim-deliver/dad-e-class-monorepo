@@ -4,7 +4,6 @@ import LoadingOverlay from './loading-overlay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { SectionHeading } from '../text';
 import { Button } from '../button';
-import { cn } from '../../utils/style-utils';
 
 const isToday = (date: Date) => {
     const today = new Date();
@@ -195,37 +194,7 @@ export function WeeklyCalendar({
         return `GMT${offsetHours >= 0 ? '+' : ''}${offsetHours}`;
     };
 
-    const [draggedOverCell, setDraggedOverCell] = useState<{
-        date: Date;
-        time: string;
-    } | null>(null);
-
-    const onDragOver = (event: React.DragEvent, time: string, date: Date) => {
-        event.preventDefault();
-        const hasSessionData = event.dataTransfer.types.includes(
-            'application/coaching-session',
-        );
-
-        if (hasSessionData) {
-            setDraggedOverCell({ time, date });
-        }
-    };
-
-    const onDrop = (event: React.DragEvent, time: string, date: Date) => {
-        event.preventDefault();
-        const sessionId = event.dataTransfer.getData('text/plain');
-        onSessionDrop?.(sessionId, date, time);
-        setDraggedOverCell(null);
-    };
-
     const getCellBackground = (time: string, date: Date) => {
-        if (
-            draggedOverCell &&
-            draggedOverCell.date.toDateString() === date.toDateString() &&
-            draggedOverCell.time === time
-        ) {
-            return 'bg-action-semi-transparent-medium';
-        }
         if (isToday(date)) {
             return 'bg-base-neutral-800';
         }
@@ -305,34 +274,6 @@ export function WeeklyCalendar({
                                 </div>
                             ))}
                         </div>
-                    </div>
-
-                    {/* Invisible drag detection overlay */}
-                    <div className="absolute inset-0 pointer-events-none">
-                        {timeSlots.map((time, timeIndex) => (
-                            <div
-                                key={timeIndex}
-                                className="grid grid-cols-[80px_repeat(7,1fr)] h-24"
-                            >
-                                {/* Skip the time column */}
-                                <div className="w-20"></div>
-                                {weekDates.map((date, dateIndex) => (
-                                    <div
-                                        key={`${timeIndex}-${dateIndex}`}
-                                        className="h-24 pointer-events-auto"
-                                        onDragOver={(event) =>
-                                            onDragOver(event, time, date)
-                                        }
-                                        onDragLeave={() => {
-                                            setDraggedOverCell(null);
-                                        }}
-                                        onDrop={(event) =>
-                                            onDrop(event, time, date)
-                                        }
-                                    />
-                                ))}
-                            </div>
-                        ))}
                     </div>
                 </div>
             </div>

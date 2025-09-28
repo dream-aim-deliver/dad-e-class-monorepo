@@ -11,10 +11,9 @@ export type TListAvailableCoachingsRequest = z.infer<typeof ListAvailableCoachin
 
 export const ListAvailableCoachingsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
     offerings: z.object({
-        id: z.string().or(z.number()),
+        id: z.number(),
         name: z.string(),
-        duration: z.number().int().positive(), // minutes
-        boughtCoachingIds: z.array(z.string().or(z.number())),
+        duration: z.number().int().positive(),
     }).array()
 }));
 

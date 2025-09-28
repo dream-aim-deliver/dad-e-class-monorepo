@@ -13,6 +13,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useListAvailableCoachingsPresenter } from '../../hooks/use-available-coachings-presenter';
 import { useSession } from 'next-auth/react';
+import { groupOfferings } from '../../utils/group-offerings';
 
 function AvailableCoachings() {
     const [availableCoachingsResponse] =
@@ -27,6 +28,14 @@ function AvailableCoachings() {
     presenter.present(availableCoachingsResponse, availableCoachingsViewModel);
 
     const locale = useLocale() as TLocale;
+
+    const groupedOfferings = useMemo(
+        () => {
+            if (!availableCoachingsViewModel) return [];
+            return groupOfferings(availableCoachingsViewModel);
+        },
+        [availableCoachingsViewModel],
+    );
 
     if (!availableCoachingsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -52,14 +61,8 @@ function AvailableCoachings() {
     return (
         <AvailableCoachingSessions
             locale={locale}
-            availableCoachingSessionsData={availableOfferings.map(
-                (offering) => ({
-                    id: offering.id,
-                    title: offering.name,
-                    time: offering.duration,
-                    numberOfSessions: offering.boughtCoachingIds.length,
-                }),
-            )}
+            availableCoachingSessionsData={groupedOfferings}
+            onClickBuyMoreSessions={() => {}}
             hideButton
         />
     );
@@ -123,6 +126,8 @@ export default function CoachingOfferingsPanel() {
                             locale={locale}
                             isLoading
                             hideButton
+                            availableCoachingSessionsData={[]}
+                            onClickBuyMoreSessions={() => {}}
                         />
                     }
                 >
