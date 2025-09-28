@@ -50,7 +50,9 @@ export function useComputeWeeklyEvents({
                         start={new Date(session.startTime)}
                         end={new Date(session.endTime)}
                         title={session.coachingOfferingName}
-                        onClick={() => {}}
+                        onClick={() => {
+                            // TODO: Implement session click functionality
+                        }}
                     />
                 ),
             });
