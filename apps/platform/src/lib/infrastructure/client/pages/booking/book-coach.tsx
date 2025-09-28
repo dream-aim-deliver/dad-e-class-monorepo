@@ -10,12 +10,14 @@ import { useGetCoachAvailabilityPresenter } from '../../hooks/use-coach-availabi
 import {
     AnonymousCalendarCard,
     AvailabilityCalendarCard,
+    Button,
     DefaultError,
     DefaultLoading,
     MonthlyCalendar,
     SectionHeading,
     SessionCalendarCard,
     WeeklyCalendar,
+    WeeklyHeader,
 } from '@maany_shr/e-class-ui-kit';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -118,38 +120,15 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
 
     const coachAvailability = coachAvailabilityViewModel.data;
 
-    const changeWeek = (difference: 1 | -1) => {
-        setCurrentDate(
-            new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth(),
-                currentDate.getDate() + difference * 7,
-            ),
-        );
-    };
-
     return (
         <div>
             <div className="flex-row hidden md:flex">
                 <div className="w-full rounded-lg bg-card-fill p-4 max-h-100%">
-                    <div className="flex flex-row mb-4 items-center justify-between">
-                        <SectionHeading
-                            text={currentDate.toLocaleDateString(locale, {
-                                month: 'long',
-                                year: 'numeric',
-                            })}
-                        />
-                        <div className="flex flex-row space-x-6 text-base-brand-500">
-                            <ChevronLeft
-                                className="cursor-pointer"
-                                onClick={() => changeWeek(-1)}
-                            />
-                            <ChevronRight
-                                className="cursor-pointer"
-                                onClick={() => changeWeek(1)}
-                            />
-                        </div>
-                    </div>
+                    <WeeklyHeader
+                        currentDate={currentDate}
+                        setCurrentDate={setCurrentDate}
+                        locale={locale}
+                    />
                     <WeeklyCalendar
                         locale={locale}
                         currentDate={currentDate}
