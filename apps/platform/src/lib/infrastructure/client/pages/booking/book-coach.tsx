@@ -9,6 +9,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachAvailabilityPresenter } from '../../hooks/use-coach-availability-presenter';
 import {
     AvailabilityCalendarCard,
+    AvailableCoachingSessions,
     DefaultError,
     DefaultLoading,
     MonthlyCalendar,
@@ -16,9 +17,67 @@ import {
     WeeklyCalendar,
     WeeklyHeader,
 } from '@maany_shr/e-class-ui-kit';
+import { useListAvailableCoachingsPresenter } from '../../hooks/use-available-coachings-presenter';
+import { groupOfferings } from '../../utils/group-offerings';
 
 interface BookCoachPageProps {
     coachUsername: string;
+}
+
+function AvailableCoachings() {
+    const [availableCoachingsResponse] =
+        trpc.listAvailableCoachings.useSuspenseQuery({});
+    const [availableCoachingsViewModel, setAvailableCoachingsViewModel] =
+        useState<viewModels.TAvailableCoachingListViewModel | undefined>(
+            undefined,
+        );
+    const { presenter } = useListAvailableCoachingsPresenter(
+        setAvailableCoachingsViewModel,
+    );
+    presenter.present(availableCoachingsResponse, availableCoachingsViewModel);
+
+    const locale = useLocale() as TLocale;
+
+    const groupedOfferings = useMemo(() => {
+        if (!availableCoachingsViewModel) return [];
+        return groupOfferings(availableCoachingsViewModel);
+    }, [availableCoachingsViewModel]);
+
+    if (!availableCoachingsViewModel) {
+        return <DefaultLoading locale={locale} variant="minimal" />;
+    }
+
+    if (availableCoachingsViewModel.mode === 'kaboom') {
+        return <DefaultError locale={locale} />;
+    }
+
+    if (
+        availableCoachingsViewModel.mode === 'not-found' ||
+        availableCoachingsViewModel.mode === 'unauthenticated'
+    ) {
+        return;
+    }
+
+    const availableOfferings = availableCoachingsViewModel.data.offerings;
+
+    if (availableOfferings.length === 0) {
+        return;
+    }
+
+    return (
+        <AvailableCoachingSessions
+            locale={locale}
+            availableCoachingSessionsData={groupedOfferings}
+            onClickBuyMoreSessions={() => {}}
+            hideButton
+        />
+    );
+}
+
+interface ScheduledSession {
+    id?: number;
+    startTime?: Date;
+    endTime?: Date;
 }
 
 export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
@@ -35,6 +94,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
     presenter.present(coachAvailabilityResponse, coachAvailabilityViewModel);
 
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [newEvent, setNewEvent] = useState<ScheduledSession | null>(null);
 
     const events = useMemo(() => {
         if (
@@ -78,6 +138,11 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                         locale={locale}
                         start={new Date(availability.startTime)}
                         end={new Date(availability.endTime)}
+                        onClick={(startTime) => {
+                            setNewEvent({
+                                startTime: startTime,
+                            });
+                        }}
                     />
                 ),
             });
@@ -119,6 +184,11 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                         events={events}
                     />
                 </div>
+                {newEvent && (
+                    <div className="w-80">
+                        <AvailableCoachings />
+                    </div>
+                )}
             </div>
             <div className="flex flex-col md:hidden">
                 <MonthlyCalendar
