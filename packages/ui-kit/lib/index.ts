@@ -186,7 +186,8 @@ export { TeachCourseBanner } from './components/teach-course-banner';
 
 export { CourseCompletionModal } from './components/course-completion-modal';
 
-export { MonthlyCalendar } from './components/calendar/monthly-calendar';
+
+export { MonthlyCalendar, formatDateKey } from './components/calendar/monthly-calendar';
 export { WeeklyCalendar, WeeklyHeader } from './components/calendar/weekly-calendar';
 export * from './components/calendar/calendar-cards';
 export { type CoachingSessionData } from './components/available-coaching-sessions/available-coaching-sessions';
