@@ -6,8 +6,8 @@ import { Button } from "../button";
 import LoadingOverlay from "./loading-overlay";
 
 interface MonthlyCalendarProps {
-    currentDate?: Date;
-    setCurrentDate?: (date: Date) => void;
+    currentDate: Date;
+    setCurrentDate: (date: Date) => void;
     selectedDate?: Date;
     onDateClick?: (date: Date) => void;
     dateEvents?: {
@@ -47,7 +47,7 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
     lastSunday.setDate(lastDayOfMonth.getDate() + daysToAdd);
 
     // Generate all days from first Monday to last Sunday
-    const calendarDays = [];
+    const calendarDays: Date[] = [];
     for (let date = new Date(firstMonday); date <= lastSunday; date.setDate(date.getDate() + 1)) {
         calendarDays.push(new Date(date));
     }
@@ -55,7 +55,7 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
     const currentMonth = currentDate.getMonth();
 
     // Generate localized day headers (Monday to Sunday)
-    const dayHeaders = [];
+    const dayHeaders: string[] = [];
     for (let i = 1; i <= 7; i++) {
         const date = new Date(2024, 0, i); // January 1, 2024 was a Monday
         dayHeaders.push(date.toLocaleDateString(props.locale, { weekday: 'short' }));

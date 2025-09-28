@@ -1,12 +1,15 @@
-import { TLocale } from "@maany_shr/e-class-translations";
-import { useEffect, useMemo, useRef, useState } from "react";
-import LoadingOverlay from "./loading-overlay";
+import { TLocale } from '@maany_shr/e-class-translations';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import LoadingOverlay from './loading-overlay';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const isToday = (date) => {
     const today = new Date();
-    return date.getDate() === today.getDate() &&
+    return (
+        date.getDate() === today.getDate() &&
         date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear();
+        date.getFullYear() === today.getFullYear()
+    );
 };
 
 const getHeaderBackground = (date) => {
@@ -14,7 +17,7 @@ const getHeaderBackground = (date) => {
         return 'bg-base-neutral-700';
     }
     return 'bg-base-neutral-800';
-}
+};
 
 interface CalendarEvent {
     start: Date;
@@ -42,13 +45,26 @@ function WeekdayHeader({ date, locale }: { date: Date; locale: TLocale }) {
     const weekday = date.toLocaleDateString(locale, { weekday: 'short' });
     const day = date.getDate();
 
-    return <div className={`${getHeaderBackground(date)} border-t border-divider outline outline-1 outline-divider p-2 pb-0 font-medium text-text-primary`}>
-        <div className="text-text-secondary text-sm">{weekday.toUpperCase()}</div>
-        <div className="text-3xl font-bold">{day}</div>
-    </div>
+    return (
+        <div
+            className={`${getHeaderBackground(date)} border-t border-divider outline outline-1 outline-divider p-2 pb-0 font-medium text-text-primary`}
+        >
+            <div className="text-text-secondary text-sm">
+                {weekday.toUpperCase()}
+            </div>
+            <div className="text-3xl font-bold">{day}</div>
+        </div>
+    );
 }
 
-export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, locale, events, isLoading }: WeeklyCalendarProps) {
+export function WeeklyCalendar({
+    currentDate,
+    setCurrentDate,
+    onSessionDrop,
+    locale,
+    events,
+    isLoading,
+}: WeeklyCalendarProps) {
     const getWeekStart = (date) => {
         const d = new Date(date);
         const day = d.getDay();
@@ -59,7 +75,7 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
     // Get array of dates for the current week
     const getWeekDates = () => {
         const weekStart = getWeekStart(currentDate);
-        const dates = [];
+        const dates: Date[] = [];
         for (let i = 0; i < 7; i++) {
             const date = new Date(weekStart);
             date.setDate(weekStart.getDate() + i);
@@ -69,7 +85,7 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
     };
 
     const timeSlots = useMemo(() => {
-        const slots = [];
+        const slots: string[] = [];
         for (let hour = 0; hour < 24; hour++) {
             const date = new Date();
             date.setHours(hour, 0, 0, 0);
@@ -77,7 +93,7 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
             const formattedTime = date.toLocaleTimeString(locale, {
                 hour: 'numeric',
                 minute: '2-digit',
-                hour12: undefined // Let the locale decide 12/24 hour format
+                hour12: undefined, // Let the locale decide 12/24 hour format
             });
 
             slots.push(formattedTime);
@@ -90,7 +106,9 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
     // Helper function to get day index for a date
     const getDayIndex = (date: Date, weekDates: Date[]) => {
         const dateStr = date.toDateString();
-        return weekDates.findIndex(weekDate => weekDate.toDateString() === dateStr);
+        return weekDates.findIndex(
+            (weekDate) => weekDate.toDateString() === dateStr,
+        );
     };
 
     // Helper function to convert time to minutes from midnight
@@ -105,7 +123,7 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
         }
 
         const processed: ProcessedEvent[] = events
-            .filter(event => {
+            .filter((event) => {
                 // Filter events that fall within the current week
                 const dayIndex = getDayIndex(event.start, weekDates);
                 return dayIndex !== -1;
@@ -115,7 +133,10 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
                 id: `event-${index}`,
                 dayIndex: getDayIndex(event.start, weekDates),
                 startMinutes: timeToMinutes(event.start),
-                durationMinutes: Math.max(30, timeToMinutes(event.end) - timeToMinutes(event.start)), // Minimum 30 minutes
+                durationMinutes: Math.max(
+                    30,
+                    timeToMinutes(event.end) - timeToMinutes(event.start),
+                ), // Minimum 30 minutes
             }));
 
         return processed;
@@ -125,7 +146,7 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
     const eventsByDayAndTime = useMemo(() => {
         const grouped: { [key: string]: ProcessedEvent[] } = {};
 
-        processedEvents.forEach(event => {
+        processedEvents.forEach((event) => {
             const key = `${event.dayIndex}`;
             if (!grouped[key]) {
                 grouped[key] = [];
@@ -149,7 +170,7 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
                     height: `${height}px`,
                     left: 0,
                     right: 0,
-                    paddingRight: '2px'
+                    paddingRight: '2px',
                 }}
             >
                 {event.component}
@@ -165,13 +186,18 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
 
         // Format the offset as GMT±X
         return `GMT${offsetHours >= 0 ? '+' : ''}${offsetHours}`;
-    }
+    };
 
-    const [draggedOverCell, setDraggedOverCell] = useState<{ date: Date; time: string } | null>(null);
+    const [draggedOverCell, setDraggedOverCell] = useState<{
+        date: Date;
+        time: string;
+    } | null>(null);
 
     const onDragOver = (event: React.DragEvent, time: string, date: Date) => {
         event.preventDefault();
-        const hasSessionData = event.dataTransfer.types.includes('application/coaching-session');
+        const hasSessionData = event.dataTransfer.types.includes(
+            'application/coaching-session',
+        );
 
         if (hasSessionData) {
             setDraggedOverCell({ time, date });
@@ -183,21 +209,25 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
         const sessionId = event.dataTransfer.getData('text/plain');
         onSessionDrop?.(sessionId, date, time);
         setDraggedOverCell(null);
-    }
+    };
 
     const getCellBackground = (time: string, date: Date) => {
-        if (draggedOverCell && draggedOverCell.date.toDateString() === date.toDateString() && draggedOverCell.time === time) {
+        if (
+            draggedOverCell &&
+            draggedOverCell.date.toDateString() === date.toDateString() &&
+            draggedOverCell.time === time
+        ) {
             return 'bg-action-semi-transparent-medium';
         }
         if (isToday(date)) {
             return 'bg-base-neutral-800';
         }
         return 'bg-card-fill';
-    }
+    };
 
     return (
         <div className="flex flex-col h-full w-full bg-base-neutral-900">
-            {isLoading && (<LoadingOverlay className="fixed z-60" />)}
+            {isLoading && <LoadingOverlay className="fixed z-60" />}
 
             {/* Header row */}
             <div className="grid grid-cols-[80px_repeat(7,1fr)] sticky top-0 z-50">
@@ -209,18 +239,21 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
                 ))}
             </div>
 
-
             {/* Time slots and calendar grid */}
             <div className="flex-1 overflow-auto">
                 <div className="relative">
                     {/* Time slots and calendar grid */}
                     {timeSlots.map((time, timeIndex) => (
-                        <div key={timeIndex} className="grid grid-cols-[80px_repeat(7,1fr)]">
+                        <div
+                            key={timeIndex}
+                            className="grid grid-cols-[80px_repeat(7,1fr)]"
+                        >
                             <div className="p-2 h-24 text-sm text-text-secondary border-r border-divider">
                                 {time}
                             </div>
                             {weekDates.map((date, dateIndex) => (
-                                <div key={dateIndex}
+                                <div
+                                    key={dateIndex}
                                     className={`outline outline-1 outline-divider border-r border-b border-divider h-24 ${getCellBackground(time, date)} relative`}
                                 >
                                     {/* Events will be positioned absolutely within their day columns */}
@@ -234,10 +267,18 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
                         <div className="grid grid-cols-[80px_repeat(7,1fr)] h-full">
                             <div className="h-full"></div>
                             {weekDates.map((date, dateIndex) => (
-                                <div key={dateIndex} className="relative h-full pointer-events-auto">
-                                    {(eventsByDayAndTime[dateIndex] || []).map(event => (
-                                        <EventComponent key={event.id} event={event} />
-                                    ))}
+                                <div
+                                    key={dateIndex}
+                                    className="relative h-full pointer-events-auto"
+                                >
+                                    {(eventsByDayAndTime[dateIndex] || []).map(
+                                        (event) => (
+                                            <EventComponent
+                                                key={event.id}
+                                                event={event}
+                                            />
+                                        ),
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -246,18 +287,25 @@ export function WeeklyCalendar({ currentDate, setCurrentDate, onSessionDrop, loc
                     {/* Invisible drag detection overlay */}
                     <div className="absolute inset-0 pointer-events-none">
                         {timeSlots.map((time, timeIndex) => (
-                            <div key={timeIndex} className="grid grid-cols-[80px_repeat(7,1fr)] h-24">
+                            <div
+                                key={timeIndex}
+                                className="grid grid-cols-[80px_repeat(7,1fr)] h-24"
+                            >
                                 {/* Skip the time column */}
                                 <div className="w-20"></div>
                                 {weekDates.map((date, dateIndex) => (
                                     <div
                                         key={`${timeIndex}-${dateIndex}`}
                                         className="h-24 pointer-events-auto"
-                                        onDragOver={(event) => onDragOver(event, time, date)}
+                                        onDragOver={(event) =>
+                                            onDragOver(event, time, date)
+                                        }
                                         onDragLeave={() => {
                                             setDraggedOverCell(null);
                                         }}
-                                        onDrop={(event) => onDrop(event, time, date)}
+                                        onDrop={(event) =>
+                                            onDrop(event, time, date)
+                                        }
                                     />
                                 ))}
                             </div>
