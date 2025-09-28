@@ -17,6 +17,7 @@ import {
     DefaultLoading,
     Dialog,
     DialogContent,
+    IconCalendar,
     InputField,
     MonthlyCalendar,
     SessionCalendarCard,
@@ -132,6 +133,29 @@ function ChooseCoachingSessionContent({
     );
 }
 
+interface MonthlyCalendarPickerProps {
+    onDateClick: (date: Date) => void;
+    selectedDate?: Date;
+}
+
+function MonthlyCalendarPicker({
+    onDateClick,
+    selectedDate,
+}: MonthlyCalendarPickerProps) {
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const locale = useLocale() as TLocale;
+    // Placeholder for a calendar picker component
+    return (
+        <MonthlyCalendar
+            locale={locale}
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+            onDateClick={onDateClick}
+            selectedDate={selectedDate}
+        />
+    );
+}
+
 interface ConfirmTimeContentProps {
     session: ScheduledOffering;
     setSession: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
@@ -144,6 +168,7 @@ function ConfirmTimeContent({
     onSubmit,
 }: ConfirmTimeContentProps) {
     const locale = useLocale() as TLocale;
+    const [datePickerOpen, setDatePickerOpen] = useState(false);
 
     const getTimeValue = (time: Date): string => {
         return time.toLocaleTimeString(locale, {
@@ -270,7 +295,7 @@ function ConfirmTimeContent({
 
     return (
         <div className="flex flex-col gap-3">
-            <div>
+            <div className="relative">
                 <span className="text-sm text-text-secondary">Date</span>
                 <InputField
                     inputText="Date"
@@ -278,7 +303,29 @@ function ConfirmTimeContent({
                     setValue={() => {
                         // Can't be edited directly
                     }}
+                    hasRightContent
+                    rightContent={
+                        <span
+                            onClick={() => {
+                                setDatePickerOpen((prev) => !prev);
+                            }}
+                            className="text-base-brand-500 cursor-pointer"
+                        >
+                            <IconCalendar />
+                        </span>
+                    }
                 />
+                {datePickerOpen && (
+                    <div className="absolute top-full left-0 mt-2 z-40">
+                        <MonthlyCalendarPicker
+                            onDateClick={(date) => {
+                                handleDateChange(date);
+                                setDatePickerOpen(false);
+                            }}
+                            selectedDate={session.startTime}
+                        />
+                    </div>
+                )}
             </div>
             <div>
                 <span className="text-sm text-text-secondary">Start Time</span>
@@ -291,7 +338,7 @@ function ConfirmTimeContent({
             <div>
                 <span className="text-sm text-text-secondary">End Time</span>
                 <InputField
-                    state='disabled'
+                    state="disabled"
                     inputText={getTimeValue(session.endTime)}
                     setValue={() => {
                         // Can't be edited directly
