@@ -226,8 +226,24 @@ export function WeeklyCalendar({
         return 'bg-card-fill';
     };
 
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+     if (scrollContainerRef.current) {
+       const container = scrollContainerRef.current;
+       const scrollHeight = container.scrollHeight;
+       const clientHeight = container.clientHeight;
+       const middlePosition = (scrollHeight - clientHeight) / 2;
+       
+       container.scrollTop = middlePosition;
+     }
+   }, [scrollContainerRef]);
+
     return (
-        <div className="flex flex-col h-full w-full bg-base-neutral-900">
+        <div
+            ref={scrollContainerRef}
+            className="flex flex-col h-full w-full bg-base-neutral-900 overflow-auto"
+        >
             {isLoading && <LoadingOverlay className="fixed z-60" />}
 
             {/* Header row */}
@@ -241,7 +257,7 @@ export function WeeklyCalendar({
             </div>
 
             {/* Time slots and calendar grid */}
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1">
                 <div className="relative">
                     {/* Time slots and calendar grid */}
                     {timeSlots.map((time, timeIndex) => (
