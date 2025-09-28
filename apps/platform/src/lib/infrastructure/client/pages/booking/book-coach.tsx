@@ -19,6 +19,7 @@ import {
     WeeklyHeader,
 } from '@maany_shr/e-class-ui-kit';
 import ScheduledOfferingContent from './dialogs/scheduled-offering-content';
+import useComputeEvents from './hooks/use-compute-events';
 
 interface BookCoachPageProps {
     coachUsername: string;
@@ -42,62 +43,16 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
         null,
     );
 
-    const scheduleSessionMutation = trpc.scheduleCoachingSession.useMutation();
-
-    const events = useMemo(() => {
-        if (
-            !coachAvailabilityViewModel ||
-            coachAvailabilityViewModel.mode !== 'default'
-        ) {
-            return [];
+    const { weeklyEvents, monthlyEvents } = useComputeEvents({
+        coachAvailabilityViewModel,
+        onAvailabilityClick: (startTime: Date) => {
+            setNewSession({
+                startTime,
+            });
         }
+    });
 
-        const events: {
-            start: Date;
-            end: Date;
-            priority: number;
-            component: React.ReactNode;
-        }[] = [];
-
-        coachAvailabilityViewModel.data.mySessions.forEach((session) => {
-            events.push({
-                start: new Date(session.startTime),
-                end: new Date(session.endTime),
-                priority: 2,
-                component: (
-                    <SessionCalendarCard
-                        locale={locale}
-                        start={new Date(session.startTime)}
-                        end={new Date(session.endTime)}
-                        title={session.coachingOfferingName}
-                        onClick={() => {}}
-                    />
-                ),
-            });
-        });
-
-        coachAvailabilityViewModel.data.availability.forEach((availability) => {
-            events.push({
-                start: new Date(availability.startTime),
-                end: new Date(availability.endTime),
-                priority: 1,
-                component: (
-                    <AvailabilityCalendarCard
-                        locale={locale}
-                        start={new Date(availability.startTime)}
-                        end={new Date(availability.endTime)}
-                        onClick={(startTime) => {
-                            setNewSession({
-                                startTime: startTime,
-                            });
-                        }}
-                    />
-                ),
-            });
-        });
-
-        return events;
-    }, [coachAvailabilityViewModel]);
+    const scheduleSessionMutation = trpc.scheduleCoachingSession.useMutation();
 
     const onSubmit = () => {
         if (!newSession) return;
@@ -180,7 +135,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                             locale={locale}
                             currentDate={currentDate}
                             setCurrentDate={setCurrentDate}
-                            events={events}
+                            events={weeklyEvents}
                         />
                     </div>
                 </div>
@@ -189,6 +144,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                         locale={locale}
                         currentDate={currentDate}
                         setCurrentDate={setCurrentDate}
+                        dateEvents={monthlyEvents}
                     />
                 </div>
             </div>
