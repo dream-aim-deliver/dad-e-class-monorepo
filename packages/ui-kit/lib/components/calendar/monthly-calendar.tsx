@@ -1,11 +1,15 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
-import { cn } from "../../utils/style-utils";
-import { TLocale, getDictionary } from "@maany_shr/e-class-translations";
-import { Button } from "../button";
-import LoadingOverlay from "./loading-overlay";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { cn } from '../../utils/style-utils';
+import {
+    TLocale,
+    getDictionary,
+    isLocalAware,
+} from '@maany_shr/e-class-translations';
+import { Button } from '../button';
+import LoadingOverlay from './loading-overlay';
 
-interface MonthlyCalendarProps {
+interface MonthlyCalendarProps extends isLocalAware {
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
     selectedDate?: Date;
@@ -14,10 +18,9 @@ interface MonthlyCalendarProps {
         [date: string]: {
             hasCoachAvailability: boolean;
             hasSessions: boolean;
-        }
+        };
     };
     isLoading?: boolean;
-    locale: TLocale;
 }
 
 export function formatDateKey(date: Date): string {
@@ -31,8 +34,16 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
     const { currentDate, setCurrentDate } = props;
     const dictionary = getDictionary(props.locale);
 
-    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    const firstDayOfMonth = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1,
+    );
+    const lastDayOfMonth = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0,
+    );
 
     // Get the first Monday of the calendar (might be from previous month)
     const firstMonday = new Date(firstDayOfMonth);
@@ -48,7 +59,11 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
 
     // Generate all days from first Monday to last Sunday
     const calendarDays: Date[] = [];
-    for (let date = new Date(firstMonday); date <= lastSunday; date.setDate(date.getDate() + 1)) {
+    for (
+        let date = new Date(firstMonday);
+        date <= lastSunday;
+        date.setDate(date.getDate() + 1)
+    ) {
         calendarDays.push(new Date(date));
     }
 
@@ -58,35 +73,57 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
     const dayHeaders: string[] = [];
     for (let i = 1; i <= 7; i++) {
         const date = new Date(2024, 0, i); // January 1, 2024 was a Monday
-        dayHeaders.push(date.toLocaleDateString(props.locale, { weekday: 'short' }));
+        dayHeaders.push(
+            date.toLocaleDateString(props.locale, { weekday: 'short' }),
+        );
     }
 
     const changeMonth = (difference: 1 | -1) => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + difference, 1));
-    }
+        setCurrentDate(
+            new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth() + difference,
+                1,
+            ),
+        );
+    };
 
     return (
         <div className="bg-card-fill rounded-xl border border-card-stroke p-6 overflow-x-auto relative">
-            {props.isLoading && (
-                <LoadingOverlay />
-            )}
+            {props.isLoading && <LoadingOverlay />}
 
             <div className="flex flex-row justify-between items-center space-x-3">
                 <div className="flex flex-row space-x-3">
                     <div className="text-lg font-semibold text-text-primary">
-                        {currentDate.toLocaleDateString(props.locale, { month: 'long', year: 'numeric' })}
+                        {currentDate.toLocaleDateString(props.locale, {
+                            month: 'long',
+                            year: 'numeric',
+                        })}
                     </div>
                     <div className="flex flex-row space-x-6 text-base-brand-500">
-                        <ChevronLeft className="cursor-pointer" onClick={() => changeMonth(-1)} />
-                        <ChevronRight className="cursor-pointer" onClick={() => changeMonth(1)} />
+                        <ChevronLeft
+                            className="cursor-pointer"
+                            onClick={() => changeMonth(-1)}
+                        />
+                        <ChevronRight
+                            className="cursor-pointer"
+                            onClick={() => changeMonth(1)}
+                        />
                     </div>
                 </div>
-                <Button variant="secondary" text={dictionary.components.calendar.today} onClick={() => setCurrentDate(new Date())} />
+                <Button
+                    variant="secondary"
+                    text={dictionary.components.calendar.today}
+                    onClick={() => setCurrentDate(new Date())}
+                />
             </div>
             <div className="mt-4 grid grid-cols-7 gap-2 min-w-[320px]">
                 {/* Day headers */}
                 {dayHeaders.map((day, index) => (
-                    <div key={index} className="py-2 font-semibold text-text-secondary text-center">
+                    <div
+                        key={index}
+                        className="py-2 font-semibold text-text-secondary text-center"
+                    >
                         {day.toUpperCase()}
                     </div>
                 ))}
@@ -94,25 +131,43 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
                 {/* Calendar days */}
                 {calendarDays.map((date) => {
                     const isCurrentMonth = date.getMonth() === currentMonth;
-                    const isSelected = props.selectedDate && date.toDateString() === props.selectedDate.toDateString();
+                    const isSelected =
+                        props.selectedDate &&
+                        date.toDateString() ===
+                            props.selectedDate.toDateString();
                     const dateKey = formatDateKey(date);
-                    const hasCoachAvailability = props.dateEvents?.[dateKey]?.hasCoachAvailability;
-                    const hasSessions = props.dateEvents?.[dateKey]?.hasSessions;
+                    const hasCoachAvailability =
+                        props.dateEvents?.[dateKey]?.hasCoachAvailability;
+                    const hasSessions =
+                        props.dateEvents?.[dateKey]?.hasSessions;
 
                     return (
                         <div
                             key={date.toISOString()}
                             onClick={() => props.onDateClick?.(date)}
-                            className={cn(`flex flex-col py-2 items-center justify-center text-text-primary aspect-square mx-auto space-y-1 min-w-0`,
+                            className={cn(
+                                `flex flex-col py-2 items-center justify-center text-text-primary aspect-square mx-auto space-y-1 min-w-0`,
                                 !isCurrentMonth && 'text-base-neutral-400',
-                                isSelected && 'bg-base-brand-500 text-text-primary-inverted rounded-full',
-                                props.onDateClick ? 'cursor-pointer' : 'cursor-default')}
+                                isSelected &&
+                                    'bg-base-brand-500 text-text-primary-inverted rounded-full',
+                                props.onDateClick
+                                    ? 'cursor-pointer'
+                                    : 'cursor-default',
+                            )}
                         >
-                            <span className="text-xl font-bold">{date.getDate()}</span>
-                            {!isSelected && <div className="flex flex-row space-x-1">
-                                {hasCoachAvailability && <div className="h-[6px] w-[6px] rounded-full bg-action-semi-transparent-medium"></div>}
-                                {hasSessions && <div className="h-[6px] w-[6px] rounded-full bg-action-default"></div>}
-                            </div>}
+                            <span className="text-xl font-bold">
+                                {date.getDate()}
+                            </span>
+                            {!isSelected && (
+                                <div className="flex flex-row space-x-1">
+                                    {hasCoachAvailability && (
+                                        <div className="h-[6px] w-[6px] rounded-full bg-action-semi-transparent-medium"></div>
+                                    )}
+                                    {hasSessions && (
+                                        <div className="h-[6px] w-[6px] rounded-full bg-action-default"></div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     );
                 })}
