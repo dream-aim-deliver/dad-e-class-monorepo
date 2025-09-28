@@ -14,12 +14,14 @@ interface ConfirmTimeContentProps {
     session: ScheduledOffering;
     setSession: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
     onSubmit: () => void;
+    isSubmitting?: boolean;
 }
 
 export default function ConfirmTimeContent({
     session,
     setSession,
     onSubmit,
+    isSubmitting = false,
 }: ConfirmTimeContentProps) {
     const locale = useLocale() as TLocale;
 
@@ -141,6 +143,7 @@ export default function ConfirmTimeContent({
     if (!session || !session.session || !session.startTime || !session.endTime)
         return null;
 
+    // TODO: format the button during the submission
     return (
         <div className="flex flex-col gap-3">
             <div className="relative">
@@ -179,7 +182,8 @@ export default function ConfirmTimeContent({
                 variant="primary"
                 className="w-full"
                 onClick={onSubmit}
-                text="Submit"
+                text="Send request"
+                disabled={hasTimeError}
             />
         </div>
     );

@@ -10,15 +10,17 @@ import {
 import ConfirmTimeContent from './confirm-time-content';
 import ChooseCoachingSessionContent from './choose-coaching-session-content';
 
-interface ScheduledSessionContentProps {
-    session: ScheduledOffering | null;
-    setSession: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
+interface ScheduledOfferingContentProps {
+    offering: ScheduledOffering | null;
+    setOffering: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
+    onSubmit: () => void;
 }
 
-export default function ScheduledSessionContent({
-    session,
-    setSession,
-}: ScheduledSessionContentProps) {
+export default function ScheduledOfferingContent({
+    offering: session,
+    setOffering: setSession,
+    onSubmit,
+}: ScheduledOfferingContentProps) {
     const locale = useLocale() as TLocale;
 
     if (!session) return null;
@@ -26,6 +28,10 @@ export default function ScheduledSessionContent({
     return (
         <div className="flex flex-col gap-3">
             <h2>Schedule</h2>
+            {session.session && <div className="bg-card-stroke rounded-md border border-neutral-700 p-4">
+                <span className="text-text-secondary">Session: </span>
+                <span className="font-bold text-text-primary">{session.session.name} ({session.session.duration} minutes)</span>
+            </div>}
             {!session.session && (
                 <Suspense fallback={<DefaultLoading locale={locale} />}>
                     <ChooseCoachingSessionContent setSession={setSession} />
@@ -35,9 +41,7 @@ export default function ScheduledSessionContent({
                 <ConfirmTimeContent
                     session={session}
                     setSession={setSession}
-                    onSubmit={() => {
-                        // Handle submit logic here
-                    }}
+                    onSubmit={onSubmit}
                 />
             )}
             <Button
