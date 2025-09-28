@@ -334,10 +334,10 @@ export const AvailabilityManager: FC<AvailabilityManagerProps> = ({
           }
         >
           <Tabs.List>
-            <Tabs.Trigger value="recurring">
+            <Tabs.Trigger value="recurring" isLast={false}>
               {dictionary.components.calendar.availabilityManagement.recurringText}
             </Tabs.Trigger>
-            <Tabs.Trigger value="single">
+            <Tabs.Trigger value="single" isLast>
               {dictionary.components.calendar.availabilityManagement.singleText}
             </Tabs.Trigger>
           </Tabs.List>
