@@ -17,6 +17,7 @@ import {
     SessionCalendarCard,
     WeeklyCalendar,
 } from '@maany_shr/e-class-ui-kit';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface BookCoachPageProps {
     coachUsername: string;
@@ -72,7 +73,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                         start={new Date(session.startTime)}
                         end={new Date(session.endTime)}
                         title={session.coachingOfferingName}
-                        onClick={() => { }}
+                        onClick={() => {}}
                     />
                 ),
             });
@@ -117,16 +118,37 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
 
     const coachAvailability = coachAvailabilityViewModel.data;
 
-    const changeMonth = (difference: 1 | -1) => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + difference, 1));
-    }
+    const changeWeek = (difference: 1 | -1) => {
+        setCurrentDate(
+            new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth(),
+                currentDate.getDate() + difference * 7,
+            ),
+        );
+    };
 
     return (
         <div>
             <div className="flex-row hidden md:flex">
                 <div className="w-full rounded-lg bg-card-fill p-4 max-h-100%">
-                    <div className="flex flex-row mb-4">
-                        <SectionHeading text={currentDate.toLocaleDateString(locale, { month: 'long', year: 'numeric' })} />
+                    <div className="flex flex-row mb-4 items-center justify-between">
+                        <SectionHeading
+                            text={currentDate.toLocaleDateString(locale, {
+                                month: 'long',
+                                year: 'numeric',
+                            })}
+                        />
+                        <div className="flex flex-row space-x-6 text-base-brand-500">
+                            <ChevronLeft
+                                className="cursor-pointer"
+                                onClick={() => changeWeek(-1)}
+                            />
+                            <ChevronRight
+                                className="cursor-pointer"
+                                onClick={() => changeWeek(1)}
+                            />
+                        </div>
                     </div>
                     <WeeklyCalendar
                         locale={locale}
@@ -137,7 +159,11 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                 </div>
             </div>
             <div className="flex flex-col md:hidden">
-                <MonthlyCalendar locale={locale} currentDate={currentDate} setCurrentDate={setCurrentDate} />
+                <MonthlyCalendar
+                    locale={locale}
+                    currentDate={currentDate}
+                    setCurrentDate={setCurrentDate}
+                />
             </div>
         </div>
     );
