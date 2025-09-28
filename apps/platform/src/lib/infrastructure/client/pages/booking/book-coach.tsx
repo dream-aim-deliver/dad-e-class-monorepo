@@ -121,9 +121,9 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
     const coachAvailability = coachAvailabilityViewModel.data;
 
     return (
-        <div>
-            <div className="flex-row hidden md:flex">
-                <div className="w-full rounded-lg bg-card-fill p-4 max-h-100%">
+        <div className="flex flex-col h-screen">
+            <div className="max-h-full flex-row hidden md:flex">
+                <div className="w-full rounded-lg bg-card-fill p-4 flex-1">
                     <WeeklyHeader
                         currentDate={currentDate}
                         setCurrentDate={setCurrentDate}
