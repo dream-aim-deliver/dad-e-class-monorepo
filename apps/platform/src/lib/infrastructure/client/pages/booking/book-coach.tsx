@@ -18,7 +18,7 @@ import {
     WeeklyCalendar,
     WeeklyHeader,
 } from '@maany_shr/e-class-ui-kit';
-import ScheduledSessionContent from './dialogs/scheduled-offering-content';
+import ScheduledOfferingContent from './dialogs/scheduled-offering-content';
 
 interface BookCoachPageProps {
     coachUsername: string;
@@ -38,7 +38,11 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
     presenter.present(coachAvailabilityResponse, coachAvailabilityViewModel);
 
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [newEvent, setNewEvent] = useState<ScheduledOffering | null>(null);
+    const [newSession, setNewSession] = useState<ScheduledOffering | null>(
+        null,
+    );
+
+    const scheduleSessionMutation = trpc.scheduleCoachingSession.useMutation();
 
     const events = useMemo(() => {
         if (
@@ -83,7 +87,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                         start={new Date(availability.startTime)}
                         end={new Date(availability.endTime)}
                         onClick={(startTime) => {
-                            setNewEvent({
+                            setNewSession({
                                 startTime: startTime,
                             });
                         }}
@@ -94,6 +98,35 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
 
         return events;
     }, [coachAvailabilityViewModel]);
+
+    const onSubmit = () => {
+        if (!newSession) return;
+        if (!newSession.session) return;
+        if (!newSession.startTime) return;
+
+        // TODO: Check if there is availability for the selected time
+
+        scheduleSessionMutation.mutate(
+            {
+                coachUsername,
+                sessionId: newSession.session.id,
+                startTime: newSession.startTime.toISOString(),
+            },
+            {
+                onSuccess: (data) => {
+                    if (!data.success) {
+                        // TODO: check error type and show specific message
+                        throw new Error('Failed to schedule session:');
+                    }
+                    setNewSession(null);
+                    // TODO: refresh the availability
+                },
+                onError: (error) => {
+                    throw new Error('Failed to schedule session:');
+                },
+            },
+        );
+    };
 
     useEffect(() => {
         if (coachAvailabilityViewModel?.mode === 'unauthenticated') {
@@ -115,10 +148,10 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
     return (
         <>
             <Dialog
-                open={newEvent !== null}
+                open={newSession !== null}
                 onOpenChange={(open) => {
                     if (!open) {
-                        setNewEvent(null);
+                        setNewSession(null);
                     }
                 }}
                 defaultOpen={false}
@@ -128,9 +161,10 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                     closeOnOverlayClick
                     closeOnEscape
                 >
-                    <ScheduledSessionContent
-                        session={newEvent}
-                        setSession={setNewEvent}
+                    <ScheduledOfferingContent
+                        offering={newSession}
+                        setOffering={setNewSession}
+                        onSubmit={onSubmit}
                     />
                 </DialogContent>
             </Dialog>

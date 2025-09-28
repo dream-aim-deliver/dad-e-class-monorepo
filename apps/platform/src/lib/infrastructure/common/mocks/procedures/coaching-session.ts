@@ -6,7 +6,7 @@ const scheduleCoachingSessionMock: useCaseModels.TScheduleCoachingSessionSuccess
 
 export const scheduleCoachingSession = t.procedure
     .input(useCaseModels.ScheduleCoachingSessionRequestSchema)
-    .query(
+    .mutation(
         async (): Promise<useCaseModels.TScheduleCoachingSessionUseCaseResponse> => {
             return {
                 success: true,
