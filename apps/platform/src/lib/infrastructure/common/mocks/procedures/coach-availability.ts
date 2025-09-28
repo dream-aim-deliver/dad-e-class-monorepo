@@ -111,7 +111,7 @@ const getCoachAvailabilityMock: useCaseModels.TGetCoachAvailabilitySuccessRespon
         },
         {
             id: 1003,
-            status: 'accepted',
+            status: 'scheduled',
             coachingOfferingName: 'Time Management',
             startTime: '2025-10-01T10:00:00Z',
             endTime: '2025-10-01T11:00:00Z',
@@ -139,7 +139,7 @@ const getCoachAvailabilityMock: useCaseModels.TGetCoachAvailabilitySuccessRespon
         },
         {
             id: 1007,
-            status: 'accepted',
+            status: 'scheduled',
             coachingOfferingName: 'Team Building',
             startTime: '2025-10-05T09:00:00Z',
             endTime: '2025-10-05T10:00:00Z',
@@ -174,7 +174,7 @@ const getCoachAvailabilityMock: useCaseModels.TGetCoachAvailabilitySuccessRespon
         },
         {
             id: 1012,
-            status: 'accepted',
+            status: 'scheduled',
             coachingOfferingName: 'Performance Review Prep',
             startTime: '2025-10-03T11:00:00Z',
             endTime: '2025-10-03T12:00:00Z',

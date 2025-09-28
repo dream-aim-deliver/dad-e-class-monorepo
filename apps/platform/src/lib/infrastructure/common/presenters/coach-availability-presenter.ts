@@ -66,7 +66,6 @@ export default class CoachAvailabilityPresenter extends BasePresenter<
             return {
                 mode: 'unauthenticated',
                 data: {
-                    type: response.data.errorType,
                     message: response.data.message,
                     operation: response.data.operation,
                     context: response.data.context,
@@ -76,11 +75,9 @@ export default class CoachAvailabilityPresenter extends BasePresenter<
         return {
             mode: 'kaboom',
             data: {
-                type: response.data.errorType,
                 message: response.data.message,
                 operation: response.data.operation,
                 context: response.data.context,
-                trace: undefined,
             },
         };
     }

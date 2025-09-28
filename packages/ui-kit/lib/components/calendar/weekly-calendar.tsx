@@ -21,7 +21,7 @@ const getWeekStart = (date: Date) => {
     return new Date(d.setDate(diff));
 };
 
-const getHeaderBackground = (date) => {
+const getHeaderBackground = (date: Date) => {
     if (isToday(date)) {
         return 'bg-base-neutral-700';
     }
