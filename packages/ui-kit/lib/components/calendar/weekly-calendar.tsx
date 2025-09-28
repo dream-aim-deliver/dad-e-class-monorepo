@@ -4,6 +4,7 @@ import LoadingOverlay from './loading-overlay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { SectionHeading } from '../text';
 import { Button } from '../button';
+import { cn } from '../../utils/style-utils';
 
 const isToday = (date: Date) => {
     const today = new Date();
@@ -31,6 +32,7 @@ const getHeaderBackground = (date) => {
 interface CalendarEvent {
     start: Date;
     end: Date;
+    priority: number;
     component: React.ReactNode;
 }
 
@@ -44,6 +46,7 @@ interface WeeklyCalendarProps extends isLocalAware {
 
 interface ProcessedEvent extends CalendarEvent {
     id: string;
+    priority: number;
     dayIndex: number;
     startMinutes: number;
     durationMinutes: number;
@@ -132,6 +135,7 @@ export function WeeklyCalendar({
             .map((event, index) => ({
                 ...event,
                 id: `event-${index}`,
+                priority: event.priority,
                 dayIndex: getDayIndex(event.start, weekDates),
                 startMinutes: timeToMinutes(event.start),
                 durationMinutes: Math.max(
@@ -162,16 +166,18 @@ export function WeeklyCalendar({
     const EventComponent = ({ event }: { event: ProcessedEvent }) => {
         const top = (event.startMinutes / 60) * 96; // 96px per hour (24px * 4 quarters)
         const height = Math.max(20, (event.durationMinutes / 60) * 96);
+        const zIndex = 10 + event.priority; // Base z-index plus priority
 
         return (
             <div
-                className="absolute z-10 px-1"
+                className='absolute px-1'
                 style={{
                     top: `${top}px`,
                     height: `${height}px`,
                     left: 0,
                     right: 0,
                     paddingRight: '2px',
+                    zIndex,
                 }}
             >
                 {event.component}

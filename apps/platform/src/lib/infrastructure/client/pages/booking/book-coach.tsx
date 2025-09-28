@@ -48,13 +48,14 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
             return [];
         }
 
-        const events: { start: Date; end: Date; component: React.ReactNode }[] =
+        const events: { start: Date; end: Date; priority: number; component: React.ReactNode }[] =
             [];
 
         coachAvailabilityViewModel.data.anonymousSessions.forEach((session) => {
             events.push({
                 start: new Date(session.startTime),
                 end: new Date(session.endTime),
+                priority: 2,
                 component: (
                     <AnonymousCalendarCard
                         locale={locale}
@@ -69,6 +70,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
             events.push({
                 start: new Date(session.startTime),
                 end: new Date(session.endTime),
+                priority: 3,
                 component: (
                     <SessionCalendarCard
                         locale={locale}
@@ -86,6 +88,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                 events.push({
                     start: new Date(availability.startTime),
                     end: new Date(availability.endTime),
+                    priority: 1,
                     component: (
                         <AvailabilityCalendarCard
                             locale={locale}
