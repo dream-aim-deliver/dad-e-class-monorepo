@@ -58,3 +58,5 @@ export * from './get-course-packages-usecase-models';
 export * from './get-coach-availability-usecase-models';
 
 export * from './schedule-coaching-session-usecase-models';
+
+export * from './add-availability-usecase-models';

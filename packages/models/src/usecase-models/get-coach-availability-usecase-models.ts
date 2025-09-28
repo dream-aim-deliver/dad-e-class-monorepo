@@ -6,14 +6,14 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 
 export const GetCoachAvailabilityRequestSchema = z.object({
-  coachUsername: z.string(),
+  coachUsername: z.string().optional(),
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
 });
 
 export type TGetCoachAvailabilityRequest = z.infer<typeof GetCoachAvailabilityRequestSchema>;
 
-export const CoachingStatusSchema = z.enum(['unscheduled', 'requested', 'accepted', 'completed']);
+export const CoachingStatusSchema = z.enum(['unscheduled', 'requested', 'scheduled', 'canceled', 'completed']);
 export type TCoachingStatus = z.infer<typeof CoachingStatusSchema>;
 
 export const GetCoachAvailabilitySuccessResponseSchema = BaseSuccessSchemaFactory(z.object({

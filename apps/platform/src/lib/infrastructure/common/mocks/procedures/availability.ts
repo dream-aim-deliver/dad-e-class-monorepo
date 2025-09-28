@@ -1,0 +1,16 @@
+import { useCaseModels } from '@maany_shr/e-class-models';
+import { t } from '../trpc-setup';
+
+const addAvailabilityMock: useCaseModels.TAddAvailabilitySuccessResponse['data'] =
+    {};
+
+export const addAvailability = t.procedure
+    .input(useCaseModels.AddAvailabilityRequestSchema)
+    .query(
+        async (): Promise<useCaseModels.TAddAvailabilityUseCaseResponse> => {
+            return {
+                success: true,
+                data: addAvailabilityMock,
+            };
+        },
+    );
