@@ -4,74 +4,113 @@ import { t } from '../trpc-setup';
 const getCoachAvailabilityMock: useCaseModels.TGetCoachAvailabilitySuccessResponse['data'] =
 {
     availability: [
-        // Single availability slots
+        // September 29th - fragmented slots
         {
-            type: 'single',
-            startTime: '2025-09-30T09:00:00Z',
-            endTime: '2025-09-30T10:00:00Z',
+
+            startTime: '2025-09-29T08:30:00Z',
+            endTime: '2025-09-29T10:30:00Z', // Overlaps with session 1001
         },
         {
-            type: 'single',
-            startTime: '2025-10-02T14:00:00Z',
-            endTime: '2025-10-02T15:30:00Z',
-        },
-        {
-            type: 'single',
-            startTime: '2025-10-03T11:00:00Z',
-            endTime: '2025-10-03T12:00:00Z',
-        },
-        {
-            type: 'single',
-            startTime: '2025-10-04T16:00:00Z',
-            endTime: '2025-10-04T17:00:00Z',
-        },
-        {
-            type: 'single',
-            startTime: '2025-10-05T10:00:00Z',
-            endTime: '2025-10-05T11:30:00Z',
-        },
-        // Recurring availability slots
-        {
-            type: 'recurring',
-            startTime: '2025-09-29T08:00:00Z',
-            endTime: '2025-09-29T09:00:00Z',
-            monday: true,
-            tuesday: false,
-            wednesday: true,
-            thursday: false,
-            friday: true,
-            saturday: false,
-            sunday: false,
-            createdAt: '2025-09-22T10:00:00Z',
-            expirationDate: '2025-10-31T23:59:59Z',
-        },
-        {
-            type: 'recurring',
-            startTime: '2025-09-29T13:00:00Z',
-            endTime: '2025-09-29T14:00:00Z',
-            monday: false,
-            tuesday: true,
-            wednesday: false,
-            thursday: true,
-            friday: false,
-            saturday: true,
-            sunday: false,
-            createdAt: '2025-09-25T14:30:00Z',
-            expirationDate: '2025-11-15T23:59:59Z',
-        },
-        {
-            type: 'recurring',
+
             startTime: '2025-09-29T15:30:00Z',
-            endTime: '2025-09-29T16:30:00Z',
-            monday: false,
-            tuesday: false,
-            wednesday: false,
-            thursday: false,
-            friday: false,
-            saturday: false,
-            sunday: true,
-            createdAt: '2025-09-27T12:00:00Z',
-            expirationDate: '2025-10-31T23:59:59Z',
+            endTime: '2025-09-29T18:00:00Z', // Overlaps with session 1008
+        },
+
+        // September 30th - fragmented slots
+        {
+
+            startTime: '2025-09-30T08:00:00Z',
+            endTime: '2025-09-30T12:00:00Z', // Overlaps with session 1009
+        },
+        {
+
+            startTime: '2025-09-30T13:30:00Z',
+            endTime: '2025-09-30T16:00:00Z', // Overlaps with session 1002
+        },
+        {
+
+            startTime: '2025-09-30T17:00:00Z',
+            endTime: '2025-09-30T19:00:00Z',
+        },
+
+        // October 1st - fragmented slots
+        {
+
+            startTime: '2025-10-01T08:00:00Z',
+            endTime: '2025-10-01T11:30:00Z', // Overlaps with session 1003
+        },
+        {
+
+            startTime: '2025-10-01T13:00:00Z',
+            endTime: '2025-10-01T16:30:00Z', // Overlaps with session 1010
+        },
+        {
+
+            startTime: '2025-10-01T18:00:00Z',
+            endTime: '2025-10-01T20:00:00Z',
+        },
+
+        // October 2nd - fragmented slots
+        {
+
+            startTime: '2025-10-02T09:00:00Z',
+            endTime: '2025-10-02T12:00:00Z',
+        },
+        {
+
+            startTime: '2025-10-02T12:30:00Z',
+            endTime: '2025-10-02T16:00:00Z', // Overlaps with sessions 1004 and 1011
+        },
+        {
+
+            startTime: '2025-10-02T17:30:00Z',
+            endTime: '2025-10-02T19:30:00Z',
+        },
+
+        // October 3rd - fragmented slots
+        {
+
+            startTime: '2025-10-03T08:30:00Z',
+            endTime: '2025-10-03T13:00:00Z', // Overlaps with session 1012
+        },
+        {
+
+            startTime: '2025-10-03T14:30:00Z',
+            endTime: '2025-10-03T17:30:00Z', // Overlaps with session 1005
+        },
+        {
+
+            startTime: '2025-10-03T18:00:00Z',
+            endTime: '2025-10-03T20:00:00Z',
+        },
+
+        // October 4th - fragmented slots
+        {
+
+            startTime: '2025-10-04T09:00:00Z',
+            endTime: '2025-10-04T13:30:00Z', // Overlaps with session 1006
+        },
+        {
+
+            startTime: '2025-10-04T14:00:00Z',
+            endTime: '2025-10-04T18:00:00Z', // Overlaps with session 1013
+        },
+
+        // October 5th - fragmented slots
+        {
+
+            startTime: '2025-10-05T08:00:00Z',
+            endTime: '2025-10-05T12:00:00Z', // Overlaps with sessions 1007 and 1014
+        },
+        {
+
+            startTime: '2025-10-05T13:30:00Z',
+            endTime: '2025-10-05T16:30:00Z', // Overlaps with session 1015
+        },
+        {
+
+            startTime: '2025-10-05T17:00:00Z',
+            endTime: '2025-10-05T19:00:00Z',
         },
     ],
     mySessions: [
@@ -177,60 +216,6 @@ const getCoachAvailabilityMock: useCaseModels.TGetCoachAvailabilitySuccessRespon
             id: 1015,
             status: 'unscheduled',
             coachingOfferingName: 'Executive Presence',
-            startTime: '2025-10-05T14:00:00Z',
-            endTime: '2025-10-05T15:00:00Z',
-        },
-    ],
-    anonymousSessions: [
-        {
-            startTime: '2025-09-29T10:00:00Z',
-            endTime: '2025-09-29T11:00:00Z',
-        },
-        {
-            startTime: '2025-09-30T13:00:00Z',
-            endTime: '2025-09-30T14:00:00Z',
-        },
-        {
-            startTime: '2025-10-01T15:00:00Z',
-            endTime: '2025-10-01T16:00:00Z',
-        },
-        {
-            startTime: '2025-10-01T09:00:00Z',
-            endTime: '2025-10-01T10:00:00Z',
-        },
-        {
-            startTime: '2025-10-02T14:00:00Z',
-            endTime: '2025-10-02T15:00:00Z',
-        },
-        {
-            startTime: '2025-10-03T11:00:00Z',
-            endTime: '2025-10-03T12:00:00Z',
-        },
-        {
-            startTime: '2025-10-03T16:00:00Z',
-            endTime: '2025-10-03T17:00:00Z',
-        },
-        {
-            startTime: '2025-10-04T10:00:00Z',
-            endTime: '2025-10-04T11:00:00Z',
-        },
-        {
-            startTime: '2025-10-04T13:00:00Z',
-            endTime: '2025-10-04T14:00:00Z',
-        },
-        {
-            startTime: '2025-10-05T15:00:00Z',
-            endTime: '2025-10-05T16:00:00Z',
-        },
-        {
-            startTime: '2025-09-29T09:00:00Z',
-            endTime: '2025-09-29T10:00:00Z',
-        },
-        {
-            startTime: '2025-09-30T12:00:00Z',
-            endTime: '2025-09-30T13:00:00Z',
-        },
-        {
             startTime: '2025-10-05T14:00:00Z',
             endTime: '2025-10-05T15:00:00Z',
         },
