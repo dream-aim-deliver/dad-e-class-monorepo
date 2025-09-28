@@ -149,7 +149,9 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
 
-    const [coachAvailabilityResponse] =
+    const [coachAvailabilityResponse, {
+        refetch: refetchCoachAvailability,
+    }] =
         trpc.getCoachAvailability.useSuspenseQuery({ coachUsername });
     const [coachAvailabilityViewModel, setCoachAvailabilityViewModel] =
         useState<viewModels.TCoachAvailabilityViewModel | undefined>(undefined);
@@ -185,7 +187,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                         throw new Error('Failed to schedule session:');
                     }
                     setNewSession(null);
-                    // TODO: refresh the availability
+                    refetchCoachAvailability();
                 },
                 onError: (error) => {
                     throw new Error('Failed to schedule session:');
