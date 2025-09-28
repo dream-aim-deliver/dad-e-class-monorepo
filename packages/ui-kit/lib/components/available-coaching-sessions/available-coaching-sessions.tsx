@@ -1,22 +1,21 @@
 import { Button } from '../button';
 import { FC, useRef, useState } from 'react';
-import { DragDropSession } from './drag-drop-session';
+import { AvailableCoachingSessionCard } from './available-coaching-session-card';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 export interface CoachingSessionData {
-  id: string;
-  title: string;
-  time: number;
-  numberOfSessions: number;
+    title: string;
+    time: number;
+    numberOfSessions: number;
 }
 
 export interface AvailableCoachingSessionsProps extends isLocalAware {
-  text?: string;
-  availableCoachingSessionsData: CoachingSessionData[];
-  onClickBuyMoreSessions: () => void;
-  isLoading?: boolean;
-  hideButton?: boolean;
-  isDraggable?: boolean;
+    text?: string;
+    availableCoachingSessionsData: CoachingSessionData[];
+    onClickBuyMoreSessions: () => void;
+    isLoading?: boolean;
+    hideButton?: boolean;
+    isDraggable?: boolean;
 }
 
 /**
@@ -50,109 +49,108 @@ export interface AvailableCoachingSessionsProps extends isLocalAware {
  * />
  */
 export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
-  locale,
-  text,
-  availableCoachingSessionsData,
-  onClickBuyMoreSessions,
-  isLoading = false,
-  hideButton = false,
-  isDraggable = false,
+    locale,
+    text,
+    availableCoachingSessionsData,
+    onClickBuyMoreSessions,
+    isLoading = false,
+    hideButton = false,
+    isDraggable = false,
 }) => {
-  const dictionary = getDictionary(locale);
-  const [sessionCounts, setSessionCounts] = useState<{ [key: string]: number }>({});
+    const dictionary = getDictionary(locale);
 
-  /**
-   * Handle session drag event
-   */
-  const handleSessionDrag = (event, sessionId: string) => {
-    event.dataTransfer.effectAllowed = 'copy';
-    event.dataTransfer.setData('text/plain', sessionId);
-    event.dataTransfer.setData('application/coaching-session', 'session');
-  };
-
-  return (
-    <div
-      className="z-30 select-none flex flex-col items-start p-4 gap-[0.875rem] bg-card-fill rounded-medium h-fit w-full shadow-lg"
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={(e) => e.preventDefault()}
-    >
-      <p className="text-lg text-text-primary font-bold leading-[120%]">
-        {dictionary?.components?.availableCoachingSessions?.title}
-      </p>
-      {!isLoading && (!availableCoachingSessionsData ||
-        availableCoachingSessionsData?.length === 0) ? (
-        <div className="flex items-center justify-center w-full">
-          <p className="text-[1rem] text-text-secondary leading-[150%]">
-            {dictionary?.components?.availableCoachingSessions?.noAvailableSessionText}
-          </p>
-        </div>
-      ) : (
-        <>
-          {isLoading ? (
-            <p className="text-[0.875rem] text-text-secondary leading-[150%]">
-              {dictionary?.components?.availableCoachingSessions?.loadingText}
+    return (
+        <div
+            className="z-30 select-none flex flex-col items-start p-4 gap-[0.875rem] bg-card-fill rounded-medium h-fit w-full shadow-lg"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => e.preventDefault()}
+        >
+            <p className="text-lg text-text-primary font-bold leading-[120%]">
+                {dictionary?.components?.availableCoachingSessions?.title}
             </p>
-          ) : (
-            <p className="text-[0.875rem] text-text-secondary leading-[150%]">{text}</p>
-          )}
-          <div className="flex flex-col gap-2 items-end w-full">
-            {isLoading || !availableCoachingSessionsData ? (
-              <>
-                <DragDropSession isLoading={isLoading} />
-                <DragDropSession isLoading={isLoading} />
-                <DragDropSession isLoading={isLoading} />
-              </>
+            {!isLoading &&
+            (!availableCoachingSessionsData ||
+                availableCoachingSessionsData?.length === 0) ? (
+                <div className="flex items-center justify-center w-full">
+                    <p className="text-[1rem] text-text-secondary leading-[150%]">
+                        {
+                            dictionary?.components?.availableCoachingSessions
+                                ?.noAvailableSessionText
+                        }
+                    </p>
+                </div>
             ) : (
-              availableCoachingSessionsData.map((session) => {
-                const sessionId = session.id;
-                const remainingSessions = session.numberOfSessions - (sessionCounts[sessionId] || 0);
-
-                if (remainingSessions <= 0) return null;
-
-                return (
-                  <div
-                    key={sessionId}
-                    className={`draggable-session ${remainingSessions <= 0 ? 'opacity-50 cursor-not-allowed' : ''
-                      } ${isDraggable ? 'cursor-grab' : 'cursor-auto'} w-full`}
-                    draggable={isDraggable && remainingSessions > 0}
-                    onDragStart={(event) => {
-                      handleSessionDrag(event, sessionId);
-                    }}
-                  >
-                    <DragDropSession
-                      key={session.title}
-                      {...session}
-                      numberOfSessions={remainingSessions}
-                      durationMinutes={
-                        dictionary?.components?.availableCoachingSessions?.durationMinutes
-                      }
-                    />
-                  </div>
-                );
-              })
+                <>
+                    {isLoading ? (
+                        <p className="text-[0.875rem] text-text-secondary leading-[150%]">
+                            {
+                                dictionary?.components
+                                    ?.availableCoachingSessions?.loadingText
+                            }
+                        </p>
+                    ) : (
+                        <p className="text-[0.875rem] text-text-secondary leading-[150%]">
+                            {text}
+                        </p>
+                    )}
+                    <div className="flex flex-col gap-2 items-end w-full">
+                        {isLoading || !availableCoachingSessionsData ? (
+                            <>
+                                <AvailableCoachingSessionCard
+                                    isLoading={isLoading}
+                                />
+                                <AvailableCoachingSessionCard
+                                    isLoading={isLoading}
+                                />
+                                <AvailableCoachingSessionCard
+                                    isLoading={isLoading}
+                                />
+                            </>
+                        ) : (
+                            availableCoachingSessionsData.map((session) => {
+                                return (
+                                    <div key={session.title} className="w-full">
+                                        <AvailableCoachingSessionCard
+                                            key={session.title}
+                                            {...session}
+                                            numberOfSessions={
+                                                session.numberOfSessions
+                                            }
+                                            durationMinutes={
+                                                dictionary?.components
+                                                    ?.availableCoachingSessions
+                                                    ?.durationMinutes
+                                            }
+                                        />
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+                    {!isLoading &&
+                        availableCoachingSessionsData.length === 0 && (
+                            <div className="flex items-center justify-center w-full">
+                                <p className="text-[1rem] text-text-secondary leading-[150%]">
+                                    {
+                                        dictionary?.components
+                                            ?.availableCoachingSessions
+                                            ?.noAvailableSessionText
+                                    }
+                                </p>
+                            </div>
+                        )}
+                </>
             )}
-          </div>
-          {availableCoachingSessionsData.every((session) => {
-            const sessionId = session.id;
-            return session.numberOfSessions - (sessionCounts[sessionId] || 0) <= 0;
-          }) &&
-            !isLoading &&
-            availableCoachingSessionsData.length > 0 && (
-              <div className="flex items-center justify-center w-full">
-                <p className="text-[1rem] text-text-secondary leading-[150%]">
-                  {dictionary?.components?.availableCoachingSessions?.noAvailableSessionText}
-                </p>
-              </div>
+            {!hideButton && (
+                <Button
+                    className="w-full"
+                    onClick={onClickBuyMoreSessions}
+                    text={
+                        dictionary?.components?.availableCoachingSessions
+                            ?.buyMoreSessions
+                    }
+                />
             )}
-        </>
-      )}
-      {!hideButton && <Button
-        className="w-full"
-        onClick={onClickBuyMoreSessions}
-        text={
-          dictionary?.components?.availableCoachingSessions?.buyMoreSessions
-        }
-      />}
-    </div>
-  );
+        </div>
+    );
 };

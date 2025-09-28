@@ -4,14 +4,19 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { trpc } from '../../trpc/client';
-import { useEffect, useMemo, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachAvailabilityPresenter } from '../../hooks/use-coach-availability-presenter';
 import {
     AvailabilityCalendarCard,
+    AvailableCoachingSessionCard,
     AvailableCoachingSessions,
+    Button,
+    CoachingSessionData,
     DefaultError,
     DefaultLoading,
+    Dialog,
+    DialogContent,
     MonthlyCalendar,
     SessionCalendarCard,
     WeeklyCalendar,
@@ -24,7 +29,23 @@ interface BookCoachPageProps {
     coachUsername: string;
 }
 
-function AvailableCoachings() {
+interface ScheduledOffering {
+    session?: {
+        id: number;
+        name: string;
+        duration: number;
+    };
+    startTime?: Date;
+    endTime?: Date;
+}
+
+interface ChooseCoachingSessionContentProps {
+    setSession: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
+}
+
+function ChooseCoachingSessionContent({
+    setSession,
+}: ChooseCoachingSessionContentProps) {
     const [availableCoachingsResponse] =
         trpc.listAvailableCoachings.useSuspenseQuery({});
     const [availableCoachingsViewModel, setAvailableCoachingsViewModel] =
@@ -64,20 +85,81 @@ function AvailableCoachings() {
         return;
     }
 
+    const calculateEndTime = (startTime: Date, durationMinutes: number) => {
+        const endTime = new Date(startTime);
+        endTime.setMinutes(endTime.getMinutes() + durationMinutes);
+        return endTime;
+    };
+
+    const onChoose = (offering: CoachingSessionData) => {
+        // Find the first matching ID
+        const sessionId = availableOfferings.find(
+            (o) => o.name === offering.title && o.duration === offering.time,
+        )?.id;
+        if (!sessionId) return;
+        setSession((oldSession) => {
+            return {
+                session: {
+                    id: sessionId,
+                    name: offering.title,
+                    duration: offering.time,
+                },
+                startTime: oldSession?.startTime,
+                endTime: oldSession?.startTime
+                    ? calculateEndTime(oldSession.startTime, offering.time)
+                    : undefined,
+            };
+        });
+    };
+
     return (
-        <AvailableCoachingSessions
-            locale={locale}
-            availableCoachingSessionsData={groupedOfferings}
-            onClickBuyMoreSessions={() => {}}
-            hideButton
-        />
+        <div className="flex flex-col gap-3">
+            <span className="text-text-secondary">
+                Select a coaching session
+            </span>
+            {groupedOfferings.map((offering) => (
+                <AvailableCoachingSessionCard
+                    key={offering.title}
+                    {...offering}
+                    numberOfSessions={offering.numberOfSessions}
+                    durationMinutes="minutes"
+                    onClick={() => onChoose(offering)}
+                />
+            ))}
+        </div>
     );
 }
 
-interface ScheduledSession {
-    id?: number;
-    startTime?: Date;
-    endTime?: Date;
+interface ScheduledSessionContentProps {
+    session: ScheduledOffering | null;
+    setSession: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
+}
+
+function ScheduledSessionContent({
+    session,
+    setSession,
+}: ScheduledSessionContentProps) {
+    const locale = useLocale() as TLocale;
+
+    if (!session) return null;
+
+    return (
+        <div className="flex flex-col gap-3">
+            <h2>Schedule</h2>
+            {!session.session && (
+                <Suspense fallback={<DefaultLoading locale={locale} />}>
+                    <ChooseCoachingSessionContent setSession={setSession} />
+                </Suspense>
+            )}
+            <Button
+                className="w-full"
+                variant="secondary"
+                onClick={() => setSession(null)}
+            >
+                Cancel
+            </Button>
+        </div>
+    );
 }
 
 export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
@@ -94,7 +176,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
     presenter.present(coachAvailabilityResponse, coachAvailabilityViewModel);
 
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [newEvent, setNewEvent] = useState<ScheduledSession | null>(null);
+    const [newEvent, setNewEvent] = useState<ScheduledOffering | null>(null);
 
     const events = useMemo(() => {
         if (
@@ -169,34 +251,51 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
     const coachAvailability = coachAvailabilityViewModel.data;
 
     return (
-        <div className="flex flex-col h-screen">
-            <div className="max-h-full flex-row hidden md:flex">
-                <div className="w-full rounded-lg bg-card-fill p-4 flex-1">
-                    <WeeklyHeader
-                        currentDate={currentDate}
-                        setCurrentDate={setCurrentDate}
-                        locale={locale}
+        <>
+            <Dialog
+                open={newEvent !== null}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setNewEvent(null);
+                    }
+                }}
+                defaultOpen={false}
+            >
+                <DialogContent
+                    showCloseButton
+                    closeOnOverlayClick
+                    closeOnEscape
+                >
+                    <ScheduledSessionContent
+                        session={newEvent}
+                        setSession={setNewEvent}
                     />
-                    <WeeklyCalendar
+                </DialogContent>
+            </Dialog>
+            <div className="flex flex-col h-screen">
+                <div className="max-h-full flex-row hidden md:flex">
+                    <div className="w-full rounded-lg bg-card-fill p-4 flex-1">
+                        <WeeklyHeader
+                            currentDate={currentDate}
+                            setCurrentDate={setCurrentDate}
+                            locale={locale}
+                        />
+                        <WeeklyCalendar
+                            locale={locale}
+                            currentDate={currentDate}
+                            setCurrentDate={setCurrentDate}
+                            events={events}
+                        />
+                    </div>
+                </div>
+                <div className="flex flex-col md:hidden">
+                    <MonthlyCalendar
                         locale={locale}
                         currentDate={currentDate}
                         setCurrentDate={setCurrentDate}
-                        events={events}
                     />
                 </div>
-                {newEvent && (
-                    <div className="w-80">
-                        <AvailableCoachings />
-                    </div>
-                )}
             </div>
-            <div className="flex flex-col md:hidden">
-                <MonthlyCalendar
-                    locale={locale}
-                    currentDate={currentDate}
-                    setCurrentDate={setCurrentDate}
-                />
-            </div>
-        </div>
+        </>
     );
 }
