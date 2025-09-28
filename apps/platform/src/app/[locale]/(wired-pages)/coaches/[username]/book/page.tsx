@@ -1,4 +1,4 @@
-import BookingServerComponent from 'apps/platform/src/lib/infrastructure/server/pages/booking-rsc';
+import BookingServerComponent from '../../../../../../lib/infrastructure/server/pages/booking-rsc';
 
 export default async function Page({
     params: paramsPromise,

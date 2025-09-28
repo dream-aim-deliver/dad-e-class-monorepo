@@ -62,7 +62,9 @@ function AvailableCoachings() {
         <AvailableCoachingSessions
             locale={locale}
             availableCoachingSessionsData={groupedOfferings}
-            onClickBuyMoreSessions={() => {}}
+            onClickBuyMoreSessions={() => {
+                // TODO: Implement buy more sessions functionality
+            }}
             hideButton
         />
     );
@@ -127,7 +129,9 @@ export default function CoachingOfferingsPanel() {
                             isLoading
                             hideButton
                             availableCoachingSessionsData={[]}
-                            onClickBuyMoreSessions={() => {}}
+                            onClickBuyMoreSessions={() => {
+                                // TODO: Implement buy more sessions functionality
+                            }}
                         />
                     }
                 >
