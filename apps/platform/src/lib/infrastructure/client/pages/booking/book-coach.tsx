@@ -8,18 +8,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachAvailabilityPresenter } from '../../hooks/use-coach-availability-presenter';
 import {
-    AnonymousCalendarCard,
     AvailabilityCalendarCard,
-    Button,
     DefaultError,
     DefaultLoading,
     MonthlyCalendar,
-    SectionHeading,
     SessionCalendarCard,
     WeeklyCalendar,
     WeeklyHeader,
 } from '@maany_shr/e-class-ui-kit';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface BookCoachPageProps {
     coachUsername: string;
@@ -48,29 +44,18 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
             return [];
         }
 
-        const events: { start: Date; end: Date; priority: number; component: React.ReactNode }[] =
-            [];
-
-        coachAvailabilityViewModel.data.anonymousSessions.forEach((session) => {
-            events.push({
-                start: new Date(session.startTime),
-                end: new Date(session.endTime),
-                priority: 2,
-                component: (
-                    <AnonymousCalendarCard
-                        locale={locale}
-                        start={new Date(session.startTime)}
-                        end={new Date(session.endTime)}
-                    />
-                ),
-            });
-        });
+        const events: {
+            start: Date;
+            end: Date;
+            priority: number;
+            component: React.ReactNode;
+        }[] = [];
 
         coachAvailabilityViewModel.data.mySessions.forEach((session) => {
             events.push({
                 start: new Date(session.startTime),
                 end: new Date(session.endTime),
-                priority: 3,
+                priority: 2,
                 component: (
                     <SessionCalendarCard
                         locale={locale}
@@ -84,23 +69,18 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
         });
 
         coachAvailabilityViewModel.data.availability.forEach((availability) => {
-            if (availability.type === 'single') {
-                events.push({
-                    start: new Date(availability.startTime),
-                    end: new Date(availability.endTime),
-                    priority: 1,
-                    component: (
-                        <AvailabilityCalendarCard
-                            locale={locale}
-                            start={new Date(availability.startTime)}
-                            end={new Date(availability.endTime)}
-                        />
-                    ),
-                });
-            }
-            if (availability.type === 'recurring') {
-                // TODO: check for every day of the currently displayed week
-            }
+            events.push({
+                start: new Date(availability.startTime),
+                end: new Date(availability.endTime),
+                priority: 1,
+                component: (
+                    <AvailabilityCalendarCard
+                        locale={locale}
+                        start={new Date(availability.startTime)}
+                        end={new Date(availability.endTime)}
+                    />
+                ),
+            });
         });
 
         return events;
