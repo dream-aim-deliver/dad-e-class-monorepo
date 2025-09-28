@@ -98,7 +98,7 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
                             router.push(`/courses/${courseSlug}`);
                         }}
                         onClickBookSession={() => {
-                            // TODO: Implement booking session navigation
+                            router.push(`/coaches/${coach.username}/book`);
                         }}
                     />
                 ))}
