@@ -186,7 +186,7 @@ export const DialogContent: React.FC<DialogContentProps> = ({
         <>
             {/* Overlay with fade-in/out */}
             <div 
-                className={`fixed inset-0 z-40 bg-neutral-900/60 backdrop-blur-sm transition-all duration-300 ease-out ${
+                className={`fixed inset-0 z-100 bg-neutral-900/60 backdrop-blur-sm transition-all duration-300 ease-out ${
                     isAnimating || isClosing ? 'opacity-0' : 'opacity-100'
                 }`} 
             />
@@ -194,7 +194,7 @@ export const DialogContent: React.FC<DialogContentProps> = ({
             {/* Content with scale + fade animation */}
             <div
                 ref={contentRef}
-                className={`fixed top-1/2 left-1/2 z-50 w-full max-w-lg 
+                className={`fixed top-1/2 left-1/2 z-110 w-full max-w-lg 
                     bg-card-fill border border-card-stroke rounded-lg shadow-[0_4px_12px_0var(base-neutral-950)] 
                     p-4 transition-all duration-300 ease-out transform -translate-x-1/2 -translate-y-1/2 ${
                         isAnimating || isClosing 
