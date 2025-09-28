@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
     BaseDiscriminatedViewModeSchemaFactory,
+    BaseErrorContextSchema,
+    BaseErrorDataSchema,
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
@@ -11,8 +13,8 @@ export const CoachAvailabilitySuccessSchema = GetCoachAvailabilitySuccessRespons
 export type TCoachAvailabilitySuccess = z.infer<typeof CoachAvailabilitySuccessSchema>;
 
 const CoachAvailabilityDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CoachAvailabilitySuccessSchema);
-const CoachAvailabilityUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory());
-const CoachAvailabilityKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory());
+const CoachAvailabilityUnauthenticatedViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("unauthenticated", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
+const CoachAvailabilityKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema));
 
 export const CoachAvailabilityViewModelSchemaMap = {
     default: CoachAvailabilityDefaultViewModelSchema,
