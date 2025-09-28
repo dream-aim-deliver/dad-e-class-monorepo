@@ -222,7 +222,7 @@ export function WeeklyCalendar({
             {isLoading && <LoadingOverlay className="fixed z-60" />}
 
             {/* Header row */}
-            <div className="grid grid-cols-[80px_repeat(7,1fr)] sticky top-0 z-50">
+            <div className="grid grid-cols-[80px_repeat(7,1fr)] sticky top-0 z-40">
                 <div className="p-2 text-sm text-base-neutral-500 bg-card-fill">
                     {getTimezoneFormat()}
                 </div>
