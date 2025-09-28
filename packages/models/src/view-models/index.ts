@@ -51,3 +51,4 @@ export * from './get-course-certificate-data-view-model';
 export * from './create-course-review-view-model';
 export * from './get-course-status-view-model';
 export * from './coach-availability-view-model';
+export * from './coach-availability-view-model';
