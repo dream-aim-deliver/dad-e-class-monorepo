@@ -12,13 +12,16 @@ interface UseComputeEventsProps {
     coachAvailabilityViewModel:
         | viewModels.TCoachAvailabilityViewModel
         | undefined;
+}
+
+interface UseComputeWeeklyEventsProps extends UseComputeEventsProps {
     onAvailabilityClick: (startTime: Date) => void;
 }
 
-export default function useComputeEvents({
+export function useComputeWeeklyEvents({
     coachAvailabilityViewModel,
     onAvailabilityClick,
-}: UseComputeEventsProps) {
+}: UseComputeWeeklyEventsProps) {
     const locale = useLocale() as TLocale;
 
     const weeklyEvents = useMemo(() => {
@@ -72,6 +75,14 @@ export default function useComputeEvents({
         return events;
     }, [coachAvailabilityViewModel]);
 
+    return {
+        weeklyEvents,
+    };
+}
+
+export function useComputeMonthlyEvents({
+    coachAvailabilityViewModel,
+}: UseComputeEventsProps) {
     const monthlyEvents = useMemo(() => {
         if (
             !coachAvailabilityViewModel ||
@@ -118,8 +129,5 @@ export default function useComputeEvents({
         return dateEventsMap;
     }, [coachAvailabilityViewModel]);
 
-    return {
-        weeklyEvents,
-        monthlyEvents,
-    };
+    return { monthlyEvents };
 }
