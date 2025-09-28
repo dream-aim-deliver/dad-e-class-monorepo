@@ -1,38 +1,54 @@
 import { Button } from '../button';
-import { FC } from 'react';
-import { DragDropSession, DragDropSessionProps } from './drag-drop-session';
+import { FC, useRef, useState } from 'react';
+import { DragDropSession } from './drag-drop-session';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
+
+export interface CoachingSessionData {
+  id: string;
+  title: string;
+  time: number;
+  numberOfSessions: number;
+}
 
 export interface AvailableCoachingSessionsProps extends isLocalAware {
   text?: string;
-  availableCoachingSessionsData?: DragDropSessionProps[];
-  onClickBuyMoreSessions?: () => void;
+  availableCoachingSessionsData: CoachingSessionData[];
+  onClickBuyMoreSessions: () => void;
   isLoading?: boolean;
   hideButton?: boolean;
+  isDraggable?: boolean;
 }
 
 /**
- * A reusable component that displays available coaching sessions with a title, description,
- * session list, and a button to purchase more sessions.
+ * A component that displays and manages available coaching sessions with drag-and-drop functionality.
  *
- * @param locale The locale for translations, used to retrieve localized text.
- * @param text Optional custom text displayed below the title.
- * @param availableCoachingSessionsData An array of `DragDropSessionProps` representing available coaching sessions.
- * @param onClickBuyMoreSessions A callback function to handle the buy more sessions button click event.
- * @param isLoading A boolean value to check if the data is loading or not.
+ * @param locale The locale for internationalization, used to fetch the appropriate dictionary.
+ * @param text Optional description text for the available sessions section.
+ * @param availableCoachingSessionsData Array of coaching session data, each containing id, title, time, and numberOfSessions.
+ * @param onClickBuyMoreSessions Handler function for the "Buy More Sessions" button click.
+ * @param isLoading Optional boolean indicating if the component is in a loading state (default: false).
+ * @param onSessionDrag Optional handler function triggered when a session is dragged, receiving the session ID.
  *
  * @example
  * <AvailableCoachingSessions
  *   locale="en"
- *   text="Here are your available coaching sessions."
+ *   text="Drag sessions to schedule"
  *   availableCoachingSessionsData={[
- *     { title: "Session 1", time: 60, numberofSessions: 2 },
- *     { title: "Session 2", time: 45, numberofSessions: 1 },
+ *     { id: "1", title: "Intro Session", time: 60, numberOfSessions: 2 },
+ *     { id: "2", title: "Advanced Session", time: 90, numberOfSessions: 1 }
  *   ]}
- *   onClickBuyMoreSessions={() => console.log("Buy more sessions")}
+ *   onClickBuyMoreSessions={() => console.log("Buy more clicked")}
+ *   isLoading={false}
+ *   onSessionDrag={(sessionId) => console.log(`Session ${sessionId} dragged`)}
  * />
- **/
-
+ *
+ * @example
+ * <AvailableCoachingSessions
+ *   locale="en"
+ *   availableCoachingSessionsData={[]}
+ *   onClickBuyMoreSessions={() => console.log("Buy more clicked")}
+ * />
+ */
 export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
   locale,
   text,
@@ -40,21 +56,34 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
   onClickBuyMoreSessions,
   isLoading = false,
   hideButton = false,
+  isDraggable = false,
 }) => {
   const dictionary = getDictionary(locale);
+  const [sessionCounts, setSessionCounts] = useState<{ [key: string]: number }>({});
+
+  /**
+   * Handle session drag event
+   */
+  const handleSessionDrag = (event, sessionId: string) => {
+    event.dataTransfer.effectAllowed = 'copy';
+    event.dataTransfer.setData('text/plain', sessionId);
+    event.dataTransfer.setData('application/coaching-session', 'session');
+  };
+
   return (
-    <div className="flex flex-col items-start p-4 gap-[0.875rem] bg-card-fill rounded-medium h-fit">
+    <div
+      className="z-30 select-none flex flex-col items-start p-4 gap-[0.875rem] bg-card-fill rounded-medium h-fit w-full shadow-lg"
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => e.preventDefault()}
+    >
       <p className="text-lg text-text-primary font-bold leading-[120%]">
         {dictionary?.components?.availableCoachingSessions?.title}
       </p>
       {!isLoading && (!availableCoachingSessionsData ||
-      availableCoachingSessionsData?.length === 0) ? (
+        availableCoachingSessionsData?.length === 0) ? (
         <div className="flex items-center justify-center w-full">
           <p className="text-[1rem] text-text-secondary leading-[150%]">
-            {
-              dictionary?.components?.availableCoachingSessions
-                ?.noAvailableSessionText
-            }
+            {dictionary?.components?.availableCoachingSessions?.noAvailableSessionText}
           </p>
         </div>
       ) : (
@@ -64,34 +93,57 @@ export const AvailableCoachingSessions: FC<AvailableCoachingSessionsProps> = ({
               {dictionary?.components?.availableCoachingSessions?.loadingText}
             </p>
           ) : (
-            <p className="text-[0.875rem] text-text-secondary leading-[150%]">
-              {text}
-            </p>
+            <p className="text-[0.875rem] text-text-secondary leading-[150%]">{text}</p>
           )}
           <div className="flex flex-col gap-2 items-end w-full">
-            {isLoading ? (
+            {isLoading || !availableCoachingSessionsData ? (
               <>
                 <DragDropSession isLoading={isLoading} />
                 <DragDropSession isLoading={isLoading} />
                 <DragDropSession isLoading={isLoading} />
               </>
             ) : (
-              <>
-                {availableCoachingSessionsData?.map(
-                  (availableCoachingSession) => (
+              availableCoachingSessionsData.map((session) => {
+                const sessionId = session.id;
+                const remainingSessions = session.numberOfSessions - (sessionCounts[sessionId] || 0);
+
+                if (remainingSessions <= 0) return null;
+
+                return (
+                  <div
+                    key={sessionId}
+                    className={`draggable-session ${remainingSessions <= 0 ? 'opacity-50 cursor-not-allowed' : ''
+                      } ${isDraggable ? 'cursor-grab' : 'cursor-auto'} w-full`}
+                    draggable={isDraggable && remainingSessions > 0}
+                    onDragStart={(event) => {
+                      handleSessionDrag(event, sessionId);
+                    }}
+                  >
                     <DragDropSession
-                      key={availableCoachingSession.title}
-                      {...availableCoachingSession}
+                      key={session.title}
+                      {...session}
+                      numberOfSessions={remainingSessions}
                       durationMinutes={
-                        dictionary?.components?.availableCoachingSessions
-                          ?.durationMinutes
+                        dictionary?.components?.availableCoachingSessions?.durationMinutes
                       }
                     />
-                  ),
-                )}
-              </>
+                  </div>
+                );
+              })
             )}
           </div>
+          {availableCoachingSessionsData.every((session) => {
+            const sessionId = session.id;
+            return session.numberOfSessions - (sessionCounts[sessionId] || 0) <= 0;
+          }) &&
+            !isLoading &&
+            availableCoachingSessionsData.length > 0 && (
+              <div className="flex items-center justify-center w-full">
+                <p className="text-[1rem] text-text-secondary leading-[150%]">
+                  {dictionary?.components?.availableCoachingSessions?.noAvailableSessionText}
+                </p>
+              </div>
+            )}
         </>
       )}
       {!hideButton && <Button

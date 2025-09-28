@@ -183,3 +183,8 @@ export { Stepper } from './components/stepper/stepper';
 export { CourseMaterialsAccordion } from "./components/accordion/course-materials-accordion";
 export { TeachCourseBanner } from './components/teach-course-banner';
 
+
+
+export { MonthlyCalendar } from './components/calendar/monthly-calendar';
+export { WeeklyCalendar } from './components/calendar/weekly-calendar';
+export * from './components/calendar/calendar-cards';

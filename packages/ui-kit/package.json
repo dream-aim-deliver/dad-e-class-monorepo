@@ -17,6 +17,10 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@fullcalendar/daygrid": "^6.1.17",
+    "@fullcalendar/interaction": "^6.1.17",
+    "@fullcalendar/react": "^6.1.17",
+    "@fullcalendar/timegrid": "^6.1.17",
     "@maany_shr/e-class-models": "workspace:*",
     "@maany_shr/e-class-translations": "workspace:*",
     "@mux/mux-player-react": "^3.3.0",
@@ -37,7 +41,8 @@
     "tailwind-merge": "^2.5.5",
     "vitest": "^2.1.8",
     "zod": "^3.24.1",
-    "spark-md5": "^3.0.2"
+    "spark-md5": "^3.0.2",
+    "@storybook/react": "^8.4.7"
   },
   "publishConfig": {
     "access": "public"
