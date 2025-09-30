@@ -9,7 +9,7 @@ import { useListStudentCoachingSessionsPresenter } from "../../hooks/use-list-st
 import { useListCoachesPresenter } from "../../hooks/use-coaches-presenter";
 import { useCreateCoachingSessionReviewPresenter } from "../../hooks/use-create-coaching-session-review-presenter";
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
-import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions, ReviewModal } from "@maany_shr/e-class-ui-kit";
+import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions, ReviewModal, CancelCoachingSessionModal } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { useRouter } from "next/navigation";
 import { useCheckTimeLeft } from "../../../hooks/use-check-time-left";
@@ -165,6 +165,10 @@ export default function StudentCoachingSessions() {
     const [reviewSessionId, setReviewSessionId] = useState<number | null>(null);
     const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
+    // Cancel modal state
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+    const [cancelSessionId, setCancelSessionId] = useState<number | null>(null);
+
     // Review handlers
     const handleReviewClick = (sessionId: number) => {
         setReviewSessionId(sessionId);
@@ -217,21 +221,26 @@ export default function StudentCoachingSessions() {
 
     // Cancel handler - just unschedule the session
     const handleCancel = async (sessionId: number) => {
+        setIsCancelModalOpen(false);
+        setCancelSessionId(null);
         const response = await unscheduleMutation.mutateAsync({
             coachingSessionId: sessionId,
         });
-        
         // Present the response to the view model
         unschedulePresenter.present(response, unscheduleViewModel);
-
         // Check if the presentation resulted in an error
         if (unscheduleViewModel && unscheduleViewModel.mode === 'kaboom') {
             // Error occurred, don't proceed with success actions
             return;
         }
-        
         // Invalidate and refetch the sessions list to reflect the change
         utils.listStudentCoachingSessions.invalidate();
+    };
+
+    // Open cancel modal instead of direct cancel
+    const handleOpenCancelModal = (sessionId: number) => {
+        setCancelSessionId(sessionId);
+        setIsCancelModalOpen(true);
     };
 
     // Reschedule handler - unschedule and redirect to coach calendar
@@ -465,7 +474,7 @@ export default function StudentCoachingSessions() {
                         key={session.id}
                         {...commonProps}
                         status="requested"
-                        onClickCancel={() => handleCancel(session.id)}
+                        onClickCancel={() => handleOpenCancelModal(session.id)}
                     />
                 );
             }
@@ -510,7 +519,7 @@ export default function StudentCoachingSessions() {
                             status="upcoming-editable"
                             hoursLeftToEdit={hoursLeftToEdit}
                             onClickReschedule={() => handleReschedule(session.id, session.coach.username)}
-                            onClickCancel={() => handleCancel(session.id)}
+                            onClickCancel={() => handleOpenCancelModal(session.id)}
                         />
                     );
                 }
@@ -603,7 +612,7 @@ export default function StudentCoachingSessions() {
 
             {/* Review Modal */}
             {isReviewModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-10 flex items-center justify-center z-50">
+                <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm rounded-lg shadow-lg">
                     <ReviewModal
                         locale={locale}
                         modalType="coaching"
@@ -613,6 +622,22 @@ export default function StudentCoachingSessions() {
                         isLoading={createReviewMutation.isPending}
                         isError={createReviewViewModel?.mode === 'kaboom'}
                         submitted={reviewSubmitted}
+                    />
+                </div>
+            )}
+
+            {/* Cancel Coaching Session Modal */}
+            {isCancelModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm rounded-lg shadow-lg">
+                    <CancelCoachingSessionModal
+                        locale={locale}
+                        onClose={() => {
+                        setIsCancelModalOpen(false);
+                        setCancelSessionId(null);
+                        }}
+                        onCancel={() => {
+                        if (cancelSessionId) handleCancel(cancelSessionId);
+                        }}
                     />
                 </div>
             )}

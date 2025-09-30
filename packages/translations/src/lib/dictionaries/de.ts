@@ -391,6 +391,11 @@ export const DE: TDictionary = {
       toBeDefined: 'Wird noch festgelegt',
       toBeDefinedMessage: 'Kontaktiere den Coach mit deiner Verfügbarkeit. Verwende Planungstools wie Doodle, um einen passenden Termin für alle zu finden.',
     },
+    coachingSessionCancelModal: {
+      noText: 'NEIN',
+      yesCancelText: 'Ja, Abbrechen',
+      modalText: 'Möchten Sie diese Coaching-Sitzung wirklich abbrechen?',
+    },
     coachingSessionTracker: {
       minuteText: 'Minuten',
       usedText: 'gebraucht',

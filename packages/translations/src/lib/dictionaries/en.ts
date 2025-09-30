@@ -388,6 +388,11 @@ export const EN: TDictionary = {
       toBeDefined: 'To be defined',
       toBeDefinedMessage: 'Contact the coach with your availability. Use scheduling tools like Doodle to find a time that works for everyone.',
     },
+    coachingSessionCancelModal: {
+      noText: 'No',
+      yesCancelText: 'Yes, Cancel',
+      modalText: 'Are you sure you want to cancel this coaching session?',
+    },
     coachingSessionTracker: {
       minuteText: 'minutes',
       usedText: 'used',

@@ -392,6 +392,11 @@ export const DictionarySchema = z.object({
       toBeDefined: z.string(),
       toBeDefinedMessage: z.string(),
     }),
+    coachingSessionCancelModal: z.object({
+      noText: z.string(),
+      yesCancelText: z.string(),
+      modalText: z.string(),
+    }),
     coachingSessionTracker: z.object({
       minuteText: z.string(),
       usedText: z.string(),
