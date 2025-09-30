@@ -52,7 +52,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.
-      external: ['@maany_shr/e-class-models'],
+      external: ['@maany_shr/e-class-models', '@dream-aim-deliver/e-class-cms-rest'],
       input: Object.fromEntries(
         // https://rollupjs.org/configuration-options/#input
         glob.sync("src/**/*.{ts,tsx}").map((file) => [
