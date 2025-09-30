@@ -47,3 +47,4 @@ export * from './save-professional-profile-view-model';
 export * from './get-professional-profile-view-model';
 export * from './save-personal-profile-view-model';
 export * from './get-personal-profile-view-model';
+export * from './get-course-certificate-data-view-model';
