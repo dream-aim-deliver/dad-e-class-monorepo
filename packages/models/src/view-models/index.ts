@@ -45,3 +45,4 @@ export * from './course-packages-view-model';
 export * from './list-student-interactions-view-model';
 export * from './save-professional-profile-view-model';
 export * from './get-professional-profile-view-model';
+export * from './save-personal-profile-view-model';
