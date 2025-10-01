@@ -52,9 +52,6 @@ export default function AboutPage() {
         <div className="flex flex-col space-y-5 px-30">
             {/* TODO: Add your page content */}
             <h1>{t('title')}</h1>
-
-            {/* TODO: Implement getPlatformLanguage feature */}
-
         </div>
     );
 }
