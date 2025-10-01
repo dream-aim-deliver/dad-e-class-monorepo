@@ -1,5 +1,6 @@
 import { TLocale } from "@maany_shr/e-class-translations";
 import CMSTRPCClientProviders from '../../../../../../../lib/infrastructure/client/trpc/cms-client-provider';
+import { PlatformLocaleProvider } from '../../../../../../../lib/infrastructure/client/context/platform-locale-context';
 
 export default async function PlatformLayout({
     children,
@@ -11,17 +12,19 @@ export default async function PlatformLayout({
     const params = await paramsPromise;
     const platformLocale = params.platform_locale as TLocale;
     const platformSlug = params.platform_slug;
-    
+
     return (
         <div>
-            <CMSTRPCClientProviders
-                platformContext={{
-                    platformSlug,
-                    platformLanguageCode: platformLocale
-                }}
-            >
-            {children}
-            </CMSTRPCClientProviders>
+            <PlatformLocaleProvider platformSlug={platformSlug} platformLocale={platformLocale}>
+                <CMSTRPCClientProviders
+                    platformContext={{
+                        platformSlug,
+                        platformLanguageCode: platformLocale
+                    }}
+                >
+                {children}
+                </CMSTRPCClientProviders>
+            </PlatformLocaleProvider>
         </div>
     );
 }
