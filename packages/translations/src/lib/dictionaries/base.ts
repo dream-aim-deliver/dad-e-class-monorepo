@@ -1317,6 +1317,12 @@ export const DictionarySchema = z.object({
     }),
     userCoursesList: z.object({
       emptyState: z.string(),
+    }),
+    profile: z.object({
+      yourProfile: z.string(),
+    }),
+    aboutPage: z.object({
+      title: z.string(),
     })
   }),
 });
