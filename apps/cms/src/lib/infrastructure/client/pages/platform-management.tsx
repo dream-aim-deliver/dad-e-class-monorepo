@@ -33,10 +33,6 @@ export default function PlatformManagement() {
     // Content locale - the locale for platform content (may differ from app UI locale)
     const contentLocale = useContentLocale();
 
-    console.log('[Platform Management] App locale (UI):', appLocale);
-    console.log('[Platform Management] Platform context:', platformContext);
-    console.log('[Platform Management] Content locale:', contentLocale);
-
     // ========================================
     // TYPE SAFETY DEMONSTRATION
     // ========================================
