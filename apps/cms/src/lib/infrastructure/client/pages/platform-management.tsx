@@ -14,17 +14,28 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useState } from 'react';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
 import { useListCategoriesPresenter } from '../hooks/use-categories-presenter';
+import { usePlatformLocale, useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { useContentLocale } from '../hooks/use-platform-translations';
 
-interface PlatformManagementProps {
-    platformSlug: string;
-    platformLocale: string;
-}
+/**
+ * Platform Management component.
+ * Manages platform-specific content with dual-locale support:
+ * - App locale (UI): For interface elements (buttons, labels, navigation)
+ * - Platform locale (content): For platform-specific content (courses, categories, topics)
+ */
+export default function PlatformManagement() {
+    // App locale - used for UI elements (buttons, labels, etc.)
+    const appLocale = useLocale() as TLocale;
 
-export default function PlatformManagement({
-    platformSlug,
-    platformLocale
-}: PlatformManagementProps) {
-    const locale = useLocale() as TLocale;
+    // Platform context - contains platform-specific information
+    const platformContext = useRequiredPlatformLocale();
+
+    // Content locale - the locale for platform content (may differ from app UI locale)
+    const contentLocale = useContentLocale();
+
+    console.log('[Platform Management] App locale (UI):', appLocale);
+    console.log('[Platform Management] Platform context:', platformContext);
+    console.log('[Platform Management] Content locale:', contentLocale);
 
     // Topics data fetching and presentation
     const [topicsResponse, { refetch: refetchTopics }] = trpc.listTopics.useSuspenseQuery({});
@@ -46,14 +57,14 @@ export default function PlatformManagement({
 
     // Loading state
     if (!topicsViewModel || !categoriesViewModel) {
-        return <DefaultLoading locale={locale} variant="minimal" />;
+        return <DefaultLoading locale={appLocale} variant="minimal" />;
     }
 
     // Error handling for topics
     if (topicsViewModel.mode === 'kaboom') {
         return (
             <DefaultError
-                locale={locale}
+                locale={appLocale}
                 onRetry={() => {
                     refetchTopics();
                 }}
@@ -65,7 +76,7 @@ export default function PlatformManagement({
     if (categoriesViewModel.mode === 'kaboom') {
         return (
             <DefaultError
-                locale={locale}
+                locale={appLocale}
                 onRetry={() => {
                     refetchCategories();
                 }}
@@ -84,21 +95,29 @@ export default function PlatformManagement({
                 <h1 className="text-4xl font-bold mb-2">
                     Platform Management
                 </h1>
-                <div className="flex items-center gap-4 text-lg">
+                <div className="flex items-center gap-4 text-lg flex-wrap">
                     <div className="flex items-center gap-2">
                         <span className="font-semibold">Platform:</span>
                         <Badge
                             variant="primary"
                             className="bg-white/20 text-white"
-                            text={platformSlug}
+                            text={platformContext.platformSlug}
                         />
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="font-semibold">Language:</span>
+                        <span className="font-semibold">Content Language:</span>
                         <Badge
                             variant="primary"
                             className="bg-white/20 text-white"
-                            text={platformLocale.toUpperCase()}
+                            text={contentLocale.toUpperCase()}
+                        />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="font-semibold">UI Language:</span>
+                        <Badge
+                            variant="primary"
+                            className="bg-white/20 text-white"
+                            text={appLocale.toUpperCase()}
                         />
                     </div>
                 </div>

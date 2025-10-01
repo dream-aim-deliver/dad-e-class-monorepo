@@ -27,8 +27,6 @@ export default async function Page({
     //     prefetch(trpc.listCategories.queryOptions({})),
     // ]);
 
-    const platformSlug = params.platform_slug;
-    const platformLocale = params.platform_locale;
     let tab = searchParams.tab;
 
     if (!tab || Array.isArray(tab)) {
@@ -38,10 +36,7 @@ export default async function Page({
     return (
         <HydrateClient>
             <Suspense fallback={<DefaultLoadingWrapper />}>
-                <PlatformManagement
-                    platformSlug={platformSlug}
-                    platformLocale={platformLocale}
-                />
+                <PlatformManagement />
             </Suspense>
         </HydrateClient>
     )
