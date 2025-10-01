@@ -1,3 +1,5 @@
+'use client';
+
 import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import LoadingOverlay from './loading-overlay';
