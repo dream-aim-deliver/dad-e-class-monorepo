@@ -6,6 +6,7 @@ export * from './lib/dictionaries/en';
 export * from './lib/utils/react';
 export * from './lib/utils/dictionary-utils';
 export * from './lib/types/namespace-keys';
+export * from './lib/types/dictionary-utils';
 
 // Type alias for translation namespaces
 export type { TDictionary } from './lib/dictionaries/base';

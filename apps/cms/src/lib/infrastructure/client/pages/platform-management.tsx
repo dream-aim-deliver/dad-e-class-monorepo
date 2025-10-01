@@ -37,6 +37,35 @@ export default function PlatformManagement() {
     console.log('[Platform Management] Platform context:', platformContext);
     console.log('[Platform Management] Content locale:', contentLocale);
 
+    // ========================================
+    // TYPE SAFETY DEMONSTRATION
+    // ========================================
+    // This demonstrates the new type-safe translation utilities!
+    // All of these will have full IntelliSense and compile-time type checking.
+
+    const tCourseCard = useTranslations('components.courseCard');
+    const tNavbar = useTranslations('components.navbar');
+
+    // These keys are fully typed - try autocomplete in your IDE!
+    console.log('[Type Safety Demo] Testing typed translations:', {
+        // Valid keys from courseCard namespace - TypeScript knows these exist!
+        courseCard_createdBy: tCourseCard('createdBy'),
+        courseCard_you: tCourseCard('you'),
+        courseCard_group: tCourseCard('group'),
+        courseCard_manageButton: tCourseCard('manageButton'),
+
+        // Valid keys from navbar namespace
+        navbar_login: tNavbar('login'),
+        navbar_logout: tNavbar('logout'),
+        navbar_workspace: tNavbar('workspace'),
+
+        // UNCOMMENT THE LINES BELOW TO TEST TYPE SAFETY:
+        // These should cause TypeScript compilation errors! ❌
+        // invalidKey: tCourseCard('thisKeyDoesNotExist'),
+        // wrongNamespace: tNavbar('createdBy'), // This key is in courseCard, not navbar!
+    });
+    // ========================================
+
     // Topics data fetching and presentation
     const [topicsResponse, { refetch: refetchTopics }] = trpc.listTopics.useSuspenseQuery({});
     const [topicsViewModel, setTopicsViewModel] = useState<

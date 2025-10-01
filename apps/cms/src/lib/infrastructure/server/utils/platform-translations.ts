@@ -1,38 +1,45 @@
 import 'server-only';
-import { TLocale, TNamespace, getDictionary } from '@maany_shr/e-class-translations';
-import { getTranslations as getNextIntlTranslations } from 'next-intl/server';
+import { TLocale, TNamespace, getDictionary, getScopedMessages, type TDictionary, type ScopedMessages } from '@maany_shr/e-class-translations';
 
 /**
  * Server-side utility to get translations for a specific locale.
  * Useful when you need to access translations for the platform locale
  * in server components.
  *
+ * This implementation uses type-safe message extraction, avoiding the need
+ * for unsafe type casting.
+ *
  * @param locale - The locale to get translations for (platform locale)
  * @param namespace - Optional namespace for scoped translations (e.g., 'components.courseCard')
- * @returns Translation function for the specified locale
+ * @returns Scoped messages object with full type safety
  *
  * @example
  * ```tsx
  * // In a server component within platform route
  * export default async function Page({ params }) {
  *   const resolvedParams = await params;
- *   const t = await getPlatformTranslations(resolvedParams.platform_locale as TLocale, 'components.courseCard');
- *   return <div>{t('title')}</div>;
+ *   const messages = getPlatformTranslations(resolvedParams.platform_locale as TLocale, 'components.courseCard');
+ *   // messages is fully typed! Access messages.createdBy, messages.you, etc.
+ *   return <div>{messages.createdBy}</div>;
  * }
  * ```
  */
-export async function getPlatformTranslations(locale: TLocale, namespace?: TNamespace) {
-    // For now, we'll use the standard next-intl getTranslations
-    // In the future, this could be enhanced to use createTranslator
-    // with the platform-specific locale if it differs from app locale
+export function getPlatformTranslations<N extends TNamespace>(
+    locale: TLocale,
+    namespace?: N
+): ScopedMessages<TDictionary, N> {
+    // Get the full dictionary for the specified locale
+    const dictionary = getDictionary(locale);
 
-    // Get the dictionary for the platform locale
-    const messages = getDictionary(locale);
+    // Extract scoped messages for the namespace (or full dictionary if no namespace)
+    // This is type-safe and returns the correctly typed messages object
+    const messages = namespace
+        ? getScopedMessages<TDictionary, N>(dictionary, namespace)
+        : dictionary;
 
-    // Use next-intl's getTranslations with explicit locale
-    // Note: This requires next-intl to support explicit locale parameter
-    // If not supported, we might need to use createTranslator directly
-    return await getNextIntlTranslations({ locale, messages, namespace } as any);
+    // Return properly typed messages
+    // No need for 'as any' - everything is type-safe!
+    return messages as ScopedMessages<TDictionary, N>;
 }
 
 /**
