@@ -1283,5 +1283,11 @@ export const EN: TDictionary = {
     userCoursesList: {
       emptyState: 'You don’t have any offers yet.',
     },
+    profile: {
+      yourProfile: 'Your profile',
+    },
+    aboutPage: {
+      title: 'About us',
+    },
   },
 };
