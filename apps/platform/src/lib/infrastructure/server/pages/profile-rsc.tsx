@@ -13,10 +13,10 @@ interface ProfileProps {
 }
 
 export default async function ProfileServerComponent(props: ProfileProps) {
-	// Prefetch data for the profile page
+	// TODO: Prefetch data for the profile page
 	// await Promise.all([
-	//	trpc.user.getProfessionalProfile.prefetch(),
-	//	trpc.expertiseTopic.listTopics.prefetch(),
+	//	trpc.getProfessionalProfile.prefetch(),
+	// 	trpc.listTopics.prefetch(),
 	// ]);
 
 	return (

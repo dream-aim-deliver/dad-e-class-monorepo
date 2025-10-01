@@ -1289,5 +1289,12 @@ export const EN: TDictionary = {
     aboutPage: {
       title: 'About us',
     },
+    student: {
+      tabs: {
+        assignments: 'Assignments',
+        interactions: 'Interactions',
+        preCourseAssessment: 'Pre-course Assessment',
+      },
+    },
   },
 };
