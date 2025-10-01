@@ -17,11 +17,6 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@fullcalendar/core": "^6.1.17",
-    "@fullcalendar/daygrid": "^6.1.17",
-    "@fullcalendar/interaction": "^6.1.17",
-    "@fullcalendar/react": "^6.1.17",
-    "@fullcalendar/timegrid": "^6.1.17",
     "@maany_shr/e-class-models": "workspace:*",
     "@maany_shr/e-class-translations": "workspace:*",
     "@mux/mux-player-react": "^3.3.0",
@@ -32,7 +27,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "fuse.js": "^7.1.0",
-    "fullcalendar": "^6.1.17",
     "lucide-react": "^0.473.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",

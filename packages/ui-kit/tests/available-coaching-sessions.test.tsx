@@ -25,31 +25,35 @@ vi.mock('../lib/components/button', () => ({
   ),
 }));
 
-vi.mock(
-  '../lib/components/available-coaching-sessions/drag-drop-session',
-  () => ({
-    DragDropSession: ({
-      title,
-      duration,
-      isMoreThan1Available,
-      isEmpty,
-    }: {
-      title?: string;
-      duration?: string;
-      isMoreThan1Available?: boolean;
-      isEmpty?: 'default' | 'empty';
-    }) => (
-      <div>
-        <span>{title}</span>
-        <span>{duration}</span>
-        <span>
-          {isMoreThan1Available ? 'Multiple Available' : 'Single Available'}
-        </span>
-        <span>{isEmpty}</span>
+vi.mock('../lib/components/available-coaching-sessions/available-coaching-session-card', () => ({
+  AvailableCoachingSessionCard: ({
+    title,
+    time,
+    durationMinutes,
+    numberOfSessions,
+  }: {
+    title?: string;
+    time?: number;
+    durationMinutes?: string;
+    numberOfSessions?: number;
+  }) => (
+    <div className="flex gap-2 p-2 items-center justify-between bg-card-stroke border border-divider rounded-medium w-full">
+      <div className="flex flex-col gap-1 items-start">
+        <p className="text-sm text-text-primary font-bold leading-[100%]">
+          {title}
+        </p>
+        <p className="text-sm text-text-secondary leading-[100%]">
+          {time} {durationMinutes}
+        </p>
       </div>
-    ),
-  }),
-);
+      {numberOfSessions && numberOfSessions > 1 && (
+        <span className="gap-1 inline-flex font-bold transition-colors bg-base-neutral-400 text-text-primary-inverted rounded-small h-[1.5rem] min-w-[2.0625rem] px-0 py-1 items-center justify-center text-sm leading-[100%]" role="badge">
+          <span className="truncate">x{numberOfSessions}</span>
+        </span>
+      )}
+    </div>
+  ),
+}));
 
 describe('AvailableCoachingSessions', () => {
   it('renders the title from dictionary', () => {
@@ -68,10 +72,8 @@ describe('AvailableCoachingSessions', () => {
   it('renders provided coaching session data', () => {
     const customData = [
       {
-        id: '1',
         title: 'Custom Session',
         time: 45,
-        isMoreThan1Available: true,
         numberOfSessions: 2,
       },
     ];
@@ -83,7 +85,7 @@ describe('AvailableCoachingSessions', () => {
         } }      />,
     );
     expect(screen.getByText('Custom Session')).toBeInTheDocument();
-    expect(screen.getByText('Multiple Available')).toBeInTheDocument();
+    expect(screen.getByText('x2')).toBeInTheDocument();
     // Ensure default data is not present
     expect(screen.queryByText('Quick sprint')).not.toBeInTheDocument();
   });
