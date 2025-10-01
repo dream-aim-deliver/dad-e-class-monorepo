@@ -1,5 +1,4 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
 import { cn } from '../../utils/style-utils';
 import {
     TLocale,
@@ -134,7 +133,7 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
                     const isSelected =
                         props.selectedDate &&
                         date.toDateString() ===
-                            props.selectedDate.toDateString();
+                        props.selectedDate.toDateString();
                     const dateKey = formatDateKey(date);
                     const hasCoachAvailability =
                         props.dateEvents?.[dateKey]?.hasCoachAvailability;
@@ -149,7 +148,7 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
                                 `flex flex-col py-2 items-center justify-center text-text-primary aspect-square mx-auto space-y-1 min-w-0`,
                                 !isCurrentMonth && 'text-base-neutral-400',
                                 isSelected &&
-                                    'bg-base-brand-500 text-text-primary-inverted rounded-full',
+                                'bg-base-brand-500 text-text-primary-inverted rounded-full',
                                 props.onDateClick
                                     ? 'cursor-pointer'
                                     : 'cursor-default',
