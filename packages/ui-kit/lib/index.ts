@@ -196,7 +196,6 @@ export * from './components/calendar/calendar-cards';
 export { type CoachingSessionData } from './components/available-coaching-sessions/available-coaching-sessions';
 export { CoachingAvailabilityCard } from './components/available-coaching-sessions/coaching-availability-card';
 export { CoachingSessionList } from './components/coaching-sessions/coaching-session-list';
-export { CoachingSessionCard } from './components/coaching-sessions/coaching-session-card';
 
 export { ReviewModal } from './components/review/review-modal';
 export { CancelCoachingSessionModal } from './components/coaching-sessions/cancel-coaching-session-modal';

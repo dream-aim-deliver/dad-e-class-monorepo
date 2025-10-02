@@ -32,7 +32,7 @@ const CoachingSessionSchema = z.object({
     meetingUrl: z.string().nullable(),
 });
 
-export type TUpcomingCoachingSession = z.infer<typeof CoachingSessionSchema>;
+export type TUpcomingStudentCoachingSession = z.infer<typeof CoachingSessionSchema>;
 
 
 export const ListUpcomingStudentCoachingSessionsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
