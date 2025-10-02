@@ -57,7 +57,6 @@ import { getCoachAvailability } from './procedures/coach-availability';
 import { scheduleCoachingSession } from './procedures/coaching-session';
 import { addAvailability } from './procedures/availability';
 import { listCoachCoachingSessions } from './procedures/coach-coaching-session';
-import { scheduleCoachingSession } from './procedures/schedule-coaching-session';
 import { unscheduleCoachingSession } from './procedures/unschedule-coaching-session';
 import { createNotification } from './procedures/create-notification'; 
 
@@ -117,7 +116,6 @@ export const mockRouter = t.router({
     scheduleCoachingSession,
     addAvailability,
     listCoachCoachingSessions,
-    scheduleCoachingSession,
     unscheduleCoachingSession,
     createNotification
 });
