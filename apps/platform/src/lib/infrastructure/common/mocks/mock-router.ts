@@ -116,7 +116,6 @@ export const mockRouter = t.router({
     listCourseReviews,
     getCoursePackages,
     getCoachAvailability,
-    listUserCourses,
     scheduleCoachingSession,
     addAvailability,
     listStudentCoachingSessions,
