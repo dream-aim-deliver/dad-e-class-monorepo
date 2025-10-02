@@ -79,7 +79,7 @@ const CardTemplate = ({
     status,
     hasReply
 }: {
-    role: Omit<role.TRole, 'visitor' | 'admin'>;
+    role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
     locale: TLocale;
     status: assignment.TAssignmentStatusEnum;
     hasReply: boolean;

@@ -60,6 +60,13 @@ const RULES: TRoleWithResourcePermissions<"course", course.TCourseMetadata, TRes
             update: true,
             delete: true,
         }
+    },
+    superadmin: {
+        course: {
+            read: true,
+            update: true,
+            delete: true,
+        }
     }
 }
 

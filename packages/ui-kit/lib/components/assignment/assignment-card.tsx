@@ -16,7 +16,7 @@ import { LinkEdit, LinkPreview } from '../links';
 export interface AssignmentCardProps
     extends assignment.TAssignmentWithId,
         isLocalAware {
-    role: Omit<role.TRole, 'visitor' | 'admin'>;
+    role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
     onFileDownload: (id: string) => void;
     onFileDelete: (assignmentId: number, fileId: string) => void;
     onLinkDelete: (assignmentId: number, linkId: number) => void;
