@@ -54,10 +54,10 @@ export const RecentActivity: FC<RecentActivityProps> = ({
   const displayedChildren = allChildren.slice(0, maxActivities);
 
   return (
-    <div className={`flex flex-col gap-2 items-center ${className}`}>
+    <div className={`flex flex-col gap-2 items-center ${className || ''}`}>
       {variation === 'Feed' && (
-        <div className="flex w-full items-center justify-between">
-          <p className="text-xl text-base-white font-bold text-left">
+        <div className="flex w-full items-start justify-between gap-2 sm:items-center">
+          <p className="text-xl text-base-white font-bold text-left min-w-0 flex-1">
             {dictionary?.components?.recentActivity?.recentActivity}
           </p>
           {onClickMarkAllAsRead && (
@@ -66,20 +66,22 @@ export const RecentActivity: FC<RecentActivityProps> = ({
               size="medium"
               text={dictionary?.components?.recentActivity?.markAllAsRead}
               hasIconLeft
-              className="text-right p-0"
+              className="text-right p-0 flex-shrink-0 max-w-fit whitespace-nowrap"
               iconLeft={<IconCheckDouble size="6" />}
               onClick={onClickMarkAllAsRead}
             />
           )}
         </div>
       )}
-      <div className="flex p-2 flex-col w-full bg-card-fill border border-card-stroke rounded-medium">
-        {displayedChildren}
+      <div className="flex p-2 flex-col w-full bg-card-fill border border-card-stroke rounded-medium overflow-hidden">
+        <div className="space-y-2">
+          {displayedChildren}
+        </div>
         {allChildren.length > maxActivities && (
           <Button
             text={dictionary?.components?.recentActivity?.viewAll}
             variant="text"
-            className="p-0"
+            className="p-0 mt-2"
             onClick={onClickViewAll}
           />
         )}
