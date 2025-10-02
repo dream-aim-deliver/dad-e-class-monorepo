@@ -52,3 +52,6 @@ export * from './create-course-review-view-model';
 export * from './get-course-status-view-model';
 export * from './coach-availability-view-model';
 export * from './coach-availability-view-model';
+export * from './student-coaching-sessions-list-view-model';
+export * from './create-coaching-session-review-view-model';
+export * from './unschedule-coaching-session-view-model';
