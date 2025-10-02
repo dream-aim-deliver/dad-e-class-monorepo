@@ -1140,7 +1140,29 @@ export const DictionarySchema = z.object({
     teachCourseBanner: z.object({
       placeHolderText: z.string(),
       teachButtonText: z.string(),
-    })
+    }),
+    coachFilterModal: z.object({
+      title: z.string(),
+      nameFilter: z.string(),
+      namePlaceholder: z.string(),
+      ratingFilter: z.string(),
+      min: z.string(),
+      max: z.string(),
+      minimumRatingPlaceholder: z.string(),
+      maximumRatingPlaceholder: z.string(),
+      languageFilter: z.string(),
+      skillsFilter: z.string(),
+      sessionCountFilter: z.string(),
+      minimumSessionCountPlaceholder: z.string(),
+      maximumSessionCountPlaceholder: z.string(),
+      resetFilters: z.string(),
+      applyFilters: z.string(),
+    }),
+    courseCoachCard: z.object({
+      viewProfile: z.string(),
+      removeCourse: z.string(),
+      sortBy: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({
