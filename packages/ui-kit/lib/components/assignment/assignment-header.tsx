@@ -7,7 +7,7 @@ import { IconGroup } from "../icons/icon-group";
 import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
 
 export interface AssignmentHeaderProps extends Omit<assignment.TAssignmentWithId, 'replies'>, isLocalAware {
-    role: Omit<role.TRole, 'visitor' | 'admin'>;
+    role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
     onClickCourse: () => void;
     onClickUser: () => void;
     onClickGroup: () => void;

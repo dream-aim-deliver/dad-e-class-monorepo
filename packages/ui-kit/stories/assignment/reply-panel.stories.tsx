@@ -104,7 +104,7 @@ const simulateFileUpload = async (
 // Main Render Logic
 const ReplyPanelRender: React.FC<{
     locale: 'en' | 'de';
-    role: Omit<role.TRole, 'visitor' | 'admin'>;
+    role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
 }> = ({ locale, role }) => {
     const sender = role === 'coach' ? mockSenderCoach : mockSenderStudent;
 

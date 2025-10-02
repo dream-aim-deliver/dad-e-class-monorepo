@@ -15,7 +15,7 @@ import { LinkEdit, LinkPreview } from '../links';
 export interface AssignmentModalProps
     extends Omit<assignment.TAssignmentWithId, 'replies'>,
         isLocalAware {
-    role: Omit<role.TRole, 'visitor' | 'admin'>;
+    role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
     linkEditIndex: number;
     children: React.ReactNode;
     onFileDownload: (id: string) => void;

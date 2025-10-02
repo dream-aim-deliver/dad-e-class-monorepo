@@ -55,6 +55,13 @@ const RULES: TRoleWithResourcePermissions<"profile", profile.TProfiles, TResourc
             update: true,
             delete: true,
         }
+    },
+    superadmin: {
+        profile: {
+            read: true,
+            update: true,
+            delete: true,
+        }
     }
 }
 

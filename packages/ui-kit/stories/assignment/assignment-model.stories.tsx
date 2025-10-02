@@ -66,7 +66,7 @@ type Story = StoryObj<typeof AssignmentModal>;
 // Template Component
 const ModalTemplate: FC<{
     locale: 'en' | 'de';
-    role: Omit<role.TRole, 'visitor' | 'admin'>;
+    role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
     withReplies?: boolean;
 }> = ({ locale, role, withReplies }) => {
     const sender = role === 'coach' ? mockCoach : mockStudent;

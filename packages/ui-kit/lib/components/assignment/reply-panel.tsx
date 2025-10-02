@@ -11,7 +11,7 @@ import { LinkEdit, LinkPreview } from "../links";
 import { IconPlus } from "../icons/icon-plus";
 
 export interface ReplyPanelProps extends isLocalAware {
-    role: Omit<role.TRole, 'visitor' | 'admin'>;
+    role: Omit<role.TRole, 'visitor' | 'admin' | 'superadmin'>;
     comment: string;
     linkEditIndex: number;
     files: fileMetadata.TFileMetadata[];

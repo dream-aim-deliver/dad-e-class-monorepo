@@ -55,7 +55,7 @@ export default async function middleware(req: NextRequest) {
             console.log('[Middleware Debug] userRoles type:', typeof userRoles);
             console.log('[Middleware Debug] userRoles isArray:', Array.isArray(userRoles));
 
-            const isAdmin = userRoles.includes('admin');
+            const isAdmin = userRoles.includes('admin') || userRoles.includes('superadmin');
             console.log('[Middleware Debug] isAdmin:', isAdmin);
 
             if (!isAdmin) {
