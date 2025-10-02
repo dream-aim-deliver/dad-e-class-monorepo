@@ -60,3 +60,7 @@ export * from './get-coach-availability-usecase-models';
 export * from './schedule-coaching-session-usecase-models';
 
 export * from './add-availability-usecase-models';
+
+export * from './list-student-coaching-sessions-usecase-models';
+export * from './create-coaching-session-review-usecase-models';
+export * from './unschedule-coaching-session-usecase-models';
