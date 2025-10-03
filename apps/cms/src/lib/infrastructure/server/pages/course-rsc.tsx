@@ -133,30 +133,31 @@ async function prefetchIntroductionData(
     slug: string,
     currentRole: string,
 ): Promise<void> {
+    const trpc = getServerTRPC();
     const promises = [
-        // prefetch(
-        //     trpc.getEnrolledCourseDetails.queryOptions({
-        //         courseSlug: slug,
-        //     }),
-        // ),
+        prefetch(
+            trpc.getEnrolledCourseDetails.queryOptions({
+                courseSlug: slug,
+            }),
+        ),
     ];
 
-    // if (currentRole === 'student') {
-    //     promises.push(
-    //         prefetchMock(
-    //             trpcMock.getStudentProgress.queryOptions({
-    //                 courseSlug: slug,
-    //             }),
-    //         ),
-    //         prefetchMock(
-    //             trpcMock.listIncludedCoachingSessions.queryOptions({
-    //                 courseSlug: slug,
-    //             }),
-    //         ),
-    //     );
-    // }
+    if (currentRole === 'student') {
+        promises.push(
+            prefetchMock(
+                trpcMock.getStudentProgress.queryOptions({
+                    courseSlug: slug,
+                }),
+            ),
+            prefetchMock(
+                trpcMock.listIncludedCoachingSessions.queryOptions({
+                    courseSlug: slug,
+                }),
+            ),
+        );
+    }
 
-    await Promise.all([]);
+    await Promise.all(promises);
 }
 
 function renderEnrolledCourse({

@@ -2,17 +2,15 @@
 // TSK: TSK-2
 // Features: getPlatformLanguage
 
-import { HydrateClient } from '../config/trpc/cms-server';
+import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { Suspense } from 'react';
 import AboutPage from '../../../../lib/infrastructure/client/pages/about-page';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 
 export default async function AboutPageServerComponent() {
-    // TODO: Add TRPC prefetching for your page data
-    // Based on discovered patterns in this project:
-    // await Promise.all([
-    //     prefetch(trpc.getPlatformLanguage.queryOptions({})),
-    // ]);
+    await Promise.all([
+        prefetch(trpc.getPlatformLanguage.queryOptions({})),
+    ]);
 
     return (
         <>
