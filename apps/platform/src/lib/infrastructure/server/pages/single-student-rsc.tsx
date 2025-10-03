@@ -6,7 +6,7 @@ import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
 import getSession from '../config/auth/get-session';
 import SingleStudent from '../../client/pages/student/single-student';
-import { HydrateClient } from '../config/trpc/cms-server';
+import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 interface SingleStudentServerComponentProps {
@@ -38,11 +38,9 @@ export default async function SingleStudentServerComponent({
         throw new Error('Access denied. Only coaches and admins can access student details.');
     }
 
-    // TODO: Add TRPC prefetching for student data
-    // Based on discovered patterns in this project:
-    // await Promise.all([
-    //     prefetch(trpc.listStudentInteractions.queryOptions({ studentSlug: slug })),
-    // ]);
+    await Promise.all([
+        prefetch(trpc.listStudentInteractions.queryOptions({ studentId, courseSlug })),
+    ]);
 
     return (
         <>

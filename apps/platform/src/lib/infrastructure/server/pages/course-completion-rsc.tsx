@@ -2,7 +2,7 @@
 // TSK: TSK-3
 // Features: createCourseReview, getCourseCertificateData, downloadCertificate, getCourseStatus
 
-import { HydrateClient } from '../config/trpc/cms-server';
+import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { Suspense } from 'react';
 import CourseCompletion from '../../client/pages/course-completion';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
@@ -14,12 +14,10 @@ interface CourseCompletionServerComponentProps {
 export default async function CourseCompletionServerComponent(
     props: CourseCompletionServerComponentProps,
 ) {
-    // TODO: Add TRPC prefetching for course completion data
-    // Based on discovered patterns in this project:
-    // await Promise.all([
-    //     prefetch(trpc.getCourseStatus.queryOptions({ courseSlug: props.slug })),
-    //     prefetch(trpc.getCourseCertificateData.queryOptions({ courseSlug: props.slug })),
-    // ]);
+    await Promise.all([
+        prefetch(trpc.getCourseStatus.queryOptions({ courseSlug: props.slug })),
+        prefetch(trpc.getCourseCertificateData.queryOptions({ courseSlug: props.slug })),
+    ]);
 
     return (
         <>

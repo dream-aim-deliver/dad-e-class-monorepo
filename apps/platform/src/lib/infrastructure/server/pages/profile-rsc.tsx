@@ -3,7 +3,7 @@
 // Features: listTopics, getProfessionalProfile, saveProfessionalProfile
 // Route: /workspace/profile
 
-import { HydrateClient, trpc } from '../config/trpc/cms-server';
+import { HydrateClient, trpc, prefetch } from '../config/trpc/cms-server';
 import { Suspense } from 'react';
 import { DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import Profile from '../../client/pages/profile';
@@ -13,11 +13,10 @@ interface ProfileProps {
 }
 
 export default async function ProfileServerComponent(props: ProfileProps) {
-	// TODO: Prefetch data for the profile page
-	// await Promise.all([
-	//	trpc.getProfessionalProfile.prefetch(),
-	// 	trpc.listTopics.prefetch(),
-	// ]);
+	await Promise.all([
+		prefetch(trpc.getProfessionalProfile.queryOptions({})),
+		prefetch(trpc.listTopics.queryOptions({})),
+	]);
 
 	return (
 		<>
