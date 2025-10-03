@@ -3,7 +3,7 @@ import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
 import CoachStudents from '../../../client/pages/workspace/coach-students';
-import { HydrateClient, prefetch, getServerTRPC } from '../../config/trpc/cms-server';
+import { HydrateClient, prefetch, trpc } from '../../config/trpc/server';
 
 export default async function CoachStudentsServerComponent() {
     const session = await getSession();
@@ -20,8 +20,16 @@ export default async function CoachStudentsServerComponent() {
         throw new Error('Access denied. Only coaches and course creators can access this page.');
     }
 
-    // Prefetch removed: trpc.listCoachStudents does not exist on the server proxy.
-    // Data will be fetched on the client-side component instead.
+    await Promise.all([
+        prefetch(
+            trpc.listCoachStudents.queryOptions({
+                pagination: {
+                    page: 1,
+                    pageSize: 20,
+                },
+            }),
+        ),
+    ]);
 
     return (
         <>

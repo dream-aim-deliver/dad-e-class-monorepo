@@ -2,7 +2,7 @@
 import { Suspense } from 'react';
 import PlatformManagement from '../../../../../../../lib/infrastructure/client/pages/platform-management';
 import DefaultLoadingWrapper from '../../../../../../../lib/infrastructure/client/wrappers/default-loading';
-import { HydrateClient, getServerTRPC } from '../../../../../../../lib/infrastructure/server/config/trpc/cms-server';
+import { HydrateClient, getServerTRPC, prefetch } from '../../../../../../../lib/infrastructure/server/config/trpc/cms-server';
 
 export default async function Page({
     params: paramsPromise,
@@ -22,10 +22,10 @@ export default async function Page({
     const trpc = getServerTRPC(params);
 
     // Optional: Prefetch data for better performance
-    // await Promise.all([
-    //     prefetch(trpc.listTopics.queryOptions({})),
-    //     prefetch(trpc.listCategories.queryOptions({})),
-    // ]);
+    await Promise.all([
+        prefetch(trpc.listTopics.queryOptions({})),
+        prefetch(trpc.listCategories.queryOptions({})),
+    ]);
 
     let tab = searchParams.tab;
 

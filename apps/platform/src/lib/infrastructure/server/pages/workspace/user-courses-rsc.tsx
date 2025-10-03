@@ -20,7 +20,7 @@ export default async function UserCoursesServerComponent() {
         throw new Error();
     }
 
-    // await Promise.all([prefetch(trpc.listUserCourses.queryOptions({}))]);
+    await Promise.all([prefetch(trpc.listUserCourses.queryOptions({}))]);
 
     return (
         <>
