@@ -54,7 +54,8 @@ import { getPublicCourseDetails } from './procedures/get-public-course-detail';
 import { listCourseReviews } from './procedures/course-reviews';
 import { getCoursePackages } from './procedures/course-packages';
 import { getCoachAvailability } from './procedures/coach-availability';
-import { scheduleCoachingSession } from './procedures/coaching-session';
+import { scheduleCoachingSession } from './procedures/schedule-coaching-session';
+import { requestCoachingSession } from './procedures/request-coaching-session';
 import { addAvailability } from './procedures/availability';
 import { listStudentCoachingSessions } from './procedures/student-coaching-sessions';
 import { createCoachingSessionReview } from './procedures/create-coaching-session-review';
@@ -63,8 +64,7 @@ import { listUpcomingStudentCoachingSessions } from './procedures/upcoming-stude
 import { listNotifications } from './procedures/list-notifications';
 import { markNotificationsAsRead } from './procedures/mark-notifications-as-read';
 import { listCoachCoachingSessions } from './procedures/coach-coaching-session';
-import { unscheduleCoachingSession } from './procedures/unschedule-coaching-session';
-import { createNotification } from './procedures/create-notification'; 
+import { createNotification } from './procedures/create-notification';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -120,6 +120,7 @@ export const mockRouter = t.router({
     getCoursePackages,
     getCoachAvailability,
     scheduleCoachingSession,
+    requestCoachingSession,
     addAvailability,
     listStudentCoachingSessions,
     createCoachingSessionReview,
@@ -128,7 +129,6 @@ export const mockRouter = t.router({
     listNotifications,
     markNotificationsAsRead,
     listCoachCoachingSessions,
-    unscheduleCoachingSession,
     createNotification
 });
 

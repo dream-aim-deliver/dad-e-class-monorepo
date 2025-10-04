@@ -52,13 +52,13 @@ export const UpcomingScheduledCoachingSessionSchema = BaseCoachingSessionSchema.
     meetingUrl: z.string().nullable(),
 });
 
-export const UpcomingCoachingSessionSchema = z.union([
+export const CoachUpcomingCoachingSessionSchema = z.union([
     UpcomingRequestedCoachingSessionSchema,
     UpcomingScheduledCoachingSessionSchema,
 ]);
-export type TUpcomingCoachingSession = z.infer<typeof UpcomingCoachingSessionSchema>;
+export type TCoachUpcomingCoachingSession = z.infer<typeof CoachUpcomingCoachingSessionSchema>;
 
-export const EndedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
+export const CoachEndedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
     status: z.literal('completed'),
     startTime: z.string().datetime({ offset: true }),
     endTime: z.string().datetime({ offset: true }),
@@ -78,12 +78,12 @@ export const EndedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
         comment: z.string().optional().nullable(),
     }).optional().nullable(),
 });
-export type TEndedCoachingSession = z.infer<typeof EndedCoachingSessionSchema>;
+export type TCoachEndedCoachingSession = z.infer<typeof CoachEndedCoachingSessionSchema>;
 
 export const CoachCoachingSessionSchema = z.discriminatedUnion('status', [
     UpcomingRequestedCoachingSessionSchema,
     UpcomingScheduledCoachingSessionSchema,
-    EndedCoachingSessionSchema,
+    CoachEndedCoachingSessionSchema,
 ]);
 export type TCoachCoachingSession = z.infer<typeof CoachCoachingSessionSchema>;
 
