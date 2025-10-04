@@ -2,7 +2,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
 import CoachingOfferingsPresenter, {
     TCoachCoachingSessionsPresenterUtilities,
-} from '../../common/presenters/coach-coaching-session-preseneter';
+} from '../../common/presenters/coach-coaching-session-presenter';
 
 export function useListCoachCoachingSessionsPresenter(
     setViewModel: (viewModel: viewModels.TCoachCoachingSessionsViewModel) => void,
