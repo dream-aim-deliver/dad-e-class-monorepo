@@ -60,9 +60,9 @@ export const ScheduledCoachingSessionSchema = BaseCoachingSessionSchema.extend({
 export type TScheduledCoachingSession = z.infer<typeof ScheduledCoachingSessionSchema>;
 
 // For backward compatibility, create a union type for upcoming sessions
-export type TUpcomingCoachingSession = TRequestedCoachingSession | TScheduledCoachingSession;
+export type TStudentUpcomingCoachingSession = TRequestedCoachingSession | TScheduledCoachingSession;
 
-export const EndedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
+export const StudentEndedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
     status: z.literal('completed'),
     startTime: z.string().datetime({ offset: true }),
     endTime: z.string().datetime({ offset: true }),
@@ -82,7 +82,7 @@ export const EndedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
         comment: z.string().optional().nullable(),
     }).optional().nullable(),
 });
-export type TEndedCoachingSession = z.infer<typeof EndedCoachingSessionSchema>;
+export type TStudentEndedCoachingSession = z.infer<typeof StudentEndedCoachingSessionSchema>;
 
 export const StudentCoachingSessionSchema = z.discriminatedUnion(
     'status',
@@ -90,7 +90,7 @@ export const StudentCoachingSessionSchema = z.discriminatedUnion(
         AvailableCoachingSessionSchema,
         RequestedCoachingSessionSchema,
         ScheduledCoachingSessionSchema,
-        EndedCoachingSessionSchema
+        StudentEndedCoachingSessionSchema
     ]
 )
 export type TStudentCoachingSession = z.infer<typeof StudentCoachingSessionSchema>;

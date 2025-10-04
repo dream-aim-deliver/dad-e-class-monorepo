@@ -6,9 +6,7 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 
 export const ScheduleCoachingSessionRequestSchema = z.object({
-  sessionId: z.number(),
-  coachUsername: z.string(),
-  startTime: z.string(),
+  coachingSessionId: z.number(),
 });
 
 export type TScheduleCoachingSessionRequest = z.infer<typeof ScheduleCoachingSessionRequestSchema>;
