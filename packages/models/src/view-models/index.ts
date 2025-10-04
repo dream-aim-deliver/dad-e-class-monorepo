@@ -61,5 +61,6 @@ export * from './notifications-view-model';
 
 export * from "./coach-coaching-sessions-view-model";
 export * from './schedule-coaching-session-view-model';
+export * from './request-coaching-session-view-model';
 export * from './unschedule-coaching-session-view-model';
 export * from './create-notification-view-model';

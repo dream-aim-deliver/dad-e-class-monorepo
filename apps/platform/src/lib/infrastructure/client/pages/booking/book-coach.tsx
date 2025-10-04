@@ -165,7 +165,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
         null,
     );
 
-    const scheduleSessionMutation = trpc.scheduleCoachingSession.useMutation();
+    const requestSessionMutation = trpc.requestCoachingSession.useMutation();
 
     const onSubmit = () => {
         if (!newSession) return;
@@ -174,7 +174,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
 
         // TODO: Check if there is availability for the selected time
 
-        scheduleSessionMutation.mutate(
+        requestSessionMutation.mutate(
             {
                 coachUsername,
                 sessionId: newSession.session.id,
@@ -184,7 +184,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                 onSuccess: (data) => {
                     if (!data.success) {
                         // TODO: check error type and show specific message
-                        throw new Error('Failed to schedule session:');
+                        throw new Error('Failed to request session:');
                     }
                     setNewSession(null);
                     refetchCoachAvailability();

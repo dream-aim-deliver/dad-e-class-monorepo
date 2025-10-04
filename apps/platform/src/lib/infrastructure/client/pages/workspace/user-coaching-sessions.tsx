@@ -15,7 +15,7 @@ interface UserCoachingSessionsProps {
 }
 
 // Type guard to check if a session is upcoming/scheduled
-function isUpcomingSession(session: useCaseModels.TUpcomingCoachingSession): session is useCaseModels.TUpcomingCoachingSession {
+function isUpcomingSession(session: useCaseModels.TStudentUpcomingCoachingSession): session is useCaseModels.TStudentUpcomingCoachingSession {
     return session.status === 'scheduled';
 }
 
