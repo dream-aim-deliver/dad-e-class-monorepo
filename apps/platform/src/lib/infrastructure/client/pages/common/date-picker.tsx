@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { IconCalendar, InputField } from '@maany_shr/e-class-ui-kit';
-import MonthlyCalendarPicker from '../../common/monthly-calendar-picker';
+import MonthlyCalendarPicker from './monthly-calendar-picker';
 
 interface DatePickerProps {
     selectedDate?: Date;

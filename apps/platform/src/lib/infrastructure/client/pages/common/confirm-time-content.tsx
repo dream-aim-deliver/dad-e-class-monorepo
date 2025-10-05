@@ -4,7 +4,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { Button, DefaultError, InputField } from '@maany_shr/e-class-ui-kit';
-import DatePicker from '../booking/dialogs/date-picker';
+import DatePicker from './date-picker';
 
 interface ConfirmTimeContentProps {
     startTime?: Date;
@@ -35,9 +35,13 @@ export default function ConfirmTimeContent({
         });
     };
 
-    const [timeValue, setTimeValue] = useState(() => {
+    const [startTimeValue, setStartTimeValue] = useState(() => {
         if (!startTime) return '';
         return getTimeValue(startTime);
+    });
+    const [endTimeValue, setEndTimeValue] = useState(() => {
+        if (!endTime) return '';
+        return getTimeValue(endTime);
     });
     const [hasTimeError, setHasTimeError] = useState(false);
 
@@ -82,13 +86,10 @@ export default function ConfirmTimeContent({
     };
 
     const handleDateChange = (newDate: Date) => {
-        if (!startTime) return;
-
         try {
-            const currentTime = startTime;
             newDate.setHours(
-                currentTime.getHours(),
-                currentTime.getMinutes(),
+                startTime?.getHours() ?? 0,
+                startTime?.getMinutes() ?? 0,
                 0,
                 0,
             );
@@ -142,12 +143,39 @@ export default function ConfirmTimeContent({
             return;
         }
 
-        if (!endTime) return;
+        if (!startTime) return;
+
+        const parsedTime = parseTimeString(newTimeValue);
+
+        if (!parsedTime) {
+            setHasTimeError(true);
+            return;
+        }
+
+        setHasTimeError(false);
+
+        try {
+            const newDate = new Date(startTime);
+            newDate.setHours(parsedTime.hours, parsedTime.minutes, 0, 0);
+            setEndTime(newDate);
+        } catch (error) {
+            setHasTimeError(true);
+        }
+    };
+
+    const submitTime = () => {
+        // TODO: show error of start time not set
+        if (!startTimeValue || !endTimeValue) return;
+        onSubmit();
     };
 
     useEffect(() => {
-        handleStartTimeChange(timeValue);
-    }, [timeValue]);
+        handleStartTimeChange(startTimeValue);
+    }, [startTimeValue]);
+
+    useEffect(() => {
+        handleEndTimeChange(endTimeValue);
+    }, [endTimeValue]);
 
     // TODO: format the button during the submission
     return (
@@ -159,22 +187,35 @@ export default function ConfirmTimeContent({
                     onDateSelect={handleDateChange}
                 />
             </div>
-            <div>
-                <span className="text-sm text-text-secondary">Start Time</span>
-                <InputField
-                    inputText="Time"
-                    value={timeValue}
-                    setValue={setTimeValue}
-                />
-            </div>
-            <div>
-                <span className="text-sm text-text-secondary">End Time</span>
-                <InputField
-                    state={duration !== undefined ? 'disabled' : undefined}
-                    inputText={getTimeValue(endTime)}
-                    setValue={handleEndTimeChange}
-                />
-            </div>
+            {startTime && (
+                <>
+                    <div>
+                        <span className="text-sm text-text-secondary">
+                            Start Time
+                        </span>
+                        <InputField
+                            inputText="Time (12/24h format)"
+                            value={startTimeValue}
+                            setValue={setStartTimeValue}
+                        />
+                    </div>
+                    <div>
+                        <span className="text-sm text-text-secondary">
+                            End Time
+                        </span>
+                        <InputField
+                            state={
+                                duration !== undefined ? 'disabled' : undefined
+                            }
+                            inputText={
+                                duration !== undefined ? getTimeValue(endTime) : "Time (12/24h format)"
+                            }
+                            value={endTimeValue}
+                            setValue={setEndTimeValue}
+                        />
+                    </div>
+                </>
+            )}
             {hasTimeError && (
                 <DefaultError
                     locale={locale}
@@ -185,7 +226,7 @@ export default function ConfirmTimeContent({
             <Button
                 variant="primary"
                 className="w-full"
-                onClick={onSubmit}
+                onClick={submitTime}
                 text="Send request"
                 disabled={hasTimeError}
             />

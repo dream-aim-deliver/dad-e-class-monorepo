@@ -19,6 +19,12 @@ import {
     MonthlyCalendarWrapper,
     WeeklyCalendarWrapper,
 } from '../common/calendar-wrappers';
+import ConfirmTimeContent from '../common/confirm-time-content';
+
+interface NewAvailability {
+    startTime?: Date;
+    endTime?: Date;
+}
 
 export default function UserCalendar() {
     const locale = useLocale() as TLocale;
@@ -33,8 +39,35 @@ export default function UserCalendar() {
     presenter.present(coachAvailabilityResponse, coachAvailabilityViewModel);
 
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [newAvailability, setNewAvailability] = useState<NewAvailability>({
+        startTime: undefined,
+        endTime: undefined,
+    });
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const addAvailabilityMutation = trpc.addAvailability.useMutation();
+
+    const onSubmit = () => {
+        if (!newAvailability.startTime) return;
+        if (!newAvailability.endTime) return;
+        // TODO: Validate that endTime is after startTime
+
+        addAvailabilityMutation.mutate(
+            {
+                startTime: newAvailability.startTime.toISOString(),
+                endTime: newAvailability.endTime.toISOString(),
+            },
+            {
+                onSuccess: () => {
+                    refetchCoachAvailability();
+                    setIsDialogOpen(false);
+                },
+                onError: (error) => {
+                    console.error('Error adding availability:', error);
+                },
+            },
+        );
+    };
 
     if (!coachAvailabilityViewModel) {
         return <DefaultLoading locale={locale} />;
@@ -52,21 +85,39 @@ export default function UserCalendar() {
                 <h2>Your Calendar</h2>
                 <Dialog
                     defaultOpen={false}
-                    open={undefined}
-                    onOpenChange={() => {}}
+                    open={isDialogOpen}
+                    onOpenChange={() => {
+                        setNewAvailability({
+                            startTime: undefined,
+                            endTime: undefined,
+                        });
+                        setIsDialogOpen(!isDialogOpen);
+                    }}
                 >
                     <DialogTrigger asChild>
-                        <Button
-                            variant="primary"
-                            text="Add Availability"
-                        />
+                        <Button variant="primary" text="Add Availability" />
                     </DialogTrigger>
                     <DialogContent
                         showCloseButton
                         closeOnOverlayClick
                         closeOnEscape
                     >
-                        <span>Add Availability</span>
+                        <ConfirmTimeContent
+                            startTime={newAvailability.startTime}
+                            endTime={newAvailability.endTime}
+                            setStartTime={(date: Date) =>
+                                setNewAvailability((prev) =>
+                                    prev ? { ...prev, startTime: date } : prev,
+                                )
+                            }
+                            setEndTime={(date: Date) =>
+                                setNewAvailability((prev) =>
+                                    prev ? { ...prev, endTime: date } : prev,
+                                )
+                            }
+                            isSubmitting={false}
+                            onSubmit={onSubmit}
+                        />
                     </DialogContent>
                 </Dialog>
             </div>
