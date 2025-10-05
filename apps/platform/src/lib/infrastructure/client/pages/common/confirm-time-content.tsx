@@ -14,6 +14,7 @@ interface ConfirmTimeContentProps {
     duration?: number;
     onSubmit: () => void;
     isSubmitting?: boolean;
+    submitError?: string;
 }
 
 export default function ConfirmTimeContent({
@@ -24,6 +25,7 @@ export default function ConfirmTimeContent({
     onSubmit,
     duration,
     isSubmitting = false,
+    submitError,
 }: ConfirmTimeContentProps) {
     const locale = useLocale() as TLocale;
 
@@ -164,8 +166,9 @@ export default function ConfirmTimeContent({
     };
 
     const submitTime = () => {
-        // TODO: show error of start time not set
+        // TODO: show error of start time not set (internal error state)
         if (!startTimeValue || !endTimeValue) return;
+        if (hasTimeError) return;
         onSubmit();
     };
 
@@ -223,12 +226,19 @@ export default function ConfirmTimeContent({
                     description="Invalid time format"
                 />
             )}
+            {submitError && (
+                <DefaultError
+                    locale={locale}
+                    title=""
+                    description={submitError}
+                />
+            )}
             <Button
                 variant="primary"
                 className="w-full"
                 onClick={submitTime}
                 text="Send request"
-                disabled={hasTimeError}
+                disabled={hasTimeError || !startTime || !endTime || isSubmitting}
             />
         </div>
     );

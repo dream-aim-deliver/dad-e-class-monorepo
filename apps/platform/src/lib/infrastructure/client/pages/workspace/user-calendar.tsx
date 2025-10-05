@@ -46,11 +46,25 @@ export default function UserCalendar() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const addAvailabilityMutation = trpc.addAvailability.useMutation();
+    const [addAvailabilityError, setAddAvailabilityError] = useState<
+        string | undefined
+    >(undefined);
 
     const onSubmit = () => {
-        if (!newAvailability.startTime) return;
-        if (!newAvailability.endTime) return;
-        // TODO: Validate that endTime is after startTime
+        if (!newAvailability.startTime || !newAvailability.endTime) {
+            setAddAvailabilityError('Please select both start and end times.');
+            return;
+        }
+        if (newAvailability.startTime >= newAvailability.endTime) {
+            setAddAvailabilityError(
+                'End time must be after start time.',
+            );
+            return;
+        }
+        // TODO: Add validation for minimum duration 
+
+        setAddAvailabilityError(undefined);
+
 
         addAvailabilityMutation.mutate(
             {
@@ -58,12 +72,18 @@ export default function UserCalendar() {
                 endTime: newAvailability.endTime.toISOString(),
             },
             {
-                onSuccess: () => {
-                    refetchCoachAvailability();
-                    setIsDialogOpen(false);
+                onSuccess: (result) => {
+                    if (result.success) {
+                        refetchCoachAvailability();
+                        setIsDialogOpen(false);
+                        setAddAvailabilityError(undefined);
+                    } else {
+                        // TODO: Determine specific error message from result errorType
+                        setAddAvailabilityError("Failed to add availability");
+                    }
                 },
-                onError: (error) => {
-                    console.error('Error adding availability:', error);
+                onError: () => {
+                    setAddAvailabilityError("Failed to add availability");
                 },
             },
         );
@@ -76,8 +96,6 @@ export default function UserCalendar() {
     if (coachAvailabilityViewModel.mode !== 'default') {
         return <DefaultError locale={locale} />;
     }
-
-    // TODO: Integrate add availability functionality
 
     return (
         <div className="flex flex-col gap-4">
@@ -92,6 +110,7 @@ export default function UserCalendar() {
                             endTime: undefined,
                         });
                         setIsDialogOpen(!isDialogOpen);
+                        setAddAvailabilityError(undefined);
                     }}
                 >
                     <DialogTrigger asChild>
@@ -115,8 +134,9 @@ export default function UserCalendar() {
                                     prev ? { ...prev, endTime: date } : prev,
                                 )
                             }
-                            isSubmitting={false}
+                            isSubmitting={addAvailabilityMutation.isPending}
                             onSubmit={onSubmit}
+                            submitError={addAvailabilityError}
                         />
                     </DialogContent>
                 </Dialog>
