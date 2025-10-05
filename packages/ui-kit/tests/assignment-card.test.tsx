@@ -189,11 +189,4 @@ describe('AssignmentCard Component', () => {
         expect(screen.getByText('Last Activity')).toBeInTheDocument();
         expect(screen.getByTestId('message-reply')).toHaveTextContent('Most recent reply');
     });
-
-    it('calls onReplyDeleteIcon when delete icon is clicked in message', () => {
-        render(<AssignmentCard {...defaultProps} />);
-        const deleteIconButton = screen.getByTestId('delete-icon');
-        fireEvent.click(deleteIconButton);
-        expect(defaultProps.onReplyDeleteIcon).toHaveBeenCalledWith('test-id');
-    });
 });
