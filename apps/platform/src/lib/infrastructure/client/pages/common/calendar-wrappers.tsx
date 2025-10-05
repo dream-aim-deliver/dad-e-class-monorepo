@@ -16,7 +16,7 @@ interface WeeklyCalendarWrapperProps {
     coachAvailabilityViewModel:
         | viewModels.TCoachAvailabilityViewModel
         | undefined;
-    setNewSession: React.Dispatch<
+    setNewSession?: React.Dispatch<
         React.SetStateAction<ScheduledOffering | null>
     >;
     currentDate: Date;
@@ -33,11 +33,11 @@ export function WeeklyCalendarWrapper({
 
     const { weeklyEvents } = useComputeWeeklyEvents({
         coachAvailabilityViewModel,
-        onAvailabilityClick: (startTime: Date) => {
+        onNewEvent: setNewSession ? (startTime: Date) => {
             setNewSession({
                 startTime,
             });
-        },
+        } : undefined,
     });
 
     return (
