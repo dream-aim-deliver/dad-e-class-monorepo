@@ -3,29 +3,32 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import React, { useEffect, useState } from 'react';
-import {
-    Button,
-    DefaultError,
-    InputField,
-} from '@maany_shr/e-class-ui-kit';
-import DatePicker from './date-picker';
+import { Button, DefaultError, InputField } from '@maany_shr/e-class-ui-kit';
+import DatePicker from '../booking/dialogs/date-picker';
 
 interface ConfirmTimeContentProps {
-    session: ScheduledOffering;
-    setSession: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
+    startTime?: Date;
+    endTime?: Date;
+    setStartTime: (date: Date) => void;
+    setEndTime: (date: Date) => void;
+    duration?: number;
     onSubmit: () => void;
     isSubmitting?: boolean;
 }
 
 export default function ConfirmTimeContent({
-    session,
-    setSession,
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
     onSubmit,
+    duration,
     isSubmitting = false,
 }: ConfirmTimeContentProps) {
     const locale = useLocale() as TLocale;
 
-    const getTimeValue = (time: Date): string => {
+    const getTimeValue = (time?: Date): string => {
+        if (!time) return '';
         return time.toLocaleTimeString(locale, {
             hour: 'numeric',
             minute: '2-digit',
@@ -33,8 +36,8 @@ export default function ConfirmTimeContent({
     };
 
     const [timeValue, setTimeValue] = useState(() => {
-        if (!session.startTime) return '';
-        return getTimeValue(session.startTime);
+        if (!startTime) return '';
+        return getTimeValue(startTime);
     });
     const [hasTimeError, setHasTimeError] = useState(false);
 
@@ -79,10 +82,10 @@ export default function ConfirmTimeContent({
     };
 
     const handleDateChange = (newDate: Date) => {
-        if (!session.startTime || !session.session?.duration) return;
+        if (!startTime) return;
 
         try {
-            const currentTime = session.startTime;
+            const currentTime = startTime;
             newDate.setHours(
                 currentTime.getHours(),
                 currentTime.getMinutes(),
@@ -91,22 +94,22 @@ export default function ConfirmTimeContent({
             );
 
             const newEndTime = new Date(newDate);
-            newEndTime.setMinutes(
-                newEndTime.getMinutes() + session.session.duration,
-            );
+            if (duration) {
+                newEndTime.setMinutes(newEndTime.getMinutes() + duration);
+                setEndTime(newEndTime);
+            } else if (endTime) {
+                newEndTime.setMinutes(endTime.getMinutes());
+                setEndTime(newEndTime);
+            }
 
-            setSession((prevSession) => ({
-                ...prevSession!,
-                startTime: newDate,
-                endTime: newEndTime,
-            }));
+            setStartTime(newDate);
         } catch (error) {
             // Handle invalid date silently
         }
     };
 
-    const handleTimeChange = (newTimeValue: string) => {
-        if (!session.startTime || !session.session?.duration) return;
+    const handleStartTimeChange = (newTimeValue: string) => {
+        if (!startTime) return;
 
         const parsedTime = parseTimeString(newTimeValue);
 
@@ -118,30 +121,33 @@ export default function ConfirmTimeContent({
         setHasTimeError(false);
 
         try {
-            const newDate = new Date(session.startTime);
+            const newDate = new Date(startTime);
             newDate.setHours(parsedTime.hours, parsedTime.minutes, 0, 0);
 
             const newEndTime = new Date(newDate);
-            newEndTime.setMinutes(
-                newEndTime.getMinutes() + session.session.duration,
-            );
+            if (duration) {
+                newEndTime.setMinutes(newEndTime.getMinutes() + duration);
+                setEndTime(newEndTime);
+            }
 
-            setSession((prevSession) => ({
-                ...prevSession!,
-                startTime: newDate,
-                endTime: newEndTime,
-            }));
+            setStartTime(newDate);
         } catch (error) {
             setHasTimeError(true);
         }
     };
 
-    useEffect(() => {
-        handleTimeChange(timeValue);
-    }, [timeValue]);
+    const handleEndTimeChange = (newTimeValue: string) => {
+        if (duration !== undefined) {
+            // End time is derived from start time + duration; ignore manual changes
+            return;
+        }
 
-    if (!session || !session.session || !session.startTime || !session.endTime)
-        return null;
+        if (!endTime) return;
+    };
+
+    useEffect(() => {
+        handleStartTimeChange(timeValue);
+    }, [timeValue]);
 
     // TODO: format the button during the submission
     return (
@@ -149,7 +155,7 @@ export default function ConfirmTimeContent({
             <div className="relative">
                 <span className="text-sm text-text-secondary">Date</span>
                 <DatePicker
-                    selectedDate={session.startTime}
+                    selectedDate={startTime}
                     onDateSelect={handleDateChange}
                 />
             </div>
@@ -164,11 +170,9 @@ export default function ConfirmTimeContent({
             <div>
                 <span className="text-sm text-text-secondary">End Time</span>
                 <InputField
-                    state="disabled"
-                    inputText={getTimeValue(session.endTime)}
-                    setValue={() => {
-                        // Can't be edited directly
-                    }}
+                    state={duration !== undefined ? 'disabled' : undefined}
+                    inputText={getTimeValue(endTime)}
+                    setValue={handleEndTimeChange}
                 />
             </div>
             {hasTimeError && (
