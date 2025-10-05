@@ -14,39 +14,46 @@ export interface MessageProps extends isLocalAware {
 
 /**
  * Renders a single assignment reply message in a chat/conversation style, showing sender,
- * date/time, comment, any attached files and resource links, along with in-place editing of links.
+ * date/time, comment, and any attached files and resource links.
  *
- * This is a presentational component; all state and callback handlers (file actions, link edit, etc) are controlled by the parent.
+ * This is a presentational (read-only) component that displays a reply from an assignment conversation thread.
+ * Files and links are nested within the reply object and displayed without editing capabilities.
  * Styling of the message bubble changes based on which user sent the message.
  *
- * @param reply The assignment reply/message to display.
- * @param linkEditIndex The (zero-based) index of the reply's resource links currently being edited.
- * @param onFileDownload Callback to download a file (from the resource list).
- * @param onFileDelete Callback to delete or cancel a file upload.
- * @param onLinkDelete Callback to delete a resource link.
- * @param onChange Callback to update files, links or change link editing mode.
- * @param onImageChange Callback to update the Link image.
- * @param onDeleteIcon Callback to delete the Link icon.
+ * @param reply The assignment reply/message to display. Can be one of three types:
+ *   - 'text': Simple text comment
+ *   - 'resources': Comment with attached files and/or links (nested in reply.files, reply.links)
+ *   - 'passed': Coach marking assignment as passed
+ * @param onFileDownload Callback to download a file from the reply's resource list.
  * @param locale The locale string for i18n/localization.
  *
  * @example
+ * // Text reply
+ * <Message
+ *   reply={{
+ *     type: 'text',
+ *     comment: 'Great work!',
+ *     sender: { name: 'Coach', isCurrentUser: false, role: 'coach', ... },
+ *     timestamp: 1640000000,
+ *     replyId: 5,
+ *   }}
+ *   onFileDownload={handleFileDownload}
+ *   locale="en"
+ * />
+ *
+ * @example
+ * // Resources reply with nested files and links
  * <Message
  *   reply={{
  *     type: 'resources',
  *     comment: 'See the attached files',
- *     files: [{ ... }],
- *     links: [{ title: 'Ref', url: 'https://...' }],
- *     sender: { name: 'Alice', isCurrentUser: true, image: '...' },
- *     timestamp: '2023-12-20T10:30:00Z',
- *     replyId: 5,
+ *     files: [{ id: '1', name: 'doc.pdf', url: 'https://...', ... }],
+ *     links: [{ linkId: 1, title: 'Reference', url: 'https://...' }],
+ *     sender: { name: 'Alice', isCurrentUser: true, role: 'student', ... },
+ *     timestamp: 1640000000,
+ *     replyId: 6,
  *   }}
- *   linkEditIndex={-1}
  *   onFileDownload={handleFileDownload}
- *   onFileDelete={handleFileDelete}
- *   onLinkDelete={handleLinkDelete}
- *   onChange={handleMessageChange}
- *   onImageChange={handleImageChange}
- *   onDeleteIcon={handleDeleteIcon}
  *   locale="en"
  * />
  */
@@ -134,14 +141,14 @@ export const Message: FC<MessageProps> = ({
                     }
                     style="success"
                 />
-            ) : (
+            ) : reply.type === 'resources' ? (
                 <div className="flex flex-col gap-2">
                     <p className="text-sm text-text-primary leading-[150%]">
                         {reply.comment}
                     </p>
                     {getResources()}
                 </div>
-            )}
+            ) : null}
         </div>
     );
 

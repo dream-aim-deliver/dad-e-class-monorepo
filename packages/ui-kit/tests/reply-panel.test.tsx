@@ -101,6 +101,7 @@ const defaultProps = {
     onClickAddLink: vi.fn(),
     onImageChange: vi.fn(),
     onClickSendMessage: vi.fn(),
+    onClickMarkAsPassed: vi.fn(),
     onDeleteIcon: vi.fn(),
     locale: 'en' as TLocale,
 };
@@ -143,40 +144,16 @@ describe('ReplyPanel Component', () => {
         expect(defaultProps.onFilesChange).toHaveBeenCalled();
     });
 
-    it('calls onClickSendMessage with "resources" if there are files/links', () => {
+    it('calls onClickSendMessage when send button is clicked', () => {
         render(<ReplyPanel {...defaultProps} />);
         fireEvent.click(screen.getByText('Send Message'));
-        expect(defaultProps.onClickSendMessage).toHaveBeenCalledWith(
-            expect.objectContaining({
-                type: 'resources',
-                comment: defaultProps.comment,
-                files: defaultProps.files,
-                links: defaultProps.links,
-                sender: defaultProps.sender,
-            })
-        );
+        expect(defaultProps.onClickSendMessage).toHaveBeenCalled();
     });
 
-    it('calls onClickSendMessage with "text" if no files and no links', () => {
-        render(<ReplyPanel {...defaultProps} files={[]} links={[]} />);
-        fireEvent.click(screen.getByText('Send Message'));
-        expect(defaultProps.onClickSendMessage).toHaveBeenCalledWith(
-            expect.objectContaining({
-                type: 'text',
-                comment: defaultProps.comment
-            })
-        );
-    });
-
-    it('calls onClickSendMessage with "passed" type for coach mark as passed', () => {
+    it('calls onClickMarkAsPassed when mark as passed button is clicked', () => {
         render(<ReplyPanel {...defaultProps} />);
         fireEvent.click(screen.getByText('Mark as Passed'));
-        expect(defaultProps.onClickSendMessage).toHaveBeenCalledWith(
-            expect.objectContaining({
-                type: 'passed',
-                sender: defaultProps.sender,
-            })
-        );
+        expect(defaultProps.onClickMarkAsPassed).toHaveBeenCalled();
     });
 
     it('calls onClickAddLink when add link button is clicked', () => {
@@ -194,7 +171,7 @@ describe('ReplyPanel Component', () => {
         expect(props.onCreateLink).toHaveBeenCalledWith({ title: 'Edited Link', url: 'https://edited.com', customIcon: undefined, linkId: 2 }, 1);
 
         fireEvent.click(screen.getByTestId('discard-link'));
-        expect(props.onLinkDelete).toHaveBeenCalledWith(2, 1);
+        expect(props.onLinkDelete).toHaveBeenCalledWith(1);
     });
 
     it('calls onClickEditLink when Edit button of LinkPreview is clicked', () => {
@@ -208,6 +185,6 @@ describe('ReplyPanel Component', () => {
         render(<ReplyPanel {...defaultProps} />);
         const deleteButtons = screen.getAllByTestId('delete-link');
         fireEvent.click(deleteButtons[0]);
-        expect(defaultProps.onLinkDelete).toHaveBeenCalledWith(1, 0);
+        expect(defaultProps.onLinkDelete).toHaveBeenCalledWith(0);
     });
 });

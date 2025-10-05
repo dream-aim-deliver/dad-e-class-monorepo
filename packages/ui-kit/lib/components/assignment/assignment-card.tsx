@@ -164,7 +164,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
     const getLatestReply = (replies: assignment.TAssignmentReplyWithId[]) => {
         if (replies.length === 0) return undefined;
         return replies.reduce((latest, current) =>
-            new Date(current.timestamp as string) > new Date(latest.timestamp as string)
+            (current.timestamp ?? 0) > (latest.timestamp ?? 0)
                 ? current
                 : latest,
         );
@@ -189,6 +189,10 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
         >
             <AssignmentHeader
                 title={title}
+                description={description}
+                assignmentId={assignmentId}
+                files={files}
+                links={links}
                 course={course}
                 module={module}
                 lesson={lesson}
@@ -215,13 +219,11 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                               </h6>
                               <Message
                                   reply={latestReply}
-                                  linkEditIndex={replyLinkEditIndex}
-                                  onFileDownload={onFileDownload}
-                                  onFileDelete={onReplyFileDelete}
-                                  onLinkDelete={onReplyLinkDelete}
-                                  onImageChange={onReplyImageChange}
-                                  onDeleteIcon={onReplyDeleteIcon}
-                                  onChange={onReplyChange}
+                                  onFileDownload={(file) => {
+                                      if (file.id) {
+                                          onFileDownload(file.id);
+                                      }
+                                  }}
                                   locale={locale}
                               />
                           </div>
@@ -272,6 +274,7 @@ export const AssignmentCard: FC<AssignmentCardProps> = ({
                                                           title,
                                                           url,
                                                           customIcon,
+                                                          linkId: link.linkId,
                                                       },
                                                       index,
                                                   )

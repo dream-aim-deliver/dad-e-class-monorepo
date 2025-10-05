@@ -83,10 +83,10 @@ export const AssignmentViewProvider: React.FC<AssignmentViewProviderProps> = ({
     mode,
     config,
 }) => {
-    const service =
-        mode === 'preview'
-            ? usePreviewAssignmentView()
-            : useStudyAssignmentView(config);
+    const previewService = usePreviewAssignmentView();
+    const studyService = useStudyAssignmentView(config);
+
+    const service = mode === 'preview' ? previewService : studyService;
 
     return (
         <AssignmentViewContext.Provider value={service}>
