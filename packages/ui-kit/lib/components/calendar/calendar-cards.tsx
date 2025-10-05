@@ -5,7 +5,8 @@ interface AvailabilityCalendarCardProps {
     locale: string;
     start: Date;
     end: Date;
-    onClick?: (startTime: Date) => void;
+    onNewEvent?: (startTime: Date) => void;
+    onClick?: () => void;
 }
 
 export function AvailabilityCalendarCard(props: AvailabilityCalendarCardProps) {
@@ -40,13 +41,14 @@ export function AvailabilityCalendarCard(props: AvailabilityCalendarCardProps) {
 
     return (
         <div
-            className={`h-full w-full rounded-md bg-action-semi-transparent-medium text-action-default font-semibold text-sm overflow-hidden ${props.onClick ? 'cursor-pointer' : ''}`}
+            className={`h-full w-full rounded-md bg-action-semi-transparent-medium text-action-default font-semibold text-sm overflow-hidden ${props.onNewEvent || props.onClick ? 'cursor-pointer' : ''}`}
+            onClick={props.onClick}
         >
             <div className="relative truncate p-2" title={timeRange}>
                 {timeRange}
             </div>
 
-            {props.onClick && (
+            {props.onNewEvent && (
                 <div className="absolute inset-0 z-10">
                     {timeSlots.map((slot, index) => (
                         <div
@@ -57,7 +59,7 @@ export function AvailabilityCalendarCard(props: AvailabilityCalendarCardProps) {
                                 height: `${100 / timeSlots.length}%`,
                             }}
                             title={formatTime(slot.start)}
-                            onClick={() => props.onClick?.(slot.start)}
+                            onClick={() => props.onNewEvent?.(slot.start)}
                         >
                             <span className="invisible group-hover:visible text-action">
                                 <IconPlus />
