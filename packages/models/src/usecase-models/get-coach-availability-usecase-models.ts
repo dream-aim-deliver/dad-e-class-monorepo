@@ -18,6 +18,7 @@ export type TCoachingStatus = z.infer<typeof CoachingStatusSchema>;
 
 export const GetCoachAvailabilitySuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
   availability: z.array(z.object({
+    id: z.number(),
     startTime: z.string().datetime(),
     endTime: z.string().datetime(),
   })),
