@@ -18,46 +18,37 @@ vi.mock('@maany_shr/e-class-translations', () => ({
 }));
 
 vi.mock('../lib/components/drag-and-drop-uploader/file-preview', () => ({
-    FilePreview: ({ uploadResponse, deletion, onDownload, locale, className }: any) => (
+    FilePreview: ({ uploadResponse, onDownload }: any) => (
         <div data-testid={`file-preview-${uploadResponse.id}`}>
             <span>{uploadResponse.name}</span>
             <button data-testid={`download-btn-${uploadResponse.id}`} onClick={onDownload}>Download</button>
-            {deletion?.isAllowed && (
-                <button data-testid={`delete-btn-${uploadResponse.id}`} onClick={deletion.onDelete}>Delete</button>
-            )}
         </div>
     ),
 }));
 
 vi.mock('../lib/components/links', () => ({
-    LinkEdit: ({ initialTitle, initialUrl, onSave, onDiscard }: any) => (
-        <div data-testid="link-edit">
-            <input data-testid="edit-title" defaultValue={initialTitle} />
-            <input data-testid="edit-url" defaultValue={initialUrl} />
-            <button data-testid="save-link" onClick={() => onSave('Edited Title', 'https://edited.com')}>Save</button>
-            <button data-testid="discard-link" onClick={onDiscard}>Discard</button>
-        </div>
-    ),
-    LinkPreview: ({ title, url, onEdit, onDelete }: any) => (
+    LinkPreview: ({ title, url }: any) => (
         <div data-testid="link-preview">
             <span>{title}</span>
             <span>{url}</span>
-            {onEdit && <button data-testid="edit-link" onClick={onEdit}>Edit</button>}
-            {onDelete && <button data-testid="delete-link" onClick={onDelete}>Delete</button>}
         </div>
     ),
 }));
 
 vi.mock('../lib/components/avatar/user-avatar', () => ({
-    UserAvatar: ({ imageUrl, fullName }) => (<div data-testid="user-avatar">{fullName}</div>),
+    UserAvatar: ({ imageUrl, fullName }: any) => (<div data-testid="user-avatar">{fullName}</div>),
+}));
+
+vi.mock('../lib/components/banner', () => ({
+    default: ({ title }: any) => <div data-testid="banner">{title}</div>,
 }));
 
 const mockReply: assignment.TAssignmentReplyWithId = {
     replyId: 123,
     type: 'resources',
     comment: 'See attached resources!',
-    sender: { name: 'Alice', isCurrentUser: true, image: 'http://avatar.url' },
-    timestamp: '2024-06-09T10:37:00Z',
+    sender: { name: 'Alice', isCurrentUser: true, image: 'http://avatar.url', id: '1', role: 'student', email: 'alice@example.com' } as any,
+    timestamp: 1717930620, // Unix timestamp in seconds
     files: [
         {
             id: 'f1',
@@ -76,13 +67,7 @@ const mockReply: assignment.TAssignmentReplyWithId = {
 
 const defaultProps = {
     reply: mockReply,
-    linkEditIndex: -1,
     onFileDownload: vi.fn(),
-    onFileDelete: vi.fn(),
-    onLinkDelete: vi.fn(),
-    onChange: vi.fn(),
-    onImageChange: vi.fn(),
-    onDeleteIcon: vi.fn(),
     locale: 'en' as TLocale,
 };
 
@@ -97,46 +82,32 @@ describe('Message Component', () => {
         expect(screen.getByText('See attached resources!')).toBeInTheDocument();
     });
 
-    it('renders file previews with download and delete', () => {
+    it('renders file previews (read-only)', () => {
         render(<Message {...defaultProps} />);
-        // Checks that FilePreview is rendered with file name
         expect(screen.getByText('file1.pdf')).toBeInTheDocument();
         expect(screen.getByTestId('download-btn-f1')).toBeInTheDocument();
-        expect(screen.getByTestId('delete-btn-f1')).toBeInTheDocument();
     });
 
     it('calls onFileDownload when download clicked', () => {
         render(<Message {...defaultProps} />);
         fireEvent.click(screen.getByTestId('download-btn-f1'));
-        expect(defaultProps.onFileDownload).toHaveBeenCalledWith('f1');
+        expect(defaultProps.onFileDownload).toHaveBeenCalledWith(mockReply.files![0]);
     });
 
-    it('calls onFileDelete when delete clicked', () => {
-        render(<Message {...defaultProps} />);
-        fireEvent.click(screen.getByTestId('delete-btn-f1'));
-        expect(defaultProps.onFileDelete).toHaveBeenCalledWith(123, 'f1');
-    });
-
-    it('renders link previews and calls edit/delete', () => {
+    it('renders link previews (read-only)', () => {
         render(<Message {...defaultProps} />);
         expect(screen.getByText('Resource Link')).toBeInTheDocument();
         expect(screen.getByText('https://resource.com')).toBeInTheDocument();
-
-        fireEvent.click(screen.getByTestId('edit-link'));
-    });
-
-    it('shows LinkEdit when linkEditIndex matches and calls onSave/onDiscard', () => {
-        const props = { ...defaultProps, linkEditIndex: 0 };
-        render(<Message {...props} />);
-        expect(screen.getByTestId('link-edit')).toBeInTheDocument();
-        fireEvent.click(screen.getByTestId('save-link'));
-        expect(props.onChange).toHaveBeenCalled();
-        fireEvent.click(screen.getByTestId('discard-link'));
-        expect(props.onLinkDelete).toHaveBeenCalledWith(123, 1);
     });
 
     it('displays as a passed banner if reply.type="passed"', () => {
-        render(<Message {...defaultProps} reply={{ ...mockReply, type: 'passed' }} />);
+        const passedReply: assignment.TAssignmentReplyWithId = {
+            ...mockReply,
+            type: 'passed',
+            replyId: 456,
+            timestamp: 1717930620,
+        } as any;
+        render(<Message {...defaultProps} reply={passedReply} />);
         expect(screen.getByText('Marked as Passed')).toBeInTheDocument();
     });
 
@@ -156,10 +127,35 @@ describe('Message Component', () => {
         expect(screen.getByTestId('user-avatar')).toHaveTextContent('Bob');
     });
 
-
     it('renders plain text for "text" reply', () => {
-        const reply = { ...mockReply, type: 'text' as const, comment: 'A simple message', files: [], links: [] };
-        render(<Message {...defaultProps} reply={reply} />);
+        const textReply: assignment.TAssignmentReplyWithId = {
+            replyId: 789,
+            type: 'text',
+            comment: 'A simple message',
+            sender: mockReply.sender,
+            timestamp: 1717930620,
+        };
+        render(<Message {...defaultProps} reply={textReply} />);
         expect(screen.getByText('A simple message')).toBeInTheDocument();
+    });
+
+    it('does not show resources section for text reply', () => {
+        const textReply: assignment.TAssignmentReplyWithId = {
+            replyId: 789,
+            type: 'text',
+            comment: 'Just text',
+            sender: mockReply.sender,
+            timestamp: 1717930620,
+        };
+        render(<Message {...defaultProps} reply={textReply} />);
+        expect(screen.queryByTestId('file-preview-f1')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('link-preview')).not.toBeInTheDocument();
+    });
+
+    it('renders resources for resources reply type', () => {
+        render(<Message {...defaultProps} />);
+        expect(screen.getByText('See attached resources!')).toBeInTheDocument();
+        expect(screen.getByTestId('file-preview-f1')).toBeInTheDocument();
+        expect(screen.getByTestId('link-preview')).toBeInTheDocument();
     });
 });
