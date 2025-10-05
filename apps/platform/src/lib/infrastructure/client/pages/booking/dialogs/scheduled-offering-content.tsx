@@ -7,7 +7,7 @@ import {
     Button,
     DefaultLoading,
 } from '@maany_shr/e-class-ui-kit';
-import ConfirmTimeContent from './confirm-time-content';
+import ConfirmTimeContent from '../../common/confirm-time-content';
 import ChooseCoachingSessionContent from './choose-coaching-session-content';
 
 interface ScheduledOfferingContentProps {
@@ -39,8 +39,16 @@ export default function ScheduledOfferingContent({
             )}
             {session.session && session.startTime && session.endTime && (
                 <ConfirmTimeContent
-                    session={session}
-                    setSession={setSession}
+                    startTime={session.startTime}
+                    endTime={session.endTime}
+                    setStartTime={(date: Date) =>
+                        setSession((prev) => (prev ? { ...prev, startTime: date } : prev))
+                    }
+                    setEndTime={(date: Date) =>
+                        setSession((prev) => (prev ? { ...prev, endTime: date } : prev))
+                    }
+                    duration={session.session.duration}
+                    isSubmitting={false}
                     onSubmit={onSubmit}
                 />
             )}

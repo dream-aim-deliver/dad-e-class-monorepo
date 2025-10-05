@@ -6,7 +6,7 @@ const addAvailabilityMock: useCaseModels.TAddAvailabilitySuccessResponse['data']
 
 export const addAvailability = t.procedure
     .input(useCaseModels.AddAvailabilityRequestSchema)
-    .query(
+    .mutation(
         async (): Promise<useCaseModels.TAddAvailabilityUseCaseResponse> => {
             return {
                 success: true,
