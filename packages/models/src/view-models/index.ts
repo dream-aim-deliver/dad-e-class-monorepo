@@ -44,6 +44,7 @@ export * from './assessment-component-view-model';
 
 export * from './course-students-list-view-model';
 export * from './coach-students-view-model';
+export * from './list-coach-student-courses-view-model';
 export * from './course-materials-view-model';
 export * from './student-notes-view-model';
 export * from './lesson-note-view-model';
