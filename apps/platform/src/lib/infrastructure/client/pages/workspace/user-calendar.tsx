@@ -59,7 +59,6 @@ export default function UserCalendar() {
                         <Button
                             variant="primary"
                             text="Add Availability"
-                            onClick={() => {}}
                         />
                     </DialogTrigger>
                     <DialogContent
@@ -83,7 +82,6 @@ export default function UserCalendar() {
                             coachAvailabilityViewModel={
                                 coachAvailabilityViewModel
                             }
-                            setNewSession={() => {}}
                             currentDate={currentDate}
                             setCurrentDate={setCurrentDate}
                         />

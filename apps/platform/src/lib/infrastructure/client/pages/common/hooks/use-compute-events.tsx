@@ -15,11 +15,13 @@ interface UseComputeEventsProps {
 }
 
 interface UseComputeWeeklyEventsProps extends UseComputeEventsProps {
-    onAvailabilityClick: (startTime: Date) => void;
+    onNewEvent?: (startTime: Date) => void;
+    onAvailabilityClick?: () => void;
 }
 
 export function useComputeWeeklyEvents({
     coachAvailabilityViewModel,
+    onNewEvent,
     onAvailabilityClick,
 }: UseComputeWeeklyEventsProps) {
     const locale = useLocale() as TLocale;
@@ -68,6 +70,7 @@ export function useComputeWeeklyEvents({
                         locale={locale}
                         start={new Date(availability.startTime)}
                         end={new Date(availability.endTime)}
+                        onNewEvent={onNewEvent}
                         onClick={onAvailabilityClick}
                     />
                 ),
