@@ -15,13 +15,15 @@ interface CoachStudentInteractionCardProps extends isLocalAware {
   onViewLessonsClick: (moduleId: string, lessonId: string) => void;
   locale: TLocale;
   modules: TListStudentInteractionsSuccess['modules'];
+  courseSlug: string;
 }
 
-function CoachStudentInteractionCard({
+export const  CoachStudentInteractionCard = ({
   modules,
   locale,
   onViewLessonsClick,
-}: CoachStudentInteractionCardProps) {
+  courseSlug,
+}: CoachStudentInteractionCardProps) => {
   const dictionary = getDictionary(locale);
   return (
     <Accordion
@@ -34,7 +36,7 @@ function CoachStudentInteractionCard({
         <AccordionItem
           key={`module-${module.id}`}
           value={`module-${module.id}`}
-          className="bg-card-fill border border-card-stroke px-4 py-6 rounded-medium"
+          className="bg-card-fill border border-divider px-4 py-6 rounded-medium"
         >
           <AccordionTrigger
             value={`module-${module.id}`}
@@ -62,15 +64,14 @@ function CoachStudentInteractionCard({
               </span>
             }
           >
-            <div>course title</div>
+            <h5 className="text-text-primary">{dictionary.components.courseMaterialsAccordion.module} {module.position}: {module.title}</h5>
           </AccordionTrigger>
 
           <AccordionContent value={`module-${module.id}`} className="pt-4 pb-6">
             {/* Nested Lessons Accordion */}
-            <hr className="flex-grow border-t border-divider mb-4" />
+            {/* <hr className="flex-grow border-t border-divider mb-4" /> */}
 
             <div className="pb-2">
-
               <Accordion
                 type="multiple"
                 className="flex flex-col gap-4"
@@ -109,7 +110,7 @@ function CoachStudentInteractionCard({
                     >
                       <div className="flex items-center justify-between gap-4 flex-1">
                         <div className="flex items-center gap-4">
-                          <h5 className="text-text-primary">lesson {lesson.position}: {lesson.title}</h5>
+                          <h5 className="text-text-primary">{dictionary.components.courseMaterialsAccordion.lesson} {lesson.position}: {lesson.title}</h5>
                         </div>
                         <Button
                           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -119,12 +120,12 @@ function CoachStudentInteractionCard({
                           variant='text'
                           text='View Lesson'
                         />
-
                       </div>
                     </AccordionTrigger>
                     <AccordionContent value={`lesson-${lesson.id}`} className="pb-4">
                       {/* Student-Coach Interactions */}
                       <div className="flex flex-col gap-4 mt-4">
+                        <hr className="flex-grow border-t border-divider" />
                         {lesson.textInputs?.length > 0 ? (
                           lesson.textInputs.map((input, index) => (
                             <div
@@ -184,5 +185,3 @@ function CoachStudentInteractionCard({
     </Accordion>
   );
 }
-
-export default CoachStudentInteractionCard;

@@ -7,10 +7,13 @@ import { useMemo } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
+    Breadcrumbs,
     DefaultError,
     Tabs,
+    UserAvatar,
 } from '@maany_shr/e-class-ui-kit';
 import StudentInteractionsTab from './student-interactions-tab';
+import { useRouter } from 'next/navigation';
 
 interface SingleStudentProps {
     slug: string;
@@ -66,7 +69,9 @@ export default function SingleStudent({
     studentId,
     courseSlug,
 }: SingleStudentProps) {
+    const router = useRouter();
     const locale = useLocale() as TLocale;
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
     const defaultTab: string = useMemo(() => {
         if (initialTab) {
@@ -82,8 +87,40 @@ export default function SingleStudent({
 
     return (
         <div className="flex flex-col space-y-4">
-            <div>
-                <h1>Student</h1>
+            <div className='flex flex-col'>
+                <Breadcrumbs
+                    items={[
+                        {
+                            label: breadcrumbsTranslations('home'),
+                            onClick: () => router.push('/'),
+                        },
+                        {
+                            label: breadcrumbsTranslations('workspace'),
+                            onClick: () => {
+                                // TODO: Implement navigation to workspace
+                            },
+                        },
+                        {
+                            label: breadcrumbsTranslations('yourStudents'),
+                            onClick: () => {
+                                // TODO: Implement navigation to your students page
+                            },
+                        },
+                        {
+                            label: 'Student Name',
+                            onClick: () => {
+                                // TODO: Implement navigation to current student page
+                            },
+                        },
+                    ]}
+                />
+                <div className='flex items-center gap-4'>
+                    <UserAvatar
+                        fullName="Student Name"
+                        size="xLarge"
+                    />
+                    <h1>Student</h1>
+                </div>
             </div>
 
             <Tabs.Root defaultTab={defaultTab}>

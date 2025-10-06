@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import CoachStudentInteractionCard from '../lib/components/coach-student-interaction-card';
+import { CoachStudentInteractionCard } from '../lib/components/coach-student-interaction-card';
 import { TListStudentInteractionsSuccess } from 'packages/models/src/view-models';
 
 /**

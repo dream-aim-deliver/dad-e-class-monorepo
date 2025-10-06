@@ -32,7 +32,7 @@ export default async function Page({
         }
 
         const studentIdNum = studentId ? parseInt(studentId, 10) : 0;
-        const courseSlugStr = courseSlug || '';
+        const courseSlugStr = courseSlug || 'new-course';
 
         return <SingleStudentServerComponent slug={slug} locale={locale} tab={tab} studentId={studentIdNum} courseSlug={courseSlugStr} />;
     }
