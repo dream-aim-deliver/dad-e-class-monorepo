@@ -206,3 +206,6 @@ export { ConfirmationModal } from './components/confirmation-modal';
 export { AssignmentModalContent } from './components/assignment/assignment-modal-content';
 export { Message } from './components/assignment/message';
 export { ReplyPanel } from './components/assignment/reply-panel';
+
+export { CoachStudentInteractionCard } from './components/coach-student-interaction-card';
+export { UserAvatar } from './components/avatar/user-avatar';
