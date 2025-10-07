@@ -80,3 +80,4 @@ export * from './request-file-upload-view-model';
 export * from './list-coach-reviews-view-model';
 export * from './get-coach-introduction-view-model';
 export * from './get-coach-profile-access-view-model';
+export * from './list-coach-courses-view-model';
