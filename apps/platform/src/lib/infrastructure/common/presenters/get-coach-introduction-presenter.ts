@@ -1,7 +1,7 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import {
-    GetCoachIntroductionUseCaseResponseSchema,
-    TGetCoachIntroductionUseCaseResponse,
+    GetCoachIntroductionResponseSchema,
+    TGetCoachIntroductionResponse,
     TGetCoachIntroductionErrorResponse,
 } from '@dream-aim-deliver/e-class-cms-rest';
 import {
@@ -15,7 +15,7 @@ export type TGetCoachIntroductionPresenterUtilities = {};
 
 export const GetCoachIntroductionResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        TGetCoachIntroductionUseCaseResponse,
+        TGetCoachIntroductionResponse,
         viewModels.TGetCoachIntroductionViewModel,
         TGetCoachIntroductionPresenterUtilities
     >;
@@ -29,7 +29,7 @@ type TGetCoachIntroductionResponseMiddleware = typeof GetCoachIntroductionRespon
  * Maps success responses to 'default' view mode and errors to appropriate error modes.
  */
 export default class GetCoachIntroductionPresenter extends BasePresenter<
-    TGetCoachIntroductionUseCaseResponse,
+    TGetCoachIntroductionResponse,
     viewModels.TGetCoachIntroductionViewModel,
     TGetCoachIntroductionPresenterUtilities,
     TGetCoachIntroductionResponseMiddleware
@@ -40,7 +40,7 @@ export default class GetCoachIntroductionPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: GetCoachIntroductionUseCaseResponseSchema,
+                responseModel: GetCoachIntroductionResponseSchema,
                 viewModel: viewModels.GetCoachIntroductionViewModelSchema
             },
             middleware: GetCoachIntroductionResponseMiddleware,
@@ -51,7 +51,7 @@ export default class GetCoachIntroductionPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            TGetCoachIntroductionUseCaseResponse,
+            TGetCoachIntroductionResponse,
             { success: true }
         >,
     ): viewModels.TGetCoachIntroductionViewModel {
