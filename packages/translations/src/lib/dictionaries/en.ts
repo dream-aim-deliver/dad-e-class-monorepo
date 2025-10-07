@@ -960,6 +960,9 @@ export const EN: TDictionary = {
       newCourse: 'New Course',
       coachingSessions: 'Coaching Sessions',
       dashboard: 'Dashboard',
+      platforms: 'Platforms',
+      topics: 'Topics',
+      categories: 'Categories',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1172,6 +1175,15 @@ export const EN: TDictionary = {
       viewProfile: 'View profile',
       removeCourse: 'Remove from course',
       sortBy: 'Sort by',
+    },
+    manageCategoryTopicItem: {
+      course: 'course',
+      courses: 'courses',
+      coach: 'coach',
+      coaches: 'coaches',
+      edit: 'Edit',
+      delete: 'Delete',
+      emptyState: 'No items were found.',
     },
   },
   pages: {
@@ -1416,6 +1428,10 @@ export const EN: TDictionary = {
       home: 'Home',
       workspace: 'Workspace',
       coachingSessions: 'Coaching Sessions',
+    },
+    manageTopics: {
+      title: 'Manage Topics (aka Skills)',
+      description: 'Maximum 25 topics for each platform',
     },
   },
 };

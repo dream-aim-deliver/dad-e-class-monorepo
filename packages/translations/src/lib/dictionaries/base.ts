@@ -951,6 +951,9 @@ export const DictionarySchema = z.object({
       newCourse: z.string(),
       coachingSessions: z.string(),
       dashboard: z.string(),
+      platforms: z.string(),
+      topics: z.string(),
+      categories: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1162,6 +1165,15 @@ export const DictionarySchema = z.object({
       viewProfile: z.string(),
       removeCourse: z.string(),
       sortBy: z.string(),
+    }),
+    manageCategoryTopicItem: z.object({
+      course: z.string(),
+      courses: z.string(),
+      coach: z.string(),
+      coaches: z.string(),
+      edit: z.string(),
+      delete: z.string(),
+      emptyState: z.string(),
     }),
   }),
   pages: z.object({
@@ -1452,6 +1464,10 @@ export const DictionarySchema = z.object({
       workspace: z.string(),
       coachingSessions: z.string(),
     }),
+  manageTopics: z.object({
+    title: z.string(),
+    description: z.string(),
+  })
   }),
 });
 

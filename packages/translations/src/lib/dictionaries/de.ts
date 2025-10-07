@@ -964,6 +964,9 @@ export const DE: TDictionary = {
       newCourse: 'Neuer Kurs',
       coachingSessions: 'Coaching-Sitzungen',
       dashboard: 'Dashboard',
+      platforms: 'Plattformen',
+      topics: 'Themen',
+      categories: 'Kategorien',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -1175,6 +1178,15 @@ export const DE: TDictionary = {
       viewProfile: 'Profil ansehen',
       removeCourse: 'Vom Kurs entfernen',
       sortBy: 'Sortieren nach',
+    },
+    manageCategoryTopicItem: {
+      course: 'Kurs',
+      courses: 'Kurse',
+      coach: 'Coach',
+      coaches: 'Coaches',
+      edit: 'Bearbeiten',
+      delete: 'Löschen',
+      emptyState: 'Keine Einträge gefunden.',
     },
   },
   pages: {
@@ -1419,6 +1431,10 @@ export const DE: TDictionary = {
       home: 'Startseite',
       workspace: 'Arbeitsbereich',
       coachingSessions: 'Coaching-Sitzungen',
+    },
+    manageTopics: {
+      title: 'Themen verwalten (aka Fähigkeiten)',
+      description: 'Maximal 25 Themen pro Plattform',
     },
   },
 };
