@@ -14,12 +14,12 @@ export type TRequestFileUploadSuccess = z.infer<typeof RequestFileUploadSuccessS
 
 const RequestFileUploadDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", RequestFileUploadSuccessSchema)
 const RequestFileUploadKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
-const RequestFileUploadNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
+const RequestFileUploadInvalidViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("invalid", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
 
 export const RequestFileUploadViewModelSchemaMap = {
     default: RequestFileUploadDefaultViewModelSchema,
     kaboom: RequestFileUploadKaboomViewModelSchema,
-    notFound: RequestFileUploadNotFoundViewModelSchema,
+    invalid: RequestFileUploadInvalidViewModelSchema,
 };
 export type TRequestFileUploadViewModelSchemaMap = typeof RequestFileUploadViewModelSchemaMap;
 export const RequestFileUploadViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(RequestFileUploadViewModelSchemaMap);
