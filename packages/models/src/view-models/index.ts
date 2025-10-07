@@ -77,3 +77,4 @@ export * from './create-notification-view-model';
 export * from './assignment-view-model';
 
 export * from './request-file-upload-view-model';
+export * from './list-coach-reviews-view-model';
