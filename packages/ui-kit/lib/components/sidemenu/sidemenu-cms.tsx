@@ -1,0 +1,103 @@
+'use client';
+import { FC } from 'react';
+import { IconButton } from '../icon-button';
+import { IconChevronRight } from '../icons/icon-chevron-right';
+import { IconChevronLeft } from '../icons/icon-chevron-left';
+import { cn } from '../../utils/style-utils';
+
+export interface SideMenuCMSProps {
+    platformName: string;
+    platformLogoUrl?: string;
+    children: React.ReactNode;
+    className?: string;
+    isCollapsed?: boolean;
+    onClickToggle?: (isCollapsed: boolean) => void;
+}
+
+/**
+ * A collapsible SideMenu component for CMS that displays platform branding and navigation items.
+ * The menu supports an initial collapsed state and dynamically adjusts its layout accordingly.
+ *
+ * @param platformName The name of the platform to display at the top.
+ * @param platformLogoUrl URL of the platform logo image.
+ * @param children Menu items and sections to render inside the menu.
+ * @param className Optional CSS class for styling the SideMenu container.
+ * @param isCollapsed Optional initial collapsed state of the SideMenu. Defaults to false.
+ * @param onClickToggle Optional callback function to handle toggle button click events.
+ * @param locale The locale for translations.
+ *
+ * @example
+ * <SideMenuCMS
+ *   platformName="Just Do Ad"
+ *   platformLogoUrl="https://example.com/logo.png"
+ *   locale="en"
+ *   children={<div>Menu items here</div>}
+ *   isCollapsed={false}
+ *   onClickToggle={(collapsed) => console.log('Collapsed:', collapsed)}
+ * />
+ */
+
+export const SideMenuCMS: FC<SideMenuCMSProps> = ({
+    platformName,
+    platformLogoUrl,
+    className,
+    isCollapsed = false,
+    children,
+    onClickToggle,
+}) => {
+    return (
+        <div
+            className={cn(
+                'bg-card-fill rounded-medium border-[1px] border-card-stroke flex flex-col gap-4 py-6 items-center relative overflow-hidden transition-all duration-500 ease-in-out',
+                isCollapsed ? 'w-[4rem] px-4 gap-3' : `w-[18rem] px-6`,
+                className,
+            )}
+            data-testid="cms-menu-container"
+        >
+            {/* Platform Branding Section */}
+            <div className={cn('flex flex-col w-full gap-4 h-auto items-start')}>
+                {platformLogoUrl && (
+                    <div className={cn('flex items-center flex-shrink-0')}>
+                        <img
+                            src={platformLogoUrl}
+                            alt={`${platformName} logo`}
+                            className={cn(
+                                'object-contain',
+                                isCollapsed ? 'w-8 h-8' : 'w-12 h-12'
+                            )}
+                        />
+                    </div>
+                )}
+                {!isCollapsed && (
+                    <div className="flex flex-col items-start justify-center min-w-0 flex-1">
+                        <p className="text-text-primary text-md font-bold leading-[150%] truncate w-full">
+                            {platformName}
+                        </p>
+                    </div>
+                )}
+            </div>
+
+            {/* Menu Items */}
+            <div className="flex flex-col items-end gap-2 self-stretch mb-[1.5rem] overflow-y-auto flex-1">
+                {children}
+            </div>
+
+            {/* Collapse Button */}
+            <div
+                className={cn(
+                    'flex w-[2rem] h-[2rem] absolute p-[4] right-[0.5rem] bottom-[0.5rem] items-center',
+                )}
+                data-testid="toggle-container"
+            >
+                <IconButton
+                    icon={
+                        isCollapsed ? <IconChevronRight /> : <IconChevronLeft />
+                    }
+                    styles="text"
+                    size="small"
+                    onClick={() => onClickToggle && onClickToggle(isCollapsed)}
+                />
+            </div>
+        </div>
+    );
+};

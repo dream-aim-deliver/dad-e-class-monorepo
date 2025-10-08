@@ -445,6 +445,11 @@ export const EN: TDictionary = {
       yesCancelText: 'Yes, Cancel',
       modalText: 'Are you sure you want to cancel this coaching session?',
     },
+    deleteConfirmationModal: {
+      noText: 'No',
+      yesDeleteText: 'Yes, Delete',
+      modalText: 'Are you sure you want to delete this item?',
+    },
     coachingSessionTracker: {
       minuteText: 'minutes',
       usedText: 'used',
@@ -678,6 +683,20 @@ export const EN: TDictionary = {
       titleLesson: 'Create lesson',
       descriptionLesson: 'Would you like to start from scratch or clone an existing lesson?',
       you: 'You',
+    },
+    editCategoryTopicModal: {
+      categoryName: 'Category name',
+      topicName: 'Topic name',
+      categoryPlaceholder: 'Enter category name',
+      topicPlaceholder: 'Enter topic name',
+      goBack: 'Go Back',
+      delete: 'Delete',
+      save: 'Save',
+      create: 'Create',
+      createCategoryTitle: 'Create category',
+      createTopicTitle: 'Create topic',
+      editCategoryTitle: 'Edit category',
+      editTopicTitle: 'Edit topic',
     },
     removeModal: {
       coach: 'Coach',
@@ -1432,6 +1451,8 @@ export const EN: TDictionary = {
     manageTopics: {
       title: 'Manage Topics (aka Skills)',
       description: 'Maximum 25 topics for each platform',
+      createTopic: 'New Topic',
+      deleteTopicConfirmation: 'Are you sure you want to delete this topic?',
     },
   },
 };

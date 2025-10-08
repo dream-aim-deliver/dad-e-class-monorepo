@@ -200,7 +200,15 @@ export { ReviewModal } from './components/review/review-modal';
 export { CancelCoachingSessionModal } from './components/coaching-sessions/cancel-coaching-session-modal';
 export { CoachingSessionList } from "./components/coaching-sessions/coaching-session-list"
 export { ConfirmationModal } from './components/confirmation-modal';
+export { DeleteConfirmationModal } from './components/delete-confirmation-modal/delete-confirmation-modal';
 
 export { AssignmentModalContent } from './components/assignment/assignment-modal-content';
 export { Message } from './components/assignment/message';
 export { ReplyPanel } from './components/assignment/reply-panel';
+
+export { SideMenuCMS } from './components/sidemenu/sidemenu-cms';
+export { SideMenuSection } from './components/sidemenu/sidemenu-section';
+export { ManageCategoryTopicItem } from './components/manage-category-topic/manage-category-topic-item';
+export { ManageCategoryTopicList } from './components/manage-category-topic/manage-category-topic-list';
+export { SideMenuItem } from './components/sidemenu/sidemenu-item';
+export { default as CreateEditCategoryTopicModal } from './components/create-modal/create-edit-category-topic-modal';

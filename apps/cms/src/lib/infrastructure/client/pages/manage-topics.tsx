@@ -13,11 +13,24 @@ import {
     DefaultError,
     DefaultLoading,
     DefaultNotFound,
+    ManageCategoryTopicList,
+    ManageCategoryTopicItem,
+    Badge,
+    Button,
+    CreateEditCategoryTopicModal,
+    Dialog,
+    DialogContent,
+    DialogTrigger,
+    useDialog,
+    DeleteConfirmationModal,
 } from '@maany_shr/e-class-ui-kit';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
+import { useCreateTopicPresenter } from '../hooks/use-create-topic-presenter';
+import { useUpdateTopicPresenter } from '../hooks/use-update-topic-presenter';
+import { useDeleteTopicPresenter } from '../hooks/use-delete-topic-presenter';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRouter } from 'next/navigation';
@@ -26,12 +39,221 @@ interface ManageTopicsProps {
     platformSlug: string;
     platformLocale: string;
     platformName: string;
+    topicsWithCourseCount?: Array<{ topicId: number; coursesCount: number }>;
+}
+
+function CreateTopicDialogContent({ onSuccess }: { onSuccess: () => void }) {
+    const locale = useLocale() as TLocale;
+    const { setIsOpen } = useDialog();
+
+    const [createTopicViewModel, setCreateTopicViewModel] = useState<
+        viewModels.TCreateTopicViewModel | undefined
+    >(undefined);
+    const { presenter } = useCreateTopicPresenter(setCreateTopicViewModel);
+
+    const createTopicMutation = trpc.createTopic.useMutation();
+
+    useEffect(() => {
+        if (createTopicMutation.isSuccess && createTopicMutation.data) {
+            // @ts-ignore
+            presenter.present(createTopicMutation.data, createTopicViewModel);
+        }
+    }, [createTopicMutation.isSuccess, createTopicMutation.data, presenter, createTopicViewModel]);
+
+    useEffect(() => {
+        if (createTopicViewModel?.mode === 'default') {
+            onSuccess();
+            setIsOpen(false);
+        }
+    }, [createTopicViewModel, onSuccess, setIsOpen]);
+
+    const handleSave = (name: string) => {
+        // Generate a slug from the name
+        const slug = name
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+
+        createTopicMutation.mutate({
+            name,
+            slug,
+            state: 'draft',
+        });
+    };
+
+    return (
+        <div className="p-6">
+            <CreateEditCategoryTopicModal
+                locale={locale}
+                mode="create"
+                type="topic"
+                onSave={handleSave}
+                onClose={() => setIsOpen(false)}
+            />
+            {createTopicViewModel?.mode === 'invalid' && (
+                <div className="text-red-500 mt-2">
+                    {createTopicViewModel.data.message}
+                </div>
+            )}
+            {createTopicViewModel?.mode === 'kaboom' && (
+                <div className="text-red-500 mt-2">
+                    {createTopicViewModel.data.message}
+                </div>
+            )}
+        </div>
+    );
+}
+
+function EditTopicDialogContent({
+    topic,
+    onSuccess,
+    onDelete,
+}: {
+    topic: { id: number; name: string; slug: string };
+    onSuccess: () => void;
+    onDelete: () => void;
+}) {
+    const locale = useLocale() as TLocale;
+    const { setIsOpen } = useDialog();
+
+    const [updateTopicViewModel, setUpdateTopicViewModel] = useState<
+        viewModels.TUpdateTopicViewModel | undefined
+    >(undefined);
+    const { presenter: updatePresenter } =
+        useUpdateTopicPresenter(setUpdateTopicViewModel);
+
+    const [deleteTopicViewModel, setDeleteTopicViewModel] = useState<
+        viewModels.TDeleteTopicViewModel | undefined
+    >(undefined);
+    const { presenter: deletePresenter } =
+        useDeleteTopicPresenter(setDeleteTopicViewModel);
+
+    const updateTopicMutation = trpc.updateTopic.useMutation();
+    const deleteTopicMutation = trpc.deleteTopic.useMutation();
+
+    useEffect(() => {
+        if (updateTopicMutation.isSuccess && updateTopicMutation.data) {
+            // @ts-ignore
+            updatePresenter.present(updateTopicMutation.data, updateTopicViewModel);
+        }
+    }, [
+        updateTopicMutation.isSuccess,
+        updateTopicMutation.data,
+        updatePresenter,
+        updateTopicViewModel,
+    ]);
+
+    useEffect(() => {
+        if (deleteTopicMutation.isSuccess && deleteTopicMutation.data) {
+            // @ts-ignore
+            deletePresenter.present(deleteTopicMutation.data, deleteTopicViewModel);
+        }
+    }, [
+        deleteTopicMutation.isSuccess,
+        deleteTopicMutation.data,
+        deletePresenter,
+        deleteTopicViewModel,
+    ]);
+
+    useEffect(() => {
+        if (updateTopicViewModel?.mode === 'default') {
+            onSuccess();
+            setIsOpen(false);
+        }
+    }, [updateTopicViewModel, onSuccess, setIsOpen]);
+
+    useEffect(() => {
+        if (deleteTopicViewModel?.mode === 'default') {
+            onDelete();
+            setIsOpen(false);
+        }
+    }, [deleteTopicViewModel, onDelete, setIsOpen]);
+
+    const handleSave = (name: string) => {
+        // Generate a slug from the name
+        const slug = name
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+
+        updateTopicMutation.mutate({
+            topicId: topic.id,
+            name,
+            slug,
+        });
+    };
+
+    const handleDelete = () => {
+        deleteTopicMutation.mutate({
+            topicId: topic.id,
+        });
+    };
+
+    return (
+        <div className="p-6">
+            <CreateEditCategoryTopicModal
+                locale={locale}
+                mode="edit"
+                type="topic"
+                initialValue={topic.name}
+                onSave={handleSave}
+                onDelete={handleDelete}
+                onClose={() => setIsOpen(false)}
+            />
+            {updateTopicViewModel?.mode === 'invalid' && (
+                <div className="text-red-500 mt-2">
+                    {updateTopicViewModel.data.message}
+                </div>
+            )}
+            {updateTopicViewModel?.mode === 'kaboom' && (
+                <div className="text-red-500 mt-2">
+                    {updateTopicViewModel.data.message}
+                </div>
+            )}
+            {deleteTopicViewModel?.mode === 'invalid' && (
+                <div className="text-red-500 mt-2">
+                    {deleteTopicViewModel.data.message}
+                </div>
+            )}
+            {deleteTopicViewModel?.mode === 'kaboom' && (
+                <div className="text-red-500 mt-2">
+                    {deleteTopicViewModel.data.message}
+                </div>
+            )}
+        </div>
+    );
+}
+
+function CreateTopicDialog({ onTopicCreated }: { onTopicCreated: () => void }) {
+    const t = useTranslations('pages.manageTopics');
+
+    return (
+        <Dialog
+            open={undefined}
+            onOpenChange={() => {
+                // This function is called when the dialog is opened or closed
+            }}
+            defaultOpen={false}
+        >
+            <DialogTrigger asChild>
+                <Button text={t('createTopic')} />
+            </DialogTrigger>
+            <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
+                <CreateTopicDialogContent onSuccess={onTopicCreated} />
+            </DialogContent>
+        </Dialog>
+    );
 }
 
 export default function ManageTopics({
     platformSlug,
     platformLocale,
     platformName,
+    topicsWithCourseCount = [],
 }: ManageTopicsProps) {
     // App locale - used for UI elements (buttons, labels, etc.)
     const appLocale = useLocale() as TLocale;
@@ -53,6 +275,20 @@ export default function ManageTopics({
     >(undefined);
 
     const { presenter } = useListTopicsPresenter(setTopicsViewModel);
+
+    // State for edit modal
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedTopic, setSelectedTopic] = useState<{
+        id: number;
+        name: string;
+        slug: string;
+    } | null>(null);
+
+    // State for delete confirmation modal
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [deleteTopicId, setDeleteTopicId] = useState<number | null>(null);
+
+    const deleteTopicMutation = trpc.deleteTopic.useMutation();
 
     // Present the data
     // @ts-ignore
@@ -79,9 +315,57 @@ export default function ManageTopics({
     const topics = topicsViewModel.data.topics;
     const router = useRouter();
 
+    // Handler to open edit modal
+    const handleOpenEditModal = (topic: { id: number; name: string; slug: string }) => {
+        setSelectedTopic(topic);
+        setIsEditModalOpen(true);
+    };
+
+    // Handler to close edit modal
+    const handleCloseEditModal = () => {
+        setIsEditModalOpen(false);
+        setSelectedTopic(null);
+    };
+
+    // Handler after successful edit
+    const handleEditSuccess = () => {
+        refetchTopics();
+        handleCloseEditModal();
+    };
+
+    // Handler to open delete confirmation modal
+    const handleOpenDeleteModal = (topicId: number) => {
+        setDeleteTopicId(topicId);
+        setIsDeleteModalOpen(true);
+    };
+
+    // Handler to close delete confirmation modal
+    const handleCloseDeleteModal = () => {
+        setIsDeleteModalOpen(false);
+        setDeleteTopicId(null);
+    };
+
+    // Handler to confirm deletion
+    const handleConfirmDelete = async () => {
+        if (!deleteTopicId) return;
+
+        try {
+            await deleteTopicMutation.mutateAsync({
+                topicId: deleteTopicId,
+            });
+            // Refresh the topics list
+            refetchTopics();
+        } catch (error) {
+            // Error handling - mutation error is handled by the mutation itself
+            console.error('Failed to delete topic:', error);
+        } finally {
+            handleCloseDeleteModal();
+        }
+    };
+
     const breadcrumbItems = [
         {
-            label: breadcrumbsTranslations('home'),
+            label: breadcrumbsTranslations('platforms'),
             onClick: () => router.push('/'),
         },
         {
@@ -101,10 +385,70 @@ export default function ManageTopics({
     return (
         <div className="flex flex-col space-y-2">
             <Breadcrumbs items={breadcrumbItems} />
-            <div>
-            <h1> {t('title')} </h1>
-            <p className='text-text-primary'> {t('description')} </p>
+            <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
+                <div className="flex flex-row items-center gap-3">
+                    <h1> {t('title')} </h1>
+                    <Badge
+                        variant="info"
+                        size="medium"
+                        text={topics.length.toString()}
+                    />
+                </div>
+                <CreateTopicDialog onTopicCreated={() => refetchTopics()} />
             </div>
+
+            <p className="text-text-primary"> {t('description')} </p>
+
+            <div className="flex flex-col items-start gap-6">
+
+                <ManageCategoryTopicList locale={appLocale}>
+                    {topics.map((topic) => {
+                        const courseCount =
+                            topicsWithCourseCount.find(
+                                (t) => t.topicId === topic.id,
+                            )?.coursesCount || 0;
+
+                        return (
+                            <ManageCategoryTopicItem
+                                key={topic.id}
+                                title={topic.name}
+                                coursesCount={courseCount}
+                                locale={appLocale}
+                                onEdit={() => handleOpenEditModal(topic)}
+                                onDelete={() => handleOpenDeleteModal(topic.id)}
+                            />
+                        );
+                    })}
+                </ManageCategoryTopicList>
+            </div>
+
+            {/* Edit Topic Modal */}
+            {isEditModalOpen && selectedTopic && (
+                <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen} defaultOpen={false}>
+                    <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
+                        <EditTopicDialogContent
+                            topic={selectedTopic}
+                            onSuccess={handleEditSuccess}
+                            onDelete={() => {
+                                handleCloseEditModal();
+                                handleOpenDeleteModal(selectedTopic.id);
+                            }}
+                        />
+                    </DialogContent>
+                </Dialog>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {isDeleteModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm rounded-lg shadow-lg">
+                    <DeleteConfirmationModal
+                        locale={appLocale}
+                        title={t('deleteTopicConfirmation')}
+                        onClose={handleCloseDeleteModal}
+                        onDelete={handleConfirmDelete}
+                    />
+                </div>
+            )}
         </div>
     );
 }
