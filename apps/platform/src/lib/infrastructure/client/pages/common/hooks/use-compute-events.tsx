@@ -1,4 +1,4 @@
-import { viewModels } from '@maany_shr/e-class-models';
+import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
 import {
     AvailabilityCalendarCard,
@@ -16,7 +16,7 @@ interface UseComputeEventsProps {
 
 interface UseComputeWeeklyEventsProps extends UseComputeEventsProps {
     onNewEvent?: (startTime: Date) => void;
-    onAvailabilityClick?: () => void;
+    onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
 }
 
 export function useComputeWeeklyEvents({
@@ -71,7 +71,7 @@ export function useComputeWeeklyEvents({
                         start={new Date(availability.startTime)}
                         end={new Date(availability.endTime)}
                         onNewEvent={onNewEvent}
-                        onClick={onAvailabilityClick}
+                        onClick={() => onAvailabilityClick?.(availability)}
                     />
                 ),
             });

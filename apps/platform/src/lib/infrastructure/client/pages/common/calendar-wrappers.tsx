@@ -1,7 +1,7 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import React, { useMemo, useState } from 'react';
-import { viewModels } from '@maany_shr/e-class-models';
+import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import {
     CoachingAvailabilityCard,
     MonthlyCalendar,
@@ -21,6 +21,7 @@ interface WeeklyCalendarWrapperProps {
     >;
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
+    onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
 }
 
 export function WeeklyCalendarWrapper({
@@ -28,6 +29,7 @@ export function WeeklyCalendarWrapper({
     setNewSession,
     currentDate,
     setCurrentDate,
+    onAvailabilityClick,
 }: WeeklyCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
 
@@ -38,6 +40,7 @@ export function WeeklyCalendarWrapper({
                 startTime,
             });
         } : undefined,
+        onAvailabilityClick,
     });
 
     return (
