@@ -42,11 +42,18 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
     );
 
     const requestSessionMutation = trpc.requestCoachingSession.useMutation();
+    const [submitError, setSubmitError] = useState<string | undefined>(undefined);
 
     const onSubmit = () => {
         if (!newSession) return;
         if (!newSession.session) return;
         if (!newSession.startTime) return;
+
+        // Check if session is scheduled for the past
+        if (newSession.startTime < new Date()) {
+            setSubmitError('Cannot schedule a session in the past.');
+            return;
+        }
 
         // TODO: Check if there is availability for the selected time
 
@@ -60,13 +67,14 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                 onSuccess: (data) => {
                     if (!data.success) {
                         // TODO: check error type and show specific message
-                        throw new Error('Failed to request session:');
+                        setSubmitError('Failed to schedule session. Please try again.');
+                        return;
                     }
                     setNewSession(null);
                     refetchCoachAvailability();
                 },
                 onError: (error) => {
-                    throw new Error('Failed to schedule session:');
+                    setSubmitError('Failed to schedule session. Please try again.');
                 },
             },
         );
@@ -109,6 +117,8 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                         offering={newSession}
                         setOffering={setNewSession}
                         onSubmit={onSubmit}
+                        isSubmitting={requestSessionMutation.isPending}
+                        submitError={submitError}
                     />
                 </DialogContent>
             </Dialog>
