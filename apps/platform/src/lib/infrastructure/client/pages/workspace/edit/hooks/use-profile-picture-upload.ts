@@ -109,8 +109,9 @@ export function useProfilePictureUpload({
 		}
 	};
 
-	const handleUploadComplete = useCallback((file: fileMetadata.TFileMetadataImage) => {
-		setProfilePicture(file);
+	const handleUploadComplete = useCallback((file: fileMetadata.TFileMetadata) => {
+		// Since profile pictures are always images, we can safely cast
+		setProfilePicture(file as fileMetadata.TFileMetadataImage);
 	}, []);
 
 	const handleDelete = (id: string) => {

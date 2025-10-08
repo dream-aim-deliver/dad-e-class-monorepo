@@ -1,32 +1,29 @@
 import { useCaseModels } from '@maany_shr/e-class-models';
 import { t } from '../trpc-setup';
 
-const listLanguagesMock: useCaseModels.TListLanguagesSuccessResponse = {
+const listLanguagesMock: useCaseModels.TListLanguagesUseCaseResponse = {
     success: true,
     data: {
         languages: [
             {
-                languageCode: 'en',
-                language: 'English',
+                code: 'en',
+                name: 'English',
+                state: 'created' as const,
+                id: 1,
+                createdAt: new Date('2020-01-01T00:00:00.000Z'),
+                updatedAt: new Date('2020-01-01T00:00:00.000Z'),
             },
             {
-                languageCode: 'de',
-                language: 'Deutsch',
+                code: 'de',
+                name: 'Deutsch',
+                state: 'created' as const,
+                id: 2,
+                createdAt: new Date('2020-01-01T00:00:00.000Z'),
+                updatedAt: new Date('2020-01-01T00:00:00.000Z'),
             },
         ],
     },
 };
-
-const listLanguagesErrorMock: useCaseModels.TListLanguagesUseCaseErrorResponse =
-    {
-        success: false,
-        data: {
-            errorType: 'UnknownError',
-            message: 'An unknown error occurred while fetching languages.',
-            operation: 'listLanguages',
-            context: {},
-        },
-    };
 
 export const listLanguages = t.procedure
     .input(useCaseModels.ListLanguagesRequestSchema)
