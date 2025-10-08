@@ -194,7 +194,7 @@ export { MonthlyCalendar, formatDateKey } from './components/calendar/monthly-ca
 export { WeeklyCalendar, WeeklyHeader } from './components/calendar/weekly-calendar';
 export * from './components/calendar/calendar-cards';
 export { type CoachingSessionData } from './components/available-coaching-sessions/available-coaching-sessions';
-export { RequestCoachingAvailabilityCard, OwnerCoachingAvailabilityCard } from './components/available-coaching-sessions/coaching-availability-card';
+export { CoachingAvailabilityCard } from './components/available-coaching-sessions/coaching-availability-card';
 
 export { ReviewModal } from './components/review/review-modal';
 export { CancelCoachingSessionModal } from './components/coaching-sessions/cancel-coaching-session-modal';
