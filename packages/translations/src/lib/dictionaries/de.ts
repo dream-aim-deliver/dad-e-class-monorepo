@@ -1007,6 +1007,7 @@ export const DE: TDictionary = {
       aboutPage: 'Über uns Seite',
       coachingOfferings: 'Coaching-Angebote',
       yourStudents: 'Deine Schüler',
+      yourProfile: 'Ihr Profil',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -1472,6 +1473,11 @@ export const DE: TDictionary = {
     },
     profile: {
       yourProfile: 'Dein Profil',
+      personalProfileSaved: 'Persönliches Profil erfolgreich gespeichert',
+      professionalProfileSaved: 'Berufliches Profil erfolgreich gespeichert',
+      failedToSavePersonal: 'Fehler beim Speichern des persönlichen Profils',
+      failedToSaveProfessional: 'Fehler beim Speichern des beruflichen Profils',
+      saving: 'Wird gespeichert...',
     },
     aboutPage: {
       title: 'Über uns',

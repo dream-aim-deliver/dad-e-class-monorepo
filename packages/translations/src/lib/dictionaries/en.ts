@@ -264,7 +264,7 @@ export const EN: TDictionary = {
       password: 'Password',
       changePassword: 'Change Password',
       date: 'Date',
-      checkboxtext1: 'Iâ€™m acting on behalf of a company',
+      checkboxtext1: 'I am acting on behalf of a company',
       companyName: 'Company Name',
       companyNamePlaceholder: 'e.g. Acme',
       companyUID: 'Company UID (VAT) (optional)',
@@ -1003,6 +1003,7 @@ export const EN: TDictionary = {
       aboutPage: 'About Page',
       coachingOfferings: 'Coaching Offerings',
       yourStudents: 'Your students',
+      yourProfile: 'Your Profile',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1469,6 +1470,11 @@ export const EN: TDictionary = {
     },
     profile: {
       yourProfile: 'Your profile',
+      personalProfileSaved: 'Personal profile saved successfully',
+      professionalProfileSaved: 'Professional profile saved successfully',
+      failedToSavePersonal: 'Failed to save personal profile',
+      failedToSaveProfessional: 'Failed to save professional profile',
+      saving: 'Saving...',
     },
     aboutPage: {
       title: 'About us',

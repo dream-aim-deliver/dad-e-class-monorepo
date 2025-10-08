@@ -994,6 +994,7 @@ export const DictionarySchema = z.object({
       aboutPage: z.string(),
       coachingOfferings: z.string(),
       yourStudents: z.string(),
+      yourProfile: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1230,6 +1231,14 @@ export const DictionarySchema = z.object({
     }),
   }),
   pages: z.object({
+    profile: z.object({
+      yourProfile: z.string(),
+      personalProfileSaved: z.string(),
+      professionalProfileSaved: z.string(),
+      failedToSavePersonal: z.string(),
+      failedToSaveProfessional: z.string(),
+      saving: z.string(),
+    }),
     sso: z.object({
       termsAndConditions: z.object({
         title: z.string(),
@@ -1501,9 +1510,6 @@ export const DictionarySchema = z.object({
     }),
     userCoursesList: z.object({
       emptyState: z.string(),
-    }),
-    profile: z.object({
-      yourProfile: z.string(),
     }),
     aboutPage: z.object({
       title: z.string(),

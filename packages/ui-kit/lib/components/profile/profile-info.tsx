@@ -12,9 +12,11 @@ import { language } from '@maany_shr/e-class-models';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 
 type TPersonalProfileAPI = viewModels.TGetPersonalProfileSuccess['profile'];
+type TLanguageFromBackend = { languageCode: string; language: string };
 
 interface ProfileInfoProps extends isLocalAware {
   initialData: TPersonalProfileAPI;
+  availableLanguages: TLanguageFromBackend[];
   onSave?: (profile: TPersonalProfileAPI) => void;
   onFileUpload: (
     fileRequest: fileMetadata.TFileUploadRequest,
@@ -22,6 +24,7 @@ interface ProfileInfoProps extends isLocalAware {
   ) => Promise<fileMetadata.TFileMetadata>;
   profilePictureFile?: fileMetadata.TFileMetadata | null;
   onUploadComplete?: (fileMetadata: fileMetadata.TFileMetadata) => void;
+  onFileDelete?: (id: string) => void;
 }
 
 
@@ -68,11 +71,19 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   onFileUpload,
   profilePictureFile,
   onUploadComplete,
+  onFileDelete,
+  availableLanguages = [],
   locale,
 }) => {
   const [formData, setFormData] = React.useState<TPersonalProfileAPI>(initialData);
 
   const dictionary = getDictionary(locale);
+
+  // Transform backend language format to UI language format
+  const languages: language.TLanguage[] = availableLanguages.map((lang) => ({
+    name: lang.language as 'English' | 'German',
+    code: lang.languageCode,
+  }));
 
   const handleChange = <
     K extends keyof TPersonalProfileAPI,
@@ -130,15 +141,8 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   const handleUploadComplete = (fileMetadata: fileMetadata.TFileMetadata) => {
     // Update form data with the uploaded file metadata
     if (fileMetadata.category === 'image') {
-      // Map the uploaded file to the API's expected structure
-      const avatarImage = {
-        id: fileMetadata.id,
-        name: fileMetadata.name,
-        size: fileMetadata.size,
-        category: 'image' as const,
-        downloadUrl: fileMetadata.url, // Map url to downloadUrl
-      };
-      handleChange('avatarImage', avatarImage);
+      // Use the file metadata directly without transformation
+      handleChange('avatarImage', fileMetadata as any);
     }
 
     // Notify parent component that upload is complete
@@ -147,21 +151,13 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
   const handleFileDelete = (id: string) => {
     handleChange('avatarImage', null);
+    // Notify parent component about deletion
+    onFileDelete?.(id);
   };
 
   const handleSubmit = () => {
     onSave?.(formData);
   };
-  const languages: language.TLanguage[] = [
-    {
-      name: dictionary.components.languageSelector.english as 'English',
-      code: 'ENG',
-    },
-    {
-      name: dictionary.components.languageSelector.german as 'German',
-      code: 'DEU',
-    },
-  ];
 
   return (
     <div className="flex gap-4 items-start p-4 rounded-medium border border-solid bg-card-fill border-card-stroke w-full min-w-[240px]">
