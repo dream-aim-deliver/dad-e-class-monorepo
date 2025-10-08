@@ -17,7 +17,7 @@ export default function DatePicker({
 
     const getCurrentDateValue = (): string => {
         if (!selectedDate) return '';
-        return selectedDate.toISOString().split('T')[0];
+        return selectedDate.toLocaleDateString();
     };
 
     return (
