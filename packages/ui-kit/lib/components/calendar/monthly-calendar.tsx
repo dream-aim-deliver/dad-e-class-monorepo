@@ -113,7 +113,11 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
                 <Button
                     variant="secondary"
                     text={dictionary.components.calendar.today}
-                    onClick={() => setCurrentDate(new Date())}
+                    onClick={() => {
+                        const today = new Date();
+                        setCurrentDate(today);
+                        props.onDateClick?.(today);
+                    }}
                 />
             </div>
             <div className="mt-4 grid grid-cols-7 gap-2 min-w-[320px]">
@@ -133,7 +137,7 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
                     const isSelected =
                         props.selectedDate &&
                         date.toDateString() ===
-                        props.selectedDate.toDateString();
+                            props.selectedDate.toDateString();
                     const dateKey = formatDateKey(date);
                     const hasCoachAvailability =
                         props.dateEvents?.[dateKey]?.hasCoachAvailability;
@@ -148,7 +152,7 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
                                 `flex flex-col py-2 items-center justify-center text-text-primary aspect-square mx-auto space-y-1 min-w-0`,
                                 !isCurrentMonth && 'text-base-neutral-400',
                                 isSelected &&
-                                'bg-base-brand-500 text-text-primary-inverted rounded-full',
+                                    'bg-base-brand-500 text-text-primary-inverted rounded-full',
                                 props.onDateClick
                                     ? 'cursor-pointer'
                                     : 'cursor-default',
