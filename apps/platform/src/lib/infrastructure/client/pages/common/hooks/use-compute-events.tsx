@@ -17,12 +17,14 @@ interface UseComputeEventsProps {
 interface UseComputeWeeklyEventsProps extends UseComputeEventsProps {
     onNewEvent?: (startTime: Date) => void;
     onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
+    onSessionClick?: (sessionId: number) => void;
 }
 
 export function useComputeWeeklyEvents({
     coachAvailabilityViewModel,
     onNewEvent,
     onAvailabilityClick,
+    onSessionClick,
 }: UseComputeWeeklyEventsProps) {
     const locale = useLocale() as TLocale;
 
@@ -52,9 +54,7 @@ export function useComputeWeeklyEvents({
                         start={new Date(session.startTime)}
                         end={new Date(session.endTime)}
                         title={session.coachingOfferingName}
-                        onClick={() => {
-                            // TODO: Implement session click functionality
-                        }}
+                        onClick={() => onSessionClick?.(session.id)}
                     />
                 ),
             });
