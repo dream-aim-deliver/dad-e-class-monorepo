@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { IconCalendar, InputField } from '@maany_shr/e-class-ui-kit';
 import MonthlyCalendarPicker from './monthly-calendar-picker';
 
@@ -14,6 +14,26 @@ export default function DatePicker({
     onDateSelect,
 }: DatePickerProps) {
     const [datePickerOpen, setDatePickerOpen] = useState(false);
+    const datePickerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (
+                datePickerRef.current &&
+                !datePickerRef.current.contains(event.target as Node)
+            ) {
+                setDatePickerOpen(false);
+            }
+        }
+
+        if (datePickerOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [datePickerOpen]);
 
     const getCurrentDateValue = (): string => {
         if (!selectedDate) return '';
@@ -21,7 +41,7 @@ export default function DatePicker({
     };
 
     return (
-        <>
+        <div ref={datePickerRef} className="relative">
             <InputField
                 inputText="Date"
                 value={getCurrentDateValue()}
@@ -51,6 +71,6 @@ export default function DatePicker({
                     />
                 </div>
             )}
-        </>
+        </div>
     );
 }
