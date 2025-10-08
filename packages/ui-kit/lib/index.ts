@@ -216,3 +216,5 @@ export { default as CreateEditCategoryTopicModal } from './components/create-mod
 export { default as CoachingOfferingModal } from './components/coaching-offering-modal';
 export { ManageCoachingOfferingItem } from './components/manage-coaching-offering/manage-coaching-offering-item';
 export { ManageCoachingOfferingList } from './components/manage-coaching-offering/manage-coaching-offering-list';
+export { CoachStudentInteractionCard } from './components/coach-student-interaction-card';
+export { UserAvatar } from './components/avatar/user-avatar';

@@ -1002,6 +1002,7 @@ export const EN: TDictionary = {
       categories: 'Categories',
       aboutPage: 'About Page',
       coachingOfferings: 'Coaching Offerings',
+      yourStudents: 'Your students',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1470,6 +1471,9 @@ export const EN: TDictionary = {
         interactions: 'Interactions',
         preCourseAssessment: 'Pre-course Assessment',
       },
+      studentInteractions: 'Student interactions',
+      noInteractionsYet: 'No interactions yet',
+      course: 'Course',
     },
     studentCoachingSessions: {
       yourCoachingSessions: 'Your coaching sessions',

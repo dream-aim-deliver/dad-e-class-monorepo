@@ -993,6 +993,7 @@ export const DictionarySchema = z.object({
       categories: z.string(),
       aboutPage: z.string(),
       coachingOfferings: z.string(),
+      yourStudents: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1505,6 +1506,9 @@ export const DictionarySchema = z.object({
         interactions: z.string(),
         preCourseAssessment: z.string(),
       }),
+      studentInteractions: z.string(),
+      noInteractionsYet: z.string(),
+      course: z.string(),
     }),
     studentCoachingSessions: z.object({
       yourCoachingSessions: z.string(),
@@ -1529,24 +1533,24 @@ export const DictionarySchema = z.object({
       workspace: z.string(),
       coachingSessions: z.string(),
     }),
-  manageTopics: z.object({
-    title: z.string(),
-    description: z.string(),
-    createTopic: z.string(),
-    deleteTopicConfirmation: z.string(),
-  }),
-  manageCategories: z.object({
-    title: z.string(),
-    description: z.string(),
-    createCategory: z.string(),
-    deleteCategoryConfirmation: z.string(),
-  }),
-  coachingOffering: z.object({
-    title: z.string(),
-    deleteCoachingOffering: z.string(),
-    descriptionDeleteCoaching: z.string(),
-    newCoachingOffering: z.string(),
-  })
+    manageTopics: z.object({
+      title: z.string(),
+      description: z.string(),
+      createTopic: z.string(),
+      deleteTopicConfirmation: z.string(),
+    }),
+    manageCategories: z.object({
+      title: z.string(),
+      description: z.string(),
+      createCategory: z.string(),
+      deleteCategoryConfirmation: z.string(),
+    }),
+    coachingOffering: z.object({
+      title: z.string(),
+      deleteCoachingOffering: z.string(),
+      descriptionDeleteCoaching: z.string(),
+      newCoachingOffering: z.string(),
+    })
   }),
 });
 
