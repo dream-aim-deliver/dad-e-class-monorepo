@@ -3,10 +3,7 @@
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import React, { Suspense } from 'react';
-import {
-    Button,
-    DefaultLoading,
-} from '@maany_shr/e-class-ui-kit';
+import { Button, DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import ConfirmTimeContent from '../../common/confirm-time-content';
 import ChooseCoachingSessionContent from './choose-coaching-session-content';
 
@@ -22,16 +19,22 @@ export default function ScheduledOfferingContent({
     onSubmit,
 }: ScheduledOfferingContentProps) {
     const locale = useLocale() as TLocale;
+    const isSubmitting = false;
 
     if (!session) return null;
 
     return (
         <div className="flex flex-col gap-3">
             <h2>Schedule</h2>
-            {session.session && <div className="bg-card-stroke rounded-md border border-neutral-700 p-4">
-                <span className="text-text-secondary">Session: </span>
-                <span className="font-bold text-text-primary">{session.session.name} ({session.session.duration} minutes)</span>
-            </div>}
+            {session.session && (
+                <div className="bg-card-stroke rounded-md border border-neutral-700 p-4">
+                    <span className="text-text-secondary">Session: </span>
+                    <span className="font-bold text-text-primary">
+                        {session.session.name} ({session.session.duration}{' '}
+                        minutes)
+                    </span>
+                </div>
+            )}
             {!session.session && (
                 <Suspense fallback={<DefaultLoading locale={locale} />}>
                     <ChooseCoachingSessionContent setSession={setSession} />
@@ -42,14 +45,21 @@ export default function ScheduledOfferingContent({
                     startTime={session.startTime}
                     endTime={session.endTime}
                     setStartTime={(date: Date) =>
-                        setSession((prev) => (prev ? { ...prev, startTime: date } : prev))
+                        setSession((prev) =>
+                            prev ? { ...prev, startTime: date } : prev,
+                        )
                     }
                     setEndTime={(date: Date) =>
-                        setSession((prev) => (prev ? { ...prev, endTime: date } : prev))
+                        setSession((prev) =>
+                            prev ? { ...prev, endTime: date } : prev,
+                        )
                     }
                     duration={session.session.duration}
-                    isSubmitting={false}
+                    isSubmitting={isSubmitting}
                     onSubmit={onSubmit}
+                    buttonText={
+                        isSubmitting ? 'Sending request...' : 'Send request'
+                    }
                 />
             )}
             <Button

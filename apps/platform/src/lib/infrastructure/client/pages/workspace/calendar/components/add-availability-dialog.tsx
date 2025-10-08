@@ -56,6 +56,7 @@ export function AddAvailabilityDialog({
                     isSubmitting={isSubmitting}
                     onSubmit={validateAndSubmit}
                     submitError={error}
+                    buttonText={isSubmitting ? 'Adding availability...' : 'Add availability'}
                 />
             </DialogContent>
         </Dialog>
