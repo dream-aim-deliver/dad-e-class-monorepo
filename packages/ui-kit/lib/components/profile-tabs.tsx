@@ -35,7 +35,7 @@ export interface ProfileTabsProps extends isLocalAware {
     abortSignal?: AbortSignal
   ) => Promise<fileMetadata.TFileMetadata>;
   profilePictureFile?: fileMetadata.TFileMetadataImage | null;
-  onProfilePictureUploadComplete?: (file: fileMetadata.TFileMetadataImage) => void;
+  onProfilePictureUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
   onProfilePictureDelete: (id: string) => void;
   curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
   onCurriculumVitaeUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
