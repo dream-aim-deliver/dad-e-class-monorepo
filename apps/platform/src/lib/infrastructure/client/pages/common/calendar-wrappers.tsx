@@ -65,6 +65,7 @@ interface MonthlyCalendarWrapperProps {
         React.SetStateAction<ScheduledOffering | null>
     >;
     onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
+    onSessionClick?: (sessionId: number) => void;
 }
 
 export function MonthlyCalendarWrapper({
@@ -73,6 +74,7 @@ export function MonthlyCalendarWrapper({
     setCurrentDate,
     setNewSession,
     onAvailabilityClick,
+    onSessionClick,
 }: MonthlyCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
     const { monthlyEvents } = useComputeMonthlyEvents({
@@ -165,9 +167,7 @@ export function MonthlyCalendarWrapper({
                             startTime: new Date(session.startTime),
                             endTime: new Date(session.endTime),
                             title: session.coachingOfferingName,
-                            onClick: () => {
-                                // TODO: Implement session click functionality
-                            },
+                            onClick: () => onSessionClick?.(session.id),
                         }))}
                     />
                 ),
