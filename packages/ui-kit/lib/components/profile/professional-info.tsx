@@ -1,8 +1,6 @@
-'use client';
-
-import * as React from 'react';
+"use client";
 import { Button } from '../button';
-import { profile, fileMetadata } from '@maany_shr/e-class-models';
+import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 import { IconButton } from '../icon-button';
 import { TextInput } from '../text-input';
 import { InputField } from '../input-field';
@@ -13,10 +11,13 @@ import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
+import { useState } from 'react';
+
+type TProfessionalProfileAPI = viewModels.TGetProfessionalProfileSuccess['profile'];
 
 interface ProfessionalInfoProps extends isLocalAware {
-  initialData?: profile.TProfessionalProfile;
-  onSave?: (profile: profile.TProfessionalProfile) => void;
+  initialData: TProfessionalProfileAPI ;
+  onSave: (profile: TProfessionalProfileAPI) => void;
   onFileUpload: (
     fileRequest: fileMetadata.TFileUploadRequest,
     abortSignal?: AbortSignal
@@ -71,40 +72,38 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   onUploadComplete,
   locale,
 }) => {
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = useState(false);
   const dictionary = getDictionary(locale);
-  const [formData, setFormData] = React.useState<profile.TProfessionalProfile>(
-    () => ({
-      bio: initialData?.bio || '',
-      linkedinUrl: initialData?.linkedinUrl || '',
-      curriculumVitae: initialData?.curriculumVitae || '',
-      portfolioWebsite: initialData?.portfolioWebsite || '',
-      associatedCompanyName: initialData?.associatedCompanyName || '',
-      associatedCompanyRole: initialData?.associatedCompanyRole || '',
-      associatedCompanyIndustry: initialData?.associatedCompanyIndustry || '',
-      skills: initialData?.skills || [],
-      isPrivateProfile: initialData?.isPrivateProfile || false,
-    }),
+  const [formData, setFormData] = useState<TProfessionalProfileAPI>(initialData);
+
+  const [skillSearchQuery, setSkillSearchQuery] = useState('');
+  const [allSkills, setAllSkills] = useState<string[]>(
+    () => initialData.skills?.map(s => s.name) ?? [],
   );
 
-  const [skillSearchQuery, setSkillSearchQuery] = React.useState('');
-  const [allSkills, setAllSkills] = React.useState<string[]>(
-    () => formData.skills ?? [],
-  );
-
-  const handleChange = (
-    field: keyof profile.TProfessionalProfile,
-    value: string | boolean | string[],
+  const handleChange = <K extends keyof TProfessionalProfileAPI>(
+    field: K,
+    value: TProfessionalProfileAPI[K],
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const toggleSkill = (skillName: string) => {
-    setAllSkills((prevSkills) =>
-      prevSkills.includes(skillName)
-        ? prevSkills.filter((skill) => skill !== skillName)
-        : [...prevSkills, skillName],
-    );
+  const toggleSkill = (skill: TProfessionalProfileAPI['skills'][number]) => {
+    setFormData((prev) => {
+      const skillExists = prev.skills.some(s => s.id === skill.id);
+      const updatedSkills = skillExists
+        ? prev.skills.filter((s) => s.id !== skill.id)
+        : [...prev.skills, skill];
+
+      return { ...prev, skills: updatedSkills };
+    });
+
+    setAllSkills((prevSkills) => {
+      const skillExists = prevSkills.includes(skill.name);
+      return skillExists
+        ? prevSkills.filter((s) => s !== skill.name)
+        : [...prevSkills, skill.name];
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -119,9 +118,16 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   };
 
   const handleUploadComplete = (fileMetadata: fileMetadata.TFileMetadata) => {
-    // Update form data with the uploaded file URL (if it exists)
-    if ('url' in fileMetadata && fileMetadata.url) {
-      handleChange('curriculumVitae', fileMetadata.url);
+    // Update form data with the uploaded file metadata
+    if (fileMetadata.category === 'document') {
+      const cvFile = {
+        id: fileMetadata.id,
+        name: fileMetadata.name,
+        size: fileMetadata.size,
+        category: 'document' as const,
+        downloadUrl: fileMetadata.url,
+      };
+      handleChange('curriculumVitae', cvFile);
     }
 
     // Notify parent component that upload is complete
@@ -129,23 +135,12 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   };
 
   const handleFileDelete = (id: string) => {
-    handleChange('curriculumVitae', '');
+    handleChange('curriculumVitae', null);
   };
 
   const handleDiscard = () => {
-    setFormData(
-      initialData || {
-        bio: '',
-        linkedinUrl: '',
-        curriculumVitae: '',
-        portfolioWebsite: '',
-        associatedCompanyName: '',
-        associatedCompanyRole: '',
-        associatedCompanyIndustry: '',
-        skills: [],
-        isPrivateProfile: false,
-      },
-    );
+    setFormData(initialData);
+    setAllSkills(initialData.skills?.map(s => s.name) ?? []);
   };
 
   return (
@@ -197,6 +192,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               // Handle download logic here
             }}
             locale={locale}
+          
           />
         </div>
 
@@ -218,10 +214,8 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <TextInput
             label={dictionary.components.professionalInfo.associatedCompanyName}
             inputField={{
-              value: formData.associatedCompanyName
-                ? formData.associatedCompanyName
-                : '',
-              setValue: (value) => handleChange('associatedCompanyName', value),
+              value: formData.companyName || '',
+              setValue: (value) => handleChange('companyName', value || null),
               className: "w-full",
               inputText:
                 dictionary.components.professionalInfo
@@ -234,10 +228,8 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <TextInput
             label={dictionary.components.professionalInfo.associatedCompanyRole}
             inputField={{
-              value: formData.associatedCompanyRole
-                ? formData.associatedCompanyRole
-                : '',
-              setValue: (value) => handleChange('associatedCompanyRole', value),
+              value: formData.companyRole || '',
+              setValue: (value) => handleChange('companyRole', value || null),
               className: "w-full",
               inputText:
                 dictionary.components.professionalInfo
@@ -252,11 +244,9 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               dictionary.components.professionalInfo.associatedCompanyIndustry
             }
             inputField={{
-              value: formData.associatedCompanyIndustry
-                ? formData.associatedCompanyIndustry
-                : '',
+              value: formData.companyIndustry || '',
               setValue: (value) =>
-                handleChange('associatedCompanyIndustry', value),
+                handleChange('companyIndustry', value || null),
               className: "w-full",
               inputText:
                 dictionary.components.professionalInfo
@@ -326,13 +316,13 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               />
               <div className=" space-y-2 max-h-60 overflow-y-auto gap-2">
                 {formData.skills?.map((skill, index) => (
-                  <div key={index} className="flex items-center">
+                  <div key={skill.id} className="flex items-center">
                     <CheckBox
-                      label={skill}
-                      name={`skill-${index}`}
+                      label={skill.name}
+                      name={`skill-${skill.id}`}
                       labelClass="text-text-primary text-sm  leading-[100%]"
-                      value={skill}
-                      checked={allSkills?.includes(skill)}
+                      value={skill.name}
+                      checked={allSkills?.includes(skill.name)}
                       withText={true}
                       onChange={() => toggleSkill(skill)}
                     />
@@ -350,9 +340,9 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             name="profile-visibility"
             value="private-profile"
             withText={true}
-            checked={formData.isPrivateProfile}
+            checked={formData.private}
             onChange={() =>
-              handleChange('isPrivateProfile', !formData.isPrivateProfile)
+              handleChange('private', !formData.private)
             }
           />
         </div>

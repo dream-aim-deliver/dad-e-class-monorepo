@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Tabs, TabList, TabTrigger, TabContent } from './tabs/tab';
 import { ProfileInfo } from './profile/profile-info';
 import { ProfessionalInfo } from './profile/professional-info';
-import { profile, fileMetadata } from '@maany_shr/e-class-models';
+import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 
 import {
   TLocale,
@@ -12,62 +12,75 @@ import {
   isLocalAware,
 } from '@maany_shr/e-class-translations';
 
+type TPersonalProfile = viewModels.TGetPersonalProfileSuccess['profile'];
+type TProfessionalProfile = viewModels.TGetProfessionalProfileSuccess['profile'];
+
 export interface ProfileTabsProps extends isLocalAware {
-  initialProfiles: profile.TProfiles;
-  onSave?: (profiles: profile.TProfiles) => void;
-  onFileUpload: (
+  personalProfile?: TPersonalProfile | null;
+  professionalProfile?: TProfessionalProfile | null;
+  onSavePersonal?: (profile: TPersonalProfile) => void;
+  onSaveProfessional?: (
+    profile: TProfessionalProfile
+  ) => void;
+  onPersonalFileUpload: (
     fileRequest: fileMetadata.TFileUploadRequest,
     abortSignal?: AbortSignal
   ) => Promise<fileMetadata.TFileMetadata>;
-  profilePictureFile?: fileMetadata.TFileMetadata | null;
+  onProfessionalFileUpload: (
+    fileRequest: fileMetadata.TFileUploadRequest,
+    abortSignal?: AbortSignal
+  ) => Promise<fileMetadata.TFileMetadata>;
+  profilePictureFile?: fileMetadata.TFileMetadataImage | null;
+  onProfilePictureUploadComplete?: (file: fileMetadata.TFileMetadataImage) => void;
   curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
-  onProfilePictureUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
   onCurriculumVitaeUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
+  uploadProgress?: number;
 }
 
 /**
  * A reusable ProfileTabs component for managing personal and professional profiles.
  *
- * @param initialProfiles The initial array of profiles. The first profile is the personal profile, and the second (optional) is the professional profile.
- * @param onSave Callback function triggered when profiles are saved. Receives an updated array of profiles.
+ * @param personalProfile Optional personal profile data.
+ * @param professionalProfile Optional professional profile data.
+ * @param onSavePersonal Callback function triggered when the personal profile is saved.
+ * @param onSaveProfessional Callback function triggered when the professional profile is saved.
  * @param locale The locale used for translations and localization.
  *
  * @example
  * <ProfileTabs
- *   initialProfiles={[
- *     { name: "John", surname: "Doe", email: "john.doe@example.com" }, // Personal profile
- *     { bio: "Experienced developer", linkedinUrl: "https://linkedin.com/in/johndoe" }, // Professional profile
- *   ]}
- *   onSave={(profiles) => console.log("Saved profiles:", profiles)}
+ *   personalProfile={{ name: "John", surname: "Doe", email: "john.doe@example.com" }}
+ *   professionalProfile={{ bio: "Experienced developer", linkedinUrl: "https://linkedin.com/in/johndoe" }}
+ *   onSavePersonal={(profile) => console.log("Saved personal profile:", profile)}
+ *   onSaveProfessional={(profile) => console.log("Saved professional profile:", profile)}
  *   locale="en"
  * />
  */
 
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({
-  initialProfiles,
-  onSave,
-  onFileUpload,
+  personalProfile,
+  professionalProfile,
+  onSavePersonal,
+  onSaveProfessional,
+  onPersonalFileUpload,
+  onProfessionalFileUpload,
   profilePictureFile,
-  curriculumVitaeFile,
   onProfilePictureUploadComplete,
+  curriculumVitaeFile,
   onCurriculumVitaeUploadComplete,
+  uploadProgress,
   locale,
 }) => {
   const [activeTab, setActiveTab] = useState('personal');
-  const hasProfessionalProfile = initialProfiles.length > 1;
+  const hasProfessionalProfile = Boolean(professionalProfile);
   const dictionary = getDictionary(locale);
-  const personalProfile = initialProfiles[0] as profile.TPersonalProfile;
-  const professionalProfile = hasProfessionalProfile
-    ? (initialProfiles[1] as profile.TProfessionalProfile)
-    : undefined;
 
   if (!hasProfessionalProfile) {
     return (
       <div className="w-full max-w-3xl mx-auto">
         <ProfileInfo
-          initialData={personalProfile}
-          onSave={(profile) => onSave?.([profile])}
-          onFileUpload={onFileUpload}
+          initialData={personalProfile!}
+          onSave={onSavePersonal}
+          onFileUpload={onPersonalFileUpload}
           profilePictureFile={profilePictureFile}
           onUploadComplete={onProfilePictureUploadComplete}
           locale={locale as TLocale}
@@ -95,28 +108,21 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
 
         <TabContent value="personal">
           <ProfileInfo
-            initialData={personalProfile}
-            onSave={(profile) => {
-              if (professionalProfile) {
-                onSave?.([profile, professionalProfile]);
-              } else {
-                onSave?.([profile]);
-              }
-            }}
-            onFileUpload={onFileUpload}
+            initialData={personalProfile!}
+            onSave={onSavePersonal}
+            onFileUpload={onPersonalFileUpload}
             profilePictureFile={profilePictureFile}
             onUploadComplete={onProfilePictureUploadComplete}
             locale={locale as TLocale}
+           
           />
         </TabContent>
 
         <TabContent value="professional">
           <ProfessionalInfo
-            initialData={professionalProfile}
-            onSave={(profile) => {
-              onSave?.([personalProfile, profile]);
-            }}
-            onFileUpload={onFileUpload}
+            initialData={professionalProfile!}
+            onSave={onSaveProfessional!}
+            onFileUpload={onProfessionalFileUpload}
             curriculumVitaeFile={curriculumVitaeFile}
             onUploadComplete={onCurriculumVitaeUploadComplete}
             locale={locale as TLocale}
