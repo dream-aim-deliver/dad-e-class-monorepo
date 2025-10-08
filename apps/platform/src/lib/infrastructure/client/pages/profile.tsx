@@ -36,8 +36,12 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 	const t = useTranslations('pages.profile');
 	const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
-	// Upload progress state
-	const [uploadProgress, setUploadProgress] = useState<number>(0);
+	// Upload progress state - separate for each upload type
+	const [profilePictureUploadProgress, setProfilePictureUploadProgress] = useState<number>(0);
+	const [curriculumVitaeUploadProgress, setCurriculumVitaeUploadProgress] = useState<number>(0);
+
+	
+	// State for messages
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -152,12 +156,12 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 	// Upload hooks (must be called unconditionally before any returns)
 	const profilePictureUpload = useProfilePictureUpload({
 		initialImage: initialProfilePicture,
-		onProgressUpdate: setUploadProgress,
+		onProgressUpdate: setProfilePictureUploadProgress,
 	});
 
 	const curriculumVitaeUpload = useCurriculumVitaeUpload({
 		initialDocument: initialCurriculumVitae,
-		onProgressUpdate: setUploadProgress,
+		onProgressUpdate: setCurriculumVitaeUploadProgress,
 	});
 
 	// Loading state - wait for all view models to be ready
@@ -178,7 +182,7 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 		return <DefaultError locale={locale} />;
 	}
 
-	// Re-extract data after validation (now we know it's safe)
+
 	const allTopics = topicsViewModel.data.topics;
 	const allLanguages = languagesViewModel.data.languages;
 
@@ -269,10 +273,11 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 						profilePictureFile={profilePictureUpload.profilePicture}
 						onProfilePictureUploadComplete={profilePictureUpload.handleUploadComplete}
 						onProfilePictureDelete={profilePictureUpload.handleDelete}
+						profilePictureUploadProgress={profilePictureUploadProgress}
 						curriculumVitaeFile={curriculumVitaeUpload.curriculumVitae}
 						onCurriculumVitaeUploadComplete={curriculumVitaeUpload.handleUploadComplete as (file: fileMetadata.TFileMetadata) => void}
 						onCurriculumVitaeDelete={curriculumVitaeUpload.handleDelete}
-						uploadProgress={uploadProgress}
+						curriculumVitaeUploadProgress={curriculumVitaeUploadProgress}
 					/>
 
 
