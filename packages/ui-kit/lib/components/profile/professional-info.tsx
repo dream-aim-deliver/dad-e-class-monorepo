@@ -27,6 +27,7 @@ interface ProfessionalInfoProps extends isLocalAware {
   curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
   onUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
   onFileDelete: (id: string) => void;
+  uploadProgress?: number;
 }
 
 
@@ -76,6 +77,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   onUploadComplete,
   onFileDelete,
   locale,
+  uploadProgress,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const dictionary = getDictionary(locale);
@@ -200,7 +202,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               // Handle download logic here
             }}
             locale={locale}
-
+            uploadProgress={uploadProgress}
           />
         </div>
 

@@ -6,13 +6,10 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
+import { ListLanguagesSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
 
-export const LanguageListSuccessSchema = z.object({
-    languages: z.array(z.object({
-        languageCode: z.string(),
-        language: z.string(),
-    }))
-});
+// Extract just the data portion from the success response schema
+export const LanguageListSuccessSchema = ListLanguagesSuccessResponseSchema.shape.data;
 
 export type TLanguageListSuccess = z.infer<typeof LanguageListSuccessSchema>;
 

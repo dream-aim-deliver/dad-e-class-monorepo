@@ -9,13 +9,15 @@ import { Dropdown } from './dropdown';
 export interface LanguageSelectorProps {
   text: {
     title?: string;
-    choosetext?: string;
+    chooseText?: string;
     interface?: string;
     chooseLanguage?: string;
     chooseColor?: string;
     chooseOptions?: string;
   };
   selectedLanguages: language.TLanguage[];
+  availableLanguages: language.TLanguage[];
+  selectedInterfaceLanguage: language.TLanguage | null;
   onChange?: (languages: language.TLanguage[]) => void;
   onInterfaceLanguageChange?: (language: language.TLanguage | null) => void;
 }
@@ -28,9 +30,16 @@ export interface LanguageSelectorProps {
  *   - `interface`: Label for the "Interface Language" section.
  *   - `chooseLanguage`: Placeholder text for choosing a language.
  *   - `chooseOptions`: Placeholder text for multiple-choice dropdowns.
- * @param selectedLanguages The list of all available languages, each with:
+ * @param selectedLanguages The list of currently selected spoken languages by the user.
+ * @param availableLanguages (Optional) The list of all available languages to choose from. If not provided, `selectedLanguages` is used.
+ *   Each language should have:
+ *   - `id`: The unique identifier of the language (string or number).
  *   - `name`: The display name of the language (e.g., "English").
  *   - `code`: The unique code representing the language (e.g., "EN").
+ *   - `state`: The state of the language (always "created").
+ *   - `createdAt`: The date when the language was created.
+ *   - `updatedAt`: The date when the language was last updated.
+ * @param selectedInterfaceLanguage (Optional) The currently selected interface language.
  * @param onChange Callback triggered when spoken languages change. Receives an updated array of selected languages.
  * @param onInterfaceLanguageChange Callback triggered when the interface language changes. Receives the new interface language or `null`.
  *
@@ -43,9 +52,13 @@ export interface LanguageSelectorProps {
  *     chooseOptions: "Choose options",
  *   }}
  *   selectedLanguages={[
- *     { name: "English", code: "EN" },
- *     { name: "Spanish", code: "ES" },
+ *     { id: 1, name: "English", code: "EN", state: "created", createdAt: new Date(), updatedAt: new Date() },
  *   ]}
+ *   availableLanguages={[
+ *     { id: 1, name: "English", code: "EN", state: "created", createdAt: new Date(), updatedAt: new Date() },
+ *     { id: 2, name: "Spanish", code: "ES", state: "created", createdAt: new Date(), updatedAt: new Date() },
+ *   ]}
+ *   selectedInterfaceLanguage={{ id: 1, name: "English", code: "EN", state: "created", createdAt: new Date(), updatedAt: new Date() }}
  *   onChange={(languages) => console.log("Spoken languages updated:", languages)}
  *   onInterfaceLanguageChange={(language) => console.log("Interface language changed:", language)}
  * />
@@ -53,12 +66,16 @@ export interface LanguageSelectorProps {
 
 export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   selectedLanguages,
+  availableLanguages,
+  selectedInterfaceLanguage,
   text,
   onChange,
   onInterfaceLanguageChange,
 }) => {
+  const languageOptions = availableLanguages;
+
   const [interfaceLanguage, setInterfaceLanguage] =
-    React.useState<language.TLanguage | null>(null);
+    React.useState<language.TLanguage | null>(selectedInterfaceLanguage || null);
   const [spokenLanguages, setSpokenLanguages] =
     React.useState<language.TLanguage[]>(selectedLanguages);
 
@@ -66,12 +83,16 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     setSpokenLanguages(selectedLanguages);
   }, [selectedLanguages]);
 
+  React.useEffect(() => {
+    setInterfaceLanguage(selectedInterfaceLanguage || null);
+  }, [selectedInterfaceLanguage]);
+
   const handleSpokenLanguagesChange = (selected: string[] | string | null) => {
     if (!selected) return;
 
     const newLanguages = Array.isArray(selected)
-      ? selectedLanguages.filter((lang) => selected.includes(lang.code as string))
-      : selectedLanguages.filter((lang) => lang.code === selected);
+      ? languageOptions.filter((lang) => selected.includes(lang.code as string))
+      : languageOptions.filter((lang) => lang.code === selected);
 
     setSpokenLanguages(newLanguages);
     onChange?.(newLanguages);
@@ -90,7 +111,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   ) => {
     if (typeof selected === 'string') {
       const newLanguage =
-        selectedLanguages.find((lang) => lang.code === selected) || null;
+        languageOptions.find((lang) => lang.code === selected) || null;
       setInterfaceLanguage(newLanguage);
       onInterfaceLanguageChange?.(newLanguage);
     } else {
@@ -110,7 +131,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           <Dropdown
             key={spokenLanguages.map((lang) => lang.code).join(',')}
             type="multiple-choice-and-search"
-            options={selectedLanguages.map((lang) => ({
+            options={languageOptions.map((lang) => ({
               label: lang.name as string,
               value: lang.code as string,
             }))}
@@ -150,10 +171,11 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         </label>
         <Dropdown
           type="simple"
-          options={selectedLanguages.map((lang) => ({
+          options={languageOptions.map((lang) => ({
             label: lang.name as string,
             value: lang.code as string,
           }))}
+          defaultValue={interfaceLanguage?.code as string}
           onSelectionChange={handleInterfaceLanguageChange}
           className="w-fit"
           text={{

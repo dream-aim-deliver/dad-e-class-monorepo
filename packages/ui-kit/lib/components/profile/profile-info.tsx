@@ -8,15 +8,14 @@ import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 import { TextInput } from '../text-input';
 import { LanguageSelector } from '../language-selector';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { language } from '@maany_shr/e-class-models';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
+import { TLanguageListSuccess } from 'packages/models/src/view-models';
 
 type TPersonalProfileAPI = viewModels.TGetPersonalProfileSuccess['profile'];
-type TLanguageFromBackend = { languageCode: string; language: string };
 
 interface ProfileInfoProps extends isLocalAware {
   initialData: TPersonalProfileAPI;
-  availableLanguages: TLanguageFromBackend[];
+  availableLanguages: TLanguageListSuccess["languages"];
   onSave?: (profile: TPersonalProfileAPI) => void;
   onFileUpload: (
     fileRequest: fileMetadata.TFileUploadRequest,
@@ -25,6 +24,7 @@ interface ProfileInfoProps extends isLocalAware {
   profilePictureFile?: fileMetadata.TFileMetadata | null;
   onUploadComplete?: (fileMetadata: fileMetadata.TFileMetadata) => void;
   onFileDelete?: (id: string) => void;
+  uploadProgress?: number;
 }
 
 
@@ -74,16 +74,14 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   onFileDelete,
   availableLanguages = [],
   locale,
+  uploadProgress,
 }) => {
   const [formData, setFormData] = React.useState<TPersonalProfileAPI>(initialData);
+  const [password, setPassword] = React.useState('');
 
   const dictionary = getDictionary(locale);
 
-  // Transform backend language format to UI language format
-  const languages: language.TLanguage[] = availableLanguages.map((lang) => ({
-    name: lang.language as 'English' | 'German',
-    code: lang.languageCode,
-  }));
+
 
   const handleChange = <
     K extends keyof TPersonalProfileAPI,
@@ -155,6 +153,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
     onFileDelete?.(id);
   };
 
+
   const handleSubmit = () => {
     onSave?.(formData);
   };
@@ -211,8 +210,8 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           inputField={{
             id: 'password',
             className: "w-full",
-            value: formData.phone || '',
-            setValue: (value) => handleChange('phone', value),
+            value: password,
+            setValue: setPassword,
             inputText: dictionary.components.profileInfo.password,
             type: 'password',
             hasRightContent: true,
@@ -298,18 +297,75 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             locale={locale}
             className="w-full"
             maxSize={5}
+            uploadProgress={uploadProgress}
           />
         </div>
 
         <LanguageSelector
           text={dictionary.components.languageSelector}
-          selectedLanguages={languages}
-          onChange={(languages) =>
-            console.log('Selected languages:', languages)
-          }
-          onInterfaceLanguageChange={(language) =>
-            console.log('Interface language:', language)
-          }
+          // Convert formData languages to simple format for LanguageSelector
+          selectedLanguages={formData.languages?.map(lang => ({
+            name: lang.name,
+            code: lang.code
+          })) || []}
+          // Convert API languages to simple format for LanguageSelector dropdown
+          availableLanguages={availableLanguages.map(lang => ({
+            name: lang.name,
+            code: lang.code
+          }))}
+          // Convert formData interface language to simple format
+          selectedInterfaceLanguage={formData.interfaceLanguage ? {
+            name: formData.interfaceLanguage.name,
+            code: formData.interfaceLanguage.code
+          } : null}
+          onChange={(selectedSimpleLanguages) => {
+            // User checked/unchecked languages - convert back to full format
+            const fullLanguages = selectedSimpleLanguages.map((simpleLang) => {
+              // Check if this language already exists in formData (keeps existing data)
+              const existingLang = formData.languages?.find(l => l.code === simpleLang.code);
+              if (existingLang) {
+                return existingLang;
+              }
+
+              // New language selected - find full details from availableLanguages
+              const availableLang = availableLanguages.find(l => l.code === simpleLang.code);
+              if (availableLang) {
+                return {
+                  name: availableLang.name,
+                  code: availableLang.code,
+                  id: availableLang.id,
+                  state: 'created' as const,
+                  createdAt: new Date(),
+                  updatedAt: new Date()
+                } as any;
+              }
+            }).filter(Boolean);
+            handleChange('languages', fullLanguages);
+          }}
+          onInterfaceLanguageChange={(selectedSimpleLang) => {
+            if (selectedSimpleLang) {
+              // Check if this language already exists in formData
+              const existingLang = formData.languages?.find(l => l.code === selectedSimpleLang.code)
+                || (formData.interfaceLanguage?.code === selectedSimpleLang.code ? formData.interfaceLanguage : null);
+              if (existingLang) {
+                handleChange('interfaceLanguage', existingLang);
+                return;
+              }
+
+              // New language selected - find full details from availableLanguages
+              const availableLang = availableLanguages.find(l => l.code === selectedSimpleLang.code);
+              if (availableLang) {
+                handleChange('interfaceLanguage', {
+                  name: availableLang.name,
+                  code: availableLang.code,
+                  id: availableLang.id,
+                  state: 'created' as const,
+                  createdAt: new Date(),
+                  updatedAt: new Date()
+                } as any);
+              }
+            }
+          }}
         />
 
         <CheckBox
