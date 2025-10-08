@@ -401,6 +401,8 @@ export const ModuleWithoutLessons: Story = {
             {
                 id: 'module-1',
                 title: 'Empty Module',
+                position: 1,
+                lessonCount: 0,
                 lessons: [],
             },
         ],
@@ -427,6 +429,8 @@ export const WithStudentInteractions: Story = {
             {
                 id: 'module-1',
                 title: 'Web Development Fundamentals',
+                position: 1,
+                lessonCount: 2,
                 lessons: [
                     {
                         id: 'lesson-1',
@@ -436,6 +440,7 @@ export const WithStudentInteractions: Story = {
                             {
                                 id: 'text-input-1',
                                 type: 'textInput' as const,
+                                position: 1,
                                 helperText: JSON.stringify([
                                     {
                                         type: 'paragraph',
@@ -448,6 +453,8 @@ export const WithStudentInteractions: Story = {
                                 ]),
                                 required: true,
                                 progress: {
+                                    type: 'textInput',
+                                    componentId: 'text-input-1',
                                     answer: JSON.stringify([
                                         {
                                             type: 'paragraph',
@@ -497,6 +504,7 @@ export const WithStudentInteractions: Story = {
                             {
                                 id: 'text-input-2',
                                 type: 'textInput' as const,
+                                position: 2,
                                 helperText: JSON.stringify([
                                     {
                                         type: 'paragraph',
@@ -509,6 +517,8 @@ export const WithStudentInteractions: Story = {
                                 ]),
                                 required: true,
                                 progress: {
+                                    type: 'textInput',
+                                    componentId: 'text-input-2',
                                     answer: JSON.stringify([
                                         {
                                             type: 'paragraph',
@@ -550,6 +560,7 @@ export const WithStudentInteractions: Story = {
                             {
                                 id: 'text-input-3',
                                 type: 'textInput' as const,
+                                position: 1,
                                 helperText: JSON.stringify([
                                     {
                                         type: 'paragraph',
@@ -566,6 +577,8 @@ export const WithStudentInteractions: Story = {
                                 ]),
                                 required: true,
                                 progress: {
+                                    type: 'textInput',
+                                    componentId: 'text-input-3',
                                     answer: JSON.stringify([
                                         {
                                             type: 'paragraph',

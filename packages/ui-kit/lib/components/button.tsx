@@ -46,12 +46,12 @@ const buttonStyles = cva(baseButtonStyles, {
 export interface ButtonProps extends VariantProps<typeof buttonStyles> {
   text?: string;
   children?: ReactNode;
-  onClick?: () => void;
+  onClick?: ( e?: React.MouseEvent<HTMLButtonElement> ) => void;
   className?: string;
   disabled?: boolean;
   hasIconLeft?: boolean;
   hasIconRight?: boolean;
-  iconLeft?: ReactNode;
+  iconLeft?: ReactNode; 
   iconRight?: ReactNode;
 }
 
