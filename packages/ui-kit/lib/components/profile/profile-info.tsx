@@ -4,22 +4,24 @@ import * as React from 'react';
 import { DateInput } from '../date-input';
 import { Button } from '../button';
 import { CheckBox } from '../checkbox';
-import { profile, fileMetadata } from '@maany_shr/e-class-models';
+import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 import { TextInput } from '../text-input';
 import { LanguageSelector } from '../language-selector';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { language } from '@maany_shr/e-class-models';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 
+type TPersonalProfileAPI = viewModels.TGetPersonalProfileSuccess['profile'];
+
 interface ProfileInfoProps extends isLocalAware {
-  initialData?: profile.TPersonalProfile;
-  onSave?: (profile: profile.TPersonalProfile) => void;
+  initialData: TPersonalProfileAPI;
+  onSave?: (profile: TPersonalProfileAPI) => void;
   onFileUpload: (
     fileRequest: fileMetadata.TFileUploadRequest,
     abortSignal?: AbortSignal
   ) => Promise<fileMetadata.TFileMetadata>;
   profilePictureFile?: fileMetadata.TFileMetadata | null;
-  onUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
+  onUploadComplete?: (fileMetadata: fileMetadata.TFileMetadata) => void;
 }
 
 
@@ -68,40 +70,54 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   onUploadComplete,
   locale,
 }) => {
-  const [formData, setFormData] = React.useState<profile.TPersonalProfile>(
-    () =>
-      ({
-        name: initialData?.name || '',
-        surname: initialData?.surname || '',
-        email: initialData?.email || '',
-        phoneNumber: initialData?.phoneNumber || '',
-        dateOfBirth: initialData?.dateOfBirth || '',
-        profilePicture: initialData?.profilePicture || '',
-        languages: initialData?.languages || [],
-        interfaceLanguage: initialData?.interfaceLanguage || {
-          code: 'ENG',
-          name: 'English',
-        },
-        receiveNewsletter: initialData?.receiveNewsletter || false,
-
-        isRepresentingCompany: initialData?.isRepresentingCompany ?? false,
-        ...(initialData?.isRepresentingCompany
-          ? {
-            representingCompanyName: initialData.representingCompanyName,
-            representedCompanyUID: initialData.representedCompanyUID,
-            representedCompanyAddress: initialData.representedCompanyAddress,
-          }
-          : {}),
-      }) as profile.TPersonalProfile,
-  );
+  const [formData, setFormData] = React.useState<TPersonalProfileAPI>(initialData);
 
   const dictionary = getDictionary(locale);
 
-  const handleChange = (
-    field: keyof profile.TPersonalProfileRepresentingCompany,
-    value: string | boolean | language.TLanguage | language.TLanguage[],
+  const handleChange = <
+    K extends keyof TPersonalProfileAPI,
+  >(
+    field: K,
+    value: TPersonalProfileAPI[K],
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleCompanyDetailsChange = (
+    isRepresenting: boolean,
+    field?: 'companyName' | 'companyUid' | 'companyAddress',
+    value?: string,
+  ) => {
+    setFormData((prev) => {
+      if (!isRepresenting) {
+        return {
+          ...prev,
+          companyDetails: { isRepresentingCompany: false },
+        };
+      }
+
+      const currentDetails = prev.companyDetails;
+      if (currentDetails.isRepresentingCompany && field) {
+        return {
+          ...prev,
+          companyDetails: {
+            ...currentDetails,
+            [field]: value,
+          },
+        };
+      }
+
+      // Transitioning from false to true
+      return {
+        ...prev,
+        companyDetails: {
+          isRepresentingCompany: true,
+          companyName: field === 'companyName' ? (value || '') : '',
+          companyUid: field === 'companyUid' ? value : null,
+          companyAddress: field === 'companyAddress' ? (value || '') : '',
+        },
+      };
+    });
   };
 
   const handleUploadedFiles = async (
@@ -112,9 +128,17 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   };
 
   const handleUploadComplete = (fileMetadata: fileMetadata.TFileMetadata) => {
-    // Update form data with the uploaded file URL (if it exists)
-    if ('url' in fileMetadata && fileMetadata.url) {
-      handleChange('profilePicture', fileMetadata.url);
+    // Update form data with the uploaded file metadata
+    if (fileMetadata.category === 'image') {
+      // Map the uploaded file to the API's expected structure
+      const avatarImage = {
+        id: fileMetadata.id,
+        name: fileMetadata.name,
+        size: fileMetadata.size,
+        category: 'image' as const,
+        downloadUrl: fileMetadata.url, // Map url to downloadUrl
+      };
+      handleChange('avatarImage', avatarImage);
     }
 
     // Notify parent component that upload is complete
@@ -122,7 +146,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   };
 
   const handleFileDelete = (id: string) => {
-    handleChange('profilePicture', '');
+    handleChange('avatarImage', null);
   };
 
   const handleSubmit = () => {
@@ -181,8 +205,8 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           inputField={{
             id: 'phone',
             className: "w-full",
-            value: formData.phoneNumber || '',
-            setValue: (value) => handleChange('phoneNumber', value),
+            value: formData.phone || '',
+            setValue: (value) => handleChange('phone', value || null),
             inputText: dictionary.components.profileInfo.phoneNumberPlaceholder,
           }}
         />
@@ -191,8 +215,8 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           inputField={{
             id: 'password',
             className: "w-full",
-            value: formData.phoneNumber || '',
-            setValue: (value) => handleChange('phoneNumber', value),
+            value: formData.phone || '',
+            setValue: (value) => handleChange('phone', value),
             inputText: dictionary.components.profileInfo.password,
             type: 'password',
             hasRightContent: true,
@@ -209,7 +233,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
         <DateInput
           label={dictionary.components.profileInfo.date}
           value={formData.dateOfBirth || ''}
-          onChange={(value) => handleChange('dateOfBirth', value)}
+          onChange={(value) => handleChange('dateOfBirth', value || null)}
           locale={locale}
         />
         <CheckBox
@@ -217,45 +241,44 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           value="isRepresentingCompany"
           label={dictionary.components.profileInfo.checkboxtext1}
           labelClass="text-text-primary text-sm leading-[100%]"
-          checked={formData.isRepresentingCompany}
+          checked={formData.companyDetails.isRepresentingCompany}
           withText
           onChange={() =>
-            handleChange(
-              'isRepresentingCompany',
-              !formData.isRepresentingCompany,
+            handleCompanyDetailsChange(
+              !formData.companyDetails.isRepresentingCompany,
             )
           }
         />
-        {formData.isRepresentingCompany && (
+        {formData.companyDetails.isRepresentingCompany && (
           <div className="flex flex-col gap-4 transition-all duration-300 ease-in-out">
             <TextInput
               label={dictionary.components.profileInfo.companyName}
               inputField={{
                 id: 'companyName',
                 inputText: dictionary.components.profileInfo.companyNamePlaceholder,
-                value: formData.representingCompanyName || '',
+                value: formData.companyDetails.isRepresentingCompany ? formData.companyDetails.companyName : '',
                 setValue: (value) =>
-                  handleChange('representingCompanyName', value),
+                  handleCompanyDetailsChange(true, 'companyName', value),
               }}
             />
             <TextInput
               label={dictionary.components.profileInfo.companyUID}
               inputField={{
                 id: 'companyUID',
-                value: formData.representedCompanyUID || '',
+                value: formData.companyDetails.isRepresentingCompany ? (formData.companyDetails.companyUid || '') : '',
                 inputText: dictionary.components.profileInfo.companyUIDPlaceholder,
                 setValue: (value) =>
-                  handleChange('representedCompanyUID', value),
+                  handleCompanyDetailsChange(true, 'companyUid', value),
               }}
             />
             <TextInput
               label={dictionary.components.profileInfo.address}
               inputField={{
                 id: 'companyAddress',
-                value: formData.representedCompanyAddress || '',
+                value: formData.companyDetails.isRepresentingCompany ? formData.companyDetails.companyAddress : '',
                 inputText: dictionary.components.profileInfo.addressPlaceholder,
                 setValue: (value) =>
-                  handleChange('representedCompanyAddress', value),
+                  handleCompanyDetailsChange(true, 'companyAddress', value),
               }}
             />
           </div>
@@ -309,9 +332,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
           <Button
             variant="secondary"
             size="medium"
-            onClick={() =>
-              setFormData({ ...initialData } as profile.TPersonalProfile)
-            }
+            onClick={() => setFormData(initialData)}
             className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
             text={dictionary.components.profileInfo.buttontext1}
           />

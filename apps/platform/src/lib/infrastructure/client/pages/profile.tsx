@@ -5,7 +5,7 @@
 // Features: listTopics, getProfessionalProfile, saveProfessionalProfile
 // Route: /workspace/profile
 
-import { viewModels, profile, fileMetadata } from '@maany_shr/e-class-models';
+import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useState, useEffect } from 'react';
 import {
@@ -19,6 +19,9 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
 import { useGetPersonalProfilePresenter } from '../hooks/use-get-personal-profile-presenter';
+import { useProfilePictureUpload } from './workspace/edit/hooks/use-profile-picture-upload';
+import { useCurriculumVitaeUpload } from './workspace/edit/hooks/use-curriculum-vitae-upload';
+import Banner from 'packages/ui-kit/lib/components/banner';
 
 interface ProfileProps {
 	locale: string;
@@ -29,10 +32,14 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 	const router = useRouter();
 	const t = useTranslations('pages.profile');
 
+	// Upload progress state
+	const [uploadProgress, setUploadProgress] = useState<number>(0);
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
 	// Fetch profile data using tRPC queries
 	const [professionalProfileResponse] = trpc.getProfessionalProfile.useSuspenseQuery({});
 	const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
-	const [topicsResponse] = trpc.listTopics.useSuspenseQuery({});
 
 	// View model state management
 	const [professionalProfileViewModel, setProfessionalProfileViewModel] = useState<
@@ -49,6 +56,8 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 	const { presenter: personalPresenter } = useGetPersonalProfilePresenter(
 		setPersonalProfileViewModel
 	);
+
+
 
 	// Present data to view models
 	useEffect(() => {
@@ -72,84 +81,139 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 		return <DefaultError locale={locale} />;
 	}
 
+	if (professionalProfileViewModel.mode !== 'default' || personalProfileViewModel.mode !== 'default') {
+		return <DefaultError locale={locale} />;
+	}
+
 	// Extract profile data from view models
-	const professionalData = professionalProfileViewModel.data;
-	const personalData = personalProfileViewModel.data;
+	const personalProfile = personalProfileViewModel.data.profile;
+	const professionalProfile = professionalProfileViewModel.data.profile;
 
-	// Transform backend data to UI profile format
-	// The backend returns data with a nested 'profile' structure that needs to be transformed
-	// Using 'unknown' cast to handle type mismatch between backend schema and UI schema
-	// TODO: Implement proper data transformation mapping backend fields to UI fields:
-	//   - backend.phone -> UI.phoneNumber
-	//   - backend.avatarImageUrl -> UI.profilePicture
-	//   - backend.receiveNewsletterEmails -> UI.receiveNewsletter
-	//   - Add missing required fields: email, interfaceLanguage, isRepresentingCompany
-	const transformedPersonalProfile = personalData.profile as unknown as profile.TPersonalProfile;
-	const transformedProfessionalProfile = professionalData.profile as unknown as profile.TProfessionalProfile;
+	// Transform avatarImage to TFileMetadataImage if it exists
+	const initialProfilePicture: fileMetadata.TFileMetadataImage | null = personalProfile.avatarImage
+		? {
+			id: personalProfile.avatarImage.id,
+			name: personalProfile.avatarImage.name,
+			url: personalProfile.avatarImage.downloadUrl,
+			thumbnailUrl: personalProfile.avatarImage.downloadUrl,
+			size: personalProfile.avatarImage.size,
+			category: 'image' as const,
+			status: 'available' as const,
+		}
+		: null;
 
-	// Prepare profiles array for ProfileTabs component
-	const initialProfiles: profile.TProfiles = [
-		transformedPersonalProfile,
-		transformedProfessionalProfile,
-	];
+	// Transform curriculumVitae to TFileMetadata (document type) if it exists
+	const initialCurriculumVitae: fileMetadata.TFileMetadata | null = professionalProfile.curriculumVitae
+		? {
+			id: professionalProfile.curriculumVitae.id,
+			name: professionalProfile.curriculumVitae.name,
+			url: professionalProfile.curriculumVitae.downloadUrl,
+			size: professionalProfile.curriculumVitae.size,
+			category: 'document' as const,
+			status: 'available' as const,
+		}
+		: null;
 
-	// TODO: Implement save functionality using tRPC mutations
-	const handleSave = async (profiles: profile.TProfiles) => {
-		// const personalProfile = profiles[0] as profile.TPersonalProfile;
-		// const professionalProfile = profiles[1] as profile.TProfessionalProfile;
+	// Save mutations with error handling
+	const savePersonalMutation = trpc.savePersonalProfile.useMutation({
+		onSuccess: () => {
+			setSuccessMessage('Personal profile saved successfully');
+			setErrorMessage(null);
+		},
+		onError: (error) => {
+			setErrorMessage(error.message || 'Failed to save personal profile');
+			setSuccessMessage(null);
+		}
+	});
 
-		// await Promise.all([
-		//   trpc.savePersonalProfile.mutate(personalProfile),
-		//   trpc.saveProfessionalProfile.mutate(professionalProfile),
-		// ]);
+	const saveProfessionalMutation = trpc.saveProfessionalProfile.useMutation({
+		onSuccess: () => {
+			setSuccessMessage('Professional profile saved successfully');
+			setErrorMessage(null);
+		},
+		onError: (error) => {
+			setErrorMessage(error.message || 'Failed to save professional profile');
+			setSuccessMessage(null);
+		}
+	});
 
-		console.log('Saving profiles:', profiles);
+	const handleSavePersonal = async (profile: typeof personalProfile) => {
+		const savePayload = {
+			...profile,
+			languageIds: profile.languages.map(lang => {
+				return typeof lang.id === 'number' ? lang.id : parseInt(lang.id as string);
+			}),
+			interfaceLanguageId: typeof profile.interfaceLanguage.id === 'number'
+				? profile.interfaceLanguage.id
+				: parseInt(profile.interfaceLanguage.id as string),
+			avatarImageId: profile.avatarImage?.id,
+			languages: undefined,
+			interfaceLanguage: undefined,
+			avatarImage: undefined
+		};
+
+		await savePersonalMutation.mutateAsync(savePayload as any);
 	};
 
-	// TODO: Implement file upload handler for profile pictures
-	const handleFileUpload = async (
-		fileRequest: fileMetadata.TFileUploadRequest,
-		abortSignal?: AbortSignal
-	): Promise<fileMetadata.TFileMetadata> => {
-		// Implement file upload logic using tRPC mutation
-		// const uploadResult = await trpc.uploadProfilePicture.mutate({
-		//   name: fileRequest.name,
-		//   checksum: await calculateMd5(fileRequest.file),
-		//   ...
-		// });
+	const handleSaveProfessional = async (profile: typeof professionalProfile) => {
+		const savePayload = {
+			...profile,
+			skillIds: profile.skills.map(skill => {
+				return typeof skill.id === 'number' ? skill.id : parseInt(skill.id as string);
+			}),
+			curriculumVitaeId: profile.curriculumVitae?.id,
+			skills: undefined,
+			curriculumVitae: undefined
+		};
 
-		console.log('Uploading file:', fileRequest.name);
-
-		// Mock return for now
-		throw new Error('File upload not yet implemented');
+		await saveProfessionalMutation.mutateAsync(savePayload as any);
 	};
+	const profilePictureUpload = useProfilePictureUpload({
+		initialImage: initialProfilePicture,
+		onProgressUpdate: setUploadProgress,
+	});
 
-	// TODO: Implement upload completion handlers
-	const handleProfilePictureUploadComplete = (file: fileMetadata.TFileMetadata) => {
-		console.log('Profile picture uploaded:', file);
-	};
-
-	const handleCurriculumVitaeUploadComplete = (file: fileMetadata.TFileMetadata) => {
-		console.log('Curriculum vitae uploaded:', file);
-	};
+	const curriculumVitaeUpload = useCurriculumVitaeUpload({
+		initialDocument: initialCurriculumVitae,
+		onProgressUpdate: setUploadProgress,
+	});
 
 	return (
 		<div className="flex flex-col space-y-5 mx-auto max-w-[560px]">
 			<h1 className="text-2xl font-bold mb-6">{t('yourProfile')}</h1>
 
 			<ProfileTabs
-				initialProfiles={initialProfiles}
-				onSave={handleSave}
-				onFileUpload={handleFileUpload}
-				profilePictureFile={null} // TODO: Get from profile data when available
-				curriculumVitaeFile={null} // TODO: Get from profile data when available
-				onProfilePictureUploadComplete={handleProfilePictureUploadComplete}
-				onCurriculumVitaeUploadComplete={handleCurriculumVitaeUploadComplete}
+				personalProfile={personalProfile}
+				professionalProfile={professionalProfile}
+				onSavePersonal={handleSavePersonal}
+				onSaveProfessional={handleSaveProfessional}
+				onPersonalFileUpload={profilePictureUpload.handleFileChange}
+				onProfessionalFileUpload={curriculumVitaeUpload.handleFileChange}
 				locale={locale}
+				profilePictureFile={profilePictureUpload.profilePicture}
+				onProfilePictureUploadComplete={profilePictureUpload.handleUploadComplete}
+				curriculumVitaeFile={curriculumVitaeUpload.curriculumVitae}
+				onCurriculumVitaeUploadComplete={curriculumVitaeUpload.handleUploadComplete as any}
+				uploadProgress={uploadProgress}
 			/>
 
-			{/* TODO: Implement topics/expertise selection UI if needed */}
-			{/* Topics data is available in topicsResponse */}
+
+			{/* Display error message */}
+			{errorMessage && (
+				<DefaultError locale={locale} description={errorMessage} />
+			)}
+
+			{/* Display success message */}
+			{successMessage && (
+				<Banner style="success" description={successMessage} />
+			)}
+
+			{/* Display loading state */}
+			{(savePersonalMutation.isPending || saveProfessionalMutation.isPending) && (
+				<Banner style="success" description="Saving..." />
+			)}
 		</div>
 	);
 }
+
+
