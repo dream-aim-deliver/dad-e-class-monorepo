@@ -209,13 +209,14 @@ export default function ConfirmTimeContent({
                             End Time
                         </span>
                         <InputField
+                            className="text-text-primary"
                             state={
                                 duration !== undefined ? 'disabled' : undefined
                             }
                             inputText={
                                 duration !== undefined ? getTimeValue(endTime) : "Time (12/24h format)"
                             }
-                            value={endTimeValue}
+                            value={duration !== undefined ? undefined : endTimeValue}
                             setValue={setEndTimeValue}
                         />
                     </div>
