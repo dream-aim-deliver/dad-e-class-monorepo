@@ -232,7 +232,7 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 
 
 	return (
-		<div className="min-h-screen text-base-white">
+		<div className="min-h-screen text-base-white flex flex-col gap-6">
 			<div className="flex flex-col space-y-6 p-6">
 				<Breadcrumbs
 					items={[
