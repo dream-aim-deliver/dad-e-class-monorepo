@@ -104,6 +104,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                 onOpenChange={(open) => {
                     if (!open) {
                         setNewSession(null);
+                        setSubmitError(undefined);
                     }
                 }}
                 defaultOpen={false}
