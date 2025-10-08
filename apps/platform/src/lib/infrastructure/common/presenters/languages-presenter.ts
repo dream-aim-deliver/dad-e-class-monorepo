@@ -29,8 +29,8 @@ export default class LanguagesPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetHomePageUseCaseResponseSchema,
-                viewModel: viewModels.HomePageViewModelSchema
+                responseModel: useCaseModels.ListLanguagesUseCaseResponseSchema,
+                viewModel: viewModels.LanguageListViewModelSchema
             },
             middleware: ListLanguagesResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -47,7 +47,7 @@ export default class LanguagesPresenter extends BasePresenter<
         return {
             mode: 'default',
             data: {
-                ...response.data
+                ...response.data.data
             }
         };
     }
