@@ -7,6 +7,7 @@ import React, { useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import {
     AvailableCoachingSessionCard,
+    Button,
     CoachingSessionData,
     DefaultError,
     DefaultLoading,
@@ -17,6 +18,20 @@ import { groupOfferings } from '../../../utils/group-offerings';
 
 interface ChooseCoachingSessionContentProps {
     setSession: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
+}
+
+function CoachingSessionsNotFound() {
+    const locale = useLocale() as TLocale;
+    return (
+        <div className="flex flex-col gap-3">
+            <div className="p-4 bg-card-stroke rounded-md border border-neutral-700 text-text-secondary">
+                No available coaching sessions found.
+            </div>
+            <Button variant="primary" text="Buy more sessions" onClick={() => {
+                // TODO: Implement navigation to buy more sessions
+            }} />
+        </div>
+    );
 }
 
 export default function ChooseCoachingSessionContent({
@@ -52,13 +67,13 @@ export default function ChooseCoachingSessionContent({
         availableCoachingsViewModel.mode === 'not-found' ||
         availableCoachingsViewModel.mode === 'unauthenticated'
     ) {
-        return;
+        return <CoachingSessionsNotFound />;
     }
 
     const availableOfferings = availableCoachingsViewModel.data.offerings;
 
     if (availableOfferings.length === 0) {
-        return;
+        return <CoachingSessionsNotFound />;
     }
 
     const calculateEndTime = (startTime: Date, durationMinutes: number) => {
