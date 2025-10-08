@@ -111,8 +111,8 @@ export const  CoachStudentInteractionCard = ({
                           <h5 className="text-text-primary md:text-lg text-sm font-bold">{dictionary.components.courseMaterialsAccordion.lesson} {lesson.position}: {lesson.title}</h5>
                         </div>
                         <Button
-                          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                            e.stopPropagation();
+                          onClick={(e?: React.MouseEvent<HTMLButtonElement>) => {
+                            e?.stopPropagation();
                             onViewLessonsClick(module.id, lesson.id);
                           }}
                           variant='text'
