@@ -17,7 +17,7 @@ export type TListLanguagesSuccessResponse = z.infer<typeof ListLanguagesSuccessR
 const ListLanguagesUseCaseErrorResponseSchema = BaseErrorDiscriminatedUnionSchemaFactory({});
 export type TListLanguagesUseCaseErrorResponse = z.infer<typeof ListLanguagesUseCaseErrorResponseSchema>;
 export const ListLanguagesUseCaseResponseSchema = BaseStatusDiscriminatedUnionSchemaFactory([
-    ListLanguagesSuccessResponseSchema,
+    ListLanguagesSuccessResponse,
     ListLanguagesUseCaseErrorResponseSchema,
 ]);
 export type TListLanguagesUseCaseResponse = z.infer<typeof ListLanguagesUseCaseResponseSchema>;
