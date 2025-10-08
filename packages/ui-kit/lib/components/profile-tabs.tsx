@@ -14,10 +14,14 @@ import {
 
 type TPersonalProfile = viewModels.TGetPersonalProfileSuccess['profile'];
 type TProfessionalProfile = viewModels.TGetProfessionalProfileSuccess['profile'];
+type TSkill = { id: number; name: string; slug: string };
+type TLanguage = { languageCode: string; language: string };
 
 export interface ProfileTabsProps extends isLocalAware {
   personalProfile?: TPersonalProfile | null;
   professionalProfile?: TProfessionalProfile | null;
+  availableSkills: TSkill[];
+  availableLanguages: TLanguage[];
   onSavePersonal?: (profile: TPersonalProfile) => void;
   onSaveProfessional?: (
     profile: TProfessionalProfile
@@ -32,8 +36,10 @@ export interface ProfileTabsProps extends isLocalAware {
   ) => Promise<fileMetadata.TFileMetadata>;
   profilePictureFile?: fileMetadata.TFileMetadataImage | null;
   onProfilePictureUploadComplete?: (file: fileMetadata.TFileMetadataImage) => void;
+  onProfilePictureDelete?: (id: string) => void;
   curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
   onCurriculumVitaeUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
+  onCurriculumVitaeDelete?: (id: string) => void;
   uploadProgress?: number;
 }
 
@@ -59,14 +65,18 @@ export interface ProfileTabsProps extends isLocalAware {
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   personalProfile,
   professionalProfile,
+  availableSkills = [],
+  availableLanguages = [],
   onSavePersonal,
   onSaveProfessional,
   onPersonalFileUpload,
   onProfessionalFileUpload,
   profilePictureFile,
   onProfilePictureUploadComplete,
+  onProfilePictureDelete,
   curriculumVitaeFile,
   onCurriculumVitaeUploadComplete,
+  onCurriculumVitaeDelete,
   uploadProgress,
   locale,
 }) => {
@@ -83,6 +93,8 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           onFileUpload={onPersonalFileUpload}
           profilePictureFile={profilePictureFile}
           onUploadComplete={onProfilePictureUploadComplete}
+          onFileDelete={onProfilePictureDelete}
+          availableLanguages={availableLanguages}
           locale={locale as TLocale}
         />
       </div>
@@ -113,18 +125,22 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             onFileUpload={onPersonalFileUpload}
             profilePictureFile={profilePictureFile}
             onUploadComplete={onProfilePictureUploadComplete}
+            onFileDelete={onProfilePictureDelete}
+            availableLanguages={availableLanguages}
             locale={locale as TLocale}
-           
+
           />
         </TabContent>
 
         <TabContent value="professional">
           <ProfessionalInfo
             initialData={professionalProfile!}
+            availableSkills={availableSkills}
             onSave={onSaveProfessional!}
             onFileUpload={onProfessionalFileUpload}
             curriculumVitaeFile={curriculumVitaeFile}
             onUploadComplete={onCurriculumVitaeUploadComplete}
+            onFileDelete={onCurriculumVitaeDelete}
             locale={locale as TLocale}
           />
         </TabContent>

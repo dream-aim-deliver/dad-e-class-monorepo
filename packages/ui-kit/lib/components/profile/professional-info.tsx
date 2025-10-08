@@ -14,9 +14,11 @@ import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { useState } from 'react';
 
 type TProfessionalProfileAPI = viewModels.TGetProfessionalProfileSuccess['profile'];
+type TSkill = { id: number; name: string; slug: string };
 
 interface ProfessionalInfoProps extends isLocalAware {
-  initialData: TProfessionalProfileAPI ;
+  initialData: TProfessionalProfileAPI;
+  availableSkills: TSkill[];
   onSave: (profile: TProfessionalProfileAPI) => void;
   onFileUpload: (
     fileRequest: fileMetadata.TFileUploadRequest,
@@ -24,6 +26,7 @@ interface ProfessionalInfoProps extends isLocalAware {
   ) => Promise<fileMetadata.TFileMetadata>;
   curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
   onUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
+  onFileDelete: (id: string) => void;
 }
 
 
@@ -66,10 +69,12 @@ interface ProfessionalInfoProps extends isLocalAware {
 
 export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   initialData,
+  availableSkills = [],
   onSave,
   onFileUpload,
   curriculumVitaeFile,
   onUploadComplete,
+  onFileDelete,
   locale,
 }) => {
   const [showModal, setShowModal] = useState(false);
@@ -88,12 +93,19 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const toggleSkill = (skill: TProfessionalProfileAPI['skills'][number]) => {
+  const toggleSkill = (skill: TSkill) => {
     setFormData((prev) => {
       const skillExists = prev.skills.some(s => s.id === skill.id);
       const updatedSkills = skillExists
         ? prev.skills.filter((s) => s.id !== skill.id)
-        : [...prev.skills, skill];
+        : [...prev.skills, {
+          id: skill.id,
+          name: skill.name,
+          slug: skill.slug,
+          state: 'created' as const,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }];
 
       return { ...prev, skills: updatedSkills };
     });
@@ -120,14 +132,8 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   const handleUploadComplete = (fileMetadata: fileMetadata.TFileMetadata) => {
     // Update form data with the uploaded file metadata
     if (fileMetadata.category === 'document') {
-      const cvFile = {
-        id: fileMetadata.id,
-        name: fileMetadata.name,
-        size: fileMetadata.size,
-        category: 'document' as const,
-        downloadUrl: fileMetadata.url,
-      };
-      handleChange('curriculumVitae', cvFile);
+      // Use the file metadata directly without transformation
+      handleChange('curriculumVitae', fileMetadata as any);
     }
 
     // Notify parent component that upload is complete
@@ -136,6 +142,8 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
 
   const handleFileDelete = (id: string) => {
     handleChange('curriculumVitae', null);
+    // Notify parent component about deletion
+    onFileDelete?.(id);
   };
 
   const handleDiscard = () => {
@@ -192,7 +200,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               // Handle download logic here
             }}
             locale={locale}
-          
+
           />
         </div>
 
@@ -315,19 +323,23 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                 leftContent={<IconSearch />}
               />
               <div className=" space-y-2 max-h-60 overflow-y-auto gap-2">
-                {formData.skills?.map((skill, index) => (
-                  <div key={skill.id} className="flex items-center">
-                    <CheckBox
-                      label={skill.name}
-                      name={`skill-${skill.id}`}
-                      labelClass="text-text-primary text-sm  leading-[100%]"
-                      value={skill.name}
-                      checked={allSkills?.includes(skill.name)}
-                      withText={true}
-                      onChange={() => toggleSkill(skill)}
-                    />
-                  </div>
-                ))}
+                {availableSkills
+                  .filter((skill) =>
+                    skill.name.toLowerCase().includes(skillSearchQuery.toLowerCase())
+                  )
+                  .map((skill) => (
+                    <div key={skill.id} className="flex items-center">
+                      <CheckBox
+                        label={skill.name}
+                        name={`skill-${skill.id}`}
+                        labelClass="text-text-primary text-sm  leading-[100%]"
+                        value={skill.name}
+                        checked={formData.skills.some((s) => s.id === skill.id)}
+                        withText={true}
+                        onChange={() => toggleSkill(skill)}
+                      />
+                    </div>
+                  ))}
               </div>
             </div>
           </div>

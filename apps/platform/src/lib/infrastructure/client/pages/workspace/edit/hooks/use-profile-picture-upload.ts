@@ -9,10 +9,6 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../../../trpc/cms-client';
 
-interface UseProfilePictureUploadProps {
-	userId: number;
-	onProgressUpdate?: (progress: number) => void;
-}
 
 export function useProfilePictureUpload({
 	initialImage = null,

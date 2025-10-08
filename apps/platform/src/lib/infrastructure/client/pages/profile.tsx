@@ -12,13 +12,16 @@ import {
 	DefaultLoading,
 	DefaultError,
 	DefaultNotFound,
-	ProfileTabs
+	ProfileTabs,
+	Breadcrumbs
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
 import { useGetPersonalProfilePresenter } from '../hooks/use-get-personal-profile-presenter';
+import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
+import { useListLanguagesPresenter } from '../hooks/use-languages-presenter';
 import { useProfilePictureUpload } from './workspace/edit/hooks/use-profile-picture-upload';
 import { useCurriculumVitaeUpload } from './workspace/edit/hooks/use-curriculum-vitae-upload';
 import Banner from 'packages/ui-kit/lib/components/banner';
@@ -31,6 +34,7 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 	const locale = useLocale() as TLocale;
 	const router = useRouter();
 	const t = useTranslations('pages.profile');
+	const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
 	// Upload progress state
 	const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -40,6 +44,8 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 	// Fetch profile data using tRPC queries
 	const [professionalProfileResponse] = trpc.getProfessionalProfile.useSuspenseQuery({});
 	const [personalProfileResponse] = trpc.getPersonalProfile.useSuspenseQuery({});
+	const [topicsResponse] = trpc.listTopics.useSuspenseQuery({});
+	const [languagesResponse] = trpc.listLanguages.useSuspenseQuery({});
 
 	// View model state management
 	const [professionalProfileViewModel, setProfessionalProfileViewModel] = useState<
@@ -48,6 +54,12 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 	const [personalProfileViewModel, setPersonalProfileViewModel] = useState<
 		viewModels.TGetPersonalProfileViewModel | undefined
 	>(undefined);
+	const [topicsViewModel, setTopicsViewModel] = useState<
+		viewModels.TTopicListViewModel | undefined
+	>(undefined);
+	const [languagesViewModel, setLanguagesViewModel] = useState<
+		viewModels.TLanguageListViewModel | undefined
+	>(undefined);
 
 	// Initialize presenters
 	const { presenter: professionalPresenter } = useGetProfessionalProfilePresenter(
@@ -55,6 +67,12 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 	);
 	const { presenter: personalPresenter } = useGetPersonalProfilePresenter(
 		setPersonalProfileViewModel
+	);
+	const { presenter: topicsPresenter } = useListTopicsPresenter(
+		setTopicsViewModel
+	);
+	const { presenter: languagesPresenter } = useListLanguagesPresenter(
+		setLanguagesViewModel
 	);
 
 
@@ -65,10 +83,14 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 		professionalPresenter.present(professionalProfileResponse, professionalProfileViewModel);
 		// @ts-ignore - Presenter type compatibility issue
 		personalPresenter.present(personalProfileResponse, personalProfileViewModel);
-	}, [professionalProfileResponse, personalProfileResponse, professionalPresenter, personalPresenter]);
+		// @ts-ignore - Presenter type compatibility issue
+		topicsPresenter.present(topicsResponse, topicsViewModel);
+		// @ts-ignore - Presenter type compatibility issue
+		languagesPresenter.present(languagesResponse, languagesViewModel);
+	}, [professionalProfileResponse, personalProfileResponse, topicsResponse, languagesResponse, professionalPresenter, personalPresenter, topicsPresenter, languagesPresenter]);
 
-	// Loading state - wait for both view models to be ready
-	if (!professionalProfileViewModel || !personalProfileViewModel) {
+	// Loading state - wait for all view models to be ready
+	if (!professionalProfileViewModel || !personalProfileViewModel || !topicsViewModel || !languagesViewModel) {
 		return <DefaultLoading locale={locale} variant="minimal" />;
 	}
 
@@ -77,7 +99,7 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 		return <DefaultNotFound locale={locale} />;
 	}
 
-	if (professionalProfileViewModel.mode === 'kaboom' || personalProfileViewModel.mode === 'kaboom') {
+	if (professionalProfileViewModel.mode === 'kaboom' || personalProfileViewModel.mode === 'kaboom' || topicsViewModel.mode === 'kaboom' || languagesViewModel.mode === 'kaboom') {
 		return <DefaultError locale={locale} />;
 	}
 
@@ -88,6 +110,8 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 	// Extract profile data from view models
 	const personalProfile = personalProfileViewModel.data.profile;
 	const professionalProfile = professionalProfileViewModel.data.profile;
+	const allTopics = topicsViewModel.data.topics;
+	const allLanguages = languagesViewModel.data.languages;
 
 	// Transform avatarImage to TFileMetadataImage if it exists
 	const initialProfilePicture: fileMetadata.TFileMetadataImage | null = personalProfile.avatarImage
@@ -116,25 +140,45 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 
 	// Save mutations with error handling
 	const savePersonalMutation = trpc.savePersonalProfile.useMutation({
+		onMutate: () => {
+			// Clear messages when mutation starts
+			setErrorMessage(null);
+			setSuccessMessage(null);
+		},
 		onSuccess: () => {
-			setSuccessMessage('Personal profile saved successfully');
+			setSuccessMessage(t('personalProfileSaved'));
 			setErrorMessage(null);
 		},
 		onError: (error) => {
-			setErrorMessage(error.message || 'Failed to save personal profile');
+			setErrorMessage(error.message || t('failedToSavePersonal'));
 			setSuccessMessage(null);
 		}
 	});
 
 	const saveProfessionalMutation = trpc.saveProfessionalProfile.useMutation({
+		onMutate: () => {
+			// Clear messages when mutation starts
+			setErrorMessage(null);
+			setSuccessMessage(null);
+		},
 		onSuccess: () => {
-			setSuccessMessage('Professional profile saved successfully');
+			setSuccessMessage(t('professionalProfileSaved'));
 			setErrorMessage(null);
 		},
 		onError: (error) => {
-			setErrorMessage(error.message || 'Failed to save professional profile');
+			setErrorMessage(error.message || t('failedToSaveProfessional'));
 			setSuccessMessage(null);
 		}
+	});
+
+	const profilePictureUpload = useProfilePictureUpload({
+		initialImage: initialProfilePicture,
+		onProgressUpdate: setUploadProgress,
+	});
+
+	const curriculumVitaeUpload = useCurriculumVitaeUpload({
+		initialDocument: initialCurriculumVitae,
+		onProgressUpdate: setUploadProgress,
 	});
 
 	const handleSavePersonal = async (profile: typeof personalProfile) => {
@@ -146,13 +190,17 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 			interfaceLanguageId: typeof profile.interfaceLanguage.id === 'number'
 				? profile.interfaceLanguage.id
 				: parseInt(profile.interfaceLanguage.id as string),
-			avatarImageId: profile.avatarImage?.id,
+			avatarImageId: profile.avatarImage?.id
+				? (typeof profile.avatarImage.id === 'number'
+					? profile.avatarImage.id
+					: parseInt(profile.avatarImage.id as string))
+				: undefined,
 			languages: undefined,
 			interfaceLanguage: undefined,
 			avatarImage: undefined
 		};
 
-		await savePersonalMutation.mutateAsync(savePayload as any);
+		await savePersonalMutation.mutateAsync(savePayload);
 	};
 
 	const handleSaveProfessional = async (profile: typeof professionalProfile) => {
@@ -161,57 +209,84 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 			skillIds: profile.skills.map(skill => {
 				return typeof skill.id === 'number' ? skill.id : parseInt(skill.id as string);
 			}),
-			curriculumVitaeId: profile.curriculumVitae?.id,
+			curriculumVitaeId: profile.curriculumVitae?.id
+				? (typeof profile.curriculumVitae.id === 'number'
+					? profile.curriculumVitae.id
+					: parseInt(profile.curriculumVitae.id as string))
+				: undefined,
 			skills: undefined,
 			curriculumVitae: undefined
 		};
 
-		await saveProfessionalMutation.mutateAsync(savePayload as any);
+		await saveProfessionalMutation.mutateAsync(savePayload);
 	};
-	const profilePictureUpload = useProfilePictureUpload({
-		initialImage: initialProfilePicture,
-		onProgressUpdate: setUploadProgress,
-	});
 
-	const curriculumVitaeUpload = useCurriculumVitaeUpload({
-		initialDocument: initialCurriculumVitae,
-		onProgressUpdate: setUploadProgress,
-	});
 
 	return (
-		<div className="flex flex-col space-y-5 mx-auto max-w-[560px]">
-			<h1 className="text-2xl font-bold mb-6">{t('yourProfile')}</h1>
+		<div className="min-h-screen text-base-white">
+			<div className="flex flex-col space-y-6 p-6">
+				<Breadcrumbs
+					items={[
+						{
+							label: breadcrumbsTranslations('home'),
+							onClick: () => {
+								router.push(`/${locale}`);
+							},
+						},
+						{
+							label: breadcrumbsTranslations('workspace'),
+							onClick: () => {
+								router.push(`/${locale}/workspace`);
+							},
+						},
+						{
+							label: breadcrumbsTranslations('yourProfile'),
+							onClick: () => {
+								// Current page, no action needed
+							},
+						},
+					]}
+				/>
 
-			<ProfileTabs
-				personalProfile={personalProfile}
-				professionalProfile={professionalProfile}
-				onSavePersonal={handleSavePersonal}
-				onSaveProfessional={handleSaveProfessional}
-				onPersonalFileUpload={profilePictureUpload.handleFileChange}
-				onProfessionalFileUpload={curriculumVitaeUpload.handleFileChange}
-				locale={locale}
-				profilePictureFile={profilePictureUpload.profilePicture}
-				onProfilePictureUploadComplete={profilePictureUpload.handleUploadComplete}
-				curriculumVitaeFile={curriculumVitaeUpload.curriculumVitae}
-				onCurriculumVitaeUploadComplete={curriculumVitaeUpload.handleUploadComplete as any}
-				uploadProgress={uploadProgress}
-			/>
+				<div className="flex flex-col space-y-5 mx-auto max-w-[560px]">
+					<h1 className="text-2xl font-bold">{t('yourProfile')}</h1>
+
+					<ProfileTabs
+						personalProfile={personalProfile}
+						professionalProfile={professionalProfile}
+						availableSkills={allTopics}
+						availableLanguages={allLanguages}
+						onSavePersonal={handleSavePersonal}
+						onSaveProfessional={handleSaveProfessional}
+						onPersonalFileUpload={profilePictureUpload.handleFileChange}
+						onProfessionalFileUpload={curriculumVitaeUpload.handleFileChange}
+						locale={locale}
+						profilePictureFile={profilePictureUpload.profilePicture}
+						onProfilePictureUploadComplete={profilePictureUpload.handleUploadComplete}
+						onProfilePictureDelete={profilePictureUpload.handleDelete}
+						curriculumVitaeFile={curriculumVitaeUpload.curriculumVitae}
+						onCurriculumVitaeUploadComplete={curriculumVitaeUpload.handleUploadComplete as any}
+						onCurriculumVitaeDelete={curriculumVitaeUpload.handleDelete}
+						uploadProgress={uploadProgress}
+					/>
 
 
-			{/* Display error message */}
-			{errorMessage && (
-				<DefaultError locale={locale} description={errorMessage} />
-			)}
+					{/* Display error message */}
+					{errorMessage && (
+						<DefaultError locale={locale} description={errorMessage} />
+					)}
 
-			{/* Display success message */}
-			{successMessage && (
-				<Banner style="success" description={successMessage} />
-			)}
+					{/* Display success message */}
+					{successMessage && (
+						<Banner style="success" description={successMessage} />
+					)}
 
-			{/* Display loading state */}
-			{(savePersonalMutation.isPending || saveProfessionalMutation.isPending) && (
-				<Banner style="success" description="Saving..." />
-			)}
+					{/* Display loading state */}
+					{(savePersonalMutation.isPending || saveProfessionalMutation.isPending) && (
+						<Banner style="success" description={t('saving')} />
+					)}
+				</div>
+			</div>
 		</div>
 	);
 }

@@ -1,50 +1,101 @@
 import { ProfileTabs } from '../lib/components/profile-tabs';
-import { profile, fileMetadata } from '@maany_shr/e-class-models';
+import { fileMetadata } from '@maany_shr/e-class-models';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
-// Mock Personal Profile Data
-const mockPersonalProfile: profile.TPersonalProfile = {
+// Mock Personal Profile Data (matching viewModels.TGetPersonalProfileSuccess['profile'])
+const mockPersonalProfile = {
+  id: 1,
   name: 'John',
   surname: 'Doe',
   email: 'john.doe@example.com',
-  phoneNumber: '+1234567890',
-  dateOfBirth: '1990-01-01',
-  profilePicture: '', // Start with empty string to show uploader
   languages: [
-    { code: 'ENG', name: 'English' },
-    { code: 'DEU', name: 'German' },
+    { id: 1, languageCode: 'ENG', language: 'English', name: 'English', code: 'ENG', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+    { id: 2, languageCode: 'DEU', language: 'German', name: 'German', code: 'DEU', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
   ],
-  interfaceLanguage: { code: 'ENG', name: 'English' },
+  interfaceLanguage: { id: 1, languageCode: 'ENG', language: 'English', name: 'English', code: 'ENG', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
   receiveNewsletter: true,
-  isRepresentingCompany: false,
+  companyDetails: { isRepresentingCompany: false as const },
+  phone: '+1234567890',
+  dateOfBirth: '1990-01-01',
+  avatarImage: null as any,
 };
 
-// Mock Professional Profile Data
-const mockProfessionalProfile: profile.TProfessionalProfile = {
+// Mock Professional Profile Data (matching viewModels.TGetProfessionalProfileSuccess['profile'])
+const mockProfessionalProfile = {
+  id: 1,
   bio: 'Experienced software engineer with a passion for building scalable applications.',
+  skills: [
+    { id: 1, name: 'React', slug: 'react', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+    { id: 2, name: 'Node.js', slug: 'nodejs', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+    { id: 3, name: 'TypeScript', slug: 'typescript', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+    { id: 4, name: 'AWS', slug: 'aws', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+  ],
+  private: false,
   linkedinUrl: 'https://www.linkedin.com/in/johndoe',
-  curriculumVitae: '', // Start with empty string to show uploader
+  curriculumVitae: null as any,
   portfolioWebsite: 'https://johndoe.dev',
-  associatedCompanyName: 'Tech Corp',
-  associatedCompanyRole: 'Senior Software Engineer',
-  associatedCompanyIndustry: 'Technology',
-  skills: ['React', 'Node.js', 'TypeScript', 'AWS'],
-  isPrivateProfile: false,
+  companyName: 'Tech Corp',
+  companyRole: 'Senior Software Engineer',
+  companyIndustry: 'Technology',
 };
 
-// Combine both profiles into a single array
-const mockProfiles: profile.TProfiles = [
-  mockPersonalProfile,
-  mockProfessionalProfile,
+// Mock available skills
+const mockAvailableSkills = [
+  { id: 1, name: 'React', slug: 'react' },
+  { id: 2, name: 'Node.js', slug: 'nodejs' },
+  { id: 3, name: 'TypeScript', slug: 'typescript' },
+  { id: 4, name: 'AWS', slug: 'aws' },
+  { id: 5, name: 'Python', slug: 'python' },
+  { id: 6, name: 'Java', slug: 'java' },
 ];
 
-// Mock file upload handler
-const handleFileUpload = async (
+// Mock available languages
+const mockAvailableLanguages = [
+  { languageCode: 'ENG', language: 'English' },
+  { languageCode: 'DEU', language: 'German' },
+  { languageCode: 'FRA', language: 'French' },
+  { languageCode: 'SPA', language: 'Spanish' },
+];
+
+// Mock file upload handlers
+const handlePersonalFileUpload = async (
   fileRequest: fileMetadata.TFileUploadRequest,
   abortSignal?: AbortSignal
 ): Promise<fileMetadata.TFileMetadata> => {
-  console.log('Uploading file:', fileRequest.name);
+  console.log('Uploading personal file:', fileRequest.name);
+
+  // Simulate upload delay
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      // Create final metadata with simulated server response
+      const finalMetadata: fileMetadata.TFileMetadataImage = {
+        id: `uploaded-${Date.now()}`,
+        name: fileRequest.name,
+        size: fileRequest.file.size,
+        status: 'available' as const,
+        category: 'image' as const,
+        url: `https://example.com/uploads/${fileRequest.name}`,
+        thumbnailUrl: `https://picsum.photos/200/300?random=${Math.random()}`
+      };
+
+      console.log('Upload completed:', finalMetadata);
+      resolve(finalMetadata);
+    }, 2000);
+
+    abortSignal?.addEventListener('abort', () => {
+      console.log('Upload aborted');
+      clearTimeout(timeout);
+      reject(new DOMException('Upload aborted', 'AbortError'));
+    });
+  });
+};
+
+const handleProfessionalFileUpload = async (
+  fileRequest: fileMetadata.TFileUploadRequest,
+  abortSignal?: AbortSignal
+): Promise<fileMetadata.TFileMetadata> => {
+  console.log('Uploading professional file:', fileRequest.name);
 
   // Simulate upload delay
   return new Promise((resolve, reject) => {
@@ -53,15 +104,10 @@ const handleFileUpload = async (
       const finalMetadata: fileMetadata.TFileMetadata = {
         id: `uploaded-${Date.now()}`,
         name: fileRequest.name,
-        mimeType: fileRequest.file.type || 'application/octet-stream',
         size: fileRequest.file.size,
-        checksum: `checksum-${Math.random().toString(36).substr(2, 9)}`,
         status: 'available' as const,
-        category: fileRequest.file.type?.startsWith('image/') ? 'image' as const : 'document' as const,
-        url: `https://example.com/uploads/${fileRequest.name}`,
-        ...(fileRequest.file.type?.startsWith('image/') && {
-          thumbnailUrl: `https://picsum.photos/200/300?random=${Math.random()}`
-        })
+        category: 'document' as const,
+        url: `https://example.com/uploads/${fileRequest.name}`
       };
 
       console.log('Upload completed:', finalMetadata);
@@ -77,47 +123,52 @@ const handleFileUpload = async (
 };
 
 // Wrapper component that handles state
-const ProfileTabsWrapper = ({ initialProfiles, locale, preloadedFiles = false }) => {
-  const [profiles, setProfiles] = useState(initialProfiles);
+const ProfileTabsWrapper = ({
+  personalProfile,
+  professionalProfile,
+  locale,
+  preloadedFiles = false
+}) => {
+  const [personal, setPersonal] = useState(personalProfile);
+  const [professional, setProfessional] = useState(professionalProfile);
 
   // Initialize file states based on preloadedFiles flag and existing URLs
-  const [profilePictureFile, setProfilePictureFile] = useState<fileMetadata.TFileMetadata | null>(() => {
-    if (!preloadedFiles) return null;
-    const profilePicture = profiles[0]?.profilePicture;
-    return profilePicture ? {
+  const [profilePictureFile, setProfilePictureFile] = useState<fileMetadata.TFileMetadataImage | null>(() => {
+    if (!preloadedFiles || !personal?.avatarImage) return null;
+    return {
       id: 'profile-picture',
       name: 'profile-picture.jpg',
-      mimeType: 'image/jpeg',
       size: 0,
-      checksum: '',
       status: 'available' as const,
       category: 'image' as const,
-      url: profilePicture,
-      thumbnailUrl: profilePicture,
-    } : null;
+      url: personal.avatarImage.downloadUrl,
+      thumbnailUrl: personal.avatarImage.downloadUrl,
+    };
   });
 
   const [curriculumVitaeFile, setCurriculumVitaeFile] = useState<fileMetadata.TFileMetadata | null>(() => {
-    if (!preloadedFiles) return null;
-    const curriculumVitae = profiles[1]?.curriculumVitae;
-    return curriculumVitae ? {
+    if (!preloadedFiles || !professional?.curriculumVitae) return null;
+    return {
       id: 'curriculum-vitae',
       name: 'curriculum-vitae.pdf',
-      mimeType: 'application/pdf',
       size: 0,
-      checksum: '',
       status: 'available' as const,
       category: 'document' as const,
-      url: curriculumVitae,
-    } : null;
+      url: professional.curriculumVitae.downloadUrl,
+    };
   });
 
-  const handleProfileSave = (updatedProfiles: profile.TProfiles) => {
-    console.log('Profiles saved:', updatedProfiles);
-    setProfiles(updatedProfiles);
+  const handlePersonalSave = (updatedProfile: typeof personal) => {
+    console.log('Personal profile saved:', updatedProfile);
+    setPersonal(updatedProfile);
   };
 
-  const handleProfilePictureUploadComplete = (fileMetadata: fileMetadata.TFileMetadata) => {
+  const handleProfessionalSave = (updatedProfile: typeof professional) => {
+    console.log('Professional profile saved:', updatedProfile);
+    setProfessional(updatedProfile);
+  };
+
+  const handleProfilePictureUploadComplete = (fileMetadata: fileMetadata.TFileMetadataImage) => {
     console.log('Profile picture upload completed:', fileMetadata);
     setProfilePictureFile(fileMetadata);
   };
@@ -129,13 +180,18 @@ const ProfileTabsWrapper = ({ initialProfiles, locale, preloadedFiles = false })
 
   return (
     <ProfileTabs
-      initialProfiles={profiles}
+      personalProfile={personal}
+      professionalProfile={professional}
+      availableSkills={mockAvailableSkills}
+      availableLanguages={mockAvailableLanguages}
       locale={locale}
-      onSave={handleProfileSave}
-      onFileUpload={handleFileUpload}
+      onSavePersonal={handlePersonalSave}
+      onSaveProfessional={handleProfessionalSave}
+      onPersonalFileUpload={handlePersonalFileUpload}
+      onProfessionalFileUpload={handleProfessionalFileUpload}
       profilePictureFile={profilePictureFile}
-      curriculumVitaeFile={curriculumVitaeFile}
       onProfilePictureUploadComplete={handleProfilePictureUploadComplete}
+      curriculumVitaeFile={curriculumVitaeFile}
       onCurriculumVitaeUploadComplete={handleCurriculumVitaeUploadComplete}
     />
   );
@@ -167,7 +223,8 @@ type Story = StoryObj<typeof ProfileTabsWrapper>;
 // Stories
 export const WithBothProfiles: Story = {
   args: {
-    initialProfiles: mockProfiles,
+    personalProfile: mockPersonalProfile,
+    professionalProfile: mockProfessionalProfile,
     locale: 'en',
     preloadedFiles: false,
   },
@@ -175,7 +232,8 @@ export const WithBothProfiles: Story = {
 
 export const WithOnlyPersonalProfile: Story = {
   args: {
-    initialProfiles: [mockPersonalProfile],
+    personalProfile: mockPersonalProfile,
+    professionalProfile: null,
     locale: 'en',
     preloadedFiles: false,
   },
@@ -183,16 +241,24 @@ export const WithOnlyPersonalProfile: Story = {
 
 export const WithFilesPreloaded: Story = {
   args: {
-    initialProfiles: [
-      {
-        ...mockPersonalProfile,
-        profilePicture: 'https://picsum.photos/200/300?random=1',
+    personalProfile: {
+      ...mockPersonalProfile,
+      avatarImage: {
+        id: '1',
+        name: 'profile-picture.jpg',
+        downloadUrl: 'https://picsum.photos/200/300?random=1',
+        size: 1024,
       },
-      {
-        ...mockProfessionalProfile,
-        curriculumVitae: 'https://example.com/sample-cv.pdf',
+    },
+    professionalProfile: {
+      ...mockProfessionalProfile,
+      curriculumVitae: {
+        id: '2',
+        name: 'curriculum-vitae.pdf',
+        downloadUrl: 'https://example.com/sample-cv.pdf',
+        size: 2048,
       },
-    ],
+    },
     locale: 'en',
     preloadedFiles: true,
   },
