@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { IconPlus } from '../icons';
+import { isLocalAware } from '@maany_shr/e-class-translations';
 
-interface AvailabilityCalendarCardProps {
-    locale: string;
+interface AvailabilityCalendarCardProps extends isLocalAware {
     start: Date;
     end: Date;
     onNewEvent?: (startTime: Date) => void;
@@ -72,8 +72,7 @@ export function AvailabilityCalendarCard(props: AvailabilityCalendarCardProps) {
     );
 }
 
-interface SessionCalendarCardProps {
-    locale: string;
+interface SessionCalendarCardProps extends isLocalAware {
     start: Date;
     end: Date;
     onClick?: () => void;
@@ -106,8 +105,7 @@ export function SessionCalendarCard(props: SessionCalendarCardProps) {
     );
 }
 
-interface AnonymousCalendarCardProps {
-    locale: string;
+interface AnonymousCalendarCardProps extends isLocalAware {
     start: Date;
     end: Date;
 }
