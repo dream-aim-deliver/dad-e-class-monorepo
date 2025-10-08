@@ -31,6 +31,11 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	const session = sessionDTO.data;
 	const isLoggedIn = !!session;
 
+	// Fetch coach profile access - determines if profile can be viewed
+	const [coachProfileAccessResponse] = trpc.getCoachProfileAccess.useSuspenseQuery({
+		coachUsername: username,
+	});
+
 	// Fetch coach introduction data
 	const [coachIntroductionResponse] = trpc.getCoachIntroduction.useSuspenseQuery({
 		coachUsername: username,
@@ -41,14 +46,11 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 		coachUsername: username,
 	});
 
-	// Fetch coach courses
+	// Fetch coach courses - conditional based on login status
+	// If logged in: forStudent=true (shows enrolled/in-progress courses)
+	// If NOT logged in: forStudent=false (shows all public courses)
 	const [coachCoursesResponse] = trpc.listCoachCourses.useSuspenseQuery({
-		forStudent: true,
-	});
-
-	// Fetch coach profile access
-	const [coachProfileAccessResponse] = trpc.getCoachProfileAccess.useSuspenseQuery({
-		coachUsername: username,
+		forStudent: isLoggedIn,
 	});
 
 	const [coachIntroductionViewModel, setCoachIntroductionViewModel] = useState<
@@ -118,6 +120,11 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	// Error handling for profile access
 	if (coachProfileAccessViewModel.mode === 'kaboom') {
 		return <DefaultError locale={locale} />;
+	}
+
+	// Access control check - if profile access is denied, show not found
+	if (coachProfileAccessViewModel.mode === 'default' && !coachProfileAccessViewModel.data.access) {
+		return <DefaultNotFound locale={locale} />;
 	}
 
 	// Success state - extract data
