@@ -448,6 +448,11 @@ export const DE: TDictionary = {
       yesCancelText: 'Ja, Abbrechen',
       modalText: 'Möchten Sie diese Coaching-Sitzung wirklich abbrechen?',
     },
+    deleteConfirmationModal: {
+      noText: 'NEIN',
+      yesDeleteText: 'Ja, Löschen',
+      modalText: 'Sind Sie sicher, dass Sie dieses Element löschen möchten?',
+    },
     coachingSessionTracker: {
       minuteText: 'Minuten',
       usedText: 'gebraucht',
@@ -682,6 +687,20 @@ export const DE: TDictionary = {
       titleLesson: 'Lektion erstelle',
       descriptionLesson: 'Möchtest du ganz neu anfangen oder eine fertige Lektion kopieren?',
       you: 'Du',
+    },
+    editCategoryTopicModal: {
+      categoryName: 'Kategoriename',
+      topicName: 'Themenname',
+      categoryPlaceholder: 'Kategoriename eingeben',
+      topicPlaceholder: 'Themenname eingeben',
+      goBack: 'Zurück',
+      delete: 'Löschen',
+      save: 'Speichern',
+      create: 'Erstellen',
+      createCategoryTitle: 'Kategorie erstellen',
+      createTopicTitle: 'Thema erstellen',
+      editCategoryTitle: 'Kategorie bearbeiten',
+      editTopicTitle: 'Thema bearbeiten',
     },
     removeModal: {
       coach: 'Coach',
@@ -1435,6 +1454,8 @@ export const DE: TDictionary = {
     manageTopics: {
       title: 'Themen verwalten (aka Fähigkeiten)',
       description: 'Maximal 25 Themen pro Plattform',
+      createTopic: 'Neues Thema',
+      deleteTopicConfirmation: 'Sind Sie sicher, dass Sie dieses Thema löschen möchten?',
     },
   },
 };

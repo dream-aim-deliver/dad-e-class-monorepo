@@ -449,6 +449,11 @@ export const DictionarySchema = z.object({
       yesCancelText: z.string(),
       modalText: z.string(),
     }),
+    deleteConfirmationModal: z.object({
+      noText: z.string(),
+      yesDeleteText: z.string(),
+      modalText: z.string(),
+    }),
     coachingSessionTracker: z.object({
       minuteText: z.string(),
       usedText: z.string(),
@@ -669,6 +674,20 @@ export const DictionarySchema = z.object({
       titleLesson: z.string(),
       descriptionLesson: z.string(),
       you: z.string(),
+    }),
+    editCategoryTopicModal: z.object({
+      categoryName: z.string(),
+      topicName: z.string(),
+      categoryPlaceholder: z.string(),
+      topicPlaceholder: z.string(),
+      goBack: z.string(),
+      delete: z.string(),
+      save: z.string(),
+      create: z.string(),
+      createCategoryTitle: z.string(),
+      createTopicTitle: z.string(),
+      editCategoryTitle: z.string(),
+      editTopicTitle: z.string(),
     }),
     removeModal: z.object({
       coach: z.string(),
@@ -1467,6 +1486,8 @@ export const DictionarySchema = z.object({
   manageTopics: z.object({
     title: z.string(),
     description: z.string(),
+    createTopic: z.string(),
+    deleteTopicConfirmation: z.string(),
   })
   }),
 });
