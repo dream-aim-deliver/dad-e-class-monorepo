@@ -3,8 +3,7 @@ import { useLocale } from 'next-intl';
 import React, { useMemo, useState } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import {
-    RequestCoachingAvailabilityCard,
-    OwnerCoachingAvailabilityCard,
+    CoachingAvailabilityCard,
     MonthlyCalendar,
     WeeklyCalendar,
 } from '@maany_shr/e-class-ui-kit';
@@ -62,95 +61,19 @@ interface MonthlyCalendarWrapperProps {
         | undefined;
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
-    setNewSession: React.Dispatch<
+    setNewSession?: React.Dispatch<
         React.SetStateAction<ScheduledOffering | null>
     >;
+    onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
 }
 
-export function RequestMonthlyCalendarWrapper({
+export function MonthlyCalendarWrapper({
     coachAvailabilityViewModel,
     currentDate,
     setCurrentDate,
     setNewSession,
-}: MonthlyCalendarWrapperProps) {
-    const locale = useLocale() as TLocale;
-    const { monthlyEvents } = useComputeMonthlyEvents({
-        coachAvailabilityViewModel,
-    });
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-        undefined,
-    );
-
-    const isSameDay = (date1: Date, date2: Date): boolean => {
-        return (
-            date1.getFullYear() === date2.getFullYear() &&
-            date1.getMonth() === date2.getMonth() &&
-            date1.getDate() === date2.getDate()
-        );
-    };
-
-    const availability = useMemo(() => {
-        if (
-            !coachAvailabilityViewModel ||
-            coachAvailabilityViewModel.mode !== 'default' ||
-            !selectedDate
-        ) {
-            return [];
-        }
-        return coachAvailabilityViewModel.data.availability.filter((event) =>
-            isSameDay(new Date(event.startTime), selectedDate),
-        );
-    }, [coachAvailabilityViewModel, selectedDate]);
-
-    return (
-        <div className="flex flex-col gap-3">
-            <MonthlyCalendar
-                locale={locale}
-                currentDate={currentDate}
-                setCurrentDate={setCurrentDate}
-                dateEvents={monthlyEvents}
-                selectedDate={selectedDate}
-                onDateClick={(date) => {
-                    setSelectedDate(date);
-                }}
-            />
-            {availability.map((availability, index) => (
-                <RequestCoachingAvailabilityCard
-                    locale={locale}
-                    key={`availability-card-${index}`}
-                    startTime={new Date(availability.startTime)}
-                    endTime={new Date(availability.endTime)}
-                    onClick={() => {
-                        setNewSession({
-                            startTime: new Date(availability.startTime),
-                        });
-                    }}
-                />
-            ))}
-            {availability.length === 0 && (
-                <div className="border border-card-stroke bg-card-fill text-text-secondary p-4 rounded-md">
-                    Please select a date with availability.
-                </div>
-            )}
-        </div>
-    );
-}
-
-interface OwnerMonthlyCalendarWrapperProps {
-    coachAvailabilityViewModel:
-        | viewModels.TCoachAvailabilityViewModel
-        | undefined;
-    currentDate: Date;
-    setCurrentDate: (date: Date) => void;
-    onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
-}
-
-export function OwnerMonthlyCalendarWrapper({
-    coachAvailabilityViewModel,
-    currentDate,
-    setCurrentDate,
     onAvailabilityClick,
-}: OwnerMonthlyCalendarWrapperProps) {
+}: MonthlyCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
     const { monthlyEvents } = useComputeMonthlyEvents({
         coachAvailabilityViewModel,
@@ -201,6 +124,18 @@ export function OwnerMonthlyCalendarWrapper({
         });
     }, [coachAvailabilityViewModel, selectedDate]);
 
+    // TODO: Implement handling sessions outside of availability
+
+    const getOnRequestAvailabilityHandler = (
+        availability: useCaseModels.TAvailability,
+    ) => {
+        if (!setNewSession) return;
+        return () =>
+            setNewSession({
+                startTime: new Date(availability.startTime),
+            });
+    };
+
     return (
         <div className="flex flex-col gap-3">
             <MonthlyCalendar
@@ -215,9 +150,12 @@ export function OwnerMonthlyCalendarWrapper({
             />
             {availabilityWithSessions.map(
                 ({ availability, sessions }, index) => (
-                    <OwnerCoachingAvailabilityCard
+                    <CoachingAvailabilityCard
                         locale={locale}
                         key={`availability-card-${index}`}
+                        onRequest={getOnRequestAvailabilityHandler(
+                            availability,
+                        )}
                         availability={{
                             startTime: new Date(availability.startTime),
                             endTime: new Date(availability.endTime),
