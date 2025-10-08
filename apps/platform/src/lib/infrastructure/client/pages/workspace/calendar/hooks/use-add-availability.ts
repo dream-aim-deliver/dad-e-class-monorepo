@@ -40,6 +40,10 @@ export function useAddAvailability({ onSuccess }: UseAddAvailabilityProps = {}) 
             setError('End time must be after start time.');
             return;
         }
+        if (newAvailability.startTime < new Date()) {
+            setError('Cannot add availability in the past.');
+            return;
+        }
 
         setError(undefined);
 

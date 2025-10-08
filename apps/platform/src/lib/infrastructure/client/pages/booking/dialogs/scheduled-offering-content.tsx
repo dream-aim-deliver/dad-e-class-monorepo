@@ -11,15 +11,18 @@ interface ScheduledOfferingContentProps {
     offering: ScheduledOffering | null;
     setOffering: React.Dispatch<React.SetStateAction<ScheduledOffering | null>>;
     onSubmit: () => void;
+    isSubmitting?: boolean;
+    submitError?: string;
 }
 
 export default function ScheduledOfferingContent({
     offering: session,
     setOffering: setSession,
     onSubmit,
+    submitError,
+    isSubmitting,
 }: ScheduledOfferingContentProps) {
     const locale = useLocale() as TLocale;
-    const isSubmitting = false;
 
     if (!session) return null;
 
@@ -60,6 +63,7 @@ export default function ScheduledOfferingContent({
                     buttonText={
                         isSubmitting ? 'Sending request...' : 'Send request'
                     }
+                    submitError={submitError}
                 />
             )}
             <Button
