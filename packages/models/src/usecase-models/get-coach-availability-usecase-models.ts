@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import {
-    BaseErrorDiscriminatedUnionSchemaFactory,
-    BaseStatusDiscriminatedUnionSchemaFactory,
-    BaseSuccessSchemaFactory
+  BaseErrorDiscriminatedUnionSchemaFactory,
+  BaseStatusDiscriminatedUnionSchemaFactory,
+  BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
 
 export const GetCoachAvailabilityRequestSchema = z.object({
@@ -16,12 +16,16 @@ export type TGetCoachAvailabilityRequest = z.infer<typeof GetCoachAvailabilityRe
 export const CoachingStatusSchema = z.enum(['unscheduled', 'requested', 'scheduled', 'canceled', 'completed']);
 export type TCoachingStatus = z.infer<typeof CoachingStatusSchema>;
 
+const AvailabilitySchema = z.object({
+  id: z.number(),
+  startTime: z.string().datetime(),
+  endTime: z.string().datetime(),
+});
+
+export type TAvailability = z.infer<typeof AvailabilitySchema>;
+
 export const GetCoachAvailabilitySuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
-  availability: z.array(z.object({
-    id: z.number(),
-    startTime: z.string().datetime(),
-    endTime: z.string().datetime(),
-  })),
+  availability: z.array(AvailabilitySchema),
   mySessions: z.array(z.object({
     id: z.number(),
     status: CoachingStatusSchema,
