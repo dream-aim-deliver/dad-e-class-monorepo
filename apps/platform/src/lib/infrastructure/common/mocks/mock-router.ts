@@ -56,7 +56,7 @@ import { getCoursePackages } from './procedures/course-packages';
 import { getCoachAvailability } from './procedures/coach-availability';
 import { scheduleCoachingSession } from './procedures/schedule-coaching-session';
 import { requestCoachingSession } from './procedures/request-coaching-session';
-import { addAvailability } from './procedures/availability';
+import { addAvailability, deleteAvailability } from './procedures/availability';
 import { listStudentCoachingSessions } from './procedures/student-coaching-sessions';
 import { createCoachingSessionReview } from './procedures/create-coaching-session-review';
 import { unscheduleCoachingSession } from './procedures/unschedule-coaching-session';
@@ -129,7 +129,8 @@ export const mockRouter = t.router({
     listNotifications,
     markNotificationsAsRead,
     listCoachCoachingSessions,
-    createNotification
+    createNotification,
+    deleteAvailability,
 });
 
 export type MockRouter = typeof mockRouter;

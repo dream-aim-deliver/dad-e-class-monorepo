@@ -14,3 +14,17 @@ export const addAvailability = t.procedure
             };
         },
     );
+
+const deleteAvailabilityMock: useCaseModels.TDeleteAvailabilitySuccessResponse['data'] =
+    {};
+
+export const deleteAvailability = t.procedure
+    .input(useCaseModels.DeleteAvailabilityRequestSchema)
+    .mutation(
+        async (): Promise<useCaseModels.TDeleteAvailabilityUseCaseResponse> => {
+            return {
+                success: true,
+                data: deleteAvailabilityMock,
+            };
+        },
+    );
