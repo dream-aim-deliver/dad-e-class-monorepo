@@ -87,7 +87,78 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 		topicsPresenter.present(topicsResponse, topicsViewModel);
 		// @ts-ignore - Presenter type compatibility issue
 		languagesPresenter.present(languagesResponse, languagesViewModel);
-	}, [professionalProfileResponse, personalProfileResponse, topicsResponse, languagesResponse, professionalPresenter, personalPresenter, topicsPresenter, languagesPresenter]);
+	}, [professionalProfileResponse, personalProfileResponse, topicsResponse, languagesResponse, professionalPresenter, personalPresenter, topicsPresenter, languagesPresenter, professionalProfileViewModel, personalProfileViewModel, topicsViewModel, languagesViewModel]);
+
+	// Extract profile data from view models (with defaults for loading state)
+	const personalProfile = personalProfileViewModel?.mode === 'default' ? personalProfileViewModel.data.profile : null;
+	const professionalProfile = professionalProfileViewModel?.mode === 'default' ? professionalProfileViewModel.data.profile : null;
+
+	// Transform avatarImage to TFileMetadataImage if it exists
+	const initialProfilePicture: fileMetadata.TFileMetadataImage | null = personalProfile?.avatarImage
+		? {
+			id: personalProfile.avatarImage.id,
+			name: personalProfile.avatarImage.name,
+			url: personalProfile.avatarImage.downloadUrl,
+			thumbnailUrl: personalProfile.avatarImage.downloadUrl,
+			size: personalProfile.avatarImage.size,
+			category: 'image' as const,
+			status: 'available' as const,
+		}
+		: null;
+
+	// Transform curriculumVitae to TFileMetadata (document type) if it exists
+	const initialCurriculumVitae: fileMetadata.TFileMetadata | null = professionalProfile?.curriculumVitae
+		? {
+			id: professionalProfile.curriculumVitae.id,
+			name: professionalProfile.curriculumVitae.name,
+			url: professionalProfile.curriculumVitae.downloadUrl,
+			size: professionalProfile.curriculumVitae.size,
+			category: 'document' as const,
+			status: 'available' as const,
+		}
+		: null;
+
+	// Save mutations with error handling (must be called unconditionally)
+	const savePersonalMutation = trpc.savePersonalProfile.useMutation({
+		onMutate: () => {
+			setErrorMessage(null);
+			setSuccessMessage(null);
+		},
+		onSuccess: () => {
+			setSuccessMessage(t('personalProfileSaved'));
+			setErrorMessage(null);
+		},
+		onError: (error) => {
+			setErrorMessage(error.message || t('failedToSavePersonal'));
+			setSuccessMessage(null);
+		}
+	});
+
+	const saveProfessionalMutation = trpc.saveProfessionalProfile.useMutation({
+		onMutate: () => {
+			setErrorMessage(null);
+			setSuccessMessage(null);
+		},
+		onSuccess: () => {
+			setSuccessMessage(t('professionalProfileSaved'));
+			setErrorMessage(null);
+		},
+		onError: (error) => {
+			setErrorMessage(error.message || t('failedToSaveProfessional'));
+			setSuccessMessage(null);
+		}
+	});
+
+	// Upload hooks (must be called unconditionally before any returns)
+	const profilePictureUpload = useProfilePictureUpload({
+		initialImage: initialProfilePicture,
+		onProgressUpdate: setUploadProgress,
+	});
+
+	const curriculumVitaeUpload = useCurriculumVitaeUpload({
+		initialDocument: initialCurriculumVitae,
+		onProgressUpdate: setUploadProgress,
+	});
 
 	// Loading state - wait for all view models to be ready
 	if (!professionalProfileViewModel || !personalProfileViewModel || !topicsViewModel || !languagesViewModel) {
@@ -107,81 +178,13 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 		return <DefaultError locale={locale} />;
 	}
 
-	// Extract profile data from view models
-	const personalProfile = personalProfileViewModel.data.profile;
-	const professionalProfile = professionalProfileViewModel.data.profile;
+	// Re-extract data after validation (now we know it's safe)
 	const allTopics = topicsViewModel.data.topics;
 	const allLanguages = languagesViewModel.data.languages;
 
-	// Transform avatarImage to TFileMetadataImage if it exists
-	const initialProfilePicture: fileMetadata.TFileMetadataImage | null = personalProfile.avatarImage
-		? {
-			id: personalProfile.avatarImage.id,
-			name: personalProfile.avatarImage.name,
-			url: personalProfile.avatarImage.downloadUrl,
-			thumbnailUrl: personalProfile.avatarImage.downloadUrl,
-			size: personalProfile.avatarImage.size,
-			category: 'image' as const,
-			status: 'available' as const,
-		}
-		: null;
-
-	// Transform curriculumVitae to TFileMetadata (document type) if it exists
-	const initialCurriculumVitae: fileMetadata.TFileMetadata | null = professionalProfile.curriculumVitae
-		? {
-			id: professionalProfile.curriculumVitae.id,
-			name: professionalProfile.curriculumVitae.name,
-			url: professionalProfile.curriculumVitae.downloadUrl,
-			size: professionalProfile.curriculumVitae.size,
-			category: 'document' as const,
-			status: 'available' as const,
-		}
-		: null;
-
-	// Save mutations with error handling
-	const savePersonalMutation = trpc.savePersonalProfile.useMutation({
-		onMutate: () => {
-			// Clear messages when mutation starts
-			setErrorMessage(null);
-			setSuccessMessage(null);
-		},
-		onSuccess: () => {
-			setSuccessMessage(t('personalProfileSaved'));
-			setErrorMessage(null);
-		},
-		onError: (error) => {
-			setErrorMessage(error.message || t('failedToSavePersonal'));
-			setSuccessMessage(null);
-		}
-	});
-
-	const saveProfessionalMutation = trpc.saveProfessionalProfile.useMutation({
-		onMutate: () => {
-			// Clear messages when mutation starts
-			setErrorMessage(null);
-			setSuccessMessage(null);
-		},
-		onSuccess: () => {
-			setSuccessMessage(t('professionalProfileSaved'));
-			setErrorMessage(null);
-		},
-		onError: (error) => {
-			setErrorMessage(error.message || t('failedToSaveProfessional'));
-			setSuccessMessage(null);
-		}
-	});
-
-	const profilePictureUpload = useProfilePictureUpload({
-		initialImage: initialProfilePicture,
-		onProgressUpdate: setUploadProgress,
-	});
-
-	const curriculumVitaeUpload = useCurriculumVitaeUpload({
-		initialDocument: initialCurriculumVitae,
-		onProgressUpdate: setUploadProgress,
-	});
-
 	const handleSavePersonal = async (profile: typeof personalProfile) => {
+		if (!profile) return;
+		
 		const savePayload = {
 			...profile,
 			languageIds: profile.languages.map(lang => {
@@ -204,6 +207,8 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 	};
 
 	const handleSaveProfessional = async (profile: typeof professionalProfile) => {
+		if (!profile) return;
+		
 		const savePayload = {
 			...profile,
 			skillIds: profile.skills.map(skill => {
@@ -265,7 +270,7 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 						onProfilePictureUploadComplete={profilePictureUpload.handleUploadComplete}
 						onProfilePictureDelete={profilePictureUpload.handleDelete}
 						curriculumVitaeFile={curriculumVitaeUpload.curriculumVitae}
-						onCurriculumVitaeUploadComplete={curriculumVitaeUpload.handleUploadComplete as any}
+						onCurriculumVitaeUploadComplete={curriculumVitaeUpload.handleUploadComplete as (file: fileMetadata.TFileMetadata) => void}
 						onCurriculumVitaeDelete={curriculumVitaeUpload.handleDelete}
 						uploadProgress={uploadProgress}
 					/>

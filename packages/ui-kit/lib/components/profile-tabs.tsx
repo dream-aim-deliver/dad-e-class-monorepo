@@ -36,10 +36,10 @@ export interface ProfileTabsProps extends isLocalAware {
   ) => Promise<fileMetadata.TFileMetadata>;
   profilePictureFile?: fileMetadata.TFileMetadataImage | null;
   onProfilePictureUploadComplete?: (file: fileMetadata.TFileMetadataImage) => void;
-  onProfilePictureDelete?: (id: string) => void;
+  onProfilePictureDelete: (id: string) => void;
   curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
   onCurriculumVitaeUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
-  onCurriculumVitaeDelete?: (id: string) => void;
+  onCurriculumVitaeDelete: (id: string) => void;
   uploadProgress?: number;
 }
 
