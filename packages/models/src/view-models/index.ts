@@ -82,3 +82,4 @@ export * from './get-coach-introduction-view-model';
 export * from './get-coach-profile-access-view-model';
 export * from './list-coach-courses-view-model';
 export * from './save-home-page-view-model';
+export * from './get-home-page-view-model';
