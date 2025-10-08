@@ -15,6 +15,7 @@ interface ConfirmTimeContentProps {
     onSubmit: () => void;
     isSubmitting?: boolean;
     submitError?: string;
+    buttonText: string;
 }
 
 export default function ConfirmTimeContent({
@@ -26,6 +27,7 @@ export default function ConfirmTimeContent({
     duration,
     isSubmitting = false,
     submitError,
+    buttonText,
 }: ConfirmTimeContentProps) {
     const locale = useLocale() as TLocale;
 
@@ -237,7 +239,7 @@ export default function ConfirmTimeContent({
                 variant="primary"
                 className="w-full"
                 onClick={submitTime}
-                text="Send request"
+                text={buttonText}
                 disabled={hasTimeError || !startTime || !endTime || isSubmitting}
             />
         </div>
