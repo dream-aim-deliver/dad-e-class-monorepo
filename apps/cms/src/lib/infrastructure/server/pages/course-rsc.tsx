@@ -7,7 +7,7 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import { getQueryClient, getServerTRPC, prefetch } from '../config/trpc/cms-server';
 import { trpc as trpcMock, HydrateClient, prefetch as prefetchMock } from '../config/trpc/server';
-
+import { trpc } from '../../client/trpc/cms-client';
 interface CourseServerComponentProps {
     slug: string;
     role?: string;
