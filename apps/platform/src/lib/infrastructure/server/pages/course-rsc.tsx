@@ -164,6 +164,11 @@ async function prefetchIntroductionData(
                     courseSlug: slug,
                 }),
             ),
+            prefetch(
+                trpc.getCourseStatus.queryOptions({
+                    courseSlug: slug,
+                }),
+            ),
         );
     }
 

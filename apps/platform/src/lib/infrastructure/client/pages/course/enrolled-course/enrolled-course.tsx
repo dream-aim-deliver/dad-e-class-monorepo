@@ -34,6 +34,9 @@ import EnrolledCourseStudents from './enrolled-course-students';
 import EnrolledCourseNotes from './enrolled-course-notes';
 import CoachCourseGroups from './coach-course-groups';
 // import { trpc as trpcMock } from '../../../trpc/client';
+import { useGetCourseStatusPresenter } from '../../../hooks/use-get-course-status-presenter';
+import { useCreateCourseReviewPresenter } from '../../../hooks/use-create-course-review-presenter';
+import { CourseCompletionModal, ReviewModal } from '@maany_shr/e-class-ui-kit';
 
 interface EnrolledCourseProps {
     roles: string[];
@@ -172,6 +175,75 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
         useGetEnrolledCourseDetailsPresenter(setCourseViewModel);
     // @ts-ignore
     coursePresenter.present(courseResponse, courseViewModel);
+
+    const [courseStatusResponse] = trpc.getCourseStatus.useSuspenseQuery({
+        courseSlug: props.courseSlug,
+    });
+    const [courseStatusViewModel, setCourseStatusViewModel] = useState<
+        viewModels.TGetCourseStatusViewModel | undefined
+    >(undefined);
+    const { presenter: courseStatusPresenter } = useGetCourseStatusPresenter(
+        setCourseStatusViewModel,
+    );
+    // @ts-ignore
+    courseStatusPresenter.present(courseStatusResponse, courseStatusViewModel);
+
+    const [courseReviewViewModel, setCourseReviewViewModel] = useState<
+        viewModels.TCreateCourseReviewViewModel | undefined
+    >(undefined);
+    const { presenter: courseReviewPresenter } = useCreateCourseReviewPresenter(
+        setCourseReviewViewModel,
+    );
+
+    const [showCompletionModal, setShowCompletionModal] = useState(false);
+    const [showReviewModal, setShowReviewModal] = useState(false);
+
+    const createReviewMutation = trpc.createCourseReview.useMutation();
+
+    useEffect(() => {
+        if (courseStatusViewModel?.mode === 'default' && props.currentRole === 'student') {
+            const isCompleted = courseStatusViewModel.data?.courseStatus.status === 'completed';
+            if (isCompleted) {
+                setShowCompletionModal(true);
+            }
+        }
+    }, [courseStatusViewModel, props.currentRole]);
+
+    const handleDownloadCertificate = () => {
+        console.log('Download certificate');
+    };
+
+    const handleRateCourse = () => {
+        setShowCompletionModal(false);
+        setShowReviewModal(true);
+    };
+
+    const handleCloseCompletionModal = () => {
+        setShowCompletionModal(false);
+    };
+
+    const handleCloseReviewModal = () => {
+        setShowReviewModal(false);
+    };
+
+    const handleSubmitReview = (rating: number, review: string) => {
+        createReviewMutation.mutate({
+            courseSlug: props.courseSlug,
+            rating,
+            review,
+        });
+    };
+
+    useEffect(() => {
+        if (createReviewMutation.data) {
+            // @ts-ignore
+            courseReviewPresenter.present(createReviewMutation.data, courseReviewViewModel);
+        }
+    }, [createReviewMutation.data]);
+
+    const handleSkipReview = () => {
+        setShowReviewModal(false);
+    };
 
     const locale = useLocale() as TLocale;
     const router = useRouter();
@@ -312,6 +384,33 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                     </Suspense>
                 </Tabs.Content>
             </Tabs.Root>
+            {showCompletionModal && courseViewModel?.mode === 'default' && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <CourseCompletionModal
+                        courseImage={courseViewModel.data.imageFile?.downloadUrl || ''}
+                        courseTitle={courseViewModel.data.title}
+                        completionDate={new Date().toISOString()}
+                        onClickDownloadCertificate={handleDownloadCertificate}
+                        onClickRateCourse={handleRateCourse}
+                        onClose={handleCloseCompletionModal}
+                        locale={locale}
+                    />
+                </div>
+            )}
+            {showReviewModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <ReviewModal
+                        onClose={handleCloseReviewModal}
+                        modalType="course"
+                        onSubmit={handleSubmitReview}
+                        onSkip={handleSkipReview}
+                        locale={locale}
+                        isLoading={createReviewMutation.isPending}
+                        isError={createReviewMutation.isError}
+                        submitted={courseReviewViewModel?.mode === 'default'}
+                    />
+                </div>
+            )}
         </div>
     );
 }
