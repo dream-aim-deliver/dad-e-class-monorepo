@@ -1485,7 +1485,6 @@ export const DE: TDictionary = {
       studentInteractions: 'Interaktionen zwischen Schülern',
       course: 'Kurs',
       selectACourse: 'Wählen Sie einen Kurs aus',
-      accessDeniedError: 'Zugriff verweigert. Nur Trainer und Administratoren können auf die Schülerdaten zugreifen.',
     },
     studentCoachingSessions: {
       yourCoachingSessions: 'Ihre Coaching-Sitzungen',

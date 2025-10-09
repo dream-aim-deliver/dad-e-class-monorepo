@@ -1517,7 +1517,6 @@ export const DictionarySchema = z.object({
       studentInteractions: z.string(),
       course: z.string(),
       selectACourse: z.string(),
-      accessDeniedError: z.string(),
     }),
     studentCoachingSessions: z.object({
       yourCoachingSessions: z.string(),
