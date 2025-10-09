@@ -8,10 +8,19 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 
 export const CategoryListSuccessSchema = z.object({
-    categories: z.array(z.object({
-        id: z.number(),
-        name: z.string(),
-    }))
+    categories: z.union([
+        z.array(
+            z.object({
+                id: z.number(),
+                name: z.string(),
+            })),
+        z.array(
+            z.object({
+                id: z.number(),
+                name: z.string(),
+                courseCount: z.number(),
+            }))
+    ])
 });
 
 export type TCategoryListSuccess = z.infer<typeof CategoryListSuccessSchema>;

@@ -19,7 +19,7 @@ export default function CMSSidebarLayout({
     locale,
 }: CMSSidebarLayoutProps) {
     return (
-        <div className="flex flex-row lg:gap-3 p-5">
+        <div className="flex flex-row lg:gap-3">
             <div
                 id="cms-sidebar"
                 className="sticky top-25 h-screen flex-shrink-0 z-[1000]"

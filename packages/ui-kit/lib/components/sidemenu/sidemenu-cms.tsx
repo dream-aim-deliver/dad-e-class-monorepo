@@ -3,6 +3,8 @@ import { FC } from 'react';
 import { IconButton } from '../icon-button';
 import { IconChevronRight } from '../icons/icon-chevron-right';
 import { IconChevronLeft } from '../icons/icon-chevron-left';
+import { Dropdown } from '../dropdown';
+import { TLocale } from '@maany_shr/e-class-translations';
 import { cn } from '../../utils/style-utils';
 
 export interface SideMenuCMSProps {
@@ -12,6 +14,9 @@ export interface SideMenuCMSProps {
     className?: string;
     isCollapsed?: boolean;
     onClickToggle?: (isCollapsed: boolean) => void;
+    locale?: TLocale;
+    availableLocales?: TLocale[];
+    onChangeLanguage?: (locale: TLocale) => void;
 }
 
 /**
@@ -44,41 +49,81 @@ export const SideMenuCMS: FC<SideMenuCMSProps> = ({
     isCollapsed = false,
     children,
     onClickToggle,
+    locale,
+    availableLocales = [],
+    onChangeLanguage,
 }) => {
+    const languageOptions = availableLocales.map((loc) => ({
+        label: loc.toUpperCase(),
+        value: loc,
+    }));
+
+    const handleLocaleChange = (selected: string | string[]) => {
+        if (
+            typeof selected === 'string' &&
+            availableLocales.includes(selected as TLocale) &&
+            onChangeLanguage
+        ) {
+            onChangeLanguage(selected as TLocale);
+        }
+    };
     return (
         <div
             className={cn(
                 'bg-card-fill rounded-medium border-[1px] border-card-stroke flex flex-col gap-4 py-6 items-center relative overflow-hidden transition-all duration-500 ease-in-out',
-                isCollapsed ? 'w-[4rem] px-4 gap-3' : `w-[18rem] px-6`,
+                isCollapsed ? 'w-[4rem] px-4 gap-3' : `w-[20rem] px-5`,
                 className,
             )}
             data-testid="cms-menu-container"
         >
             {/* Platform Branding Section */}
-            <div className={cn('flex flex-col w-full gap-4 h-auto items-start')}>
-                {platformLogoUrl && (
-                    <div className={cn('flex items-center flex-shrink-0')}>
-                        <img
-                            src={platformLogoUrl}
-                            alt={`${platformName} logo`}
-                            className={cn(
-                                'object-contain',
-                                isCollapsed ? 'w-8 h-8' : 'w-12 h-12'
-                            )}
+            <div className="flex flex-row justify-between items-start w-full">
+                <div className={cn('flex flex-col gap-4 h-auto items-start')}>
+                    {platformLogoUrl && (
+                        <div className={cn('flex items-center flex-shrink-0')}>
+                            <img
+                                src={platformLogoUrl}
+                                alt={`${platformName} logo`}
+                                className={cn(
+                                    'object-contain',
+                                    isCollapsed ? 'w-8 h-8' : 'w-12 h-12',
+                                )}
+                            />
+                        </div>
+                    )}
+                    {!isCollapsed && (
+                        <div className="flex flex-col items-start justify-center min-w-0">
+                            <p className="text-text-primary text-md font-bold leading-[150%] truncate">
+                                {platformName}
+                            </p>
+                        </div>
+                    )}
+                </div>
+                {/* Language Selector */}
+                {!isCollapsed && locale && availableLocales.length > 1 && (
+                    <div className="flex items-start flex-shrink-0">
+                        <Dropdown
+                            type="simple"
+                            options={languageOptions}
+                            onSelectionChange={(selected) => {
+                                if (
+                                    typeof selected === 'string' &&
+                                    availableLocales.includes(
+                                        selected as TLocale,
+                                    )
+                                ) {
+                                    handleLocaleChange(selected as TLocale);
+                                }
+                            }}
+                            text={{ simpleText: '' }}
+                            defaultValue={locale}
                         />
-                    </div>
-                )}
-                {!isCollapsed && (
-                    <div className="flex flex-col items-start justify-center min-w-0 flex-1">
-                        <p className="text-text-primary text-md font-bold leading-[150%] truncate w-full">
-                            {platformName}
-                        </p>
                     </div>
                 )}
             </div>
 
             {/* Menu Items */}
-            <div className="flex flex-col items-end gap-2 self-stretch mb-[1.5rem] overflow-y-auto flex-1">
+            <div className="flex flex-col items-end self-stretch overflow-y-auto flex-1">
                 {children}
             </div>
 

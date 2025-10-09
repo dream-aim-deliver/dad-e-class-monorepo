@@ -14,6 +14,8 @@ const ListTopicsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
         id: z.number(),
         name: z.string(),
         slug: z.string(),
+        courseCount: z.number().optional().nullable(),
+        coachCount: z.number().optional().nullable(),
     }))
 }));
 

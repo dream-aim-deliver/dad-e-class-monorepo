@@ -51,7 +51,9 @@ export default class TopicsPresenter extends BasePresenter<
                     id: topic.id,
                     name: topic.name,
                     slug: topic.slug,
-                    url: `/offers?topics=${topic.slug}`
+                    url: `/offers?topics=${topic.slug}`,
+                    courseCount: topic.courseCount ?? 0,
+                    coachCount: topic.coachCount ?? 0,
                 }))
             }
         };

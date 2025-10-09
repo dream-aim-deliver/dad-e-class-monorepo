@@ -31,17 +31,15 @@ export const SideMenuSection: FC<SideMenuSectionProps> = ({
     className,
 }) => {
     return (
-        <div className={cn('flex flex-col gap-2 w-full', className)}>
+        <div className={cn('flex flex-col w-full', className)}>
             {title && !isCollapsed && (
                 <div className="px-4 py-2">
-                    <p className="text-text-secondary text-sm font-bold leading-[150%]">
-                        {title}
-                    </p>
+                    <div className="h-[1px] bg-divider my-1" />
+
+                    <h5>{title}</h5>
                 </div>
             )}
-            <div className="flex flex-col gap-1 w-full">
-                {children}
-            </div>
+            <div className="flex flex-col gap-1 w-full">{children}</div>
         </div>
     );
 };
