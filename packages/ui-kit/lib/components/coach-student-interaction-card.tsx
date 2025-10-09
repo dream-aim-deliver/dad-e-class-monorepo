@@ -15,12 +15,14 @@ interface CoachStudentInteractionCardProps extends isLocalAware {
   onViewLessonsClick: (moduleId: string, lessonId: string) => void;
   locale: TLocale;
   modules: TListStudentInteractionsSuccess['modules'];
+  onDeserializationError: (message: string, error: Error) => void;
 }
 
 export const  CoachStudentInteractionCard = ({
   modules,
   locale,
   onViewLessonsClick,
+  onDeserializationError,
 }: CoachStudentInteractionCardProps) => {
   const dictionary = getDictionary(locale);
   return (
@@ -62,13 +64,11 @@ export const  CoachStudentInteractionCard = ({
               </span>
             }
           >
-            <h4 className="text-text-primary md:text-xl text-md font-bold">{dictionary.components.courseMaterialsAccordion.module} {module.position}: {module.title}</h4>
+            <h4 className="text-text-primary md:text-xl text-md font-bold">{dictionary.components.coachStudentIneractionCard.module} {module.position}: {module.title}</h4>
           </AccordionTrigger>
 
           <AccordionContent value={`module-${module.id}`} className="pt-4 pb-6">
             {/* Nested Lessons Accordion */}
-            {/* <hr className="flex-grow border-t border-divider mb-4" /> */}
-
             <div className="pb-2">
               <Accordion
                 type="multiple"
@@ -108,7 +108,7 @@ export const  CoachStudentInteractionCard = ({
                     >
                       <div className="flex items-center justify-between gap-4 flex-1">
                         <div className="flex items-center gap-4">
-                          <h5 className="text-text-primary md:text-lg text-sm font-bold">{dictionary.components.courseMaterialsAccordion.lesson} {lesson.position}: {lesson.title}</h5>
+                          <h5 className="text-text-primary md:text-lg text-sm font-bold">{dictionary.components.coachStudentIneractionCard.lesson} {lesson.position}: {lesson.title}</h5>
                         </div>
                         <Button
                           onClick={(e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -116,7 +116,7 @@ export const  CoachStudentInteractionCard = ({
                             onViewLessonsClick(module.id, lesson.id);
                           }}
                           variant='text'
-                          text='View Lesson'
+                          text={dictionary.components.coachStudentIneractionCard.viewLesson}
                         />
                       </div>
                     </AccordionTrigger>
@@ -135,16 +135,14 @@ export const  CoachStudentInteractionCard = ({
                                 <Button
                                   hasIconLeft
                                   iconLeft={<IconTextInput />}
-                                  text="Text Input"
+                                  text={dictionary.components.coachStudentIneractionCard.textInput}
                                   variant="text"
                                   className="p-0 text-base-white hover:text-base-white"
                                 />
                                 <RichTextRenderer
                                   content={input?.helperText}
                                   className="text-text-secondary"
-                                  onDeserializationError={(message: string, error: Error) => {
-                                    console.error('Deserialization error:', message, error);
-                                  }}
+                                  onDeserializationError={onDeserializationError}
                                 />
                               </div>
 
@@ -153,24 +151,21 @@ export const  CoachStudentInteractionCard = ({
                               {/* Student Answer Section */}
                               <div className="flex flex-col gap-2 items-start">
                                 <Button
-                                 
-                                  text="Student Reply"
+                                  text={dictionary.components.coachStudentIneractionCard.studentReply}
                                   variant="text"
                                   className="p-0 text-base-white hover:text-base-white"
                                 />
                                 <RichTextRenderer
                                   content={input?.progress?.answer ?? ''}
                                   className="text-text-secondary"
-                                  onDeserializationError={(message: string, error: Error) => {
-                                    console.error('Deserialization error:', message, error);
-                                  }}
+                                  onDeserializationError={onDeserializationError}
                                 />
                               </div>
                             </div>
                           ))
                         ) : (
                           <p className="text-text-secondary text-sm">
-                            {dictionary.pages.student.noInteractionsYet}
+                            {dictionary.components.coachStudentIneractionCard.noInteractionsYet}
                           </p>
                         )}
                       </div>

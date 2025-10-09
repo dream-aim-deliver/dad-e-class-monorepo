@@ -16,10 +16,11 @@ import {
     UserAvatar,
 } from '@maany_shr/e-class-ui-kit';
 import StudentInteractionsTab from './student-interactions-tab';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { trpc } from '../../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCoachStudentCoursesPresenter } from '../../hooks/use-list-coach-student-courses-presenter';
+import { useGetPersonalProfilePresenter } from '../../hooks/use-get-personal-profile-presenter';
 
 interface SingleStudentProps {
     slug: string;
@@ -76,6 +77,7 @@ export default function SingleStudent({
     courseSlug,
 }: SingleStudentProps) {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const locale = useLocale() as TLocale;
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
@@ -93,8 +95,24 @@ export default function SingleStudent({
 
     const tabContentClass = 'mt-10';
 
+    // Function to update URL searchParams
+    const updateSearchParams = (newCourseSlug: string) => {
+        const current = new URLSearchParams(Array.from(searchParams.entries()));
+        current.set('courseSlug', newCourseSlug);
+        
+        // Keep other search params intact
+        const search = current.toString();
+        const query = search ? `?${search}` : '';
+        
+        router.push(`${window.location.pathname}${query}`);
+    };
+
     const [viewModel, setViewModel] = useState<
         viewModels.TListCoachStudentCoursesViewModel | undefined
+    >(undefined);
+
+    const [personalProfileViewModel, setPersonalProfileViewModel] = useState<
+        viewModels.TGetPersonalProfileViewModel | undefined
     >(undefined);
     
     const [selectedCourse, setSelectedCourse] = useState<string>(courseSlug);
@@ -116,9 +134,16 @@ export default function SingleStudent({
             studentUsername: slug,
         });
 
-    const { presenter } = useListCoachStudentCoursesPresenter(setViewModel);
+    const [personalProfileResponse] =
+        trpc.getPersonalProfile.useSuspenseQuery({
+            username: slug,
+        });
 
-    // Initialize selected course data when courses are loaded - moved before conditional returns
+    const { presenter } = useListCoachStudentCoursesPresenter(setViewModel);
+    
+    const { presenter: personalProfilePresenter } = useGetPersonalProfilePresenter(setPersonalProfileViewModel);
+
+    // Initialize selected course data when courses are loaded
     const currentSelectedCourseData = useMemo(() => {
         if (viewModel?.mode === 'default' && viewModel.data.courses.length > 0) {
             return viewModel.data.courses.find(c => c.slug === selectedCourse) || null;
@@ -129,26 +154,27 @@ export default function SingleStudent({
     //@ts-ignore
     presenter.present(listCoachStudentCoursesResponse, viewModel);
 
-    if (!viewModel) {
+    //@ts-ignore
+    personalProfilePresenter.present(personalProfileResponse, personalProfileViewModel);
+
+    if (!viewModel || !personalProfileViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
-    if (viewModel.mode === 'kaboom') {
+    if (viewModel.mode === 'kaboom' || personalProfileViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
     }
 
-    if (viewModel.mode === 'not-found') {
+    if (viewModel.mode === 'not-found' || personalProfileViewModel.mode === 'not-found') {
         return <DefaultNotFound locale={locale} />;
     }
 
     if (viewModel.mode === 'invalid') {
-        // TODO: Decide if we can pass the error message directly
-        return viewModel.data.message;
+        return <DefaultError locale={locale} description={viewModel.data.message} />
     }
 
     const courses = viewModel.data.courses;
-
-    console.log("Current Selected Course Data: ", courses);
+    const profile = personalProfileViewModel.data.profile;
 
     return (
         <div className="flex flex-col space-y-4">
@@ -182,11 +208,12 @@ export default function SingleStudent({
                 <div className='flex items-center justify-between'>
                     <div className='flex items-center gap-4'>
                         <UserAvatar
-                            fullName={slug}
+                            fullName={`${profile.name} ${profile.surname}`}
+                            imageUrl={profile?.avatarImage?.downloadUrl}
                             size="xLarge"
                         />
                         <h1 className='text-text-primary md:text-4xl text-2xl font-bold'>
-                            {slug}
+                            {profile.name} {profile.surname}
                         </h1>
                     </div>
                     <div className='flex items-center gap-4'>
@@ -214,11 +241,13 @@ export default function SingleStudent({
                                         setSelectedCourse(selected);
                                         const courseData = courses.find(c => c.slug === selected);
                                         setSelectedCourseData(courseData || null);
+                                        // Update URL searchParams
+                                        updateSearchParams(selected);
                                     }
                                 }}
                                 defaultValue={selectedCourse}
                                 text={{
-                                    simpleText: "Select a course"
+                                    simpleText: t('selectACourse')
                                 }}
                             />
                         </div>
