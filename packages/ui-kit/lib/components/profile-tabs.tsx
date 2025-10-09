@@ -42,6 +42,7 @@ export interface ProfileTabsProps extends isLocalAware {
   onCurriculumVitaeUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
   onCurriculumVitaeDelete: (id: string) => void;
   curriculumVitaeUploadProgress?: number;
+  isSaving?: boolean;
 }
 
 /**
@@ -81,6 +82,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   onCurriculumVitaeDelete,
   curriculumVitaeUploadProgress,
   locale,
+  isSaving = false,
 }) => {
   const [activeTab, setActiveTab] = useState('personal');
   const hasProfessionalProfile = Boolean(professionalProfile);
@@ -99,6 +101,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           availableLanguages={availableLanguages}
           locale={locale as TLocale}
           uploadProgress={profilePictureUploadProgress}
+          isSaving={isSaving}
         />
       </div>
     );
@@ -131,7 +134,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             onFileDelete={onProfilePictureDelete}
             availableLanguages={availableLanguages}
             locale={locale as TLocale}
-
+            isSaving={isSaving}
           />
         </TabContent>
 
@@ -146,6 +149,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             onFileDelete={onCurriculumVitaeDelete}
             locale={locale as TLocale}
             uploadProgress={curriculumVitaeUploadProgress}
+            isSaving={isSaving}
           />
         </TabContent>
       </Tabs.Root>
