@@ -1482,7 +1482,6 @@ export const EN: TDictionary = {
       studentInteractions: 'Student interactions',
       course: 'Course',
       selectACourse: 'Select a course',
-      accessDeniedError: 'Access denied. Only coaches and admins can access student details.',
     },
     studentCoachingSessions: {
       yourCoachingSessions: 'Your coaching sessions',
