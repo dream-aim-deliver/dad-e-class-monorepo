@@ -58,7 +58,7 @@ export default function Layout({
 
     return (
         <div
-            className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center px-15"
+            className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center px-4"
             style={{
                 // Temporary linear gradient to match the Figma. Should be uploaded this dark.
                 backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${backgroundImageUrl})`,

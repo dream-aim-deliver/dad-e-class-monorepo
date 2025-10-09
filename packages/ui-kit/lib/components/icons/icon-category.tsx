@@ -1,0 +1,17 @@
+import { type IconProps, generateClassesForIcon } from './icon';
+
+/**
+ * IconCategory
+ * @usage <IconCategory />
+ */
+export const IconCategory = (props: IconProps) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            className={generateClassesForIcon(props)}
+        >
+            <path d="M20 5H11.414L9.707 3.293C9.61426 3.2 9.50406 3.12624 9.38273 3.07596C9.2614 3.02568 9.13134 2.99986 9 3H4C2.897 3 2 3.897 2 5V19C2 20.103 2.897 21 4 21H20C21.103 21 22 20.103 22 19V7C22 5.897 21.103 5 20 5ZM4 19V7H20L20.002 19H4Z" />
+        </svg>
+    );
+};

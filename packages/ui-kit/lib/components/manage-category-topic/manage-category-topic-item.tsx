@@ -9,6 +9,7 @@ export interface ManageCategoryTopicItemProps extends isLocalAware {
     title: string;
     coursesCount: number;
     coachesCount?: number;
+    type: 'category' | 'topic';
     onEdit: () => void;
     onDelete: () => void;
 }
@@ -35,6 +36,7 @@ export const ManageCategoryTopicItem = ({
     title,
     coursesCount,
     coachesCount,
+    type = 'category',
     locale,
     onEdit,
     onDelete,
@@ -67,8 +69,8 @@ export const ManageCategoryTopicItem = ({
                         text={`${coursesCount} ${coursesText}`}
                     />
 
-                    {/* Optional coaches badge */}
-                    {typeof coachesCount === 'number' && coachesCount > 0 && (
+                    {/* Coaches badge - only show for topics */}
+                    {type === 'topic' && typeof coachesCount === 'number' && (
                         <Badge
                             variant="info"
                             size="medium"

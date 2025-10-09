@@ -60,3 +60,17 @@ export { IconTextInput } from './icon-text-input';
 export { IconTrashAlt } from './icon-trash-alt';
 export { IconVideo } from './icon-video';
 export { IconWarning } from './icon-warning';
+export { IconPackageCourseBundle } from './icon-package-course-bundle';
+export { IconCategory } from './icon-category';
+export { IconTopic } from './icon-topic';
+export { IconPreCourseAssessmentForm } from './icon-pre-course-assessment-form';
+export { IconCoachSkillForm } from './icon-coach-skill-form';
+export { IconCoupon } from './icon-coupon';
+export { IconPayments } from './icon-payments';
+export { IconSendEmail } from './icon-send-email';
+export { IconSettings } from './icon-settings';
+export { IconHome } from './icon-home';
+export { IconOffersPage } from './icon-offers-page';
+export { IconFaq } from './icon-faq';
+export { IconFooter } from './icon-footer';
+

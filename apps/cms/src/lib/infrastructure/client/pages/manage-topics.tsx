@@ -383,7 +383,7 @@ export default function ManageTopics({
     ];
 
     return (
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
             <Breadcrumbs items={breadcrumbItems} />
             <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
                 <div className="flex flex-row items-center gap-3">
@@ -403,16 +403,17 @@ export default function ManageTopics({
 
                 <ManageCategoryTopicList locale={appLocale}>
                     {topics.map((topic) => {
-                        const courseCount =
-                            topicsWithCourseCount.find(
-                                (t) => t.topicId === topic.id,
-                            )?.coursesCount || 0;
+                        // Get counts from view model
+                        const courseCount = 'courseCount' in topic ? topic.courseCount ?? 0 : 0;
+                        const coachCount = 'coachCount' in topic ? topic.coachCount ?? 0 : 0;
 
                         return (
                             <ManageCategoryTopicItem
                                 key={topic.id}
                                 title={topic.name}
                                 coursesCount={courseCount}
+                                coachesCount={coachCount}
+                                type="topic"
                                 locale={appLocale}
                                 onEdit={() => handleOpenEditModal(topic)}
                                 onDelete={() => handleOpenDeleteModal(topic.id)}

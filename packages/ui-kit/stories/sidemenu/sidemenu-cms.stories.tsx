@@ -136,6 +136,7 @@ const websiteContentItems: MenuItem[] = [
 const SideMenuCMSInteractive = (props: React.ComponentProps<typeof SideMenuCMS>) => {
   const [isCollapsed, setIsCollapsed] = useState(props.isCollapsed || false);
   const [activeItem, setActiveItem] = useState('');
+  const [currentLocale, setCurrentLocale] = useState<TLocale>(props.locale || 'en');
 
   // Handle Item Click
   const handleItemClick = (item: MenuItem) => {
@@ -149,8 +150,20 @@ const SideMenuCMSInteractive = (props: React.ComponentProps<typeof SideMenuCMS>)
     setIsCollapsed(!isCollapsed);
   };
 
+  // Handle language change
+  const handleLanguageChange = (newLocale: TLocale) => {
+    setCurrentLocale(newLocale);
+    console.log('Language changed to:', newLocale);
+  };
+
   return (
-    <SideMenuCMS {...props} isCollapsed={isCollapsed} onClickToggle={handleToggle}>
+    <SideMenuCMS
+      {...props}
+      isCollapsed={isCollapsed}
+      onClickToggle={handleToggle}
+      locale={currentLocale}
+      onChangeLanguage={handleLanguageChange}
+    >
       {createCMSMenuItems().map((group, i) => (
         <div key={i} className="flex flex-col w-full">
           <div className="h-[1px] bg-divider my-2" />
@@ -199,6 +212,7 @@ const baseArgs = {
   platformLogoUrl:
     'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748270861/a_wy7cuh_kwevw6.png',
   locale: 'en' as TLocale,
+  availableLocales: ['en', 'de'] as TLocale[],
 };
 
 // Default Story - Just Do Ad Platform
@@ -240,5 +254,25 @@ export const GermanLocale: StoryObj<typeof meta> = {
 export const WithoutLogo: StoryObj<typeof meta> = {
   args: {
     platformName: 'My Platform',
+    locale: 'en' as TLocale,
+    availableLocales: ['en', 'de'] as TLocale[],
+  },
+};
+
+// With Language Selector
+export const WithLanguageSelector: StoryObj<typeof meta> = {
+  args: {
+    ...baseArgs,
+    platformName: 'Just Do Ad',
+    availableLocales: ['en', 'de', 'es', 'fr'] as TLocale[],
+  },
+};
+
+// Single Language (No Selector)
+export const SingleLanguage: StoryObj<typeof meta> = {
+  args: {
+    ...baseArgs,
+    platformName: 'Just Do Ad',
+    availableLocales: ['en'] as TLocale[],
   },
 };

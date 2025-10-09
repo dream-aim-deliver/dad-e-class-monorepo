@@ -1,22 +1,32 @@
 'use client';
 import {
-    IconAccountInformation,
     IconCoachingOffer,
     IconCoachingSession,
     IconCourse,
-    IconDashboard,
-    IconEdit,
-    IconFile,
     IconGroup,
-    IconSales,
     SideMenuCMS,
     SideMenuItem,
     SideMenuSection,
+    IconPackageCourseBundle,
+    IconCategory,
+    IconNotes,
+    IconTopic,
+    IconPreCourseAssessmentForm,
+    IconCoachSkillForm,
+    IconCoupon,
+    IconPayments,
+    IconSendEmail,
+    IconSettings,
+    IconHome,
+    IconOffersPage,
+    IconFaq,
+    IconFooter,
 } from '@maany_shr/e-class-ui-kit';
 import { MenuItem } from 'packages/ui-kit/lib/components/sidemenu/sidemenu-item';
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { useTranslations } from 'next-intl';
 
 interface CMSSidebarProps {
     platformName: string;
@@ -24,6 +34,8 @@ interface CMSSidebarProps {
     platformSlug: string;
     platformLocale: string;
     locale: TLocale;
+    availableLocales?: TLocale[];
+    onChangeLanguage?: (locale: TLocale) => void;
 }
 
 const CMSSidebar = ({
@@ -32,9 +44,24 @@ const CMSSidebar = ({
     platformSlug,
     platformLocale,
     locale,
+    availableLocales = ['en', 'de'],
+    onChangeLanguage,
 }: CMSSidebarProps) => {
     const router = useRouter();
     const pathname = usePathname();
+    const t = useTranslations('pages.cmsSidebarLayout');
+
+    const handleLanguageChange = (newLocale: TLocale) => {
+        if (onChangeLanguage) {
+            onChangeLanguage(newLocale);
+        } else {
+            // URL structure: /{locale}/platform/{platformSlug}/{platformLocale}/...
+            const pathSegments = pathname.split('/');
+            // Replace the platformLocale (index 4) with the new locale
+            pathSegments[4] = newLocale;
+            router.push(pathSegments.join('/'));
+        }
+    };
 
     // Base path for all CMS routes
     const basePath = `/${locale}/platform/${platformSlug}/${platformLocale}`;
@@ -62,24 +89,24 @@ const CMSSidebar = ({
 
     // Create dynamic route to label mapping
     const routeToLabelMap: { [key: string]: string } = {
-        [routeMap.allCourses]: 'All Courses',
-        [routeMap.packages]: 'Packages',
-        [routeMap.categories]: 'Categories',
-        [routeMap.topics]: 'Topics',
-        [routeMap.preCourseAssessment]: 'Pre-Course Assessment form',
-        [routeMap.termsConditions]: 'Terms & Conditions form',
-        [routeMap.coachingOffering]: 'Coaching offering',
-        [routeMap.coachingSessions]: 'Coaching sessions',
-        [routeMap.coachSkills]: 'Coach skills form',
-        [routeMap.coupons]: 'Coupons',
-        [routeMap.users]: 'Users',
-        [routeMap.transactions]: 'Transactions',
-        [routeMap.sendNotification]: 'Send Notification',
-        [routeMap.settings]: 'Settings',
-        [routeMap.homepage]: 'Homepage',
-        [routeMap.offers]: 'Offers',
-        [routeMap.aboutPage]: 'About Page',
-        [routeMap.footer]: 'Footer',
+        [routeMap.allCourses]: t('allCourses'),
+        [routeMap.packages]: t('packages'),
+        [routeMap.categories]: t('categories'),
+        [routeMap.topics]: t('topics'),
+        [routeMap.preCourseAssessment]: t('preCourseAssessmentForm'),
+        [routeMap.termsConditions]: t('termsConditionsForm'),
+        [routeMap.coachingOffering]: t('coachingOffering'),
+        [routeMap.coachingSessions]: t('coachingSessions'),
+        [routeMap.coachSkills]: t('coachSkillsForm'),
+        [routeMap.coupons]: t('coupons'),
+        [routeMap.users]: t('users'),
+        [routeMap.transactions]: t('transactions'),
+        [routeMap.sendNotification]: t('sendNotification'),
+        [routeMap.settings]: t('settings'),
+        [routeMap.homepage]: t('homepage'),
+        [routeMap.offers]: t('offers'),
+        [routeMap.aboutPage]: t('aboutPage'),
+        [routeMap.footer]: t('footer'),
     };
 
     const createMainMenuItems = (): MenuItem[][] => {
@@ -88,36 +115,32 @@ const CMSSidebar = ({
             [
                 {
                     icon: <IconCourse />,
-                    label: 'All Courses',
+                    label: t('allCourses'),
                     onClick: () => router.push(routeMap.allCourses),
-                    notificationCount: 18,
                 },
                 {
-                    icon: <IconDashboard />,
-                    label: 'Packages',
+                    icon: <IconPackageCourseBundle />,
+                    label: t('packages'),
                     onClick: () => router.push(routeMap.packages),
-                    notificationCount: 2,
                 },
                 {
-                    icon: <IconDashboard />,
-                    label: 'Categories',
+                    icon: <IconCategory />,
+                    label: t('categories'),
                     onClick: () => router.push(routeMap.categories),
-                    notificationCount: 3,
                 },
                 {
-                    icon: <IconDashboard />,
-                    label: 'Topics',
+                    icon: <IconTopic />,
+                    label: t('topics'),
                     onClick: () => router.push(routeMap.topics),
-                    notificationCount: 12,
                 },
                 {
-                    icon: <IconEdit />,
-                    label: 'Pre-Course Assessment form',
+                    icon: <IconPreCourseAssessmentForm />,
+                    label: t('preCourseAssessmentForm'),
                     onClick: () => router.push(routeMap.preCourseAssessment),
                 },
                 {
-                    icon: <IconFile />,
-                    label: 'Terms & Conditions form',
+                    icon: <IconNotes />,
+                    label: t('termsConditionsForm'),
                     onClick: () => router.push(routeMap.termsConditions),
                 },
             ],
@@ -125,47 +148,45 @@ const CMSSidebar = ({
             [
                 {
                     icon: <IconCoachingOffer />,
-                    label: 'Coaching offering',
+                    label: t('coachingOffering'),
                     onClick: () => router.push(routeMap.coachingOffering),
-                    notificationCount: 8,
                 },
                 {
                     icon: <IconCoachingSession />,
-                    label: 'Coaching sessions',
+                    label: t('coachingSessions'),
                     onClick: () => router.push(routeMap.coachingSessions),
                 },
                 {
-                    icon: <IconEdit />,
-                    label: 'Coach skills form',
+                    icon: <IconCoachSkillForm />,
+                    label: t('coachSkillsForm'),
                     onClick: () => router.push(routeMap.coachSkills),
                 },
             ],
             // Other management items
             [
                 {
-                    icon: <IconSales />,
-                    label: 'Coupons',
+                    icon: <IconCoupon />,
+                    label: t('coupons'),
                     onClick: () => router.push(routeMap.coupons),
-                    notificationCount: 23,
                 },
                 {
                     icon: <IconGroup />,
-                    label: 'Users',
+                    label: t('users'),
                     onClick: () => router.push(routeMap.users),
                 },
                 {
-                    icon: <IconSales />,
-                    label: 'Transactions',
+                    icon: <IconPayments />,
+                    label: t('transactions'),
                     onClick: () => router.push(routeMap.transactions),
                 },
                 {
-                    icon: <IconEdit />,
-                    label: 'Send Notification',
+                    icon: <IconSendEmail />,
+                    label: t('sendNotification'),
                     onClick: () => router.push(routeMap.sendNotification),
                 },
                 {
-                    icon: <IconAccountInformation />,
-                    label: 'Settings',
+                    icon: <IconSettings />,
+                    label: t('settings'),
                     onClick: () => router.push(routeMap.settings),
                 },
             ],
@@ -176,23 +197,23 @@ const CMSSidebar = ({
     const createWebsiteContentItems = (): MenuItem[] => {
         return [
             {
-                icon: <IconGroup />,
-                label: 'Homepage',
+                icon: <IconHome />,
+                label: t('homepage'),
                 onClick: () => router.push(routeMap.homepage),
             },
             {
-                icon: <IconSales />,
-                label: 'Offers',
+                icon: <IconOffersPage />,
+                label: t('offers'),
                 onClick: () => router.push(routeMap.offers),
             },
             {
-                icon: <IconFile />,
-                label: 'About Page',
+                icon: <IconFaq />,
+                label: t('aboutPage'),
                 onClick: () => router.push(routeMap.aboutPage),
             },
             {
-                icon: <IconFile />,
-                label: 'Footer',
+                icon: <IconFooter />,
+                label: t('footer'),
                 onClick: () => router.push(routeMap.footer),
             },
         ];
@@ -224,10 +245,13 @@ const CMSSidebar = ({
             platformLogoUrl={platformLogoUrl}
             isCollapsed={isCollapsed}
             onClickToggle={handleToggle}
+            locale={platformLocale as TLocale}
+            availableLocales={availableLocales}
+            onChangeLanguage={handleLanguageChange}
         >
             {createMainMenuItems().map((group, i) => (
                 <div key={i} className="flex flex-col w-full">
-                    <div className="h-[1px] bg-divider my-2" />
+                    <div className="h-[1px] bg-divider my-1" />
                     {group.map((item) => (
                         <SideMenuItem
                             key={item.label}
@@ -243,8 +267,11 @@ const CMSSidebar = ({
             ))}
 
             {/* Website Content Section */}
-            <div className="h-[1px] bg-divider my-2" />
-            <SideMenuSection title="Website content" isCollapsed={isCollapsed}>
+            <div className="h-[1px] bg-divider" />
+            <SideMenuSection
+                title={t('websiteContentSection')}
+                isCollapsed={isCollapsed}
+            >
                 {createWebsiteContentItems().map((item) => (
                     <SideMenuItem
                         key={item.label}
