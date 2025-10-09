@@ -1478,5 +1478,11 @@ export const DE: TDictionary = {
       createTopic: 'Neues Thema',
       deleteTopicConfirmation: 'Sind Sie sicher, dass Sie dieses Thema löschen möchten?',
     },
+    manageCategories: {
+      title: 'Kategorien verwalten',
+      description: 'Maximal 4 Themen für jede Plattform',
+      createCategory: 'Neue Kategorie',
+      deleteCategoryConfirmation: 'Bist du sicher, dass du diese Kategorie löschen möchtest?',
+    },
   },
 };

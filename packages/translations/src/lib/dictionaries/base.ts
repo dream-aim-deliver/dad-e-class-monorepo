@@ -1509,6 +1509,12 @@ export const DictionarySchema = z.object({
     description: z.string(),
     createTopic: z.string(),
     deleteTopicConfirmation: z.string(),
+  }),
+  manageCategories: z.object({
+    title: z.string(),
+    description: z.string(),
+    createCategory: z.string(),
+    deleteCategoryConfirmation: z.string(),
   })
   }),
 });

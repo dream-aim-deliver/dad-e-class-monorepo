@@ -67,24 +67,24 @@ const CMSSidebar = ({
     const basePath = `/${locale}/platform/${platformSlug}/${platformLocale}`;
 
     const routeMap = {
-        allCourses: `${basePath}/courses`,
-        packages: `${basePath}/packages`,
-        categories: `${basePath}/categories`,
+        allCourses: `${basePath}/manage-courses`,
+        packages: `${basePath}/manage-packages`,
+        categories: `${basePath}/manage-categories`,
         topics: `${basePath}/manage-topics`,
         preCourseAssessment: `${basePath}/pre-course-assessment-form`,
         termsConditions: `${basePath}/terms-conditions-form`,
         coachingOffering: `${basePath}/coaching-offering`,
         coachingSessions: `${basePath}/coaching-sessions`,
         coachSkills: `${basePath}/coach-skills-form`,
-        coupons: `${basePath}/coupons`,
-        users: `${basePath}/users`,
+        coupons: `${basePath}/manage-coupons`,
+        users: `${basePath}/manage-users`,
         transactions: `${basePath}/transactions`,
         sendNotification: `${basePath}/send-notification`,
         settings: `${basePath}/settings`,
-        homepage: `${basePath}/homepage`,
-        offers: `${basePath}/offers`,
-        aboutPage: `${basePath}/about`,
-        footer: `${basePath}/footer`,
+        homepage: `${basePath}/manage-homepage`,
+        offers: `${basePath}/manage-offers`,
+        aboutPage: `${basePath}/manage-about`,
+        footer: `${basePath}/manage-footer`,
     };
 
     // Create dynamic route to label mapping

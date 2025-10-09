@@ -22,13 +22,13 @@ export const EN: TDictionary = {
     },
     defaultNotFound: {
       title: 'Not found',
-      description: 'Sorry, the page youâ€™re looking for doesnâ€™t exist or may have been moved.',
+      description: "Sorry, the page you are looking for doesn't exist or may have been moved.",
       retry: 'Retry',
       goBack: 'Go to Homepage',
     },
     defaultComingSoon: {
       title: 'Coming soon',
-      description: 'This page is under construction. Weâ€™re working on it and it will be available soon!',
+      description: "This page is under construction. We are working on it and it will be available soon!",
       goBack: 'Go back',
     },
     coachBanner: {
@@ -1475,5 +1475,11 @@ export const EN: TDictionary = {
       createTopic: 'New Topic',
       deleteTopicConfirmation: 'Are you sure you want to delete this topic?',
     },
+    manageCategories: {
+      title: 'Manage Categories',
+      description: 'Maximum 4 topics for each platform',
+      createCategory: 'New Category',
+      deleteCategoryConfirmation: 'Are you sure you want to delete this category?',
+    }
   },
 };
