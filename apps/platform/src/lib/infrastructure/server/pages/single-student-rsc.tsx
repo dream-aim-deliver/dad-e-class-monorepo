@@ -8,6 +8,7 @@ import getSession from '../config/auth/get-session';
 import SingleStudent from '../../client/pages/student/single-student';
 import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { useTranslations } from 'next-intl';
 
 interface SingleStudentServerComponentProps {
     slug: string;
@@ -25,6 +26,7 @@ export default async function SingleStudentServerComponent({
     courseSlug,
 }: SingleStudentServerComponentProps) {
     const session = await getSession();
+    const t = useTranslations('pages.student');
 
     if (!session || !session.user) {
         redirect('/auth/login');
@@ -34,12 +36,13 @@ export default async function SingleStudentServerComponent({
     const isCoachOrAdmin = roles && (roles.includes('coach') || roles.includes('admin'));
 
     if (!isCoachOrAdmin) {
-        // TODO: fill in localized error message
-        throw new Error('Access denied. Only coaches and admins can access student details.');
+        throw new Error(t('accessDeniedError'));
     }
 
     await Promise.all([
         prefetch(trpc.listStudentInteractions.queryOptions({ studentId, courseSlug })),
+        prefetch(trpc.listCoachStudentCourses.queryOptions({ studentUsername: slug })),
+        prefetch(trpc.getPersonalProfile.queryOptions({ username: slug })),
     ]);
 
     return (

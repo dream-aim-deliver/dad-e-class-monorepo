@@ -1219,7 +1219,15 @@ export const DictionarySchema = z.object({
       minutes: z.string(),
       edit: z.string(),
       delete: z.string(),
-    })
+    }),
+    coachStudentIneractionCard: z.object({
+      module: z.string(),
+      lesson: z.string(),
+      viewLesson: z.string(),
+      textInput: z.string(),
+      studentReply: z.string(),
+      noInteractionsYet: z.string(),
+    }),
   }),
   pages: z.object({
     sso: z.object({
@@ -1507,8 +1515,9 @@ export const DictionarySchema = z.object({
         preCourseAssessment: z.string(),
       }),
       studentInteractions: z.string(),
-      noInteractionsYet: z.string(),
       course: z.string(),
+      selectACourse: z.string(),
+      accessDeniedError: z.string(),
     }),
     studentCoachingSessions: z.object({
       yourCoachingSessions: z.string(),

@@ -1233,6 +1233,14 @@ export const DE: TDictionary = {
       edit: 'Bearbeiten',
       delete: 'Löschen',
     },
+    coachStudentIneractionCard: {
+      module: 'Modul',
+      lesson: 'Lektion',
+      viewLesson: 'Lektion anzeigen',
+      textInput: 'Texteingabe',
+      studentReply: 'Antwort des Studenten',
+      noInteractionsYet: 'Noch keine Interaktionen',
+    },
   },
   pages: {
     home: Home_DE,
@@ -1475,8 +1483,9 @@ export const DE: TDictionary = {
         preCourseAssessment: 'Vorab-Assessment',
       },
       studentInteractions: 'Interaktionen zwischen Schülern',
-      noInteractionsYet: 'Noch keine Interaktionen',
       course: 'Kurs',
+      selectACourse: 'Wählen Sie einen Kurs aus',
+      accessDeniedError: 'Zugriff verweigert. Nur Trainer und Administratoren können auf die Schülerdaten zugreifen.',
     },
     studentCoachingSessions: {
       yourCoachingSessions: 'Ihre Coaching-Sitzungen',

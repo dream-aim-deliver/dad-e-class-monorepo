@@ -81,8 +81,11 @@ export default function StudentInteractionsTab({
                     modules={interactions.modules || []}
                     locale={locale}
                     onViewLessonsClick={(moduleId: string, lessonId: string) => {
-                        // Handle view lessons click
+                        // TODO: handle view lessons click
                         console.log('View lessons for module:', moduleId, 'lesson:', lessonId);
+                    }}
+                    onDeserializationError={(message: string, error: Error) => {
+                        console.error(message, error);
                     }}
                 />
             </div>
