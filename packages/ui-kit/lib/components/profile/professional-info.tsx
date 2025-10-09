@@ -28,6 +28,7 @@ interface ProfessionalInfoProps extends isLocalAware {
   onUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
   onFileDelete: (id: string) => void;
   uploadProgress?: number;
+  isSaving?: boolean;
 }
 
 
@@ -78,6 +79,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   onFileDelete,
   locale,
   uploadProgress,
+  isSaving = false,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const dictionary = getDictionary(locale);
@@ -368,12 +370,15 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
             onClick={handleDiscard}
             text={dictionary.components.professionalInfo.buttontext1}
+            type="button"
           />
           <Button
             variant="primary"
             size="medium"
             className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
             text={dictionary.components.professionalInfo.buttontext2}
+            type="submit"
+            disabled={isSaving}
           />
         </div>
       </div>

@@ -278,6 +278,7 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 						onCurriculumVitaeUploadComplete={curriculumVitaeUpload.handleUploadComplete as (file: fileMetadata.TFileMetadata) => void}
 						onCurriculumVitaeDelete={curriculumVitaeUpload.handleDelete}
 						curriculumVitaeUploadProgress={curriculumVitaeUploadProgress}
+						isSaving={savePersonalMutation.isPending || saveProfessionalMutation.isPending}
 					/>
 
 

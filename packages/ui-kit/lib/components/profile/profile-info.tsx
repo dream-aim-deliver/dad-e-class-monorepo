@@ -25,6 +25,7 @@ interface ProfileInfoProps extends isLocalAware {
   onUploadComplete?: (fileMetadata: fileMetadata.TFileMetadata) => void;
   onFileDelete?: (id: string) => void;
   uploadProgress?: number;
+  isSaving?: boolean;
 }
 
 
@@ -75,6 +76,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   availableLanguages = [],
   locale,
   uploadProgress,
+  isSaving = false,
 }) => {
   const [formData, setFormData] = React.useState<TPersonalProfileAPI>(initialData);
   const [password, setPassword] = React.useState('');
@@ -387,6 +389,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             onClick={() => setFormData(initialData)}
             className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
             text={dictionary.components.profileInfo.buttontext1}
+            type="button"
           />
 
           <Button
@@ -395,6 +398,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             onClick={handleSubmit}
             className="flex-1 min-h-[40px] min-w-[240px] max-md:max-w-full"
             text={dictionary.components.profileInfo.buttontext2}
+            disabled={isSaving}
           />
         </div>
       </div>
