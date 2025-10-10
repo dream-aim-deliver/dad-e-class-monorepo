@@ -79,7 +79,6 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   isSaving = false,
 }) => {
   const [formData, setFormData] = React.useState<TPersonalProfileAPI>(initialData);
-  const [password, setPassword] = React.useState('');
 
   const dictionary = getDictionary(locale);
 
@@ -195,6 +194,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             value: formData.email,
             setValue: (value) => handleChange('email', value),
             inputText: dictionary.components.profileInfo.emailPlaceholder,
+            state: 'disabled'
           }}
         />
         <TextInput
@@ -205,26 +205,6 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             value: formData.phone || '',
             setValue: (value) => handleChange('phone', value || null),
             inputText: dictionary.components.profileInfo.phoneNumberPlaceholder,
-          }}
-        />
-        <TextInput
-          label={dictionary.components.profileInfo.password}
-          inputField={{
-            id: 'password',
-            className: "w-full",
-            value: password,
-            setValue: setPassword,
-            inputText: dictionary.components.profileInfo.password,
-            type: 'password',
-            hasRightContent: true,
-            rightContent: (
-              <Button
-                variant="text"
-                size="small"
-                className="p-0"
-                text={dictionary.components.profileInfo.changePassword}
-              />
-            ),
           }}
         />
         <DateInput
