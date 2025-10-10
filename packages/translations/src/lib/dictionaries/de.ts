@@ -1004,6 +1004,8 @@ export const DE: TDictionary = {
       platforms: 'Plattformen',
       topics: 'Themen',
       categories: 'Kategorien',
+      aboutPage: 'Über uns Seite',
+      coachingOfferings: 'Coaching-Angebote',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',

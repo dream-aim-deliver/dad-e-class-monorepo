@@ -991,6 +991,8 @@ export const DictionarySchema = z.object({
       platforms: z.string(),
       topics: z.string(),
       categories: z.string(),
+      aboutPage: z.string(),
+      coachingOfferings: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),

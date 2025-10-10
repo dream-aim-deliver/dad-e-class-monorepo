@@ -18,7 +18,7 @@ export default function AboutPage() {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.aboutPage');
 
-    const [aboutPageResponse] = trpc.getPlatformLanguage.useSuspenseQuery({});
+    const [aboutPageResponse, { refetch: refetchAboutPage }] = trpc.getPlatformLanguage.useSuspenseQuery({});
     const [aboutPageViewModel, setAboutPageViewModel] = useState<
         viewModels.TPlatformLanguageViewModel | undefined
     >(undefined);
@@ -40,12 +40,25 @@ export default function AboutPage() {
 
     // Error handling - kaboom
     if (aboutPageViewModel.mode === 'kaboom') {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                locale={locale}
+                onRetry={() => refetchAboutPage()}
+            />
+        );
     }
 
     // Error handling - rich text deserialization error
     if (richTextError) {
-        return <DefaultError locale={locale} />;
+        return (
+            <DefaultError
+                locale={locale}
+                onRetry={() => {
+                    setRichTextError(false);
+                    refetchAboutPage();
+                }}
+            />
+        );
     }
 
     // Success state - extract data using discovered pattern

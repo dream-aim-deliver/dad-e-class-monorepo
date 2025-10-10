@@ -14,11 +14,15 @@ export default async function ManageAboutPagePage({
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
 	const params = await paramsPromise;
-	const searchParams = searchParamsPromise;
+	await searchParamsPromise;
 
 	return (
 		<Suspense fallback={<DefaultLoadingWrapper />}>
-			<ManageAboutPageServerComponent params={paramsPromise} />
+			<ManageAboutPageServerComponent
+				platformSlug={params.platform_slug}
+				platformLocale={params.platform_locale}
+				locale={params.locale}
+			/>
 		</Suspense>
 	);
 }

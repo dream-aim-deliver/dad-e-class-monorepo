@@ -3,17 +3,21 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import { HydrateClient, prefetch, getServerTRPC } from '../config/trpc/cms-server';
 
+interface ManageAboutPageProps {
+	platformSlug: string;
+	platformLocale: string;
+	locale: string;
+}
+
 export default async function ManageAboutPageServerComponent({
-	params
-}: {
-	params: Promise<{
-		platform_slug: string;
-		platform_locale: string;
-		locale: string;
-	}>;
-}) {
-	const resolvedParams = await params;
-	const trpc = getServerTRPC(resolvedParams);
+	platformSlug,
+	platformLocale,
+	locale
+}: ManageAboutPageProps) {
+	const trpc = getServerTRPC({
+		platform_slug: platformSlug,
+		platform_locale: platformLocale
+	});
 
 	// Prefetch platform language data for the about page editor
 	await Promise.all([
@@ -21,12 +25,10 @@ export default async function ManageAboutPageServerComponent({
 	]);
 
 	return (
-		<>
-			<HydrateClient>
-				<Suspense fallback={<DefaultLoadingWrapper />}>
-					<ManageAboutPage />
-				</Suspense>
-			</HydrateClient>
-		</>
+		<HydrateClient>
+			<Suspense fallback={<DefaultLoadingWrapper />}>
+				<ManageAboutPage />
+			</Suspense>
+		</HydrateClient>
 	);
 }

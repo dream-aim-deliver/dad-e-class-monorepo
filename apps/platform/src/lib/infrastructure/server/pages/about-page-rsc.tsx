@@ -9,12 +9,10 @@ export default async function AboutPageServerComponent() {
     ]);
 
     return (
-        <>
-            <HydrateClient>
-                <Suspense fallback={<DefaultLoadingWrapper/>}>
-                    <AboutPage />
-                </Suspense>
-            </HydrateClient>
-        </>
+        <HydrateClient>
+            <Suspense fallback={<DefaultLoadingWrapper/>}>
+                <AboutPage />
+            </Suspense>
+        </HydrateClient>
     );
 }

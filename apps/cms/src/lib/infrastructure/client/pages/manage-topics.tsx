@@ -390,23 +390,29 @@ export default function ManageTopics({
     return (
         <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
             <Breadcrumbs items={breadcrumbItems} />
-            <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
-                <div className="flex flex-row items-center gap-3">
-                    <h1> {t('title')} </h1>
-                    <Badge
-                        variant="info"
-                        size="medium"
-                        text={topics.length.toString()}
-                    />
+
+            <div className="flex flex-col space-y-2">
+                <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
+                    <div className="flex flex-row items-center gap-3">
+                        <h1> {t('title')} </h1>
+                        <Badge
+                            variant="info"
+                            size="medium"
+                            text={topics.length.toString()}
+                        />
+                    </div>
+                    {topics.length < 25 ? (
+                    <CreateTopicDialog onTopicCreated={() => refetchTopics()} />
+                    ) : (
+                        <Button
+                        text={t('createTopic')}
+                        disabled
+                        />
+                    )}
                 </div>
-                {topics.length < 25 ? (
-                <CreateTopicDialog onTopicCreated={() => refetchTopics()} />
-                ) : (
-                    <Button
-                    text={t('createTopic')}
-                    disabled
-                    />
-                )}
+                <p className="text-text-secondary text-sm">
+                    Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
+                </p>
             </div>
 
             <p className="text-text-primary"> {t('description')} </p>

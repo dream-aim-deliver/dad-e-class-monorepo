@@ -25,12 +25,15 @@ import {
     DialogTrigger,
     useDialog,
     DeleteConfirmationModal,
+    Breadcrumbs,
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCoachingOfferingsPresenter } from '../hooks/use-coaching-offerings-presenter';
 import { useCreateCoachingOfferingPresenter } from '../hooks/use-create-coaching-offering-presenter';
 import { useUpdateCoachingOfferingPresenter } from '../hooks/use-update-coaching-offering-presenter';
 import { useDeleteCoachingOfferingPresenter } from '../hooks/use-delete-coaching-offering-presenter';
+import { useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { useContentLocale } from '../hooks/use-platform-translations';
 
 interface CoachingOfferingProps {
     locale: string;
@@ -271,6 +274,13 @@ export default function CoachingOffering({
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const t = useTranslations('pages.coachingOffering');
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+
+    // Platform context - contains platform-specific information
+    const platformContext = useRequiredPlatformLocale();
+
+    // Content locale - the locale for platform content (may differ from app UI locale)
+    const contentLocale = useContentLocale();
 
     // List coaching offerings - fetch data
     const [coachingOfferingsResponse, { refetch: refetchOfferings }] =
@@ -378,15 +388,46 @@ export default function CoachingOffering({
         }
     };
 
+    const breadcrumbItems = [
+        {
+            label: breadcrumbsTranslations('platforms'),
+            onClick: () => router.push('/'),
+        },
+        {
+            label: platformContext.platformSlug.charAt(0).toUpperCase() + platformContext.platformSlug.slice(1),
+            onClick: () => {
+                // TODO: Implement navigation to platform
+            },
+        },
+        {
+            label: breadcrumbsTranslations('coachingOfferings'),
+            onClick: () => {
+                // Nothing should happen on clicking the current page
+            },
+        },
+    ];
+
     return (
         <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
-            <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
-                <div className="flex flex-row items-center gap-3">
-                    <h1>{t('title')}</h1>
+            <Breadcrumbs items={breadcrumbItems} />
+
+            <div className="flex flex-col space-y-2">
+                <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
+                    <div className="flex flex-row items-center gap-3">
+                        <h1>{t('title')}</h1>
+                        <Badge
+                            variant="info"
+                            size="medium"
+                            text={offerings.length.toString()}
+                        />
+                    </div>
+                    <CreateCoachingOfferingDialog
+                        onOfferingCreated={() => refetchOfferings()}
+                    />
                 </div>
-                <CreateCoachingOfferingDialog
-                    onOfferingCreated={() => refetchOfferings()}
-                />
+                <p className="text-text-secondary text-sm">
+                    Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
+                </p>
             </div>
 
             <div className="flex flex-col items-start gap-6">
