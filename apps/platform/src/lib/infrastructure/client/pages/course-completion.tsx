@@ -17,7 +17,6 @@ import {
     DefaultNotFound,
     CourseCompletionModal,
     ReviewModal,
-    Button,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -49,7 +48,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     );
 
     // @ts-ignore
-    courseStatusPresenter.present({ mode: 'default', data: courseStatusResponse }, courseStatusViewModel);
+    courseStatusPresenter.present(courseStatusResponse , courseStatusViewModel);
 
     // State for certificate data
     const [certificateDataResponse] =
@@ -63,7 +62,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
         useGetCourseCertificateDataPresenter(setCertificateDataViewModel);
 
     // @ts-ignore
-    certificateDataPresenter.present({ mode: 'default', data: certificateDataResponse }, certificateDataViewModel);    // State for course review
+    certificateDataPresenter.present( certificateDataResponse , certificateDataViewModel);    // State for course review
     const [courseReviewViewModel, setCourseReviewViewModel] = useState<
         viewModels.TCreateCourseReviewViewModel | undefined
     >(undefined);
@@ -72,8 +71,8 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     );
 
     // Course completion modal state
-    const [showCompletionModal, setShowCompletionModal] = useState(false);
-    const [showReviewModal, setShowReviewModal] = useState(false);
+    type ModalState = 'completion' | 'review-form' | 'review-thank-you' | 'none';
+    const [modalState, setModalState] = useState<ModalState>('none');
 
     // TRPC mutation for creating review
     const createReviewMutation = trpc.createCourseReview.useMutation();
@@ -84,7 +83,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
             const isCompleted =
                 courseStatusViewModel.data?.courseStatus.status === 'completed';
             if (isCompleted) {
-                setShowCompletionModal(true);
+                setModalState('completion');
             }
         }
     }, [courseStatusViewModel]);
@@ -109,17 +108,16 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
 
     // Handle rate course
     const handleRateCourse = () => {
-        setShowCompletionModal(false);
-        setShowReviewModal(true);
+        setModalState('review-form');
     };
 
     // Handle modal close
     const handleCloseCompletionModal = () => {
-        setShowCompletionModal(false);
+        setModalState('none');
     };
 
     const handleCloseReviewModal = () => {
-        setShowReviewModal(false);
+        setModalState('none');
     };
 
     const handleSubmitReview = (rating: number, review: string) => {
@@ -134,11 +132,13 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
         if (createReviewMutation.data) {
             // @ts-ignore
             courseReviewPresenter.present(createReviewMutation.data, courseReviewViewModel);
+            // Switch to thank you state
+            setModalState('review-thank-you');
         }
     }, [createReviewMutation.data]);
 
     const handleSkipReview = () => {
-        setShowReviewModal(false);
+        setModalState('none');
     };
 
     // Loading state using discovered patterns
@@ -163,7 +163,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
 
     return (
         <>
-            {showCompletionModal && courseStatusData && certificateData && (
+            {modalState === 'completion' && courseStatusData && certificateData && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                     <CourseCompletionModal
                         courseImage={courseImage}
@@ -176,7 +176,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                     />
                 </div>
             )}
-            {showReviewModal && (
+            {(modalState === 'review-form' || modalState === 'review-thank-you') && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                     <ReviewModal
                         onClose={handleCloseReviewModal}
@@ -186,7 +186,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                         locale={locale}
                         isLoading={createReviewMutation.isPending}
                         isError={createReviewMutation.isError}
-                        submitted={courseReviewViewModel?.mode === 'default'}
+                        submitted={modalState === 'review-thank-you'}
                     />
                 </div>
             )}
