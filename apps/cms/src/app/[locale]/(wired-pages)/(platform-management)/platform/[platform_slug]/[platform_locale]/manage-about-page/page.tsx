@@ -19,13 +19,12 @@ export default async function ManageAboutPagePage({
 	}>;
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-	// Await params for Next.js 15+ compatibility
-	await paramsPromise;
-	await searchParamsPromise;
+	const params = await paramsPromise;
+	const searchParams = searchParamsPromise;
 
 	return (
 		<Suspense fallback={<DefaultLoadingWrapper />}>
-			<ManageAboutPageServerComponent />
+			<ManageAboutPageServerComponent params={paramsPromise} />
 		</Suspense>
 	);
 }
