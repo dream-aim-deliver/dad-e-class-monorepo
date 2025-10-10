@@ -9,6 +9,20 @@
 
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { useState } from 'react';
+import { trpc } from '../trpc/cms-client';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useGetPlatformLanguagePresenter } from '../hooks/use-platform-language-presenter';
+import { useSaveAboutPagePresenter } from '../hooks/use-save-about-page-presenter';
+import {
+	DefaultLoading,
+	DefaultError,
+	RichTextDesignerComponent,
+	RichTextElement,
+	FormElementType,
+} from '@maany_shr/e-class-ui-kit';
+import { useLocale } from 'next-intl';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 /**
  * ManageAboutPage component for CMS
@@ -25,6 +39,104 @@ export default function ManageAboutPage() {
 	// Platform context
 	const platformContext = useRequiredPlatformLocale();
 	const contentLocale = useContentLocale();
+	const locale = useLocale() as TLocale;
+
+	// Data fetching
+	const [platformLanguageResponse] = trpc.getPlatformLanguage.useSuspenseQuery({});
+	const [platformLanguageViewModel, setPlatformLanguageViewModel] = useState<
+		viewModels.TPlatformLanguageViewModel | undefined
+	>(undefined);
+
+	// Presenters
+	const { presenter: platformLanguagePresenter } = useGetPlatformLanguagePresenter(
+		setPlatformLanguageViewModel,
+	);
+
+	// Rich text editor state
+	const [richTextError, setRichTextError] = useState<boolean>(false);
+	const [currentContent, setCurrentContent] = useState<string>('');
+
+	// Save mutation
+	const saveAboutPageMutation = trpc.saveAboutPage.useMutation();
+	const [saveViewModel, setSaveViewModel] = useState<
+		viewModels.TSaveAboutPageViewModel | undefined
+	>(undefined);
+	const { presenter: savePresenter } = useSaveAboutPagePresenter(setSaveViewModel);
+
+	// Present platform language data
+	// @ts-ignore
+	platformLanguagePresenter.present(platformLanguageResponse, platformLanguageViewModel);
+
+	// Initialize current content with API data
+	if (platformLanguageViewModel?.mode === 'default' && platformLanguageViewModel.data.aboutPageContent && currentContent === '') {
+		setCurrentContent(platformLanguageViewModel.data.aboutPageContent);
+	}
+
+
+	// Save handler
+	const handleSave = async () => {
+		try {
+			console.log('Saving content:', currentContent);
+			
+			const response = await saveAboutPageMutation.mutateAsync({
+				aboutPageContent: currentContent,
+			});
+			
+			// @ts-ignore
+			savePresenter.present(response, saveViewModel);
+			
+		} catch (error) {
+			console.error('Error saving about page:', error);
+		}
+	};
+
+	// Error handling
+	if (platformLanguageViewModel?.mode === 'kaboom' || richTextError) {
+		return <DefaultError locale={locale} />;
+	}
+
+	if (saveViewModel?.mode === 'kaboom') {
+		return <DefaultError locale={locale} />;
+	}
+
+	// Loading state - show loading animation while data is being fetched
+	if (!platformLanguageViewModel) {
+		return (
+			<div className="flex flex-col space-y-6 p-6">
+				{/* Page Header */}
+				<div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-6 rounded-lg shadow-lg">
+					<h1 className="text-3xl font-bold mb-2">Manage About Page</h1>
+					<p className="text-lg opacity-90">
+						Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
+					</p>
+				</div>
+
+				{/* Loading state for editor */}
+				<div className="bg-card-fill rounded-medium border-[1px] border-card-stroke shadow">
+					<div className="flex justify-between items-center p-6 border-b">
+						<h2 className="text-xl font-semibold text-white-900">About page content</h2>
+						<div className="flex space-x-2">
+							<button
+								disabled
+								className="px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed"
+							>
+								Save Changes
+							</button>
+						</div>
+					</div>
+
+					<div className="p-6">
+						<div className="flex items-center justify-center min-h-[400px]">
+							<DefaultLoading locale={locale} variant="minimal" />
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	// Success state
+	const aboutPageData = platformLanguageViewModel.data;
 
 	return (
 		<div className="flex flex-col space-y-6 p-6">
@@ -36,21 +148,54 @@ export default function ManageAboutPage() {
 				</p>
 			</div>
 
-			{/* TODO: Add RichtextElement Editor and Viewer */}
-			{/* TODO: Implement about page rich text editor */}
-			{/* TODO: Add save functionality with saveAboutPage mutation */}
-			{/* TODO: Add preview functionality with RichtextElement Viewer */}
+			{/* Success Message */}
+			{saveViewModel?.mode === 'default' && (
+				<div className="bg-green-50 border border-green-200 rounded-lg p-4">
+					<div className="flex">
+						<div className="flex-shrink-0">
+							<svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+								<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+							</svg>
+						</div>
+						<div className="ml-3">
+							<p className="text-sm font-medium text-green-800">
+								About page content saved successfully!
+							</p>
+						</div>
+					</div>
+				</div>
+			)}
 
-			<div className="bg-white rounded-lg shadow p-6">
-				<p className="text-gray-600">
-					About page management UI will be implemented here.
-				</p>
-				<p className="text-sm text-gray-500 mt-2">
-					Features to implement: getPlatformLanguage, saveAboutPage
-				</p>
-				<p className="text-sm text-gray-500 mt-1">
-					UI Components needed: RichtextElement (Editor and Viewer)
-				</p>
+			{/* About Page Content Editor */}
+			<div className="bg-card-fill rounded-medium border-[1px] border-card-stroke shadow">
+				<div className="flex justify-between items-center p-6 border-b">
+					<h2 className="text-xl font-semibold text-white-900">About page content</h2>
+					<div className="flex space-x-2">
+						<button
+							onClick={handleSave}
+							disabled={saveAboutPageMutation.isPending}
+							className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+						>
+							{saveAboutPageMutation.isPending ? 'Saving...' : 'Save Changes'}
+						</button>
+					</div>
+				</div>
+
+				<div className="p-6">
+					<RichTextDesignerComponent
+						elementInstance={{
+							id: 'about-page-content',
+							type: FormElementType.RichText,
+							content: aboutPageData.aboutPageContent || '',
+						} as RichTextElement}
+						locale={locale}
+						onContentChange={(value: string) => {
+							console.log('Editor content changed:', value);
+							setCurrentContent(value);
+						}}
+						isCourseBuilder={false}
+					/>
+				</div>
 			</div>
 		</div>
 	);
