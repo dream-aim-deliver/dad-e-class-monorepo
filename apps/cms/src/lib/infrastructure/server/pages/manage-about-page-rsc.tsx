@@ -9,8 +9,17 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import { HydrateClient, prefetch, getServerTRPC } from '../config/trpc/cms-server';
 
-export default async function ManageAboutPageServerComponent() {
-	const trpc = getServerTRPC();
+export default async function ManageAboutPageServerComponent({
+	params
+}: {
+	params: Promise<{
+		platform_slug: string;
+		platform_locale: string;
+		locale: string;
+	}>;
+}) {
+	const resolvedParams = await params;
+	const trpc = getServerTRPC(resolvedParams);
 
 	// Prefetch platform language data for the about page editor
 	await Promise.all([
