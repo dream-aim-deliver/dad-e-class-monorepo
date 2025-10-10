@@ -15,6 +15,7 @@ export {
   FeedBackMessage,
   type FeedBackMessageProps,
 } from './components/feedback-message';
+export { default as Banner } from './components/banner';
 export {
   TextAreaInput,
   type TextAreaInputProps,

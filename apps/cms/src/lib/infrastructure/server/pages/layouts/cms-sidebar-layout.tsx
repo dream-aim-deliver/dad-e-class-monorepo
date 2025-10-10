@@ -32,7 +32,7 @@ export default function CMSSidebarLayout({
                     locale={locale}
                 />
             </div>
-            <div id="content" className="w-full px-5">
+            <div id="content" className="w-full min-w-0 px-5">
                 {children}
             </div>
         </div>

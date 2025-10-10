@@ -1000,6 +1000,8 @@ export const EN: TDictionary = {
       platforms: 'Platforms',
       topics: 'Topics',
       categories: 'Categories',
+      aboutPage: 'About Page',
+      coachingOfferings: 'Coaching Offerings',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
