@@ -2,7 +2,7 @@
 
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { trpc } from '../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetPlatformLanguagePresenter } from '../hooks/use-platform-language-presenter';
@@ -52,9 +52,11 @@ export default function ManageAboutPage() {
 	platformLanguagePresenter.present(platformLanguageResponse, platformLanguageViewModel);
 
 	// Initialize current content with API data
-	if (platformLanguageViewModel?.mode === 'default' && platformLanguageViewModel.data.aboutPageContent && currentContent === '') {
-		setCurrentContent(platformLanguageViewModel.data.aboutPageContent);
-	}
+	useEffect(() => {
+		if (platformLanguageViewModel?.mode === 'default' && platformLanguageViewModel.data.aboutPageContent && currentContent === '') {
+			setCurrentContent(platformLanguageViewModel.data.aboutPageContent);
+		}
+	}, [platformLanguageViewModel, currentContent]);
 
 
 	// Save handler
@@ -173,7 +175,6 @@ export default function ManageAboutPage() {
 						} as RichTextElement}
 						locale={locale}
 						onContentChange={(value: string) => {
-							console.log('Editor content changed:', value);
 							setCurrentContent(value);
 						}}
 						isCourseBuilder={false}
