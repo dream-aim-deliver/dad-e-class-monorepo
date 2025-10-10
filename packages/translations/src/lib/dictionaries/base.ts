@@ -689,6 +689,24 @@ export const DictionarySchema = z.object({
       editCategoryTitle: z.string(),
       editTopicTitle: z.string(),
     }),
+    coachingOfferingModal: z.object({
+      createTitle: z.string(),
+      editTitle: z.string(),
+      titleLabel: z.string(),
+      titlePlaceholder: z.string(),
+      descriptionLabel: z.string(),
+      descriptionPlaceholder: z.string(),
+      durationLabel: z.string(),
+      durationPlaceholder: z.string(),
+      priceLabel: z.string(),
+      pricePlaceholder: z.string(),
+      newPriceLabel: z.string(),
+      minutes: z.string(),
+      goBack: z.string(),
+      add: z.string(),
+      save: z.string(),
+      confirm: z.string(),
+    }),
     removeModal: z.object({
       coach: z.string(),
       course: z.string(),
@@ -1194,6 +1212,11 @@ export const DictionarySchema = z.object({
       delete: z.string(),
       emptyState: z.string(),
     }),
+    manageCoachingOffering: z.object({
+      minutes: z.string(),
+      edit: z.string(),
+      delete: z.string(),
+    })
   }),
   pages: z.object({
     sso: z.object({
@@ -1515,6 +1538,12 @@ export const DictionarySchema = z.object({
     description: z.string(),
     createCategory: z.string(),
     deleteCategoryConfirmation: z.string(),
+  }),
+  coachingOffering: z.object({
+    title: z.string(),
+    deleteCoachingOffering: z.string(),
+    descriptionDeleteCoaching: z.string(),
+    newCoachingOffering: z.string(),
   })
   }),
 });

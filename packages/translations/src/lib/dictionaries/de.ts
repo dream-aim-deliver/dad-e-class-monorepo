@@ -702,6 +702,24 @@ export const DE: TDictionary = {
       editCategoryTitle: 'Kategorie bearbeiten',
       editTopicTitle: 'Thema bearbeiten',
     },
+    coachingOfferingModal: {
+      createTitle: 'Neues Coaching-Angebot',
+      editTitle: 'Coaching-Angebot bearbeiten',
+      titleLabel: 'Titel',
+      titlePlaceholder: '1/2 Tages-Workshop',
+      descriptionLabel: 'Beschreibung (Tooltip)',
+      descriptionPlaceholder: 'Kurze Beschreibung',
+      durationLabel: 'Dauer (min)',
+      durationPlaceholder: '240',
+      priceLabel: 'Preis',
+      pricePlaceholder: '800 CHF',
+      newPriceLabel: 'Neuer Preis',
+      minutes: 'Minuten',
+      goBack: 'Zurück',
+      add: 'Hinzufügen',
+      save: 'Speichern',
+      confirm: 'Bestätigen',
+    },
     removeModal: {
       coach: 'Coach',
       course: 'Kurs',
@@ -1207,6 +1225,11 @@ export const DE: TDictionary = {
       delete: 'Löschen',
       emptyState: 'Keine Einträge gefunden.',
     },
+    manageCoachingOffering: {
+      minutes: 'minuten',
+      edit: 'Bearbeiten',
+      delete: 'Löschen',
+    },
   },
   pages: {
     home: Home_DE,
@@ -1484,5 +1507,11 @@ export const DE: TDictionary = {
       createCategory: 'Neue Kategorie',
       deleteCategoryConfirmation: 'Bist du sicher, dass du diese Kategorie löschen möchtest?',
     },
+    coachingOffering: {
+      title: 'Coaching-Angebot',
+      deleteCoachingOffering: 'Coaching-Angebot löschen?',
+      descriptionDeleteCoaching: 'Studierende können dieses Coaching-Angebot nicht mehr buchen. Bereits gebuchte Coaching-Sessions bleiben unverändert.',
+      newCoachingOffering: 'Neues Coaching-Angebot',
+    }
   },
 };

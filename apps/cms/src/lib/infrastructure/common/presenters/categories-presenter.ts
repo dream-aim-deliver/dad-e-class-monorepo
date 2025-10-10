@@ -47,10 +47,7 @@ export default class CategoriesPresenter extends BasePresenter<
         return {
             mode: 'default',
             data: {
-                categories: response.data.categories.map((category) => ({
-                    id: category.id,
-                    name: category.name,
-                }))
+                ...response.data
             }
         };
     }

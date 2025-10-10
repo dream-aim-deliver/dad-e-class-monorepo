@@ -61,6 +61,7 @@ export const Default: Story = {
                     locale={locale as 'en' | 'de'}
                     onEdit={mockCallbacks.onEdit}
                     onDelete={mockCallbacks.onDelete}
+                    type={'category'}
                 />
             ))}
         </ManageCategoryTopicList>
@@ -71,8 +72,7 @@ export const Default: Story = {
     parameters: {
         docs: {
             description: {
-                story:
-                    'A list of multiple topic/category items displayed in a vertical layout.',
+                story: 'A list of multiple topic/category items displayed in a vertical layout.',
             },
         },
     },
@@ -93,8 +93,7 @@ export const EmptyState: Story = {
     parameters: {
         docs: {
             description: {
-                story:
-                    'The empty state displayed when no topic items are provided. Shows a localized empty message.',
+                story: 'The empty state displayed when no topic items are provided. Shows a localized empty message.',
             },
         },
     },
@@ -113,6 +112,7 @@ export const SingleItem: Story = {
                 locale={locale as 'en' | 'de'}
                 onEdit={mockCallbacks.onEdit}
                 onDelete={mockCallbacks.onDelete}
+                type="category"
             />
         </ManageCategoryTopicList>
     ),
@@ -122,8 +122,7 @@ export const SingleItem: Story = {
     parameters: {
         docs: {
             description: {
-                story:
-                    'A list containing only a single topic item.',
+                story: 'A list containing only a single topic item.',
             },
         },
     },
@@ -144,6 +143,7 @@ export const ManyTopics: Story = {
                     locale={locale as 'en' | 'de'}
                     onEdit={mockCallbacks.onEdit}
                     onDelete={mockCallbacks.onDelete}
+                    type="topic"
                 />
             ))}
         </ManageCategoryTopicList>
@@ -154,8 +154,7 @@ export const ManyTopics: Story = {
     parameters: {
         docs: {
             description: {
-                story:
-                    'A longer list with all sample topics to demonstrate scrolling behavior.',
+                story: 'A longer list with all sample topics to demonstrate scrolling behavior.',
             },
         },
     },
@@ -175,6 +174,7 @@ export const WithoutCoaches: Story = {
                     locale={locale as 'en' | 'de'}
                     onEdit={mockCallbacks.onEdit}
                     onDelete={mockCallbacks.onDelete}
+                    type="topic"
                 />
             ))}
         </ManageCategoryTopicList>
@@ -185,8 +185,7 @@ export const WithoutCoaches: Story = {
     parameters: {
         docs: {
             description: {
-                story:
-                    'A list where none of the topics have coaches assigned. Only course counts are displayed.',
+                story: 'A list where none of the topics have coaches assigned. Only course counts are displayed.',
             },
         },
     },
@@ -205,6 +204,7 @@ export const Mixed: Story = {
                 locale={locale as 'en' | 'de'}
                 onEdit={mockCallbacks.onEdit}
                 onDelete={mockCallbacks.onDelete}
+                type="topic"
             />
             <ManageCategoryTopicItem
                 title="Data Science"
@@ -212,6 +212,7 @@ export const Mixed: Story = {
                 locale={locale as 'en' | 'de'}
                 onEdit={mockCallbacks.onEdit}
                 onDelete={mockCallbacks.onDelete}
+                type="topic"
             />
             <ManageCategoryTopicItem
                 title="UI/UX Design"
@@ -220,6 +221,7 @@ export const Mixed: Story = {
                 locale={locale as 'en' | 'de'}
                 onEdit={mockCallbacks.onEdit}
                 onDelete={mockCallbacks.onDelete}
+                type="topic"
             />
             <ManageCategoryTopicItem
                 title="Mobile Development"
@@ -227,6 +229,7 @@ export const Mixed: Story = {
                 locale={locale as 'en' | 'de'}
                 onEdit={mockCallbacks.onEdit}
                 onDelete={mockCallbacks.onDelete}
+                type="topic"
             />
         </ManageCategoryTopicList>
     ),
@@ -236,8 +239,7 @@ export const Mixed: Story = {
     parameters: {
         docs: {
             description: {
-                story:
-                    'A mixed list where some topics have coaches and others do not.',
+                story: 'A mixed list where some topics have coaches and others do not.',
             },
         },
     },
@@ -256,6 +258,7 @@ export const GermanLocale: Story = {
                 locale={locale as 'en' | 'de'}
                 onEdit={() => alert('Bearbeiten geklickt')}
                 onDelete={() => alert('Löschen geklickt')}
+                type="topic"
             />
             <ManageCategoryTopicItem
                 title="Datenwissenschaft"
@@ -264,6 +267,7 @@ export const GermanLocale: Story = {
                 locale={locale as 'en' | 'de'}
                 onEdit={() => alert('Bearbeiten geklickt')}
                 onDelete={() => alert('Löschen geklickt')}
+                type="topic"
             />
             <ManageCategoryTopicItem
                 title="Cloud Computing"
@@ -271,6 +275,7 @@ export const GermanLocale: Story = {
                 locale={locale as 'en' | 'de'}
                 onEdit={() => alert('Bearbeiten geklickt')}
                 onDelete={() => alert('Löschen geklickt')}
+                type="topic"
             />
         </ManageCategoryTopicList>
     ),
@@ -280,8 +285,7 @@ export const GermanLocale: Story = {
     parameters: {
         docs: {
             description: {
-                story:
-                    'The list component rendered with German translations (de locale), including German empty state.',
+                story: 'The list component rendered with German translations (de locale), including German empty state.',
             },
         },
     },
@@ -302,8 +306,7 @@ export const EmptyStateGerman: Story = {
     parameters: {
         docs: {
             description: {
-                story:
-                    'The empty state message displayed in German when no topics exist.',
+                story: 'The empty state message displayed in German when no topics exist.',
             },
         },
     },
@@ -322,6 +325,7 @@ export const VaryingCounts: Story = {
                 locale={locale as 'en' | 'de'}
                 onEdit={mockCallbacks.onEdit}
                 onDelete={mockCallbacks.onDelete}
+                type="topic"
             />
             <ManageCategoryTopicItem
                 title="New Topic"
@@ -330,6 +334,7 @@ export const VaryingCounts: Story = {
                 locale={locale as 'en' | 'de'}
                 onEdit={mockCallbacks.onEdit}
                 onDelete={mockCallbacks.onDelete}
+                type="topic"
             />
             <ManageCategoryTopicItem
                 title="Growing Topic"
@@ -338,6 +343,7 @@ export const VaryingCounts: Story = {
                 locale={locale as 'en' | 'de'}
                 onEdit={mockCallbacks.onEdit}
                 onDelete={mockCallbacks.onDelete}
+                type="topic"
             />
         </ManageCategoryTopicList>
     ),
@@ -347,8 +353,7 @@ export const VaryingCounts: Story = {
     parameters: {
         docs: {
             description: {
-                story:
-                    'Topics with varying counts from very low (1) to very high (150+) to test singular/plural handling.',
+                story: 'Topics with varying counts from very low (1) to very high (150+) to test singular/plural handling.',
             },
         },
     },
