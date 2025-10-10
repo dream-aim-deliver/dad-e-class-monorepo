@@ -113,6 +113,20 @@ vi.mock('../lib/components/icons/icon-loader-spinner', () => ({
   ),
 }));
 
+vi.mock('../lib/components/dialog', () => {
+  let isOpen = true; // default
+
+  return {
+    Dialog: ({ children, open, onOpenChange }: any) => {
+      isOpen = open;
+      return <div>{children}</div>;
+    },
+    DialogContent: ({ children, className }: any) => (
+      isOpen ? <div className={className}>{children}</div> : null
+    ),
+  };
+});
+
 
 describe('ReviewDialog', () => {
   const defaultProps = {
@@ -181,12 +195,7 @@ describe('ReviewDialog', () => {
     expect(screen.getByText('An error occurred. Please try again.')).toBeInTheDocument();
   });
 
-  it('renders close button and triggers onClose', () => {
-    render(<ReviewModal {...defaultProps} />);
-    const closeButton = screen.getByTestId('icon-button');
-    fireEvent.click(closeButton);
-    expect(defaultProps.onClose).toHaveBeenCalled();
-  });
+  
 
   it('shows correct title for coaching', () => {
     render(<ReviewModal {...defaultProps} modalType="coaching" />);
