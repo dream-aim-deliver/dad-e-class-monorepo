@@ -16,7 +16,7 @@ import {
     DefaultError,
     DefaultNotFound,
     CourseCompletionModal,
-    ReviewModal,
+    ReviewDialog,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -48,7 +48,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     );
 
     // @ts-ignore
-    courseStatusPresenter.present(courseStatusResponse , courseStatusViewModel);
+    courseStatusPresenter.present(courseStatusResponse, courseStatusViewModel);
 
     // State for certificate data
     const [certificateDataResponse] =
@@ -62,7 +62,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
         useGetCourseCertificateDataPresenter(setCertificateDataViewModel);
 
     // @ts-ignore
-    certificateDataPresenter.present( certificateDataResponse , certificateDataViewModel);    // State for course review
+    certificateDataPresenter.present(certificateDataResponse, certificateDataViewModel);    // State for course review
     const [courseReviewViewModel, setCourseReviewViewModel] = useState<
         viewModels.TCreateCourseReviewViewModel | undefined
     >(undefined);
@@ -99,10 +99,6 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     const handleDownloadCertificate = () => {
         if (certificateDataViewModel?.mode === 'default') {
             const data = certificateDataViewModel.data;
-            // Assume data has downloadUrl or similar
-            console.log('Download certificate', data);
-        } else {
-            console.log('Certificate data not available');
         }
     };
 
@@ -177,18 +173,22 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                 </div>
             )}
             {(modalState === 'review-form' || modalState === 'review-thank-you') && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <ReviewModal
-                        onClose={handleCloseReviewModal}
-                        modalType="course"
-                        onSubmit={handleSubmitReview}
-                        onSkip={handleSkipReview}
-                        locale={locale}
-                        isLoading={createReviewMutation.isPending}
-                        isError={createReviewMutation.isError}
-                        submitted={modalState === 'review-thank-you'}
-                    />
-                </div>
+                <ReviewDialog
+                    onClose={handleCloseReviewModal}
+                    modalType="course"
+                    onSubmit={handleSubmitReview}
+                    onSkip={handleSkipReview}
+                    locale={locale}
+                    isLoading={createReviewMutation.isPending}
+                    isError={createReviewMutation.isError}
+                    submitted={modalState === 'review-thank-you'}
+                    isOpen={modalState === 'review-form' || modalState === 'review-thank-you'}
+                    onOpenChange={(open) => {
+                        if (!open) {
+                            setModalState('none');
+                        }
+                    }}
+                />
             )}
         </>
     );
