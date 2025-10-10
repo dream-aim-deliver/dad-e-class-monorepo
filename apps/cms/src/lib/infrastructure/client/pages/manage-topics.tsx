@@ -271,7 +271,9 @@ export default function ManageTopics({
 
     // TODO: Add TRPC query for topics data
     const [topicsResponse, { refetch: refetchTopics }] =
-        trpc.listTopics.useSuspenseQuery({});
+        trpc.listTopics.useSuspenseQuery({
+            withCounts: true
+        });
 
     const [topicsViewModel, setTopicsViewModel] = useState<
         viewModels.TTopicListViewModel | undefined
@@ -371,7 +373,8 @@ export default function ManageTopics({
             onClick: () => router.push('/'),
         },
         {
-            label: platformName,
+            // label: platformName,  TODO: Uncoment when platform name is wired
+            label: platformSlug.charAt(0).toUpperCase() + platformSlug.slice(1),
             onClick: () => {
                 // TODO: Implement navigation to platform
             },
@@ -396,7 +399,14 @@ export default function ManageTopics({
                         text={topics.length.toString()}
                     />
                 </div>
+                {topics.length < 25 ? (
                 <CreateTopicDialog onTopicCreated={() => refetchTopics()} />
+                ) : (
+                    <Button
+                    text={t('createTopic')}
+                    disabled
+                    />
+                )}
             </div>
 
             <p className="text-text-primary"> {t('description')} </p>

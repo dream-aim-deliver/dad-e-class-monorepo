@@ -442,12 +442,12 @@ export const EN: TDictionary = {
     },
     coachingSessionCancelModal: {
       noText: 'No',
-      yesCancelText: 'Yes, Cancel',
+      yesCancelText: 'Yes, cancel',
       modalText: 'Are you sure you want to cancel this coaching session?',
     },
     deleteConfirmationModal: {
-      noText: 'No',
-      yesDeleteText: 'Yes, Delete',
+      noText: 'Go Back',
+      yesDeleteText: 'Delete',
       modalText: 'Are you sure you want to delete this item?',
     },
     coachingSessionTracker: {
@@ -697,6 +697,24 @@ export const EN: TDictionary = {
       createTopicTitle: 'Create topic',
       editCategoryTitle: 'Edit category',
       editTopicTitle: 'Edit topic',
+    },
+    coachingOfferingModal: {
+      createTitle: 'New coaching offering',
+      editTitle: 'Edit coaching offering',
+      titleLabel: 'Title',
+      titlePlaceholder: '1/2 day workshop',
+      descriptionLabel: 'Description',
+      descriptionPlaceholder: 'Write a brief description',
+      durationLabel: 'Duration (min)',
+      durationPlaceholder: '240',
+      priceLabel: 'Price',
+      pricePlaceholder: '800 CHF',
+      newPriceLabel: 'New Price',
+      minutes: 'minutes',
+      goBack: 'Go back',
+      add: 'Add',
+      save: 'Save',
+      confirm: 'Confirm',
     },
     removeModal: {
       coach: 'Coach',
@@ -1204,6 +1222,11 @@ export const EN: TDictionary = {
       delete: 'Delete',
       emptyState: 'No items were found.',
     },
+    manageCoachingOffering: {
+      minutes: 'minutes',
+      edit: 'Edit',
+      delete: 'Delete',
+    },
   },
   pages: {
     home: Home_EN,
@@ -1480,6 +1503,12 @@ export const EN: TDictionary = {
       description: 'Maximum 4 topics for each platform',
       createCategory: 'New Category',
       deleteCategoryConfirmation: 'Are you sure you want to delete this category?',
+    },
+    coachingOffering: {
+      title: 'Coaching offering',
+      deleteCoachingOffering: 'Delete coaching offering?',
+      descriptionDeleteCoaching: "Students won't be able to book this coaching offering anymore. Coaching sessions that are already booked won't be changed.",
+      newCoachingOffering: "New coaching offering",
     }
   },
 };

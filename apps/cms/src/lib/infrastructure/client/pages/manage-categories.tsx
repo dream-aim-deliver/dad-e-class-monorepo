@@ -253,7 +253,9 @@ export default function ManageCategories({
 
     // TODO: Add TRPC query for categories data
     const [categoriesResponse, { refetch: refetchCategories }] =
-        trpc.listCategories.useSuspenseQuery({});
+        trpc.listCategories.useSuspenseQuery({
+            withCounts: true
+        });
 
     const [categoriesViewModel, setCategoriesViewModel] = useState<
         viewModels.TCategoryListViewModel | undefined
@@ -352,7 +354,8 @@ export default function ManageCategories({
             onClick: () => router.push('/'),
         },
         {
-            label: platformName,
+            // label: platformName,  TODO: Uncoment when platform name is wired
+            label: platformSlug.charAt(0).toUpperCase() + platformSlug.slice(1),            
             onClick: () => {
                 // TODO: Implement navigation to platform
             },
@@ -368,7 +371,7 @@ export default function ManageCategories({
     return (
         <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4">
             <Breadcrumbs items={breadcrumbItems} />
-            <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
+            <div className="flex flex-col sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
                 <div className="flex flex-row items-center gap-3">
                     <h1> {t('title')} </h1>
                     <Badge
@@ -377,8 +380,15 @@ export default function ManageCategories({
                         text={categories.length.toString()}
                     />
                 </div>
+                {categories.length < 4 ? (
                 <CreateCategoryDialog onCategoryCreated={() => refetchCategories()} />
-            </div>
+                ) : (
+                <Button
+                 text={t('createCategory')}
+                disabled
+                    />
+                )} 
+                </div>
 
             <p className="text-text-primary"> {t('description')} </p>
 
