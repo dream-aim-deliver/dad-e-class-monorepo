@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { ReviewModal } from '../lib/components/review/review-modal';
+import { ReviewModal, ReviewDialog } from '../lib/components/review/review-modal';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -196,5 +196,15 @@ describe('ReviewDialog', () => {
   it('shows correct title for course', () => {
     render(<ReviewModal {...defaultProps} modalType="course" />);
     expect(screen.getByText('How would you rate this course?')).toBeInTheDocument();
+  });
+
+  it('renders dialog variant when is open', () => {
+    render(<ReviewDialog {...defaultProps} isOpen={true} />);
+    expect(screen.getByTestId('button-Send review')).toBeInTheDocument();
+  });
+
+  it('does not render dialog content when closed', () => {
+    render(<ReviewDialog {...defaultProps} isOpen={false} />);
+    expect(screen.queryByTestId('button-Send review')).not.toBeInTheDocument();
   });
 });
