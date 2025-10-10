@@ -9,7 +9,7 @@ import { useListStudentCoachingSessionsPresenter } from "../../hooks/use-list-st
 import { useListCoachesPresenter } from "../../hooks/use-coaches-presenter";
 import { useCreateCoachingSessionReviewPresenter } from "../../hooks/use-create-coaching-session-review-presenter";
 import { useUnscheduleCoachingSessionPresenter } from "../../hooks/use-unschedule-coaching-session-presenter";
-import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions, ReviewModal, CancelCoachingSessionModal } from "@maany_shr/e-class-ui-kit";
+import { CoachingSessionCard, CoachingSessionList, DefaultError, DefaultLoading, Tabs, Button, CoachCard, CardListLayout, DefaultNotFound, Breadcrumbs, AvailableCoachingSessions, ReviewDialog, CancelCoachingSessionModal } from "@maany_shr/e-class-ui-kit";
 import useClientSidePagination from "../../utils/use-client-side-pagination";
 import { useRouter } from "next/navigation";
 import { useCheckTimeLeft } from "../../../hooks/use-check-time-left";
@@ -611,20 +611,22 @@ export default function StudentCoachingSessions() {
             </Tabs.Root >
 
             {/* Review Modal */}
-            {isReviewModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm rounded-lg shadow-lg">
-                    <ReviewModal
-                        locale={locale}
-                        modalType="coaching"
-                        onClose={handleReviewClose}
-                        onSubmit={handleReviewSubmit}
-                        onSkip={handleReviewSkip}
-                        isLoading={createReviewMutation.isPending}
-                        isError={createReviewViewModel?.mode === 'kaboom'}
-                        submitted={reviewSubmitted}
-                    />
-                </div>
-            )}
+            <ReviewDialog
+                locale={locale}
+                modalType="coaching"
+                onClose={handleReviewClose}
+                onSubmit={handleReviewSubmit}
+                onSkip={handleReviewSkip}
+                isLoading={createReviewMutation.isPending}
+                isError={createReviewViewModel?.mode === 'kaboom'}
+                submitted={reviewSubmitted}
+                isOpen={isReviewModalOpen}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        handleReviewClose();
+                    }
+                }}
+            />
 
             {/* Cancel Coaching Session Modal */}
             {isCancelModalOpen && (
