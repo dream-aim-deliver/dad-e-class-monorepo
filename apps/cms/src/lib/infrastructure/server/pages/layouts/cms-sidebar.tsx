@@ -83,7 +83,7 @@ const CMSSidebar = ({
         settings: `${basePath}/settings`,
         homepage: `${basePath}/manage-homepage`,
         offers: `${basePath}/manage-offers`,
-        aboutPage: `${basePath}/manage-about`,
+        aboutPage: `${basePath}/manage-about-page`,
         footer: `${basePath}/manage-footer`,
     };
 
