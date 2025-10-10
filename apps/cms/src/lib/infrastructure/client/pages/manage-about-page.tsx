@@ -50,9 +50,6 @@ export default function ManageAboutPage() {
 		setPlatformLanguageViewModel,
 	);
 
-	// ✅ PATTERN: Present query data directly in render, not in useEffect
-	// This follows the manage-topics pattern and prevents circular useEffect dependencies
-	// Reference: apps/cms/src/lib/infrastructure/client/pages/manage-topics.tsx:300
 	// @ts-ignore
 	platformLanguagePresenter.present(platformLanguageResponse, platformLanguageViewModel);
 
@@ -60,8 +57,6 @@ export default function ManageAboutPage() {
 	const [currentContent, setCurrentContent] = useState<string>('');
 	const [isContentInitialized, setIsContentInitialized] = useState(false);
 
-	// ✅ PATTERN: Initialize content from loaded data with a flag to prevent re-initialization
-	// This prevents the useEffect from running multiple times with stale state
 	useEffect(() => {
 		if (
 			!isContentInitialized &&
@@ -94,9 +89,6 @@ export default function ManageAboutPage() {
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-	// ✅ PATTERN: Present mutation result in useEffect when mutation succeeds
-	// The presenter is called ONLY when the mutation completes successfully
-	// Reference: apps/platform/src/lib/infrastructure/client/pages/workspace/edit/hooks/save-hooks.ts:151-159
 	useEffect(() => {
 		if (saveAboutPageMutation.isSuccess && saveAboutPageMutation.data) {
 			// @ts-ignore
@@ -104,9 +96,6 @@ export default function ManageAboutPage() {
 		}
 	}, [saveAboutPageMutation.isSuccess, saveAboutPageMutation.data, savePresenter, saveViewModel]);
 
-	// ✅ PATTERN: Handle mutation success states in a separate useEffect
-	// Check for different view model modes: 'default' (success) and other error modes
-	// Reference: apps/platform/src/lib/infrastructure/client/pages/workspace/edit/hooks/save-hooks.ts:161-182
 	useEffect(() => {
 		if (
 			saveAboutPageMutation.isSuccess &&
@@ -119,9 +108,7 @@ export default function ManageAboutPage() {
 			const timer = setTimeout(() => setSuccessMessage(null), 5000);
 			return () => clearTimeout(timer);
 		}
-		// Note: The TSaveAboutPageViewModel might not have 'conflict' mode
-		// If your API supports optimistic concurrency, add the conflict mode to the view model
-		// For now, we handle kaboom and other error modes
+		// Handle kaboom and other error modes
 		if (
 			saveAboutPageMutation.isSuccess &&
 			saveViewModel?.mode === 'kaboom'
@@ -133,9 +120,6 @@ export default function ManageAboutPage() {
 		}
 	}, [saveViewModel, saveAboutPageMutation.isSuccess]);
 
-	// ✅ PATTERN: Handle mutation errors in a separate useEffect
-	// This catches network errors, server errors, and other mutation failures
-	// Reference: apps/platform/src/lib/infrastructure/client/pages/workspace/edit/hooks/save-hooks.ts:184-190
 	useEffect(() => {
 		if (saveAboutPageMutation.isError) {
 			setErrorMessage(
@@ -146,11 +130,7 @@ export default function ManageAboutPage() {
 		}
 	}, [saveAboutPageMutation.isError, saveAboutPageMutation.error]);
 
-	// ✅ PATTERN: Save handler should NOT call presenter directly
-	// Instead, it only triggers the mutation and lets useEffect handle the presenter
-	// Reference: apps/platform/src/lib/infrastructure/client/pages/workspace/edit/hooks/save-hooks.ts:192-219
 	const handleSave = useCallback(async () => {
-		// Clear previous messages
 		setErrorMessage(null);
 		setSuccessMessage(null);
 
@@ -158,16 +138,11 @@ export default function ManageAboutPage() {
 			await saveAboutPageMutation.mutateAsync({
 				aboutPageContent: currentContent,
 			});
-			// ✅ Presenter will be called automatically in useEffect above
-			// ✅ No need to refetch - the mutation response includes updated data
 		} catch (error) {
-			// ✅ Error will be set automatically in useEffect above
-			console.error('Failed to save about page:', error);
+			// Error handled by useEffect
 		}
 	}, [currentContent, saveAboutPageMutation]);
 
-	// ✅ PATTERN: Error handling for query with retry functionality
-	// Reference: apps/cms/src/lib/infrastructure/client/pages/manage-topics.tsx:308-316
 	if (platformLanguageViewModel?.mode === 'kaboom') {
 		return (
 			<DefaultError
