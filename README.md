@@ -261,9 +261,8 @@ You may need to make yourself coach/admin depending on the page you are building
 }
 ```
 
-#### Assign Admin Role
-
-```
+#### Assign Course Creator Role
+```json
 {
   "filter": {
     "byId": {
@@ -276,5 +275,22 @@ You may need to make yourself coach/admin depending on the page you are building
   "operationType": "attach",
   "relationship": "roles",
   "relatedId": 4
+}
+```
+
+#### Assign Admin Role
+```json
+{
+  "filter": {
+    "byId": {
+      "field": "id",
+      "type": "number",
+      "op": "eq",
+      "value": 1
+    }
+  },
+  "operationType": "attach",
+  "relationship": "roles",
+  "relatedId": 5
 }
 ```
