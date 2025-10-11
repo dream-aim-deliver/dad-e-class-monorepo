@@ -5,6 +5,14 @@ import { Badge } from './badge';
 import { StarRating } from './star-rating';
 import SkillBadges from './skill-badges';
 
+export interface Skill {
+    name: string;
+    id: string | number;
+    state: "created";
+    createdAt: Date;
+    updatedAt: Date;
+    slug: string;
+}
 export interface BuyCoachingSessionBannerProps extends isLocalAware {
     coachName: string;
     coachAvatarUrl: string;
@@ -13,7 +21,7 @@ export interface BuyCoachingSessionBannerProps extends isLocalAware {
     totalRatings: number;
     onBookSessionWith: () => void;
     isCourseCreator?: boolean;
-    skills: string[];
+    skills: Skill[];
 }
 
 /**

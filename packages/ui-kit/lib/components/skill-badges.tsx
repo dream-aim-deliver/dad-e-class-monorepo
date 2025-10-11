@@ -3,9 +3,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Badge } from './badge';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
+import { Skill } from './buy-coaching-session-banner';
 
 interface SkillBadgesProps {
-    skills: string[];
+    skills: Skill[];
     locale: TLocale;
 }
 
@@ -13,7 +14,7 @@ interface SkillBadgesProps {
  * A component that displays a list of skill badges with a toggle for overflow.
  *
  * @param {SkillBadgesProps} props - The component props.
- * @param {string[]} props.skills - The array of skills to be displayed as badges.
+ * @param {Skill[]} [props.skills] - An array of skills to display as badges.
  * @param {TLocale} [props.locale] - The locale for translations.
  *
  * @returns {JSX.Element} A list of skill badges with a toggle for overflow.
@@ -112,11 +113,11 @@ const SkillBadges: React.FC<SkillBadgesProps> = ({ skills = [], locale }) => {
             >
                 {skills.map((skill, index) => (
                     <div
-                        key={skill}
+                        key={skill.slug}
                         ref={el => { badgeRefs.current[index] = el; }}
                     >
                         <Badge
-                            text={skill}
+                            text={skill.name}
                             className="h-6 py-1 text-base max-w-full"
                         />
                     </div>

@@ -50,7 +50,7 @@ export interface ReviewCardProps extends isLocalAware {
 *   locale="en"
 * />
 */
-const ReviewCard: React.FC<ReviewCardProps> = ({
+export const ReviewCard: React.FC<ReviewCardProps> = ({
   className,
   rating,
   reviewerName,
@@ -117,5 +117,3 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
     </div>
   );
 };
-
-export default ReviewCard;

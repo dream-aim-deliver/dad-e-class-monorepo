@@ -10,7 +10,7 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useState } from 'react';
-import { DefaultLoading, DefaultError, DefaultNotFound } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, DefaultNotFound, BuyCoachingSessionBanner, CoachReviewCard, BookSessionWith, Breadcrumbs } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useGetCoachIntroductionPresenter } from '../hooks/use-get-coach-introduction-presenter';
@@ -26,6 +26,7 @@ interface CoachProfileProps {
 
 export default function CoachProfile({ username }: CoachProfileProps) {
 	const locale = useLocale() as TLocale;
+	// const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
 	const sessionDTO = useSession();
 	const session = sessionDTO.data;
@@ -72,12 +73,15 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	const { presenter: coachIntroductionPresenter } = useGetCoachIntroductionPresenter(
 		setCoachIntroductionViewModel,
 	);
+
 	const { presenter: coachReviewsPresenter } = useListCoachReviewsPresenter(
 		setCoachReviewsViewModel,
 	);
+
 	const { presenter: coachCoursesPresenter } = useListCoachCoursesPresenter(
 		setCoachCoursesViewModel,
 	);
+
 	const { presenter: coachProfileAccessPresenter } = useGetCoachProfileAccessPresenter(
 		setCoachProfileAccessViewModel,
 	);
@@ -93,7 +97,11 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 	coachProfileAccessPresenter.present(coachProfileAccessResponse, coachProfileAccessViewModel);
 
 	// Loading state
-	if (!coachIntroductionViewModel || !coachReviewsViewModel || !coachCoursesViewModel || !coachProfileAccessViewModel) {
+	// if (!coachIntroductionViewModel || !coachReviewsViewModel || !coachCoursesViewModel || !coachProfileAccessViewModel) {
+	// 	return <DefaultLoading locale={locale} variant="minimal" />;
+	// }
+
+	if (!coachIntroductionViewModel || !coachCoursesViewModel || !coachReviewsViewModel || !coachProfileAccessViewModel) {
 		return <DefaultLoading locale={locale} variant="minimal" />;
 	}
 
@@ -102,25 +110,40 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 		return <DefaultNotFound locale={locale} />;
 	}
 
+	// Error handling - not found for courses
+	if(coachCoursesViewModel.mode === 'not-found') {
+		return <DefaultNotFound locale={locale} />;
+	}
+
+	// Error handling for reviews
+	if (coachReviewsViewModel.mode === 'not-found') {
+		return <DefaultNotFound locale={locale} />;
+	}
+
+	// Error handling - not found for profile access
+	if (coachProfileAccessViewModel.mode === 'not-found') {
+		return <DefaultNotFound locale={locale} />;
+	}
+
 	// Error handling - kaboom
 	if (coachIntroductionViewModel.mode === 'kaboom') {
 		return <DefaultError locale={locale} />;
 	}
 
-	// Error handling for reviews
-	if (coachReviewsViewModel.mode === 'kaboom') {
-		return <DefaultError locale={locale} />;
-	}
-
 	// Error handling for courses
-	if (coachCoursesViewModel.mode === 'kaboom') {
-		return <DefaultError locale={locale} />;
-	}
+	// if (coachCoursesViewModel.mode === 'kaboom') {
+	// 	return <DefaultError locale={locale} />;
+	// }
+
+	// Error handling for reviews
+	// if (coachReviewsViewModel.mode === 'kaboom') {
+	// 	return <DefaultError locale={locale} />;
+	// }
 
 	// Error handling for profile access
-	if (coachProfileAccessViewModel.mode === 'kaboom') {
-		return <DefaultError locale={locale} />;
-	}
+	// if (coachProfileAccessViewModel.mode === 'kaboom') {
+	// 	return <DefaultError locale={locale} />;
+	// }
 
 	// Access control check - if profile access is denied, show not found
 	if (coachProfileAccessViewModel.mode === 'default' && !coachProfileAccessViewModel.data.access) {
@@ -129,9 +152,9 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 
 	// Success state - extract data
 	// TODO: Use these variables when implementing UI components
-	// const coachIntroduction = coachIntroductionViewModel.data;
-	// const coachReviews = coachReviewsViewModel.data;
-	// const coachCourses = coachCoursesViewModel.data;
+	const coachIntroduction = coachIntroductionViewModel.data.coach;
+	// const coachCourses = coachCoursesViewModel.data.courses;
+	// const coachReviews = coachReviewsViewModel.data.reviews;
 	// const coachProfileAccess = coachProfileAccessViewModel.data;
 
 	// TODO: Implement createCourseReview mutation
@@ -147,15 +170,62 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 
 			{/* Profile Header Section */}
 			<div>
-				<h1 className="text-2xl font-bold">Coach Profile</h1>
 				{/* TODO: Add ProfileHeader component */}
 				{/* Available data: coachIntroductionViewModel.data */}
+				{isLoggedIn && (
+					<div>
+						{/* <Breadcrumbs
+							items={[
+								{
+									label: breadcrumbsTranslations('home'),
+									onClick: () => router.push('/'),
+								},
+								{
+									label: breadcrumbsTranslations('workspace'),
+									onClick: () => {
+										// TODO: Implement navigation to workspace
+									},
+								},
+								{
+									label: breadcrumbsTranslations('students'),
+									onClick: () => {
+										// Nothing should happen on clicking the current page
+									},
+								},
+							]}
+						/> */}
+					</div>
+				)}
 			</div>
 
 			{/* Coach Introduction Section */}
 			<div>
 				{/* TODO: Add CoachIntroduction component */}
 				{/* Display coach bio, expertise, etc. from coachIntroductionViewModel.data */}
+				{isLoggedIn ? (
+					<BookSessionWith 
+						coachName={`${coachIntroduction.name} ${coachIntroduction.surname}`}
+						coachAvatarUrl={coachIntroduction?.avatarImage?.downloadUrl || ""}
+						description={coachIntroduction.bio}
+						coachRating={coachIntroduction.rating}
+						totalRatings={coachIntroduction.ratingCount}
+						onBookSessionWith={() => { alert('Book session clicked!'); }}
+						isCourseCreator={coachIntroduction.isCourseCreator}
+						locale={locale}
+					/>
+				) : (
+					<BuyCoachingSessionBanner
+						coachName={`${coachIntroduction.name} ${coachIntroduction.surname}`}
+						coachAvatarUrl={coachIntroduction?.avatarImage?.downloadUrl || ""}
+						description={coachIntroduction.bio}
+						coachRating={coachIntroduction.rating}
+						totalRatings={coachIntroduction.ratingCount}
+						onBookSessionWith={() => { alert('Book session clicked!'); }}
+						isCourseCreator={coachIntroduction.isCourseCreator}
+						skills={coachIntroduction.skills}
+						locale={locale}
+					/>
+				)}
 			</div>
 
 			{/* Coach Availability & Booking Section */}
@@ -171,12 +241,51 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 			<div>
 				{/* TODO: Add CoachCourses component */}
 				{/* Display courses from coachCoursesViewModel.data */}
+				{/* <CourseCardList 
+					locale={locale} 
+					onEmptyStateButtonClick={() => {
+						console.log('Explore courses clicked');
+					}}
+					emptyStateMessage="No courses available from this coach."
+					emptyStateButtonText="Explore Courses"
+				>
+					{coachCourses.map((course) => (
+						<CourseCard
+							key={course.id}
+							userType="student"
+							reviewCount={course.ratingCount}
+							locale={locale}
+							language={course.languages[0]}
+						/>
+					))}
+				</CourseCardList> */}
 			</div>
 
 			{/* Coach Reviews Section */}
 			<div>
 				{/* TODO: Add CoachReviews component */}
 				{/* Display reviews from coachReviewsViewModel.data */}
+				
+				{/* <CoachReviewCard /> */}
+				{/* {coachReviews.length > 0 && (
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+						{coachReviews.map((review) => (
+							<CoachReviewCard
+								key={review.id}
+								locale={locale}
+								rating={review.rating}
+								reviewerName={`${review.student.name} ${review.student.surname}`}
+								reviewerAvatar={review.student.avatarImage?.downloadUrl || ''}
+								reviewText={review.notes || ''}
+								workshopTitle={review.coachingSession.coachingOfferingTitle}
+								date={review.createdAt}
+								time={new Date(review.createdAt).toLocaleTimeString(locale)}
+								courseTitle={review.course.title}
+								courseImage={review.course.image?.downloadUrl || ''}
+							/>
+						))}
+					</div>
+				)} */}
 			</div>
 
 			{/* Review Form Section */}
@@ -184,13 +293,6 @@ export default function CoachProfile({ username }: CoachProfileProps) {
 				<div>
 					{/* TODO: Add ReviewForm component */}
 					{/* Allow students to submit reviews using createCourseReview */}
-				</div>
-			)}
-
-			{/* Unauthenticated user message */}
-			{!isLoggedIn && (
-				<div>
-					{/* TODO: Add message prompting users to sign in to book coaching or leave reviews */}
 				</div>
 			)}
 		</div>

@@ -215,3 +215,5 @@ export { default as CreateEditCategoryTopicModal } from './components/create-mod
 export { default as CoachingOfferingModal } from './components/coaching-offering-modal';
 export { ManageCoachingOfferingItem } from './components/manage-coaching-offering/manage-coaching-offering-item';
 export { ManageCoachingOfferingList } from './components/manage-coaching-offering/manage-coaching-offering-list';
+export { CourseCardList } from './components/course-card/course-card-list';
+export { ReviewCard as CoachReviewCard } from './components/review/coach-review-card';
