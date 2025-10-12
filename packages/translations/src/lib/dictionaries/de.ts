@@ -172,6 +172,11 @@ export const DE: TDictionary = {
       sendRequestButton: 'Anfrage senden',
       errorMessage: 'Der Trainer ist in dem ausgewählten Zeitraum nicht verfügbar.',
     },
+    coachingAvailabilityCard: {
+      availability: 'Verfügbarkeit',
+      session: 'Sitzung',
+      requestButton: 'Anfragen',
+    },
     courseCard: {
       courseEmptyState: {
         message: 'Du hast noch keine Angebote gekauft',

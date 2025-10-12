@@ -1,4 +1,4 @@
-import { isLocalAware } from '@maany_shr/e-class-translations';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Button } from '../button';
 import { cn } from '../../utils/style-utils';
 
@@ -29,11 +29,13 @@ function CoachingSessionCard({
     endTime,
     title,
     onClick,
+    sessionLabel,
 }: {
     startTime: Date;
     endTime: Date;
     title: string;
     onClick?: () => void;
+    sessionLabel: string;
 }) {
     return (
         <div
@@ -43,7 +45,7 @@ function CoachingSessionCard({
             )}
             onClick={onClick}
         >
-            <div className="text-text-secondary text-sm">Session</div>
+            <div className="text-text-secondary text-sm">{sessionLabel}</div>
             <div className="text-text-primary font-medium">{title}</div>
             <div className="text-text-primary">
                 {formatTime(startTime)} - {formatTime(endTime)}
@@ -53,10 +55,12 @@ function CoachingSessionCard({
 }
 
 export function CoachingAvailabilityCard({
+    locale,
     availability,
     coachingSessions,
     onRequest,
 }: CoachingAvailabilityCardProps) {
+    const dictionary = getDictionary(locale);
     const getCoachingSessions = () => {
         return (
             coachingSessions.length > 0 && (
@@ -68,6 +72,10 @@ export function CoachingAvailabilityCard({
                             endTime={session.endTime}
                             title={session.title}
                             onClick={session.onClick}
+                            sessionLabel={
+                                dictionary?.components
+                                    ?.coachingAvailabilityCard?.session
+                            }
                         />
                     ))}
                 </div>
@@ -89,7 +97,10 @@ export function CoachingAvailabilityCard({
             >
                 <div>
                     <div className="text-text-secondary text-sm">
-                        Availability
+                        {
+                            dictionary?.components?.coachingAvailabilityCard
+                                ?.availability
+                        }
                     </div>
                     <div className="text-text-primary">
                         {formatTime(availability.startTime)} -{' '}
@@ -99,7 +110,10 @@ export function CoachingAvailabilityCard({
                 {onRequest && (
                     <Button
                         variant="primary"
-                        text="Request"
+                        text={
+                            dictionary?.components?.coachingAvailabilityCard
+                                ?.requestButton
+                        }
                         onClick={onRequest}
                     />
                 )}
