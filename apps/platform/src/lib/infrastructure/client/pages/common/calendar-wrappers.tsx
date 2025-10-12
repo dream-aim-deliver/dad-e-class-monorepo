@@ -128,9 +128,23 @@ export function MonthlyCalendarWrapper({
             isSameDay(new Date(segment.startTime), selectedDate),
         );
 
-        return availabilityOnDate.map((availabilitySegment) => {
+        // Filter session segments for the selected date
+        const sessionsOnDate = sessionSegments.filter((segment) =>
+            isSameDay(new Date(segment.startTime), selectedDate),
+        );
+
+        const result: Array<{
+            availability?: useCaseModels.TAvailability;
+            sessions: useCaseModels.TCoachCoachingSession[];
+        }> = [];
+
+        // Track which sessions have been assigned to an availability
+        const assignedSessionIds = new Set<number>();
+
+        // Map availability segments with their sessions
+        availabilityOnDate.forEach((availabilitySegment) => {
             // Find all session segments that fall within this availability segment
-            const sessionsForAvailability = sessionSegments.filter(
+            const sessionsForAvailability = sessionsOnDate.filter(
                 (sessionSegment) => {
                     const sessionStart = new Date(sessionSegment.startTime);
                     const sessionEnd = new Date(sessionSegment.endTime);
@@ -139,14 +153,18 @@ export function MonthlyCalendarWrapper({
 
                     // Check if session segment overlaps with availability segment
                     return (
-                        isSameDay(sessionStart, selectedDate) &&
                         sessionStart >= availStart &&
                         sessionEnd <= availEnd
                     );
                 },
             );
 
-            return {
+            // Mark these sessions as assigned
+            sessionsForAvailability.forEach((seg) => {
+                assignedSessionIds.add(seg.original.id);
+            });
+
+            result.push({
                 availability: {
                     ...availabilitySegment.original,
                     startTime: availabilitySegment.startTime,
@@ -157,11 +175,28 @@ export function MonthlyCalendarWrapper({
                     startTime: seg.startTime,
                     endTime: seg.endTime,
                 })),
-            };
+            });
         });
-    }, [coachAvailabilityViewModel, selectedDate]);
 
-    // TODO: Implement handling sessions outside of availability
+        // Find sessions that are not assigned to any availability
+        const sessionsOutsideAvailability = sessionsOnDate.filter(
+            (sessionSegment) => !assignedSessionIds.has(sessionSegment.original.id),
+        );
+
+        // Add sessions outside availability as a separate card without availability
+        if (sessionsOutsideAvailability.length > 0) {
+            result.push({
+                availability: undefined,
+                sessions: sessionsOutsideAvailability.map((seg) => ({
+                    ...seg.original,
+                    startTime: seg.startTime,
+                    endTime: seg.endTime,
+                })),
+            });
+        }
+
+        return result;
+    }, [coachAvailabilityViewModel, selectedDate]);
 
     const getOnRequestAvailabilityHandler = (
         availability: useCaseModels.TAvailability,
@@ -190,14 +225,14 @@ export function MonthlyCalendarWrapper({
                     <CoachingAvailabilityCard
                         locale={locale}
                         key={`availability-card-${index}`}
-                        onRequest={getOnRequestAvailabilityHandler(
+                        onRequest={availability ? getOnRequestAvailabilityHandler(
                             availability,
-                        )}
-                        availability={{
+                        ) : undefined}
+                        availability={availability ? {
                             startTime: new Date(availability.startTime),
                             endTime: new Date(availability.endTime),
                             onClick: onAvailabilityClick && (() => onAvailabilityClick?.(availability)),
-                        }}
+                        } : undefined}
                         coachingSessions={sessions.map((session) => ({
                             startTime: new Date(session.startTime),
                             endTime: new Date(session.endTime),
