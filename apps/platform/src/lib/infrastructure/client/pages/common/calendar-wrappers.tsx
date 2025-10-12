@@ -1,5 +1,5 @@
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import React, { useMemo, useState } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import {
@@ -78,6 +78,7 @@ export function MonthlyCalendarWrapper({
     onSessionClick,
 }: MonthlyCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('components.calendar');
     const { monthlyEvents } = useComputeMonthlyEvents({
         coachAvailabilityViewModel,
     });
@@ -244,7 +245,7 @@ export function MonthlyCalendarWrapper({
             )}
             {availabilityWithSessions.length === 0 && (
                 <div className="border border-card-stroke bg-card-fill text-text-secondary p-4 rounded-md">
-                    Please select a date with availability.
+                    {t('selectDateWithAvailability')}
                 </div>
             )}
         </div>
