@@ -11,6 +11,7 @@ import {
     useComputeMonthlyEvents,
     useComputeWeeklyEvents,
 } from './hooks/use-compute-events';
+import { splitTimeRangeByDays } from '../../utils/split-time-range';
 
 interface WeeklyCalendarWrapperProps {
     coachAvailabilityViewModel:
@@ -101,27 +102,61 @@ export function MonthlyCalendarWrapper({
             return [];
         }
 
-        const availabilityOnDate =
-            coachAvailabilityViewModel.data.availability.filter((event) =>
-                isSameDay(new Date(event.startTime), selectedDate),
+        // Split all availability periods by day
+        const availabilitySegments =
+            coachAvailabilityViewModel.data.availability.flatMap(
+                (availability) =>
+                    splitTimeRangeByDays(
+                        availability.startTime,
+                        availability.endTime,
+                        availability,
+                    ),
             );
 
-        return availabilityOnDate.map((availability) => {
-            // Find all sessions that fall within this availability time slot
-            const sessionsForAvailability =
-                coachAvailabilityViewModel.data.mySessions.filter((session) => {
-                    const sessionStart = new Date(session.startTime);
-                    const sessionEnd = new Date(session.endTime);
-                    const availStart = new Date(availability.startTime);
-                    const availEnd = new Date(availability.endTime);
+        // Split all sessions by day
+        const sessionSegments =
+            coachAvailabilityViewModel.data.mySessions.flatMap((session) =>
+                splitTimeRangeByDays(
+                    session.startTime,
+                    session.endTime,
+                    session,
+                ),
+            );
 
-                    // Check if session overlaps with availability
-                    return sessionStart >= availStart && sessionEnd <= availEnd;
-                });
+        // Filter availability segments for the selected date
+        const availabilityOnDate = availabilitySegments.filter((segment) =>
+            isSameDay(new Date(segment.startTime), selectedDate),
+        );
+
+        return availabilityOnDate.map((availabilitySegment) => {
+            // Find all session segments that fall within this availability segment
+            const sessionsForAvailability = sessionSegments.filter(
+                (sessionSegment) => {
+                    const sessionStart = new Date(sessionSegment.startTime);
+                    const sessionEnd = new Date(sessionSegment.endTime);
+                    const availStart = new Date(availabilitySegment.startTime);
+                    const availEnd = new Date(availabilitySegment.endTime);
+
+                    // Check if session segment overlaps with availability segment
+                    return (
+                        isSameDay(sessionStart, selectedDate) &&
+                        sessionStart >= availStart &&
+                        sessionEnd <= availEnd
+                    );
+                },
+            );
 
             return {
-                availability,
-                sessions: sessionsForAvailability,
+                availability: {
+                    ...availabilitySegment.original,
+                    startTime: availabilitySegment.startTime,
+                    endTime: availabilitySegment.endTime,
+                },
+                sessions: sessionsForAvailability.map((seg) => ({
+                    ...seg.original,
+                    startTime: seg.startTime,
+                    endTime: seg.endTime,
+                })),
             };
         });
     }, [coachAvailabilityViewModel, selectedDate]);
