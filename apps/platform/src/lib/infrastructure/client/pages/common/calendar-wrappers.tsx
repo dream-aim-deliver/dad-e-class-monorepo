@@ -196,13 +196,13 @@ export function MonthlyCalendarWrapper({
                         availability={{
                             startTime: new Date(availability.startTime),
                             endTime: new Date(availability.endTime),
-                            onClick: () => onAvailabilityClick?.(availability),
+                            onClick: onAvailabilityClick && (() => onAvailabilityClick?.(availability)),
                         }}
                         coachingSessions={sessions.map((session) => ({
                             startTime: new Date(session.startTime),
                             endTime: new Date(session.endTime),
                             title: session.coachingOfferingName,
-                            onClick: () => onSessionClick?.(session.id),
+                            onClick: onSessionClick && (() => onSessionClick?.(session.id)),
                         }))}
                     />
                 ),

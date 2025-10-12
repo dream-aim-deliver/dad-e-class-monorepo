@@ -46,6 +46,7 @@ export function CalendarView({
                     currentDate={currentDate}
                     setCurrentDate={setCurrentDate}
                     setNewSession={undefined}
+                    onAvailabilityClick={onAvailabilityClick}
                 />
             </div>
         </div>
