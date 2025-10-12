@@ -129,6 +129,7 @@ export const EN: TDictionary = {
       month: 'Month',
       week: 'Week',
       today: 'Today',
+      selectDateWithAvailability: 'Please select a date with availability.',
       availabilityManagement: {
         minText: 'min',
         repeatsEveryText: 'Repeats every',
