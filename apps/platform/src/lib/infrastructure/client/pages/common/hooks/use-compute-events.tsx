@@ -8,6 +8,98 @@ import {
 import { useLocale } from 'next-intl';
 import { useMemo } from 'react';
 
+/**
+ * Splits a time period that spans multiple days into separate daily segments.
+ * Each segment starts at the beginning of the period or midnight, and ends at
+ * the end of the period or 23:59:59.999 of that day.
+ */
+function splitTimeRangeByDays<T>(
+    startTime: string,
+    endTime: string,
+    original: T,
+): {
+    startTime: string;
+    endTime: string;
+    original: T;
+}[] {
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+
+    // Check if time range spans multiple days
+    const startDay = new Date(
+        start.getFullYear(),
+        start.getMonth(),
+        start.getDate(),
+    );
+    const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+    if (startDay.getTime() === endDay.getTime()) {
+        // Same day, no split needed
+        return [
+            {
+                startTime,
+                endTime,
+                original,
+            },
+        ];
+    }
+
+    // Split into multiple days
+    const segments: {
+        startTime: string;
+        endTime: string;
+        original: T;
+    }[] = [];
+    const currentDate = new Date(start);
+
+    while (currentDate <= end) {
+        const dayStart = new Date(currentDate);
+        const dayEnd = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate(),
+            23,
+            59,
+            59,
+            999,
+        );
+
+        const segmentStart =
+            currentDate.getTime() === start.getTime() ? start : dayStart;
+        const segmentEnd = dayEnd > end ? end : dayEnd;
+
+        segments.push({
+            startTime: segmentStart.toISOString(),
+            endTime: segmentEnd.toISOString(),
+            original,
+        });
+
+        // Move to next day
+        currentDate.setDate(currentDate.getDate() + 1);
+        currentDate.setHours(0, 0, 0, 0);
+    }
+
+    return segments;
+}
+
+/**
+ * Splits an availability period that spans multiple days into separate daily segments.
+ */
+function splitAvailabilityByDays(availability: useCaseModels.TAvailability) {
+    return splitTimeRangeByDays(
+        availability.startTime,
+        availability.endTime,
+        availability,
+    );
+}
+
+/**
+ * Splits a coaching session that spans multiple days into separate daily segments.
+ */
+function splitSessionByDays(session: useCaseModels.TCoachCoachingSession) {
+    return splitTimeRangeByDays(session.startTime, session.endTime, session);
+}
+
 interface UseComputeEventsProps {
     coachAvailabilityViewModel:
         | viewModels.TCoachAvailabilityViewModel
@@ -44,36 +136,48 @@ export function useComputeWeeklyEvents({
         }[] = [];
 
         coachAvailabilityViewModel.data.mySessions.forEach((session) => {
-            events.push({
-                start: new Date(session.startTime),
-                end: new Date(session.endTime),
-                priority: 2,
-                component: (
-                    <SessionCalendarCard
-                        locale={locale}
-                        start={new Date(session.startTime)}
-                        end={new Date(session.endTime)}
-                        title={session.coachingOfferingName}
-                        onClick={() => onSessionClick?.(session.id)}
-                    />
-                ),
+            const segments = splitSessionByDays(session);
+
+            segments.forEach((segment) => {
+                events.push({
+                    start: new Date(segment.startTime),
+                    end: new Date(segment.endTime),
+                    priority: 2,
+                    component: (
+                        <SessionCalendarCard
+                            locale={locale}
+                            start={new Date(segment.startTime)}
+                            end={new Date(segment.endTime)}
+                            title={segment.original.coachingOfferingName}
+                            onClick={() =>
+                                onSessionClick?.(segment.original.id)
+                            }
+                        />
+                    ),
+                });
             });
         });
 
         coachAvailabilityViewModel.data.availability.forEach((availability) => {
-            events.push({
-                start: new Date(availability.startTime),
-                end: new Date(availability.endTime),
-                priority: 1,
-                component: (
-                    <AvailabilityCalendarCard
-                        locale={locale}
-                        start={new Date(availability.startTime)}
-                        end={new Date(availability.endTime)}
-                        onNewEvent={onNewEvent}
-                        onClick={() => onAvailabilityClick?.(availability)}
-                    />
-                ),
+            const segments = splitAvailabilityByDays(availability);
+
+            segments.forEach((segment) => {
+                events.push({
+                    start: new Date(segment.startTime),
+                    end: new Date(segment.endTime),
+                    priority: 1,
+                    component: (
+                        <AvailabilityCalendarCard
+                            locale={locale}
+                            start={new Date(segment.startTime)}
+                            end={new Date(segment.endTime)}
+                            onNewEvent={onNewEvent}
+                            onClick={() =>
+                                onAvailabilityClick?.(segment.original)
+                            }
+                        />
+                    ),
+                });
             });
         });
 
@@ -103,32 +207,40 @@ export function useComputeMonthlyEvents({
             };
         } = {};
 
-        // Process sessions
+        // Process sessions - split multi-day sessions into separate days
         coachAvailabilityViewModel.data.mySessions.forEach((session) => {
-            const dateKey = formatDateKey(new Date(session.startTime));
+            const segments = splitSessionByDays(session);
 
-            if (!dateEventsMap[dateKey]) {
-                dateEventsMap[dateKey] = {
-                    hasCoachAvailability: false,
-                    hasSessions: false,
-                };
-            }
+            segments.forEach((segment) => {
+                const dateKey = formatDateKey(new Date(segment.startTime));
 
-            dateEventsMap[dateKey].hasSessions = true;
+                if (!dateEventsMap[dateKey]) {
+                    dateEventsMap[dateKey] = {
+                        hasCoachAvailability: false,
+                        hasSessions: false,
+                    };
+                }
+
+                dateEventsMap[dateKey].hasSessions = true;
+            });
         });
 
-        // Process availability
+        // Process availability - split multi-day availability into separate days
         coachAvailabilityViewModel.data.availability.forEach((availability) => {
-            const dateKey = formatDateKey(new Date(availability.startTime));
+            const segments = splitAvailabilityByDays(availability);
 
-            if (!dateEventsMap[dateKey]) {
-                dateEventsMap[dateKey] = {
-                    hasCoachAvailability: false,
-                    hasSessions: false,
-                };
-            }
+            segments.forEach((segment) => {
+                const dateKey = formatDateKey(new Date(segment.startTime));
 
-            dateEventsMap[dateKey].hasCoachAvailability = true;
+                if (!dateEventsMap[dateKey]) {
+                    dateEventsMap[dateKey] = {
+                        hasCoachAvailability: false,
+                        hasSessions: false,
+                    };
+                }
+
+                dateEventsMap[dateKey].hasCoachAvailability = true;
+            });
         });
 
         return dateEventsMap;

@@ -24,15 +24,19 @@ const AvailabilitySchema = z.object({
 
 export type TAvailability = z.infer<typeof AvailabilitySchema>;
 
+const CoachCoachingSessionSchema = z.object({
+  id: z.number(),
+  status: CoachingStatusSchema,
+  coachingOfferingName: z.string(),
+  startTime: z.string().datetime(),
+  endTime: z.string().datetime(),
+});
+
+export type TCoachCoachingSession = z.infer<typeof CoachCoachingSessionSchema>;
+
 export const GetCoachAvailabilitySuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
   availability: z.array(AvailabilitySchema),
-  mySessions: z.array(z.object({
-    id: z.number(),
-    status: CoachingStatusSchema,
-    coachingOfferingName: z.string(),
-    startTime: z.string().datetime(),
-    endTime: z.string().datetime(),
-  })),
+  mySessions: z.array(CoachCoachingSessionSchema),
 }));
 
 export type TGetCoachAvailabilitySuccessResponse = z.infer<typeof GetCoachAvailabilitySuccessResponseSchema>;
