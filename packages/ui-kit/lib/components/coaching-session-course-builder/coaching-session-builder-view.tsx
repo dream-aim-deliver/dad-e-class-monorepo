@@ -1,7 +1,7 @@
-import { FC } from "react";
-import { CoachingSession } from "../course-builder-lesson-component/types";
-import { RadioButton } from "../radio-button";
-import { getDictionary, isLocalAware } from "@maany_shr/e-class-translations";
+import { FC } from 'react';
+import { CoachingSession } from '../course-builder-lesson-component/types';
+import { RadioButton } from '../radio-button';
+import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 /**
  * A component that allows users to select a coaching session type from a list of options.
@@ -40,15 +40,35 @@ interface CoachingSessionBuilderViewProps extends isLocalAware {
     onSessionChange: (session: CoachingSession) => void;
 }
 
-export const CoachingSessionBuilderView: FC<CoachingSessionBuilderViewProps> = ({
-    coachingSessionTypes,
-    onSessionChange,
-    selectedSession,
-    locale
-}) => {
-    const dictionary = getDictionary(locale);    
+export const CoachingSessionBuilderView: FC<
+    CoachingSessionBuilderViewProps
+> = ({ coachingSessionTypes, onSessionChange, selectedSession, locale }) => {
+    const dictionary = getDictionary(locale);
+
+    const isSaved = selectedSession !== undefined && selectedSession.id === undefined;
+
+    if (isSaved) {
+        return (
+            <div className="flex flex-row gap-1 items-center bg-card-fill p-4 rounded-md w-full border border-neutral-700">
+                <span>{selectedSession.name}</span>
+                <span className="text-text-secondary text-sm leading-[100%]">
+                    {selectedSession.duration}{' '}
+                    {
+                        dictionary.components.coachingSessionCourseBuilder
+                            .minText
+                    }
+                </span>
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col gap-4 w-full items-start justify-center">
+            {coachingSessionTypes.length === 0 && (
+                <div className="bg-card-fill p-4 rounded-md w-full border border-neutral-700">
+                    No coaching offers available.
+                </div>
+            )}
             {coachingSessionTypes.map((session) => (
                 <div key={session.id} className="flex gap-4 items-center">
                     <div className="w-fit flex items-center">
@@ -67,7 +87,11 @@ export const CoachingSessionBuilderView: FC<CoachingSessionBuilderViewProps> = (
                             {session.name}
                         </span>
                         <span className="text-text-secondary text-sm leading-[100%]">
-                            {session.duration} {dictionary.components.coachingSessionCourseBuilder.minText}
+                            {session.duration}{' '}
+                            {
+                                dictionary.components
+                                    .coachingSessionCourseBuilder.minText
+                            }
                         </span>
                     </div>
                 </div>

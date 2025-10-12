@@ -344,7 +344,7 @@ function transformCoachingSession(
         id: extractId(component.id),
         type: 'coachingSession',
         position: order,
-        courseCoachingOfferingId: component.coachingSession!.id,
+        coachingOfferingId: component.coachingSession!.id!,
     };
 }
 
