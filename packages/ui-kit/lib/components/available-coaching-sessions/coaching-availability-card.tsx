@@ -1,5 +1,6 @@
 import { isLocalAware } from '@maany_shr/e-class-translations';
 import { Button } from '../button';
+import { cn } from '../../utils/style-utils';
 
 interface CoachingAvailabilityCardProps extends isLocalAware {
     availability: {
@@ -36,7 +37,7 @@ function CoachingSessionCard({
 }) {
     return (
         <div
-            className="bg-card-stroke border border-neutral-700 rounded-md p-4 flex flex-col"
+            className={cn("bg-card-stroke border border-neutral-700 rounded-md p-4 flex flex-col", {"cursor-pointer": !!onClick})}
             onClick={onClick}
         >
             <div className="text-text-secondary text-sm">Session</div>
@@ -58,7 +59,7 @@ export function CoachingAvailabilityCard({
     return (
         <div className="bg-card-fill rounded-md p-4 flex flex-col gap-4 border border-card-stroke">
             <div
-                className="flex flex-row justify-between items-center"
+                className={cn("flex flex-row justify-between items-center", {"cursor-pointer": !!availability.onClick})}
                 onClick={availability.onClick}
             >
                 <div>
