@@ -260,6 +260,11 @@ export const DictionarySchema = z.object({
       sendRequestButton: z.string(),
       errorMessage: z.string(),
     }),
+    coachingAvailabilityCard: z.object({
+      availability: z.string(),
+      session: z.string(),
+      requestButton: z.string(),
+    }),
     coachCard: z.object({
       coachingSession: z.string(),
       teaches: z.string(),
