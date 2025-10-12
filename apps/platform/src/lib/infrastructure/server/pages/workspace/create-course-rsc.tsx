@@ -18,7 +18,9 @@ export default async function CreateCourseServerComponent(
         redirect('/auth/login');
     }
 
-    if (!session.user.roles?.includes('admin')) {
+    const roles = session.user.roles || [];
+
+    if (!roles.includes('admin') && !roles.includes('course_creator')) {
         // TODO: fill in localized error message
         throw new Error('You do not have permission to access this page');
     }

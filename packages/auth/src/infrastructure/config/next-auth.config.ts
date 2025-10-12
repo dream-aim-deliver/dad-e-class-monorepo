@@ -115,7 +115,7 @@ export const generateNextAuthConfig = (config: {
                 return token;
             },
             session: async ({ session, token }) => {
-                const defaultSessionRoles: ("visitor" | "student" | "coach" | "admin" | "superadmin")[] = ["visitor", "student"]
+                const defaultSessionRoles: ("visitor" | "student" | "coach" | "course_creator" | "admin" | "superadmin")[] = ["visitor", "student"]
 
                 // Get the token for authorization
                 const nextAuthToken = token as DefaultJWT & {
@@ -162,7 +162,7 @@ export const generateNextAuthConfig = (config: {
                     const userRolesDTO = await trpcClient.listUserRoles.query({});
                     console.log("[Auth Session] 📦 User Roles Response:", JSON.stringify(userRolesDTO, null, 2));
                     if(userRolesDTO.success && userRolesDTO.data) {
-                        const allowedRoles = ["visitor", "student", "coach", "admin", "superadmin"] as const;
+                        const allowedRoles = ["visitor", "student", "coach", "course_creator", "admin", "superadmin"] as const;
                         // The response has data.roles, not data as an array
                         const roles = (userRolesDTO.data as any).roles as TEClassRole[];
                         if (Array.isArray(roles)) {

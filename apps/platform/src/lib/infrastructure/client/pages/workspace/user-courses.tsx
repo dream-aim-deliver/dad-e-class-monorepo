@@ -125,7 +125,7 @@ function CreateCourseDialog() {
 }
 
 export default function UserCourses(props: UserCoursesProps) {
-    const isAdmin = props.roles.includes('admin');
+    const canCreateCourse = props.roles.includes('admin') || props.roles.includes('course_creator');
     const isStudent = props.roles.includes('student');
 
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
@@ -157,8 +157,8 @@ export default function UserCourses(props: UserCoursesProps) {
             />
             <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
                 <h1> {pageTranslations('yourCourses')} </h1>
-                {isAdmin && <CreateCourseDialog />}
-                {!isAdmin && !isStudent && (
+                {canCreateCourse && <CreateCourseDialog />}
+                {!canCreateCourse && !isStudent && (
                     <Button text={pageTranslations('becomeCourseCreator')} />
                 )}
             </div>
