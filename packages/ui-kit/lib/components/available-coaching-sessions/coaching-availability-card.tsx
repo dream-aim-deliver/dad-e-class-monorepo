@@ -3,7 +3,7 @@ import { Button } from '../button';
 import { cn } from '../../utils/style-utils';
 
 interface CoachingAvailabilityCardProps extends isLocalAware {
-    availability: {
+    availability?: {
         startTime: Date;
         endTime: Date;
         onClick?: () => void;
@@ -37,7 +37,10 @@ function CoachingSessionCard({
 }) {
     return (
         <div
-            className={cn("bg-card-stroke border border-neutral-700 rounded-md p-4 flex flex-col", {"cursor-pointer": !!onClick})}
+            className={cn(
+                'bg-card-stroke border border-neutral-700 rounded-md p-4 flex flex-col',
+                { 'cursor-pointer': !!onClick },
+            )}
             onClick={onClick}
         >
             <div className="text-text-secondary text-sm">Session</div>
@@ -54,12 +57,34 @@ export function CoachingAvailabilityCard({
     coachingSessions,
     onRequest,
 }: CoachingAvailabilityCardProps) {
-    // TODO: Implement handling sessions outside of availability
+    const getCoachingSessions = () => {
+        return (
+            coachingSessions.length > 0 && (
+                <div className="flex flex-col gap-2">
+                    {coachingSessions.map((session, index) => (
+                        <CoachingSessionCard
+                            key={`coaching-session-${index}`}
+                            startTime={session.startTime}
+                            endTime={session.endTime}
+                            title={session.title}
+                            onClick={session.onClick}
+                        />
+                    ))}
+                </div>
+            )
+        );
+    };
+
+    if (!availability) {
+        return getCoachingSessions();
+    }
 
     return (
         <div className="bg-card-fill rounded-md p-4 flex flex-col gap-4 border border-card-stroke">
             <div
-                className={cn("flex flex-row justify-between items-center", {"cursor-pointer": !!availability.onClick})}
+                className={cn('flex flex-row justify-between items-center', {
+                    'cursor-pointer': !!availability.onClick,
+                })}
                 onClick={availability.onClick}
             >
                 <div>
@@ -79,19 +104,7 @@ export function CoachingAvailabilityCard({
                     />
                 )}
             </div>
-            {coachingSessions.length > 0 && (
-                <div className="flex flex-col gap-2">
-                    {coachingSessions.map((session, index) => (
-                        <CoachingSessionCard
-                            key={`coaching-session-${index}`}
-                            startTime={session.startTime}
-                            endTime={session.endTime}
-                            title={session.title}
-                            onClick={session.onClick}
-                        />
-                    ))}
-                </div>
-            )}
+            {getCoachingSessions()}
         </div>
     );
 }
