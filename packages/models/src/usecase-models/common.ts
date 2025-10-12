@@ -484,7 +484,7 @@ const QuizTypeFourComponentRequestSchema = BaseComponentRequestSchema.extend({
 
 const CoachingSessionComponentRequestSchema = BaseComponentRequestSchema.extend({
     type: z.literal('coachingSession'),
-    courseCoachingOfferingId: z.number().int(),
+    coachingOfferingId: z.number().int(),
 });
 
 const AssignmentComponentRequestSchema = BaseComponentRequestSchema.extend({

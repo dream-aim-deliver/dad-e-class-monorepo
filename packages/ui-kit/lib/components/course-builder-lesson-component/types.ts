@@ -9,7 +9,7 @@ interface BaseCourseFormElement {
 }
 
 export interface CoachingSession {
-    id: number;
+    id?: number;
     name: string;
     duration: number;
 }
