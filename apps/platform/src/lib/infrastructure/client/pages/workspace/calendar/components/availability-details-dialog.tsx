@@ -56,7 +56,7 @@ export function AvailabilityDetailsDialog({
             <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
                 <div className="flex flex-col gap-4">
                     <h4>Availability Details</h4>
-                    <div className="p-4 flex flex-col gap-3 bg-neutral-800 rounded-md border border-divider text-text-primary">
+                    <div className="p-4 flex flex-col gap-3 bg-card-stroke rounded-md border border-divider text-text-primary">
                         <div className="flex flex-row gap-2 text-text-secondary">
                             <IconCalendar />
                             <span>Date</span>
