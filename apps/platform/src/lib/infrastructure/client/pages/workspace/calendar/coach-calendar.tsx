@@ -10,27 +10,8 @@ import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import { AddAvailabilityDialog } from './components/add-availability-dialog';
 import { CalendarView } from './components/calendar-view';
 import { AvailabilityDetailsDialog } from './components/availability-details-dialog';
-import { useSession } from 'next-auth/react';
-import { useListStudentCoachingSessionsPresenter } from '../../../hooks/use-list-student-coaching-sessions-presenter';
 
-function StudentCalendar() {
-    const locale = useLocale() as TLocale;
-    const [listStudentCoachingSessionsResponse] = trpc.listStudentCoachingSessions.useSuspenseQuery({});
-    const [studentCoachingSessionsViewModel, setStudentCoachingSessionsViewModel] =
-        useState<viewModels.TStudentCoachingSessionsListViewModel | undefined>(undefined);
-    const { presenter } = useListStudentCoachingSessionsPresenter(
-        setStudentCoachingSessionsViewModel,
-    );
-    presenter.present(listStudentCoachingSessionsResponse, studentCoachingSessionsViewModel);
-
-    // TODO: Implement mapping sessions to calendar
-
-    return <div>
-        Student
-    </div>;
-}
-
-function CoachCalendar() {
+export default function CoachCalendar() {
     const locale = useLocale() as TLocale;
     const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -98,20 +79,4 @@ function CoachCalendar() {
             />
         </div>
     );
-}
-
-export default function UserCalendar() {
-    return <CoachCalendar />;
-
-    // const session = useSession();
-    // if (!session.data) {
-    //     // TODO: handle unauthenticated
-    //     return;
-    // }
-    // const roles = session.data.user.roles;
-    // if (roles?.includes('coach')) {
-    //     return <CoachCalendar />;
-    // } else {
-    //     return <StudentCalendar />;
-    // }
 }
