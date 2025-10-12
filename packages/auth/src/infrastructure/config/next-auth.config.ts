@@ -202,10 +202,14 @@ export const generateNextAuthConfig = (config: {
                     console.log("[Auth Session] 📦 User Details Response:", JSON.stringify(getUserForSessionDTO, null, 2));
                     if(getUserForSessionDTO.success == true && getUserForSessionDTO.data) {
                         const responseData = getUserForSessionDTO.data;
-                        session.user.id = responseData.data.id.toString();
-                        session.user.email = responseData.data.email;
-                        session.user.name = responseData.data.username;
-                        session.user.image = responseData.data.avatarImage || undefined;
+                        // @ts-ignore
+                        session.user.id = responseData.id.toString();
+                        // @ts-ignore
+                        session.user.email = responseData.email;
+                        // @ts-ignore
+                        session.user.name = responseData.username;
+                        // @ts-ignore
+                        session.user.image = responseData.avatarImage || undefined;
                         console.log("[Auth Session] ✅ User details populated successfully");
                     }
                 } catch (error) {
