@@ -184,23 +184,48 @@ export const generateNextAuthConfig = (config: {
                     }
                     session.user.roles = defaultSessionRoles 
                 }
-
+                
                 // CRITICAL [WE SHOULD REMOVE THIS AND PROXY VIA A SERVER SIDE CACHE/ROUTE]: Set the tokens on the session so they're available client-side
                 session.user.accessToken = nextAuthToken.account.access_token;
                 session.user.idToken = nextAuthToken.account.id_token;
 
-                // TODO query the database
-                session.userId = nextAuthToken.user.sub;
-                session.user.email = nextAuthToken.user.email;
-                session.user.name = nextAuthToken.user.name;
-                session.user.image = nextAuthToken.user.image;
-                session.user.id = nextAuthToken.user.externalID;
+                if(!session.user.accessToken || !session.user.idToken) {
+                    return session;
+                }
+
+                try {
+                    console.log("[Auth Session] 🚀 Requesting User Details for session callback");
+                    const getUserForSessionDTO = await trpcClient.getUserDetailsForSession.query({
+                        userSub: nextAuthToken.user.sub,
+                        defaultImage: nextAuthToken.user.image
+                    });
+                    console.log("[Auth Session] 📦 User Details Response:", JSON.stringify(getUserForSessionDTO, null, 2));
+                    if(getUserForSessionDTO.success == true && getUserForSessionDTO.data) {
+                        const responseData = getUserForSessionDTO.data;
+                        session.user.id = responseData.data.id.toString();
+                        session.user.email = responseData.data.email;
+                        session.user.name = responseData.data.username;
+                        session.user.image = responseData.data.avatarImage || undefined;
+                        console.log("[Auth Session] ✅ User details populated successfully");
+                    }
+                } catch (error) {
+                    console.error('[Auth Session] ❌ Failed to fetch user details in session callback:', error);
+                    if (error instanceof Error) {
+                        console.error('[Auth Session] Error details:', {
+                            message: error.message,
+                            stack: error.stack?.slice(0, 500)
+                        });
+                    }
+                }
 
                 console.log('[Auth Session] ✅ Session prepared with:', {
                     hasIdToken: !!session.user.idToken,
                     hasAccessToken: !!session.user.accessToken,
                     roles: session.user.roles,
-                    userId: session.userId
+                    userId: session.user.id,
+                    email: session.user.email,
+                    name: session.user.name,
+                    hasImage: !!session.user.image,
                 });
 
                 return session;
