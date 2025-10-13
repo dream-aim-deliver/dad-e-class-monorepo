@@ -1220,7 +1220,7 @@ export const DictionarySchema = z.object({
       edit: z.string(),
       delete: z.string(),
     }),
-    coachStudentIneractionCard: z.object({
+    coachStudentInteractionCard: z.object({
       module: z.string(),
       lesson: z.string(),
       viewLesson: z.string(),

@@ -64,7 +64,7 @@ export const  CoachStudentInteractionCard = ({
               </span>
             }
           >
-            <h4 className="text-text-primary md:text-xl text-md font-bold">{dictionary.components.coachStudentIneractionCard.module} {module.position}: {module.title}</h4>
+            <h4 className="text-text-primary md:text-xl text-md font-bold">{dictionary.components.coachStudentInteractionCard.module} {module.position}: {module.title}</h4>
           </AccordionTrigger>
 
           <AccordionContent value={`module-${module.id}`} className="pt-4 pb-6">
@@ -108,7 +108,7 @@ export const  CoachStudentInteractionCard = ({
                     >
                       <div className="flex items-center justify-between gap-4 flex-1">
                         <div className="flex items-center gap-4">
-                          <h5 className="text-text-primary md:text-lg text-sm font-bold">{dictionary.components.coachStudentIneractionCard.lesson} {lesson.position}: {lesson.title}</h5>
+                          <h5 className="text-text-primary md:text-lg text-sm font-bold">{dictionary.components.coachStudentInteractionCard.lesson} {lesson.position}: {lesson.title}</h5>
                         </div>
                         <Button
                           onClick={(e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -116,7 +116,7 @@ export const  CoachStudentInteractionCard = ({
                             onViewLessonsClick(module.id, lesson.id);
                           }}
                           variant='text'
-                          text={dictionary.components.coachStudentIneractionCard.viewLesson}
+                          text={dictionary.components.coachStudentInteractionCard.viewLesson}
                         />
                       </div>
                     </AccordionTrigger>
@@ -135,7 +135,7 @@ export const  CoachStudentInteractionCard = ({
                                 <Button
                                   hasIconLeft
                                   iconLeft={<IconTextInput />}
-                                  text={dictionary.components.coachStudentIneractionCard.textInput}
+                                  text={dictionary.components.coachStudentInteractionCard.textInput}
                                   variant="text"
                                   className="p-0 text-base-white hover:text-base-white"
                                 />
@@ -151,7 +151,7 @@ export const  CoachStudentInteractionCard = ({
                               {/* Student Answer Section */}
                               <div className="flex flex-col gap-2 items-start">
                                 <Button
-                                  text={dictionary.components.coachStudentIneractionCard.studentReply}
+                                  text={dictionary.components.coachStudentInteractionCard.studentReply}
                                   variant="text"
                                   className="p-0 text-base-white hover:text-base-white"
                                 />
@@ -165,7 +165,7 @@ export const  CoachStudentInteractionCard = ({
                           ))
                         ) : (
                           <p className="text-text-secondary text-sm">
-                            {dictionary.components.coachStudentIneractionCard.noInteractionsYet}
+                            {dictionary.components.coachStudentInteractionCard.noInteractionsYet}
                           </p>
                         )}
                       </div>
