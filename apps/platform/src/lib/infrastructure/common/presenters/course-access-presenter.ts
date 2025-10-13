@@ -1,46 +1,53 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TGetCourseAccessUseCaseResponse,
+    TGetCourseAccessErrorResponse,
+    GetCourseAccessUseCaseResponseSchema,
+    TEClassRole
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TCourseAccessPresenterUtilities = {};
 
 export const GetCourseAccessResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetCourseAccessUseCaseResponse,
-        viewModels.TCourseAccessViewModel,
+        TGetCourseAccessUseCaseResponse,
+        viewModels.TGetCourseAccessViewModel,
         TCourseAccessPresenterUtilities
     >;
 
 type TGetCourseAccessResponseMiddleware =
     typeof GetCourseAccessResponseMiddleware;
 
-const roleHierarchy: Record<useCaseModels.TCourseRole, number> = {
+const roleHierarchy: Record<TEClassRole, number> = {
     visitor: 0,
     student: 1,
     coach: 2,
     course_creator: 3,
-    admin: 4
+    admin: 4,
+    superadmin: 5
 };
 
 export default class CourseAccessPresenter extends BasePresenter<
-    useCaseModels.TGetCourseAccessUseCaseResponse,
-    viewModels.TCourseAccessViewModel,
+    TGetCourseAccessUseCaseResponse,
+    viewModels.TGetCourseAccessViewModel,
     TCourseAccessPresenterUtilities,
     TGetCourseAccessResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.TCourseAccessViewModel) => void,
+        setViewModel: (viewModel: viewModels.TGetCourseAccessViewModel) => void,
         viewUtilities: TCourseAccessPresenterUtilities,
     ) {
         super({
             schemas: {
                 responseModel:
-                    useCaseModels.GetCourseAccessUseCaseResponseSchema,
-                viewModel: viewModels.CourseAccessViewModelSchema
+                    GetCourseAccessUseCaseResponseSchema,
+                viewModel: viewModels.GetCourseAccessViewModelSchema
             },
             middleware: GetCourseAccessResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -50,11 +57,11 @@ export default class CourseAccessPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetCourseAccessUseCaseResponse,
+            TGetCourseAccessUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TCourseAccessViewModel {
-        let highestRole: useCaseModels.TCourseRole | null = null;
+    ): viewModels.TGetCourseAccessViewModel {
+        let highestRole: TEClassRole | null = null;
         if (response.data.roles.length > 0) {
             highestRole = response.data.roles.reduce((a, b) =>
                 roleHierarchy[a] > roleHierarchy[b] ? a : b,
@@ -72,10 +79,10 @@ export default class CourseAccessPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetCourseAccessUseCaseErrorResponse,
+            TGetCourseAccessErrorResponse,
             TGetCourseAccessResponseMiddleware
         >,
-    ): viewModels.TCourseAccessViewModel {
+    ): viewModels.TGetCourseAccessViewModel {
         if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
