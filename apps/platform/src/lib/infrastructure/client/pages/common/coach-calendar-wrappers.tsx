@@ -13,7 +13,7 @@ import {
 } from './hooks/use-compute-events';
 import { splitTimeRangeByDays } from '../../utils/split-time-range';
 
-interface WeeklyCalendarWrapperProps {
+interface WeeklyCoachCalendarWrapperProps {
     coachAvailabilityViewModel:
         | viewModels.TCoachAvailabilityViewModel
         | undefined;
@@ -25,13 +25,13 @@ interface WeeklyCalendarWrapperProps {
     onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
 }
 
-export function WeeklyCalendarWrapper({
+export function WeeklyCoachCalendarWrapper({
     coachAvailabilityViewModel,
     setNewSession,
     currentDate,
     setCurrentDate,
     onAvailabilityClick,
-}: WeeklyCalendarWrapperProps) {
+}: WeeklyCoachCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
 
     const { weeklyEvents } = useComputeWeeklyEvents({
@@ -56,7 +56,7 @@ export function WeeklyCalendarWrapper({
     );
 }
 
-interface MonthlyCalendarWrapperProps {
+interface MonthlyCoachCalendarWrapperProps {
     coachAvailabilityViewModel:
         | viewModels.TCoachAvailabilityViewModel
         | undefined;
@@ -69,14 +69,14 @@ interface MonthlyCalendarWrapperProps {
     onSessionClick?: (sessionId: number) => void;
 }
 
-export function MonthlyCalendarWrapper({
+export function MonthlyCoachCalendarWrapper({
     coachAvailabilityViewModel,
     currentDate,
     setCurrentDate,
     setNewSession,
     onAvailabilityClick,
     onSessionClick,
-}: MonthlyCalendarWrapperProps) {
+}: MonthlyCoachCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('components.calendar');
     const { monthlyEvents } = useComputeMonthlyEvents({
