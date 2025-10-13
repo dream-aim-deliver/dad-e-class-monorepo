@@ -4,9 +4,9 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { WeeklyHeader } from '@maany_shr/e-class-ui-kit';
 import {
-    MonthlyCalendarWrapper,
-    WeeklyCalendarWrapper,
-} from '../../../common/calendar-wrappers';
+    MonthlyCoachCalendarWrapper,
+    WeeklyCoachCalendarWrapper,
+} from '../../../common/coach-calendar-wrappers';
 
 interface CalendarViewProps {
     coachAvailabilityViewModel: viewModels.TCoachAvailabilityViewModel;
@@ -32,7 +32,7 @@ export function CalendarView({
                         setCurrentDate={setCurrentDate}
                         locale={locale}
                     />
-                    <WeeklyCalendarWrapper
+                    <WeeklyCoachCalendarWrapper
                         coachAvailabilityViewModel={coachAvailabilityViewModel}
                         currentDate={currentDate}
                         setCurrentDate={setCurrentDate}
@@ -41,7 +41,7 @@ export function CalendarView({
                 </div>
             </div>
             <div className="flex flex-col md:hidden">
-                <MonthlyCalendarWrapper
+                <MonthlyCoachCalendarWrapper
                     coachAvailabilityViewModel={coachAvailabilityViewModel}
                     currentDate={currentDate}
                     setCurrentDate={setCurrentDate}

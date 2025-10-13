@@ -6,12 +6,14 @@ import { trpc } from '../../../trpc/client';
 import React, { useState } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachAvailabilityPresenter } from '../../../hooks/use-coach-availability-presenter';
-import { DefaultError, DefaultLoading } from '@maany_shr/e-class-ui-kit';
+import { DefaultError, DefaultLoading, Tabs } from '@maany_shr/e-class-ui-kit';
 import { AddAvailabilityDialog } from './components/add-availability-dialog';
 import { CalendarView } from './components/calendar-view';
 import { AvailabilityDetailsDialog } from './components/availability-details-dialog';
+import { useSession } from 'next-auth/react';
+import StudentCalendar from './student-calendar';
 
-export default function CoachCalendar() {
+function CalendarContent() {
     const locale = useLocale() as TLocale;
     const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -79,4 +81,33 @@ export default function CoachCalendar() {
             />
         </div>
     );
+}
+
+export default function CoachCalendar() {
+    const session = useSession();
+    const isStudent = session.data?.user?.roles?.includes('student');
+    const tabContentClass = 'mt-4';
+
+    if (isStudent) {
+        return (
+            <Tabs.Root defaultTab="coach">
+                <Tabs.List>
+                    <Tabs.Trigger value="coach" isLast={false}>
+                        Coach
+                    </Tabs.Trigger>
+                    <Tabs.Trigger value="student" isLast={true}>
+                        Student
+                    </Tabs.Trigger>
+                </Tabs.List>
+                <Tabs.Content value="coach" className={tabContentClass}>
+                    <CalendarContent />
+                </Tabs.Content>
+                <Tabs.Content value="student" className={tabContentClass}>
+                    <StudentCalendar />
+                </Tabs.Content>
+            </Tabs.Root>
+        );
+    }
+
+    return <CalendarContent />;
 }

@@ -1,0 +1,215 @@
+import { TLocale } from '@maany_shr/e-class-translations';
+import { useLocale, useTranslations } from 'next-intl';
+import React, { useMemo, useState } from 'react';
+import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
+import {
+    CoachingAvailabilityCard,
+    formatDateKey,
+    MonthlyCalendar,
+    SessionCalendarCard,
+    WeeklyCalendar,
+} from '@maany_shr/e-class-ui-kit';
+import { splitTimeRangeByDays } from '../../utils/split-time-range';
+
+interface WeeklyStudentCalendarWrapperProps {
+    studentCoachingSessionsViewModel:
+        | viewModels.TStudentCoachingSessionsListViewModel
+        | undefined;
+    currentDate: Date;
+    setCurrentDate: (date: Date) => void;
+    onSessionClick?: (sessionId: number) => void;
+}
+
+export function WeeklyStudentCalendarWrapper({
+    studentCoachingSessionsViewModel,
+    currentDate,
+    setCurrentDate,
+    onSessionClick,
+}: WeeklyStudentCalendarWrapperProps) {
+    const locale = useLocale() as TLocale;
+
+    const weeklyEvents = useMemo(() => {
+        if (
+            !studentCoachingSessionsViewModel ||
+            studentCoachingSessionsViewModel.mode !== 'default'
+        ) {
+            return [];
+        }
+
+        const events: {
+            start: Date;
+            end: Date;
+            priority: number;
+            component: React.ReactNode;
+        }[] = [];
+
+        studentCoachingSessionsViewModel.data.sessions.forEach((session) => {
+            if (session.status === 'unscheduled') return;
+
+            const segments = splitTimeRangeByDays(session.startTime, session.endTime, session);
+
+            segments.forEach((segment) => {
+                events.push({
+                    start: new Date(segment.startTime),
+                    end: new Date(segment.endTime),
+                    priority: 1,
+                    component: (
+                        <SessionCalendarCard
+                            locale={locale}
+                            start={new Date(segment.startTime)}
+                            end={new Date(segment.endTime)}
+                            title={segment.original.coachingOfferingTitle}
+                            onClick={() =>
+                                onSessionClick?.(segment.original.id)
+                            }
+                        />
+                    ),
+                });
+            });
+        });
+
+        return events;
+    }, [studentCoachingSessionsViewModel]);
+
+    return (
+        <WeeklyCalendar
+            locale={locale}
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+            events={weeklyEvents}
+        />
+    );
+}
+
+interface MonthlyStudentCalendarWrapperProps {
+    studentCoachingSessionsViewModel:
+        | viewModels.TStudentCoachingSessionsListViewModel
+        | undefined;
+    currentDate: Date;
+    setCurrentDate: (date: Date) => void;
+    onSessionClick?: (sessionId: number) => void;
+}
+
+export function MonthlyStudentCalendarWrapper({
+    studentCoachingSessionsViewModel,
+    currentDate,
+    setCurrentDate,
+    onSessionClick,
+}: MonthlyStudentCalendarWrapperProps) {
+    const locale = useLocale() as TLocale;
+    const t = useTranslations('components.calendar');
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+        undefined,
+    );
+
+    const monthlyEvents = useMemo(() => {
+        if (
+            !studentCoachingSessionsViewModel ||
+            studentCoachingSessionsViewModel.mode !== 'default'
+        ) {
+            return {};
+        }
+
+        const dateEventsMap: {
+            [date: string]: {
+                hasCoachAvailability: boolean;
+                hasSessions: boolean;
+            };
+        } = {};
+
+        // Process sessions - split multi-day sessions into separate days
+        studentCoachingSessionsViewModel.data.sessions.forEach((session) => {
+            if (session.status === 'unscheduled') return;
+
+            const segments = splitTimeRangeByDays(session.startTime, session.endTime, session);
+
+            segments.forEach((segment) => {
+                const dateKey = formatDateKey(new Date(segment.startTime));
+
+                if (!dateEventsMap[dateKey]) {
+                    dateEventsMap[dateKey] = {
+                        hasCoachAvailability: false,
+                        hasSessions: false,
+                    };
+                }
+
+                dateEventsMap[dateKey].hasSessions = true;
+            });
+        });
+
+        return dateEventsMap;
+    }, [studentCoachingSessionsViewModel]);
+
+    const isSameDay = (date1: Date, date2: Date): boolean => {
+        return (
+            date1.getFullYear() === date2.getFullYear() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getDate() === date2.getDate()
+        );
+    };
+
+    const sessionsOnDate = useMemo(() => {
+        if (
+            !studentCoachingSessionsViewModel ||
+            studentCoachingSessionsViewModel.mode !== 'default' ||
+            !selectedDate
+        ) {
+            return [];
+        }
+
+        // Split all sessions by day
+        const sessionSegments =
+            studentCoachingSessionsViewModel.data.sessions.flatMap((session) => {
+                if (session.status === 'unscheduled') return [];
+                return splitTimeRangeByDays(
+                    session.startTime,
+                    session.endTime,
+                    session,
+                );
+            });
+
+        // Filter session segments for the selected date
+        return sessionSegments
+            .filter((segment) =>
+                isSameDay(new Date(segment.startTime), selectedDate),
+            )
+            .map((seg) => ({
+                ...seg.original,
+                startTime: seg.startTime,
+                endTime: seg.endTime,
+            }));
+    }, [studentCoachingSessionsViewModel, selectedDate]);
+
+    return (
+        <div className="flex flex-col gap-3">
+            <MonthlyCalendar
+                locale={locale}
+                currentDate={currentDate}
+                setCurrentDate={setCurrentDate}
+                dateEvents={monthlyEvents}
+                selectedDate={selectedDate}
+                onDateClick={(date) => {
+                    setSelectedDate(date);
+                }}
+            />
+            {sessionsOnDate.length > 0 && (
+                <CoachingAvailabilityCard
+                    locale={locale}
+                    coachingSessions={sessionsOnDate.map((session) => ({
+                        startTime: new Date(session.startTime),
+                        endTime: new Date(session.endTime),
+                        title: session.coachingOfferingTitle,
+                        onClick:
+                            onSessionClick &&
+                            (() => onSessionClick?.(session.id)),
+                    }))}
+                />
+            )}
+            {sessionsOnDate.length === 0 && selectedDate && (
+                <div className="border border-card-stroke bg-card-fill text-text-secondary p-4 rounded-md">
+                    {t('selectDateWithAvailability')}
+                </div>
+            )}
+        </div>
+    );
+}
