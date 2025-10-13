@@ -1,16 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    TGetStudentDetailsUseCaseResponse,
+    TGetStudentDetailsErrorResponse,
+    GetStudentDetailsUseCaseResponseSchema
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TGetStudentDetailsPresenterUtilities = {};
 
 export const GetStudentDetailsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetStudentDetailsUseCaseResponse,
+        TGetStudentDetailsUseCaseResponse,
         viewModels.TGetStudentDetailsViewModel,
         TGetStudentDetailsPresenterUtilities
     >;
@@ -18,7 +23,7 @@ export const GetStudentDetailsResponseMiddleware =
 type TGetStudentDetailsResponseMiddleware = typeof GetStudentDetailsResponseMiddleware;
 
 export default class GetStudentDetailsPresenter extends BasePresenter<
-    useCaseModels.TGetStudentDetailsUseCaseResponse,
+    TGetStudentDetailsUseCaseResponse,
     viewModels.TGetStudentDetailsViewModel,
     TGetStudentDetailsPresenterUtilities,
     TGetStudentDetailsResponseMiddleware
@@ -29,7 +34,7 @@ export default class GetStudentDetailsPresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel: useCaseModels.GetStudentDetailsUseCaseResponseSchema,
+                responseModel: GetStudentDetailsUseCaseResponseSchema,
                 viewModel: viewModels.GetStudentDetailsViewModelSchema
             },
             middleware: GetStudentDetailsResponseMiddleware,
@@ -40,7 +45,7 @@ export default class GetStudentDetailsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetStudentDetailsUseCaseResponse,
+            TGetStudentDetailsUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TGetStudentDetailsViewModel {
@@ -51,10 +56,10 @@ export default class GetStudentDetailsPresenter extends BasePresenter<
             }
         };
     }
-    
+
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetStudentDetailsUseCaseErrorResponse,
+            TGetStudentDetailsErrorResponse,
             TGetStudentDetailsResponseMiddleware
         >,
     ): viewModels.TGetStudentDetailsViewModel {

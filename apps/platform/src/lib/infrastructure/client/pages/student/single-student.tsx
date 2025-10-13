@@ -18,7 +18,6 @@ import {
 import StudentInteractionsTab from './student-interactions-tab';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { trpc } from '../../trpc/cms-client';
-import { trpc as clientTrpc } from '../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCoachStudentCoursesPresenter } from '../../hooks/use-list-coach-student-courses-presenter';
 import { useGetStudentDetailsPresenter } from '../../hooks/use-get-student-details-presenter';
@@ -100,11 +99,11 @@ export default function SingleStudent({
     const updateSearchParams = (newCourseSlug: string) => {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
         current.set('courseSlug', newCourseSlug);
-        
+
         // Keep other search params intact
         const search = current.toString();
         const query = search ? `?${search}` : '';
-        
+
         router.push(`${window.location.pathname}${query}`);
     };
 
@@ -115,7 +114,7 @@ export default function SingleStudent({
     const [studentDetailsViewModel, setStudentDetailsViewModel] = useState<
         viewModels.TGetStudentDetailsViewModel | undefined
     >(undefined);
-    
+
     const [selectedCourse, setSelectedCourse] = useState<string>(courseSlug);
     const [selectedCourseData, setSelectedCourseData] = useState<{
         title: string;
@@ -135,12 +134,12 @@ export default function SingleStudent({
             studentUsername: slug,
         });
 
-    const [studentDetailsResponse] = clientTrpc.getStudentDetails.useSuspenseQuery({
+    const [studentDetailsResponse] = trpc.getStudentDetails.useSuspenseQuery({
         username: slug,
     });
 
     const { presenter } = useListCoachStudentCoursesPresenter(setViewModel);
-    
+
     const { presenter: studentDetailsPresenter } = useGetStudentDetailsPresenter(setStudentDetailsViewModel);
 
     // Initialize selected course data when courses are loaded
@@ -262,11 +261,11 @@ export default function SingleStudent({
                 </Tabs.Content>
 
                 <Tabs.Content value={StudentTab.INTERACTIONS} className={tabContentClass}>
-                    <StudentInteractionsTab 
-                        studentId={studentId} 
-                        courseSlug={selectedCourse} 
-                        courseImageUrl={currentSelectedCourseData?.image?.downloadUrl || ""} 
-                        courseTitle={currentSelectedCourseData?.title || ""} 
+                    <StudentInteractionsTab
+                        studentId={studentId}
+                        courseSlug={selectedCourse}
+                        courseImageUrl={currentSelectedCourseData?.image?.downloadUrl || ""}
+                        courseTitle={currentSelectedCourseData?.title || ""}
                     />
                 </Tabs.Content>
 
