@@ -1,0 +1,5 @@
+# Python dependencies for DAD E-Class tools
+
+# Smart case conversion library
+# Handles PascalCase, camelCase, snake_case, kebab-case conversions
+pyhumps==3.8.0
