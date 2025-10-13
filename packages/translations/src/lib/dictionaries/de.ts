@@ -1233,7 +1233,7 @@ export const DE: TDictionary = {
       edit: 'Bearbeiten',
       delete: 'Löschen',
     },
-    coachStudentIneractionCard: {
+    coachStudentInteractionCard: {
       module: 'Modul',
       lesson: 'Lektion',
       viewLesson: 'Lektion anzeigen',
