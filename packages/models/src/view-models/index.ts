@@ -10,7 +10,7 @@ export * from './coach-list-view-model';
 export * from './get-coaching-page-view-model';
 export * from './coaching-offering-list-view-model';
 export * from './available-coaching-list-view-model';
-export * from './course-access-view-model';
+export * from './get-course-access-view-model';
 export * from './assessment-component-list-view-model';
 export * from './assessment-progress-view-model';
 export * from './enrolled-course-details-view-model';
