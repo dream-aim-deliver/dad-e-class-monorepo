@@ -11,7 +11,7 @@ export type TCourseAccessPresenterUtilities = {};
 export const GetCourseAccessResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
         useCaseModels.TGetCourseAccessUseCaseResponse,
-        viewModels.TCourseAccessViewModel,
+        viewModels.TGetCourseAccessViewModel,
         TCourseAccessPresenterUtilities
     >;
 
@@ -28,19 +28,19 @@ const roleHierarchy: Record<useCaseModels.TCourseRole, number> = {
 
 export default class CourseAccessPresenter extends BasePresenter<
     useCaseModels.TGetCourseAccessUseCaseResponse,
-    viewModels.TCourseAccessViewModel,
+    viewModels.TGetCourseAccessViewModel,
     TCourseAccessPresenterUtilities,
     TGetCourseAccessResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.TCourseAccessViewModel) => void,
+        setViewModel: (viewModel: viewModels.TGetCourseAccessViewModel) => void,
         viewUtilities: TCourseAccessPresenterUtilities,
     ) {
         super({
             schemas: {
                 responseModel:
                     useCaseModels.GetCourseAccessUseCaseResponseSchema,
-                viewModel: viewModels.CourseAccessViewModelSchema
+                viewModel: viewModels.GetCourseAccessViewModelSchema
             },
             middleware: GetCourseAccessResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -53,7 +53,7 @@ export default class CourseAccessPresenter extends BasePresenter<
             useCaseModels.TGetCourseAccessUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TCourseAccessViewModel {
+    ): viewModels.TGetCourseAccessViewModel {
         let highestRole: useCaseModels.TCourseRole | null = null;
         if (response.data.roles.length > 0) {
             highestRole = response.data.roles.reduce((a, b) =>
@@ -75,7 +75,7 @@ export default class CourseAccessPresenter extends BasePresenter<
             useCaseModels.TGetCourseAccessUseCaseErrorResponse,
             TGetCourseAccessResponseMiddleware
         >,
-    ): viewModels.TCourseAccessViewModel {
+    ): viewModels.TGetCourseAccessViewModel {
         if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',

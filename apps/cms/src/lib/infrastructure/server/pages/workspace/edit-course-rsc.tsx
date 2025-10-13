@@ -45,7 +45,7 @@ export default async function EditCourseServerComponent({
 
 async function fetchCourseAccess(
     slug: string,
-): Promise<viewModels.TCourseAccessViewModel> {
+): Promise<viewModels.TGetCourseAccessViewModel> {
     const trpc = getServerTRPC();
     const queryOptions = trpc.getCourseAccess.queryOptions({
         courseSlug: slug,
@@ -53,7 +53,7 @@ async function fetchCourseAccess(
     const queryClient = getQueryClient();
     const courseAccessResponse = await queryClient.fetchQuery(queryOptions);
 
-    let courseAccessViewModel: viewModels.TCourseAccessViewModel | undefined;
+    let courseAccessViewModel: viewModels.TGetCourseAccessViewModel | undefined;
     const presenter = createGetCourseAccessPresenter((viewModel) => {
         courseAccessViewModel = viewModel;
     });
@@ -70,7 +70,7 @@ async function fetchCourseAccess(
 }
 
 function handleAccessModes(
-    courseAccessViewModel: viewModels.TCourseAccessViewModel,
+    courseAccessViewModel: viewModels.TGetCourseAccessViewModel,
 ): void {
     switch (courseAccessViewModel.mode) {
         case 'not-found':
