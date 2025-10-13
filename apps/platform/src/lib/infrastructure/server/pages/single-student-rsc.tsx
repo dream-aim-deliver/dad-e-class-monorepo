@@ -7,7 +7,6 @@ import { redirect } from 'next/navigation';
 import getSession from '../config/auth/get-session';
 import SingleStudent from '../../client/pages/student/single-student';
 import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
-import { trpc as clientTrpc } from '../config/trpc/server';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 interface SingleStudentServerComponentProps {
@@ -42,7 +41,7 @@ export default async function SingleStudentServerComponent({
     await Promise.all([
         prefetch(trpc.listStudentInteractions.queryOptions({ studentId, courseSlug })),
         prefetch(trpc.listCoachStudentCourses.queryOptions({ studentUsername: slug })),
-        prefetch(clientTrpc.getStudentDetails.queryOptions({ username: slug })),
+        prefetch(trpc.getStudentDetails.queryOptions({ username: slug })),
     ]);
 
     return (

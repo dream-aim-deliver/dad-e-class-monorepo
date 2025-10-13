@@ -80,4 +80,3 @@ export * from './send-assignment-reply-usecase-models';
 export * from './pass-assignment-usecase-models';
 
 export * from './delete-availability-usecase-models';
-export * from './get-student-details-usecase-models';
