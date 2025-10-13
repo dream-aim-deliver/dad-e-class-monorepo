@@ -200,7 +200,7 @@ export const EN: TDictionary = {
       buyButton: 'Buy',
       fromButton: 'from',
       draftBadge: 'Draft',
-      completedBadge: 'Offers Completed',
+      completedBadge: 'Offer Completed',
       cochingSession: 'Coaching Session',
       sales: 'sales',
       hours: 'hours',
