@@ -125,8 +125,8 @@ def generate_presenter(feature_kebab: str, feature_pascal: str, output_dir: Path
     """Generate presenter file with cms-rest imports."""
     content = f'''import {{ viewModels }} from '@maany_shr/e-class-models';
 import {{
-    {feature_pascal}UseCaseResponseSchema,
-    T{feature_pascal}UseCaseResponse,
+    {feature_pascal}ResponseSchema,
+    T{feature_pascal}Response,
     T{feature_pascal}ErrorResponse,
 }} from '@dream-aim-deliver/e-class-cms-rest';
 import {{
@@ -140,7 +140,7 @@ export type T{feature_pascal}PresenterUtilities = {{}};
 
 export const {feature_pascal}ResponseMiddleware =
     {{}} satisfies TBaseResponseResponseMiddleware<
-        T{feature_pascal}UseCaseResponse,
+        T{feature_pascal}Response,
         viewModels.T{feature_pascal}ViewModel,
         T{feature_pascal}PresenterUtilities
     >;
@@ -148,7 +148,7 @@ export const {feature_pascal}ResponseMiddleware =
 type T{feature_pascal}ResponseMiddleware = typeof {feature_pascal}ResponseMiddleware;
 
 export default class {feature_pascal}Presenter extends BasePresenter<
-    T{feature_pascal}UseCaseResponse,
+    T{feature_pascal}Response,
     viewModels.T{feature_pascal}ViewModel,
     T{feature_pascal}PresenterUtilities,
     T{feature_pascal}ResponseMiddleware
@@ -159,7 +159,7 @@ export default class {feature_pascal}Presenter extends BasePresenter<
     ) {{
         super({{
             schemas: {{
-                responseModel: {feature_pascal}UseCaseResponseSchema,
+                responseModel: {feature_pascal}ResponseSchema,
                 viewModel: viewModels.{feature_pascal}ViewModelSchema
             }},
             middleware: {feature_pascal}ResponseMiddleware,
@@ -170,7 +170,7 @@ export default class {feature_pascal}Presenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            T{feature_pascal}UseCaseResponse,
+            T{feature_pascal}Response,
             {{ success: true }}
         >,
     ): viewModels.T{feature_pascal}ViewModel {{
