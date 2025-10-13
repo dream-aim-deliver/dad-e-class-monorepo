@@ -15,7 +15,7 @@ import {
     WeeklyHeader,
 } from '@maany_shr/e-class-ui-kit';
 import ScheduledOfferingContent from './dialogs/scheduled-offering-content';
-import { MonthlyCalendarWrapper, WeeklyCalendarWrapper } from '../common/calendar-wrappers';
+import { MonthlyCoachCalendarWrapper, WeeklyCoachCalendarWrapper } from '../common/coach-calendar-wrappers';
 
 interface BookCoachPageProps {
     coachUsername: string;
@@ -131,7 +131,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                             setCurrentDate={setCurrentDate}
                             locale={locale}
                         />
-                        <WeeklyCalendarWrapper
+                        <WeeklyCoachCalendarWrapper
                             coachAvailabilityViewModel={
                                 coachAvailabilityViewModel
                             }
@@ -142,7 +142,7 @@ export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
                     </div>
                 </div>
                 <div className="flex flex-col md:hidden">
-                    <MonthlyCalendarWrapper
+                    <MonthlyCoachCalendarWrapper
                         coachAvailabilityViewModel={coachAvailabilityViewModel}
                         currentDate={currentDate}
                         setCurrentDate={setCurrentDate}
