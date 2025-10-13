@@ -18,9 +18,10 @@ import {
 import StudentInteractionsTab from './student-interactions-tab';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { trpc } from '../../trpc/cms-client';
+import { trpc as clientTrpc } from '../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCoachStudentCoursesPresenter } from '../../hooks/use-list-coach-student-courses-presenter';
-import { useGetPersonalProfilePresenter } from '../../hooks/use-get-personal-profile-presenter';
+import { useGetStudentDetailsPresenter } from '../../hooks/use-get-student-details-presenter';
 
 interface SingleStudentProps {
     slug: string;
@@ -111,8 +112,8 @@ export default function SingleStudent({
         viewModels.TListCoachStudentCoursesViewModel | undefined
     >(undefined);
 
-    const [personalProfileViewModel, setPersonalProfileViewModel] = useState<
-        viewModels.TGetPersonalProfileViewModel | undefined
+    const [studentDetailsViewModel, setStudentDetailsViewModel] = useState<
+        viewModels.TGetStudentDetailsViewModel | undefined
     >(undefined);
     
     const [selectedCourse, setSelectedCourse] = useState<string>(courseSlug);
@@ -134,14 +135,13 @@ export default function SingleStudent({
             studentUsername: slug,
         });
 
-    const [personalProfileResponse] =
-        trpc.getPersonalProfile.useSuspenseQuery({
-            username: slug,
-        });
+    const [studentDetailsResponse] = clientTrpc.getStudentDetails.useSuspenseQuery({
+        username: slug,
+    });
 
     const { presenter } = useListCoachStudentCoursesPresenter(setViewModel);
     
-    const { presenter: personalProfilePresenter } = useGetPersonalProfilePresenter(setPersonalProfileViewModel);
+    const { presenter: studentDetailsPresenter } = useGetStudentDetailsPresenter(setStudentDetailsViewModel);
 
     // Initialize selected course data when courses are loaded
     const currentSelectedCourseData = useMemo(() => {
@@ -155,17 +155,17 @@ export default function SingleStudent({
     presenter.present(listCoachStudentCoursesResponse, viewModel);
 
     //@ts-ignore
-    personalProfilePresenter.present(personalProfileResponse, personalProfileViewModel);
+    studentDetailsPresenter.present(studentDetailsResponse, studentDetailsViewModel);
 
-    if (!viewModel || !personalProfileViewModel) {
+    if (!viewModel || !studentDetailsViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
-    if (viewModel.mode === 'kaboom' || personalProfileViewModel.mode === 'kaboom') {
+    if (viewModel.mode === 'kaboom' || studentDetailsViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
     }
 
-    if (viewModel.mode === 'not-found' || personalProfileViewModel.mode === 'not-found') {
+    if (viewModel.mode === 'not-found' || studentDetailsViewModel.mode === 'not-found') {
         return <DefaultNotFound locale={locale} />;
     }
 
@@ -174,7 +174,7 @@ export default function SingleStudent({
     }
 
     const courses = viewModel.data.courses;
-    const profile = personalProfileViewModel.data.profile;
+    const profile = studentDetailsViewModel.data;
 
     return (
         <div className="flex flex-col space-y-4">
