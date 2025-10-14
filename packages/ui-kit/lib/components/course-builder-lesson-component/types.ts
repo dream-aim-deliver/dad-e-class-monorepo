@@ -17,6 +17,12 @@ export interface CoachingSession {
 export interface CoachingSessionElement extends BaseCourseFormElement {
     type: CourseElementType.CoachingSession;
     coachingSession?: CoachingSession;
+    progress?: {
+        session: {
+            id: number;
+            status: string;
+        }
+    }
 }
 
 export type QuizType = "quizTypeOne" | "quizTypeTwo" | "quizTypeThree" | "quizTypeFour";

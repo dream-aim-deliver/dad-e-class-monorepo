@@ -381,6 +381,12 @@ function transformCoachingSession(
             name: component.name,
             duration: component.duration,
         },
+        progress: component.progress ? {
+            session: {
+                id: component.progress.session.id,
+                status: component.progress.session.status,
+            }
+        } : undefined,
     };
 }
 

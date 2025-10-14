@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 
 interface BookingServerComponentProps {
     coachUsername: string;
+    sessionId?: string;
 }
 
 export default async function BookingServerComponent(
@@ -22,9 +23,17 @@ export default async function BookingServerComponent(
         throw new Error('You cannot book a session with yourself');
     }
 
+    let sessionIdNumber: number | undefined = undefined;
+    if (props.sessionId) {
+        sessionIdNumber = parseInt(props.sessionId, 10);
+        if (isNaN(sessionIdNumber)) {
+            throw new Error('Invalid session ID');
+        }
+    }
+
     return (
         <Suspense fallback={<DefaultLoadingWrapper />}>
-            <BookCoachPage coachUsername={props.coachUsername} />
+            <BookCoachPage coachUsername={props.coachUsername} sessionId={sessionIdNumber} />
         </Suspense>
     );
 }
