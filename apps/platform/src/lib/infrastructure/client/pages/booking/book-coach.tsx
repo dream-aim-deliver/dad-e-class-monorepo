@@ -19,9 +19,10 @@ import { MonthlyCoachCalendarWrapper, WeeklyCoachCalendarWrapper } from '../comm
 
 interface BookCoachPageProps {
     coachUsername: string;
+    sessionId?: number;
 }
 
-export default function BookCoachPage({ coachUsername }: BookCoachPageProps) {
+export default function BookCoachPage({ coachUsername, sessionId }: BookCoachPageProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
 

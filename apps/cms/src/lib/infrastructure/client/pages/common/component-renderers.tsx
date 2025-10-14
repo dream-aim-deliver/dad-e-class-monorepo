@@ -406,7 +406,7 @@ function CoachingSessionComponent({
             key={key}
             elementInstance={formElement as CoachingSessionElement}
             locale={locale}
-            coachList={<CourseCoachList />}
+            progressContent={<CourseCoachList />}
         />
     );
 }

@@ -1,9 +1,4 @@
-import {
-    assignment,
-    fileMetadata,
-    useCaseModels,
-    viewModels,
-} from '@maany_shr/e-class-models';
+import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import {
     CoachingSessionElement,
     CoachingSessionStudentView,
@@ -36,16 +31,19 @@ import {
     AssignmentElement,
     CourseElementType,
     downloadFile,
+    Button,
+    DefaultLoading,
+    DefaultError,
 } from '@maany_shr/e-class-ui-kit';
 import { FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
-import { JSX, useEffect, useMemo, useRef, useState } from 'react';
-import { getLessonComponentsMap } from '../../utils/transform-lesson-components';
+import { JSX, useEffect, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { mockCoaches } from '../../../common/mocks/simple/coaches';
-import { simulateUploadFile } from '../../../common/mocks/simple/upload-file';
 import { useFileUploadContext } from '../course/utils/file-upload';
 import { useAssignmentView } from '../course/utils/assignment-view';
+import { trpc } from '../../trpc/cms-client';
+import { useListCoachesPresenter } from '../../hooks/use-coaches-presenter';
+import { useRouter } from 'next/navigation';
 
 export interface ComponentRendererProps {
     keyString: string;
@@ -382,13 +380,28 @@ function LinksComponent({
     );
 }
 
-// Mocked for the MVP
-function CourseCoachList() {
-    // TODO: This needs courseSlug passed to it. Maybe through a context?
+function CourseCoachList({ sessionId }: { sessionId: number }) {
+    // TODO: This needs courseSlug passed to it through context
     const locale = useLocale() as TLocale;
+    const router = useRouter();
 
-    // TODO: Implement fetching of coaches based on courseSlug
-    const coaches = mockCoaches;
+    const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({});
+    const [coachesViewModel, setCoachesViewModel] = useState<
+        viewModels.TCoachListViewModel | undefined
+    >(undefined);
+    const { presenter } = useListCoachesPresenter(setCoachesViewModel);
+    // @ts-ignore
+    presenter.present(coachesResponse, coachesViewModel);
+
+    if (!coachesViewModel) {
+        return <DefaultLoading locale={locale} variant="minimal" />;
+    }
+
+    if (coachesViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
+
+    const coaches = coachesViewModel.data.coaches;
 
     // TODO: Implement "show more" functionality
     return (
@@ -397,16 +410,18 @@ function CourseCoachList() {
                 <LessonCoachComponent
                     key={coach.username}
                     name={coach.name}
-                    rating={coach.rating}
-                    imageUrl={coach.imageUrl}
-                    numberOfRatings={coach.numberOfRatings}
-                    description={coach.description}
+                    rating={coach.averageRating ?? 0}
+                    imageUrl={coach.avatarUrl ?? ''}
+                    numberOfRatings={coach.reviewCount}
+                    description={coach.bio}
                     defaultCoach={true}
                     onClickProfile={() => {
                         // TODO: Implement profile click logic
                     }}
                     onClickBook={() => {
-                        // TODO: Implement book click logic
+                        router.push(
+                            `/coaches/${coach.username}/book?sessionId=${sessionId}`,
+                        );
                     }}
                     locale={locale}
                 />
@@ -420,12 +435,38 @@ function CoachingSessionComponent({
     keyString: key,
     locale,
 }: ComponentRendererProps) {
+    const element = formElement as CoachingSessionElement;
+    const router = useRouter();
+
+    const getProgressContent = () => {
+        if (!element.progress) {
+            return (
+                <span>Your course plan doesn't include coaching sessions</span>
+            );
+        }
+        if (element.progress.session.status === 'unscheduled') {
+            return <CourseCoachList sessionId={element.progress.session.id} />;
+        }
+        return (
+            <div>
+                <span>Your coaching session is scheduled.</span>
+                <Button
+                    variant="primary"
+                    text="View coaching sessions"
+                    onClick={() => {
+                        router.push('/workspace/coaching-sessions');
+                    }}
+                />
+            </div>
+        );
+    };
+
     return (
         <CoachingSessionStudentView
             key={key}
-            elementInstance={formElement as CoachingSessionElement}
+            elementInstance={element}
             locale={locale}
-            coachList={<CourseCoachList />}
+            progressContent={getProgressContent()}
         />
     );
 }
