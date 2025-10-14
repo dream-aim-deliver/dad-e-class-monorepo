@@ -13,18 +13,88 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useCreatePackagePresenter } from '../hooks/use-create-package-presenter';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import React from 'react';
 import {
     DefaultLoading,
     DefaultError,
     DefaultNotFound,
+    TextInput,
+    TextAreaInput,
+    Button,
+    Stepper,
+    CheckBox,
+    Accordion,
+    AccordionItem,
+    AccordionTrigger,
+    AccordionContent,
+    RichTextDesignerComponent,
+    RichTextElement,
+    FormElementType,
+    SearchInput,
+    CourseCardAddToPackage,
+    Breadcrumbs,
 } from '@maany_shr/e-class-ui-kit';
+// Temporary placeholder components until proper imports are available
+const Uploader = ({ type, variant, file, maxSize, locale, onFilesChange, onUploadComplete, onDelete, onDownload }: any) => (
+    <div className="border-2 border-dashed border-card-stroke rounded-medium p-8 text-center">
+        <p className="text-text-secondary">Upload component placeholder</p>
+        <p className="text-sm text-text-secondary">Max size: {maxSize}MB</p>
+    </div>
+);
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { fileMetadata } from '@maany_shr/e-class-models';
+
+// Types for accordion items
+interface AccordionItemData {
+    id: string;
+    visibleText: string;
+    collapsedText: string;
+    iconFile: fileMetadata.TFileMetadata | null;
+}
+
+// Types for course data
+interface CourseData {
+    id: string;
+    title: string;
+    description: string;
+    rating: number;
+    reviewCount: number;
+    language: { code: string; name: string };
+    sessions: number;
+    duration: { video: number; coaching: number; selfStudy: number };
+    sales: number;
+    imageUrl: string;
+    author: { name: string; image: string };
+    pricing: { fullPrice: number; currency: string; partialPrice: number };
+}
+
+// Types for pricing configuration
+interface PricingConfig {
+    completePackageWithCoaching: string;
+    completePackageWithoutCoaching: string;
+    partialDiscounts: {
+        [key: string]: string; // e.g., "2": "20%", "3": "25%", etc.
+    };
+}
+
+// Types for package preview
+interface PackagePreviewData {
+    title: string;
+    description: string;
+    featuredImage: fileMetadata.TFileMetadata | null;
+    accordionTitle: string;
+    showListItemNumbers: boolean;
+    accordionItems: AccordionItemData[];
+    selectedCourses: CourseData[];
+    pricingConfig: PricingConfig;
+    coachingIncluded: boolean;
+}
 
 interface CreatePackageProps {
     locale: TLocale;
@@ -39,7 +109,8 @@ export default function CreatePackage({
 }: CreatePackageProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
-    //    const t = useTranslations('pages.create_package');
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    // const t = useTranslations('components.createPackage');
 
     // CMS-specific context hooks
     const requiredPlatformLocale = useRequiredPlatformLocale();
@@ -50,100 +121,1012 @@ export default function CreatePackage({
     const session = sessionDTO.data;
     const isLoggedIn = !!session;
 
-    // TODO: Add TRPC query for your page data
-    // Example: Fetch package templates, categories, or platform info
-    // const [packageTemplatesResponse] = trpc.packages.getPackageTemplates.useSuspenseQuery({});
-    // const [platformInfoResponse] = trpc.platforms.getPlatformInfo.useSuspenseQuery({
-    //     slug: platformSlug,
-    // });
+    // Multi-step form state
+    const [currentStep, setCurrentStep] = useState(1);
+    
+    // Package details state
+    const [packageTitle, setPackageTitle] = useState('');
+    const [packageDescription, setPackageDescription] = useState('');
+    const [featuredImage, setFeaturedImage] = useState<fileMetadata.TFileMetadata | null>(null);
+    
+    // Accordion state
+    const [accordionTitle, setAccordionTitle] = useState('');
+    const [showListItemNumbers, setShowListItemNumbers] = useState(true);
+    const [accordionItems, setAccordionItems] = useState<AccordionItemData[]>([
+        {
+            id: '1',
+            visibleText: 'Learning goals',
+            collapsedText: '',
+            iconFile: null,
+        },
+        {
+            id: '2',
+            visibleText: '',
+            collapsedText: '',
+            iconFile: null,
+        }
+    ]);
 
-    const [createPackageViewModel, setCreatePackageViewModel] = useState<
-        viewModels.TCreatePackageViewModel | undefined
-    >(undefined);
+    // Course selection state
+    const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>(['1', '2']); // Mock: 2 courses selected
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredCourses, setFilteredCourses] = useState<CourseData[]>([]);
 
-    const { presenter } = useCreatePackagePresenter(setCreatePackageViewModel);
+    // Pricing state
+    const [pricingConfig, setPricingConfig] = useState<PricingConfig>({
+        completePackageWithCoaching: '',
+        completePackageWithoutCoaching: '',
+        partialDiscounts: {
+            '2': '',
+            '3': '',
+            '4': '',
+            '5': '',
+            '6': '',
+            '7': ''
+        }
+    });
 
-    // TODO: Present the data using the presenter
-    // @ts-ignore
-    // presenter.present(packageTemplatesResponse, createPackageViewModel);
+    // Preview state
+    const [coachingIncluded, setCoachingIncluded] = useState(true);
+    const [isPublishing, setIsPublishing] = useState(false);
 
-    // Authentication check based on discovered patterns
+    // Mock course data
+    const allCourses: CourseData[] = [
+        {
+            id: '1',
+            title: 'Course Title',
+            description: 'Learn the fundamentals of this course',
+            rating: 4.7,
+            reviewCount: 43,
+            language: { code: 'ENG', name: 'English' },
+            sessions: 24,
+            duration: { video: 120, coaching: 60, selfStudy: 30 },
+            sales: 48,
+            imageUrl: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+            author: { name: 'Course Creator Full Name', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80' },
+            pricing: { fullPrice: 299, partialPrice: 199, currency: 'USD' }
+        },
+        {
+            id: '2',
+            title: 'Advanced Techniques',
+            description: 'Master advanced techniques and strategies',
+            rating: 4.5,
+            reviewCount: 28,
+            language: { code: 'ENG', name: 'English' },
+            sessions: 18,
+            duration: { video: 90, coaching: 45, selfStudy: 45 },
+            sales: 32,
+            imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+            author: { name: 'Expert Instructor', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80' },
+            pricing: { fullPrice: 199, partialPrice: 149, currency: 'USD' }
+        },
+        {
+            id: '3',
+            title: 'Videomaking Jumpstart',
+            description: 'Complete guide to video production',
+            rating: 4.8,
+            reviewCount: 67,
+            language: { code: 'ENG', name: 'English' },
+            sessions: 32,
+            duration: { video: 150, coaching: 75, selfStudy: 60 },
+            sales: 89,
+            imageUrl: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+            author: { name: 'Video Pro', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80' },
+            pricing: { fullPrice: 399, partialPrice: 299, currency: 'USD' }
+        },
+        {
+            id: '4',
+            title: 'Digital Marketing Mastery',
+            description: 'Comprehensive digital marketing strategies',
+            rating: 4.6,
+            reviewCount: 52,
+            language: { code: 'ENG', name: 'English' },
+            sessions: 20,
+            duration: { video: 100, coaching: 50, selfStudy: 40 },
+            sales: 76,
+            imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+            author: { name: 'Marketing Guru', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80' },
+            pricing: { fullPrice: 249, partialPrice: 199, currency: 'USD' }
+        }
+    ];
+
+    // Initialize filtered courses
+    React.useEffect(() => {
+        setFilteredCourses(allCourses);
+    }, []);
+
+    // File upload handlers
+    const handleFeaturedImageUpload = useCallback(async (
+        file: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal
+    ): Promise<fileMetadata.TFileMetadata> => {
+        // TODO: Implement requestFileUpload with uploadType: "upload_package_image"
+        // For now, return mock data
+        return {
+            id: crypto.randomUUID(),
+            name: file.name,
+            size: file.file.size,
+            status: 'available',
+            category: 'image',
+            url: URL.createObjectURL(file.file),
+            thumbnailUrl: URL.createObjectURL(file.file),
+        };
+    }, []);
+
+    const handleAccordionIconUpload = useCallback(async (
+        file: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal
+    ): Promise<fileMetadata.TFileMetadata> => {
+        // TODO: Implement requestFileUpload with uploadType: "upload_package_accordion_item_icon"
+        // For now, return mock data
+        return {
+            id: crypto.randomUUID(),
+            name: file.name,
+            size: file.file.size,
+            status: 'available',
+            category: 'image',
+            url: URL.createObjectURL(file.file),
+            thumbnailUrl: URL.createObjectURL(file.file),
+        };
+    }, []);
+
+    // Accordion item management
+    const addAccordionItem = useCallback(() => {
+        const newItem: AccordionItemData = {
+            id: (accordionItems.length + 1).toString(),
+            visibleText: '',
+            collapsedText: '',
+            iconFile: null,
+        };
+        setAccordionItems(prev => [...prev, newItem]);
+    }, [accordionItems.length]);
+
+    const updateAccordionItem = useCallback((id: string, updates: Partial<AccordionItemData>) => {
+        setAccordionItems(prev => prev.map(item => 
+            item.id === id ? { ...item, ...updates } : item
+        ));
+    }, []);
+
+    const removeAccordionItem = useCallback((id: string) => {
+        setAccordionItems(prev => prev.filter(item => item.id !== id));
+    }, []);
+
+    // Course management functions
+    const toggleCourseSelection = useCallback((courseId: string) => {
+        setSelectedCourseIds(prev => 
+            prev.includes(courseId) 
+                ? prev.filter(id => id !== courseId)
+                : [...prev, courseId]
+        );
+    }, []);
+
+    const handleSearchResults = useCallback((results: CourseData[]) => {
+        setFilteredCourses(results);
+    }, []);
+
+    const handleSearchQueryChange = useCallback((query: string) => {
+        setSearchQuery(query);
+    }, []);
+
+    // Pricing management functions
+    const updatePricingConfig = useCallback((updates: Partial<PricingConfig>) => {
+        setPricingConfig(prev => ({ ...prev, ...updates }));
+    }, []);
+
+    const updatePartialDiscount = useCallback((courseCount: string, discount: string) => {
+        setPricingConfig(prev => ({
+            ...prev,
+            partialDiscounts: {
+                ...prev.partialDiscounts,
+                [courseCount]: discount
+            }
+        }));
+    }, []);
+
+    // Publish logic
+    const handlePublishPackage = useCallback(async () => {
+        setIsPublishing(true);
+        try {
+            // TODO: Implement actual package creation/publishing
+            // This would call createPackage mutation with all accumulated data
+            console.log('Publishing package with data:', {
+                packageTitle,
+                packageDescription,
+                featuredImage,
+                accordionTitle,
+                showListItemNumbers,
+                accordionItems,
+                selectedCourseIds,
+                pricingConfig,
+                coachingIncluded
+            });
+            
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Redirect to packages list after successful publish
+            router.push(`/${locale}/(wired-pages)/(platform-management)/platform/${platformSlug}/${platformLocale}/packages`);
+        } catch (error) {
+            console.error('Failed to publish package:', error);
+            setIsPublishing(false);
+        }
+    }, [
+        packageTitle, packageDescription, featuredImage, accordionTitle, 
+        showListItemNumbers, accordionItems, selectedCourseIds, pricingConfig, 
+        coachingIncluded, router, locale, platformSlug, platformLocale
+    ]);
+
+    // Get selected courses data
+    const selectedCourses = allCourses.filter(course => selectedCourseIds.includes(course.id));
+
+    // Pricing calculations
+    const calculateIndividualCourseTotal = useCallback(() => {
+        return selectedCourses.reduce((total, course) => {
+            return total + (coachingIncluded ? course.pricing.fullPrice : course.pricing.partialPrice);
+        }, 0);
+    }, [selectedCourses, coachingIncluded]);
+
+    const calculatePackagePrice = useCallback(() => {
+        const basePrice = coachingIncluded 
+            ? pricingConfig.completePackageWithCoaching 
+            : pricingConfig.completePackageWithoutCoaching;
+        
+        // Extract numeric value from price string (e.g., "5400 CHF" -> 5400)
+        const numericPrice = parseFloat(basePrice.replace(/[^\d.]/g, '')) || 0;
+        return numericPrice;
+    }, [pricingConfig, coachingIncluded]);
+
+    const calculateSavings = useCallback(() => {
+        const individualTotal = calculateIndividualCourseTotal();
+        const packagePrice = calculatePackagePrice();
+        return Math.max(0, individualTotal - packagePrice);
+    }, [calculateIndividualCourseTotal, calculatePackagePrice]);
+
+    // Breadcrumbs following the standard pattern
+    const breadcrumbItems = [
+        {
+            label: breadcrumbsTranslations('platforms'),
+            onClick: () => router.push('/'),
+        },
+        {
+            label: platformSlug.charAt(0).toUpperCase() + platformSlug.slice(1),
+            onClick: () => {
+                // TODO: Implement navigation to platform
+            },
+        },
+        {
+            label: 'Packages',
+            onClick: () => {
+                router.push(`/${locale}/(wired-pages)/(platform-management)/platform/${platformSlug}/${platformLocale}/packages`);
+            },
+        },
+        {
+            label: 'Create Package',
+            onClick: () => {
+                // Nothing should happen on clicking the current page
+            },
+        },
+    ];
+
+    // Authentication check
     if (!isLoggedIn) {
-        // TODO: Configure authentication redirect for CMS users
         router.push(`/${locale}/login`);
         return null;
     }
 
-    // Loading state using discovered patterns
-    if (!createPackageViewModel) {
-        return <DefaultLoading locale={locale} variant="minimal" />;
-    }
+    const handleNext = () => {
+        if (currentStep === 1) {
+            setCurrentStep(2); // Move to Courses step
+        } else if (currentStep === 2) {
+            setCurrentStep(3); // Move to Pricing step
+        } else if (currentStep === 3) {
+            setCurrentStep(4); // Move to Preview step
+        }
+    };
 
-    // Error handling using discovered project patterns
-    if (createPackageViewModel.mode === 'kaboom') {
+    const handleBack = () => {
+        if (currentStep === 2) {
+            setCurrentStep(1); // Move back to Package Details step
+        } else if (currentStep === 3) {
+            setCurrentStep(2); // Move back to Courses step
+        } else if (currentStep === 4) {
+            setCurrentStep(3); // Move back to Pricing step
+        }
+    };
 
-        return (
-            <DefaultError
-                locale={locale}
-            />
-        );
-    }
-
-    if (createPackageViewModel.mode === 'not-found') {
-
-        return (
-            <DefaultNotFound
-                locale={locale}
-            />
-        );
-    }
-
-    // Success state - extract data using discovered pattern
-    const createPackageData = createPackageViewModel.data;
+    const handleDiscard = () => {
+        router.push(`/${locale}/(wired-pages)/(platform-management)/platform/${platformSlug}/${platformLocale}/packages`);
+    };
 
     return (
-        <div className="flex flex-col space-y-5 px-30">
-            {/* TODO: Add your page content */}
+        <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium">
+            {/* Breadcrumbs */}
+            <Breadcrumbs items={breadcrumbItems} />
 
-            {/* Page Header/Outline */}
-            {/* TODO: Add Outline component if needed */}
-            {/* <Outline
-                title={t('title')}
-                description={t('description')}
-            /> */}
-
-            {/* Main Content Area */}
-            <div className="flex flex-col space-y-4">
-                {/* TODO: Implement package creation form */}
-                {/* Features to implement (from Notion): */}
-                {/* - Package information form fields */}
-                {/* - Category selection */}
-                {/* - Package template selection */}
-                {/* - Draft state creation (createPackage) */}
-                {/* - Preview/Review before publish */}
-                {/* - Publish action (publishPackage) */}
-
-                {/* UI Components needed (9 components linked in Notion): */}
-                {/* TODO: Add the 9 UI components from Notion */}
-
-                {/* Package Creation Form */}
-                <div>
-                    {/* TODO: Add form fields for package creation */}
-                    {/* Package name, description, category, pricing, etc. */}
-                </div>
-
-                {/* Draft/Publish Actions */}
-                <div className="flex gap-4">
-                    {/* TODO: Add draft save button (createPackage) */}
-                    {/* TODO: Add publish button (publishPackage) */}
-                    {/* TODO: Add cancel/back navigation */}
-                </div>
+            <div className="flex flex-col space-y-2">
+                <h1>Create Package</h1>
+                <p className="text-text-secondary text-sm">
+                    Platform: {platformSlug} | Content Language: {platformLocale.toUpperCase()}
+                </p>
             </div>
 
-            {/* Platform Context */}
-            {/* Platform: {platformSlug} */}
-            {/* Locale: {platformLocale} */}
-            {/* Content Locale: {contentLocale} */}
+            {/* Step Navigation */}
+            <Stepper.Root 
+                defaultStep={currentStep} 
+                totalSteps={4}
+                onStepChange={(step) => setCurrentStep(step)}
+            >
+                <Stepper.List>
+                    <Stepper.Item 
+                        step={1} 
+                        description="Pkg. Details" 
+                    />
+                    <Stepper.Item 
+                        step={2} 
+                        description="Courses" 
+                    />
+                    <Stepper.Item 
+                        step={3} 
+                        description="Pricing" 
+                    />
+                    <Stepper.Item 
+                        step={4} 
+                        description="Preview" 
+                    />
+                </Stepper.List>
+            </Stepper.Root>
+
+            {/* Step 1: Package Details */}
+            {currentStep === 1 && (
+                <div className="flex flex-col gap-4">
+                    <h2 className="text-xl font-semibold text-text-primary">Package details</h2>
+                    
+                    {/* Package Title */}
+                    <TextAreaInput
+                        label="Package Title"
+                        value={packageTitle}
+                        setValue={setPackageTitle}
+                        placeholder="Max 70 characters"
+                    />
+
+                    {/* Package Description */}
+                    <TextAreaInput
+                        label="Package Description"
+                        value={packageDescription}
+                        setValue={setPackageDescription}
+                        placeholder="Max 320 characters"
+                    />
+
+                    {/* Featured Image */}
+                    <div className="flex flex-col space-y-2">
+                        <label className="text-sm text-text-secondary">Featured Image</label>
+                        <Uploader
+                            type="single"
+                            variant="image"
+                            file={featuredImage}
+                            maxSize={15}
+                            locale={locale}
+                            onFilesChange={handleFeaturedImageUpload}
+                            onUploadComplete={(file: fileMetadata.TFileMetadata) => setFeaturedImage(file)}
+                            onDelete={() => setFeaturedImage(null)}
+                            onDownload={() => {}}
+                        />
+                    </div>
+
+                    {/* Accordion Section */}
+                    <div className="flex flex-col space-y-4">
+                        <h3 className="text-lg font-semibold text-text-primary">Accordion</h3>
+                        
+                        {/* Accordion Title */}
+                        <TextInput
+                            inputField={{
+                                inputText: "accordion-title",
+                                value: accordionTitle,
+                                setValue: setAccordionTitle,
+                            }}
+                        />
+
+                        {/* Show List Item Numbers Checkbox */}
+                        <CheckBox
+                            name="showListItemNumbers"
+                            value="showNumbers"
+                            label="Show list item numbers in public view"
+                            checked={showListItemNumbers}
+                            withText={true}
+                            onChange={() => setShowListItemNumbers(!showListItemNumbers)}
+                        />
+
+                        {/* Accordion Items */}
+                        <Accordion type="multiple" defaultValue={['1']}>
+                            {accordionItems.map((item, index) => (
+                                <AccordionItem key={item.id} value={item.id}>
+                                    <AccordionTrigger value={item.id}>
+                                        <div className="flex items-center space-x-3 w-full">
+                                            <span className="text-text-primary font-medium">
+                                                {index + 1}.
+                                            </span>
+                                            {item.iconFile ? (
+                                                <div className="flex items-center space-x-2">
+                                                    <img 
+                                                        src={item.iconFile.category === 'image' ? (item.iconFile.thumbnailUrl || '') : ''} 
+                                                        alt={item.iconFile.name}
+                                                        className="w-6 h-6 object-cover rounded"
+                                                    />
+                                                    <span className="text-text-primary">{item.iconFile.name}</span>
+                                                    <span className="text-text-secondary text-sm">
+                                                        {(item.iconFile.size / (1024 * 1024)).toFixed(1)} MB
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-text-secondary">Upload Icon</span>
+                                            )}
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent value={item.id}>
+                                        <div className="flex flex-col space-y-4 p-4">
+                                            {/* Action buttons */}
+                                            <div className="flex justify-end space-x-2">
+                                                <Button
+                                                    variant="text"
+                                                    size="small"
+                                                    text="Delete"
+                                                    onClick={() => removeAccordionItem(item.id)}
+                                                />
+                                                <Button
+                                                    variant="text"
+                                                    size="small"
+                                                    text="Move Up"
+                                                    onClick={() => {/* TODO: Implement move up */}}
+                                                />
+                                                <Button
+                                                    variant="text"
+                                                    size="small"
+                                                    text="Move Down"
+                                                    onClick={() => {/* TODO: Implement move down */}}
+                                                />
+                                            </div>
+
+                                            {/* Icon Upload */}
+                                            <div className="flex flex-col space-y-2">
+                                                <label className="text-sm text-text-secondary">Icon Upload</label>
+                                                <Uploader
+                                                    type="single"
+                                                    variant="image"
+                                                    file={item.iconFile}
+                                                    maxSize={5}
+                                                    locale={locale}
+                                                    onFilesChange={handleAccordionIconUpload}
+                                                    onUploadComplete={(file: fileMetadata.TFileMetadata) => updateAccordionItem(item.id, { iconFile: file })}
+                                                    onDelete={() => updateAccordionItem(item.id, { iconFile: null })}
+                                                    onDownload={() => {}}
+                                                />
+                                            </div>
+
+                                            {/* Visible Text */}
+                                            <TextInput
+                                                label="Visible Text"
+                                                inputField={{
+                                                    inputText: "Item Title (visible when collapsed)",
+                                                    value: item.visibleText,
+                                                    setValue: (value: string) => updateAccordionItem(item.id, { visibleText: value }),
+                                                }}
+                                            />
+
+                                            {/* Collapsed Text */}
+                                            <div className="flex flex-col space-y-2">
+                                                <label className="text-sm text-text-secondary">Collapsed Text</label>
+                                                <RichTextDesignerComponent
+                                                    elementInstance={{
+                                                        id: `accordion-${item.id}`,
+                                                        type: FormElementType.RichText,
+                                                        content: item.collapsedText || '',
+                                                    } as RichTextElement}
+                                                    locale={locale}
+                                                    onContentChange={(value: string) => {
+                                                        updateAccordionItem(item.id, { collapsedText: value });
+                                                    }}
+                                                    isCourseBuilder={false}
+                                                />
+                                            </div>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+
+                        {/* Add Item Button */}
+                        <Button
+                            variant="secondary"
+                            size="medium"
+                            text="+ Add Item"
+                            onClick={addAccordionItem}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {/* Step 2: Course Selection */}
+            {currentStep === 2 && (
+            <div className="flex flex-col gap-4">
+                {/* Include courses section */}
+                <div className="flex flex-col space-y-4">
+                <h2 className="text-xl font-semibold text-text-primary">Include courses</h2>
+                <p className="text-text-secondary">Included courses ({selectedCourses.length})</p>
+                
+                {/* Selected courses horizontal scroll */}
+                <div className="flex overflow-x-auto pb-4">
+                    <div className="flex gap-4">
+                    {selectedCourses.map((course) => (
+                        <div key={course.id} className="flex-shrink-0 w-80">
+                        <CourseCardAddToPackage
+                            {...course}
+                            courseAdded={true}
+                            onAddOrRemove={() => toggleCourseSelection(course.id)}
+                            onClickUser={() => {/* TODO: Handle user click */}}
+                            locale={locale}
+                        />
+                        </div>
+                    ))}
+                    </div>
+                </div>
+                </div>
+
+                {/* All courses section */}
+                <div className="flex flex-col space-y-4">
+                <h2 className="text-xl font-semibold text-text-primary">All courses</h2>
+                
+                {/* Search bar */}
+                <div className="flex gap-4">
+                    <div className="flex-1">
+                    <SearchInput
+                        items={allCourses}
+                        keys={['title', 'description', 'author.name']}
+                        onResults={handleSearchResults}
+                        onQueryChange={handleSearchQueryChange}
+                        placeholder='e.g. "Videomaking Jumpstart"'
+                        className="w-full"
+                    />
+                    </div>
+                    <Button
+                    variant="primary"
+                    size="medium"
+                    text="Search"
+                    hasIconLeft={true}
+                    iconLeft={<span>🔍</span>}
+                    />
+                </div>
+
+                {/* All courses horizontal scroll */}
+                <div className="flex overflow-x-auto pb-4">
+                    <div className="flex gap-4">
+                    {filteredCourses.map((course) => (
+                        <div key={course.id} className="flex-shrink-0 w-80">
+                        <CourseCardAddToPackage
+                            {...course}
+                            courseAdded={selectedCourseIds.includes(course.id)}
+                            onAddOrRemove={() => toggleCourseSelection(course.id)}
+                            onClickUser={() => {/* TODO: Handle user click */}}
+                            locale={locale}
+                        />
+                        </div>
+                    ))}
+                    </div>
+                </div>
+                </div>
+            </div>
+            )}
+
+            {/* Step 3: Pricing Configuration */}
+            {currentStep === 3 && (
+                <div className="flex flex-col gap-4">
+                    <h2 className="text-xl font-semibold text-text-primary">Choose pricing</h2>
+                    
+                    {/* Complete Package Section */}
+                    <div className="flex flex-col space-y-6">
+                        <h3 className="text-lg font-semibold text-text-primary">Complete package</h3>
+                        
+            <div className="flex flex-col space-y-4">
+                            {/* With Coaching */}
+                            <div className="flex flex-col space-y-2">
+                                <label className="text-sm text-text-secondary">With coaching</label>
+                                <TextInput
+                                    inputField={{
+                                        inputText: "e.g. 5400 CHF",
+                                        value: pricingConfig.completePackageWithCoaching,
+                                        setValue: (value: string) => updatePricingConfig({ completePackageWithCoaching: value }),
+                                    }}
+                                />
+                            </div>
+                            
+                            {/* Without Coaching */}
+                            <div className="flex flex-col space-y-2">
+                                <label className="text-sm text-text-secondary">Without coaching</label>
+                                <TextInput
+                                    inputField={{
+                                        inputText: "e.g. 5400 CHF",
+                                        value: pricingConfig.completePackageWithoutCoaching,
+                                        setValue: (value: string) => updatePricingConfig({ completePackageWithoutCoaching: value }),
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Partial Package Discounts Section */}
+                    <div className="flex flex-col space-y-6">
+                        <h3 className="text-lg font-semibold text-text-primary">Partial package discounts</h3>
+                        
+                        <p className="text-text-secondary">
+                            If the user selects only some courses, they will receive a percentage discount compared to purchasing each course individually. This discount applies whether or not they choose to include coaching.
+                        </p>
+                        
+                        {/* Discount Grid */}
+                        <div className="grid grid-cols-3 gap-6">
+                            {Object.entries(pricingConfig.partialDiscounts).map(([courseCount, discount]) => (
+                                <div key={courseCount} className="flex flex-col space-y-2">
+                                    <label className="text-sm text-text-secondary">{courseCount} courses</label>
+                                    <TextInput
+                                        inputField={{
+                                            inputText: "e.g. 20%",
+                                            value: discount,
+                                            setValue: (value: string) => updatePartialDiscount(courseCount, value),
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Step 4: Preview and Publish */}
+            {currentStep === 4 && (
+                <div className="flex flex-col gap-4">
+                    {/* Package Preview Header */}
+                    <div className="flex flex-col space-y-6">
+                        <h2 className="text-xl font-semibold text-text-primary">Package preview</h2>
+                        
+                        {/* Package Info Card */}
+                        <div className="flex bg-card-fill rounded-medium border border-card-stroke overflow-hidden">
+                            {/* Left Column - Package Details */}
+                            <div className="flex-1 p-6 space-y-4">
+                                <div className="flex items-center space-x-3">
+                                    <h3 className="text-2xl font-bold text-text-primary">
+                                        {packageTitle || 'Package Title'}
+                                    </h3>
+                                    <div className="flex items-center space-x-1 bg-base-neutral-700 px-2 py-1 rounded-full">
+                                        <span className="text-xs">🕒</span>
+                                        <span className="text-xs text-text-secondary">2h 43m</span>
+                                    </div>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                    <p className="text-sm text-text-secondary">As a package or flexible:</p>
+                                    <p className="text-text-primary">
+                                        {packageDescription || 'This package offers comprehensive learning materials and resources designed to help you achieve your goals efficiently and effectively.'}
+                                    </p>
+                                </div>
+                                
+                                <div className="flex items-center space-x-4">
+                                    <CheckBox
+                                        name="coachingIncluded"
+                                        value="coaching"
+                                        label="Coaching included"
+                                        checked={coachingIncluded}
+                                        withText={true}
+                                        onChange={() => setCoachingIncluded(!coachingIncluded)}
+                                    />
+                                </div>
+                                
+                                <div className="flex items-center space-x-4">
+                                    <Button
+                                        variant="primary"
+                                        size="medium"
+                                        text="Purchase Package"
+                                        onClick={() => {/* TODO: Handle purchase */}}
+                                    />
+                                    <div className="flex flex-col">
+                                        <span className="text-text-primary font-semibold">
+                                            ab CHF {calculatePackagePrice()}
+                                        </span>
+                                        {calculateSavings() > 0 && (
+                                            <span className="text-green-500 text-sm">
+                                                save CHF {calculateSavings()}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Right Column - Featured Image */}
+                            <div className="w-80 flex-shrink-0">
+                                {featuredImage ? (
+                                    <img 
+                                        src={featuredImage.url} 
+                                        alt={packageTitle || 'Package'}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full bg-base-neutral-700 flex items-center justify-center">
+                                        <span className="text-text-secondary">Package Image</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Flexible Course Selection */}
+                    <div className="flex flex-col space-y-6">
+                        <div className="space-y-2">
+                            <h3 className="text-xl font-semibold text-text-primary">Buy the entire package or choose only the courses you need</h3>
+                            <p className="text-text-secondary">
+                                With this package, you can select only specific courses or purchase the entire package for maximum savings.
+                            </p>
+                        </div>
+                        
+                        {/* Flexible Section */}
+                        <div className="space-y-4">
+                            <div className="flex items-center space-x-4">
+                                <h4 className="text-lg font-semibold text-text-primary">Flexibel</h4>
+                                <CheckBox
+                                    name="flexibleCoaching"
+                                    value="coaching"
+                                    label="Coaching included"
+                                    checked={coachingIncluded}
+                                    withText={true}
+                                    onChange={() => setCoachingIncluded(!coachingIncluded)}
+                                />
+                            </div>
+                            <p className="text-text-secondary">
+                                Wähle nur die Leistungen aus, die du wirklich für deinen Erfolg benötigst.
+                            </p>
+                            
+                            {/* Course Cards */}
+                            <div className="flex overflow-x-auto space-x-4 pb-4">
+                                {selectedCourses.map((course) => (
+                                    <div key={course.id} className="flex-shrink-0 w-80">
+                                        <div className="bg-card-fill rounded-medium border border-card-stroke p-4 space-y-3">
+                                            <img 
+                                                src={course.imageUrl} 
+                                                alt={course.title}
+                                                className="w-full h-32 object-cover rounded"
+                                            />
+                                            <div className="space-y-2">
+                                                <h5 className="font-semibold text-text-primary">{course.title}</h5>
+                                                <div className="flex items-center space-x-1">
+                                                    <span className="text-yellow-400">★★★★☆</span>
+                                                    <span className="text-sm text-text-primary">{course.rating}</span>
+                                                    <span className="text-sm text-text-secondary">({course.reviewCount})</span>
+                                                </div>
+                                                <p className="text-sm text-text-secondary">
+                                                    Created by {course.author.name}
+                                                </p>
+                                                <div className="flex items-center space-x-4 text-xs text-text-secondary">
+                                                    <span>🌐 {course.language.name}</span>
+                                                    <span>📅 {course.sessions} sessions</span>
+                                                    <span>⏱️ 2.5 hours</span>
+                                                    <span>💰 {course.sales} sales</span>
+                                                </div>
+                                                <p className="text-sm text-text-primary">
+                                                    This course teaches you how to create powerful, cohesive brand identities that resonate with audiences and stand out in the marketplace.
+                                                </p>
+                                                <div className="flex items-center justify-between">
+                                                    <span className="font-semibold text-text-primary">
+                                                        CHF {coachingIncluded ? course.pricing.fullPrice : course.pricing.partialPrice}
+                                                    </span>
+                                                    <div className="flex space-x-2">
+                                                        <Button
+                                                            variant="secondary"
+                                                            size="small"
+                                                            text="Exclude"
+                                                            onClick={() => toggleCourseSelection(course.id)}
+                                                        />
+                                                        <Button
+                                                            variant="text"
+                                                            size="small"
+                                                            text="Details"
+                                                            onClick={() => {/* TODO: Handle details */}}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            {/* Purchase Selected Courses */}
+                            <div className="flex items-center space-x-4">
+                                <Button
+                                    variant="primary"
+                                    size="medium"
+                                    text="Purchase Selected Courses"
+                                    onClick={() => {/* TODO: Handle purchase selected */}}
+                                />
+                                <div className="flex flex-col">
+                                    <span className="text-text-primary font-semibold">
+                                        CHF {calculateIndividualCourseTotal()}
+                                    </span>
+                                    {calculateSavings() > 0 && (
+                                        <span className="text-green-500 text-sm">
+                                            save CHF {calculateSavings()}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Complete Package Section */}
+                    <div className="flex flex-col space-y-6">
+                        <div className="space-y-2">
+                            <h3 className="text-xl font-semibold text-text-primary">Buy complete package</h3>
+                            <p className="text-text-secondary">
+                                Here you get everything included. You can therefore gradually implement your overall appearance with a key visual, new branding, a website and corresponding video content.
+                            </p>
+                        </div>
+                        
+                        {/* Complete Package Card */}
+                        <div className="bg-card-fill rounded-medium border border-card-stroke p-6">
+                            <div className="flex items-start space-x-4">
+                                <div className="w-16 h-16 bg-base-neutral-700 rounded flex items-center justify-center flex-shrink-0">
+                                    <span className="text-text-secondary">📦</span>
+                                </div>
+                                <div className="flex-1 space-y-3">
+                                    <div className="flex items-center space-x-3">
+                                        <h4 className="text-lg font-semibold text-text-primary">
+                                            {packageTitle || 'Package Title'}
+                                        </h4>
+                                        <div className="flex items-center space-x-1 bg-base-neutral-700 px-2 py-1 rounded-full">
+                                            <span className="text-xs">🕒</span>
+                                            <span className="text-xs text-text-secondary">2h 43m</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-text-primary">
+                                        {packageDescription || 'This comprehensive package includes all courses and resources needed to achieve your learning goals effectively.'}
+                                    </p>
+                                    <div className="flex items-center space-x-4">
+                                        <CheckBox
+                                            name="completeCoaching"
+                                            value="coaching"
+                                            label="Coaching included"
+                                            checked={coachingIncluded}
+                                            withText={true}
+                                            onChange={() => setCoachingIncluded(!coachingIncluded)}
+                                        />
+                                    </div>
+                                    <div className="flex items-center space-x-4">
+                                        <Button
+                                            variant="primary"
+                                            size="medium"
+                                            text="Purchase Package"
+                                            onClick={() => {/* TODO: Handle purchase package */}}
+                                        />
+                                        <div className="flex flex-col">
+                                            <span className="text-text-primary font-semibold">
+                                                ab CHF {calculatePackagePrice()}
+                                            </span>
+                                            {calculateSavings() > 0 && (
+                                                <span className="text-green-500 text-sm">
+                                                    save CHF {calculateSavings()}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Accordion Section */}
+                    {accordionItems.length > 0 && (
+                        <div className="flex flex-col space-y-4">
+                            <h3 className="text-lg font-semibold text-text-primary">
+                                {accordionTitle || 'Package Details'}
+                            </h3>
+                            <Accordion type="multiple" defaultValue={['1']}>
+                                {accordionItems.map((item, index) => (
+                                    <AccordionItem key={item.id} value={item.id}>
+                                        <AccordionTrigger value={item.id}>
+                                            <div className="flex items-center space-x-3 w-full">
+                                                {showListItemNumbers && (
+                                                    <span className="text-text-primary font-medium">
+                                                        {index + 1}.
+                                                    </span>
+                                                )}
+                                                <span className="text-text-primary">{item.visibleText || `Item ${index + 1}`}</span>
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent value={item.id}>
+                                            <div className="p-4">
+                                                <p className="text-text-primary">
+                                                    {item.collapsedText || 'This item provides detailed information about the package component.'}
+                                                </p>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
+                            </Accordion>
+                        </div>
+                    )}
+
+                    {/* Publish Confirmation */}
+                    <div className="flex flex-col space-y-6 pt-6 border-t border-card-stroke">
+                        <div className="space-y-2">
+                            <h3 className="text-xl font-semibold text-text-primary">Publish package?</h3>
+                            <p className="text-text-secondary">
+                                Does everything look good? If so, go ahead and publish the package. Keep in mind that once a package is published, its courses cannot be changed, so double-check everything before proceeding.
+                            </p>
+                </div>
+
+                        <div className="flex space-x-4">
+                            <Button
+                                variant="secondary"
+                                size="medium"
+                                text="No, go back"
+                                onClick={handleBack}
+                            />
+                            <Button
+                                variant="primary"
+                                size="medium"
+                                text={isPublishing ? "Publishing..." : "Yes, publish package"}
+                                onClick={handlePublishPackage}
+                                disabled={isPublishing}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Footer Actions */}
+            <div className="flex justify-between pt-6 border-t border-card-stroke">
+                {currentStep === 1 ? (
+                    <>
+                        <Button
+                            variant="secondary"
+                            size="medium"
+                            text="Discard"
+                            onClick={handleDiscard}
+                        />
+                        <Button
+                            variant="primary"
+                            size="medium"
+                            text="Next: Choose courses"
+                            onClick={handleNext}
+                        />
+                    </>
+                ) : currentStep === 2 ? (
+                    <>
+                        <Button
+                            variant="secondary"
+                            size="medium"
+                            text="Back"
+                            onClick={handleBack}
+                        />
+                        <Button
+                            variant="primary"
+                            size="medium"
+                            text="Next: Choose pricing"
+                            onClick={handleNext}
+                        />
+                    </>
+                ) : currentStep === 3 ? (
+                    <>
+                        <Button
+                            variant="secondary"
+                            size="medium"
+                            text="Back"
+                            onClick={handleBack}
+                        />
+                        <Button
+                            variant="primary"
+                            size="medium"
+                            text="Next: Preview"
+                            onClick={handleNext}
+                        />
+                    </>
+                ) : null}
+            </div>
         </div>
     );
 }
