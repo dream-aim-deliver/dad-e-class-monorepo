@@ -1526,6 +1526,10 @@ export const DE: TDictionary = {
       deleteCoachingOffering: 'Coaching-Angebot löschen?',
       descriptionDeleteCoaching: 'Studierende können dieses Coaching-Angebot nicht mehr buchen. Bereits gebuchte Coaching-Sessions bleiben unverändert.',
       newCoachingOffering: 'Neues Coaching-Angebot',
-    }
+    },
+    allPackages: {
+      title: 'Alle Pakete',
+      description: 'Verwalte alle Pakete für diese Plattform',
+    },
   },
 };

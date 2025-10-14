@@ -1558,7 +1558,11 @@ export const DictionarySchema = z.object({
       deleteCoachingOffering: z.string(),
       descriptionDeleteCoaching: z.string(),
       newCoachingOffering: z.string(),
-    })
+    }),
+    allPackages: z.object({
+      title: z.string(),
+      description: z.string(),
+    }),
   }),
 });
 

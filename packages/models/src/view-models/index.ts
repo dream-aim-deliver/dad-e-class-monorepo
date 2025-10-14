@@ -86,3 +86,5 @@ export * from './get-student-details-view-model';
 export * from './create-package-view-model';
 export * from './list-coach-students-view-model';
 export * from './list-coach-coaching-sessions-view-model';
+export * from './list-packages-view-model';
+export * from './archive-package-view-model';
