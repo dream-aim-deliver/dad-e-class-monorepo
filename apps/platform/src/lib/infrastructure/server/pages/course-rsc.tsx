@@ -64,7 +64,7 @@ export default async function CourseServerComponent({
 async function fetchCourseAccess(
     slug: string,
 ): Promise<viewModels.TCourseAccessViewModel> {
-    const queryOptions = trpcMock.getCourseAccess.queryOptions({
+    const queryOptions = trpc.getCourseAccess.queryOptions({
         courseSlug: slug,
     });
     const queryClient = getQueryClient();
@@ -75,6 +75,7 @@ async function fetchCourseAccess(
         courseAccessViewModel = viewModel;
     });
 
+    // @ts-ignore
     await presenter.present(courseAccessResponse, courseAccessViewModel);
 
     if (!courseAccessViewModel) {
