@@ -41,7 +41,7 @@ type CourseAssignment =
     | CourseCompletedCourseAssignment;
 
 interface CoachStudentsListProps {
-    students: viewModels.TCoachStudentsSuccess['students'];
+    students: viewModels.TListCoachStudentsSuccess['students'];
     isLoading: boolean;
     error: any;
     hasActiveFiltersOrSearch?: boolean;
@@ -140,8 +140,8 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
             
             // If there's a last assignment, use its status directly
             if (course.lastAssignment) {
-                status = mapAssignmentStatusToCourseStatus(course.lastAssignment.assignmentStatus);
-                assignmentTitle = course.lastAssignment.assignmentTitle;
+                status = mapAssignmentStatusToCourseStatus(course.lastAssignment.status);
+                assignmentTitle = course.lastAssignment.title;
             }
             // If no assignment, status remains "no-assignment"
 
@@ -152,8 +152,8 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
 
             if (!course.lastAssignment) {
                 return {
-                    courseName: course.courseTitle,
-                    courseImageUrl: course.courseImageUrl || '',
+                    courseName: course.title,
+                    courseImageUrl: course.imageUrl || '',
                     onClickCourse: () => {
                         // TODO: Navigate to course
                     },
@@ -163,8 +163,8 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
 
             if (completedCourseDate) {
                 return {
-                    courseName: course.courseTitle,
-                    courseImageUrl: course.courseImageUrl || '',
+                    courseName: course.title,
+                    courseImageUrl: course.imageUrl || '',
                     onClickCourse: () => {
                         // TODO: Navigate to course
                     },
@@ -174,8 +174,8 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
             }
 
             return {
-                courseName: course.courseTitle,
-                courseImageUrl: course.courseImageUrl || '',
+                courseName: course.title,
+                courseImageUrl: course.imageUrl || '',
                 onClickCourse: () => {
                     // TODO: Navigate to course
                 },
@@ -189,9 +189,9 @@ export default function CoachStudentsList({ students, isLoading, error, hasActiv
 
         return (
             <YourStudentCard
-                key={student.studentId}
+                key={student.id}
                 locale={locale}
-                studentName={student.fullName}
+                studentName={`${student.name} ${student.surname}`}
                 studentImageUrl={student.avatarUrl || ''}
                 coachingSessionsLeft={student.coachingSessionCount > 0 ? student.coachingSessionCount : undefined}
                 onStudentDetails={() => {
