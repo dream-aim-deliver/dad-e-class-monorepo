@@ -1528,5 +1528,11 @@ export const EN: TDictionary = {
       title: 'All Packages',
       description: 'Manage all packages for this platform',
     },
+    editPackage: {
+      title: 'Edit Package: {packageName}',
+      description: 'Edit package information and pricing',
+      saving: 'Saving...',
+      save: 'Save Changes',
+    },
   },
 };

@@ -1531,5 +1531,11 @@ export const DE: TDictionary = {
       title: 'Alle Pakete',
       description: 'Verwalte alle Pakete für diese Plattform',
     },
+    editPackage: {
+      title: 'Paket bearbeiten: {packageName}',
+      description: 'Paketinformationen und Preise bearbeiten',
+      saving: 'Speichern...',
+      save: 'Änderungen speichern',
+    },
   },
 };

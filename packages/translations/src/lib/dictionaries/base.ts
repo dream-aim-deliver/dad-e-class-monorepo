@@ -1563,6 +1563,12 @@ export const DictionarySchema = z.object({
       title: z.string(),
       description: z.string(),
     }),
+    editPackage: z.object({
+      title: z.string(),
+      description: z.string(),
+      saving: z.string(),
+      save: z.string(),
+    }),
   }),
 });
 
