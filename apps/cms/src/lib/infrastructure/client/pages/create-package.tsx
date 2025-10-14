@@ -34,14 +34,8 @@ import {
     SearchInput,
     CourseCardAddToPackage,
     Breadcrumbs,
+    Uploader,
 } from '@maany_shr/e-class-ui-kit';
-// Temporary placeholder components until proper imports are available
-const Uploader = ({ type, variant, file, maxSize, locale, onFilesChange, onUploadComplete, onDelete, onDownload }: any) => (
-    <div className="border-2 border-dashed border-card-stroke rounded-medium p-8 text-center">
-        <p className="text-text-secondary">Upload component placeholder</p>
-        <p className="text-sm text-text-secondary">Max size: {maxSize}MB</p>
-    </div>
-);
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
@@ -135,17 +129,12 @@ export default function CreatePackage({
     const [accordionItems, setAccordionItems] = useState<AccordionItemData[]>([
         {
             id: '1',
-            visibleText: 'Learning goals',
-            collapsedText: '',
-            iconFile: null,
-        },
-        {
-            id: '2',
             visibleText: '',
             collapsedText: '',
             iconFile: null,
-        }
+        },
     ]);
+    const [openAccordionItems, setOpenAccordionItems] = useState<string[]>(['1']); // Track which items are open
 
     // Course selection state
     const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>(['1', '2']); // Mock: 2 courses selected
@@ -272,13 +261,16 @@ export default function CreatePackage({
 
     // Accordion item management
     const addAccordionItem = useCallback(() => {
+        const newItemId = (accordionItems.length + 1).toString();
         const newItem: AccordionItemData = {
-            id: (accordionItems.length + 1).toString(),
+            id: newItemId,
             visibleText: '',
             collapsedText: '',
             iconFile: null,
         };
         setAccordionItems(prev => [...prev, newItem]);
+        // Automatically open the new item
+        setOpenAccordionItems(prev => [...prev, newItemId]);
     }, [accordionItems.length]);
 
     const updateAccordionItem = useCallback((id: string, updates: Partial<AccordionItemData>) => {
@@ -289,6 +281,8 @@ export default function CreatePackage({
 
     const removeAccordionItem = useCallback((id: string) => {
         setAccordionItems(prev => prev.filter(item => item.id !== id));
+        // Also remove from open items
+        setOpenAccordionItems(prev => prev.filter(itemId => itemId !== id));
     }, []);
 
     // Course management functions
@@ -534,10 +528,15 @@ export default function CreatePackage({
                             checked={showListItemNumbers}
                             withText={true}
                             onChange={() => setShowListItemNumbers(!showListItemNumbers)}
+                            labelClass="text-white"
                         />
 
                         {/* Accordion Items */}
-                        <Accordion type="multiple" defaultValue={['1']}>
+                        <Accordion 
+                            type="multiple" 
+                            defaultValue={openAccordionItems}
+                            key={`accordion-${accordionItems.length}`}
+                        >
                             {accordionItems.map((item, index) => (
                                 <AccordionItem key={item.id} value={item.id}>
                                     <AccordionTrigger value={item.id}>
@@ -545,21 +544,6 @@ export default function CreatePackage({
                                             <span className="text-text-primary font-medium">
                                                 {index + 1}.
                                             </span>
-                                            {item.iconFile ? (
-                                                <div className="flex items-center space-x-2">
-                                                    <img 
-                                                        src={item.iconFile.category === 'image' ? (item.iconFile.thumbnailUrl || '') : ''} 
-                                                        alt={item.iconFile.name}
-                                                        className="w-6 h-6 object-cover rounded"
-                                                    />
-                                                    <span className="text-text-primary">{item.iconFile.name}</span>
-                                                    <span className="text-text-secondary text-sm">
-                                                        {(item.iconFile.size / (1024 * 1024)).toFixed(1)} MB
-                                                    </span>
-                                                </div>
-                                            ) : (
-                                                <span className="text-text-secondary">Upload Icon</span>
-                                            )}
                                         </div>
                                     </AccordionTrigger>
                                     <AccordionContent value={item.id}>
@@ -815,6 +799,7 @@ export default function CreatePackage({
                                         checked={coachingIncluded}
                                         withText={true}
                                         onChange={() => setCoachingIncluded(!coachingIncluded)}
+                                        labelClass="text-white"
                                     />
                                 </div>
                                 
@@ -875,6 +860,7 @@ export default function CreatePackage({
                                     checked={coachingIncluded}
                                     withText={true}
                                     onChange={() => setCoachingIncluded(!coachingIncluded)}
+                                    labelClass="text-white"
                                 />
                             </div>
                             <p className="text-text-secondary">
@@ -993,6 +979,7 @@ export default function CreatePackage({
                                             checked={coachingIncluded}
                                             withText={true}
                                             onChange={() => setCoachingIncluded(!coachingIncluded)}
+                                            labelClass="text-white"
                                         />
                                     </div>
                                     <div className="flex items-center space-x-4">
@@ -1024,7 +1011,11 @@ export default function CreatePackage({
                             <h3 className="text-lg font-semibold text-text-primary">
                                 {accordionTitle || 'Package Details'}
                             </h3>
-                            <Accordion type="multiple" defaultValue={['1']}>
+                            <Accordion 
+                                type="multiple" 
+                                defaultValue={openAccordionItems}
+                                key={`preview-accordion-${accordionItems.length}`}
+                            >
                                 {accordionItems.map((item, index) => (
                                     <AccordionItem key={item.id} value={item.id}>
                                         <AccordionTrigger value={item.id}>
