@@ -1523,6 +1523,10 @@ export const EN: TDictionary = {
       deleteCoachingOffering: 'Delete coaching offering?',
       descriptionDeleteCoaching: "Students won't be able to book this coaching offering anymore. Coaching sessions that are already booked won't be changed.",
       newCoachingOffering: "New coaching offering",
-    }
+    },
+    allPackages: {
+      title: 'All Packages',
+      description: 'Manage all packages for this platform',
+    },
   },
 };
