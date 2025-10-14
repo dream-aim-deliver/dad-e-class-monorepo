@@ -88,3 +88,5 @@ export * from './list-coach-students-view-model';
 export * from './list-coach-coaching-sessions-view-model';
 export * from './list-packages-view-model';
 export * from './archive-package-view-model';
+export * from './update-package-view-model';
+export * from './get-package-view-model';
