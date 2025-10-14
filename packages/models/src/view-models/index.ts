@@ -86,3 +86,4 @@ export * from './get-home-page-view-model';
 export * from './save-about-page-view-model';
 export * from './get-platform-language-counts-view-model';
 export * from './get-student-details-view-model';
+export * from './create-package-view-model';
