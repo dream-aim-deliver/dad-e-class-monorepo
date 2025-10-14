@@ -22,7 +22,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import EnrolledCourseHeading from './enrolled-course-heading';
 import EnrolledCourseIntroduction from './enrolled-course-introduction';
-import { useGetStudentProgressPresenter } from '../../../hooks/use-student-progress-presenter';
 import { useRouter } from 'next/navigation';
 import { CoachCourseTab, StudentCourseTab } from '../../../utils/course-tabs';
 import EnrolledCourseCompletedAssessment from './enrolled-course-completed-assessment';
@@ -32,7 +31,6 @@ import EnrolledCoaches from './enrolled-coaches';
 import { trpc } from '../../../trpc/cms-client';
 import EnrolledCourseStudents from './enrolled-course-students';
 import EnrolledCourseNotes from './enrolled-course-notes';
-// import { trpc as trpcMock } from '../../../trpc/client';
 import { useGetCourseStatusPresenter } from '../../../hooks/use-get-course-status-presenter';
 import CourseCompletion from '../../course-completion';
 
