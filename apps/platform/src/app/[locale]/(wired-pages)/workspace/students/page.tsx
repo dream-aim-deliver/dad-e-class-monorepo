@@ -1,4 +1,4 @@
-import CoachStudentsServerComponent from '../../../../../lib/infrastructure/server/pages/workspace/coach-students-mock-rsc';
+import CoachStudentsServerComponent from '../../../../../lib/infrastructure/server/pages/workspace/coach-students-rsc';
 
 export default async function Page({
     searchParams: searchParamsPromise,

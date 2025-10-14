@@ -46,7 +46,6 @@ import {
     saveCourseIntroduction,
 } from './procedures/course-introduction';
 import { listCourseStudents } from "./procedures/course-students";
-import { listCoachStudents } from './procedures/coach-students';
 import { uploadLessonProgressFile } from './procedures/lesson-progress-file';
 import { listCourseMaterials } from './procedures/course-materials';
 import { listStudentNotes } from './procedures/course-notes';
@@ -114,7 +113,6 @@ export const mockRouter = t.router({
     togglePreCourseAssessment,
     savePreCourseAssessmentComponents: saveAssessmentComponents,
     listCourseStudents,
-    listCoachStudents,
     submitLessonProgresses,
     uploadLessonProgressFile,
     listCourseMaterials,

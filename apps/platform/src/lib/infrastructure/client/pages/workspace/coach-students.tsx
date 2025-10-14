@@ -11,11 +11,11 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import CoachStudentsList from './coach-students-list';
-import { trpc } from '../../trpc/client';
 import { useEffect, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCoachStudentsPresenter } from '../../hooks/use-list-coach-students-presenter';
 import { useRouter } from 'next/navigation';
+import { trpc } from '../../trpc/cms-client';
 
 interface CoachStudentsProps {
     roles: string[];
@@ -34,12 +34,12 @@ export default function CoachStudents(props: CoachStudentsProps) {
     const [appliedFilters, setAppliedFilters] =
         useState<StudentCardFilterModel>({});
     const [filteredStudents, setFilteredStudents] = useState<
-        viewModels.TCoachStudentsSuccess['students'] | undefined
+        viewModels.TListCoachStudentsSuccess['students'] | undefined
     >(undefined);
 
     // Search state
     const [searchResults, setSearchResults] = useState<
-        viewModels.TCoachStudentsSuccess['students'] | undefined
+        viewModels.TListCoachStudentsSuccess['students'] | undefined
     >(undefined);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -55,13 +55,14 @@ export default function CoachStudents(props: CoachStudentsProps) {
     });
 
     const [studentsViewModel, setStudentsViewModel] = useState<
-        viewModels.TCoachStudentsViewModel | undefined
+        viewModels.TListCoachStudentsViewModel | undefined
     >(undefined);
 
     const { presenter } = useListCoachStudentsPresenter(setStudentsViewModel);
 
     useEffect(() => {
         if (studentsResponse) {
+            // @ts-ignore
             presenter.present(studentsResponse, studentsViewModel);
         }
     }, [studentsResponse, presenter, studentsViewModel]);
@@ -88,7 +89,7 @@ export default function CoachStudents(props: CoachStudentsProps) {
         ) {
             const searchTerm = appliedFilters.studentName.toLowerCase().trim();
             filtered = filtered.filter((student) =>
-                student.fullName.toLowerCase().includes(searchTerm),
+                `${student.name} ${student.surname}`.toLowerCase().includes(searchTerm),
             );
         }
 
@@ -97,7 +98,7 @@ export default function CoachStudents(props: CoachStudentsProps) {
             const searchTerm = appliedFilters.courseName.toLowerCase().trim();
             filtered = filtered.filter((student) =>
                 student.courses.some((course) =>
-                    course.courseTitle.toLowerCase().includes(searchTerm),
+                    course.title.toLowerCase().includes(searchTerm),
                 ),
             );
         }
@@ -119,7 +120,7 @@ export default function CoachStudents(props: CoachStudentsProps) {
                     }
                     if (course.lastAssignment) {
                         const status = mapAssignmentStatusToCourseStatus(
-                            course.lastAssignment.assignmentStatus,
+                            course.lastAssignment.status,
                         );
                         return appliedFilters.assignmentStatus!.includes(
                             status,
@@ -166,7 +167,7 @@ export default function CoachStudents(props: CoachStudentsProps) {
     };
 
     const handleSearchResults = (
-        results: viewModels.TCoachStudentsSuccess['students'],
+        results: viewModels.TListCoachStudentsSuccess['students'],
     ) => {
         setSearchResults(results);
     };
@@ -256,8 +257,8 @@ export default function CoachStudents(props: CoachStudentsProps) {
                     filteredStudents !== undefined
                         ? filteredStudents
                         : studentsViewModel?.mode === 'default'
-                          ? studentsViewModel.data.students
-                          : []
+                            ? studentsViewModel.data.students
+                            : []
                 }
                 isLoading={isFetching}
                 error={error}

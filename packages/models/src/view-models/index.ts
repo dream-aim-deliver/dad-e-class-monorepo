@@ -43,7 +43,6 @@ export * from './platform-language-view-model';
 export * from './assessment-component-view-model';
 
 export * from './course-students-list-view-model';
-export * from './coach-students-view-model';
 export * from './list-coach-student-courses-view-model';
 export * from './course-materials-view-model';
 export * from './student-notes-view-model';
@@ -87,3 +86,4 @@ export * from './save-about-page-view-model';
 export * from './get-platform-language-counts-view-model';
 export * from './get-student-details-view-model';
 export * from './create-package-view-model';
+export * from './list-coach-students-view-model';

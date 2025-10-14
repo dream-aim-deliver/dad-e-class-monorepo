@@ -3,7 +3,7 @@ import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
 import CoachStudents from '../../../client/pages/workspace/coach-students';
-import { HydrateClient, prefetch, trpc } from '../../config/trpc/server';
+import { HydrateClient, prefetch, trpc } from '../../config/trpc/cms-server';
 
 export default async function CoachStudentsServerComponent() {
     const session = await getSession();

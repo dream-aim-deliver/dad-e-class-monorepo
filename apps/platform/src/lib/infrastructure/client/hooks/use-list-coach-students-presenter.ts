@@ -1,13 +1,13 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
 import ListCoachStudentsPresenter, {
-    TCoachStudentsPresenterUtilities,
+    TListCoachStudentsPresenterUtilities,
 } from '../../common/presenters/list-coach-students-presenter';
 
 export function useListCoachStudentsPresenter(
-    setViewModel: (viewModel: viewModels.TCoachStudentsViewModel) => void,
+    setViewModel: (viewModel: viewModels.TListCoachStudentsViewModel) => void,
 ) {
-    const presenterUtilities: TCoachStudentsPresenterUtilities = {};
+    const presenterUtilities: TListCoachStudentsPresenterUtilities = {};
     const presenter = useMemo(
         () => new ListCoachStudentsPresenter(setViewModel, presenterUtilities),
         [setViewModel],

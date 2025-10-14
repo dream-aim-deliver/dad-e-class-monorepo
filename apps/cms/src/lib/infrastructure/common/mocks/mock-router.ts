@@ -41,7 +41,6 @@ import {
     saveCourseIntroduction,
 } from './procedures/course-introduction';
 import { listCourseStudents } from "./procedures/course-students";
-import { listCoachStudents } from './procedures/coach-students';
 import { uploadLessonProgressFile } from './procedures/lesson-progress-file';
 
 export const mockRouter = t.router({
@@ -82,7 +81,6 @@ export const mockRouter = t.router({
     togglePreCourseAssessment,
     savePreCourseAssessmentComponents: saveAssessmentComponents,
     listCourseStudents,
-    listCoachStudents,
     submitLessonProgresses,
     uploadLessonProgressFile,
 });

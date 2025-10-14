@@ -1,4 +1,9 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
+import {
+    ListCoachStudentsUseCaseResponseSchema,
+    TListCoachStudentsUseCaseResponse,
+    TListCoachStudentsErrorResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import {
     BasePresenter,
     TBaseResponseResponseMiddleware,
@@ -6,33 +11,31 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type TCoachStudentsPresenterUtilities = {};
+export type TListCoachStudentsPresenterUtilities = {};
 
 export const ListCoachStudentsResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TListCoachStudentsUseCaseResponse,
-        viewModels.TCoachStudentsViewModel,
-        TCoachStudentsPresenterUtilities
+        TListCoachStudentsUseCaseResponse,
+        viewModels.TListCoachStudentsViewModel,
+        TListCoachStudentsPresenterUtilities
     >;
 
-type TListCoachStudentsResponseMiddleware =
-    typeof ListCoachStudentsResponseMiddleware;
+type TListCoachStudentsResponseMiddleware = typeof ListCoachStudentsResponseMiddleware;
 
 export default class ListCoachStudentsPresenter extends BasePresenter<
-    useCaseModels.TListCoachStudentsUseCaseResponse,
-    viewModels.TCoachStudentsViewModel,
-    TCoachStudentsPresenterUtilities,
+    TListCoachStudentsUseCaseResponse,
+    viewModels.TListCoachStudentsViewModel,
+    TListCoachStudentsPresenterUtilities,
     TListCoachStudentsResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.TCoachStudentsViewModel) => void,
-        viewUtilities: TCoachStudentsPresenterUtilities,
+        setViewModel: (viewModel: viewModels.TListCoachStudentsViewModel) => void,
+        viewUtilities: TListCoachStudentsPresenterUtilities,
     ) {
         super({
             schemas: {
-                responseModel:
-                    useCaseModels.ListCoachStudentsUseCaseResponseSchema,
-                viewModel: viewModels.CoachStudentsViewModelSchema
+                responseModel: ListCoachStudentsUseCaseResponseSchema,
+                viewModel: viewModels.ListCoachStudentsViewModelSchema
             },
             middleware: ListCoachStudentsResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -42,10 +45,10 @@ export default class ListCoachStudentsPresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TListCoachStudentsUseCaseResponse,
+            TListCoachStudentsUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TCoachStudentsViewModel {
+    ): viewModels.TListCoachStudentsViewModel {
         return {
             mode: 'default',
             data: {
@@ -56,10 +59,10 @@ export default class ListCoachStudentsPresenter extends BasePresenter<
 
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TListCoachStudentsUseCaseErrorResponse,
+            TListCoachStudentsErrorResponse,
             TListCoachStudentsResponseMiddleware
         >,
-    ): viewModels.TCoachStudentsViewModel {
+    ): viewModels.TListCoachStudentsViewModel {
         return {
             mode: 'kaboom',
             data: {
