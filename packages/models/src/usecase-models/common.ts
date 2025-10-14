@@ -1,5 +1,95 @@
 import { z } from "zod";
 
+export const CoachingSessionStatusSchema = z.enum(['unscheduled', 'requested', 'scheduled', 'completed', 'canceled']);
+export type TCoachingSessionStatus = z.infer<typeof CoachingSessionStatusSchema>;
+
+const BaseCoachingSessionSchema = z.object({
+    id: z.number(),
+    coachingOfferingTitle: z.string(),
+    coachingOfferingDuration: z.number(),  // minutes
+    status: CoachingSessionStatusSchema,
+});
+
+export const AvailableCoachingSessionSchema = BaseCoachingSessionSchema.extend({
+    status: z.literal('unscheduled'),
+});
+export type TAvailableCoachingSession = z.infer<typeof AvailableCoachingSessionSchema>;
+
+export const RequestedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
+    status: z.literal('requested'),
+    startTime: z.string().datetime({ offset: true }),
+    endTime: z.string().datetime({ offset: true }),
+    coach: z.object({
+        name: z.string().nullable(),
+        surname: z.string().nullable(),
+        username: z.string(),
+        avatarUrl: z.string().nullable(),
+    }),
+    course: z.object({
+        id: z.number(),
+        title: z.string(),
+        slug: z.string(),
+    }).optional().nullable(),
+    meetingUrl: z.string().nullable(),
+});
+export type TRequestedCoachingSession = z.infer<typeof RequestedCoachingSessionSchema>;
+
+export const ScheduledCoachingSessionSchema = BaseCoachingSessionSchema.extend({
+    status: z.literal('scheduled'),
+    startTime: z.string().datetime({ offset: true }),
+    endTime: z.string().datetime({ offset: true }),
+    coach: z.object({
+        name: z.string().nullable(),
+        surname: z.string().nullable(),
+        username: z.string(),
+        avatarUrl: z.string().nullable(),
+    }),
+    course: z.object({
+        id: z.number(),
+        title: z.string(),
+        slug: z.string(),
+    }).optional().nullable(),
+    meetingUrl: z.string().nullable(),
+});
+export type TScheduledCoachingSession = z.infer<typeof ScheduledCoachingSessionSchema>;
+
+// For backward compatibility, create a union type for upcoming sessions
+export type TStudentUpcomingCoachingSession = TRequestedCoachingSession | TScheduledCoachingSession;
+
+export const StudentEndedCoachingSessionSchema = BaseCoachingSessionSchema.extend({
+    status: z.literal('completed'),
+    startTime: z.string().datetime({ offset: true }),
+    endTime: z.string().datetime({ offset: true }),
+    coach: z.object({
+        name: z.string().nullable(),
+        surname: z.string().nullable(),
+        username: z.string(),
+        avatarUrl: z.string().nullable(),
+    }),
+    course: z.object({
+        id: z.number(),
+        title: z.string(),
+        slug: z.string(),
+    }).optional().nullable(),
+    review: z.object({
+        rating: z.number().min(1).max(5),
+        comment: z.string().optional().nullable(),
+    }).optional().nullable(),
+});
+export type TStudentEndedCoachingSession = z.infer<typeof StudentEndedCoachingSessionSchema>;
+
+export const StudentCoachingSessionSchema = z.discriminatedUnion(
+    'status',
+    [
+        AvailableCoachingSessionSchema,
+        RequestedCoachingSessionSchema,
+        ScheduledCoachingSessionSchema,
+        StudentEndedCoachingSessionSchema
+    ]
+)
+export type TStudentCoachingSession = z.infer<typeof StudentCoachingSessionSchema>;
+
+
 const BaseProgress = z.object({
     componentId: z.string(),
     type: z.string(),
@@ -240,29 +330,31 @@ const CoachingSessionSchema = BaseComponent.extend({
     courseCoachingOfferingId: z.number(),
     name: z.string(),
     duration: z.number(), // minutes
-    // TODO: add progress field
+    progress: z.object({
+        session: StudentCoachingSessionSchema,
+    }).optional().nullable(),
 });
 
 const AssignmentSenderSchema = z.object({
-  id: z.number(),
-  username: z.string(),
-  name: z.string().optional().nullable(),
-  surname: z.string().optional().nullable(),
-  avatarUrl: z.string().optional().nullable(),
-  role: z.string(),
+    id: z.number(),
+    username: z.string(),
+    name: z.string().optional().nullable(),
+    surname: z.string().optional().nullable(),
+    avatarUrl: z.string().optional().nullable(),
+    role: z.string(),
 });
 
 const AssignmentReplySchema = z.object({
-  sentAt: z.number(),
-  comment: z.string(),
-  files: z.array(FileSchema),
-  links: z.array(LinkItemSchema),
-  sender: AssignmentSenderSchema,
+    sentAt: z.number(),
+    comment: z.string(),
+    files: z.array(FileSchema),
+    links: z.array(LinkItemSchema),
+    sender: AssignmentSenderSchema,
 });
 
 const AssignmentProgressSchema = z.object({
-  passed: z.boolean(),
-  lastActivity: AssignmentReplySchema.optional().nullable(),
+    passed: z.boolean(),
+    lastActivity: AssignmentReplySchema.optional().nullable(),
 });
 
 const AssignmentSchema = BaseComponent.extend({
@@ -532,11 +624,6 @@ export const LessonComponentRequestSchema = z.discriminatedUnion('type', [
 export type TAssessmentComponentRequest = z.infer<typeof AssessmentComponentRequestSchema>;
 export type TLessonComponentRequest = z.infer<typeof LessonComponentRequestSchema>;
 
-
-export const CoachingSessionStatusSchema = z.enum(['unscheduled', 'requested', 'scheduled', 'completed', 'canceled']);
-
-export type TCoachingSessionStatus = z.infer<typeof CoachingSessionStatusSchema>;
-
 export const ActionSchema = z.object({
     title: z.string(),
     url: z.string(),
@@ -552,8 +639,6 @@ export const NotificationSchema = z.object({
 });
 
 export type TNotification = z.infer<typeof NotificationSchema>;
-
-
 
 export const CourseAssignmentStatusEnumSchema = z.enum([
     'waiting-feedback',
