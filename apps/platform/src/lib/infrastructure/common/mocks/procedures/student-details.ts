@@ -1,8 +1,8 @@
-import { useCaseModels } from '@maany_shr/e-class-models';
+import { TGetStudentDetailsSuccessResponse, GetStudentDetailsRequestSchema, TGetStudentDetailsUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 import { t } from '../trpc-setup';
 
 // Mock data for different students - this will simulate a database lookup by username
-const studentsMockData: Record<string, useCaseModels.TGetStudentDetailsSuccessResponse['data']> = {
+const studentsMockData: Record<string, TGetStudentDetailsSuccessResponse['data']> = {
     'alicejohnson': {
         id: 1,
         name: 'Alice',
@@ -70,14 +70,14 @@ const studentsMockData: Record<string, useCaseModels.TGetStudentDetailsSuccessRe
 };
 
 export const getStudentDetails = t.procedure
-    .input(useCaseModels.GetStudentDetailsRequestSchema)
+    .input(GetStudentDetailsRequestSchema)
     .query(
-        async ({ input }): Promise<useCaseModels.TGetStudentDetailsUseCaseResponse> => {
+        async ({ input }): Promise<TGetStudentDetailsUseCaseResponse> => {
             const { username } = input;
-            
+
             // Simulate database lookup
             const studentData = studentsMockData[username];
-            
+
             if (!studentData) {
                 // Return not found error
                 return {
@@ -90,7 +90,7 @@ export const getStudentDetails = t.procedure
                     }
                 };
             }
-            
+
             return {
                 success: true,
                 data: studentData,
