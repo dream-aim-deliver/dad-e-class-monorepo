@@ -24,12 +24,12 @@ import DefaultError from '../default-error';
 
 interface CoachingSessionStudentViewProps extends isLocalAware {
     elementInstance: CoachingSessionElement;
-    coachList: React.ReactNode;
+    progressContent: React.ReactNode;
 }
 
 export const CoachingSessionStudentView: FC<
     CoachingSessionStudentViewProps
-> = ({ elementInstance, coachList, locale }) => {
+> = ({ elementInstance, progressContent: coachList, locale }) => {
     const dictionary = getDictionary(locale);
 
     const validationError = getValidationError({ elementInstance, dictionary });
