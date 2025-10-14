@@ -1,15 +1,15 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
-import CoachingOfferingsPresenter, {
-    TCoachCoachingSessionsPresenterUtilities,
-} from '../../common/presenters/coach-coaching-session-presenter';
+import ListCoachCoachingSessionsPresenter, {
+    TListCoachCoachingSessionsPresenterUtilities,
+} from '../../common/presenters/list-coach-coaching-sessions-presenter';
 
 export function useListCoachCoachingSessionsPresenter(
-    setViewModel: (viewModel: viewModels.TCoachCoachingSessionsViewModel) => void,
+    setViewModel: (viewModel: viewModels.TListCoachCoachingSessionsViewModel) => void,
 ) {
-    const presenterUtilities: TCoachCoachingSessionsPresenterUtilities = {};
+    const presenterUtilities: TListCoachCoachingSessionsPresenterUtilities = {};
     const presenter = useMemo(
-        () => new CoachingOfferingsPresenter(setViewModel, presenterUtilities),
+        () => new ListCoachCoachingSessionsPresenter(setViewModel, presenterUtilities),
         [setViewModel],
     );
     return { presenter };

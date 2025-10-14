@@ -67,7 +67,6 @@ export * from './list-upcoming-student-coaching-sessions-usecase-models';
 export * from './list-notifications-usecase-models';
 export * from './mark-notifications-as-read-usecase-models';
 
-export * from "./list-coach-coaching-sessions-usecase-models";
 export * from "./schedule-coaching-session-usecase-models";
 export * from "./request-coaching-session-usecase-models";
 export * from "./unschedule-coaching-session-usecase-models";

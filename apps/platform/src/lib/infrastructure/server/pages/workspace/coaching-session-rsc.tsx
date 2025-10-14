@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../../client/wrappers/default-loading';
 import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
-import { HydrateClient, prefetch, trpc } from '../../config/trpc/server';
+import { HydrateClient, prefetch, trpc } from '../../config/trpc/cms-server';
 import StudentCoachingSessions from '../../../client/pages/workspace/student-coaching-sessions';
 import CoachCoachingSessions from '../../../client/pages/workspace/coach-coaching-sessions';
 
