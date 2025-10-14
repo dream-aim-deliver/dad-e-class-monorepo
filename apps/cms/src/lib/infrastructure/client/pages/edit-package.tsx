@@ -32,6 +32,7 @@ export default function EditPackage({
     platformLocale,
     packageId,
 }: EditPackageProps) {
+    // All hooks must be called before any conditional returns
     const currentLocale = useLocale() as TLocale;
     const router = useRouter();
     const t = useTranslations('pages.editPackage');
@@ -40,11 +41,16 @@ export default function EditPackage({
     const requiredPlatformLocale = useRequiredPlatformLocale();
     const contentLocale = useContentLocale();
 
-    let packageIdInt: number;
+    // State and presenter hooks
+    const [getPackageViewModel, setGetPackageViewModel] = useState<
+        viewModels.TGetPackageViewModel | undefined
+    >(undefined);
 
-    try {
-        packageIdInt = parseInt(packageId);
-    } catch (_) {
+    const { presenter } = useGetPackagePresenter(setGetPackageViewModel);
+
+    // Validate packageId after all hooks
+    const packageIdInt = parseInt(packageId);
+    if (isNaN(packageIdInt)) {
         return <DefaultNotFound locale={currentLocale} />;
     }
 
@@ -52,12 +58,6 @@ export default function EditPackage({
     const [getPackageResponse] = trpc.getPackage.useSuspenseQuery({
         packageId: packageIdInt
     });
-
-    const [getPackageViewModel, setGetPackageViewModel] = useState<
-        viewModels.TGetPackageViewModel | undefined
-    >(undefined);
-
-    const { presenter } = useGetPackagePresenter(setGetPackageViewModel);
 
     // @ts-ignore
     presenter.present(getPackageResponse, getPackageViewModel);
