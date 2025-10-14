@@ -24,6 +24,7 @@ export interface CoachingReviewProps extends isLocalAware {
   variant?: 'card' | 'dialog';
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  showSkipButton?: boolean;
 }
 
 export interface CourseCourseReviewProps extends isLocalAware {
@@ -37,6 +38,7 @@ export interface CourseCourseReviewProps extends isLocalAware {
   variant?: 'card' | 'dialog';
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  showSkipButton?: boolean;
 }
 
 // The ReviewProps type is a union of CoachingReviewProps and CourseCourseReviewProps
@@ -57,6 +59,7 @@ export type ReviewProps = CoachingReviewProps | CourseCourseReviewProps;
  * @param variant Optional variant, either 'card' or 'dialog'. Defaults to 'card'.
  * @param isOpen Required if variant is 'dialog', boolean indicating if the dialog is open.
  * @param onOpenChange Required if variant is 'dialog', callback for open state changes.
+ * @param showSkipButton Optional boolean indicating whether to show the skip button. Defaults to true.
  *
  * @example
  * // Card variant (default)
@@ -99,6 +102,7 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
   variant = 'card',
   isOpen,
   onOpenChange,
+  showSkipButton = true,
 }) => {
   const [review, setReview] = React.useState('');
   const [rating, setRating] = React.useState(0);
@@ -221,14 +225,16 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
           )}
         </div>
 
-        <Button
-          className="w-full"
-          variant="text"
-          size="medium"
-          text={dictionary.components!.reviewModal!.skipButton}
-          onClick={onSkip}
-          disabled={isLoading}
-        />
+        {showSkipButton && (
+          <Button
+            className="w-full"
+            variant="text"
+            size="medium"
+            text={dictionary.components!.reviewModal!.skipButton}
+            onClick={onSkip}
+            disabled={isLoading}
+          />
+        )}
       </form>
     </div>
   );
@@ -259,8 +265,8 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
           showCloseButton={true}
           closeOnOverlayClick={true}
           closeOnEscape={true}
-          className="w-[390px] flex flex-col items-end gap-4 p-6 rounded-lg border border-card-stroke bg-card-fill shadow-[0_4px_12px_rgba(12,10,9,1)] relative"
-        > 
+          className="w-[390px] flex flex-col items-end gap-4 p-6 rounded-lg border border-card-stroke bg-card-fill shadow-[0_4px_12px_rgba(12,10,9,1)]"
+        >
           {formContent}
         </DialogContent>
       </Dialog>

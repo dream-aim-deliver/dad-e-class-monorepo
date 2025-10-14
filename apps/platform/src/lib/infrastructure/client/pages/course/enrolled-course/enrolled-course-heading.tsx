@@ -9,11 +9,13 @@ import {
     IconEdit,
     IconTrashAlt,
     StarRating,
+    ReviewCard
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { StudentCourseTab } from '../../../utils/course-tabs';
+import { trpc } from '../../../trpc/cms-client';
 
 interface EnrolledCourseHeadingProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
@@ -39,43 +41,54 @@ export default function EnrolledCourseHeading({
 
     const locale = useLocale() as TLocale;
     const router = useRouter();
+    const createReviewMutation = trpc.createCourseReview.useMutation();
+    
+    
+    const handleReviewSubmit = (rating: number, review: string) => {
+        createReviewMutation.mutate({
+            courseSlug,
+            rating,
+            review,
+        });
+    };
+
 
     const renderProgress = () => {
-        if (isCompleted) {
+        if (!isCompleted) {
             return (
-                <div className="flex flex-col space-y-4 items-start md:items-end">
-                    <Badge
-                        className="w-fit"
-                        size="medium"
-                        text={courseTranslations('completedPanel.badgeText')}
-                        variant="successprimary"
-                    />
-                    <Button
-                        hasIconLeft
-                        iconLeft={<IconCertification />}
-                        className="px-0 mb-0"
-                        variant="text"
-                        text={courseTranslations(
-                            'completedPanel.downloadCertificate',
-                        )}
-                        onClick={() => {
-                            // TODO: Implement certificate download functionality
-                        }}
-                    />
+                <div className="w-full flex flex-col md:flex-row justify-between items-start space-y-6 gap-6">
+                    {/* Left side: Review component */}
+                    <div className="flex flex-col space-y-4">
+                        <ReviewCard
+                            modalType="course"
+                            locale={locale}
+                            onSubmit={handleReviewSubmit}
+                            isLoading={createReviewMutation.isPending}
+                            isError={createReviewMutation.isError}
+                            submitted={createReviewMutation.isSuccess}
+                            showSkipButton={false}
+                        />
+                    </div>
+
+                    {/* Right side: Download certificate button */}
+                    <div className="flex flex-col space-y-4 items-start md:items-end">
+                        <Button
+                            hasIconLeft
+                            iconLeft={<IconCertification />}
+                            className="px-0 mb-0"
+                            variant="text"
+                            text={courseTranslations(
+                                'completedPanel.downloadCertificate',
+                            )}
+                            onClick={() => {
+                                // TODO: Implement certificate download functionality
+                            }}
+                        />
+                    </div>
                 </div>
             );
         }
-        if (hasProgress) {
-            return (
-                <CourseProgressBar
-                    percentage={studentProgressViewModel.data.progressPercent}
-                    locale={locale}
-                    onClickResume={() => {
-                        window.location.href = `/courses/${courseSlug}?role=${currentRole}&tab=${StudentCourseTab.STUDY}`;
-                    }}
-                />
-            );
-        }
+    
         return null;
     };
 
@@ -130,8 +143,40 @@ export default function EnrolledCourseHeading({
         <div className="flex flex-col space-y-4">
             {/* Title and Buttons Row */}
             <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                <div className="flex-1">
+                <div className="flex-1 flex items-end gap-4 justify-between">
+                    <div className="flex flex-col gap-4">
                     <h1 className="text-left"> {courseViewModel.data.title} </h1>
+                     <div className="flex space-x-2 items-center">
+                    <StarRating
+                        totalStars={5}
+                        rating={courseViewModel.data.averageRating}
+                    />
+                    <span className="text-text-primary">
+                        {courseViewModel.data.averageRating}
+                    </span>
+                    <span className="text-sm text-text-secondary">
+                        ({courseViewModel.data.reviewCount})
+                    </span>
+                    </div>
+                </div>
+                    {!isCompleted ? (
+                        <Badge
+                            className="w-fit"
+                            size="medium"
+                            text={courseTranslations('completedPanel.badgeText')}
+                            variant="successprimary"
+                        />
+                    ) : (
+                        hasProgress && (
+                            <CourseProgressBar
+                                percentage={studentProgressViewModel?.data?.progressPercent ?? 67.5}
+                                locale={locale}
+                                onClickResume={() => {
+                                    window.location.href = `/courses/${courseSlug}?role=${currentRole}&tab=${StudentCourseTab.STUDY}`;
+                                }}
+                            />
+                        )
+                    )}
                 </div>
                 <div className="flex flex-wrap gap-2 items-center justify-end">
                     {currentRole === "admin" && (
@@ -161,36 +206,26 @@ export default function EnrolledCourseHeading({
 
             
             <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                <div className="flex space-x-2 items-center">
-                    <StarRating
-                        totalStars={5}
-                        rating={courseViewModel.data.averageRating}
-                    />
-                    <span className="text-text-primary">
-                        {courseViewModel.data.averageRating}
-                    </span>
-                    <span className="text-sm text-text-secondary">
-                        ({courseViewModel.data.reviewCount})
-                    </span>
-                </div>
-                <div className="flex flex-col space-y-4 items-start md:items-end">
-                    {renderProgress()}
-                    {roleOptions.length > 1 && (
-                        <div className="flex space-x-3 items-center">
-                            <span className="text-text-secondary">
-                                {courseTranslations('roleDropdown.viewAs')}
-                            </span>
-                            <Dropdown
-                                type="simple"
-                                className="w-fit"
-                                options={roleOptions}
-                                defaultValue={currentRole}
-                                text={{}}
-                                onSelectionChange={onRoleChange}
-                            />
-                        </div>
-                    )}
-                </div>
+            
+                    <div className="w-full">
+                        {renderProgress()}
+                        {roleOptions.length > 1 && (
+                            <div className="flex space-x-3 items-center justify-end mt-4">
+                                <span className="text-text-secondary">
+                                    {courseTranslations('roleDropdown.viewAs')}
+                                </span>
+                                <Dropdown
+                                    type="simple"
+                                    className="w-fit"
+                                    options={roleOptions}
+                                    defaultValue={currentRole}
+                                    text={{}}
+                                    onSelectionChange={onRoleChange}
+                                />
+                            </div>
+                        )}
+                    </div>
+            
             </div>
         </div>
     );

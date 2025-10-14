@@ -197,7 +197,6 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
             }
         }
     }, [courseStatusViewModel, props.currentRole]);
-
     const locale = useLocale() as TLocale;
     const router = useRouter();
 

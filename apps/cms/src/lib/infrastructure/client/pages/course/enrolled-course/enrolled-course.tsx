@@ -152,7 +152,7 @@ function CourseTabList({ role }: { role: string }) {
 }
 
 interface EnrolledCourseContentProps extends EnrolledCourseProps {
-    studentProgressViewModel?: viewModels.TStudentProgressViewModel;
+    studentProgressViewModel?: viewModels.TGetCourseStatusViewModel;
 }
 
 export function EnrolledCourseContent(props: EnrolledCourseContentProps) {

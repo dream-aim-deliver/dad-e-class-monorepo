@@ -15,7 +15,7 @@ import { StudentCourseTab } from '../../../utils/course-tabs';
 
 interface EnrolledCourseHeadingProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
-    studentProgressViewModel?: viewModels.TStudentProgressViewModel;
+    studentProgressViewModel?: viewModels.TGetCourseStatusViewModel;
     courseSlug: string;
     roles: string[];
     currentRole: string;
@@ -30,10 +30,10 @@ export default function EnrolledCourseHeading({
 }: EnrolledCourseHeadingProps) {
     const hasProgress =
         studentProgressViewModel?.mode === 'default' &&
-        studentProgressViewModel.data.progressPercent !== undefined;
+        studentProgressViewModel.data.courseStatus.status === 'inProgress';
     const isCompleted =
         studentProgressViewModel?.mode === 'default' &&
-        studentProgressViewModel.data.isCompleted;
+        studentProgressViewModel.data.courseStatus.status === 'completed';
 
     const locale = useLocale() as TLocale;
     const router = useRouter();
@@ -66,7 +66,7 @@ export default function EnrolledCourseHeading({
         if (hasProgress) {
             return (
                 <CourseProgressBar
-                    percentage={studentProgressViewModel.data.progressPercent}
+                    percentage={studentProgressViewModel.data.courseStatus.status === 'inProgress' ? studentProgressViewModel.data.courseStatus.progress : 0}
                     locale={locale}
                     onClickResume={() => {
                         window.location.href = `/courses/${courseSlug}?role=${currentRole}&tab=${StudentCourseTab.STUDY}`;
