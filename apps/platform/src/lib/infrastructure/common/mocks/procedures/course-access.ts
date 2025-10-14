@@ -1,29 +1,39 @@
-import { useCaseModels } from '@maany_shr/e-class-models';
+import {
+    GetCourseAccessRequestSchema,
+    GetCourseAccessSuccessResponseSchema,
+    TGetCourseAccessErrorResponse,
+    TGetCourseAccessUseCaseResponse,
+} from '@dream-aim-deliver/e-class-cms-rest';
 import { t } from '../trpc-setup';
+import { z } from 'zod';
 
-const getCourseAccessMock: useCaseModels.TGetCourseAccessSuccessResponse['data'] =
-    {
-        roles: ['visitor'],
-        isAssessmentCompleted: null,
-    };
+type TGetCourseAccessSuccessResponse = z.infer<
+    typeof GetCourseAccessSuccessResponseSchema
+>;
 
-const getCourseAccessErrorMock: useCaseModels.TGetCourseAccessUseCaseErrorResponse =
-    {
-        success: false,
-        data: {
-            errorType: 'NotFoundError',
-            message: 'Course not found',
-            operation: 'getCourseAccess',
-            context: {},
-        },
-    };
+const getCourseAccessMock: TGetCourseAccessSuccessResponse['data'] =
+{
+    roles: ['visitor'],
+    isAssessmentCompleted: null,
+};
+
+const getCourseAccessErrorMock: TGetCourseAccessErrorResponse =
+{
+    success: false,
+    data: {
+        errorType: 'NotFoundError',
+        message: 'Course not found',
+        operation: 'getCourseAccess',
+        context: {},
+    },
+};
 
 export const getCourseAccess = t.procedure
-    .input(useCaseModels.GetCourseAccessRequestSchema)
+    .input(GetCourseAccessRequestSchema)
     .query(
         async (
             opts,
-        ): Promise<useCaseModels.TGetCourseAccessUseCaseResponse> => {
+        ): Promise<TGetCourseAccessUseCaseResponse> => {
             const slug = opts.input.courseSlug;
 
             if (slug === 'missing-course') {
