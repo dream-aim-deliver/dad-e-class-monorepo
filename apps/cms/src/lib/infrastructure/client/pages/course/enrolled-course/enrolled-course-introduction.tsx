@@ -9,7 +9,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useTabContext } from 'packages/ui-kit/lib/components/tabs/tab-context';
+import { useTabContext } from '@maany_shr/e-class-ui-kit';
 import { StudentCourseTab } from '../../../utils/course-tabs';
 import { trpc } from '../../../trpc/client';
 import { Suspense, useState } from 'react';
@@ -19,7 +19,7 @@ import CourseOutline from '../../common/course-outline';
 
 interface EnrolledCourseIntroductionProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
-    progressViewModel?: viewModels.TStudentProgressViewModel;
+    progressViewModel?: viewModels.TGetCourseStatusViewModel;
     currentRole: string;
     courseSlug: string;
 }
@@ -64,7 +64,7 @@ function EnrolledCourseIntroductionContent(
                     name: '',
                     image: '',
                 }}
-                progress={progressViewModel?.data.progressPercent ?? 0}
+                progress={progressViewModel?.data.courseStatus.status === 'inProgress' ? progressViewModel?.data.courseStatus.progress : 0}
                 imageUrl={courseViewModel.data.imageFile?.downloadUrl ?? ''}
                 students={courseViewModel.data.students.map((student) => ({
                     name: student.name,
