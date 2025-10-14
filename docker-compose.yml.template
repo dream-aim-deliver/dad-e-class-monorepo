@@ -95,13 +95,14 @@ services:
       - DAD_DATA_PLATFORM_M2M_TOKEN=valid_token
   
   db:
-    image: postgres
+    image: postgres:16.2
     restart: always
     container_name: bw-kp-db
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: db
+      POSTGRES_MAX_CONNECTIONS: 1000
 
   adminer:
     image: adminer
