@@ -396,14 +396,6 @@ function CourseCoachList({ sessionId }: { sessionId: number }) {
     // @ts-ignore
     presenter.present(coachesResponse, coachesViewModel);
 
-    if (!coachesViewModel) {
-        return <DefaultLoading locale={locale} variant="minimal" />;
-    }
-
-    if (coachesViewModel.mode !== 'default') {
-        return <DefaultError locale={locale} />;
-    }
-
     const coaches = useMemo(() => {
         if (!coachesViewModel || coachesViewModel.mode !== 'default') {
             return [];
@@ -422,6 +414,14 @@ function CourseCoachList({ sessionId }: { sessionId: number }) {
             return true;
         });
     }, [coachesViewModel, session]);
+
+    if (!coachesViewModel) {
+        return <DefaultLoading locale={locale} variant="minimal" />;
+    }
+
+    if (coachesViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
 
     // TODO: Implement "show more" functionality
     return (
@@ -458,10 +458,18 @@ function CoachingSessionComponent({
     const element = formElement as CoachingSessionElement;
     const router = useRouter();
 
+    // This statement is needed for debugging
+    console.log(
+        'Rendering CoachingSessionComponent for element with ID:',
+        element.id,
+    );
+
     const getProgressContent = () => {
         if (!element.progress) {
             return (
-                <span className="text-text-secondary">Your course plan doesn't include coaching sessions.</span>
+                <span className="text-text-secondary">
+                    Your course plan doesn't include coaching sessions.
+                </span>
             );
         }
         if (element.progress.session.status === 'unscheduled') {
@@ -469,7 +477,9 @@ function CoachingSessionComponent({
         }
         return (
             <div className="flex flex-col gap-4">
-                <span className="text-text-secondary">Your coaching session is scheduled.</span>
+                <span className="text-text-secondary">
+                    Your coaching session is scheduled.
+                </span>
                 <Button
                     variant="primary"
                     text="View coaching sessions"
