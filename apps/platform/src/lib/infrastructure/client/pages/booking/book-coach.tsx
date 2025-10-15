@@ -100,6 +100,10 @@ function BookCoachPageContent({
                         return;
                     }
                     setNewSession(defaultSession);
+                    setIsDialogOpen(false);
+                    if (defaultSession) {
+                        router.push('/workspace/coaching-sessions');
+                    }
                     refetchCoachAvailability();
                 },
                 onError: (error) => {
@@ -152,6 +156,11 @@ function BookCoachPageContent({
                         onSubmit={onSubmit}
                         isSubmitting={requestSessionMutation.isPending}
                         submitError={submitError}
+                        closeDialog={() => {
+                            setIsDialogOpen(false);
+                            setNewSession(defaultSession);
+                            setSubmitError(undefined);
+                        }}
                     />
                 </DialogContent>
             </Dialog>
