@@ -14,12 +14,15 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import useClientSidePagination from '../../utils/use-client-side-pagination';
+import { useSession } from 'next-auth/react';
 
 interface CoachListProps {
     selectedTopics: string[];
 }
 
 export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
+    const session = useSession();
+
     const [coachesResponse] = trpc.listCoaches.useSuspenseQuery({});
     const [coachesViewModel, setCoachesViewModel] = useState<
         viewModels.TCoachListViewModel | undefined
@@ -36,7 +39,13 @@ export default function CoachingCoachList({ selectedTopics }: CoachListProps) {
             return [];
         }
 
+        const currentUserUsername = session.data?.user?.name;
+
         return coachesViewModel.data.coaches.filter((coach) => {
+            if (coach.username === currentUserUsername) {
+                return false;
+            }
+
             const matchesTopics =
                 selectedTopics.length === 0 ||
                 coach.skills.some((skill) =>
