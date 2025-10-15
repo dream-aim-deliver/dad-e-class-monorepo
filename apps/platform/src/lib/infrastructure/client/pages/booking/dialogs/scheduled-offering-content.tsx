@@ -13,6 +13,7 @@ interface ScheduledOfferingContentProps {
     onSubmit: () => void;
     isSubmitting?: boolean;
     submitError?: string;
+    closeDialog?: () => void;
 }
 
 export default function ScheduledOfferingContent({
@@ -21,6 +22,7 @@ export default function ScheduledOfferingContent({
     onSubmit,
     submitError,
     isSubmitting,
+    closeDialog,
 }: ScheduledOfferingContentProps) {
     const locale = useLocale() as TLocale;
 
@@ -69,7 +71,7 @@ export default function ScheduledOfferingContent({
             <Button
                 className="w-full"
                 variant="secondary"
-                onClick={() => setSession(null)}
+                onClick={closeDialog}
             >
                 Cancel
             </Button>
