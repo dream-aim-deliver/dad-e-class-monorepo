@@ -1018,6 +1018,7 @@ export const DE: TDictionary = {
       coachingOfferings: 'Coaching-Angebote',
       yourStudents: 'Deine Schüler',
       yourProfile: 'Ihr Profil',
+      yourReviews: 'Deine Bewertungen',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -1621,6 +1622,19 @@ export const DE: TDictionary = {
       description: 'Paketinformationen und Preise bearbeiten',
       saving: 'Speichern...',
       save: 'Änderungen speichern',
+    },
+    yourReviews: {
+      title: 'Deine Bewertungen',
+      filterButton: "Filtern",
+      noReviews: "Noch keine Bewertungen. Bewertungen aus deinen Coaching-Sitzungen werden hier angezeigt.",
+      noReviewsFiltered: "Keine Bewertungen entsprechen deinen Filtern.",
+      sortBy: "Sortieren nach",
+      sortMostRecent: "Neueste zuerst",
+      sortOldest: "Älteste zuerst",
+      sortBest: "Beste zuerst",
+      sortWorst: "Schlechteste zuerst",
+      activeFilters: "Aktive Filter:",
+      clearFilters: "Alle löschen",
     },
     manageOffersPage: {
       title: 'Angebote-Seite verwalten',

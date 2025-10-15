@@ -1014,6 +1014,7 @@ export const EN: TDictionary = {
       coachingOfferings: 'Coaching Offerings',
       yourStudents: 'Your students',
       yourProfile: 'Your Profile',
+      yourReviews: 'Your Reviews',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1618,6 +1619,19 @@ export const EN: TDictionary = {
       description: 'Edit package information and pricing',
       saving: 'Saving...',
       save: 'Save Changes',
+    },
+    yourReviews: {
+      title: 'Your reviews',
+      filterButton: "Filter",
+      noReviews: "No reviews yet. Reviews from your coaching sessions will appear here.",
+      noReviewsFiltered: "No reviews match your filters.",
+      sortBy: "Sort by",
+      sortMostRecent: "Most recent first",
+      sortOldest: "Oldest first",
+      sortBest: "Best first",
+      sortWorst: "Worst first",
+      activeFilters: "Active filters:",
+      clearFilters: "Clear all",
     },
     manageOffersPage: {
       title: 'Manage Offers Page',
