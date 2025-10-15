@@ -54,7 +54,7 @@ export const generateNextAuthConfig = (config: {
         async authorize(credentials, req) {
             const { username, password } = credentials as { username: string, password: string };
             const validUser = TEST_ACCOUNTS.find(user => user.name === username && user.password === password);
-            if(validUser) {
+            if (validUser) {
                 return Promise.resolve(validUser);
             }
             return null;
@@ -131,7 +131,7 @@ export const generateNextAuthConfig = (config: {
                             url: config.trpc.getTrpcUrl(),
                             async headers() {
                                 const headers: Record<string, string> = config.trpc.getPlatformHeaders();
-                                
+
                                 // Add Authorization header if we have an ID token
                                 if (nextAuthToken.account?.id_token) {
                                     headers['Authorization'] = `Bearer ${nextAuthToken.account.id_token}`;
@@ -142,7 +142,7 @@ export const generateNextAuthConfig = (config: {
                                         hasAccessToken: !!nextAuthToken.account?.access_token
                                     });
                                 }
-                                
+
                                 // Add Accept-Language header if locale is available
                                 const locale = await config.trpc.getLocale?.();
                                 if (locale) {
@@ -150,7 +150,7 @@ export const generateNextAuthConfig = (config: {
                                 } else {
                                     console.warn('[Auth TRPC] ⚠️ No locale available for NextAuth TRPC client');
                                 }
-                                
+
                                 return headers;
                             },
                         }),
@@ -161,7 +161,7 @@ export const generateNextAuthConfig = (config: {
                     console.log("[Auth Session] 🚀 Requesting User Roles for session callback");
                     const userRolesDTO = await trpcClient.listUserRoles.query({});
                     console.log("[Auth Session] 📦 User Roles Response:", JSON.stringify(userRolesDTO, null, 2));
-                    if(userRolesDTO.success && userRolesDTO.data) {
+                    if (userRolesDTO.success && userRolesDTO.data) {
                         const allowedRoles = ["visitor", "student", "coach", "admin", "superadmin"] as const;
                         // The response has data.roles, not data as an array
                         const roles = (userRolesDTO.data as any).roles as TEClassRole[];
@@ -173,7 +173,7 @@ export const generateNextAuthConfig = (config: {
                     } else {
                         session.user.roles = defaultSessionRoles
                     }
-                    
+
                 } catch (error) {
                     console.error('[Auth Session] ❌ Failed to fetch user roles in session callback:', error);
                     if (error instanceof Error) {
@@ -182,14 +182,14 @@ export const generateNextAuthConfig = (config: {
                             stack: error.stack?.slice(0, 500)
                         });
                     }
-                    session.user.roles = defaultSessionRoles 
+                    session.user.roles = defaultSessionRoles
                 }
-                
+
                 // CRITICAL [WE SHOULD REMOVE THIS AND PROXY VIA A SERVER SIDE CACHE/ROUTE]: Set the tokens on the session so they're available client-side
                 session.user.accessToken = nextAuthToken.account.access_token;
                 session.user.idToken = nextAuthToken.account.id_token;
 
-                if(!session.user.accessToken || !session.user.idToken) {
+                if (!session.user.accessToken || !session.user.idToken) {
                     return session;
                 }
 
@@ -200,12 +200,12 @@ export const generateNextAuthConfig = (config: {
                         defaultImage: nextAuthToken.user.image
                     });
                     console.log("[Auth Session] 📦 User Details Response:", JSON.stringify(getUserForSessionDTO, null, 2));
-                    if(getUserForSessionDTO.success == true && getUserForSessionDTO.data) {
-                        const responseData = getUserForSessionDTO.data;
-                        session.user.id = responseData.data.id.toString();
-                        session.user.email = responseData.data.email;
-                        session.user.name = responseData.data.username;
-                        session.user.image = responseData.data.avatarImage || undefined;
+                    if (getUserForSessionDTO.success == true && getUserForSessionDTO.data) {
+                        const responseData = getUserForSessionDTO.data as unknown as typeof getUserForSessionDTO.data.data; // getting around the type issue temporarily
+                        session.user.id = responseData.id.toString();
+                        session.user.email = responseData.email;
+                        session.user.name = responseData.username;
+                        session.user.image = responseData.avatarImage || undefined;
                         console.log("[Auth Session] ✅ User details populated successfully");
                     }
                 } catch (error) {
@@ -233,8 +233,8 @@ export const generateNextAuthConfig = (config: {
         }
     }
 
-    if(config.useTestAccounts) {
-        if(process.env.NODE_ENV === 'production' && process.env.E_CLASS_DEV_MODE?.trim().toLocaleLowerCase() !== 'true') {
+    if (config.useTestAccounts) {
+        if (process.env.NODE_ENV === 'production' && process.env.E_CLASS_DEV_MODE?.trim().toLocaleLowerCase() !== 'true') {
             console.error('❗❗❗ Test accounts are not allowed in production environment. This is a security risk!!. Please disable test accounts in production.');
         } else {
             console.warn('⚠️⚠️⚠️ Test accounts are enabled. This is a security risk. Please make sure this is only used in development or testing environments.');

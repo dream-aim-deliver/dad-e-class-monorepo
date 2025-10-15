@@ -122,7 +122,7 @@ export default function Header({
         if (selected === 'dashboard') {
             router.push(`/${locale}/workspace/courses`);
         } else if (selected === 'yourProfile') {
-            router.push(`/${locale}/profile`);
+            router.push(`/${locale}/workspace/profile`);
         }
         // logout is handled by the Navbar component itself
     };

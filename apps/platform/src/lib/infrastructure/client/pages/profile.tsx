@@ -6,12 +6,12 @@
 // Route: /workspace/profile
 
 import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
+import { USERNAME_REGEX } from '@dream-aim-deliver/e-class-cms-rest';
 import { trpc } from '../trpc/cms-client';
 import { useState, useEffect } from 'react';
 import {
 	DefaultLoading,
 	DefaultError,
-	DefaultNotFound,
 	ProfileTabs,
 	Breadcrumbs
 } from '@maany_shr/e-class-ui-kit';
@@ -21,26 +21,29 @@ import { useRouter } from 'next/navigation';
 import { useGetProfessionalProfilePresenter } from '../hooks/use-get-professional-profile-presenter';
 import { useGetPersonalProfilePresenter } from '../hooks/use-get-personal-profile-presenter';
 import { useListTopicsPresenter } from '../hooks/use-topics-presenter';
-import { useListLanguagesPresenter } from '../hooks/use-languages-presenter';
+import { useListLanguagesPresenter } from '../hooks/use-list-languages-presenter';
 import { useProfilePictureUpload } from './workspace/edit/hooks/use-profile-picture-upload';
 import { useCurriculumVitaeUpload } from './workspace/edit/hooks/use-curriculum-vitae-upload';
 import Banner from 'packages/ui-kit/lib/components/banner';
 
 interface ProfileProps {
 	locale: string;
+	userEmail: string;
+	username: string;
 }
 
-export default function Profile({ locale: localeStr }: ProfileProps) {
+export default function Profile({ locale: localeStr, userEmail, username }: ProfileProps) {
 	const locale = useLocale() as TLocale;
 	const router = useRouter();
 	const t = useTranslations('pages.profile');
 	const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+	const utils = trpc.useUtils();
 
 	// Upload progress state - separate for each upload type
 	const [profilePictureUploadProgress, setProfilePictureUploadProgress] = useState<number>(0);
 	const [curriculumVitaeUploadProgress, setCurriculumVitaeUploadProgress] = useState<number>(0);
 
-	
+
 	// State for messages
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -128,9 +131,11 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 			setErrorMessage(null);
 			setSuccessMessage(null);
 		},
-		onSuccess: () => {
+		onSuccess: (data) => {
 			setSuccessMessage(t('personalProfileSaved'));
 			setErrorMessage(null);
+			// Update the query cache with the fresh data from the mutation response (no extra fetch needed)
+			utils.getPersonalProfile.setData({}, data);
 		},
 		onError: (error) => {
 			setErrorMessage(error.message || t('failedToSavePersonal'));
@@ -143,9 +148,11 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 			setErrorMessage(null);
 			setSuccessMessage(null);
 		},
-		onSuccess: () => {
+		onSuccess: (data) => {
 			setSuccessMessage(t('professionalProfileSaved'));
 			setErrorMessage(null);
+			// Update the query cache with the fresh data from the mutation response (no extra fetch needed)
+			utils.getProfessionalProfile.setData({}, data);
 		},
 		onError: (error) => {
 			setErrorMessage(error.message || t('failedToSaveProfessional'));
@@ -169,26 +176,91 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 		return <DefaultLoading locale={locale} variant="minimal" />;
 	}
 
-	// Error handling - check both view models for errors
-	if (professionalProfileViewModel.mode === 'not-found' || personalProfileViewModel.mode === 'not-found') {
-		return <DefaultNotFound locale={locale} />;
-	}
-
+	// Error handling - only kaboom errors should prevent rendering
+	// Note: 'not-found' is acceptable for profiles since save mutations support upsert
+	// However, topics and languages must be available
 	if (professionalProfileViewModel.mode === 'kaboom' || personalProfileViewModel.mode === 'kaboom' || topicsViewModel.mode === 'kaboom' || languagesViewModel.mode === 'kaboom') {
 		return <DefaultError locale={locale} />;
 	}
 
-	if (professionalProfileViewModel.mode !== 'default' || personalProfileViewModel.mode !== 'default') {
+	// Topics and languages are required for the form to work
+	if (topicsViewModel.mode !== 'default' || languagesViewModel.mode !== 'default') {
 		return <DefaultError locale={locale} />;
 	}
-
 
 	const allTopics = topicsViewModel.data.topics;
 	const allLanguages = languagesViewModel.data.languages;
 
-	const handleSavePersonal = async (profile: typeof personalProfile) => {
+	// Ensure we have languages - this should never happen if the check above passes
+	if (!allLanguages || allLanguages.length === 0) {
+		console.error('[Profile] Languages data is missing or empty despite mode being default', {
+			languagesViewModel,
+			allLanguages
+		});
+		return <DefaultError locale={locale} title={"Language data missing"} description={'[Profile] Languages data is missing or empty despite mode being default'} />;
+	}
+
+	// Create default profiles when they don't exist (for upsert functionality)
+	const defaultPersonalProfile: viewModels.TGetPersonalProfileSuccess['profile'] = {
+		id: 0,
+		name: '',
+		surname: '',
+		username: username,
+		email: userEmail,
+		phone: null,
+		dateOfBirth: null,
+		companyDetails: {
+			isRepresentingCompany: false as const,
+		},
+		avatarImage: null,
+		languages: [],
+		interfaceLanguage: allLanguages[0],
+		receiveNewsletter: false,
+	};
+
+	const defaultProfessionalProfile: viewModels.TGetProfessionalProfileSuccess['profile'] = {
+		id: 0,
+		bio: '',
+		linkedinUrl: null,
+		curriculumVitae: null,
+		skills: [],
+		private: true,
+	};
+
+	// Use actual profiles if they exist, otherwise use defaults
+	const personalProfileToUse = personalProfile || defaultPersonalProfile;
+	const professionalProfileToUse = professionalProfile || defaultProfessionalProfile;
+
+	const handleSavePersonalProfile = async (profile: typeof personalProfile) => {
 		if (!profile) return;
-		
+
+		// Client-side validation
+		const errors: string[] = [];
+
+		if (!profile.name || profile.name.trim() === '') {
+			errors.push(t('nameRequired') || 'Name is required');
+		}
+
+		if (!profile.surname || profile.surname.trim() === '') {
+			errors.push(t('surnameRequired') || 'Surname is required');
+		}
+
+		if (!profile.username || profile.username.trim() === '') {
+			errors.push(t('usernameRequired') || 'Username is required');
+		} else if (!USERNAME_REGEX.test(profile.username)) {
+			errors.push(t('usernameInvalid') || 'Username can only contain letters, numbers, underscores, and hyphens');
+		}
+
+		if (!profile.email || profile.email.trim() === '') {
+			errors.push(t('emailRequired') || 'Email is required');
+		}
+
+		if (errors.length > 0) {
+			setErrorMessage(errors.join(', '));
+			setSuccessMessage(null);
+			return;
+		}
+
 		const savePayload = {
 			...profile,
 			languageIds: profile.languages.map(lang => {
@@ -207,12 +279,32 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 			avatarImage: undefined
 		};
 
-		await savePersonalMutation.mutateAsync(savePayload);
+		try {
+			await savePersonalMutation.mutateAsync(savePayload);
+		} catch (error) {
+			// Error is already handled by the mutation's onError callback
+			console.error('Failed to save personal profile:', error);
+		}
 	};
 
-	const handleSaveProfessional = async (profile: typeof professionalProfile) => {
+	const handleSaveProfessionalProfile = async (profile: typeof professionalProfile) => {
 		if (!profile) return;
-		
+
+		// Client-side validation
+		const errors: string[] = [];
+
+		if (!profile.bio || profile.bio.trim() === '') {
+			errors.push(t('bioRequired') || 'Bio is required');
+		} else if (profile.bio.length > 280) {
+			errors.push(t('bioTooLong') || 'Bio must be 280 characters or less');
+		}
+
+		if (errors.length > 0) {
+			setErrorMessage(errors.join(', '));
+			setSuccessMessage(null);
+			return;
+		}
+
 		const savePayload = {
 			...profile,
 			skillIds: profile.skills.map(skill => {
@@ -227,7 +319,12 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 			curriculumVitae: undefined
 		};
 
-		await saveProfessionalMutation.mutateAsync(savePayload);
+		try {
+			await saveProfessionalMutation.mutateAsync(savePayload);
+		} catch (error) {
+			// Error is already handled by the mutation's onError callback
+			console.error('Failed to save professional profile:', error);
+		}
 	};
 
 
@@ -261,12 +358,12 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 					<h1 className="text-2xl font-bold">{t('yourProfile')}</h1>
 
 					<ProfileTabs
-						personalProfile={personalProfile}
-						professionalProfile={professionalProfile}
+						personalProfile={personalProfileToUse}
+						professionalProfile={professionalProfileToUse}
 						availableSkills={allTopics}
 						availableLanguages={allLanguages}
-						onSavePersonal={handleSavePersonal}
-						onSaveProfessional={handleSaveProfessional}
+						onSavePersonal={handleSavePersonalProfile}
+						onSaveProfessional={handleSaveProfessionalProfile}
 						onPersonalFileUpload={profilePictureUpload.handleFileChange}
 						onProfessionalFileUpload={curriculumVitaeUpload.handleFileChange}
 						locale={locale}
@@ -284,7 +381,7 @@ export default function Profile({ locale: localeStr }: ProfileProps) {
 
 					{/* Display error message */}
 					{errorMessage && (
-						<DefaultError locale={locale} description={errorMessage} />
+						<Banner style="error" description={errorMessage} />
 					)}
 
 					{/* Display success message */}
