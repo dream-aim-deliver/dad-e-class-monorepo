@@ -54,6 +54,15 @@ export { default as TopicList } from './components/topic-list';
 export { CoachingOnDemandBanner } from './components/coaching-on-demand-banner/coaching-on-demand-banner';
 export { HomeAccordion } from './components/home-accordion';
 export { default as RichTextRenderer } from './components/rich-text-element/renderer';
+export { default as RichTextEditor } from './components/rich-text-element/editor';
+export { Uploader } from './components/drag-and-drop-uploader/uploader';
+
+// Create Package Components
+export { PackageDetailsStep } from './components/create-package/package-details-step';
+export { default as PackagePricingStep } from './components/create-package/package-pricing-step';
+export { default as PackagePreviewStep } from './components/create-package/package-preview-step';
+export { PackageCourseSelector } from './components/course-card/package-course-selector/package-course-selector';
+export { BuyCompletePackageBanner } from './components/buy-complete-package-banner';
 
 export { default as DefaultLoading } from './components/default-loading';
 export { default as DefaultError } from './components/default-error';
