@@ -208,7 +208,7 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
         )}
 
         {isError && (
-          <Banner style="error" title={errorMessage} />
+          <Banner style="error" title={errorMessage || dictionary.components!.reviewModal!.errorState} />
            
         )}
 
