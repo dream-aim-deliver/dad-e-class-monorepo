@@ -36,7 +36,7 @@ import {
     DefaultError,
 } from '@maany_shr/e-class-ui-kit';
 import { FormElement, LessonElement } from '@maany_shr/e-class-ui-kit';
-import { JSX, useEffect, useState } from 'react';
+import { JSX, useEffect, useState, useMemo } from 'react';
 import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useFileUploadContext } from '../course/utils/file-upload';
@@ -44,6 +44,7 @@ import { useAssignmentView } from '../course/utils/assignment-view';
 import { trpc } from '../../trpc/cms-client';
 import { useListCoachesPresenter } from '../../hooks/use-coaches-presenter';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export interface ComponentRendererProps {
     keyString: string;
@@ -382,6 +383,7 @@ function LinksComponent({
 
 function CourseCoachList({ sessionId }: { sessionId: number }) {
     // TODO: This needs courseSlug passed to it through context
+    const session = useSession();
     const locale = useLocale() as TLocale;
     const router = useRouter();
 
@@ -401,7 +403,24 @@ function CourseCoachList({ sessionId }: { sessionId: number }) {
         return <DefaultError locale={locale} />;
     }
 
-    const coaches = coachesViewModel.data.coaches;
+    const coaches = useMemo(() => {
+        if (!coachesViewModel || coachesViewModel.mode !== 'default') {
+            return [];
+        }
+
+        const currentUserUsername = session.data?.user?.name;
+
+        if (!currentUserUsername) {
+            return coachesViewModel.data.coaches;
+        }
+
+        return coachesViewModel.data.coaches.filter((coach) => {
+            if (coach.username === currentUserUsername) {
+                return false;
+            }
+            return true;
+        });
+    }, [coachesViewModel, session]);
 
     // TODO: Implement "show more" functionality
     return (
