@@ -17,32 +17,34 @@ interface WeeklyCoachCalendarWrapperProps {
     coachAvailabilityViewModel:
         | viewModels.TCoachAvailabilityViewModel
         | undefined;
-    setNewSession?: React.Dispatch<
-        React.SetStateAction<ScheduledOffering | null>
-    >;
+    setNewSessionStart?: (startTime: Date) => void;
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
+    openDialog?: () => void;
     onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
 }
 
 export function WeeklyCoachCalendarWrapper({
     coachAvailabilityViewModel,
-    setNewSession,
+    setNewSessionStart,
     currentDate,
     setCurrentDate,
     onAvailabilityClick,
+    openDialog,
 }: WeeklyCoachCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
 
+    const getOnNewEventHandler = () => {
+        if (!setNewSessionStart) return;
+        return (startTime: Date) => {
+            setNewSessionStart?.(startTime);
+            openDialog?.();
+        };
+    };
+
     const { weeklyEvents } = useComputeWeeklyEvents({
         coachAvailabilityViewModel,
-        onNewEvent: setNewSession
-            ? (startTime: Date) => {
-                  setNewSession({
-                      startTime,
-                  });
-              }
-            : undefined,
+        onNewEvent: getOnNewEventHandler(),
         onAvailabilityClick,
     });
 
@@ -62,9 +64,8 @@ interface MonthlyCoachCalendarWrapperProps {
         | undefined;
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
-    setNewSession?: React.Dispatch<
-        React.SetStateAction<ScheduledOffering | null>
-    >;
+    setNewSessionStart?: (startTime: Date) => void;
+    openDialog?: () => void;
     onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
     onSessionClick?: (sessionId: number) => void;
 }
@@ -73,9 +74,10 @@ export function MonthlyCoachCalendarWrapper({
     coachAvailabilityViewModel,
     currentDate,
     setCurrentDate,
-    setNewSession,
+    setNewSessionStart,
     onAvailabilityClick,
     onSessionClick,
+    openDialog,
 }: MonthlyCoachCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('components.calendar');
@@ -153,10 +155,7 @@ export function MonthlyCoachCalendarWrapper({
                     const availEnd = new Date(availabilitySegment.endTime);
 
                     // Check if session segment overlaps with availability segment
-                    return (
-                        sessionStart >= availStart &&
-                        sessionEnd <= availEnd
-                    );
+                    return sessionStart >= availStart && sessionEnd <= availEnd;
                 },
             );
 
@@ -181,7 +180,8 @@ export function MonthlyCoachCalendarWrapper({
 
         // Find sessions that are not assigned to any availability
         const sessionsOutsideAvailability = sessionsOnDate.filter(
-            (sessionSegment) => !assignedSessionIds.has(sessionSegment.original.id),
+            (sessionSegment) =>
+                !assignedSessionIds.has(sessionSegment.original.id),
         );
 
         // Add sessions outside availability as a separate card without availability
@@ -202,11 +202,11 @@ export function MonthlyCoachCalendarWrapper({
     const getOnRequestAvailabilityHandler = (
         availability: useCaseModels.TAvailability,
     ) => {
-        if (!setNewSession) return;
-        return () =>
-            setNewSession({
-                startTime: new Date(availability.startTime),
-            });
+        if (!setNewSessionStart) return;
+        return () => {
+            setNewSessionStart?.(new Date(availability.startTime));
+            openDialog?.();
+        };
     };
 
     return (
@@ -222,26 +222,42 @@ export function MonthlyCoachCalendarWrapper({
                 }}
             />
             {availabilityWithSessions.map(
-                ({ availability, sessions }, index) => (
-                    <CoachingAvailabilityCard
-                        locale={locale}
-                        key={`availability-card-${index}`}
-                        onRequest={availability ? getOnRequestAvailabilityHandler(
-                            availability,
-                        ) : undefined}
-                        availability={availability ? {
-                            startTime: new Date(availability.startTime),
-                            endTime: new Date(availability.endTime),
-                            onClick: onAvailabilityClick && (() => onAvailabilityClick?.(availability)),
-                        } : undefined}
-                        coachingSessions={sessions.map((session) => ({
-                            startTime: new Date(session.startTime),
-                            endTime: new Date(session.endTime),
-                            title: session.coachingOfferingName,
-                            onClick: onSessionClick && (() => onSessionClick?.(session.id)),
-                        }))}
-                    />
-                ),
+                ({ availability, sessions }, index) => {
+                    const availabilityProps = availability
+                        ? {
+                              startTime: new Date(availability.startTime),
+                              endTime: new Date(availability.endTime),
+                              onClick: onAvailabilityClick
+                                  ? () => onAvailabilityClick(availability)
+                                  : undefined,
+                          }
+                        : undefined;
+
+                    const sessionProps = sessions.map((session) => ({
+                        startTime: new Date(session.startTime),
+                        endTime: new Date(session.endTime),
+                        title: session.coachingOfferingName,
+                        onClick: onSessionClick
+                            ? () => onSessionClick(session.id)
+                            : undefined,
+                    }));
+
+                    return (
+                        <CoachingAvailabilityCard
+                            locale={locale}
+                            key={`availability-card-${index}`}
+                            onRequest={
+                                availability
+                                    ? getOnRequestAvailabilityHandler(
+                                          availability,
+                                      )
+                                    : undefined
+                            }
+                            availability={availabilityProps}
+                            coachingSessions={sessionProps}
+                        />
+                    );
+                },
             )}
             {availabilityWithSessions.length === 0 && (
                 <div className="border border-card-stroke bg-card-fill text-text-secondary p-4 rounded-md">

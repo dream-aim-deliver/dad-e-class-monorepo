@@ -45,7 +45,6 @@ export function CalendarView({
                     coachAvailabilityViewModel={coachAvailabilityViewModel}
                     currentDate={currentDate}
                     setCurrentDate={setCurrentDate}
-                    setNewSession={undefined}
                     onAvailabilityClick={onAvailabilityClick}
                 />
             </div>
