@@ -36,7 +36,6 @@ export interface CourseCourseReviewProps extends isLocalAware {
   isLoading?: boolean;
   isError?: boolean;
   errorMessage?: string;
-  successMessage?: string;
   submitted?: boolean;
   variant?: 'card' | 'dialog';
   isOpen?: boolean;
