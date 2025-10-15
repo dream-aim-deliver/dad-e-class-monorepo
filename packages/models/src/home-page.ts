@@ -15,7 +15,7 @@ export const HomeBannerSchema = z.object({
  * Properties:
  * - `title`: The title of the banner.
  * - `description`: A brief description of the banner.
- * - `videoId`: The ID of the associated video.
+ * - `videoId`: The numeric ID of the associated video.
  * - `thumbnailUrl`: The URL of the banner's thumbnail image.
  */
 export type THomeBanner = z.infer<typeof HomeBannerSchema>;
@@ -121,7 +121,7 @@ export const HomePageSchema = z.object({
  * - `banner`: An object representing the home page banner, containing:
  *   - `title`: The title of the banner.
  *   - `description`: A brief description of the banner.
- *   - `videoId`: The ID of the associated video.
+ *   - `videoId`: The numeric ID of the associated video.
  *   - `thumbnailUrl`: The URL of the banner's thumbnail image.
  * - `carousel`: An array of general card objects, each containing:
  *   - `title`: The title of the card.
