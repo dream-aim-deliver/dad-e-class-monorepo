@@ -33,8 +33,12 @@ import {
     FormElementType,
     SearchInput,
     CourseCardAddToPackage,
+    CourseCardAddToPackageList,
     Breadcrumbs,
     Uploader,
+    PackageDetailsStep,
+    PackagePricingStep,
+    PackagePreviewStep,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -43,14 +47,7 @@ import { useSession } from 'next-auth/react';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { fileMetadata } from '@maany_shr/e-class-models';
-
-// Types for accordion items
-interface AccordionItemData {
-    id: string;
-    visibleText: string;
-    collapsedText: string;
-    iconFile: fileMetadata.TFileMetadata | null;
-}
+import { AccordionBuilderItem } from '@maany_shr/e-class-ui-kit';
 
 // Types for course data
 interface CourseData {
@@ -84,7 +81,7 @@ interface PackagePreviewData {
     featuredImage: fileMetadata.TFileMetadata | null;
     accordionTitle: string;
     showListItemNumbers: boolean;
-    accordionItems: AccordionItemData[];
+    accordionItems: AccordionBuilderItem[];
     selectedCourses: CourseData[];
     pricingConfig: PricingConfig;
     coachingIncluded: boolean;
@@ -126,20 +123,10 @@ export default function CreatePackage({
     // Accordion state
     const [accordionTitle, setAccordionTitle] = useState('');
     const [showListItemNumbers, setShowListItemNumbers] = useState(true);
-    const [accordionItems, setAccordionItems] = useState<AccordionItemData[]>([
-        {
-            id: '1',
-            visibleText: '',
-            collapsedText: '',
-            iconFile: null,
-        },
-    ]);
-    const [openAccordionItems, setOpenAccordionItems] = useState<string[]>(['1']); // Track which items are open
+    const [accordionItems, setAccordionItems] = useState<AccordionBuilderItem[]>([]);
 
     // Course selection state
     const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>(['1', '2']); // Mock: 2 courses selected
-    const [searchQuery, setSearchQuery] = useState('');
-    const [filteredCourses, setFilteredCourses] = useState<CourseData[]>([]);
 
     // Pricing state
     const [pricingConfig, setPricingConfig] = useState<PricingConfig>({
@@ -219,10 +206,6 @@ export default function CreatePackage({
         }
     ];
 
-    // Initialize filtered courses
-    React.useEffect(() => {
-        setFilteredCourses(allCourses);
-    }, []);
 
     // File upload handlers
     const handleFeaturedImageUpload = useCallback(async (
@@ -259,32 +242,6 @@ export default function CreatePackage({
         };
     }, []);
 
-    // Accordion item management
-    const addAccordionItem = useCallback(() => {
-        const newItemId = (accordionItems.length + 1).toString();
-        const newItem: AccordionItemData = {
-            id: newItemId,
-            visibleText: '',
-            collapsedText: '',
-            iconFile: null,
-        };
-        setAccordionItems(prev => [...prev, newItem]);
-        // Automatically open the new item
-        setOpenAccordionItems(prev => [...prev, newItemId]);
-    }, [accordionItems.length]);
-
-    const updateAccordionItem = useCallback((id: string, updates: Partial<AccordionItemData>) => {
-        setAccordionItems(prev => prev.map(item => 
-            item.id === id ? { ...item, ...updates } : item
-        ));
-    }, []);
-
-    const removeAccordionItem = useCallback((id: string) => {
-        setAccordionItems(prev => prev.filter(item => item.id !== id));
-        // Also remove from open items
-        setOpenAccordionItems(prev => prev.filter(itemId => itemId !== id));
-    }, []);
-
     // Course management functions
     const toggleCourseSelection = useCallback((courseId: string) => {
         setSelectedCourseIds(prev => 
@@ -292,14 +249,6 @@ export default function CreatePackage({
                 ? prev.filter(id => id !== courseId)
                 : [...prev, courseId]
         );
-    }, []);
-
-    const handleSearchResults = useCallback((results: CourseData[]) => {
-        setFilteredCourses(results);
-    }, []);
-
-    const handleSearchQueryChange = useCallback((query: string) => {
-        setSearchQuery(query);
     }, []);
 
     // Pricing management functions
@@ -339,7 +288,7 @@ export default function CreatePackage({
             await new Promise(resolve => setTimeout(resolve, 2000));
             
             // Redirect to packages list after successful publish
-            router.push(`/${locale}/(wired-pages)/(platform-management)/platform/${platformSlug}/${platformLocale}/packages`);
+            router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`);
         } catch (error) {
             console.error('Failed to publish package:', error);
             setIsPublishing(false);
@@ -391,7 +340,7 @@ export default function CreatePackage({
         {
             label: 'Packages',
             onClick: () => {
-                router.push(`/${locale}/(wired-pages)/(platform-management)/platform/${platformSlug}/${platformLocale}/packages`);
+                router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`);
             },
         },
         {
@@ -429,11 +378,11 @@ export default function CreatePackage({
     };
 
     const handleDiscard = () => {
-        router.push(`/${locale}/(wired-pages)/(platform-management)/platform/${platformSlug}/${platformLocale}/packages`);
+        router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`);
     };
 
-    return (
-        <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium">
+        return (
+        <div className="flex flex-col space-y-4">
             {/* Breadcrumbs */}
             <Breadcrumbs items={breadcrumbItems} />
 
@@ -470,607 +419,91 @@ export default function CreatePackage({
                 </Stepper.List>
             </Stepper.Root>
 
+            {/* Step Content */}
+
             {/* Step 1: Package Details */}
             {currentStep === 1 && (
-                <div className="flex flex-col gap-4">
-                    <h2 className="text-xl font-semibold text-text-primary">Package details</h2>
-                    
-                    {/* Package Title */}
-                    <TextAreaInput
-                        label="Package Title"
-                        value={packageTitle}
-                        setValue={setPackageTitle}
-                        placeholder="Max 70 characters"
-                    />
-
-                    {/* Package Description */}
-                    <TextAreaInput
-                        label="Package Description"
-                        value={packageDescription}
-                        setValue={setPackageDescription}
-                        placeholder="Max 320 characters"
-                    />
-
-                    {/* Featured Image */}
-                    <div className="flex flex-col space-y-2">
-                        <label className="text-sm text-text-secondary">Featured Image</label>
-                        <Uploader
-                            type="single"
-                            variant="image"
-                            file={featuredImage}
-                            maxSize={15}
-                            locale={locale}
-                            onFilesChange={handleFeaturedImageUpload}
-                            onUploadComplete={(file: fileMetadata.TFileMetadata) => setFeaturedImage(file)}
-                            onDelete={() => setFeaturedImage(null)}
-                            onDownload={() => {}}
-                        />
-                    </div>
-
-                    {/* Accordion Section */}
-                    <div className="flex flex-col space-y-4">
-                        <h3 className="text-lg font-semibold text-text-primary">Accordion</h3>
-                        
-                        {/* Accordion Title */}
-                        <TextInput
-                            inputField={{
-                                inputText: "accordion-title",
-                                value: accordionTitle,
-                                setValue: setAccordionTitle,
-                            }}
-                        />
-
-                        {/* Show List Item Numbers Checkbox */}
-                        <CheckBox
-                            name="showListItemNumbers"
-                            value="showNumbers"
-                            label="Show list item numbers in public view"
-                            checked={showListItemNumbers}
-                            withText={true}
-                            onChange={() => setShowListItemNumbers(!showListItemNumbers)}
-                            labelClass="text-white"
-                        />
-
-                        {/* Accordion Items */}
-                        <Accordion 
-                            type="multiple" 
-                            defaultValue={openAccordionItems}
-                            key={`accordion-${accordionItems.length}`}
-                        >
-                            {accordionItems.map((item, index) => (
-                                <AccordionItem key={item.id} value={item.id}>
-                                    <AccordionTrigger value={item.id}>
-                                        <div className="flex items-center space-x-3 w-full">
-                                            <span className="text-text-primary font-medium">
-                                                {index + 1}.
-                                            </span>
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent value={item.id}>
-                                        <div className="flex flex-col space-y-4 p-4">
-                                            {/* Action buttons */}
-                                            <div className="flex justify-end space-x-2">
-                                                <Button
-                                                    variant="text"
-                                                    size="small"
-                                                    text="Delete"
-                                                    onClick={() => removeAccordionItem(item.id)}
-                                                />
-                                                <Button
-                                                    variant="text"
-                                                    size="small"
-                                                    text="Move Up"
-                                                    onClick={() => {/* TODO: Implement move up */}}
-                                                />
-                                                <Button
-                                                    variant="text"
-                                                    size="small"
-                                                    text="Move Down"
-                                                    onClick={() => {/* TODO: Implement move down */}}
-                                                />
-                                            </div>
-
-                                            {/* Icon Upload */}
-                                            <div className="flex flex-col space-y-2">
-                                                <label className="text-sm text-text-secondary">Icon Upload</label>
-                                                <Uploader
-                                                    type="single"
-                                                    variant="image"
-                                                    file={item.iconFile}
-                                                    maxSize={5}
-                                                    locale={locale}
-                                                    onFilesChange={handleAccordionIconUpload}
-                                                    onUploadComplete={(file: fileMetadata.TFileMetadata) => updateAccordionItem(item.id, { iconFile: file })}
-                                                    onDelete={() => updateAccordionItem(item.id, { iconFile: null })}
-                                                    onDownload={() => {}}
-                                                />
-                                            </div>
-
-                                            {/* Visible Text */}
-                                            <TextInput
-                                                label="Visible Text"
-                                                inputField={{
-                                                    inputText: "Item Title (visible when collapsed)",
-                                                    value: item.visibleText,
-                                                    setValue: (value: string) => updateAccordionItem(item.id, { visibleText: value }),
-                                                }}
-                                            />
-
-                                            {/* Collapsed Text */}
-                                            <div className="flex flex-col space-y-2">
-                                                <label className="text-sm text-text-secondary">Collapsed Text</label>
-                                                <RichTextDesignerComponent
-                                                    elementInstance={{
-                                                        id: `accordion-${item.id}`,
-                                                        type: FormElementType.RichText,
-                                                        content: item.collapsedText || '',
-                                                    } as RichTextElement}
-                                                    locale={locale}
-                                                    onContentChange={(value: string) => {
-                                                        updateAccordionItem(item.id, { collapsedText: value });
-                                                    }}
-                                                    isCourseBuilder={false}
-                                                />
-                                            </div>
-                                        </div>
-                                    </AccordionContent>
-                                </AccordionItem>
-                            ))}
-                        </Accordion>
-
-                        {/* Add Item Button */}
-                        <Button
-                            variant="secondary"
-                            size="medium"
-                            text="+ Add Item"
-                            onClick={addAccordionItem}
-                        />
-                    </div>
-                </div>
+            <PackageDetailsStep
+                    packageTitle={packageTitle}
+                    setPackageTitle={setPackageTitle}
+                    packageDescription={packageDescription}
+                    setPackageDescription={setPackageDescription}
+                    featuredImage={featuredImage}
+                    setFeaturedImage={setFeaturedImage}
+                    accordionTitle={accordionTitle}
+                    setAccordionTitle={setAccordionTitle}
+                    accordionItems={accordionItems}
+                    setAccordionItems={setAccordionItems}
+                    handleFeaturedImageUpload={handleFeaturedImageUpload}
+                    handleAccordionIconUpload={handleAccordionIconUpload}
+                locale={locale}
+            />
             )}
 
             {/* Step 2: Course Selection */}
             {currentStep === 2 && (
-            <div className="flex flex-col gap-4">
-                {/* Include courses section */}
-                <div className="flex flex-col space-y-4">
-                <h2 className="text-xl font-semibold text-text-primary">Include courses</h2>
-                <p className="text-text-secondary">Included courses ({selectedCourses.length})</p>
-                
-                {/* Selected courses horizontal scroll */}
-                <div className="flex overflow-x-auto pb-4">
-                    <div className="flex gap-4">
-                    {selectedCourses.map((course) => (
-                        <div key={course.id} className="flex-shrink-0 w-80">
-                        <CourseCardAddToPackage
-                            {...course}
-                            courseAdded={true}
-                            onAddOrRemove={() => toggleCourseSelection(course.id)}
-                            onClickUser={() => {/* TODO: Handle user click */}}
-                            locale={locale}
-                        />
-                        </div>
-                    ))}
-                    </div>
+                <div className="flex flex-col gap-4">
+                    {/* All courses section with search */}
+                    <CourseCardAddToPackageList 
+                        locale={locale} 
+                        onSearch={() => {
+                            // The search functionality is handled internally by the component
+                        }}
+                    >
+                        {allCourses.map((course) => (
+                            <CourseCardAddToPackage
+                                key={course.id}
+                                {...course}
+                                courseAdded={selectedCourseIds.includes(course.id)}
+                                onAddOrRemove={() => toggleCourseSelection(course.id)}
+                                onClickUser={() => {/* TODO: Handle user click */}}
+                locale={locale}
+            />
+                        ))}
+                    </CourseCardAddToPackageList>
                 </div>
-                </div>
-
-                {/* All courses section */}
-                <div className="flex flex-col space-y-4">
-                <h2 className="text-xl font-semibold text-text-primary">All courses</h2>
-                
-                {/* Search bar */}
-                <div className="flex gap-4">
-                    <div className="flex-1">
-                    <SearchInput
-                        items={allCourses}
-                        keys={['title', 'description', 'author.name']}
-                        onResults={handleSearchResults}
-                        onQueryChange={handleSearchQueryChange}
-                        placeholder='e.g. "Videomaking Jumpstart"'
-                        className="w-full"
-                    />
-                    </div>
-                    <Button
-                    variant="primary"
-                    size="medium"
-                    text="Search"
-                    hasIconLeft={true}
-                    iconLeft={<span>🔍</span>}
-                    />
-                </div>
-
-                {/* All courses horizontal scroll */}
-                <div className="flex overflow-x-auto pb-4">
-                    <div className="flex gap-4">
-                    {filteredCourses.map((course) => (
-                        <div key={course.id} className="flex-shrink-0 w-80">
-                        <CourseCardAddToPackage
-                            {...course}
-                            courseAdded={selectedCourseIds.includes(course.id)}
-                            onAddOrRemove={() => toggleCourseSelection(course.id)}
-                            onClickUser={() => {/* TODO: Handle user click */}}
-                            locale={locale}
-                        />
-                        </div>
-                    ))}
-                    </div>
-                </div>
-                </div>
-            </div>
             )}
 
             {/* Step 3: Pricing Configuration */}
             {currentStep === 3 && (
-                <div className="flex flex-col gap-4">
-                    <h2 className="text-xl font-semibold text-text-primary">Choose pricing</h2>
-                    
-                    {/* Complete Package Section */}
-                    <div className="flex flex-col space-y-6">
-                        <h3 className="text-lg font-semibold text-text-primary">Complete package</h3>
-                        
-            <div className="flex flex-col space-y-4">
-                            {/* With Coaching */}
-                            <div className="flex flex-col space-y-2">
-                                <label className="text-sm text-text-secondary">With coaching</label>
-                                <TextInput
-                                    inputField={{
-                                        inputText: "e.g. 5400 CHF",
-                                        value: pricingConfig.completePackageWithCoaching,
-                                        setValue: (value: string) => updatePricingConfig({ completePackageWithCoaching: value }),
-                                    }}
-                                />
-                            </div>
-                            
-                            {/* Without Coaching */}
-                            <div className="flex flex-col space-y-2">
-                                <label className="text-sm text-text-secondary">Without coaching</label>
-                                <TextInput
-                                    inputField={{
-                                        inputText: "e.g. 5400 CHF",
-                                        value: pricingConfig.completePackageWithoutCoaching,
-                                        setValue: (value: string) => updatePricingConfig({ completePackageWithoutCoaching: value }),
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Partial Package Discounts Section */}
-                    <div className="flex flex-col space-y-6">
-                        <h3 className="text-lg font-semibold text-text-primary">Partial package discounts</h3>
-                        
-                        <p className="text-text-secondary">
-                            If the user selects only some courses, they will receive a percentage discount compared to purchasing each course individually. This discount applies whether or not they choose to include coaching.
-                        </p>
-                        
-                        {/* Discount Grid */}
-                        <div className="grid grid-cols-3 gap-6">
-                            {Object.entries(pricingConfig.partialDiscounts).map(([courseCount, discount]) => (
-                                <div key={courseCount} className="flex flex-col space-y-2">
-                                    <label className="text-sm text-text-secondary">{courseCount} courses</label>
-                                    <TextInput
-                                        inputField={{
-                                            inputText: "e.g. 20%",
-                                            value: discount,
-                                            setValue: (value: string) => updatePartialDiscount(courseCount, value),
-                                        }}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                <PackagePricingStep
+                    pricingConfig={pricingConfig}
+                    onUpdatePricingConfig={updatePricingConfig}
+                    onUpdatePartialDiscount={updatePartialDiscount}
+                />
             )}
 
             {/* Step 4: Preview and Publish */}
             {currentStep === 4 && (
-                <div className="flex flex-col gap-4">
-                    {/* Package Preview Header */}
-                    <div className="flex flex-col space-y-6">
-                        <h2 className="text-xl font-semibold text-text-primary">Package preview</h2>
-                        
-                        {/* Package Info Card */}
-                        <div className="flex bg-card-fill rounded-medium border border-card-stroke overflow-hidden">
-                            {/* Left Column - Package Details */}
-                            <div className="flex-1 p-6 space-y-4">
-                                <div className="flex items-center space-x-3">
-                                    <h3 className="text-2xl font-bold text-text-primary">
-                                        {packageTitle || 'Package Title'}
-                                    </h3>
-                                    <div className="flex items-center space-x-1 bg-base-neutral-700 px-2 py-1 rounded-full">
-                                        <span className="text-xs">🕒</span>
-                                        <span className="text-xs text-text-secondary">2h 43m</span>
-                                    </div>
-                                </div>
-                                
-                                <div className="space-y-2">
-                                    <p className="text-sm text-text-secondary">As a package or flexible:</p>
-                                    <p className="text-text-primary">
-                                        {packageDescription || 'This package offers comprehensive learning materials and resources designed to help you achieve your goals efficiently and effectively.'}
-                                    </p>
-                                </div>
-                                
-                                <div className="flex items-center space-x-4">
-                                    <CheckBox
-                                        name="coachingIncluded"
-                                        value="coaching"
-                                        label="Coaching included"
-                                        checked={coachingIncluded}
-                                        withText={true}
-                                        onChange={() => setCoachingIncluded(!coachingIncluded)}
-                                        labelClass="text-white"
-                                    />
-                                </div>
-                                
-                                <div className="flex items-center space-x-4">
-                                    <Button
-                                        variant="primary"
-                                        size="medium"
-                                        text="Purchase Package"
-                                        onClick={() => {/* TODO: Handle purchase */}}
-                                    />
-                                    <div className="flex flex-col">
-                                        <span className="text-text-primary font-semibold">
-                                            ab CHF {calculatePackagePrice()}
-                                        </span>
-                                        {calculateSavings() > 0 && (
-                                            <span className="text-green-500 text-sm">
-                                                save CHF {calculateSavings()}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            {/* Right Column - Featured Image */}
-                            <div className="w-80 flex-shrink-0">
-                                {featuredImage ? (
-                                    <img 
-                                        src={featuredImage.url} 
-                                        alt={packageTitle || 'Package'}
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full bg-base-neutral-700 flex items-center justify-center">
-                                        <span className="text-text-secondary">Package Image</span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Flexible Course Selection */}
-                    <div className="flex flex-col space-y-6">
-                        <div className="space-y-2">
-                            <h3 className="text-xl font-semibold text-text-primary">Buy the entire package or choose only the courses you need</h3>
-                            <p className="text-text-secondary">
-                                With this package, you can select only specific courses or purchase the entire package for maximum savings.
-                            </p>
-                        </div>
-                        
-                        {/* Flexible Section */}
-                        <div className="space-y-4">
-                            <div className="flex items-center space-x-4">
-                                <h4 className="text-lg font-semibold text-text-primary">Flexibel</h4>
-                                <CheckBox
-                                    name="flexibleCoaching"
-                                    value="coaching"
-                                    label="Coaching included"
-                                    checked={coachingIncluded}
-                                    withText={true}
-                                    onChange={() => setCoachingIncluded(!coachingIncluded)}
-                                    labelClass="text-white"
-                                />
-                            </div>
-                            <p className="text-text-secondary">
-                                Wähle nur die Leistungen aus, die du wirklich für deinen Erfolg benötigst.
-                            </p>
-                            
-                            {/* Course Cards */}
-                            <div className="flex overflow-x-auto space-x-4 pb-4">
-                                {selectedCourses.map((course) => (
-                                    <div key={course.id} className="flex-shrink-0 w-80">
-                                        <div className="bg-card-fill rounded-medium border border-card-stroke p-4 space-y-3">
-                                            <img 
-                                                src={course.imageUrl} 
-                                                alt={course.title}
-                                                className="w-full h-32 object-cover rounded"
-                                            />
-                                            <div className="space-y-2">
-                                                <h5 className="font-semibold text-text-primary">{course.title}</h5>
-                                                <div className="flex items-center space-x-1">
-                                                    <span className="text-yellow-400">★★★★☆</span>
-                                                    <span className="text-sm text-text-primary">{course.rating}</span>
-                                                    <span className="text-sm text-text-secondary">({course.reviewCount})</span>
-                                                </div>
-                                                <p className="text-sm text-text-secondary">
-                                                    Created by {course.author.name}
-                                                </p>
-                                                <div className="flex items-center space-x-4 text-xs text-text-secondary">
-                                                    <span>🌐 {course.language.name}</span>
-                                                    <span>📅 {course.sessions} sessions</span>
-                                                    <span>⏱️ 2.5 hours</span>
-                                                    <span>💰 {course.sales} sales</span>
-                                                </div>
-                                                <p className="text-sm text-text-primary">
-                                                    This course teaches you how to create powerful, cohesive brand identities that resonate with audiences and stand out in the marketplace.
-                                                </p>
-                                                <div className="flex items-center justify-between">
-                                                    <span className="font-semibold text-text-primary">
-                                                        CHF {coachingIncluded ? course.pricing.fullPrice : course.pricing.partialPrice}
-                                                    </span>
-                                                    <div className="flex space-x-2">
-                                                        <Button
-                                                            variant="secondary"
-                                                            size="small"
-                                                            text="Exclude"
-                                                            onClick={() => toggleCourseSelection(course.id)}
-                                                        />
-                                                        <Button
-                                                            variant="text"
-                                                            size="small"
-                                                            text="Details"
-                                                            onClick={() => {/* TODO: Handle details */}}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            
-                            {/* Purchase Selected Courses */}
-                            <div className="flex items-center space-x-4">
-                                <Button
-                                    variant="primary"
-                                    size="medium"
-                                    text="Purchase Selected Courses"
-                                    onClick={() => {/* TODO: Handle purchase selected */}}
-                                />
-                                <div className="flex flex-col">
-                                    <span className="text-text-primary font-semibold">
-                                        CHF {calculateIndividualCourseTotal()}
-                                    </span>
-                                    {calculateSavings() > 0 && (
-                                        <span className="text-green-500 text-sm">
-                                            save CHF {calculateSavings()}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Complete Package Section */}
-                    <div className="flex flex-col space-y-6">
-                        <div className="space-y-2">
-                            <h3 className="text-xl font-semibold text-text-primary">Buy complete package</h3>
-                            <p className="text-text-secondary">
-                                Here you get everything included. You can therefore gradually implement your overall appearance with a key visual, new branding, a website and corresponding video content.
-                            </p>
-                        </div>
-                        
-                        {/* Complete Package Card */}
-                        <div className="bg-card-fill rounded-medium border border-card-stroke p-6">
-                            <div className="flex items-start space-x-4">
-                                <div className="w-16 h-16 bg-base-neutral-700 rounded flex items-center justify-center flex-shrink-0">
-                                    <span className="text-text-secondary">📦</span>
-                                </div>
-                                <div className="flex-1 space-y-3">
-                                    <div className="flex items-center space-x-3">
-                                        <h4 className="text-lg font-semibold text-text-primary">
-                                            {packageTitle || 'Package Title'}
-                                        </h4>
-                                        <div className="flex items-center space-x-1 bg-base-neutral-700 px-2 py-1 rounded-full">
-                                            <span className="text-xs">🕒</span>
-                                            <span className="text-xs text-text-secondary">2h 43m</span>
-                                        </div>
-                                    </div>
-                                    <p className="text-text-primary">
-                                        {packageDescription || 'This comprehensive package includes all courses and resources needed to achieve your learning goals effectively.'}
-                                    </p>
-                                    <div className="flex items-center space-x-4">
-                                        <CheckBox
-                                            name="completeCoaching"
-                                            value="coaching"
-                                            label="Coaching included"
-                                            checked={coachingIncluded}
-                                            withText={true}
-                                            onChange={() => setCoachingIncluded(!coachingIncluded)}
-                                            labelClass="text-white"
-                                        />
-                                    </div>
-                                    <div className="flex items-center space-x-4">
-                                        <Button
-                                            variant="primary"
-                                            size="medium"
-                                            text="Purchase Package"
-                                            onClick={() => {/* TODO: Handle purchase package */}}
-                                        />
-                                        <div className="flex flex-col">
-                                            <span className="text-text-primary font-semibold">
-                                                ab CHF {calculatePackagePrice()}
-                                            </span>
-                                            {calculateSavings() > 0 && (
-                                                <span className="text-green-500 text-sm">
-                                                    save CHF {calculateSavings()}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Accordion Section */}
-                    {accordionItems.length > 0 && (
-                        <div className="flex flex-col space-y-4">
-                            <h3 className="text-lg font-semibold text-text-primary">
-                                {accordionTitle || 'Package Details'}
-                            </h3>
-                            <Accordion 
-                                type="multiple" 
-                                defaultValue={openAccordionItems}
-                                key={`preview-accordion-${accordionItems.length}`}
-                            >
-                                {accordionItems.map((item, index) => (
-                                    <AccordionItem key={item.id} value={item.id}>
-                                        <AccordionTrigger value={item.id}>
-                                            <div className="flex items-center space-x-3 w-full">
-                                                {showListItemNumbers && (
-                                                    <span className="text-text-primary font-medium">
-                                                        {index + 1}.
-                                                    </span>
-                                                )}
-                                                <span className="text-text-primary">{item.visibleText || `Item ${index + 1}`}</span>
-                                            </div>
-                                        </AccordionTrigger>
-                                        <AccordionContent value={item.id}>
-                                            <div className="p-4">
-                                                <p className="text-text-primary">
-                                                    {item.collapsedText || 'This item provides detailed information about the package component.'}
-                                                </p>
-                                            </div>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                ))}
-                            </Accordion>
-                        </div>
-                    )}
-
-                    {/* Publish Confirmation */}
-                    <div className="flex flex-col space-y-6 pt-6 border-t border-card-stroke">
-                        <div className="space-y-2">
-                            <h3 className="text-xl font-semibold text-text-primary">Publish package?</h3>
-                            <p className="text-text-secondary">
-                                Does everything look good? If so, go ahead and publish the package. Keep in mind that once a package is published, its courses cannot be changed, so double-check everything before proceeding.
-                            </p>
-                </div>
-
-                        <div className="flex space-x-4">
-                            <Button
-                                variant="secondary"
-                                size="medium"
-                                text="No, go back"
-                                onClick={handleBack}
-                            />
-                            <Button
-                                variant="primary"
-                                size="medium"
-                                text={isPublishing ? "Publishing..." : "Yes, publish package"}
-                                onClick={handlePublishPackage}
-                                disabled={isPublishing}
-                            />
-                        </div>
-                    </div>
-                </div>
+                <PackagePreviewStep
+                    topBannerTitle="Buy the entire package or choose only the courses you need"
+                    topBannerSubtitle="With this package, you can select only specific courses or purchase the entire package for maximum savings."
+                    bottomBannerTitle="Buy complete package"
+                    bottomBannerSubtitle="Here you get everything included. You can therefore gradually implement your overall appearance with a key visual, new branding, a website and corresponding video content."
+                    packageTitle={packageTitle || 'Package Title'}
+                    packageDescription={packageDescription}
+                    featuredImageUrl={featuredImage?.url}
+                    durationInMinutes={163}
+                    accordionTitle={accordionTitle}
+                    showListItemNumbers={showListItemNumbers}
+                    accordionItems={accordionItems}
+                    selectedCourses={selectedCourses}
+                    onExcludeCourse={(id: string) => toggleCourseSelection(id)}
+                    coachingIncluded={coachingIncluded}
+                    onToggleCoaching={() => setCoachingIncluded(!coachingIncluded)}
+                    selectedCoursesTotal={calculateIndividualCourseTotal()}
+                    selectedCoursesSavings={calculateSavings()}
+                    onBack={handleBack}
+                    onPublish={handlePublishPackage}
+                    isPublishing={isPublishing}
+                    locale={locale}
+                />
             )}
 
+            
+
             {/* Footer Actions */}
-            <div className="flex justify-between pt-6 border-t border-card-stroke">
+            <div className="flex justify-between pt-6 pb-6 border-t border-card-stroke">
                 {currentStep === 1 ? (
                     <>
                         <Button
@@ -1115,6 +548,32 @@ export default function CreatePackage({
                             text="Next: Preview"
                             onClick={handleNext}
                         />
+                    </>
+                ) : currentStep === 4 ? (
+                    <>
+                        <div className="flex flex-col gap-4 pt-6 border-t border-card-stroke">
+                            <div className="flex flex-col gap-2">
+                                <h3 className="text-xl font-semibold text-text-primary">Publish package?</h3>
+                                <p className="text-text-secondary">
+                                    Does everything look good? If so, go ahead and publish the package. Keep in mind that once a package is published, its courses cannot be changed, so double-check everything before proceeding.
+                                </p>
+                            </div>
+                            <div className="flex gap-4">
+                                <Button
+                                    variant="secondary"
+                                    size="medium"
+                                    text="No, go back"
+                                    onClick={handleBack}
+                                />
+                                <Button
+                                    variant="primary"
+                                    size="medium"
+                                    text={isPublishing ? 'Publishing...' : 'Yes, publish package'}
+                                    onClick={handlePublishPackage}
+                                    disabled={isPublishing}
+                                />
+                            </div>
+                        </div>
                     </>
                 ) : null}
             </div>
