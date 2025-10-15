@@ -44,14 +44,16 @@ interface PackagePricingStepProps {
  * ```
  */
 
-export function PackagePricingStep({
+export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
     pricingConfig,
     onUpdatePricingConfig,
     onUpdatePartialDiscount,
-}: PackagePricingStepProps) {
+}) => {
     return (
-        <div className="flex flex-col gap-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
-            <h2 className="text-xl font-semibold text-text-primary">Choose pricing</h2>
+        <div className="flex flex-col border border-card-stroke bg-card-fill p-6 gap-6 w-full rounded-medium">
+            <h3 className="text-text-primary">
+                Choose Pricing
+            </h3>
 
             {/* Complete Package Section */}
             <div className="flex flex-col space-y-6">
@@ -110,8 +112,7 @@ export function PackagePricingStep({
             </div>
         </div>
     );
-}
+};
 
-export default PackagePricingStep;
 
 

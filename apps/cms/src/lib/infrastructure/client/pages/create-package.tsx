@@ -10,42 +10,28 @@
 // UI Components: 9 components linked (see Notion for details)
 // Comments: createPackage creates package in draft state; publishPackage puts it in published state
 
-import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../trpc/cms-client';
-import { useCreatePackagePresenter } from '../hooks/use-create-package-presenter';
+import { useContentLocale } from '../hooks/use-platform-translations';
+import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { useState, useCallback } from 'react';
+import { trpc } from '../trpc/cms-client';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useGetPlatformLanguagePresenter } from '../hooks/use-platform-language-presenter';
+import { getAuthorDisplayName } from '../utils/get-author-display-name';
+import { useCreatePackagePresenter } from '../hooks/use-create-package-presenter';
 import React from 'react';
 import {
-    DefaultLoading,
-    DefaultError,
-    DefaultNotFound,
-    TextInput,
-    TextAreaInput,
     Button,
     Stepper,
-    CheckBox,
-    Accordion,
-    AccordionItem,
-    AccordionTrigger,
-    AccordionContent,
-    RichTextDesignerComponent,
-    RichTextElement,
-    FormElementType,
-    SearchInput,
-    CourseCardAddToPackage,
-    CourseCardAddToPackageList,
     Breadcrumbs,
-    Uploader,
     PackageDetailsStep,
     PackagePricingStep,
+    PackageCoursesStep,
     PackagePreviewStep,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useContentLocale } from '../hooks/use-platform-translations';
-import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { AccordionBuilderItem } from '@maany_shr/e-class-ui-kit';
 
@@ -87,25 +73,29 @@ interface PackagePreviewData {
     coachingIncluded: boolean;
 }
 
-interface CreatePackageProps {
-    locale: TLocale;
-    platformSlug: string;
-    platformLocale: string;
-}
-
-export default function CreatePackage({
-    locale: routeLocale,
-    platformSlug,
-    platformLocale,
-}: CreatePackageProps) {
+export default function CreatePackage() {
+    // Platform context
+    const platformContext = useRequiredPlatformLocale();
+    const contentLocale = useContentLocale();
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     // const t = useTranslations('components.createPackage');
 
     // CMS-specific context hooks
-    const requiredPlatformLocale = useRequiredPlatformLocale();
-    const contentLocale = useContentLocale();
+    const platformSlug = platformContext.platformSlug;
+    const platformLocale = platformContext.platformLocale;
+
+    // Data fetching - platform language (hydrated by RSC)
+    const [platformLanguageResponse, { refetch: refetchPlatformLanguage }] = trpc.getPlatformLanguage.useSuspenseQuery({});
+    const [platformLanguageViewModel, setPlatformLanguageViewModel] = useState<
+        viewModels.TPlatformLanguageViewModel | undefined
+    >(undefined);
+    const { presenter: platformLanguagePresenter } = useGetPlatformLanguagePresenter(
+        setPlatformLanguageViewModel,
+    );
+    // @ts-ignore
+    platformLanguagePresenter.present(platformLanguageResponse, platformLanguageViewModel);
 
     // Authentication check for CMS users
     const sessionDTO = useSession();
@@ -146,65 +136,35 @@ export default function CreatePackage({
     const [coachingIncluded, setCoachingIncluded] = useState(true);
     const [isPublishing, setIsPublishing] = useState(false);
 
-    // Mock course data
-    const allCourses: CourseData[] = [
-        {
-            id: '1',
-            title: 'Course Title',
-            description: 'Learn the fundamentals of this course',
-            rating: 4.7,
-            reviewCount: 43,
-            language: { code: 'ENG', name: 'English' },
-            sessions: 24,
-            duration: { video: 120, coaching: 60, selfStudy: 30 },
-            sales: 48,
-            imageUrl: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-            author: { name: 'Course Creator Full Name', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80' },
-            pricing: { fullPrice: 299, partialPrice: 199, currency: 'USD' }
-        },
-        {
-            id: '2',
-            title: 'Advanced Techniques',
-            description: 'Master advanced techniques and strategies',
-            rating: 4.5,
-            reviewCount: 28,
-            language: { code: 'ENG', name: 'English' },
-            sessions: 18,
-            duration: { video: 90, coaching: 45, selfStudy: 45 },
-            sales: 32,
-            imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-            author: { name: 'Expert Instructor', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80' },
-            pricing: { fullPrice: 199, partialPrice: 149, currency: 'USD' }
-        },
-        {
-            id: '3',
-            title: 'Videomaking Jumpstart',
-            description: 'Complete guide to video production',
-            rating: 4.8,
-            reviewCount: 67,
-            language: { code: 'ENG', name: 'English' },
-            sessions: 32,
-            duration: { video: 150, coaching: 75, selfStudy: 60 },
-            sales: 89,
-            imageUrl: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-            author: { name: 'Video Pro', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80' },
-            pricing: { fullPrice: 399, partialPrice: 299, currency: 'USD' }
-        },
-        {
-            id: '4',
-            title: 'Digital Marketing Mastery',
-            description: 'Comprehensive digital marketing strategies',
-            rating: 4.6,
-            reviewCount: 52,
-            language: { code: 'ENG', name: 'English' },
-            sessions: 20,
-            duration: { video: 100, coaching: 50, selfStudy: 40 },
-            sales: 76,
-            imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-            author: { name: 'Marketing Guru', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80' },
-            pricing: { fullPrice: 249, partialPrice: 199, currency: 'USD' }
-        }
-    ];
+    // Courses data from TRPC usecase
+    const [coursesResponse] = trpc.listCourses.useSuspenseQuery({ pagination: { page: 1, pageSize: 50 } });
+    const allCourses: CourseData[] = (() => {
+        if (!coursesResponse.success) return [];
+        const payload: any = coursesResponse.data;
+        const data = payload?.success ? payload.data : payload;
+        const courses: any[] = data?.courses ?? [];
+        return courses.map((course) => ({
+            id: String(course.id),
+            title: course.title,
+            description: course.description,
+            rating: course.averageRating ?? 0,
+            reviewCount: course.reviewCount,
+            language: { code: '', name: course.language },
+            sessions: course.coachingSessionCount ?? 0,
+            duration: { video: 0, coaching: 0, selfStudy: course.fullDuration },
+            sales: course.salesCount,
+            imageUrl: course.imageUrl ?? '',
+            author: {
+                name: getAuthorDisplayName(course.author.name, course.author.surname, locale),
+                image: course.author.avatarUrl ?? ''
+            },
+            pricing: {
+                fullPrice: course.pricing.withCoaching ?? 0,
+                partialPrice: course.pricing.base,
+                currency: course.pricing.currency
+            }
+        }));
+    })();
 
 
     // File upload handlers
@@ -395,6 +355,7 @@ export default function CreatePackage({
 
             {/* Step Navigation */}
             <Stepper.Root 
+                key={`stepper-${currentStep}`}
                 defaultStep={currentStep} 
                 totalSteps={4}
                 onStepChange={(step) => setCurrentStep(step)}
@@ -442,26 +403,12 @@ export default function CreatePackage({
 
             {/* Step 2: Course Selection */}
             {currentStep === 2 && (
-                <div className="flex flex-col gap-4">
-                    {/* All courses section with search */}
-                    <CourseCardAddToPackageList 
-                        locale={locale} 
-                        onSearch={() => {
-                            // The search functionality is handled internally by the component
-                        }}
-                    >
-                        {allCourses.map((course) => (
-                            <CourseCardAddToPackage
-                                key={course.id}
-                                {...course}
-                                courseAdded={selectedCourseIds.includes(course.id)}
-                                onAddOrRemove={() => toggleCourseSelection(course.id)}
-                                onClickUser={() => {/* TODO: Handle user click */}}
+            <PackageCoursesStep
+                courses={allCourses}
+                selectedCourseIds={selectedCourseIds}
+                onToggleCourseSelection={toggleCourseSelection}
                 locale={locale}
             />
-                        ))}
-                    </CourseCardAddToPackageList>
-                </div>
             )}
 
             {/* Step 3: Pricing Configuration */}
@@ -476,10 +423,6 @@ export default function CreatePackage({
             {/* Step 4: Preview and Publish */}
             {currentStep === 4 && (
                 <PackagePreviewStep
-                    topBannerTitle="Buy the entire package or choose only the courses you need"
-                    topBannerSubtitle="With this package, you can select only specific courses or purchase the entire package for maximum savings."
-                    bottomBannerTitle="Buy complete package"
-                    bottomBannerSubtitle="Here you get everything included. You can therefore gradually implement your overall appearance with a key visual, new branding, a website and corresponding video content."
                     packageTitle={packageTitle || 'Package Title'}
                     packageDescription={packageDescription}
                     featuredImageUrl={featuredImage?.url}
@@ -497,13 +440,15 @@ export default function CreatePackage({
                     onPublish={handlePublishPackage}
                     isPublishing={isPublishing}
                     locale={locale}
+                    bottomBannerTitle="Buy complete package"
+                    bottomBannerSubtitle="Here you get everything included. You can therefore gradually implement your overall appearance with a key visual, new branding, a website and corresponding video content."
                 />
             )}
 
             
 
             {/* Footer Actions */}
-            <div className="flex justify-between pt-6 pb-6 border-t border-card-stroke">
+            <div className="flex justify-between pt-6 pb-6">
                 {currentStep === 1 ? (
                     <>
                         <Button
@@ -551,14 +496,14 @@ export default function CreatePackage({
                     </>
                 ) : currentStep === 4 ? (
                     <>
-                        <div className="flex flex-col gap-4 pt-6 border-t border-card-stroke">
+                        <div className="flex flex-col gap-4 pt-6">
                             <div className="flex flex-col gap-2">
                                 <h3 className="text-xl font-semibold text-text-primary">Publish package?</h3>
                                 <p className="text-text-secondary">
                                     Does everything look good? If so, go ahead and publish the package. Keep in mind that once a package is published, its courses cannot be changed, so double-check everything before proceeding.
                                 </p>
                             </div>
-                            <div className="flex gap-4">
+                <div className="flex gap-4">
                                 <Button
                                     variant="secondary"
                                     size="medium"
@@ -573,7 +518,7 @@ export default function CreatePackage({
                                     disabled={isPublishing}
                                 />
                             </div>
-                        </div>
+                </div>
                     </>
                 ) : null}
             </div>

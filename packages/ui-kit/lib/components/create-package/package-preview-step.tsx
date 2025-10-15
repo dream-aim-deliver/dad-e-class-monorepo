@@ -29,11 +29,6 @@ type CoursePreview = {
 };
 
 export interface PackagePreviewStepProps {
-    // Banner copy
-    topBannerTitle: string;
-    topBannerSubtitle: string;
-    bottomBannerTitle: string;
-    bottomBannerSubtitle: string;
 
     // Package general info
     packageTitle: string;
@@ -63,6 +58,10 @@ export interface PackagePreviewStepProps {
 
     // Intl
     locale: TLocale;
+
+    // Banner copy
+    bottomBannerTitle: string;
+    bottomBannerSubtitle: string;
 }
 
 /**
@@ -81,10 +80,6 @@ export interface PackagePreviewStepProps {
  * The component is purely presentational; all data/state are passed from the parent.
  */
 export function PackagePreviewStep({
-    topBannerTitle,
-    topBannerSubtitle,
-    bottomBannerTitle,
-    bottomBannerSubtitle,
     packageTitle,
     packageDescription,
     featuredImageUrl,
@@ -102,13 +97,15 @@ export function PackagePreviewStep({
     onPublish,
     isPublishing,
     locale,
+    bottomBannerTitle,
+    bottomBannerSubtitle,
 }: PackagePreviewStepProps) {
     return (
         <div className="flex flex-col gap-8 bg-card-fill p-5 border border-card-stroke rounded-medium">
             {/* Top hero section */}
             <PackageGeneralInformation
                 title={packageTitle}
-                subTitle={packageDescription}
+                subTitle={''}
                 imageUrl={featuredImageUrl || ''}
                 description={packageDescription}
                 duration={durationInMinutes || 0}
@@ -116,6 +113,8 @@ export function PackagePreviewStep({
                 locale={locale}
                 onClickPurchase={() => {}}
             />
+
+            <div className="border-t border-card-stroke" />
 
             {/* Accordion Section */}
             {accordionItems.length > 0 && (
@@ -132,6 +131,8 @@ export function PackagePreviewStep({
                     />
                 </div>
             )}
+
+            <div className="border-t border-card-stroke" />
 
             {/* Flexible Section using PackageCourseSelector */}
             <PackageCourseSelector
@@ -188,6 +189,8 @@ export function PackagePreviewStep({
                 ))}
             </PackageCourseSelector>
 
+            <div className="border-t border-card-stroke" />
+
             {/* Bottom banner (complete package CTA) */}
             <BuyCompletePackageBanner
                 titleBanner={bottomBannerTitle}
@@ -204,7 +207,5 @@ export function PackagePreviewStep({
         </div>
     );
 }
-
-export default PackagePreviewStep;
 
 
