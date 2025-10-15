@@ -68,6 +68,7 @@ import { createNotification } from './procedures/create-notification';
 import { getAssignment } from './procedures/assignment';
 import { sendAssignmentReply } from './procedures/assignment-reply';
 import { passAssignment } from './procedures/assignment';
+import { getStudentCoachingSession } from './procedures/student-coaching-session';
 
 export const mockRouter = t.router({
     getPlatform,
@@ -137,6 +138,7 @@ export const mockRouter = t.router({
     sendAssignmentReply,
     passAssignment,
     deleteAvailability,
+    getStudentCoachingSession,
 });
 
 export type MockRouter = typeof mockRouter;

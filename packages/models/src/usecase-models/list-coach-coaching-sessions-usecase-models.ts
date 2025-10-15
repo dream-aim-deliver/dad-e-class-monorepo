@@ -85,7 +85,7 @@ export const CoachCoachingSessionSchema = z.discriminatedUnion('status', [
     UpcomingScheduledCoachingSessionSchema,
     CoachEndedCoachingSessionSchema,
 ]);
-export type TCoachCoachingSession = z.infer<typeof CoachCoachingSessionSchema>;
+export type TCoachFullCoachingSession = z.infer<typeof CoachCoachingSessionSchema>;
 
 
 export const ListCoachCoachingSessionsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
