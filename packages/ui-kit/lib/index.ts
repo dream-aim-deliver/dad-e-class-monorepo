@@ -61,8 +61,11 @@ export { Uploader } from './components/drag-and-drop-uploader/uploader';
 
 // Create Package Components
 export { PackageDetailsStep } from './components/create-package/package-details-step';
-export { default as PackagePricingStep } from './components/create-package/package-pricing-step';
-export { default as PackagePreviewStep } from './components/create-package/package-preview-step';
+export { PackageCoursesStep } from './components/create-package/package-courses-step';
+export { PackagePricingStep } from './components/create-package/package-pricing-step';
+export { PackagePreviewStep } from './components/create-package/package-preview-step';
+
+// Components used in the Package subComponents
 export { PackageCourseSelector } from './components/course-card/package-course-selector/package-course-selector';
 export { BuyCompletePackageBanner } from './components/buy-complete-package-banner';
 

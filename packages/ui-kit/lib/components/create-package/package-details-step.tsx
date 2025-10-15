@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useCallback } from 'react';
 import {
-    TextInput,
+    InputField,
     TextAreaInput,
     Uploader,
 } from '@maany_shr/e-class-ui-kit';
@@ -113,8 +113,10 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
     locale,
 }) => {
     return (
-        <div className="flex flex-col gap-4 bg-card-fill p-5 border border-card-stroke rounded-medium">
-            <h2 className="text-xl font-semibold text-text-primary">Package details</h2>
+        <div className="flex flex-col border border-card-stroke bg-card-fill p-6 gap-6 w-full rounded-medium">
+            <h3 className="text-text-primary">
+                Package details
+            </h3>
             
             {/* Package Title */}
             <TextAreaInput
@@ -153,12 +155,10 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                 <h3 className="text-lg font-semibold text-text-primary">Accordion</h3>
 
                 {/* Accordion Title */}
-                <TextInput
-                    inputField={{
-                        inputText: "accordion-title",
-                        value: accordionTitle,
-                        setValue: setAccordionTitle,
-                    }}
+                <InputField
+                    inputText="accordion-title"
+                    value={accordionTitle}
+                    setValue={setAccordionTitle}
                 />
 
                 <AccordionBuilder
