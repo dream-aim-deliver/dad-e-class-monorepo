@@ -7,14 +7,27 @@ import { HydrateClient, trpc, prefetch } from '../config/trpc/cms-server';
 import { Suspense } from 'react';
 import { DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import Profile from '../../client/pages/profile';
+import getSession from '../config/auth/get-session';
+import { redirect } from 'next/navigation';
 
 interface ProfileProps {
 	locale: string;
 }
 
 export default async function ProfileServerComponent(props: ProfileProps) {
+	const session = await getSession();
+
+	if (!session || !session.user) {
+		redirect('/auth/login');
+	}
+
+	const userEmail = session.user.email || '';
+	const username = session.user.name || '';
+
 	await Promise.all([
+		prefetch(trpc.getPersonalProfile.queryOptions({})),
 		prefetch(trpc.getProfessionalProfile.queryOptions({})),
+		prefetch(trpc.listLanguages.queryOptions({})),
 		prefetch(trpc.listTopics.queryOptions({})),
 	]);
 
@@ -22,7 +35,7 @@ export default async function ProfileServerComponent(props: ProfileProps) {
 		<>
 			<HydrateClient>
 				<Suspense fallback={<DefaultLoading locale={props.locale as any} variant="minimal" />}>
-					<Profile locale={props.locale} />
+					<Profile locale={props.locale} userEmail={userEmail} username={username} />
 				</Suspense>
 			</HydrateClient>
 		</>

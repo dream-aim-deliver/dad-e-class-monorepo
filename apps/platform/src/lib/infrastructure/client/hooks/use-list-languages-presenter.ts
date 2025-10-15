@@ -2,7 +2,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
 import LanguagesPresenter, {
     TLanguagesPresenterUtilities,
-} from '../../common/presenters/languages-presenter';
+} from '../../common/presenters/list-languages-presenter';
 
 export function useListLanguagesPresenter(
     setViewModel: (viewModel: viewModels.TLanguageListViewModel) => void,

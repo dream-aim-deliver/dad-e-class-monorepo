@@ -80,6 +80,11 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
 }) => {
   const [formData, setFormData] = React.useState<TPersonalProfileAPI>(initialData);
 
+  // Update form data when initialData changes (e.g., when switching tabs)
+  React.useEffect(() => {
+    setFormData(initialData);
+  }, [initialData]);
+
   const dictionary = getDictionary(locale);
 
 
@@ -195,6 +200,16 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             setValue: (value) => handleChange('email', value),
             inputText: dictionary.components.profileInfo.emailPlaceholder,
             state: 'disabled'
+          }}
+        />
+        <TextInput
+          label={dictionary.components.profileInfo.username}
+          inputField={{
+            id: 'username',
+            className: "w-full",
+            value: formData.username,
+            setValue: (value) => handleChange('username', value),
+            inputText: dictionary.components.profileInfo.usernamePlaceholder,
           }}
         />
         <TextInput

@@ -11,7 +11,7 @@ import { IconClose } from '../icons/icon-close';
 import { IconSearch } from '../icons/icon-search';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type TProfessionalProfileAPI = viewModels.TGetProfessionalProfileSuccess['profile'];
 type TSkill = { id: number; name: string; slug: string };
@@ -89,6 +89,12 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   const [allSkills, setAllSkills] = useState<string[]>(
     () => initialData.skills?.map(s => s.name) ?? [],
   );
+
+  // Update form data when initialData changes (e.g., when switching tabs)
+  useEffect(() => {
+    setFormData(initialData);
+    setAllSkills(initialData.skills?.map(s => s.name) ?? []);
+  }, [initialData]);
 
   const handleChange = <K extends keyof TProfessionalProfileAPI>(
     field: K,

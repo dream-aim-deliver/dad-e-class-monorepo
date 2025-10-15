@@ -159,6 +159,8 @@ export const DictionarySchema = z.object({
       surnamePlaceholder: z.string(),
       email: z.string(),
       emailPlaceholder: z.string(),
+      username: z.string(),
+      usernamePlaceholder: z.string(),
       phoneNumber: z.string(),
       phoneNumberPlaceholder: z.string(),
       password: z.string(),
@@ -1238,6 +1240,13 @@ export const DictionarySchema = z.object({
       failedToSavePersonal: z.string(),
       failedToSaveProfessional: z.string(),
       saving: z.string(),
+      nameRequired: z.string(),
+      surnameRequired: z.string(),
+      usernameRequired: z.string(),
+      usernameInvalid: z.string(),
+      emailRequired: z.string(),
+      bioRequired: z.string(),
+      bioTooLong: z.string(),
     }),
     sso: z.object({
       termsAndConditions: z.object({
