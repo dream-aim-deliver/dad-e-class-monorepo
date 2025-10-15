@@ -6,7 +6,9 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 import { StudentCoachingSessionSchema } from './common';
 
-export const GetStudentCoachingSessionRequestSchema = z.object({});
+export const GetStudentCoachingSessionRequestSchema = z.object({
+  id: z.number(),
+});
 
 export type TGetStudentCoachingSessionRequest = z.infer<typeof GetStudentCoachingSessionRequestSchema>;
 

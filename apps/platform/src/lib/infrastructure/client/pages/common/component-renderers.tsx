@@ -45,6 +45,7 @@ import { trpc } from '../../trpc/cms-client';
 import { useListCoachesPresenter } from '../../hooks/use-coaches-presenter';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useCourseSlug } from '../course/utils/course-slug-context';
 
 export interface ComponentRendererProps {
     keyString: string;
@@ -382,7 +383,7 @@ function LinksComponent({
 }
 
 function CourseCoachList({ sessionId }: { sessionId: number }) {
-    // TODO: This needs courseSlug passed to it through context
+    const courseSlug = useCourseSlug();
     const session = useSession();
     const locale = useLocale() as TLocale;
     const router = useRouter();
@@ -467,8 +468,8 @@ function CoachingSessionComponent({
             return <CourseCoachList sessionId={element.progress.session.id} />;
         }
         return (
-            <div>
-                <span>Your coaching session is scheduled.</span>
+            <div className="flex flex-col gap-4">
+                <span className="text-text-secondary">Your coaching session is scheduled.</span>
                 <Button
                     variant="primary"
                     text="View coaching sessions"
