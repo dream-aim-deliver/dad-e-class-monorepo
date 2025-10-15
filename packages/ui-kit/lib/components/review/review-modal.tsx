@@ -101,7 +101,6 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
   isLoading = false,
   isError = false,
   errorMessage,
-  successMessage,
   submitted: initialSubmitted = false,
   variant = 'card',
   isOpen,
