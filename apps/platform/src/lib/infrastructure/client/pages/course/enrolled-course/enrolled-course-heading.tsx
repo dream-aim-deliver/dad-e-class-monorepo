@@ -20,7 +20,7 @@ import { useGetCourseCertificateDataPresenter } from '../../../hooks/use-get-cou
 
 interface EnrolledCourseHeadingProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
-    studentProgressViewModel?: viewModels.TStudentProgressViewModel;
+    courseStatusViewModel?: viewModels.TGetCourseStatusViewModel;
     courseSlug: string;
     roles: string[];
     currentRole: string;
@@ -28,17 +28,24 @@ interface EnrolledCourseHeadingProps {
 
 export default function EnrolledCourseHeading({
     courseViewModel,
-    studentProgressViewModel,
+    courseStatusViewModel,
     roles,
     currentRole,
     courseSlug,
 }: EnrolledCourseHeadingProps) {
-    const hasProgress =
-        studentProgressViewModel?.mode === 'default' &&
-        studentProgressViewModel.data.progressPercent !== undefined;
+    // Use courseStatusViewModel for both completion status and progress
     const isCompleted =
-        studentProgressViewModel?.mode === 'default' &&
-        studentProgressViewModel.data.isCompleted;
+        courseStatusViewModel?.mode === 'default' &&
+        courseStatusViewModel.data?.courseStatus.status === 'completed';
+    
+    const progressPercent =
+        courseStatusViewModel?.mode === 'default' &&
+        courseStatusViewModel.data?.courseStatus.status === 'inProgress' &&
+        'progress' in courseStatusViewModel.data.courseStatus
+            ? courseStatusViewModel.data.courseStatus.progress
+            : undefined;
+    
+    const hasProgress = progressPercent !== undefined;
 
     const locale = useLocale() as TLocale;
     const router = useRouter();
@@ -179,7 +186,7 @@ export default function EnrolledCourseHeading({
                             </span>
                         </div>
                     </div>
-                    {!isCompleted ? (
+                    {isCompleted ? (
                         <Badge
                             className="w-fit"
                             size="medium"
@@ -189,7 +196,7 @@ export default function EnrolledCourseHeading({
                     ) : (
                         hasProgress && (
                             <CourseProgressBar
-                                percentage={studentProgressViewModel?.data?.progressPercent ?? 67.5}
+                                percentage={progressPercent ?? 0}
                                 locale={locale}
                                 onClickResume={() => {
                                     window.location.href = `/courses/${courseSlug}?role=${currentRole}&tab=${StudentCourseTab.STUDY}`;

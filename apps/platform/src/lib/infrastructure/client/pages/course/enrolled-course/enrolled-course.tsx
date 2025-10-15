@@ -215,7 +215,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
             }
         }
         return StudentCourseTab.INTRODUCTION;
-    }, [props.tab]);
+    }, [props.tab, props.currentRole]);
 
     if (!courseViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -244,7 +244,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
         <div className="flex flex-col space-y-4">
             <EnrolledCourseHeading
                 courseViewModel={courseViewModel}
-                studentProgressViewModel={props.studentProgressViewModel}
+                courseStatusViewModel={courseStatusViewModel}
                 roles={props.roles}
                 currentRole={props.currentRole}
                 courseSlug={props.courseSlug}
