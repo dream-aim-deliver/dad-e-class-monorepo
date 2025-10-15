@@ -33,12 +33,11 @@ export default function AssignmentContent({
     const locale = useLocale() as TLocale;
     const session = useSession();
 
-    const [assignmentResponse, {
-        refetch: refetchAssignment,
-    }] = trpc.getAssignment.useSuspenseQuery({
-        assignmentId,
-        studentId,
-    });
+    const [assignmentResponse, { refetch: refetchAssignment }] =
+        trpc.getAssignment.useSuspenseQuery({
+            assignmentId,
+            studentId,
+        });
     const [assignmentViewModel, setAssignmentViewModel] = useState<
         viewModels.TAssignmentViewModel | undefined
     >(undefined);
@@ -49,9 +48,7 @@ export default function AssignmentContent({
         return <DefaultLoading locale={locale} />;
     }
 
-    if (
-        assignmentViewModel.mode !== 'default'
-    ) {
+    if (assignmentViewModel.mode !== 'default') {
         return <DefaultError locale={locale} />;
     }
 
@@ -65,6 +62,7 @@ export default function AssignmentContent({
                     replies={assignment.progress.replies}
                     passedDetails={assignment.progress.passedDetails}
                     locale={locale}
+                    currentUserId={session.data?.user?.id || ''}
                 />
             )}
             <AssignmentInteraction
@@ -91,7 +89,6 @@ function AssignmentInteraction({
     refetchAssignment,
 }: AssignmentInteractionProps) {
     const locale = useLocale() as TLocale;
-    // TODO: Check if the user is a student or coach (studentId matches session user ID)
     const session = useSession();
 
     const sendReplyMutation = trpc.sendAssignmentReply.useMutation();
@@ -213,10 +210,12 @@ function AssignmentInteraction({
     const isSending =
         sendReplyMutation.isPending || passAssignmentMutation.isPending;
 
+    const isStudent = session.data?.user?.id === studentId.toString();
+
     // TODO: display uploadError somewhere in the UI
     return (
         <ReplyPanel
-            role="coach"
+            role={isStudent ? 'student' : 'coach'}
             comment={comment}
             files={files}
             links={links}
@@ -333,17 +332,23 @@ interface RepliesListProps {
     replies: useCaseModels.TAssignmentReply[];
     passedDetails: useCaseModels.TAssignmentPassedData | undefined;
     locale: TLocale;
+    currentUserId: string;
 }
 
 // Render replies as Message components
-function RepliesList({ replies, passedDetails, locale }: RepliesListProps) {
+function RepliesList({
+    replies,
+    passedDetails,
+    locale,
+    currentUserId,
+}: RepliesListProps) {
     const messageComponents: React.ReactNode[] = useMemo(() => {
         const components = replies.map((reply, index) => (
             <Message
                 key={`reply-${index}`}
                 reply={{
                     replyId: index,
-                    ...transformReplyData(reply, locale),
+                    ...transformReplyData(reply, currentUserId, locale),
                 }}
                 onFileDownload={(file) => {
                     downloadFile(file.url, file.name);
@@ -361,6 +366,7 @@ function RepliesList({ replies, passedDetails, locale }: RepliesListProps) {
                         type: 'passed',
                         sender: transformReplySender(
                             passedDetails.sender,
+                            currentUserId,
                             locale,
                         ),
                     }}
@@ -380,13 +386,14 @@ function RepliesList({ replies, passedDetails, locale }: RepliesListProps) {
 // Transform reply data for Message component
 function transformReplyData(
     reply: useCaseModels.TAssignmentReply,
+    currentUserId: string,
     locale: TLocale,
 ) {
     return {
         type: 'resources' as const,
         comment: reply.comment,
         timestamp: reply.sentAt,
-        sender: transformReplySender(reply.sender, locale),
+        sender: transformReplySender(reply.sender, currentUserId, locale),
         files: reply.files.map((file: any) => ({
             ...file,
             category: 'generic' as const,
@@ -411,6 +418,7 @@ function transformReplyData(
 
 function transformReplySender(
     sender: useCaseModels.TAssignmentReply['sender'],
+    currentUserId: string,
     locale: TLocale,
 ) {
     // TODO: Handle translation for anonymous user
@@ -421,6 +429,6 @@ function transformReplySender(
         email: '',
         role: sender.role as 'student' | 'coach',
         image: sender.avatarUrl ?? '',
-        isCurrentUser: false,
+        isCurrentUser: sender.id.toString() === currentUserId,
     };
 }
