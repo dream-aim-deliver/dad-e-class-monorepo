@@ -8,17 +8,78 @@
 
 import { trpc } from '../trpc/cms-client';
 import { useLocale } from 'next-intl';
+
 import {
 	DefaultError,
 	DefaultLoading,
 	DefaultNotFound,
+	Button,
+	Tabs,
+	Banner,
 } from '@maany_shr/e-class-ui-kit';
+import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { viewModels } from '@maany_shr/e-class-models';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-get-home-page-presenter';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { useHomePageFileUpload } from './manage-homepage-hooks/use-homepage-file-upload';
+import { HeroSection, CarouselSection, CoachingDemandSection, HowItWorksSection } from '@maany_shr/e-class-ui-kit';
+
+const mockHomePageResponse: useCaseModels.TGetHomePageUseCaseResponse = {
+	success: true,
+	data: {
+		banner: {
+			title: 'Welcome to E-Class',
+			description: 'Empower your learning journey',
+			videoId: 'o017yCZbw87zC9xDoy1Bl02FsbCBXuSdx6xPbkF01sW02IU',
+			thumbnailUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748006627/hb-thumb_eabema.png',
+		},
+		carousel: [
+			{
+				title: 'Course 1',
+				description: 'Description for course 1',
+				imageUrl: 'https://images.unsplash.com/photo-1543269866-8cd2dfe969d6?q=80&w=1170&auto=format&fit=crop',
+				buttonText: 'Enroll',
+				buttonUrl: '/course/1',
+				badge: 'New',
+			},
+			{
+				title: 'Course 2',
+				description: 'Description for course 2',
+				imageUrl: 'https://images.unsplash.com/photo-1580742432710-d3c3703559a9?q=80&w=1170&auto=format&fit=crop',
+				buttonText: 'Learn More',
+				buttonUrl: '/course/2',
+				badge: 'Popular',
+			},
+		],
+		coachingOnDemand: {
+			title: 'Coaching On Demand',
+			description: 'Get personalized coaching',
+			desktopImageUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364855/Frame_4353_zxdyos.png',
+			tabletImageUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364854/tablet_rdfwwe.png',
+			mobileImageUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364853/mobile_s5v6sk.png',
+		},
+		accordion: {
+			title: 'How it works',
+			showNumbers: true,
+			items: [
+				{
+					title: 'FAQ 1',
+					content: 'Answer to FAQ 1',
+					position: 1,
+					iconImageUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1749031184/icon_btkez8.png',
+				},
+				{
+					title: 'FAQ 2',
+					content: 'Answer to FAQ 2',
+					position: 2,
+					iconImageUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1749031184/icon_1_rtoehe.png',
+				},
+			],
+		},
+	},
+};
 
 /**
  * ManageHomepage component for CMS
@@ -36,18 +97,60 @@ export default function ManageHomepage() {
 	const platformContext = useRequiredPlatformLocale();
 	const contentLocale = useContentLocale();
 
-	// Fetch homepage data
-	const [homePageResponse, { refetch: refetchHomePage }] = trpc.getHomePage.useSuspenseQuery({});
-
+	// Fetch homepage data (refetch retained for future integration)
+	const [, { refetch: refetchHomePage }] = trpc.getHomePage.useSuspenseQuery({});
 	const [homePageViewModel, setHomePageViewModel] = useState<
 		viewModels.TGetHomePageViewModel | undefined
 	>(undefined);
 
 	const { presenter: homePagePresenter } = useGetHomePagePresenter(setHomePageViewModel);
 
+	// Track upload progress
+	const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+
+	const [currentHomePageData, setCurrentHomePageData] = useState<viewModels.TGetHomePageSuccess | null>(null);
+
+	const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+	const [saveMessage, setSaveMessage] = useState<string | null>(null);
+
+	// File upload hook - MUST be called before any conditional returns
+	const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
+
+	// Save homepage mutation - uncommented
+	const saveHomePageMutation = trpc.saveHomePage.useMutation({
+		onSuccess: (data) => {
+			if (data.success) {
+				setSaveStatus('success');
+				setSaveMessage('Homepage saved successfully!');
+				// Optionally refetch homepage data
+				refetchHomePage();
+			} else {
+				setSaveStatus('error');
+				setSaveMessage('Failed to save homepage');
+			}
+		},
+		onError: (error) => {
+			setSaveStatus('error');
+			setSaveMessage(error.message ?? 'An error occurred while saving');
+			console.error('Error saving homepage:', error);
+		},
+
+	});
+
 	// Present the data
-	// @ts-ignore
-	homePagePresenter.present(homePageResponse, homePageViewModel);
+	useEffect(() => {
+		homePagePresenter.present(
+			mockHomePageResponse,
+			homePageViewModel
+		);
+	}, [homePagePresenter]);
+
+	useEffect(() => {
+		if (homePageViewModel?.mode === 'default' && !currentHomePageData) {
+			setCurrentHomePageData(homePageViewModel.data);
+		}
+	}, [homePageViewModel, currentHomePageData]);
+
 
 	// Loading state
 	if (!homePageViewModel) {
@@ -70,47 +173,170 @@ export default function ManageHomepage() {
 		return <DefaultNotFound locale={appLocale} />;
 	}
 
+	// Only access data if mode is 'default'
+	if (homePageViewModel.mode !== 'default') {
+		return <DefaultLoading locale={appLocale} variant="minimal" />;
+	}
+
 	// Success state - extract data
-	// const homePageData = homePageViewModel.data;
+	const homePageData = homePageViewModel.data;
 
-	// TODO: Implement saveHomePage mutation
-	// const saveHomePageMutation = trpc.saveHomePage.useMutation();
-	// const handleSaveHomePage = async (data: any) => {
-	//   await saveHomePageMutation.mutateAsync(data);
-	//   refetchHomePage();
-	// };
+	// Single state for all homepage data
 
-	// TODO: Implement requestFileUpload mutation
-	// const requestFileUploadMutation = trpc.requestFileUpload.useMutation();
-	// const handleFileUpload = async (fileData: any) => {
-	//   const uploadFormData = await requestFileUploadMutation.mutateAsync(fileData);
-	//   // Use uploadFormData to upload file to S3
-	// };
+	const editableHomePageData = currentHomePageData ?? homePageData;
+
+	const handleBannerChange = (banner: typeof homePageData.banner) => {
+		setCurrentHomePageData(prev => {
+			const base = prev ?? homePageData;
+			return {
+				...base,
+				banner,
+			};
+		});
+	};
+
+	const handleCarouselChange = (carousel: typeof homePageData.carousel) => {
+		setCurrentHomePageData(prev => {
+			const base = prev ?? homePageData;
+			return {
+				...base,
+				carousel,
+			};
+		});
+	};
+
+	const handleCoachingDemandChange = (coachingOnDemand: typeof homePageData.coachingOnDemand) => {
+		setCurrentHomePageData(prev => {
+			const base = prev ?? homePageData;
+			return {
+				...base,
+				coachingOnDemand,
+			};
+		});
+	};
+
+	const handleAccordionChange = (accordion: typeof homePageData.accordion) => {
+		setCurrentHomePageData(prev => {
+			const base = prev ?? homePageData;
+			return {
+				...base,
+				accordion,
+			};
+		});
+	};
+
+	const handleSaveHomePage = () => {
+		setSaveStatus('idle');
+		setSaveMessage(null);
+
+		saveHomePageMutation.mutate({
+			banner: editableHomePageData.banner,
+			carousel: editableHomePageData.carousel,
+			coachingOnDemand: editableHomePageData.coachingOnDemand,
+			accordion: editableHomePageData.accordion,
+		});
+	};
 
 	return (
-		<div className="flex flex-col space-y-6 p-6">
+		<div className="flex flex-col space-y-6 p-6 max-w-7xl mx-auto">
 			{/* Page Header */}
 			<div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-6 rounded-lg shadow-lg">
-				<h1 className="text-3xl font-bold mb-2">Manage Homepage</h1>
-				<p className="text-lg opacity-90">
-					Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
-				</p>
+				<div className="flex justify-between items-center">
+					<div>
+						<h1 className="text-3xl font-bold mb-2">Manage Homepage</h1>
+						<p className="text-lg opacity-90">
+							Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
+						</p>
+					</div>
+					<Button
+						variant="primary"
+						size="medium"
+						text="Save Changes"
+						onClick={handleSaveHomePage}
+						disabled={saveHomePageMutation.isPending}
+
+					/>
+				</div>
 			</div>
 
-			{/* TODO: Add Homepage Editor Components */}
-			{/* TODO: Implement banner editor */}
-			{/* TODO: Implement carousel editor */}
-			{/* TODO: Implement coaching on demand section editor */}
-			{/* TODO: Implement accordion editor */}
+			{saveHomePageMutation.isPending && (
+					<Banner style="success" title="Saving homepage changes..." />
 
-			<div className="bg-white rounded-lg shadow p-6">
-				<p className="text-gray-600">
-					Homepage management UI will be implemented here.
-				</p>
-				<p className="text-sm text-gray-500 mt-2">
-					Features to implement: getHomePage, saveHomePage, requestFileUpload
-				</p>
-			</div>
-		</div>
+
+			)}
+			{saveStatus === 'success' && saveMessage && (
+				<Banner style="success" title={saveMessage} />
+			)
+			}
+			{
+				saveStatus === 'error' && saveMessage && (
+					<Banner style="error" title={saveMessage} />
+				)
+			}
+
+			{/* Tabs for Homepage Sections */}
+			<Tabs.Root defaultTab="hero" className="w-full">
+				<Tabs.List variant="default">
+					<Tabs.Trigger value="hero" isLast={false}>
+						Hero Section
+					</Tabs.Trigger>
+					<Tabs.Trigger value="carousel" isLast={false}>
+						Carousel
+					</Tabs.Trigger>
+					<Tabs.Trigger value="coaching" isLast={false}>
+						Coaching On Demand
+					</Tabs.Trigger>
+					<Tabs.Trigger value="accordion" isLast={true}>
+						Accordion
+					</Tabs.Trigger>
+				</Tabs.List>
+
+				<div className="mt-6">
+					<Tabs.Content value="hero">
+						<HeroSection
+							initialValue={editableHomePageData.banner}
+							onChange={handleBannerChange}
+							onFileUpload={handleFileUpload}
+							onFileDelete={handleFileDelete}
+							onFileDownload={handleFileDownload}
+							uploadProgress={uploadProgress}
+						/>
+					</Tabs.Content>
+
+					<Tabs.Content value="carousel">
+						<CarouselSection
+							initialValue={editableHomePageData.carousel}
+							onChange={handleCarouselChange}
+							onFileUpload={handleFileUpload}
+							onFileDelete={handleFileDelete}
+							onFileDownload={handleFileDownload}
+							uploadProgress={uploadProgress}
+						/>
+					</Tabs.Content>
+
+					<Tabs.Content value="coaching">
+						<CoachingDemandSection
+							initialValue={editableHomePageData.coachingOnDemand}
+							onChange={handleCoachingDemandChange}
+							onFileUpload={handleFileUpload}
+							onFileDelete={handleFileDelete}
+							onFileDownload={handleFileDownload}
+							uploadProgress={uploadProgress}
+						/>
+					</Tabs.Content>
+
+					<Tabs.Content value="accordion">
+						<HowItWorksSection
+							initialValue={editableHomePageData.accordion}
+							onChange={handleAccordionChange}
+							onFileUpload={handleFileUpload}
+							onFileDelete={handleFileDelete}
+							onFileDownload={handleFileDownload}
+							uploadProgress={uploadProgress}
+						/>
+					</Tabs.Content>
+				</div>
+			</Tabs.Root>
+		</div >
 	);
 }
