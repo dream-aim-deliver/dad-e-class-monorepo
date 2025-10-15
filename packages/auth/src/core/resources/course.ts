@@ -54,6 +54,13 @@ const RULES: TRoleWithResourcePermissions<"course", course.TCourseMetadata, TRes
             delete: false
         }
     },
+    course_creator: {
+        course: {
+            read: true,
+            update: true,
+            delete: false
+        }
+    },
     admin: {
         course: {
             read: true,

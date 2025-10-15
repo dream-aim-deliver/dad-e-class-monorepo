@@ -4,7 +4,7 @@ import {
     BaseStatusDiscriminatedUnionSchemaFactory,
     BaseSuccessSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { CoachingSessionStatusSchema, StudentCoachingSessionSchema } from './common';
+import { StudentCoachingSessionSchema } from './common';
 
 export const ListStudentCoachingSessionsRequestSchema = z.object({});
 export type TListStudentCoachingSessionsRequest = z.infer<typeof ListStudentCoachingSessionsRequestSchema>;
