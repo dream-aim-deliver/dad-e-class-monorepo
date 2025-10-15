@@ -48,6 +48,14 @@ const RULES: TRoleWithResourcePermissions<"profile", profile.TProfiles, TResourc
             delete: false,
         }
     },
+    course_creator: {
+        profile:
+        {
+            read: true,
+            update: true,
+            delete: true,
+        }
+    },
     admin: {
         profile:
         {

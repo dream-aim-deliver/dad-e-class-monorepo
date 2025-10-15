@@ -468,7 +468,7 @@ function CoachingSessionComponent({
         if (!element.progress) {
             return (
                 <span className="text-text-secondary">
-                    Your course plan doesn't include coaching sessions.
+                    Your course plan doesn&apos;t include coaching sessions.
                 </span>
             );
         }
