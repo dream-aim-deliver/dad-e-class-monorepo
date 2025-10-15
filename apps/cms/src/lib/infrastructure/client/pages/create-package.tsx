@@ -34,6 +34,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { AccordionBuilderItem } from '@maany_shr/e-class-ui-kit';
+import { usePackageFileUpload } from './common/hooks/use-package-file-upload';
 
 // Types for course data
 interface CourseData {
@@ -167,40 +168,14 @@ export default function CreatePackage() {
     })();
 
 
-    // File upload handlers
-    const handleFeaturedImageUpload = useCallback(async (
-        file: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal
-    ): Promise<fileMetadata.TFileMetadata> => {
-        // TODO: Implement requestFileUpload with uploadType: "upload_package_image"
-        // For now, return mock data
-        return {
-            id: crypto.randomUUID(),
-            name: file.name,
-            size: file.file.size,
-            status: 'available',
-            category: 'image',
-            url: URL.createObjectURL(file.file),
-            thumbnailUrl: URL.createObjectURL(file.file),
-        };
-    }, []);
+    // File upload handlers using custom hook
+    const {
+        handleFileChange: handlePackageImageUpload,
+    } = usePackageFileUpload("upload_package_image");
 
-    const handleAccordionIconUpload = useCallback(async (
-        file: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal
-    ): Promise<fileMetadata.TFileMetadata> => {
-        // TODO: Implement requestFileUpload with uploadType: "upload_package_accordion_item_icon"
-        // For now, return mock data
-        return {
-            id: crypto.randomUUID(),
-            name: file.name,
-            size: file.file.size,
-            status: 'available',
-            category: 'image',
-            url: URL.createObjectURL(file.file),
-            thumbnailUrl: URL.createObjectURL(file.file),
-        };
-    }, []);
+    const {
+        handleFileChange: handleAccordionIconUpload,
+    } = usePackageFileUpload("upload_package_accordion_item_icon");
 
     // Course management functions
     const toggleCourseSelection = useCallback((courseId: string) => {
@@ -227,28 +202,36 @@ export default function CreatePackage() {
     }, []);
 
     // Publish logic
+    const createPackageMutation = trpc.createPackage.useMutation();
+    
     const handlePublishPackage = useCallback(async () => {
         setIsPublishing(true);
         try {
-            // TODO: Implement actual package creation/publishing
-            // This would call createPackage mutation with all accumulated data
-            console.log('Publishing package with data:', {
-                packageTitle,
-                packageDescription,
-                featuredImage,
+            // Mock package creation/publishing
+            const mockPackageData = {
+                title: packageTitle,
+                description: packageDescription,
+                featuredImageId: featuredImage?.id,
                 accordionTitle,
                 showListItemNumbers,
-                accordionItems,
-                selectedCourseIds,
+                accordionItems: accordionItems.map(item => ({
+                    title: item.title,
+                    content: item.content,
+                    iconId: item.icon?.id
+                })),
+                courseIds: selectedCourseIds,
                 pricingConfig,
                 coachingIncluded
-            });
+            };
+
+            const result = await createPackageMutation.mutateAsync(mockPackageData);
             
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            // Redirect to packages list after successful publish
-            router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`);
+            if (result.success) {
+                // Redirect to packages list after successful publish
+                router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`);
+            } else {
+                throw new Error(result.data?.data?.message || 'Failed to create package');
+            }
         } catch (error) {
             console.error('Failed to publish package:', error);
             setIsPublishing(false);
@@ -256,7 +239,7 @@ export default function CreatePackage() {
     }, [
         packageTitle, packageDescription, featuredImage, accordionTitle, 
         showListItemNumbers, accordionItems, selectedCourseIds, pricingConfig, 
-        coachingIncluded, router, locale, platformSlug, platformLocale
+        coachingIncluded, router, locale, platformSlug, platformLocale, createPackageMutation
     ]);
 
     // Get selected courses data
@@ -393,9 +376,11 @@ export default function CreatePackage() {
                     setFeaturedImage={setFeaturedImage}
                     accordionTitle={accordionTitle}
                     setAccordionTitle={setAccordionTitle}
+                    showListItemNumbers={showListItemNumbers}
+                    setShowListItemNumbers={setShowListItemNumbers}
                     accordionItems={accordionItems}
                     setAccordionItems={setAccordionItems}
-                    handleFeaturedImageUpload={handleFeaturedImageUpload}
+                    handleFeaturedImageUpload={handlePackageImageUpload}
                     handleAccordionIconUpload={handleAccordionIconUpload}
                 locale={locale}
             />
@@ -423,8 +408,8 @@ export default function CreatePackage() {
             {/* Step 4: Preview and Publish */}
             {currentStep === 4 && (
                 <PackagePreviewStep
-                    packageTitle={packageTitle || 'Package Title'}
-                    packageDescription={packageDescription}
+                    packageTitle={packageTitle || 'Package Title Here'}
+                    packageDescription={packageDescription || 'Package Description Here'}
                     featuredImageUrl={featuredImage?.url}
                     durationInMinutes={163}
                     accordionTitle={accordionTitle}
@@ -448,67 +433,74 @@ export default function CreatePackage() {
             
 
             {/* Footer Actions */}
-            <div className="flex justify-between pt-6 pb-6">
+            <div className="flex justify-between pt-2 pb-6">
                 {currentStep === 1 ? (
-                    <>
+                    <div className="flex gap-4 w-full">
                         <Button
                             variant="secondary"
                             size="medium"
                             text="Discard"
                             onClick={handleDiscard}
+                            className="flex-1"
                         />
                         <Button
                             variant="primary"
                             size="medium"
                             text="Next: Choose courses"
                             onClick={handleNext}
+                            className="flex-1"
                         />
-                    </>
+                    </div>
                 ) : currentStep === 2 ? (
-                    <>
+                    <div className="flex gap-4 w-full">
                         <Button
                             variant="secondary"
                             size="medium"
                             text="Back"
                             onClick={handleBack}
+                            className="flex-1"
                         />
                         <Button
                             variant="primary"
                             size="medium"
                             text="Next: Choose pricing"
                             onClick={handleNext}
+                            className="flex-1"
                         />
-                    </>
+                    </div>
                 ) : currentStep === 3 ? (
-                    <>
+                    <div className="flex gap-4 w-full">
                         <Button
                             variant="secondary"
                             size="medium"
                             text="Back"
                             onClick={handleBack}
+                            className="flex-1"
                         />
                         <Button
                             variant="primary"
                             size="medium"
                             text="Next: Preview"
                             onClick={handleNext}
+                            className="flex-1"
                         />
-                    </>
+                    </div>
                 ) : currentStep === 4 ? (
                     <>
-                        <div className="flex flex-col gap-4 pt-6">
+                        <div className="flex flex-col gap-4 pt-1">
                             <div className="flex flex-col gap-2">
                                 <h3 className="text-xl font-semibold text-text-primary">Publish package?</h3>
                                 <p className="text-text-secondary">
                                     Does everything look good? If so, go ahead and publish the package. Keep in mind that once a package is published, its courses cannot be changed, so double-check everything before proceeding.
                                 </p>
                             </div>
-                <div className="flex gap-4">
+                            <div className="flex gap-4 w-full">
                                 <Button
                                     variant="secondary"
                                     size="medium"
                                     text="No, go back"
                                     onClick={handleBack}
+                                    className="flex-1"
                                 />
                                 <Button
                                     variant="primary"
@@ -516,8 +508,9 @@ export default function CreatePackage() {
                                     text={isPublishing ? 'Publishing...' : 'Yes, publish package'}
                                     onClick={handlePublishPackage}
                                     disabled={isPublishing}
+                                    className="flex-1"
                                 />
-                            </div>
+                </div>
                 </div>
                     </>
                 ) : null}

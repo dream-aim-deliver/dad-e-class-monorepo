@@ -136,8 +136,8 @@ export function PackagePreviewStep({
 
             {/* Flexible Section using PackageCourseSelector */}
             <PackageCourseSelector
-                title="Flexibel"
-                description="Wähle nur die Leistungen aus, die du wirklich für deinen Erfolg benötigst."
+                title="Flexible"
+                description="Choose only the services you really need for your success."
                 coachingIncluded={coachingIncluded}
                 pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: Math.max(selectedCoursesTotal - selectedCoursesSavings, 0) }}
                 onClickCheckbox={onToggleCoaching}
