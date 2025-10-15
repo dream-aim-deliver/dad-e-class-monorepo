@@ -1635,6 +1635,10 @@ export const DE: TDictionary = {
       sortWorst: "Schlechteste zuerst",
       activeFilters: "Aktive Filter:",
       clearFilters: "Alle löschen",
+      errorTitle: "Bewertungen konnten nicht geladen werden",
+      errorDescription: "Beim Laden deiner Bewertungen ist ein Fehler aufgetreten. Bitte aktualisiere die Seite oder wende dich an den Support, falls das Problem weiterhin besteht.",
+      accessDeniedError: "Zugriff verweigert. Nur Coaches und Kursersteller können auf diese Seite zugreifen.",
+      failedPrefetch: "Vorabruf der Coach-Bewertungen fehlgeschlagen, wird auf dem Client abgerufen:",
     },
     manageOffersPage: {
       title: 'Angebote-Seite verwalten',

@@ -1632,6 +1632,10 @@ export const EN: TDictionary = {
       sortWorst: "Worst first",
       activeFilters: "Active filters:",
       clearFilters: "Clear all",
+      errorTitle: "Unable to load reviews",
+      errorDescription: "We encountered an error while loading your reviews. Please try refreshing the page or contact support if the problem persists.",
+      accessDeniedError: "Access denied. Only coaches and course creators can access this page.",
+      failedPrefetch: "Failed to prefetch coach reviews, will fetch on client:",
     },
     manageOffersPage: {
       title: 'Manage Offers Page',

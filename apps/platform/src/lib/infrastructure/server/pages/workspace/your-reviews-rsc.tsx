@@ -11,24 +11,44 @@ import { redirect } from 'next/navigation';
 import getSession from '../../config/auth/get-session';
 import YourReviews from '../../../client/pages/workspace/your-reviews';
 import { HydrateClient, prefetch, trpc } from '../../config/trpc/cms-server';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 
-export default async function YourReviewsServerComponent() {
+
+export default async function YourReviewsServerComponent({ locale }: { locale: TLocale }) {
     const session = await getSession();
 
-    if (!session || !session.user || !session.user.name || !session.user.roles) {
+    if (
+        !session ||
+        !session.user ||
+        !session.user.name ||
+        !session.user.roles
+    ) {
         redirect('/auth/login');
     }
 
     const roles = session.user.roles;
 
+    const dictionary = getDictionary(locale).pages.yourReviews;
+
+    const isCoachOrCourseCreator = roles && roles.includes('coach');
+
+    if (!isCoachOrCourseCreator) {
+        throw new Error(dictionary.accessDeniedError);
+    }
+
     // Prefetch coach reviews data
-    await Promise.all([
-        prefetch(
-            trpc.listCoachReviews.queryOptions({
-                coachUsername: session.user.name,
-            }),
-        ),
-    ]);
+    // If authentication fails on server-side, client will fetch instead
+    try {
+        await Promise.all([
+            prefetch(
+                trpc.listCoachReviews.queryOptions({
+                    coachUsername: session.user.name,
+                }),
+            ),
+        ]);
+    } catch (error) {
+        console.warn(dictionary.failedPrefetch, error);
+    }
 
     return (
         <>

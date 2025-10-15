@@ -49,6 +49,7 @@ export default function YourReviews({ roles }: YourReviewsProps) {
     const sessionDTO = useSession();
     const session = sessionDTO.data;
     const isLoggedIn = !!session;
+    const isCoach = roles.includes('coach');
 
     // Filter and sort states
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -64,21 +65,12 @@ export default function YourReviews({ roles }: YourReviewsProps) {
         viewModels.TListCoachReviewsViewModel | undefined
     >(undefined);
 
-    const { presenter } = useListCoachReviewsPresenter(
-        setCoachReviewsViewModel,
-    );
+	const { presenter: coachReviewsPresenter } = useListCoachReviewsPresenter(
+		setCoachReviewsViewModel,
+	);
 
-    // Present the data when response is available
-    useEffect(() => {
-        if (coachReviewsResponse && presenter) {
-            // tRPC returns nested response structure, unwrap the inner response
-            const innerResponse = (coachReviewsResponse as any).data || coachReviewsResponse;
-            presenter.present(
-                innerResponse,
-                coachReviewsViewModel,
-            );
-        }
-    }, [coachReviewsResponse, presenter, coachReviewsViewModel]);
+	// @ts-ignore
+	coachReviewsPresenter.present(coachReviewsResponse, coachReviewsViewModel);
 
     // Loading state
     if (!coachReviewsViewModel) {
@@ -266,6 +258,7 @@ export default function YourReviews({ roles }: YourReviewsProps) {
                                 showCloseButton={false}
                                 closeOnOverlayClick={true}
                                 closeOnEscape={true}
+                                className="mt-10"
                             >
                                 <DialogBody>
                                     <ReviewFilterModal
@@ -293,17 +286,17 @@ export default function YourReviews({ roles }: YourReviewsProps) {
                 <CardListLayout>
                     {sortedAndFilteredReviews.map((review: any, index: number) => (
                         <CoachReviewCard
-                            key={review.id || index}
+                            key={review.id }
                             locale={locale}
-                            rating={review.rating || 0}
-                            reviewerName={review.reviewerName || review.studentName || 'Anonymous'}
+                            rating={review.rating}
+                            reviewerName={review.reviewerName || review.studentName}
                             reviewerAvatar={review.reviewerAvatar || review.studentAvatar}
-                            reviewText={review.reviewText || review.comment || ''}
-                            workshopTitle={review.workshopTitle || review.sessionTitle || ''}
+                            reviewText={review.reviewText || review.comment}
+                            workshopTitle={review.workshopTitle || review.sessionTitle}
                             date={review.date ? new Date(review.date) : new Date()}
-                            time={review.time || ''}
-                            courseTitle={review.courseTitle || review.courseName || ''}
-                            courseImage={review.courseImage || review.courseImageUrl || ''}
+                            time={review.time}
+                            courseTitle={review.courseTitle || review.courseName}
+                            courseImage={review.courseImage || review.courseImageUrl}
                         />
                     ))}
                 </CardListLayout>
