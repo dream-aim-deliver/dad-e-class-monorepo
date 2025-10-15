@@ -36,6 +36,9 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     const session = sessionDTO.data;
     const isLoggedIn = !!session;
 
+    // Add state for error message
+    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+
     // State for course status
     const [courseStatusResponse] = trpc.getCourseStatus.useSuspenseQuery({
         courseSlug: slug,
@@ -74,8 +77,22 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     type ModalState = 'completion' | 'review-form' | 'review-thank-you' | 'none';
     const [modalState, setModalState] = useState<ModalState>('none');
 
-    // TRPC mutation for creating review
-    const createReviewMutation = trpc.createCourseReview.useMutation();
+    // TRPC mutation for creating review with proper callbacks
+    const createReviewMutation = trpc.createCourseReview.useMutation({
+        onMutate: () => {
+            setErrorMessage(undefined);
+        },
+        onSuccess: (data) => {
+            setErrorMessage(undefined);
+            // @ts-ignore
+            courseReviewPresenter.present(data, courseReviewViewModel);
+            // Switch to thank you state
+            setModalState('review-thank-you');
+        },
+        onError: (error) => {
+            setErrorMessage(error.message);
+        }
+    });
 
     // Check if course is completed and show modal
     useEffect(() => {
@@ -123,15 +140,6 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
             review,
         });
     };
-
-    useEffect(() => {
-        if (createReviewMutation.data) {
-            // @ts-ignore
-            courseReviewPresenter.present(createReviewMutation.data, courseReviewViewModel);
-            // Switch to thank you state
-            setModalState('review-thank-you');
-        }
-    }, [createReviewMutation.data]);
 
     const handleSkipReview = () => {
         setModalState('none');
@@ -181,6 +189,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                     locale={locale}
                     isLoading={createReviewMutation.isPending}
                     isError={createReviewMutation.isError}
+                    errorMessage={errorMessage}
                     submitted={modalState === 'review-thank-you'}
                     isOpen={modalState === 'review-form' || modalState === 'review-thank-you'}
                     onOpenChange={(open) => {
