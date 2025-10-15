@@ -94,3 +94,5 @@ export * from './list-group-coaching-session-reviews-view-model';
 export * from './list-group-coaching-sessions-view-model';
 export * from './register-coach-to-group-view-model';
 export * from './list-course-groups-view-model';
+
+export * from './student-coaching-session-view-model';
