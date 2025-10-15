@@ -19,16 +19,22 @@ import {
     MonthlyCoachCalendarWrapper,
     WeeklyCoachCalendarWrapper,
 } from '../common/coach-calendar-wrappers';
+import { useGetStudentCoachingSessionPresenter } from '../../hooks/use-student-coaching-session-presenter';
 
 interface BookCoachPageProps {
     coachUsername: string;
     sessionId?: number;
 }
 
-export default function BookCoachPage({
+interface BookCoachPageContentProps {
+    coachUsername: string;
+    defaultSession: ScheduledOffering | null;
+}
+
+function BookCoachPageContent({
     coachUsername,
-    sessionId,
-}: BookCoachPageProps) {
+    defaultSession,
+}: BookCoachPageContentProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
 
@@ -42,16 +48,6 @@ export default function BookCoachPage({
     presenter.present(coachAvailabilityResponse, coachAvailabilityViewModel);
 
     const [currentDate, setCurrentDate] = useState(new Date());
-    const defaultSession = useMemo<ScheduledOffering | null>(() => {
-        if (!sessionId) return null;
-        return {
-            session: {
-                id: sessionId,
-                name: 'Test Session',
-                duration: 50,
-            },
-        };
-    }, [sessionId]);
     const [newSession, setNewSession] = useState<ScheduledOffering | null>(
         defaultSession,
     );
@@ -190,4 +186,74 @@ export default function BookCoachPage({
             </div>
         </>
     );
+}
+
+interface BookCoachWithSessionPageProps {
+    coachUsername: string;
+    sessionId: number;
+}
+
+function BookCoachWithSessionPage({
+    coachUsername,
+    sessionId,
+}: BookCoachWithSessionPageProps) {
+    const locale = useLocale() as TLocale;
+
+    const [coachingSessionResponse] =
+        trpc.getStudentCoachingSession.useSuspenseQuery({ id: sessionId });
+    const [coachingSessionViewModel, setCoachingSessionViewModel] = useState<
+        viewModels.TStudentCoachingSessionViewModel | undefined
+    >(undefined);
+    const { presenter } = useGetStudentCoachingSessionPresenter(
+        setCoachingSessionViewModel,
+    );
+    presenter.present(coachingSessionResponse, coachingSessionViewModel);
+
+    if (!coachingSessionViewModel) {
+        return <DefaultLoading locale={locale} />;
+    }
+
+    if (coachingSessionViewModel.mode !== 'default') {
+        return <DefaultError locale={locale} />;
+    }
+
+    const coachingSession = coachingSessionViewModel.data;
+    const defaultSession: ScheduledOffering = {
+        session: {
+            id: coachingSession.session.id,
+            name: coachingSession.session.coachingOfferingTitle,
+            duration: coachingSession.session.coachingOfferingDuration,
+        },
+    };
+
+    return (
+        <div className="flex flex-col gap-4">
+            <div className="bg-card-stroke rounded-md border border-neutral-700 p-4 w-full">
+                <span className="text-text-secondary">Session: </span>
+                <span className="font-bold text-text-primary">
+                    {coachingSession.session.coachingOfferingTitle} ({coachingSession.session.coachingOfferingDuration} minutes)
+                </span>
+            </div>
+            <BookCoachPageContent
+                coachUsername={coachUsername}
+                defaultSession={defaultSession}
+            />
+        </div>
+    );
+}
+
+export default function BookCoachPage({
+    coachUsername,
+    sessionId,
+}: BookCoachPageProps) {
+    if (sessionId) {
+        return (
+            <BookCoachWithSessionPage
+                coachUsername={coachUsername}
+                sessionId={sessionId}
+            />
+        );
+    }
+
+    return <BookCoachPage coachUsername={coachUsername} />;
 }
