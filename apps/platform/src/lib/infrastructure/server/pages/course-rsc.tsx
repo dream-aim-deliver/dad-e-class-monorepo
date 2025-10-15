@@ -51,7 +51,7 @@ export default async function CourseServerComponent({
     const currentRole = role ?? highestRoleParsed;
     validateRoleAccess(currentRole, roles);
 
-    if (shouldShowAssessment(currentRole, isAssessmentCompleted)) {
+    if (shouldShowAssessment(currentRole, isAssessmentCompleted ?? false)) {
         return renderAssessmentForm(slug);
     }
 
@@ -63,18 +63,19 @@ export default async function CourseServerComponent({
 
 async function fetchCourseAccess(
     slug: string,
-): Promise<viewModels.TCourseAccessViewModel> {
-    const queryOptions = trpcMock.getCourseAccess.queryOptions({
+): Promise<viewModels.TGetCourseAccessViewModel> {
+    const queryOptions = trpc.getCourseAccess.queryOptions({
         courseSlug: slug,
     });
     const queryClient = getQueryClient();
     const courseAccessResponse = await queryClient.fetchQuery(queryOptions);
 
-    let courseAccessViewModel: viewModels.TCourseAccessViewModel | undefined;
+    let courseAccessViewModel: viewModels.TGetCourseAccessViewModel | undefined;
     const presenter = createGetCourseAccessPresenter((viewModel) => {
         courseAccessViewModel = viewModel;
     });
 
+    // @ts-ignore
     await presenter.present(courseAccessResponse, courseAccessViewModel);
 
     if (!courseAccessViewModel) {
@@ -85,7 +86,7 @@ async function fetchCourseAccess(
 }
 
 function handleAccessModes(
-    courseAccessViewModel: viewModels.TCourseAccessViewModel,
+    courseAccessViewModel: viewModels.TGetCourseAccessViewModel,
 ): void {
     switch (courseAccessViewModel.mode) {
         case 'not-found':
@@ -160,6 +161,11 @@ async function prefetchIntroductionData(
             ),
             prefetchMock(
                 trpcMock.listIncludedCoachingSessions.queryOptions({
+                    courseSlug: slug,
+                }),
+            ),
+            prefetch(
+                trpc.getCourseStatus.queryOptions({
                     courseSlug: slug,
                 }),
             ),

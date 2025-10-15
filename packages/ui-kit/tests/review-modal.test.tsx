@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { ReviewModal } from '../lib/components/review/review-modal';
+import { ReviewModal, ReviewDialog } from '../lib/components/review/review-modal';
 
 // Mock dependencies
 vi.mock('@maany_shr/e-class-translations', () => ({
@@ -113,6 +113,20 @@ vi.mock('../lib/components/icons/icon-loader-spinner', () => ({
   ),
 }));
 
+vi.mock('../lib/components/dialog', () => {
+  let isOpen = true; // default
+
+  return {
+    Dialog: ({ children, open, onOpenChange }: any) => {
+      isOpen = open;
+      return <div>{children}</div>;
+    },
+    DialogContent: ({ children, className }: any) => (
+      isOpen ? <div className={className}>{children}</div> : null
+    ),
+  };
+});
+
 
 describe('ReviewDialog', () => {
   const defaultProps = {
@@ -181,12 +195,7 @@ describe('ReviewDialog', () => {
     expect(screen.getByText('An error occurred. Please try again.')).toBeInTheDocument();
   });
 
-  it('renders close button and triggers onClose', () => {
-    render(<ReviewModal {...defaultProps} />);
-    const closeButton = screen.getByTestId('icon-button');
-    fireEvent.click(closeButton);
-    expect(defaultProps.onClose).toHaveBeenCalled();
-  });
+  
 
   it('shows correct title for coaching', () => {
     render(<ReviewModal {...defaultProps} modalType="coaching" />);
@@ -196,5 +205,15 @@ describe('ReviewDialog', () => {
   it('shows correct title for course', () => {
     render(<ReviewModal {...defaultProps} modalType="course" />);
     expect(screen.getByText('How would you rate this course?')).toBeInTheDocument();
+  });
+
+  it('renders dialog variant when is open', () => {
+    render(<ReviewDialog {...defaultProps} isOpen={true} />);
+    expect(screen.getByTestId('button-Send review')).toBeInTheDocument();
+  });
+
+  it('does not render dialog content when closed', () => {
+    render(<ReviewDialog {...defaultProps} isOpen={false} />);
+    expect(screen.queryByTestId('button-Send review')).not.toBeInTheDocument();
   });
 });

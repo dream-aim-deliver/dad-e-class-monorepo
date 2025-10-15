@@ -48,6 +48,12 @@ const meta: Meta<typeof ReviewModal> = {
       description:
         'Indicates if the form has been successfully submitted, showing the success view.',
     },
+    variant: {
+      control: 'select',
+      options: ['card', 'dialog'],
+      description:
+        'The variant of the modal: card (default div-based) or dialog (with overlay).',
+    },
     onClose: {
       action: 'dialog-closed',
       description: 'Callback triggered when the dialog is closed.',
@@ -86,6 +92,7 @@ export const DefaultForm: Story = {
           args={{
             ...context.args,
             ...({} as CoachingReviewProps),
+            variant: 'card',
             isLoading,
             isError,
             submitted,
@@ -110,6 +117,7 @@ export const DefaultForm: Story = {
   args: {
     locale: 'en',
     modalType: 'coaching',
+    variant: 'card',
     onClose: () => {
       alert('Close button clicked');
       console.log('Dialog Closed');
@@ -130,7 +138,7 @@ export const DefaultForm: Story = {
   },
 };
 
-export const courseModal: Story = {
+export const lessonModal: Story = {
   decorators: [
     (Story, context) => {
       const [isLoading, setIsLoading] = React.useState(false);
@@ -141,20 +149,21 @@ export const courseModal: Story = {
         <Story
           args={{
             ...context.args,
-            ...({} as CourseCourseReviewProps),
+            ...({} as CoachingReviewProps),
+            variant: 'card',
             isLoading,
             isError,
             submitted,
-            onSubmit: async (rating, review) => {
+            onSubmit: async (rating, review, neededMoreTime) => {
               setIsLoading(true);
               setTimeout(() => {
                 setIsLoading(false);
                 setSubmitted(true); // Set submitted to true for success
                 alert(
-                  `Review Submitted Successfully: Rating=${rating}, Review="${review}"`,
+                  `Review Submitted Successfully: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
                 );
                 console.log(
-                  `Review Submitted: Rating=${rating}, Review="${review}"`,
+                  `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
                 );
               }, 1000);
             },
@@ -165,7 +174,8 @@ export const courseModal: Story = {
   ],
   args: {
     locale: 'en',
-    modalType: 'course',
+    modalType: 'coaching',
+    variant: 'card',
     onClose: () => {
       alert('Close button clicked');
       console.log('Dialog Closed');
@@ -179,7 +189,7 @@ export const courseModal: Story = {
     docs: {
       description: {
         story:
-          'The ReviewDialog in its form state (English) for course modal type, allowing users to rate, write a review, check "Did you need more time?", submit, skip, or close. On successful submission, it shows the success view after a 1-second loading state. Alerts show the submitted data, skip action, and close action.',
+          'The ReviewDialog in its form state (English) for coaching modal type, allowing users to rate, write a review, check "Did you need more time?", submit, skip, or close. On successful submission, it shows the success view after a 1-second loading state. Alerts show the submitted data, skip action, and close action.',
       },
     },
   },
@@ -197,7 +207,7 @@ export const DefaultFormGerman: Story = {
       console.log(
         `Bewertung eingereicht: Bewertung=${rating}, Rezension="${review}"`,
       );
-    }
+    },
   },
   decorators: DefaultForm.decorators, // Reuse the same decorator
   parameters: {
@@ -278,10 +288,12 @@ export const ErrorState: Story = {
     isLoading: false,
     isError: true,
     submitted: false,
+
     onClose: () => {
       alert('Close button clicked');
       console.log('Dialog Closed');
     },
+
     onSubmit: (rating, review, neededMoreTime) => {
       alert(
         `Review Submitted (Simulated Error): Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
@@ -290,10 +302,13 @@ export const ErrorState: Story = {
         `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
       );
     },
+
     onSkip: () => {
       alert('Skip button clicked');
       console.log('Review Skipped');
     },
+
+    variant: 'card',
   },
   parameters: {
     docs: {
@@ -398,12 +413,123 @@ export const ErrorStateWithPreservedData: Story = {
   args: {
     locale: 'en',
     modalType: 'coaching',
+    variant: 'card',
   },
   parameters: {
     docs: {
       description: {
         story:
           'The ReviewDialog with a simulated error on submission. When the user submits the form, it enters a loading state for 1 second, then shows an error state in the form view. User inputs (rating, review, neededMoreTime) are preserved, and the success view is not shown. Alerts show the attempted submission data, skip action, and close action.',
+      },
+    },
+  },
+};
+
+// Dialog variant stories
+export const DialogForm: Story = {
+  decorators: [
+    (Story, context) => {
+      const [isOpen, setIsOpen] = React.useState(true);
+      const [isLoading, setIsLoading] = React.useState(false);
+      const [isError, setIsError] = React.useState(false);
+      const [submitted, setSubmitted] = React.useState(false);
+
+      return (
+        <Story
+          args={{
+            ...context.args,
+            ...({} as CoachingReviewProps),
+            variant: 'dialog',
+            isOpen,
+            onOpenChange: setIsOpen,
+            isLoading,
+            isError,
+            submitted,
+            onSubmit: (rating, review, neededMoreTime) => {
+              setIsLoading(true);
+              setTimeout(() => {
+                setIsLoading(false);
+                setSubmitted(true);
+                alert(
+                  `Review Submitted Successfully: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
+                );
+                console.log(
+                  `Review Submitted: Rating=${rating}, Review="${review}", Needed More Time=${neededMoreTime}`,
+                );
+              }, 1000);
+            },
+            onClose: () => {
+              setIsOpen(false);
+              alert('Close button clicked');
+              console.log('Dialog Closed');
+            },
+            onSkip: () => {
+              setIsOpen(false);
+              alert('Skip button clicked');
+              console.log('Review Skipped');
+            },
+          }}
+        />
+      );
+    },
+  ],
+  args: {
+    locale: 'en',
+    modalType: 'coaching',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The ReviewModal in dialog variant with form state. Uses Dialog component with overlay, escape key, and overlay click to close. On successful submission, shows success view after loading.',
+      },
+    },
+  },
+};
+
+export const DialogSuccess: Story = {
+  decorators: [
+    (Story, context) => {
+      const [isOpen, setIsOpen] = React.useState(true);
+
+      return (
+        <Story
+          args={{
+            ...context.args,
+            ...({} as CourseCourseReviewProps),
+            variant: 'dialog',
+            isOpen,
+            onOpenChange: setIsOpen,
+            submitted: true,
+            onClose: () => {
+              setIsOpen(false);
+              alert('Close button clicked');
+              console.log('Dialog Closed');
+            },
+            onSubmit: (rating, review) => {
+              console.log(
+                `Review Submitted: Rating=${rating}, Review="${review}"`,
+              );
+            },
+            onSkip: () => {
+              setIsOpen(false);
+              alert('Skip button clicked');
+              console.log('Review Skipped');
+            },
+          }}
+        />
+      );
+    },
+  ],
+  args: {
+    locale: 'en',
+    modalType: 'course',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The ReviewModal in dialog variant with success state. Shows the thank you message with review and stars. Can be closed via overlay click, escape, or close button.',
       },
     },
   },

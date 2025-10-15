@@ -16,7 +16,7 @@ import {
     DefaultError,
     DefaultNotFound,
     CourseCompletionModal,
-    Button,
+    ReviewDialog,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -25,14 +25,19 @@ import { useSession } from 'next-auth/react';
 
 interface CourseCompletionProps {
     slug: string;
+    courseImage: string;
+    courseTitle: string;
 }
 
-export default function CourseCompletion({ slug }: CourseCompletionProps) {
+export default function CourseCompletion({ slug, courseImage, courseTitle }: CourseCompletionProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const sessionDTO = useSession();
     const session = sessionDTO.data;
     const isLoggedIn = !!session;
+
+    // Add state for error message
+    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
     // State for course status
     const [courseStatusResponse] = trpc.getCourseStatus.useSuspenseQuery({
@@ -60,12 +65,7 @@ export default function CourseCompletion({ slug }: CourseCompletionProps) {
         useGetCourseCertificateDataPresenter(setCertificateDataViewModel);
 
     // @ts-ignore
-    presenter.present(
-        certificateDataResponse,
-        certificateDataViewModel,
-    );
-
-    // State for course review
+    certificateDataPresenter.present(certificateDataResponse, certificateDataViewModel);    // State for course review
     const [courseReviewViewModel, setCourseReviewViewModel] = useState<
         viewModels.TCreateCourseReviewViewModel | undefined
     >(undefined);
@@ -74,10 +74,25 @@ export default function CourseCompletion({ slug }: CourseCompletionProps) {
     );
 
     // Course completion modal state
-    const [showCompletionModal, setShowCompletionModal] = useState(false);
+    type ModalState = 'completion' | 'review-form' | 'review-thank-you' | 'none';
+    const [modalState, setModalState] = useState<ModalState>('none');
 
-    // TRPC mutation for creating review
-    const createReviewMutation = trpc.createCourseReview.useMutation();
+    // TRPC mutation for creating review with proper callbacks
+    const createReviewMutation = trpc.createCourseReview.useMutation({
+        onMutate: () => {
+            setErrorMessage(undefined);
+        },
+        onSuccess: (data) => {
+            setErrorMessage(undefined);
+            // @ts-ignore
+            courseReviewPresenter.present(data, courseReviewViewModel);
+            // Switch to thank you state
+            setModalState('review-thank-you');
+        },
+        onError: (error) => {
+            setErrorMessage(error.message);
+        }
+    });
 
     // Check if course is completed and show modal
     useEffect(() => {
@@ -85,7 +100,7 @@ export default function CourseCompletion({ slug }: CourseCompletionProps) {
             const isCompleted =
                 courseStatusViewModel.data?.courseStatus.status === 'completed';
             if (isCompleted) {
-                setShowCompletionModal(true);
+                setModalState('completion');
             }
         }
     }, [courseStatusViewModel]);
@@ -96,6 +111,39 @@ export default function CourseCompletion({ slug }: CourseCompletionProps) {
             router.push('/login');
         }
     }, [isLoggedIn, router]);
+
+    // Handle download certificate
+    const handleDownloadCertificate = () => {
+        if (certificateDataViewModel?.mode === 'default') {
+            const data = certificateDataViewModel.data;
+        }
+    };
+
+    // Handle rate course
+    const handleRateCourse = () => {
+        setModalState('review-form');
+    };
+
+    // Handle modal close
+    const handleCloseCompletionModal = () => {
+        setModalState('none');
+    };
+
+    const handleCloseReviewModal = () => {
+        setModalState('none');
+    };
+
+    const handleSubmitReview = (rating: number, review: string) => {
+        createReviewMutation.mutate({
+            courseSlug: slug,
+            rating,
+            review,
+        });
+    };
+
+    const handleSkipReview = () => {
+        setModalState('none');
+    };
 
     // Loading state using discovered patterns
     if (!courseStatusViewModel || !certificateDataViewModel) {
@@ -117,32 +165,40 @@ export default function CourseCompletion({ slug }: CourseCompletionProps) {
     const courseStatusData = courseStatusViewModel.data;
     const certificateData = certificateDataViewModel.data;
 
-
-    // Handle download certificate
-    const handleDownloadCertificate = () => {
-        // TODO: Implement certificate download functionality
-        // This could trigger a PDF generation, open a new tab, or download a file
-        // For now, we'll navigate to a certificate page or trigger a download
-        console.log('Download certificate for course:', slug);
-        // Example: window.open(`/certificates/${slug}`, '_blank');
-    };
-
-    // Handle rate course
-    const handleRateCourse = () => {
-        // TODO: Implement rating UI - this could navigate to a review page
-        // or open a rating modal
-        router.push(`/courses/${slug}/review`);
-    };
-
-    // Handle modal close
-    const handleCloseModal = () => {
-        setShowCompletionModal(false);
-    };
-
     return (
-        <div className="flex flex-col space-y-5 px-30">
-                <h1>Title</h1>
-
-        </div>
+        <>
+            {modalState === 'completion' && courseStatusData && certificateData && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <CourseCompletionModal
+                        courseImage={courseImage}
+                        courseTitle={courseTitle}
+                        completionDate={courseStatusData.courseStatus.status === 'completed' ? courseStatusData.courseStatus.completionDate : new Date().toISOString()}
+                        onClickDownloadCertificate={handleDownloadCertificate}
+                        onClickRateCourse={handleRateCourse}
+                        onClose={handleCloseCompletionModal}
+                        locale={locale}
+                    />
+                </div>
+            )}
+            {(modalState === 'review-form' || modalState === 'review-thank-you') && (
+                <ReviewDialog
+                    onClose={handleCloseReviewModal}
+                    modalType="course"
+                    onSubmit={handleSubmitReview}
+                    onSkip={handleSkipReview}
+                    locale={locale}
+                    isLoading={createReviewMutation.isPending}
+                    isError={createReviewMutation.isError}
+                    errorMessage={errorMessage}
+                    submitted={modalState === 'review-thank-you'}
+                    isOpen={modalState === 'review-form' || modalState === 'review-thank-you'}
+                    onOpenChange={(open) => {
+                        if (!open) {
+                            setModalState('none');
+                        }
+                    }}
+                />
+            )}
+        </>
     );
 }
