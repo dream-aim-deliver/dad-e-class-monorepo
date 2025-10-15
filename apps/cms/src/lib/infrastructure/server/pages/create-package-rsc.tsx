@@ -8,16 +8,15 @@
 // UI Components: 9 components linked (see Notion)
 // Comments: createPackage creates package in draft state; publishPackage puts it in published state
 
-import { HydrateClient } from '../config/trpc/cms-server';
-import { Suspense } from 'react';
-import { DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import CreatePackage from '../../client/pages/create-package';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { Suspense } from 'react';
+import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
+import { HydrateClient, prefetch, getServerTRPC } from '../config/trpc/cms-server';
 
 interface CreatePackageServerComponentProps {
-    locale: TLocale;
     platformSlug: string;
     platformLocale: string;
+    locale: string;
 }
 
 export default async function CreatePackageServerComponent(
@@ -28,24 +27,22 @@ export default async function CreatePackageServerComponent(
     // const session = await getServerSession();
     // Verify user has CMS permissions
 
+    const trpc = getServerTRPC({
+        platform_slug: props.platformSlug,
+        platform_locale: props.platformLocale,
+    });
+
+    // Prefetch data needed by the client page
+    await Promise.all([
+        prefetch(trpc.getPlatformLanguage.queryOptions({})),
+        prefetch(trpc.listCourses.queryOptions({ pagination: { page: 1, pageSize: 50 } })),
+    ]);
+
     return (
-        <>
-            <HydrateClient>
-                <Suspense
-                    fallback={
-                        <DefaultLoading
-                            locale={props.locale}
-                            variant="minimal"
-                        />
-                    }
-                >
-                    <CreatePackage
-                        locale={props.locale}
-                        platformSlug={props.platformSlug}
-                        platformLocale={props.platformLocale}
-                    />
-                </Suspense>
-            </HydrateClient>
-        </>
+        <HydrateClient>
+            <Suspense fallback={<DefaultLoadingWrapper />}>
+                <CreatePackage/>
+            </Suspense>
+        </HydrateClient>
     );
 }

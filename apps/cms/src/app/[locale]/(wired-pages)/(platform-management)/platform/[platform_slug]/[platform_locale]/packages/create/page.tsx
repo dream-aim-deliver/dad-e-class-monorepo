@@ -12,14 +12,17 @@ import { Suspense } from 'react';
 
 export default async function CreatePackagePage({
     params: paramsPromise,
+    searchParams: searchParamsPromise,
 }: {
     params: Promise<{
         locale: TLocale;
         platform_slug: string;
         platform_locale: string;
     }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const params = await paramsPromise;
+	await searchParamsPromise;
 
     return (
         <Suspense fallback={<DefaultLoadingWrapper />}>
