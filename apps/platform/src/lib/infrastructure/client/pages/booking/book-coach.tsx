@@ -218,6 +218,17 @@ function BookCoachWithSessionPage({
     }
 
     const coachingSession = coachingSessionViewModel.data;
+
+    if (coachingSession.session.status !== 'unscheduled') {
+        return (
+            <DefaultError
+                locale={locale}
+                title="Invalid request"
+                description="This coaching session has been scheduled"
+            />
+        );
+    }
+
     const defaultSession: ScheduledOffering = {
         session: {
             id: coachingSession.session.id,
@@ -231,7 +242,8 @@ function BookCoachWithSessionPage({
             <div className="bg-card-stroke rounded-md border border-neutral-700 p-4 w-full">
                 <span className="text-text-secondary">Session: </span>
                 <span className="font-bold text-text-primary">
-                    {coachingSession.session.coachingOfferingTitle} ({coachingSession.session.coachingOfferingDuration} minutes)
+                    {coachingSession.session.coachingOfferingTitle} (
+                    {coachingSession.session.coachingOfferingDuration} minutes)
                 </span>
             </div>
             <BookCoachPageContent
