@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { StudentCourseTab } from '../../../utils/course-tabs';
 import { trpc } from '../../../trpc/cms-client';
+import { useGetCourseCertificateDataPresenter } from '../../../hooks/use-get-course-certificate-data-presenter';
 
 interface EnrolledCourseHeadingProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
@@ -42,8 +43,29 @@ export default function EnrolledCourseHeading({
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const createReviewMutation = trpc.createCourseReview.useMutation();
-    
-    
+
+    // State for certificate data
+    const [certificateDataResponse] = trpc.getCourseCertificateData.useSuspenseQuery({
+        courseSlug: courseSlug,
+    });
+    const [certificateDataViewModel, setCertificateDataViewModel] = useState<
+        viewModels.TGetCourseCertificateDataViewModel | undefined
+    >(undefined);
+    const { presenter: certificateDataPresenter } = useGetCourseCertificateDataPresenter(
+        setCertificateDataViewModel
+    );
+
+    // @ts-ignore
+    certificateDataPresenter.present(certificateDataResponse, certificateDataViewModel);
+
+    // Handle download certificate
+    const handleDownloadCertificate = () => {
+        if (certificateDataViewModel?.mode === 'default') {
+            const data = certificateDataViewModel.data;
+        }
+    };
+
+
     const handleReviewSubmit = (rating: number, review: string) => {
         createReviewMutation.mutate({
             courseSlug,
@@ -54,7 +76,7 @@ export default function EnrolledCourseHeading({
 
 
     const renderProgress = () => {
-        if (!isCompleted) {
+        if (isCompleted) {
             return (
                 <div className="w-full flex flex-col md:flex-row justify-between items-start space-y-6 gap-6">
                     {/* Left side: Review component */}
@@ -80,15 +102,13 @@ export default function EnrolledCourseHeading({
                             text={courseTranslations(
                                 'completedPanel.downloadCertificate',
                             )}
-                            onClick={() => {
-                                // TODO: Implement certificate download functionality
-                            }}
+                            onClick={handleDownloadCertificate}
                         />
                     </div>
                 </div>
             );
         }
-    
+
         return null;
     };
 
@@ -145,20 +165,20 @@ export default function EnrolledCourseHeading({
             <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                 <div className="flex-1 flex items-end gap-4 justify-between">
                     <div className="flex flex-col gap-4">
-                    <h1 className="text-left"> {courseViewModel.data.title} </h1>
-                     <div className="flex space-x-2 items-center">
-                    <StarRating
-                        totalStars={5}
-                        rating={courseViewModel.data.averageRating}
-                    />
-                    <span className="text-text-primary">
-                        {courseViewModel.data.averageRating}
-                    </span>
-                    <span className="text-sm text-text-secondary">
-                        ({courseViewModel.data.reviewCount})
-                    </span>
+                        <h1 className="text-left"> {courseViewModel.data.title} </h1>
+                        <div className="flex space-x-2 items-center">
+                            <StarRating
+                                totalStars={5}
+                                rating={courseViewModel.data.averageRating}
+                            />
+                            <span className="text-text-primary">
+                                {courseViewModel.data.averageRating}
+                            </span>
+                            <span className="text-sm text-text-secondary">
+                                ({courseViewModel.data.reviewCount})
+                            </span>
+                        </div>
                     </div>
-                </div>
                     {!isCompleted ? (
                         <Badge
                             className="w-fit"
@@ -204,28 +224,28 @@ export default function EnrolledCourseHeading({
                 </div>
             </div>
 
-            
+
             <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-            
-                    <div className="w-full">
-                        {renderProgress()}
-                        {roleOptions.length > 1 && (
-                            <div className="flex space-x-3 items-center justify-end mt-4">
-                                <span className="text-text-secondary">
-                                    {courseTranslations('roleDropdown.viewAs')}
-                                </span>
-                                <Dropdown
-                                    type="simple"
-                                    className="w-fit"
-                                    options={roleOptions}
-                                    defaultValue={currentRole}
-                                    text={{}}
-                                    onSelectionChange={onRoleChange}
-                                />
-                            </div>
-                        )}
-                    </div>
-            
+
+                <div className="w-full">
+                    {renderProgress()}
+                    {roleOptions.length > 1 && (
+                        <div className="flex space-x-3 items-center justify-end mt-4">
+                            <span className="text-text-secondary">
+                                {courseTranslations('roleDropdown.viewAs')}
+                            </span>
+                            <Dropdown
+                                type="simple"
+                                className="w-fit"
+                                options={roleOptions}
+                                defaultValue={currentRole}
+                                text={{}}
+                                onSelectionChange={onRoleChange}
+                            />
+                        </div>
+                    )}
+                </div>
+
             </div>
         </div>
     );
