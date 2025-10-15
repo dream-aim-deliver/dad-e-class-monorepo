@@ -461,7 +461,7 @@ function CoachingSessionComponent({
     const getProgressContent = () => {
         if (!element.progress) {
             return (
-                <span>Your course plan doesn't include coaching sessions</span>
+                <span className="text-text-secondary">Your course plan doesn't include coaching sessions.</span>
             );
         }
         if (element.progress.session.status === 'unscheduled') {
