@@ -3,14 +3,20 @@
 // TSK: TSK-1451
 
 import YourReviewsServerComponent from '../../../../../lib/infrastructure/server/pages/workspace/your-reviews-rsc';
+import { TLocale } from '@maany_shr/e-class-translations';
 
 export default async function YourReviewsPage({
+    params: paramsPromise,
     searchParams: searchParamsPromise,
 }: {
+    params: Promise<{ locale: TLocale }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+    const params = await paramsPromise;
     const searchParams = await searchParamsPromise;
     // TODO: handle searchParams if needed
 
-    return <YourReviewsServerComponent />;
+    const { locale } = params;
+
+    return <YourReviewsServerComponent locale={locale} />;
 }

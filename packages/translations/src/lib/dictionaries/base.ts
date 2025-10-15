@@ -1597,6 +1597,10 @@ export const DictionarySchema = z.object({
       sortWorst: z.string(),
       activeFilters: z.string(),
       clearFilters: z.string(),
+      errorTitle: z.string(),
+      errorDescription: z.string(),
+      accessDeniedError: z.string(),
+      failedPrefetch: z.string(),
     }),
   }),
 });
