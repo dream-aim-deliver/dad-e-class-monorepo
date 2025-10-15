@@ -6,6 +6,7 @@ import {
     InputField,
     TextAreaInput,
     Uploader,
+    CheckBox,
 } from '@maany_shr/e-class-ui-kit';
 import { AccordionBuilder, type AccordionBuilderItem } from '../accordion-builder';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -23,6 +24,8 @@ export interface PackageDetailsStepProps {
     // Accordion state
     accordionTitle: string;
     setAccordionTitle: (title: string) => void;
+    showListItemNumbers: boolean;
+    setShowListItemNumbers: (show: boolean) => void;
     accordionItems: AccordionBuilderItem[];
     setAccordionItems: React.Dispatch<React.SetStateAction<AccordionBuilderItem[]>>;
     
@@ -106,6 +109,8 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
     setFeaturedImage,
     accordionTitle,
     setAccordionTitle,
+    showListItemNumbers,
+    setShowListItemNumbers,
     accordionItems,
     setAccordionItems,
     handleFeaturedImageUpload,
@@ -159,6 +164,17 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                     inputText="accordion-title"
                     value={accordionTitle}
                     setValue={setAccordionTitle}
+                />
+
+                {/* Show List Item Numbers Checkbox */}
+                <CheckBox
+                    name="showListItemNumbers"
+                    value={showListItemNumbers.toString()}
+                    checked={showListItemNumbers}
+                    onChange={() => setShowListItemNumbers(!showListItemNumbers)}
+                    label="Show list item numbers in public view"
+                    labelClass="text-white"
+                    withText={true}
                 />
 
                 <AccordionBuilder
