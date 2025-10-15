@@ -2,7 +2,7 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Button, DefaultLoading } from '@maany_shr/e-class-ui-kit';
 import ConfirmTimeContent from '../../common/confirm-time-content';
 import ChooseCoachingSessionContent from './choose-coaching-session-content';

@@ -4,7 +4,7 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { trpc } from '../../trpc/client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachAvailabilityPresenter } from '../../hooks/use-coach-availability-presenter';
 import {
@@ -15,20 +15,24 @@ import {
     WeeklyHeader,
 } from '@maany_shr/e-class-ui-kit';
 import ScheduledOfferingContent from './dialogs/scheduled-offering-content';
-import { MonthlyCoachCalendarWrapper, WeeklyCoachCalendarWrapper } from '../common/coach-calendar-wrappers';
+import {
+    MonthlyCoachCalendarWrapper,
+    WeeklyCoachCalendarWrapper,
+} from '../common/coach-calendar-wrappers';
 
 interface BookCoachPageProps {
     coachUsername: string;
     sessionId?: number;
 }
 
-export default function BookCoachPage({ coachUsername, sessionId }: BookCoachPageProps) {
+export default function BookCoachPage({
+    coachUsername,
+    sessionId,
+}: BookCoachPageProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
 
-    const [coachAvailabilityResponse, {
-        refetch: refetchCoachAvailability,
-    }] =
+    const [coachAvailabilityResponse, { refetch: refetchCoachAvailability }] =
         trpc.getCoachAvailability.useSuspenseQuery({ coachUsername });
     const [coachAvailabilityViewModel, setCoachAvailabilityViewModel] =
         useState<viewModels.TCoachAvailabilityViewModel | undefined>(undefined);
@@ -38,12 +42,38 @@ export default function BookCoachPage({ coachUsername, sessionId }: BookCoachPag
     presenter.present(coachAvailabilityResponse, coachAvailabilityViewModel);
 
     const [currentDate, setCurrentDate] = useState(new Date());
+    const defaultSession = useMemo<ScheduledOffering | null>(() => {
+        if (!sessionId) return null;
+        return {
+            session: {
+                id: sessionId,
+                name: 'Test Session',
+                duration: 50,
+            },
+        };
+    }, [sessionId]);
     const [newSession, setNewSession] = useState<ScheduledOffering | null>(
-        null,
+        defaultSession,
     );
 
+    const setNewSessionStart = (startTime: Date) => {
+        setNewSession((prev) => {
+            if (!defaultSession || !defaultSession.session)
+                return { startTime };
+            const endTime = new Date(startTime);
+            endTime.setMinutes(
+                endTime.getMinutes() + defaultSession.session.duration,
+            );
+            return { ...prev, startTime, endTime };
+        });
+    };
+
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
     const requestSessionMutation = trpc.requestCoachingSession.useMutation();
-    const [submitError, setSubmitError] = useState<string | undefined>(undefined);
+    const [submitError, setSubmitError] = useState<string | undefined>(
+        undefined,
+    );
 
     const onSubmit = () => {
         if (!newSession) return;
@@ -68,14 +98,18 @@ export default function BookCoachPage({ coachUsername, sessionId }: BookCoachPag
                 onSuccess: (data) => {
                     if (!data.success) {
                         // TODO: check error type and show specific message
-                        setSubmitError('Failed to schedule session. Please try again.');
+                        setSubmitError(
+                            'Failed to schedule session. Please try again.',
+                        );
                         return;
                     }
-                    setNewSession(null);
+                    setNewSession(defaultSession);
                     refetchCoachAvailability();
                 },
                 onError: (error) => {
-                    setSubmitError('Failed to schedule session. Please try again.');
+                    setSubmitError(
+                        'Failed to schedule session. Please try again.',
+                    );
                 },
             },
         );
@@ -101,12 +135,13 @@ export default function BookCoachPage({ coachUsername, sessionId }: BookCoachPag
     return (
         <>
             <Dialog
-                open={newSession !== null}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setNewSession(null);
+                open={isDialogOpen}
+                onOpenChange={(isDialogOpen) => {
+                    if (!isDialogOpen) {
+                        setNewSession(defaultSession);
                         setSubmitError(undefined);
                     }
+                    setIsDialogOpen(isDialogOpen);
                 }}
                 defaultOpen={false}
             >
@@ -136,7 +171,8 @@ export default function BookCoachPage({ coachUsername, sessionId }: BookCoachPag
                             coachAvailabilityViewModel={
                                 coachAvailabilityViewModel
                             }
-                            setNewSession={setNewSession}
+                            setNewSessionStart={setNewSessionStart}
+                            openDialog={() => setIsDialogOpen(true)}
                             currentDate={currentDate}
                             setCurrentDate={setCurrentDate}
                         />
@@ -147,7 +183,8 @@ export default function BookCoachPage({ coachUsername, sessionId }: BookCoachPag
                         coachAvailabilityViewModel={coachAvailabilityViewModel}
                         currentDate={currentDate}
                         setCurrentDate={setCurrentDate}
-                        setNewSession={setNewSession}
+                        setNewSessionStart={setNewSessionStart}
+                        openDialog={() => setIsDialogOpen(true)}
                     />
                 </div>
             </div>
