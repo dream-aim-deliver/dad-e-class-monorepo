@@ -6,12 +6,11 @@ import StarRatingInput from '../star-rating-input';
 import { StarRating } from '../star-rating';
 import { CheckBox } from '../checkbox';
 import { IconSuccess } from '../icons/icon-success';
-import { IconButton } from '../icon-button';
-import { IconClose } from '../icons/icon-close';
 import { IconLoaderSpinner } from '../icons/icon-loader-spinner';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 import { TextAreaInput } from '../text-areaInput';
 import { Dialog, DialogContent } from '../dialog';
+import Banner from '../banner';
 
 export interface CoachingReviewProps extends isLocalAware {
   onClose?: () => void;
@@ -20,6 +19,8 @@ export interface CoachingReviewProps extends isLocalAware {
   onSkip?: () => void;
   isLoading?: boolean;
   isError?: boolean;
+  errorMessage?: string;
+  successMessage?: string;
   submitted?: boolean;
   variant?: 'card' | 'dialog';
   isOpen?: boolean;
@@ -34,6 +35,8 @@ export interface CourseCourseReviewProps extends isLocalAware {
   onSkip?: () => void;
   isLoading?: boolean;
   isError?: boolean;
+  errorMessage?: string;
+  successMessage?: string;
   submitted?: boolean;
   variant?: 'card' | 'dialog';
   isOpen?: boolean;
@@ -98,6 +101,8 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
   locale,
   isLoading = false,
   isError = false,
+  errorMessage,
+  successMessage,
   submitted: initialSubmitted = false,
   variant = 'card',
   isOpen,
@@ -205,9 +210,8 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
         )}
 
         {isError && (
-          <div className="w-full text-sm text-feedback-error-primary text-justify">
-            {dictionary.components!.reviewModal!.errorState}
-          </div>
+          <Banner style="error" title={errorMessage} />
+           
         )}
 
         <div className="relative w-full">
