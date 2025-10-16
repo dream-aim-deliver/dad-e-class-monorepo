@@ -1552,5 +1552,14 @@ export const DE: TDictionary = {
       saving: 'Speichern...',
       save: 'Änderungen speichern',
     },
+    groupCoachingSessionReviews: {
+      title: 'Gruppenkurs Bewertungen',
+      description: 'Bewertungen für diese Gruppenkurs-Sitzung anzeigen und verwalten',
+      error: {
+        title: 'Bewertungen konnten nicht geladen werden',
+        description: 'Beim Laden der Coaching-Sitzungsbewertungen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+        accessDenied: 'Zugriff verweigert. Nur Coaches können auf Coaching-Sitzungsbewertungen zugreifen.',
+      },
+    },
   },
 };
