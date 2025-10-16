@@ -60,9 +60,9 @@ export { default as RichTextEditor } from './components/rich-text-element/editor
 export { Uploader } from './components/drag-and-drop-uploader/uploader';
 
 // Create Package Components
-export { PackageDetailsStep } from './components/create-package/package-details-step';
+export { PackageDetailsStep, type PackageDetailsFormData } from './components/create-package/package-details-step';
 export { PackageCoursesStep } from './components/create-package/package-courses-step';
-export { PackagePricingStep } from './components/create-package/package-pricing-step';
+export { PackagePricingStep, type PackagePricingFormData } from './components/create-package/package-pricing-step';
 export { PackagePreviewStep } from './components/create-package/package-preview-step';
 
 // Components used in the Package subComponents
