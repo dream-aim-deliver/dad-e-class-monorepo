@@ -2074,6 +2074,33 @@ manageHomePage: {
         notFoundDescription: 'Es gibt keine beendeten Coaching-Sitzungen für diese Gruppe.',
       },
     },
+    userDashboard: {
+      editProfile: "Profil bearbeiten",
+      viewCalendar: "Kalender anzeigen",
+      yourCourses: "Deine Kurse",
+      createCourse: "Kurs erstellen",
+    },
+    userCoachingSessions: {
+      title: "Deine Coaching-Sitzungen",
+      loadingTitle: "Deine Coaching-Sitzungen",
+      tabUpcoming: "Anstehend",
+      tabEnded: "Beendet",
+      tabAvailable: "Verfügbar",
+      viewAllSessions: "Alle Sitzungen anzeigen",
+      noUpcoming: "Du hast noch keine anstehenden Coaching-Sitzungen.",
+      noEnded: "Du hast keine abgeschlossenen Coaching-Sitzungen.",
+      noAvailable: "Du hast noch keine verfügbaren Coaching-Sitzungen.",
+    },
+    coachDashboardReviews: {
+      title: "Deine Bewertungen",
+      viewAllReviews: "Alle Bewertungen anzeigen",
+      noReviewsTitle: "Noch keine Bewertungen",
+      noReviewsDescription: "Du hast noch keine Bewertungen erhalten. Bewertungen von Studenten erscheinen hier, nachdem sie deine Kurse oder Coaching-Sitzungen abgeschlossen haben.",
+    },
+    coachDashboardStudents: {
+      emptyState: "Dir sind noch keine Schüler zugewiesen. Schüler erscheinen hier, wenn sie sich in deine Kurse einschreiben oder Coaching-Sitzungen buchen.",
+      errorLoadingStudents: "Fehler beim Laden der Schüler",
+    },
     groupWorkspace: {
       title: 'Gruppen-Workspace',
       description: 'Arbeite mit deinen Gruppenmitgliedern zusammen und verfolge deinen Fortschritt',

@@ -2071,6 +2071,33 @@ export const EN: TDictionary = {
         notFoundDescription: 'There are no ended coaching sessions for this group.',
       },
     },
+    userDashboard: {
+      editProfile: "Edit Profile",
+      viewCalendar: "View Calendar",
+      yourCourses: "Your Courses",
+      createCourse: "Create Course",
+    },
+    userCoachingSessions: {
+      title: "Your Coaching Sessions",
+      loadingTitle: "Your Coaching Sessions",
+      tabUpcoming: "Upcoming",
+      tabEnded: "Ended",
+      tabAvailable: "Available",
+      viewAllSessions: "View All Sessions",
+      noUpcoming: "You don't have upcoming coaching sessions yet.",
+      noEnded: "You don't have ended coaching sessions.",
+      noAvailable: "You don't have available coaching sessions yet.",
+    },
+    coachDashboardReviews: {
+      title: "Your Reviews",
+      viewAllReviews: "View All Reviews",
+      noReviewsTitle: "No reviews yet",
+      noReviewsDescription: "You haven't received any reviews yet. Reviews from students will appear here after they complete your courses or coaching sessions.",
+    },
+    coachDashboardStudents: {
+      emptyState: "You don't have any students assigned to you yet. Students will appear here when they enroll in your courses or book coaching sessions.",
+      errorLoadingStudents: "Error loading students",
+    },
     groupWorkspace: {
       title: 'Group Workspace',
       description: 'Collaborate with your group members and track your progress',
