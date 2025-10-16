@@ -1,14 +1,97 @@
 import React from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ProfileTabs } from '../lib/components/profile-tabs';
 import { fileMetadata } from '@maany_shr/e-class-models';
+
+// Mock translations
+vi.mock('@maany_shr/e-class-translations', () => ({
+  getDictionary: () => ({
+    components: {
+      profileTab: {
+        personal: 'Personal',
+        professional: 'Professional',
+      },
+      profileInfo: {
+        title: 'Personal Information',
+        name: 'Name',
+        namePlaceholder: 'Enter your name',
+        surname: 'Surname',
+        surnamePlaceholder: 'Enter your surname',
+        email: 'Email',
+        emailPlaceholder: 'Enter your email',
+        username: 'Username',
+        usernamePlaceholder: 'Enter your username',
+        phoneNumber: 'Phone Number',
+        phoneNumberPlaceholder: 'Enter your phone number',
+        date: 'Date of Birth',
+        checkboxtext1: 'I am representing a company',
+        checkboxtext2: 'Subscribe to newsletter',
+        companyName: 'Company Name',
+        companyNamePlaceholder: 'Enter company name',
+        companyUID: 'Company UID',
+        companyUIDPlaceholder: 'Enter company UID',
+        address: 'Address',
+        addressPlaceholder: 'Enter address',
+        profilePicture: 'Profile Picture',
+        buttontext1: 'Cancel',
+        buttontext2: 'Save',
+      },
+      professionalInfo: {
+        title: 'Professional Information',
+        bio: 'Bio',
+        bioPlaceholder: 'Enter your bio',
+        linkedinUrl: 'LinkedIn URL',
+        linkedinPlaceholder: 'Enter your LinkedIn URL',
+        curriculumVitae: 'Curriculum Vitae',
+        portfolioWebsite: 'Portfolio Website',
+        portfolioWebsitePlaceholder: 'Enter your portfolio website',
+        associatedCompanyName: 'Company Name',
+        associatedCompanyNamePlaceholder: 'Enter company name',
+        associatedCompanyRole: 'Company Role',
+        associatedCompanyRolePlaceholder: 'Enter your role',
+        associatedCompanyIndustry: 'Company Industry',
+        associatedCompanyIndustryPlaceholder: 'Enter company industry',
+        skills: 'Skills',
+        addSkills: 'Add Skills',
+        privateProfile: 'Private Profile',
+        buttontext1: 'Cancel',
+        buttontext2: 'Save',
+      },
+      languageSelector: 'Languages',
+      uploadingSection: {
+        uploadImage: 'Upload Image',
+        uploadVideo: 'Upload Video',
+        uploadFile: 'Upload File',
+        maxSizeText: 'Maximum file size',
+        fileUploadFailedText: 'File upload failed',
+        uploadingText: 'Uploading',
+        processingText: 'Processing',
+        deleteButtonText: 'Delete',
+        changeButtonText: 'Change',
+        downloadButtonText: 'Download',
+      },
+    },
+    pages: {
+      profile: {
+        unsavedChangesDialog: {
+          title: 'Unsaved Changes',
+          description: 'You have unsaved changes. What would you like to do?',
+          saveButton: 'Save',
+          discardButton: 'Discard',
+        },
+      },
+    },
+  }),
+  isLocalAware: {},
+}));
 
 // Mock Personal Profile Data (matching viewModels.TGetPersonalProfileSuccess['profile'])
 const mockPersonalProfile = {
   id: 1,
   name: 'John',
   surname: 'Doe',
+  username: 'johndoe',
   email: 'john.doe@example.com',
   languages: [
     { id: 1, languageCode: 'ENG', language: 'English', name: 'English', code: 'ENG', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
@@ -53,10 +136,10 @@ const mockAvailableSkills = [
 
 // Mock available languages
 const mockAvailableLanguages = [
-  { languageCode: 'ENG', language: 'English' },
-  { languageCode: 'DEU', language: 'German' },
-  { languageCode: 'FRA', language: 'French' },
-  { languageCode: 'SPA', language: 'Spanish' },
+  { id: 1, code: 'ENG', name: 'English', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+  { id: 2, code: 'DEU', name: 'German', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+  { id: 3, code: 'FRA', name: 'French', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
+  { id: 4, code: 'SPA', name: 'Spanish', state: 'created' as const, createdAt: new Date(), updatedAt: new Date() },
 ];
 
 // Mock file upload handler
@@ -72,11 +155,15 @@ const mockFileUpload = vi.fn().mockResolvedValue({
 describe('ProfileTabs', () => {
   const mockOnSavePersonal = vi.fn();
   const mockOnSaveProfessional = vi.fn();
+  const mockOnProfilePictureDelete = vi.fn();
+  const mockOnCurriculumVitaeDelete = vi.fn();
 
   beforeEach(() => {
     mockOnSavePersonal.mockClear();
     mockOnSaveProfessional.mockClear();
     mockFileUpload.mockClear();
+    mockOnProfilePictureDelete.mockClear();
+    mockOnCurriculumVitaeDelete.mockClear();
   });
 
   it('renders personal profile tab by default', () => {
@@ -88,6 +175,9 @@ describe('ProfileTabs', () => {
         availableLanguages={mockAvailableLanguages}
         onPersonalFileUpload={mockFileUpload}
         onProfessionalFileUpload={mockFileUpload}
+        onProfilePictureDelete={mockOnProfilePictureDelete}
+        onCurriculumVitaeDelete={mockOnCurriculumVitaeDelete}
+        hasProfessionalProfile={true}
         locale="en"
       />
     );
@@ -115,6 +205,9 @@ describe('ProfileTabs', () => {
         availableLanguages={mockAvailableLanguages}
         onPersonalFileUpload={mockFileUpload}
         onProfessionalFileUpload={mockFileUpload}
+        onProfilePictureDelete={mockOnProfilePictureDelete}
+        onCurriculumVitaeDelete={mockOnCurriculumVitaeDelete}
+        hasProfessionalProfile={true}
         locale="en"
       />
     );
@@ -147,6 +240,8 @@ describe('ProfileTabs', () => {
         availableLanguages={mockAvailableLanguages}
         onPersonalFileUpload={mockFileUpload}
         onProfessionalFileUpload={mockFileUpload}
+        onProfilePictureDelete={mockOnProfilePictureDelete}
+        onCurriculumVitaeDelete={mockOnCurriculumVitaeDelete}
         onSavePersonal={mockOnSavePersonal}
         locale="en"
       />,
@@ -170,6 +265,9 @@ describe('ProfileTabs', () => {
         availableLanguages={mockAvailableLanguages}
         onPersonalFileUpload={mockFileUpload}
         onProfessionalFileUpload={mockFileUpload}
+        onProfilePictureDelete={mockOnProfilePictureDelete}
+        onCurriculumVitaeDelete={mockOnCurriculumVitaeDelete}
+        hasProfessionalProfile={true}
         locale="en"
         onSavePersonal={onSavePersonalMock}
         onSaveProfessional={onSaveProfessionalMock}
