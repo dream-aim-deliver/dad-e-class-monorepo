@@ -2107,6 +2107,33 @@ export const DictionarySchema = z.object({
         notFoundDescription: z.string(),
       }),
     }),
+    userDashboard: z.object({
+      editProfile: z.string(),
+      viewCalendar: z.string(),
+      yourCourses: z.string(),
+      createCourse: z.string(),
+    }),
+    userCoachingSessions: z.object({
+      title: z.string(),
+      loadingTitle: z.string(),
+      tabUpcoming: z.string(),
+      tabEnded: z.string(),
+      tabAvailable: z.string(),
+      viewAllSessions: z.string(),
+      noUpcoming: z.string(),
+      noEnded: z.string(),
+      noAvailable: z.string(),
+    }),
+    coachDashboardReviews: z.object({
+      title: z.string(),
+      viewAllReviews: z.string(),
+      noReviewsTitle: z.string(),
+      noReviewsDescription: z.string(),
+    }),
+    coachDashboardStudents: z.object({
+      emptyState: z.string(),
+      errorLoadingStudents: z.string(),
+    }),
     groupWorkspace: z.object({
       title: z.string(),
       description: z.string(),
