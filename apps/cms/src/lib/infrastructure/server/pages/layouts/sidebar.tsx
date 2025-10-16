@@ -56,7 +56,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
             '/calendar': sidebarTranslations('calendar'),
             '/workspace/students': sidebarTranslations('yourStudents'),
             '/workspace/reviews': sidebarTranslations('yourReviews'),
-            '/profile': sidebarTranslations('yourProfile'),
+            '/workspace/profile': sidebarTranslations('yourProfile'),
             '/orders': sidebarTranslations('orderPayments'),
             '/workspace/pre-course-assessment': 'Pre-Course Assessment',
         };

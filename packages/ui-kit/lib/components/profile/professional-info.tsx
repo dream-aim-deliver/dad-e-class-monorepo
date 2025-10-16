@@ -18,6 +18,7 @@ type TSkill = { id: number; name: string; slug: string };
 
 interface ProfessionalInfoProps extends isLocalAware {
   initialData: TProfessionalProfileAPI;
+  onChange: (data: TProfessionalProfileAPI) => void;
   availableSkills: TSkill[];
   onSave: (profile: TProfessionalProfileAPI) => void;
   onFileUpload: (
@@ -71,6 +72,7 @@ interface ProfessionalInfoProps extends isLocalAware {
 
 export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   initialData,
+  onChange,
   availableSkills = [],
   onSave,
   onFileUpload,
@@ -83,16 +85,14 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const dictionary = getDictionary(locale);
-  const [formData, setFormData] = useState<TProfessionalProfileAPI>(initialData);
 
   const [skillSearchQuery, setSkillSearchQuery] = useState('');
   const [allSkills, setAllSkills] = useState<string[]>(
     () => initialData.skills?.map(s => s.name) ?? [],
   );
 
-  // Update form data when initialData changes (e.g., when switching tabs)
+  // Update allSkills when initialData changes
   useEffect(() => {
-    setFormData(initialData);
     setAllSkills(initialData.skills?.map(s => s.name) ?? []);
   }, [initialData]);
 
@@ -100,25 +100,25 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     field: K,
     value: TProfessionalProfileAPI[K],
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    const newData = { ...initialData, [field]: value };
+    onChange(newData);
   };
 
   const toggleSkill = (skill: TSkill) => {
-    setFormData((prev) => {
-      const skillExists = prev.skills.some(s => s.id === skill.id);
-      const updatedSkills = skillExists
-        ? prev.skills.filter((s) => s.id !== skill.id)
-        : [...prev.skills, {
-          id: skill.id,
-          name: skill.name,
-          slug: skill.slug,
-          state: 'created' as const,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        }];
+    const skillExists = initialData.skills.some(s => s.id === skill.id);
+    const updatedSkills = skillExists
+      ? initialData.skills.filter((s) => s.id !== skill.id)
+      : [...initialData.skills, {
+        id: skill.id,
+        name: skill.name,
+        slug: skill.slug,
+        state: 'created' as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }];
 
-      return { ...prev, skills: updatedSkills };
-    });
+    const newData = { ...initialData, skills: updatedSkills };
+    onChange(newData);
 
     setAllSkills((prevSkills) => {
       const skillExists = prevSkills.includes(skill.name);
@@ -130,7 +130,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave?.(formData);
+    onSave?.(initialData);
   };
   const handleUploadedFiles = async (
     fileRequest: fileMetadata.TFileUploadRequest,
@@ -143,7 +143,8 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
     // Update form data with the uploaded file metadata
     if (fileMetadata.category === 'document') {
       // Use the file metadata directly without transformation
-      handleChange('curriculumVitae', fileMetadata as any);
+      const newData = { ...initialData, curriculumVitae: fileMetadata as any };
+      onChange(newData);
     }
 
     // Notify parent component that upload is complete
@@ -151,13 +152,14 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   };
 
   const handleFileDelete = (id: string) => {
-    handleChange('curriculumVitae', null);
+    const newData = { ...initialData, curriculumVitae: null };
+    onChange(newData);
     // Notify parent component about deletion
     onFileDelete?.(id);
   };
 
   const handleDiscard = () => {
-    setFormData(initialData);
+    onChange(initialData);
     setAllSkills(initialData.skills?.map(s => s.name) ?? []);
   };
 
@@ -175,7 +177,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <TextAreaInput
             className="h-[104px]"
             label={dictionary.components.professionalInfo.bio}
-            value={formData.bio as string}
+            value={initialData.bio as string}
             setValue={(value: string) => handleChange('bio', value)}
             placeholder={dictionary.components.professionalInfo.bioPlaceholder}
           />
@@ -186,7 +188,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             label={dictionary.components.professionalInfo.linkedinUrl}
             inputField={{
               className: "w-full",
-              value: formData.linkedinUrl ? formData.linkedinUrl : '',
+              value: initialData.linkedinUrl ? initialData.linkedinUrl : '',
               setValue: (value) => handleChange('linkedinUrl', value),
               inputText:
                 dictionary.components.professionalInfo.linkedinPlaceholder,
@@ -218,7 +220,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <TextInput
             label={dictionary.components.professionalInfo.portfolioWebsite}
             inputField={{
-              value: formData.portfolioWebsite ? formData.portfolioWebsite : '',
+              value: initialData.portfolioWebsite ? initialData.portfolioWebsite : '',
               setValue: (value) => handleChange('portfolioWebsite', value),
               className: "w-full",
               inputText:
@@ -232,7 +234,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <TextInput
             label={dictionary.components.professionalInfo.associatedCompanyName}
             inputField={{
-              value: formData.companyName || '',
+              value: initialData.companyName || '',
               setValue: (value) => handleChange('companyName', value || null),
               className: "w-full",
               inputText:
@@ -246,7 +248,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
           <TextInput
             label={dictionary.components.professionalInfo.associatedCompanyRole}
             inputField={{
-              value: formData.companyRole || '',
+              value: initialData.companyRole || '',
               setValue: (value) => handleChange('companyRole', value || null),
               className: "w-full",
               inputText:
@@ -262,7 +264,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
               dictionary.components.professionalInfo.associatedCompanyIndustry
             }
             inputField={{
-              value: formData.companyIndustry || '',
+              value: initialData.companyIndustry || '',
               setValue: (value) =>
                 handleChange('companyIndustry', value || null),
               className: "w-full",
@@ -344,7 +346,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
                         name={`skill-${skill.id}`}
                         labelClass="text-text-primary text-sm  leading-[100%]"
                         value={skill.name}
-                        checked={formData.skills.some((s) => s.id === skill.id)}
+                        checked={initialData.skills.some((s) => s.id === skill.id)}
                         withText={true}
                         onChange={() => toggleSkill(skill)}
                       />
@@ -362,9 +364,9 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             name="profile-visibility"
             value="private-profile"
             withText={true}
-            checked={formData.private}
+            checked={initialData.private}
             onChange={() =>
-              handleChange('private', !formData.private)
+              handleChange('private', !initialData.private)
             }
           />
         </div>
