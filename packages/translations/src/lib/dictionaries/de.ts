@@ -1318,6 +1318,17 @@ export const DE: TDictionary = {
         noCoachesAssigned: 'Diesem Kurs sind noch keine Coaches zugewiesen.',
         noCoachesFound: 'Keine Coaches gefunden, die deiner Suche entsprechen.'
       },
+      groups: {
+        title: 'Gruppen',
+        description: 'Verwalte Kursgruppen und Gruppen-Coaching-Sitzungen',
+        noGroupsFound: 'Keine Gruppen für diesen Kurs gefunden.',
+        searchPlaceholder: 'Gruppen suchen...',
+        createGroupButton: 'Gruppe erstellen',
+        error: {
+          title: 'Fehler beim Laden der Gruppen',
+          description: 'Beim Laden der Kursgruppen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+        },
+      },
       archiveCourseButton: 'Kurs archivieren',
       editCourseButton: 'Kurs bearbeiten',
       visitor: {

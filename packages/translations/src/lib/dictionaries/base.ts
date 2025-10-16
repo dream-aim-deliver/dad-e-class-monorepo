@@ -1365,6 +1365,17 @@ export const DictionarySchema = z.object({
         noCoachesAssigned: z.string(),
         noCoachesFound: z.string(),
       }),
+      groups: z.object({
+        title: z.string(),
+        description: z.string(),
+        noGroupsFound: z.string(),
+        searchPlaceholder: z.string(),
+        createGroupButton: z.string(),
+        error: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
       archiveCourseButton: z.string(),
       editCourseButton: z.string(),
       visitor: z.object({
