@@ -1397,6 +1397,7 @@ export const DictionarySchema = z.object({
       yourCourses: z.string(),
       createCourse: z.string(),
       becomeCourseCreator: z.string(),
+      viewAllCourses: z.string(),
     }),
     coachStudents: z.object({
       yourStudents: z.string(),
@@ -1620,6 +1621,7 @@ export const DictionarySchema = z.object({
       viewCalendar: z.string(),
       yourCourses: z.string(),
       createCourse: z.string(),
+      viewAllCourses: z.string(),
     }),
     userCoachingSessions: z.object({
       title: z.string(),
@@ -1641,6 +1643,11 @@ export const DictionarySchema = z.object({
     coachDashboardStudents: z.object({
       emptyState: z.string(),
       errorLoadingStudents: z.string(),
+      title: z.string(),
+      clearAllFilters: z.string(),
+      search: z.string(),
+      filter: z.string(),
+      viewAllStudents: z.string(),
     }),
   }),
 });
