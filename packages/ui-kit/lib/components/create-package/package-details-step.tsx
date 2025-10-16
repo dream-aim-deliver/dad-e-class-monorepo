@@ -1,13 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { useCallback } from 'react';
-import {
-    InputField,
-    TextAreaInput,
-    Uploader,
-    CheckBox,
-} from '@maany_shr/e-class-ui-kit';
+import { InputField } from '../input-field';
+import { TextAreaInput } from '../text-areaInput';
+import { Uploader } from '../drag-and-drop-uploader/uploader';
+import { CheckBox } from '../checkbox';
 import { AccordionBuilder, type AccordionBuilderItem } from '../accordion-builder';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
@@ -30,7 +27,7 @@ export interface PackageDetailsStepProps {
     setAccordionItems: React.Dispatch<React.SetStateAction<AccordionBuilderItem[]>>;
     
     // File upload handlers
-    handleFeaturedImageUpload: (
+    handlePackageImageUpload: (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal
     ) => Promise<fileMetadata.TFileMetadata>;
@@ -39,6 +36,18 @@ export interface PackageDetailsStepProps {
         abortSignal?: AbortSignal
     ) => Promise<fileMetadata.TFileMetadata>;
     
+    // Optional progress/error for featured image upload
+    uploadProgress?: number;
+    errorMessage?: string;
+
+    // Featured image actions
+    onDeleteFeaturedImage?: (id: string) => void;
+    onDownloadFeaturedImage?: (id: string) => void;
+
+    // Accordion icon upload
+    iconUploadProgress?: number;
+    onDownloadAccordionIcon?: (id: string) => void;
+
     locale: TLocale;
 }
 
@@ -62,8 +71,8 @@ export interface PackageDetailsStepProps {
  * @param {function} setPackageTitle - Function to update package title
  * @param {string} packageDescription - Current package description value
  * @param {function} setPackageDescription - Function to update package description
- * @param {fileMetadata.TFileMetadata | null} featuredImage - Current featured image
- * @param {function} setFeaturedImage - Function to update featured image
+ * @param {fileMetadata.TFileMetadata | null} featuredImage - Current package image
+ * @param {function} setFeaturedImage - Function to update package image
  * @param {string} accordionTitle - Current accordion title value
  * @param {function} setAccordionTitle - Function to update accordion title
  * @param {boolean} showListItemNumbers - Whether to show list item numbers
@@ -72,7 +81,7 @@ export interface PackageDetailsStepProps {
  * @param {function} setAccordionItems - Function to update accordion items
  * @param {string[]} openAccordionItems - Array of open accordion item IDs
  * @param {function} setOpenAccordionItems - Function to update open accordion items
- * @param {function} handleFeaturedImageUpload - Handler for featured image upload
+ * @param {function} handlePackageImageUpload - Handler for featured image upload
  * @param {function} handleAccordionIconUpload - Handler for accordion icon upload
  * @param {TLocale} locale - Current locale for translations
  *
@@ -84,6 +93,8 @@ export interface PackageDetailsStepProps {
  *   packageDescription={packageDescription}
  *   setPackageDescription={setPackageDescription}
  *   featuredImage={featuredImage}
+ *   uploadProgress={uploadProgress}
+ *   errorMessage={errorMessage}
  *   setFeaturedImage={setFeaturedImage}
  *   accordionTitle={accordionTitle}
  *   setAccordionTitle={setAccordionTitle}
@@ -93,7 +104,7 @@ export interface PackageDetailsStepProps {
  *   setAccordionItems={setAccordionItems}
  *   openAccordionItems={openAccordionItems}
  *   setOpenAccordionItems={setOpenAccordionItems}
- *   handleFeaturedImageUpload={handleFeaturedImageUpload}
+ *   handlePackageImageUpload={handlePackageImageUpload}
  *   handleAccordionIconUpload={handleAccordionIconUpload}
  *   locale={locale}
  * />
@@ -113,10 +124,42 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
     setShowListItemNumbers,
     accordionItems,
     setAccordionItems,
-    handleFeaturedImageUpload,
+    handlePackageImageUpload,
     handleAccordionIconUpload,
+    uploadProgress,
+    errorMessage,
+    onDeleteFeaturedImage,
+    onDownloadFeaturedImage,
+    iconUploadProgress,
+    onDownloadAccordionIcon,
     locale,
 }) => {
+    const handleOnFilesChange = async (
+        file: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => {
+        return handlePackageImageUpload(file, abortSignal);
+    };
+
+    const handleOnUploadComplete = (file: fileMetadata.TFileMetadata) => {
+        if (file.category !== 'image') {
+            console.error('Uploaded file is not an image');
+            return;
+        }
+        setFeaturedImage(file);
+    };
+
+    const handleOnDelete = (id: string) => {
+        onDeleteFeaturedImage?.(id);
+        if (featuredImage?.id === id) {
+            setFeaturedImage(null);
+        }
+    };
+
+    const handleOnDownload = (id: string) => {
+        onDownloadFeaturedImage?.(id);
+    };
+
     return (
         <div className="flex flex-col border border-card-stroke bg-card-fill p-6 gap-6 w-full rounded-medium">
             <h3 className="text-text-primary">
@@ -148,11 +191,18 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                     file={featuredImage}
                     maxSize={15}
                     locale={locale}
-                    onFilesChange={handleFeaturedImageUpload}
-                    onUploadComplete={(file: fileMetadata.TFileMetadata) => setFeaturedImage(file)}
-                    onDelete={() => setFeaturedImage(null)}
-                    onDownload={() => {}}
+                    onFilesChange={handleOnFilesChange}
+                    onUploadComplete={handleOnUploadComplete}
+                    onDelete={handleOnDelete}
+                    onDownload={handleOnDownload}
+                    uploadProgress={uploadProgress}
+                    isDeletionAllowed
+                    className="mb-2"
                 />
+                {/* TODO: Consider surfacing i18n-friendly error messages here */}
+                {errorMessage && (
+                    <p className="text-sm text-red-500">{errorMessage}</p>
+                )}
             </div>
 
             {/* Accordion Section */}
@@ -181,7 +231,11 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                     items={accordionItems}
                     setItems={setAccordionItems}
                     onIconChange={handleAccordionIconUpload}
-                    onIconDownload={() => {}}
+                    onIconDownload={(index: number) => {
+                        const id = accordionItems[index]?.icon?.id as string | undefined;
+                        if (id) onDownloadAccordionIcon?.(id);
+                    }}
+                    uploadProgress={iconUploadProgress}
                     locale={locale}
                 />
             </div>

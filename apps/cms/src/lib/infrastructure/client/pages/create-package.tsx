@@ -169,13 +169,19 @@ export default function CreatePackage() {
 
 
     // File upload handlers using custom hook
+    const [packageImageProgress, setPackageImageProgress] = useState<number | undefined>(undefined);
     const {
         handleFileChange: handlePackageImageUpload,
-    } = usePackageFileUpload("upload_package_image");
+        uploadError: packageImageError,
+        handleDelete: handleDeleteFeaturedImage,
+        handleDownload: handleDownloadFeaturedImage,
+    } = usePackageFileUpload("upload_package_image", null, setPackageImageProgress);
 
+    const [iconUploadProgress, setIconUploadProgress] = useState<number | undefined>(undefined);
     const {
         handleFileChange: handleAccordionIconUpload,
-    } = usePackageFileUpload("upload_package_accordion_item_icon");
+        uploadError: iconUploadError,
+    } = usePackageFileUpload("upload_package_accordion_item_icon", null, setIconUploadProgress);
 
     // Course management functions
     const toggleCourseSelection = useCallback((courseId: string) => {
@@ -207,24 +213,44 @@ export default function CreatePackage() {
     const handlePublishPackage = useCallback(async () => {
         setIsPublishing(true);
         try {
-            // Mock package creation/publishing
-            const mockPackageData = {
+            // Build payload matching backend contract
+            // TODO: Replace string parsing when backend exposes numeric price fields
+            const price = parseFloat(pricingConfig.completePackageWithoutCoaching.replace(/[^\d.]/g, '')) || 0;
+            const priceWithCoachings = parseFloat(pricingConfig.completePackageWithCoaching.replace(/[^\d.]/g, '')) || 0;
+
+            // TODO: Move discount parsing to a shared util and validate range (0-100)
+            const partialDiscountsPayload = Object.entries(pricingConfig.partialDiscounts)
+                .map(([courseAmount, discount]) => ({
+                    courseAmount: Number(courseAmount),
+                    discountPercent: Number(String(discount).replace('%', '')),
+                }))
+                .filter(d => !Number.isNaN(d.courseAmount) && !Number.isNaN(d.discountPercent));
+
+            // TODO: Support per-item icon upload progress in UI (AccordionBuilder)
+            const accordionItemsPayload = accordionItems.map((item, idx) => ({
+                title: item.title,
+                description: item.content,
+                position: idx + 1,
+                iconId: item.icon?.id ? Number(item.icon.id) : undefined,
+            }));
+
+            // TODO: Confirm whether BE will accept string IDs to remove Number casting
+            const courseIdsPayload = selectedCourseIds
+                .map((id) => Number(id))
+                .filter((n) => !Number.isNaN(n));
+
+            // TODO: Add featuredImageId, accordionTitle, showListItemNumbers when supported by backend contract
+            const payload = {
                 title: packageTitle,
                 description: packageDescription,
-                featuredImageId: featuredImage?.id,
-                accordionTitle,
-                showListItemNumbers,
-                accordionItems: accordionItems.map(item => ({
-                    title: item.title,
-                    content: item.content,
-                    iconId: item.icon?.id
-                })),
-                courseIds: selectedCourseIds,
-                pricingConfig,
-                coachingIncluded
+                price,
+                priceWithCoachings,
+                partialDiscounts: partialDiscountsPayload,
+                accordionItems: accordionItemsPayload,
+                courseIds: courseIdsPayload,
             };
 
-            const result = await createPackageMutation.mutateAsync(mockPackageData);
+            const result = await createPackageMutation.mutateAsync(payload);
             
             if (result.success) {
                 // Redirect to packages list after successful publish
@@ -380,8 +406,14 @@ export default function CreatePackage() {
                     setShowListItemNumbers={setShowListItemNumbers}
                     accordionItems={accordionItems}
                     setAccordionItems={setAccordionItems}
-                    handleFeaturedImageUpload={handlePackageImageUpload}
+                    handlePackageImageUpload={handlePackageImageUpload}
                     handleAccordionIconUpload={handleAccordionIconUpload}
+                    uploadProgress={packageImageProgress}
+                    errorMessage={packageImageError}
+                    onDeleteFeaturedImage={handleDeleteFeaturedImage}
+                    onDownloadFeaturedImage={handleDownloadFeaturedImage}
+                    iconUploadProgress={iconUploadProgress}
+                    onDownloadAccordionIcon={(id: string) => handleDownloadFeaturedImage(id)}
                 locale={locale}
             />
             )}
