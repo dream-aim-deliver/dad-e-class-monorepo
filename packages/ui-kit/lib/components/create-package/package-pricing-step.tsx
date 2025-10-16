@@ -5,16 +5,15 @@ import { TextInput } from '../text-input';
 
 type PartialDiscounts = Record<string, string>;
 
-export interface PackagePricingConfig {
+export interface PackagePricingFormData {
     completePackageWithCoaching: string;
     completePackageWithoutCoaching: string;
     partialDiscounts: PartialDiscounts;
 }
 
-interface PackagePricingStepProps {
-    pricingConfig: PackagePricingConfig;
-    onUpdatePricingConfig: (updates: Partial<PackagePricingConfig>) => void;
-    onUpdatePartialDiscount: (courseCount: string, discount: string) => void;
+export interface PackagePricingStepProps {
+    formData: PackagePricingFormData;
+    onFormDataChange: (updates: Partial<PackagePricingFormData>) => void;
 }
 
 /**
@@ -30,25 +29,27 @@ interface PackagePricingStepProps {
  * - Grid of percentage discounts for partial selections by course count
  *
  * Props:
- * @param {PackagePricingConfig} pricingConfig - Current pricing configuration state
- * @param {function} onUpdatePricingConfig - Function to update top-level pricing fields
- * @param {function} onUpdatePartialDiscount - Function to update a single partial discount by course count
+ * @param {PackagePricingFormData} formData - Current pricing configuration state
+ * @param {function} onFormDataChange - Function to update pricing configuration with partial updates
  *
  * Usage:
  * ```tsx
  * <PackagePricingStep
- *   pricingConfig={pricingConfig}
- *   onUpdatePricingConfig={updatePricingConfig}
- *   onUpdatePartialDiscount={updatePartialDiscount}
+ *   formData={formData}
+ *   onFormDataChange={onFormDataChange}
  * />
  * ```
  */
 
 export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
-    pricingConfig,
-    onUpdatePricingConfig,
-    onUpdatePartialDiscount,
+    formData,
+    onFormDataChange,
 }) => {
+    const {
+        completePackageWithCoaching,
+        completePackageWithoutCoaching,
+        partialDiscounts,
+    } = formData;
     return (
         <div className="flex flex-col border border-card-stroke bg-card-fill p-6 gap-6 w-full rounded-medium">
             <h3 className="text-text-primary">
@@ -66,8 +67,8 @@ export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
                         <TextInput
                             inputField={{
                                 inputText: 'e.g. 5400 CHF',
-                                value: pricingConfig.completePackageWithCoaching,
-                                setValue: (value: string) => onUpdatePricingConfig({ completePackageWithCoaching: value }),
+                                value: completePackageWithCoaching,
+                                setValue: (value: string) => onFormDataChange({ completePackageWithCoaching: value }),
                             }}
                         />
                     </div>
@@ -78,8 +79,8 @@ export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
                         <TextInput
                             inputField={{
                                 inputText: 'e.g. 5400 CHF',
-                                value: pricingConfig.completePackageWithoutCoaching,
-                                setValue: (value: string) => onUpdatePricingConfig({ completePackageWithoutCoaching: value }),
+                                value: completePackageWithoutCoaching,
+                                setValue: (value: string) => onFormDataChange({ completePackageWithoutCoaching: value }),
                             }}
                         />
                     </div>
@@ -96,14 +97,19 @@ export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
 
                 {/* Discount Grid */}
                 <div className="grid grid-cols-3 gap-6">
-                    {Object.entries(pricingConfig.partialDiscounts).map(([courseCount, discount]) => (
+                    {Object.entries(partialDiscounts).map(([courseCount, discount]) => (
                         <div key={courseCount} className="flex flex-col space-y-2">
                             <label className="text-sm text-text-secondary">{courseCount} courses</label>
                             <TextInput
                                 inputField={{
                                     inputText: 'e.g. 20%',
                                     value: discount,
-                                    setValue: (value: string) => onUpdatePartialDiscount(courseCount, value),
+                                    setValue: (value: string) => onFormDataChange({
+                                        partialDiscounts: {
+                                            ...partialDiscounts,
+                                            [courseCount]: value,
+                                        },
+                                    }),
                                 }}
                             />
                         </div>

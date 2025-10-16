@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { DefaultLoading, DefaultError, DefaultNotFound, Outline, PackageCmsCardList, PackageCmsCard } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, DefaultNotFound, Outline, PackageCmsCardList, PackageCmsCard, Breadcrumbs } from '@maany_shr/e-class-ui-kit';
 
 interface AllPackagesProps {
   locale: TLocale;
@@ -25,6 +25,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   const currentLocale = useLocale() as TLocale;
   const router = useRouter();
   const t = useTranslations('pages.allPackages');
+  const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
 
   // TRPC query for listPackages usecase (FEAT-164)
   const [listPackagesResponse] = trpc.listPackages.useSuspenseQuery({
@@ -90,6 +91,26 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
     console.log('Publish package:', packageId);
   };
 
+  // Breadcrumbs following the standard pattern
+  const breadcrumbItems = [
+    {
+      label: breadcrumbsTranslations('platforms'),
+      onClick: () => router.push('/'),
+    },
+    {
+      label: platformSlug.charAt(0).toUpperCase() + platformSlug.slice(1),
+      onClick: () => {
+        // TODO: Implement navigation to platform
+      },
+    },
+    {
+      label: 'Packages',
+      onClick: () => {
+        // Nothing should happen on clicking the current page
+      },
+    },
+  ];
+
   // Loading state using discovered patterns
   if (!listPackagesViewModel) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
@@ -129,11 +150,9 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   }));
 
   return (
-    <div className="flex flex-col space-y-5 px-30">
-      <Outline
-        title={t('title') || 'All Packages'}
-        description={t('description') || 'Manage all packages for this platform'}
-      />
+    <div className="flex flex-col space-y-4">
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={breadcrumbItems} />
 
       <PackageCmsCardList
         locale={currentLocale}

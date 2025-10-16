@@ -9,22 +9,22 @@ import { AccordionBuilder, type AccordionBuilderItem } from '../accordion-builde
 import { TLocale } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
-export interface PackageDetailsStepProps {
-    // Package details state
+export interface PackageDetailsFormData {
+    // Package details
     packageTitle: string;
-    setPackageTitle: (title: string) => void;
     packageDescription: string;
-    setPackageDescription: (description: string) => void;
     featuredImage: fileMetadata.TFileMetadata | null;
-    setFeaturedImage: (image: fileMetadata.TFileMetadata | null) => void;
     
-    // Accordion state
+    // Accordion configuration
     accordionTitle: string;
-    setAccordionTitle: (title: string) => void;
     showListItemNumbers: boolean;
-    setShowListItemNumbers: (show: boolean) => void;
     accordionItems: AccordionBuilderItem[];
-    setAccordionItems: React.Dispatch<React.SetStateAction<AccordionBuilderItem[]>>;
+}
+
+export interface PackageDetailsStepProps {
+    // Form data
+    formData: PackageDetailsFormData;
+    onFormDataChange: (updates: Partial<PackageDetailsFormData>) => void;
     
     // File upload handlers
     handlePackageImageUpload: (
@@ -67,63 +67,39 @@ export interface PackageDetailsStepProps {
  * - Auto-opening of new accordion items
  *
  * Props:
- * @param {string} packageTitle - Current package title value
- * @param {function} setPackageTitle - Function to update package title
- * @param {string} packageDescription - Current package description value
- * @param {function} setPackageDescription - Function to update package description
- * @param {fileMetadata.TFileMetadata | null} featuredImage - Current package image
- * @param {function} setFeaturedImage - Function to update package image
- * @param {string} accordionTitle - Current accordion title value
- * @param {function} setAccordionTitle - Function to update accordion title
- * @param {boolean} showListItemNumbers - Whether to show list item numbers
- * @param {function} setShowListItemNumbers - Function to toggle list item numbers
- * @param {AccordionItemData[]} accordionItems - Array of accordion items
- * @param {function} setAccordionItems - Function to update accordion items
- * @param {string[]} openAccordionItems - Array of open accordion item IDs
- * @param {function} setOpenAccordionItems - Function to update open accordion items
+ * @param {PackageDetailsFormData} formData - Current form data containing all package details
+ * @param {function} onFormDataChange - Function to update form data with partial updates
  * @param {function} handlePackageImageUpload - Handler for featured image upload
  * @param {function} handleAccordionIconUpload - Handler for accordion icon upload
+ * @param {number} uploadProgress - Optional upload progress for featured image
+ * @param {string} errorMessage - Optional error message for featured image upload
+ * @param {function} onDeleteFeaturedImage - Optional handler for deleting featured image
+ * @param {function} onDownloadFeaturedImage - Optional handler for downloading featured image
+ * @param {number} iconUploadProgress - Optional upload progress for accordion icons
+ * @param {function} onDownloadAccordionIcon - Optional handler for downloading accordion icons
  * @param {TLocale} locale - Current locale for translations
  *
  * Usage:
  * ```tsx
  * <PackageDetailsStep
- *   packageTitle={packageTitle}
- *   setPackageTitle={setPackageTitle}
- *   packageDescription={packageDescription}
- *   setPackageDescription={setPackageDescription}
- *   featuredImage={featuredImage}
- *   uploadProgress={uploadProgress}
- *   errorMessage={errorMessage}
- *   setFeaturedImage={setFeaturedImage}
- *   accordionTitle={accordionTitle}
- *   setAccordionTitle={setAccordionTitle}
- *   showListItemNumbers={showListItemNumbers}
- *   setShowListItemNumbers={setShowListItemNumbers}
- *   accordionItems={accordionItems}
- *   setAccordionItems={setAccordionItems}
- *   openAccordionItems={openAccordionItems}
- *   setOpenAccordionItems={setOpenAccordionItems}
+ *   formData={formData}
+ *   onFormDataChange={onFormDataChange}
  *   handlePackageImageUpload={handlePackageImageUpload}
  *   handleAccordionIconUpload={handleAccordionIconUpload}
+ *   uploadProgress={uploadProgress}
+ *   errorMessage={errorMessage}
+ *   onDeleteFeaturedImage={onDeleteFeaturedImage}
+ *   onDownloadFeaturedImage={onDownloadFeaturedImage}
+ *   iconUploadProgress={iconUploadProgress}
+ *   onDownloadAccordionIcon={onDownloadAccordionIcon}
  *   locale={locale}
  * />
  * ```
  */
 
 export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
-    packageTitle,
-    setPackageTitle,
-    packageDescription,
-    setPackageDescription,
-    featuredImage,
-    setFeaturedImage,
-    accordionTitle,
-    setAccordionTitle,
-    showListItemNumbers,
-    setShowListItemNumbers,
-    accordionItems,
-    setAccordionItems,
+    formData,
+    onFormDataChange,
     handlePackageImageUpload,
     handleAccordionIconUpload,
     uploadProgress,
@@ -134,6 +110,14 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
     onDownloadAccordionIcon,
     locale,
 }) => {
+    const {
+        packageTitle,
+        packageDescription,
+        featuredImage,
+        accordionTitle,
+        showListItemNumbers,
+        accordionItems,
+    } = formData;
     const handleOnFilesChange = async (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
@@ -146,13 +130,13 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
             console.error('Uploaded file is not an image');
             return;
         }
-        setFeaturedImage(file);
+        onFormDataChange({ featuredImage: file });
     };
 
     const handleOnDelete = (id: string) => {
         onDeleteFeaturedImage?.(id);
         if (featuredImage?.id === id) {
-            setFeaturedImage(null);
+            onFormDataChange({ featuredImage: null });
         }
     };
 
@@ -170,7 +154,7 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
             <TextAreaInput
                 label="Package Title"
                 value={packageTitle}
-                setValue={setPackageTitle}
+                setValue={(value) => onFormDataChange({ packageTitle: value })}
                 placeholder="Max 70 characters"
             />
 
@@ -178,7 +162,7 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
             <TextAreaInput
                 label="Package Description"
                 value={packageDescription}
-                setValue={setPackageDescription}
+                setValue={(value) => onFormDataChange({ packageDescription: value })}
                 placeholder="Max 320 characters"
             />
 
@@ -213,7 +197,7 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                 <InputField
                     inputText="accordion-title"
                     value={accordionTitle}
-                    setValue={setAccordionTitle}
+                    setValue={(value) => onFormDataChange({ accordionTitle: value })}
                 />
 
                 {/* Show List Item Numbers Checkbox */}
@@ -221,7 +205,7 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                     name="showListItemNumbers"
                     value={showListItemNumbers.toString()}
                     checked={showListItemNumbers}
-                    onChange={() => setShowListItemNumbers(!showListItemNumbers)}
+                    onChange={() => onFormDataChange({ showListItemNumbers: !showListItemNumbers })}
                     label="Show list item numbers in public view"
                     labelClass="text-white"
                     withText={true}
@@ -229,7 +213,13 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
 
                 <AccordionBuilder
                     items={accordionItems}
-                    setItems={setAccordionItems}
+                    setItems={(items) => {
+                        if (typeof items === 'function') {
+                            onFormDataChange({ accordionItems: items(accordionItems) });
+                        } else {
+                            onFormDataChange({ accordionItems: items });
+                        }
+                    }}
                     onIconChange={handleAccordionIconUpload}
                     onIconDownload={(index: number) => {
                         const id = accordionItems[index]?.icon?.id as string | undefined;
