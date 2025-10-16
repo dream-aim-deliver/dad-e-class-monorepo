@@ -39,7 +39,7 @@ export default function CoachDashboardReviews() {
         return (
             <div className="flex flex-col space-y-4">
                 <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-semibold text-white">{t('title')}</h2>
+                    <h3>{t('title')}</h3>
                 </div>
                 <div className="animate-pulse">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -54,8 +54,8 @@ export default function CoachDashboardReviews() {
 
     return (
         <div className="rounded-lg">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold text-white">{t('title')}</h2>
+            <div className="flex items-center mb-6">
+                <h3>{t('title')}</h3>
                 <Button
                     variant="text"
                     size="small"

@@ -111,11 +111,19 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
     const hasUpcomingSessions = upcomingSessions.length > 0;
 
     return (
-        <div className="rounded-lg">
+        <div className="rounded-lg pb-15">
             <Tabs.Root defaultTab="upcoming" onValueChange={setActiveTab}>
                 <div className="w-full flex justify-between items-center md:flex-row flex-col gap-4">
                     <div className="w-full flex gap-4 items-center justify-between">
+                        <div className='flex flex-row items-center'>
                         <h3>{t('title')}</h3>
+                        <Button
+                            variant="text"
+                            size="small"
+                            onClick={handleViewAllCoachingSessions}
+                            text={t('viewAllSessions')}
+                        />
+                        </div>
                         <div className="flex items-center gap-4">
                             <Tabs.List className="flex rounded-medium gap-2 w-fit whitespace-nowrap">
                                 <Tabs.Trigger value="upcoming" isLast={false}>
@@ -128,13 +136,6 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                                     {t('tabAvailable')}
                                 </Tabs.Trigger>
                             </Tabs.List>
-                            <Button
-                                variant="text"
-                                size="small"
-                                onClick={handleViewAllCoachingSessions}
-                            >
-                                {t('viewAllSessions')}
-                            </Button>
                         </div>
                     </div>
                 </div>
@@ -200,20 +201,29 @@ export default function UserCoachingSessions(props: UserCoachingSessionsProps) {
                         </div>
                     ) : (
                         <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
-                            <p className="text-text-secondary text-md"> {t('noUpcoming')} </p>
+                            <p className="text-text-secondary text-md">
+                                {' '}
+                                {t('noUpcoming')}{' '}
+                            </p>
                         </div>
                     )}
                 </Tabs.Content>
 
                 <Tabs.Content value="ended" className="mt-6">
                     <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
-                        <p className="text-text-secondary text-md"> {t('noEnded')} </p>
+                        <p className="text-text-secondary text-md">
+                            {' '}
+                            {t('noEnded')}{' '}
+                        </p>
                     </div>
                 </Tabs.Content>
 
                 <Tabs.Content value="available" className="mt-6">
                     <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
-                        <p className="text-text-secondary text-md"> {t('noAvailable')} </p>
+                        <p className="text-text-secondary text-md">
+                            {' '}
+                            {t('noAvailable')}{' '}
+                        </p>
                     </div>
                 </Tabs.Content>
             </Tabs.Root>

@@ -24,8 +24,9 @@ import UserCoachingSessions from './user-coaching-sessions';
 import UserNotifications from './user-notifications';
 import CoachDashboardStudents from './coach-dashboard-students';
 import CoachDashboardReviews from './coach-dashboard-reviews';
+import { trpc } from '../../trpc/cms-client';
 // TODO: Change back to cms-client once searchCourses is available in the CMS REST API
-import { trpc } from '../../trpc/client';
+import { trpc as trpcMock } from '../../trpc/client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useSearchCoursesPresenter } from '../../hooks/use-search-courses-presenter';
 
@@ -62,7 +63,7 @@ function CreateCourseDialogContent() {
         data: searchResponse,
         isFetching,
         error,
-    } = trpc.searchCourses.useQuery(
+    } = trpcMock.searchCourses.useQuery(
         {
             titleContains: debouncedSearchQuery,
             pagination: {
@@ -139,6 +140,7 @@ function CreateCourseDialog() {
 export default function UserDashboard({ roles }: UserDashboardProps) {
     const { data: session } = useSession();
     const router = useRouter();
+    const locale = useLocale() as TLocale;
 
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const t = useTranslations('pages.userDashboard');
@@ -154,7 +156,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
         },
         {
             enabled: isCoach && !!session?.user?.name,
-        }
+        },
     );
 
     // Calculate average rating from reviews
@@ -166,7 +168,10 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
         }
 
         const ratings = reviews.map((review: any) => review.rating);
-        const totalRating = ratings.reduce((sum: number, rating: number) => sum + rating, 0);
+        const totalRating = ratings.reduce(
+            (sum: number, rating: number) => sum + rating,
+            0,
+        );
         const average = totalRating / reviews.length;
 
         return Math.round(average * 10) / 10;
@@ -180,6 +185,10 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
         router.push('/workspace/calendar');
     }, [router]);
 
+    const handleViewAllCourses = useCallback(() => {
+        router.push(`/${locale}/workspace/courses`);
+    }, [router, locale]);
+
     const getDisplayName = useCallback(() => {
         if (session?.user?.name) {
             return session.user.name;
@@ -192,8 +201,8 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
 
         // Filter out visitor and student roles, then capitalize first letter of each role
         return roles
-            .filter(role => role !== 'visitor' && role !== 'student')
-            .map(role => role.charAt(0).toUpperCase() + role.slice(1));
+            .filter((role) => role !== 'visitor' && role !== 'student')
+            .map((role) => role.charAt(0).toUpperCase() + role.slice(1));
     }, [roles]);
 
     return (
@@ -221,7 +230,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                         },
                     ]}
                 />
-                <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
+                <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center pb-15">
                     <div className="flex items-center space-x-4">
                         <UserAvatar
                             size="xLarge"
@@ -229,9 +238,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                             fullName={getDisplayName()}
                         />
                         <div className="flex flex-col space-y-2">
-                            <h1>
-                                 {getDisplayName()}
-                            </h1>
+                            <h1>{getDisplayName()}</h1>
                             <div className="flex gap-2 flex-wrap">
                                 {formatRoles().map((role) => (
                                     <Badge
@@ -247,7 +254,9 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                                         variant="primary"
                                         size="medium"
                                         hasIconLeft
-                                        iconLeft={<IconStar className="w-3 h-3"/>}
+                                        iconLeft={
+                                            <IconStar className="w-3 h-3" />
+                                        }
                                     />
                                 )}
                             </div>
@@ -257,7 +266,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                         <Button
                             variant="secondary"
                             hasIconLeft
-                            iconLeft={<IconEdit/>}
+                            iconLeft={<IconEdit />}
                             size="medium"
                             onClick={handleEditProfile}
                         >
@@ -266,7 +275,7 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                         <Button
                             variant="primary"
                             hasIconLeft
-                            iconLeft={<IconCalendar/>}
+                            iconLeft={<IconCalendar />}
                             size="medium"
                             onClick={handleViewCalendar}
                         >
@@ -276,16 +285,26 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                 </div>
                 {/* Conditional rendering based on role */}
                 {isCoach ? (
-
                     // Coach Dashboard Layout
                     <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
                         <div className="xl:col-span-3 lg:col-span-2 space-y-6">
                             <UserCoachingSessions />
+
+                            {/* Your courses and Create course button and modal */}
                             <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
-                                <h3> {t('yourCourses')} </h3>
+                                <div className="flex items-center">
+                                    <h3> {t('yourCourses')} </h3>
+                                    <Button
+                                        variant="text"
+                                        size="small"
+                                        onClick={handleViewAllCourses}
+                                        text={t('viewAllCourses')}
+                                    />
+                                </div>
                                 {isAdmin && <CreateCourseDialog />}
                             </div>
-                            <UserCoursesList />
+                            <UserCoursesList maxItems={3} />
+
                             <CoachDashboardStudents />
                             <CoachDashboardReviews />
                         </div>
@@ -293,12 +312,12 @@ export default function UserDashboard({ roles }: UserDashboardProps) {
                             <UserNotifications />
                         </div>
                     </div>
-
                 ) : (
                     // Student Dashboard Layout
                     <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
                         <div className="xl:col-span-3 lg:col-span-2 space-y-6">
-                            <UserCoursesList />
+                            <h3> {t('yourCourses')} </h3>
+                            <UserCoursesList maxItems={3} />
                             <UserCoachingSessions />
                         </div>
                         <div className="xl:col-span-1 lg:col-span-1">
