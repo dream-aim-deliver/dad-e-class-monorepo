@@ -1403,6 +1403,7 @@ export const DE: TDictionary = {
       yourCourses: 'Deine Angebote',
       createCourse: 'Einen Kurs erstellen',
       becomeCourseCreator: 'Kurs-Creator werden',
+      viewAllCourses: 'Alle Kurse anzeigen',
     },
     coachStudents: {
       yourStudents: 'Deine Schüler',
@@ -1666,6 +1667,7 @@ export const DE: TDictionary = {
       viewCalendar: "Kalender anzeigen",
       yourCourses: "Deine Kurse",
       createCourse: "Kurs erstellen",
+      viewAllCourses: "Alle Kurse anzeigen",
     },
     userCoachingSessions: {
       title: "Deine Coaching-Sitzungen",
@@ -1687,6 +1689,11 @@ export const DE: TDictionary = {
     coachDashboardStudents: {
       emptyState: "Dir sind noch keine Schüler zugewiesen. Schüler erscheinen hier, wenn sie sich in deine Kurse einschreiben oder Coaching-Sitzungen buchen.",
       errorLoadingStudents: "Fehler beim Laden der Schüler",
+      title: "Deine Schüler",
+      clearAllFilters: "Alle Filter löschen",
+      search: "Schüler suchen",
+      filter: "Filter",
+      viewAllStudents: "Alle Schüler anzeigen",
     },
     groupWorkspace: {
       title: 'Gruppen-Workspace',
