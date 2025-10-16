@@ -68,7 +68,7 @@ const CMSSidebar = ({
 
     const routeMap = {
         allCourses: `${basePath}/manage-courses`,
-        packages: `${basePath}/manage-packages`,
+        packages: `${basePath}/packages`,
         categories: `${basePath}/manage-categories`,
         topics: `${basePath}/manage-topics`,
         preCourseAssessment: `${basePath}/pre-course-assessment-form`,
