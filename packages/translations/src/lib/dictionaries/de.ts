@@ -1561,5 +1561,16 @@ export const DE: TDictionary = {
         accessDenied: 'Zugriff verweigert. Nur Coaches können auf Coaching-Sitzungsbewertungen zugreifen.',
       },
     },
+    endedGroupCoachingSessions: {
+      title: 'Beendete Gruppenkurs-Sitzungen',
+      description: 'Zeige und verwalte deine abgeschlossenen Gruppenkurs-Sitzungen',
+      error: {
+        title: 'Sitzungen konnten nicht geladen werden',
+        description: 'Beim Laden der beendeten Coaching-Sitzungen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+        accessDenied: 'Zugriff verweigert. Nur Coaches können auf beendete Gruppenkurs-Sitzungen zugreifen.',
+        notFoundTitle: 'Keine Sitzungen gefunden',
+        notFoundDescription: 'Es gibt keine beendeten Coaching-Sitzungen für diese Gruppe.',
+      },
+    },
   },
 };

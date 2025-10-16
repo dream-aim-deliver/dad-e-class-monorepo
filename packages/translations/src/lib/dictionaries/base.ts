@@ -1593,6 +1593,17 @@ export const DictionarySchema = z.object({
         accessDenied: z.string(),
       }),
     }),
+    endedGroupCoachingSessions: z.object({
+      title: z.string(),
+      description: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        accessDenied: z.string(),
+        notFoundTitle: z.string(),
+        notFoundDescription: z.string(),
+      }),
+    }),
   }),
 });
 

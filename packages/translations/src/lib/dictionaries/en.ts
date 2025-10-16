@@ -1558,5 +1558,16 @@ export const EN: TDictionary = {
         accessDenied: 'Access denied. Only coaches can access coaching session reviews.',
       },
     },
+    endedGroupCoachingSessions: {
+      title: 'Ended Group Coaching Sessions',
+      description: 'View and manage your completed group coaching sessions',
+      error: {
+        title: 'Failed to load sessions',
+        description: 'An error occurred while loading ended coaching sessions. Please try again.',
+        accessDenied: 'Access denied. Only coaches can access ended group coaching sessions.',
+        notFoundTitle: 'No sessions found',
+        notFoundDescription: 'There are no ended coaching sessions for this group.',
+      },
+    },
   },
 };
