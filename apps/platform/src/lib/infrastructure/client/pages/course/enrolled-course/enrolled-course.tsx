@@ -32,6 +32,7 @@ import EnrolledCoaches from './enrolled-coaches';
 import { trpc } from '../../../trpc/cms-client';
 import EnrolledCourseStudents from './enrolled-course-students';
 import EnrolledCourseNotes from './enrolled-course-notes';
+import CoachCourseGroups from './coach-course-groups';
 // import { trpc as trpcMock } from '../../../trpc/client';
 
 interface EnrolledCourseProps {
@@ -270,6 +271,21 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                         }
                     >
                         <EnrolledCoaches
+                            courseSlug={props.courseSlug}
+                            currentRole={props.currentRole}
+                        />
+                    </Suspense>
+                </Tabs.Content>
+                <Tabs.Content
+                    value={CoachCourseTab.GROUPS}
+                    className={tabContentClass}
+                >
+                    <Suspense
+                        fallback={
+                            <DefaultLoading locale={locale} variant="minimal" />
+                        }
+                    >
+                        <CoachCourseGroups
                             courseSlug={props.courseSlug}
                             currentRole={props.currentRole}
                         />

@@ -1315,6 +1315,17 @@ export const EN: TDictionary = {
         noCoachesAssigned: 'No coaches assigned to this course yet.',
         noCoachesFound: 'No coaches found matching your search.',
       },
+      groups: {
+        title: 'Groups',
+        description: 'Manage course groups and group coaching sessions',
+        noGroupsFound: 'No groups found for this course.',
+        searchPlaceholder: 'Search groups...',
+        createGroupButton: 'Create Group',
+        error: {
+          title: 'Failed to load groups',
+          description: 'An error occurred while loading course groups. Please try again.',
+        },
+      },
       archiveCourseButton: 'Archive Course',
       editCourseButton: 'Edit Course',
       visitor: {
