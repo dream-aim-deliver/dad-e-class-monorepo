@@ -91,3 +91,4 @@ export * from './archive-package-view-model';
 export * from './update-package-view-model';
 export * from './get-package-view-model';
 export * from './list-group-coaching-session-reviews-view-model';
+export * from './list-group-coaching-sessions-view-model';
