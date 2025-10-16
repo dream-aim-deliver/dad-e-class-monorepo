@@ -18,6 +18,9 @@ interface StudentCourseCardProps extends TCourseMetadata {
   sales: number;
   reviewCount: number;
   progress?: number;
+  isPurchased?: boolean;
+  coachingIncluded?: boolean;
+  onBuy?: () => void;
   onBegin?: () => void;
   onResume?: () => void;
   onReview?: () => void;
@@ -44,6 +47,10 @@ interface StudentCourseCardProps extends TCourseMetadata {
  * @param onReview Optional callback function triggered when the "Review Course" button is clicked.
  * @param onDetails Optional callback function triggered when the "Details" button is clicked.
  * @param onClickUser Optional callback function triggered when the user name is clicked.
+ * @param isPurchased Optional boolean indicating if the course has been purchased.
+ * @param coachingIncluded Optional boolean indicating if coaching is included in the course pricing.
+ * @param pricing Optional object containing pricing details: currency, fullPrice, and partialPrice.
+ * @param onBuy Optional callback function triggered when the "Buy Course" button is clicked.
  *
  * @example
  * <StudentCourseCard
@@ -57,6 +64,10 @@ interface StudentCourseCardProps extends TCourseMetadata {
  *   author={{ name: "Alice Johnson", image: "author-image.jpg" }}
  *   language={{ name: "English" }}
  *   progress={50}
+ *   isPurchased={true}
+ *   coachingIncluded={true}
+ *   pricing={{ currency: 'USD', fullPrice: 199, partialPrice: 99 }}
+ *   onBuy={() => console.log("Buy clicked!")}
  *   locale="en"
  *   onBegin={() => console.log("Begin clicked!")}
  *   onResume={() => console.log("Resume clicked!")}
@@ -76,7 +87,11 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
   author,
   language,
   progress = 0,
+  isPurchased = true,
+  coachingIncluded,
+  pricing,
   locale,
+  onBuy,
   onBegin,
   onResume,
   onReview,
@@ -183,6 +198,10 @@ export const StudentCourseCard: React.FC<StudentCourseCardProps> = ({
               locale={locale as TLocale}
               studyProgress={studyProgress}
               progress={progress}
+              isPurchased={isPurchased}
+              onBuy={onBuy}
+              coachingIncluded={coachingIncluded}
+              pricing={pricing}
               onBegin={onBegin}
               onResume={onResume}
               onReview={onReview}

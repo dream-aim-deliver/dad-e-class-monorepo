@@ -18,12 +18,12 @@ interface CoachProfileProps {
 export default async function CoachProfileServerComponent(props: CoachProfileProps) {
 	// TODO: Add TRPC prefetching for coach profile data
 	// Based on discovered patterns in this project:
-	await Promise.all([
-		prefetch(trpc.getCoachIntroduction.queryOptions({ coachUsername: props.username })),
-		prefetch(trpc.listCoachReviews.queryOptions({ coachUsername: props.username })),
-		prefetch(trpc.listCoachCourses.queryOptions({ forStudent: true })),
-		prefetch(trpc.getCoachProfileAccess.queryOptions({ coachUsername: props.username })),
-	]);
+	// await Promise.all([
+	// 	prefetch(trpc.getCoachIntroduction.queryOptions({ coachUsername: props.username })),
+	// 	prefetch(trpc.listCoachReviews.queryOptions({ coachUsername: props.username })),
+	// 	prefetch(trpc.listCoachCourses.queryOptions({ forStudent: true })),
+	// 	prefetch(trpc.getCoachProfileAccess.queryOptions({ coachUsername: props.username })),
+	// ]);
 
 	return (
 		<>

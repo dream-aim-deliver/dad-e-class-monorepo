@@ -45,6 +45,7 @@ export { CarouselSkeleton } from './components/skeletons/carousel-skeleton'
 export { StudentCardListSkeleton } from './components/skeletons/students-skeleton';
 
 export { ReviewSnippet } from './components/review/review-snippet';
+export { ReviewDisplay } from './components/review/review-display';
 export { default as CreateCourseModal } from './components/create-modal/create-course-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
@@ -217,3 +218,4 @@ export { ManageCoachingOfferingItem } from './components/manage-coaching-offerin
 export { ManageCoachingOfferingList } from './components/manage-coaching-offering/manage-coaching-offering-list';
 export { CourseCardList } from './components/course-card/course-card-list';
 export { ReviewCard as CoachReviewCard } from './components/review/coach-review-card';
+export { CoachReviewFilterModal, type CoachReviewFilterModel } from './components/review/coach-review-filter-modal';

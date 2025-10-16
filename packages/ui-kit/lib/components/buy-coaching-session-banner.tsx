@@ -5,14 +5,6 @@ import { Badge } from './badge';
 import { StarRating } from './star-rating';
 import SkillBadges from './skill-badges';
 
-export interface Skill {
-    name: string;
-    id: string | number;
-    state: "created";
-    createdAt: Date;
-    updatedAt: Date;
-    slug: string;
-}
 export interface BuyCoachingSessionBannerProps extends isLocalAware {
     coachName: string;
     coachAvatarUrl: string;
@@ -21,7 +13,7 @@ export interface BuyCoachingSessionBannerProps extends isLocalAware {
     totalRatings: number;
     onBookSessionWith: () => void;
     isCourseCreator?: boolean;
-    skills: Skill[];
+    skills: string[];
 }
 
 /**
@@ -42,7 +34,7 @@ export interface BuyCoachingSessionBannerProps extends isLocalAware {
  * @param onBookSessionWith - Callback triggered when the booking button is clicked.
  * @param locale - Current locale used for translations (e.g., 'en', 'de').
  * @param isCourseCreator - Optional. If `true`, shows an additional badge indicating the coach is also a course creator.
- * @param skills - List of skills associated with the coach.
+ * @param skills - An array of skills to display as badges.
  *
  * @returns A JSX element displaying coach information, badges, skills, and a purchase CTA.
  */
@@ -62,7 +54,7 @@ export const BuyCoachingSessionBanner = ({
         getDictionary(locale).components.buyCoachingSessionBanner;
 
     return (
-        <div className="flex flex-col w-full p-3 items-start gap-4">
+        <div className="flex flex-col w-full items-start gap-4">
             <div className="flex flex-col md:flex-row w-full gap-5">
                 <div>
                     <UserAvatar

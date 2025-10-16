@@ -3,10 +3,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Badge } from './badge';
 import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
-import { Skill } from './buy-coaching-session-banner';
 
 interface SkillBadgesProps {
-    skills: Skill[];
+    skills: string[];
     locale: TLocale;
 }
 
@@ -113,11 +112,11 @@ const SkillBadges: React.FC<SkillBadgesProps> = ({ skills = [], locale }) => {
             >
                 {skills.map((skill, index) => (
                     <div
-                        key={skill.slug}
+                        key={skill}
                         ref={el => { badgeRefs.current[index] = el; }}
                     >
                         <Badge
-                            text={skill.name}
+                            text={skill}
                             className="h-6 py-1 text-base max-w-full"
                         />
                     </div>

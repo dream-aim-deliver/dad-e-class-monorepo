@@ -639,6 +639,10 @@ export const DictionarySchema = z.object({
       readMore: z.string(),
       readLess: z.string(),
     }),
+    reviewDisplay: z.object({
+      yourReview: z.string(),
+      close: z.string(),
+    }),
     moduleCompletionModal: z.object({
       moduleCompletedText: z.string(),
       moduleText: z.string(),
@@ -991,6 +995,7 @@ export const DictionarySchema = z.object({
       platforms: z.string(),
       topics: z.string(),
       categories: z.string(),
+      coaches: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1544,7 +1549,28 @@ export const DictionarySchema = z.object({
     deleteCoachingOffering: z.string(),
     descriptionDeleteCoaching: z.string(),
     newCoachingOffering: z.string(),
-  })
+  }),
+  coachProfile: z.object({
+    coachReviews: z.string(),
+    coachCourses: z.string(),
+    back: z.string(),
+    sortBy: z.string(),
+    mostRecentFirst: z.string(),
+    oldestFirst: z.string(),
+    bestFirst: z.string(),
+    worstFirst: z.string(),
+    selectSort: z.string(),
+    filterButton: z.string(),
+    filterReviews: z.string(),
+    ratingFilter: z.string(),
+    maxRating: z.string(),
+    minRating: z.string(),
+    dateFilter: z.string(),
+    beforeDate: z.string(),
+    afterDate: z.string(),
+    resetFilters: z.string(),
+    applyFilters: z.string(),
+  }),
   }),
 });
 

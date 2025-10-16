@@ -648,6 +648,10 @@ export const EN: TDictionary = {
       readMore: 'Read more',
       readLess: 'Read less',
     },
+    reviewDisplay: {
+      yourReview: 'Your Review',
+      close: 'Close',
+    },
     moduleCompletionModal: {
       moduleCompletedText: 'Module complete â€“ awesome job!',
       moduleText: 'Module',
@@ -1000,6 +1004,7 @@ export const EN: TDictionary = {
       platforms: 'Platforms',
       topics: 'Topics',
       categories: 'Categories',
+      coaches: 'Coaches',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1509,6 +1514,27 @@ export const EN: TDictionary = {
       deleteCoachingOffering: 'Delete coaching offering?',
       descriptionDeleteCoaching: "Students won't be able to book this coaching offering anymore. Coaching sessions that are already booked won't be changed.",
       newCoachingOffering: "New coaching offering",
-    }
+    },
+    coachProfile: {
+      coachReviews: "Coach's reviews",
+      coachCourses: "Coach's courses",
+      back: "Back",
+      sortBy: "Sort by",
+      mostRecentFirst: "Most recent first",
+      oldestFirst: "Oldest first", 
+      bestFirst: "Best first",
+      worstFirst: "Worst first",
+      selectSort: "Select sorting option",
+      filterButton: "Filter",
+      filterReviews: "Filter reviews",
+      ratingFilter: "Rating Filter",
+      maxRating: "Max rating",
+      minRating: "Min rating",
+      dateFilter: "Date Filter",
+      beforeDate: "Before date",
+      afterDate: "After date",
+      resetFilters: "Reset filters",
+      applyFilters: "Apply filters",
+    },
   },
 };
