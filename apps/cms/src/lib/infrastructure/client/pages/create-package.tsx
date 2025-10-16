@@ -28,6 +28,7 @@ import {
     PackageCoursesStep,
     PackagePreviewStep,
 } from '@maany_shr/e-class-ui-kit';
+import type { PackageDetailsFormData, PackagePricingFormData } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
@@ -52,15 +53,6 @@ interface CourseData {
     pricing: { fullPrice: number; currency: string; partialPrice: number };
 }
 
-// Types for pricing configuration
-interface PricingConfig {
-    completePackageWithCoaching: string;
-    completePackageWithoutCoaching: string;
-    partialDiscounts: {
-        [key: string]: string; // e.g., "2": "20%", "3": "25%", etc.
-    };
-}
-
 // Types for package preview
 interface PackagePreviewData {
     title: string;
@@ -70,7 +62,7 @@ interface PackagePreviewData {
     showListItemNumbers: boolean;
     accordionItems: AccordionBuilderItem[];
     selectedCourses: CourseData[];
-    pricingConfig: PricingConfig;
+    pricingFormData: PackagePricingFormData;
     coachingIncluded: boolean;
 }
 
@@ -106,21 +98,18 @@ export default function CreatePackage() {
     // Multi-step form state
     const [currentStep, setCurrentStep] = useState(1);
     
-    // Package details state
-    const [packageTitle, setPackageTitle] = useState('');
-    const [packageDescription, setPackageDescription] = useState('');
-    const [featuredImage, setFeaturedImage] = useState<fileMetadata.TFileMetadata | null>(null);
-    
-    // Accordion state
-    const [accordionTitle, setAccordionTitle] = useState('');
-    const [showListItemNumbers, setShowListItemNumbers] = useState(true);
-    const [accordionItems, setAccordionItems] = useState<AccordionBuilderItem[]>([]);
+    // Package details form data
+    const [packageDetailsFormData, setPackageDetailsFormData] = useState<PackageDetailsFormData>({
+        packageTitle: '',
+        packageDescription: '',
+        featuredImage: null,
+        accordionTitle: '',
+        showListItemNumbers: true,
+        accordionItems: [],
+    });
 
-    // Course selection state
-    const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>(['1', '2']); // Mock: 2 courses selected
-
-    // Pricing state
-    const [pricingConfig, setPricingConfig] = useState<PricingConfig>({
+    // Pricing form data
+    const [pricingFormData, setPricingFormData] = useState<PackagePricingFormData>({
         completePackageWithCoaching: '',
         completePackageWithoutCoaching: '',
         partialDiscounts: {
@@ -132,6 +121,9 @@ export default function CreatePackage() {
             '7': ''
         }
     });
+
+    // Course selection state
+    const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>(['1', '2']); // Mock: 2 courses selected
 
     // Preview state
     const [coachingIncluded, setCoachingIncluded] = useState(true);
@@ -183,6 +175,15 @@ export default function CreatePackage() {
         uploadError: iconUploadError,
     } = usePackageFileUpload("upload_package_accordion_item_icon", null, setIconUploadProgress);
 
+    // Form data handlers
+    const handlePackageDetailsChange = useCallback((updates: Partial<PackageDetailsFormData>) => {
+        setPackageDetailsFormData((prev: PackageDetailsFormData) => ({ ...prev, ...updates }));
+    }, []);
+
+    const handlePricingChange = useCallback((updates: Partial<PackagePricingFormData>) => {
+        setPricingFormData((prev: PackagePricingFormData) => ({ ...prev, ...updates }));
+    }, []);
+
     // Course management functions
     const toggleCourseSelection = useCallback((courseId: string) => {
         setSelectedCourseIds(prev => 
@@ -193,12 +194,12 @@ export default function CreatePackage() {
     }, []);
 
     // Pricing management functions
-    const updatePricingConfig = useCallback((updates: Partial<PricingConfig>) => {
-        setPricingConfig(prev => ({ ...prev, ...updates }));
+    const updatePricingConfig = useCallback((updates: Partial<PackagePricingFormData>) => {
+        setPricingFormData(prev => ({ ...prev, ...updates }));
     }, []);
 
     const updatePartialDiscount = useCallback((courseCount: string, discount: string) => {
-        setPricingConfig(prev => ({
+        setPricingFormData(prev => ({
             ...prev,
             partialDiscounts: {
                 ...prev.partialDiscounts,
@@ -215,11 +216,11 @@ export default function CreatePackage() {
         try {
             // Build payload matching backend contract
             // TODO: Replace string parsing when backend exposes numeric price fields
-            const price = parseFloat(pricingConfig.completePackageWithoutCoaching.replace(/[^\d.]/g, '')) || 0;
-            const priceWithCoachings = parseFloat(pricingConfig.completePackageWithCoaching.replace(/[^\d.]/g, '')) || 0;
+            const price = parseFloat(pricingFormData.completePackageWithoutCoaching.replace(/[^\d.]/g, '')) || 0;
+            const priceWithCoachings = parseFloat(pricingFormData.completePackageWithCoaching.replace(/[^\d.]/g, '')) || 0;
 
             // TODO: Move discount parsing to a shared util and validate range (0-100)
-            const partialDiscountsPayload = Object.entries(pricingConfig.partialDiscounts)
+            const partialDiscountsPayload = Object.entries(pricingFormData.partialDiscounts)
                 .map(([courseAmount, discount]) => ({
                     courseAmount: Number(courseAmount),
                     discountPercent: Number(String(discount).replace('%', '')),
@@ -227,7 +228,7 @@ export default function CreatePackage() {
                 .filter(d => !Number.isNaN(d.courseAmount) && !Number.isNaN(d.discountPercent));
 
             // TODO: Support per-item icon upload progress in UI (AccordionBuilder)
-            const accordionItemsPayload = accordionItems.map((item, idx) => ({
+            const accordionItemsPayload = packageDetailsFormData.accordionItems.map((item: AccordionBuilderItem, idx: number) => ({
                 title: item.title,
                 description: item.content,
                 position: idx + 1,
@@ -241,8 +242,8 @@ export default function CreatePackage() {
 
             // TODO: Add featuredImageId, accordionTitle, showListItemNumbers when supported by backend contract
             const payload = {
-                title: packageTitle,
-                description: packageDescription,
+                title: packageDetailsFormData.packageTitle,
+                description: packageDetailsFormData.packageDescription,
                 price,
                 priceWithCoachings,
                 partialDiscounts: partialDiscountsPayload,
@@ -263,8 +264,7 @@ export default function CreatePackage() {
             setIsPublishing(false);
         }
     }, [
-        packageTitle, packageDescription, featuredImage, accordionTitle, 
-        showListItemNumbers, accordionItems, selectedCourseIds, pricingConfig, 
+        packageDetailsFormData, selectedCourseIds, pricingFormData, 
         coachingIncluded, router, locale, platformSlug, platformLocale, createPackageMutation
     ]);
 
@@ -280,13 +280,13 @@ export default function CreatePackage() {
 
     const calculatePackagePrice = useCallback(() => {
         const basePrice = coachingIncluded 
-            ? pricingConfig.completePackageWithCoaching 
-            : pricingConfig.completePackageWithoutCoaching;
+            ? pricingFormData.completePackageWithCoaching 
+            : pricingFormData.completePackageWithoutCoaching;
         
         // Extract numeric value from price string (e.g., "5400 CHF" -> 5400)
         const numericPrice = parseFloat(basePrice.replace(/[^\d.]/g, '')) || 0;
         return numericPrice;
-    }, [pricingConfig, coachingIncluded]);
+    }, [pricingFormData, coachingIncluded]);
 
     const calculateSavings = useCallback(() => {
         const individualTotal = calculateIndividualCourseTotal();
@@ -394,26 +394,16 @@ export default function CreatePackage() {
             {/* Step 1: Package Details */}
             {currentStep === 1 && (
             <PackageDetailsStep
-                    packageTitle={packageTitle}
-                    setPackageTitle={setPackageTitle}
-                    packageDescription={packageDescription}
-                    setPackageDescription={setPackageDescription}
-                    featuredImage={featuredImage}
-                    setFeaturedImage={setFeaturedImage}
-                    accordionTitle={accordionTitle}
-                    setAccordionTitle={setAccordionTitle}
-                    showListItemNumbers={showListItemNumbers}
-                    setShowListItemNumbers={setShowListItemNumbers}
-                    accordionItems={accordionItems}
-                    setAccordionItems={setAccordionItems}
-                    handlePackageImageUpload={handlePackageImageUpload}
-                    handleAccordionIconUpload={handleAccordionIconUpload}
-                    uploadProgress={packageImageProgress}
-                    errorMessage={packageImageError}
-                    onDeleteFeaturedImage={handleDeleteFeaturedImage}
-                    onDownloadFeaturedImage={handleDownloadFeaturedImage}
-                    iconUploadProgress={iconUploadProgress}
-                    onDownloadAccordionIcon={(id: string) => handleDownloadFeaturedImage(id)}
+                formData={packageDetailsFormData}
+                onFormDataChange={handlePackageDetailsChange}
+                handlePackageImageUpload={handlePackageImageUpload}
+                handleAccordionIconUpload={handleAccordionIconUpload}
+                uploadProgress={packageImageProgress}
+                errorMessage={packageImageError}
+                onDeleteFeaturedImage={handleDeleteFeaturedImage}
+                onDownloadFeaturedImage={handleDownloadFeaturedImage}
+                iconUploadProgress={iconUploadProgress}
+                onDownloadAccordionIcon={(id: string) => handleDownloadFeaturedImage(id)}
                 locale={locale}
             />
             )}
@@ -431,22 +421,21 @@ export default function CreatePackage() {
             {/* Step 3: Pricing Configuration */}
             {currentStep === 3 && (
                 <PackagePricingStep
-                    pricingConfig={pricingConfig}
-                    onUpdatePricingConfig={updatePricingConfig}
-                    onUpdatePartialDiscount={updatePartialDiscount}
+                    formData={pricingFormData}
+                    onFormDataChange={handlePricingChange}
                 />
             )}
 
             {/* Step 4: Preview and Publish */}
             {currentStep === 4 && (
                 <PackagePreviewStep
-                    packageTitle={packageTitle || 'Package Title Here'}
-                    packageDescription={packageDescription || 'Package Description Here'}
-                    featuredImageUrl={featuredImage?.url}
+                    packageTitle={packageDetailsFormData.packageTitle || 'Package Title Here'}
+                    packageDescription={packageDetailsFormData.packageDescription || 'Package Description Here'}
+                    featuredImageUrl={packageDetailsFormData.featuredImage?.url}
                     durationInMinutes={163}
-                    accordionTitle={accordionTitle}
-                    showListItemNumbers={showListItemNumbers}
-                    accordionItems={accordionItems}
+                    accordionTitle={packageDetailsFormData.accordionTitle}
+                    showListItemNumbers={packageDetailsFormData.showListItemNumbers}
+                    accordionItems={packageDetailsFormData.accordionItems}
                     selectedCourses={selectedCourses}
                     onExcludeCourse={(id: string) => toggleCourseSelection(id)}
                     coachingIncluded={coachingIncluded}
