@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { TextInput } from '@maany_shr/e-class-ui-kit';
+import { TextInput } from '../text-input';
 
 type PartialDiscounts = Record<string, string>;
 

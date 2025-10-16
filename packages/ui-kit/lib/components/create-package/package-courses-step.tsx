@@ -40,23 +40,19 @@ export const PackageCoursesStep: React.FC<PackageCoursesStepProps> = ({
     onToggleCourseSelection,
     locale,
 }) => {
-    const selectedCourses = React.useMemo(
-        () => courses.filter((c) => selectedCourseIds.includes(c.id)),
-        [courses, selectedCourseIds],
-    );
-
     return (
         <div>
-
             {/* All courses list */}
-            <CourseCardAddToPackageList locale={locale} onSearch={() => {}}>
+            {/* TODO: Add search functionality when available */}
+            <CourseCardAddToPackageList locale={locale} onSearch={() => undefined}>
                 {courses.map((course) => (
                     <CourseCardAddToPackage
                         key={course.id}
                         {...course}
                         courseAdded={selectedCourseIds.includes(course.id)}
                         onAddOrRemove={() => onToggleCourseSelection(course.id)}
-                        onClickUser={() => {}}
+                        // TODO: Add author page route when available
+                        onClickUser={() => undefined}
                         locale={locale}
                     />
                 ))}

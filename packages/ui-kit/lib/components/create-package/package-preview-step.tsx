@@ -1,15 +1,12 @@
 'use client';
 
 import React from 'react';
-import {
-    Button,
-    CheckBox,
-    BuyCompletePackageBanner,
-    CourseCard,
-    PackageCourseSelector,
-    PackageGeneralInformation,
-    DefaultAccordion,
-} from '@maany_shr/e-class-ui-kit';
+import { Button } from '../button';
+import { BuyCompletePackageBanner } from '../buy-complete-package-banner';
+import { CourseCard } from '../course-card/course-card';
+import { PackageCourseSelector } from '../course-card/package-course-selector/package-course-selector';
+import { PackageGeneralInformation } from '../package-general-information-banner';
+import { DefaultAccordion } from '../accordion/default-accordion';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { type AccordionBuilderItem } from '../accordion-builder';
 
@@ -111,7 +108,7 @@ export function PackagePreviewStep({
                 duration={durationInMinutes || 0}
                 pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: selectedCoursesSavings } as any}
                 locale={locale}
-                onClickPurchase={() => {}}
+                onClickPurchase={() => undefined}
             />
 
             <div className="border-t border-card-stroke" />
@@ -141,7 +138,7 @@ export function PackagePreviewStep({
                 coachingIncluded={coachingIncluded}
                 pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: Math.max(selectedCoursesTotal - selectedCoursesSavings, 0) }}
                 onClickCheckbox={onToggleCoaching}
-                onClickPurchase={() => {}}
+                onClickPurchase={() => undefined}
                 locale={locale}
             >
                 {selectedCourses.map((course) => (
@@ -162,8 +159,8 @@ export function PackagePreviewStep({
                             } as any}
                             sessions={course.sessions}
                             sales={course.sales}
-                            onDetails={() => {}}
-                            onClickUser={() => {}}
+                            onDetails={() => undefined}
+                            onClickUser={() => undefined}
                             className="mb-3"
                         />
                         <div className="flex items-center justify-between">
@@ -181,7 +178,7 @@ export function PackagePreviewStep({
                                     variant="text"
                                     size="small"
                                     text="Details"
-                                    onClick={() => {}}
+                                    onClick={() => undefined}
                                 />
                             </div>
                         </div>
@@ -201,7 +198,7 @@ export function PackagePreviewStep({
                 duration={durationInMinutes || 0}
                 pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: selectedCoursesSavings }}
                 locale={locale}
-                onClickPurchase={() => {}}
+                onClickPurchase={() => undefined}
             />
 
         </div>

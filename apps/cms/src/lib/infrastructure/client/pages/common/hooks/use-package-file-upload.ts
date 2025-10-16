@@ -76,12 +76,25 @@ export const usePackageFileUpload = (
 
         // Comment out to test without the storage running
         // Track upload progress (30-100% of total)
+        // TODO: Replace manual casting with proper TRPC output type once available
+        const data = uploadResult.data as {
+            storageUrl: string;
+            formFields: Record<string, string>;
+            file: {
+                id: string;
+                name: string;
+                size: number;
+                category: fileMetadata.TFileCategoryEnum;
+                objectName: string;
+            };
+        };
+
         await uploadToS3({
             file: uploadRequest.file,
             checksum,
-            storageUrl: uploadResult.data.storageUrl,
-            objectName: uploadResult.data.file.objectName,
-            formFields: uploadResult.data.formFields,
+            storageUrl: data.storageUrl,
+            objectName: data.file.objectName,
+            formFields: data.formFields,
             abortSignal,
             onProgress: (uploadProgress) => {
                 onProgressUpdate?.(30 + Math.round(uploadProgress * 0.7));
@@ -89,19 +102,22 @@ export const usePackageFileUpload = (
         });
 
         const verifyResult = await verifyMutation.mutateAsync({
-            fileId: uploadResult.data.file.id,
+            fileId: data.file.id,
         });
         if (!verifyResult.success) {
             throw new Error(verifyImageError);
         }
 
+        // TODO: Replace manual casting with proper TRPC output type once available
+        const verifyData = verifyResult.data as { downloadUrl: string };
+
         return {
-            id: uploadResult.data.file.id,
-            name: uploadResult.data.file.name,
-            url: verifyResult.data.downloadUrl,
-            thumbnailUrl: verifyResult.data.downloadUrl,
-            size: uploadResult.data.file.size,
-            category: uploadResult.data.file.category,
+            id: data.file.id,
+            name: data.file.name,
+            url: verifyData.downloadUrl,
+            thumbnailUrl: verifyData.downloadUrl,
+            size: data.file.size,
+            category: data.file.category,
         } as fileMetadata.TFileMetadata;
     };
 
