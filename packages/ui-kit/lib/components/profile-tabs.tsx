@@ -134,7 +134,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
 
   if (!hasProfessionalProfile) {
     return (
-      <div className="w-full max-w-3xl mx-auto">
+      <div className="w-full  mx-auto">
         <ProfileInfo
           initialData={personalForm.value!}
           onChange={personalForm.setValue}

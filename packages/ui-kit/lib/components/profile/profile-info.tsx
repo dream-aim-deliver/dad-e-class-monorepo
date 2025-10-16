@@ -152,7 +152,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   };
 
   return (
-    <div className="flex gap-4 items-start p-4 rounded-medium border border-solid bg-card-fill border-card-stroke w-full min-w-[240px]">
+    <div className="flex gap-4 items-start p-4 rounded-medium border border-solid bg-card-fill border-card-stroke w-full">
       <div className="flex flex-col flex-1 gap-4 shrink w-full basis-0">
         <h1 className="text-xl flex items-start font-bold leading-[120%] text-text-primary">
           {dictionary.components.profileInfo.title}
