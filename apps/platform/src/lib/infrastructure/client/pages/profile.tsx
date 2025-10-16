@@ -30,9 +30,10 @@ interface ProfileProps {
 	locale: string;
 	userEmail: string;
 	username: string;
+	roles: string[];
 }
 
-export default function Profile({ locale: localeStr, userEmail, username }: ProfileProps) {
+export default function Profile({ locale: localeStr, userEmail, username, roles }: ProfileProps) {
 	const locale = useLocale() as TLocale;
 	const router = useRouter();
 	const t = useTranslations('pages.profile');
@@ -231,6 +232,9 @@ export default function Profile({ locale: localeStr, userEmail, username }: Prof
 	const personalProfileToUse = personalProfile || defaultPersonalProfile;
 	const professionalProfileToUse = professionalProfile || defaultProfessionalProfile;
 
+	// Determine if user is a coach - only coaches should see the professional profile tab
+	const isCoach = roles.includes('coach');
+
 	const handleSavePersonalProfile = async (profile: typeof personalProfile) => {
 		if (!profile) return;
 
@@ -354,8 +358,8 @@ export default function Profile({ locale: localeStr, userEmail, username }: Prof
 					]}
 				/>
 
-				<div className="flex flex-col space-y-5 mx-auto max-w-[560px]">
-					<h1 className="text-2xl font-bold">{t('yourProfile')}</h1>
+				<div className="flex flex-col space-y-5 mx-auto w-full">
+					<h1>{t('yourProfile')}</h1>
 
 					<ProfileTabs
 						personalProfile={personalProfileToUse}
@@ -376,7 +380,7 @@ export default function Profile({ locale: localeStr, userEmail, username }: Prof
 						onCurriculumVitaeDelete={curriculumVitaeUpload.handleDelete}
 						curriculumVitaeUploadProgress={curriculumVitaeUploadProgress}
 						isSaving={savePersonalMutation.isPending || saveProfessionalMutation.isPending}
-						hasProfessionalProfile={true}
+						hasProfessionalProfile={isCoach}
 					/>
 
 

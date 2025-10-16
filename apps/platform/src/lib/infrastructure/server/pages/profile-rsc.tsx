@@ -23,6 +23,7 @@ export default async function ProfileServerComponent(props: ProfileProps) {
 
 	const userEmail = session.user.email || '';
 	const username = session.user.name || '';
+	const roles = session.user.roles || [];
 
 	await Promise.all([
 		prefetch(trpc.getPersonalProfile.queryOptions({})),
@@ -35,7 +36,7 @@ export default async function ProfileServerComponent(props: ProfileProps) {
 		<>
 			<HydrateClient>
 				<Suspense fallback={<DefaultLoading locale={props.locale as any} variant="minimal" />}>
-					<Profile locale={props.locale} userEmail={userEmail} username={username} />
+					<Profile locale={props.locale} userEmail={userEmail} username={username} roles={roles} />
 				</Suspense>
 			</HydrateClient>
 		</>
