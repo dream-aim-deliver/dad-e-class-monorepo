@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   main:
-    runs-on: [self-hosted, org-gh-runner]
+    runs-on: ubuntu-latest
     environment: CI
     steps:
       - name: Checkout
@@ -55,9 +55,8 @@ jobs:
       # - run: pnpm exec nx-cloud record -- echo Hello World
       # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
       # When you enable task distribution, run the e2e-ci task instead of e2e
-      - name: Run lint
-        timeout-minutes: 10
-        run: pnpm exec nx run-many --no-cloud --skipNxCache -t lint
+      - name: Run lint, test, build, and e2e
+        run: pnpm exec nx run-many --no-cloud --skipNxCache -t lint test build # e2e disabled temporarily
         env:
           'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
           'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
@@ -71,53 +70,3 @@ jobs:
           'S3_PORT': '9000'
           'S3_PROTOCOL': 'http'
           'E_CLASS_DEV_MODE': 'true'
-          'E_CLASS_PLATFORM_SHORT_NAME': ${{ vars.E_CLASS_PLATFORM_SHORT_NAME}}
-          'E_CLASS_PLATFORM_NAME': ${{ vars.E_CLASS_PLATFORM_NAME }}
-
-      - name: Run build
-        timeout-minutes: 20
-        run: pnpm exec nx run-many --no-cloud --skipNxCache -t build # e2e disabled temporarily
-        env:
-          'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
-          'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
-          'AUTH_AUTH0_CLIENT_ID': ${{ secrets.AUTH_AUTH0_CLIENT_ID }}
-          'AUTH_AUTH0_CLIENT_SECRET': ${{ secrets.AUTH_AUTH0_CLIENT_SECRET }}
-          'AUTH_AUTH0_ISSUER': ${{ secrets.AUTH_AUTH0_ISSUER }}
-          'AUTH_AUTH0_AUTHORIZATION_URL': ${{ secrets.AUTH_AUTH0_AUTHORIZATION_URL }}
-          'NEXTAUTH_URL': 'https://example.com'
-          'NEXTAUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
-          'S3_HOSTNAME': 'localhost'
-          'S3_PORT': '9000'
-          'S3_PROTOCOL': 'http'
-          'E_CLASS_DEV_MODE': 'true'
-          'E_CLASS_PLATFORM_SHORT_NAME': ${{ vars.E_CLASS_PLATFORM_SHORT_NAME}}
-          'E_CLASS_PLATFORM_NAME': ${{ vars.E_CLASS_PLATFORM_NAME }}
-
-      - name: Run tests
-        timeout-minutes: 10
-        run: pnpm exec nx run-many --no-cloud --skipNxCache -t test
-        env:
-          'AUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
-          'AUTH_ENABLE_TEST_ACCOUNTS': 'true'
-          'AUTH_AUTH0_CLIENT_ID': ${{ secrets.AUTH_AUTH0_CLIENT_ID }}
-          'AUTH_AUTH0_CLIENT_SECRET': ${{ secrets.AUTH_AUTH0_CLIENT_SECRET }}
-          'AUTH_AUTH0_ISSUER': ${{ secrets.AUTH_AUTH0_ISSUER }}
-          'AUTH_AUTH0_AUTHORIZATION_URL': ${{ secrets.AUTH_AUTH0_AUTHORIZATION_URL }}
-          'NEXTAUTH_URL': 'https://example.com'
-          'NEXTAUTH_SECRET': 'Wu/hegOKb+gqUY9pBZeLyZQLatMlZSWvK'
-          'S3_HOSTNAME': 'localhost'
-          'S3_PORT': '9000'
-          'S3_PROTOCOL': 'http'
-          'E_CLASS_DEV_MODE': 'true'
-          'E_CLASS_PLATFORM_SHORT_NAME': ${{ vars.E_CLASS_PLATFORM_SHORT_NAME}}
-          'E_CLASS_PLATFORM_NAME': ${{ vars.E_CLASS_PLATFORM_NAME }}
-
-      - name: Final Docker Cleanup
-        if: always()
-        run: |
-          echo "Pruning all Docker containers, volumes, and networks..."
-          docker stop $(docker ps -aq) || true
-          docker container prune -f
-          docker volume prune -f
-          docker network prune -f
-          echo "Docker cleanup completed!"
