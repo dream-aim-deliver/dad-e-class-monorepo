@@ -1584,6 +1584,15 @@ export const DictionarySchema = z.object({
       saving: z.string(),
       save: z.string(),
     }),
+    groupCoachingSessionReviews: z.object({
+      title: z.string(),
+      description: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        accessDenied: z.string(),
+      }),
+    }),
   }),
 });
 

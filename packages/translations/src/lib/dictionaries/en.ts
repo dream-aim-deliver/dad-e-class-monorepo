@@ -1,4 +1,4 @@
-﻿import { TDictionary } from './base';
+import { TDictionary } from './base';
 import { Home_EN } from '../pages/home/home-en';
 import { Login_EN } from '../pages/login/login-en';
 import { SSO_EN } from '../pages/sso/sso-en';
@@ -1548,6 +1548,15 @@ export const EN: TDictionary = {
       description: 'Edit package information and pricing',
       saving: 'Saving...',
       save: 'Save Changes',
+    },
+    groupCoachingSessionReviews: {
+      title: 'Group Coaching Session Reviews',
+      description: 'View and manage reviews for this group coaching session',
+      error: {
+        title: 'Failed to load reviews',
+        description: 'An error occurred while loading the coaching session reviews. Please try again.',
+        accessDenied: 'Access denied. Only coaches can access coaching session reviews.',
+      },
     },
   },
 };
