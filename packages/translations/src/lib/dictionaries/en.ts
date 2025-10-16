@@ -1495,6 +1495,12 @@ export const EN: TDictionary = {
       emailRequired: 'Email is required',
       bioRequired: 'Bio is required',
       bioTooLong: 'Bio must be 280 characters or less',
+      unsavedChangesDialog: {
+        title: 'Unsaved Changes',
+        description: 'You have unsaved changes. Would you like to save them or discard them?',
+        saveButton: 'Save',
+        discardButton: 'Discard',
+      },
     },
     aboutPage: {
       title: 'About us',

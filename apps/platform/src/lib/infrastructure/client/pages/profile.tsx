@@ -376,6 +376,7 @@ export default function Profile({ locale: localeStr, userEmail, username }: Prof
 						onCurriculumVitaeDelete={curriculumVitaeUpload.handleDelete}
 						curriculumVitaeUploadProgress={curriculumVitaeUploadProgress}
 						isSaving={savePersonalMutation.isPending || saveProfessionalMutation.isPending}
+						hasProfessionalProfile={true}
 					/>
 
 

@@ -1247,6 +1247,12 @@ export const DictionarySchema = z.object({
       emailRequired: z.string(),
       bioRequired: z.string(),
       bioTooLong: z.string(),
+      unsavedChangesDialog: z.object({
+        title: z.string(),
+        description: z.string(),
+        saveButton: z.string(),
+        discardButton: z.string(),
+      }),
     }),
     sso: z.object({
       termsAndConditions: z.object({

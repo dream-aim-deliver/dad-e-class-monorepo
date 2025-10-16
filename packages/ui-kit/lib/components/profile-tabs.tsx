@@ -1,17 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Tabs, TabList, TabTrigger, TabContent } from './tabs/tab';
 import { ProfileInfo } from './profile/profile-info';
 import { ProfessionalInfo } from './profile/professional-info';
 import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
-
 import {
   TLocale,
   getDictionary,
   isLocalAware,
 } from '@maany_shr/e-class-translations';
 import { TLanguageListSuccess } from 'packages/models/src/view-models';
+import { Dialog, DialogContent, DialogBody } from './dialog';
+import { Button } from './button';
+import { useFormState } from '../hooks/use-form-state';
+import { useUnsavedChangesGuard } from '../hooks/use-unsaved-changes-guard';
 
 type TPersonalProfile = viewModels.TGetPersonalProfileSuccess['profile'];
 type TProfessionalProfile = viewModels.TGetProfessionalProfileSuccess['profile'];
@@ -21,11 +24,9 @@ export interface ProfileTabsProps extends isLocalAware {
   personalProfile?: TPersonalProfile | null;
   professionalProfile?: TProfessionalProfile | null;
   availableSkills: TSkill[];
-  availableLanguages: TLanguageListSuccess["languages"];
+  availableLanguages: TLanguageListSuccess['languages'];
   onSavePersonal?: (profile: TPersonalProfile) => void;
-  onSaveProfessional?: (
-    profile: TProfessionalProfile
-  ) => void;
+  onSaveProfessional?: (profile: TProfessionalProfile) => void;
   onPersonalFileUpload: (
     fileRequest: fileMetadata.TFileUploadRequest,
     abortSignal?: AbortSignal
@@ -43,26 +44,8 @@ export interface ProfileTabsProps extends isLocalAware {
   onCurriculumVitaeDelete: (id: string) => void;
   curriculumVitaeUploadProgress?: number;
   isSaving?: boolean;
+  hasProfessionalProfile?: boolean;
 }
-
-/**
- * A reusable ProfileTabs component for managing personal and professional profiles.
- *
- * @param personalProfile Optional personal profile data.
- * @param professionalProfile Optional professional profile data.
- * @param onSavePersonal Callback function triggered when the personal profile is saved.
- * @param onSaveProfessional Callback function triggered when the professional profile is saved.
- * @param locale The locale used for translations and localization.
- *
- * @example
- * <ProfileTabs
- *   personalProfile={{ name: "John", surname: "Doe", email: "john.doe@example.com" }}
- *   professionalProfile={{ bio: "Experienced developer", linkedinUrl: "https://linkedin.com/in/johndoe" }}
- *   onSavePersonal={(profile) => console.log("Saved personal profile:", profile)}
- *   onSaveProfessional={(profile) => console.log("Saved professional profile:", profile)}
- *   locale="en"
- * />
- */
 
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   personalProfile,
@@ -83,17 +66,79 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   curriculumVitaeUploadProgress,
   locale,
   isSaving = false,
+  hasProfessionalProfile = false,
 }) => {
-  const [activeTab, setActiveTab] = useState('personal');
-  const hasProfessionalProfile = Boolean(professionalProfile);
-  const dictionary = getDictionary(locale);
+  const personalForm = useFormState(personalProfile, {
+    enableReloadProtection: true
+  });
+
+  const professionalForm = useFormState(professionalProfile, {
+    enableReloadProtection: true,
+     });
+  const [currentTab, setCurrentTab] = useState<'personal' | 'professional'>('personal');
+  const dictionary = getDictionary(locale as TLocale);
+
+  const unsavedGuard = useUnsavedChangesGuard({
+    checkHasChanges: (tab) => {
+      if (tab === 'personal') return personalForm.isDirty;
+      if (tab === 'professional') return professionalForm.isDirty;
+      return false;
+    },
+    onDiscardChanges: (tab) => {
+      if (tab === 'personal') personalForm.reset();
+      else if (tab === 'professional') professionalForm.reset();
+    },
+  });
+
+  const handleTabChange = useCallback((newTab: string) => {
+    const canChange = unsavedGuard.handleTabChangeRequest(newTab, currentTab);
+    if (!canChange) {
+      return false;
+    }
+    setCurrentTab(newTab as 'personal' | 'professional');
+    return true;
+  }, [currentTab, unsavedGuard]);
+
+  const handleConfirmDiscard = () => {
+    unsavedGuard.confirmDiscard();
+    if (unsavedGuard.pendingTab) {
+      setCurrentTab(unsavedGuard.pendingTab as 'personal' | 'professional');
+    }
+  };
+
+  const handlePersonalSave = (profile: TPersonalProfile) => {
+    onSavePersonal?.(profile);
+    personalForm.markAsSaved();
+  };
+
+
+  const handleProfessionalSave = (profile: TProfessionalProfile) => {
+    onSaveProfessional?.(profile);
+    professionalForm.markAsSaved();
+  };
+
+  // ⚠️ REMOVED useCallback - performance analysis showed it's slower
+  const handleSaveFromDialog = () => {
+    if (unsavedGuard.sourceTab === 'personal' && personalForm.value) {
+      handlePersonalSave(personalForm.value);
+    } else if (unsavedGuard.sourceTab === 'professional' && professionalForm.value) {
+      handleProfessionalSave(professionalForm.value);
+    }
+    // Close dialog after saving
+    unsavedGuard.cancelChange();
+    // Switch to pending tab if there was one
+    if (unsavedGuard.pendingTab) {
+      setCurrentTab(unsavedGuard.pendingTab as 'personal' | 'professional');
+    }
+  };
 
   if (!hasProfessionalProfile) {
     return (
       <div className="w-full max-w-3xl mx-auto">
         <ProfileInfo
-          initialData={personalProfile!}
-          onSave={onSavePersonal}
+          initialData={personalForm.value!}
+          onChange={personalForm.setValue}
+          onSave={handlePersonalSave}
           onFileUpload={onPersonalFileUpload}
           profilePictureFile={profilePictureFile}
           onUploadComplete={onProfilePictureUploadComplete}
@@ -111,8 +156,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
     <div className="w-full mx-auto">
       <Tabs.Root
         defaultTab="personal"
-        defaultValue={activeTab}
-        onValueChange={setActiveTab}
+        onValueChange={handleTabChange}
         className="w-full"
       >
         <TabList className="grid w-full grid-cols-2 mb-8">
@@ -126,23 +170,26 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
 
         <TabContent value="personal">
           <ProfileInfo
-            initialData={personalProfile!}
-            onSave={onSavePersonal}
+            initialData={personalForm.value!}
+            onChange={personalForm.setValue}
+            onSave={handlePersonalSave}
             onFileUpload={onPersonalFileUpload}
             profilePictureFile={profilePictureFile}
             onUploadComplete={onProfilePictureUploadComplete}
             onFileDelete={onProfilePictureDelete}
             availableLanguages={availableLanguages}
             locale={locale as TLocale}
+            uploadProgress={profilePictureUploadProgress}
             isSaving={isSaving}
           />
         </TabContent>
 
         <TabContent value="professional">
           <ProfessionalInfo
-            initialData={professionalProfile!}
+            initialData={professionalForm.value!}
+            onChange={professionalForm.setValue}
             availableSkills={availableSkills}
-            onSave={onSaveProfessional!}
+            onSave={handleProfessionalSave}
             onFileUpload={onProfessionalFileUpload}
             curriculumVitaeFile={curriculumVitaeFile}
             onUploadComplete={onCurriculumVitaeUploadComplete}
@@ -153,6 +200,37 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           />
         </TabContent>
       </Tabs.Root>
+      <Dialog defaultOpen={false} open={unsavedGuard.showDialog} onOpenChange={(open) => !open && unsavedGuard.cancelChange()}>
+        <DialogContent showCloseButton={false} closeOnOverlayClick={false} closeOnEscape={false}>
+          <DialogBody>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold mb-2">
+                {dictionary.pages.profile.unsavedChangesDialog.title}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                {dictionary.pages.profile.unsavedChangesDialog.description}
+              </p>
+              <div className="flex gap-3 justify-center">
+                <Button
+                  variant="primary"
+                  onClick={handleSaveFromDialog}
+                  className="px-4 py-2"
+                  disabled={isSaving}
+                >
+                  {dictionary.pages.profile.unsavedChangesDialog.saveButton}
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={handleConfirmDiscard}
+                  className="px-4 py-2"
+                >
+                  {dictionary.pages.profile.unsavedChangesDialog.discardButton}
+                </Button>
+              </div>
+            </div>
+          </DialogBody>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

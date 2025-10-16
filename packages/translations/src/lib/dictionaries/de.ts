@@ -1498,6 +1498,12 @@ export const DE: TDictionary = {
       emailRequired: 'E-Mail ist erforderlich',
       bioRequired: 'Biografie ist erforderlich',
       bioTooLong: 'Biografie darf maximal 280 Zeichen lang sein',
+      unsavedChangesDialog: {
+        title: 'Ungespeicherte Änderungen',
+        description: 'Du hast ungespeicherte Änderungen. Möchtest du sie speichern oder verwerfen?',
+        saveButton: 'Speichern',
+        discardButton: 'Verwerfen',
+      },
     },
     aboutPage: {
       title: 'Über uns',
