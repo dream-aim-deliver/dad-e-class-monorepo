@@ -188,6 +188,16 @@ export default class {feature_pascal}Presenter extends BasePresenter<
             T{feature_pascal}ResponseMiddleware
         >,
     ): viewModels.T{feature_pascal}ViewModel {{
+        if (response.data.errorType === 'NotFoundError') {{
+            return {{
+                mode: 'not-found',
+                data: {{
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }}
+            }};
+        }}
         return {{
             mode: 'kaboom',
             data: {{
