@@ -8,13 +8,12 @@
 
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
-// TODO: Create presenter hook
-// import { useListPackagesPresenter } from '../hooks/use-list-packages-presenter';
+import { useListPackagesPresenter } from '../hooks/use-list-packages-presenter';
 import { useState } from 'react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { DefaultLoading, DefaultError, DefaultNotFound, Outline } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, DefaultNotFound, Outline, PackageCmsCardList, PackageCmsCard } from '@maany_shr/e-class-ui-kit';
 
 interface AllPackagesProps {
   locale: TLocale;
@@ -27,22 +26,69 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   const router = useRouter();
   const t = useTranslations('pages.allPackages');
 
-  // TODO: Add TRPC query for listPackages usecase (FEAT-164)
-  // const [listPackagesResponse] = trpc.listPackages.useSuspenseQuery({
-  //   platformSlug,
-  //   platformLocale,
-  // });
+  // TRPC query for listPackages usecase (FEAT-164)
+  const [listPackagesResponse] = trpc.listPackages.useSuspenseQuery({
+    platformSlug,
+    platformLocale,
+  });
 
   const [listPackagesViewModel, setListPackagesViewModel] = useState<
     viewModels.TListPackagesViewModel | undefined
   >(undefined);
 
-  // TODO: Create useListPackagesPresenter hook
-  // const { presenter } = useListPackagesPresenter(setListPackagesViewModel);
+  // Create useListPackagesPresenter hook
+  const { presenter } = useListPackagesPresenter(setListPackagesViewModel);
 
-  // TODO: Present the data when you have the response
+  // Present the data when you have the response
   // @ts-ignore
-  // presenter.present(listPackagesResponse, listPackagesViewModel);
+  presenter.present(listPackagesResponse, listPackagesViewModel);
+
+  // Client state for show archived filter
+  const [showArchived, setShowArchived] = useState(false);
+
+  // Archive package mutation
+  const archivePackageMutation = trpc.archivePackage.useMutation({
+    onSuccess: () => {
+      // TODO: Add toast notification for success
+      // Refetch packages by invalidating the query
+      trpc.useUtils().listPackages.invalidate({ platformSlug, platformLocale });
+    },
+    onError: (error) => {
+      // TODO: Add toast notification for error
+      console.error('Failed to archive package:', error);
+    },
+  });
+
+  // TODO: Check if publishPackage mutation exists, if not add TODO comment
+  // const publishPackageMutation = trpc.publishPackage.useMutation({
+  //   onSuccess: () => {
+  //     // TODO: Add toast notification for success
+  //     trpc.useUtils().listPackages.invalidate({ platformSlug, platformLocale });
+  //   },
+  //   onError: (error) => {
+  //     // TODO: Add toast notification for error
+  //     console.error('Failed to publish package:', error);
+  //   },
+  // });
+
+  // Navigation handlers
+  const handleCreatePackage = () => {
+    router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages/create`);
+  };
+
+  const handleEditPackage = (packageId: string) => {
+    router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages/${packageId}/edit`);
+  };
+
+  const handleArchivePackage = (packageId: string) => {
+    // TODO: Check if packageId should be number instead of string
+    archivePackageMutation.mutate({ packageId: Number(packageId) });
+  };
+
+  const handlePublishPackage = (packageId: string) => {
+    // TODO: Implement when publishPackage mutation is available
+    console.log('Publish package:', packageId);
+  };
 
   // Loading state using discovered patterns
   if (!listPackagesViewModel) {
@@ -64,33 +110,55 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
 
   // Success state - extract data using discovered pattern
   const packagesData = listPackagesViewModel.data;
+  const packages = packagesData.packages;
+
+  // Transform package data to match card props
+  const transformedPackages = packages.map((pkg: any) => ({
+    id: pkg.id,
+    title: pkg.title,
+    description: pkg.description,
+    imageUrl: pkg.imageUrl,
+    duration: pkg.duration,
+    courseCount: pkg.courseCount || 0,
+    pricing: {
+      currency: pkg.pricing?.currency || '$',
+      fullPrice: pkg.pricing?.fullPrice || pkg.pricing?.actual || 0,
+      partialPrice: pkg.pricing?.partialPrice || pkg.pricing?.allCourses || 0,
+    },
+    status: pkg.status || 'published', // Default to published if status not provided
+  }));
 
   return (
     <div className="flex flex-col space-y-5 px-30">
-      {/* TODO: Add your page content */}
-
       <Outline
         title={t('title') || 'All Packages'}
         description={t('description') || 'Manage all packages for this platform'}
       />
 
-      {/* TODO: Add main content sections */}
-      {/* Usecases to implement: */}
-      {/* - listPackages (FEAT-164): Display all packages for platform */}
-      {/* - archivePackage (FEAT-165): Archive package action/modal */}
-      {/* UI Components needed: 3 components (see Notion) */}
-
-      {/* TODO: Implement listPackages usecase - display packages table */}
-      {/* TODO: Implement archivePackage usecase - archive button/modal */}
-      {/* TODO: Add "Show archived" filter (client-side) */}
-      {/* TODO: Add navigation to Create Package and Edit Package pages */}
-
-      <div>
-        <p className="text-sm text-gray-500">
-          Platform: {platformSlug} | Locale: {platformLocale}
-        </p>
-        {/* TODO: Implement packages listing here */}
-      </div>
+      <PackageCmsCardList
+        locale={currentLocale}
+        packageCount={packages.length}
+        showArchived={showArchived}
+        onClickCheckbox={() => setShowArchived(!showArchived)}
+        onCreatePackage={handleCreatePackage}
+      >
+        {transformedPackages.map((pkg) => (
+          <PackageCmsCard
+            key={pkg.id}
+            status={pkg.status as 'published' | 'archived'}
+            title={pkg.title}
+            description={pkg.description}
+            imageUrl={pkg.imageUrl}
+            duration={pkg.duration}
+            courseCount={pkg.courseCount}
+            pricing={pkg.pricing}
+            locale={currentLocale}
+            onClickEdit={() => handleEditPackage(pkg.id)}
+            onClickArchive={() => handleArchivePackage(pkg.id)}
+            onClickPublished={() => handlePublishPackage(pkg.id)}
+          />
+        ))}
+      </PackageCmsCardList>
     </div>
   );
 }
