@@ -23,7 +23,11 @@ import { useRouter } from 'next/navigation';
 import { trpc } from '../../trpc/client';
 import { getAuthorDisplayName } from '../../utils/get-author-display-name';
 
-export default function UserCoursesList() {
+interface UserCoursesListProps {
+    maxItems?: number;
+}
+
+export default function UserCoursesList({ maxItems }: UserCoursesListProps = {}) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const sessionDTO = useSession();
@@ -70,6 +74,10 @@ export default function UserCoursesList() {
         items: courses,
     });
 
+    // If maxItems is specified, limit the displayed courses
+    const limitedCourses = maxItems ? displayedCourses.slice(0, maxItems) : displayedCourses;
+    const showLoadMore = maxItems ? false : hasMoreCourses;
+
     if (!coursesViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
@@ -82,7 +90,7 @@ export default function UserCoursesList() {
         return <DefaultError locale={locale} />;
     }
 
-    if (displayedCourses.length === 0) {
+    if (limitedCourses.length === 0) {
         return (
             <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                 <p className="text-text-primary text-md">
@@ -105,9 +113,9 @@ export default function UserCoursesList() {
     };
 
     return (
-        <div className="flex flex-col space-y-2 mt-6">
+        <div className="flex flex-col space-y-2 mt-6 pb-15">
             <CardListLayout>
-                {displayedCourses.map((course) => {
+                {limitedCourses.map((course) => {
                     // Leaving some fields empty as neither response provides them, nor the view uses them
 
                     const language = {
@@ -214,7 +222,7 @@ export default function UserCoursesList() {
                     }
                 })}
             </CardListLayout>
-            {hasMoreCourses && (
+            {showLoadMore && (
                 <Button
                     variant="text"
                     text={paginationTranslations('loadMore')}

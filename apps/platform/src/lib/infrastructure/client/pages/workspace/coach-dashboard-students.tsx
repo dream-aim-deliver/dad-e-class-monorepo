@@ -4,7 +4,11 @@ import { useState, useCallback, useEffect } from 'react';
 import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { Button, YourStudentCard, YourStudentCardList } from '@maany_shr/e-class-ui-kit';
+import {
+    Button,
+    YourStudentCard,
+    YourStudentCardList,
+} from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useListCoachStudentsPresenter } from '../../hooks/use-list-coach-students-presenter';
@@ -44,7 +48,9 @@ type CourseAssignment =
     | WaitingFeedbackCourseAssignment
     | CourseCompletedCourseAssignment;
 
-function mapAssignmentStatusToCourseStatus(status: string): CourseAssignment['status'] {
+function mapAssignmentStatusToCourseStatus(
+    status: string,
+): CourseAssignment['status'] {
     switch (status) {
         case 'Passed':
             return 'course-completed';
@@ -68,7 +74,7 @@ export default function CoachDashboardStudents() {
     } = trpc.listCoachStudents.useQuery({
         pagination: {
             page: 1,
-            pageSize: 3, // Only show 3 students in dashboard
+            pageSize: 8,
         },
     });
 
@@ -91,16 +97,32 @@ export default function CoachDashboardStudents() {
 
     const t = useTranslations('pages.coachDashboardStudents');
 
+    const students =
+        studentsViewModel?.mode === 'default'
+            ? studentsViewModel.data.students
+            : [];
+    const hasStudents = students.length > 0;
+    const hasError = error || studentsViewModel?.mode === 'kaboom';
+
     if (isLoading) {
         return (
-            <div className="flex flex-col space-y-4">
-                <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-semibold text-white">Your Students</h2>
+            <div className="flex flex-col space-y-4 pb-15">
+                <div className="flex items-center">
+                    <h3> {t('title')} </h3>
+                    <Button
+                        variant="text"
+                        size="small"
+                        onClick={handleViewAllStudents}
+                        text={t('viewAllStudents')}
+                    />
                 </div>
                 <div className="animate-pulse">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {[1, 2, 3].map((i) => (
-                            <div key={i} className="h-64 bg-neutral-800 border border-neutral-700 rounded-medium"></div>
+                            <div
+                                key={i}
+                                className="h-64 bg-neutral-800 border border-neutral-700 rounded-medium"
+                            ></div>
                         ))}
                     </div>
                 </div>
@@ -108,87 +130,107 @@ export default function CoachDashboardStudents() {
         );
     }
 
-    if (error || studentsViewModel?.mode === 'kaboom') {
+    if (hasError) {
         return (
-            <div className="flex flex-col space-y-4">
-                <div className="flex justify-between items-center">
-                    <h3>Your Students</h3>
+            <div className="flex flex-col space-y-4 pb-15">
+                <div className="flex items-center">
+                    <h3> {t('title')} </h3>
+                    <Button
+                        variant="text"
+                        size="small"
+                        onClick={handleViewAllStudents}
+                        text={t('viewAllStudents')}
+                    />
                 </div>
                 <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full">
-                    <p className="text-red-500"> {t('errorLoadingStudents')} </p>
+                    <p className="text-red-500">
+                        {' '}
+                        {t('errorLoadingStudents')}{' '}
+                    </p>
                 </div>
             </div>
         );
     }
 
-    const students = studentsViewModel?.mode === 'default' ? studentsViewModel.data.students : [];
-    const hasStudents = students.length > 0;
-
     return (
-        <div className="rounded-lg">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold text-white">Your Students</h2>
+        <div className="flex flex-col rounded-lg pb-15">
+            <div className="flex items-center mb-6">
+                <h3> {t('title')} </h3>
                 <Button
                     variant="text"
                     size="small"
                     onClick={handleViewAllStudents}
-                    text="View All Students"
+                    text={t('viewAllStudents')}
                 />
             </div>
 
             {hasStudents ? (
                 <YourStudentCardList locale={locale}>
                     {students.map((student) => {
-                        const courses: CourseAssignment[] = student.courses.map((course) => {
-                            let completedCourseDate: Date | undefined;
-                            let status = 'no-assignment';
-                            let assignmentTitle: string | undefined;
+                        const courses: CourseAssignment[] = student.courses.map(
+                            (course) => {
+                                let completedCourseDate: Date | undefined;
+                                let status = 'no-assignment';
+                                let assignmentTitle: string | undefined;
 
-                            if (course.lastAssignment) {
-                                status = mapAssignmentStatusToCourseStatus(course.lastAssignment.status);
-                                assignmentTitle = course.lastAssignment.title;
-                            }
+                                if (course.lastAssignment) {
+                                    status = mapAssignmentStatusToCourseStatus(
+                                        course.lastAssignment.status,
+                                    );
+                                    assignmentTitle =
+                                        course.lastAssignment.title;
+                                }
 
-                            if (course.courseCompletionDate) {
-                                completedCourseDate = new Date(course.courseCompletionDate);
-                            }
+                                if (course.courseCompletionDate) {
+                                    completedCourseDate = new Date(
+                                        course.courseCompletionDate,
+                                    );
+                                }
 
-                            if (!course.lastAssignment) {
+                                if (!course.lastAssignment) {
+                                    return {
+                                        courseName: course.title,
+                                        courseImageUrl: course.imageUrl || '',
+                                        onClickCourse: () => {
+                                            router.push(
+                                                `/${locale}/course/${course.slug || ''}`,
+                                            );
+                                        },
+                                        status: 'no-assignment' as const,
+                                    };
+                                }
+
+                                if (completedCourseDate) {
+                                    return {
+                                        courseName: course.title,
+                                        courseImageUrl: course.imageUrl || '',
+                                        onClickCourse: () => {
+                                            router.push(
+                                                `/${locale}/course/${course.slug || ''}`,
+                                            );
+                                        },
+                                        status: 'course-completed' as const,
+                                        completedCourseDate:
+                                            completedCourseDate,
+                                    };
+                                }
+
                                 return {
                                     courseName: course.title,
                                     courseImageUrl: course.imageUrl || '',
                                     onClickCourse: () => {
-                                        router.push(`/${locale}/course/${course.slug || ''}`);
-                                    },
-                                    status: 'no-assignment' as const,
-                                };
-                            }
-
-                            if (completedCourseDate) {
-                                return {
-                                    courseName: course.title,
-                                    courseImageUrl: course.imageUrl || '',
-                                    onClickCourse: () => {
-                                        router.push(`/${locale}/course/${course.slug || ''}`);
-                                    },
-                                    status: 'course-completed' as const,
-                                    completedCourseDate: completedCourseDate,
-                                };
-                            }
-
-                            return {
-                                courseName: course.title,
-                                courseImageUrl: course.imageUrl || '',
-                                onClickCourse: () => {
-                                        router.push(`/${locale}/course/${course.slug || ''}`);
+                                        router.push(
+                                            `/${locale}/course/${course.slug || ''}`,
+                                        );
                                     },
                                     status: status,
-                                assignmentTitle: assignmentTitle!,
-                                onViewAssignment: () => {
-                                    // TODO: Navigate to assignment
-                                },
-                            } as CourseAssignment;
-                        });
+                                    assignmentTitle: assignmentTitle!,
+                                    onViewAssignment: () => {
+                                        // TODO: Navigate to assignment
+                                    },
+                                } as CourseAssignment;
+                            },
+                        );
 
                         return (
                             <YourStudentCard
@@ -196,9 +238,15 @@ export default function CoachDashboardStudents() {
                                 locale={locale}
                                 studentName={`${student.name} ${student.surname}`}
                                 studentImageUrl={student.avatarUrl || ''}
-                                coachingSessionsLeft={student.coachingSessionCount > 0 ? student.coachingSessionCount : undefined}
+                                coachingSessionsLeft={
+                                    student.coachingSessionCount > 0
+                                        ? student.coachingSessionCount
+                                        : undefined
+                                }
                                 onStudentDetails={() => {
-                                    router.push(`/${locale}/workspace/student/${student.id}`);
+                                    router.push(
+                                        `/${locale}/workspace/student/${student.id}`,
+                                    );
                                 }}
                                 courses={courses}
                             />
@@ -210,11 +258,6 @@ export default function CoachDashboardStudents() {
                     <p className="text-text-secondary text-md">
                         {t('emptyState')}
                     </p>
-                    <Button
-                        variant="primary"
-                        onClick={handleViewAllStudents}
-                        text="Explore Coaching Opportunities"
-                    />
                 </div>
             )}
         </div>
