@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { TextInput } from '../text-input';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 
 type PartialDiscounts = Record<string, string>;
 
@@ -14,6 +15,7 @@ export interface PackagePricingFormData {
 export interface PackagePricingStepProps {
     formData: PackagePricingFormData;
     onFormDataChange: (updates: Partial<PackagePricingFormData>) => void;
+    locale: TLocale;
 }
 
 /**
@@ -44,7 +46,9 @@ export interface PackagePricingStepProps {
 export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
     formData,
     onFormDataChange,
+    locale,
 }) => {
+    const dictionary = getDictionary(locale);
     const {
         completePackageWithCoaching,
         completePackageWithoutCoaching,
@@ -53,20 +57,20 @@ export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
     return (
         <div className="flex flex-col border border-card-stroke bg-card-fill p-6 gap-6 w-full rounded-medium">
             <h3 className="text-text-primary">
-                Choose Pricing
+                {dictionary.components.packagePricingStep.title}
             </h3>
 
             {/* Complete Package Section */}
             <div className="flex flex-col space-y-6">
-                <h3 className="text-lg font-semibold text-text-primary">Complete package</h3>
+                <h3 className="text-lg font-semibold text-text-primary">{dictionary.components.packagePricingStep.completePackageTitle}</h3>
 
                 <div className="flex flex-col space-y-4">
                     {/* With Coaching */}
                     <div className="flex flex-col space-y-2">
-                        <label className="text-sm text-text-secondary">With coaching</label>
+                        <label className="text-sm text-text-secondary">{dictionary.components.packagePricingStep.withCoachingLabel}</label>
                         <TextInput
                             inputField={{
-                                inputText: 'e.g. 5400 CHF',
+                                inputText: dictionary.components.packagePricingStep.withCoachingPlaceholder,
                                 value: completePackageWithCoaching,
                                 setValue: (value: string) => onFormDataChange({ completePackageWithCoaching: value }),
                             }}
@@ -75,10 +79,10 @@ export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
 
                     {/* Without Coaching */}
                     <div className="flex flex-col space-y-2">
-                        <label className="text-sm text-text-secondary">Without coaching</label>
+                        <label className="text-sm text-text-secondary">{dictionary.components.packagePricingStep.withoutCoachingLabel}</label>
                         <TextInput
                             inputField={{
-                                inputText: 'e.g. 5400 CHF',
+                                inputText: dictionary.components.packagePricingStep.withoutCoachingPlaceholder,
                                 value: completePackageWithoutCoaching,
                                 setValue: (value: string) => onFormDataChange({ completePackageWithoutCoaching: value }),
                             }}
@@ -89,20 +93,20 @@ export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
 
             {/* Partial Package Discounts Section */}
             <div className="flex flex-col space-y-6">
-                <h3 className="text-lg font-semibold text-text-primary">Partial package discounts</h3>
+                <h3 className="text-lg font-semibold text-text-primary">{dictionary.components.packagePricingStep.partialDiscountsTitle}</h3>
 
                 <p className="text-text-secondary">
-                    If the user selects only some courses, they will receive a percentage discount compared to purchasing each course individually. This discount applies whether or not they choose to include coaching.
+                    {dictionary.components.packagePricingStep.partialDiscountsDescription}
                 </p>
 
                 {/* Discount Grid */}
                 <div className="grid grid-cols-3 gap-6">
                     {Object.entries(partialDiscounts).map(([courseCount, discount]) => (
                         <div key={courseCount} className="flex flex-col space-y-2">
-                            <label className="text-sm text-text-secondary">{courseCount} courses</label>
+                            <label className="text-sm text-text-secondary">{courseCount} {dictionary.components.packagePricingStep.coursesLabel}</label>
                             <TextInput
                                 inputField={{
-                                    inputText: 'e.g. 20%',
+                                    inputText: dictionary.components.packagePricingStep.discountPlaceholder,
                                     value: discount,
                                     setValue: (value: string) => onFormDataChange({
                                         partialDiscounts: {
