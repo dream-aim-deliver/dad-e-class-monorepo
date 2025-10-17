@@ -49,6 +49,7 @@ export { StudentCardListSkeleton } from './components/skeletons/students-skeleto
 export { ReviewSnippet } from './components/review/review-snippet';
 export { default as CoachReviewCard, type ReviewCardProps as CoachReviewCardProps } from './components/review/coach-review-card';
 export { default as CreateCourseModal } from './components/create-modal/create-course-modal';
+export { ArchivePackageModal, ArchiveSuccessModal, type ArchivePackageModalProps, type ArchiveSuccessModalProps } from './components/archive-package-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
 export { RemoveModal } from './components/remove-modal';
