@@ -95,7 +95,7 @@ export const InputField: FC<InputFieldProps> = ({
 
   return (
     <div
-      className={cn(`flex gap-2 items-start justify-center flex-col px-3 py-[10px] bg-input-fill border rounded-medium
+      className={cn(`flex gap-2 items-start justify-center flex-col px-3 py-[10px] bg-input-fill border rounded-medium w-full
       ${stateClasses[state]}
       ${className}
       `)}
