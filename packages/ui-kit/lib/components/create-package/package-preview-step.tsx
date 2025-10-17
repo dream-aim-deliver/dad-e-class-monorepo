@@ -76,6 +76,7 @@ export interface PackagePreviewStepProps {
  *
  * The component is purely presentational; all data/state are passed from the parent.
  */
+
 export function PackagePreviewStep({
     packageTitle,
     packageDescription,
