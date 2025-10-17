@@ -1633,6 +1633,9 @@ function AssignmentComponent({
                 if (component.id !== elementInstance.id) {
                     return component;
                 }
+                if (component.type !== CourseElementType.Assignment) {
+                    return component;
+                }
                 return { ...component, ...newAssignment };
             }),
         );
