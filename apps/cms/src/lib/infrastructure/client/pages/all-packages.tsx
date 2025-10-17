@@ -78,7 +78,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   };
 
   const handleEditPackage = (packageId: string) => {
-    router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages/${packageId}/edit`);
+    router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages/edit/${packageId}`);
   };
 
   const handleArchivePackage = (packageId: string) => {
