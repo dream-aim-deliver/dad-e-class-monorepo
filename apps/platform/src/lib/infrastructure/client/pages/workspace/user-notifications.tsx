@@ -68,7 +68,7 @@ export default function UserNotifications() {
                 isRead={notification.isRead}
                 platformName="E-Class"
                 recipients={1}
-                layout="horizontal"
+                layout="vertical"
                 locale={locale}
                 onClickActivity={(url: string) => () => {
                     if (url && url !== '#' && isValidUrl(url)) {
