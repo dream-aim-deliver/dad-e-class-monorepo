@@ -12,12 +12,17 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useGetPackagePresenter } from '../hooks/use-get-package-presenter';
-import { useState } from 'react';
-import { DefaultLoading, DefaultError, DefaultNotFound, Outline } from '@maany_shr/e-class-ui-kit';
+import { useState, useCallback } from 'react';
+import { DefaultLoading, DefaultError, DefaultNotFound, PackageDetailsStep, PackagePricingStep, Breadcrumbs, Button } from '@maany_shr/e-class-ui-kit';
+import type { PackageDetailsFormData, PackagePricingFormData } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { usePackageFileUpload } from './common/hooks/use-package-file-upload';
+import { AccordionBuilderItem } from '@maany_shr/e-class-ui-kit';
+import { slateifySerialize } from '@maany_shr/e-class-ui-kit';
+import React from 'react';
 
 interface EditPackageProps {
     locale: TLocale;
@@ -35,7 +40,6 @@ export default function EditPackage({
     // All hooks must be called before any conditional returns
     const currentLocale = useLocale() as TLocale;
     const router = useRouter();
-    const t = useTranslations('pages.editPackage');
 
     // CMS context hooks
     const requiredPlatformLocale = useRequiredPlatformLocale();
@@ -48,12 +52,52 @@ export default function EditPackage({
 
     const { presenter } = useGetPackagePresenter(setGetPackageViewModel);
 
+    // Package details form state
+    const [packageDetailsFormData, setPackageDetailsFormData] = useState<PackageDetailsFormData>({
+        packageTitle: '',
+        packageDescription: '',
+        featuredImage: null,
+        accordionTitle: '',
+        showListItemNumbers: true,
+        accordionItems: [],
+    });
+
+    // Pricing form state
+    const [pricingFormData, setPricingFormData] = useState<PackagePricingFormData>({
+        completePackageWithCoaching: '',
+        completePackageWithoutCoaching: '',
+        partialDiscounts: { '2': '', '3': '', '4': '', '5': '', '6': '', '7': '' }
+    });
+
+    // Update state flag
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    // File upload handlers
+    const [packageImageProgress, setPackageImageProgress] = useState<number | undefined>(undefined);
+    const { 
+        handleFileChange: handlePackageImageUpload, 
+        uploadError: packageImageError,
+        handleDelete: handleDeleteFeaturedImage,
+        handleDownload: handleDownloadFeaturedImage,
+    } = usePackageFileUpload("upload_package_image", null, setPackageImageProgress);
+
+    const [iconUploadProgress, setIconUploadProgress] = useState<number | undefined>(undefined);
+    const { 
+        handleFileChange: handleAccordionIconUpload,
+    } = usePackageFileUpload("upload_package_accordion_item_icon", null, setIconUploadProgress);
+
+    // Form data handlers
+    const handlePackageDetailsChange = useCallback((updates: Partial<PackageDetailsFormData>) => {
+        setPackageDetailsFormData((prev: PackageDetailsFormData) => ({ ...prev, ...updates }));
+    }, []);
+
+    const handlePricingChange = useCallback((updates: Partial<PackagePricingFormData>) => {
+        setPricingFormData((prev: PackagePricingFormData) => ({ ...prev, ...updates }));
+    }, []);
+
     // Validate packageId after all hooks
     const packageIdInt = parseInt(packageId);
-    if (isNaN(packageIdInt)) {
-        return <DefaultNotFound locale={currentLocale} />;
-    }
-
+    
     // Fetch package data using getPackage feature
     const [getPackageResponse] = trpc.getPackage.useSuspenseQuery({
         packageId: packageIdInt
@@ -61,6 +105,140 @@ export default function EditPackage({
 
     // @ts-ignore
     presenter.present(getPackageResponse, getPackageViewModel);
+
+    // Success state - extract package data
+    const packageData = getPackageViewModel?.data;
+
+    // Populate form data when package data is loaded
+    React.useEffect(() => {
+        if (packageData && typeof packageData === 'object' && 'package' in packageData) {
+            const pkg = (packageData as { package: any }).package;
+            
+            // Populate package details
+            setPackageDetailsFormData({
+                packageTitle: pkg.title || '',
+                packageDescription: pkg.description || '',
+                featuredImage: pkg.image ? {
+                    status: 'available' as const,
+                    name: pkg.image.name || '',
+                    id: pkg.image.id || '',
+                    category: 'image' as const,
+                    size: pkg.image.size || 0,
+                    url: pkg.image.downloadUrl || '',
+                    thumbnailUrl: null,
+                } : null,
+                accordionTitle: '', // TODO: Add when supported by backend
+                showListItemNumbers: true, // TODO: Add when supported by backend
+                accordionItems: pkg.accordionItems?.map((item: { id?: string; title?: string; description?: string; content?: string; icon?: any }) => ({
+                    id: item.id || String(Math.random()),
+                    title: item.title || '',
+                    content: slateifySerialize(item.description || item.content || ''),
+                    icon: item.icon || null,
+                })) || [],
+            });
+            
+            // Populate pricing - convert numbers to string format
+            setPricingFormData({
+                completePackageWithCoaching: pkg.priceWithCoachings ? `${pkg.priceWithCoachings} CHF` : '',
+                completePackageWithoutCoaching: pkg.price ? `${pkg.price} CHF` : '',
+                partialDiscounts: pkg.partialDiscounts?.reduce((acc: Record<string, string>, d: { courseAmount: number; discountPercent: number }) => {
+                    acc[String(d.courseAmount)] = `${d.discountPercent}%`;
+                    return acc;
+                }, { '2': '', '3': '', '4': '', '5': '', '6': '', '7': '' }) || { '2': '', '3': '', '4': '', '5': '', '6': '', '7': '' }
+            });
+        }
+    }, [packageData]);
+
+    // TODO: Implement updatePackage mutation
+    const updatePackageMutation = trpc.updatePackage.useMutation({
+        onSuccess: () => {
+            // TODO: Add success handling (toast notification, redirect, etc.)
+            router.refresh();
+        },
+        onError: (error) => {
+            // TODO: Add error handling (toast notification, error state, etc.)
+            console.error('Failed to update package:', error);
+        },
+    });
+
+    const handleUpdatePackage = useCallback(async () => {
+        setIsUpdating(true);
+        try {
+            // Parse prices from string format
+            const price = parseFloat(pricingFormData.completePackageWithoutCoaching.replace(/[^\d.]/g, '')) || 0;
+            const priceWithCoachings = parseFloat(pricingFormData.completePackageWithCoaching.replace(/[^\d.]/g, '')) || 0;
+            
+            // Map partial discounts
+            const partialDiscountsPayload = Object.entries(pricingFormData.partialDiscounts)
+                .map(([courseAmount, discount]) => ({
+                    courseAmount: Number(courseAmount),
+                    discountPercent: Number(String(discount).replace('%', '')),
+                }))
+                .filter(d => !Number.isNaN(d.courseAmount) && !Number.isNaN(d.discountPercent));
+            
+            // Map accordion items
+            const accordionItemsPayload = packageDetailsFormData.accordionItems.map((item: AccordionBuilderItem, idx: number) => ({
+                title: item.title,
+                description: item.content,
+                position: idx + 1,
+                iconId: item.icon?.id ? Number(item.icon.id) : undefined,
+            }));
+            
+            const payload = {
+                id: packageIdInt,
+                title: packageDetailsFormData.packageTitle,
+                description: packageDetailsFormData.packageDescription,
+                price,
+                priceWithCoachings,
+                partialDiscounts: partialDiscountsPayload,
+                accordionItems: accordionItemsPayload.map((item, idx) => ({
+                    ...item,
+                    id: idx + 1, // Add required id field
+                })),
+                // TODO: Add featuredImageId when supported
+            };
+            
+            await updatePackageMutation.mutateAsync(payload);
+            
+            // Navigate back to packages list on success
+            router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`);
+        } catch (error) {
+            console.error('Failed to update package:', error);
+            setIsUpdating(false);
+        }
+    }, [packageDetailsFormData, pricingFormData, packageIdInt, updatePackageMutation, router, locale, platformSlug, platformLocale]);
+
+    // Breadcrumbs
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+
+    // Conditional returns after all hooks
+    if (isNaN(packageIdInt)) {
+        return <DefaultNotFound locale={currentLocale} />;
+    }
+    const breadcrumbItems = [
+        {
+            label: breadcrumbsTranslations('platforms'),
+            onClick: () => router.push('/'),
+        },
+        {
+            label: platformSlug.charAt(0).toUpperCase() + platformSlug.slice(1),
+            onClick: () => {
+                // TODO: Implement navigation to platform
+            },
+        },
+        {
+            label: 'Packages',
+            onClick: () => {
+                router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`);
+            },
+        },
+        {
+            label: 'Edit Package',
+            onClick: () => {
+                // Current page
+            },
+        },
+    ];
 
     // Loading state using discovered patterns
     if (!getPackageViewModel) {
@@ -82,66 +260,56 @@ export default function EditPackage({
         return <DefaultNotFound locale={currentLocale} />;
     }
 
-    // Success state - extract package data
-    const packageData = getPackageViewModel.data;
-
-    // TODO: Implement updatePackage mutation
-    const updatePackageMutation = trpc.updatePackage.useMutation({
-        onSuccess: () => {
-            // TODO: Add success handling (toast notification, redirect, etc.)
-            router.refresh();
-        },
-        onError: (error) => {
-            // TODO: Add error handling (toast notification, error state, etc.)
-            console.error('Failed to update package:', error);
-        },
-    });
-
-    const handleUpdatePackage = (updatedData: any) => {
-        // TODO: Call updatePackage mutation with the form data
-        updatePackageMutation.mutate({
-            packageId,
-            ...updatedData,
-        });
-    };
-
     return (
-        <div className="flex flex-col space-y-5 px-30">
-            <Outline
-                title={t('title', { packageName: packageData.package.title || packageId })}
-                description={t('description')}
+        <div className="flex flex-col space-y-4">
+            {/* Breadcrumbs */}
+            <Breadcrumbs items={breadcrumbItems} />
+            
+            <div className="flex flex-col space-y-2">
+                <h1>Edit Package</h1>
+                <p className="text-text-secondary text-sm">
+                    Platform: {platformSlug} | Content Language: {platformLocale.toUpperCase()}
+                </p>
+            </div>
+            
+            {/* Package Details Section */}
+            <PackageDetailsStep
+                formData={packageDetailsFormData}
+                onFormDataChange={handlePackageDetailsChange}
+                handlePackageImageUpload={handlePackageImageUpload}
+                handleAccordionIconUpload={handleAccordionIconUpload}
+                uploadProgress={packageImageProgress}
+                errorMessage={packageImageError}
+                onDeleteFeaturedImage={handleDeleteFeaturedImage}
+                onDownloadFeaturedImage={handleDownloadFeaturedImage}
+                iconUploadProgress={iconUploadProgress}
+                onDownloadAccordionIcon={(id: string) => handleDownloadFeaturedImage(id)}
+                locale={currentLocale}
             />
-
-            {/* TODO: Add Package Edit Form */}
-            {/*
-                Features to implement:
-                - Edit package metadata (name, description, etc.)
-                - Edit package pricing (Note: Can't change courses in the package)
-                - Package Edit & Achieve Modal component
-
-                Important: According to comments, you can only change data around
-                the package or the pricing, NOT the courses themselves.
-            */}
-
-            <div className="space-y-4">
-                {/* TODO: Add form fields for editing package data */}
-                {/* Example structure:
-                <form onSubmit={(e) => {
-                    e.preventDefault();
-                    // Extract form data and call handleUpdatePackage
-                }}>
-                    <div>Package Name: {packageData.name}</div>
-                    <div>Package Description: {packageData.description}</div>
-                    <div>Package Pricing: {packageData.pricing}</div>
-
-                    <button type="submit" disabled={updatePackageMutation.isPending}>
-                        {updatePackageMutation.isPending ? t('saving') : t('save')}
-                    </button>
-                </form>
-                */}
-
-                {/* TODO: Integrate Package Edit & Achieve Modal component */}
-                {/* See Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=6400-224574 */}
+            
+            {/* Pricing Section */}
+            <PackagePricingStep
+                formData={pricingFormData}
+                onFormDataChange={handlePricingChange}
+            />
+            
+            {/* Action Buttons */}
+            <div className="flex gap-4 pt-2 pb-6">
+                <Button
+                    variant="secondary"
+                    size="medium"
+                    text="Cancel"
+                    onClick={() => router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`)}
+                    className="flex-1"
+                />
+                <Button
+                    variant="primary"
+                    size="medium"
+                    text={isUpdating ? 'Updating...' : 'Save Changes'}
+                    onClick={handleUpdatePackage}
+                    disabled={isUpdating}
+                    className="flex-1"
+                />
             </div>
         </div>
     );
