@@ -6,7 +6,7 @@ import { TextAreaInput } from '../text-areaInput';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { CheckBox } from '../checkbox';
 import { AccordionBuilder, type AccordionBuilderItem } from '../accordion-builder';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
 export interface PackageDetailsFormData {
@@ -110,6 +110,7 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
     onDownloadAccordionIcon,
     locale,
 }) => {
+    const dictionary = getDictionary(locale);
     const {
         packageTitle,
         packageDescription,
@@ -147,28 +148,28 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
     return (
         <div className="flex flex-col border border-card-stroke bg-card-fill p-6 gap-6 w-full rounded-medium">
             <h3 className="text-text-primary">
-                Package details
+                {dictionary.components.packageDetailsStep.title}
             </h3>
             
             {/* Package Title */}
             <TextAreaInput
-                label="Package Title"
+                label={dictionary.components.packageDetailsStep.packageTitleLabel}
                 value={packageTitle}
                 setValue={(value) => onFormDataChange({ packageTitle: value })}
-                placeholder="Max 70 characters"
+                placeholder={dictionary.components.packageDetailsStep.packageTitlePlaceholder}
             />
 
             {/* Package Description */}
             <TextAreaInput
-                label="Package Description"
+                label={dictionary.components.packageDetailsStep.packageDescriptionLabel}
                 value={packageDescription}
                 setValue={(value) => onFormDataChange({ packageDescription: value })}
-                placeholder="Max 320 characters"
+                placeholder={dictionary.components.packageDetailsStep.packageDescriptionPlaceholder}
             />
 
             {/* Featured Image */}
             <div className="flex flex-col space-y-2">
-                <label className="text-sm text-text-secondary">Featured Image</label>
+                <label className="text-sm text-text-secondary">{dictionary.components.packageDetailsStep.featuredImageLabel}</label>
                 <Uploader
                     type="single"
                     variant="image"
@@ -191,11 +192,11 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
 
             {/* Accordion Section */}
             <div className="flex flex-col space-y-4">
-                <h3 className="text-lg font-semibold text-text-primary">Accordion</h3>
+                <h3 className="text-lg font-semibold text-text-primary">{dictionary.components.packageDetailsStep.accordionSectionTitle}</h3>
 
                 {/* Accordion Title */}
                 <InputField
-                    inputText="accordion-title"
+                    inputText={dictionary.components.packageDetailsStep.accordionTitlePlaceholder}
                     value={accordionTitle}
                     setValue={(value) => onFormDataChange({ accordionTitle: value })}
                 />
@@ -206,7 +207,7 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                     value={showListItemNumbers.toString()}
                     checked={showListItemNumbers}
                     onChange={() => onFormDataChange({ showListItemNumbers: !showListItemNumbers })}
-                    label="Show list item numbers in public view"
+                    label={dictionary.components.packageDetailsStep.showNumbersCheckbox}
                     labelClass="text-white"
                     withText={true}
                 />

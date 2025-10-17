@@ -7,7 +7,7 @@ import { CourseCard } from '../course-card/course-card';
 import { PackageCourseSelector } from '../course-card/package-course-selector/package-course-selector';
 import { PackageGeneralInformation } from '../package-general-information-banner';
 import { DefaultAccordion } from '../accordion/default-accordion';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { type AccordionBuilderItem } from '../accordion-builder';
 
 type CoursePreview = {
@@ -98,6 +98,8 @@ export function PackagePreviewStep({
     bottomBannerTitle,
     bottomBannerSubtitle,
 }: PackagePreviewStepProps) {
+    const dictionary = getDictionary(locale);
+    
     return (
         <div className="flex flex-col gap-8 bg-card-fill p-5 border border-card-stroke rounded-medium">
             {/* Top hero section */}
@@ -117,7 +119,7 @@ export function PackagePreviewStep({
             {/* Accordion Section */}
             {accordionItems.length > 0 && (
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-lg font-semibold text-text-primary">{accordionTitle || 'Package Details'}</h3>
+                    <h3 className="text-lg font-semibold text-text-primary">{accordionTitle || dictionary.components.packagePreviewStep.packageDetailsTitle}</h3>
                     <DefaultAccordion
                         showNumbers={showListItemNumbers}
                         items={accordionItems.map((item, index) => ({
@@ -134,8 +136,8 @@ export function PackagePreviewStep({
 
             {/* Flexible Section using PackageCourseSelector */}
             <PackageCourseSelector
-                title="Flexible"
-                description="Choose only the services you really need for your success."
+                title={dictionary.components.packagePreviewStep.flexibleSectionTitle}
+                description={dictionary.components.packagePreviewStep.flexibleDescription}
                 coachingIncluded={coachingIncluded}
                 pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: Math.max(selectedCoursesTotal - selectedCoursesSavings, 0) }}
                 onClickCheckbox={onToggleCoaching}
@@ -172,13 +174,13 @@ export function PackagePreviewStep({
                                 <Button
                                     variant="secondary"
                                     size="small"
-                                    text="Exclude"
+                                    text={dictionary.components.packagePreviewStep.excludeButton}
                                     onClick={() => onExcludeCourse(course.id)}
                                 />
                                 <Button
                                     variant="text"
                                     size="small"
-                                    text="Details"
+                                    text={dictionary.components.packagePreviewStep.detailsButton}
                                     onClick={() => undefined}
                                 />
                             </div>
