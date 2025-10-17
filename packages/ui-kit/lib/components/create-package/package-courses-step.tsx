@@ -34,6 +34,7 @@ export interface PackageCoursesStepProps {
  * horizontal scroll section and renders the searchable list of all
  * courses using CourseCardAddToPackageList.
  */
+
 export const PackageCoursesStep: React.FC<PackageCoursesStepProps> = ({
     courses,
     selectedCourseIds,

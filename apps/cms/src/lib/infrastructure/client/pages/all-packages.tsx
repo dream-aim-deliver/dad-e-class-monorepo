@@ -13,7 +13,17 @@ import { useState } from 'react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { DefaultLoading, DefaultError, DefaultNotFound, Outline, PackageCmsCardList, PackageCmsCard, Breadcrumbs } from '@maany_shr/e-class-ui-kit';
+import { 
+  DefaultLoading, 
+  DefaultError, 
+  DefaultNotFound, 
+  Outline, 
+  PackageCmsCardList, 
+  PackageCmsCard, 
+  Breadcrumbs, 
+  ArchivePackageModal, 
+  ArchiveSuccessModal 
+} from '@maany_shr/e-class-ui-kit';
 
 interface AllPackagesProps {
   locale: TLocale;
@@ -47,10 +57,17 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   // Client state for show archived filter
   const [showArchived, setShowArchived] = useState(false);
 
+  // Modal state
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [packageToArchive, setPackageToArchive] = useState<string | null>(null);
+
   // Archive package mutation
   const archivePackageMutation = trpc.archivePackage.useMutation({
     onSuccess: () => {
-      // TODO: Add toast notification for success
+      // Close archive modal and show success modal
+      setShowArchiveModal(false);
+      setShowSuccessModal(true);
       // Refetch packages by invalidating the query
       trpc.useUtils().listPackages.invalidate({ platformSlug, platformLocale });
     },
@@ -82,8 +99,24 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   };
 
   const handleArchivePackage = (packageId: string) => {
-    // TODO: Check if packageId should be number instead of string
-    archivePackageMutation.mutate({ packageId: Number(packageId) });
+    setPackageToArchive(packageId);
+    setShowArchiveModal(true);
+  };
+
+  const handleConfirmArchive = () => {
+    if (packageToArchive) {
+      archivePackageMutation.mutate({ packageId: Number(packageToArchive) });
+    }
+  };
+
+  const handleCloseArchiveModal = () => {
+    setShowArchiveModal(false);
+    setPackageToArchive(null);
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+    setPackageToArchive(null);
   };
 
   const handlePublishPackage = (packageId: string) => {
@@ -178,6 +211,22 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
           />
         ))}
       </PackageCmsCardList>
+
+      {/* Archive Confirmation Modal */}
+      <ArchivePackageModal
+        isOpen={showArchiveModal}
+        onClose={handleCloseArchiveModal}
+        onConfirm={handleConfirmArchive}
+        isLoading={archivePackageMutation.isPending}
+        locale={currentLocale}
+      />
+
+      {/* Archive Success Modal */}
+      <ArchiveSuccessModal
+        isOpen={showSuccessModal}
+        onClose={handleCloseSuccessModal}
+        locale={currentLocale}
+      />
     </div>
   );
 }
