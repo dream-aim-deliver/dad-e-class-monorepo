@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { CourseCardAddToPackage } from '../course-card/add-to-package/course-card-add-to-package';
 import { CourseCardAddToPackageList } from '../course-card/add-to-package/course-card-add-to-package-list';
 
@@ -41,22 +41,30 @@ export const PackageCoursesStep: React.FC<PackageCoursesStepProps> = ({
     onToggleCourseSelection,
     locale,
 }) => {
+    const dictionary = getDictionary(locale);
+    
     return (
         <div>
             {/* All courses list */}
             {/* TODO: Add search functionality when available */}
             <CourseCardAddToPackageList locale={locale} onSearch={() => undefined}>
-                {courses.map((course) => (
-                    <CourseCardAddToPackage
-                        key={course.id}
-                        {...course}
-                        courseAdded={selectedCourseIds.includes(course.id)}
-                        onAddOrRemove={() => onToggleCourseSelection(course.id)}
-                        // TODO: Add author page route when available
-                        onClickUser={() => undefined}
-                        locale={locale}
-                    />
-                ))}
+                {courses.length === 0 ? (
+                    <div className="text-center text-text-secondary py-8">
+                        {dictionary.components.packageCoursesStep.emptyState}
+                    </div>
+                ) : (
+                    courses.map((course) => (
+                        <CourseCardAddToPackage
+                            key={course.id}
+                            {...course}
+                            courseAdded={selectedCourseIds.includes(course.id)}
+                            onAddOrRemove={() => onToggleCourseSelection(course.id)}
+                            // TODO: Add author page route when available
+                            onClickUser={() => undefined}
+                            locale={locale}
+                        />
+                    ))
+                )}
             </CourseCardAddToPackageList>
         </div>
     );

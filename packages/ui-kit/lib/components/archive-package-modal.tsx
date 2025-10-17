@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogBody } from './dialog';
 import { InputField } from './input-field';
 import { Button } from './button';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
 
 export interface ArchivePackageModalProps {
     isOpen: boolean;
@@ -37,6 +37,7 @@ export const ArchivePackageModal: React.FC<ArchivePackageModalProps> = ({
     isLoading = false,
     locale,
 }) => {
+    const dictionary = getDictionary(locale);
     const [confirmText, setConfirmText] = useState('');
     const isValid = confirmText === 'ARCHIVE';
 
@@ -58,15 +59,15 @@ export const ArchivePackageModal: React.FC<ArchivePackageModalProps> = ({
                 <DialogBody>
                     <div className="flex flex-col gap-4">
                         <h1 className="text-3xl font-semibold text-text-primary text-center">
-                            Are you sure you want to archive this package?
+                            {dictionary.components.archivePackageModal.confirmationTitle}
                         </h1>
                         
                         <div className="flex flex-col gap-2">
                             <label className="text-text-secondary text-sm">
-                                Type "ARCHIVE" to confirm
+                                {dictionary.components.archivePackageModal.inputLabel}
                             </label>
                             <InputField
-                                inputText="Type 'ARCHIVE' to confirm"
+                                inputText={dictionary.components.archivePackageModal.inputPlaceholder}
                                 value={confirmText}
                                 setValue={setConfirmText}
                                 state={confirmText ? 'filling' : 'placeholder'}
@@ -78,7 +79,7 @@ export const ArchivePackageModal: React.FC<ArchivePackageModalProps> = ({
                             <Button
                                 variant="primary"
                                 size="medium"
-                                text="Archive Package"
+                                text={dictionary.components.archivePackageModal.archiveButton}
                                 onClick={onConfirm}
                                 disabled={!isValid || isLoading}
                                 className="w-full"
@@ -88,7 +89,7 @@ export const ArchivePackageModal: React.FC<ArchivePackageModalProps> = ({
                                 onClick={onClose}
                                 className="text-text-secondary text-sm hover:text-text-primary transition-colors self-center"
                             >
-                                Back
+                                {dictionary.components.archivePackageModal.backButton}
                             </button>
                         </div>
                     </div>
@@ -110,6 +111,8 @@ export const ArchiveSuccessModal: React.FC<ArchiveSuccessModalProps> = ({
     onClose,
     locale,
 }) => {
+    const dictionary = getDictionary(locale);
+    
     return (
         <Dialog open={isOpen} onOpenChange={onClose} defaultOpen={false}>
             <DialogContent
@@ -121,14 +124,14 @@ export const ArchiveSuccessModal: React.FC<ArchiveSuccessModalProps> = ({
                 <DialogBody>
                     <div className="flex flex-col gap-4">
                         <h1 className="text-3xl font-semibold text-text-primary text-center">
-                            Package has been successfully archived
+                            {dictionary.components.archiveSuccessModal.successTitle}
                         </h1>
                         
                         <div className="flex justify-center mt-6">
                             <Button
                                 variant="primary"
                                 size="medium"
-                                text="Close"
+                                text={dictionary.components.archiveSuccessModal.closeButton}
                                 onClick={onClose}
                                 className="w-full"
                             />
