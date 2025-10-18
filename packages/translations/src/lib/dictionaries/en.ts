@@ -1572,6 +1572,25 @@ export const EN: TDictionary = {
       saving: 'Saving...',
       save: 'Save Changes',
     },
+    manageOffersPage: {
+      title: 'Manage Offers Page',
+      description: 'Customize the content and layout of your offers page',
+      save: 'Save Changes',
+      saving: 'Saving...',
+      saved: 'Changes saved successfully',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading the offers page',
+        unauthorized: {
+          title: 'Access Denied',
+          description: 'You do not have permission to access this page',
+        },
+        notFound: {
+          title: 'Not Found',
+          description: 'The offers page could not be found',
+        },
+      },
+    },
     groupCoachingSessionReviews: {
       title: 'Group Coaching Session Reviews',
       description: 'View and manage reviews for this group coaching session',
