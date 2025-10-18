@@ -1705,5 +1705,19 @@ export const DE: TDictionary = {
       resetFilters: "Filter zurücksetzen",
       applyFilters: "Filter anwenden",
     },
+    coachingSessions: {
+      title: 'Coaching-Sitzungen',
+      description: 'Verwalte und betrachte alle Coaching-Sitzungen deiner Plattform',
+      searchPlaceholder: 'Coaching-Sitzungen durchsuchen...',
+      exportButton: 'Exportieren',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der Coaching-Sitzungen ist ein Fehler aufgetreten.',
+        notFound: {
+          title: 'Keine Coaching-Sitzungen gefunden',
+          description: 'Es sind keine Coaching-Sitzungen zum Anzeigen vorhanden.',
+        },
+      },
+    },
   },
 };

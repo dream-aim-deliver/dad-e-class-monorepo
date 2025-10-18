@@ -1737,6 +1737,20 @@ export const DictionarySchema = z.object({
       resetFilters: z.string(),
       applyFilters: z.string(),
     }),
+    coachingSessions: z.object({
+      title: z.string(),
+      description: z.string(),
+      searchPlaceholder: z.string(),
+      exportButton: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
   }),
 });
 
