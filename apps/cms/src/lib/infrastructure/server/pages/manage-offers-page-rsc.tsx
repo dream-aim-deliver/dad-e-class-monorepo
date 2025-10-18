@@ -31,6 +31,7 @@ export default async function ManageOffersPageServerComponent({
     await Promise.all([
         prefetch(trpc.getOffersPageOutline.queryOptions({})), // getOffersPageOutline
         prefetch(trpc.listOffersPagePackagesShort.queryOptions({})), // listOffersPagePackagesShort
+        prefetch(trpc.listPackages.queryOptions({})), // listPackages
     ]);
 
     return (
