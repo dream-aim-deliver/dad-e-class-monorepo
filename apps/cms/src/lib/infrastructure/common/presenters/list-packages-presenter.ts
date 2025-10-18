@@ -63,6 +63,16 @@ export default class ListPackagesPresenter extends BasePresenter<
             TListPackagesResponseMiddleware
         >,
     ): viewModels.TListPackagesViewModel {
+        if (response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
         return {
             mode: 'kaboom',
             data: {
