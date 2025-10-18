@@ -1713,6 +1713,20 @@ export const DictionarySchema = z.object({
         }),
       }),
     }),
+    coachingSessions: z.object({
+      title: z.string(),
+      description: z.string(),
+      searchPlaceholder: z.string(),
+      exportButton: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
   }),
 });
 

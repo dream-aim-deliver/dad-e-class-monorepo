@@ -1678,5 +1678,19 @@ export const EN: TDictionary = {
         },
       },
     },
+    coachingSessions: {
+      title: 'Coaching Sessions',
+      description: 'Manage and view all coaching sessions across your platform',
+      searchPlaceholder: 'Search coaching sessions...',
+      exportButton: 'Export',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading coaching sessions.',
+        notFound: {
+          title: 'No Coaching Sessions Found',
+          description: 'There are no coaching sessions to display.',
+        },
+      },
+    },
   },
 };
