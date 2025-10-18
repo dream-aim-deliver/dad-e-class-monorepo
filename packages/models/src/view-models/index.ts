@@ -103,3 +103,4 @@ export * from './list-group-members-view-model';
 export * from './get-group-notes-view-model';
 export * from './save-group-notes-view-model';
 export * from './save-offers-page-view-model';
+export * from './list-offers-page-packages-short-view-model';
