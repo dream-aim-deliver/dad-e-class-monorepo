@@ -3,7 +3,7 @@ export * from './list-platforms-view-model';
 export * from './home-page-view-model';
 export * from './list-languages-view-model';
 export * from './topic-list-view-model';
-export * from './offers-page-outline-view-model';
+export * from './get-offers-page-outline-view-model';
 export * from './topics-by-category-view-model';
 export * from './course-list-view-model';
 export * from './offers-page-package-list-view-model';

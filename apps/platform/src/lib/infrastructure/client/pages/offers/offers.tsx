@@ -12,7 +12,7 @@ import {
 import { trpc } from '../../trpc/cms-client';
 import { Suspense, lazy, useState } from 'react';
 import { viewModels } from '@maany_shr/e-class-models';
-import { useGetOffersPageOutlinePresenter } from '../../hooks/use-offers-page-outline-presenter';
+import { useGetOffersPageOutlinePresenter } from '../../hooks/use-get-offers-page-outline-presenter';
 import { useLocale, useTranslations } from 'next-intl';
 import OffersFilters from './offers-filters';
 import { OffersCourseHeading, OffersCourseList } from './offers-course-list';
