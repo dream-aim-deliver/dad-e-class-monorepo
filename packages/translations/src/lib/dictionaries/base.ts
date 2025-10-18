@@ -1607,6 +1607,25 @@ export const DictionarySchema = z.object({
       saving: z.string(),
       save: z.string(),
     }),
+    manageOffersPage: z.object({
+      title: z.string(),
+      description: z.string(),
+      save: z.string(),
+      saving: z.string(),
+      saved: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        unauthorized: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
     groupCoachingSessionReviews: z.object({
       title: z.string(),
       description: z.string(),

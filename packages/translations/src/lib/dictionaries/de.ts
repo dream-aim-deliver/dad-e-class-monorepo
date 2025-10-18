@@ -1575,6 +1575,25 @@ export const DE: TDictionary = {
       saving: 'Speichern...',
       save: 'Änderungen speichern',
     },
+    manageOffersPage: {
+      title: 'Angebote-Seite verwalten',
+      description: 'Passe den Inhalt und das Layout deiner Angebote-Seite an',
+      save: 'Änderungen speichern',
+      saving: 'Speichern...',
+      saved: 'Änderungen erfolgreich gespeichert',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der Angebote-Seite ist ein Fehler aufgetreten',
+        unauthorized: {
+          title: 'Zugriff verweigert',
+          description: 'Du hast keine Berechtigung, auf diese Seite zuzugreifen',
+        },
+        notFound: {
+          title: 'Nicht gefunden',
+          description: 'Die Angebote-Seite konnte nicht gefunden werden',
+        },
+      },
+    },
     groupCoachingSessionReviews: {
       title: 'Gruppenkurs Bewertungen',
       description: 'Bewertungen für diese Gruppenkurs-Sitzung anzeigen und verwalten',
