@@ -47,6 +47,7 @@ export { StudentCardListSkeleton } from './components/skeletons/students-skeleto
 
 export { ReviewSnippet } from './components/review/review-snippet';
 export { default as CreateCourseModal } from './components/create-modal/create-course-modal';
+export { ArchivePackageModal, ArchiveSuccessModal, type ArchivePackageModalProps, type ArchiveSuccessModalProps } from './components/archive-package-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
 export { RemoveModal } from './components/remove-modal';
@@ -54,6 +55,19 @@ export { default as TopicList } from './components/topic-list';
 export { CoachingOnDemandBanner } from './components/coaching-on-demand-banner/coaching-on-demand-banner';
 export { HomeAccordion } from './components/home-accordion';
 export { default as RichTextRenderer } from './components/rich-text-element/renderer';
+export { default as RichTextEditor } from './components/rich-text-element/editor';
+export { slateifySerialize } from './components/rich-text-element/serializer';
+export { Uploader } from './components/drag-and-drop-uploader/uploader';
+
+// Create Package Components
+export { PackageDetailsStep, type PackageDetailsFormData } from './components/create-package/package-details-step';
+export { PackageCoursesStep } from './components/create-package/package-courses-step';
+export { PackagePricingStep, type PackagePricingFormData } from './components/create-package/package-pricing-step';
+export { PackagePreviewStep } from './components/create-package/package-preview-step';
+
+// Components used in the Package subComponents
+export { PackageCourseSelector } from './components/course-card/package-course-selector/package-course-selector';
+export { BuyCompletePackageBanner } from './components/buy-complete-package-banner';
 
 export { default as DefaultLoading } from './components/default-loading';
 export { default as DefaultError } from './components/default-error';
