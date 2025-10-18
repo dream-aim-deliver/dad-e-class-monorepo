@@ -1592,5 +1592,72 @@ export const EN: TDictionary = {
         notFoundDescription: 'There are no ended coaching sessions for this group.',
       },
     },
+    groupWorkspace: {
+      title: 'Group Workspace',
+      description: 'Collaborate with your group members and track your progress',
+      introduction: {
+        title: 'Group Introduction',
+      },
+      assignments: {
+        title: 'Group Assignments',
+      },
+      nextCoachingSession: {
+        title: 'Next Coaching Session',
+        noSession: 'No upcoming coaching session scheduled',
+      },
+      members: {
+        title: 'Group Members',
+      },
+      notes: {
+        title: 'Group Notes',
+      },
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading the group workspace.',
+        unauthorized: {
+          title: 'Access Denied',
+          description: 'You do not have permission to access this group workspace. Please make sure you are enrolled as a student.',
+        },
+        notFound: {
+          title: 'Group Not Found',
+          description: 'The requested group workspace could not be found.',
+        },
+      },
+    },
+    groupWorkspaceCoach: {
+      title: 'Group Workspace',
+      description: 'Manage your coaching group and track their progress',
+      introduction: {
+        title: 'Group Introduction',
+      },
+      assignments: {
+        title: 'Group Assignments',
+      },
+      nextCoachingSession: {
+        title: 'Next Coaching Session',
+        noSession: 'No upcoming coaching session scheduled',
+      },
+      members: {
+        title: 'Group Members',
+      },
+      notes: {
+        title: 'Group Notes',
+        saveButton: 'Save Notes',
+        saving: 'Saving...',
+        saved: 'Notes saved successfully',
+      },
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading the group workspace.',
+        accessDenied: {
+          title: 'Access Denied',
+          description: 'You do not have permission to access this group workspace. This workspace is only accessible to coaches.',
+        },
+        notFound: {
+          title: 'Group Not Found',
+          description: 'The requested group workspace could not be found.',
+        },
+      },
+    },
   },
 };
