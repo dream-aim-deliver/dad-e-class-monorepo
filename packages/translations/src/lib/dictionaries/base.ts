@@ -1627,6 +1627,73 @@ export const DictionarySchema = z.object({
         notFoundDescription: z.string(),
       }),
     }),
+    groupWorkspace: z.object({
+      title: z.string(),
+      description: z.string(),
+      introduction: z.object({
+        title: z.string(),
+      }),
+      assignments: z.object({
+        title: z.string(),
+      }),
+      nextCoachingSession: z.object({
+        title: z.string(),
+        noSession: z.string(),
+      }),
+      members: z.object({
+        title: z.string(),
+      }),
+      notes: z.object({
+        title: z.string(),
+      }),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        unauthorized: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
+    groupWorkspaceCoach: z.object({
+      title: z.string(),
+      description: z.string(),
+      introduction: z.object({
+        title: z.string(),
+      }),
+      assignments: z.object({
+        title: z.string(),
+      }),
+      nextCoachingSession: z.object({
+        title: z.string(),
+        noSession: z.string(),
+      }),
+      members: z.object({
+        title: z.string(),
+      }),
+      notes: z.object({
+        title: z.string(),
+        saveButton: z.string(),
+        saving: z.string(),
+        saved: z.string(),
+      }),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        accessDenied: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
   }),
 });
 

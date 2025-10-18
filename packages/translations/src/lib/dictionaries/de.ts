@@ -1595,5 +1595,72 @@ export const DE: TDictionary = {
         notFoundDescription: 'Es gibt keine beendeten Coaching-Sitzungen für diese Gruppe.',
       },
     },
+    groupWorkspace: {
+      title: 'Gruppen-Workspace',
+      description: 'Arbeite mit deinen Gruppenmitgliedern zusammen und verfolge deinen Fortschritt',
+      introduction: {
+        title: 'Gruppenvorstellung',
+      },
+      assignments: {
+        title: 'Gruppenaufgaben',
+      },
+      nextCoachingSession: {
+        title: 'Nächste Coaching-Sitzung',
+        noSession: 'Keine bevorstehende Coaching-Sitzung geplant',
+      },
+      members: {
+        title: 'Gruppenmitglieder',
+      },
+      notes: {
+        title: 'Gruppennotizen',
+      },
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden des Gruppen-Workspace ist ein Fehler aufgetreten.',
+        unauthorized: {
+          title: 'Zugriff verweigert',
+          description: 'Du hast keine Berechtigung, auf diesen Gruppen-Workspace zuzugreifen. Bitte stelle sicher, dass du als Student eingeschrieben bist.',
+        },
+        notFound: {
+          title: 'Gruppe nicht gefunden',
+          description: 'Der angeforderte Gruppen-Workspace konnte nicht gefunden werden.',
+        },
+      },
+    },
+    groupWorkspaceCoach: {
+      title: 'Gruppen-Workspace',
+      description: 'Verwalte deine Coaching-Gruppe und verfolge den Fortschritt',
+      introduction: {
+        title: 'Gruppenvorstellung',
+      },
+      assignments: {
+        title: 'Gruppenaufgaben',
+      },
+      nextCoachingSession: {
+        title: 'Nächste Coaching-Sitzung',
+        noSession: 'Keine bevorstehende Coaching-Sitzung geplant',
+      },
+      members: {
+        title: 'Gruppenmitglieder',
+      },
+      notes: {
+        title: 'Gruppennotizen',
+        saveButton: 'Notizen speichern',
+        saving: 'Wird gespeichert...',
+        saved: 'Notizen erfolgreich gespeichert',
+      },
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden des Gruppen-Workspace ist ein Fehler aufgetreten.',
+        accessDenied: {
+          title: 'Zugriff verweigert',
+          description: 'Du hast keine Berechtigung, auf diesen Gruppen-Workspace zuzugreifen. Dieser Workspace ist nur für Coaches zugänglich.',
+        },
+        notFound: {
+          title: 'Gruppe nicht gefunden',
+          description: 'Der angeforderte Gruppen-Workspace konnte nicht gefunden werden.',
+        },
+      },
+    },
   },
 };
