@@ -41,9 +41,9 @@ export interface CouponGridProps extends isLocalAware {
     doesExternalFilterPass?: (node: IRowNode<CouponRow>) => boolean;
 }
 
-const OutcomeCellRenderer = (params: { value: CouponRow['outcome'] }) => {
+const OutcomeCellRenderer = (params: { value: CouponRow['outcome']; locale: TLocale }) => {
     const { type, courses } = params.value;
-    const dictionary = getDictionary('en').components.couponGrid; // TODO: Pass locale properly
+    const dictionary = getDictionary(params.locale).components.couponGrid;
     
     return (
         <div className="flex flex-col">
@@ -57,9 +57,9 @@ const OutcomeCellRenderer = (params: { value: CouponRow['outcome'] }) => {
     );
 };
 
-const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRow }) => {
+const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRow; onRevoke: (id: number) => void; locale: TLocale }) => {
     const { value: status, data } = params;
-    const dictionary = getDictionary('en').components.couponGrid; // TODO: Pass locale properly
+    const dictionary = getDictionary(params.locale).components.couponGrid;
     
     if (status === 'revoked') {
         return (
@@ -71,11 +71,7 @@ const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRo
     
     return (
         <button
-            onClick={() => {
-                // This will be handled by the parent component
-                const event = new CustomEvent('revokeCoupon', { detail: data.couponId });
-                window.dispatchEvent(event);
-            }}
+            onClick={() => params.onRevoke(data.couponId)}
             className="text-blue-600 hover:text-blue-800 text-sm font-medium"
         >
             {dictionary.revokeButton}
@@ -187,7 +183,7 @@ export const CouponGrid = (props: CouponGridProps) => {
             sortable: false,
             flex: 2, // Takes up more space for course names
             minWidth: 200,
-            cellRenderer: OutcomeCellRenderer
+            cellRenderer: (params: any) => <OutcomeCellRenderer {...params} locale={props.locale} />
         },
         {
             field: 'status',
@@ -195,27 +191,15 @@ export const CouponGrid = (props: CouponGridProps) => {
             sortable: true,
             flex: 1,
             minWidth: 100,
-            cellRenderer: StatusCellRenderer,
+            cellRenderer: (params: any) => <StatusCellRenderer {...params} onRevoke={props.onRevokeCoupon} locale={props.locale} />,
             cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center' }
         }
-    ], [dictionary]);
+    ], [dictionary, props.locale]);
 
     // For filter modal
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
     const [appliedFilters, setAppliedFilters] = useState<Partial<CouponFilterModel>>({});
     const [searchTerm, setSearchTerm] = useState<string>('');
-
-    // Set up event listener for revoke button clicks
-    useEffect(() => {
-        const handleRevokeCoupon = (event: CustomEvent) => {
-            props.onRevokeCoupon(event.detail);
-        };
-
-        window.addEventListener('revokeCoupon', handleRevokeCoupon as EventListener);
-        return () => {
-            window.removeEventListener('revokeCoupon', handleRevokeCoupon as EventListener);
-        };
-    }, [props.onRevokeCoupon]);
 
     // Client-side filtering logic
     const doesExternalFilterPass = useCallback((node: IRowNode<CouponRow>) => {
