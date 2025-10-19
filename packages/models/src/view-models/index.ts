@@ -107,3 +107,4 @@ export * from './list-offers-page-packages-short-view-model';
 export * from './list-coaching-sessions-view-model';
 export * from './get-package-with-courses-view-model';
 export * from './list-package-related-packages-view-model';
+export * from './list-coupons-view-model';
