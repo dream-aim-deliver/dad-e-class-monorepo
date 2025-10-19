@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useRef, useState, useMemo, useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef, IRowNode, SortChangedEvent } from 'ag-grid-community';
