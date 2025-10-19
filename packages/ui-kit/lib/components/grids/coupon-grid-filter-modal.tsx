@@ -11,7 +11,7 @@ export interface CouponFilterModel {
     status?: ('active' | 'revoked')[];
     minUsagesLeft?: number;
     maxUsagesLeft?: number;
-    createdAfter?: string; // ISO date string
+    createdAfter?: string;
     createdBefore?: string;
     expiresAfter?: string;
     expiresBefore?: string;

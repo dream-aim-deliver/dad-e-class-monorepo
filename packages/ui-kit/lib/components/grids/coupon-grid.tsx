@@ -1,81 +1,45 @@
 'use client';
 
-import React, { useRef, useState, useMemo, useCallback } from 'react';
+import React, { useRef, useState, useMemo, useCallback, useEffect, RefObject } from 'react';
+import { AllCommunityModule, IRowNode, ModuleRegistry, SortChangedEvent } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, IRowNode, SortChangedEvent } from 'ag-grid-community';
 import { Button } from '../button';
 import { InputField } from '../input-field';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
 import { getDictionary } from '@maany_shr/e-class-translations';
 import { CouponGridFilterModal, CouponFilterModel } from './coupon-grid-filter-modal';
 import { IconFilter } from '../icons/icon-filter';
 import { IconPlus } from '../icons/icon-plus';
+import { IconSearch } from '../icons/icon-search';
+import { BaseGrid } from './base-grid';
 
-/**
- * Represents a coupon row in the grid with all necessary coupon data.
- */
+ModuleRegistry.registerModules([AllCommunityModule]);
+
 export interface CouponRow {
-    /** Unique identifier for the coupon */
     id: number;
-    /** Coupon ID used for business logic */
     couponId: number;
-    /** Display name of the coupon */
     name: string;
-    /** Number of usages remaining */
     usagesLeft: number;
-    /** Maximum number of usages allowed */
     maxUsages: number;
-    /** Creation timestamp in milliseconds */
     creationDate: number;
-    /** Expiration timestamp in milliseconds */
     expirationDate: number;
-    /** Coupon outcome details */
     outcome: {
-        /** Type of coupon outcome */
         type: 'free_courses' | 'discount' | 'coaching';
-        /** List of course names associated with this coupon */
         courses: string[];
     };
-    /** Current status of the coupon */
     status: 'active' | 'revoked';
 }
 
-/**
- * Props interface for the CouponGrid component.
- */
-export interface CouponGridProps {
-    /** A React ref object to access the AG Grid instance for programmatic control */
-    gridRef: React.RefObject<AgGridReact>;
-    /** An array of CouponRow objects representing the coupons to display in the grid */
+export interface CouponGridProps extends isLocalAware {
+    gridRef: RefObject<AgGridReact | null>;
     coupons: CouponRow[];
-    /** The locale used for translations and localization */
     locale: TLocale;
-    /** Callback function triggered when the "Revoke" button is clicked for a coupon. Receives the coupon ID */
     onRevokeCoupon: (couponId: number) => void;
-    /** Callback function triggered when the "Create Coupon" button is clicked */
     onCreateCoupon: () => void;
-    /** Optional callback function triggered when the grid's sort order changes. Receives the SortChangedEvent from AG Grid */
     onSortChanged?: (event: SortChangedEvent) => void;
-    /** Optional function to define custom external filtering logic. Receives an IRowNode<CouponRow> and returns a boolean */
     doesExternalFilterPass?: (node: IRowNode<CouponRow>) => boolean;
 }
 
-// Cell Renderers
-/**
- * Renders the usages left cell showing current usages vs maximum usages.
- */
-const UsagesCellRenderer = (params: { value: { usagesLeft: number; maxUsages: number } }) => {
-    const { usagesLeft, maxUsages } = params.value;
-    return (
-        <span className="text-text-primary">
-            {usagesLeft}/{maxUsages}
-        </span>
-    );
-};
-
-/**
- * Renders the outcome cell showing the coupon type and associated courses.
- */
 const OutcomeCellRenderer = (params: { value: CouponRow['outcome'] }) => {
     const { type, courses } = params.value;
     const dictionary = getDictionary('en').components.couponGrid; // TODO: Pass locale properly
@@ -92,9 +56,6 @@ const OutcomeCellRenderer = (params: { value: CouponRow['outcome'] }) => {
     );
 };
 
-/**
- * Renders the status cell showing either a "Revoked" badge or a "Revoke" button.
- */
 const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRow }) => {
     const { value: status, data } = params;
     const dictionary = getDictionary('en').components.couponGrid; // TODO: Pass locale properly
@@ -118,22 +79,6 @@ const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRo
         >
             {dictionary.revokeButton}
         </button>
-    );
-};
-
-/**
- * Renders the date cell formatting timestamps as localized date strings.
- */
-const DateCellRenderer = (params: { value: number }) => {
-    const date = new Date(params.value);
-    return (
-        <span className="text-text-primary text-sm">
-            {date.toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: '2-digit', 
-                day: '2-digit' 
-            })}
-        </span>
     );
 };
 
@@ -180,38 +125,19 @@ const DateCellRenderer = (params: { value: number }) => {
  * />
  * ```
  */
-export const CouponGrid: React.FC<CouponGridProps> = ({
-    gridRef,
-    coupons,
-    locale,
-    onRevokeCoupon,
-    onCreateCoupon,
-    onSortChanged,
-    doesExternalFilterPass
-}) => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const dictionary = getDictionary(locale).components.couponGrid;
+export const CouponGrid = (props: CouponGridProps) => {
 
-    // Set up event listener for revoke button clicks
-    React.useEffect(() => {
-        const handleRevokeCoupon = (event: CustomEvent) => {
-            onRevokeCoupon(event.detail);
-        };
+    const dictionary = getDictionary(props.locale).components.couponGrid;
 
-        window.addEventListener('revokeCoupon', handleRevokeCoupon as EventListener);
-        return () => {
-            window.removeEventListener('revokeCoupon', handleRevokeCoupon as EventListener);
-        };
-    }, [onRevokeCoupon]);
-
-    const columnDefs = useMemo((): ColDef<CouponRow>[] => [
+    const columnDefs = useMemo(() => [
         {
             field: 'name',
             headerName: dictionary.nameColumn,
             sortable: true,
             filter: 'agTextColumnFilter',
-            width: 200,
-            cellRenderer: (params) => (
+            flex: 2, // Takes up more space
+            minWidth: 150,
+            cellRenderer: (params: { value: string }) => (
                 <span className="text-text-primary font-medium">
                     {params.value}
                 </span>
@@ -221,76 +147,100 @@ export const CouponGrid: React.FC<CouponGridProps> = ({
             field: 'usagesLeft',
             headerName: dictionary.usagesLeftColumn,
             sortable: true,
-            width: 150,
-            cellRenderer: UsagesCellRenderer,
-            valueGetter: (params) => ({
-                usagesLeft: params.data?.usagesLeft || 0,
-                maxUsages: params.data?.maxUsages || 0
-            })
+            flex: 1,
+            minWidth: 120,
+            valueFormatter: (params: any) => {
+                const usagesLeft = params.data?.usagesLeft || 0;
+                const maxUsages = params.data?.maxUsages || 0;
+                return `${usagesLeft}/${maxUsages}`;
+            },
+            filter: 'agNumberColumnFilter'
         },
         {
             field: 'creationDate',
             headerName: dictionary.creationDateColumn,
             sortable: true,
-            width: 150,
-            cellRenderer: DateCellRenderer
+            flex: 1,
+            minWidth: 130,
+            valueFormatter: (params: any) => {
+                const date = new Date(params.value);
+                return date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: '2-digit', 
+                    day: '2-digit' 
+                });
+            },
+            filter: 'agDateColumnFilter'
         },
         {
             field: 'expirationDate',
             headerName: dictionary.expirationDateColumn,
             sortable: true,
-            width: 150,
-            cellRenderer: DateCellRenderer
+            flex: 1,
+            minWidth: 130,
+            valueFormatter: (params: any) => {
+                const date = new Date(params.value);
+                return date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: '2-digit', 
+                    day: '2-digit' 
+                });
+            },
+            filter: 'agDateColumnFilter'
         },
         {
             field: 'outcome',
             headerName: dictionary.outcomeColumn,
             sortable: false,
-            width: 250,
+            flex: 2, // Takes up more space for course names
+            minWidth: 200,
             cellRenderer: OutcomeCellRenderer
         },
         {
             field: 'status',
             headerName: dictionary.statusColumn,
             sortable: true,
-            width: 120,
+            flex: 1,
+            minWidth: 100,
             cellRenderer: StatusCellRenderer,
             cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center' }
         }
     ], [dictionary]);
 
-    const defaultColDef = useMemo(() => ({
-        resizable: true,
-        sortable: true,
-        filter: true,
-    }), []);
-
-    const handleSearchChange = useCallback((value: string) => {
-        setSearchTerm(value);
-        if (gridRef.current?.api) {
-            gridRef.current.api.setGridOption('quickFilterText', value);
-        }
-    }, [gridRef]);
-
-    const [showFilterModal, setShowFilterModal] = useState(false);
+    // For filter modal
+    const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
     const [appliedFilters, setAppliedFilters] = useState<Partial<CouponFilterModel>>({});
+    const [searchTerm, setSearchTerm] = useState<string>('');
+
+    // Set up event listener for revoke button clicks
+    useEffect(() => {
+        const handleRevokeCoupon = (event: CustomEvent) => {
+            props.onRevokeCoupon(event.detail);
+        };
+
+        window.addEventListener('revokeCoupon', handleRevokeCoupon as EventListener);
+        return () => {
+            window.removeEventListener('revokeCoupon', handleRevokeCoupon as EventListener);
+        };
+    }, [props.onRevokeCoupon]);
 
     // Client-side filtering logic
-    const internalDoesExternalFilterPass = useCallback((node: IRowNode<CouponRow>) => {
-        if (!node.data) return false;
-        
+    const doesExternalFilterPass = useCallback((node: IRowNode<CouponRow>) => {
+        if (!node.data) {
+            return false;
+        }
         const coupon = node.data;
-        
+
         // Apply search term filter (fuzzy search)
         if (searchTerm) {
             const searchLower = searchTerm.toLowerCase();
             const nameMatch = coupon.name?.toLowerCase().includes(searchLower);
-            
+
             if (!nameMatch) {
                 return false;
             }
         }
-        
+
         // Apply modal filters
         // Status filter
         if (appliedFilters.status?.length && !appliedFilters.status.includes(coupon.status)) {
@@ -325,128 +275,109 @@ export const CouponGrid: React.FC<CouponGridProps> = ({
         if (appliedFilters.outcomeTypes?.length && !appliedFilters.outcomeTypes.includes(coupon.outcome.type)) {
             return false;
         }
-        
+
         // If custom external filter is provided, apply it last
-        if (doesExternalFilterPass) {
-            return doesExternalFilterPass(node);
+        if (props.doesExternalFilterPass) {
+            return props.doesExternalFilterPass(node);
         }
-        
+
         return true;
-    }, [searchTerm, appliedFilters, doesExternalFilterPass]);
+    }, [searchTerm, appliedFilters, props.doesExternalFilterPass]);
 
     // Force refresh the grid when the external filter changes
     const refreshGrid = useCallback(() => {
-        if (gridRef.current?.api) {
-            gridRef.current.api.setGridOption('doesExternalFilterPass', internalDoesExternalFilterPass);
-            gridRef.current.api.onFilterChanged();
+        if (props.gridRef.current?.api) {
+            props.gridRef.current.api.setGridOption('doesExternalFilterPass', doesExternalFilterPass);
+            props.gridRef.current.api.onFilterChanged();
         }
-    }, [gridRef, internalDoesExternalFilterPass]);
+    }, [props.gridRef, doesExternalFilterPass]);
 
     // Apply filter when search or filters change
-    React.useEffect(() => {
+    useEffect(() => {
         refreshGrid();
     }, [refreshGrid, searchTerm, appliedFilters]);
-
-    const handleFilterClick = useCallback(() => {
-        setShowFilterModal(true);
-    }, []);
-
-    const handleLoadMore = useCallback(() => {
-        // TODO: Implement pagination
-        console.log('Load more coupons');
-    }, []);
 
     const handleClearAllFilters = useCallback(() => {
         setSearchTerm(''); // Clear search input
         setAppliedFilters({}); // Clear applied filters
         
         // Reset grid filters
-        if (gridRef.current?.api) {
-            gridRef.current.api.setFilterModel(null);
-            gridRef.current.api.onFilterChanged();
+        if (props.gridRef.current?.api) {
+            props.gridRef.current.api.setFilterModel(null);
+            props.gridRef.current.api.onFilterChanged();
         }
-    }, [gridRef]);
+    }, [props.gridRef]);
 
     // Initialize the grid with external filters enabled
-    React.useEffect(() => {
-        if (gridRef.current?.api) {
-            gridRef.current.api.setGridOption('isExternalFilterPresent', () => true);
-            gridRef.current.api.setGridOption('doesExternalFilterPass', internalDoesExternalFilterPass);
+    useEffect(() => {
+        if (props.gridRef.current?.api) {
+            props.gridRef.current.api.setGridOption('isExternalFilterPresent', () => true);
+            props.gridRef.current.api.setGridOption('doesExternalFilterPass', doesExternalFilterPass);
             refreshGrid();
         }
-    }, [gridRef, internalDoesExternalFilterPass, refreshGrid]);
+    }, [props.gridRef, doesExternalFilterPass, refreshGrid]);
 
     return (
         <div className="flex flex-col h-full w-full">
-            {/* Search and Action Bar */}
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex-1 mr-4">
-                    <InputField
-                        inputText={dictionary.searchPlaceholder}
-                        value={searchTerm}
-                        setValue={handleSearchChange}
-                        state={searchTerm ? 'filling' : 'placeholder'}
-                        type="text"
-                        className="w-full"
-                    />
-                </div>
-                <div className="flex items-center space-x-3">
+            {/* Search bar, Filter button, Export button, and Create button */}
+            <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-4">
+                <InputField
+                    className="flex-grow relative m-0 md:mr-2 h-10"
+                    setValue={setSearchTerm}
+                    value={searchTerm}
+                    inputText={dictionary.searchPlaceholder}
+                    hasLeftContent
+                    leftContent={<IconSearch />}
+                />
+                <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-1.5">
                     <Button
                         variant="secondary"
                         size="medium"
                         text={dictionary.filterButton}
-                        onClick={handleFilterClick}
+                        onClick={() => setShowFilterModal(true)}
                         hasIconLeft
                         iconLeft={<IconFilter />}
+                        className="w-full md:w-auto"
                     />
                     <Button
                         variant="secondary"
                         size="medium"
                         text={dictionary.clearFilters}
                         onClick={handleClearAllFilters}
+                        className="w-full md:w-auto"
                     />
                     <Button
                         variant="primary"
                         size="medium"
                         text={dictionary.createCouponButton}
-                        onClick={onCreateCoupon}
+                        onClick={props.onCreateCoupon}
                         hasIconLeft
                         iconLeft={<IconPlus />}
+                        className="w-full md:w-auto"
                     />
                 </div>
             </div>
 
             {/* Grid */}
-            <div className="flex-1 min-h-0">
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={coupons}
+            <div className="flex flex-col grow">
+                <BaseGrid
+                    gridRef={props.gridRef}
+                    locale={props.locale}
                     columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    onSortChanged={onSortChanged}
+                    rowData={props.coupons}
+                    enableCellTextSelection={true}
+                    onSortChanged={props.onSortChanged}
+                    pagination={true}
+                    suppressPaginationPanel={true}
+                    paginationAutoPageSize={true}
                     isExternalFilterPresent={() => true}
-                    doesExternalFilterPass={internalDoesExternalFilterPass}
-                    suppressRowClickSelection
-                    rowHeight={60}
-                    headerHeight={40}
-                    className="ag-theme-alpine-dark w-full h-full"
+                    doesExternalFilterPass={doesExternalFilterPass}
                 />
             </div>
 
-            {/* Load More */}
-            {coupons.length > 0 && (
-                <div className="flex justify-center mt-4">
-                    <button
-                        onClick={handleLoadMore}
-                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                    >
-                        {dictionary.loadMore}
-                    </button>
-                </div>
-            )}
 
             {/* Empty State */}
-            {coupons.length === 0 && (
+            {props.coupons.length === 0 && (
                 <div className="flex-1 flex items-center justify-center">
                     <div className="text-center text-text-secondary py-8">
                         {dictionary.emptyState}
@@ -455,16 +386,12 @@ export const CouponGrid: React.FC<CouponGridProps> = ({
             )}
             {showFilterModal && (
                 <CouponGridFilterModal
-                    onApplyFilters={(filters) => {
-                        setAppliedFilters(filters);
-                        setShowFilterModal(false);
-                        if (gridRef.current?.api) {
-                            gridRef.current.api.onFilterChanged();
-                        }
+                    onApplyFilters={(newFilters) => {
+                        setAppliedFilters(newFilters);
                     }}
                     onClose={() => setShowFilterModal(false)}
                     initialFilters={appliedFilters}
-                    locale={locale}
+                    locale={props.locale}
                 />
             )}
         </div>
