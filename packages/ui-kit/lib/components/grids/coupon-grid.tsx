@@ -12,6 +12,7 @@ import { IconFilter } from '../icons/icon-filter';
 import { IconPlus } from '../icons/icon-plus';
 import { IconSearch } from '../icons/icon-search';
 import { BaseGrid } from './base-grid';
+import { formatDate } from '../../utils/format-utils';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -164,11 +165,7 @@ export const CouponGrid = (props: CouponGridProps) => {
             minWidth: 130,
             valueFormatter: (params: any) => {
                 const date = new Date(params.value);
-                return date.toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: '2-digit', 
-                    day: '2-digit' 
-                });
+                return formatDate(date);
             },
             filter: 'agDateColumnFilter'
         },
@@ -180,11 +177,7 @@ export const CouponGrid = (props: CouponGridProps) => {
             minWidth: 130,
             valueFormatter: (params: any) => {
                 const date = new Date(params.value);
-                return date.toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: '2-digit', 
-                    day: '2-digit' 
-                });
+                return formatDate(date);
             },
             filter: 'agDateColumnFilter'
         },
