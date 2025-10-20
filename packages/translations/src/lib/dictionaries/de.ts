@@ -108,6 +108,8 @@ export const DE: TDictionary = {
     baseGrid: {
       loading: 'Laden...',
       noRows: 'Nichts gefunden',
+      page: 'Seite',
+      of: 'von',
     },
     notificationGrid: {
       new: 'Neue',
@@ -1261,8 +1263,10 @@ export const DE: TDictionary = {
       revokedBadge: 'Widerrufen',
       createCouponButton: 'Gutschein erstellen',
       filterButton: 'Filter',
+      exportCurrentView: 'Aktuelle Ansicht exportieren',
       searchPlaceholder: 'Suchen',
       clearFilters: 'Filter löschen',
+      coachingLabel: 'Coaching',
       freeCourses: 'Kostenlose Kurse',
       discountPercent: 'Rabatt',
       loadMore: 'Mehr laden...',
@@ -1288,6 +1292,8 @@ export const DE: TDictionary = {
       freeCoursesLabel: 'Kostenlose Kurse',
       discountLabel: 'Rabatt',
       coachingLabel: 'Coaching',
+      groupCourseLabel: 'Gruppenkurs',
+      freeBundlesLabel: 'Kostenlose Pakete',
       resetFilters: 'Filter zurücksetzen',
       applyFilters: 'Filter anwenden',
     },

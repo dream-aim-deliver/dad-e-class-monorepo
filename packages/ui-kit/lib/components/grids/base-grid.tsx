@@ -25,6 +25,8 @@ export const SimplePaginationPanel = (props: {
   lastPageRef: RefObject<HTMLButtonElement | null>;
   firstPageRef: RefObject<HTMLButtonElement | null>;
   containerRef: RefObject<HTMLDivElement | null>;
+  pageLabel: string;
+  ofLabel: string;
 }) => {
   const enabledTextClasses = 'text-neutral-50';
   const disabledTextClasses = 'disabled:text-neutral-500';
@@ -49,8 +51,8 @@ export const SimplePaginationPanel = (props: {
           <ChevronLeft className={iconClasses} />
         </button>
         <span className="px-3 text-sm">
-                    Page <span ref={props.currentPageRef}>0</span> of <span ref={props.totalPagesRef}>0</span>
-                </span>
+          {props.pageLabel} <span ref={props.currentPageRef}>0</span> {props.ofLabel} <span ref={props.totalPagesRef}>0</span>
+        </span>
         <button disabled={true} ref={props.nextPageRef} className={buttonClasses}>
           <ChevronRight className={iconClasses} />
         </button>
@@ -175,6 +177,8 @@ export const BaseGrid = ({ gridRef, shouldDelayRender, locale, ...props }: BaseT
         containerRef={containerRef}
         firstPageRef={firstPageRef}
         lastPageRef={lastPageRef}
+        pageLabel={dictionary.page}
+        ofLabel={dictionary.of}
       />
     </>
   );
