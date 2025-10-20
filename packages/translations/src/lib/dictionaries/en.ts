@@ -108,6 +108,8 @@ export const EN: TDictionary = {
     baseGrid: {
       loading: 'Loading...',
       noRows: 'Nothing found',
+      page: 'Page',
+      of: 'of',
     },
     notificationGrid: {
       markAllAsRead: 'Mark all as read',
@@ -1258,8 +1260,10 @@ export const EN: TDictionary = {
       revokedBadge: 'Revoked',
       createCouponButton: 'Create coupon',
       filterButton: 'Filter',
+      exportCurrentView: 'Export current view',
       searchPlaceholder: 'Search',
       clearFilters: 'Clear filters',
+      coachingLabel: 'Coaching',
       freeCourses: 'Free courses',
       discountPercent: 'Discount',
       loadMore: 'Load more...',
@@ -1285,6 +1289,8 @@ export const EN: TDictionary = {
       freeCoursesLabel: 'Free courses',
       discountLabel: 'Discount',
       coachingLabel: 'Coaching',
+      groupCourseLabel: 'Group Course',
+      freeBundlesLabel: 'Free Bundles',
       resetFilters: 'Reset filters',
       applyFilters: 'Apply filters',
     },

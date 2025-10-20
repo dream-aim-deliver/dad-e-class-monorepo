@@ -5,6 +5,7 @@ import { Button } from '../button';
 import { DateInput } from '../date-input';
 import { CheckBox } from '../checkbox';
 import { TextInput } from '../text-input';
+import { IconClose } from '../icons/icon-close';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
 
 export interface CouponFilterModel {
@@ -15,7 +16,7 @@ export interface CouponFilterModel {
     createdBefore?: string;
     expiresAfter?: string;
     expiresBefore?: string;
-    outcomeTypes?: ('free_courses' | 'discount' | 'coaching')[];
+    outcomeTypes?: ('groupCourse' | 'freeCoachingSession' | 'discountOnEverything' | 'freeCourses' | 'freeBundles')[];
 }
 
 export interface CouponGridFilterModalProps extends isLocalAware {
@@ -59,7 +60,7 @@ export const CouponGridFilterModal: React.FC<CouponGridFilterModalProps> = ({
         setFilters((prev) => ({ ...prev, status: toggleArrayValue(prev.status, value) }));
     };
 
-    const handleOutcomeToggle = (value: 'free_courses' | 'discount' | 'coaching') => {
+    const handleOutcomeToggle = (value: 'groupCourse' | 'freeCoachingSession' | 'discountOnEverything' | 'freeCourses' | 'freeBundles') => {
         setFilters((prev) => ({ ...prev, outcomeTypes: toggleArrayValue(prev.outcomeTypes, value) }));
     };
 
@@ -88,7 +89,7 @@ export const CouponGridFilterModal: React.FC<CouponGridFilterModalProps> = ({
                 <div className="flex justify-between items-center">
                     <h2 className="text-2xl font-bold">{dictionary.title}</h2>
                     <div className="flex top-0 right-0 p-0">
-                        <Button variant="text" size="small" onClick={onClose} text="✕" />
+                    <Button variant="text" size="small" hasIconLeft iconLeft={<IconClose size="6" />} onClick={onClose} />
                     </div>
                 </div>
                 <div className="h-px w-full bg-divider"></div>
@@ -190,31 +191,49 @@ export const CouponGridFilterModal: React.FC<CouponGridFilterModalProps> = ({
                     <h3 className="text-xl font-semibold">{dictionary.outcomeTypeFilter}</h3>
                     <div className="grid grid-cols-2 gap-3">
                         <CheckBox
-                            name="outcome-free"
-                            value="free_courses"
-                            label={dictionary.freeCoursesLabel}
+                            name="outcome-group-course"
+                            value="groupCourse"
+                            label={dictionary.groupCourseLabel}
                             labelClass="text-white text-sm"
-                            checked={(filters.outcomeTypes || []).includes('free_courses')}
+                            checked={(filters.outcomeTypes || []).includes('groupCourse')}
                             withText
-                            onChange={() => handleOutcomeToggle('free_courses')}
-                        />
-                        <CheckBox
-                            name="outcome-discount"
-                            value="discount"
-                            label={dictionary.discountLabel}
-                            labelClass="text-white text-sm"
-                            checked={(filters.outcomeTypes || []).includes('discount')}
-                            withText
-                            onChange={() => handleOutcomeToggle('discount')}
+                            onChange={() => handleOutcomeToggle('groupCourse')}
                         />
                         <CheckBox
                             name="outcome-coaching"
-                            value="coaching"
+                            value="freeCoachingSession"
                             label={dictionary.coachingLabel}
                             labelClass="text-white text-sm"
-                            checked={(filters.outcomeTypes || []).includes('coaching')}
+                            checked={(filters.outcomeTypes || []).includes('freeCoachingSession')}
                             withText
-                            onChange={() => handleOutcomeToggle('coaching')}
+                            onChange={() => handleOutcomeToggle('freeCoachingSession')}
+                        />
+                        <CheckBox
+                            name="outcome-discount"
+                            value="discountOnEverything"
+                            label={dictionary.discountLabel}
+                            labelClass="text-white text-sm"
+                            checked={(filters.outcomeTypes || []).includes('discountOnEverything')}
+                            withText
+                            onChange={() => handleOutcomeToggle('discountOnEverything')}
+                        />
+                        <CheckBox
+                            name="outcome-free"
+                            value="freeCourses"
+                            label={dictionary.freeCoursesLabel}
+                            labelClass="text-white text-sm"
+                            checked={(filters.outcomeTypes || []).includes('freeCourses')}
+                            withText
+                            onChange={() => handleOutcomeToggle('freeCourses')}
+                        />
+                        <CheckBox
+                            name="outcome-free-bundles"
+                            value="freeBundles"
+                            label={dictionary.freeBundlesLabel}
+                            labelClass="text-white text-sm"
+                            checked={(filters.outcomeTypes || []).includes('freeBundles')}
+                            withText
+                            onChange={() => handleOutcomeToggle('freeBundles')}
                         />
                     </div>
                 </div>
