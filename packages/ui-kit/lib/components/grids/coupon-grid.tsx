@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useMemo, useCallback, useEffect, RefObject } from 'react';
-import { AllCommunityModule, IRowNode, ModuleRegistry, SortChangedEvent } from 'ag-grid-community';
+import { AllCommunityModule, IRowNode, ModuleRegistry, SortChangedEvent, ProcessCellForExportParams } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { Button } from '../button';
 import { InputField } from '../input-field';
@@ -10,25 +10,30 @@ import { getDictionary } from '@maany_shr/e-class-translations';
 import { CouponGridFilterModal, CouponFilterModel } from './coupon-grid-filter-modal';
 import { IconFilter } from '../icons/icon-filter';
 import { IconPlus } from '../icons/icon-plus';
+import { IconCloudDownload } from '../icons/icon-cloud-download';
 import { IconSearch } from '../icons/icon-search';
 import { BaseGrid } from './base-grid';
 import { formatDate } from '../../utils/format-utils';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
+// Coupon outcome types based on listCoupons API
+type CouponOutcome =
+    | { type: 'groupCourse'; groupId: number; groupName: string; course: { id: number; title: string; slug: string } }
+    | { type: 'freeCoachingSession'; coachingOffering: { id: number; title: string; duration: number }; course: { id: number; title: string; slug: string } | null }
+    | { type: 'discountOnEverything'; percentage: number }
+    | { type: 'freeCourses'; courses: { id: number; title: string; slug: string; withCoaching: boolean }[] }
+    | { type: 'freeBundles'; packages: { id: number; title: string; withCoaching: boolean }[] };
+
 export interface CouponRow {
-    id: number;
-    couponId: number;
+    id: string; // Backend returns string ID
     name: string;
-    usagesLeft: number;
-    maxUsages: number;
-    creationDate: number;
-    expirationDate: number;
-    outcome: {
-        type: 'free_courses' | 'discount' | 'coaching';
-        courses: string[];
-    };
     status: 'active' | 'revoked';
+    usageCount: number; // Current usage count
+    usagesAllowed: number | null; // Max usages allowed (nullable)
+    createdAt: string; // ISO date string
+    expirationDate: string | null; // ISO date string (nullable)
+    outcome: CouponOutcome;
 }
 
 export interface CouponGridProps extends isLocalAware {
@@ -42,19 +47,60 @@ export interface CouponGridProps extends isLocalAware {
 }
 
 const OutcomeCellRenderer = (params: { value: CouponRow['outcome']; locale: TLocale }) => {
-    const { type, courses } = params.value;
+    const outcome = params.value;
     const dictionary = getDictionary(params.locale).components.couponGrid;
-    
-    return (
-        <div className="flex flex-col">
-            <span className="text-text-primary text-sm">
-                {type === 'free_courses' ? dictionary.freeCourses : dictionary.discountPercent}
-            </span>
-            <span className="text-text-secondary text-xs">
-                {courses.join(', ')}
-            </span>
-        </div>
-    );
+
+    switch (outcome.type) {
+        case 'groupCourse': {
+            const title = outcome.course?.title ?? '';
+            const group = outcome.groupName ?? '';
+            return (
+                <div className="flex flex-col">
+                    <span className="text-text-primary text-sm">{dictionary.freeCourses}</span>
+                    <span className="text-text-secondary text-xs">{title}{group ? ` — ${group}` : ''}</span>
+                </div>
+            );
+        }
+        case 'freeCoachingSession': {
+            const offering = outcome.coachingOffering?.title ?? '';
+            const maybeCourse = outcome.course?.title ? ` — ${outcome.course.title}` : '';
+            return (
+                <div className="flex flex-col">
+                    <span className="text-text-primary text-sm">{dictionary.coachingLabel}</span>
+                    <span className="text-text-secondary text-xs">{offering}{maybeCourse}</span>
+                </div>
+            );
+        }
+        case 'discountOnEverything': {
+            return (
+                <div className="flex flex-col">
+                    <span className="text-text-primary text-sm">{dictionary.discountPercent}</span>
+                    <span className="text-text-secondary text-xs">{`${outcome.percentage}%`}</span>
+                </div>
+            );
+        }
+        case 'freeCourses': {
+            const titles = (outcome.courses ?? []).map(c => c.title).join(', ');
+            return (
+                <div className="flex flex-col">
+                    <span className="text-text-primary text-sm">{dictionary.freeCourses}</span>
+                    <span className="text-text-secondary text-xs">{titles}</span>
+                </div>
+            );
+        }
+        case 'freeBundles': {
+            const titles = (outcome.packages ?? []).map(p => p.title).join(', ');
+            return (
+                <div className="flex flex-col">
+                    <span className="text-text-primary text-sm">{dictionary.freeCourses}</span>
+                    <span className="text-text-secondary text-xs">{titles}</span>
+                </div>
+            );
+        }
+        default: {
+            return null;
+        }
+    }
 };
 
 const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRow; onRevoke: (id: number) => void; locale: TLocale }) => {
@@ -71,7 +117,7 @@ const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRo
     
     return (
         <button
-            onClick={() => params.onRevoke(data.couponId)}
+            onClick={() => params.onRevoke(Number(data.id))}
             className="text-blue-600 hover:text-blue-800 text-sm font-medium"
         >
             {dictionary.revokeButton}
@@ -141,20 +187,23 @@ export const CouponGrid = (props: CouponGridProps) => {
             )
         },
         {
-            field: 'usagesLeft',
+            field: 'usageCount',
             headerName: dictionary.usagesLeftColumn,
             sortable: true,
             flex: 1,
             minWidth: 120,
             valueFormatter: (params: any) => {
-                const usagesLeft = params.data?.usagesLeft || 0;
-                const maxUsages = params.data?.maxUsages || 0;
-                return `${usagesLeft}/${maxUsages}`;
+                const usageCount = params.data?.usageCount || 0;
+                const usagesAllowed = params.data?.usagesAllowed;
+                if (usagesAllowed === null) {
+                    return `${usageCount}/∞`;
+                }
+                return `${usageCount}/${usagesAllowed}`;
             },
             filter: 'agNumberColumnFilter'
         },
         {
-            field: 'creationDate',
+            field: 'createdAt',
             headerName: dictionary.creationDateColumn,
             sortable: true,
             flex: 1,
@@ -172,6 +221,7 @@ export const CouponGrid = (props: CouponGridProps) => {
             flex: 1,
             minWidth: 130,
             valueFormatter: (params: any) => {
+                if (!params.value) return '-';
                 const date = new Date(params.value);
                 return formatDate(date);
             },
@@ -224,27 +274,28 @@ export const CouponGrid = (props: CouponGridProps) => {
             return false;
         }
         
-        // Usages left range
-        if (appliedFilters.minUsagesLeft !== undefined && coupon.usagesLeft < appliedFilters.minUsagesLeft) {
+        // Usages left range (using usageCount and usagesAllowed)
+        const usagesLeft = coupon.usagesAllowed ? coupon.usagesAllowed - coupon.usageCount : Infinity;
+        if (appliedFilters.minUsagesLeft !== undefined && usagesLeft < appliedFilters.minUsagesLeft) {
             return false;
         }
-        if (appliedFilters.maxUsagesLeft !== undefined && coupon.usagesLeft > appliedFilters.maxUsagesLeft) {
+        if (appliedFilters.maxUsagesLeft !== undefined && usagesLeft > appliedFilters.maxUsagesLeft) {
             return false;
         }
         
         // Creation date range
-        if (appliedFilters.createdAfter && coupon.creationDate < new Date(appliedFilters.createdAfter).getTime()) {
+        if (appliedFilters.createdAfter && coupon.createdAt < appliedFilters.createdAfter) {
             return false;
         }
-        if (appliedFilters.createdBefore && coupon.creationDate > new Date(appliedFilters.createdBefore).getTime()) {
+        if (appliedFilters.createdBefore && coupon.createdAt > appliedFilters.createdBefore) {
             return false;
         }
         
         // Expiration date range
-        if (appliedFilters.expiresAfter && coupon.expirationDate < new Date(appliedFilters.expiresAfter).getTime()) {
+        if (appliedFilters.expiresAfter && coupon.expirationDate && coupon.expirationDate < appliedFilters.expiresAfter) {
             return false;
         }
-        if (appliedFilters.expiresBefore && coupon.expirationDate > new Date(appliedFilters.expiresBefore).getTime()) {
+        if (appliedFilters.expiresBefore && coupon.expirationDate && coupon.expirationDate > appliedFilters.expiresBefore) {
             return false;
         }
         
@@ -285,6 +336,72 @@ export const CouponGrid = (props: CouponGridProps) => {
         }
     }, [props.gridRef]);
 
+    const outcomeToString = useCallback((outcome: CouponRow['outcome']): string => {
+        switch (outcome.type) {
+            case 'groupCourse': {
+                const title = outcome.course?.title ?? '';
+                const group = outcome.groupName ?? '';
+                return `${dictionary.freeCourses}${title ? `: ${title}` : ''}${group ? ` — ${group}` : ''}`;
+            }
+            case 'freeCoachingSession': {
+                const offering = outcome.coachingOffering?.title ?? '';
+                const maybeCourse = outcome.course?.title ? ` — ${outcome.course.title}` : '';
+                return `${dictionary.coachingLabel}${offering ? `: ${offering}` : ''}${maybeCourse}`;
+            }
+            case 'discountOnEverything': {
+                return `${dictionary.discountPercent}: ${outcome.percentage}%`;
+            }
+            case 'freeCourses': {
+                const titles = (outcome.courses ?? []).map(c => c.title).join(', ');
+                return `${dictionary.freeCourses}${titles ? `: ${titles}` : ''}`;
+            }
+            case 'freeBundles': {
+                const titles = (outcome.packages ?? []).map(p => p.title).join(', ');
+                return `${dictionary.freeCourses}${titles ? `: ${titles}` : ''}`;
+            }
+            default:
+                return '';
+        }
+    }, [dictionary]);
+
+    // Export current view to CSV
+    const handleExportCurrentView = useCallback(() => {
+        if (props.gridRef.current?.api) {
+            props.gridRef.current.api.exportDataAsCsv({
+                fileName: `coupon_grid_export_${new Date().toISOString()}.csv`,
+                onlySelected: false,
+                skipPinnedTop: true,
+                skipPinnedBottom: true,
+                processCellCallback: (params: ProcessCellForExportParams) => {
+                    const colId = params.column.getColId();
+                    const data = params.node?.data as CouponRow | undefined;
+                    if (!data) return params.value;
+
+                    if (colId === 'outcome') {
+                        return outcomeToString(data.outcome);
+                    }
+                    if (colId === 'usageCount') {
+                        const usageCount = data.usageCount ?? 0;
+                        const usagesAllowed = data.usagesAllowed;
+                        return usagesAllowed === null || usagesAllowed === undefined
+                            ? `${usageCount}/∞`
+                            : `${usageCount}/${usagesAllowed}`;
+                    }
+                    if (colId === 'createdAt') {
+                        const date = new Date(data.createdAt);
+                        return formatDate(date);
+                    }
+                    if (colId === 'expirationDate') {
+                        if (!data.expirationDate) return '-';
+                        const date = new Date(data.expirationDate);
+                        return formatDate(date);
+                    }
+                    return params.value;
+                },
+            });
+        }
+    }, [props.gridRef, outcomeToString]);
+
     // Initialize the grid with external filters enabled
     useEffect(() => {
         if (props.gridRef.current?.api) {
@@ -307,6 +424,15 @@ export const CouponGrid = (props: CouponGridProps) => {
                     leftContent={<IconSearch />}
                 />
                 <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-1.5">
+                    <Button
+                        variant="text"
+                        size="medium"
+                        text={dictionary.exportCurrentView}
+                        onClick={handleExportCurrentView}
+                        hasIconLeft
+                        iconLeft={<IconCloudDownload />}
+                        className="w-full md:w-auto"
+                    />
                     <Button
                         variant="secondary"
                         size="medium"
@@ -352,15 +478,6 @@ export const CouponGrid = (props: CouponGridProps) => {
                 />
             </div>
 
-
-            {/* Empty State */}
-            {props.coupons.length === 0 && (
-                <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center text-text-secondary py-8">
-                        {dictionary.emptyState}
-                    </div>
-                </div>
-            )}
             {showFilterModal && (
                 <CouponGridFilterModal
                     onApplyFilters={(newFilters) => {

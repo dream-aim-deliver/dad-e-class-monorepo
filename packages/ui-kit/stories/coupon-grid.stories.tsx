@@ -9,47 +9,65 @@ import { NextIntlClientProvider } from 'next-intl';
 
 const mockMessages = {
     en: {
-        couponGrid: {
-            nameColumn: 'Name',
-            usagesLeftColumn: 'Usages left',
-            creationDateColumn: 'Creation date',
-            expirationDateColumn: 'Expiration date',
-            outcomeColumn: 'Outcome',
-            statusColumn: 'Status',
-            revokeButton: 'Revoke',
-            revokedBadge: 'Revoked',
-            createCouponButton: 'Create coupon',
-            filterButton: 'Filter',
-            searchPlaceholder: 'Search',
-            exportCurrentView: 'Export current view',
-            clearFilters: 'Clear filters',
-            freeCourses: 'Free courses',
-            discountPercent: 'Discount',
-            loadMore: 'Load more...',
-            emptyState: 'No coupons found'
-        }
+        components: {
+            baseGrid: {
+                loading: 'Loading...',
+                noRows: 'Nothing found',
+                page: 'Page',
+                of: 'of',
+            },
+            couponGrid: {
+                nameColumn: 'Name',
+                usagesLeftColumn: 'Usages left',
+                creationDateColumn: 'Creation date',
+                expirationDateColumn: 'Expiration date',
+                outcomeColumn: 'Outcome',
+                statusColumn: 'Status',
+                revokeButton: 'Revoke',
+                revokedBadge: 'Revoked',
+                createCouponButton: 'Create coupon',
+                filterButton: 'Filter',
+                searchPlaceholder: 'Search',
+                exportCurrentView: 'Export current view',
+                clearFilters: 'Clear filters',
+                freeCourses: 'Free courses',
+                discountPercent: 'Discount',
+                loadMore: 'Load more...',
+                emptyState: 'No coupons found',
+                coachingLabel: 'Coaching',
+            },
+        },
     },
     de: {
-        couponGrid: {
-            nameColumn: 'Name',
-            usagesLeftColumn: 'Verwendungen übrig',
-            creationDateColumn: 'Erstellungsdatum',
-            expirationDateColumn: 'Ablaufdatum',
-            outcomeColumn: 'Ergebnis',
-            statusColumn: 'Status',
-            revokeButton: 'Widerrufen',
-            revokedBadge: 'Widerrufen',
-            createCouponButton: 'Gutschein erstellen',
-            filterButton: 'Filter',
-            searchPlaceholder: 'Suchen',
-            exportCurrentView: 'Aktuelle Ansicht exportieren',
-            clearFilters: 'Filter löschen',
-            freeCourses: 'Kostenlose Kurse',
-            discountPercent: 'Rabatt',
-            loadMore: 'Mehr laden...',
-            emptyState: 'Keine Gutscheine gefunden'
-        }
-    }
+        components: {
+            baseGrid: {
+                loading: 'Laden...',
+                noRows: 'Nichts gefunden',
+                page: 'Seite',
+                of: 'von',
+            },
+            couponGrid: {
+                nameColumn: 'Name',
+                usagesLeftColumn: 'Verwendungen übrig',
+                creationDateColumn: 'Erstellungsdatum',
+                expirationDateColumn: 'Ablaufdatum',
+                outcomeColumn: 'Ergebnis',
+                statusColumn: 'Status',
+                revokeButton: 'Widerrufen',
+                revokedBadge: 'Widerrufen',
+                createCouponButton: 'Gutschein erstellen',
+                filterButton: 'Filter',
+                searchPlaceholder: 'Suchen',
+                exportCurrentView: 'Aktuelle Ansicht exportieren',
+                clearFilters: 'Filter löschen',
+                freeCourses: 'Kostenlose Kurse',
+                discountPercent: 'Rabatt',
+                loadMore: 'Mehr laden...',
+                emptyState: 'Keine Gutscheine gefunden',
+                coachingLabel: 'Coaching',
+            },
+        },
+    },
 };
 
 const meta: Meta<typeof CouponGrid> = {
@@ -87,215 +105,128 @@ const meta: Meta<typeof CouponGrid> = {
 
 const mockCoupons: CouponRow[] = [
     {
-        id: 1001,
-        couponId: 1001,
+        id: '1001',
         name: 'NAME_TEST_1',
-        usagesLeft: 2,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
+        status: 'active',
+        usageCount: 2,
+        usagesAllowed: 20,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        expirationDate: '2025-01-01T00:00:00.000Z',
         outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
+            type: 'freeCourses',
+            courses: [
+                { id: 1, title: 'Course A', slug: 'course-a', withCoaching: false },
+                { id: 2, title: 'Course B with coaching', slug: 'course-b', withCoaching: true },
+            ],
         },
-        status: 'active'
     },
     {
-        id: 1002,
-        couponId: 1002,
+        id: '1002',
         name: '50PERCENTOFF',
-        usagesLeft: 0,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
+        status: 'revoked',
+        usageCount: 0,
+        usagesAllowed: 20,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        expirationDate: '2025-01-01T00:00:00.000Z',
         outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
+            type: 'freeCourses',
+            courses: [
+                { id: 1, title: 'Course A', slug: 'course-a', withCoaching: false },
+                { id: 2, title: 'Course B with coaching', slug: 'course-b', withCoaching: true },
+            ],
         },
-        status: 'revoked'
     },
     {
-        id: 1003,
-        couponId: 1003,
+        id: '1003',
         name: 'COACHING50PERCENTOFF',
-        usagesLeft: 15,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
+        status: 'active',
+        usageCount: 15,
+        usagesAllowed: 20,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        expirationDate: '2025-01-01T00:00:00.000Z',
         outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
+            type: 'freeCourses',
+            courses: [
+                { id: 1, title: 'Course A', slug: 'course-a', withCoaching: false },
+                { id: 2, title: 'Course B with coaching', slug: 'course-b', withCoaching: true },
+            ],
         },
-        status: 'active'
     },
     {
-        id: 1004,
-        couponId: 1004,
+        id: '1004',
         name: 'FREECOURSE50',
-        usagesLeft: 8,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
+        status: 'active',
+        usageCount: 8,
+        usagesAllowed: 20,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        expirationDate: '2025-01-01T00:00:00.000Z',
         outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
+            type: 'freeCourses',
+            courses: [
+                { id: 1, title: 'Course A', slug: 'course-a', withCoaching: false },
+                { id: 2, title: 'Course B with coaching', slug: 'course-b', withCoaching: true },
+            ],
         },
-        status: 'active'
+    },
+    // One example for each remaining outcome type
+    {
+        id: '2001',
+        name: 'GROUPCOURSE-INTRO',
+        status: 'active',
+        usageCount: 1,
+        usagesAllowed: 30,
+        createdAt: '2024-03-10T00:00:00.000Z',
+        expirationDate: '2025-03-10T00:00:00.000Z',
+        outcome: {
+            type: 'groupCourse',
+            groupId: 10,
+            groupName: 'Spring Cohort',
+            course: { id: 101, title: 'Intro to TypeScript', slug: 'intro-ts' },
+        },
     },
     {
-        id: 1005,
-        couponId: 1005,
-        name: 'COUPON_NAME',
-        usagesLeft: 20,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
+        id: '2002',
+        name: 'FREE-COACHING-30',
+        status: 'active',
+        usageCount: 3,
+        usagesAllowed: 10,
+        createdAt: '2024-04-15T00:00:00.000Z',
+        expirationDate: '2025-04-15T00:00:00.000Z',
         outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
+            type: 'freeCoachingSession',
+            coachingOffering: { id: 501, title: '30 min Coaching', duration: 30 },
+            course: { id: 102, title: 'Advanced React', slug: 'advanced-react' },
         },
-        status: 'active'
     },
     {
-        id: 1006,
-        couponId: 1006,
-        name: 'COUPON_NAME',
-        usagesLeft: 0,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
+        id: '2003',
+        name: 'DISCOUNT-25OFF',
+        status: 'active',
+        usageCount: 6,
+        usagesAllowed: null,
+        createdAt: '2024-05-20T00:00:00.000Z',
+        expirationDate: null,
         outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
+            type: 'discountOnEverything',
+            percentage: 25,
         },
-        status: 'revoked'
     },
     {
-        id: 1007,
-        couponId: 1007,
-        name: 'COUPON_NAME',
-        usagesLeft: 12,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
+        id: '2004',
+        name: 'FREE-BUNDLES-Q1',
+        status: 'revoked',
+        usageCount: 9,
+        usagesAllowed: 9,
+        createdAt: '2024-02-01T00:00:00.000Z',
+        expirationDate: '2024-12-31T00:00:00.000Z',
         outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
+            type: 'freeBundles',
+            packages: [
+                { id: 301, title: 'Starter Bundle', withCoaching: false },
+                { id: 302, title: 'Pro Bundle', withCoaching: true },
+            ],
         },
-        status: 'active'
     },
-    {
-        id: 1008,
-        couponId: 1008,
-        name: 'COUPON_NAME',
-        usagesLeft: 3,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
-        outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
-        },
-        status: 'active'
-    },
-    {
-        id: 1009,
-        couponId: 1009,
-        name: 'COUPON_NAME',
-        usagesLeft: 0,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
-        outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
-        },
-        status: 'revoked'
-    },
-    {
-        id: 1010,
-        couponId: 1010,
-        name: 'COUPON_NAME',
-        usagesLeft: 18,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
-        outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
-        },
-        status: 'active'
-    },
-    {
-        id: 1011,
-        couponId: 1011,
-        name: 'COUPON_NAME',
-        usagesLeft: 1,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
-        outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
-        },
-        status: 'active'
-    },
-    {
-        id: 1012,
-        couponId: 1012,
-        name: 'COUPON_NAME',
-        usagesLeft: 0,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
-        outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
-        },
-        status: 'revoked'
-    },
-    {
-        id: 1013,
-        couponId: 1013,
-        name: 'COUPON_NAME',
-        usagesLeft: 7,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
-        outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
-        },
-        status: 'active'
-    },
-    {
-        id: 1014,
-        couponId: 1014,
-        name: 'COUPON_NAME',
-        usagesLeft: 0,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
-        outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
-        },
-        status: 'revoked'
-    },
-    {
-        id: 1015,
-        couponId: 1015,
-        name: 'COUPON_NAME',
-        usagesLeft: 20,
-        maxUsages: 20,
-        creationDate: 1704067200000, // January 1, 2024
-        expirationDate: 1735689600000, // January 1, 2025
-        outcome: {
-            type: 'free_courses',
-            courses: ['Course A', 'Course B with coaching']
-        },
-        status: 'active'
-    }
 ];
 
 export default meta;
@@ -386,14 +317,26 @@ export const WithFilters: Story = {
 
             const doesFilterPass = useCallback((node: IRowNode<CouponRow>) => {
                 if (!node.data) return false;
+
+                // Status filter
                 if (appliedFilters.status?.length && !appliedFilters.status.includes(node.data.status)) return false;
-                if (appliedFilters.minUsagesLeft !== undefined && node.data.usagesLeft < appliedFilters.minUsagesLeft) return false;
-                if (appliedFilters.maxUsagesLeft !== undefined && node.data.usagesLeft > appliedFilters.maxUsagesLeft) return false;
-                if (appliedFilters.createdAfter && node.data.creationDate < new Date(appliedFilters.createdAfter).getTime()) return false;
-                if (appliedFilters.createdBefore && node.data.creationDate > new Date(appliedFilters.createdBefore).getTime()) return false;
-                if (appliedFilters.expiresAfter && node.data.expirationDate < new Date(appliedFilters.expiresAfter).getTime()) return false;
-                if (appliedFilters.expiresBefore && node.data.expirationDate > new Date(appliedFilters.expiresBefore).getTime()) return false;
+
+                // Usages left: derive from usageCount/usagesAllowed
+                const usagesLeft = node.data.usagesAllowed == null ? Infinity : (node.data.usagesAllowed - node.data.usageCount);
+                if (appliedFilters.minUsagesLeft !== undefined && usagesLeft < appliedFilters.minUsagesLeft) return false;
+                if (appliedFilters.maxUsagesLeft !== undefined && usagesLeft > appliedFilters.maxUsagesLeft) return false;
+
+                // Creation date range (ISO strings)
+                if (appliedFilters.createdAfter && node.data.createdAt < appliedFilters.createdAfter) return false;
+                if (appliedFilters.createdBefore && node.data.createdAt > appliedFilters.createdBefore) return false;
+
+                // Expiration date range (ISO strings, nullable)
+                if (appliedFilters.expiresAfter && node.data.expirationDate && node.data.expirationDate < appliedFilters.expiresAfter) return false;
+                if (appliedFilters.expiresBefore && node.data.expirationDate && node.data.expirationDate > appliedFilters.expiresBefore) return false;
+
+                // Outcome type filter
                 if (appliedFilters.outcomeTypes?.length && !appliedFilters.outcomeTypes.includes(node.data.outcome.type)) return false;
+
                 return true;
             }, [appliedFilters]);
 
