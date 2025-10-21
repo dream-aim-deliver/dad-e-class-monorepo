@@ -1847,5 +1847,34 @@ export const DE: TDictionary = {
         },
       },
     },
+    orderHistory: {
+      title: 'Bestellverlauf',
+      description: 'Sieh dir deinen Transaktionsverlauf an und verwalte Rechnungen',
+      transactionsTab: 'Transaktionen',
+      invoicesTab: 'Rechnungen',
+      downloadInvoice: 'Rechnung herunterladen',
+      generateInvoice: 'Rechnung erstellen',
+      transactionId: 'Transaktions-ID',
+      date: 'Datum',
+      amount: 'Betrag',
+      status: 'Status',
+      type: 'Typ',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden deines Bestellverlaufs ist ein Fehler aufgetreten.',
+        kaboom: {
+          title: 'Fehler',
+          description: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.',
+        },
+        notFound: {
+          title: 'Bestellverlauf nicht gefunden',
+          description: 'Der Bestellverlauf konnte nicht geladen werden. Bitte versuche es später erneut.',
+        },
+        unauthorized: {
+          title: 'Zugriff verweigert',
+          description: 'Du hast keine Berechtigung, diese Seite anzusehen.',
+        },
+      },
+    },
   },
 };
