@@ -1329,6 +1329,8 @@ export const EN: TDictionary = {
       flexibleDescription: 'Choose only the services you really need for your success.',
       excludeButton: 'Exclude',
       detailsButton: 'Details',
+      bottomBannerTitle: 'Buy complete package',
+      bottomBannerSubtitle: 'Here you get everything included. You can therefore gradually implement your overall appearance with a key visual, new branding, a website and corresponding video content.',
     },
     archivePackageModal: {
       confirmationTitle: 'Are you sure you want to archive this package?',

@@ -53,12 +53,15 @@ export interface PackagePreviewStepProps {
     onPublish: () => void;
     isPublishing: boolean;
 
+    // Purchase callback
+    onClickPurchase: () => void;
+
+    // Course interaction callbacks
+    onCourseDetails: (courseId: string) => void;
+    onCourseAuthorClick: (courseId: string) => void;
+
     // Intl
     locale: TLocale;
-
-    // Banner copy
-    bottomBannerTitle: string;
-    bottomBannerSubtitle: string;
 }
 
 /**
@@ -95,9 +98,10 @@ export interface PackagePreviewStepProps {
  * @param {function} onBack - Function to handle back navigation
  * @param {function} onPublish - Function to handle package publishing
  * @param {boolean} isPublishing - Loading state for publish action
+ * @param {function} onClickPurchase - Function to handle purchase button clicks (use no-op function for preview mode)
+ * @param {function} onCourseDetails - Function to handle course details clicks (receives courseId)
+ * @param {function} onCourseAuthorClick - Function to handle course author clicks (receives courseId)
  * @param {TLocale} locale - Current locale for translations
- * @param {string} bottomBannerTitle - Title for the bottom banner
- * @param {string} bottomBannerSubtitle - Subtitle for the bottom banner
  *
  * Usage:
  * ```tsx
@@ -118,9 +122,10 @@ export interface PackagePreviewStepProps {
  *   onBack={onBack}
  *   onPublish={onPublish}
  *   isPublishing={isPublishing}
+ *   onClickPurchase={() => {}} // Use no-op function for preview mode
+ *   onCourseDetails={(courseId) => router.push(`/courses/${courseId}`)} // Navigate to course details
+ *   onCourseAuthorClick={(courseId) => router.push(`/coaches/${courseId}`)} // Navigate to author profile
  *   locale={locale}
- *   bottomBannerTitle={bottomBannerTitle}
- *   bottomBannerSubtitle={bottomBannerSubtitle}
  * />
  * ```
  */
@@ -142,9 +147,10 @@ export function PackagePreviewStep({
     onBack,
     onPublish,
     isPublishing,
+    onClickPurchase,
+    onCourseDetails,
+    onCourseAuthorClick,
     locale,
-    bottomBannerTitle,
-    bottomBannerSubtitle,
 }: PackagePreviewStepProps) {
     const dictionary = getDictionary(locale);
     
@@ -159,7 +165,7 @@ export function PackagePreviewStep({
                 duration={durationInMinutes || 0}
                 pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: selectedCoursesSavings } as any}
                 locale={locale}
-                onClickPurchase={() => undefined}
+                onClickPurchase={onClickPurchase}
             />
 
             <div className="border-t border-card-stroke" />
@@ -189,7 +195,7 @@ export function PackagePreviewStep({
                 coachingIncluded={coachingIncluded}
                 pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: Math.max(selectedCoursesTotal - selectedCoursesSavings, 0) }}
                 onClickCheckbox={onToggleCoaching}
-                onClickPurchase={() => undefined}
+                onClickPurchase={onClickPurchase}
                 locale={locale}
             >
                 {selectedCourses.map((course) => (
@@ -210,8 +216,8 @@ export function PackagePreviewStep({
                             } as any}
                             sessions={course.sessions}
                             sales={course.sales}
-                            onDetails={() => undefined}
-                            onClickUser={() => undefined}
+                            onDetails={() => onCourseDetails(course.id)}
+                            onClickUser={() => onCourseAuthorClick(course.id)}
                             className="mb-3"
                         />
                         <div className="flex items-center justify-between">
@@ -229,7 +235,7 @@ export function PackagePreviewStep({
                                     variant="text"
                                     size="small"
                                     text={dictionary.components.packagePreviewStep.detailsButton}
-                                    onClick={() => undefined}
+                                    onClick={() => onCourseDetails(course.id)}
                                 />
                             </div>
                         </div>
@@ -241,15 +247,15 @@ export function PackagePreviewStep({
 
             {/* Bottom banner (complete package CTA) */}
             <BuyCompletePackageBanner
-                titleBanner={bottomBannerTitle}
-                descriptionBanner={bottomBannerSubtitle}
+                titleBanner={dictionary.components.packagePreviewStep.bottomBannerTitle}
+                descriptionBanner={dictionary.components.packagePreviewStep.bottomBannerSubtitle}
                 imageUrl={featuredImageUrl || ''}
                 title={packageTitle}
                 description={packageDescription}
                 duration={durationInMinutes || 0}
                 pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: selectedCoursesSavings }}
                 locale={locale}
-                onClickPurchase={() => undefined}
+                onClickPurchase={onClickPurchase}
             />
 
         </div>

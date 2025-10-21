@@ -21,33 +21,31 @@ export interface PackageDetailsFormData {
     accordionItems: AccordionBuilderItem[];
 }
 
+interface FeaturedImageUploadHandlers {
+    onUpload: (file: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
+    onDelete: (id: string) => void;
+    onDownload: (id: string) => void;
+    uploadProgress: number;
+    errorMessage: string;
+}
+
+interface AccordionIconUploadHandlers {
+    onUpload: (file: fileMetadata.TFileUploadRequest, abortSignal?: AbortSignal) => Promise<fileMetadata.TFileMetadata>;
+    onDelete: (id: string) => void;
+    onDownload: (id: string) => void;
+    uploadProgress: number;
+    errorMessage: string;
+}
+
 export interface PackageDetailsStepProps {
     // Form data
     formData: PackageDetailsFormData;
     onFormDataChange: (updates: Partial<PackageDetailsFormData>) => void;
     
-    // File upload handlers
-    handlePackageImageUpload: (
-        file: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal
-    ) => Promise<fileMetadata.TFileMetadata>;
-    handleAccordionIconUpload: (
-        file: fileMetadata.TFileUploadRequest,
-        abortSignal?: AbortSignal
-    ) => Promise<fileMetadata.TFileMetadata>;
+    // Structured upload handlers
+    featuredImageUpload: FeaturedImageUploadHandlers;
+    accordionIconUpload: AccordionIconUploadHandlers;
     
-    // Optional progress/error for featured image upload
-    uploadProgress?: number;
-    errorMessage?: string;
-
-    // Featured image actions
-    onDeleteFeaturedImage?: (id: string) => void;
-    onDownloadFeaturedImage?: (id: string) => void;
-
-    // Accordion icon upload
-    iconUploadProgress?: number;
-    onDownloadAccordionIcon?: (id: string) => void;
-
     locale: TLocale;
 }
 
@@ -69,14 +67,8 @@ export interface PackageDetailsStepProps {
  * Props:
  * @param {PackageDetailsFormData} formData - Current form data containing all package details
  * @param {function} onFormDataChange - Function to update form data with partial updates
- * @param {function} handlePackageImageUpload - Handler for featured image upload
- * @param {function} handleAccordionIconUpload - Handler for accordion icon upload
- * @param {number} uploadProgress - Optional upload progress for featured image
- * @param {string} errorMessage - Optional error message for featured image upload
- * @param {function} onDeleteFeaturedImage - Optional handler for deleting featured image
- * @param {function} onDownloadFeaturedImage - Optional handler for downloading featured image
- * @param {number} iconUploadProgress - Optional upload progress for accordion icons
- * @param {function} onDownloadAccordionIcon - Optional handler for downloading accordion icons
+ * @param {FeaturedImageUploadHandlers} featuredImageUpload - Structured handlers for featured image upload operations
+ * @param {AccordionIconUploadHandlers} accordionIconUpload - Structured handlers for accordion icon upload operations
  * @param {TLocale} locale - Current locale for translations
  *
  * Usage:
@@ -84,14 +76,20 @@ export interface PackageDetailsStepProps {
  * <PackageDetailsStep
  *   formData={formData}
  *   onFormDataChange={onFormDataChange}
- *   handlePackageImageUpload={handlePackageImageUpload}
- *   handleAccordionIconUpload={handleAccordionIconUpload}
- *   uploadProgress={uploadProgress}
- *   errorMessage={errorMessage}
- *   onDeleteFeaturedImage={onDeleteFeaturedImage}
- *   onDownloadFeaturedImage={onDownloadFeaturedImage}
- *   iconUploadProgress={iconUploadProgress}
- *   onDownloadAccordionIcon={onDownloadAccordionIcon}
+ *   featuredImageUpload={{
+ *     onUpload: handlePackageImageUpload,
+ *     onDelete: handleDeleteFeaturedImage,
+ *     onDownload: handleDownloadFeaturedImage,
+ *     uploadProgress: packageImageProgress,
+ *     errorMessage: packageImageError
+ *   }}
+ *   accordionIconUpload={{
+ *     onUpload: handleAccordionIconUpload,
+ *     onDelete: handleDeleteAccordionIcon,
+ *     onDownload: handleDownloadAccordionIcon,
+ *     uploadProgress: iconUploadProgress,
+ *     errorMessage: iconUploadError
+ *   }}
  *   locale={locale}
  * />
  * ```
@@ -100,14 +98,8 @@ export interface PackageDetailsStepProps {
 export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
     formData,
     onFormDataChange,
-    handlePackageImageUpload,
-    handleAccordionIconUpload,
-    uploadProgress,
-    errorMessage,
-    onDeleteFeaturedImage,
-    onDownloadFeaturedImage,
-    iconUploadProgress,
-    onDownloadAccordionIcon,
+    featuredImageUpload,
+    accordionIconUpload,
     locale,
 }) => {
     const dictionary = getDictionary(locale);
@@ -123,7 +115,7 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
-        return handlePackageImageUpload(file, abortSignal);
+        return featuredImageUpload.onUpload(file, abortSignal);
     };
 
     const handleOnUploadComplete = (file: fileMetadata.TFileMetadata) => {
@@ -135,14 +127,14 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
     };
 
     const handleOnDelete = (id: string) => {
-        onDeleteFeaturedImage?.(id);
+        featuredImageUpload.onDelete(id);
         if (featuredImage?.id === id) {
             onFormDataChange({ featuredImage: null });
         }
     };
 
     const handleOnDownload = (id: string) => {
-        onDownloadFeaturedImage?.(id);
+        featuredImageUpload.onDownload(id);
     };
 
     return (
@@ -180,12 +172,12 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                     onUploadComplete={handleOnUploadComplete}
                     onDelete={handleOnDelete}
                     onDownload={handleOnDownload}
-                    uploadProgress={uploadProgress}
+                    uploadProgress={featuredImageUpload.uploadProgress}
                     isDeletionAllowed
                     className="mb-2"
                 />
-                {errorMessage && (
-                    <p className="text-sm text-red-500">{errorMessage}</p>
+                {featuredImageUpload.errorMessage && (
+                    <p className="text-sm text-red-500">{featuredImageUpload.errorMessage}</p>
                 )}
             </div>
 
@@ -215,17 +207,32 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                     items={accordionItems}
                     setItems={(items) => {
                         if (typeof items === 'function') {
-                            onFormDataChange({ accordionItems: items(accordionItems) });
+                            const newItems = items(accordionItems);
+                            // Check if any icons were removed and call onDelete
+                            accordionItems.forEach((oldItem, index) => {
+                                const newItem = newItems[index];
+                                if (oldItem.icon && !newItem?.icon) {
+                                    accordionIconUpload.onDelete(oldItem.icon.id);
+                                }
+                            });
+                            onFormDataChange({ accordionItems: newItems });
                         } else {
+                            // Check if any icons were removed and call onDelete
+                            accordionItems.forEach((oldItem, index) => {
+                                const newItem = items[index];
+                                if (oldItem.icon && !newItem?.icon) {
+                                    accordionIconUpload.onDelete(oldItem.icon.id);
+                                }
+                            });
                             onFormDataChange({ accordionItems: items });
                         }
                     }}
-                    onIconChange={handleAccordionIconUpload}
+                    onIconChange={accordionIconUpload.onUpload}
                     onIconDownload={(index: number) => {
                         const id = accordionItems[index]?.icon?.id as string | undefined;
-                        if (id) onDownloadAccordionIcon?.(id);
+                        if (id) accordionIconUpload.onDownload(id);
                     }}
-                    uploadProgress={iconUploadProgress}
+                    uploadProgress={accordionIconUpload.uploadProgress}
                     locale={locale}
                 />
             </div>
