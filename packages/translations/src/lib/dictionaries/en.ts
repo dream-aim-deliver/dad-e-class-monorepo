@@ -1862,5 +1862,34 @@ export const EN: TDictionary = {
         },
       },
     },
+    orderHistory: {
+      title: 'Order History',
+      description: 'View your transaction history and manage invoices',
+      transactionsTab: 'Transactions',
+      invoicesTab: 'Invoices',
+      downloadInvoice: 'Download Invoice',
+      generateInvoice: 'Generate Invoice',
+      transactionId: 'Transaction ID',
+      date: 'Date',
+      amount: 'Amount',
+      status: 'Status',
+      type: 'Type',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading your order history.',
+        kaboom: {
+          title: 'Error',
+          description: 'An unexpected error occurred. Please try again later.',
+        },
+        notFound: {
+          title: 'Order History Not Found',
+          description: 'No order history could be loaded. Please try again later.',
+        },
+        unauthorized: {
+          title: 'Access Denied',
+          description: 'You do not have permission to view this page.',
+        },
+      },
+    },
   },
 };

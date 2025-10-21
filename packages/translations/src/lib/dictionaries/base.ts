@@ -1897,6 +1897,35 @@ export const DictionarySchema = z.object({
         }),
       }),
     }),
+    orderHistory: z.object({
+      title: z.string(),
+      description: z.string(),
+      transactionsTab: z.string(),
+      invoicesTab: z.string(),
+      downloadInvoice: z.string(),
+      generateInvoice: z.string(),
+      transactionId: z.string(),
+      date: z.string(),
+      amount: z.string(),
+      status: z.string(),
+      type: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+        kaboom: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        unauthorized: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+    }),
   }),
 });
 
