@@ -76,7 +76,6 @@ export const usePackageFileUpload = (
 
         // Comment out to test without the storage running
         // Track upload progress (30-100% of total)
-        // TODO: Replace manual casting with proper TRPC output type once available
         const data = uploadResult.data as {
             storageUrl: string;
             formFields: Record<string, string>;
@@ -108,7 +107,6 @@ export const usePackageFileUpload = (
             throw new Error(verifyImageError);
         }
 
-        // TODO: Replace manual casting with proper TRPC output type once available
         const verifyData = verifyResult.data as { downloadUrl: string };
 
         return {
