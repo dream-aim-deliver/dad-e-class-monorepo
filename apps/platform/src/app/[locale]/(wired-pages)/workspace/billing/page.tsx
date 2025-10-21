@@ -3,7 +3,7 @@
 // Usecases: listUserIncomingTransactions, generateInvoicePdf
 
 import { TLocale } from '@maany_shr/e-class-translations';
-import OrderHistoryServerComponent from '../../../../lib/infrastructure/server/pages/order-history-rsc';
+import OrderHistoryServerComponent from '../../../../../lib/infrastructure/server/pages/order-history-rsc';
 
 export default async function OrderHistoryPage({
   searchParams: searchParamsPromise,
