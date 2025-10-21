@@ -23,22 +23,28 @@ export interface PackagePricingStepProps {
  *
  * A component for Step 3 of the Create Package flow, handling pricing configuration
  * for complete packages (with/without coaching) and partial package discounts
- * when users select only some courses.
+ * when users select only some courses. This component manages all pricing-related
+ * inputs and calculations for the package creation workflow.
  *
  * Features:
- * - Inputs for complete package price with coaching
- * - Inputs for complete package price without coaching
- * - Grid of percentage discounts for partial selections by course count
+ * - Complete package pricing with coaching inclusion option
+ * - Complete package pricing without coaching option
+ * - Dynamic discount grid for partial course selections
+ * - Percentage-based discount calculations by course count
+ * - Form validation and state management for pricing data
+ * - Responsive grid layout for discount inputs
  *
  * Props:
- * @param {PackagePricingFormData} formData - Current pricing configuration state
+ * @param {PackagePricingFormData} formData - Current pricing configuration state containing all pricing data
  * @param {function} onFormDataChange - Function to update pricing configuration with partial updates
+ * @param {TLocale} locale - Current locale for translations
  *
  * Usage:
  * ```tsx
  * <PackagePricingStep
  *   formData={formData}
  *   onFormDataChange={onFormDataChange}
+ *   locale={locale}
  * />
  * ```
  */
