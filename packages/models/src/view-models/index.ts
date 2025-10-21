@@ -116,3 +116,4 @@ export * from './revoke-coupon-view-model';
 export * from './save-coaching-page-view-model';
 export * from './list-user-incoming-transactions-view-model';
 export * from './list-user-outgoing-transactions-view-model';
+export * from './list-transactions-view-model';
