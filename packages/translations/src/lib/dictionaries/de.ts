@@ -1645,6 +1645,25 @@ export const DE: TDictionary = {
         },
       },
     },
+    manageCoachingPage: {
+      title: 'Coaching-Seite verwalten',
+      description: 'Passe den Inhalt und das Layout deiner Coaching-Seite an',
+      save: 'Änderungen speichern',
+      saving: 'Speichern...',
+      saved: 'Änderungen erfolgreich gespeichert',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der Coaching-Seite ist ein Fehler aufgetreten',
+        unauthorized: {
+          title: 'Zugriff verweigert',
+          description: 'Du hast keine Berechtigung, auf diese Seite zuzugreifen',
+        },
+        notFound: {
+          title: 'Nicht gefunden',
+          description: 'Die Coaching-Seite konnte nicht gefunden werden',
+        },
+      },
+    },
     groupCoachingSessionReviews: {
       title: 'Gruppenkurs Bewertungen',
       description: 'Bewertungen für diese Gruppenkurs-Sitzung anzeigen und verwalten',
