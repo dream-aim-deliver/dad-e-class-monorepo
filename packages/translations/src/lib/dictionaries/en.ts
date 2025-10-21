@@ -1891,5 +1891,33 @@ export const EN: TDictionary = {
         },
       },
     },
+    receivedPayments: {
+      title: 'Received Payments',
+      description: 'View payments received from your students',
+      transactionId: 'Transaction ID',
+      date: 'Date',
+      amount: 'Amount',
+      status: 'Status',
+      type: 'Type',
+      from: 'From',
+      downloadInvoice: 'Download Invoice',
+      generateInvoice: 'Generate Invoice',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading your received payments.',
+        kaboom: {
+          title: 'Error',
+          description: 'An unexpected error occurred. Please try again later.',
+        },
+        notFound: {
+          title: 'Received Payments Not Found',
+          description: 'No payment records could be loaded. Please try again later.',
+        },
+        unauthorized: {
+          title: 'Access Denied',
+          description: 'You do not have permission to view this page.',
+        },
+      },
+    },
   },
 };

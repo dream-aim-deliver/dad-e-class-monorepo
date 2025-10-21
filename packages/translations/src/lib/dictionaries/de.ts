@@ -1894,5 +1894,33 @@ export const DE: TDictionary = {
         },
       },
     },
+    receivedPayments: {
+      title: 'Erhaltene Zahlungen',
+      description: 'Sieh dir die Zahlungen deiner Teilnehmer an',
+      transactionId: 'Transaktions-ID',
+      date: 'Datum',
+      amount: 'Betrag',
+      status: 'Status',
+      type: 'Typ',
+      from: 'Von',
+      downloadInvoice: 'Rechnung herunterladen',
+      generateInvoice: 'Rechnung erstellen',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden deiner erhaltenen Zahlungen ist ein Fehler aufgetreten.',
+        kaboom: {
+          title: 'Fehler',
+          description: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.',
+        },
+        notFound: {
+          title: 'Erhaltene Zahlungen nicht gefunden',
+          description: 'Die Zahlungsdaten konnten nicht geladen werden. Bitte versuche es später erneut.',
+        },
+        unauthorized: {
+          title: 'Zugriff verweigert',
+          description: 'Du hast keine Berechtigung, diese Seite anzusehen.',
+        },
+      },
+    },
   },
 };
