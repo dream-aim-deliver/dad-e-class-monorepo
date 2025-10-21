@@ -1656,6 +1656,25 @@ export const EN: TDictionary = {
         },
       },
     },
+    manageCoachingPage: {
+      title: 'Manage Coaching Page',
+      description: 'Customize the content and layout of your coaching page',
+      save: 'Save Changes',
+      saving: 'Saving...',
+      saved: 'Changes saved successfully',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading the coaching page',
+        unauthorized: {
+          title: 'Access Denied',
+          description: 'You do not have permission to access this page',
+        },
+        notFound: {
+          title: 'Not Found',
+          description: 'The coaching page could not be found',
+        },
+      },
+    },
     groupCoachingSessionReviews: {
       title: 'Group Coaching Session Reviews',
       description: 'View and manage reviews for this group coaching session',
