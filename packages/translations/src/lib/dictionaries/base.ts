@@ -1320,6 +1320,8 @@ export const DictionarySchema = z.object({
       flexibleDescription: z.string(),
       excludeButton: z.string(),
       detailsButton: z.string(),
+      bottomBannerTitle: z.string(),
+      bottomBannerSubtitle: z.string(),
     }),
     archivePackageModal: z.object({
       confirmationTitle: z.string(),
