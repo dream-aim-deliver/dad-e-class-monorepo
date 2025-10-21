@@ -1299,6 +1299,7 @@ export const DE: TDictionary = {
       freeBundlesLabel: 'Kostenlose Pakete',
       resetFilters: 'Filter zurücksetzen',
       applyFilters: 'Filter anwenden',
+    },
     packageDetailsStep: {
       title: 'Paket-Details',
       packageTitleLabel: 'Paket-Titel',

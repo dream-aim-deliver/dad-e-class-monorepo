@@ -1286,6 +1286,7 @@ export const DictionarySchema = z.object({
         freeBundlesLabel: z.string(),
       resetFilters: z.string(),
       applyFilters: z.string(),
+    }),
     packageDetailsStep: z.object({
       title: z.string(),
       packageTitleLabel: z.string(),
