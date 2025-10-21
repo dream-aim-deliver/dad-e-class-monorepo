@@ -5,7 +5,7 @@
 // Parent page for billing with role-based tab visibility
 // User Types: Student (no tabs), Coach (tabs: Order History, Received Payments)
 
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { DefaultLoading, Tabs } from '@maany_shr/e-class-ui-kit';
 import { useSession } from 'next-auth/react';
@@ -21,7 +21,7 @@ interface BillingProps {
 
 export default function Billing({ locale, tab }: BillingProps) {
   const t = useTranslations('pages.orderHistory');
-  const currentLocale = useLocale() as TLocale;
+  const tReceivedPayments = useTranslations('pages.receivedPayments');
   const sessionDTO = useSession();
   const session = sessionDTO.data;
   const isCoach = session?.user?.roles?.includes('coach');
@@ -60,7 +60,7 @@ export default function Billing({ locale, tab }: BillingProps) {
           {t('transactionsTab')}
         </Tabs.Trigger>
         <Tabs.Trigger value={BillingTab.RECEIVED_PAYMENTS} isLast={true}>
-          {useTranslations('pages.receivedPayments')('title')}
+          {tReceivedPayments('title')}
         </Tabs.Trigger>
 
         <Tabs.Content value={BillingTab.ORDER_HISTORY} className={tabContentClass}>
