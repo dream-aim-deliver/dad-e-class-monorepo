@@ -184,7 +184,6 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                     isDeletionAllowed
                     className="mb-2"
                 />
-                {/* TODO: Consider surfacing i18n-friendly error messages here */}
                 {errorMessage && (
                     <p className="text-sm text-red-500">{errorMessage}</p>
                 )}

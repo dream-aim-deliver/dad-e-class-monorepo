@@ -64,17 +64,65 @@ export interface PackagePreviewStepProps {
 /**
  * PackagePreviewStep
  *
- * Renders the Step 4 preview for the Create Package flow using existing UI Kit components.
+ * A component for Step 4 of the Create Package flow, providing a comprehensive preview
+ * of the package before publishing. This component renders the final package layout
+ * using existing UI Kit components to show users exactly how their package will appear.
  *
- * Sections:
- * 1) BuyCompletePackageBanner (hero)
- * 2) Package details accordion populated from Step 1
- * 3) Flexible course selection grid rendered with CourseCard and Include/Exclude controls
- * 4) Disabled "Purchase Selected Courses" CTA with dynamic totals
- * 5) Secondary BuyCompletePackageBanner (complete package CTA)
- * 6) Footer publish controls (Back / Publish)
+ * Features:
+ * - Complete package information display with hero banner
+ * - Dynamic accordion section populated from package details
+ * - Flexible course selection grid with individual course controls
+ * - Pricing calculations and savings display
+ * - Coaching inclusion toggle functionality
+ * - Course exclusion controls for flexible purchasing
+ * - Complete package purchase banner
+ * - Publish workflow controls (Back/Publish buttons)
  *
- * The component is purely presentational; all data/state are passed from the parent.
+ * Props:
+ * @param {string} packageTitle - Title of the package
+ * @param {string} packageDescription - Description of the package
+ * @param {string} featuredImageUrl - Optional URL for the package featured image
+ * @param {number} durationInMinutes - Total duration of the package in minutes
+ * @param {string} accordionTitle - Title for the accordion section
+ * @param {boolean} showListItemNumbers - Whether to show numbers in accordion items
+ * @param {AccordionBuilderItem[]} accordionItems - Array of accordion items to display
+ * @param {CoursePreview[]} selectedCourses - Array of selected courses for the package
+ * @param {function} onExcludeCourse - Function to handle course exclusion from package
+ * @param {boolean} coachingIncluded - Whether coaching is included in the package
+ * @param {function} onToggleCoaching - Function to toggle coaching inclusion
+ * @param {number} selectedCoursesTotal - Total price of selected courses
+ * @param {number} selectedCoursesSavings - Total savings amount
+ * @param {function} onBack - Function to handle back navigation
+ * @param {function} onPublish - Function to handle package publishing
+ * @param {boolean} isPublishing - Loading state for publish action
+ * @param {TLocale} locale - Current locale for translations
+ * @param {string} bottomBannerTitle - Title for the bottom banner
+ * @param {string} bottomBannerSubtitle - Subtitle for the bottom banner
+ *
+ * Usage:
+ * ```tsx
+ * <PackagePreviewStep
+ *   packageTitle={packageTitle}
+ *   packageDescription={packageDescription}
+ *   featuredImageUrl={featuredImageUrl}
+ *   durationInMinutes={durationInMinutes}
+ *   accordionTitle={accordionTitle}
+ *   showListItemNumbers={showListItemNumbers}
+ *   accordionItems={accordionItems}
+ *   selectedCourses={selectedCourses}
+ *   onExcludeCourse={onExcludeCourse}
+ *   coachingIncluded={coachingIncluded}
+ *   onToggleCoaching={onToggleCoaching}
+ *   selectedCoursesTotal={selectedCoursesTotal}
+ *   selectedCoursesSavings={selectedCoursesSavings}
+ *   onBack={onBack}
+ *   onPublish={onPublish}
+ *   isPublishing={isPublishing}
+ *   locale={locale}
+ *   bottomBannerTitle={bottomBannerTitle}
+ *   bottomBannerSubtitle={bottomBannerSubtitle}
+ * />
+ * ```
  */
 
 export function PackagePreviewStep({

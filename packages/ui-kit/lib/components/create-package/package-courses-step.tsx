@@ -30,9 +30,32 @@ export interface PackageCoursesStepProps {
 /**
  * PackageCoursesStep
  *
- * Step 2 of the Create Package flow. Displays selected courses in a
- * horizontal scroll section and renders the searchable list of all
- * courses using CourseCardAddToPackageList.
+ * A component for Step 2 of the Create Package flow, handling course selection
+ * and display. This component manages the course selection interface where users
+ * can browse and select courses to include in their package.
+ *
+ * Features:
+ * - Course search and filtering capabilities
+ * - Course selection/deselection with visual feedback
+ * - Course card display with detailed information
+ * - Empty state handling when no courses are available
+ * - Integration with CourseCardAddToPackageList for search functionality
+ *
+ * Props:
+ * @param {PackageCoursesStepCourseItem[]} courses - Array of available courses to display
+ * @param {string[]} selectedCourseIds - Array of currently selected course IDs
+ * @param {function} onToggleCourseSelection - Function to handle course selection/deselection
+ * @param {TLocale} locale - Current locale for translations
+ *
+ * Usage:
+ * ```tsx
+ * <PackageCoursesStep
+ *   courses={courses}
+ *   selectedCourseIds={selectedCourseIds}
+ *   onToggleCourseSelection={onToggleCourseSelection}
+ *   locale={locale}
+ * />
+ * ```
  */
 
 export const PackageCoursesStep: React.FC<PackageCoursesStepProps> = ({
@@ -46,7 +69,6 @@ export const PackageCoursesStep: React.FC<PackageCoursesStepProps> = ({
     return (
         <div>
             {/* All courses list */}
-            {/* TODO: Add search functionality when available */}
             <CourseCardAddToPackageList locale={locale} onSearch={() => undefined}>
                 {courses.length === 0 ? (
                     <div className="text-center text-text-secondary py-8">
@@ -56,10 +78,19 @@ export const PackageCoursesStep: React.FC<PackageCoursesStepProps> = ({
                     courses.map((course) => (
                         <CourseCardAddToPackage
                             key={course.id}
-                            {...course}
+                            title={course.title}
+                            description={course.description}
+                            rating={course.rating}
+                            reviewCount={course.reviewCount}
+                            language={course.language}
+                            sessions={course.sessions}
+                            duration={course.duration}
+                            sales={course.sales}
+                            imageUrl={course.imageUrl}
+                            author={course.author}
+                            pricing={course.pricing}
                             courseAdded={selectedCourseIds.includes(course.id)}
                             onAddOrRemove={() => onToggleCourseSelection(course.id)}
-                            // TODO: Add author page route when available
                             onClickUser={() => undefined}
                             locale={locale}
                         />
