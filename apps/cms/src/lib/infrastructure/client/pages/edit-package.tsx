@@ -76,6 +76,9 @@ export default function EditPackage({
     const [iconUploadProgress, setIconUploadProgress] = useState<number | undefined>(undefined);
     const { 
         handleFileChange: handleAccordionIconUpload,
+        uploadError: iconUploadError,
+        handleDelete: handleDeleteAccordionIcon,
+        handleDownload: handleDownloadAccordionIcon,
     } = usePackageFileUpload("upload_package_accordion_item_icon", null, setIconUploadProgress);
 
     // Form data handlers
@@ -268,14 +271,20 @@ export default function EditPackage({
             <PackageDetailsStep
                 formData={packageDetailsFormData}
                 onFormDataChange={handlePackageDetailsChange}
-                handlePackageImageUpload={handlePackageImageUpload}
-                handleAccordionIconUpload={handleAccordionIconUpload}
-                uploadProgress={packageImageProgress}
-                errorMessage={packageImageError}
-                onDeleteFeaturedImage={handleDeleteFeaturedImage}
-                onDownloadFeaturedImage={handleDownloadFeaturedImage}
-                iconUploadProgress={iconUploadProgress}
-                onDownloadAccordionIcon={(id: string) => handleDownloadFeaturedImage(id)}
+                featuredImageUpload={{
+                    onUpload: handlePackageImageUpload,
+                    onDelete: handleDeleteFeaturedImage,
+                    onDownload: handleDownloadFeaturedImage,
+                    uploadProgress: packageImageProgress ?? 0,
+                    errorMessage: packageImageError ?? '',
+                }}
+                accordionIconUpload={{
+                    onUpload: handleAccordionIconUpload,
+                    onDelete: handleDeleteAccordionIcon,
+                    onDownload: handleDownloadAccordionIcon,
+                    uploadProgress: iconUploadProgress ?? 0,
+                    errorMessage: iconUploadError ?? '',
+                }}
                 locale={currentLocale}
             />
             

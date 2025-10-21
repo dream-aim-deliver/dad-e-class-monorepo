@@ -120,7 +120,7 @@ export default function CreatePackage() {
     const [isPublishing, setIsPublishing] = useState(false);
 
     // Courses data from TRPC usecase
-    const [coursesResponse] = trpc.listCourses.useSuspenseQuery({ pagination: { page: 1, pageSize: 50 } });
+    const [coursesResponse] = trpc.listCourses.useSuspenseQuery({});
     const allCourses: CourseData[] = (() => {
         if (!coursesResponse.success) return [];
         const payload: any = coursesResponse.data;
@@ -163,6 +163,8 @@ export default function CreatePackage() {
     const {
         handleFileChange: handleAccordionIconUpload,
         uploadError: iconUploadError,
+        handleDelete: handleDeleteAccordionIcon,
+        handleDownload: handleDownloadAccordionIcon,
     } = usePackageFileUpload("upload_package_accordion_item_icon", null, setIconUploadProgress);
 
     // Form data handlers
@@ -284,6 +286,14 @@ export default function CreatePackage() {
         return Math.max(0, individualTotal - packagePrice);
     }, [calculateIndividualCourseTotal, calculatePackagePrice]);
 
+    // Calculate total duration from selected courses
+    const calculateTotalDuration = useCallback(() => {
+        return selectedCourses.reduce((total, course) => {
+            const courseDuration = course.duration.video + course.duration.coaching + course.duration.selfStudy;
+            return total + courseDuration;
+        }, 0);
+    }, [selectedCourses]);
+
     // Breadcrumbs following the standard pattern
     const breadcrumbItems = [
         {
@@ -386,14 +396,20 @@ export default function CreatePackage() {
             <PackageDetailsStep
                 formData={packageDetailsFormData}
                 onFormDataChange={handlePackageDetailsChange}
-                handlePackageImageUpload={handlePackageImageUpload}
-                handleAccordionIconUpload={handleAccordionIconUpload}
-                uploadProgress={packageImageProgress}
-                errorMessage={packageImageError}
-                onDeleteFeaturedImage={handleDeleteFeaturedImage}
-                onDownloadFeaturedImage={handleDownloadFeaturedImage}
-                iconUploadProgress={iconUploadProgress}
-                onDownloadAccordionIcon={(id: string) => handleDownloadFeaturedImage(id)}
+                featuredImageUpload={{
+                    onUpload: handlePackageImageUpload,
+                    onDelete: handleDeleteFeaturedImage,
+                    onDownload: handleDownloadFeaturedImage,
+                    uploadProgress: packageImageProgress ?? 0,
+                    errorMessage: packageImageError ?? '',
+                }}
+                accordionIconUpload={{
+                    onUpload: handleAccordionIconUpload,
+                    onDelete: handleDeleteAccordionIcon,
+                    onDownload: handleDownloadAccordionIcon,
+                    uploadProgress: iconUploadProgress ?? 0,
+                    errorMessage: iconUploadError ?? '',
+                }}
                 locale={locale}
             />
             )}
@@ -423,7 +439,7 @@ export default function CreatePackage() {
                     packageTitle={packageDetailsFormData.packageTitle || 'Package Title Here'}
                     packageDescription={packageDetailsFormData.packageDescription || 'Package Description Here'}
                     featuredImageUrl={packageDetailsFormData.featuredImage?.url}
-                    durationInMinutes={163}
+                    durationInMinutes={calculateTotalDuration()}
                     accordionTitle={packageDetailsFormData.accordionTitle}
                     showListItemNumbers={packageDetailsFormData.showListItemNumbers}
                     accordionItems={packageDetailsFormData.accordionItems}
@@ -436,9 +452,10 @@ export default function CreatePackage() {
                     onBack={handleBack}
                     onPublish={handlePublishPackage}
                     isPublishing={isPublishing}
+                    onClickPurchase={() => {}}
+                    onCourseDetails={() => {}}
+                    onCourseAuthorClick={() => {}}
                     locale={locale}
-                    bottomBannerTitle="Buy complete package"
-                    bottomBannerSubtitle="Here you get everything included. You can therefore gradually implement your overall appearance with a key visual, new branding, a website and corresponding video content."
                 />
             )}
 
