@@ -39,9 +39,6 @@ export default function ManageCoachingPage({
   const [coachingPageResponse, { refetch: refetchCoachingPage }] =
     trpc.getCoachingPage.useSuspenseQuery({});
 
-  // TODO: Add state management and presenter hooks when implementing
-  // const [coachingPageViewModel, setCoachingPageViewModel] = useState<TGetCoachingPageViewModel | undefined>(undefined);
-  // const { presenter } = useGetCoachingPagePresenter(setCoachingPageViewModel);
 
   // Defensive auth check on client side
   if (!session || !isAdmin) {
@@ -58,31 +55,6 @@ export default function ManageCoachingPage({
   if (!coachingPageResponse) {
     return <DefaultLoading locale={locale} variant="minimal" />;
   }
-
-  // TODO: Implement error handling with proper view model checks
-  // Example error handling patterns from project:
-  // if (viewModel.mode === 'kaboom') {
-  //     const errorData = viewModel.data;
-  //     console.error(errorData);
-  //     return (
-  //         <DefaultError
-  //             locale={locale}
-  //             title={t('error.title')}
-  //             description={t('error.description')}
-  //             onRetry={() => refetchCoachingPage()}
-  //         />
-  //     );
-  // }
-  //
-  // if (viewModel.mode === 'not-found') {
-  //     const errorData = viewModel.data;
-  //     console.error(errorData);
-  //     return (
-  //         <DefaultNotFound
-  //             locale={locale}
-  //         />
-  //     );
-  // }
 
   return (
     <div className="flex flex-col space-y-5 px-30">
