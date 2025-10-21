@@ -114,3 +114,4 @@ export * from './list-packages-short-view-model';
 export * from './list-platform-coaching-offerings-view-model';
 export * from './revoke-coupon-view-model';
 export * from './save-coaching-page-view-model';
+export * from './list-user-incoming-transactions-view-model';
