@@ -17,7 +17,7 @@ import {
 	Tabs,
 	Banner,
 } from '@maany_shr/e-class-ui-kit';
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useEffect, useState } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-get-home-page-presenter';
@@ -26,60 +26,6 @@ import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { useHomePageFileUpload } from './manage-homepage-hooks/use-homepage-file-upload';
 import { HeroSection, CarouselSection, CoachingDemandSection, HowItWorksSection } from '@maany_shr/e-class-ui-kit';
 
-const mockHomePageResponse: useCaseModels.TGetHomePageUseCaseResponse = {
-	success: true,
-	data: {
-		banner: {
-			title: 'Welcome to E-Class',
-			description: 'Empower your learning journey',
-			videoId: 'o017yCZbw87zC9xDoy1Bl02FsbCBXuSdx6xPbkF01sW02IU',
-			thumbnailUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748006627/hb-thumb_eabema.png',
-		},
-		carousel: [
-			{
-				title: 'Course 1',
-				description: 'Description for course 1',
-				imageUrl: 'https://images.unsplash.com/photo-1543269866-8cd2dfe969d6?q=80&w=1170&auto=format&fit=crop',
-				buttonText: 'Enroll',
-				buttonUrl: '/course/1',
-				badge: 'New',
-			},
-			{
-				title: 'Course 2',
-				description: 'Description for course 2',
-				imageUrl: 'https://images.unsplash.com/photo-1580742432710-d3c3703559a9?q=80&w=1170&auto=format&fit=crop',
-				buttonText: 'Learn More',
-				buttonUrl: '/course/2',
-				badge: 'Popular',
-			},
-		],
-		coachingOnDemand: {
-			title: 'Coaching On Demand',
-			description: 'Get personalized coaching',
-			desktopImageUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364855/Frame_4353_zxdyos.png',
-			tabletImageUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364854/tablet_rdfwwe.png',
-			mobileImageUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1748364853/mobile_s5v6sk.png',
-		},
-		accordion: {
-			title: 'How it works',
-			showNumbers: true,
-			items: [
-				{
-					title: 'FAQ 1',
-					content: 'Answer to FAQ 1',
-					position: 1,
-					iconImageUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1749031184/icon_btkez8.png',
-				},
-				{
-					title: 'FAQ 2',
-					content: 'Answer to FAQ 2',
-					position: 2,
-					iconImageUrl: 'https://res.cloudinary.com/dnhiejjyu/image/upload/v1749031184/icon_1_rtoehe.png',
-				},
-			],
-		},
-	},
-};
 
 /**
  * ManageHomepage component for CMS
@@ -98,12 +44,15 @@ export default function ManageHomepage() {
 	const contentLocale = useContentLocale();
 
 	// Fetch homepage data (refetch retained for future integration)
-	const [, { refetch: refetchHomePage }] = trpc.getHomePage.useSuspenseQuery({});
+	const [getHomePageResponse, { refetch: refetchHomePage }] = trpc.getHomePage.useSuspenseQuery({});
 	const [homePageViewModel, setHomePageViewModel] = useState<
 		viewModels.TGetHomePageViewModel | undefined
 	>(undefined);
 
 	const { presenter: homePagePresenter } = useGetHomePagePresenter(setHomePageViewModel);
+
+	// @ts-ignore
+	homePagePresenter.present(getHomePageResponse, homePageViewModel);
 
 	// Track upload progress
 	const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
@@ -137,13 +86,6 @@ export default function ManageHomepage() {
 
 	});
 
-	// Present the data
-	useEffect(() => {
-		homePagePresenter.present(
-			mockHomePageResponse,
-			homePageViewModel
-		);
-	}, [homePagePresenter]);
 
 	useEffect(() => {
 		if (homePageViewModel?.mode === 'default' && !currentHomePageData) {
@@ -157,7 +99,8 @@ export default function ManageHomepage() {
 		return <DefaultLoading locale={appLocale} variant="minimal" />;
 	}
 
-	// Error handling
+	// Error handling - only kaboom errors should prevent rendering
+	// Note: 'not-found' is acceptable since save mutation supports upsert
 	if (homePageViewModel.mode === 'kaboom') {
 		return (
 			<DefaultError
@@ -169,17 +112,33 @@ export default function ManageHomepage() {
 		);
 	}
 
-	if (homePageViewModel.mode === 'not-found') {
-		return <DefaultNotFound locale={appLocale} />;
-	}
+	// Create default homepage data when it doesn't exist (for upsert functionality)
+	const defaultHomePageData: viewModels.TGetHomePageSuccess = {
+		banner: {
+			title: '',
+			description: '',
+			videoId: null,
+			thumbnailUrl: '',
+		},
+		carousel: [],
+		coachingOnDemand: {
+			title: '',
+			description: '',
+			desktopImageUrl: '',
+			tabletImageUrl: '',
+			mobileImageUrl: '',
+		},
+		accordion: {
+			title: '',
+			showNumbers: true,
+			items: [],
+		},
+	};
 
-	// Only access data if mode is 'default'
-	if (homePageViewModel.mode !== 'default') {
-		return <DefaultLoading locale={appLocale} variant="minimal" />;
-	}
-
-	// Success state - extract data
-	const homePageData = homePageViewModel.data;
+	// Use actual data if available (mode is 'default'), otherwise use default
+	const homePageData = homePageViewModel.mode === 'default'
+		? homePageViewModel.data
+		: defaultHomePageData;
 
 	// Single state for all homepage data
 
@@ -260,7 +219,7 @@ export default function ManageHomepage() {
 			</div>
 
 			{saveHomePageMutation.isPending && (
-					<Banner style="success" title="Saving homepage changes..." />
+				<Banner style="success" title="Saving homepage changes..." />
 
 
 			)}

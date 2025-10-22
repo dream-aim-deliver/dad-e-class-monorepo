@@ -23,7 +23,7 @@ export default async function ManageHomepagePage({
 
 	return (
 		<Suspense fallback={<DefaultLoadingWrapper />}>
-			<ManageHomepageServerComponent />
+			<ManageHomepageServerComponent platformSlug={params.platform_slug} platformLocale={params.platform_locale} />
 		</Suspense>
 	);
 }
