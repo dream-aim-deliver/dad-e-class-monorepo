@@ -1668,6 +1668,40 @@ export const EN: TDictionary = {
       description: 'Edit package information and pricing',
       saving: 'Saving...',
       save: 'Save Changes',
+      pageTitle: 'Edit Package',
+      cancel: 'Cancel',
+      updating: 'Updating...',
+      platformInfo: 'Platform: {platformSlug} | Content Language: {platformLocale}',
+    },
+    createPackage: {
+      title: 'Create Package',
+      subtitle: 'Platform: {platformSlug} | Content Language: {platformLocale}',
+      stepper: {
+        details: 'Pkg. Details',
+        courses: 'Courses',
+        pricing: 'Pricing',
+        preview: 'Preview',
+      },
+      buttons: {
+        discard: 'Discard',
+        back: 'Back',
+        nextCourses: 'Next: Choose courses',
+        nextPricing: 'Next: Choose pricing',
+        nextPreview: 'Next: Preview',
+        noGoBack: 'No, go back',
+        publishing: 'Publishing...',
+        publishPackage: 'Yes, publish package',
+      },
+      breadcrumbs: {
+        createPackage: 'Create Package',
+      },
+      publishConfirm: {
+        title: 'Publish package?',
+        description: 'Does everything look good? If so, go ahead and publish the package. Keep in mind that once a package is published, its courses cannot be changed, so double-check everything before proceeding.',
+      },
+      alerts: {
+        previewPurchaseNotAvailable: 'This is a preview. Package purchasing is not available in creation mode.',
+      },
     },
     manageOffersPage: {
       title: 'Manage Offers Page',

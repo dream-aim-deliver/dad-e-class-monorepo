@@ -1703,6 +1703,40 @@ export const DictionarySchema = z.object({
       description: z.string(),
       saving: z.string(),
       save: z.string(),
+      pageTitle: z.string(),
+      cancel: z.string(),
+      updating: z.string(),
+      platformInfo: z.string(),
+    }),
+    createPackage: z.object({
+      title: z.string(),
+      subtitle: z.string(),
+      stepper: z.object({
+        details: z.string(),
+        courses: z.string(),
+        pricing: z.string(),
+        preview: z.string(),
+      }),
+      buttons: z.object({
+        discard: z.string(),
+        back: z.string(),
+        nextCourses: z.string(),
+        nextPricing: z.string(),
+        nextPreview: z.string(),
+        noGoBack: z.string(),
+        publishing: z.string(),
+        publishPackage: z.string(),
+      }),
+      breadcrumbs: z.object({
+        createPackage: z.string(),
+      }),
+      publishConfirm: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+      alerts: z.object({
+        previewPurchaseNotAvailable: z.string(),
+      }),
     }),
     manageOffersPage: z.object({
       title: z.string(),
