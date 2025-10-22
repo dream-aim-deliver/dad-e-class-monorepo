@@ -498,6 +498,7 @@ export default function CreatePackage() {
                 courses={allCourses}
                 selectedCourseIds={selectedCourseIds}
                 onToggleCourseSelection={toggleCourseSelection}
+                onClickUser={handleCourseDetails}
                 locale={locale}
             />
             )}
