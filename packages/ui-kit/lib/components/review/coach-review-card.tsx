@@ -1,5 +1,6 @@
 import { UserAvatar } from '../avatar/user-avatar';
 import { Button } from '../button';
+import { IconGroup } from '../icons';
 import { IconCalendar } from '../icons/icon-calendar';
 import { IconClock } from '../icons/icon-clock';
 import { StarRating } from '../star-rating';
@@ -20,6 +21,7 @@ export interface ReviewCardProps extends isLocalAware {
   time: string;
   courseTitle: string;
   courseImage: string;
+  groupName?: string;
 }
 /**
 * A reusable ReviewCard component that displays user reviews, ratings, and course details.
@@ -34,6 +36,7 @@ export interface ReviewCardProps extends isLocalAware {
 * @param time The time of the review or event.
 * @param courseTitle The title of the course related to the review.
 * @param courseImage URL of the course's image.
+* @param groupName Optional name of the group associated with the review.
 * @param locale The locale used for translations.
 *
 * @example
@@ -47,10 +50,11 @@ export interface ReviewCardProps extends isLocalAware {
 *   time="10:00 AM"
 *   courseTitle="Advanced React"
 *   courseImage="https://example.com/course.jpg"
+*   groupName="React Enthusiasts"
 *   locale="en"
 * />
 */
-const ReviewCard: React.FC<ReviewCardProps> = ({
+export const ReviewCard: React.FC<ReviewCardProps> = ({
   className,
   rating,
   reviewerName,
@@ -61,12 +65,13 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   time,
   courseTitle,
   courseImage,
+  groupName,
   locale
 }) => {
   const dictionary = getDictionary(locale);
 
   return (
-    <div className={`max-w-[390px]  p-3 bg-base-neutral-900 rounded-small border-1 border-base-neutral-700 ${className}`}>
+    <div className={`w-full p-3 bg-base-neutral-900 rounded-small border-1 border-base-neutral-700 ${className}`}>
       <div className='flex flex-col gap-3'>
         <div className='flex flex-col gap-2'>
           <div className="w-full flex items-center gap-4 truncate">
@@ -103,7 +108,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             <p className="text-sm lg:text-md">{time}</p>
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button
             className='p-0 gap-1 text-sm  max-w-full'
             variant='text'
@@ -112,10 +117,19 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             iconLeft={<UserAvatar fullName={courseTitle} imageUrl={courseImage} className='rounded-small' size="small" />}
             text={courseTitle}
           />
+          {groupName && (
+            <div className="flex gap-1 flex-wrap items-center">
+              <div className="flex items-center gap-1">
+                <IconGroup classNames="text-text-primary" size="5" />
+                <p className="text-text-secondary text-sm">{dictionary.components.coachReview.group}</p>
+              </div>
+              <p className="text-sm text-text-primary font-bold">
+                {groupName}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
-
-export default ReviewCard;
