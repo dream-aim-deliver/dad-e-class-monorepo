@@ -1666,6 +1666,15 @@ export const DE: TDictionary = {
     allPackages: {
       title: 'Alle Pakete',
       description: 'Verwalte alle Pakete für diese Plattform',
+      success: 'Erfolg',
+      successMessages: {
+        packageArchived: 'Paket erfolgreich archiviert',
+        packagePublished: 'Paket erfolgreich veröffentlicht',
+      },
+      errorMessages: {
+        archiveFailed: 'Fehler beim Archivieren des Pakets. Bitte versuche es erneut.',
+        publishFailed: 'Fehler beim Veröffentlichen des Pakets. Bitte versuche es erneut.',
+      },
     },
     editPackage: {
       title: 'Paket bearbeiten: {packageName}',
@@ -1676,6 +1685,13 @@ export const DE: TDictionary = {
       cancel: 'Abbrechen',
       updating: 'Wird aktualisiert...',
       platformInfo: 'Plattform: {platformSlug} | Inhaltssprache: {platformLocale}',
+      success: 'Erfolg',
+      successMessages: {
+        packageUpdated: 'Paket erfolgreich aktualisiert!',
+      },
+      errorMessages: {
+        updateFailed: 'Fehler beim Aktualisieren des Pakets. Bitte versuche es erneut.',
+      },
     },
     createPackage: {
       title: 'Paket erstellen',
@@ -1702,6 +1718,13 @@ export const DE: TDictionary = {
       publishConfirm: {
         title: 'Paket veröffentlichen?',
         description: 'Sieht alles gut aus? Wenn ja, veröffentliche das Paket. Beachte, dass nach der Veröffentlichung die enthaltenen Kurse nicht mehr geändert werden können – überprüfe also alles sorgfältig, bevor du fortfährst.',
+      },
+      success: 'Erfolg',
+      successMessages: {
+        packageCreated: 'Paket erfolgreich erstellt!',
+      },
+      errorMessages: {
+        createFailed: 'Fehler beim Erstellen des Pakets. Bitte versuche es erneut.',
       },
       alerts: {
         previewPurchaseNotAvailable: 'Dies ist eine Vorschau. Der Kauf von Paketen ist im Erstellungsmodus nicht verfügbar.',

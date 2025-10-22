@@ -1698,6 +1698,15 @@ export const DictionarySchema = z.object({
     allPackages: z.object({
       title: z.string(),
       description: z.string(),
+      success: z.string(),
+      successMessages: z.object({
+        packageArchived: z.string(),
+        packagePublished: z.string(),
+      }),
+      errorMessages: z.object({
+        archiveFailed: z.string(),
+        publishFailed: z.string(),
+      }),
     }),
     editPackage: z.object({
       title: z.string(),
@@ -1708,6 +1717,13 @@ export const DictionarySchema = z.object({
       cancel: z.string(),
       updating: z.string(),
       platformInfo: z.string(),
+      success: z.string(),
+      successMessages: z.object({
+        packageUpdated: z.string(),
+      }),
+      errorMessages: z.object({
+        updateFailed: z.string(),
+      }),
     }),
     createPackage: z.object({
       title: z.string(),
@@ -1734,6 +1750,13 @@ export const DictionarySchema = z.object({
       publishConfirm: z.object({
         title: z.string(),
         description: z.string(),
+      }),
+      success: z.string(),
+      successMessages: z.object({
+        packageCreated: z.string(),
+      }),
+      errorMessages: z.object({
+        createFailed: z.string(),
       }),
       alerts: z.object({
         previewPurchaseNotAvailable: z.string(),

@@ -1663,6 +1663,15 @@ export const EN: TDictionary = {
     allPackages: {
       title: 'All Packages',
       description: 'Manage all packages for this platform',
+      success: 'Success',
+      successMessages: {
+        packageArchived: 'Package archived successfully',
+        packagePublished: 'Package published successfully',
+      },
+      errorMessages: {
+        archiveFailed: 'Failed to archive package. Please try again.',
+        publishFailed: 'Failed to publish package. Please try again.',
+      },
     },
     editPackage: {
       title: 'Edit Package: {packageName}',
@@ -1673,6 +1682,13 @@ export const EN: TDictionary = {
       cancel: 'Cancel',
       updating: 'Updating...',
       platformInfo: 'Platform: {platformSlug} | Content Language: {platformLocale}',
+      success: 'Success',
+      successMessages: {
+        packageUpdated: 'Package updated successfully!',
+      },
+      errorMessages: {
+        updateFailed: 'Failed to update package. Please try again.',
+      },
     },
     createPackage: {
       title: 'Create Package',
@@ -1699,6 +1715,13 @@ export const EN: TDictionary = {
       publishConfirm: {
         title: 'Publish package?',
         description: 'Does everything look good? If so, go ahead and publish the package. Keep in mind that once a package is published, its courses cannot be changed, so double-check everything before proceeding.',
+      },
+      success: 'Success',
+      successMessages: {
+        packageCreated: 'Package created successfully!',
+      },
+      errorMessages: {
+        createFailed: 'Failed to create package. Please try again.',
       },
       alerts: {
         previewPurchaseNotAvailable: 'This is a preview. Package purchasing is not available in creation mode.',
