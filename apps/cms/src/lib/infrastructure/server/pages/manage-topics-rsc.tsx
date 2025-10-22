@@ -11,7 +11,6 @@ import ManageTopics from '../../client/pages/manage-topics';
 interface ManageTopicsProps {
     platformSlug: string;
     platformLocale: string;
-    platformName: string;
     locale: string;
 }
 
@@ -33,7 +32,6 @@ export default async function ManageTopicsServerComponent(props: ManageTopicsPro
                 <ManageTopics
                     platformSlug={props.platformSlug}
                     platformLocale={props.platformLocale}
-                    platformName={props.platformName}
                 />
             </Suspense>
         </HydrateClient>

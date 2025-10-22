@@ -32,13 +32,13 @@ import { useCreateTopicPresenter } from '../hooks/use-create-topic-presenter';
 import { useUpdateTopicPresenter } from '../hooks/use-update-topic-presenter';
 import { useDeleteTopicPresenter } from '../hooks/use-delete-topic-presenter';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { useRequiredPlatform } from '../context/platform-context';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRouter } from 'next/navigation';
 
 interface ManageTopicsProps {
     platformSlug: string;
     platformLocale: string;
-    platformName: string;
     topicsWithCourseCount?: Array<{ topicId: number; coursesCount: number }>;
 }
 
@@ -252,7 +252,6 @@ function CreateTopicDialog({ onTopicCreated }: { onTopicCreated: () => void }) {
 export default function ManageTopics({
     platformSlug,
     platformLocale,
-    platformName,
     topicsWithCourseCount = [],
 }: ManageTopicsProps) {
     // App locale - used for UI elements (buttons, labels, etc.)
@@ -265,6 +264,9 @@ export default function ManageTopics({
 
     // Platform context - contains platform-specific information
     const platformContext = useRequiredPlatformLocale();
+
+    // Platform data - contains platform name, logo, etc.
+    const { platform } = useRequiredPlatform();
 
     // Content locale - the locale for platform content (may differ from app UI locale)
     const contentLocale = useContentLocale();
@@ -373,8 +375,7 @@ export default function ManageTopics({
             onClick: () => router.push('/'),
         },
         {
-            // label: platformName,  TODO: Uncoment when platform name is wired
-            label: platformSlug.charAt(0).toUpperCase() + platformSlug.slice(1),
+            label: platform.name,
             onClick: () => {
                 // TODO: Implement navigation to platform
             },
@@ -411,7 +412,7 @@ export default function ManageTopics({
                     )}
                 </div>
                 <p className="text-text-secondary text-sm">
-                    Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
+                    Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
                 </p>
             </div>
 

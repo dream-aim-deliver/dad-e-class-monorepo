@@ -34,6 +34,7 @@ import { useUpdateCoachingOfferingPresenter } from '../hooks/use-update-coaching
 import { useDeleteCoachingOfferingPresenter } from '../hooks/use-delete-coaching-offering-presenter';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { useContentLocale } from '../hooks/use-platform-translations';
+import { useRequiredPlatform } from '../context/platform-context';
 
 interface CoachingOfferingProps {
     locale: string;
@@ -279,6 +280,8 @@ export default function CoachingOffering({
     // Platform context - contains platform-specific information
     const platformContext = useRequiredPlatformLocale();
 
+    const { platform } = useRequiredPlatform();
+
     // Content locale - the locale for platform content (may differ from app UI locale)
     const contentLocale = useContentLocale();
 
@@ -394,7 +397,7 @@ export default function CoachingOffering({
             onClick: () => router.push('/'),
         },
         {
-            label: platformContext.platformSlug.charAt(0).toUpperCase() + platformContext.platformSlug.slice(1),
+            label: platform.name,
             onClick: () => {
                 // TODO: Implement navigation to platform
             },
@@ -426,7 +429,7 @@ export default function CoachingOffering({
                     />
                 </div>
                 <p className="text-text-secondary text-sm">
-                    Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
+                    Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
                 </p>
             </div>
 
