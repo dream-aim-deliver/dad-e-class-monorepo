@@ -17,6 +17,7 @@ import {
     DefaultNotFound,
     CourseCompletionModal,
     ReviewDialog,
+    generateCertificatePDF,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -38,6 +39,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
 
     // Add state for error message
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+    const [certificateError, setCertificateError] = useState<string | null>(null);
 
     // State for course status
     const [courseStatusResponse] = trpc.getCourseStatus.useSuspenseQuery({
@@ -113,9 +115,23 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     }, [isLoggedIn, router]);
 
     // Handle download certificate
-    const handleDownloadCertificate = () => {
+    const handleDownloadCertificate =async () => {
         if (certificateDataViewModel?.mode === 'default') {
-            const data = certificateDataViewModel.data;
+            
+            try {
+                setCertificateError(null); // Clear any previous errors
+                const certificateData = certificateDataViewModel.data.certificateData;
+
+                // Map the certificate data to the expected format
+                await generateCertificatePDF({
+                    studentName: `${certificateData.studentName} ${certificateData.studentSurname}`,
+                    courseTitle: certificateData.courseName,
+                    completionDate: certificateData.awardedOn,
+                    platformName: certificateData.platformName,
+                });
+            } catch (error) {
+                setCertificateError(typeof error === 'string' ? error : 'Failed to generate certificate');
+            }
         }
     };
 
@@ -167,6 +183,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
 
     return (
         <>
+        
             {modalState === 'completion' && courseStatusData && certificateData && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                     <CourseCompletionModal
@@ -178,6 +195,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                         onClose={handleCloseCompletionModal}
                         locale={locale}
                     />
+                    {certificateError && <DefaultError locale={locale} title={certificateError}  />}
                 </div>
             )}
             {(modalState === 'review-form' || modalState === 'review-thank-you') && (

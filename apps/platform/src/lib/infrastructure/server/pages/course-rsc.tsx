@@ -169,6 +169,11 @@ async function prefetchIntroductionData(
                     courseSlug: slug,
                 }),
             ),
+             prefetch(
+                trpc.getCourseCertificateData.queryOptions({
+                    courseSlug: slug,
+                }),
+            ),
         );
     }
 
