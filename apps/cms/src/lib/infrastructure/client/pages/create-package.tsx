@@ -53,7 +53,6 @@ interface PackagePreviewData {
     title: string;
     description: string;
     featuredImage: fileMetadata.TFileMetadata | null;
-    accordionTitle: string;
     showListItemNumbers: boolean;
     accordionItems: AccordionBuilderItem[];
     selectedCourses: CourseData[];
@@ -98,7 +97,6 @@ export default function CreatePackage() {
         packageTitle: '',
         packageDescription: '',
         featuredImage: null,
-        accordionTitle: '',
         showListItemNumbers: true,
         accordionItems: [],
     });
@@ -298,7 +296,6 @@ export default function CreatePackage() {
                 .map((id) => idToNumber(id))
                 .filter((n): n is number => n !== undefined);
 
-            // TODO: Add accordionTitle to backend contract
             const payload = {
                 title: packageDetailsFormData.packageTitle,
                 description: packageDetailsFormData.packageDescription,
@@ -521,7 +518,6 @@ export default function CreatePackage() {
                     packageDescription={packageDetailsFormData.packageDescription}
                     featuredImageUrl={packageDetailsFormData.featuredImage?.url}
                     durationInMinutes={calculateTotalDuration()}
-                    accordionTitle={packageDetailsFormData.accordionTitle}
                     showListItemNumbers={packageDetailsFormData.showListItemNumbers}
                     accordionItems={packageDetailsFormData.accordionItems}
                     selectedCourses={selectedCourses}
