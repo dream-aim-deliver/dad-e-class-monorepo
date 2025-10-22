@@ -298,15 +298,17 @@ export default function CreatePackage() {
                 .map((id) => idToNumber(id))
                 .filter((n): n is number => n !== undefined);
 
-            // TODO: Add featuredImageId, accordionTitle, showListItemNumbers to backend contract
+            // TODO: Add accordionTitle to backend contract
             const payload = {
                 title: packageDetailsFormData.packageTitle,
                 description: packageDetailsFormData.packageDescription,
                 price,
                 priceWithCoachings,
                 partialDiscounts: partialDiscountsPayload,
+                showAccordionNumbers: packageDetailsFormData.showListItemNumbers,
                 accordionItems: accordionItemsPayload,
                 courseIds: courseIdsPayload,
+                featuredImageId: null,
             };
 
             const result = await createPackageMutation.mutateAsync(payload);
