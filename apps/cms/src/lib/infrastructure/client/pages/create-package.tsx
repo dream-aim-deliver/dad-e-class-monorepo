@@ -17,6 +17,8 @@ import {
     PackagePricingStep,
     PackageCoursesStep,
     PackagePreviewStep,
+    Banner,
+    FeedBackMessage,
 } from '@maany_shr/e-class-ui-kit';
 import type { PackageDetailsFormData, PackagePricingFormData } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
@@ -26,6 +28,8 @@ import { useSession } from 'next-auth/react';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { AccordionBuilderItem } from '@maany_shr/e-class-ui-kit';
 import { usePackageFileUpload } from './common/hooks/use-package-file-upload';
+import { idToNumber } from '../utils/id-to-number';
+import { useEffect } from 'react';
 
 // Types for course data
 interface CourseData {
@@ -65,7 +69,6 @@ export default function CreatePackage() {
     const router = useRouter();
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
     const t = useTranslations('pages.createPackage');
-    // const t = useTranslations('components.createPackage');
 
     // CMS-specific context hooks
     const platformSlug = platformContext.platformSlug;
@@ -115,11 +118,21 @@ export default function CreatePackage() {
     });
 
     // Course selection state
-    const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>(['1', '2']); // Mock: 2 courses selected
+    const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]); // Start with empty selection
 
     // Preview state
     const [coachingIncluded, setCoachingIncluded] = useState(true);
     const [isPublishing, setIsPublishing] = useState(false);
+
+    // Error and success message state
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+    // Create package presenter
+    const [createPackageViewModel, setCreatePackageViewModel] = useState<
+        viewModels.TCreatePackageViewModel | undefined
+    >(undefined);
+    const { presenter: createPresenter } = useCreatePackagePresenter(setCreatePackageViewModel);
 
     // Courses data from TRPC usecase
     const [coursesResponse] = trpc.listCourses.useSuspenseQuery({});
@@ -211,27 +224,57 @@ export default function CreatePackage() {
         );
     }, []);
 
-    // Pricing management functions
-    const updatePricingConfig = useCallback((updates: Partial<PackagePricingFormData>) => {
-        setPricingFormData(prev => ({ ...prev, ...updates }));
-    }, []);
-
-    const updatePartialDiscount = useCallback((courseCount: string, discount: string) => {
-        setPricingFormData(prev => ({
-            ...prev,
-            partialDiscounts: {
-                ...prev.partialDiscounts,
-                [courseCount]: discount
-            }
-        }));
-    }, []);
-
-    // Publish logic
     const createPackageMutation = trpc.createPackage.useMutation();
+
+    // Handle create package mutation presentation
+    useEffect(() => {
+        if (createPackageMutation.isSuccess && createPackageMutation.data) {
+            // @ts-ignore
+            createPresenter.present(createPackageMutation.data, createPackageViewModel);
+        }
+    }, [createPackageMutation.isSuccess, createPackageMutation.data, createPresenter, createPackageViewModel]);
+
+    // Handle create package success/error
+    useEffect(() => {
+        if (createPackageViewModel?.mode === 'default') {
+            setSuccessMessage(t('successMessages.packageCreated'));
+            setErrorMessage(null);
+            // Redirect to packages list after successful create
+            router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`);
+        }
+        if (createPackageViewModel?.mode === 'kaboom') {
+            setErrorMessage(t('errorMessages.createFailed'));
+            setSuccessMessage(null);
+            setIsPublishing(false);
+        }
+    }, [createPackageViewModel, router, locale, platformSlug, platformLocale]);
+
+    // Handle mutation errors (network/unknown)
+    useEffect(() => {
+        if (createPackageMutation.isError) {
+            setErrorMessage(createPackageMutation.error?.message || t('errorMessages.createFailed'));
+            setSuccessMessage(null);
+            setIsPublishing(false);
+        }
+    }, [createPackageMutation.isError, createPackageMutation.error]);
     
     const handlePublishPackage = useCallback(async () => {
         setIsPublishing(true);
+        setErrorMessage(null);
+        setSuccessMessage(null);
+        
         try {
+            // Validate required data
+            if (!packageDetailsFormData.packageTitle.trim()) {
+                throw new Error('Package title is required');
+            }
+            if (!packageDetailsFormData.packageDescription.trim()) {
+                throw new Error('Package description is required');
+            }
+            if (selectedCourseIds.length === 0) {
+                throw new Error('At least one course must be selected');
+            }
+
             // Build payload matching backend contract
             // TODO: Replace string parsing when backend exposes numeric price fields
             const price = parseFloat(pricingFormData.completePackageWithoutCoaching.replace(/[^\d.]/g, '')) || 0;
@@ -250,13 +293,12 @@ export default function CreatePackage() {
                 title: item.title,
                 description: item.content,
                 position: idx + 1,
-                iconId: item.icon?.id,
+                iconId: idToNumber(item.icon?.id) ?? null,
             }));
 
-            // TODO: Confirm whether BE will accept string IDs to remove Number casting
             const courseIdsPayload = selectedCourseIds
-                .map((id) => Number(id))
-                .filter((n) => !Number.isNaN(n));
+                .map((id) => idToNumber(id))
+                .filter((n): n is number => n !== undefined);
 
             // TODO: Add featuredImageId, accordionTitle, showListItemNumbers when supported by backend contract
             const payload = {
@@ -271,15 +313,9 @@ export default function CreatePackage() {
 
             const result = await createPackageMutation.mutateAsync(payload);
             
-            if (result.success) {
-                // Redirect to packages list after successful publish
-                router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`);
-            } else {
-                throw new Error(result.data?.data?.message || 'Failed to create package');
-            }
+            // Success/error handling done by useEffect hooks
         } catch (error) {
-            console.error('Failed to publish package:', error);
-            setIsPublishing(false);
+            // Error handled by useEffect hooks
         }
     }, [
         packageDetailsFormData, selectedCourseIds, pricingFormData, 
@@ -388,6 +424,25 @@ export default function CreatePackage() {
                 </p>
             </div>
 
+            {/* Success Banner */}
+            {successMessage && (
+                <Banner
+                    title={t('success')}
+                    description={successMessage}
+                    style="success"
+                    closeable={true}
+                    onClose={() => setSuccessMessage(null)}
+                />
+            )}
+
+            {/* Error Message */}
+            {errorMessage && (
+                <FeedBackMessage
+                    type="error"
+                    message={errorMessage}
+                />
+            )}
+
             {/* Step Navigation */}
             <Stepper.Root 
                 key={`stepper-${currentStep}`}
@@ -462,8 +517,8 @@ export default function CreatePackage() {
             {/* Step 4: Preview and Publish */}
             {currentStep === 4 && (
                 <PackagePreviewStep
-                    packageTitle={packageDetailsFormData.packageTitle || 'Package Title Here'}
-                    packageDescription={packageDetailsFormData.packageDescription || 'Package Description Here'}
+                    packageTitle={packageDetailsFormData.packageTitle}
+                    packageDescription={packageDetailsFormData.packageDescription}
                     featuredImageUrl={packageDetailsFormData.featuredImage?.url}
                     durationInMinutes={calculateTotalDuration()}
                     accordionTitle={packageDetailsFormData.accordionTitle}
