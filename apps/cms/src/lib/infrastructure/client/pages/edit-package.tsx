@@ -57,7 +57,6 @@ export default function EditPackage({
         packageTitle: '',
         packageDescription: '',
         featuredImage: null,
-        accordionTitle: '',
         showListItemNumbers: true,
         accordionItems: [],
     });
@@ -140,8 +139,7 @@ export default function EditPackage({
                     url: pkg.image.downloadUrl || '',
                     thumbnailUrl: null,
                 } : null,
-                accordionTitle: '', // TODO: Add when supported by backend
-                showListItemNumbers: true, // TODO: Add when supported by backend
+                showListItemNumbers: true, 
                 accordionItems: pkg.accordionItems?.map((item: { id?: string; title?: string; description?: string; content?: string; icon?: any }) => ({
                     id: item.id || String(Math.random()),
                     title: item.title || '',
@@ -236,7 +234,6 @@ export default function EditPackage({
                     id: idx + 1, // Add required id field
                 })),
                 featuredImageId: null,
-                // TODO: Add accordionTitle when supported by backend
             };
             
             await updatePackageMutation.mutateAsync(payload);
