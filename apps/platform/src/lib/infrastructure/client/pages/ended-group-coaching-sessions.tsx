@@ -6,14 +6,15 @@
 // User Type: Coach
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=6913-296778
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
-import { DefaultLoading, DefaultError, DefaultNotFound } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, DefaultNotFound, CoachingSessionCard, Breadcrumbs, Dropdown, Button, IconFilter, CoachingSessionList } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../trpc/cms-client';
 import { useListGroupCoachingSessionsPresenter } from '../hooks/use-list-group-coaching-sessions-presenter';
+import useClientSidePagination from '../utils/use-client-side-pagination';
 
 interface EndedGroupCoachingSessionsProps {
     locale: TLocale;
@@ -28,6 +29,8 @@ export default function EndedGroupCoachingSessions({
 }: EndedGroupCoachingSessionsProps) {
     const currentLocale = useLocale() as TLocale;
     const t = useTranslations('pages.endedGroupCoachingSessions');
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const paginationTranslations = useTranslations('components.paginationButton');
     const { data: session, status } = useSession();
 
     // Fetch ended group coaching sessions using TRPC
@@ -40,6 +43,9 @@ export default function EndedGroupCoachingSessions({
         viewModels.TListGroupCoachingSessionsViewModel | undefined
     >(undefined);
 
+    // Sorting state
+    const [sortBy, setSortBy] = useState<string>('sessionDate');
+
     // Initialize presenter
     const { presenter } = useListGroupCoachingSessionsPresenter(setSessionsViewModel);
 
@@ -48,6 +54,81 @@ export default function EndedGroupCoachingSessions({
         // @ts-ignore - Presenter type compatibility issue
         presenter.present(sessionsResponse, sessionsViewModel);
     }, [sessionsResponse, presenter, sessionsViewModel]);
+
+    // Handlers
+    const formatTime = (isoString: string) => {
+        const date = new Date(isoString);
+        return date.toLocaleTimeString(localeProp, {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
+    // Sort options based on session criteria
+    const sortOptions = [
+        { label: t('filters.sessionDateNewest'), value: 'sessionDate' },
+        { label: t('filters.sessionDateOldest'), value: 'sessionDateOldest' },
+        { label: t('filters.courseNameAZ'), value: 'courseName' },
+        { label: t('filters.courseNameZA'), value: 'courseNameDesc' },
+        { label: t('filters.mostParticipants'), value: 'mostParticipants' },
+        { label: t('filters.leastParticipants'), value: 'leastParticipants' },
+        { label: t('filters.highestRated'), value: 'highestRated' },
+        { label: t('filters.lowestRated'), value: 'lowestRated' },
+    ];
+
+    // Handle dropdown change
+    const handleSortChange = (value: string | string[] | null) => {
+        if (typeof value === 'string') {
+            setSortBy(value);
+        }
+    };
+
+    // Sort sessions using useMemo for performance
+    const sortedSessions = useMemo(() => {
+        if (!sessionsViewModel || sessionsViewModel.mode !== 'default') return [];
+        
+        const sessions = [...sessionsViewModel.data.sessions];
+
+        // Apply sorting
+        return sessions.sort((a, b) => {
+            switch (sortBy) {
+                case 'sessionDate':
+                    return new Date(b.startTime).getTime() - new Date(a.startTime).getTime();
+                case 'sessionDateOldest':
+                    return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+                case 'courseName':
+                    return a.course.title.localeCompare(b.course.title);
+                case 'courseNameDesc':
+                    return b.course.title.localeCompare(a.course.title);
+                case 'mostParticipants':
+                    return b.studentCount - a.studentCount;
+                case 'leastParticipants':
+                    return a.studentCount - b.studentCount;
+                case 'highestRated':
+                    const ratingA = a.averageRating || 0;
+                    const ratingB = b.averageRating || 0;
+                    return ratingB - ratingA;
+                case 'lowestRated':
+                    const ratingA2 = a.averageRating || 0;
+                    const ratingB2 = b.averageRating || 0;
+                    return ratingA2 - ratingB2;
+                default:
+                    return 0;
+            }
+        });
+    }, [sessionsViewModel, sortBy]);
+
+    // Pagination for sessions
+    const {
+        displayedItems: displayedSessions,
+        hasMoreItems: hasMoreSessions,
+        handleLoadMore: handleLoadMoreSessions,
+    } = useClientSidePagination({
+        items: sortedSessions,
+        itemsPerPage: 6,
+        itemsPerPage2xl: 8,
+    });
 
     // Loading state
     if (status === 'loading' || !sessionsViewModel) {
@@ -96,21 +177,120 @@ export default function EndedGroupCoachingSessions({
     const sessionsData = sessionsViewModel.data;
 
     return (
-        <div className="flex flex-col space-y-5 px-30">
-            <h1>{t('title')}</h1>
-            <p>{t('description')}</p>
+        <div className="flex flex-col space-y-5">
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => {
+                            // TODO: Implement navigation to home
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('workspace'),
+                        onClick: () => {
+                            // TODO: Implement navigation to workspace
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('yourCourses'),
+                        onClick: () => {
+                            // TODO: Implement navigation to your courses
+                        },
+                    },
+                    {
+                        label: courseSlug,
+                        onClick: () => {
+                            // TODO: Implement navigation to your course details
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('groups'),
+                        onClick: () => {
+                            // TODO: Implement navigation to groups
+                        },
+                    },
+                    {
+                        label: sessionsData.sessions[0]?.group.name || '',
+                        onClick: () => {
+                            // TODO: Implement navigation to specific group details
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('coachingSessionReviews'),
+                        onClick: () => {
+                            // TODO: Implement navigation to coaching session reviews
+                        },
+                    },
+                ]}
+            />
 
-            {/* TODO: Implement ended sessions list */}
-            {/* TODO: Add filtering/sorting options */}
-            {/* TODO: Display session cards with:
-                - Session date/time
-                - Course name
-                - Number of participants
-                - Session recording link (if available)
-                - Reviews/ratings
-            */}
+            <div className='flex flex-col gap-4'>
+                <div className='flex items-center justify-between'>
+                    <div className='flex flex-col gap-2'>
+                        <h6 className='text-text-secondary text-sm md:text-md leading-[120%]'>
+                            {sessionsData.sessions[0]?.group.name || ''}
+                        </h6>
+                        <h2 className='text-text-primary md:text-3xl text-xl font-bold'>
+                            {t('title')}
+                        </h2>
+                        <p className='text-text-secondary text-sm md:text-md'>
+                            {t('description')}
+                        </p>
+                    </div>
+                    {/* Dropdown for sorting options */}
+                    <div className="flex items-center gap-2">
+                        <p className="text-sm text-text-primary">
+                            {t('filters.sortBy')}
+                        </p>
+                        <div className="w-48">
+                            <Dropdown
+                                type="simple"
+                                options={sortOptions}
+                                onSelectionChange={handleSortChange}
+                                defaultValue={sortBy}
+                                text={{ simpleText: t('filters.selectSort') }}
+                            />
+                        </div>
+                    </div>
+                </div>
 
-            {/* TODO: Add pagination or infinite scroll */}
+                {/* Sessions with pagination */}
+                <CoachingSessionList locale={localeProp}>
+                    {displayedSessions.map((session) => {
+                        return (
+                            <CoachingSessionCard
+                                key={session.id}
+                                locale={localeProp}
+                                userType="coach"
+                                status="ended"
+                                title={session.coachingOfferingTitle}
+                                duration={session.coachingOfferingDuration}
+                                date={new Date(session.publicationDate)}
+                                startTime={formatTime(session.startTime)}
+                                endTime={formatTime(session.endTime)}
+                                studentName={session.group.name}
+                                studentImageUrl={session.course.imageUrl || ""}
+                                onClickStudent={() => console.log('Navigate to group details')}
+                                reviewType="session-review"
+                                reviewText={`${session.studentCount} participants • Course: ${session.course.title}`}
+                                rating={session.averageRating || 0}
+                                onClickDownloadRecording={() => console.log('Download recording')}
+                                onClickRateCallQuality={() => console.log('Rate call quality')}
+                            />
+                        );
+                    })}
+                </CoachingSessionList>
+                {hasMoreSessions && (
+                    <div className="flex justify-center items-center w-full mt-6">
+                        <Button
+                            variant="text"
+                            text={paginationTranslations('loadMore')}
+                            onClick={handleLoadMoreSessions}
+                        />
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

@@ -1003,6 +1003,9 @@ export const DictionarySchema = z.object({
       coachingOfferings: z.string(),
       yourStudents: z.string(),
       yourProfile: z.string(),
+      yourCourses: z.string(),
+      groups: z.string(),
+      coachingSessionReviews: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1638,6 +1641,21 @@ export const DictionarySchema = z.object({
     endedGroupCoachingSessions: z.object({
       title: z.string(),
       description: z.string(),
+      filters: z.object({
+        sortBy: z.string(),
+        selectSort: z.string(),
+        sessionDateNewest: z.string(),
+        sessionDateOldest: z.string(),
+        courseNameAZ: z.string(),
+        courseNameZA: z.string(),
+        mostParticipants: z.string(),
+        leastParticipants: z.string(),
+        highestRated: z.string(),
+        lowestRated: z.string(),
+      }),
+      showingResults: z.string(),
+      noSessionsFound: z.string(),
+      clearFilters: z.string(),
       error: z.object({
         title: z.string(),
         description: z.string(),

@@ -1016,6 +1016,9 @@ export const DE: TDictionary = {
       coachingOfferings: 'Coaching-Angebote',
       yourStudents: 'Deine Schüler',
       yourProfile: 'Ihr Profil',
+      yourCourses: 'Ihre Kurse',
+      groups: 'Gruppen',
+      coachingSessionReviews: 'Coaching-Sitzungsbewertungen',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -1606,6 +1609,21 @@ export const DE: TDictionary = {
     endedGroupCoachingSessions: {
       title: 'Beendete Gruppenkurs-Sitzungen',
       description: 'Zeige und verwalte deine abgeschlossenen Gruppenkurs-Sitzungen',
+      filters: {
+        sortBy: 'Sortieren nach',
+        selectSort: 'Sortieroption wählen',
+        sessionDateNewest: 'Sitzungsdatum (Neueste zuerst)',
+        sessionDateOldest: 'Sitzungsdatum (Älteste zuerst)',
+        courseNameAZ: 'Kursname (A-Z)',
+        courseNameZA: 'Kursname (Z-A)',
+        mostParticipants: 'Meiste Teilnehmer',
+        leastParticipants: 'Wenigste Teilnehmer',
+        highestRated: 'Höchste Bewertung',
+        lowestRated: 'Niedrigste Bewertung',
+      },
+      showingResults: 'Zeige {count} von {total} Sitzungen',
+      noSessionsFound: 'Keine Sitzungen gefunden, die deinen Kriterien entsprechen',
+      clearFilters: 'Filter löschen',
       error: {
         title: 'Sitzungen konnten nicht geladen werden',
         description: 'Beim Laden der beendeten Coaching-Sitzungen ist ein Fehler aufgetreten. Bitte versuche es erneut.',

@@ -1012,6 +1012,9 @@ export const EN: TDictionary = {
       coachingOfferings: 'Coaching Offerings',
       yourStudents: 'Your students',
       yourProfile: 'Your Profile',
+      yourCourses: 'Your Courses',
+      groups: 'Groups',
+      coachingSessionReviews: 'Coaching Session Reviews',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1603,6 +1606,21 @@ export const EN: TDictionary = {
     endedGroupCoachingSessions: {
       title: 'Ended Group Coaching Sessions',
       description: 'View and manage your completed group coaching sessions',
+      filters: {
+        sortBy: 'Sort by',
+        selectSort: 'Select sort option',
+        sessionDateNewest: 'Session Date (Newest First)',
+        sessionDateOldest: 'Session Date (Oldest First)',
+        courseNameAZ: 'Course Name (A-Z)',
+        courseNameZA: 'Course Name (Z-A)',
+        mostParticipants: 'Most Participants',
+        leastParticipants: 'Least Participants',
+        highestRated: 'Highest Rated',
+        lowestRated: 'Lowest Rated',
+      },
+      showingResults: 'Showing {count} of {total} sessions',
+      noSessionsFound: 'No sessions found matching your criteria',
+      clearFilters: 'Clear Filters',
       error: {
         title: 'Failed to load sessions',
         description: 'An error occurred while loading ended coaching sessions. Please try again.',
