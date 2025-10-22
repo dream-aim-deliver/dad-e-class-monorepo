@@ -4,8 +4,9 @@ import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useGetPackagePresenter } from '../hooks/use-get-package-presenter';
+import { useUpdatePackagePresenter } from '../hooks/use-update-package-presenter';
 import { useState, useCallback } from 'react';
-import { DefaultLoading, DefaultError, DefaultNotFound, PackageDetailsStep, PackagePricingStep, Breadcrumbs, Button } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, DefaultNotFound, PackageDetailsStep, PackagePricingStep, Breadcrumbs, Button, Banner, FeedBackMessage } from '@maany_shr/e-class-ui-kit';
 import type { PackageDetailsFormData, PackagePricingFormData } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -15,6 +16,8 @@ import { usePackageFileUpload } from './common/hooks/use-package-file-upload';
 import { AccordionBuilderItem } from '@maany_shr/e-class-ui-kit';
 import { slateifySerialize } from '@maany_shr/e-class-ui-kit';
 import React from 'react';
+import { idToNumber } from '../utils/id-to-number';
+import { useEffect } from 'react';
 
 interface EditPackageProps {
     locale: TLocale;
@@ -36,6 +39,11 @@ export default function EditPackage({
     // CMS context hooks
     const requiredPlatformLocale = useRequiredPlatformLocale();
     const contentLocale = useContentLocale();
+
+    // Translations
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const editPackageTranslations = useTranslations('pages.editPackage');
+    const t = useTranslations('pages.editPackage');
 
     // State and presenter hooks
     const [getPackageViewModel, setGetPackageViewModel] = useState<
@@ -63,6 +71,16 @@ export default function EditPackage({
 
     // Update state flag
     const [isUpdating, setIsUpdating] = useState(false);
+
+    // Error and success message state
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+    // Update package presenter
+    const [updatePackageViewModel, setUpdatePackageViewModel] = useState<
+        viewModels.TUpdatePackageViewModel | undefined
+    >(undefined);
+    const { presenter: updatePresenter } = useUpdatePackagePresenter(setUpdatePackageViewModel);
 
     // File upload handlers
     const [packageImageProgress, setPackageImageProgress] = useState<number | undefined>(undefined);
@@ -144,20 +162,46 @@ export default function EditPackage({
         }
     }, [packageData]);
 
-    // TODO: Implement updatePackage mutation
-    const updatePackageMutation = trpc.updatePackage.useMutation({
-        onSuccess: () => {
-            // TODO: Add success handling (toast notification, redirect, etc.)
-            router.refresh();
-        },
-        onError: (error) => {
-            // TODO: Add error handling (toast notification, error state, etc.)
-            console.error('Failed to update package:', error);
-        },
-    });
+    const updatePackageMutation = trpc.updatePackage.useMutation();
+
+    // Handle update package mutation presentation
+    useEffect(() => {
+        if (updatePackageMutation.isSuccess && updatePackageMutation.data) {
+            // @ts-ignore
+            updatePresenter.present(updatePackageMutation.data, updatePackageViewModel);
+        }
+    }, [updatePackageMutation.isSuccess, updatePackageMutation.data, updatePresenter, updatePackageViewModel]);
+
+    // Handle update package success/error
+    useEffect(() => {
+        if (updatePackageViewModel?.mode === 'default') {
+            setSuccessMessage(t('successMessages.packageUpdated'));
+            setErrorMessage(null);
+            // Auto-dismiss success message after 5 seconds
+            const timer = setTimeout(() => setSuccessMessage(null), 5000);
+            return () => clearTimeout(timer);
+        }
+        if (updatePackageViewModel?.mode === 'kaboom') {
+            setErrorMessage(t('errorMessages.updateFailed'));
+            setSuccessMessage(null);
+            setIsUpdating(false);
+        }
+    }, [updatePackageViewModel]);
+
+    // Handle mutation errors (network/unknown)
+    useEffect(() => {
+        if (updatePackageMutation.isError) {
+            setErrorMessage(updatePackageMutation.error?.message || t('errorMessages.updateFailed'));
+            setSuccessMessage(null);
+            setIsUpdating(false);
+        }
+    }, [updatePackageMutation.isError, updatePackageMutation.error]);
 
     const handleUpdatePackage = useCallback(async () => {
         setIsUpdating(true);
+        setErrorMessage(null);
+        setSuccessMessage(null);
+        
         try {
             // Parse prices from string format
             const price = parseFloat(pricingFormData.completePackageWithoutCoaching.replace(/[^\d.]/g, '')) || 0;
@@ -176,7 +220,7 @@ export default function EditPackage({
                 title: item.title,
                 description: item.content,
                 position: idx + 1,
-                iconId: item.icon?.id ? Number(item.icon.id) : undefined,
+                iconId: idToNumber(item.icon?.id),
             }));
             
             const payload = {
@@ -198,14 +242,9 @@ export default function EditPackage({
             // Navigate back to packages list on success
             router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`);
         } catch (error) {
-            console.error('Failed to update package:', error);
-            setIsUpdating(false);
+            // Error handled by useEffect hooks
         }
     }, [packageDetailsFormData, pricingFormData, packageIdInt, updatePackageMutation, router, locale, platformSlug, platformLocale]);
-
-    // Translations
-    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
-    const editPackageTranslations = useTranslations('pages.editPackage');
 
     // Conditional returns after all hooks
     if (isNaN(packageIdInt)) {
@@ -236,22 +275,20 @@ export default function EditPackage({
         },
     ];
 
-    // Loading state using discovered patterns
+    // Loading state using 
     if (!getPackageViewModel) {
         return <DefaultLoading locale={currentLocale} variant="minimal" />;
     }
 
-    // Error handling using discovered project patterns
+    // Error handling 
     if (getPackageViewModel.mode === 'kaboom') {
         const errorData = getPackageViewModel.data;
-        console.error(errorData);
 
         return <DefaultError locale={currentLocale} />;
     }
 
     if (getPackageViewModel.mode === 'not-found') {
         const errorData = getPackageViewModel.data;
-        console.error(errorData);
 
         return <DefaultNotFound locale={currentLocale} />;
     }
@@ -270,6 +307,25 @@ export default function EditPackage({
                     })}
                 </p>
             </div>
+            
+            {/* Success Banner */}
+            {successMessage && (
+                <Banner
+                    title={t('success')}
+                    description={successMessage}
+                    style="success"
+                    closeable={true}
+                    onClose={() => setSuccessMessage(null)}
+                />
+            )}
+
+            {/* Error Message */}
+            {errorMessage && (
+                <FeedBackMessage
+                    type="error"
+                    message={errorMessage}
+                />
+            )}
             
             {/* Package Details Section */}
             <PackageDetailsStep

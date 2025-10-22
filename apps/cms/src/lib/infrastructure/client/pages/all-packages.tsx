@@ -3,7 +3,8 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useListPackagesPresenter } from '../hooks/use-list-packages-presenter';
-import { useState } from 'react';
+import { useArchivePackagePresenter } from '../hooks/use-archive-package-presenter';
+import { useState, useEffect } from 'react';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -16,8 +17,11 @@ import {
   PackageCmsCard, 
   Breadcrumbs, 
   ArchivePackageModal, 
-  ArchiveSuccessModal 
+  ArchiveSuccessModal,
+  Banner,
+  FeedBackMessage
 } from '@maany_shr/e-class-ui-kit';
+import { idToNumber } from '../utils/id-to-number';
 
 interface AllPackagesProps {
   locale: TLocale;
@@ -56,32 +60,65 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [packageToArchive, setPackageToArchive] = useState<string | null>(null);
 
+  // Error and success message state for mutations
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Archive package presenter
+  const [archivePackageViewModel, setArchivePackageViewModel] = useState<
+    viewModels.TArchivePackageViewModel | undefined
+  >(undefined);
+  const { presenter: archivePresenter } = useArchivePackagePresenter(setArchivePackageViewModel);
+
   // Archive package mutation
-  const archivePackageMutation = trpc.archivePackage.useMutation({
-    onSuccess: () => {
+  const archivePackageMutation = trpc.archivePackage.useMutation();
+
+  // Handle archive package mutation presentation
+  useEffect(() => {
+    if (archivePackageMutation.isSuccess && archivePackageMutation.data) {
+      // @ts-ignore
+      archivePresenter.present(archivePackageMutation.data, archivePackageViewModel);
+    }
+  }, [archivePackageMutation.isSuccess, archivePackageMutation.data, archivePresenter, archivePackageViewModel]);
+
+  // Handle archive package success/error
+  useEffect(() => {
+    if (archivePackageViewModel?.mode === 'default') {
       // Close archive modal and show success modal
       setShowArchiveModal(false);
       setShowSuccessModal(true);
       // Refetch packages by invalidating the query
       trpc.useUtils().listPackages.invalidate({ platformSlug, platformLocale });
+    }
+    if (archivePackageViewModel?.mode === 'kaboom') {
+      setErrorMessage(t('errorMessages.archiveFailed'));
+      setSuccessMessage(null);
+    }
+  }, [archivePackageViewModel, platformSlug, platformLocale]);
+
+  // Handle archive mutation errors (network/unknown)
+  useEffect(() => {
+    if (archivePackageMutation.isError) {
+      setErrorMessage(archivePackageMutation.error?.message || t('errorMessages.archiveFailed'));
+      setSuccessMessage(null);
+    }
+  }, [archivePackageMutation.isError, archivePackageMutation.error]);
+
+  // Publish package mutation (no presenter available)
+  const publishPackageMutation = trpc.publishPackage.useMutation({
+    onSuccess: () => {
+      setSuccessMessage(t('successMessages.packagePublished'));
+      setErrorMessage(null);
+      trpc.useUtils().listPackages.invalidate({ platformSlug, platformLocale });
+      // Auto-dismiss success message after 5 seconds
+      const timer = setTimeout(() => setSuccessMessage(null), 5000);
+      return () => clearTimeout(timer);
     },
     onError: (error) => {
-      // TODO: Add toast notification for error
-      console.error('Failed to archive package:', error);
+      setErrorMessage(error?.message || t('errorMessages.publishFailed'));
+      setSuccessMessage(null);
     },
   });
-
-  // TODO: Check if publishPackage mutation exists, if not add TODO comment
-  // const publishPackageMutation = trpc.publishPackage.useMutation({
-  //   onSuccess: () => {
-  //     // TODO: Add toast notification for success
-  //     trpc.useUtils().listPackages.invalidate({ platformSlug, platformLocale });
-  //   },
-  //   onError: (error) => {
-  //     // TODO: Add toast notification for error
-  //     console.error('Failed to publish package:', error);
-  //   },
-  // });
 
   // Navigation handlers
   const handleCreatePackage = () => {
@@ -113,9 +150,17 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
     setPackageToArchive(null);
   };
 
-  const handlePublishPackage = (packageId: string) => {
-    // TODO: Implement when publishPackage mutation is available
-    console.log('Publish package:', packageId);
+  const handlePublishPackage = async (packageId: string) => {
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    
+    try {
+      await publishPackageMutation.mutateAsync({
+        packageId: idToNumber(packageId)!
+      });
+    } catch (error) {
+      // Error handled by mutation onError callback
+    }
   };
 
   // Breadcrumbs following the standard pattern
@@ -138,21 +183,19 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
     },
   ];
 
-  // Loading state using discovered patterns
+  // Loading state 
   if (!listPackagesViewModel) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
   }
 
-  // Error handling using discovered project patterns
+  // Error handling 
   if (listPackagesViewModel.mode === 'kaboom') {
     const errorData = listPackagesViewModel.data;
-    console.error(errorData);
     return <DefaultError locale={currentLocale} />;
   }
 
   if (listPackagesViewModel.mode === 'not-found') {
     const errorData = listPackagesViewModel.data;
-    console.error(errorData);
     return <DefaultNotFound locale={currentLocale} />;
   }
 
@@ -180,6 +223,25 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
     <div className="flex flex-col space-y-4">
       {/* Breadcrumbs */}
       <Breadcrumbs items={breadcrumbItems} />
+
+      {/* Success Banner */}
+      {successMessage && (
+        <Banner
+          title={t('success')}
+          description={successMessage}
+          style="success"
+          closeable={true}
+          onClose={() => setSuccessMessage(null)}
+        />
+      )}
+
+      {/* Error Message */}
+      {errorMessage && (
+        <FeedBackMessage
+          type="error"
+          message={errorMessage}
+        />
+      )}
 
       <PackageCmsCardList
         locale={currentLocale}
