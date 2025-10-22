@@ -211,7 +211,7 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                             // Check if any icons were removed and call onDelete
                             accordionItems.forEach((oldItem, index) => {
                                 const newItem = newItems[index];
-                                if (oldItem.icon && !newItem?.icon) {
+                                if (oldItem.icon && !newItem?.icon && oldItem.icon.id) {
                                     accordionIconUpload.onDelete(oldItem.icon.id);
                                 }
                             });
@@ -220,7 +220,7 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
                             // Check if any icons were removed and call onDelete
                             accordionItems.forEach((oldItem, index) => {
                                 const newItem = items[index];
-                                if (oldItem.icon && !newItem?.icon) {
+                                if (oldItem.icon && !newItem?.icon && oldItem.icon.id) {
                                     accordionIconUpload.onDelete(oldItem.icon.id);
                                 }
                             });
