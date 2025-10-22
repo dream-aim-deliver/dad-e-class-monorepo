@@ -32,13 +32,13 @@ import { useCreateCategoryPresenter } from '../hooks/use-create-category-present
 import { useUpdateCategoryPresenter } from '../hooks/use-update-category-presenter';
 import { useDeleteCategoryPresenter } from '../hooks/use-delete-category-presenter';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { useRequiredPlatform } from '../context/platform-context';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRouter } from 'next/navigation';
 
 interface ManageCategoriesProps {
     platformSlug: string;
     platformLocale: string;
-    platformName: string;
     categoriesWithTopicCount?: Array<{ categoryId: number; topicsCount: number }>;
 }
 
@@ -234,7 +234,6 @@ function CreateCategoryDialog({ onCategoryCreated }: { onCategoryCreated: () => 
 export default function ManageCategories({
     platformSlug,
     platformLocale,
-    platformName,
     categoriesWithTopicCount = [],
 }: ManageCategoriesProps) {
     // App locale - used for UI elements (buttons, labels, etc.)
@@ -247,6 +246,9 @@ export default function ManageCategories({
 
     // Platform context - contains platform-specific information
     const platformContext = useRequiredPlatformLocale();
+
+    // Platform data - contains platform name, logo, etc.
+    const { platform } = useRequiredPlatform();
 
     // Content locale - the locale for platform content (may differ from app UI locale)
     const contentLocale = useContentLocale();
@@ -354,8 +356,7 @@ export default function ManageCategories({
             onClick: () => router.push('/'),
         },
         {
-            // label: platformName,  TODO: Uncoment when platform name is wired
-            label: platformSlug.charAt(0).toUpperCase() + platformSlug.slice(1),            
+            label: platform.name,
             onClick: () => {
                 // TODO: Implement navigation to platform
             },
@@ -383,16 +384,16 @@ export default function ManageCategories({
                         />
                     </div>
                     {categories.length < 4 ? (
-                    <CreateCategoryDialog onCategoryCreated={() => refetchCategories()} />
+                        <CreateCategoryDialog onCategoryCreated={() => refetchCategories()} />
                     ) : (
-                    <Button
-                     text={t('createCategory')}
-                    disabled
+                        <Button
+                            text={t('createCategory')}
+                            disabled
                         />
                     )}
                 </div>
                 <p className="text-text-secondary text-sm">
-                    Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
+                    Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
                 </p>
             </div>
 

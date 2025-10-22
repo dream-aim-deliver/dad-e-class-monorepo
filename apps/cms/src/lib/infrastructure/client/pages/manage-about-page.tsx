@@ -10,6 +10,7 @@
 
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { useRequiredPlatform } from '../context/platform-context';
 import { useState, useEffect, useCallback } from 'react';
 import { trpc } from '../trpc/cms-client';
 import { viewModels } from '@maany_shr/e-class-models';
@@ -33,6 +34,7 @@ import { useRouter } from 'next/navigation';
 export default function ManageAboutPage() {
 	// Platform context
 	const platformContext = useRequiredPlatformLocale();
+	const { platform } = useRequiredPlatform();
 	const contentLocale = useContentLocale();
 	const locale = useLocale() as TLocale;
 	const router = useRouter();
@@ -159,7 +161,7 @@ export default function ManageAboutPage() {
 				<div className="flex flex-col space-y-2">
 					<h1>Manage About Page</h1>
 					<p className="text-text-secondary text-sm">
-						Platform: {platformContext.platformSlug} | Content Language: {contentLocale.toUpperCase()}
+						Platform: {platform.name} | Content Language: {contentLocale.toUpperCase()}
 					</p>
 				</div>
 
@@ -180,7 +182,7 @@ export default function ManageAboutPage() {
 			onClick: () => router.push('/'),
 		},
 		{
-			label: platformContext.platformSlug.charAt(0).toUpperCase() + platformContext.platformSlug.slice(1),
+			label: platform.name,
 			onClick: () => {
 				// TODO: Implement navigation to platform
 			},
