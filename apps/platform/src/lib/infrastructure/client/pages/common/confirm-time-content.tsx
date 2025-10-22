@@ -1,7 +1,7 @@
 'use client';
 
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { Button, DefaultError, InputField } from '@maany_shr/e-class-ui-kit';
 import DatePicker from './date-picker';
@@ -30,6 +30,7 @@ export default function ConfirmTimeContent({
     buttonText,
 }: ConfirmTimeContentProps) {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.calendarPage');
 
     const getTimeValue = (time?: Date): string => {
         if (!time) return '';
@@ -48,6 +49,7 @@ export default function ConfirmTimeContent({
         return getTimeValue(endTime);
     });
     const [hasTimeError, setHasTimeError] = useState(false);
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
     const parseTimeString = (
         timeStr: string,
@@ -184,29 +186,30 @@ export default function ConfirmTimeContent({
 
     // TODO: format the button during the submission
     return (
-        <div className="flex flex-col gap-3">
+        <div className={`flex flex-col gap-3 transition-all duration-300 ${isCalendarOpen ? 'min-h-[550px]' : 'min-h-0'}`}>
             <div className="relative">
-                <span className="text-sm text-text-secondary">Date</span>
+                <span className="text-sm text-text-secondary">{t('dateLabel')}</span>
                 <DatePicker
                     selectedDate={startTime}
                     onDateSelect={handleDateChange}
+                    onCalendarOpenChange={setIsCalendarOpen}
                 />
             </div>
             {startTime && (
-                <>
+                <div className='flex flex-row gap-6 items-center'>
                     <div>
                         <span className="text-sm text-text-secondary">
-                            Start Time
+                            {t('startTimeLabel')}
                         </span>
                         <InputField
-                            inputText="Time (12/24h format)"
+                            inputText="Eg. 15:00"
                             value={startTimeValue}
                             setValue={setStartTimeValue}
                         />
                     </div>
                     <div>
                         <span className="text-sm text-text-secondary">
-                            End Time
+                            {t('endTimeLabel')}
                         </span>
                         <InputField
                             className="text-text-primary"
@@ -214,19 +217,19 @@ export default function ConfirmTimeContent({
                                 duration !== undefined ? 'disabled' : undefined
                             }
                             inputText={
-                                duration !== undefined ? getTimeValue(endTime) : "Time (12/24h format)"
+                                duration !== undefined ? getTimeValue(endTime) : "Eg. 16:00"
                             }
                             value={duration !== undefined ? undefined : endTimeValue}
                             setValue={setEndTimeValue}
                         />
                     </div>
-                </>
+                </div>
             )}
             {hasTimeError && (
                 <DefaultError
                     locale={locale}
-                    title=""
-                    description="Invalid time format"
+                    title={t('invalidTimeFormatTitle')}
+                    description={t('invalidTimeFormatDescription')}
                 />
             )}
             {submitError && (

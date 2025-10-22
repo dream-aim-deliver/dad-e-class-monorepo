@@ -24,20 +24,22 @@ export function CalendarView({
     onAvailabilityClick,
 }: CalendarViewProps) {
     return (
-        <div className="flex flex-col h-screen">
-            <div className="max-h-full flex-row hidden md:flex">
-                <div className="w-full rounded-lg bg-card-fill p-4 flex-1">
+        <div className="flex flex-col h-full">
+            <div className="h-[800px] flex-row hidden md:flex">
+                <div className="w-full rounded-lg bg-card-fill p-4 flex flex-col">
                     <WeeklyHeader
                         currentDate={currentDate}
                         setCurrentDate={setCurrentDate}
                         locale={locale}
                     />
-                    <WeeklyCoachCalendarWrapper
-                        coachAvailabilityViewModel={coachAvailabilityViewModel}
-                        currentDate={currentDate}
-                        setCurrentDate={setCurrentDate}
-                        onAvailabilityClick={onAvailabilityClick}
-                    />
+                    <div className="flex-1 min-h-0">
+                        <WeeklyCoachCalendarWrapper
+                            coachAvailabilityViewModel={coachAvailabilityViewModel}
+                            currentDate={currentDate}
+                            setCurrentDate={setCurrentDate}
+                            onAvailabilityClick={onAvailabilityClick}
+                        />
+                    </div>
                 </div>
             </div>
             <div className="flex flex-col md:hidden">

@@ -1,10 +1,9 @@
 'use client';
 
-import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
+import { isLocalAware, TLocale, getDictionary } from '@maany_shr/e-class-translations';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import LoadingOverlay from './loading-overlay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { SectionHeading } from '../text';
 import { Button } from '../button';
 
 const isToday = (date: Date) => {
@@ -197,8 +196,14 @@ export function WeeklyCalendar({
     };
 
     const getCellBackground = (time: string, date: Date) => {
+        const dayOfWeek = date.getDay();
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // Sunday = 0, Saturday = 6
+
         if (isToday(date)) {
             return 'bg-base-neutral-800';
+        }
+        if (isWeekend) {
+            return 'bg-base-neutral-950';
         }
         return 'bg-card-fill';
     };
@@ -293,6 +298,8 @@ export function WeeklyHeader({
     setCurrentDate,
     locale,
 }: WeeklyHeaderProps) {
+    const dictionary = getDictionary(locale);
+
     const getSectionHeading = () => {
         const startDate = getWeekStart(currentDate);
         const firstMonth = startDate.toLocaleDateString(locale, {
@@ -326,7 +333,7 @@ export function WeeklyHeader({
 
     return (
         <div className="flex flex-row mb-4 items-center justify-between">
-            <SectionHeading text={getSectionHeading()} />
+            <h2> {getSectionHeading()} </h2>
             <div className="flex flex-row space-x-6 text-base-brand-500 items-center">
                 <ChevronLeft
                     className="cursor-pointer"
@@ -338,7 +345,7 @@ export function WeeklyHeader({
                 />
                 <Button
                     variant="secondary"
-                    text="Today"
+                    text={dictionary.components.calendar.today}
                     onClick={() => setCurrentDate(new Date())}
                 />
             </div>

@@ -149,7 +149,7 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
                             key={date.toISOString()}
                             onClick={() => props.onDateClick?.(date)}
                             className={cn(
-                                `flex flex-col py-2 items-center justify-center text-text-primary aspect-square mx-auto space-y-1 min-w-0`,
+                                `flex flex-col items-center justify-center text-text-primary mx-auto min-w-0 w-10 h-10`,
                                 !isCurrentMonth && 'text-base-neutral-400',
                                 isSelected &&
                                     'bg-base-brand-500 text-text-primary-inverted rounded-full',
@@ -158,11 +158,11 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
                                     : 'cursor-default',
                             )}
                         >
-                            <span className="text-xl font-bold">
+                            <span className="text-xl font-bold leading-none">
                                 {date.getDate()}
                             </span>
                             {!isSelected && (
-                                <div className="flex flex-row space-x-1">
+                                <div className="flex flex-row space-x-1 mt-1">
                                     {hasCoachAvailability && (
                                         <div className="h-[6px] w-[6px] rounded-full bg-action-semi-transparent-medium"></div>
                                     )}

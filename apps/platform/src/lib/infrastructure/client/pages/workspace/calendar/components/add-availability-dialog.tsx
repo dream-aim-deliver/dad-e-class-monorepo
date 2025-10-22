@@ -8,6 +8,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import ConfirmTimeContent from '../../../common/confirm-time-content';
 import { useAddAvailability } from '../hooks/use-add-availability';
+import { useTranslations } from 'next-intl';
 
 interface AddAvailabilityDialogProps {
     isOpen: boolean;
@@ -20,6 +21,7 @@ export function AddAvailabilityDialog({
     onOpenChange,
     onSuccess,
 }: AddAvailabilityDialogProps) {
+    const t = useTranslations('pages.calendarPage');
     const {
         startTime,
         endTime,
@@ -41,7 +43,7 @@ export function AddAvailabilityDialog({
     return (
         <Dialog defaultOpen={false} open={isOpen} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <Button variant="primary" text="Add Availability" />
+                <Button variant="primary" text={t('addAvailabilityButton')} />
             </DialogTrigger>
             <DialogContent
                 showCloseButton
@@ -56,7 +58,7 @@ export function AddAvailabilityDialog({
                     isSubmitting={isSubmitting}
                     onSubmit={validateAndSubmit}
                     submitError={error}
-                    buttonText={isSubmitting ? 'Adding availability...' : 'Add availability'}
+                    buttonText={isSubmitting ? t('addingAvailability') : t('addAvailabilityButton')}
                 />
             </DialogContent>
         </Dialog>

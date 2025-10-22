@@ -1936,6 +1936,22 @@ export const DictionarySchema = z.object({
         }),
       }),
     }),
+    calendarPage: z.object({
+      dateLabel: z.string(),
+      startTimeLabel: z.string(),
+      endTimeLabel: z.string(),
+      invalidTimeFormatTitle: z.string(),
+      invalidTimeFormatDescription: z.string(),
+      addAvailabilityButton: z.string(),
+      addingAvailability: z.string(),
+      availabilityDetailsTitle: z.string(),
+      timeSlotLabel: z.string(),
+      cancelSlotButton: z.string(),
+      cancelingSlot: z.string(),
+      yourCalendarTitle: z.string(),
+      coachTab: z.string(),
+      studentTab: z.string(),
+    }),
   }),
 });
 
