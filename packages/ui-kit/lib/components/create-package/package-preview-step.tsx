@@ -34,7 +34,6 @@ export interface PackagePreviewStepProps {
     durationInMinutes?: number;
 
     // Accordion
-    accordionTitle: string;
     showListItemNumbers: boolean;
     accordionItems: AccordionBuilderItem[];
 
@@ -86,7 +85,6 @@ export interface PackagePreviewStepProps {
  * @param {string} packageDescription - Description of the package
  * @param {string} featuredImageUrl - Optional URL for the package featured image
  * @param {number} durationInMinutes - Total duration of the package in minutes
- * @param {string} accordionTitle - Title for the accordion section
  * @param {boolean} showListItemNumbers - Whether to show numbers in accordion items
  * @param {AccordionBuilderItem[]} accordionItems - Array of accordion items to display
  * @param {CoursePreview[]} selectedCourses - Array of selected courses for the package
@@ -110,7 +108,6 @@ export interface PackagePreviewStepProps {
  *   packageDescription={packageDescription}
  *   featuredImageUrl={featuredImageUrl}
  *   durationInMinutes={durationInMinutes}
- *   accordionTitle={accordionTitle}
  *   showListItemNumbers={showListItemNumbers}
  *   accordionItems={accordionItems}
  *   selectedCourses={selectedCourses}
@@ -135,7 +132,6 @@ export function PackagePreviewStep({
     packageDescription,
     featuredImageUrl,
     durationInMinutes,
-    accordionTitle,
     showListItemNumbers,
     accordionItems,
     selectedCourses,
@@ -174,7 +170,7 @@ export function PackagePreviewStep({
             {/* Accordion Section */}
             {accordionItems.length > 0 && (
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-lg font-semibold text-text-primary">{accordionTitle || dictionary.components.packagePreviewStep.packageDetailsTitle}</h3>
+                    <h3 className="text-lg font-semibold text-text-primary">{dictionary.components.packagePreviewStep.packageDetailsTitle}</h3>
                     <DefaultAccordion
                         showNumbers={showListItemNumbers}
                         items={accordionItems.map((item, index) => ({
@@ -247,7 +243,7 @@ export function PackagePreviewStep({
 
             <div className="border-t border-card-stroke" />
 
-            {/* Bottom banner (complete package CTA) */}
+            {/* Bottom banner */}
             <BuyCompletePackageBanner
                 titleBanner={dictionary.components.packagePreviewStep.bottomBannerTitle}
                 descriptionBanner={dictionary.components.packagePreviewStep.bottomBannerSubtitle}

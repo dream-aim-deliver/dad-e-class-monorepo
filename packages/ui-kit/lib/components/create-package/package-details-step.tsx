@@ -16,7 +16,6 @@ export interface PackageDetailsFormData {
     featuredImage: fileMetadata.TFileMetadata | null;
     
     // Accordion configuration
-    accordionTitle: string;
     showListItemNumbers: boolean;
     accordionItems: AccordionBuilderItem[];
 }
@@ -107,7 +106,6 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
         packageTitle,
         packageDescription,
         featuredImage,
-        accordionTitle,
         showListItemNumbers,
         accordionItems,
     } = formData;
@@ -184,13 +182,6 @@ export const PackageDetailsStep: React.FC<PackageDetailsStepProps> = ({
             {/* Accordion Section */}
             <div className="flex flex-col space-y-4">
                 <h3 className="text-lg font-semibold text-text-primary">{dictionary.components.packageDetailsStep.accordionSectionTitle}</h3>
-
-                {/* Accordion Title */}
-                <InputField
-                    inputText={dictionary.components.packageDetailsStep.accordionTitlePlaceholder}
-                    value={accordionTitle}
-                    setValue={(value) => onFormDataChange({ accordionTitle: value })}
-                />
 
                 {/* Show List Item Numbers Checkbox */}
                 <CheckBox
