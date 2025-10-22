@@ -111,6 +111,7 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
   const [rating, setRating] = React.useState(0);
   const [neededMoreTime, setNeededMoreTime] = React.useState(false);
   const [submitted, setLocalSubmitted] = React.useState(initialSubmitted);
+  const [submittedData, setSubmittedData] = React.useState({ review: '', rating: 0 });
 
   React.useEffect(() => {
     setLocalSubmitted(initialSubmitted);
@@ -122,6 +123,9 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
   const handleReviewSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!onSubmit || !isFormValid) return;
+
+    // Capture values before they might be reset
+    setSubmittedData({ review, rating });
 
     // Call onSubmit and let parent/story handle submitted state
     onSubmit(rating, review, neededMoreTime);
@@ -139,9 +143,9 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
           </h5>
 
           <div className="bg-base-neutral-800 p-3 rounded-lg border border-card-stroke w-full">
-            <p className="text-sm text-stone-300 text-justify line-clamp-3">{review}</p>
+            <p className="text-sm text-stone-300 text-justify line-clamp-3">{submittedData.review}</p>
             <div className="flex justify-end items-center gap-1">
-              <StarRating rating={rating} totalStars={5} />
+              <StarRating rating={submittedData.rating} totalStars={5} />
             </div>
           </div>
         </div>
@@ -209,7 +213,7 @@ const ReviewModalBase: React.FC<ReviewProps> = ({
 
         {isError && (
           <Banner style="error" title={errorMessage || dictionary.components!.reviewModal!.errorState} />
-           
+
         )}
 
         <div className="relative w-full">

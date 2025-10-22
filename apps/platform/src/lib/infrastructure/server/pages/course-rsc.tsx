@@ -63,7 +63,7 @@ export default async function CourseServerComponent({
 
 async function fetchCourseAccess(
     slug: string,
-): Promise<viewModels.TCourseAccessViewModel> {
+): Promise<viewModels.TGetCourseAccessViewModel> {
     const queryOptions = trpcMock.getCourseAccess.queryOptions({
         courseSlug: slug,
     });
