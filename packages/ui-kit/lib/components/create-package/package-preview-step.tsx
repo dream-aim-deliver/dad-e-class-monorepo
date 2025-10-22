@@ -163,6 +163,7 @@ export function PackagePreviewStep({
                 imageUrl={featuredImageUrl || ''}
                 description={packageDescription}
                 duration={durationInMinutes || 0}
+                // TODO: Remove hardcoded currency
                 pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: selectedCoursesSavings } as any}
                 locale={locale}
                 onClickPurchase={onClickPurchase}
@@ -193,6 +194,7 @@ export function PackagePreviewStep({
                 title={dictionary.components.packagePreviewStep.flexibleSectionTitle}
                 description={dictionary.components.packagePreviewStep.flexibleDescription}
                 coachingIncluded={coachingIncluded}
+                // TODO: Remove hardcoded currency
                 pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: Math.max(selectedCoursesTotal - selectedCoursesSavings, 0) }}
                 onClickCheckbox={onToggleCoaching}
                 onClickPurchase={onClickPurchase}
@@ -253,6 +255,7 @@ export function PackagePreviewStep({
                 title={packageTitle}
                 description={packageDescription}
                 duration={durationInMinutes || 0}
+                // TODO: Remove hardcoded currency
                 pricing={{ currency: 'CHF', fullPrice: selectedCoursesTotal, partialPrice: selectedCoursesSavings }}
                 locale={locale}
                 onClickPurchase={onClickPurchase}

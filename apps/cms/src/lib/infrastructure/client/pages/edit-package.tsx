@@ -230,11 +230,13 @@ export default function EditPackage({
                 price,
                 priceWithCoachings,
                 partialDiscounts: partialDiscountsPayload,
+                showAccordionNumbers: packageDetailsFormData.showListItemNumbers,
                 accordionItems: accordionItemsPayload.map((item, idx) => ({
                     ...item,
                     id: idx + 1, // Add required id field
                 })),
-                // TODO: Add featuredImageId, accordionTitle, showListItemNumbers when supported by backend
+                featuredImageId: null,
+                // TODO: Add accordionTitle when supported by backend
             };
             
             await updatePackageMutation.mutateAsync(payload);
