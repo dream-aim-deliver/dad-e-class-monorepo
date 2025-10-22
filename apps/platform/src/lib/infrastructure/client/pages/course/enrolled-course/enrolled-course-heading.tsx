@@ -9,14 +9,15 @@ import {
     IconEdit,
     IconTrashAlt,
     StarRating,
-    ReviewCard
+    ReviewCard,
+    generateCertificatePDF,
+    DefaultError,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { StudentCourseTab } from '../../../utils/course-tabs';
 import { trpc } from '../../../trpc/cms-client';
-import { useGetCourseCertificateDataPresenter } from '../../../hooks/use-get-course-certificate-data-presenter';
 
 interface EnrolledCourseHeadingProps {
     courseViewModel: viewModels.TEnrolledCourseDetailsViewModel;
@@ -24,6 +25,7 @@ interface EnrolledCourseHeadingProps {
     courseSlug: string;
     roles: string[];
     currentRole: string;
+    certificateDataViewModel?: viewModels.TGetCourseCertificateDataViewModel;
 }
 
 export default function EnrolledCourseHeading({
@@ -32,6 +34,7 @@ export default function EnrolledCourseHeading({
     roles,
     currentRole,
     courseSlug,
+    certificateDataViewModel,
 }: EnrolledCourseHeadingProps) {
     // Use courseStatusViewModel for both completion status and progress
     const isCompleted =
@@ -51,24 +54,26 @@ export default function EnrolledCourseHeading({
     const router = useRouter();
     const createReviewMutation = trpc.createCourseReview.useMutation();
 
-    // State for certificate data
-    const [certificateDataResponse] = trpc.getCourseCertificateData.useSuspenseQuery({
-        courseSlug: courseSlug,
-    });
-    const [certificateDataViewModel, setCertificateDataViewModel] = useState<
-        viewModels.TGetCourseCertificateDataViewModel | undefined
-    >(undefined);
-    const { presenter: certificateDataPresenter } = useGetCourseCertificateDataPresenter(
-        setCertificateDataViewModel
-    );
-
-    // @ts-ignore
-    certificateDataPresenter.present(certificateDataResponse, certificateDataViewModel);
+    // State for certificate error
+    const [certificateError, setCertificateError] = useState<string | null>(null);
 
     // Handle download certificate
-    const handleDownloadCertificate = () => {
+    const handleDownloadCertificate = async () => {
         if (certificateDataViewModel?.mode === 'default') {
-            const data = certificateDataViewModel.data;
+            try {
+                setCertificateError(null); // Clear any previous errors
+                const certificateData = certificateDataViewModel.data.certificateData;
+
+                // Map the certificate data to the expected format
+                await generateCertificatePDF({
+                    studentName: `${certificateData.studentName} ${certificateData.studentSurname}`,
+                    courseTitle: certificateData.courseName,
+                    completionDate: certificateData.awardedOn,
+                    platformName: certificateData.platformName,
+                });
+            } catch (error) {
+                setCertificateError(typeof error === 'string' ? error : 'Failed to generate certificate');
+            }
         }
     };
 
@@ -111,6 +116,9 @@ export default function EnrolledCourseHeading({
                             )}
                             onClick={handleDownloadCertificate}
                         />
+                        {certificateError && (
+                            <DefaultError title={certificateError} locale={locale} />
+                        )}
                     </div>
                 </div>
             );
