@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { InputField } from '../input-field';
 import { TextAreaInput } from '../text-areaInput';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { CheckBox } from '../checkbox';

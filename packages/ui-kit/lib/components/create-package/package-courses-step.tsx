@@ -7,6 +7,7 @@ import { CourseCardAddToPackageList } from '../course-card/add-to-package/course
 
 export interface PackageCoursesStepCourseItem {
     id: string;
+    slug: string;
     title: string;
     description: string;
     rating: number;
@@ -24,6 +25,7 @@ export interface PackageCoursesStepProps {
     courses: PackageCoursesStepCourseItem[];
     selectedCourseIds: string[];
     onToggleCourseSelection: (courseId: string) => void;
+    onClickUser: (courseId: string) => void;
     locale: TLocale;
 }
 
@@ -45,6 +47,7 @@ export interface PackageCoursesStepProps {
  * @param {PackageCoursesStepCourseItem[]} courses - Array of available courses to display
  * @param {string[]} selectedCourseIds - Array of currently selected course IDs
  * @param {function} onToggleCourseSelection - Function to handle course selection/deselection
+ * @param {function} onClickUser - Function to handle user click on course author
  * @param {TLocale} locale - Current locale for translations
  *
  * Usage:
@@ -53,6 +56,7 @@ export interface PackageCoursesStepProps {
  *   courses={courses}
  *   selectedCourseIds={selectedCourseIds}
  *   onToggleCourseSelection={onToggleCourseSelection}
+ *   onClickUser={onClickUser}
  *   locale={locale}
  * />
  * ```
@@ -62,6 +66,7 @@ export const PackageCoursesStep: React.FC<PackageCoursesStepProps> = ({
     courses,
     selectedCourseIds,
     onToggleCourseSelection,
+    onClickUser,
     locale,
 }) => {
     const dictionary = getDictionary(locale);
@@ -91,7 +96,7 @@ export const PackageCoursesStep: React.FC<PackageCoursesStepProps> = ({
                             pricing={course.pricing}
                             courseAdded={selectedCourseIds.includes(course.id)}
                             onAddOrRemove={() => onToggleCourseSelection(course.id)}
-                            onClickUser={() => undefined}
+                            onClickUser={() => onClickUser(course.id)}
                             locale={locale}
                         />
                     ))
