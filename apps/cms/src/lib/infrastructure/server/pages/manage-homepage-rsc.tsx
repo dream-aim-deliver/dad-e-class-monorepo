@@ -8,8 +8,21 @@ import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import { HydrateClient, prefetch, getServerTRPC } from '../config/trpc/cms-server';
 
-export default async function ManageHomepageServerComponent() {
-	const trpc = getServerTRPC();
+
+interface ManageHomepagePageProps {
+	platformSlug: string;
+	platformLocale: string;
+}
+
+export default async function ManageHomepageServerComponent({
+	platformSlug,
+	platformLocale
+}: ManageHomepagePageProps
+) {
+	const trpc = getServerTRPC({
+		platform_slug: platformSlug,
+		platform_locale: platformLocale
+	});
 
 	// Prefetch homepage data for better performance
 	await Promise.all([
