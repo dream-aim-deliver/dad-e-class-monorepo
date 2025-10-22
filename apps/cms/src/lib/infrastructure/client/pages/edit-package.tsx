@@ -234,7 +234,7 @@ export default function EditPackage({
                     ...item,
                     id: idx + 1, // Add required id field
                 })),
-                // TODO: Add featuredImageId when supported
+                // TODO: Add featuredImageId, accordionTitle, showListItemNumbers when supported by backend
             };
             
             await updatePackageMutation.mutateAsync(payload);
