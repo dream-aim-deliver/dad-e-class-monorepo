@@ -325,7 +325,8 @@ export const DE: TDictionary = {
       noAvailableSessionText: 'Keine verfügbaren Sitzungen',
     },
     coachReview: {
-      by: 'von'
+      by: 'von',
+      group: 'Gruppe',
     },
     coachCard: {
       coachingSession: "Coaching-Sitzung",
@@ -1016,6 +1017,9 @@ export const DE: TDictionary = {
       coachingOfferings: 'Coaching-Angebote',
       yourStudents: 'Deine Schüler',
       yourProfile: 'Ihr Profil',
+      yourCourses: 'Ihre Kurse',
+      groups: 'Gruppen',
+      coachingSessionReviews: 'Coaching-Sitzungsbewertungen',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -1597,6 +1601,7 @@ export const DE: TDictionary = {
     groupCoachingSessionReviews: {
       title: 'Gruppenkurs Bewertungen',
       description: 'Bewertungen für diese Gruppenkurs-Sitzung anzeigen und verwalten',
+      noReviewsFound: 'Keine Bewertungen gefunden, die deinen Kriterien entsprechen',
       error: {
         title: 'Bewertungen konnten nicht geladen werden',
         description: 'Beim Laden der Coaching-Sitzungsbewertungen ist ein Fehler aufgetreten. Bitte versuche es erneut.',
@@ -1680,6 +1685,25 @@ export const DE: TDictionary = {
           description: 'Der angeforderte Gruppen-Workspace konnte nicht gefunden werden.',
         },
       },
+      reviewsBanner: {
+        reviewsReceived: 'Bewertungen erhalten',
+        averageRating: 'Durchschnittliche Bewertung',
+      },
+      sessionBanner: {
+        minutes: 'Min.',
+      },
+    },
+    coachProfile: {
+      filterButton: "Filter",
+      filterReviews: "Bewertungen filtern",
+      ratingFilter: "Bewertungsfilter",
+      maxRating: "Max. Bewertung",
+      minRating: "Min. Bewertung",
+      dateFilter: "Datumsfilter",
+      beforeDate: "Vor Datum",
+      afterDate: "Nach Datum",
+      resetFilters: "Filter zurücksetzen",
+      applyFilters: "Filter anwenden",
     },
   },
 };

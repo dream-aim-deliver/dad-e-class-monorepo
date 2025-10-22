@@ -218,3 +218,7 @@ export { ManageCoachingOfferingItem } from './components/manage-coaching-offerin
 export { ManageCoachingOfferingList } from './components/manage-coaching-offering/manage-coaching-offering-list';
 export { CoachStudentInteractionCard } from './components/coach-student-interaction-card';
 export { UserAvatar } from './components/avatar/user-avatar';
+export { ReviewCard as CoachReviewCard } from './components/review/coach-review-card';
+export { CoachReviewFilterModal, type CoachReviewFilterModel } from './components/review/coach-review-filter-modal';
+export { GroupCoachingSessionBanner } from './components/group-coaching-session-banner';
+export { GroupCoachingSessionReviewsBanner } from './components/group-coaching-session-reviews-banner';

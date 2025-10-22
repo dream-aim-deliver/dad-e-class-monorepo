@@ -206,7 +206,8 @@ export const DictionarySchema = z.object({
       buttontext2: z.string(),
     }),
     coachReview: z.object({
-      by: z.string()
+      by: z.string(),
+      group: z.string(),
     }),
     calendar: z.object({
       coachAvailability: z.string(),
@@ -1003,6 +1004,9 @@ export const DictionarySchema = z.object({
       coachingOfferings: z.string(),
       yourStudents: z.string(),
       yourProfile: z.string(),
+      yourCourses: z.string(),
+      groups: z.string(),
+      coachingSessionReviews: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1629,6 +1633,7 @@ export const DictionarySchema = z.object({
     groupCoachingSessionReviews: z.object({
       title: z.string(),
       description: z.string(),
+      noReviewsFound: z.string(),
       error: z.object({
         title: z.string(),
         description: z.string(),
@@ -1712,6 +1717,25 @@ export const DictionarySchema = z.object({
           description: z.string(),
         }),
       }),
+      reviewsBanner: z.object({
+        reviewsReceived: z.string(),
+        averageRating: z.string(),
+      }),
+      sessionBanner: z.object({
+        minutes: z.string(),
+      }),
+    }),
+    coachProfile: z.object({
+      filterButton: z.string(),
+      filterReviews: z.string(),
+      ratingFilter: z.string(),
+      maxRating: z.string(),
+      minRating: z.string(),
+      dateFilter: z.string(),
+      beforeDate: z.string(),
+      afterDate: z.string(),
+      resetFilters: z.string(),
+      applyFilters: z.string(),
     }),
   }),
 });

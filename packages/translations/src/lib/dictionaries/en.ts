@@ -322,7 +322,8 @@ export const EN: TDictionary = {
       loadingText: 'Loading Sessions...',
     },
     coachReview: {
-      by: 'by'
+      by: 'by',
+      group: 'Group',
     },
     coachCard: {
       coachingSession: "Coaching Session",
@@ -1012,6 +1013,9 @@ export const EN: TDictionary = {
       coachingOfferings: 'Coaching Offerings',
       yourStudents: 'Your students',
       yourProfile: 'Your Profile',
+      yourCourses: 'Your Courses',
+      groups: 'Groups',
+      coachingSessionReviews: 'Coaching Session Reviews',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1594,6 +1598,7 @@ export const EN: TDictionary = {
     groupCoachingSessionReviews: {
       title: 'Group Coaching Session Reviews',
       description: 'View and manage reviews for this group coaching session',
+      noReviewsFound: 'No reviews found matching your criteria',
       error: {
         title: 'Failed to load reviews',
         description: 'An error occurred while loading the coaching session reviews. Please try again.',
@@ -1677,6 +1682,25 @@ export const EN: TDictionary = {
           description: 'The requested group workspace could not be found.',
         },
       },
+      reviewsBanner: {
+        reviewsReceived: 'Reviews received',
+        averageRating: 'Average rating',
+      },
+      sessionBanner: {
+        minutes: 'min',
+      },
+    },
+    coachProfile: {
+      filterButton: "Filter",
+      filterReviews: "Filter reviews",
+      ratingFilter: "Rating Filter",
+      maxRating: "Max rating",
+      minRating: "Min rating",
+      dateFilter: "Date Filter",
+      beforeDate: "Before date",
+      afterDate: "After date",
+      resetFilters: "Reset filters",
+      applyFilters: "Apply filters",
     },
   },
 };
