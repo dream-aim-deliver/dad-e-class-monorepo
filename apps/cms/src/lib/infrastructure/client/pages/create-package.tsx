@@ -280,7 +280,6 @@ export default function CreatePackage() {
             const price = parseFloat(pricingFormData.completePackageWithoutCoaching.replace(/[^\d.]/g, '')) || 0;
             const priceWithCoachings = parseFloat(pricingFormData.completePackageWithCoaching.replace(/[^\d.]/g, '')) || 0;
 
-            // TODO: Move discount parsing to a shared util and validate range (0-100)
             const partialDiscountsPayload = Object.entries(pricingFormData.partialDiscounts)
                 .map(([courseAmount, discount]) => ({
                     courseAmount: Number(courseAmount),
@@ -288,7 +287,6 @@ export default function CreatePackage() {
                 }))
                 .filter(d => !Number.isNaN(d.courseAmount) && !Number.isNaN(d.discountPercent));
 
-            // TODO: Support per-item icon upload progress in UI (AccordionBuilder)
             const accordionItemsPayload = packageDetailsFormData.accordionItems.map((item: AccordionBuilderItem, idx: number) => ({
                 title: item.title,
                 description: item.content,
@@ -300,7 +298,7 @@ export default function CreatePackage() {
                 .map((id) => idToNumber(id))
                 .filter((n): n is number => n !== undefined);
 
-            // TODO: Add featuredImageId, accordionTitle, showListItemNumbers when supported by backend contract
+            // TODO: Add featuredImageId, accordionTitle, showListItemNumbers to backend contract
             const payload = {
                 title: packageDetailsFormData.packageTitle,
                 description: packageDetailsFormData.packageDescription,
