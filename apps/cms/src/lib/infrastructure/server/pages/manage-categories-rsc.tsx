@@ -11,7 +11,6 @@ import ManageCategories from '../../client/pages/manage-categories';
 interface ManageCategoriesProps {
     platformSlug: string;
     platformLocale: string;
-    platformName: string;
     locale: string;
 }
 
@@ -33,7 +32,6 @@ export default async function ManageCategoriesServerComponent(props: ManageCateg
                 <ManageCategories
                     platformSlug={props.platformSlug}
                     platformLocale={props.platformLocale}
-                    platformName={props.platformName}
                 />
             </Suspense>
         </HydrateClient>

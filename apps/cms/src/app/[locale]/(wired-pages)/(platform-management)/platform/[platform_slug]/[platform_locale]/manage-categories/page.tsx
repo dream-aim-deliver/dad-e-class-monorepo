@@ -13,7 +13,6 @@ export default async function ManageCategoriesPage({
     params: Promise<{
         platform_slug: string;
         platform_locale: string;
-        platform_name: string;
         locale: string;
     }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -25,7 +24,6 @@ export default async function ManageCategoriesPage({
         <ManageCategoriesServerComponent
             platformSlug={params.platform_slug}
             platformLocale={params.platform_locale}
-            platformName={params.platform_name}
             locale={params.locale}
         />
     );

@@ -13,7 +13,6 @@ export default async function ManageTopicsPage({
     params: Promise<{
         platform_slug: string;
         platform_locale: string;
-        plarform_name: string;
         locale: string;
     }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -25,7 +24,6 @@ export default async function ManageTopicsPage({
         <ManageTopicsServerComponent
             platformSlug={params.platform_slug}
             platformLocale={params.platform_locale}
-            platformName={params.plarform_name}
             locale={params.locale}
         />
     );

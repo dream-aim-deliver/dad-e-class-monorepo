@@ -1,7 +1,10 @@
 import { TLocale } from "@maany_shr/e-class-translations";
 import CMSTRPCClientProviders from '../../../../../../../lib/infrastructure/client/trpc/cms-client-provider';
 import { PlatformLocaleProvider } from '../../../../../../../lib/infrastructure/client/context/platform-locale-context';
+import { PlatformProvider } from '../../../../../../../lib/infrastructure/client/context/platform-context';
 import CMSSidebarLayout from '../../../../../../../lib/infrastructure/server/pages/layouts/cms-sidebar-layout';
+import { getQueryClient, getServerTRPC } from '../../../../../../../lib/infrastructure/server/config/trpc/cms-server';
+import type { TGetPlatformUseCaseResponse } from '@dream-aim-deliver/e-class-cms-rest';
 
 export default async function PlatformLayout({
     children,
@@ -15,30 +18,45 @@ export default async function PlatformLayout({
     const platformSlug = params.platform_slug;
     const appLocale = params.locale;
 
-    // TODO: Fetch actual platform details from database
-    // For now, using placeholder values
-    const platformName = platformSlug.charAt(0).toUpperCase() + platformSlug.slice(1);
-    const platformLogoUrl = undefined; // Will be fetched from database
+    // Fetch platform details from database via TRPC
+    const trpc = getServerTRPC({
+        platform_slug: platformSlug,
+        platform_locale: platformLocale
+    });
+
+    const queryClient = getQueryClient();
+    // @ts-expect-error - fetchQuery returns unknown, but we know the type from TRPC router
+    const platformResult: TGetPlatformUseCaseResponse = await queryClient.fetchQuery(
+        trpc.getPlatform.queryOptions({})
+    );
+
+    if (!platformResult.success) {
+        throw new Error('Failed to load platform data');
+    }
+
+    const platform = platformResult.data;
 
     return (
         <div>
             <PlatformLocaleProvider platformSlug={platformSlug} platformLocale={platformLocale}>
-                <CMSTRPCClientProviders
-                    platformContext={{
-                        platformSlug,
-                        platformLanguageCode: platformLocale
-                    }}
-                >
-                    <CMSSidebarLayout
-                        platformName={platformName}
-                        platformLogoUrl={platformLogoUrl}
-                        platformSlug={platformSlug}
-                        platformLocale={platformLocale}
-                        locale={appLocale}
+                <PlatformProvider platform={platform}>
+                    <CMSTRPCClientProviders
+                        platformContext={{
+                            platformSlug,
+                            platformLanguageCode: platformLocale
+                        }}
                     >
-                        {children}
-                    </CMSSidebarLayout>
-                </CMSTRPCClientProviders>
+                        <CMSSidebarLayout
+                            platformName={platform.name}
+                            platformLogoUrl={platform.logoUrl ?? undefined}
+                            platformSlug={platformSlug}
+                            platformLocale={platformLocale}
+                            locale={appLocale}
+                        >
+                            {children}
+                        </CMSSidebarLayout>
+                    </CMSTRPCClientProviders>
+                </PlatformProvider>
             </PlatformLocaleProvider>
         </div>
     );
