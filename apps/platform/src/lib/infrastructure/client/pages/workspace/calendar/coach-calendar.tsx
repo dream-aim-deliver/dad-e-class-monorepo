@@ -1,7 +1,7 @@
 'use client';
 
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { trpc } from '../../../trpc/client';
 import React, { useState } from 'react';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
@@ -15,6 +15,7 @@ import StudentCalendar from './student-calendar';
 
 function CalendarContent() {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.calendarPage');
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -54,7 +55,7 @@ function CalendarContent() {
     return (
         <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <h2>Your Calendar</h2>
+                <h2>{t('yourCalendarTitle')}</h2>
                 <AddAvailabilityDialog
                     isOpen={isAddDialogOpen}
                     onOpenChange={setIsAddDialogOpen}
@@ -85,6 +86,7 @@ function CalendarContent() {
 
 export default function CoachCalendar() {
     const session = useSession();
+    const t = useTranslations('pages.calendarPage');
     const isStudent = session.data?.user?.roles?.includes('student');
     const tabContentClass = 'mt-4';
 
@@ -93,10 +95,10 @@ export default function CoachCalendar() {
             <Tabs.Root defaultTab="coach">
                 <Tabs.List>
                     <Tabs.Trigger value="coach" isLast={false}>
-                        Coach
+                        {t('coachTab')}
                     </Tabs.Trigger>
                     <Tabs.Trigger value="student" isLast={true}>
-                        Student
+                        {t('studentTab')}
                     </Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.Content value="coach" className={tabContentClass}>

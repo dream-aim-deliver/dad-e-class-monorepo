@@ -10,7 +10,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useCaseModels } from '@maany_shr/e-class-models';
 import { useDeleteAvailability } from '../hooks/use-delete-availability';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 
 interface AvailabilityDetailsDialogProps {
@@ -32,6 +32,7 @@ export function AvailabilityDetailsDialog({
     onDeleteSuccess,
 }: AvailabilityDetailsDialogProps) {
     const locale = useLocale() as TLocale;
+    const t = useTranslations('pages.calendarPage');
 
     const startDate = new Date(availability.startTime);
     const endDate = new Date(availability.endTime);
@@ -55,24 +56,24 @@ export function AvailabilityDetailsDialog({
         <Dialog defaultOpen={false} open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent showCloseButton closeOnOverlayClick closeOnEscape>
                 <div className="flex flex-col gap-4">
-                    <h4>Availability Details</h4>
+                    <h4>{t('availabilityDetailsTitle')}</h4>
                     <div className="p-4 flex flex-col gap-3 bg-card-stroke rounded-md border border-divider text-text-primary">
                         <div className="flex flex-row gap-2 text-text-secondary">
                             <IconCalendar />
-                            <span>Date</span>
+                            <span>{t('dateLabel')}</span>
                         </div>
                         <span>{dateDisplay}</span>
                         <div className="flex flex-row gap-2 text-text-secondary">
                             <IconCalendar />
-                            <span>Time slot</span>
+                            <span>{t('timeSlotLabel')}</span>
                         </div>
                         <span>{timeRange}</span>
                     </div>
                     <Button
                         text={
                             isDeletionPending
-                                ? 'Canceling...'
-                                : 'Cancel this slot'
+                                ? t('cancelingSlot')
+                                : t('cancelSlotButton')
                         }
                         variant="primary"
                         iconLeft={<IconTrashAlt />}
