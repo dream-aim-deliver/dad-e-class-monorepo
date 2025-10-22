@@ -131,6 +131,7 @@ export { Breadcrumbs } from './components/breadcrumbs';
 export * from './components/dialog';
 export { CourseForm, useCourseForm, type CourseDetailsState } from './components/course-form';
 export * from './utils/file-utils';
+export { generateCertificatePDF, type CertificateData } from './utils/course-certificate-generator';
 
 export { LessonHeader } from './components/lesson-header';
 
