@@ -127,14 +127,14 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
     {
       label: platformSlug.charAt(0).toUpperCase() + platformSlug.slice(1),
       onClick: () => {
-        // TODO: Implement navigation to platform
+        router.push(`/${locale}/platform/${platformSlug}/${platformLocale}`);
       },
     },
     {
-      label: 'Packages',
-      onClick: () => {
-        // Nothing should happen on clicking the current page
-      },
+        label: t('title'),
+        onClick: () => {
+            // Nothing should happen on clicking the current page
+        },
     },
   ];
 

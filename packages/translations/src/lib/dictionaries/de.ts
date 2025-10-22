@@ -1671,6 +1671,40 @@ export const DE: TDictionary = {
       description: 'Paketinformationen und Preise bearbeiten',
       saving: 'Speichern...',
       save: 'Änderungen speichern',
+      pageTitle: 'Paket bearbeiten',
+      cancel: 'Abbrechen',
+      updating: 'Wird aktualisiert...',
+      platformInfo: 'Plattform: {platformSlug} | Inhaltssprache: {platformLocale}',
+    },
+    createPackage: {
+      title: 'Paket erstellen',
+      subtitle: 'Plattform: {platformSlug} | Inhaltssprache: {platformLocale}',
+      stepper: {
+        details: 'Paket-Details',
+        courses: 'Kurse',
+        pricing: 'Preise',
+        preview: 'Vorschau',
+      },
+      buttons: {
+        discard: 'Verwerfen',
+        back: 'Zurück',
+        nextCourses: 'Weiter: Kurse wählen',
+        nextPricing: 'Weiter: Preise festlegen',
+        nextPreview: 'Weiter: Vorschau',
+        noGoBack: 'Nein, zurück',
+        publishing: 'Wird veröffentlicht...',
+        publishPackage: 'Ja, Paket veröffentlichen',
+      },
+      breadcrumbs: {
+        createPackage: 'Paket erstellen',
+      },
+      publishConfirm: {
+        title: 'Paket veröffentlichen?',
+        description: 'Sieht alles gut aus? Wenn ja, veröffentliche das Paket. Beachte, dass nach der Veröffentlichung die enthaltenen Kurse nicht mehr geändert werden können – überprüfe also alles sorgfältig, bevor du fortfährst.',
+      },
+      alerts: {
+        previewPurchaseNotAvailable: 'Dies ist eine Vorschau. Der Kauf von Paketen ist im Erstellungsmodus nicht verfügbar.',
+      },
     },
     manageOffersPage: {
       title: 'Angebote-Seite verwalten',

@@ -203,8 +203,9 @@ export default function EditPackage({
         }
     }, [packageDetailsFormData, pricingFormData, packageIdInt, updatePackageMutation, router, locale, platformSlug, platformLocale]);
 
-    // Breadcrumbs
+    // Translations
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const editPackageTranslations = useTranslations('pages.editPackage');
 
     // Conditional returns after all hooks
     if (isNaN(packageIdInt)) {
@@ -218,7 +219,7 @@ export default function EditPackage({
         {
             label: platformSlug.charAt(0).toUpperCase() + platformSlug.slice(1),
             onClick: () => {
-                // TODO: Implement navigation to platform
+                router.push(`/${locale}/platform/${platformSlug}/${platformLocale}`);
             },
         },
         {
@@ -228,7 +229,7 @@ export default function EditPackage({
             },
         },
         {
-            label: 'Edit Package',
+            label: editPackageTranslations('pageTitle'),
             onClick: () => {
                 // Current page
             },
@@ -261,9 +262,12 @@ export default function EditPackage({
             <Breadcrumbs items={breadcrumbItems} />
             
             <div className="flex flex-col space-y-2">
-                <h1>Edit Package</h1>
+                <h1>{editPackageTranslations('pageTitle')}</h1>
                 <p className="text-text-secondary text-sm">
-                    Platform: {platformSlug} | Content Language: {platformLocale.toUpperCase()}
+                    {editPackageTranslations('platformInfo', { 
+                        platformSlug, 
+                        platformLocale: platformLocale.toUpperCase() 
+                    })}
                 </p>
             </div>
             
@@ -300,14 +304,14 @@ export default function EditPackage({
                 <Button
                     variant="secondary"
                     size="medium"
-                    text="Cancel"
+                    text={editPackageTranslations('cancel')}
                     onClick={() => router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`)}
                     className="flex-1"
                 />
                 <Button
                     variant="primary"
                     size="medium"
-                    text={isUpdating ? 'Updating...' : 'Save Changes'}
+                    text={isUpdating ? editPackageTranslations('updating') : editPackageTranslations('save')}
                     onClick={handleUpdatePackage}
                     disabled={isUpdating}
                     className="flex-1"

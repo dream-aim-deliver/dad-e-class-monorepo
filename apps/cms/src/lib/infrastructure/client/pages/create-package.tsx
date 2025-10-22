@@ -30,6 +30,7 @@ import { usePackageFileUpload } from './common/hooks/use-package-file-upload';
 // Types for course data
 interface CourseData {
     id: string;
+    slug: string;
     title: string;
     description: string;
     rating: number;
@@ -39,7 +40,7 @@ interface CourseData {
     duration: { video: number; coaching: number; selfStudy: number };
     sales: number;
     imageUrl: string;
-    author: { name: string; image: string };
+    author: { name: string; image: string; username: string };
     pricing: { fullPrice: number; currency: string; partialPrice: number };
 }
 
@@ -63,6 +64,7 @@ export default function CreatePackage() {
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const t = useTranslations('pages.createPackage');
     // const t = useTranslations('components.createPackage');
 
     // CMS-specific context hooks
@@ -128,6 +130,7 @@ export default function CreatePackage() {
         const courses: any[] = data?.courses ?? [];
         return courses.map((course) => ({
             id: String(course.id),
+            slug: course.slug,
             title: course.title,
             description: course.description,
             rating: course.averageRating ?? 0,
@@ -139,7 +142,8 @@ export default function CreatePackage() {
             imageUrl: course.imageUrl ?? '',
             author: {
                 name: getAuthorDisplayName(course.author.name, course.author.surname, locale),
-                image: course.author.avatarUrl ?? ''
+                image: course.author.avatarUrl ?? '',
+                username: course.author.username
             },
             pricing: {
                 fullPrice: course.pricing.withCoaching ?? 0,
@@ -150,13 +154,35 @@ export default function CreatePackage() {
     })();
 
 
+    // Handler for purchase click - show alert since this is preview mode
+    const handleClickPurchase = () => {
+        alert(t('alerts.previewPurchaseNotAvailable'));
+    };
+
+    // Handler for course details click - navigate to course page
+    const handleCourseDetails = useCallback((courseId: string) => {
+        const course = allCourses.find(c => c.id === courseId);
+        if (course?.slug) {
+            router.push(`/courses/${course.slug}`);
+        }
+    }, [allCourses, router]);
+
+    // Handler for course author click - navigate to coach profile
+    const handleCourseAuthorClick = useCallback((courseId: string) => {
+        const course = allCourses.find(c => c.id === courseId);
+        if (course?.author?.username) {
+            router.push(`/coaches/${course.author.username}`);
+        }
+    }, [allCourses, router]);
+
+
     // File upload handlers using custom hook
     const [packageImageProgress, setPackageImageProgress] = useState<number | undefined>(undefined);
     const {
-        handleFileChange: handlePackageImageUpload,
-        uploadError: packageImageError,
+        handleFileChange: handleFeaturedImageUpload,
         handleDelete: handleDeleteFeaturedImage,
         handleDownload: handleDownloadFeaturedImage,
+        uploadError: packageImageError,
     } = usePackageFileUpload("upload_package_image", null, setPackageImageProgress);
 
     const [iconUploadProgress, setIconUploadProgress] = useState<number | undefined>(undefined);
@@ -224,7 +250,7 @@ export default function CreatePackage() {
                 title: item.title,
                 description: item.content,
                 position: idx + 1,
-                iconId: item.icon?.id ? Number(item.icon.id) : undefined,
+                iconId: item.icon?.id,
             }));
 
             // TODO: Confirm whether BE will accept string IDs to remove Number casting
@@ -303,7 +329,7 @@ export default function CreatePackage() {
         {
             label: platformSlug.charAt(0).toUpperCase() + platformSlug.slice(1),
             onClick: () => {
-                // TODO: Implement navigation to platform
+                router.push(`/${locale}/platform/${platformSlug}/${platformLocale}`);
             },
         },
         {
@@ -313,7 +339,7 @@ export default function CreatePackage() {
             },
         },
         {
-            label: 'Create Package',
+            label: t('breadcrumbs.createPackage'),
             onClick: () => {
                 // Nothing should happen on clicking the current page
             },
@@ -356,9 +382,9 @@ export default function CreatePackage() {
             <Breadcrumbs items={breadcrumbItems} />
 
             <div className="flex flex-col space-y-2">
-                <h1>Create Package</h1>
+                <h1>{t('title')}</h1>
                 <p className="text-text-secondary text-sm">
-                    Platform: {platformSlug} | Content Language: {platformLocale.toUpperCase()}
+                    {t('subtitle', { platformSlug, platformLocale: platformLocale.toUpperCase() })}
                 </p>
             </div>
 
@@ -372,19 +398,19 @@ export default function CreatePackage() {
                 <Stepper.List>
                     <Stepper.Item 
                         step={1} 
-                        description="Pkg. Details" 
+                        description={t('stepper.details')} 
                     />
                     <Stepper.Item 
                         step={2} 
-                        description="Courses" 
+                        description={t('stepper.courses')} 
                     />
                     <Stepper.Item 
                         step={3} 
-                        description="Pricing" 
+                        description={t('stepper.pricing')} 
                     />
                     <Stepper.Item 
                         step={4} 
-                        description="Preview" 
+                        description={t('stepper.preview')} 
                     />
                 </Stepper.List>
             </Stepper.Root>
@@ -397,7 +423,7 @@ export default function CreatePackage() {
                 formData={packageDetailsFormData}
                 onFormDataChange={handlePackageDetailsChange}
                 featuredImageUpload={{
-                    onUpload: handlePackageImageUpload,
+                    onUpload: handleFeaturedImageUpload,
                     onDelete: handleDeleteFeaturedImage,
                     onDownload: handleDownloadFeaturedImage,
                     uploadProgress: packageImageProgress ?? 0,
@@ -452,9 +478,9 @@ export default function CreatePackage() {
                     onBack={handleBack}
                     onPublish={handlePublishPackage}
                     isPublishing={isPublishing}
-                    onClickPurchase={() => {}}
-                    onCourseDetails={() => {}}
-                    onCourseAuthorClick={() => {}}
+                    onClickPurchase={handleClickPurchase}
+                    onCourseDetails={handleCourseDetails}
+                    onCourseAuthorClick={handleCourseAuthorClick}
                     locale={locale}
                 />
             )}
@@ -468,14 +494,14 @@ export default function CreatePackage() {
                         <Button
                             variant="secondary"
                             size="medium"
-                            text="Discard"
+                            text={t('buttons.discard')}
                             onClick={handleDiscard}
                             className="flex-1"
                         />
                         <Button
                             variant="primary"
                             size="medium"
-                            text="Next: Choose courses"
+                            text={t('buttons.nextCourses')}
                             onClick={handleNext}
                             className="flex-1"
                         />
@@ -485,14 +511,14 @@ export default function CreatePackage() {
                         <Button
                             variant="secondary"
                             size="medium"
-                            text="Back"
+                            text={t('buttons.back')}
                             onClick={handleBack}
                             className="flex-1"
                         />
                         <Button
                             variant="primary"
                             size="medium"
-                            text="Next: Choose pricing"
+                            text={t('buttons.nextPricing')}
                             onClick={handleNext}
                             className="flex-1"
                         />
@@ -502,14 +528,14 @@ export default function CreatePackage() {
                         <Button
                             variant="secondary"
                             size="medium"
-                            text="Back"
+                            text={t('buttons.back')}
                             onClick={handleBack}
                             className="flex-1"
                         />
                         <Button
                             variant="primary"
                             size="medium"
-                            text="Next: Preview"
+                            text={t('buttons.nextPreview')}
                             onClick={handleNext}
                             className="flex-1"
                         />
@@ -518,28 +544,28 @@ export default function CreatePackage() {
                     <>
                         <div className="flex flex-col gap-4 pt-1">
                             <div className="flex flex-col gap-2">
-                                <h3 className="text-xl font-semibold text-text-primary">Publish package?</h3>
+                                <h3 className="text-xl font-semibold text-text-primary">{t('publishConfirm.title')}</h3>
                                 <p className="text-text-secondary">
-                                    Does everything look good? If so, go ahead and publish the package. Keep in mind that once a package is published, its courses cannot be changed, so double-check everything before proceeding.
+                                    {t('publishConfirm.description')}
                                 </p>
                             </div>
                             <div className="flex gap-4 w-full">
                                 <Button
                                     variant="secondary"
                                     size="medium"
-                                    text="No, go back"
+                                    text={t('buttons.noGoBack')}
                                     onClick={handleBack}
                                     className="flex-1"
                                 />
                                 <Button
                                     variant="primary"
                                     size="medium"
-                                    text={isPublishing ? 'Publishing...' : 'Yes, publish package'}
+                                    text={isPublishing ? t('buttons.publishing') : t('buttons.publishPackage')}
                                     onClick={handlePublishPackage}
                                     disabled={isPublishing}
                                     className="flex-1"
                                 />
-                </div>
+                            </div>
                 </div>
                     </>
                 ) : null}
