@@ -12,7 +12,7 @@ import {
     DefaultLoading,
     Dialog,
     DialogContent,
-    WeeklyHeader,
+    CalendarNavigationHeader,
 } from '@maany_shr/e-class-ui-kit';
 import ScheduledOfferingContent from './dialogs/scheduled-offering-content';
 import {
@@ -167,10 +167,11 @@ function BookCoachPageContent({
             <div className="flex flex-col h-screen">
                 <div className="max-h-full flex-row hidden md:flex">
                     <div className="w-full rounded-lg bg-card-fill p-4 flex-1">
-                        <WeeklyHeader
+                        <CalendarNavigationHeader
                             currentDate={currentDate}
                             setCurrentDate={setCurrentDate}
                             locale={locale}
+                            viewType="weekly"
                         />
                         <WeeklyCoachCalendarWrapper
                             coachAvailabilityViewModel={

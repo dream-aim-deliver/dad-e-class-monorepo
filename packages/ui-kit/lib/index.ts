@@ -194,7 +194,8 @@ export { CourseCompletionModal } from './components/course-completion-modal';
 
 
 export { MonthlyCalendar, formatDateKey } from './components/calendar/monthly-calendar';
-export { WeeklyCalendar, WeeklyHeader } from './components/calendar/weekly-calendar';
+export { WeeklyCalendar } from './components/calendar/weekly-calendar';
+export { CalendarNavigationHeader } from './components/calendar/calendar-navigation-header';
 export * from './components/calendar/calendar-cards';
 export { type CoachingSessionData } from './components/available-coaching-sessions/available-coaching-sessions';
 export { CoachingAvailabilityCard } from './components/available-coaching-sessions/coaching-availability-card';

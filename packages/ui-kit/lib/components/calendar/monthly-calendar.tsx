@@ -1,12 +1,10 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../../utils/style-utils';
 import {
-    TLocale,
-    getDictionary,
     isLocalAware,
 } from '@maany_shr/e-class-translations';
-import { Button } from '../button';
 import LoadingOverlay from './loading-overlay';
+import { CalendarNavigationHeader } from './calendar-navigation-header';
+import { Divider } from '../divider';
 
 interface MonthlyCalendarProps extends isLocalAware {
     currentDate: Date;
@@ -20,6 +18,7 @@ interface MonthlyCalendarProps extends isLocalAware {
         };
     };
     isLoading?: boolean;
+    variant?: 'compact' | 'full';
 }
 
 export function formatDateKey(date: Date): string {
@@ -31,7 +30,6 @@ export function formatDateKey(date: Date): string {
 
 export function MonthlyCalendar(props: MonthlyCalendarProps) {
     const { currentDate, setCurrentDate } = props;
-    const dictionary = getDictionary(props.locale);
 
     const firstDayOfMonth = new Date(
         currentDate.getFullYear(),
@@ -77,57 +75,31 @@ export function MonthlyCalendar(props: MonthlyCalendarProps) {
         );
     }
 
-    const changeMonth = (difference: 1 | -1) => {
-        setCurrentDate(
-            new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth() + difference,
-                1,
-            ),
-        );
-    };
+    const showHeader = props.variant === 'compact';
 
     return (
-        <div className="bg-card-fill rounded-xl border border-card-stroke p-6 overflow-x-auto relative">
+        <div className="bg-base-neutral-800 rounded-xl border border-base-neutral-700 p-6 overflow-x-auto relative">
             {props.isLoading && <LoadingOverlay />}
 
-            <div className="flex flex-row justify-between items-center space-x-3">
-                <div className="flex flex-row space-x-3">
-                    <div className="text-lg font-semibold text-text-primary">
-                        {currentDate.toLocaleDateString(props.locale, {
-                            month: 'long',
-                            year: 'numeric',
-                        })}
-                    </div>
-                    <div className="flex flex-row space-x-6 text-base-brand-500">
-                        <ChevronLeft
-                            className="cursor-pointer"
-                            onClick={() => changeMonth(-1)}
-                        />
-                        <ChevronRight
-                            className="cursor-pointer"
-                            onClick={() => changeMonth(1)}
-                        />
-                    </div>
-                </div>
-                <Button
-                    variant="secondary"
-                    text={dictionary.components.calendar.today}
-                    onClick={() => {
-                        const today = new Date();
-                        setCurrentDate(today);
-                        props.onDateClick?.(today);
-                    }}
+            {showHeader && (
+                <CalendarNavigationHeader
+                    currentDate={currentDate}
+                    setCurrentDate={setCurrentDate}
+                    locale={props.locale}
+                    viewType="monthly"
+                    onDateClick={props.onDateClick}
                 />
-            </div>
-            <div className="mt-4 grid grid-cols-7 gap-2 min-w-[320px]">
+            )}
+
+            <div className="grid grid-cols-7 gap-2 min-w-[320px]">
                 {/* Day headers */}
                 {dayHeaders.map((day, index) => (
                     <div
                         key={index}
-                        className="py-2 font-semibold text-text-secondary text-center"
+                        className="py-2 font-semibold text-text-primary text-sm md:text-xl text-center"
                     >
                         {day.toUpperCase()}
+                        <Divider className='my-2'/>
                     </div>
                 ))}
 

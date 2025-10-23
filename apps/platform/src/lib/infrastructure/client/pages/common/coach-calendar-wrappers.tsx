@@ -68,6 +68,9 @@ interface MonthlyCoachCalendarWrapperProps {
     openDialog?: () => void;
     onAvailabilityClick?: (availability: useCaseModels.TAvailability) => void;
     onSessionClick?: (sessionId: number) => void;
+    variant?: 'compact' | 'full';
+    selectedDate?: Date;
+    setSelectedDate?: (date: Date | undefined) => void;
 }
 
 export function MonthlyCoachCalendarWrapper({
@@ -78,15 +81,22 @@ export function MonthlyCoachCalendarWrapper({
     onAvailabilityClick,
     onSessionClick,
     openDialog,
+    variant = 'compact',
+    selectedDate: externalSelectedDate,
+    setSelectedDate: externalSetSelectedDate,
 }: MonthlyCoachCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('components.calendar');
     const { monthlyEvents } = useComputeMonthlyEvents({
         coachAvailabilityViewModel,
     });
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    const [internalSelectedDate, setInternalSelectedDate] = useState<Date | undefined>(
         undefined,
     );
+
+    // Use external state if provided, otherwise use internal state
+    const selectedDate = externalSelectedDate !== undefined ? externalSelectedDate : internalSelectedDate;
+    const setSelectedDate = externalSetSelectedDate || setInternalSelectedDate;
 
     const isSameDay = (date1: Date, date2: Date): boolean => {
         return (
@@ -220,6 +230,7 @@ export function MonthlyCoachCalendarWrapper({
                 onDateClick={(date) => {
                     setSelectedDate(date);
                 }}
+                variant={variant}
             />
             {availabilityWithSessions.map(
                 ({ availability, sessions }, index) => {
@@ -260,7 +271,7 @@ export function MonthlyCoachCalendarWrapper({
                 },
             )}
             {availabilityWithSessions.length === 0 && (
-                <div className="border border-card-stroke bg-card-fill text-text-secondary p-4 rounded-md">
+                <div className="border border-base-neutral-700 bg-base-neutral-800 text-text-secondary p-4 rounded-md">
                     {t('selectDateWithAvailability')}
                 </div>
             )}

@@ -2,7 +2,7 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
-import { WeeklyHeader } from '@maany_shr/e-class-ui-kit';
+import { CalendarNavigationHeader } from '@maany_shr/e-class-ui-kit';
 import {
     MonthlyCoachCalendarWrapper,
     WeeklyCoachCalendarWrapper,
@@ -27,10 +27,11 @@ export function CalendarView({
         <div className="flex flex-col h-full">
             <div className="h-[800px] flex-row hidden md:flex">
                 <div className="w-full rounded-lg bg-card-fill p-4 flex flex-col">
-                    <WeeklyHeader
+                    <CalendarNavigationHeader
                         currentDate={currentDate}
                         setCurrentDate={setCurrentDate}
                         locale={locale}
+                        viewType="weekly"
                     />
                     <div className="flex-1 min-h-0">
                         <WeeklyCoachCalendarWrapper
