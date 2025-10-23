@@ -136,9 +136,8 @@ function AccordionBuilderItem({
                             {orderNo}.
                         </h4>
                     </span>
-
                     {!shownIcon && (
-                        <>
+                        <div className='flex flex-col items-start'>
                             <Button
                                 text={
                                     dictionary.components.accordion
@@ -158,7 +157,8 @@ function AccordionBuilderItem({
                                 ref={fileInputRef}
                                 className="hidden"
                             />
-                        </>
+                            <p className='text-text-secondary text-sm'> {dictionary.components.accordion.recommendedSize} </p>
+                        </div>
                     )}
                 </div>
 

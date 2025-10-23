@@ -276,7 +276,7 @@ export const DE: TDictionary = {
       phoneNumberPlaceholder: '+44 1234567890',
       password: 'Passwort',
       changePassword: 'Passwort ändern',
-      date: 'Datum',
+      date: 'Geburtsdatum',
       checkboxtext1: 'Ich handle im Namen eines Unternehmens',
       companyName: 'Firmenname',
       companyNamePlaceholder: 'z.B. Acme',
@@ -764,6 +764,7 @@ export const DE: TDictionary = {
       paste: 'einfügen',
       titlePlaceholder: 'Z.B. Mein neues Video-Projekt',
       urlPlaceholder: 'Z.B. https://website.com/dies/ist/die/url',
+      recommendedSize: "Empfohlene Symbolgröße: Quadrate mit 24 × 24 Pixeln.",
     },
     courseBuilder: {
       addLinkText: "Link hinzufügen",
@@ -1125,6 +1126,7 @@ export const DE: TDictionary = {
       moveUpText: "Nach oben verschieben",
       moveDownText: "Nach unten verschieben",
       deleteText: "Löschen",
+      recommendedSize: "Empfohlene Symbolgröße: Quadrate mit 24 × 24 Pixeln.",
     },
     courseMaterialsAccordion: {
       expand: 'Erweitern',

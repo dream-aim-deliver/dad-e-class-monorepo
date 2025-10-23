@@ -138,10 +138,12 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
             ),
         );
         setCourseVersion(lessonComponentsViewModel.data.courseVersion);
+        setLessonTitle(lessonComponentsViewModel.data.lessonTitle);
     }, [lessonComponentsViewModel]);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const [courseVersion, setCourseVersion] = useState<number | null>(null);
+    const [lessonTitle, setLessonTitle] = useState<string>('');
     const { components, setComponents, saveLesson, isSaving } = useSaveLesson({
         lessonId,
         courseVersion,
@@ -421,7 +423,7 @@ export default function EditLesson({ lessonId }: EditLessonProps) {
         <div className="flex flex-col gap-4 px-15">
             <Breadcrumbs items={breadcrumbItems} />
             <EditHeader
-                title={editLessonsTranslations('editLessonTitle')}
+                title={`${editLessonsTranslations('editLessonTitle')}: ${lessonTitle}`}
                 onPreview={() => {
                     setIsPreviewing((prev) => !prev);
                 }}

@@ -8,7 +8,7 @@
 import { viewModels, fileMetadata } from '@maany_shr/e-class-models';
 import { USERNAME_REGEX } from '@dream-aim-deliver/e-class-cms-rest';
 import { trpc } from '../trpc/cms-client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
 	DefaultLoading,
 	DefaultError,
@@ -102,8 +102,10 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 	const professionalProfile = professionalProfileViewModel?.mode === 'default' ? professionalProfileViewModel.data.profile : null;
 
 	// Transform avatarImage to TFileMetadataImage if it exists
-	const initialProfilePicture: fileMetadata.TFileMetadataImage | null = personalProfile?.avatarImage
-		? {
+	// Use useMemo to prevent recreating the object on every render
+	const initialProfilePicture = useMemo<fileMetadata.TFileMetadataImage | null>(() => {
+		if (!personalProfile?.avatarImage) return null;
+		return {
 			id: personalProfile.avatarImage.id,
 			name: personalProfile.avatarImage.name,
 			url: personalProfile.avatarImage.downloadUrl,
@@ -111,20 +113,24 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 			size: personalProfile.avatarImage.size,
 			category: 'image' as const,
 			status: 'available' as const,
-		}
-		: null;
+		};
+	}, [personalProfile?.avatarImage?.id, personalProfile?.avatarImage?.downloadUrl]);
 
 	// Transform curriculumVitae to TFileMetadata (document type) if it exists
-	const initialCurriculumVitae: fileMetadata.TFileMetadata | null = professionalProfile?.curriculumVitae
-		? {
+	// Use useMemo to prevent recreating the object on every render
+	// Explicitly type as document to match the hook's expected type
+	type TFileMetadataDocument = Extract<fileMetadata.TFileMetadata, { category: 'document' }>;
+	const initialCurriculumVitae = useMemo<TFileMetadataDocument | null>(() => {
+		if (!professionalProfile?.curriculumVitae) return null;
+		return {
 			id: professionalProfile.curriculumVitae.id,
 			name: professionalProfile.curriculumVitae.name,
 			url: professionalProfile.curriculumVitae.downloadUrl,
 			size: professionalProfile.curriculumVitae.size,
 			category: 'document' as const,
 			status: 'available' as const,
-		}
-		: null;
+		};
+	}, [professionalProfile?.curriculumVitae?.id, professionalProfile?.curriculumVitae?.downloadUrl]);
 
 	// Save mutations with error handling (must be called unconditionally)
 	const savePersonalMutation = trpc.savePersonalProfile.useMutation({
@@ -374,10 +380,12 @@ export default function Profile({ locale: localeStr, userEmail, username, roles 
 						profilePictureFile={profilePictureUpload.profilePicture}
 						onProfilePictureUploadComplete={profilePictureUpload.handleUploadComplete}
 						onProfilePictureDelete={profilePictureUpload.handleDelete}
+						onProfilePictureDownload={profilePictureUpload.handleDownload}
 						profilePictureUploadProgress={profilePictureUploadProgress}
 						curriculumVitaeFile={curriculumVitaeUpload.curriculumVitae}
 						onCurriculumVitaeUploadComplete={curriculumVitaeUpload.handleUploadComplete as (file: fileMetadata.TFileMetadata) => void}
 						onCurriculumVitaeDelete={curriculumVitaeUpload.handleDelete}
+						onCurriculumVitaeDownload={curriculumVitaeUpload.handleDownload}
 						curriculumVitaeUploadProgress={curriculumVitaeUploadProgress}
 						isSaving={savePersonalMutation.isPending || saveProfessionalMutation.isPending}
 						hasProfessionalProfile={isCoach}

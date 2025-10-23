@@ -5,6 +5,7 @@ import { t } from '../trpc-setup';
 const listLessonComponentsMock: useCaseModels.TListLessonComponentsSuccessResponse['data'] =
 {
     courseVersion: 1,
+    lessonTitle: "JavaScript",
     components: [
         // RichText Component
         {
