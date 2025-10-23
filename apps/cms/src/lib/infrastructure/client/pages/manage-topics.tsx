@@ -377,7 +377,7 @@ export default function ManageTopics({
         {
             label: platform.name,
             onClick: () => {
-                // TODO: Implement navigation to platform
+                router.push(`/platform/${platformSlug}/${platformLocale}`);
             },
         },
         {

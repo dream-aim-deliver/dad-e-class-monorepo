@@ -358,7 +358,7 @@ export default function ManageCategories({
         {
             label: platform.name,
             onClick: () => {
-                // TODO: Implement navigation to platform
+                router.push(`/platform/${platformSlug}/${platformLocale}`);
             },
         },
         {
