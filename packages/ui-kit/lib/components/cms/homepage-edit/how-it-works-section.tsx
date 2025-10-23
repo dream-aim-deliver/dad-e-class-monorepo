@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { CheckBox } from '../../checkbox';
@@ -51,26 +53,45 @@ export default function HowItWorksSection({
         onChange?.(newAccordionData);
     };
 
-    const handleFieldChange = (field: keyof Omit<AccordionType, 'items'>, value: string | boolean) => {
+    const handleFieldChange = (field: string, value: string | boolean) => {
         const newAccordionData = {
             ...accordionData,
             [field]: value
-        };
+        } as AccordionType;
         handleAccordionChange(newAccordionData);
     };
 
-    const handleItemsChange = (items: AccordionBuilderItem[]) => {
-        const newItems = items.map((item, index) => ({
+    // State for builder items
+    const [builderItems, setBuilderItems] = useState<AccordionBuilderItem[]>([]);
+
+    // Sync builderItems with accordionData changes
+    useEffect(() => {
+        const items = (accordionData?.items || []).map(item => ({
+            title: item?.title || '',
+            content: item?.content || '',
+            icon: null, // TODO: Map iconImageUrl to proper file object when backend provides it
+        }));
+        setBuilderItems(items);
+    }, [accordionData]);
+
+    // Update accordionData when builderItems change
+    useEffect(() => {
+        if (builderItems.length === 0 && (!accordionData?.items || accordionData.items.length === 0)) {
+            return; // Skip initial empty state
+        }
+
+        const newItems = builderItems.map((item, index) => ({
             title: item.title,
             content: item.content,
             position: index + 1,
-            iconImageUrl: item.icon?.url || null,
+            iconImageUrl: '', // TODO: Extract from icon object when available
         }));
+
         handleAccordionChange({
             ...accordionData,
             items: newItems
         });
-    };
+    }, [builderItems]);
 
     const handleIconUpload = async (
         metadata: fileMetadata.TFileUploadRequest,
@@ -80,18 +101,11 @@ export default function HowItWorksSection({
     };
 
     const handleIconDownload = (index: number) => {
-        const item = accordionData.items[index];
+        const item = accordionData?.items?.[index];
         if (item?.iconImageUrl) {
             onFileDownload(item.iconImageUrl);
         }
     };
-
-    // Convert schema items to AccordionBuilderItem format
-    const builderItems: AccordionBuilderItem[] = accordionData.items.map(item => ({
-        title: item.title,
-        content: item.content,
-        icon: item.iconImageUrl ? { url: item.iconImageUrl } : { url: null },
-    }));
 
     return (
         <div className="w-full p-6 border border-card-fill rounded-medium bg-card-fill flex flex-col gap-6">
@@ -100,7 +114,7 @@ export default function HowItWorksSection({
             <div className="flex flex-col gap-4">
                 <TextAreaInput
                     label="Title"
-                    value={accordionData.title}
+                    value={accordionData?.title || ''}
                     setValue={(value) => handleFieldChange('title', value)}
                     placeholder="Enter the how it works section title"
                 />
@@ -110,16 +124,16 @@ export default function HowItWorksSection({
                     value="showNumbers"
                     label="Show Numbers"
                     className="text-base-white"
-                    checked={accordionData.showNumbers}
+                    checked={accordionData?.showNumbers ?? true}
                     withText={true}
-                    onChange={() => handleFieldChange('showNumbers', !accordionData.showNumbers)}
+                    onChange={() => handleFieldChange('showNumbers', !(accordionData?.showNumbers ?? true))}
                 />
             </div>
 
             <div className="flex flex-col gap-4">
                 <AccordionBuilder
                     items={builderItems}
-                    setItems={handleItemsChange}
+                    setItems={setBuilderItems}
                     onIconChange={handleIconUpload}
                     onIconDownload={handleIconDownload}
                     uploadProgress={uploadProgress}
