@@ -14,7 +14,7 @@ import { trpc } from '../trpc/cms-client';
 import { useSession } from 'next-auth/react';
 
 import { Button } from '@maany_shr/e-class-ui-kit';
-import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import { useListOffersPagePackagesShortPresenter } from '../hooks/use-list-offers-page-packages-short-presenter';
 import { useListPackagesPresenter } from '../hooks/use-list-packages-presenter';
 import { useGetOffersPageOutlinePresenter } from '../hooks/use-get-offers-page-outline-presenter';
@@ -33,17 +33,10 @@ export default function ManageOffersPage({
 }: ManageOffersPageProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.manageOffersPage');
-    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
-    // Defensive client-side auth check (middleware already enforces admin/superadmin)
-    const sessionDTO = useSession();
-    const session = sessionDTO.data;
-    const isAdmin = session?.user?.roles?.includes('admin') || session?.user?.roles?.includes('superadmin');
 
-    // TRPC queries for page data - using EXACT usecase names from Notion
-    const [offersPageOutlineResponse] = trpc.getOffersPageOutline.useSuspenseQuery({});
-    const [packagesShortResponse] = trpc.listOffersPagePackagesShort.useSuspenseQuery({});
-    const [packagesResponse] = trpc.listPackages.useSuspenseQuery({});
-
+    // All hooks must be called at the top level before any conditional returns
+    const [_uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+    const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [offersPageViewModel, setOffersPageViewModel] = useState<
         viewModels.TOffersPageOutlineViewModel | undefined
     >(undefined);
@@ -54,50 +47,26 @@ export default function ManageOffersPage({
         viewModels.TListOffersPagePackagesShortViewModel | undefined
     >(undefined);
 
+    // Defensive client-side auth check (middleware already enforces admin/superadmin)
+    const sessionDTO = useSession();
+    const session = sessionDTO.data;
+    const isAdmin = session?.user?.roles?.includes('admin') || session?.user?.roles?.includes('superadmin');
+
+    // TRPC queries for page data - using EXACT usecase names from Notion
+    const [offersPageOutlineResponse] = trpc.getOffersPageOutline.useSuspenseQuery({});
+    const [packagesShortResponse] = trpc.listOffersPagePackagesShort.useSuspenseQuery({});
+    const [packagesResponse] = trpc.listPackages.useSuspenseQuery({});
+
     const { presenter: manageOffersPagePresenter } = useGetOffersPageOutlinePresenter(setOffersPageViewModel);
     const { presenter: packagesPresenter } = useListPackagesPresenter(setPackagesViewModel);
     const { presenter: packagesShortPresenter } = useListOffersPagePackagesShortPresenter(setPackagesShortViewModel);
 
-    // @ts-ignore
-    packagesPresenter.present(packagesResponse, packagesViewModel);
-    // @ts-ignore
-    manageOffersPagePresenter.present(offersPageOutlineResponse, offersPageViewModel);
-    // @ts-ignore
-    packagesShortPresenter.present(packagesShortResponse, packagesShortViewModel);
-
     const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
-    const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
-    if (offersPageViewModel?.mode === 'kaboom' || packagesViewModel?.mode === 'kaboom' || packagesShortViewModel?.mode === 'kaboom') {
-        return (
-            <DefaultError
-                locale={locale}
-                title={t('error.title')}
-                description={t('error.description')}
-            />
-        );
-    }
-    // Defensive auth check on client side
-    if (!session || !isAdmin) {
-        return (
-            <DefaultError
-                locale={locale}
-                title={t('error.unauthorized.title')}
-                description={t('error.unauthorized.description')}
-            />
-        );
-    }
-
-    // Loading state (defensive check)
-    if (!offersPageOutlineResponse || !packagesShortResponse) {
-        return <DefaultLoading locale={locale} variant="minimal" />;
-    }
 
     // Extract data from view models
     const offersPageData = offersPageViewModel?.mode === 'default' ? offersPageViewModel.data : null;
     const packagesData = packagesViewModel?.mode === 'default' ? packagesViewModel.data : null;
     const packagesShortData = packagesShortViewModel?.mode === 'default' ? packagesShortViewModel.data : null;
-
 
     type CarouselItem = {
         title: string;
@@ -132,10 +101,6 @@ export default function ManageOffersPage({
 
     const formState = useFormState(offersPageData && packagesData && packagesShortData ? initialFormData : null, { enableReloadProtection: true });
 
-    // Derive selected packages from form state
-    // (moved below the loading guard to avoid accessing null formState.value)
-
-
     const saveOffersPageMutation = trpc.saveOffersPage.useMutation({
         onMutate: () => {
             setSaveStatus('idle');
@@ -150,6 +115,42 @@ export default function ManageOffersPage({
             setSaveStatus('error');
         },
     });
+
+    // @ts-ignore
+    packagesPresenter.present(packagesResponse, packagesViewModel);
+    // @ts-ignore
+    manageOffersPagePresenter.present(offersPageOutlineResponse, offersPageViewModel);
+    // @ts-ignore
+    packagesShortPresenter.present(packagesShortResponse, packagesShortViewModel);
+
+    // Now handle conditional rendering after all hooks are called
+    if (offersPageViewModel?.mode === 'kaboom' || packagesViewModel?.mode === 'kaboom' || packagesShortViewModel?.mode === 'kaboom') {
+        return (
+            <DefaultError
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
+    }
+    // Defensive auth check on client side
+    if (!session || !isAdmin) {
+        return (
+            <DefaultError
+                locale={locale}
+                title={t('error.unauthorized.title')}
+                description={t('error.unauthorized.description')}
+            />
+        );
+    }
+
+    // Loading state (defensive check)
+    if (!offersPageOutlineResponse || !packagesShortResponse) {
+        return <DefaultLoading locale={locale} variant="minimal" />;
+    }
+
+    // Derive selected packages from form state
+    // (moved below the loading guard to avoid accessing null formState.value)
 
 
     const handleSave = async () => {

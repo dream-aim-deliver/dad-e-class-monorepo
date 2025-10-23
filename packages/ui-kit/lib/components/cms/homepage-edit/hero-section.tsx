@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
@@ -35,21 +37,22 @@ export default function HeroSection({
     uploadProgress,
     videoUploadProgress,
 }: HeroSectionProps) {
-    const [bannerData, setBannerData] = useState<BannerType>({
-        title: '',
-        description: '',
-        videoId: null,
-        thumbnailUrl: null,
-        ...initialValue
-    });
+    const [bannerData, setBannerData] = useState<BannerType>(
+        initialValue || {
+            title: '',
+            description: '',
+            videoId: '',
+            thumbnailUrl: '',
+        }
+    );
     const [uploadedThumbnail, setUploadedThumbnail] = useState<fileMetadata.TFileMetadata | null>(null);
     const [uploadedVideo, setUploadedVideo] = useState<fileMetadata.TFileMetadataVideo | null>(null);
 
-    const handleFieldChange = (field: keyof BannerType, value: string | null) => {
+    const handleFieldChange = (field: string, value: string) => {
         const newBannerData = {
             ...bannerData,
             [field]: value
-        };
+        } as BannerType;
         setBannerData(newBannerData);
         onChange?.(newBannerData);
     };
@@ -63,12 +66,12 @@ export default function HeroSection({
 
     const handleThumbnailUploadComplete = (file: fileMetadata.TFileMetadata) => {
         setUploadedThumbnail(file);
-        handleFieldChange('thumbnailUrl', file.url);
+        handleFieldChange('thumbnailUrl', file.url as string);
     };
 
     const handleThumbnailDelete = (id: string) => {
         setUploadedThumbnail(null);
-        handleFieldChange('thumbnailUrl', null);
+        handleFieldChange('thumbnailUrl', '');
         onFileDelete(id);
     };
 
@@ -83,12 +86,12 @@ export default function HeroSection({
         const videoFile = file as fileMetadata.TFileMetadataVideo;
         setUploadedVideo(videoFile);
         // Store the video playback ID
-        handleFieldChange('videoId', videoFile.videoId || null);
+        handleFieldChange('videoId', (videoFile.videoId as string) || '');
     };
 
     const handleVideoDelete = (id: string) => {
         setUploadedVideo(null);
-        handleFieldChange('videoId', null);
+        handleFieldChange('videoId', '');
         onFileDelete(id);
     };
 
@@ -104,13 +107,13 @@ export default function HeroSection({
             <div className="flex flex-col gap-4">
                 <TextAreaInput
                     label="Title"
-                    value={bannerData.title}
+                    value={bannerData?.title || ''}
                     setValue={(value) => handleFieldChange('title', value)}
                     placeholder="Enter the title"
                 />
                 <TextAreaInput
                     label="Description"
-                    value={bannerData.description}
+                    value={bannerData?.description || ''}
                     setValue={(value) => handleFieldChange('description', value)}
                     placeholder="Enter the description"
                 />

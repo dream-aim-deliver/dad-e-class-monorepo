@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
@@ -28,14 +30,15 @@ export default function CoachingDemandSection({
     onFileDownload,
     uploadProgress,
 }: CoachingDemandSectionProps) {
-    const [coachingData, setCoachingData] = useState<CoachingOnDemandType>({
-        title: '',
-        description: '',
-        desktopImageUrl: null,
-        tabletImageUrl: null,
-        mobileImageUrl: null,
-        ...initialValue
-    });
+    const [coachingData, setCoachingData] = useState<CoachingOnDemandType>(
+        initialValue || {
+            title: '',
+            description: '',
+            desktopImageUrl: '',
+            tabletImageUrl: '',
+            mobileImageUrl: '',
+        }
+    );
 
     const [uploadedFiles, setUploadedFiles] = useState<{
         desktop?: fileMetadata.TFileMetadata;
@@ -48,11 +51,11 @@ export default function CoachingDemandSection({
         onChange?.(newCoachingData);
     };
 
-    const handleFieldChange = (field: keyof CoachingOnDemandType, value: string | null) => {
+    const handleFieldChange = (field: string, value: string) => {
         const newCoachingData = {
             ...coachingData,
             [field]: value
-        };
+        } as CoachingOnDemandType;
         handleCoachingChange(newCoachingData);
     };
 
@@ -76,7 +79,7 @@ export default function CoachingDemandSection({
         }));
 
         const urlField = `${deviceType}ImageUrl` as keyof CoachingOnDemandType;
-        handleFieldChange(urlField, file.url);
+        handleFieldChange(urlField, file.url as string);
     };
 
     const handleFileDelete = (deviceType: 'desktop' | 'tablet' | 'mobile', id: string) => {
@@ -87,7 +90,7 @@ export default function CoachingDemandSection({
         });
 
         const urlField = `${deviceType}ImageUrl` as keyof CoachingOnDemandType;
-        handleFieldChange(urlField, null);
+        handleFieldChange(urlField, '');
         onFileDelete(id);
     };
 
@@ -103,14 +106,14 @@ export default function CoachingDemandSection({
                 <div className="flex flex-col gap-4">
                     <TextAreaInput
                         label="Title"
-                        value={coachingData.title}
+                        value={coachingData?.title || ''}
                         setValue={(value) => handleFieldChange('title', value)}
                         placeholder="Enter the coaching section title"
                     />
 
                     <TextAreaInput
                         label="Description"
-                        value={coachingData.description}
+                        value={coachingData?.description || ''}
                         setValue={(value) => handleFieldChange('description', value)}
                         placeholder="Enter the coaching section description"
                     />
