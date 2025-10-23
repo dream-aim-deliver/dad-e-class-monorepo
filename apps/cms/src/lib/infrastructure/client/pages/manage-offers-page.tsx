@@ -58,16 +58,12 @@ export default function ManageOffersPage({
     const { presenter: packagesPresenter } = useListPackagesPresenter(setPackagesViewModel);
     const { presenter: packagesShortPresenter } = useListOffersPagePackagesShortPresenter(setPackagesShortViewModel);
 
-
-    if (offersPageOutlineResponse.success && (offersPageOutlineResponse.data as any)?.success) {
-        manageOffersPagePresenter.present((offersPageOutlineResponse.data as any), offersPageViewModel);
-    }
-    if (packagesResponse.success && (packagesResponse.data as any)?.success) {
-        packagesPresenter.present((packagesResponse.data as any), packagesViewModel);
-    }
-    if (packagesShortResponse.success && (packagesShortResponse.data as any)?.success) {
-        packagesShortPresenter.present((packagesShortResponse.data as any), packagesShortViewModel);
-    }
+    // @ts-ignore
+    packagesPresenter.present(packagesResponse.data, packagesViewModel);
+    // @ts-ignore
+    manageOffersPagePresenter.present(offersPageOutlineResponse.data, offersPageViewModel);
+    // @ts-ignore
+    packagesShortPresenter.present(packagesShortResponse.data, packagesShortViewModel);
 
     const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
     const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -102,13 +98,6 @@ export default function ManageOffersPage({
     const packagesShortData = packagesShortViewModel?.mode === 'default' ? packagesShortViewModel.data : null;
 
 
-    const allPackages = (packagesData?.packages || []).map(pkg => ({ ...pkg, id: String(pkg.id) }));
-    const linkedPackageIds = (packagesShortData?.packageIds || []).map(String);
-    const initialPackageIds = allPackages.filter((pkg) =>
-        pkg.id != null && linkedPackageIds.includes(String(pkg.id))
-    ).map(pkg => Number(pkg.id));
-
-
     type CarouselItem = {
         title: string;
         description: string;
@@ -124,6 +113,12 @@ export default function ManageOffersPage({
         carousel: CarouselItem[];
     };
 
+    const allPackages = (packagesData?.packages || []).map(pkg => ({ ...pkg, id: String(pkg.id) }));
+    const linkedPackageIds = (packagesShortData?.packageIds || []).map(String);
+    const initialPackageIds = allPackages.filter((pkg) =>
+        pkg.id != null && linkedPackageIds.includes(String(pkg.id))
+    ).map(pkg => Number(pkg.id));
+
     const initialFormData: OffersPageFormData = {
         title: offersPageData?.title || '',
         description: offersPageData?.description || '',
@@ -134,7 +129,7 @@ export default function ManageOffersPage({
         })),
     };
 
-    const formState = useFormState(initialFormData, { enableReloadProtection: true });
+    const formState = useFormState(offersPageData && packagesData && packagesShortData ? initialFormData : null, { enableReloadProtection: true });
 
     // Derive selected packages from form state
     const selectedPackages = allPackages.filter(pkg => formState.value!.packageIds.includes(Number(pkg.id)));

@@ -51,9 +51,9 @@ export default function ManageCoachingPage({
     setCoachingPageViewModel
   );
 
-  if (coachingPageResponse.success && (coachingPageResponse.data as any)?.success) {
-    coachingPagePresenter.present((coachingPageResponse.data as any), coachingPageViewModel);
-  }
+   // @ts-ignore
+    coachingPagePresenter.present(coachingPageResponse, coachingPageViewModel);
+  
 
   if (coachingPageViewModel?.mode === 'kaboom') {
     return (
@@ -84,17 +84,6 @@ export default function ManageCoachingPage({
   // Extract data from view model
   const coachingPageData = coachingPageViewModel?.mode === 'default' ? coachingPageViewModel.data : null;
 
-  // Banner data - note: API GET returns imageUrl (string), but API POST expects imageId (number)
-  // We'll store imageUrl for display but track imageId separately for saving
-  const bannerData = (coachingPageData as any)?.banner;
-  const initialBannerData = {
-    title: bannerData?.title || '',
-    description: bannerData?.description || '',
-    imageUrl: bannerData?.imageUrl || null,
-    buttonText: bannerData?.buttonText || '',
-    buttonUrl: bannerData?.buttonLink || '',
-  };
-
   // Track the uploaded file ID separately for the save mutation
   const [bannerImageId, setBannerImageId] = useState<number | null>(null);
 
@@ -110,13 +99,22 @@ export default function ManageCoachingPage({
     };
   };
 
+  // Banner data - note: API GET returns imageUrl (string), but API POST expects imageId (number)
+  // We'll store imageUrl for display but track imageId separately for saving
+  const bannerData = (coachingPageData as any)?.banner;
   const initialFormData: CoachingPageFormData = {
     title: coachingPageData?.title || '',
     description: coachingPageData?.description || '',
-    banner: initialBannerData,
+    banner: {
+      title: bannerData?.title || '',
+      description: bannerData?.description || '',
+      imageUrl: bannerData?.imageUrl || null,
+      buttonText: bannerData?.buttonText || '',
+      buttonUrl: bannerData?.buttonLink || '',
+    },
   };
 
-  const formState = useFormState(initialFormData, { enableReloadProtection: true });
+  const formState = useFormState(coachingPageData ? initialFormData : null, { enableReloadProtection: true });
 
   const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
 
