@@ -1,17 +1,13 @@
 import { fileMetadata } from '@maany_shr/e-class-models';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { trpc } from '../../../../trpc/cms-client';
 import {
 	AbortError,
 	calculateMd5,
 	uploadToS3,
+	downloadFile,
 } from '@maany_shr/e-class-ui-kit';
-
-interface UseCurriculumVitaeUploadProps {
-	userId: number;
-	onProgressUpdate?: (progress: number) => void;
-}
 
 // Type for document file metadata (inferred from discriminated union)
 type TFileMetadataDocument = Extract<fileMetadata.TFileMetadata, { category: 'document' }>;
@@ -34,6 +30,14 @@ export function useCurriculumVitaeUpload({
 	const [uploadError, setUploadError] = useState<string | undefined>(
 		undefined,
 	);
+
+	// Sync state when initialDocument changes - use ID as stable dependency
+	useEffect(() => {
+		// Only update if the IDs are different (avoids infinite loops from object recreation)
+		if (initialDocument?.id !== curriculumVitae?.id) {
+			setCurriculumVitae(initialDocument);
+		}
+	}, [initialDocument?.id]); // Only depend on ID, not the whole object
 
 	const uploadDocument = async (
 		uploadRequest: fileMetadata.TFileUploadRequest,
@@ -125,11 +129,17 @@ export function useCurriculumVitaeUpload({
 		}
 	};
 
+	const handleDownload = async (id: string) => {
+		if (curriculumVitae?.id !== id) return;
+		downloadFile(curriculumVitae.url, curriculumVitae.name);
+	};
+
 	return {
 		curriculumVitae,
 		uploadError,
 		handleFileChange,
 		handleUploadComplete,
 		handleDelete,
+		handleDownload,
 	};
 }

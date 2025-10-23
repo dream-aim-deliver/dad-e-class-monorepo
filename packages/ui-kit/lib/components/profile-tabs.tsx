@@ -38,10 +38,12 @@ export interface ProfileTabsProps extends isLocalAware {
   profilePictureFile?: fileMetadata.TFileMetadataImage | null;
   onProfilePictureUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
   onProfilePictureDelete: (id: string) => void;
+  onProfilePictureDownload?: (id: string) => void;
   profilePictureUploadProgress?: number;
   curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
   onCurriculumVitaeUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
   onCurriculumVitaeDelete: (id: string) => void;
+  onCurriculumVitaeDownload?: (id: string) => void;
   curriculumVitaeUploadProgress?: number;
   isSaving?: boolean;
   hasProfessionalProfile?: boolean;
@@ -59,10 +61,12 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   profilePictureFile,
   onProfilePictureUploadComplete,
   onProfilePictureDelete,
+  onProfilePictureDownload,
   profilePictureUploadProgress,
   curriculumVitaeFile,
   onCurriculumVitaeUploadComplete,
   onCurriculumVitaeDelete,
+  onCurriculumVitaeDownload,
   curriculumVitaeUploadProgress,
   locale,
   isSaving = false,
@@ -143,6 +147,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           profilePictureFile={profilePictureFile}
           onUploadComplete={onProfilePictureUploadComplete}
           onFileDelete={onProfilePictureDelete}
+          onFileDownload={onProfilePictureDownload}
           availableLanguages={availableLanguages}
           locale={locale as TLocale}
           uploadProgress={profilePictureUploadProgress}
@@ -177,6 +182,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             profilePictureFile={profilePictureFile}
             onUploadComplete={onProfilePictureUploadComplete}
             onFileDelete={onProfilePictureDelete}
+            onFileDownload={onProfilePictureDownload}
             availableLanguages={availableLanguages}
             locale={locale as TLocale}
             uploadProgress={profilePictureUploadProgress}
@@ -194,6 +200,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             curriculumVitaeFile={curriculumVitaeFile}
             onUploadComplete={onCurriculumVitaeUploadComplete}
             onFileDelete={onCurriculumVitaeDelete}
+            onFileDownload={onCurriculumVitaeDownload}
             locale={locale as TLocale}
             uploadProgress={curriculumVitaeUploadProgress}
             isSaving={isSaving}

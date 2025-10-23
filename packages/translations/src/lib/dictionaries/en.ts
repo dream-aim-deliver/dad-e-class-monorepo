@@ -273,7 +273,7 @@ export const EN: TDictionary = {
       phoneNumberPlaceholder: '+44 1234567890',
       password: 'Password',
       changePassword: 'Change Password',
-      date: 'Date',
+      date: 'Date of birth',
       checkboxtext1: 'I am acting on behalf of a company',
       companyName: 'Company Name',
       companyNamePlaceholder: 'e.g. Acme',
@@ -760,6 +760,7 @@ export const EN: TDictionary = {
       paste: 'paste',
       titlePlaceholder: 'E.g., My new video assignment',
       urlPlaceholder: 'E.g., https://website.com/this/is/the/url',
+      recommendedSize: 'Recommended icon size: squares of 24 x 24 pixels.',
     },
     courseBuilder: {
       addLinkText: "Add Link",
@@ -1122,7 +1123,8 @@ export const EN: TDictionary = {
       uploadIconText: 'Upload Icon',
       moveUpText: 'Move Up',
       moveDownText: 'Move Down',
-      deleteText: 'Delete'
+      deleteText: 'Delete',
+      recommendedSize: 'Recommended icon size: squares of 24 x 24 pixels.',
     },
     courseMaterialsAccordion: {
       expand: 'Expand',

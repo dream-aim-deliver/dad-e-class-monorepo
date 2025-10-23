@@ -776,7 +776,8 @@ export const DictionarySchema = z.object({
       discardText: z.string(),
       titleRequired: z.string(),
       urlRequired: z.string(),
-      paste: z.string()
+      paste: z.string(),
+      recommendedSize: z.string(),
     }),
     studentCard: z.object({
       coachingSessionsLeftText: z.string(),
@@ -1113,6 +1114,7 @@ export const DictionarySchema = z.object({
       moveUpText: z.string(),
       moveDownText: z.string(),
       deleteText: z.string(),
+      recommendedSize: z.string(),
     }),
     courseMaterialsAccordion: z.object({
       expand: z.string(),

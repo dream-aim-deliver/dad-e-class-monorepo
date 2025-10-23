@@ -28,6 +28,7 @@ interface ProfessionalInfoProps extends isLocalAware {
   curriculumVitaeFile?: fileMetadata.TFileMetadata | null;
   onUploadComplete?: (file: fileMetadata.TFileMetadata) => void;
   onFileDelete: (id: string) => void;
+  onFileDownload?: (id: string) => void;
   uploadProgress?: number;
   isSaving?: boolean;
 }
@@ -79,6 +80,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
   curriculumVitaeFile,
   onUploadComplete,
   onFileDelete,
+  onFileDownload,
   locale,
   uploadProgress,
   isSaving = false,
@@ -208,9 +210,7 @@ export const ProfessionalInfo: React.FC<ProfessionalInfoProps> = ({
             onFilesChange={handleUploadedFiles}
             onUploadComplete={handleUploadComplete}
             onDelete={handleFileDelete}
-            onDownload={() => {
-              // Handle download logic here
-            }}
+            onDownload={(id) => onFileDownload?.(id)}
             locale={locale}
             uploadProgress={uploadProgress}
           />
