@@ -6,7 +6,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
-import { trpc } from '../trpc/cms-client';
+import { trpc } from '../../../trpc/cms-client';
 
 export interface HomePageVideoUploadState {
     video: fileMetadata.TFileMetadataVideo | null;
@@ -27,7 +27,7 @@ export interface HomePageVideoUploadState {
 export const useHomePageVideoUpload = (
     onProgressUpdate?: (progress: number) => void,
 ): HomePageVideoUploadState => {
-    const uploadMutation = trpc.uploadHomePageVideo.useMutation();
+    const uploadMutation = trpc.requestFileUpload.useMutation();
     const verifyMutation = trpc.getDownloadUrl.useMutation();
 
     const [video, setVideo] = useState<fileMetadata.TFileMetadataVideo | null>(null);
@@ -48,15 +48,31 @@ export const useHomePageVideoUpload = (
 
         // Request upload credentials for homepage video
         const uploadResult = await uploadMutation.mutateAsync({
-            name: uploadRequest.name,
-            checksum,
-            mimeType: uploadRequest.file.type,
-            size: uploadRequest.file.size,
+            upload: {
+                name: uploadRequest.name,
+                checksum,
+                mimeType: uploadRequest.file.type,
+                size: uploadRequest.file.size,
+                uploadType: "upload_home_page_hero_video" as any, // Homepage hero video upload type
+            }
         });
 
         if (!uploadResult.success) {
             throw new Error('Failed to get video upload credentials');
         }
+
+        // Narrow uploadResult.data to a typed variable so TypeScript knows the shape
+        const data = uploadResult.data as {
+            storageUrl: string;
+            file: {
+                id: string;
+                name: string;
+                objectName: string;
+                size: number;
+                category: string;
+            };
+            formFields: Record<string, string>;
+        };
 
         if (abortSignal?.aborted) {
             throw new AbortError();
@@ -66,9 +82,9 @@ export const useHomePageVideoUpload = (
         await uploadToS3({
             file: uploadRequest.file,
             checksum,
-            storageUrl: uploadResult.data.storageUrl,
-            objectName: uploadResult.data.file.objectName,
-            formFields: uploadResult.data.formFields,
+            storageUrl: data.storageUrl,
+            objectName: data.file.objectName,
+            formFields: data.formFields,
             abortSignal,
             onProgress: (uploadProgress) => {
                 onProgressUpdate?.(30 + Math.round(uploadProgress * 0.7));
@@ -76,20 +92,23 @@ export const useHomePageVideoUpload = (
         });
 
         const verifyResult = await verifyMutation.mutateAsync({
-            fileId: uploadResult.data.file.id,
+            fileId: data.file.id,
         });
 
         if (!verifyResult.success) {
             throw new Error('Failed to verify video upload');
         }
 
+        // Type assertion for verify result
+        const verifyData = verifyResult.data as { downloadUrl: string };
+
         return {
-            id: uploadResult.data.file.id,
-            name: uploadResult.data.file.name,
-            url: verifyResult.data.downloadUrl,
-            thumbnailUrl: verifyResult.data.downloadUrl,
-            size: uploadResult.data.file.size,
-            category: uploadResult.data.file.category,
+            id: data.file.id,
+            name: data.file.name,
+            url: verifyData.downloadUrl,
+            thumbnailUrl: verifyData.downloadUrl,
+            size: data.file.size,
+            category: data.file.category,
         } as fileMetadata.TFileMetadata;
     };
 

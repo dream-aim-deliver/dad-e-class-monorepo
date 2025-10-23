@@ -15,7 +15,7 @@ import {
 	DefaultNotFound,
 	Button,
 	Tabs,
-	Banner,
+	Banner
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -24,8 +24,9 @@ import { useGetHomePagePresenter } from '../hooks/use-get-home-page-presenter';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
 import { HeroSection, CarouselSection, CoachingDemandSection, HowItWorksSection } from '@maany_shr/e-class-ui-kit';
-import { useHomePageFileUpload } from '../hooks/use-homepage-file-upload';
-import { useHomePageVideoUpload } from '../hooks/use-homepage-video-upload';
+import { useHomePageFileUpload } from './common/hooks/use-homepage-file-upload';
+import { useHomePageVideoUpload } from './common/hooks/use-homepage-video-upload';
+import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
 
 
 /**
@@ -59,7 +60,8 @@ export default function ManageHomepage() {
 	const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
 	const [videoUploadProgress, setVideoUploadProgress] = useState<number | undefined>(undefined);
 
-	const [currentHomePageData, setCurrentHomePageData] = useState<viewModels.TGetHomePageSuccess | null>(null);
+
+	const formState = useFormState<viewModels.TGetHomePageSuccess | undefined>(undefined, { enableReloadProtection: true });
 
 	const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
 	const [saveMessage, setSaveMessage] = useState<string | null>(null);
@@ -70,6 +72,7 @@ export default function ManageHomepage() {
 			if (data.success) {
 				setSaveStatus('success');
 				setSaveMessage('Homepage saved successfully!');
+				formState.markAsSaved();
 				// Optionally refetch homepage data
 				refetchHomePage();
 			} else {
@@ -87,10 +90,10 @@ export default function ManageHomepage() {
 
 
 	useEffect(() => {
-		if (homePageViewModel?.mode === 'default' && !currentHomePageData) {
-			setCurrentHomePageData(homePageViewModel.data);
+		if (homePageViewModel?.mode === 'default' && !formState.value) {
+			formState.setValue(homePageViewModel.data);
 		}
-	}, [homePageViewModel, currentHomePageData]);
+	}, [homePageViewModel, formState]);
 
 
 	// Loading state
@@ -100,6 +103,7 @@ export default function ManageHomepage() {
 
 	// Error handling - only kaboom errors should prevent rendering
 	// Note: 'not-found' is acceptable since save mutation supports upsert
+
 	if (homePageViewModel.mode === 'kaboom') {
 		return (
 			<DefaultError
@@ -141,45 +145,33 @@ export default function ManageHomepage() {
 
 	// Single state for all homepage data
 
-	const editableHomePageData = currentHomePageData ?? homePageData;
+	const editableHomePageData: viewModels.TGetHomePageSuccess = formState.value ?? homePageData;
 
 	const handleBannerChange = (banner: typeof homePageData.banner) => {
-		setCurrentHomePageData(prev => {
-			const base = prev ?? homePageData;
-			return {
-				...base,
-				banner,
-			};
+		formState.setValue({
+			...editableHomePageData,
+			banner,
 		});
 	};
 
 	const handleCarouselChange = (carousel: typeof homePageData.carousel) => {
-		setCurrentHomePageData(prev => {
-			const base = prev ?? homePageData;
-			return {
-				...base,
-				carousel,
-			};
+		formState.setValue({
+			...editableHomePageData,
+			carousel,
 		});
 	};
 
 	const handleCoachingDemandChange = (coachingOnDemand: typeof homePageData.coachingOnDemand) => {
-		setCurrentHomePageData(prev => {
-			const base = prev ?? homePageData;
-			return {
-				...base,
-				coachingOnDemand,
-			};
+		formState.setValue({
+			...editableHomePageData,
+			coachingOnDemand,
 		});
 	};
 
 	const handleAccordionChange = (accordion: typeof homePageData.accordion) => {
-		setCurrentHomePageData(prev => {
-			const base = prev ?? homePageData;
-			return {
-				...base,
-				accordion,
-			};
+		formState.setValue({
+			...editableHomePageData,
+			accordion,
 		});
 	};
 
@@ -265,12 +257,13 @@ export default function ManageHomepage() {
 
 					<Tabs.Content value="carousel">
 						<CarouselSection
-							initialValue={editableHomePageData.carousel}
+							initialValue={editableHomePageData.carousel.map(item => ({ ...item, badge: item.badge ?? undefined }))}
 							onChange={handleCarouselChange}
 							onFileUpload={handleFileUpload}
 							onFileDelete={handleFileDelete}
 							onFileDownload={handleFileDownload}
 							uploadProgress={uploadProgress}
+							uploadType='upload_home_page_carousel_item_image'
 						/>
 					</Tabs.Content>
 

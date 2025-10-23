@@ -101,7 +101,7 @@ export default function HeroSection({
             <h2>
                 Hero section
             </h2>
-            <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
                 <TextAreaInput
                     label="Title"
                     value={bannerData.title}
@@ -152,7 +152,7 @@ export default function HeroSection({
                         isDeletionAllowed
                     />
                 </div>
-            </form>
+            </div>
         </div>
     )
 }

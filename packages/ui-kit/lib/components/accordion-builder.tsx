@@ -165,6 +165,8 @@ function AccordionBuilderItem({
                 {/* Action Buttons */}
                 <ContentControlButtons
                     onDelete={() => onItemDelete()}
+                    onMoveUp={() => onItemUp()}
+                    onMoveDown={() => onItemDown()}
                     isFirst={orderNo === 1}
                     isLast={orderNo === totalItems}
                 />
@@ -311,14 +313,8 @@ export function AccordionBuilder({
                             totalItems={items.length}
                             item={item}
                             setItem={(newItem) => {
-                                setItems((prevItems) =>
-                                    prevItems.map((prevItem, i) => {
-                                        if (i === index) {
-                                            return newItem;
-                                        }
-                                        return prevItem;
-                                    }),
-                                );
+                                const newItems = items.map((prev, i) => i === index ? newItem : prev);
+                                setItems(newItems);
                             }}
                             onItemDelete={() => handleDeleteClick(index)}
                             onItemUp={() => handleUpClick(index)}

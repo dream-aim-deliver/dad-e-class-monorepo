@@ -37,9 +37,9 @@ export default function PageTitleSection({
     return (
         <div className="w-full p-6 border border-card-fill rounded-medium bg-card-fill flex flex-col gap-6">
             <h3>
-                Page Title 
+                Page Title
             </h3>
-            <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
                 <TextInput
                     label="Title"
                     inputField={{
@@ -54,7 +54,7 @@ export default function PageTitleSection({
                     setValue={(value) => handleFieldChange('description', value)}
                     placeholder="Enter the page description"
                 />
-            </form>
+            </div>
         </div>
     )
 }

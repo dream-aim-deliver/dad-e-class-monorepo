@@ -3,7 +3,7 @@ import { Dropdown } from '../../dropdown';
 
 type PackageType = {
     id: string;
-    name: string;
+    title: string;
 };
 
 interface PackageSectionProps {
@@ -36,14 +36,14 @@ export default function PackageSection({
     };
 
     const options = packages.map(pkg => ({
-        label: pkg.name,
+        label: pkg.title,
         value: pkg.id,
     }));
 
     return (
         <div className="w-full p-6 border border-card-fill rounded-medium bg-card-fill flex flex-col gap-6">
             <h3>Packages Section</h3>
-            <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2 w-full">
                     <label className="text-sm text-text-secondary">Select Packages</label>
                     <Dropdown
@@ -54,7 +54,7 @@ export default function PackageSection({
                         text={{ multiText: "Select packages to link" }}
                     />
                 </div>
-            </form>
+            </div>
         </div>
     );
 }
