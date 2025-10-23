@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { TextIcon } from 'lucide-react';

@@ -31,7 +31,14 @@ export default function ManageCoachingPage({
 }: ManageCoachingPageProps) {
   const locale = useLocale() as TLocale;
   const t = useTranslations('pages.manageCoachingPage');
+
+  // All hooks must be called at the top level before any conditional returns
   const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+  const [bannerImageId, setBannerImageId] = useState<number | null>(null);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [coachingPageViewModel, setCoachingPageViewModel] = useState<
+    viewModels.TCoachingPageViewModel | undefined
+  >(undefined);
 
   // Defensive client-side auth check (middleware already enforces admin/superadmin)
   const sessionDTO = useSession();
@@ -43,18 +50,60 @@ export default function ManageCoachingPage({
   // TRPC query for page data - using EXACT usecase name from Notion
   const [coachingPageResponse , { refetch: refetchCoachingPage }] = trpc.getCoachingPage.useSuspenseQuery({});
 
-  const [coachingPageViewModel, setCoachingPageViewModel] = useState<
-    viewModels.TCoachingPageViewModel | undefined
-  >(undefined);
-
   const { presenter: coachingPagePresenter } = useGetCoachingPagePresenter(
     setCoachingPageViewModel
   );
 
+  // Extract data from view model
+  const coachingPageData = coachingPageViewModel?.mode === 'default' ? coachingPageViewModel.data : null;
+
+  type CoachingPageFormData = {
+    title: string;
+    description: string;
+    banner: {
+      title: string;
+      description: string;
+      imageUrl: string | null;
+      buttonText: string;
+      buttonUrl: string;
+    };
+  };
+
+  // Banner data - note: API GET returns imageUrl (string), but API POST expects imageId (number)
+  // We'll store imageUrl for display but track imageId separately for saving
+  const bannerData = coachingPageData?.banner;
+  const initialFormData: CoachingPageFormData = {
+    title: coachingPageData?.title || '',
+    description: coachingPageData?.description || '',
+    banner: {
+      title: bannerData?.title || '',
+      description: bannerData?.description || '',
+      imageUrl: bannerData?.imageUrl || null,
+      buttonText: bannerData?.buttonText || '',
+      buttonUrl: bannerData?.buttonLink || '',
+    },
+  };
+
+  const formState = useFormState(coachingPageData ? initialFormData : null, { enableReloadProtection: true });
+  const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
+
+  const saveCoachingPageMutation = trpc.saveCoachingPage.useMutation({
+    onSuccess: (data) => {
+      if (data.success) {
+        formState.markAsSaved();
+        setSaveStatus('success');
+        refetchCoachingPage();
+      }
+    },
+    onError: (error) => {
+      setSaveStatus('error');
+    },
+  });
+
    // @ts-ignore
     coachingPagePresenter.present(coachingPageResponse, coachingPageViewModel);
-  
 
+  // Now handle conditional rendering after all hooks are called
   if (coachingPageViewModel?.mode === 'kaboom') {
     return (
       <DefaultError
@@ -80,59 +129,6 @@ export default function ManageCoachingPage({
   if (!coachingPageResponse) {
     return <DefaultLoading locale={locale} variant="minimal" />;
   }
-
-  // Extract data from view model
-  const coachingPageData = coachingPageViewModel?.mode === 'default' ? coachingPageViewModel.data : null;
-
-  // Track the uploaded file ID separately for the save mutation
-  const [bannerImageId, setBannerImageId] = useState<number | null>(null);
-
-  type CoachingPageFormData = {
-    title: string;
-    description: string;
-    banner: {
-      title: string;
-      description: string;
-      imageUrl: string | null;
-      buttonText: string;
-      buttonUrl: string;
-    };
-  };
-
-  // Banner data - note: API GET returns imageUrl (string), but API POST expects imageId (number)
-  // We'll store imageUrl for display but track imageId separately for saving
-  const bannerData = (coachingPageData as any)?.banner;
-  const initialFormData: CoachingPageFormData = {
-    title: coachingPageData?.title || '',
-    description: coachingPageData?.description || '',
-    banner: {
-      title: bannerData?.title || '',
-      description: bannerData?.description || '',
-      imageUrl: bannerData?.imageUrl || null,
-      buttonText: bannerData?.buttonText || '',
-      buttonUrl: bannerData?.buttonLink || '',
-    },
-  };
-
-  const formState = useFormState(coachingPageData ? initialFormData : null, { enableReloadProtection: true });
-
-  const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
-
-
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
-  const saveCoachingPageMutation = trpc.saveCoachingPage.useMutation({
-    onSuccess: (data) => {
-      if (data.success) {
-        formState.markAsSaved();
-        setSaveStatus('success');
-        refetchCoachingPage();
-      }
-    },
-    onError: (error) => {
-      setSaveStatus('error');
-    },
-  });
 
   const handleSave = async () => {
     setSaveStatus('idle');

@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { TextAreaInput } from '../text-areaInput';
 import { TextInput } from '../text-input';
@@ -68,9 +70,9 @@ export default function BannerSection({
 
     const handleUploadComplete = (file: fileMetadata.TFileMetadata) => {
         setUploadedFile(file);
-        handleFieldChange('imageUrl', file.url);
+        handleFieldChange('imageUrl', file.url as string | null);
         // Notify parent component of the file ID
-        onImageUploadComplete?.(file.id);
+        onImageUploadComplete?.(file.id as string);
     };
 
     const handleFileDelete = (id: string) => {
