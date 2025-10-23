@@ -41,7 +41,7 @@ export default function ManageCoachingPage({
     session?.user?.roles?.includes('superadmin');
 
   // TRPC query for page data - using EXACT usecase name from Notion
-  const [coachingPageResponse] = trpc.getCoachingPage.useSuspenseQuery({});
+  const [coachingPageResponse , { refetch: refetchCoachingPage }] = trpc.getCoachingPage.useSuspenseQuery({});
 
   const [coachingPageViewModel, setCoachingPageViewModel] = useState<
     viewModels.TCoachingPageViewModel | undefined
@@ -126,6 +126,7 @@ export default function ManageCoachingPage({
       if (data.success) {
         formState.markAsSaved();
         setSaveStatus('success');
+        refetchCoachingPage();
       }
     },
     onError: (error) => {
@@ -148,6 +149,11 @@ export default function ManageCoachingPage({
       },
     });
   };
+
+  // If form isn't initialized yet, avoid mounting child sections that only read initialValue once
+  if (!formState.value) {
+    return <DefaultLoading locale={locale} variant="minimal" />;
+  }
 
   return (
     <div className="flex flex-col space-y-5 w-full">
@@ -182,14 +188,13 @@ export default function ManageCoachingPage({
 
       {/* Page Title Section */}
       <PageTitleSection
-        initialValue={{ title: formState.value!.title, description: formState.value!.description }}
+        initialValue={{ title: formState.value.title, description: formState.value.description }}
         onChange={(newValue) => formState.setValue({ ...formState.value!, title: newValue.title, description: newValue.description })}
       />
 
       {/* Banner Section */}
-      {/* Banner Section */}
       <BannerSection
-        initialValue={formState.value!.banner}
+        initialValue={formState.value.banner}
         onChange={(newBanner) => formState.setValue({ ...formState.value!, banner: newBanner })}
         onFileUpload={handleFileUpload}
         onFileDelete={handleFileDelete}
