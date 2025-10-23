@@ -88,6 +88,9 @@ interface MonthlyStudentCalendarWrapperProps {
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
     onSessionClick?: (sessionId: number) => void;
+    variant?: 'compact' | 'full';
+    selectedDate?: Date;
+    setSelectedDate?: (date: Date | undefined) => void;
 }
 
 export function MonthlyStudentCalendarWrapper({
@@ -95,12 +98,19 @@ export function MonthlyStudentCalendarWrapper({
     currentDate,
     setCurrentDate,
     onSessionClick,
+    variant = 'compact',
+    selectedDate: externalSelectedDate,
+    setSelectedDate: externalSetSelectedDate,
 }: MonthlyStudentCalendarWrapperProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('components.calendar');
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    const [internalSelectedDate, setInternalSelectedDate] = useState<Date | undefined>(
         undefined,
     );
+
+    // Use external state if provided, otherwise use internal state
+    const selectedDate = externalSelectedDate !== undefined ? externalSelectedDate : internalSelectedDate;
+    const setSelectedDate = externalSetSelectedDate || setInternalSelectedDate;
 
     const monthlyEvents = useMemo(() => {
         if (
@@ -191,6 +201,7 @@ export function MonthlyStudentCalendarWrapper({
                 onDateClick={(date) => {
                     setSelectedDate(date);
                 }}
+                variant={variant}
             />
             {sessionsOnDate.length > 0 && (
                 <CoachingAvailabilityCard
@@ -206,7 +217,7 @@ export function MonthlyStudentCalendarWrapper({
                 />
             )}
             {sessionsOnDate.length === 0 && selectedDate && (
-                <div className="border border-card-stroke bg-card-fill text-text-secondary p-4 rounded-md">
+                <div className="border border-base-neutral-700 bg-base-neutral-800 text-text-secondary p-4 rounded-md">
                     {t('selectDateWithAvailability')}
                 </div>
             )}

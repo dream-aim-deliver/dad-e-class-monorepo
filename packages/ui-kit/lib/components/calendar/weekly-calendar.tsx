@@ -1,10 +1,8 @@
 'use client';
 
-import { isLocalAware, TLocale, getDictionary } from '@maany_shr/e-class-translations';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { isLocalAware, TLocale } from '@maany_shr/e-class-translations';
+import { useEffect, useMemo, useRef } from 'react';
 import LoadingOverlay from './loading-overlay';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '../button';
 
 const isToday = (date: Date) => {
     const today = new Date();
@@ -288,67 +286,3 @@ export function WeeklyCalendar({
     );
 }
 
-interface WeeklyHeaderProps extends isLocalAware {
-    currentDate: Date;
-    setCurrentDate: (date: Date) => void;
-}
-
-export function WeeklyHeader({
-    currentDate,
-    setCurrentDate,
-    locale,
-}: WeeklyHeaderProps) {
-    const dictionary = getDictionary(locale);
-
-    const getSectionHeading = () => {
-        const startDate = getWeekStart(currentDate);
-        const firstMonth = startDate.toLocaleDateString(locale, {
-            month: 'long',
-            year: 'numeric',
-        });
-        const endDate = new Date(
-            startDate.getFullYear(),
-            startDate.getMonth(),
-            startDate.getDate() + 6,
-        );
-        const lastMonth = endDate.toLocaleDateString(locale, {
-            month: 'long',
-            year: 'numeric',
-        });
-        if (firstMonth === lastMonth) {
-            return firstMonth;
-        }
-        return `${firstMonth} - ${lastMonth}`;
-    };
-
-    const changeWeek = (difference: 1 | -1) => {
-        setCurrentDate(
-            new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth(),
-                currentDate.getDate() + difference * 7,
-            ),
-        );
-    };
-
-    return (
-        <div className="flex flex-row mb-4 items-center justify-between">
-            <h2> {getSectionHeading()} </h2>
-            <div className="flex flex-row space-x-6 text-base-brand-500 items-center">
-                <ChevronLeft
-                    className="cursor-pointer"
-                    onClick={() => changeWeek(-1)}
-                />
-                <ChevronRight
-                    className="cursor-pointer"
-                    onClick={() => changeWeek(1)}
-                />
-                <Button
-                    variant="secondary"
-                    text={dictionary.components.calendar.today}
-                    onClick={() => setCurrentDate(new Date())}
-                />
-            </div>
-        </div>
-    );
-}
