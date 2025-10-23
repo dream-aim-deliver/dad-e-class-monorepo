@@ -58,13 +58,12 @@ export default function Layout({
 
     return (
         <div
-            className="w-full min-h-screen bg-repeat-y flex flex-col justify-center items-center px-4"
+            className="w-full h-full bg-repeat-y flex flex-col justify-center items-center px-4"
             style={{
-                // Temporary linear gradient to match the Figma. Should be uploaded this dark.
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${backgroundImageUrl})`,
-                backgroundSize: '100% auto',
-                // TODO: have a fallback color
-                backgroundColor: '#141414',
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${"https://i.imgur.com/PoJASP9.png"})`,
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed',
+                backgroundColor: '#1E1B4B',
             }}
         >
             <Header
@@ -72,7 +71,7 @@ export default function Layout({
                 locale={locale}
                 session={session}
             />
-            <main className="flex-grow w-full mx-auto pt-25 justify-center items-center">
+            <main className="flex-grow w-full mx-auto pt-25 pb-35 justify-center items-center">
                 {showSidebar && platformName && platformSlug && platformLocale ? (
                     <div className="flex flex-row lg:gap-3 w-full">
                         <div
