@@ -262,17 +262,6 @@ export default function CreatePackage() {
         setSuccessMessage(null);
         
         try {
-            // Validate required data
-            if (!packageDetailsFormData.packageTitle.trim()) {
-                throw new Error('Package title is required');
-            }
-            if (!packageDetailsFormData.packageDescription.trim()) {
-                throw new Error('Package description is required');
-            }
-            if (selectedCourseIds.length === 0) {
-                throw new Error('At least one course must be selected');
-            }
-
             // Build payload matching backend contract
             // TODO: Replace string parsing when backend exposes numeric price fields
             const price = parseFloat(pricingFormData.completePackageWithoutCoaching.replace(/[^\d.]/g, '')) || 0;
@@ -309,8 +298,7 @@ export default function CreatePackage() {
             };
 
             const result = await createPackageMutation.mutateAsync(payload);
-            
-            // Success/error handling done by useEffect hooks
+   
         } catch (error) {
             // Error handled by useEffect hooks
         }
