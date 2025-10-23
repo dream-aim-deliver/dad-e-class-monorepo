@@ -100,7 +100,7 @@ export default function CoachingDemandSection({
             <h2>Coaching On Demand Section</h2>
 
             <div className="flex flex-col gap-6 transition-all duration-300 ease-in-out">
-                <form className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4">
                     <TextAreaInput
                         label="Title"
                         value={coachingData.title}
@@ -165,7 +165,7 @@ export default function CoachingDemandSection({
                             uploadProgress={uploadProgress}
                         />
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     );

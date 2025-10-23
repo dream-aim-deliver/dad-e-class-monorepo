@@ -7,7 +7,7 @@
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=8540-240257&t=qGirq2t6ka6iwg1A-4
 
 import { useState } from 'react';
-import { DefaultLoading, DefaultError, Outline, PageTitleSection, PackageSection, CarouselSection } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, Outline, PageTitleSection, PackageSection, CarouselSection, Banner } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
@@ -17,8 +17,9 @@ import { Button } from '@maany_shr/e-class-ui-kit';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { useListOffersPagePackagesShortPresenter } from '../hooks/use-list-offers-page-packages-short-presenter';
 import { useListPackagesPresenter } from '../hooks/use-list-packages-presenter';
-import { useofferPageFileUpload } from '../hooks/use-offer-file-upload';
 import { useGetOffersPageOutlinePresenter } from '../hooks/use-get-offers-page-outline-presenter';
+import { useHomePageFileUpload } from './common/hooks/use-homepage-file-upload';
+import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
 interface ManageOffersPageProps {
     locale: string;
     platformSlug: string;
@@ -57,7 +58,7 @@ export default function ManageOffersPage({
     const { presenter: packagesPresenter } = useListPackagesPresenter(setPackagesViewModel);
     const { presenter: packagesShortPresenter } = useListOffersPagePackagesShortPresenter(setPackagesShortViewModel);
 
-    
+
     if (offersPageOutlineResponse.success && (offersPageOutlineResponse.data as any)?.success) {
         manageOffersPagePresenter.present((offersPageOutlineResponse.data as any), offersPageViewModel);
     }
@@ -68,8 +69,9 @@ export default function ManageOffersPage({
         packagesShortPresenter.present((packagesShortResponse.data as any), packagesShortViewModel);
     }
 
-    const { handleFileUpload, handleFileDelete, handleFileDownload } = useofferPageFileUpload(setUploadProgress);
-  if (offersPageViewModel?.mode === 'kaboom' || packagesViewModel?.mode === 'kaboom' || packagesShortViewModel?.mode === 'kaboom') {
+    const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
+    const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+    if (offersPageViewModel?.mode === 'kaboom' || packagesViewModel?.mode === 'kaboom' || packagesShortViewModel?.mode === 'kaboom') {
         return (
             <DefaultError
                 locale={locale}
@@ -99,88 +101,125 @@ export default function ManageOffersPage({
     const packagesData = packagesViewModel?.mode === 'default' ? packagesViewModel.data : null;
     const packagesShortData = packagesShortViewModel?.mode === 'default' ? packagesShortViewModel.data : null;
 
-    // State for managing offers page data
-    const [pageTitle, setPageTitle] = useState({
-        title: (offersPageData as any)?.title || '',
-        description: (offersPageData as any)?.description || '',
-    });
 
-    // Store selected packages (full objects)
-    const allPackages = (packagesData as any)?.packages || [];
-    const linkedPackageIds = ((packagesShortData as any)?.packageIds || []).map(String);
-    const initialLinkedPackages = allPackages.filter((pkg: any) =>
-        linkedPackageIds.includes(String(pkg.id))
-    );
+    const allPackages = (packagesData?.packages || []).map(pkg => ({ ...pkg, id: String(pkg.id) }));
+    const linkedPackageIds = (packagesShortData?.packageIds || []).map(String);
+    const initialPackageIds = allPackages.filter((pkg) =>
+        pkg.id != null && linkedPackageIds.includes(String(pkg.id))
+    ).map(pkg => Number(pkg.id));
 
-    const [selectedPackages, setSelectedPackages] = useState<any[]>(initialLinkedPackages);
-    const [carouselItems, setCarouselItems] = useState((offersPageData as any)?.items || []);
 
-    
-    const saveOffersPageMutation = trpc.saveOffersPage.useMutation();
-
-   
-    const handleSave = async () => {
-        try {
-            
-            const packageIdsAsNumbers = selectedPackages.map((pkg: any) => Number(pkg.id));
-
-            await saveOffersPageMutation.mutateAsync({
-                title: pageTitle.title,
-                description: pageTitle.description,
-                carousel: carouselItems,
-                packageIds: packageIdsAsNumbers,
-            });
-            alert('Offers page saved successfully!');
-        } catch (error) {
-            console.error('Error saving offers page:', error);
-            alert('Error saving offers page. Please try again.');
-        }
+    type OffersPageFormData = {
+        title: string;
+        description: string;
+        packageIds: number[];
+        carousel: any[];
     };
 
-    
-    
-    
+    const initialFormData: OffersPageFormData = {
+        title: offersPageData?.title || '',
+        description: offersPageData?.description || '',
+        packageIds: initialPackageIds,
+        carousel: offersPageData?.items || [],
+    };
+
+    const formState = useFormState(initialFormData, { enableReloadProtection: true });
+
+    // Derive selected packages from form state
+    const selectedPackages = allPackages.filter(pkg => formState.value!.packageIds.includes(Number(pkg.id)));
+    const carouselItems = formState.value!.carousel;
+
+
+    const saveOffersPageMutation = trpc.saveOffersPage.useMutation({
+        onMutate: () => {
+            setSaveStatus('idle');
+        },
+        onSuccess: (data) => {
+            if (data.success) {
+                formState.markAsSaved();
+                setSaveStatus('success');
+            }
+        },
+        onError: (error) => {
+            setSaveStatus('error');
+        },
+    });
+
+
+    const handleSave = async () => {
+        setSaveStatus('idle');
+
+        const packageIdsAsNumbers = formState.value!.packageIds;
+
+        await saveOffersPageMutation.mutateAsync({
+            title: formState.value!.title,
+            description: formState.value!.description,
+            carousel: formState.value!.carousel,
+            packageIds: packageIdsAsNumbers,
+        });
+
+    };
+
+
+
+
 
     return (
         <div className="flex flex-col space-y-5 px-30">
             {/* Page header with translations */}
-            <Outline
-                title={t('title')}
-                description={t('description')}
-            />
+            <div className="flex justify-between items-start">
+                <div className="flex-1">
+                    <Outline
+                        title={t('title')}
+                        description={t('description')}
+                    />
+                </div>
+                <div className="ml-4">
+                    <Button
+                        variant="primary"
+                        size="medium"
+                        text="Save Offers Page"
+                        onClick={handleSave}
+                        disabled={saveOffersPageMutation.isPending}
+                    />
+                </div>
+            </div>
+
+            {saveOffersPageMutation.isPending && (
+                <Banner style="success" title="Saving offers page changes..." />
+            )}
+            {saveStatus === 'success' && (
+                <Banner style="success" title="Offers page saved successfully!" />
+            )}
+            {saveStatus === 'error' && (
+                <Banner style="error" title="Failed to save offers page" />
+            )}
 
             {/* Page Title Section */}
             <PageTitleSection
-                initialValue={pageTitle}
-                onChange={setPageTitle}
+                initialValue={{ title: formState.value!.title, description: formState.value!.description }}
+                onChange={(newValue) => formState.setValue({ ...formState.value!, title: newValue.title, description: newValue.description })}
             />
 
             {/* Packages Section */}
             <PackageSection
                 packages={allPackages}
                 linkedPackages={selectedPackages}
-                onChange={setSelectedPackages}
+                onChange={(newSelected) => {
+                    const newPackageIds = newSelected.map((pkg: any) => Number(pkg.id));
+                    formState.setValue({ ...formState.value!, packageIds: newPackageIds });
+                }}
             />
 
             {/* Carousel Section */}
             <CarouselSection
                 initialValue={carouselItems}
-                onChange={setCarouselItems}
+                onChange={(newCarousel) => formState.setValue({ ...formState.value!, carousel: newCarousel })}
                 onFileUpload={handleFileUpload}
                 onFileDelete={handleFileDelete}
                 onFileDownload={handleFileDownload}
+                uploadType='upload_offers_page_carousel_card_image'
             />
-
-            {/* Save Button */}
-            <div className="flex justify-end">
-                <Button
-                    variant="primary"
-                    size="medium"
-                    text="Save Offers Page"
-                    onClick={handleSave}
-                    disabled={saveOffersPageMutation.isPending}
-                />
-            </div>
 
         </div>
     );

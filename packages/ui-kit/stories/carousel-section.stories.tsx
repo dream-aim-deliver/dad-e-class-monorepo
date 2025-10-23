@@ -39,6 +39,7 @@ type Story = StoryObj<typeof CarouselSection>;
 // Mock file upload function
 const mockFileUpload = async (
     fileRequest: fileMetadata.TFileUploadRequest,
+    uploadType: "upload_home_page_carousel_item_image" | "upload_offers_page_carousel_card_image",
     abortSignal?: AbortSignal
 ): Promise<fileMetadata.TFileMetadata> => {
     // Simulate upload delay

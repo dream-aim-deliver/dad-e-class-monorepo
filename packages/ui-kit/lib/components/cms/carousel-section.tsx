@@ -13,18 +13,19 @@ import { IconChevronDown } from '../icons/icon-chevron-down';
 
 type CarouselType = z.infer<typeof HomePageSchema>['carousel'];
 type CarouselItemType = CarouselType[0];
-
+type UploadType="upload_offers_page_carousel_card_image" |"upload_home_page_carousel_item_image";
 interface CarouselSectionProps {
     initialValue?: CarouselType;
     onChange: (value: CarouselType) => void;
     onFileUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
-        uploadType: "upload_home_page_carousel_item_image",
+        uploadType:UploadType,
         abortSignal?: AbortSignal
     ) => Promise<fileMetadata.TFileMetadata>;
     onFileDelete: (id: string) => void;
     onFileDownload: (id: string) => void;
     uploadProgress?: number;
+    uploadType: UploadType;
 }
 
 export default function CarouselSection({
@@ -34,6 +35,7 @@ export default function CarouselSection({
     onFileDelete,
     onFileDownload,
     uploadProgress,
+    uploadType
 }: CarouselSectionProps) {
     const [carouselData, setCarouselData] = useState<CarouselType>(initialValue);
     const [uploadedFiles, setUploadedFiles] = useState<Map<number, fileMetadata.TFileMetadata>>(new Map());
@@ -130,7 +132,7 @@ export default function CarouselSection({
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
-        return onFileUpload(file, "", abortSignal);
+        return onFileUpload(file, uploadType, abortSignal);
     };
 
     const handleUploadComplete = (index: number, file: fileMetadata.TFileMetadata) => {
@@ -169,7 +171,7 @@ export default function CarouselSection({
                         <div className="flex justify-between items-center border-b border-b-divider pb-2">
                             <h3 className="text-lg font-semibold transition-colors duration-200">Carousel Item {index + 1}</h3>
                             <div className="flex gap-2">
-                                  <IconButton
+                                <IconButton
                                     icon={<IconTrashAlt />}
                                     onClick={() => removeCarouselItem(index)}
                                     size="small"
@@ -187,12 +189,12 @@ export default function CarouselSection({
                                     size="small"
                                     styles="text"
                                 />
-                              
+
                             </div>
                         </div>
 
-                        <form className="flex flex-col gap-4">
-                              <div className="flex flex-col gap-2 w-full">
+                        <div className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-2 w-full">
                                 <label className="text-sm text-text-secondary">Upload Image</label>
                                 <Uploader
                                     type="single"
@@ -200,7 +202,7 @@ export default function CarouselSection({
                                     file={uploadedFiles.get(index) || null}
                                     onDelete={(id) => handleFileDelete(index, id)}
                                     onDownload={handleFileDownload}
-                                    onFilesChange={(file, abortSignal) => handleOnFilesChange(index, file, abortSignal)}
+                                    onFilesChange={(file, abortSignal) => handleOnFilesChange(file,  abortSignal)}
                                     onUploadComplete={(file) => handleUploadComplete(index, file)}
                                     locale="en"
                                     maxSize={10}
@@ -224,7 +226,7 @@ export default function CarouselSection({
                                 placeholder="Enter the description"
                             />
 
-                                                      <TextInput
+                            <TextInput
                                 label="Badge (Optional)"
                                 inputField={{
                                     inputText: "Enter badge text",
@@ -252,7 +254,7 @@ export default function CarouselSection({
                             />
 
 
-                        </form>
+                        </div>
                     </div>
                 ))}
                 <Button
