@@ -49,10 +49,31 @@ export default class ListCourseGroupsPresenter extends BasePresenter<
             { success: true }
         >,
     ): viewModels.TListCourseGroupsViewModel {
+        // Transform backend response to view model structure
+        const transformedGroups = response.data.groups.map(group => ({
+            groupId: group.id.toString(),
+            groupName: group.name,
+            currentStudents: group.actualStudentCount,
+            totalStudents: group.maxStudentCount,
+            course: {
+                image: group.course.imageUrl || '',
+                title: group.course.title,
+                slug: group.course.slug,
+            },
+            coach: group.coaches.length > 0 ? {
+                name: `${group.coaches[0].name} ${group.coaches[0].surname}`,
+                isCurrentUser: group.coaches[0].isCurrentUser,
+            } : undefined,
+            creator: group.coaches.length > 0 ? {
+                name: `${group.coaches[0].name} ${group.coaches[0].surname}`,
+                image: group.coaches[0].avatarUrl || '',
+            } : undefined,
+        }));
+
         return {
             mode: 'default',
             data: {
-                ...response.data
+                groups: transformedGroups
             }
         };
     }
