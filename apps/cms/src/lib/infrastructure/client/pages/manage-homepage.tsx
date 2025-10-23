@@ -61,59 +61,10 @@ export default function ManageHomepage() {
 	const [videoUploadProgress, setVideoUploadProgress] = useState<number | undefined>(undefined);
 
 
-	const formState = useFormState<viewModels.TGetHomePageSuccess | undefined>(undefined, { enableReloadProtection: true });
-
 	const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
 	const [saveMessage, setSaveMessage] = useState<string | null>(null);
 	const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
 	const videoUpload = useHomePageVideoUpload(setVideoUploadProgress);
-	const saveHomePageMutation = trpc.saveHomePage.useMutation({
-		onSuccess: (data) => {
-			if (data.success) {
-				setSaveStatus('success');
-				setSaveMessage('Homepage saved successfully!');
-				formState.markAsSaved();
-				// Optionally refetch homepage data
-				refetchHomePage();
-			} else {
-				setSaveStatus('error');
-				setSaveMessage('Failed to save homepage');
-			}
-		},
-		onError: (error) => {
-			setSaveStatus('error');
-			setSaveMessage(error.message ?? 'An error occurred while saving');
-			console.error('Error saving homepage:', error);
-		},
-
-	});
-
-
-	useEffect(() => {
-		if (homePageViewModel?.mode === 'default' && !formState.value) {
-			formState.setValue(homePageViewModel.data);
-		}
-	}, [homePageViewModel, formState]);
-
-
-	// Loading state
-	if (!homePageViewModel) {
-		return <DefaultLoading locale={appLocale} variant="minimal" />;
-	}
-
-	// Error handling - only kaboom errors should prevent rendering
-	// Note: 'not-found' is acceptable since save mutation supports upsert
-
-	if (homePageViewModel.mode === 'kaboom') {
-		return (
-			<DefaultError
-				locale={appLocale}
-				onRetry={() => {
-					refetchHomePage();
-				}}
-			/>
-		);
-	}
 
 	// Create default homepage data when it doesn't exist (for upsert functionality)
 	const defaultHomePageData: viewModels.TGetHomePageSuccess = {
@@ -139,36 +90,77 @@ export default function ManageHomepage() {
 	};
 
 	// Use actual data if available (mode is 'default'), otherwise use default
-	const homePageData = homePageViewModel.mode === 'default'
+	const initialHomePageData = homePageViewModel?.mode === 'default'
 		? homePageViewModel.data
 		: defaultHomePageData;
 
+	const formState = useFormState<viewModels.TGetHomePageSuccess>(initialHomePageData, { enableReloadProtection: true });
+
+	const saveHomePageMutation = trpc.saveHomePage.useMutation({
+		onSuccess: (data) => {
+			if (data.success) {
+				setSaveStatus('success');
+				setSaveMessage('Homepage saved successfully!');
+				formState.markAsSaved();
+				refetchHomePage();
+			} else {
+				setSaveStatus('error');
+				setSaveMessage('Failed to save homepage');
+			}
+		},
+		onError: (error) => {
+			setSaveStatus('error');
+			setSaveMessage(error.message ?? 'An error occurred while saving');
+			console.error('Error saving homepage:', error);
+		},
+
+	});
+
+
+	// Loading state
+	if (!homePageViewModel) {
+		return <DefaultLoading locale={appLocale} variant="minimal" />;
+	}
+
+	// Error handling - only kaboom errors should prevent rendering
+	// Note: 'not-found' is acceptable since save mutation supports upsert
+
+	if (homePageViewModel.mode === 'kaboom') {
+		return (
+			<DefaultError
+				locale={appLocale}
+				onRetry={() => {
+					refetchHomePage();
+				}}
+			/>
+		);
+	}
+
 	// Single state for all homepage data
+	const editableHomePageData: viewModels.TGetHomePageSuccess = formState.value!;
 
-	const editableHomePageData: viewModels.TGetHomePageSuccess = formState.value ?? homePageData;
-
-	const handleBannerChange = (banner: typeof homePageData.banner) => {
+	const handleBannerChange = (banner: typeof editableHomePageData.banner) => {
 		formState.setValue({
 			...editableHomePageData,
 			banner,
 		});
 	};
 
-	const handleCarouselChange = (carousel: typeof homePageData.carousel) => {
+	const handleCarouselChange = (carousel: typeof editableHomePageData.carousel) => {
 		formState.setValue({
 			...editableHomePageData,
 			carousel,
 		});
 	};
 
-	const handleCoachingDemandChange = (coachingOnDemand: typeof homePageData.coachingOnDemand) => {
+	const handleCoachingDemandChange = (coachingOnDemand: typeof editableHomePageData.coachingOnDemand) => {
 		formState.setValue({
 			...editableHomePageData,
 			coachingOnDemand,
 		});
 	};
 
-	const handleAccordionChange = (accordion: typeof homePageData.accordion) => {
+	const handleAccordionChange = (accordion: typeof editableHomePageData.accordion) => {
 		formState.setValue({
 			...editableHomePageData,
 			accordion,
@@ -180,7 +172,12 @@ export default function ManageHomepage() {
 		setSaveMessage(null);
 
 		saveHomePageMutation.mutate({
-			banner: editableHomePageData.banner,
+			banner: {
+				title: editableHomePageData.banner.title,
+				description: editableHomePageData.banner.description,
+				videoId: editableHomePageData.banner.videoId ? Number(editableHomePageData.banner.videoId) : null,
+				thumbnailImageId: editableHomePageData.banner.thumbnailUrl ? Number(editableHomePageData.banner.thumbnailUrl.split('/').pop()) : null,
+			},
 			carousel: editableHomePageData.carousel,
 			coachingOnDemand: editableHomePageData.coachingOnDemand,
 			accordion: editableHomePageData.accordion,
