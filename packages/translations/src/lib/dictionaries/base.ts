@@ -211,9 +211,9 @@ export const DictionarySchema = z.object({
       by: z.string()
     }),
     calendar: z.object({
-      coachAvailability: z.string(),
       yourMeeting: z.string(),
       availability: z.string(),
+      coachAvailability: z.string(),
       meeting: z.string(),
       scheduleSession: z.string(),
       month: z.string(),
@@ -1953,6 +1953,8 @@ export const DictionarySchema = z.object({
       yourCalendarTitle: z.string(),
       coachTab: z.string(),
       studentTab: z.string(),
+      weeklyView: z.string(),
+      monthlyView: z.string(),
     }),
   }),
 });

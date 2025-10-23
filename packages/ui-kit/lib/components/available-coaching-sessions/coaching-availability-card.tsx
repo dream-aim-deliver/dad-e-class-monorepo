@@ -88,7 +88,7 @@ export function CoachingAvailabilityCard({
     }
 
     return (
-        <div className="bg-card-fill rounded-md p-4 flex flex-col gap-4 border border-card-stroke">
+        <div className="bg-button-secondary-fill rounded-md p-4 flex flex-col gap-4">
             <div
                 className={cn('flex flex-row justify-between items-center', {
                     'cursor-pointer': !!availability.onClick,
@@ -96,16 +96,16 @@ export function CoachingAvailabilityCard({
                 onClick={availability.onClick}
             >
                 <div>
-                    <div className="text-text-secondary text-sm">
+                    <h6 className="text-action-default">
                         {
                             dictionary?.components?.coachingAvailabilityCard
                                 ?.availability
                         }
-                    </div>
-                    <div className="text-text-primary">
+                    </h6>
+                    <p className="text-text-primary text-md">
                         {formatTime(availability.startTime)} -{' '}
                         {formatTime(availability.endTime)}
-                    </div>
+                    </p>
                 </div>
                 {onRequest && (
                     <Button

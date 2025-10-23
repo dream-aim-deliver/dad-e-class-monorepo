@@ -22,6 +22,7 @@ export default function MonthlyCalendarPicker({
             setCurrentDate={setCurrentDate}
             onDateClick={onDateClick}
             selectedDate={selectedDate}
+            variant="compact"
         />
     );
 }

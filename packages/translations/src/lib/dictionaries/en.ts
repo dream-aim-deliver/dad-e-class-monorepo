@@ -1918,6 +1918,8 @@ export const EN: TDictionary = {
       yourCalendarTitle: 'Your Calendar',
       coachTab: 'Coach',
       studentTab: 'Student',
+      weeklyView: 'Weekly',
+      monthlyView: 'Monthly',
     },
   },
 };

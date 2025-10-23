@@ -1921,6 +1921,8 @@ export const DE: TDictionary = {
       yourCalendarTitle: 'Dein Kalender',
       coachTab: 'Coach',
       studentTab: 'Student',
+      weeklyView: 'Wochenansicht',
+      monthlyView: 'Monatsansicht',
     },
   },
 };
