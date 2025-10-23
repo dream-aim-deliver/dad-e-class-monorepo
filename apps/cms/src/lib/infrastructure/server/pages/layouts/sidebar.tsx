@@ -37,7 +37,7 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
         coachingSessions: '/workspace/coaching',
         calendar: '/workspace/calendar',
         students: '/workspace/students',
-        reviews: '/workspace/reviews',
+        reviews: '/workspace/your-reviews',
         profile: '/workspace/profile',
         orderPayments: '/workspace/orders',
     };
@@ -55,8 +55,8 @@ const WorkspaceSidebar = (props: React.ComponentProps<typeof SideMenu>) => {
                 : sidebarTranslations('yourCoachingSessions'),
             '/calendar': sidebarTranslations('calendar'),
             '/workspace/students': sidebarTranslations('yourStudents'),
-            '/workspace/reviews': sidebarTranslations('yourReviews'),
-            '/workspace/profile': sidebarTranslations('yourProfile'),
+            '/workspace/your-reviews': sidebarTranslations('yourReviews'),
+            '/profile': sidebarTranslations('yourProfile'),
             '/orders': sidebarTranslations('orderPayments'),
             '/workspace/pre-course-assessment': 'Pre-Course Assessment',
         };

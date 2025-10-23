@@ -35,6 +35,7 @@ export { Navbar } from './components/navbar';
 export { Footer } from './components/footer';
 
 export { NotificationGrid } from './components/grids/notification-grid';
+export { ReviewFilterModal, type ReviewFilterModel } from './components/grids/review-filter-modal';
 export { Activity } from './components/notifications/activity';
 export { RecentActivity } from './components/notifications/recent-activity';
 export { UserGrid } from './components/grids/user-grid';
@@ -46,6 +47,7 @@ export { CarouselSkeleton } from './components/skeletons/carousel-skeleton'
 export { StudentCardListSkeleton } from './components/skeletons/students-skeleton';
 
 export { ReviewSnippet } from './components/review/review-snippet';
+export { default as CoachReviewCard, type ReviewCardProps as CoachReviewCardProps } from './components/review/coach-review-card';
 export { default as CreateCourseModal } from './components/create-modal/create-course-modal';
 
 export { CoachesSkeleton } from './components/coaches-skeleton';
