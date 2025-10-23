@@ -42,9 +42,11 @@ export default function PageTitleSection({
             <form className="flex flex-col gap-4">
                 <TextInput
                     label="Title"
-                    value={pageData.title}
-                    setValue={(value) => handleFieldChange('title', value)}
-                    placeholder="Enter the page title"
+                    inputField={{
+                        value: pageData.title,
+                        setValue: (value) => handleFieldChange('title', value),
+                        inputText: "Enter the page title"
+                    }}
                 />
                 <TextAreaInput
                     label="Description"
