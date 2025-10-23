@@ -109,18 +109,29 @@ export default function ManageOffersPage({
     ).map(pkg => Number(pkg.id));
 
 
+    type CarouselItem = {
+        title: string;
+        description: string;
+        buttonText: string;
+        imageUrl: string | null;
+        buttonUrl: string;
+        badge?: string;
+    };
     type OffersPageFormData = {
         title: string;
         description: string;
         packageIds: number[];
-        carousel: any[];
+        carousel: CarouselItem[];
     };
 
     const initialFormData: OffersPageFormData = {
         title: offersPageData?.title || '',
         description: offersPageData?.description || '',
         packageIds: initialPackageIds,
-        carousel: offersPageData?.items || [],
+        carousel: (offersPageData?.items || []).map(item => ({
+            ...item,
+            badge: item.badge ?? undefined,
+        })),
     };
 
     const formState = useFormState(initialFormData, { enableReloadProtection: true });
@@ -151,10 +162,19 @@ export default function ManageOffersPage({
 
         const packageIdsAsNumbers = formState.value!.packageIds;
 
+        const carouselForSave = formState.value!.carousel.map(item => ({
+            title: item.title,
+            description: item.description,
+            buttonText: item.buttonText,
+            buttonUrl: item.buttonUrl,
+            badge: item.badge,
+            imageId: item.imageUrl ? parseInt(item.imageUrl.split('/').pop() || '0', 10) : 0,
+        }));
+
         await saveOffersPageMutation.mutateAsync({
             title: formState.value!.title,
             description: formState.value!.description,
-            carousel: formState.value!.carousel,
+            carousel: carouselForSave,
             packageIds: packageIdsAsNumbers,
         });
 
