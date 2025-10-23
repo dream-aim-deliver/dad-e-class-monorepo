@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, useState } from 'react';
 import { cn } from '../../utils/style-utils';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
