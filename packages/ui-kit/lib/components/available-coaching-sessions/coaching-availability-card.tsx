@@ -40,16 +40,16 @@ function CoachingSessionCard({
     return (
         <div
             className={cn(
-                'bg-card-stroke border border-neutral-700 rounded-md p-4 flex flex-col',
+                'bg-action-default border border-neutral-700 rounded-md p-4 flex flex-col',
                 { 'cursor-pointer': !!onClick },
             )}
             onClick={onClick}
         >
-            <div className="text-text-secondary text-sm">{sessionLabel}</div>
-            <div className="text-text-primary font-medium">{title}</div>
-            <div className="text-text-primary">
+            <h6 className="text-text-primary-inverted">{sessionLabel}</h6>
+            <h5 className="text-text-primary-inverted">{title}</h5>
+            <p className="text-text-primary-inverted text-sm">
                 {formatTime(startTime)} - {formatTime(endTime)}
-            </div>
+            </p>
         </div>
     );
 }
