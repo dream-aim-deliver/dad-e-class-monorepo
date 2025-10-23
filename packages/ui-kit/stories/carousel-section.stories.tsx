@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import CarouselSection from '../lib/components/cms/homepage-edit/carousel-section';
+import CarouselSection from '../lib/components/cms/carousel-section';
 import { fileMetadata } from '@maany_shr/e-class-models';
 
 const meta: Meta<typeof CarouselSection> = {

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
-import { TextInput } from '../../text-input';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { z } from 'zod';
@@ -16,18 +15,25 @@ interface HeroSectionProps {
         uploadType: "upload_home_page_hero_image",
         abortSignal?: AbortSignal
     ) => Promise<fileMetadata.TFileMetadata>;
+    onVideoUpload: (
+        fileRequest: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal
+    ) => Promise<fileMetadata.TFileMetadata>;
     onFileDelete: (id: string) => void;
     onFileDownload: (id: string) => void;
     uploadProgress?: number;
+    videoUploadProgress?: number;
 }
 
 export default function HeroSection({
     initialValue,
     onChange,
     onFileUpload,
+    onVideoUpload,
     onFileDelete,
     onFileDownload,
     uploadProgress,
+    videoUploadProgress,
 }: HeroSectionProps) {
     const [bannerData, setBannerData] = useState<BannerType>({
         title: '',
@@ -36,7 +42,8 @@ export default function HeroSection({
         thumbnailUrl: null,
         ...initialValue
     });
-    const [uploadedFile, setUploadedFile] = useState<fileMetadata.TFileMetadata | null>(null);
+    const [uploadedThumbnail, setUploadedThumbnail] = useState<fileMetadata.TFileMetadata | null>(null);
+    const [uploadedVideo, setUploadedVideo] = useState<fileMetadata.TFileMetadataVideo | null>(null);
 
     const handleFieldChange = (field: keyof BannerType, value: string | null) => {
         const newBannerData = {
@@ -47,21 +54,41 @@ export default function HeroSection({
         onChange?.(newBannerData);
     };
 
-    const handleOnFilesChange = async (
+    const handleOnThumbnailChange = async (
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
         return onFileUpload(file, "upload_home_page_hero_image", abortSignal);
     };
 
-    const handleUploadComplete = (file: fileMetadata.TFileMetadata) => {
-        setUploadedFile(file);
+    const handleThumbnailUploadComplete = (file: fileMetadata.TFileMetadata) => {
+        setUploadedThumbnail(file);
         handleFieldChange('thumbnailUrl', file.url);
     };
 
-    const handleFileDelete = (id: string) => {
-        setUploadedFile(null);
+    const handleThumbnailDelete = (id: string) => {
+        setUploadedThumbnail(null);
         handleFieldChange('thumbnailUrl', null);
+        onFileDelete(id);
+    };
+
+    const handleOnVideoChange = async (
+        file: fileMetadata.TFileUploadRequest,
+        abortSignal?: AbortSignal,
+    ) => {
+        return onVideoUpload(file, abortSignal);
+    };
+
+    const handleVideoUploadComplete = (file: fileMetadata.TFileMetadata) => {
+        const videoFile = file as fileMetadata.TFileMetadataVideo;
+        setUploadedVideo(videoFile);
+        // Store the video playback ID
+        handleFieldChange('videoId', videoFile.videoId || null);
+    };
+
+    const handleVideoDelete = (id: string) => {
+        setUploadedVideo(null);
+        handleFieldChange('videoId', null);
         onFileDelete(id);
     };
 
@@ -93,24 +120,38 @@ export default function HeroSection({
                     <Uploader
                         type="single"
                         variant="image"
-                        file={uploadedFile}
-                        onDelete={handleFileDelete}
+                        file={uploadedThumbnail}
+                        onDelete={handleThumbnailDelete}
                         onDownload={handleFileDownload}
-                        onFilesChange={handleOnFilesChange}
-                        onUploadComplete={handleUploadComplete}
+                        onFilesChange={handleOnThumbnailChange}
+                        onUploadComplete={handleThumbnailUploadComplete}
                         locale="en"
                         maxSize={10}
                         uploadProgress={uploadProgress}
                     />
                 </div>
-                <TextInput
-                    label="Video ID"
-                    inputField={{
-                        inputText: "Enter video ID",
-                        value: bannerData.videoId || '',
-                        setValue: (value) => handleFieldChange('videoId', value || null)
-                    }}
-                />
+
+                <div className="flex flex-col gap-2 bg-card-fill border-1 border-card-stroke rounded-md p-4">
+                    <h6 className="text-sm font-semibold text-text-primary">
+                        Hero Video
+                    </h6>
+                    <p className="text-sm text-text-secondary mb-2">
+                        Upload a video for the hero section. The video will be displayed prominently on the homepage.
+                    </p>
+                    <Uploader
+                        type="single"
+                        variant="video"
+                        file={uploadedVideo}
+                        onDelete={handleVideoDelete}
+                        onDownload={handleFileDownload}
+                        onFilesChange={handleOnVideoChange}
+                        onUploadComplete={handleVideoUploadComplete}
+                        locale="en"
+                        maxSize={2000000}
+                        uploadProgress={videoUploadProgress}
+                        isDeletionAllowed
+                    />
+                </div>
             </form>
         </div>
     )

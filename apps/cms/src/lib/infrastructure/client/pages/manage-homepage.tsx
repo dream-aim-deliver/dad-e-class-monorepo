@@ -23,8 +23,9 @@ import { useEffect, useState } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-get-home-page-presenter';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
-import { useHomePageFileUpload } from './manage-homepage-hooks/use-homepage-file-upload';
 import { HeroSection, CarouselSection, CoachingDemandSection, HowItWorksSection } from '@maany_shr/e-class-ui-kit';
+import { useHomePageFileUpload } from '../hooks/use-homepage-file-upload';
+import { useHomePageVideoUpload } from '../hooks/use-homepage-video-upload';
 
 
 /**
@@ -56,16 +57,14 @@ export default function ManageHomepage() {
 
 	// Track upload progress
 	const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
+	const [videoUploadProgress, setVideoUploadProgress] = useState<number | undefined>(undefined);
 
 	const [currentHomePageData, setCurrentHomePageData] = useState<viewModels.TGetHomePageSuccess | null>(null);
 
 	const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
 	const [saveMessage, setSaveMessage] = useState<string | null>(null);
-
-	// File upload hook - MUST be called before any conditional returns
 	const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
-
-	// Save homepage mutation - uncommented
+	const videoUpload = useHomePageVideoUpload(setVideoUploadProgress);
 	const saveHomePageMutation = trpc.saveHomePage.useMutation({
 		onSuccess: (data) => {
 			if (data.success) {
@@ -256,9 +255,11 @@ export default function ManageHomepage() {
 							initialValue={editableHomePageData.banner}
 							onChange={handleBannerChange}
 							onFileUpload={handleFileUpload}
+							onVideoUpload={videoUpload.handleFileChange}
 							onFileDelete={handleFileDelete}
 							onFileDownload={handleFileDownload}
 							uploadProgress={uploadProgress}
+							videoUploadProgress={videoUploadProgress}
 						/>
 					</Tabs.Content>
 
