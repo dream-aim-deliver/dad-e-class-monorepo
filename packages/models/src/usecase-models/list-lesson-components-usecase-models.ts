@@ -16,6 +16,7 @@ export type TListLessonComponentsRequest = z.infer<typeof ListLessonComponentsRe
 export const ListLessonComponentsSuccessResponseSchema = BaseSuccessSchemaFactory(z.object({
   courseVersion: z.number(),
   components: z.array(LessonComponentSchema),
+  lessonTitle: z.string(),
 }));
 
 export type TListLessonComponentsSuccessResponse = z.infer<typeof ListLessonComponentsSuccessResponseSchema>;

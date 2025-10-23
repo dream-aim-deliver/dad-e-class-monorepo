@@ -1,11 +1,12 @@
 import { fileMetadata } from '@maany_shr/e-class-models';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 
 import {
 	AbortError,
 	calculateMd5,
 	uploadToS3,
+	downloadFile,
 } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../../../../trpc/cms-client';
 
@@ -26,6 +27,14 @@ export function useProfilePictureUpload({
 	const [uploadError, setUploadError] = useState<string | undefined>(
 		undefined,
 	);
+
+	// Sync state when initialImage changes - use ID as stable dependency
+	useEffect(() => {
+		// Only update if the IDs are different (avoids infinite loops from object recreation)
+		if (initialImage?.id !== profilePicture?.id) {
+			setProfilePicture(initialImage);
+		}
+	}, [initialImage?.id]); // Only depend on ID, not the whole object
 
 	const uploadImage = async (
 		uploadRequest: fileMetadata.TFileUploadRequest,
@@ -120,11 +129,17 @@ export function useProfilePictureUpload({
 		}
 	};
 
+	const handleDownload = async (id: string) => {
+		if (profilePicture?.id !== id) return;
+		downloadFile(profilePicture.url, profilePicture.name);
+	};
+
 	return {
 		profilePicture,
 		uploadError,
 		handleFileChange,
 		handleUploadComplete,
 		handleDelete,
+		handleDownload,
 	};
 }

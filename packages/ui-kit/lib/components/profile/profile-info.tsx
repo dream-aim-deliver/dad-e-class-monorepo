@@ -25,6 +25,7 @@ interface ProfileInfoProps extends isLocalAware {
   profilePictureFile?: fileMetadata.TFileMetadata | null;
   onUploadComplete?: (fileMetadata: fileMetadata.TFileMetadata) => void;
   onFileDelete?: (id: string) => void;
+  onFileDownload?: (id: string) => void;
   uploadProgress?: number;
   isSaving?: boolean;
 }
@@ -75,6 +76,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
   profilePictureFile,
   onUploadComplete,
   onFileDelete,
+  onFileDownload,
   availableLanguages = [],
   locale,
   uploadProgress,
@@ -274,9 +276,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({
             onFilesChange={handleUploadedFiles}
             onUploadComplete={handleUploadComplete}
             variant='image'
-            onDownload={() => {
-              // Handle download logic here
-            }}
+            onDownload={(id) => onFileDownload?.(id)}
             onDelete={handleFileDelete}
             locale={locale}
             className="w-full"
