@@ -7,12 +7,18 @@
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=8540-240257&t=qGirq2t6ka6iwg1A-4
 
 import { useState } from 'react';
-import { DefaultLoading, DefaultError, Outline } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, Outline, PageTitleSection, PackageSection, CarouselSection } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
 import { useSession } from 'next-auth/react';
 
+import { Button } from '@maany_shr/e-class-ui-kit';
+import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
+import { useListOffersPagePackagesShortPresenter } from '../hooks/use-list-offers-page-packages-short-presenter';
+import { useListPackagesPresenter } from '../hooks/use-list-packages-presenter';
+import { useofferPageFileUpload } from '../hooks/use-offer-file-upload';
+import { useGetOffersPageOutlinePresenter } from '../hooks/use-get-offers-page-outline-presenter';
 interface ManageOffersPageProps {
     locale: string;
     platformSlug: string;
@@ -26,7 +32,7 @@ export default function ManageOffersPage({
 }: ManageOffersPageProps) {
     const locale = useLocale() as TLocale;
     const t = useTranslations('pages.manageOffersPage');
-
+    const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
     // Defensive client-side auth check (middleware already enforces admin/superadmin)
     const sessionDTO = useSession();
     const session = sessionDTO.data;
@@ -35,11 +41,43 @@ export default function ManageOffersPage({
     // TRPC queries for page data - using EXACT usecase names from Notion
     const [offersPageOutlineResponse] = trpc.getOffersPageOutline.useSuspenseQuery({});
     const [packagesShortResponse] = trpc.listOffersPagePackagesShort.useSuspenseQuery({});
+    const [packagesResponse] = trpc.listPackages.useSuspenseQuery({});
 
-    // TODO: Add state management and presenter hooks when implementing
-    // const [manageOffersPageViewModel, setManageOffersPageViewModel] = useState<TManageOffersPageViewModel | undefined>(undefined);
-    // const { presenter } = useManageOffersPagePresenter(setManageOffersPageViewModel);
+    const [offersPageViewModel, setOffersPageViewModel] = useState<
+        viewModels.TOffersPageOutlineViewModel | undefined
+    >(undefined);
+    const [packagesViewModel, setPackagesViewModel] = useState<
+        viewModels.TListPackagesViewModel | undefined
+    >(undefined);
+    const [packagesShortViewModel, setPackagesShortViewModel] = useState<
+        viewModels.TListOffersPagePackagesShortViewModel | undefined
+    >(undefined);
 
+    const { presenter: manageOffersPagePresenter } = useGetOffersPageOutlinePresenter(setOffersPageViewModel);
+    const { presenter: packagesPresenter } = useListPackagesPresenter(setPackagesViewModel);
+    const { presenter: packagesShortPresenter } = useListOffersPagePackagesShortPresenter(setPackagesShortViewModel);
+
+    
+    if (offersPageOutlineResponse.success && (offersPageOutlineResponse.data as any)?.success) {
+        manageOffersPagePresenter.present((offersPageOutlineResponse.data as any), offersPageViewModel);
+    }
+    if (packagesResponse.success && (packagesResponse.data as any)?.success) {
+        packagesPresenter.present((packagesResponse.data as any), packagesViewModel);
+    }
+    if (packagesShortResponse.success && (packagesShortResponse.data as any)?.success) {
+        packagesShortPresenter.present((packagesShortResponse.data as any), packagesShortViewModel);
+    }
+
+    const { handleFileUpload, handleFileDelete, handleFileDownload } = useofferPageFileUpload(setUploadProgress);
+  if (offersPageViewModel?.mode === 'kaboom' || packagesViewModel?.mode === 'kaboom' || packagesShortViewModel?.mode === 'kaboom') {
+        return (
+            <DefaultError
+                locale={locale}
+                title={t('error.title')}
+                description={t('error.description')}
+            />
+        );
+    }
     // Defensive auth check on client side
     if (!session || !isAdmin) {
         return (
@@ -56,19 +94,52 @@ export default function ManageOffersPage({
         return <DefaultLoading locale={locale} variant="minimal" />;
     }
 
-    // TODO: Implement error handling with proper view model checks
-    // Example error handling patterns from project:
-    // if (viewModel.mode === 'kaboom') {
-    //     const errorData = viewModel.data;
-    //     console.error(errorData);
-    //     return (
-    //         <DefaultError
-    //             locale={locale}
-    //             title={t('error.title')}
-    //             description={t('error.description')}
-    //         />
-    //     );
-    // }
+    // Extract data from view models
+    const offersPageData = offersPageViewModel?.mode === 'default' ? offersPageViewModel.data : null;
+    const packagesData = packagesViewModel?.mode === 'default' ? packagesViewModel.data : null;
+    const packagesShortData = packagesShortViewModel?.mode === 'default' ? packagesShortViewModel.data : null;
+
+    // State for managing offers page data
+    const [pageTitle, setPageTitle] = useState({
+        title: (offersPageData as any)?.title || '',
+        description: (offersPageData as any)?.description || '',
+    });
+
+    // Store selected packages (full objects)
+    const allPackages = (packagesData as any)?.packages || [];
+    const linkedPackageIds = ((packagesShortData as any)?.packageIds || []).map(String);
+    const initialLinkedPackages = allPackages.filter((pkg: any) =>
+        linkedPackageIds.includes(String(pkg.id))
+    );
+
+    const [selectedPackages, setSelectedPackages] = useState<any[]>(initialLinkedPackages);
+    const [carouselItems, setCarouselItems] = useState((offersPageData as any)?.items || []);
+
+    
+    const saveOffersPageMutation = trpc.saveOffersPage.useMutation();
+
+   
+    const handleSave = async () => {
+        try {
+            
+            const packageIdsAsNumbers = selectedPackages.map((pkg: any) => Number(pkg.id));
+
+            await saveOffersPageMutation.mutateAsync({
+                title: pageTitle.title,
+                description: pageTitle.description,
+                carousel: carouselItems,
+                packageIds: packageIdsAsNumbers,
+            });
+            alert('Offers page saved successfully!');
+        } catch (error) {
+            console.error('Error saving offers page:', error);
+            alert('Error saving offers page. Please try again.');
+        }
+    };
+
+    
+    
+    
 
     return (
         <div className="flex flex-col space-y-5 px-30">
@@ -78,27 +149,39 @@ export default function ManageOffersPage({
                 description={t('description')}
             />
 
-            {/* TODO: Implement page content based on Notion features */}
-            {/* Usecases to integrate:
-                - saveOffersPage: Save offers page configuration
-                - listPackages: Display available packages
-                - requestFileUpload: Handle file uploads for offers page
-                - getOffersPageOutline: Display page outline (already fetched)
-                - listOffersPagePackagesShort: Display package summaries (already fetched)
-            */}
+            {/* Page Title Section */}
+            <PageTitleSection
+                initialValue={pageTitle}
+                onChange={setPageTitle}
+            />
 
-            {/* TODO: Add UI components for:
-                - Offers page editor
-                - Package selection/display
-                - File upload for images/media
-                - Save/publish controls
-            */}
+            {/* Packages Section */}
+            <PackageSection
+                packages={allPackages}
+                linkedPackages={selectedPackages}
+                onChange={setSelectedPackages}
+            />
 
-            <div className="text-gray-500">
-                <p>Platform: {platformSlug}</p>
-                <p>Locale: {platformLocale}</p>
-                <p>Implementation in progress...</p>
+            {/* Carousel Section */}
+            <CarouselSection
+                initialValue={carouselItems}
+                onChange={setCarouselItems}
+                onFileUpload={handleFileUpload}
+                onFileDelete={handleFileDelete}
+                onFileDownload={handleFileDownload}
+            />
+
+            {/* Save Button */}
+            <div className="flex justify-end">
+                <Button
+                    variant="primary"
+                    size="medium"
+                    text="Save Offers Page"
+                    onClick={handleSave}
+                    disabled={saveOffersPageMutation.isPending}
+                />
             </div>
+
         </div>
     );
 }

@@ -19,8 +19,12 @@ const meta: Meta<typeof HeroSection> = {
             description: 'Callback fired when banner data changes',
         },
         onFileUpload: {
-            action: 'fileUploaded',
-            description: 'Callback fired when file is uploaded',
+            action: 'imageUploaded',
+            description: 'Callback fired when thumbnail image is uploaded',
+        },
+        onVideoUpload: {
+            action: 'videoUploaded',
+            description: 'Callback fired when video is uploaded',
         },
         onFileDelete: {
             action: 'fileDeleted',
@@ -30,15 +34,24 @@ const meta: Meta<typeof HeroSection> = {
             action: 'fileDownloaded',
             description: 'Callback fired when file is downloaded',
         },
+        uploadProgress: {
+            control: 'number',
+            description: 'Image upload progress (0-100)',
+        },
+        videoUploadProgress: {
+            control: 'number',
+            description: 'Video upload progress (0-100)',
+        },
     },
 };
 
 export default meta;
 type Story = StoryObj<typeof HeroSection>;
 
-// Mock file upload function
+// Mock file upload function for images
 const mockFileUpload = async (
     fileRequest: fileMetadata.TFileUploadRequest,
+    uploadType: "upload_home_page_hero_image",
     abortSignal?: AbortSignal
 ): Promise<fileMetadata.TFileMetadata> => {
     // Simulate upload delay
@@ -50,7 +63,7 @@ const mockFileUpload = async (
 
     // Return mock file metadata
     return {
-        id: fileRequest.id || 'mock-file-id',
+        id: fileRequest.id || 'mock-image-id',
         name: fileRequest.name,
         size: fileRequest.file.size,
         category: 'image',
@@ -59,10 +72,36 @@ const mockFileUpload = async (
     };
 };
 
+// Mock video upload function
+const mockVideoUpload = async (
+    fileRequest: fileMetadata.TFileUploadRequest,
+    abortSignal?: AbortSignal
+): Promise<fileMetadata.TFileMetadata> => {
+    // Simulate upload delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    if (abortSignal?.aborted) {
+        throw new Error('Upload cancelled');
+    }
+
+    // Return mock video metadata
+    return {
+        id: 'mock-video-id',
+        name: fileRequest.name,
+        size: fileRequest.file.size,
+        category: 'video',
+        status: 'available',
+        url: 'https://example.com/video.mp4',
+        videoId: 'mock-playback-id-123',
+        thumbnailUrl: 'https://res.cloudinary.com/dryynqhao/image/upload/v1742541099/lrpuzzgdayhoirs4gqgj.png'
+    } as fileMetadata.TFileMetadataVideo;
+};
+
 export const Default: Story = {
     args: {
         onChange: (bannerData) => console.log('Banner data changed:', bannerData),
         onFileUpload: mockFileUpload,
+        onVideoUpload: mockVideoUpload,
         onFileDelete: (id) => console.log('File deleted:', id),
         onFileDownload: (id) => console.log('File downloaded:', id),
     },
@@ -78,6 +117,7 @@ export const WithInitialData: Story = {
         },
         onChange: (bannerData) => console.log('Banner data changed:', bannerData),
         onFileUpload: mockFileUpload,
+        onVideoUpload: mockVideoUpload,
         onFileDelete: (id) => console.log('File deleted:', id),
         onFileDownload: (id) => console.log('File downloaded:', id),
     },
@@ -93,6 +133,7 @@ export const LongContent: Story = {
         },
         onChange: (bannerData) => console.log('Banner data changed:', bannerData),
         onFileUpload: mockFileUpload,
+        onVideoUpload: mockVideoUpload,
         onFileDelete: (id) => console.log('File deleted:', id),
         onFileDownload: (id) => console.log('File downloaded:', id),
     },
@@ -108,6 +149,7 @@ export const MinimalContent: Story = {
         },
         onChange: (bannerData) => console.log('Banner data changed:', bannerData),
         onFileUpload: mockFileUpload,
+        onVideoUpload: mockVideoUpload,
         onFileDelete: (id) => console.log('File deleted:', id),
         onFileDownload: (id) => console.log('File downloaded:', id),
     },
@@ -123,6 +165,7 @@ export const WithVideoOnly: Story = {
         },
         onChange: (bannerData) => console.log('Banner data changed:', bannerData),
         onFileUpload: mockFileUpload,
+        onVideoUpload: mockVideoUpload,
         onFileDelete: (id) => console.log('File deleted:', id),
         onFileDownload: (id) => console.log('File downloaded:', id),
     },
@@ -138,6 +181,7 @@ export const WithThumbnailOnly: Story = {
         },
         onChange: (bannerData) => console.log('Banner data changed:', bannerData),
         onFileUpload: mockFileUpload,
+        onVideoUpload: mockVideoUpload,
         onFileDelete: (id) => console.log('File deleted:', id),
         onFileDownload: (id) => console.log('File downloaded:', id),
     },
@@ -156,6 +200,7 @@ export const Interactive: Story = {
             alert(`Title: ${bannerData.title}\nDescription: ${bannerData.description}\nVideo ID: ${bannerData.videoId}\nThumbnail URL: ${bannerData.thumbnailUrl}`);
         },
         onFileUpload: mockFileUpload,
+        onVideoUpload: mockVideoUpload,
         onFileDelete: (id) => {
             console.log('File deleted:', id);
             alert(`File ${id} deleted successfully!`);

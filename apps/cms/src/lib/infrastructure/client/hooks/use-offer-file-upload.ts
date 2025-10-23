@@ -1,26 +1,20 @@
 import {
     AbortError,
     calculateMd5,
-    downloadFile,
     uploadToS3,
 } from '@maany_shr/e-class-ui-kit';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
-import { trpc } from '../../trpc/cms-client';
+import { trpc } from '../trpc/cms-client';
 
-type HomePageUploadType = 
-    | "upload_home_page_accordion_item" 
-    | "upload_home_page_coaching_on_demand_banner_mobile" 
-    | "upload_home_page_coaching_on_demand_banner_tablet" 
-    | "upload_home_page_coaching_on_demand_banner_desktop" 
-    | "upload_home_page_carousel_item_image" 
-    | "upload_home_page_hero_image"
 
-export interface HomePageFileUploadState {
+type offerPageUploadType = string
+
+export interface offerPageFileUploadState {
     uploadError: string | undefined;
     handleFileUpload: (
         uploadRequest: fileMetadata.TFileUploadRequest,
-        uploadType: HomePageUploadType,
+        uploadType: offerPageUploadType,
         abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata>;
     handleFileDelete: (id: string) => void;
@@ -28,13 +22,13 @@ export interface HomePageFileUploadState {
 }
 
 /**
- * Custom hook for homepage file uploads
+ * Custom hook for offerpage file uploads
  * Handles banner thumbnails, carousel images, and coaching on demand images
  * @param onProgressUpdate - Optional callback to track upload progress (0-100)
  */
-export const useHomePageFileUpload = (
+export const useofferPageFileUpload = (
     onProgressUpdate?: (progress: number) => void,
-): HomePageFileUploadState => {
+): offerPageFileUploadState => {
     const requestFileUploadMutation = trpc.requestFileUpload.useMutation();
     const verifyMutation = trpc.getDownloadUrl.useMutation();
 
@@ -42,7 +36,7 @@ export const useHomePageFileUpload = (
 
     const uploadFile = async (
         uploadRequest: fileMetadata.TFileUploadRequest,
-        uploadType: HomePageUploadType,
+        uploadType: offerPageUploadType,
         abortSignal?: AbortSignal,
     ) => {
         if (abortSignal?.aborted) {
@@ -60,7 +54,7 @@ export const useHomePageFileUpload = (
             checksum,
             mimeType: uploadRequest.file.type,
             size: uploadRequest.file.size,
-            uploadType: uploadType, // Dynamic upload type based on section
+            uploadType: uploadType as any, // Dynamic upload type based on section
         });
 
         console.log('Upload result:', uploadResult);
@@ -116,7 +110,7 @@ export const useHomePageFileUpload = (
 
     const handleFileUpload = async (
         uploadRequest: fileMetadata.TFileUploadRequest,
-        uploadType: HomePageUploadType,
+        uploadType: offerPageUploadType,
         abortSignal?: AbortSignal,
     ): Promise<fileMetadata.TFileMetadata> => {
         setUploadError(undefined);
