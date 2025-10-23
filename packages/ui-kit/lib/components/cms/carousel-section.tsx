@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { TextAreaInput } from '../../text-areaInput';
-import { TextInput } from '../../text-input';
-import { Uploader } from '../../drag-and-drop-uploader/uploader';
-import { Button } from '../../button';
+import { TextAreaInput } from '../text-areaInput';
+import { TextInput } from '../text-input';
+import { Uploader } from '../drag-and-drop-uploader/uploader';
+import { Button } from '../button';
+import { IconButton } from '../icon-button';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { z } from 'zod';
 import { HomePageSchema } from 'packages/models/src/view-models';
+import { IconTrashAlt } from '../icons/icon-trash-alt';
+import { IconChevronUp } from '../icons/icon-chevron-up';
+import { IconChevronDown } from '../icons/icon-chevron-down';
 
 type CarouselType = z.infer<typeof HomePageSchema>['carousel'];
 type CarouselItemType = CarouselType[0];
@@ -74,12 +78,59 @@ export default function CarouselSection({
         handleCarouselChange(newCarouselData);
     };
 
+    const moveCarouselItemUp = (index: number) => {
+        if (index > 0) {
+            const newCarouselData = [...carouselData];
+            [newCarouselData[index - 1], newCarouselData[index]] = [newCarouselData[index], newCarouselData[index - 1]];
+            handleCarouselChange(newCarouselData);
+
+            // Swap uploaded files
+            const newUploadedFiles = new Map(uploadedFiles);
+            const temp = newUploadedFiles.get(index - 1);
+            const current = newUploadedFiles.get(index);
+            if (current) {
+                newUploadedFiles.set(index - 1, current);
+            } else {
+                newUploadedFiles.delete(index - 1);
+            }
+            if (temp) {
+                newUploadedFiles.set(index, temp);
+            } else {
+                newUploadedFiles.delete(index);
+            }
+            setUploadedFiles(newUploadedFiles);
+        }
+    };
+
+    const moveCarouselItemDown = (index: number) => {
+        if (index < carouselData.length - 1) {
+            const newCarouselData = [...carouselData];
+            [newCarouselData[index], newCarouselData[index + 1]] = [newCarouselData[index + 1], newCarouselData[index]];
+            handleCarouselChange(newCarouselData);
+
+            // Swap uploaded files
+            const newUploadedFiles = new Map(uploadedFiles);
+            const temp = newUploadedFiles.get(index + 1);
+            const current = newUploadedFiles.get(index);
+            if (current) {
+                newUploadedFiles.set(index + 1, current);
+            } else {
+                newUploadedFiles.delete(index + 1);
+            }
+            if (temp) {
+                newUploadedFiles.set(index, temp);
+            } else {
+                newUploadedFiles.delete(index);
+            }
+            setUploadedFiles(newUploadedFiles);
+        }
+    };
+
     const handleOnFilesChange = async (
-        index: number,
         file: fileMetadata.TFileUploadRequest,
         abortSignal?: AbortSignal,
     ) => {
-        return onFileUpload(file, "upload_home_page_carousel_item_image", abortSignal);
+        return onFileUpload(file, "", abortSignal);
     };
 
     const handleUploadComplete = (index: number, file: fileMetadata.TFileMetadata) => {
@@ -103,8 +154,8 @@ export default function CarouselSection({
 
     return (
         <div className="w-full p-6 border border-card-fill rounded-medium bg-card-fill flex flex-col gap-6">
-            <div className="flex justify-between items-center">
-                <h2>Carousel Section</h2>
+            <div className="flex justify-between items-center   ">
+                <h3>Carousel Section</h3>
 
             </div>
 
@@ -112,37 +163,36 @@ export default function CarouselSection({
                 {carouselData.map((item, index) => (
                     <div
                         key={index}
-                        className=" rounded-medium flex flex-col gap-4 
+                        className=" rounded-medium flex flex-col gap-3 border-base-neutral-700 bg-base-neutral-800 p-4
                                    transition-all duration-300 ease-in-out"
                     >
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center border-b border-b-divider pb-2">
                             <h3 className="text-lg font-semibold transition-colors duration-200">Carousel Item {index + 1}</h3>
-                            <Button
-                                variant="secondary"
-                                size="small"
-                                text="Remove"
-                                onClick={() => removeCarouselItem(index)}
-                                className="transition-all duration-200 hover:scale-105"
-                            />
+                            <div className="flex gap-2">
+                                  <IconButton
+                                    icon={<IconTrashAlt />}
+                                    onClick={() => removeCarouselItem(index)}
+                                    size="small"
+                                    styles="text"
+                                />
+                                <IconButton
+                                    icon={<IconChevronUp />}
+                                    onClick={() => moveCarouselItemUp(index)}
+                                    size="small"
+                                    styles="text"
+                                />
+                                <IconButton
+                                    icon={<IconChevronDown />}
+                                    onClick={() => moveCarouselItemDown(index)}
+                                    size="small"
+                                    styles="text"
+                                />
+                              
+                            </div>
                         </div>
 
                         <form className="flex flex-col gap-4">
-                            <TextAreaInput
-                                label="Title"
-
-                                value={item.title}
-                                setValue={(value) => handleItemFieldChange(index, 'title', value)}
-                                placeholder="Enter the title"
-                            />
-
-                            <TextAreaInput
-                                label="Description"
-                                value={item.description}
-                                setValue={(value) => handleItemFieldChange(index, 'description', value)}
-                                placeholder="Enter the description"
-                            />
-
-                            <div className="flex flex-col gap-2 w-full">
+                              <div className="flex flex-col gap-2 w-full">
                                 <label className="text-sm text-text-secondary">Upload Image</label>
                                 <Uploader
                                     type="single"
@@ -157,6 +207,31 @@ export default function CarouselSection({
                                     uploadProgress={uploadProgress}
                                 />
                             </div>
+                            <TextInput
+                                label="Title"
+
+                                inputField={{
+                                    inputText: "Enter the title",
+                                    value: item.title,
+                                    setValue: (value) => handleItemFieldChange(index, 'title', value)
+                                }}
+                            />
+
+                            <TextAreaInput
+                                label="Description"
+                                value={item.description}
+                                setValue={(value) => handleItemFieldChange(index, 'description', value)}
+                                placeholder="Enter the description"
+                            />
+
+                                                      <TextInput
+                                label="Badge (Optional)"
+                                inputField={{
+                                    inputText: "Enter badge text",
+                                    value: item.badge || '',
+                                    setValue: (value) => handleItemFieldChange(index, 'badge', value || null)
+                                }}
+                            />
 
                             <TextInput
                                 label="Button Text"
@@ -168,7 +243,7 @@ export default function CarouselSection({
                             />
 
                             <TextInput
-                                label="Button URL"
+                                label="Card Link"
                                 inputField={{
                                     inputText: "Enter button URL",
                                     value: item.buttonUrl,
@@ -176,14 +251,7 @@ export default function CarouselSection({
                                 }}
                             />
 
-                            <TextInput
-                                label="Badge (Optional)"
-                                inputField={{
-                                    inputText: "Enter badge text",
-                                    value: item.badge || '',
-                                    setValue: (value) => handleItemFieldChange(index, 'badge', value || null)
-                                }}
-                            />
+
                         </form>
                     </div>
                 ))}
