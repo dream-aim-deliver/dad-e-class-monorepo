@@ -14,7 +14,9 @@ type HomePageUploadType =
     | "upload_home_page_coaching_on_demand_banner_tablet" 
     | "upload_home_page_coaching_on_demand_banner_desktop" 
     | "upload_home_page_carousel_item_image" 
-    | "upload_home_page_hero_image" |"upload_offers_page_carousel_card_image"
+    | "upload_home_page_hero_image"
+    | "upload_offers_page_carousel_card_image"
+    | "upload_coaching_page_banner_image";
 
 export interface HomePageFileUploadState {
     uploadError: string | undefined;
