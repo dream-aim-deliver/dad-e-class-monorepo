@@ -109,7 +109,6 @@ function AccordionBuilderItem({
             } finally {
                 // Clear the abort controller reference
                 abortControllerRef.current = null;
-                setIcon(null);
             }
 
             // Reset file input so the same file can be uploaded again

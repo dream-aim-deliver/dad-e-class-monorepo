@@ -59,14 +59,15 @@ export default function ManageOffersPage({
     const { presenter: packagesShortPresenter } = useListOffersPagePackagesShortPresenter(setPackagesShortViewModel);
 
     // @ts-ignore
-    packagesPresenter.present(packagesResponse.data, packagesViewModel);
+    packagesPresenter.present(packagesResponse, packagesViewModel);
     // @ts-ignore
-    manageOffersPagePresenter.present(offersPageOutlineResponse.data, offersPageViewModel);
+    manageOffersPagePresenter.present(offersPageOutlineResponse, offersPageViewModel);
     // @ts-ignore
-    packagesShortPresenter.present(packagesShortResponse.data, packagesShortViewModel);
+    packagesShortPresenter.present(packagesShortResponse, packagesShortViewModel);
 
     const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
     const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
     if (offersPageViewModel?.mode === 'kaboom' || packagesViewModel?.mode === 'kaboom' || packagesShortViewModel?.mode === 'kaboom') {
         return (
             <DefaultError
@@ -132,8 +133,7 @@ export default function ManageOffersPage({
     const formState = useFormState(offersPageData && packagesData && packagesShortData ? initialFormData : null, { enableReloadProtection: true });
 
     // Derive selected packages from form state
-    const selectedPackages = allPackages.filter(pkg => formState.value!.packageIds.includes(Number(pkg.id)));
-    const carouselItems = formState.value!.carousel;
+    // (moved below the loading guard to avoid accessing null formState.value)
 
 
     const saveOffersPageMutation = trpc.saveOffersPage.useMutation({
@@ -178,9 +178,17 @@ export default function ManageOffersPage({
 
 
 
+    // Avoid mounting child sections until form is initialized, because they only consume initialValue on first mount
+    if (!formState.value) {
+        return <DefaultLoading locale={locale} variant="minimal" />;
+    }
+
+    // Safe to derive after ensuring formState.value exists
+    const selectedPackages = allPackages.filter(pkg => formState.value!.packageIds.includes(Number(pkg.id)));
+    const carouselItems = formState.value!.carousel;
 
     return (
-        <div className="flex flex-col space-y-5 px-30">
+        <div className="flex flex-col space-y-5">
             {/* Page header with translations */}
             <div className="flex justify-between items-start">
                 <div className="flex-1">
@@ -212,7 +220,7 @@ export default function ManageOffersPage({
 
             {/* Page Title Section */}
             <PageTitleSection
-                initialValue={{ title: formState.value!.title, description: formState.value!.description }}
+                initialValue={{ title: formState.value.title, description: formState.value.description }}
                 onChange={(newValue) => formState.setValue({ ...formState.value!, title: newValue.title, description: newValue.description })}
             />
 
