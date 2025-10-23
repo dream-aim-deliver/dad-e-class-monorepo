@@ -8,11 +8,15 @@
 // User Types: CMS (admin/superadmin - enforced by middleware)
 // Design: Similar to CMS Manage Offers
 
-import { DefaultLoading, DefaultError } from '@maany_shr/e-class-ui-kit';
+import { useState } from 'react';
+import { DefaultLoading, DefaultError, Outline, PageTitleSection, BannerSection, Button } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
 import { useSession } from 'next-auth/react';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useGetCoachingPagePresenter } from '../hooks/use-coaching-page-presenter';
+import { useofferPageFileUpload } from '../hooks/use-offer-file-upload';
 
 interface ManageCoachingPageProps {
   locale: string;
@@ -27,6 +31,7 @@ export default function ManageCoachingPage({
 }: ManageCoachingPageProps) {
   const locale = useLocale() as TLocale;
   const t = useTranslations('pages.manageCoachingPage');
+  const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
 
   // Defensive client-side auth check (middleware already enforces admin/superadmin)
   const sessionDTO = useSession();
@@ -36,9 +41,29 @@ export default function ManageCoachingPage({
     session?.user?.roles?.includes('superadmin');
 
   // TRPC query for page data - using EXACT usecase name from Notion
-  const [coachingPageResponse, { refetch: refetchCoachingPage }] =
-    trpc.getCoachingPage.useSuspenseQuery({});
+  const [coachingPageResponse] = trpc.getCoachingPage.useSuspenseQuery({});
 
+  const [coachingPageViewModel, setCoachingPageViewModel] = useState<
+    viewModels.TCoachingPageViewModel | undefined
+  >(undefined);
+
+  const { presenter: coachingPagePresenter } = useGetCoachingPagePresenter(
+    setCoachingPageViewModel
+  );
+
+  if (coachingPageResponse.success && (coachingPageResponse.data as any)?.success) {
+    coachingPagePresenter.present((coachingPageResponse.data as any), coachingPageViewModel);
+  }
+
+  if (coachingPageViewModel?.mode === 'kaboom') {
+    return (
+      <DefaultError
+        locale={locale}
+        title={t('error.title')}
+        description={t('error.description')}
+      />
+    );
+  }
 
   // Defensive auth check on client side
   if (!session || !isAdmin) {
@@ -56,27 +81,93 @@ export default function ManageCoachingPage({
     return <DefaultLoading locale={locale} variant="minimal" />;
   }
 
+  // Extract data from view model
+  const coachingPageData = coachingPageViewModel?.mode === 'default' ? coachingPageViewModel.data : null;
+
+  // State for managing coaching page data
+  const [pageTitle, setPageTitle] = useState({
+    title: (coachingPageData as any)?.title || '',
+    description: (coachingPageData as any)?.description || '',
+  });
+
+  // Banner data - note: API GET returns imageUrl (string), but API POST expects imageId (number)
+  // We'll store imageUrl for display but track imageId separately for saving
+  const bannerData = (coachingPageData as any)?.banner;
+  const initialBannerData = {
+    title: bannerData?.title || '',
+    description: bannerData?.description || '',
+    imageUrl: bannerData?.imageUrl || null,
+    buttonText: bannerData?.buttonText || '',
+    buttonUrl: bannerData?.buttonLink || '',
+  };
+
+  const [banner, setBanner] = useState<{
+    title: string;
+    description: string;
+    imageUrl: string | null;
+    buttonText: string;
+    buttonUrl: string;
+  }>(initialBannerData);
+
+  // Track the uploaded file ID separately for the save mutation
+  const [bannerImageId, setBannerImageId] = useState<number | null>(null);
+
+  const { handleFileUpload, handleFileDelete, handleFileDownload } = useofferPageFileUpload(setUploadProgress);
+
+  const saveCoachingPageMutation = trpc.saveCoachingPage.useMutation();
+
+  const handleSave = async () => {
+    try {
+      await saveCoachingPageMutation.mutateAsync({
+        title: pageTitle.title,
+        description: pageTitle.description,
+        banner: {
+          title: banner.title,
+          description: banner.description,
+          imageId: bannerImageId,
+          buttonText: banner.buttonText,
+          buttonLink: banner.buttonUrl,
+        },
+      });
+    } catch (error) {
+      console.error('Error saving coaching page:', error);
+    }
+  };
+
   return (
-    <div className="flex flex-col space-y-5 px-30">
+    <div className="flex flex-col space-y-5">
       {/* Page header with translations */}
-      <div>
-        <h1>{t('title')}</h1>
-        <p className="text-text-secondary">{t('description')}</p>
-      </div>
+      <Outline
+        title={t('title')}
+        description={t('description')}
+      />
 
-      {/* TODO: Implement page content based on Notion features */}
-      {/* Usecases to integrate:
-          - getCoachingPage: Fetch coaching page content (already called)
-          - saveCoachingPage: Save coaching page configuration
-          - requestFileUpload: Handle file uploads for coaching page banner (uploadType: "upload_coaching_page_banner_image")
-      */}
+      {/* Page Title Section */}
+      <PageTitleSection
+        initialValue={pageTitle}
+        onChange={setPageTitle}
+      />
 
-      {/* TODO: Follow design from CMS Manage Offers page */}
+      {/* Banner Section */}
+      <BannerSection
+        initialValue={banner}
+        onChange={setBanner}
+        onFileUpload={handleFileUpload}
+        onFileDelete={handleFileDelete}
+        onFileDownload={handleFileDownload}
+        onImageUploadComplete={(fileId) => setBannerImageId(fileId ? Number(fileId) : null)}
+        uploadProgress={uploadProgress}
+      />
 
-      <div className="text-gray-500">
-        <p>Platform: {platformSlug}</p>
-        <p>Locale: {platformLocale}</p>
-        <p>Implementation in progress...</p>
+      {/* Save Button */}
+      <div className="flex justify-end">
+        <Button
+          variant="primary"
+          size="medium"
+          text="Save Coaching Page"
+          onClick={handleSave}
+          disabled={saveCoachingPageMutation.isPending}
+        />
       </div>
     </div>
   );
