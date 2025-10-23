@@ -5,16 +5,22 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { fileMetadata } from '@maany_shr/e-class-models';
 import { useState } from 'react';
-import { trpc } from '../trpc/cms-client';
+import { trpc } from '../../../trpc/cms-client';
 
 
-type offerPageUploadType = string
+type HomePageUploadType = 
+    | "upload_home_page_accordion_item" 
+    | "upload_home_page_coaching_on_demand_banner_mobile" 
+    | "upload_home_page_coaching_on_demand_banner_tablet" 
+    | "upload_home_page_coaching_on_demand_banner_desktop" 
+    | "upload_home_page_carousel_item_image" 
+    | "upload_home_page_hero_image" |"upload_offers_page_carousel_card_image"
 
-export interface offerPageFileUploadState {
+export interface HomePageFileUploadState {
     uploadError: string | undefined;
     handleFileUpload: (
         uploadRequest: fileMetadata.TFileUploadRequest,
-        uploadType: offerPageUploadType,
+        uploadType: HomePageUploadType,
         abortSignal?: AbortSignal,
     ) => Promise<fileMetadata.TFileMetadata>;
     handleFileDelete: (id: string) => void;
@@ -22,13 +28,13 @@ export interface offerPageFileUploadState {
 }
 
 /**
- * Custom hook for offerpage file uploads
+ * Custom hook for homepage file uploads
  * Handles banner thumbnails, carousel images, and coaching on demand images
  * @param onProgressUpdate - Optional callback to track upload progress (0-100)
  */
-export const useofferPageFileUpload = (
+export const useHomePageFileUpload = (
     onProgressUpdate?: (progress: number) => void,
-): offerPageFileUploadState => {
+): HomePageFileUploadState => {
     const requestFileUploadMutation = trpc.requestFileUpload.useMutation();
     const verifyMutation = trpc.getDownloadUrl.useMutation();
 
@@ -36,7 +42,7 @@ export const useofferPageFileUpload = (
 
     const uploadFile = async (
         uploadRequest: fileMetadata.TFileUploadRequest,
-        uploadType: offerPageUploadType,
+        uploadType: HomePageUploadType,
         abortSignal?: AbortSignal,
     ) => {
         if (abortSignal?.aborted) {
@@ -50,24 +56,34 @@ export const useofferPageFileUpload = (
 
         // Request upload credentials from server with specific upload type
         const uploadResult = await requestFileUploadMutation.mutateAsync({
-            name: uploadRequest.name,
-            checksum,
-            mimeType: uploadRequest.file.type,
-            size: uploadRequest.file.size,
-            uploadType: uploadType as any, // Dynamic upload type based on section
+            upload: {
+                name: uploadRequest.name,
+                checksum,
+                mimeType: uploadRequest.file.type,
+                size: uploadRequest.file.size,
+                uploadType: uploadType, // Dynamic upload type based on section
+            }
         });
 
-        console.log('Upload result:', uploadResult);
+       
 
         if (!uploadResult.success) {
-            const errorMessage = uploadResult.error?.message || 'Failed to get upload credentials';
-            console.error('Upload failed:', uploadResult);
-            throw new Error(errorMessage);
+            throw new Error('Failed to get upload credentials');
         }
 
-        // Type assertion after success check
-        const uploadData = uploadResult.data;
-
+        // Narrow uploadResult.data to a typed variable so TypeScript knows the shape
+        const uploadData = uploadResult.data as {
+            storageUrl: string;
+            file: {
+                id: string;
+                name: string;
+                objectName: string;
+                size: number;
+                category: string;
+            };
+            formFields: Record<string, string>;
+        };
+        
         if (abortSignal?.aborted) {
             throw new AbortError();
         }
@@ -76,7 +92,7 @@ export const useofferPageFileUpload = (
         await uploadToS3({
             file: uploadRequest.file,
             checksum,
-            storageUrl: uploadData?.storageUrl,
+            storageUrl: uploadData.storageUrl,
             objectName: uploadData.file.objectName,
             formFields: uploadData.formFields,
             abortSignal,
@@ -87,20 +103,19 @@ export const useofferPageFileUpload = (
 
         // Verify upload and get download URL
         const verifyResult = await verifyMutation.mutateAsync({
-            fileId: uploadData.file.id.toString(),
+            fileId: uploadData.file.id,
         });
 
         if (!verifyResult.success) {
             throw new Error('Failed to verify uploaded file');
         }
 
-        // Type assertion after success check
-        const verifyData = verifyResult.data as any;
+        // Type assertion for verify result
+        const verifyData = verifyResult.data as { downloadUrl: string };
 
         return {
-            id: uploadData.file.id.toString(),
+            id: uploadData.file.id,
             name: uploadData.file.name,
-            status: 'available',
             url: verifyData.downloadUrl,
             thumbnailUrl: verifyData.downloadUrl,
             size: uploadData.file.size,
@@ -110,7 +125,7 @@ export const useofferPageFileUpload = (
 
     const handleFileUpload = async (
         uploadRequest: fileMetadata.TFileUploadRequest,
-        uploadType: offerPageUploadType,
+        uploadType: HomePageUploadType,
         abortSignal?: AbortSignal,
     ): Promise<fileMetadata.TFileMetadata> => {
         setUploadError(undefined);

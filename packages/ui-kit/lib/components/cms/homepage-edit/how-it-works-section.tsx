@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { CheckBox } from '../../checkbox';
 import { AccordionBuilder, AccordionBuilderItem } from '../../accordion-builder';
@@ -30,11 +30,21 @@ export default function HowItWorksSection({
     uploadProgress,
 }: HowItWorksSectionProps) {
     const [accordionData, setAccordionData] = useState<AccordionType>({
-        title: '',
-        showNumbers: true,
-        items: [],
-        ...initialValue
+        title: initialValue?.title ?? '',
+        showNumbers: initialValue?.showNumbers ?? true,
+        items: initialValue?.items ?? [],
     });
+
+
+    useEffect(() => {
+        if (initialValue) {
+            setAccordionData({
+                title: initialValue.title ?? '',
+                showNumbers: initialValue.showNumbers ?? true,
+                items: initialValue.items ?? [],
+            });
+        }
+    }, [initialValue]);
 
     const handleAccordionChange = (newAccordionData: AccordionType) => {
         setAccordionData(newAccordionData);
@@ -80,22 +90,14 @@ export default function HowItWorksSection({
     const builderItems: AccordionBuilderItem[] = accordionData.items.map(item => ({
         title: item.title,
         content: item.content,
-        icon: item.iconImageUrl ? {
-            id: `icon-${item.position}`,
-            name: 'icon',
-            size: 0,
-            category: 'image',
-            status: 'available',
-            url: item.iconImageUrl,
-            thumbnailUrl: item.iconImageUrl,
-        } as fileMetadata.TFileMetadataImage : null,
+        icon: item.iconImageUrl ? { url: item.iconImageUrl } : { url: null },
     }));
 
     return (
         <div className="w-full p-6 border border-card-fill rounded-medium bg-card-fill flex flex-col gap-6">
             <h2>How It Works Section</h2>
 
-            <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
                 <TextAreaInput
                     label="Title"
                     value={accordionData.title}
@@ -107,12 +109,12 @@ export default function HowItWorksSection({
                     name="showNumbers"
                     value="showNumbers"
                     label="Show Numbers"
-                   className="text-base-white"
+                    className="text-base-white"
                     checked={accordionData.showNumbers}
                     withText={true}
                     onChange={() => handleFieldChange('showNumbers', !accordionData.showNumbers)}
                 />
-            </form>
+            </div>
 
             <div className="flex flex-col gap-4">
                 <AccordionBuilder
