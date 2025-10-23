@@ -9,15 +9,15 @@
 // Design: Similar to CMS Manage Offers
 
 import { useState } from 'react';
-import { DefaultLoading, DefaultError, Outline, PageTitleSection, BannerSection, Button } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, Outline, PageTitleSection, BannerSection, Button, Banner } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../trpc/cms-client';
 import { useSession } from 'next-auth/react';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useGetCoachingPagePresenter } from '../hooks/use-coaching-page-presenter';
-import { useofferPageFileUpload } from '../hooks/use-offer-file-upload';
-
+import { useHomePageFileUpload } from './common/hooks/use-homepage-file-upload';
+import { useFormState } from 'packages/ui-kit/lib/hooks/use-form-state';
 interface ManageCoachingPageProps {
   locale: string;
   platformSlug: string;
@@ -84,12 +84,6 @@ export default function ManageCoachingPage({
   // Extract data from view model
   const coachingPageData = coachingPageViewModel?.mode === 'default' ? coachingPageViewModel.data : null;
 
-  // State for managing coaching page data
-  const [pageTitle, setPageTitle] = useState({
-    title: (coachingPageData as any)?.title || '',
-    description: (coachingPageData as any)?.description || '',
-  });
-
   // Banner data - note: API GET returns imageUrl (string), but API POST expects imageId (number)
   // We'll store imageUrl for display but track imageId separately for saving
   const bannerData = (coachingPageData as any)?.banner;
@@ -101,57 +95,104 @@ export default function ManageCoachingPage({
     buttonUrl: bannerData?.buttonLink || '',
   };
 
-  const [banner, setBanner] = useState<{
-    title: string;
-    description: string;
-    imageUrl: string | null;
-    buttonText: string;
-    buttonUrl: string;
-  }>(initialBannerData);
-
   // Track the uploaded file ID separately for the save mutation
   const [bannerImageId, setBannerImageId] = useState<number | null>(null);
 
-  const { handleFileUpload, handleFileDelete, handleFileDownload } = useofferPageFileUpload(setUploadProgress);
+  type CoachingPageFormData = {
+    title: string;
+    description: string;
+    banner: {
+      title: string;
+      description: string;
+      imageUrl: string | null;
+      buttonText: string;
+      buttonUrl: string;
+    };
+  };
 
-  const saveCoachingPageMutation = trpc.saveCoachingPage.useMutation();
+  const initialFormData: CoachingPageFormData = {
+    title: coachingPageData?.title || '',
+    description: coachingPageData?.description || '',
+    banner: initialBannerData,
+  };
+
+  const formState = useFormState(initialFormData, { enableReloadProtection: true });
+
+  const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
+
+
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const saveCoachingPageMutation = trpc.saveCoachingPage.useMutation({
+    onSuccess: (data) => {
+      if (data.success) {
+        formState.markAsSaved();
+        setSaveStatus('success');
+      }
+    },
+    onError: (error) => {
+      setSaveStatus('error');
+    },
+  });
 
   const handleSave = async () => {
-    try {
-      await saveCoachingPageMutation.mutateAsync({
-        title: pageTitle.title,
-        description: pageTitle.description,
-        banner: {
-          title: banner.title,
-          description: banner.description,
-          imageId: bannerImageId,
-          buttonText: banner.buttonText,
-          buttonLink: banner.buttonUrl,
-        },
-      });
-    } catch (error) {
-      console.error('Error saving coaching page:', error);
-    }
+    setSaveStatus('idle');
+
+    await saveCoachingPageMutation.mutateAsync({
+      title: formState.value!.title,
+      description: formState.value!.description,
+      banner: {
+        title: formState.value!.banner.title,
+        description: formState.value!.banner.description,
+        imageId: bannerImageId,
+        buttonText: formState.value!.banner.buttonText,
+        buttonLink: formState.value!.banner.buttonUrl,
+      },
+    });
   };
 
   return (
-    <div className="flex flex-col space-y-5">
+    <div className="flex flex-col space-y-5 w-full">
       {/* Page header with translations */}
-      <Outline
-        title={t('title')}
-        description={t('description')}
-      />
+      <div className="flex justify-between items-start">
+        <div className="flex-1">
+          <Outline
+            title={t('title')}
+            description={t('description')}
+          />
+        </div>
+        <div className="ml-4">
+          <Button
+            variant="primary"
+            size="medium"
+            text="Save Coaching Page"
+            onClick={handleSave}
+            disabled={saveCoachingPageMutation.isPending}
+          />
+        </div>
+      </div>
+
+      {saveCoachingPageMutation.isPending && (
+        <Banner style="success" title="Saving coaching page changes..." />
+      )}
+      {saveStatus === 'success' && (
+        <Banner style="success" title="Coaching page saved successfully!" />
+      )}
+      {saveStatus === 'error' && (
+        <Banner style="error" title="Failed to save coaching page" />
+      )}
 
       {/* Page Title Section */}
       <PageTitleSection
-        initialValue={pageTitle}
-        onChange={setPageTitle}
+        initialValue={{ title: formState.value!.title, description: formState.value!.description }}
+        onChange={(newValue) => formState.setValue({ ...formState.value!, title: newValue.title, description: newValue.description })}
       />
 
       {/* Banner Section */}
+      {/* Banner Section */}
       <BannerSection
-        initialValue={banner}
-        onChange={setBanner}
+        initialValue={formState.value!.banner}
+        onChange={(newBanner) => formState.setValue({ ...formState.value!, banner: newBanner })}
         onFileUpload={handleFileUpload}
         onFileDelete={handleFileDelete}
         onFileDownload={handleFileDownload}
@@ -159,16 +200,6 @@ export default function ManageCoachingPage({
         uploadProgress={uploadProgress}
       />
 
-      {/* Save Button */}
-      <div className="flex justify-end">
-        <Button
-          variant="primary"
-          size="medium"
-          text="Save Coaching Page"
-          onClick={handleSave}
-          disabled={saveCoachingPageMutation.isPending}
-        />
-      </div>
     </div>
   );
 }

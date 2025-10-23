@@ -13,7 +13,7 @@ import { IconChevronDown } from '../icons/icon-chevron-down';
 
 type CarouselType = z.infer<typeof HomePageSchema>['carousel'];
 type CarouselItemType = CarouselType[0];
-type UploadType="upload_offers_page_carousel_card_image" |"upload_home_page_carousel_item_image";
+type UploadType="upload_offers_page_carousel_card_image" |"upload_home_page_carousel_item_image"
 interface CarouselSectionProps {
     initialValue?: CarouselType;
     onChange: (value: CarouselType) => void;

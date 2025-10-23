@@ -17,7 +17,7 @@ interface BannerSectionProps {
     onChange: (value: BannerItemType) => void;
     onFileUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
-        uploadType: string,
+        uploadType: "upload_coaching_page_banner_image",
         abortSignal?: AbortSignal
     ) => Promise<fileMetadata.TFileMetadata>;
     onFileDelete: (id: string) => void;
