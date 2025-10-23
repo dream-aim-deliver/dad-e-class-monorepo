@@ -108,16 +108,16 @@ export default function PlatformManagement() {
             />
         );
     }
-
+   
 
     const topics = topicsViewModel.data.topics;
     const categories = categoriesViewModel.data.categories;
 
     return (
-        <div className="flex flex-col space-y-8 p-6">
+        <div className="flex flex-col space-y-8 p-5">
             {/* Platform Header */}
-            <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg shadow-lg">
-                <h1 className="text-4xl font-bold mb-2">
+            <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg shadow-lg mb-12">
+                <h1 className="mb-3">
                     Platform Management
                 </h1>
                 <div className="flex items-center gap-4 text-lg flex-wrap">
@@ -125,46 +125,87 @@ export default function PlatformManagement() {
                         <span className="font-semibold">Platform:</span>
                         <Badge
                             variant="primary"
-                            className="bg-white/20 text-white"
                             text={platformContext.platformSlug}
+                            size="medium"
                         />
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="font-semibold">Content Language:</span>
                         <Badge
                             variant="primary"
-                            className="bg-white/20 text-white"
                             text={contentLocale.toUpperCase()}
+                            size="medium"
                         />
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="font-semibold">UI Language:</span>
                         <Badge
                             variant="primary"
-                            className="bg-white/20 text-white"
                             text={appLocale.toUpperCase()}
+                            size="medium"
                         />
                     </div>
                 </div>
             </div>
 
+            {/* Statistics Summary */}
+            <h3 className="mb-4">Platform Statistics</h3>
+            <section className="bg-card-fill border border-card-stroke rounded-lg p-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                        <div className="text-3xl font-bold text-text-primary">
+                            {categories.length}
+                        </div>
+                        <div className="text-sm text-text-secondary mt-1">
+                            Total Categories
+                        </div>
+                    </div>
+                    <div className="text-center">
+                        <div className="text-3xl font-bold text-text-primary">
+                            {topics.length}
+                        </div>
+                        <div className="text-sm text-text-secondary mt-1">
+                            Total Topics
+                        </div>
+                    </div>
+                    <div className="text-center">
+                        <div className="text-3xl font-bold text-text-primary">
+                            {Math.round(topics.length / Math.max(categories.length, 1))}
+                        </div>
+                        <div className="text-sm text-text-secondary mt-1">
+                            Avg Topics/Category
+                        </div>
+                    </div>
+                    <div className="text-center">
+                        <div className="text-3xl font-bold text-green-600">
+                            Active
+                        </div>
+                        <div className="text-sm text-text-secondary mt-1">
+                            Platform Status
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <Divider className='my-8'/>
+
             {/* Categories Section */}
             <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h3 className="mb-4">
                     Categories ({categories.length})
-                </h2>
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {categories.map((category) => (
                         <div
                             key={category.id}
-                            className="p-4 hover:shadow-lg transition-shadow cursor-pointer border border-gray-200 rounded-lg"
+                            className="p-4 hover:shadow-lg transition-shadow bg-card-fill border border-card-stroke cursor-pointer rounded-lg"
                         >
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <h3 className="font-medium text-lg text-gray-900">
+                                    <h4 className="text-text-primary">
                                         {category.name}
-                                    </h3>
-                                    <p className="text-sm text-gray-500 mt-1">
+                                    </h4>
+                                    <p className="text-sm text-text-secondary mt-1">
                                         ID: {category.id}
                                     </p>
                                 </div>
@@ -182,13 +223,13 @@ export default function PlatformManagement() {
                 )}
             </section>
 
-            <Divider />
+            <Divider className='my-8'/>
 
             {/* Topics Section */}
             <section>
-                <h2 className="text-2xl font-semibold mb-4">
+                <h3 className="mb-4">
                     Topics ({topics.length})
-                </h2>
+                </h3>
                 <div className="flex flex-wrap gap-3">
                     {topics.map((topic) => (
                         <div
@@ -197,7 +238,7 @@ export default function PlatformManagement() {
                         >
                             <Badge
                                 variant="primary"
-                                className="px-4 py-2 text-sm font-medium hover:bg-primary-100 transition-colors cursor-pointer"
+                                className="px-4 py-2 text-sm text-button-secondary-text font-medium bg-button-secondary-fill border border-secondary-stroke hover:bg-primary-100 transition-colors cursor-pointer"
                                 text={topic.name}
                             />
                             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
@@ -211,44 +252,6 @@ export default function PlatformManagement() {
                 )}
             </section>
 
-            {/* Statistics Summary */}
-            <section className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-4">Platform Statistics</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center">
-                        <div className="text-3xl font-bold text-primary-600">
-                            {categories.length}
-                        </div>
-                        <div className="text-sm text-gray-600 mt-1">
-                            Total Categories
-                        </div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-3xl font-bold text-primary-600">
-                            {topics.length}
-                        </div>
-                        <div className="text-sm text-gray-600 mt-1">
-                            Total Topics
-                        </div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-3xl font-bold text-primary-600">
-                            {Math.round(topics.length / Math.max(categories.length, 1))}
-                        </div>
-                        <div className="text-sm text-gray-600 mt-1">
-                            Avg Topics/Category
-                        </div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-3xl font-bold text-green-600">
-                            Active
-                        </div>
-                        <div className="text-sm text-gray-600 mt-1">
-                            Platform Status
-                        </div>
-                    </div>
-                </div>
-            </section>
         </div>
     );
 }
