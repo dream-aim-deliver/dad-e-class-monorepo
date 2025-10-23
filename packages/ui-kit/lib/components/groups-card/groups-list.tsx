@@ -1,9 +1,9 @@
 import { FC, useState } from 'react';
 import { cn } from '../../utils/style-utils';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
-import { Tabs, TabList, TabTrigger, TabContent } from '../tabs/tab';
 import { JoinGroup } from './join-group';
 import { GroupOverviewCard, GroupOverviewCardDetails } from './groups-overview-card';
+import { Tabs } from '../tabs/tab';
 
 export interface GroupsListProps {
   isAdmin?: boolean;
@@ -80,7 +80,7 @@ export const GroupsList: FC<GroupsListProps> = ({
   const filteredYourGroups = allGroups.filter(group => group.coach?.isCurrentUser === true);
   const filteredAllGroups = allGroups; // Show ALL groups in "All Groups" tab
 
-  const renderGroupCard = (group: GroupOverviewCardDetails, index: number, isYourGroup: boolean = false) => {
+  const renderGroupCard = (group: GroupOverviewCardDetails, index: number, isYourGroup = false) => {
     // Show admin view when user is admin AND is the coach of this group (regardless of tab)
     const showAsAdmin = isAdmin && group.coach?.isCurrentUser;
     

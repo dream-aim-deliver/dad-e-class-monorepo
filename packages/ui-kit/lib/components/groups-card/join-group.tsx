@@ -70,7 +70,9 @@ export const JoinGroup: FC<JoinGroupProps> = ({
           <TextInput
             inputField={{
               value: couponCode,
-              setValue: variant === 'already-has-coach' ? () => {} : (onCouponCodeChange || (() => {})),
+              setValue: variant === 'already-has-coach' 
+                ? () => { /* Input disabled for already-has-coach variant */ } 
+                : (onCouponCodeChange || (() => { /* No handler provided */ })),
               inputText: dictionary.components.joinGroup.couponCodePlaceholder,
             }}
             hasFeedback={!!validationError}
