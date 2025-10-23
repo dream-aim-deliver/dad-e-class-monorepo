@@ -220,3 +220,8 @@ export { CoachStudentInteractionCard } from './components/coach-student-interact
 export { UserAvatar } from './components/avatar/user-avatar';
 export { CouponGrid, type CouponRow, type CouponGridProps } from './components/grids/coupon-grid';
 export { CouponGridFilterModal, type CouponFilterModel, type CouponGridFilterModalProps } from './components/grids/coupon-grid-filter-modal';
+
+// Groups Components
+export { JoinGroup } from './components/groups-card/join-group';
+export { GroupOverviewCard, type GroupOverviewCardDetails, type GroupOverviewCardProps } from './components/groups-card/groups-overview-card';
+export { GroupsList, type GroupsListProps } from './components/groups-card/groups-list';

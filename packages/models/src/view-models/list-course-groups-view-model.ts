@@ -6,7 +6,9 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { ListCourseGroupsSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
+// TODO: Replace with actual schema import when backend is ready
+// import { ListCourseGroupsSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
+import { ListCourseGroupsSuccessResponseSchema } from '../usecase-models/list-course-groups-usecase-models';
 
 // Extract success data from usecase response
 export const ListCourseGroupsSuccessSchema = ListCourseGroupsSuccessResponseSchema.shape.data;
