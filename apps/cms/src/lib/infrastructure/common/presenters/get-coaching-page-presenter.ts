@@ -1,17 +1,21 @@
-import { viewModels, useCaseModels } from '@maany_shr/e-class-models';
+import { viewModels } from '@maany_shr/e-class-models';
 import {
     BasePresenter,
-    ExtractStatusModel,
     TBaseResponseResponseMiddleware,
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
+import {
+    GetCoachingPageUseCaseResponseSchema,
+    TGetCoachingPageUseCaseResponse,
+    TGetCoachingPageErrorResponse
+} from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TCoachingPagePresenterUtilities = {};
 
 export const GetCoachingPageResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        useCaseModels.TGetCoachingPageUseCaseResponse,
+        TGetCoachingPageUseCaseResponse,
         viewModels.TCoachingPageViewModel,
         TCoachingPagePresenterUtilities
     >;
@@ -19,8 +23,8 @@ export const GetCoachingPageResponseMiddleware =
 type TGetCoachingPageResponseMiddleware =
     typeof GetCoachingPageResponseMiddleware;
 
-export default class CoachingPagePresenter extends BasePresenter<
-    useCaseModels.TGetCoachingPageUseCaseResponse,
+export default class GetCoachingPagePresenter extends BasePresenter<
+    TGetCoachingPageUseCaseResponse,
     viewModels.TCoachingPageViewModel,
     TCoachingPagePresenterUtilities,
     TGetCoachingPageResponseMiddleware
@@ -31,8 +35,7 @@ export default class CoachingPagePresenter extends BasePresenter<
     ) {
         super({
             schemas: {
-                responseModel:
-                    useCaseModels.GetCoachingPageUseCaseResponseSchema,
+                responseModel: GetCoachingPageUseCaseResponseSchema,
                 viewModel: viewModels.CoachingPageViewModelSchema
             },
             middleware: GetCoachingPageResponseMiddleware,
@@ -43,7 +46,7 @@ export default class CoachingPagePresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            useCaseModels.TGetCoachingPageUseCaseResponse,
+            TGetCoachingPageUseCaseResponse,
             { success: true }
         >,
     ): viewModels.TCoachingPageViewModel {
@@ -56,18 +59,27 @@ export default class CoachingPagePresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            useCaseModels.TGetCoachingPageUseCaseErrorResponse,
+            TGetCoachingPageErrorResponse,
             TGetCoachingPageResponseMiddleware
         >,
     ): viewModels.TCoachingPageViewModel {
+        if (response.data.errorType === 'NotFoundError') {
+            return {
+                mode: 'not-found',
+                data: {
+                    message: response.data.message,
+                    operation: response.data.operation,
+                    context: response.data.context
+                }
+            };
+        }
+
         return {
             mode: 'kaboom',
             data: {
-
                 message: response.data.message,
                 operation: response.data.operation,
                 context: response.data.context
-
             }
         };
     }

@@ -1,13 +1,13 @@
 import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
-import Coaching from '../../client/pages/coaching/coaching';
+import CoachingPage from '../../client/pages/coaching/coaching-page';
 
-interface CoachingProps {
+interface CoachingPageProps {
     topics?: string[];
 }
 
-export default async function CoachingServerComponent(props: CoachingProps) {
+export default async function CoachingPageServerComponent(props: CoachingPageProps) {
     await Promise.all([
         prefetch(trpc.getCoachingPage.queryOptions({})),
         prefetch(trpc.listTopicsByCategory.queryOptions({})),
@@ -18,7 +18,7 @@ export default async function CoachingServerComponent(props: CoachingProps) {
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <Coaching initialSelectedTopics={props.topics} />
+                    <CoachingPage initialSelectedTopics={props.topics} />
                 </Suspense>
             </HydrateClient>
         </>

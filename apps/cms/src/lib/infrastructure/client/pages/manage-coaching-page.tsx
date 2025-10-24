@@ -48,7 +48,7 @@ export default function ManageCoachingPage({
     session?.user?.roles?.includes('superadmin');
 
   // TRPC query for page data - using EXACT usecase name from Notion
-  const [coachingPageResponse , { refetch: refetchCoachingPage }] = trpc.getCoachingPage.useSuspenseQuery({});
+  const [coachingPageResponse, { refetch: refetchCoachingPage }] = trpc.getCoachingPage.useSuspenseQuery({});
 
   const { presenter: coachingPagePresenter } = useGetCoachingPagePresenter(
     setCoachingPageViewModel
@@ -78,7 +78,7 @@ export default function ManageCoachingPage({
     banner: {
       title: bannerData?.title || '',
       description: bannerData?.description || '',
-      imageUrl: bannerData?.imageUrl || null,
+      imageUrl: bannerData?.image?.downloadUrl || null,
       buttonText: bannerData?.buttonText || '',
       buttonUrl: bannerData?.buttonLink || '',
     },
@@ -100,8 +100,8 @@ export default function ManageCoachingPage({
     },
   });
 
-   // @ts-ignore
-    coachingPagePresenter.present(coachingPageResponse, coachingPageViewModel);
+  // @ts-ignore
+  coachingPagePresenter.present(coachingPageResponse, coachingPageViewModel);
 
   // Now handle conditional rendering after all hooks are called
   if (coachingPageViewModel?.mode === 'kaboom') {

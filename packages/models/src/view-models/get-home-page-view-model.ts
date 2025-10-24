@@ -8,6 +8,10 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 import { GetHomePageSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
 
+
+// For backward compatibility
+export const HomePageSchema = GetHomePageSuccessResponseSchema.shape.data;
+
 // Extract success data from usecase response
 export const GetHomePageSuccessSchema = GetHomePageSuccessResponseSchema.shape.data;
 export type TGetHomePageSuccess = z.infer<typeof GetHomePageSuccessSchema>;
