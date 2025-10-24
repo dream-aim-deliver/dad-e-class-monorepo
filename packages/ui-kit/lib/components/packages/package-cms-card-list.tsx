@@ -126,15 +126,36 @@ export function PackageCmsCardList({
 
     if (isEmpty) {
         return (
-            <div className="flex flex-col justify-between gap-3 p-4 items-end">
-                <Button
-                    variant="primary"
-                    size="medium"
-                    hasIconLeft
-                    iconLeft={<IconPlus />}
-                    onClick={onCreatePackage}
-                    text={dictionary.createPackageButton}
-                />
+            <div className="flex flex-col gap-8 p-4">
+                {/* Title, Checkbox & CreatePackageButton - shown even when empty */}
+                <div className="flex flex-row items-center gap-4 justify-between">
+                    <h1 className="text-text-primary text-3xl md:text-4xl">
+                        {dictionary.allPackagesText} ({packageCount})
+                    </h1>
+                    <div className="flex flex-row gap-5">
+                        <CheckBox
+                            size="medium"
+                            name="showArchived"
+                            value="showArchived"
+                            withText={true}
+                            label={dictionary.showArchivedText}
+                            checked={showArchived}
+                            onChange={onClickCheckbox}
+                            labelClass="text-text-primary"
+                        />
+
+                        <Button
+                            variant="primary"
+                            size="medium"
+                            hasIconLeft
+                            iconLeft={<IconPlus />}
+                            onClick={onCreatePackage}
+                            text={dictionary.createPackageButton}
+                        />
+                    </div>
+                </div>
+
+                {/* Empty state message */}
                 <div className="flex flex-col md:p-5 p-3 gap-2 rounded-medium border border-card-stroke bg-card-fill w-full lg:min-w-[22rem]">
                     <p className="text-text-primary text-md">
                         {dictionary.emptyState}
