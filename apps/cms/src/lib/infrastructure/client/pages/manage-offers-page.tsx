@@ -6,7 +6,7 @@
 // User Types: CMS (admin/superadmin - enforced by middleware)
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=8540-240257&t=qGirq2t6ka6iwg1A-4
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DefaultLoading, DefaultError, Outline, PageTitleSection, PackageSection, CarouselSection, Banner } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -122,12 +122,36 @@ export default function ManageOffersPage({
         },
     });
 
-    // @ts-ignore
-    packagesPresenter.present(packagesResponse, packagesViewModel);
-    // @ts-ignore
-    manageOffersPagePresenter.present(offersPageOutlineResponse, offersPageViewModel);
-    // @ts-ignore
-    packagesShortPresenter.present(packagesShortResponse, packagesShortViewModel);
+    // Present data on mount and when responses change
+    useEffect(() => {
+        // @ts-ignore
+        packagesPresenter.present(packagesResponse, packagesViewModel);
+        // @ts-ignore
+        manageOffersPagePresenter.present(offersPageOutlineResponse, offersPageViewModel);
+        // @ts-ignore
+        packagesShortPresenter.present(packagesShortResponse, packagesShortViewModel);
+    }, [offersPageOutlineResponse, packagesResponse, packagesShortResponse, manageOffersPagePresenter, packagesPresenter, packagesShortPresenter, offersPageViewModel, packagesViewModel, packagesShortViewModel]);
+
+    // Update form state when data loads
+    useEffect(() => {
+        if (offersPageViewModel?.mode === 'default' && packagesViewModel?.mode === 'default' && packagesShortViewModel?.mode === 'default' && !formState.isDirty) {
+            const loadedFormData: OffersPageFormData = {
+                title: offersPageViewModel.data.title || '',
+                description: offersPageViewModel.data.description || '',
+                packageIds: initialPackageIds,
+                carousel: (offersPageViewModel.data.items || []).map(item => ({
+                    title: item.title,
+                    description: item.description,
+                    buttonText: item.buttonText,
+                    buttonUrl: item.buttonUrl,
+                    badge: item.badge ?? undefined,
+                    imageUrl: item.image?.downloadUrl ?? null,
+                    imageId: item.image?.id ? Number(item.image.id) : null,
+                })),
+            };
+            formState.setValue(loadedFormData);
+        }
+    }, [offersPageViewModel?.mode, packagesViewModel?.mode, packagesShortViewModel?.mode]);
 
     // Now handle conditional rendering after all hooks are called
     if (offersPageViewModel?.mode === 'kaboom' || packagesViewModel?.mode === 'kaboom' || packagesShortViewModel?.mode === 'kaboom') {
@@ -242,7 +266,7 @@ export default function ManageOffersPage({
 
             {/* Page Title Section */}
             <PageTitleSection
-                initialValue={{ title: formState.value.title, description: formState.value.description }}
+                value={{ title: formState.value.title, description: formState.value.description }}
                 onChange={(newValue) => formState.setValue({ ...formState.value!, title: newValue.title, description: newValue.description })}
             />
 
@@ -258,7 +282,7 @@ export default function ManageOffersPage({
 
             {/* Carousel Section */}
             <CarouselSection
-                initialValue={carouselItemsForComponent}
+                value={carouselItemsForComponent}
                 onChange={(newCarousel) => {
                     // Transform back from image object format to imageUrl/imageId format
                     const transformedCarousel = newCarousel.map((item: {

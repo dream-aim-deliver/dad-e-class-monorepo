@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Dropdown } from '../../dropdown';
 
 type PackageType = {
@@ -9,31 +8,19 @@ type PackageType = {
 };
 
 interface PackageSectionProps {
-    initialValue?: PackageType[];
     onChange: (packages: PackageType[]) => void;
     packages: PackageType[];
     linkedPackages: PackageType[];
 }
 
 export default function PackageSection({
-    initialValue = [],
     onChange,
     packages,
     linkedPackages,
 }: PackageSectionProps) {
-    // Store selected package IDs for the dropdown
-    const [selectedPackageIds, setSelectedPackageIds] = useState<string[]>(
-        initialValue.length > 0
-            ? initialValue.map(pkg => pkg.id)
-            : linkedPackages.map(pkg => pkg.id)
-    );
-
     const handleSelectionChange = (selected: string | string[] | null) => {
         const newSelectedIds = Array.isArray(selected) ? selected : [];
-        setSelectedPackageIds(newSelectedIds);
-
         const selectedPackages = packages.filter(pkg => newSelectedIds.includes(pkg.id));
-
         onChange(selectedPackages);
     };
 
@@ -52,7 +39,7 @@ export default function PackageSection({
                         type="multiple-choice-and-search"
                         options={options}
                         onSelectionChange={handleSelectionChange}
-                        defaultValue={selectedPackageIds}
+                        defaultValue={linkedPackages.map(pkg => pkg.id)}
                         text={{ multiText: "Select packages to link" }}
                     />
                 </div>
