@@ -202,9 +202,9 @@ export default function ManageOffersPage({
     const handleSave = async () => {
         setSaveStatus('idle');
 
-        const packageIdsAsNumbers = formState.value.packageIds;
+        const packageIdsAsNumbers = formState.value!.packageIds;
 
-        const carouselForSave = formState.value.carousel.map(item => ({
+        const carouselForSave = formState.value!.carousel.map(item => ({
             title: item.title,
             description: item.description,
             buttonText: item.buttonText,
@@ -214,8 +214,8 @@ export default function ManageOffersPage({
         }));
 
         await saveOffersPageMutation.mutateAsync({
-            title: formState.value.title,
-            description: formState.value.description,
+            title: formState.value!.title,
+            description: formState.value!.description,
             carousel: carouselForSave,
             packageIds: packageIdsAsNumbers,
         });
@@ -224,10 +224,10 @@ export default function ManageOffersPage({
 
     // Form state is always initialized with either real data or default empty data
     // Safe to derive selected packages
-    const selectedPackages = allPackages.filter(pkg => formState.value.packageIds.includes(Number(pkg.id)));
+    const selectedPackages = allPackages.filter(pkg => formState.value!.packageIds.includes(Number(pkg.id)));
 
     // Transform carousel items for CarouselSection component (needs image object format)
-    const carouselItemsForComponent = formState.value.carousel.map(item => ({
+    const carouselItemsForComponent = formState.value!.carousel.map(item => ({
         title: item.title,
         description: item.description,
         buttonText: item.buttonText,
@@ -275,8 +275,8 @@ export default function ManageOffersPage({
 
             {/* Page Title Section */}
             <PageTitleSection
-                value={{ title: formState.value.title, description: formState.value.description }}
-                onChange={(newValue) => formState.setValue({ ...formState.value, title: newValue.title, description: newValue.description })}
+                value={{ title: formState.value!.title, description: formState.value!.description }}
+                onChange={(newValue) => formState.setValue({ ...formState.value!, title: newValue.title, description: newValue.description })}
             />
 
             {/* Packages Section */}
@@ -285,7 +285,7 @@ export default function ManageOffersPage({
                 linkedPackages={selectedPackages}
                 onChange={(newSelected) => {
                     const newPackageIds = newSelected.map((pkg: any) => Number(pkg.id));
-                    formState.setValue({ ...formState.value, packageIds: newPackageIds });
+                    formState.setValue({ ...formState.value!, packageIds: newPackageIds });
                 }}
             />
 
@@ -310,7 +310,7 @@ export default function ManageOffersPage({
                         imageUrl: item.image?.downloadUrl ?? null,
                         imageId: item.image?.id ? Number(item.image.id) : null
                     }));
-                    formState.setValue({ ...formState.value, carousel: transformedCarousel });
+                    formState.setValue({ ...formState.value!, carousel: transformedCarousel });
                 }}
                 onFileUpload={handleFileUpload}
                 onFileDelete={handleFileDelete}
