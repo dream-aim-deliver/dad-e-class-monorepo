@@ -12,6 +12,7 @@ import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useListCoachingSessionsPresenter } from '../hooks/use-list-coaching-sessions-presenter';
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { Outline, Button, IconCloudDownload } from '@maany_shr/e-class-ui-kit';
 import {
   DefaultLoading,
@@ -28,6 +29,10 @@ interface CoachingSessionsProps {
   platformLocale: TLocale;
 }
 
+/**
+ * @todo: Consider extracting presenter wiring and TRPC calls to a custom hook for testability.
+ *        This component currently mixes data presentation and navigation handlers.
+ */
 export default function CoachingSessions({
   locale,
   platformSlug,
@@ -35,9 +40,10 @@ export default function CoachingSessions({
 }: CoachingSessionsProps) {
   const currentLocale = useLocale() as TLocale;
   const t = useTranslations('pages.coachingSessions');
+  const router = useRouter();
 
   // TRPC query for coaching sessions data
-  const [coachingSessionsResponse] = trpc.listCoachingSessions.useSuspenseQuery({
+  const [coachingSessionsResponse,{ refetch: refetchCoachingSessions }] = trpc.listCoachingSessions.useSuspenseQuery({
   });
 
   const [coachingSessionsViewModel, setCoachingSessionsViewModel] = useState<
@@ -54,13 +60,26 @@ export default function CoachingSessions({
 
 
   const gridRef = useRef<any>(null);
-  const handleSessionDetailsClick = (session: any) => {
-    // TODO: replace with navigation or modal open
-    console.log('session details', session);
-  };
+
+
   const handleCoachClick = (coach: any) => {
-    // TODO: navigate to coach or show details
-    console.log('coach clicked', coach);
+    // navigate to platform coach page by username if available
+    if (!coach || !coach.username) return;
+    router.push(`/${platformLocale}/coaches/${coach.username}`);
+  };
+
+  // @todo: Add analytics tracking when admins navigate to student profiles.
+  const handleStudentClick = (student: any) => {
+    if (!student || !student.username) return;
+
+    // 
+    router.push(`/${platformLocale}/students/${student.username}`);
+  };
+
+  // @todo: Validate course.slug presence and fallback gracefully if missing.
+  const handleCourseClick = (course: any) => {
+    if (!course || !course.slug) return;
+    router.push(`/${platformLocale}/courses/${course.slug}`);
   };
 
   // Loading state
@@ -70,21 +89,21 @@ export default function CoachingSessions({
 
   // Error handling - kaboom error
   if (coachingSessionsViewModel.mode === 'kaboom') {
-    const errorData = coachingSessionsViewModel.data;
 
     return (
       <DefaultError
         locale={currentLocale}
         title={t('error.title')}
         description={t('error.description')}
+        onRetry={() => {
+					refetchCoachingSessions();
+				}}
       />
     );
   }
 
   // Error handling - not found error
   if (coachingSessionsViewModel.mode === 'not-found') {
-    const errorData = coachingSessionsViewModel.data;
-    console.error(errorData);
 
     return (
       <DefaultNotFound
@@ -193,8 +212,9 @@ export default function CoachingSessions({
           gridRef={gridRef}
           locale={currentLocale}
           sessions={coachingSessionsData?.sessions ?? []}
-          onSessionDetailsClick={handleSessionDetailsClick}
           onCoachClick={handleCoachClick}
+          onStudentClick={handleStudentClick}
+          onCourseClick={handleCourseClick}
         />
       </div>
 
