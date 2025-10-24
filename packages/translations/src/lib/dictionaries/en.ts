@@ -1,4 +1,4 @@
-import { TDictionary } from './base';
+﻿import { TDictionary } from './base';
 import { Home_EN } from '../pages/home/home-en';
 import { Login_EN } from '../pages/login/login-en';
 import { SSO_EN } from '../pages/sso/sso-en';
@@ -1449,6 +1449,7 @@ export const EN: TDictionary = {
       yourCourses: 'Your offers',
       createCourse: 'Create a course',
       becomeCourseCreator: 'Become a course creator',
+      viewAllCourses: 'View All Courses',
     },
     coachStudents: {
       yourStudents: 'Your students',
@@ -1783,6 +1784,39 @@ export const EN: TDictionary = {
         notFoundTitle: 'No sessions found',
         notFoundDescription: 'There are no ended coaching sessions for this group.',
       },
+    },
+    userDashboard: {
+      editProfile: "Edit Profile",
+      viewCalendar: "View Calendar",
+      yourCourses: "Your Courses",
+      createCourse: "Create Course",
+      viewAllCourses: "View All Courses",
+    },
+    userCoachingSessions: {
+      title: "Your Coaching Sessions",
+      loadingTitle: "Your Coaching Sessions",
+      tabUpcoming: "Upcoming",
+      tabEnded: "Ended",
+      tabAvailable: "Available",
+      viewAllSessions: "View All Sessions",
+      noUpcoming: "You don't have upcoming coaching sessions yet.",
+      noEnded: "You don't have ended coaching sessions.",
+      noAvailable: "You don't have available coaching sessions yet.",
+    },
+    coachDashboardReviews: {
+      title: "Your Reviews",
+      viewAllReviews: "View All Reviews",
+      noReviewsTitle: "No reviews yet",
+      noReviewsDescription: "You haven't received any reviews yet. Reviews from students will appear here after they complete your courses or coaching sessions.",
+    },
+    coachDashboardStudents: {
+      emptyState: "You don't have any students assigned to you yet. Students will appear here when they enroll in your courses or book coaching sessions.",
+      errorLoadingStudents: "Error loading students",
+      title: "Your Students",
+      clearAllFilters: "Clear all filters",
+      search: "Search students",
+      filter: "Filter",
+      viewAllStudents: "View All Students",
     },
     groupWorkspace: {
       title: 'Group Workspace',
