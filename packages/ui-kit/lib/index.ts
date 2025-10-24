@@ -235,6 +235,7 @@ export { CoachStudentInteractionCard } from './components/coach-student-interact
 export { UserAvatar } from './components/avatar/user-avatar';
 export { CouponGrid, type CouponRow, type CouponGridProps } from './components/grids/coupon-grid';
 export { CouponGridFilterModal, type CouponFilterModel, type CouponGridFilterModalProps } from './components/grids/coupon-grid-filter-modal';
+export { CoachingSessionGrid } from './components/grids/coaching-session-grid';
 
 
 export * from "./components/cms"

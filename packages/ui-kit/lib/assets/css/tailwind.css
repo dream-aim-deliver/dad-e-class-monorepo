@@ -155,6 +155,8 @@
   --ag-foreground-color: var(--color-base-neutral-50);
   --ag-header-background-color: var(--color-base-neutral-900);
   --ag-accent-color: var(--color-base-brand-500);
+  --ag-header-text-color: var(--color-text-secondary) ;
+  --ag-header-font-weight: 700;
 }
 
 @layer base {
