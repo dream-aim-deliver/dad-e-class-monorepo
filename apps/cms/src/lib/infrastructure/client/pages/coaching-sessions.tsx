@@ -43,7 +43,7 @@ export default function CoachingSessions({
   const router = useRouter();
 
   // TRPC query for coaching sessions data
-  const [coachingSessionsResponse,{ refetch: refetchCoachingSessions }] = trpc.listCoachingSessions.useSuspenseQuery({
+  const [coachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachingSessions.useSuspenseQuery({
   });
 
   const [coachingSessionsViewModel, setCoachingSessionsViewModel] = useState<
@@ -63,22 +63,24 @@ export default function CoachingSessions({
 
 
   const handleCoachClick = (coach: any) => {
-    // navigate to platform coach page by username if available
+    
     if (!coach || !coach.username) return;
+    // TODO: we need to add actual domain for the platform
     router.push(`/${platformLocale}/coaches/${coach.username}`);
   };
 
-  // @todo: Add analytics tracking when admins navigate to student profiles.
+  // TODO: we need to add actual domain for the platform
   const handleStudentClick = (student: any) => {
     if (!student || !student.username) return;
 
-    // 
+    // TODO: we need to add actual domain for the platform
     router.push(`/${platformLocale}/students/${student.username}`);
   };
 
   // @todo: Validate course.slug presence and fallback gracefully if missing.
   const handleCourseClick = (course: any) => {
     if (!course || !course.slug) return;
+    // TODO: we need to add actual domain for the platform
     router.push(`/${platformLocale}/courses/${course.slug}`);
   };
 
@@ -96,8 +98,8 @@ export default function CoachingSessions({
         title={t('error.title')}
         description={t('error.description')}
         onRetry={() => {
-					refetchCoachingSessions();
-				}}
+          refetchCoachingSessions();
+        }}
       />
     );
   }
