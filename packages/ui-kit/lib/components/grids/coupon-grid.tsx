@@ -40,7 +40,7 @@ export interface CouponGridProps extends isLocalAware {
     gridRef: RefObject<AgGridReact | null>;
     coupons: CouponRow[];
     locale: TLocale;
-    onRevokeCoupon: (couponId: number) => void;
+    onRevokeCoupon: (couponId: string) => void;
     onCreateCoupon: () => void;
     onSortChanged?: (event: SortChangedEvent) => void;
     doesExternalFilterPass?: (node: IRowNode<CouponRow>) => boolean;
@@ -103,7 +103,7 @@ const OutcomeCellRenderer = (params: { value: CouponRow['outcome']; locale: TLoc
     }
 };
 
-const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRow; onRevoke: (id: number) => void; locale: TLocale }) => {
+const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRow; onRevoke: (id: string) => void; locale: TLocale }) => {
     const { value: status, data } = params;
     const dictionary = getDictionary(params.locale).components.couponGrid;
     
@@ -117,7 +117,7 @@ const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRo
     
     return (
         <button
-            onClick={() => params.onRevoke(Number(data.id))}
+            onClick={() => params.onRevoke(data.id)}
             className="text-sm font-medium hover:opacity-80"
             style={{ color: '#A78BFA' }}
         >
@@ -170,7 +170,6 @@ const StatusCellRenderer = (params: { value: CouponRow['status']; data: CouponRo
  * ```
  */
 export const CouponGrid = (props: CouponGridProps) => {
-
     const dictionary = getDictionary(props.locale).components.couponGrid;
 
     const columnDefs = useMemo(() => [
@@ -234,6 +233,10 @@ export const CouponGrid = (props: CouponGridProps) => {
             sortable: false,
             flex: 2, // Takes up more space for course names
             minWidth: 200,
+            valueFormatter: (params: any) => {
+                // Return empty string since we use cellRenderer for display
+                return '';
+            },
             cellRenderer: (params: any) => <OutcomeCellRenderer {...params} locale={props.locale} />
         },
         {
