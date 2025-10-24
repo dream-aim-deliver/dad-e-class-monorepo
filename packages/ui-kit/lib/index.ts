@@ -238,5 +238,7 @@ export { CouponGrid, type CouponRow, type CouponGridProps } from './components/g
 export { CouponGridFilterModal, type CouponFilterModel, type CouponGridFilterModalProps } from './components/grids/coupon-grid-filter-modal';
 export { ReviewFilterModal, type ReviewFilterModel } from './components/grids/review-filter-modal';
 export { default as CoachReviewCard, type ReviewCardProps as CoachReviewCardProps } from './components/review/coach-review-card';
+export { RevokeCouponModal, type RevokeCouponModalProps } from './components/coupon/revoke-coupon-modal';
+
 
 export * from "./components/cms"

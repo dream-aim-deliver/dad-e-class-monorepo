@@ -1302,6 +1302,14 @@ export const DictionarySchema = z.object({
       resetFilters: z.string(),
       applyFilters: z.string(),
     }),
+    revokeCouponModal: z.object({
+      title: z.string(),
+      confirmMessage: z.string(),
+      cancelButton: z.string(),
+      confirmButton: z.string(),
+      revoking: z.string(),
+      successMessage: z.string(),
+    }),
     packageDetailsStep: z.object({
       title: z.string(),
       packageTitleLabel: z.string(),
