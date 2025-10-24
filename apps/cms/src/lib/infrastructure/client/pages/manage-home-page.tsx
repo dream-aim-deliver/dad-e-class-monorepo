@@ -153,8 +153,6 @@ export default function ManageHomepage() {
 	// Single state for all homepage data
 	const editableHomePageData: viewModels.TGetHomePageSuccess = formState.value!;
 
-	console.log('[ManageHomepage] Rendering with editableHomePageData.banner.title:', editableHomePageData?.banner?.title);
-
 	const handleBannerChange = (banner: typeof editableHomePageData.banner) => {
 		formState.setValue({
 			...editableHomePageData,
