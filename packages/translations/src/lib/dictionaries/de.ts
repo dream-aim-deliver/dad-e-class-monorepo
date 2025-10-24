@@ -1019,6 +1019,7 @@ export const DE: TDictionary = {
       coachingOfferings: 'Coaching-Angebote',
       yourStudents: 'Deine Schüler',
       yourProfile: 'Ihr Profil',
+      coupons: 'Gutscheine',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',

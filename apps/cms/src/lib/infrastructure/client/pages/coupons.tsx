@@ -9,10 +9,15 @@
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=5127-27462
 
 import { trpc } from '../trpc/cms-client';
-import { useState } from 'react';
-import { DefaultLoading, DefaultError } from '@maany_shr/e-class-ui-kit';
+import { useState, useRef } from 'react';
+import { DefaultLoading, DefaultError, CouponGrid, Breadcrumbs } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useListCouponsPresenter } from '../hooks/use-list-coupons-presenter';
+import { useRequiredPlatformLocale } from '../context/platform-locale-context';
+import { useRequiredPlatform } from '../context/platform-context';
+import { useRouter } from 'next/navigation';
 
 interface CouponsProps {
   locale: string;
@@ -23,71 +28,112 @@ interface CouponsProps {
 export default function Coupons({ platformSlug, platformLocale }: CouponsProps) {
   const locale = useLocale() as TLocale;
   const t = useTranslations('pages.coupons');
+  const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+
+  // Platform context
+  const platformContext = useRequiredPlatformLocale();
+  const { platform } = useRequiredPlatform();
+  const router = useRouter();
+
+  // Grid ref for AG Grid instance
+  const gridRef = useRef<any>(null);
+
+  // ViewModel state
+  const [listCouponsViewModel, setListCouponsViewModel] = useState<
+    viewModels.TListCouponsViewModel | undefined
+  >(undefined);
+
+  // Presenter hook
+  const { presenter } = useListCouponsPresenter(setListCouponsViewModel);
 
   // TRPC query for page data
-  // TODO: Replace with actual usecase from: listCoupons
   const [couponsResponse] = trpc.listCoupons.useSuspenseQuery({
     // TODO: Add query parameters for the usecase
   });
 
-  // TODO: Create presenter hook for CouponsViewModel
-  // const [couponsViewModel, setCouponsViewModel] = useState<TCouponsViewModel | undefined>(undefined);
-  // const { presenter } = useCouponsPresenter(setCouponsViewModel);
-  // presenter.present(couponsResponse, couponsViewModel);
+  // Connect TRPC response to presenter
+  // @ts-ignore
+  presenter.present(couponsResponse, listCouponsViewModel);
 
-  // Loading state - TODO: Implement proper loading check once ViewModel is created
-  // if (!couponsViewModel) {
-  //   return <DefaultLoading locale={locale} variant="minimal" />;
-  // }
+  // Loading state
+  if (!listCouponsViewModel) {
+    return <DefaultLoading locale={locale} variant="minimal" />;
+  }
 
-  // Error handling - TODO: Implement error handling once ViewModel is created
-  // if (couponsViewModel.mode === 'kaboom') {
-  //   const errorData = couponsViewModel.data;
-  //   console.error(errorData);
-  //   return (
-  //     <DefaultError
-  //       locale={locale}
-  //       title={t('error.kaboom.title')}
-  //       description={t('error.kaboom.description')}
-  //     />
-  //   );
-  // }
+  // Error handling
+  if (listCouponsViewModel.mode === 'kaboom') {
+    const errorData = listCouponsViewModel.data;
+    console.error(errorData);
+    return (
+      <DefaultError
+        locale={locale}
+        title={t('error.kaboom.title')}
+        description={t('error.kaboom.description')}
+      />
+    );
+  }
 
-  // if (couponsViewModel.mode === 'not-found') {
-  //   const errorData = couponsViewModel.data;
-  //   console.error(errorData);
-  //   return (
-  //     <DefaultError
-  //       locale={locale}
-  //       title={t('error.notFound.title')}
-  //       description={t('error.notFound.description')}
-  //     />
-  //   );
-  // }
+  if (listCouponsViewModel.mode === 'not-found') {
+    const errorData = listCouponsViewModel.data;
+    console.error(errorData);
+    return (
+      <DefaultError
+        locale={locale}
+        title={t('error.notFound.title')}
+        description={t('error.notFound.description')}
+      />
+    );
+  }
 
-  // TODO: Extract data from ViewModel once created
-  // const couponsData = couponsViewModel.data;
+  // Success state - extract data from ViewModel
+  const couponsData = listCouponsViewModel.data;
+
+  // Breadcrumbs following the standard pattern
+  const breadcrumbItems = [
+    {
+      label: breadcrumbsTranslations('platforms'),
+      onClick: () => router.push('/'),
+    },
+    {
+      label: platform.name,
+      onClick: () => {
+        // TODO: Implement navigation to platform
+      },
+    },
+    {
+      label: breadcrumbsTranslations('coupons'),
+      onClick: () => {
+        // Nothing should happen on clicking the current page
+      },
+    },
+  ];
 
   return (
-    <div className="flex flex-col space-y-5 px-30">
-      {/* Page header with translations */}
-      <div>
+    <div className="flex flex-col space-y-2 bg-card-fill p-5 border border-card-stroke rounded-medium gap-4 h-screen">
+      <Breadcrumbs items={breadcrumbItems} />
+
+      <div className="flex flex-col space-y-2">
         <h1>{t('title')}</h1>
-        <p>{t('description')}</p>
+        <p className="text-text-secondary text-sm">
+          Platform: {platformContext.platformSlug} | Content Language: {platformLocale.toUpperCase()}
+        </p>
       </div>
 
-      {/* TODO: Implement coupons list grid with AG Grid */}
-      {/* Features to implement: List Coupon, Create & Revoke Coupon Modal */}
-      {/* UI Components needed: Nav bar / Header, SideMenu (Sidebar Navigation), List Coupon, Create & Revoke Coupon Modal */}
-      {/* Usecases: listCoupons */}
-
-      <div>
-        {/* TODO: Add Create Coupon button */}
-        {/* TODO: Add search/filter functionality */}
-        {/* TODO: Add AG Grid to display coupons */}
-        {/* TODO: Add Create Coupon Modal */}
-        {/* TODO: Add Revoke Coupon Modal */}
-        <p>{t('loading')}</p>
+      {/* Coupons Grid */}
+      <div className="flex flex-col grow bg-transparent">
+        <CouponGrid
+          gridRef={gridRef}
+          coupons={couponsData.coupons}
+          locale={locale}
+          onRevokeCoupon={(couponId) => {
+            // TODO: Implement revoke coupon functionality
+            console.log('Revoke coupon:', couponId);
+          }}
+          onCreateCoupon={() => {
+            // TODO: Implement create coupon functionality
+            console.log('Create new coupon');
+          }}
+        />
       </div>
     </div>
   );
