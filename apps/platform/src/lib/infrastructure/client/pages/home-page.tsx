@@ -6,6 +6,7 @@ import {
     CoachingOnDemandBanner,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
     Divider,
     GeneralCard,
     Hero,
@@ -65,12 +66,12 @@ function Topics() {
     return <TopicList list={topics} title={t('topicsTitle')} />;
 }
 
-export default function Home() {
+export default function HomePage() {
     const locale = useLocale() as TLocale;
 
     const [homePageResponse] = trpc.getHomePage.useSuspenseQuery({});
     const [homePageViewModel, setHomePageViewModel] = useState<
-        viewModels.THomePageViewModel | undefined
+        viewModels.TGetHomePageViewModel | undefined
     >(undefined);
     const { presenter: homePagePresenter } =
         useGetHomePagePresenter(setHomePageViewModel);
@@ -87,6 +88,10 @@ export default function Home() {
         return <DefaultError locale={locale} />;
     }
 
+    if (homePageViewModel.mode === 'not-found') {
+        return <DefaultNotFound locale={locale} />;
+    }
+
     const homePage = homePageViewModel.data;
 
     return (
@@ -96,7 +101,7 @@ export default function Home() {
                     locale={locale}
                     title={homePage.banner.title}
                     description={homePage.banner.description}
-                    thumbnailUrl={homePage.banner.thumbnailUrl ?? ''}
+                    thumbnailUrl={homePage.banner.thumbnailImage?.downloadUrl ?? ''}
                     videoId={homePage.banner.videoId ?? ''}
                 />
                 <Divider />
@@ -111,7 +116,8 @@ export default function Home() {
                                 locale={locale}
                                 onButtonClick={onClick}
                                 {...item}
-                                imageUrl={item.imageUrl ?? ''}
+                                badge={item.badge ?? undefined}
+                                imageUrl={item.image?.downloadUrl ?? ''}
                             />
                         );
                     })}
@@ -126,10 +132,10 @@ export default function Home() {
                     description={homePage.coachingOnDemand.description}
                     images={
                         <>
-                            {homePage.coachingOnDemand.mobileImageUrl && (
+                            {homePage.coachingOnDemand.mobileImage?.downloadUrl && (
                                 <Image
                                     src={
-                                        homePage.coachingOnDemand.mobileImageUrl
+                                        homePage.coachingOnDemand.mobileImage.downloadUrl
                                     }
                                     alt="Coaching on Demand"
                                     width={640}
@@ -137,10 +143,10 @@ export default function Home() {
                                     className="w-full h-auto sm:hidden"
                                 />
                             )}
-                            {homePage.coachingOnDemand.tabletImageUrl && (
+                            {homePage.coachingOnDemand.tabletImage?.downloadUrl && (
                                 <Image
                                     src={
-                                        homePage.coachingOnDemand.tabletImageUrl
+                                        homePage.coachingOnDemand.tabletImage.downloadUrl
                                     }
                                     alt="Coaching on Demand"
                                     width={1024}
@@ -149,11 +155,11 @@ export default function Home() {
                                     sizes="(min-width: 768px) and (max-width: 1023px) 100vw, 0px"
                                 />
                             )}
-                            {homePage.coachingOnDemand.desktopImageUrl && (
+                            {homePage.coachingOnDemand.desktopImage?.downloadUrl && (
                                 <Image
                                     src={
                                         homePage.coachingOnDemand
-                                            .desktopImageUrl
+                                            .desktopImage.downloadUrl
                                     }
                                     alt="Coaching on Demand"
                                     width={1920}
@@ -172,7 +178,7 @@ export default function Home() {
                     showNumbers={homePage.accordion.showNumbers}
                     items={homePage.accordion.items.map((item) => ({
                         ...item,
-                        iconImageUrl: item.iconImageUrl ?? '',
+                        iconImageUrl: item.iconImage?.downloadUrl ?? '',
                     }))}
                 />
             </div>

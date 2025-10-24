@@ -4,11 +4,10 @@ import { useState, useEffect } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { CheckBox } from '../../checkbox';
 import { AccordionBuilder, AccordionBuilderItem } from '../../accordion-builder';
-import { fileMetadata } from '@maany_shr/e-class-models';
+import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { z } from 'zod';
-import { HomePageSchema } from 'packages/models/src/view-models';
 
-type AccordionType = z.infer<typeof HomePageSchema>['accordion'];
+type AccordionType = z.infer<typeof viewModels.HomePageSchema>['accordion'];
 
 interface HowItWorksSectionProps {
     initialValue?: AccordionType;
@@ -84,7 +83,7 @@ export default function HowItWorksSection({
             title: item.title,
             content: item.content,
             position: index + 1,
-            iconImageUrl: '', // TODO: Extract from icon object when available
+            iconImage: null, // Will be set when user uploads
         }));
 
         handleAccordionChange({
@@ -102,8 +101,8 @@ export default function HowItWorksSection({
 
     const handleIconDownload = (index: number) => {
         const item = accordionData?.items?.[index];
-        if (item?.iconImageUrl) {
-            onFileDownload(item.iconImageUrl);
+        if (item?.iconImage?.id) {
+            onFileDownload(item.iconImage.id);
         }
     };
 

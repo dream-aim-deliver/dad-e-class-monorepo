@@ -261,7 +261,14 @@ export default function ManageOffersPage({
                 initialValue={carouselItemsForComponent}
                 onChange={(newCarousel) => {
                     // Transform back from image object format to imageUrl/imageId format
-                    const transformedCarousel = newCarousel.map(item => ({
+                    const transformedCarousel = newCarousel.map((item: {
+                        title: string;
+                        description: string;
+                        buttonText: string;
+                        buttonUrl: string;
+                        badge?: string | null | undefined;
+                        image: {id: string; name: string; size: number; category: 'image'; downloadUrl: string} | null;
+                    }) => ({
                         title: item.title,
                         description: item.description,
                         buttonText: item.buttonText,
