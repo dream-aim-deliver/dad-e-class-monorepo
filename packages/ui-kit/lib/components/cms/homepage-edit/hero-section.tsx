@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
@@ -38,6 +38,29 @@ export default function HeroSection({
 }: HeroSectionProps) {
     const [uploadedThumbnail, setUploadedThumbnail] = useState<fileMetadata.TFileMetadata | null>(null);
     const [uploadedVideo, setUploadedVideo] = useState<fileMetadata.TFileMetadataVideo | null>(null);
+
+    // Sync uploaded files with value prop when data is loaded from server
+    // Only update if the image ID has actually changed (not just object recreation)
+    useEffect(() => {
+        if (value.thumbnailImage) {
+            // Only update if thumbnail ID changed or didn't exist
+            if (!uploadedThumbnail || uploadedThumbnail.id !== value.thumbnailImage.id) {
+                setUploadedThumbnail({
+                    id: value.thumbnailImage.id,
+                    name: value.thumbnailImage.name,
+                    size: value.thumbnailImage.size,
+                    category: value.thumbnailImage.category,
+                    url: value.thumbnailImage.downloadUrl,
+                } as fileMetadata.TFileMetadata);
+            }
+        } else if (uploadedThumbnail) {
+            // Thumbnail was removed
+            setUploadedThumbnail(null);
+        }
+
+        // Note: videoId is stored as string, not a full video object in the schema
+        // Video state is handled differently - we don't pre-populate it from server
+    }, [value.thumbnailImage]);
 
     const handleFieldChange = (field: string, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newBannerData = {
