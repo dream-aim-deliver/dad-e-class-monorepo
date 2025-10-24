@@ -107,8 +107,8 @@ export default function HeroSection({
     const handleVideoUploadComplete = (file: fileMetadata.TFileMetadata) => {
         const videoFile = file as fileMetadata.TFileMetadataVideo;
         setUploadedVideo(videoFile);
-        // Store the video playback ID
-        handleFieldChange('videoId', (videoFile.videoId as string) || '');
+        // Store the video file ID as the videoId
+        handleFieldChange('videoId', videoFile.id);
     };
 
     const handleVideoDelete = (id: string) => {
