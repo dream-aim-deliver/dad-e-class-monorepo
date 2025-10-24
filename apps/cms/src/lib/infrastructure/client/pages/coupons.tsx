@@ -45,7 +45,35 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // TRPC mutation for revoking coupons
-  const revokeCouponMutation = trpc.revokeCoupon.useMutation();
+  const revokeCouponMutation = trpc.revokeCoupon.useMutation({
+    onSuccess: () => {
+      setRevokeSuccess(true);
+      setErrorMessage(null);
+      utils.listCoupons.invalidate();
+      // Auto-close modal after 5 seconds
+      const timer = setTimeout(() => {
+        setRevokingCouponId(null);
+        setRevokingCouponName('');
+        setRevokeSuccess(false);
+        setErrorMessage(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    },
+    onError: (error) => {
+      setRevokeSuccess(false);
+      setErrorMessage(null);
+      // Set appropriate error message based on error type
+      if (error?.data?.code === 'UNAUTHORIZED') {
+        setErrorMessage('You do not have permission to revoke this coupon.');
+      } else if (error?.data?.code === 'NOT_FOUND') {
+        setErrorMessage('Coupon not found.');
+      } else {
+        setErrorMessage('Failed to revoke coupon. Please try again.');
+      }
+    },
+  });
+
+  const utils = trpc.useUtils();
 
   // ViewModel state
   const [listCouponsViewModel, setListCouponsViewModel] = useState<
@@ -56,11 +84,8 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   const { presenter } = useListCouponsPresenter(setListCouponsViewModel);
 
   // TRPC query for page data
-  const [couponsResponse] = trpc.listCoupons.useSuspenseQuery({
-    // TODO: Add query parameters for the usecase
-  });
-
-  // Connect TRPC response to presenter
+  const [couponsResponse] = trpc.listCoupons.useSuspenseQuery({});
+  
   // @ts-ignore
   presenter.present(couponsResponse, listCouponsViewModel);
 
@@ -111,54 +136,7 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   const handleConfirmRevoke = async () => {
     if (!revokingCouponId) return;
     
-    try {
-      await revokeCouponMutation.mutateAsync({
-        couponId: revokingCouponId
-      });
-      
-      // Update local coupon state to 'revoked'
-      const updatedCoupons = listCouponsViewModel.data.coupons.map(coupon => 
-        coupon.id === revokingCouponId 
-          ? { ...coupon, status: 'revoked' as const }
-          : coupon
-      );
-      
-      // Update the view model with the new coupon data
-      setListCouponsViewModel({
-        mode: 'default',
-        data: {
-          ...listCouponsViewModel.data,
-          coupons: updatedCoupons
-        }
-      });
-      
-      // Show success state
-      setRevokeSuccess(true);
-      setErrorMessage(null);
-      
-      // Auto-close modal after 5 seconds
-      setTimeout(() => {
-        setRevokingCouponId(null);
-        setRevokingCouponName('');
-        setRevokeSuccess(false);
-        setErrorMessage(null); // Clear error message on auto-close
-      }, 5000);
-      
-    } catch (error: any) {
-      // Error handling
-      console.error('Failed to revoke coupon:', error);
-      
-      // Set appropriate error message based on error type
-      if (error?.data?.code === 'UNAUTHORIZED') {
-        setErrorMessage('You do not have permission to revoke this coupon.');
-      } else if (error?.data?.code === 'NOT_FOUND') {
-        setErrorMessage('Coupon not found.');
-      } else if (error?.data?.code === 'VALIDATION_ERROR') {
-        setErrorMessage('Invalid coupon ID.');
-      } else {
-        setErrorMessage('Failed to revoke coupon. Please try again.');
-      }
-    }
+    revokeCouponMutation.mutate({couponId: revokingCouponId});
   };
 
   const handleCancelRevoke = () => {

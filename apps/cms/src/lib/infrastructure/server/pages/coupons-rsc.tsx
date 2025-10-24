@@ -27,10 +27,9 @@ export default async function CouponsServerComponent({
     platform_locale: platformLocale
   });
 
-  // TRPC prefetching for page data using EXACT usecase names from Notion
-  // Authentication is handled by middleware - only admin/superadmin can access
+  // Prefetch coupons data for better performance
   await Promise.all([
-    prefetch(trpc.listCoupons.queryOptions({})), // listCoupons
+    prefetch(trpc.listCoupons.queryOptions({})), 
   ]);
 
   return (
