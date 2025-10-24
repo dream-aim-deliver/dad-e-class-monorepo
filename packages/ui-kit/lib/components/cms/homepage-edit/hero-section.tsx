@@ -5,7 +5,7 @@ import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { z } from 'zod';
-import { downloadFile } from '@maany_shr/e-class-ui-kit';
+import { downloadFile } from '../../../utils/file-utils';
 
 type BannerType = z.infer<typeof viewModels.HomePageSchema>['banner'];
 
@@ -118,13 +118,13 @@ export default function HeroSection({
     };
 
     const handleThumbnailDownload = (id: string) => {
-        if (uploadedThumbnail?.id === id && uploadedThumbnail.url) {
+        if (uploadedThumbnail?.id === id && uploadedThumbnail.url && uploadedThumbnail.name) {
             downloadFile(uploadedThumbnail.url, uploadedThumbnail.name);
         }
     };
 
     const handleVideoDownload = (id: string) => {
-        if (uploadedVideo?.id === id && uploadedVideo.url) {
+        if (uploadedVideo?.id === id && uploadedVideo.url && uploadedVideo.name) {
             downloadFile(uploadedVideo.url, uploadedVideo.name);
         }
     };

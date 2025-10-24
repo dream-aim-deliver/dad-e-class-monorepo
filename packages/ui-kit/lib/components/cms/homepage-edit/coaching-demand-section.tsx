@@ -5,7 +5,7 @@ import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { z } from 'zod';
-import { downloadFile } from '@maany_shr/e-class-ui-kit';
+import { downloadFile } from '../../../utils/file-utils';
 
 type CoachingOnDemandType = z.infer<typeof viewModels.HomePageSchema>['coachingOnDemand'];
 
@@ -152,7 +152,7 @@ export default function CoachingDemandSection({
 
     const handleFileDownload = (deviceType: 'desktop' | 'tablet' | 'mobile') => (id: string) => {
         const file = uploadedFiles[deviceType];
-        if (file?.id === id && file.url) {
+        if (file?.id === id && file.url && file.name) {
             downloadFile(file.url, file.name);
         }
     };

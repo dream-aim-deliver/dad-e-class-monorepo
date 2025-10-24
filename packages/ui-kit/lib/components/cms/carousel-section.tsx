@@ -11,7 +11,7 @@ import { z } from 'zod';
 import { IconTrashAlt } from '../icons/icon-trash-alt';
 import { IconChevronUp } from '../icons/icon-chevron-up';
 import { IconChevronDown } from '../icons/icon-chevron-down';
-import { downloadFile } from '@maany_shr/e-class-ui-kit';
+import { downloadFile } from '../../utils/file-utils';
 
 type CarouselType = z.infer<typeof viewModels.HomePageSchema>['carousel'];
 type CarouselItemType = CarouselType extends Array<infer T> ? T : never;
@@ -196,7 +196,7 @@ export default function CarouselSection({
 
     const handleFileDownload = (index: number) => (id: string) => {
         const file = uploadedFiles.get(index);
-        if (file?.id === id && file.url) {
+        if (file?.id === id && file.url && file.name) {
             downloadFile(file.url, file.name);
         }
     };

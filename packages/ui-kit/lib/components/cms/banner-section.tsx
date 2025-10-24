@@ -5,7 +5,7 @@ import { TextAreaInput } from '../text-areaInput';
 import { TextInput } from '../text-input';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { fileMetadata } from '@maany_shr/e-class-models';
-import { downloadFile } from '@maany_shr/e-class-ui-kit';
+import { downloadFile } from '../../utils/file-utils';
 
 interface BannerItemType {
     title: string;
@@ -97,7 +97,7 @@ export default function BannerSection({
     };
 
     const handleFileDownload = (id: string) => {
-        if (uploadedFile?.id === id && uploadedFile.url) {
+        if (uploadedFile?.id === id && uploadedFile.url && uploadedFile.name) {
             downloadFile(uploadedFile.url, uploadedFile.name);
         }
     };
