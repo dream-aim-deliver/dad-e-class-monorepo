@@ -6,7 +6,7 @@
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=6385-175063
 // Features: 3 features linked (see Notion)
 // UI Components: 9 components linked (see Notion)
-// Comments: createPackage creates package in draft state; publishPackage puts it in published state
+// Comments: createPackage creates package in published state
 
 import CreatePackage from '../../client/pages/create-package';
 import { Suspense } from 'react';
@@ -22,10 +22,6 @@ interface CreatePackageServerComponentProps {
 export default async function CreatePackageServerComponent(
     props: CreatePackageServerComponentProps,
 ) {
-
-    // TODO: Add server-side authentication if needed
-    // const session = await getServerSession();
-    // Verify user has CMS permissions
 
     const trpc = getServerTRPC({
         platform_slug: props.platformSlug,
