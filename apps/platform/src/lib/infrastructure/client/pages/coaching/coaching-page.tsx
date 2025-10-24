@@ -2,7 +2,7 @@
 
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../trpc/cms-client';
-import { useGetCoachingPagePresenter } from '../../hooks/use-coaching-page-presenter';
+import { useGetCoachingPagePresenter } from '../../hooks/use-get-coaching-page-presenter';
 import { Suspense, useState } from 'react';
 import {
     CoachBanner,
@@ -36,7 +36,7 @@ export default function CoachingPage({ initialSelectedTopics }: CoachingPageProp
 
     const [coachingPageResponse] = trpc.getCoachingPage.useSuspenseQuery({});
     const [coachingPageViewModel, setCoachingPageViewModel] = useState<
-        viewModels.TCoachingPageViewModel | undefined
+        viewModels.TGetCoachingPageViewModel | undefined
     >(undefined);
 
     const { presenter } = useGetCoachingPagePresenter(setCoachingPageViewModel);

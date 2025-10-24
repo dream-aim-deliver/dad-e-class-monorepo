@@ -37,7 +37,7 @@ export default function ManageCoachingPage({
   const [bannerImageId, setBannerImageId] = useState<number | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [coachingPageViewModel, setCoachingPageViewModel] = useState<
-    viewModels.TCoachingPageViewModel | undefined
+    viewModels.TGetCoachingPageViewModel | undefined
   >(undefined);
 
   // Defensive client-side auth check (middleware already enforces admin/superadmin)

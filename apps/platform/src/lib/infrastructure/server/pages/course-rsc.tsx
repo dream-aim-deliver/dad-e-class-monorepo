@@ -319,10 +319,11 @@ async function fetchVisitorCourseData(slug: string) {
         const offersCarouselQuery = trpcMock.getOffersPageOutline.queryOptions({});
         const offersCarouselResponse = await queryClient.fetchQuery(offersCarouselQuery);
 
-        let offersCarouselViewModel: viewModels.TOffersPageOutlineViewModel | undefined;
+        let offersCarouselViewModel: viewModels.TGetOffersPageOutlineViewModel | undefined;
         const presenter = createGetOffersPageOutlinePresenter((viewModel) => {
             offersCarouselViewModel = viewModel;
         });
+        // @ts-ignore
         await presenter.present(offersCarouselResponse, offersCarouselViewModel);
 
         return offersCarouselViewModel;

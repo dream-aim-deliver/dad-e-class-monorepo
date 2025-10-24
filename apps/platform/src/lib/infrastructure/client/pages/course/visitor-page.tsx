@@ -13,6 +13,7 @@ import {
     DefaultError,
     TeachCourseBanner,
     Breadcrumbs,
+    DefaultNotFound,
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { useState } from 'react';
@@ -20,7 +21,7 @@ import { useTranslations } from 'next-intl';
 import OffersCarousel from '../offers/offers-carousel';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc } from '../../trpc/cms-client';
-import { useGetCoachingPagePresenter } from '../../hooks/use-coaching-page-presenter';
+import { useGetCoachingPagePresenter } from '../../hooks/use-get-coaching-page-presenter';
 import { useRouter } from 'next/navigation';
 
 interface VisitorPageProps {
@@ -29,7 +30,7 @@ interface VisitorPageProps {
     outlineData: viewModels.TCourseOutlineViewModel;
     reviewsData: viewModels.TCourseReviewsViewModel;
     packagesData: viewModels.TCoursePackagesViewModel;
-    offersCarouselData: viewModels.TOffersPageOutlineViewModel;
+    offersCarouselData: viewModels.TGetOffersPageOutlineViewModel;
     locale: TLocale;
 }
 
@@ -49,7 +50,7 @@ export default function VisitorPage({
 
     const [coachingPageResponse] = trpc.getCoachingPage.useSuspenseQuery({});
     const [coachingPageViewModel, setCoachingPageViewModel] = useState<
-        viewModels.TCoachingPageViewModel | undefined
+        viewModels.TGetCoachingPageViewModel | undefined
     >(undefined);
 
     const { presenter } = useGetCoachingPagePresenter(setCoachingPageViewModel);
@@ -212,9 +213,9 @@ export default function VisitorPage({
                             .sort((a, b) =>
                                 sortOrder === 'newest'
                                     ? new Date(b.createdAt).getTime() -
-                                      new Date(a.createdAt).getTime()
+                                    new Date(a.createdAt).getTime()
                                     : new Date(a.createdAt).getTime() -
-                                      new Date(b.createdAt).getTime(),
+                                    new Date(b.createdAt).getTime(),
                             )
                             .map((review) => (
                                 <ReviewSnippet
@@ -279,6 +280,8 @@ export default function VisitorPage({
         switch (offersCarouselData?.mode) {
             case 'kaboom':
                 return <DefaultError locale={locale} />;
+            case 'not-found':
+                return <DefaultNotFound locale={locale} />;
             case 'default':
                 return <OffersCarousel items={offersCarouselData.data.items} />;
             default:
@@ -383,21 +386,22 @@ export default function VisitorPage({
                 </div>
 
                 {coachingPageViewModel &&
-                    coachingPageViewModel.mode !== 'kaboom' &&
-                    (() => {
-                        const coachingPage = coachingPageViewModel.data;
-                        return (
-                            <TeachCourseBanner
-                                locale={locale}
-                                title={coachingPage.banner.title}
-                                description={coachingPage.banner.description}
-                                imageUrl={coachingPage.banner.imageUrl ?? ''}
-                                onClick={() => {
-                                    router.push(coachingPage.banner.buttonLink);
-                                }}
-                            />
-                        );
-                    })()}
+                    coachingPageViewModel.mode !== 'kaboom' && coachingPageViewModel.mode !== 'not-found' && (
+                        (() => {
+                            const coachingPage = coachingPageViewModel.data;
+                            return (
+                                <TeachCourseBanner
+                                    locale={locale}
+                                    title={coachingPage.banner.title}
+                                    description={coachingPage.banner.description}
+                                    imageUrl={coachingPage.banner.image?.downloadUrl ?? ''}
+                                    onClick={() => {
+                                        router.push(coachingPage.banner.buttonLink);
+                                    }}
+                                />
+                            );
+                        })()
+                    )}
             </div>
         </div>
     );
