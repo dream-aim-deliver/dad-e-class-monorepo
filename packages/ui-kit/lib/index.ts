@@ -236,6 +236,7 @@ export { UserAvatar } from './components/avatar/user-avatar';
 export { CouponGrid, type CouponRow, type CouponGridProps } from './components/grids/coupon-grid';
 export { CouponGridFilterModal, type CouponFilterModel, type CouponGridFilterModalProps } from './components/grids/coupon-grid-filter-modal';
 export { RevokeCouponModal, type RevokeCouponModalProps } from './components/coupon/revoke-coupon-modal';
+export { CreateCouponModal, type CreateCouponModalProps } from './components/coupon/create-coupon-modal';
 
 
 export * from "./components/cms"
