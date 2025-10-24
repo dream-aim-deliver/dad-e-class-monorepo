@@ -6,7 +6,9 @@ import {
     BaseErrorDataSchemaFactory,
     BaseViewModelDiscriminatedUnionSchemaFactory
 } from '@dream-aim-deliver/dad-cats';
-import { RegisterCoachToGroupSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
+// TODO: Replace with actual schema import when backend is ready
+// import { RegisterCoachToGroupSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
+import { RegisterCoachToGroupSuccessResponseSchema } from '../usecase-models/register-coach-to-group-usecase-models';
 
 // Extract success data from usecase response
 export const RegisterCoachToGroupSuccessSchema = RegisterCoachToGroupSuccessResponseSchema.shape.data;

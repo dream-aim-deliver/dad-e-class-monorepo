@@ -11,6 +11,7 @@ import { listCourses } from './procedures/course';
 import { listOffersPagePackages } from './procedures/package';
 import { listCoaches } from './procedures/coach';
 import { listCourseCoaches, addCourseCoach, removeCourseCoach } from './procedures/course-coaches';
+import { listCourseGroups, registerCoachToGroup } from './procedures/course-groups';
 import { getCoachingPage } from './procedures/coachings-page';
 import { listCoachingOfferings } from './procedures/coaching-offering';
 import { listAvailableCoachings } from './procedures/available-coachings';
@@ -83,6 +84,8 @@ export const mockRouter = t.router({
     listCourseCoaches,
     addCourseCoach,
     removeCourseCoach,
+    listCourseGroups,
+    registerCoachToGroup,
     getCoachingPage,
     listCoachingOfferings,
     listAvailableCoachings,

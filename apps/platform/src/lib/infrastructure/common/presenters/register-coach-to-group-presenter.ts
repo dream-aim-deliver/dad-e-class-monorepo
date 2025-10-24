@@ -49,10 +49,13 @@ export default class RegisterCoachToGroupPresenter extends BasePresenter<
             { success: true }
         >,
     ): viewModels.TRegisterCoachToGroupViewModel {
+        // Transform backend response to view model structure
         return {
             mode: 'default',
             data: {
-                ...response.data
+                groupId: response.data.group.id.toString(),
+                coachId: response.data.group.coaches.length > 0 ? response.data.group.coaches[0].id.toString() : '',
+                registeredAt: new Date().toISOString(), // TODO: Get actual timestamp from backend response
             }
         };
     }
