@@ -5,6 +5,7 @@ import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { z } from 'zod';
+import { downloadFile } from '@maany_shr/e-class-ui-kit';
 
 type CoachingOnDemandType = z.infer<typeof viewModels.HomePageSchema>['coachingOnDemand'];
 
@@ -93,7 +94,7 @@ export default function CoachingDemandSection({
         if (hasChanges) {
             setUploadedFiles(newUploadedFiles);
         }
-    }, [value]);
+    }, [value.desktopImage?.id, value.tabletImage?.id, value.mobileImage?.id]);
 
     const handleCoachingChange = (newCoachingData: CoachingOnDemandType) => {
         onChange?.(newCoachingData);
@@ -149,8 +150,11 @@ export default function CoachingDemandSection({
         onFileDelete(id);
     };
 
-    const handleFileDownload = (id: string) => {
-        onFileDownload(id);
+    const handleFileDownload = (deviceType: 'desktop' | 'tablet' | 'mobile') => (id: string) => {
+        const file = uploadedFiles[deviceType];
+        if (file?.id === id && file.url) {
+            downloadFile(file.url, file.name);
+        }
     };
 
     return (
@@ -181,7 +185,7 @@ export default function CoachingDemandSection({
                             variant="image"
                             file={uploadedFiles.desktop || null}
                             onDelete={(id) => handleFileDelete('desktop', id)}
-                            onDownload={handleFileDownload}
+                            onDownload={handleFileDownload('desktop')}
                             onFilesChange={(file, abortSignal) => handleOnFilesChange('desktop', file, abortSignal)}
                             onUploadComplete={(file) => handleUploadComplete('desktop', file)}
                             locale="en"
@@ -198,7 +202,7 @@ export default function CoachingDemandSection({
                             variant="image"
                             file={uploadedFiles.tablet || null}
                             onDelete={(id) => handleFileDelete('tablet', id)}
-                            onDownload={handleFileDownload}
+                            onDownload={handleFileDownload('tablet')}
                             onFilesChange={(file, abortSignal) => handleOnFilesChange('tablet', file, abortSignal)}
                             onUploadComplete={(file) => handleUploadComplete('tablet', file)}
                             locale="en"
@@ -215,7 +219,7 @@ export default function CoachingDemandSection({
                             variant="image"
                             file={uploadedFiles.mobile || null}
                             onDelete={(id) => handleFileDelete('mobile', id)}
-                            onDownload={handleFileDownload}
+                            onDownload={handleFileDownload('mobile')}
                             onFilesChange={(file, abortSignal) => handleOnFilesChange('mobile', file, abortSignal)}
                             onUploadComplete={(file) => handleUploadComplete('mobile', file)}
                             locale="en"

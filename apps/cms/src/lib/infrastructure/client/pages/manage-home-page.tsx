@@ -97,6 +97,7 @@ export default function ManageHomepage() {
 		: defaultHomePageData;
 
 	const formState = useFormState<viewModels.TGetHomePageSuccess>(initialHomePageData, { enableReloadProtection: true });
+	const isInitializedRef = useRef(false);
 
 	const saveHomePageMutation = trpc.saveHomePage.useMutation({
 		onSuccess: (data) => {
@@ -104,7 +105,9 @@ export default function ManageHomepage() {
 				setSaveStatus('success');
 				setSaveMessage('Homepage saved successfully!');
 				formState.markAsSaved();
-				refetchHomePage();
+				// Don't refetch immediately after save to prevent flickering
+				// The form already has the correct data
+				// refetchHomePage();
 			} else {
 				setSaveStatus('error');
 				setSaveMessage('Failed to save homepage');
@@ -118,10 +121,12 @@ export default function ManageHomepage() {
 
 	});
 
-	// Update form state when homepage data loads
+	// Update form state when homepage data loads ONLY on initial load
+	// Don't reset form after save to prevent showing stale data
 	useEffect(() => {
-		if (homePageViewModel?.mode === 'default' && !formState.isDirty) {
+		if (homePageViewModel?.mode === 'default' && !isInitializedRef.current) {
 			formState.setValue(homePageViewModel.data);
+			isInitializedRef.current = true;
 		}
 	}, [homePageViewModel?.mode]);
 

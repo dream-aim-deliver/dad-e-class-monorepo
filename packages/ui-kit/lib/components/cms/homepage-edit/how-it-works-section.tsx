@@ -42,37 +42,49 @@ export default function HowItWorksSection({
         handleAccordionChange(newAccordionData);
     };
 
-    // State for builder items
-    const [builderItems, setBuilderItems] = useState<AccordionBuilderItem[]>([]);
-
-    // Sync builderItems with value changes
-    useEffect(() => {
-        const items = (value?.items || []).map(item => ({
+    // State for builder items - initialize from value
+    const [builderItems, setBuilderItems] = useState<AccordionBuilderItem[]>(() => {
+        return (value?.items || []).map(item => ({
             title: item?.title || '',
             content: item?.content || '',
-            icon: null, // TODO: Map iconImageUrl to proper file object when backend provides it
+            icon: item?.iconImage || null, // Preserve iconImage from server
         }));
-        setBuilderItems(items);
-    }, [value]);
+    });
 
-    // Update value when builderItems change
+    // Sync builderItems with value changes ONLY when items count changes
+    // This prevents the infinite loop when user is typing
     useEffect(() => {
-        if (builderItems.length === 0 && (!value?.items || value.items.length === 0)) {
-            return; // Skip initial empty state
-        }
+        const valueItemsLength = value?.items?.length || 0;
+        const builderItemsLength = builderItems.length;
 
-        const newItems = builderItems.map((item, index) => ({
+        // Only sync if the number of items changed (items added/removed from server)
+        if (valueItemsLength !== builderItemsLength) {
+            const items = (value?.items || []).map(item => ({
+                title: item?.title || '',
+                content: item?.content || '',
+                icon: item?.iconImage || null, // Preserve iconImage from server
+            }));
+            setBuilderItems(items);
+        }
+    }, [value?.items?.length]);
+
+    // Update value when builderItems change (from user input)
+    const handleBuilderItemsChange = (newItems: AccordionBuilderItem[]) => {
+        setBuilderItems(newItems);
+
+        const accordionItems = newItems.map((item, index) => ({
             title: item.title,
             content: item.content,
             position: index + 1,
-            iconImage: null, // Will be set when user uploads
+            // Use the icon from builderItems (which includes uploaded icons)
+            iconImage: item.icon || null,
         }));
 
         handleAccordionChange({
             ...value,
-            items: newItems
+            items: accordionItems
         });
-    }, [builderItems]);
+    };
 
     const handleIconUpload = async (
         metadata: fileMetadata.TFileUploadRequest,
@@ -114,7 +126,7 @@ export default function HowItWorksSection({
             <div className="flex flex-col gap-4">
                 <AccordionBuilder
                     items={builderItems}
-                    setItems={setBuilderItems}
+                    setItems={handleBuilderItemsChange}
                     onIconChange={handleIconUpload}
                     onIconDownload={handleIconDownload}
                     uploadProgress={uploadProgress}
