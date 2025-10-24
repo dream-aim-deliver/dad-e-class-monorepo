@@ -19,7 +19,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { viewModels } from '@maany_shr/e-class-models';
 import { TLocale } from '@maany_shr/e-class-translations';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useGetHomePagePresenter } from '../hooks/use-get-home-page-presenter';
 import { useContentLocale } from '../hooks/use-platform-translations';
 import { useRequiredPlatformLocale } from '../context/platform-locale-context';
@@ -53,8 +53,10 @@ export default function ManageHomepage() {
 
 	const { presenter: homePagePresenter } = useGetHomePagePresenter(setHomePageViewModel);
 
-	// @ts-ignore
-	homePagePresenter.present(getHomePageResponse, homePageViewModel);
+	// Present data on mount and when response changes
+	useEffect(() => {
+		homePagePresenter.present(getHomePageResponse, homePageViewModel);
+	}, [getHomePageResponse, homePagePresenter, homePageViewModel]);
 
 	// Track upload progress
 	const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
@@ -116,6 +118,12 @@ export default function ManageHomepage() {
 
 	});
 
+	// Update form state when homepage data loads
+	useEffect(() => {
+		if (homePageViewModel?.mode === 'default' && !formState.isDirty) {
+			formState.setValue(homePageViewModel.data);
+		}
+	}, [homePageViewModel?.mode]);
 
 	// Loading state
 	if (!homePageViewModel) {
@@ -138,6 +146,8 @@ export default function ManageHomepage() {
 
 	// Single state for all homepage data
 	const editableHomePageData: viewModels.TGetHomePageSuccess = formState.value!;
+
+	console.log('[ManageHomepage] Rendering with editableHomePageData.banner.title:', editableHomePageData?.banner?.title);
 
 	const handleBannerChange = (banner: typeof editableHomePageData.banner) => {
 		formState.setValue({
@@ -178,9 +188,31 @@ export default function ManageHomepage() {
 				videoId: editableHomePageData.banner.videoId ? Number(editableHomePageData.banner.videoId) : null,
 				thumbnailImageId: editableHomePageData.banner.thumbnailImage?.id ? Number(editableHomePageData.banner.thumbnailImage.id) : null,
 			},
-			carousel: editableHomePageData.carousel,
-			coachingOnDemand: editableHomePageData.coachingOnDemand,
-			accordion: editableHomePageData.accordion,
+			carousel: editableHomePageData.carousel.map(item => ({
+				title: item.title,
+				description: item.description,
+				buttonText: item.buttonText,
+				buttonUrl: item.buttonUrl,
+				badge: item.badge,
+				imageId: item.image?.id ? Number(item.image.id) : null,
+			})),
+			coachingOnDemand: {
+				title: editableHomePageData.coachingOnDemand.title,
+				description: editableHomePageData.coachingOnDemand.description,
+				desktopImageId: editableHomePageData.coachingOnDemand.desktopImage?.id ? Number(editableHomePageData.coachingOnDemand.desktopImage.id) : null,
+				tabletImageId: editableHomePageData.coachingOnDemand.tabletImage?.id ? Number(editableHomePageData.coachingOnDemand.tabletImage.id) : null,
+				mobileImageId: editableHomePageData.coachingOnDemand.mobileImage?.id ? Number(editableHomePageData.coachingOnDemand.mobileImage.id) : null,
+			},
+			accordion: {
+				title: editableHomePageData.accordion.title,
+				showNumbers: editableHomePageData.accordion.showNumbers,
+				items: editableHomePageData.accordion.items.map(item => ({
+					title: item.title,
+					content: item.content,
+					position: item.position,
+					iconImageId: item.iconImage?.id ? Number(item.iconImage.id) : null,
+				})),
+			},
 		});
 	};
 
@@ -241,7 +273,7 @@ export default function ManageHomepage() {
 				<div className="mt-6">
 					<Tabs.Content value="hero">
 						<HeroSection
-							initialValue={editableHomePageData.banner}
+							value={editableHomePageData.banner}
 							onChange={handleBannerChange}
 							onFileUpload={handleFileUpload}
 							onVideoUpload={videoUpload.handleFileChange}
@@ -254,7 +286,7 @@ export default function ManageHomepage() {
 
 					<Tabs.Content value="carousel">
 						<CarouselSection
-							initialValue={editableHomePageData.carousel.map(item => ({ ...item, badge: item.badge ?? undefined }))}
+							value={editableHomePageData.carousel.map(item => ({ ...item, badge: item.badge ?? undefined }))}
 							onChange={handleCarouselChange}
 							onFileUpload={handleFileUpload}
 							onFileDelete={handleFileDelete}
@@ -266,7 +298,7 @@ export default function ManageHomepage() {
 
 					<Tabs.Content value="coaching">
 						<CoachingDemandSection
-							initialValue={editableHomePageData.coachingOnDemand}
+							value={editableHomePageData.coachingOnDemand}
 							onChange={handleCoachingDemandChange}
 							onFileUpload={handleFileUpload}
 							onFileDelete={handleFileDelete}
@@ -277,7 +309,7 @@ export default function ManageHomepage() {
 
 					<Tabs.Content value="accordion">
 						<HowItWorksSection
-							initialValue={editableHomePageData.accordion}
+							value={editableHomePageData.accordion}
 							onChange={handleAccordionChange}
 							onFileUpload={handleFileUpload}
 							onFileDelete={handleFileDelete}

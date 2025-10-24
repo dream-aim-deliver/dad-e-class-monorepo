@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { TextIcon } from 'lucide-react';
 import { TextInput } from '../../text-input';
@@ -13,26 +12,19 @@ type PageTitleType = {
 
 
 interface PageTitleSectionProps {
-    initialValue?: PageTitleType;
+    value: PageTitleType;
     onChange: (value: PageTitleType) => void;
 }
 
 export default function PageTitleSection({
-    initialValue,
+    value,
     onChange,
 }: PageTitleSectionProps) {
-    const [pageData, setPageData] = useState<PageTitleType>({
-        title: '',
-        description: '',
-        ...initialValue
-    });
-
-    const handleFieldChange = (field: keyof PageTitleType, value: string) => {
+    const handleFieldChange = (field: keyof PageTitleType, fieldValue: string) => {
         const newPageData = {
-            ...pageData,
-            [field]: value
+            ...value,
+            [field]: fieldValue
         };
-        setPageData(newPageData);
         onChange?.(newPageData);
     };
 
@@ -45,15 +37,15 @@ export default function PageTitleSection({
                 <TextInput
                     label="Title"
                     inputField={{
-                        value: pageData.title,
-                        setValue: (value) => handleFieldChange('title', value),
+                        value: value.title,
+                        setValue: (v) => handleFieldChange('title', v),
                         inputText: "Enter the page title"
                     }}
                 />
                 <TextAreaInput
                     label="Description"
-                    value={pageData.description}
-                    setValue={(value) => handleFieldChange('description', value)}
+                    value={value.description}
+                    setValue={(v) => handleFieldChange('description', v)}
                     placeholder="Enter the page description"
                 />
             </div>

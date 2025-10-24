@@ -9,7 +9,7 @@ import { z } from 'zod';
 type CoachingOnDemandType = z.infer<typeof viewModels.HomePageSchema>['coachingOnDemand'];
 
 interface CoachingDemandSectionProps {
-    initialValue?: CoachingOnDemandType;
+    value: CoachingOnDemandType;
     onChange: (value: CoachingOnDemandType) => void;
     onFileUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
@@ -22,23 +22,13 @@ interface CoachingDemandSectionProps {
 }
 
 export default function CoachingDemandSection({
-    initialValue,
+    value,
     onChange,
     onFileUpload,
     onFileDelete,
     onFileDownload,
     uploadProgress,
 }: CoachingDemandSectionProps) {
-    const [coachingData, setCoachingData] = useState<CoachingOnDemandType>(
-        initialValue || {
-            title: '',
-            description: '',
-            desktopImage: null,
-            tabletImage: null,
-            mobileImage: null,
-        }
-    );
-
     const [uploadedFiles, setUploadedFiles] = useState<{
         desktop?: fileMetadata.TFileMetadata;
         tablet?: fileMetadata.TFileMetadata;
@@ -46,14 +36,13 @@ export default function CoachingDemandSection({
     }>({});
 
     const handleCoachingChange = (newCoachingData: CoachingOnDemandType) => {
-        setCoachingData(newCoachingData);
         onChange?.(newCoachingData);
     };
 
-    const handleFieldChange = (field: string, value: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
+    const handleFieldChange = (field: string, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newCoachingData = {
-            ...coachingData,
-            [field]: value
+            ...value,
+            [field]: fieldValue
         } as CoachingOnDemandType;
         handleCoachingChange(newCoachingData);
     };
@@ -112,15 +101,15 @@ export default function CoachingDemandSection({
                 <div className="flex flex-col gap-4">
                     <TextAreaInput
                         label="Title"
-                        value={coachingData?.title || ''}
-                        setValue={(value) => handleFieldChange('title', value)}
+                        value={value?.title || ''}
+                        setValue={(v) => handleFieldChange('title', v)}
                         placeholder="Enter the coaching section title"
                     />
 
                     <TextAreaInput
                         label="Description"
-                        value={coachingData?.description || ''}
-                        setValue={(value) => handleFieldChange('description', value)}
+                        value={value?.description || ''}
+                        setValue={(v) => handleFieldChange('description', v)}
                         placeholder="Enter the coaching section description"
                     />
 
