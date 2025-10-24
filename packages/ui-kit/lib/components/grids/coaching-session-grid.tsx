@@ -5,13 +5,11 @@ import { BaseGrid } from './base-grid';
 import { AllCommunityModule, IRowNode, ModuleRegistry, SortChangedEvent } from 'ag-grid-community';
 import { Button } from '../button';
 import { getDictionary, isLocalAware } from '@maany_shr/e-class-translations';
-import { IconCloudDownload } from '../icons/icon-cloud-download';
 import { StarRating } from '../star-rating';
 import { Badge } from '../badge';
 import { viewModels } from '@maany_shr/e-class-models';
 import { InputField } from '../input-field';
 import { IconSearch } from '../icons/icon-search';
-import { Outline } from '../outline';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -19,9 +17,10 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 type CoachingSession = viewModels.TListCoachingSessionsSuccess['sessions'][number];
 
 export interface CoachingSessionGridProps extends isLocalAware {
-    gridRef: RefObject<AgGridReact | null>;
-    onSessionDetailsClick: (session: CoachingSession) => void; 
+    gridRef: RefObject<AgGridReact | null>; 
     onCoachClick: (coach: CoachingSession['coach'] | null) => void; 
+    onStudentClick?: (student: CoachingSession['student'] | null) => void;
+    onCourseClick?: (course: CoachingSession['course'] | null) => void;
     sessions: CoachingSession[];
     onSortChanged?: (event: SortChangedEvent) => void;
     doesExternalFilterPass?: (node: IRowNode<any>) => boolean;
@@ -42,11 +41,6 @@ const StatusBadge = ({ status }: { status: CoachingSession['status'] }) => {
 
     const config = statusConfig[status] || { variant: 'secondary' as const, text: status || 'Unknown' };
     return <Badge size="medium" variant={config.variant} text={config.text} />;
-};
-
-// Cell Renderers
-const DetailsCellRenderer = () => {
-    return <Button variant="text" text="Details" className="text-sm px-0" />;
 };
 
 const StudentCellRenderer = (props: any) => {
@@ -185,6 +179,11 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             field: 'student',
             headerName: 'Student',
             cellRenderer: StudentCellRenderer,
+            onCellClicked: (params: any) => {
+                const student = params.value;
+                if (student && props.onStudentClick) props.onStudentClick(student);
+            },
+            cellClass: 'cursor-pointer',
             minWidth: 150,
             filter: 'agTextColumnFilter'
         },
@@ -207,6 +206,11 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             field: 'course',
             headerName: 'Course',
             cellRenderer: CourseCellRenderer,
+            onCellClicked: (params: any) => {
+                const course = params.value;
+                if (course && props.onCourseClick) props.onCourseClick(course);
+            },
+            cellClass: 'cursor-pointer',
             minWidth: 180,
             filter: 'agTextColumnFilter'
         },
@@ -216,20 +220,8 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             cellRenderer: CouponCellRenderer,
             width: 120,
             filter: 'agTextColumnFilter'
-        },
-        {
-            cellRenderer: DetailsCellRenderer,
-            onCellClicked: (params: any) => {
-                const session = params.data;
-                props.onSessionDetailsClick(session);
-            },
-            cellClass: 'cursor-pointer',
-            width: 100,
-            resizable: false,
-            sortable: false,
-            pinned: 'right' as const
         }
-    ], [props.onCoachClick, props.onSessionDetailsClick]);
+    ], [props.onCoachClick]);
 
     // Client-side filtering logic for search
     const doesExternalFilterPass = useCallback((node: IRowNode<any>) => {
