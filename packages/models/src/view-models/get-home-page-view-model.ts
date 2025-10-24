@@ -43,3 +43,7 @@ export type TGetHomePageViewModelSchemaMap = typeof GetHomePageViewModelSchemaMa
 // Create discriminated union of all view modes
 export const GetHomePageViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(GetHomePageViewModelSchemaMap);
 export type TGetHomePageViewModel = z.infer<typeof GetHomePageViewModelSchema>;
+
+// Backward compatibility aliases
+export const HomePageViewModelSchema = GetHomePageViewModelSchema;
+export type THomePageViewModel = TGetHomePageViewModel;

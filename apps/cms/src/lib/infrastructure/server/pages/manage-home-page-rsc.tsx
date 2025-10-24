@@ -3,7 +3,7 @@
 // Features: getHomePage, saveHomePage, requestFileUpload
 // User Types: CMS
 
-import ManageHomepage from '../../client/pages/manage-homepage';
+import ManageHomepage from '../../client/pages/manage-home-page';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import { HydrateClient, prefetch, getServerTRPC } from '../config/trpc/cms-server';

@@ -1,4 +1,4 @@
-import Home from '../../client/pages/home';
+import HomePage from '../../client/pages/home-page';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
 import { HydrateClient, prefetch, trpc } from '../config/trpc/cms-server';
@@ -13,7 +13,7 @@ export default async function HomeServerComponent() {
         <>
             <HydrateClient>
                 <Suspense fallback={<DefaultLoadingWrapper />}>
-                    <Home />
+                    <HomePage />
                 </Suspense>
             </HydrateClient>
         </>

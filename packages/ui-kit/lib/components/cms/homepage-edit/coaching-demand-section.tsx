@@ -3,11 +3,10 @@
 import { useState } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
-import { fileMetadata } from '@maany_shr/e-class-models';
+import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { z } from 'zod';
-import { HomePageSchema } from 'packages/models/src/view-models';
 
-type CoachingOnDemandType = z.infer<typeof HomePageSchema>['coachingOnDemand'];
+type CoachingOnDemandType = z.infer<typeof viewModels.HomePageSchema>['coachingOnDemand'];
 
 interface CoachingDemandSectionProps {
     initialValue?: CoachingOnDemandType;
@@ -34,9 +33,9 @@ export default function CoachingDemandSection({
         initialValue || {
             title: '',
             description: '',
-            desktopImageUrl: '',
-            tabletImageUrl: '',
-            mobileImageUrl: '',
+            desktopImage: null,
+            tabletImage: null,
+            mobileImage: null,
         }
     );
 
@@ -51,7 +50,7 @@ export default function CoachingDemandSection({
         onChange?.(newCoachingData);
     };
 
-    const handleFieldChange = (field: string, value: string) => {
+    const handleFieldChange = (field: string, value: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newCoachingData = {
             ...coachingData,
             [field]: value
@@ -78,8 +77,15 @@ export default function CoachingDemandSection({
             [deviceType]: file
         }));
 
-        const urlField = `${deviceType}ImageUrl` as keyof CoachingOnDemandType;
-        handleFieldChange(urlField, file.url as string);
+        const imageField = `${deviceType}Image` as keyof CoachingOnDemandType;
+        const imageObject = {
+            id: file.id?.toString() ?? '',
+            name: file.name ?? '',
+            size: file.size ?? 0,
+            category: 'image' as const,
+            downloadUrl: file.url ?? ''
+        };
+        handleFieldChange(imageField, imageObject);
     };
 
     const handleFileDelete = (deviceType: 'desktop' | 'tablet' | 'mobile', id: string) => {
@@ -89,8 +95,8 @@ export default function CoachingDemandSection({
             return newFiles;
         });
 
-        const urlField = `${deviceType}ImageUrl` as keyof CoachingOnDemandType;
-        handleFieldChange(urlField, '');
+        const imageField = `${deviceType}Image` as keyof CoachingOnDemandType;
+        handleFieldChange(imageField, null);
         onFileDelete(id);
     };
 

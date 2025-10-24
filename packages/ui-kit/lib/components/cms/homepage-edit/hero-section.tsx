@@ -3,11 +3,10 @@
 import { useState } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
-import { fileMetadata } from '@maany_shr/e-class-models';
+import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { z } from 'zod';
-import { HomePageSchema } from 'packages/models/src/view-models';
 
-type BannerType = z.infer<typeof HomePageSchema>['banner'];
+type BannerType = z.infer<typeof viewModels.HomePageSchema>['banner'];
 
 interface HeroSectionProps {
     initialValue?: BannerType;
@@ -41,14 +40,14 @@ export default function HeroSection({
         initialValue || {
             title: '',
             description: '',
-            videoId: '',
-            thumbnailUrl: '',
+            videoId: null,
+            thumbnailImage: null,
         }
     );
     const [uploadedThumbnail, setUploadedThumbnail] = useState<fileMetadata.TFileMetadata | null>(null);
     const [uploadedVideo, setUploadedVideo] = useState<fileMetadata.TFileMetadataVideo | null>(null);
 
-    const handleFieldChange = (field: string, value: string) => {
+    const handleFieldChange = (field: string, value: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newBannerData = {
             ...bannerData,
             [field]: value
@@ -66,12 +65,19 @@ export default function HeroSection({
 
     const handleThumbnailUploadComplete = (file: fileMetadata.TFileMetadata) => {
         setUploadedThumbnail(file);
-        handleFieldChange('thumbnailUrl', file.url as string);
+        const imageObject = {
+            id: file.id?.toString() ?? '',
+            name: file.name ?? '',
+            size: file.size ?? 0,
+            category: 'image' as const,
+            downloadUrl: file.url ?? ''
+        };
+        handleFieldChange('thumbnailImage', imageObject);
     };
 
     const handleThumbnailDelete = (id: string) => {
         setUploadedThumbnail(null);
-        handleFieldChange('thumbnailUrl', '');
+        handleFieldChange('thumbnailImage', null);
         onFileDelete(id);
     };
 
