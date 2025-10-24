@@ -1458,6 +1458,7 @@ export const EN: TDictionary = {
       settings: "Settings",
       homepage: "Homepage",
       offers: "Offers",
+      coaching: "Coaching",
       aboutPage: "About Page",
       footer: "Footer",
       websiteContentSection: "Website content",
