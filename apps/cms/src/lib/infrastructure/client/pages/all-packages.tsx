@@ -71,8 +71,8 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   // @ts-ignore
   presenter.present(listPackagesResponse, listPackagesViewModel);
 
-  // Client state for show archived filter
-  const [showArchived, setShowArchived] = useState(false);
+  // Client state for show archived filter - default to true to show all packages
+  const [showArchived, setShowArchived] = useState(true);
 
   // Modal state
   const [showArchiveModal, setShowArchiveModal] = useState(false);
@@ -224,6 +224,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   // Success state - extract data using discovered pattern
   const packagesData = listPackagesViewModel.data;
   const packages = packagesData.packages;
+  // Always show all packages regardless of archived status
 
 
   return (
