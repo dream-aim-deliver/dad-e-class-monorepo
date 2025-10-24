@@ -11,6 +11,7 @@ interface BannerItemType {
     title: string;
     description: string;
     imageUrl: string | null;
+    imageId: number | null;
     buttonText: string;
     buttonUrl: string;
 }
