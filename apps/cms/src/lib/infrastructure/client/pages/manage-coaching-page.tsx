@@ -174,14 +174,14 @@ export default function ManageCoachingPage({
     setSaveStatus('idle');
 
     await saveCoachingPageMutation.mutateAsync({
-      title: formState.value.title,
-      description: formState.value.description,
+      title: formState.value!.title,
+      description: formState.value!.description,
       banner: {
-        title: formState.value.banner.title,
-        description: formState.value.banner.description,
-        imageId: formState.value.banner.imageId,
-        buttonText: formState.value.banner.buttonText,
-        buttonLink: formState.value.banner.buttonUrl,
+        title: formState.value!.banner.title,
+        description: formState.value!.banner.description,
+        imageId: formState.value!.banner.imageId,
+        buttonText: formState.value!.banner.buttonText,
+        buttonLink: formState.value!.banner.buttonUrl,
       },
     });
   };
@@ -219,23 +219,23 @@ export default function ManageCoachingPage({
 
       {/* Page Title Section */}
       <PageTitleSection
-        value={{ title: formState.value.title, description: formState.value.description }}
-        onChange={(newValue) => formState.setValue({ ...formState.value, title: newValue.title, description: newValue.description })}
+        value={{ title: formState.value!.title, description: formState.value!.description }}
+        onChange={(newValue) => formState.setValue({ ...formState.value!, title: newValue.title, description: newValue.description })}
       />
 
       {/* Banner Section */}
       <BannerSection
-        value={formState.value.banner}
-        onChange={(newBanner) => formState.setValue({ ...formState.value, banner: newBanner })}
+        value={formState.value!.banner}
+        onChange={(newBanner) => formState.setValue({ ...formState.value!, banner: newBanner })}
         onFileUpload={handleFileUpload}
         onFileDelete={handleFileDelete}
         onFileDownload={handleFileDownload}
         onImageUploadComplete={(fileId) => {
           // Update imageId in form state when image is uploaded
           formState.setValue({
-            ...formState.value,
+            ...formState.value!,
             banner: {
-              ...formState.value.banner,
+              ...formState.value!.banner,
               imageId: fileId ? Number(fileId) : null,
             },
           });
