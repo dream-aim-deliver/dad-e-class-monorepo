@@ -112,12 +112,20 @@ export const PackagePricingStep: React.FC<PackagePricingStepProps> = ({
                                 inputField={{
                                     inputText: dictionary.components.packagePricingStep.discountPlaceholder,
                                     value: discount,
-                                    setValue: (value: string) => onFormDataChange({
-                                        partialDiscounts: {
-                                            ...partialDiscounts,
-                                            [courseCount]: value,
-                                        },
-                                    }),
+                                    setValue: (value: string) => {
+                                        // Only allow numbers between 0 and 100
+                                        const numericValue = value.replace(/[^\d]/g, '');
+                                        const numValue = parseInt(numericValue);
+                                        
+                                        if (numericValue === '' || (numValue >= 0 && numValue <= 100)) {
+                                            onFormDataChange({
+                                                partialDiscounts: {
+                                                    ...partialDiscounts,
+                                                    [courseCount]: numericValue,
+                                                },
+                                            });
+                                        }
+                                    },
                                 }}
                             />
                         </div>
