@@ -1030,6 +1030,7 @@ export const EN: TDictionary = {
       preCourseAssessmentForm: "Pre-Course Assessment Form",
       yourCalendar: "Your Calendar",
       yourReviews: 'Your Reviews',
+      coupons: 'Coupons',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -2186,6 +2187,6 @@ export const EN: TDictionary = {
       loadMore: "Load more",
       errorMessage: "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support.",
       defaultError: "Couldn't retrieve coaching session reviews. Please try again later. If the problem persists, please contact support.",
-     },
+    },
   },
 };

@@ -76,7 +76,7 @@ const CMSSidebar = ({
         coachingOffering: `${basePath}/coaching-offering`,
         coachingSessions: `${basePath}/coaching-sessions`,
         coachSkills: `${basePath}/coach-skills-form`,
-        coupons: `${basePath}/manage-coupons`,
+        coupons: `${basePath}/coupons`,
         users: `${basePath}/manage-users`,
         transactions: `${basePath}/transactions`,
         sendNotification: `${basePath}/send-notification`,
