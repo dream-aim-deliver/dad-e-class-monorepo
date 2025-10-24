@@ -311,7 +311,7 @@
   --font-weight-h1: var(--font-weight-important);
   --font-weight-h3: var(--font-weight-important);
   --font-weight-h5: var(--font-weight-important);
-  font-family: var(--font-nunito);
+    font-family: var(--font-nunito);
   --ag-font-family: var(--font-nunito);
     --ag-background-color: var(--color-card-fill);
   --ag-foreground-color: var(--color-text-primary);
