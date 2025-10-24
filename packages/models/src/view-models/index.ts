@@ -1,6 +1,5 @@
 export * from './platform-view-model';
 export * from './list-platforms-view-model';
-export * from './home-page-view-model';
 export * from './list-languages-view-model';
 export * from './topic-list-view-model';
 export * from './get-offers-page-outline-view-model';
@@ -8,7 +7,7 @@ export * from './topics-by-category-view-model';
 export * from './course-list-view-model';
 export * from './offers-page-package-list-view-model';
 export * from './coach-list-view-model';
-export * from './coaching-page-view-model';
+export * from './get-coaching-page-view-model';
 export * from './coaching-offering-list-view-model';
 export * from './available-coaching-list-view-model';
 export * from './course-access-view-model';

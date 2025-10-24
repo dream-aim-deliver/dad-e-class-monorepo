@@ -1,5 +1,5 @@
 import { extractListParams } from '../../../../lib/infrastructure/server/utils/extract-params';
-import CoachingServerComponent from '../../../../lib/infrastructure/server/pages/coaching-rsc';
+import CoachingPageServerComponent from '../../../../lib/infrastructure/server/pages/coaching-page-rsc';
 
 export default async function Page({
     searchParams: searchParamsPromise,
@@ -8,5 +8,5 @@ export default async function Page({
 }) {
     const searchParams = await searchParamsPromise;
     const topics = extractListParams(searchParams.topics);
-    return <CoachingServerComponent topics={topics} />;
+    return <CoachingPageServerComponent topics={topics} />;
 }
