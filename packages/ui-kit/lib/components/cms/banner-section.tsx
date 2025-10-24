@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TextAreaInput } from '../text-areaInput';
 import { TextInput } from '../text-input';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
@@ -38,6 +38,28 @@ export default function BannerSection({
     uploadProgress,
 }: BannerSectionProps) {
     const [uploadedFile, setUploadedFile] = useState<fileMetadata.TFileMetadata | null>(null);
+
+    // Sync uploadedFile with value prop when image is loaded from server
+    // Only update if the imageUrl has actually changed (not just object recreation)
+    useEffect(() => {
+        if (value.imageUrl) {
+            // Only update if URL changed or file didn't exist
+            if (!uploadedFile || uploadedFile.url !== value.imageUrl) {
+                // When we have an imageUrl, create a file metadata object for the Uploader
+                // Note: We don't have full file metadata from the server, so we create a minimal object
+                setUploadedFile({
+                    id: '', // ID is not available from imageUrl alone
+                    name: value.imageUrl.split('/').pop() || 'banner-image',
+                    size: 0,
+                    category: 'image',
+                    url: value.imageUrl,
+                } as fileMetadata.TFileMetadata);
+            }
+        } else if (uploadedFile) {
+            // Image was removed
+            setUploadedFile(null);
+        }
+    }, [value.imageUrl]);
 
     const handleBannerChange = (newBannerData: BannerItemType) => {
         onChange?.(newBannerData);

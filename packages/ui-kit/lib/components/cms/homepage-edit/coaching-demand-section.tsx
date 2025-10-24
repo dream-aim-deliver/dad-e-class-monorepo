@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
@@ -34,6 +34,66 @@ export default function CoachingDemandSection({
         tablet?: fileMetadata.TFileMetadata;
         mobile?: fileMetadata.TFileMetadata;
     }>({});
+
+    // Sync uploadedFiles with value prop when images are loaded from server
+    // Only update if the image IDs have actually changed (not just object recreation)
+    useEffect(() => {
+        const newUploadedFiles: {
+            desktop?: fileMetadata.TFileMetadata;
+            tablet?: fileMetadata.TFileMetadata;
+            mobile?: fileMetadata.TFileMetadata;
+        } = {};
+        let hasChanges = false;
+
+        if (value.desktopImage) {
+            if (!uploadedFiles.desktop || uploadedFiles.desktop.id !== value.desktopImage.id) {
+                hasChanges = true;
+            }
+            newUploadedFiles.desktop = {
+                id: value.desktopImage.id,
+                name: value.desktopImage.name,
+                size: value.desktopImage.size,
+                category: value.desktopImage.category,
+                url: value.desktopImage.downloadUrl,
+            } as fileMetadata.TFileMetadata;
+        } else if (uploadedFiles.desktop) {
+            hasChanges = true;
+        }
+
+        if (value.tabletImage) {
+            if (!uploadedFiles.tablet || uploadedFiles.tablet.id !== value.tabletImage.id) {
+                hasChanges = true;
+            }
+            newUploadedFiles.tablet = {
+                id: value.tabletImage.id,
+                name: value.tabletImage.name,
+                size: value.tabletImage.size,
+                category: value.tabletImage.category,
+                url: value.tabletImage.downloadUrl,
+            } as fileMetadata.TFileMetadata;
+        } else if (uploadedFiles.tablet) {
+            hasChanges = true;
+        }
+
+        if (value.mobileImage) {
+            if (!uploadedFiles.mobile || uploadedFiles.mobile.id !== value.mobileImage.id) {
+                hasChanges = true;
+            }
+            newUploadedFiles.mobile = {
+                id: value.mobileImage.id,
+                name: value.mobileImage.name,
+                size: value.mobileImage.size,
+                category: value.mobileImage.category,
+                url: value.mobileImage.downloadUrl,
+            } as fileMetadata.TFileMetadata;
+        } else if (uploadedFiles.mobile) {
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            setUploadedFiles(newUploadedFiles);
+        }
+    }, [value]);
 
     const handleCoachingChange = (newCoachingData: CoachingOnDemandType) => {
         onChange?.(newCoachingData);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TextAreaInput } from '../text-areaInput';
 import { TextInput } from '../text-input';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
@@ -39,6 +39,42 @@ export default function CarouselSection({
     uploadType
 }: CarouselSectionProps) {
     const [uploadedFiles, setUploadedFiles] = useState<Map<number, fileMetadata.TFileMetadata>>(new Map());
+
+    // Sync uploadedFiles with value prop when images are loaded from server
+    // Only update if the image IDs have actually changed (not just object recreation)
+    useEffect(() => {
+        const newUploadedFiles = new Map<number, fileMetadata.TFileMetadata>();
+        let hasChanges = false;
+
+        (value || []).forEach((item, index) => {
+            if (item.image) {
+                const existingFile = uploadedFiles.get(index);
+                // Only update if image ID changed or file didn't exist
+                if (!existingFile || existingFile.id !== item.image.id) {
+                    hasChanges = true;
+                }
+                newUploadedFiles.set(index, {
+                    id: item.image.id,
+                    name: item.image.name,
+                    size: item.image.size,
+                    category: item.image.category,
+                    url: item.image.downloadUrl,
+                } as fileMetadata.TFileMetadata);
+            } else if (uploadedFiles.get(index)) {
+                // Image was removed
+                hasChanges = true;
+            }
+        });
+
+        // Check if count changed (items added/removed)
+        if (newUploadedFiles.size !== uploadedFiles.size) {
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            setUploadedFiles(newUploadedFiles);
+        }
+    }, [value]);
 
     const handleCarouselChange = (newCarouselData: CarouselType) => {
         onChange?.(newCarouselData);
