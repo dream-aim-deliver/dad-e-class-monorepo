@@ -47,7 +47,16 @@ export default function HowItWorksSection({
         return (value?.items || []).map(item => ({
             title: item?.title || '',
             content: item?.content || '',
-            icon: item?.iconImage || null, // Preserve iconImage from server
+            // Map iconImage from server format to ImageFile format
+            icon: item?.iconImage ? {
+                status: 'available' as const,
+                id: item.iconImage.id,
+                name: item.iconImage.name,
+                thumbnailUrl: item.iconImage.downloadUrl,
+                size: item.iconImage.size,
+                category: 'image' as const,
+                url: item.iconImage.downloadUrl,
+            } : null,
         }));
     });
 
@@ -62,22 +71,39 @@ export default function HowItWorksSection({
             const items = (value?.items || []).map(item => ({
                 title: item?.title || '',
                 content: item?.content || '',
-                icon: item?.iconImage || null, // Preserve iconImage from server
+                // Map iconImage from server format to ImageFile format
+                icon: item?.iconImage ? {
+                    status: 'available' as const,
+                    id: item.iconImage.id,
+                    name: item.iconImage.name,
+                    thumbnailUrl: item.iconImage.downloadUrl,
+                    size: item.iconImage.size,
+                    category: 'image' as const,
+                    url: item.iconImage.downloadUrl,
+                } : null,
             }));
             setBuilderItems(items);
         }
     }, [value?.items?.length]);
 
     // Update value when builderItems change (from user input)
-    const handleBuilderItemsChange = (newItems: AccordionBuilderItem[]) => {
-        setBuilderItems(newItems);
+    const handleBuilderItemsChange = (newItems: AccordionBuilderItem[] | ((prev: AccordionBuilderItem[]) => AccordionBuilderItem[])) => {
+        const items = typeof newItems === 'function' ? newItems(builderItems) : newItems;
+        setBuilderItems(items);
 
-        const accordionItems = newItems.map((item, index) => ({
+        const accordionItems = items.map((item, index) => ({
             title: item.title,
             content: item.content,
             position: index + 1,
             // Use the icon from builderItems (which includes uploaded icons)
-            iconImage: item.icon || null,
+            // Map TFileMetadata to the expected iconImage format
+            iconImage: (item.icon && item.icon.name && item.icon.id !== undefined && item.icon.size !== undefined) ? {
+                name: item.icon.name,
+                id: item.icon.id,
+                size: item.icon.size,
+                category: 'image' as const,
+                downloadUrl: item.icon.url || '',
+            } : null,
         }));
 
         handleAccordionChange({
