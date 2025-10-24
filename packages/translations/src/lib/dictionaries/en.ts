@@ -1312,6 +1312,14 @@ export const EN: TDictionary = {
       resetFilters: 'Reset filters',
       applyFilters: 'Apply filters',
     },
+    revokeCouponModal: {
+      title: 'Revoke Coupon',
+      confirmMessage: 'Are you sure you want to revoke the coupon "{couponName}"? This action cannot be undone.',
+      cancelButton: 'Go back',
+      confirmButton: 'Yes, revoke',
+      revoking: 'Revoking...',
+      successMessage: 'Coupon "{couponName}" has been successfully revoked.',
+    },
     packageDetailsStep: {
       title: 'Package details',
       packageTitleLabel: 'Package Title',

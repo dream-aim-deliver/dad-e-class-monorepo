@@ -1315,6 +1315,14 @@ export const DE: TDictionary = {
       resetFilters: 'Filter zurücksetzen',
       applyFilters: 'Filter anwenden',
     },
+    revokeCouponModal: {
+      title: 'Gutschein widerrufen',
+      confirmMessage: 'Bist du sicher, dass du den Gutschein "{couponName}" widerrufen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.',
+      cancelButton: 'Zurück',
+      confirmButton: 'Ja, widerrufen',
+      revoking: 'Wird widerrufen...',
+      successMessage: 'Gutschein "{couponName}" wurde erfolgreich widerrufen.',
+    },
     packageDetailsStep: {
       title: 'Paket-Details',
       packageTitleLabel: 'Paket-Titel',

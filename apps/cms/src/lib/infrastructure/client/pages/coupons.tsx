@@ -10,7 +10,7 @@
 
 import { trpc } from '../trpc/cms-client';
 import { useState, useRef } from 'react';
-import { DefaultLoading, DefaultError, CouponGrid, Breadcrumbs } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, CouponGrid, Breadcrumbs, RevokeCouponModal } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
@@ -37,6 +37,15 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
 
   // Grid ref for AG Grid instance
   const gridRef = useRef<any>(null);
+
+  // Modal state
+  const [revokingCouponId, setRevokingCouponId] = useState<string | null>(null);
+  const [revokingCouponName, setRevokingCouponName] = useState<string>('');
+  const [revokeSuccess, setRevokeSuccess] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // TRPC mutation for revoking coupons
+  const revokeCouponMutation = trpc.revokeCoupon.useMutation();
 
   // ViewModel state
   const [listCouponsViewModel, setListCouponsViewModel] = useState<
@@ -88,6 +97,77 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
   // Success state - extract data from ViewModel
   const couponsData = listCouponsViewModel.data;
 
+  // Revoke coupon handlers
+  const handleRevokeCoupon = (couponId: string) => {
+    const coupon = listCouponsViewModel.data.coupons.find(c => c.id === couponId);
+    if (coupon) {
+      setRevokingCouponId(coupon.id);
+      setRevokingCouponName(coupon.name);
+      setRevokeSuccess(false);
+      setErrorMessage(null); // Clear any previous errors
+    }
+  };
+
+  const handleConfirmRevoke = async () => {
+    if (!revokingCouponId) return;
+    
+    try {
+      await revokeCouponMutation.mutateAsync({
+        couponId: revokingCouponId
+      });
+      
+      // Update local coupon state to 'revoked'
+      const updatedCoupons = listCouponsViewModel.data.coupons.map(coupon => 
+        coupon.id === revokingCouponId 
+          ? { ...coupon, status: 'revoked' as const }
+          : coupon
+      );
+      
+      // Update the view model with the new coupon data
+      setListCouponsViewModel({
+        mode: 'default',
+        data: {
+          ...listCouponsViewModel.data,
+          coupons: updatedCoupons
+        }
+      });
+      
+      // Show success state
+      setRevokeSuccess(true);
+      setErrorMessage(null);
+      
+      // Auto-close modal after 5 seconds
+      setTimeout(() => {
+        setRevokingCouponId(null);
+        setRevokingCouponName('');
+        setRevokeSuccess(false);
+        setErrorMessage(null); // Clear error message on auto-close
+      }, 5000);
+      
+    } catch (error: any) {
+      // Error handling
+      console.error('Failed to revoke coupon:', error);
+      
+      // Set appropriate error message based on error type
+      if (error?.data?.code === 'UNAUTHORIZED') {
+        setErrorMessage('You do not have permission to revoke this coupon.');
+      } else if (error?.data?.code === 'NOT_FOUND') {
+        setErrorMessage('Coupon not found.');
+      } else if (error?.data?.code === 'VALIDATION_ERROR') {
+        setErrorMessage('Invalid coupon ID.');
+      } else {
+        setErrorMessage('Failed to revoke coupon. Please try again.');
+      }
+    }
+  };
+
+  const handleCancelRevoke = () => {
+    setRevokingCouponId(null);
+    setRevokingCouponName('');
+    setRevokeSuccess(false);
+    setErrorMessage(null);
+  };
+
   // Breadcrumbs following the standard pattern
   const breadcrumbItems = [
     {
@@ -123,18 +203,28 @@ export default function Coupons({ platformSlug, platformLocale }: CouponsProps) 
       <div className="flex flex-col grow bg-transparent">
         <CouponGrid
           gridRef={gridRef}
-          coupons={couponsData.coupons}
+          coupons={listCouponsViewModel.data.coupons}
           locale={locale}
-          onRevokeCoupon={(couponId) => {
-            // TODO: Implement revoke coupon functionality
-            console.log('Revoke coupon:', couponId);
-          }}
+          onRevokeCoupon={handleRevokeCoupon}
           onCreateCoupon={() => {
             // TODO: Implement create coupon functionality
             console.log('Create new coupon');
           }}
         />
       </div>
+
+      {/* Revoke Coupon Modal */}
+      {revokingCouponId && (
+        <RevokeCouponModal
+          couponName={revokingCouponName}
+          locale={locale}
+          onConfirm={handleConfirmRevoke}
+          onCancel={handleCancelRevoke}
+          isRevoking={revokeCouponMutation.isPending}
+          isSuccess={revokeSuccess}
+          errorMessage={errorMessage}
+        />
+      )}
     </div>
   );
 }
