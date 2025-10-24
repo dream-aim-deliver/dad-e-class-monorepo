@@ -12,7 +12,6 @@ import {
   DefaultLoading, 
   DefaultError, 
   DefaultNotFound, 
-  Outline, 
   PackageCmsCardList, 
   PackageCmsCard, 
   Breadcrumbs, 
@@ -22,6 +21,26 @@ import {
   FeedBackMessage
 } from '@maany_shr/e-class-ui-kit';
 import { idToNumber } from '../utils/id-to-number';
+
+interface PackageImage {
+  id: string;
+  name: string;
+  size: number;
+  category: "image";
+  downloadUrl: string;
+}
+
+interface PackageData {
+  id: string | number;
+  title: string;
+  description: string;
+  status: "archived" | "published";
+  price: number;
+  priceWithCoachings: number;
+  image?: PackageImage | null;
+  courseCount: number;
+  duration: number;
+}
 
 interface AllPackagesProps {
   locale: TLocale;
@@ -72,6 +91,9 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
 
   // Archive package mutation
   const archivePackageMutation = trpc.archivePackage.useMutation();
+  
+  // Get TRPC utils for query invalidation (must be at top level)
+  const utils = trpc.useUtils();
 
   // Handle archive package mutation presentation
   useEffect(() => {
@@ -88,7 +110,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
       setShowArchiveModal(false);
       setShowSuccessModal(true);
       // Refetch packages by invalidating the query
-      trpc.useUtils().listPackages.invalidate({ platformSlug, platformLocale });
+      utils.listPackages.invalidate({ platformSlug, platformLocale });
     }
     if (archivePackageViewModel?.mode === 'kaboom') {
       setErrorMessage(t('errorMessages.archiveFailed'));
@@ -109,7 +131,7 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
     onSuccess: () => {
       setSuccessMessage(t('successMessages.packagePublished'));
       setErrorMessage(null);
-      trpc.useUtils().listPackages.invalidate({ platformSlug, platformLocale });
+      utils.listPackages.invalidate({ platformSlug, platformLocale });
       // Auto-dismiss success message after 5 seconds
       const timer = setTimeout(() => setSuccessMessage(null), 5000);
       return () => clearTimeout(timer);
@@ -203,21 +225,6 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
   const packagesData = listPackagesViewModel.data;
   const packages = packagesData.packages;
 
-  // Transform package data to match card props
-  const transformedPackages = packages.map((pkg: any) => ({
-    id: pkg.id,
-    title: pkg.title,
-    description: pkg.description,
-    imageUrl: pkg.imageUrl,
-    duration: pkg.duration,
-    courseCount: pkg.courseCount || 0,
-    pricing: {
-      currency: pkg.pricing?.currency || '$',
-      fullPrice: pkg.pricing?.fullPrice || pkg.pricing?.actual || 0,
-      partialPrice: pkg.pricing?.partialPrice || pkg.pricing?.allCourses || 0,
-    },
-    status: pkg.status || 'published', // Default to published if status not provided
-  }));
 
   return (
     <div className="flex flex-col space-y-4">
@@ -250,22 +257,53 @@ export default function AllPackages({ locale, platformSlug, platformLocale }: Al
         onClickCheckbox={() => setShowArchived(!showArchived)}
         onCreatePackage={handleCreatePackage}
       >
-        {transformedPackages.map((pkg) => (
-          <PackageCmsCard
-            key={pkg.id}
-            status={pkg.status as 'published' | 'archived'}
-            title={pkg.title}
-            description={pkg.description}
-            imageUrl={pkg.imageUrl}
-            duration={pkg.duration}
-            courseCount={pkg.courseCount}
-            pricing={pkg.pricing}
-            locale={currentLocale}
-            onClickEdit={() => handleEditPackage(pkg.id)}
-            onClickArchive={() => handleArchivePackage(pkg.id)}
-            onClickPublished={() => handlePublishPackage(pkg.id)}
-          />
-        ))}
+        {packages.map((pkg: any) => {
+          const baseProps = {
+            title: pkg.title,
+            description: pkg.description,
+            imageUrl: pkg.image?.downloadUrl || '',
+            duration: pkg.duration,
+            courseCount: pkg.courseCount || 0,
+            pricing: {
+              // TODO: Replace with actual currency from backend
+              currency: 'CHF',
+              fullPrice: pkg.price,
+              partialPrice: pkg.priceWithCoachings,
+            },
+            locale: currentLocale,
+            onClickEdit: () => handleEditPackage(pkg.id),
+          };
+
+          if (pkg.status === 'published') {
+            return (
+              <PackageCmsCard
+                key={pkg.id}
+                {...baseProps}
+                status="published"
+                onClickArchive={() => handleArchivePackage(pkg.id)}
+              />
+            );
+          } else if (pkg.status === 'archived') {
+            return (
+              <PackageCmsCard
+                key={pkg.id}
+                {...baseProps}
+                status="archived"
+                onClickPublished={() => handlePublishPackage(pkg.id)}
+              />
+            );
+          } else {
+            // Handle packages without status (treat as published)
+            return (
+              <PackageCmsCard
+                key={pkg.id}
+                {...baseProps}
+                status="published"
+                onClickArchive={() => handleArchivePackage(pkg.id)}
+              />
+            );
+          }
+        })}
       </PackageCmsCardList>
 
       {/* Archive Confirmation Modal */}

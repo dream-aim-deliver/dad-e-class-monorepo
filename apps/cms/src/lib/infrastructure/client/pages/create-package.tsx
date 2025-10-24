@@ -190,6 +190,7 @@ export default function CreatePackage() {
     // File upload handlers using custom hook
     const [packageImageProgress, setPackageImageProgress] = useState<number | undefined>(undefined);
     const {
+        packageFile,
         handleFileChange: handleFeaturedImageUpload,
         handleDelete: handleDeleteFeaturedImage,
         handleDownload: handleDownloadFeaturedImage,
@@ -294,7 +295,7 @@ export default function CreatePackage() {
                 showAccordionNumbers: packageDetailsFormData.showListItemNumbers,
                 accordionItems: accordionItemsPayload,
                 courseIds: courseIdsPayload,
-                featuredImageId: null,
+                featuredImageId: packageDetailsFormData.featuredImage?.id ? idToNumber(packageDetailsFormData.featuredImage.id) : null,
             };
 
             const result = await createPackageMutation.mutateAsync(payload);

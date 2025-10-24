@@ -114,12 +114,12 @@ export function PackageCmsCardList({
         const status = element.props.status;
 
         if (!showArchived) {
-            // Show only published cards when checkbox is NOT checked
+            // Show only published packages when checkbox is NOT checked
             return status === 'published';
         }
 
         // When checkbox is checked, show all cards regardless of status
-        return status === 'published' || status === 'archived';
+        return true;
     });
 
     const isEmpty = filteredChildren.length === 0;

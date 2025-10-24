@@ -19,6 +19,22 @@ import React from 'react';
 import { idToNumber } from '../utils/id-to-number';
 import { useEffect } from 'react';
 
+interface PackageImage {
+  id: string;
+  name: string;
+  size: number;
+  category: "image";
+  downloadUrl: string;
+}
+
+interface PackageAccordionItem {
+  id: string | number;
+  title: string;
+  description: string;
+  position: number;
+  icon?: PackageImage | null;
+}
+
 interface EditPackageProps {
     locale: TLocale;
     platformSlug: string;
