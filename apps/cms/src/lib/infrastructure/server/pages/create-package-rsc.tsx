@@ -31,7 +31,7 @@ export default async function CreatePackageServerComponent(
     // Prefetch data needed by the client page
     await Promise.all([
         prefetch(trpc.getPlatformLanguage.queryOptions({})),
-        prefetch(trpc.listCourses.queryOptions({ pagination: { page: 1, pageSize: 50 } })),
+        prefetch(trpc.listCourses.queryOptions({ showFilter: "live" })),
     ]);
 
     return (

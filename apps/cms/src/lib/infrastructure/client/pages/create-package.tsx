@@ -91,7 +91,7 @@ export default function CreatePackage() {
 
     // Multi-step form state
     const [currentStep, setCurrentStep] = useState(1);
-    
+
     // Package details form data
     const [packageDetailsFormData, setPackageDetailsFormData] = useState<PackageDetailsFormData>({
         packageTitle: '',
@@ -133,12 +133,19 @@ export default function CreatePackage() {
     const { presenter: createPresenter } = useCreatePackagePresenter(setCreatePackageViewModel);
 
     // Courses data from TRPC usecase
-    const [coursesResponse] = trpc.listCourses.useSuspenseQuery({});
+    const [coursesResponse] = trpc.listCourses.useSuspenseQuery({ showFilter: "live" });
     const allCourses: CourseData[] = (() => {
-        if (!coursesResponse.success) return [];
+        console.log('coursesResponse:', coursesResponse);
+        if (!coursesResponse.success) {
+            console.log('coursesResponse.success is false');
+            return [];
+        }
         const payload: any = coursesResponse.data;
+        console.log('payload:', payload);
         const data = payload?.success ? payload.data : payload;
+        console.log('data:', data);
         const courses: any[] = data?.courses ?? [];
+        console.log('courses array:', courses);
         return courses.map((course) => ({
             id: String(course.id),
             slug: course.slug,
@@ -216,8 +223,8 @@ export default function CreatePackage() {
 
     // Course management functions
     const toggleCourseSelection = useCallback((courseId: string) => {
-        setSelectedCourseIds(prev => 
-            prev.includes(courseId) 
+        setSelectedCourseIds(prev =>
+            prev.includes(courseId)
                 ? prev.filter(id => id !== courseId)
                 : [...prev, courseId]
         );
@@ -256,12 +263,12 @@ export default function CreatePackage() {
             setIsPublishing(false);
         }
     }, [createPackageMutation.isError, createPackageMutation.error]);
-    
+
     const handlePublishPackage = useCallback(async () => {
         setIsPublishing(true);
         setErrorMessage(null);
         setSuccessMessage(null);
-        
+
         try {
             // Build payload matching backend contract
             // TODO: Replace string parsing when backend exposes numeric price fields
@@ -299,12 +306,12 @@ export default function CreatePackage() {
             };
 
             const result = await createPackageMutation.mutateAsync(payload);
-   
+
         } catch (error) {
             // Error handled by useEffect hooks
         }
     }, [
-        packageDetailsFormData, selectedCourseIds, pricingFormData, 
+        packageDetailsFormData, selectedCourseIds, pricingFormData,
         coachingIncluded, router, locale, platformSlug, platformLocale, createPackageMutation
     ]);
 
@@ -319,10 +326,10 @@ export default function CreatePackage() {
     }, [selectedCourses, coachingIncluded]);
 
     const calculatePackagePrice = useCallback(() => {
-        const basePrice = coachingIncluded 
-            ? pricingFormData.completePackageWithCoaching 
+        const basePrice = coachingIncluded
+            ? pricingFormData.completePackageWithCoaching
             : pricingFormData.completePackageWithoutCoaching;
-        
+
         // Extract numeric value from price string (e.g., "5400 CHF" -> 5400)
         const numericPrice = parseFloat(basePrice.replace(/[^\d.]/g, '')) || 0;
         return numericPrice;
@@ -398,7 +405,7 @@ export default function CreatePackage() {
         router.push(`/${locale}/platform/${platformSlug}/${platformLocale}/packages`);
     };
 
-        return (
+    return (
         <div className="flex flex-col space-y-4">
             {/* Breadcrumbs */}
             <Breadcrumbs items={breadcrumbItems} />
@@ -430,28 +437,28 @@ export default function CreatePackage() {
             )}
 
             {/* Step Navigation */}
-            <Stepper.Root 
+            <Stepper.Root
                 key={`stepper-${currentStep}`}
-                defaultStep={currentStep} 
+                defaultStep={currentStep}
                 totalSteps={4}
                 onStepChange={(step) => setCurrentStep(step)}
             >
                 <Stepper.List>
-                    <Stepper.Item 
-                        step={1} 
-                        description={t('stepper.details')} 
+                    <Stepper.Item
+                        step={1}
+                        description={t('stepper.details')}
                     />
-                    <Stepper.Item 
-                        step={2} 
-                        description={t('stepper.courses')} 
+                    <Stepper.Item
+                        step={2}
+                        description={t('stepper.courses')}
                     />
-                    <Stepper.Item 
-                        step={3} 
-                        description={t('stepper.pricing')} 
+                    <Stepper.Item
+                        step={3}
+                        description={t('stepper.pricing')}
                     />
-                    <Stepper.Item 
-                        step={4} 
-                        description={t('stepper.preview')} 
+                    <Stepper.Item
+                        step={4}
+                        description={t('stepper.preview')}
                     />
                 </Stepper.List>
             </Stepper.Root>
@@ -460,36 +467,36 @@ export default function CreatePackage() {
 
             {/* Step 1: Package Details */}
             {currentStep === 1 && (
-            <PackageDetailsStep
-                formData={packageDetailsFormData}
-                onFormDataChange={handlePackageDetailsChange}
-                featuredImageUpload={{
-                    onUpload: handleFeaturedImageUpload,
-                    onDelete: handleDeleteFeaturedImage,
-                    onDownload: handleDownloadFeaturedImage,
-                    uploadProgress: packageImageProgress ?? 0,
-                    errorMessage: packageImageError ?? '',
-                }}
-                accordionIconUpload={{
-                    onUpload: handleAccordionIconUpload,
-                    onDelete: handleDeleteAccordionIcon,
-                    onDownload: handleDownloadAccordionIcon,
-                    uploadProgress: iconUploadProgress ?? 0,
-                    errorMessage: iconUploadError ?? '',
-                }}
-                locale={locale}
-            />
+                <PackageDetailsStep
+                    formData={packageDetailsFormData}
+                    onFormDataChange={handlePackageDetailsChange}
+                    featuredImageUpload={{
+                        onUpload: handleFeaturedImageUpload,
+                        onDelete: handleDeleteFeaturedImage,
+                        onDownload: handleDownloadFeaturedImage,
+                        uploadProgress: packageImageProgress ?? 0,
+                        errorMessage: packageImageError ?? '',
+                    }}
+                    accordionIconUpload={{
+                        onUpload: handleAccordionIconUpload,
+                        onDelete: handleDeleteAccordionIcon,
+                        onDownload: handleDownloadAccordionIcon,
+                        uploadProgress: iconUploadProgress ?? 0,
+                        errorMessage: iconUploadError ?? '',
+                    }}
+                    locale={locale}
+                />
             )}
 
             {/* Step 2: Course Selection */}
             {currentStep === 2 && (
-            <PackageCoursesStep
-                courses={allCourses}
-                selectedCourseIds={selectedCourseIds}
-                onToggleCourseSelection={toggleCourseSelection}
-                onClickUser={handleCourseDetails}
-                locale={locale}
-            />
+                <PackageCoursesStep
+                    courses={allCourses}
+                    selectedCourseIds={selectedCourseIds}
+                    onToggleCourseSelection={toggleCourseSelection}
+                    onClickUser={handleCourseDetails}
+                    locale={locale}
+                />
             )}
 
             {/* Step 3: Pricing Configuration */}
@@ -526,7 +533,7 @@ export default function CreatePackage() {
                 />
             )}
 
-            
+
 
             {/* Footer Actions */}
             <div className="flex justify-between pt-2 pb-6">
@@ -607,7 +614,7 @@ export default function CreatePackage() {
                                     className="flex-1"
                                 />
                             </div>
-                </div>
+                        </div>
                     </>
                 ) : null}
             </div>
