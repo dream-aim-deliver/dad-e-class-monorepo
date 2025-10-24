@@ -8,19 +8,19 @@ import {
 } from '@dream-aim-deliver/dad-cats';
 import { GetCoachingPageSuccessResponseSchema } from '@dream-aim-deliver/e-class-cms-rest';
 
-export const CoachingPageSuccessSchema = GetCoachingPageSuccessResponseSchema.shape.data;
+export const GetCoachingPageSuccessSchema = GetCoachingPageSuccessResponseSchema.shape.data;
 
-export type TCoachingPageSuccess = z.infer<typeof CoachingPageSuccessSchema>;
+export type TCoachingPageSuccess = z.infer<typeof GetCoachingPageSuccessSchema>;
 
-const CoachingPageDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", CoachingPageSuccessSchema)
-const CoachingPageKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
-const CoachingPageNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
+const GetCoachingPageDefaultViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("default", GetCoachingPageSuccessSchema)
+const GetCoachingPageKaboomViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("kaboom", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
+const GetCoachingPageNotFoundViewModelSchema = BaseDiscriminatedViewModeSchemaFactory("not-found", BaseErrorDataSchemaFactory(BaseErrorDataSchema, BaseErrorContextSchema))
 
 export const CoachingPageViewModelSchemaMap = {
-    default: CoachingPageDefaultViewModelSchema,
-    kaboom: CoachingPageKaboomViewModelSchema,
-    notFound: CoachingPageNotFoundViewModelSchema,
+    default: GetCoachingPageDefaultViewModelSchema,
+    kaboom: GetCoachingPageKaboomViewModelSchema,
+    notFound: GetCoachingPageNotFoundViewModelSchema,
 };
-export type TCoachingPageViewModelSchemaMap = typeof CoachingPageViewModelSchemaMap;
-export const CoachingPageViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(CoachingPageViewModelSchemaMap);
-export type TCoachingPageViewModel = z.infer<typeof CoachingPageViewModelSchema>;
+export type TGetCoachingPageViewModelSchemaMap = typeof CoachingPageViewModelSchemaMap;
+export const GetCoachingPageViewModelSchema = BaseViewModelDiscriminatedUnionSchemaFactory(CoachingPageViewModelSchemaMap);
+export type TGetCoachingPageViewModel = z.infer<typeof GetCoachingPageViewModelSchema>;

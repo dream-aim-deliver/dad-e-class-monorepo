@@ -6,6 +6,7 @@ import {
     CourseCardListSkeleton,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
     Divider,
     Outline,
 } from '@maany_shr/e-class-ui-kit';
@@ -22,15 +23,15 @@ import { TLocale } from '@maany_shr/e-class-translations';
 const PackageList = lazy(() => import('./offers-package-list'));
 const Carousel = lazy(() => import('./offers-carousel'));
 
-interface OffersProps {
+interface OffersPageProps {
     initialSelectedTopics?: string[];
 }
 
-export default function Offers(props: OffersProps) {
+export default function OffersPage(props: OffersPageProps) {
     // Data fetching and presentation logic
     const [outlineResponse] = trpc.getOffersPageOutline.useSuspenseQuery({});
     const [outlineViewModel, setOutlineViewModel] = useState<
-        viewModels.TOffersPageOutlineViewModel | undefined
+        viewModels.TGetOffersPageOutlineViewModel | undefined
     >(undefined);
 
     const { presenter } = useGetOffersPageOutlinePresenter(setOutlineViewModel);
@@ -52,6 +53,10 @@ export default function Offers(props: OffersProps) {
 
     if (outlineViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
+    }
+
+    if (outlineViewModel.mode === 'not-found') {
+        return <DefaultNotFound locale={locale} />;
     }
 
     const outline = outlineViewModel.data;

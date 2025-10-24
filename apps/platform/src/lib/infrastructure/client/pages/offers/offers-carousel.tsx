@@ -1,6 +1,5 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../../trpc/client';
-import { useState } from 'react';
 import {
     CarouselSkeleton,
     DefaultError,
@@ -24,7 +23,7 @@ const Carousel = dynamic(
 );
 
 interface OffersCarouselProps {
-    items: viewModels.TOffersPageOutlineSuccess['items'];
+    items: viewModels.TGetOffersPageOutlineSuccess['items'];
 }
 
 export default function OffersCarousel({ items }: OffersCarouselProps) {
@@ -44,7 +43,7 @@ export default function OffersCarousel({ items }: OffersCarouselProps) {
                         onButtonClick={onClick}
                         title={item.title}
                         description={item.description}
-                        imageUrl={item.imageUrl ?? ''}
+                        imageUrl={item.image?.downloadUrl ?? ''}
                         buttonText={item.buttonText}
                         buttonUrl={item.buttonUrl}
                         badge={item.badge ?? undefined}
