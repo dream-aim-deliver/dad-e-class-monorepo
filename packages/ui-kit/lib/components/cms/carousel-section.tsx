@@ -6,14 +6,13 @@ import { TextInput } from '../text-input';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { Button } from '../button';
 import { IconButton } from '../icon-button';
-import { fileMetadata } from '@maany_shr/e-class-models';
+import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { z } from 'zod';
-import { HomePageSchema } from 'packages/models/src/view-models';
 import { IconTrashAlt } from '../icons/icon-trash-alt';
 import { IconChevronUp } from '../icons/icon-chevron-up';
 import { IconChevronDown } from '../icons/icon-chevron-down';
 
-type CarouselType = z.infer<typeof HomePageSchema>['carousel'];
+type CarouselType = z.infer<typeof viewModels.HomePageSchema>['carousel'];
 type CarouselItemType = CarouselType extends Array<infer T> ? T : never;
 type UploadType="upload_offers_page_carousel_card_image" |"upload_home_page_carousel_item_image"
 interface CarouselSectionProps {
@@ -46,7 +45,7 @@ export default function CarouselSection({
         onChange?.(newCarouselData);
     };
 
-    const handleItemFieldChange = (index: number, field: keyof CarouselItemType, value: string | null) => {
+    const handleItemFieldChange = (index: number, field: keyof CarouselItemType, value: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newCarouselData = [...(carouselData || [])];
         newCarouselData[index] = {
             ...newCarouselData[index],
@@ -59,7 +58,7 @@ export default function CarouselSection({
         const newItem = {
             title: '',
             description: '',
-            imageUrl: null,
+            image: null,
             buttonText: '',
             buttonUrl: '',
             badge: ''
@@ -141,14 +140,21 @@ export default function CarouselSection({
         const newUploadedFiles = new Map(uploadedFiles);
         newUploadedFiles.set(index, file);
         setUploadedFiles(newUploadedFiles);
-        handleItemFieldChange(index, 'imageUrl', file.url as string | null);
+        const imageObject = {
+            id: file.id?.toString() ?? '',
+            name: file.name ?? '',
+            size: file.size ?? 0,
+            category: 'image' as const,
+            downloadUrl: file.url ?? ''
+        };
+        handleItemFieldChange(index, 'image', imageObject);
     };
 
     const handleFileDelete = (index: number, id: string) => {
         const newUploadedFiles = new Map(uploadedFiles);
         newUploadedFiles.delete(index);
         setUploadedFiles(newUploadedFiles);
-        handleItemFieldChange(index, 'imageUrl', null);
+        handleItemFieldChange(index, 'image', null);
         onFileDelete(id);
     };
 

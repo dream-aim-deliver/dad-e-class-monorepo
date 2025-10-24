@@ -4,7 +4,7 @@
 // User Types: CMS
 
 import { Suspense } from 'react';
-import ManageHomepageServerComponent from '../../../../../../../../lib/infrastructure/server/pages/manage-homepage-rsc';
+import ManageHomepageServerComponent from '../../../../../../../../lib/infrastructure/server/pages/manage-home-page-rsc';
 import DefaultLoadingWrapper from '../../../../../../../../lib/infrastructure/client/wrappers/default-loading';
 
 export default async function ManageHomepagePage({
