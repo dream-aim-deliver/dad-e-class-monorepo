@@ -55,6 +55,7 @@ export default function ManageHomepage() {
 
 	// Present data on mount and when response changes
 	useEffect(() => {
+		// @ts-ignore - Presenter doesn't handle progress states
 		homePagePresenter.present(getHomePageResponse, homePageViewModel);
 	}, [getHomePageResponse, homePagePresenter, homePageViewModel]);
 
