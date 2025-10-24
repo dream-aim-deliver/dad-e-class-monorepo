@@ -92,7 +92,9 @@ export default function ManageCoachingPage({
       if (data.success) {
         formState.markAsSaved();
         setSaveStatus('success');
-        refetchCoachingPage();
+        // Don't refetch immediately after save to prevent flickering
+        // The form already has the correct data
+        // refetchCoachingPage();
       }
     },
     onError: (error) => {

@@ -5,6 +5,7 @@ import { TextAreaInput } from '../text-areaInput';
 import { TextInput } from '../text-input';
 import { Uploader } from '../drag-and-drop-uploader/uploader';
 import { fileMetadata } from '@maany_shr/e-class-models';
+import { downloadFile } from '@maany_shr/e-class-ui-kit';
 
 interface BannerItemType {
     title: string;
@@ -42,20 +43,19 @@ export default function BannerSection({
     // Sync uploadedFile with value prop when image is loaded from server
     // Only update if the imageUrl has actually changed (not just object recreation)
     useEffect(() => {
-        if (value.imageUrl) {
-            // Only update if URL changed or file didn't exist
-            if (!uploadedFile || uploadedFile.url !== value.imageUrl) {
-                // When we have an imageUrl, create a file metadata object for the Uploader
-                // Note: We don't have full file metadata from the server, so we create a minimal object
-                setUploadedFile({
-                    id: '', // ID is not available from imageUrl alone
-                    name: value.imageUrl.split('/').pop() || 'banner-image',
-                    size: 0,
-                    category: 'image',
-                    url: value.imageUrl,
-                } as fileMetadata.TFileMetadata);
-            }
-        } else if (uploadedFile) {
+        const currentImageUrl = value.imageUrl;
+        const uploadedFileUrl = uploadedFile?.url;
+
+        if (currentImageUrl && currentImageUrl !== uploadedFileUrl) {
+            // URL changed or file didn't exist - update state
+            setUploadedFile({
+                id: '', // ID is not available from imageUrl alone
+                name: currentImageUrl.split('/').pop() || 'banner-image',
+                size: 0,
+                category: 'image',
+                url: currentImageUrl,
+            } as fileMetadata.TFileMetadata);
+        } else if (!currentImageUrl && uploadedFile) {
             // Image was removed
             setUploadedFile(null);
         }
@@ -96,7 +96,9 @@ export default function BannerSection({
     };
 
     const handleFileDownload = (id: string) => {
-        onFileDownload(id);
+        if (uploadedFile?.id === id && uploadedFile.url) {
+            downloadFile(uploadedFile.url, uploadedFile.name);
+        }
     };
 
     return (

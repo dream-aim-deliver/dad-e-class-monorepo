@@ -11,6 +11,7 @@ import { z } from 'zod';
 import { IconTrashAlt } from '../icons/icon-trash-alt';
 import { IconChevronUp } from '../icons/icon-chevron-up';
 import { IconChevronDown } from '../icons/icon-chevron-down';
+import { downloadFile } from '@maany_shr/e-class-ui-kit';
 
 type CarouselType = z.infer<typeof viewModels.HomePageSchema>['carousel'];
 type CarouselItemType = CarouselType extends Array<infer T> ? T : never;
@@ -193,8 +194,11 @@ export default function CarouselSection({
         onFileDelete(id);
     };
 
-    const handleFileDownload = (id: string) => {
-        onFileDownload(id);
+    const handleFileDownload = (index: number) => (id: string) => {
+        const file = uploadedFiles.get(index);
+        if (file?.id === id && file.url) {
+            downloadFile(file.url, file.name);
+        }
     };
 
     return (
@@ -244,7 +248,7 @@ export default function CarouselSection({
                                     variant="image"
                                     file={uploadedFiles.get(index) || null}
                                     onDelete={(id) => handleFileDelete(index, id)}
-                                    onDownload={handleFileDownload}
+                                    onDownload={handleFileDownload(index)}
                                     onFilesChange={(file, abortSignal) => handleOnFilesChange(file,  abortSignal)}
                                     onUploadComplete={(file) => handleUploadComplete(index, file)}
                                     locale="en"
