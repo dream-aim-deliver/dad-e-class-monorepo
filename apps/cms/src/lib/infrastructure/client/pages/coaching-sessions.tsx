@@ -170,7 +170,7 @@ export default function CoachingSessions({
 
 
   return (
-    <div className="flex flex-col space-y-5 px-30">
+    <div className="flex flex-col space-y-5 bg-card-fill p-6 rounded-md">
       {/* Page header with Outline and export control */}
       <div className="flex items-start justify-between w-full gap-4">
         <Outline title={t('title')} description={t('description')} className="flex-1" />
@@ -182,6 +182,7 @@ export default function CoachingSessions({
             hasIconLeft
             iconLeft={<IconCloudDownload />}
             onClick={handleExportCurrentView}
+            disabled={coachingSessionsData?.sessions.length === 0}
           />
         </div>
       </div>
