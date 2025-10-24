@@ -148,8 +148,23 @@ export const usePackageFileUpload = (
     };
 
     const handleDownload = async (id: string) => {
-        if (packageFile?.id !== id) return;
-        downloadFile(packageFile.url, packageFile.name);
+        // If the file is in our state, use it directly
+        if (packageFile?.id === id && packageFile.url && packageFile.name) {
+            downloadFile(packageFile.url, packageFile.name);
+            return;
+        }
+
+        // Otherwise, fetch the download URL from the server
+        try {
+            const verifyResult = await verifyMutation.mutateAsync({ fileId: id });
+            if (verifyResult.success) {
+                const data = verifyResult.data as { downloadUrl: string };
+                // Use the file ID as filename if we don't have the original name
+                downloadFile(data.downloadUrl, id);
+            }
+        } catch (error) {
+            console.error('Failed to download file:', error);
+        }
     };
 
     return {
