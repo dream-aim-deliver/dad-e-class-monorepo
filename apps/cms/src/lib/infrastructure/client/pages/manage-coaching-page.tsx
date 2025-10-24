@@ -8,7 +8,7 @@
 // User Types: CMS (admin/superadmin - enforced by middleware)
 // Design: Similar to CMS Manage Offers
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DefaultLoading, DefaultError, Outline, PageTitleSection, BannerSection, Button, Banner } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -100,8 +100,29 @@ export default function ManageCoachingPage({
     },
   });
 
-  // @ts-ignore
-  coachingPagePresenter.present(coachingPageResponse, coachingPageViewModel);
+  // Present data on mount and when response changes
+  useEffect(() => {
+    // @ts-ignore
+    coachingPagePresenter.present(coachingPageResponse, coachingPageViewModel);
+  }, [coachingPageResponse, coachingPagePresenter, coachingPageViewModel]);
+
+  // Update form state when data loads
+  useEffect(() => {
+    if (coachingPageViewModel?.mode === 'default' && !formState.isDirty) {
+      const loadedFormData: CoachingPageFormData = {
+        title: coachingPageViewModel.data.title || '',
+        description: coachingPageViewModel.data.description || '',
+        banner: {
+          title: coachingPageViewModel.data.banner?.title || '',
+          description: coachingPageViewModel.data.banner?.description || '',
+          imageUrl: coachingPageViewModel.data.banner?.image?.downloadUrl || null,
+          buttonText: coachingPageViewModel.data.banner?.buttonText || '',
+          buttonUrl: coachingPageViewModel.data.banner?.buttonLink || '',
+        },
+      };
+      formState.setValue(loadedFormData);
+    }
+  }, [coachingPageViewModel?.mode]);
 
   // Now handle conditional rendering after all hooks are called
   if (coachingPageViewModel?.mode === 'kaboom') {
@@ -184,13 +205,13 @@ export default function ManageCoachingPage({
 
       {/* Page Title Section */}
       <PageTitleSection
-        initialValue={{ title: formState.value.title, description: formState.value.description }}
+        value={{ title: formState.value.title, description: formState.value.description }}
         onChange={(newValue) => formState.setValue({ ...formState.value!, title: newValue.title, description: newValue.description })}
       />
 
       {/* Banner Section */}
       <BannerSection
-        initialValue={formState.value.banner}
+        value={formState.value.banner}
         onChange={(newBanner) => formState.setValue({ ...formState.value!, banner: newBanner })}
         onFileUpload={handleFileUpload}
         onFileDelete={handleFileDelete}

@@ -16,7 +16,7 @@ type CarouselType = z.infer<typeof viewModels.HomePageSchema>['carousel'];
 type CarouselItemType = CarouselType extends Array<infer T> ? T : never;
 type UploadType="upload_offers_page_carousel_card_image" |"upload_home_page_carousel_item_image"
 interface CarouselSectionProps {
-    initialValue?: CarouselType;
+    value: CarouselType;
     onChange: (value: CarouselType) => void;
     onFileUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
@@ -30,7 +30,7 @@ interface CarouselSectionProps {
 }
 
 export default function CarouselSection({
-    initialValue = [],
+    value = [],
     onChange,
     onFileUpload,
     onFileDelete,
@@ -38,18 +38,17 @@ export default function CarouselSection({
     uploadProgress,
     uploadType
 }: CarouselSectionProps) {
-    const [carouselData, setCarouselData] = useState<CarouselType>(initialValue);
     const [uploadedFiles, setUploadedFiles] = useState<Map<number, fileMetadata.TFileMetadata>>(new Map());
+
     const handleCarouselChange = (newCarouselData: CarouselType) => {
-        setCarouselData(newCarouselData);
         onChange?.(newCarouselData);
     };
 
-    const handleItemFieldChange = (index: number, field: keyof CarouselItemType, value: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
-        const newCarouselData = [...(carouselData || [])];
+    const handleItemFieldChange = (index: number, field: keyof CarouselItemType, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
+        const newCarouselData = [...(value || [])];
         newCarouselData[index] = {
             ...newCarouselData[index],
-            [field]: value
+            [field]: fieldValue
         };
         handleCarouselChange(newCarouselData);
     };
@@ -63,11 +62,11 @@ export default function CarouselSection({
             buttonUrl: '',
             badge: ''
         } as CarouselItemType;
-        handleCarouselChange([...(carouselData || []), newItem]);
+        handleCarouselChange([...(value || []), newItem]);
     };
 
     const removeCarouselItem = (index: number) => {
-        const newCarouselData = (carouselData || []).filter((_, i) => i !== index);
+        const newCarouselData = (value || []).filter((_, i) => i !== index);
 
         // Clean up uploaded file for this item
         const fileForItem = uploadedFiles.get(index);
@@ -82,8 +81,8 @@ export default function CarouselSection({
     };
 
     const moveCarouselItemUp = (index: number) => {
-        if (carouselData && index > 0) {
-            const newCarouselData = [...carouselData];
+        if (value && index > 0) {
+            const newCarouselData = [...value];
             [newCarouselData[index - 1], newCarouselData[index]] = [newCarouselData[index], newCarouselData[index - 1]];
             handleCarouselChange(newCarouselData);
 
@@ -106,8 +105,8 @@ export default function CarouselSection({
     };
 
     const moveCarouselItemDown = (index: number) => {
-        if (carouselData && index < carouselData.length - 1) {
-            const newCarouselData = [...carouselData];
+        if (value && index < value.length - 1) {
+            const newCarouselData = [...value];
             [newCarouselData[index], newCarouselData[index + 1]] = [newCarouselData[index + 1], newCarouselData[index]];
             handleCarouselChange(newCarouselData);
 
@@ -170,7 +169,7 @@ export default function CarouselSection({
             </div>
 
             <div className="flex flex-col gap-6 transition-all duration-300 ease-in-out">
-                {(carouselData || []).map((item, index) => (
+                {(value || []).map((item, index) => (
                     <div
                         key={index}
                         className=" rounded-medium flex flex-col gap-3 border-base-neutral-700 bg-base-neutral-800 p-4
@@ -273,7 +272,7 @@ export default function CarouselSection({
                     className="transition-all duration-200 hover:scale-105"
                 />
 
-                {(carouselData || []).length === 0 && (
+                {(value || []).length === 0 && (
                     <div className="text-center py-8 text-text-secondary transition-all duration-300 animate-in fade-in-0 slide-in-from-bottom-4">
                         No carousel items yet. Click "Add Carousel Item" to get started.
                     </div>

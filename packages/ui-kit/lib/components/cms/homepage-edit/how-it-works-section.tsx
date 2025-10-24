@@ -10,7 +10,7 @@ import { z } from 'zod';
 type AccordionType = z.infer<typeof viewModels.HomePageSchema>['accordion'];
 
 interface HowItWorksSectionProps {
-    initialValue?: AccordionType;
+    value: AccordionType;
     onChange: (value: AccordionType) => void;
     onFileUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
@@ -23,39 +23,21 @@ interface HowItWorksSectionProps {
 }
 
 export default function HowItWorksSection({
-    initialValue,
+    value,
     onChange,
     onFileUpload,
     onFileDelete,
     onFileDownload,
     uploadProgress,
 }: HowItWorksSectionProps) {
-    const [accordionData, setAccordionData] = useState<AccordionType>({
-        title: initialValue?.title ?? '',
-        showNumbers: initialValue?.showNumbers ?? true,
-        items: initialValue?.items ?? [],
-    });
-
-
-    useEffect(() => {
-        if (initialValue) {
-            setAccordionData({
-                title: initialValue.title ?? '',
-                showNumbers: initialValue.showNumbers ?? true,
-                items: initialValue.items ?? [],
-            });
-        }
-    }, [initialValue]);
-
     const handleAccordionChange = (newAccordionData: AccordionType) => {
-        setAccordionData(newAccordionData);
         onChange?.(newAccordionData);
     };
 
-    const handleFieldChange = (field: string, value: string | boolean) => {
+    const handleFieldChange = (field: string, fieldValue: string | boolean) => {
         const newAccordionData = {
-            ...accordionData,
-            [field]: value
+            ...value,
+            [field]: fieldValue
         } as AccordionType;
         handleAccordionChange(newAccordionData);
     };
@@ -63,19 +45,19 @@ export default function HowItWorksSection({
     // State for builder items
     const [builderItems, setBuilderItems] = useState<AccordionBuilderItem[]>([]);
 
-    // Sync builderItems with accordionData changes
+    // Sync builderItems with value changes
     useEffect(() => {
-        const items = (accordionData?.items || []).map(item => ({
+        const items = (value?.items || []).map(item => ({
             title: item?.title || '',
             content: item?.content || '',
             icon: null, // TODO: Map iconImageUrl to proper file object when backend provides it
         }));
         setBuilderItems(items);
-    }, [accordionData]);
+    }, [value]);
 
-    // Update accordionData when builderItems change
+    // Update value when builderItems change
     useEffect(() => {
-        if (builderItems.length === 0 && (!accordionData?.items || accordionData.items.length === 0)) {
+        if (builderItems.length === 0 && (!value?.items || value.items.length === 0)) {
             return; // Skip initial empty state
         }
 
@@ -87,7 +69,7 @@ export default function HowItWorksSection({
         }));
 
         handleAccordionChange({
-            ...accordionData,
+            ...value,
             items: newItems
         });
     }, [builderItems]);
@@ -100,7 +82,7 @@ export default function HowItWorksSection({
     };
 
     const handleIconDownload = (index: number) => {
-        const item = accordionData?.items?.[index];
+        const item = value?.items?.[index];
         if (item?.iconImage?.id) {
             onFileDownload(item.iconImage.id);
         }
@@ -113,8 +95,8 @@ export default function HowItWorksSection({
             <div className="flex flex-col gap-4">
                 <TextAreaInput
                     label="Title"
-                    value={accordionData?.title || ''}
-                    setValue={(value) => handleFieldChange('title', value)}
+                    value={value?.title || ''}
+                    setValue={(v) => handleFieldChange('title', v)}
                     placeholder="Enter the how it works section title"
                 />
 
@@ -123,9 +105,9 @@ export default function HowItWorksSection({
                     value="showNumbers"
                     label="Show Numbers"
                     className="text-base-white"
-                    checked={accordionData?.showNumbers ?? true}
+                    checked={value?.showNumbers ?? true}
                     withText={true}
-                    onChange={() => handleFieldChange('showNumbers', !(accordionData?.showNumbers ?? true))}
+                    onChange={() => handleFieldChange('showNumbers', !(value?.showNumbers ?? true))}
                 />
             </div>
 

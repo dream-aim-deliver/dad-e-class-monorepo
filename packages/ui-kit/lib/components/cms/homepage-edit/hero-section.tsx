@@ -9,7 +9,7 @@ import { z } from 'zod';
 type BannerType = z.infer<typeof viewModels.HomePageSchema>['banner'];
 
 interface HeroSectionProps {
-    initialValue?: BannerType;
+    value: BannerType;
     onChange: (value: BannerType) => void;
     onFileUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
@@ -27,7 +27,7 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({
-    initialValue,
+    value,
     onChange,
     onFileUpload,
     onVideoUpload,
@@ -36,23 +36,14 @@ export default function HeroSection({
     uploadProgress,
     videoUploadProgress,
 }: HeroSectionProps) {
-    const [bannerData, setBannerData] = useState<BannerType>(
-        initialValue || {
-            title: '',
-            description: '',
-            videoId: null,
-            thumbnailImage: null,
-        }
-    );
     const [uploadedThumbnail, setUploadedThumbnail] = useState<fileMetadata.TFileMetadata | null>(null);
     const [uploadedVideo, setUploadedVideo] = useState<fileMetadata.TFileMetadataVideo | null>(null);
 
-    const handleFieldChange = (field: string, value: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
+    const handleFieldChange = (field: string, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newBannerData = {
-            ...bannerData,
-            [field]: value
+            ...value,
+            [field]: fieldValue
         } as BannerType;
-        setBannerData(newBannerData);
         onChange?.(newBannerData);
     };
 
@@ -113,14 +104,14 @@ export default function HeroSection({
             <div className="flex flex-col gap-4">
                 <TextAreaInput
                     label="Title"
-                    value={bannerData?.title || ''}
-                    setValue={(value) => handleFieldChange('title', value)}
+                    value={value?.title || ''}
+                    setValue={(v) => handleFieldChange('title', v)}
                     placeholder="Enter the title"
                 />
                 <TextAreaInput
                     label="Description"
-                    value={bannerData?.description || ''}
-                    setValue={(value) => handleFieldChange('description', value)}
+                    value={value?.description || ''}
+                    setValue={(v) => handleFieldChange('description', v)}
                     placeholder="Enter the description"
                 />
 

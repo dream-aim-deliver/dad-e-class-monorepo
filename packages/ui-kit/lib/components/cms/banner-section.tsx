@@ -15,7 +15,7 @@ interface BannerItemType {
 }
 
 interface BannerSectionProps {
-    initialValue?: BannerItemType;
+    value: BannerItemType;
     onChange: (value: BannerItemType) => void;
     onFileUpload: (
         fileRequest: fileMetadata.TFileUploadRequest,
@@ -29,7 +29,7 @@ interface BannerSectionProps {
 }
 
 export default function BannerSection({
-    initialValue,
+    value,
     onChange,
     onFileUpload,
     onFileDelete,
@@ -37,26 +37,16 @@ export default function BannerSection({
     onImageUploadComplete,
     uploadProgress,
 }: BannerSectionProps) {
-    const [bannerData, setBannerData] = useState<BannerItemType>(
-        initialValue || {
-            title: '',
-            description: '',
-            imageUrl: null,
-            buttonText: '',
-            buttonUrl: '',
-        }
-    );
     const [uploadedFile, setUploadedFile] = useState<fileMetadata.TFileMetadata | null>(null);
 
     const handleBannerChange = (newBannerData: BannerItemType) => {
-        setBannerData(newBannerData);
         onChange?.(newBannerData);
     };
 
-    const handleFieldChange = (field: keyof BannerItemType, value: string | null) => {
+    const handleFieldChange = (field: keyof BannerItemType, fieldValue: string | null) => {
         const newBannerData = {
-            ...bannerData,
-            [field]: value
+            ...value,
+            [field]: fieldValue
         };
         handleBannerChange(newBannerData);
     };
@@ -120,15 +110,15 @@ export default function BannerSection({
                             label="Title"
                             inputField={{
                                 inputText: "Enter the title",
-                                value: bannerData.title,
-                                setValue: (value) => handleFieldChange('title', value)
+                                value: value.title,
+                                setValue: (v) => handleFieldChange('title', v)
                             }}
                         />
 
                         <TextAreaInput
                             label="Description"
-                            value={bannerData.description}
-                            setValue={(value) => handleFieldChange('description', value)}
+                            value={value.description}
+                            setValue={(v) => handleFieldChange('description', v)}
                             placeholder="Enter the description"
                         />
 
@@ -136,8 +126,8 @@ export default function BannerSection({
                             label="Button Text"
                             inputField={{
                                 inputText: "Enter button text",
-                                value: bannerData.buttonText,
-                                setValue: (value) => handleFieldChange('buttonText', value)
+                                value: value.buttonText,
+                                setValue: (v) => handleFieldChange('buttonText', v)
                             }}
                         />
 
@@ -145,8 +135,8 @@ export default function BannerSection({
                             label="Button Link"
                             inputField={{
                                 inputText: "Enter button URL",
-                                value: bannerData.buttonUrl,
-                                setValue: (value) => handleFieldChange('buttonUrl', value)
+                                value: value.buttonUrl,
+                                setValue: (v) => handleFieldChange('buttonUrl', v)
                             }}
                         />
                     </form>
