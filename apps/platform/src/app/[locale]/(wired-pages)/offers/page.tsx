@@ -1,5 +1,5 @@
 import { extractListParams } from '../../../../lib/infrastructure/server/utils/extract-params';
-import OffersServerComponent from '../../../../lib/infrastructure/server/pages/offers-rsc';
+import OffersServerComponent from '../../../../lib/infrastructure/server/pages/offers-page-rsc';
 
 export default async function Page({
     searchParams: searchParamsPromise,

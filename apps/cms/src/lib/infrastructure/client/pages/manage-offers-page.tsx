@@ -38,7 +38,7 @@ export default function ManageOffersPage({
     const [_uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
     const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [offersPageViewModel, setOffersPageViewModel] = useState<
-        viewModels.TOffersPageOutlineViewModel | undefined
+        viewModels.TGetOffersPageOutlineViewModel | undefined
     >(undefined);
     const [packagesViewModel, setPackagesViewModel] = useState<
         viewModels.TListPackagesViewModel | undefined
@@ -73,6 +73,7 @@ export default function ManageOffersPage({
         description: string;
         buttonText: string;
         imageUrl: string | null;
+        imageId: number | null;
         buttonUrl: string;
         badge?: string;
     };
@@ -94,8 +95,13 @@ export default function ManageOffersPage({
         description: offersPageData?.description || '',
         packageIds: initialPackageIds,
         carousel: (offersPageData?.items || []).map(item => ({
-            ...item,
+            title: item.title,
+            description: item.description,
+            buttonText: item.buttonText,
+            buttonUrl: item.buttonUrl,
             badge: item.badge ?? undefined,
+            imageUrl: item.image?.downloadUrl ?? null,
+            imageId: item.image?.id ? Number(item.image.id) : null,
         })),
     };
 
@@ -164,7 +170,7 @@ export default function ManageOffersPage({
             buttonText: item.buttonText,
             buttonUrl: item.buttonUrl,
             badge: item.badge,
-            imageId: item.imageUrl ? parseInt(item.imageUrl.split('/').pop() || '0', 10) : 0,
+            imageId: item.imageId ?? 0,
         }));
 
         await saveOffersPageMutation.mutateAsync({
@@ -186,7 +192,22 @@ export default function ManageOffersPage({
 
     // Safe to derive after ensuring formState.value exists
     const selectedPackages = allPackages.filter(pkg => formState.value!.packageIds.includes(Number(pkg.id)));
-    const carouselItems = formState.value!.carousel;
+
+    // Transform carousel items for CarouselSection component (needs image object format)
+    const carouselItemsForComponent = formState.value!.carousel.map(item => ({
+        title: item.title,
+        description: item.description,
+        buttonText: item.buttonText,
+        buttonUrl: item.buttonUrl,
+        badge: item.badge ?? null,
+        image: item.imageUrl && item.imageId ? {
+            id: String(item.imageId),
+            name: '',
+            size: 0,
+            category: 'image' as const,
+            downloadUrl: item.imageUrl
+        } : null
+    }));
 
     return (
         <div className="flex flex-col space-y-5">
@@ -237,8 +258,20 @@ export default function ManageOffersPage({
 
             {/* Carousel Section */}
             <CarouselSection
-                initialValue={carouselItems}
-                onChange={(newCarousel) => formState.setValue({ ...formState.value!, carousel: newCarousel })}
+                initialValue={carouselItemsForComponent}
+                onChange={(newCarousel) => {
+                    // Transform back from image object format to imageUrl/imageId format
+                    const transformedCarousel = newCarousel.map(item => ({
+                        title: item.title,
+                        description: item.description,
+                        buttonText: item.buttonText,
+                        buttonUrl: item.buttonUrl,
+                        badge: item.badge ?? undefined,
+                        imageUrl: item.image?.downloadUrl ?? null,
+                        imageId: item.image?.id ? Number(item.image.id) : null
+                    }));
+                    formState.setValue({ ...formState.value!, carousel: transformedCarousel });
+                }}
                 onFileUpload={handleFileUpload}
                 onFileDelete={handleFileDelete}
                 onFileDownload={handleFileDownload}

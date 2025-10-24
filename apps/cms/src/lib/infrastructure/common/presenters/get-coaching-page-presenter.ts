@@ -11,13 +11,13 @@ import {
 } from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type TCoachingPagePresenterUtilities = {};
+export type TGetCoachingPagePresenterUtilities = {};
 
 export const GetCoachingPageResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
         TGetCoachingPageUseCaseResponse,
-        viewModels.TCoachingPageViewModel,
-        TCoachingPagePresenterUtilities
+        viewModels.TGetCoachingPageViewModel,
+        TGetCoachingPagePresenterUtilities
     >;
 
 type TGetCoachingPageResponseMiddleware =
@@ -25,18 +25,18 @@ type TGetCoachingPageResponseMiddleware =
 
 export default class GetCoachingPagePresenter extends BasePresenter<
     TGetCoachingPageUseCaseResponse,
-    viewModels.TCoachingPageViewModel,
-    TCoachingPagePresenterUtilities,
+    viewModels.TGetCoachingPageViewModel,
+    TGetCoachingPagePresenterUtilities,
     TGetCoachingPageResponseMiddleware
 > {
     constructor(
-        setViewModel: (viewModel: viewModels.TCoachingPageViewModel) => void,
-        viewUtilities: TCoachingPagePresenterUtilities,
+        setViewModel: (viewModel: viewModels.TGetCoachingPageViewModel) => void,
+        viewUtilities: TGetCoachingPagePresenterUtilities,
     ) {
         super({
             schemas: {
                 responseModel: GetCoachingPageUseCaseResponseSchema,
-                viewModel: viewModels.CoachingPageViewModelSchema
+                viewModel: viewModels.GetCoachingPageViewModelSchema
             },
             middleware: GetCoachingPageResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -49,7 +49,7 @@ export default class GetCoachingPagePresenter extends BasePresenter<
             TGetCoachingPageUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TCoachingPageViewModel {
+    ): viewModels.TGetCoachingPageViewModel {
         return {
             mode: 'default',
             data: {
@@ -62,7 +62,7 @@ export default class GetCoachingPagePresenter extends BasePresenter<
             TGetCoachingPageErrorResponse,
             TGetCoachingPageResponseMiddleware
         >,
-    ): viewModels.TCoachingPageViewModel {
+    ): viewModels.TGetCoachingPageViewModel {
         if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',

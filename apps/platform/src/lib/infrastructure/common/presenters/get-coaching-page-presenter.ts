@@ -6,43 +6,41 @@ import {
     UnhandledErrorResponse
 } from '@dream-aim-deliver/dad-cats';
 import {
-    GetOffersPageOutlineUseCaseResponseSchema,
-    TGetOffersPageOutlineUseCaseResponse,
-    TGetOffersPageOutlineUseCaseErrorResponse
+    GetCoachingPageUseCaseResponseSchema,
+    TGetCoachingPageUseCaseResponse,
+    TGetCoachingPageErrorResponse
 } from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type TOffersPageOutlinePresenterUtilities = {};
+export type TGetCoachingPagePresenterUtilities = {};
 
-export const GetOffersPageOutlineResponseMiddleware =
+export const GetCoachingPageResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
-        TGetOffersPageOutlineUseCaseResponse,
-        viewModels.TGetOffersPageOutlineViewModel,
-        TOffersPageOutlinePresenterUtilities
+        TGetCoachingPageUseCaseResponse,
+        viewModels.TGetCoachingPageViewModel,
+        TGetCoachingPagePresenterUtilities
     >;
 
-type TGetOffersPageOutlineResponseMiddleware =
-    typeof GetOffersPageOutlineResponseMiddleware;
+type TGetCoachingPageResponseMiddleware =
+    typeof GetCoachingPageResponseMiddleware;
 
-export default class GetOffersPageOutlinePresenter extends BasePresenter<
-    TGetOffersPageOutlineUseCaseResponse,
-    viewModels.TGetOffersPageOutlineViewModel,
-    TOffersPageOutlinePresenterUtilities,
-    TGetOffersPageOutlineResponseMiddleware
+export default class GetCoachingPagePresenter extends BasePresenter<
+    TGetCoachingPageUseCaseResponse,
+    viewModels.TGetCoachingPageViewModel,
+    TGetCoachingPagePresenterUtilities,
+    TGetCoachingPageResponseMiddleware
 > {
     constructor(
-        setViewModel: (
-            viewModel: viewModels.TGetOffersPageOutlineViewModel,
-        ) => void,
-        viewUtilities: TOffersPageOutlinePresenterUtilities,
+        setViewModel: (viewModel: viewModels.TGetCoachingPageViewModel) => void,
+        viewUtilities: TGetCoachingPagePresenterUtilities,
     ) {
         super({
             schemas: {
                 responseModel:
-                    GetOffersPageOutlineUseCaseResponseSchema,
-                viewModel: viewModels.GetOffersPageOutlineViewModelSchema
+                    GetCoachingPageUseCaseResponseSchema,
+                viewModel: viewModels.GetCoachingPageViewModelSchema
             },
-            middleware: GetOffersPageOutlineResponseMiddleware,
+            middleware: GetCoachingPageResponseMiddleware,
             viewUtilities: viewUtilities,
             setViewModel: setViewModel
         });
@@ -50,10 +48,10 @@ export default class GetOffersPageOutlinePresenter extends BasePresenter<
 
     presentSuccess(
         response: Extract<
-            TGetOffersPageOutlineUseCaseResponse,
+            TGetCoachingPageUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TGetOffersPageOutlineViewModel {
+    ): viewModels.TGetCoachingPageViewModel {
         return {
             mode: 'default',
             data: {
@@ -63,18 +61,20 @@ export default class GetOffersPageOutlinePresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            TGetOffersPageOutlineUseCaseErrorResponse,
-            TGetOffersPageOutlineResponseMiddleware
+            TGetCoachingPageErrorResponse,
+            TGetCoachingPageResponseMiddleware
         >,
-    ): viewModels.TGetOffersPageOutlineViewModel {
+    ): viewModels.TGetCoachingPageViewModel {
 
         if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',
                 data: {
+
                     message: response.data.message,
                     operation: response.data.operation,
                     context: response.data.context
+
                 }
             };
 

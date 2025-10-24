@@ -7,17 +7,17 @@ import {
 import {
     GetOffersPageOutlineUseCaseResponseSchema,
     TGetOffersPageOutlineUseCaseResponse,
-    TGetOffersPageOutlineErrorResponse
+    TGetOffersPageOutlineUseCaseErrorResponse
 } from '@dream-aim-deliver/e-class-cms-rest';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type TOffersPageOutlinePresenterUtilities = {};
+export type TGetOffersPageOutlinePresenterUtilities = {};
 
 export const GetOffersPageOutlineResponseMiddleware =
     {} satisfies TBaseResponseResponseMiddleware<
         TGetOffersPageOutlineUseCaseResponse,
-        viewModels.TOffersPageOutlineViewModel,
-        TOffersPageOutlinePresenterUtilities
+        viewModels.TGetOffersPageOutlineViewModel,
+        TGetOffersPageOutlinePresenterUtilities
     >;
 
 type TGetOffersPageOutlineResponseMiddleware =
@@ -25,20 +25,20 @@ type TGetOffersPageOutlineResponseMiddleware =
 
 export default class OffersPageOutlinePresenter extends BasePresenter<
     TGetOffersPageOutlineUseCaseResponse,
-    viewModels.TOffersPageOutlineViewModel,
-    TOffersPageOutlinePresenterUtilities,
+    viewModels.TGetOffersPageOutlineViewModel,
+    TGetOffersPageOutlinePresenterUtilities,
     TGetOffersPageOutlineResponseMiddleware
 > {
     constructor(
         setViewModel: (
-            viewModel: viewModels.TOffersPageOutlineViewModel,
+            viewModel: viewModels.TGetOffersPageOutlineViewModel,
         ) => void,
-        viewUtilities: TOffersPageOutlinePresenterUtilities,
+        viewUtilities: TGetOffersPageOutlinePresenterUtilities,
     ) {
         super({
             schemas: {
                 responseModel: GetOffersPageOutlineUseCaseResponseSchema,
-                viewModel: viewModels.OffersPageOutlineViewModelSchema
+                viewModel: viewModels.GetOffersPageOutlineViewModelSchema
             },
             middleware: GetOffersPageOutlineResponseMiddleware,
             viewUtilities: viewUtilities,
@@ -51,7 +51,7 @@ export default class OffersPageOutlinePresenter extends BasePresenter<
             TGetOffersPageOutlineUseCaseResponse,
             { success: true }
         >,
-    ): viewModels.TOffersPageOutlineViewModel {
+    ): viewModels.TGetOffersPageOutlineViewModel {
         return {
             mode: 'default',
             data: {
@@ -61,10 +61,10 @@ export default class OffersPageOutlinePresenter extends BasePresenter<
     }
     presentError(
         response: UnhandledErrorResponse<
-            TGetOffersPageOutlineErrorResponse,
+            TGetOffersPageOutlineUseCaseErrorResponse,
             TGetOffersPageOutlineResponseMiddleware
         >,
-    ): viewModels.TOffersPageOutlineViewModel {
+    ): viewModels.TGetOffersPageOutlineViewModel {
         if (response.data.errorType === 'NotFoundError') {
             return {
                 mode: 'not-found',

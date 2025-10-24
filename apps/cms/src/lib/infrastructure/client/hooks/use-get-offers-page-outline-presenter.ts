@@ -1,13 +1,13 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { useMemo } from 'react';
 import OffersPageOutlinePresenter, {
-    TOffersPageOutlinePresenterUtilities,
+    TGetOffersPageOutlinePresenterUtilities,
 } from '../../common/presenters/get-offers-page-outline-presenter';
 
 export function useGetOffersPageOutlinePresenter(
-    setViewModel: (viewModel: viewModels.TOffersPageOutlineViewModel) => void,
+    setViewModel: (viewModel: viewModels.TGetOffersPageOutlineViewModel) => void,
 ) {
-    const presenterUtilities: TOffersPageOutlinePresenterUtilities = {};
+    const presenterUtilities: TGetOffersPageOutlinePresenterUtilities = {};
     const presenter = useMemo(
         () => new OffersPageOutlinePresenter(setViewModel, presenterUtilities),
         [setViewModel],
