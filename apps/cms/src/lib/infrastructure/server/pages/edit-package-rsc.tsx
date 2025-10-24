@@ -23,7 +23,10 @@ export default async function EditPackageServerComponent({
     platformLocale,
     packageId,
 }: EditPackageServerComponentProps) {
-    const trpc = getServerTRPC();
+    const trpc = getServerTRPC({
+        platform_slug: platformSlug,
+        platform_locale: platformLocale
+    });
 
     const packageIdInt = parseInt(packageId);
 
