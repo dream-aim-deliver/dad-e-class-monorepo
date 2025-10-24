@@ -249,6 +249,7 @@ export { CoachingSessionGroupOverviewCard } from './components/coaching-session-
 export { CoachReviewFilterModal, type CoachReviewFilterModel } from './components/review/coach-review-filter-modal';
 export { GroupCoachingSessionBanner } from './components/group-coaching-session-banner';
 export { GroupCoachingSessionReviewsBanner } from './components/group-coaching-session-reviews-banner';
+export { CoachingSessionGrid } from './components/grids/coaching-session-grid';
 
 // Transactions
 export { TransactionsGrid, type TransactionRow, type TransactionsGridProps } from './components/grids/transactions-grid';
