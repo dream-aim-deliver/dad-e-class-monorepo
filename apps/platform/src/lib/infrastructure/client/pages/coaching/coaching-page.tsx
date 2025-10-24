@@ -10,6 +10,7 @@ import {
     CoachesSkeleton,
     DefaultError,
     DefaultLoading,
+    DefaultNotFound,
     Outline,
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
@@ -20,11 +21,11 @@ import CoachingCoachList from './coaching-coach-list';
 import { useSession } from 'next-auth/react';
 import CoachingOfferingsPanel from './coaching-offerings-panel';
 
-interface CoachingsProps {
+interface CoachingPageProps {
     initialSelectedTopics?: string[];
 }
 
-export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
+export default function CoachingPage({ initialSelectedTopics }: CoachingPageProps) {
     const locale = useLocale() as TLocale;
     const router = useRouter();
     const t = useTranslations('pages.coaching');
@@ -52,6 +53,10 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
 
     if (coachingPageViewModel.mode === 'kaboom') {
         return <DefaultError locale={locale} />;
+    }
+
+    if (coachingPageViewModel.mode === 'not-found') {
+        return <DefaultNotFound locale={locale} />;
     }
 
     const coachingPage = coachingPageViewModel.data;
@@ -86,7 +91,7 @@ export default function Coaching({ initialSelectedTopics }: CoachingsProps) {
                 locale={locale}
                 title={coachingPage.banner.title}
                 description={coachingPage.banner.description}
-                imageUrl={coachingPage.banner.imageUrl ?? ''}
+                imageUrl={coachingPage.banner.image?.downloadUrl ?? ''}
                 buttonText={coachingPage.banner.buttonText}
                 subtitle=""
                 onClick={() => {
