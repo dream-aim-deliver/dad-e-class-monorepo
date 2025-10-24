@@ -17,8 +17,8 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 type CoachingSession = viewModels.TListCoachingSessionsSuccess['sessions'][number];
 
 export interface CoachingSessionGridProps extends isLocalAware {
-    gridRef: RefObject<AgGridReact | null>; 
-    onCoachClick: (coach: CoachingSession['coach'] | null) => void; 
+    gridRef: RefObject<AgGridReact | null>;
+    onCoachClick: (coach: CoachingSession['coach'] | null) => void;
     onStudentClick?: (student: CoachingSession['student'] | null) => void;
     onCourseClick?: (course: CoachingSession['course'] | null) => void;
     sessions: CoachingSession[];
@@ -296,7 +296,7 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
 
     return (
         <div className="h-full flex flex-col">
-            
+
             <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between mb-4 gap-2">
                 <InputField
                     className="flex-grow relative m-0 md:mr-2 h-10"
@@ -305,7 +305,7 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
                     hasLeftContent
                     leftContent={<IconSearch />}
                 />
-               
+
             </div>
 
             <div className="flex flex-col grow">
