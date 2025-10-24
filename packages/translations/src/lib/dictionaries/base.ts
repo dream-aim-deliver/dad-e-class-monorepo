@@ -1515,6 +1515,7 @@ export const DictionarySchema = z.object({
       settings: z.string(),
       homepage: z.string(),
       offers: z.string(),
+      coaching: z.string(),
       aboutPage: z.string(),
       footer: z.string(),
       websiteContentSection: z.string(),

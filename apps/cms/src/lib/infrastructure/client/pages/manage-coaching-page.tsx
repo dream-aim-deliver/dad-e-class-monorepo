@@ -8,7 +8,7 @@
 // User Types: CMS (admin/superadmin - enforced by middleware)
 // Design: Similar to CMS Manage Offers
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DefaultLoading, DefaultError, Outline, PageTitleSection, BannerSection, Button, Banner } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -34,7 +34,6 @@ export default function ManageCoachingPage({
 
   // All hooks must be called at the top level before any conditional returns
   const [uploadProgress, setUploadProgress] = useState<number | undefined>(undefined);
-  const [bannerImageId, setBannerImageId] = useState<number | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [coachingPageViewModel, setCoachingPageViewModel] = useState<
     viewModels.TGetCoachingPageViewModel | undefined
@@ -64,28 +63,46 @@ export default function ManageCoachingPage({
       title: string;
       description: string;
       imageUrl: string | null;
+      imageId: number | null;
       buttonText: string;
       buttonUrl: string;
     };
   };
 
-  // Banner data - note: API GET returns imageUrl (string), but API POST expects imageId (number)
-  // We'll store imageUrl for display but track imageId separately for saving
-  const bannerData = coachingPageData?.banner;
-  const initialFormData: CoachingPageFormData = {
-    title: coachingPageData?.title || '',
-    description: coachingPageData?.description || '',
+  // Create default coaching page data when it doesn't exist (for upsert functionality)
+  const defaultCoachingPageData: CoachingPageFormData = {
+    title: '',
+    description: '',
     banner: {
-      title: bannerData?.title || '',
-      description: bannerData?.description || '',
-      imageUrl: bannerData?.image?.downloadUrl || null,
-      buttonText: bannerData?.buttonText || '',
-      buttonUrl: bannerData?.buttonLink || '',
+      title: '',
+      description: '',
+      imageUrl: null,
+      imageId: null,
+      buttonText: '',
+      buttonUrl: '',
     },
   };
 
-  const formState = useFormState(coachingPageData ? initialFormData : null, { enableReloadProtection: true });
+  // Banner data - note: API GET returns imageUrl (string) and imageId (number)
+  // Store both for proper persistence across uploads
+  const initialFormData: CoachingPageFormData = (coachingPageViewModel?.mode === 'default')
+    ? {
+        title: coachingPageViewModel.data.title || '',
+        description: coachingPageViewModel.data.description || '',
+        banner: {
+          title: coachingPageViewModel.data.banner?.title || '',
+          description: coachingPageViewModel.data.banner?.description || '',
+          imageUrl: coachingPageViewModel.data.banner?.image?.downloadUrl || null,
+          imageId: coachingPageViewModel.data.banner?.image?.id ? Number(coachingPageViewModel.data.banner.image.id) : null,
+          buttonText: coachingPageViewModel.data.banner?.buttonText || '',
+          buttonUrl: coachingPageViewModel.data.banner?.buttonLink || '',
+        },
+      }
+    : defaultCoachingPageData;
+
+  const formState = useFormState(initialFormData, { enableReloadProtection: true });
   const { handleFileUpload, handleFileDelete, handleFileDownload } = useHomePageFileUpload(setUploadProgress);
+  const isInitializedRef = useRef(false);
 
   const saveCoachingPageMutation = trpc.saveCoachingPage.useMutation({
     onSuccess: (data) => {
@@ -108,9 +125,10 @@ export default function ManageCoachingPage({
     coachingPagePresenter.present(coachingPageResponse, coachingPageViewModel);
   }, [coachingPageResponse, coachingPagePresenter, coachingPageViewModel]);
 
-  // Update form state when data loads
+  // Update form state when data loads ONLY on initial load
+  // Don't reset form after save to prevent showing stale data
   useEffect(() => {
-    if (coachingPageViewModel?.mode === 'default' && !formState.isDirty) {
+    if (coachingPageViewModel?.mode === 'default' && !isInitializedRef.current) {
       const loadedFormData: CoachingPageFormData = {
         title: coachingPageViewModel.data.title || '',
         description: coachingPageViewModel.data.description || '',
@@ -118,15 +136,19 @@ export default function ManageCoachingPage({
           title: coachingPageViewModel.data.banner?.title || '',
           description: coachingPageViewModel.data.banner?.description || '',
           imageUrl: coachingPageViewModel.data.banner?.image?.downloadUrl || null,
+          imageId: coachingPageViewModel.data.banner?.image?.id ? Number(coachingPageViewModel.data.banner.image.id) : null,
           buttonText: coachingPageViewModel.data.banner?.buttonText || '',
           buttonUrl: coachingPageViewModel.data.banner?.buttonLink || '',
         },
       };
       formState.setValue(loadedFormData);
+      isInitializedRef.current = true;
     }
   }, [coachingPageViewModel?.mode]);
 
   // Now handle conditional rendering after all hooks are called
+  // Error handling - only kaboom errors should prevent rendering
+  // Note: 'not-found' is acceptable since save mutation supports upsert
   if (coachingPageViewModel?.mode === 'kaboom') {
     return (
       <DefaultError
@@ -148,31 +170,21 @@ export default function ManageCoachingPage({
     );
   }
 
-  // Loading state (defensive check)
-  if (!coachingPageResponse) {
-    return <DefaultLoading locale={locale} variant="minimal" />;
-  }
-
   const handleSave = async () => {
     setSaveStatus('idle');
 
     await saveCoachingPageMutation.mutateAsync({
-      title: formState.value!.title,
-      description: formState.value!.description,
+      title: formState.value.title,
+      description: formState.value.description,
       banner: {
-        title: formState.value!.banner.title,
-        description: formState.value!.banner.description,
-        imageId: bannerImageId,
-        buttonText: formState.value!.banner.buttonText,
-        buttonLink: formState.value!.banner.buttonUrl,
+        title: formState.value.banner.title,
+        description: formState.value.banner.description,
+        imageId: formState.value.banner.imageId,
+        buttonText: formState.value.banner.buttonText,
+        buttonLink: formState.value.banner.buttonUrl,
       },
     });
   };
-
-  // If form isn't initialized yet, avoid mounting child sections that only read initialValue once
-  if (!formState.value) {
-    return <DefaultLoading locale={locale} variant="minimal" />;
-  }
 
   return (
     <div className="flex flex-col space-y-5 w-full">
@@ -208,17 +220,26 @@ export default function ManageCoachingPage({
       {/* Page Title Section */}
       <PageTitleSection
         value={{ title: formState.value.title, description: formState.value.description }}
-        onChange={(newValue) => formState.setValue({ ...formState.value!, title: newValue.title, description: newValue.description })}
+        onChange={(newValue) => formState.setValue({ ...formState.value, title: newValue.title, description: newValue.description })}
       />
 
       {/* Banner Section */}
       <BannerSection
         value={formState.value.banner}
-        onChange={(newBanner) => formState.setValue({ ...formState.value!, banner: newBanner })}
+        onChange={(newBanner) => formState.setValue({ ...formState.value, banner: newBanner })}
         onFileUpload={handleFileUpload}
         onFileDelete={handleFileDelete}
         onFileDownload={handleFileDownload}
-        onImageUploadComplete={(fileId) => setBannerImageId(fileId ? Number(fileId) : null)}
+        onImageUploadComplete={(fileId) => {
+          // Update imageId in form state when image is uploaded
+          formState.setValue({
+            ...formState.value,
+            banner: {
+              ...formState.value.banner,
+              imageId: fileId ? Number(fileId) : null,
+            },
+          });
+        }}
         uploadProgress={uploadProgress}
       />
 

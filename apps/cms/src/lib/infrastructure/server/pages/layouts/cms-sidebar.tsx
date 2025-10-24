@@ -82,7 +82,8 @@ const CMSSidebar = ({
         sendNotification: `${basePath}/send-notification`,
         settings: `${basePath}/settings`,
         homepage: `${basePath}/manage-homepage`,
-        offers: `${basePath}/manage-offers`,
+        offers: `${basePath}/manage-offers-page`,
+        coaching: `${basePath}/manage-coaching-page`,
         aboutPage: `${basePath}/manage-about-page`,
         footer: `${basePath}/manage-footer`,
     };
@@ -105,6 +106,7 @@ const CMSSidebar = ({
         [routeMap.settings]: t('settings'),
         [routeMap.homepage]: t('homepage'),
         [routeMap.offers]: t('offers'),
+        [routeMap.coaching]: t('coaching'),
         [routeMap.aboutPage]: t('aboutPage'),
         [routeMap.footer]: t('footer'),
     };
@@ -205,6 +207,11 @@ const CMSSidebar = ({
                 icon: <IconOffersPage />,
                 label: t('offers'),
                 onClick: () => router.push(routeMap.offers),
+            },
+            {
+                icon: <IconCoachingOffer />,
+                label: t('coaching'),
+                onClick: () => router.push(routeMap.coaching),
             },
             {
                 icon: <IconFaq />,

@@ -113,7 +113,7 @@ export default function BannerSection({
                         <h3 className="text-lg font-semibold transition-colors duration-200">Banner Content</h3>
                     </div>
 
-                    <form className="flex flex-col gap-4">
+                    <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
                         <div className="flex flex-col gap-2 w-full">
                             <label className="text-sm text-text-secondary">Upload Banner Image</label>
                             <Uploader
@@ -129,7 +129,7 @@ export default function BannerSection({
                                 uploadProgress={uploadProgress}
                             />
                         </div>
-                        
+
                         <TextInput
                             label="Title"
                             inputField={{

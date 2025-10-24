@@ -6,7 +6,7 @@
 // User Types: CMS (admin/superadmin - enforced by middleware)
 // Figma: https://www.figma.com/design/8KEwRuOoD5IgxTtFAtLlyS/Just_Do_Ad-1.2?node-id=8540-240257&t=qGirq2t6ka6iwg1A-4
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DefaultLoading, DefaultError, Outline, PageTitleSection, PackageSection, CarouselSection, Banner } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
@@ -84,28 +84,40 @@ export default function ManageOffersPage({
         carousel: CarouselItem[];
     };
 
+    // Create default offers page data when it doesn't exist (for upsert functionality)
+    const defaultOffersPageData: OffersPageFormData = {
+        title: '',
+        description: '',
+        packageIds: [],
+        carousel: [],
+    };
+
     const allPackages = (packagesData?.packages || []).map(pkg => ({ ...pkg, id: String(pkg.id) }));
     const linkedPackageIds = (packagesShortData?.packageIds || []).map(String);
     const initialPackageIds = allPackages.filter((pkg) =>
         pkg.id != null && linkedPackageIds.includes(String(pkg.id))
     ).map(pkg => Number(pkg.id));
 
-    const initialFormData: OffersPageFormData = {
-        title: offersPageData?.title || '',
-        description: offersPageData?.description || '',
-        packageIds: initialPackageIds,
-        carousel: (offersPageData?.items || []).map(item => ({
-            title: item.title,
-            description: item.description,
-            buttonText: item.buttonText,
-            buttonUrl: item.buttonUrl,
-            badge: item.badge ?? undefined,
-            imageUrl: item.image?.downloadUrl ?? null,
-            imageId: item.image?.id ? Number(item.image.id) : null,
-        })),
-    };
+    // Use actual data if available (mode is 'default'), otherwise use default
+    const initialFormData: OffersPageFormData = (offersPageViewModel?.mode === 'default' && packagesViewModel?.mode === 'default' && packagesShortViewModel?.mode === 'default')
+        ? {
+            title: offersPageData?.title || '',
+            description: offersPageData?.description || '',
+            packageIds: initialPackageIds,
+            carousel: (offersPageData?.items || []).map(item => ({
+                title: item.title,
+                description: item.description,
+                buttonText: item.buttonText,
+                buttonUrl: item.buttonUrl,
+                badge: item.badge ?? undefined,
+                imageUrl: item.image?.downloadUrl ?? null,
+                imageId: item.image?.id ? Number(item.image.id) : null,
+            })),
+        }
+        : defaultOffersPageData;
 
-    const formState = useFormState(offersPageData && packagesData && packagesShortData ? initialFormData : null, { enableReloadProtection: true });
+    const formState = useFormState(initialFormData, { enableReloadProtection: true });
+    const isInitializedRef = useRef(false);
 
     const saveOffersPageMutation = trpc.saveOffersPage.useMutation({
         onMutate: () => {
@@ -132,9 +144,10 @@ export default function ManageOffersPage({
         packagesShortPresenter.present(packagesShortResponse, packagesShortViewModel);
     }, [offersPageOutlineResponse, packagesResponse, packagesShortResponse, manageOffersPagePresenter, packagesPresenter, packagesShortPresenter, offersPageViewModel, packagesViewModel, packagesShortViewModel]);
 
-    // Update form state when data loads
+    // Update form state when data loads ONLY on initial load
+    // Don't reset form after save to prevent showing stale data
     useEffect(() => {
-        if (offersPageViewModel?.mode === 'default' && packagesViewModel?.mode === 'default' && packagesShortViewModel?.mode === 'default' && !formState.isDirty) {
+        if (offersPageViewModel?.mode === 'default' && packagesViewModel?.mode === 'default' && packagesShortViewModel?.mode === 'default' && !isInitializedRef.current) {
             const loadedFormData: OffersPageFormData = {
                 title: offersPageViewModel.data.title || '',
                 description: offersPageViewModel.data.description || '',
@@ -150,10 +163,13 @@ export default function ManageOffersPage({
                 })),
             };
             formState.setValue(loadedFormData);
+            isInitializedRef.current = true;
         }
     }, [offersPageViewModel?.mode, packagesViewModel?.mode, packagesShortViewModel?.mode]);
 
     // Now handle conditional rendering after all hooks are called
+    // Error handling - only kaboom errors should prevent rendering
+    // Note: 'not-found' is acceptable since save mutation supports upsert
     if (offersPageViewModel?.mode === 'kaboom' || packagesViewModel?.mode === 'kaboom' || packagesShortViewModel?.mode === 'kaboom') {
         return (
             <DefaultError
@@ -186,9 +202,9 @@ export default function ManageOffersPage({
     const handleSave = async () => {
         setSaveStatus('idle');
 
-        const packageIdsAsNumbers = formState.value!.packageIds;
+        const packageIdsAsNumbers = formState.value.packageIds;
 
-        const carouselForSave = formState.value!.carousel.map(item => ({
+        const carouselForSave = formState.value.carousel.map(item => ({
             title: item.title,
             description: item.description,
             buttonText: item.buttonText,
@@ -198,27 +214,20 @@ export default function ManageOffersPage({
         }));
 
         await saveOffersPageMutation.mutateAsync({
-            title: formState.value!.title,
-            description: formState.value!.description,
+            title: formState.value.title,
+            description: formState.value.description,
             carousel: carouselForSave,
             packageIds: packageIdsAsNumbers,
         });
 
     };
 
-
-
-
-    // Avoid mounting child sections until form is initialized, because they only consume initialValue on first mount
-    if (!formState.value) {
-        return <DefaultLoading locale={locale} variant="minimal" />;
-    }
-
-    // Safe to derive after ensuring formState.value exists
-    const selectedPackages = allPackages.filter(pkg => formState.value!.packageIds.includes(Number(pkg.id)));
+    // Form state is always initialized with either real data or default empty data
+    // Safe to derive selected packages
+    const selectedPackages = allPackages.filter(pkg => formState.value.packageIds.includes(Number(pkg.id)));
 
     // Transform carousel items for CarouselSection component (needs image object format)
-    const carouselItemsForComponent = formState.value!.carousel.map(item => ({
+    const carouselItemsForComponent = formState.value.carousel.map(item => ({
         title: item.title,
         description: item.description,
         buttonText: item.buttonText,
@@ -267,7 +276,7 @@ export default function ManageOffersPage({
             {/* Page Title Section */}
             <PageTitleSection
                 value={{ title: formState.value.title, description: formState.value.description }}
-                onChange={(newValue) => formState.setValue({ ...formState.value!, title: newValue.title, description: newValue.description })}
+                onChange={(newValue) => formState.setValue({ ...formState.value, title: newValue.title, description: newValue.description })}
             />
 
             {/* Packages Section */}
@@ -276,7 +285,7 @@ export default function ManageOffersPage({
                 linkedPackages={selectedPackages}
                 onChange={(newSelected) => {
                     const newPackageIds = newSelected.map((pkg: any) => Number(pkg.id));
-                    formState.setValue({ ...formState.value!, packageIds: newPackageIds });
+                    formState.setValue({ ...formState.value, packageIds: newPackageIds });
                 }}
             />
 
@@ -301,7 +310,7 @@ export default function ManageOffersPage({
                         imageUrl: item.image?.downloadUrl ?? null,
                         imageId: item.image?.id ? Number(item.image.id) : null
                     }));
-                    formState.setValue({ ...formState.value!, carousel: transformedCarousel });
+                    formState.setValue({ ...formState.value, carousel: transformedCarousel });
                 }}
                 onFileUpload={handleFileUpload}
                 onFileDelete={handleFileDelete}
