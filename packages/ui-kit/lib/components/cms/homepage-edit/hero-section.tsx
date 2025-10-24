@@ -5,6 +5,7 @@ import { TextAreaInput } from '../../text-areaInput';
 import { Uploader } from '../../drag-and-drop-uploader/uploader';
 import { fileMetadata, viewModels } from '@maany_shr/e-class-models';
 import { z } from 'zod';
+import { downloadFile } from '@maany_shr/e-class-ui-kit';
 
 type BannerType = z.infer<typeof viewModels.HomePageSchema>['banner'];
 
@@ -42,25 +43,26 @@ export default function HeroSection({
     // Sync uploaded files with value prop when data is loaded from server
     // Only update if the image ID has actually changed (not just object recreation)
     useEffect(() => {
-        if (value.thumbnailImage) {
-            // Only update if thumbnail ID changed or didn't exist
-            if (!uploadedThumbnail || uploadedThumbnail.id !== value.thumbnailImage.id) {
-                setUploadedThumbnail({
-                    id: value.thumbnailImage.id,
-                    name: value.thumbnailImage.name,
-                    size: value.thumbnailImage.size,
-                    category: value.thumbnailImage.category,
-                    url: value.thumbnailImage.downloadUrl,
-                } as fileMetadata.TFileMetadata);
-            }
-        } else if (uploadedThumbnail) {
+        const thumbnailImageId = value.thumbnailImage?.id;
+        const currentThumbnailId = uploadedThumbnail?.id;
+
+        if (value.thumbnailImage && thumbnailImageId !== currentThumbnailId) {
+            // Image ID changed or didn't exist - update state
+            setUploadedThumbnail({
+                id: value.thumbnailImage.id,
+                name: value.thumbnailImage.name,
+                size: value.thumbnailImage.size,
+                category: value.thumbnailImage.category,
+                url: value.thumbnailImage.downloadUrl,
+            } as fileMetadata.TFileMetadata);
+        } else if (!value.thumbnailImage && uploadedThumbnail) {
             // Thumbnail was removed
             setUploadedThumbnail(null);
         }
 
         // Note: videoId is stored as string, not a full video object in the schema
         // Video state is handled differently - we don't pre-populate it from server
-    }, [value.thumbnailImage]);
+    }, [value.thumbnailImage?.id]);
 
     const handleFieldChange = (field: string, fieldValue: string | { id: string; name: string; size: number; category: 'image'; downloadUrl: string } | null) => {
         const newBannerData = {
@@ -115,8 +117,16 @@ export default function HeroSection({
         onFileDelete(id);
     };
 
-    const handleFileDownload = (id: string) => {
-        onFileDownload(id);
+    const handleThumbnailDownload = (id: string) => {
+        if (uploadedThumbnail?.id === id && uploadedThumbnail.url) {
+            downloadFile(uploadedThumbnail.url, uploadedThumbnail.name);
+        }
+    };
+
+    const handleVideoDownload = (id: string) => {
+        if (uploadedVideo?.id === id && uploadedVideo.url) {
+            downloadFile(uploadedVideo.url, uploadedVideo.name);
+        }
     };
 
     return (
@@ -145,7 +155,7 @@ export default function HeroSection({
                         variant="image"
                         file={uploadedThumbnail}
                         onDelete={handleThumbnailDelete}
-                        onDownload={handleFileDownload}
+                        onDownload={handleThumbnailDownload}
                         onFilesChange={handleOnThumbnailChange}
                         onUploadComplete={handleThumbnailUploadComplete}
                         locale="en"
@@ -166,7 +176,7 @@ export default function HeroSection({
                         variant="video"
                         file={uploadedVideo}
                         onDelete={handleVideoDelete}
-                        onDownload={handleFileDownload}
+                        onDownload={handleVideoDownload}
                         onFilesChange={handleOnVideoChange}
                         onUploadComplete={handleVideoUploadComplete}
                         locale="en"
