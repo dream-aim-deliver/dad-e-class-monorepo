@@ -676,6 +676,15 @@
   --font-weight-h5: var(--font-weight-important);
   font-family: var(--font-figtree);
   --ag-font-family: var(--font-figtree);
+
+  /* AG Grid CMS Theme */
+  --ag-background-color: var(--color-base-neutral-900);
+  --ag-foreground-color: var(--color-base-neutral-50);
+  --ag-header-background-color: var(--color-base-neutral-900);
+  --ag-accent-color: var(--color-base-brand-500);
+  --ag-border-color: var(--color-base-neutral-700);
+  --ag-row-hover-color: var(--color-base-neutral-800);
+  --ag-selected-row-background-color: var(--color-base-neutral-800);
 }
 
 /* Page Entrance Animation */
