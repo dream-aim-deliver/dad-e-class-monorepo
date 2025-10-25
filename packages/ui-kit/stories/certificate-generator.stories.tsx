@@ -3,14 +3,37 @@ import { useState } from 'react';
 import { generateCertificatePDF, type CertificateData } from '../lib/utils/course-certificate-generator';
 import { Button } from '../lib/components/button';
 import { InputField } from '../lib/components/input-field';
+import type { TLocale } from '@maany_shr/e-class-translations';
 
 // Create a wrapper component for the story
-const CertificateGeneratorDemo = () => {
+const CertificateGeneratorDemo = ({ locale }: { locale: TLocale }) => {
     const [certificateData, setCertificateData] = useState<CertificateData>({
+        studentUsername: 'john-doe',
         studentName: 'John Doe',
         courseTitle: 'React Fundamentals',
+        courseSlug: 'react-fundamentals',
+        courseDescription: 'A comprehensive introduction to building modern web applications with React',
         completionDate: '2024-01-15',
         platformName: 'Learning Platform',
+        platformFooterContent: 'This certificate verifies completion of all course modules and assessments',
+        courseSummary: [
+            {
+                moduleNumber: 1,
+                moduleTitle: 'Introduction to React',
+                lessonTitles: ['What is React?', 'Setting up your development environment', 'Your first React component']
+            },
+            {
+                moduleNumber: 2,
+                moduleTitle: 'React Components',
+                lessonTitles: ['Functional Components', 'Class Components', 'Props and State', 'Component Lifecycle']
+            },
+            {
+                moduleNumber: 3,
+                moduleTitle: 'Hooks and State Management',
+                lessonTitles: ['useState Hook', 'useEffect Hook', 'Custom Hooks', 'Context API']
+            }
+        ],
+        locale: locale,
     });
     const [isGenerating, setIsGenerating] = useState(false);
     const [message, setMessage] = useState<string>('');
@@ -27,7 +50,7 @@ const CertificateGeneratorDemo = () => {
             setIsGenerating(true);
             setMessage('Generating certificate...');
 
-            await generateCertificatePDF(certificateData);
+            await generateCertificatePDF({ ...certificateData, locale });
 
             setMessage('✅ Certificate generated successfully! Check your Downloads folder.');
         } catch (error) {
@@ -40,6 +63,18 @@ const CertificateGeneratorDemo = () => {
     return (
         <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
             <h2 style={{ marginBottom: '20px' }}>Certificate Generator Test</h2>
+
+            <div style={{
+                marginBottom: '20px',
+                padding: '10px',
+                backgroundColor: '#f0f9ff',
+                borderRadius: '4px',
+                fontSize: '14px'
+            }}>
+                <strong>Current Locale:</strong> {locale === 'en' ? '🇬🇧 English' : '🇩🇪 Deutsch'}
+                <br />
+                <em>Use the "locale" control in the panel below to switch languages</em>
+            </div>
 
             <div style={{ marginBottom: '20px' }}>
                 <div style={{ marginBottom: '15px' }}>
@@ -143,17 +178,31 @@ const meta: Meta<typeof CertificateGeneratorDemo> = {
         },
     },
     tags: ['autodocs'],
+    argTypes: {
+        locale: {
+            control: 'select',
+            options: ['en', 'de'],
+            description: 'Language for certificate text and filename prefix',
+            table: {
+                type: { summary: 'TLocale' },
+                defaultValue: { summary: 'en' },
+            },
+        },
+    },
+    args: {
+        locale: 'en',
+    },
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Interactive: Story = {
-    render: () => <CertificateGeneratorDemo />,
+    render: (args) => <CertificateGeneratorDemo {...args} />,
 };
 
 export const WithSampleData: Story = {
-    render: () => <CertificateGeneratorDemo />,
+    render: (args) => <CertificateGeneratorDemo {...args} />,
     parameters: {
         docs: {
             description: {
@@ -164,16 +213,33 @@ export const WithSampleData: Story = {
 };
 
 export const WithSpecialCharacters: Story = {
-    render: () => {
-        const SpecialCharDemo = () => {
+    render: (args) => {
+        const SpecialCharDemo = ({ locale }: { locale: TLocale }) => {
             const [isGenerating, setIsGenerating] = useState(false);
             const [message, setMessage] = useState<string>('');
 
             const specialCharData: CertificateData = {
                 studentName: 'José María-González',
+                studentUsername: 'jose-maria-gonzalez',
                 courseTitle: 'Advanced C++ & Data Structures',
+                courseSlug: 'advanced-cpp-data-structures',
+                courseDescription: 'Master advanced programming concepts with C++ and complex data structures',
                 completionDate: '2024-03-10',
                 platformName: 'Plataforma de Aprendizaje',
+                platformFooterContent: 'Certificado válido. Contacto: info@plataforma.com',
+                courseSummary: [
+                    {
+                        moduleNumber: 1,
+                        moduleTitle: 'Punteros y Gestión de Memoria',
+                        lessonTitles: ['Introducción a punteros', 'Memoria dinámica', 'Referencias y punteros inteligentes']
+                    },
+                    {
+                        moduleNumber: 2,
+                        moduleTitle: 'Estructuras de Datos Avanzadas',
+                        lessonTitles: ['Árboles binarios', 'Grafos', 'Hash tables', 'Árboles AVL']
+                    }
+                ],
+                locale: locale,
             };
 
             const handleGenerate = async () => {
@@ -224,7 +290,7 @@ export const WithSpecialCharacters: Story = {
             );
         };
 
-        return <SpecialCharDemo />;
+        return <SpecialCharDemo locale={args.locale} />;
     },
     parameters: {
         docs: {
@@ -235,29 +301,56 @@ export const WithSpecialCharacters: Story = {
     },
 };
 
-export const WithUnicodeCharacters: Story = {
-    render: () => {
-        const UnicodeDemo = () => {
+export const GermanExample: Story = {
+    render: (args) => {
+        const GermanDemo = ({ locale }: { locale: TLocale }) => {
             const [isGenerating, setIsGenerating] = useState(false);
             const [message, setMessage] = useState<string>('');
 
-            const unicodeData: CertificateData = {
-                studentName: '张三李四',
-                courseTitle: 'Programación Avanzada',
+            const germanData: CertificateData = {
+                studentName: 'Maximilian Müller',
+                studentUsername: 'maximilian-mueller',
+                courseTitle: 'Fortgeschrittene Webentwicklung mit React',
+                courseSlug: 'fortgeschrittene-webentwicklung-react',
+                courseDescription: 'Ein umfassender Kurs über moderne Webanwendungen mit React und TypeScript',
                 completionDate: '2024-01-15',
-                platformName: 'Plataforma de Aprendizaje',
+                platformName: 'Lernplattform',
+                platformFooterContent: 'Dieses Zertifikat bestätigt den erfolgreichen Abschluss aller Kursmodule und Prüfungen',
+                courseSummary: [
+                    {
+                        moduleNumber: 1,
+                        moduleTitle: 'Einführung in React',
+                        lessonTitles: ['Was ist React?', 'Entwicklungsumgebung einrichten', 'Ihre erste React-Komponente']
+                    },
+                    {
+                        moduleNumber: 2,
+                        moduleTitle: 'React-Komponenten',
+                        lessonTitles: ['Funktionale Komponenten', 'Klassenkomponenten', 'Props und State', 'Komponenten-Lebenszyklus']
+                    },
+                    {
+                        moduleNumber: 3,
+                        moduleTitle: 'Hooks und Zustandsverwaltung',
+                        lessonTitles: ['useState Hook', 'useEffect Hook', 'Eigene Hooks', 'Context API']
+                    },
+                    {
+                        moduleNumber: 4,
+                        moduleTitle: 'Fortgeschrittene Themen',
+                        lessonTitles: ['TypeScript mit React', 'Performance-Optimierung', 'Server-seitiges Rendering', 'Testing']
+                    }
+                ],
+                locale: locale,
             };
 
             const handleGenerate = async () => {
                 try {
                     setIsGenerating(true);
-                    setMessage('Generating certificate with Unicode characters...');
+                    setMessage('Zertifikat wird generiert...');
 
-                    await generateCertificatePDF(unicodeData);
+                    await generateCertificatePDF(germanData);
 
-                    setMessage('✅ Certificate with Unicode characters generated successfully!');
+                    setMessage('✅ Zertifikat erfolgreich generiert! Überprüfen Sie Ihren Downloads-Ordner.');
                 } catch (error) {
-                    setMessage(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                    setMessage(`❌ Fehler: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
                 } finally {
                     setIsGenerating(false);
                 }
@@ -265,17 +358,19 @@ export const WithUnicodeCharacters: Story = {
 
             return (
                 <div style={{ maxWidth: '400px', padding: '20px' }}>
-                    <h3>Unicode Characters Test</h3>
+                    <h3>Deutsches Zertifikat-Beispiel</h3>
                     <div style={{ marginBottom: '15px', fontSize: '14px' }}>
-                        <strong>Student:</strong> {unicodeData.studentName}<br />
-                        <strong>Course:</strong> {unicodeData.courseTitle}<br />
-                        <strong>Date:</strong> {unicodeData.completionDate}<br />
-                        <strong>Platform:</strong> {unicodeData.platformName}
+                        <strong>Student:</strong> {germanData.studentName}<br />
+                        <strong>Kurs:</strong> {germanData.courseTitle}<br />
+                        <strong>Datum:</strong> {germanData.completionDate}<br />
+                        <strong>Plattform:</strong> {germanData.platformName}<br />
+                        <strong>Sprache:</strong> Deutsch (de)<br />
+                        <strong>Dateiname:</strong> <code>zertifikat_maximilian-mueller_fortgeschrittene-webentwicklung-react.pdf</code>
                     </div>
 
                     <Button
                         variant="primary"
-                        text={isGenerating ? "Generating..." : "Generate Certificate"}
+                        text={isGenerating ? "Generiert..." : "Zertifikat generieren"}
                         onClick={handleGenerate}
                         disabled={isGenerating}
                     />
@@ -292,16 +387,29 @@ export const WithUnicodeCharacters: Story = {
                             {message}
                         </div>
                     )}
+
+                    <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
+                        <h4>Hinweise:</h4>
+                        <ul style={{ fontSize: '13px', marginTop: '10px' }}>
+                            <li>Dateiname wird mit "zertifikat_" anstatt "certificate_" präfixiert</li>
+                            <li>Deutsche Umlaute (ä, ö, ü, ß) werden korrekt dargestellt</li>
+                            <li>Vollständige Kursstruktur mit 4 Modulen</li>
+                            <li>Mehrseitige PDF mit Seitenzahlen</li>
+                        </ul>
+                    </div>
                 </div>
             );
         };
 
-        return <UnicodeDemo />;
+        return <GermanDemo locale={args.locale} />;
+    },
+    args: {
+        locale: 'de',
     },
     parameters: {
         docs: {
             description: {
-                story: 'Tests certificate generation with Chinese characters and Spanish accents to ensure proper Unicode handling.',
+                story: 'German language certificate example with umlauts (ä, ö, ü, ß). Use the locale control to switch between German (de) and English (en) to see the translation differences.',
             },
         },
     },
