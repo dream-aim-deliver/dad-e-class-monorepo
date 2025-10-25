@@ -13,7 +13,6 @@ import { IconSearch } from '../icons/icon-search';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-// Single coaching session item type (from the success payload)
 type CoachingSession = viewModels.TListCoachingSessionsSuccess['sessions'][number];
 
 export interface CoachingSessionGridProps extends isLocalAware {
@@ -31,7 +30,6 @@ export interface CoachingSessionGridProps extends isLocalAware {
 // Status Badge Component
 const StatusBadge = ({ status }: { status: CoachingSession['status'] }) => {
     const statusConfig = {
-        // 'info' used for neutral/unscheduled state (Badge doesn't have 'secondary')
         unscheduled: { variant: 'info' as const, text: 'Unscheduled' },
         requested: { variant: 'warningprimary' as const, text: 'Requested' },
         scheduled: { variant: 'info' as const, text: 'Scheduled' },
@@ -248,7 +246,6 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
             }
         }
 
-        // If custom external filter is provided, apply it last
         if (props.doesExternalFilterPass) {
             return props.doesExternalFilterPass(node);
         }
@@ -325,8 +322,6 @@ export const CoachingSessionGrid = (props: CoachingSessionGridProps) => {
                     }}
                 />
             </div>
-
-            {/* filter modal removed */}
         </div>
     );
 };
