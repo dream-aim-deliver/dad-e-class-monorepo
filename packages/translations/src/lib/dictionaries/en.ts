@@ -665,11 +665,20 @@ export const EN: TDictionary = {
       goToNextModuleText: 'Go to next module',
     },
     courseCompletionModal: {
-      courseCompletedText: 'Well done â€“ youâ€™ve completed it!',
+      courseCompletedText: 'Well done â€" youâ€™ve completed it!',
       completedOnText: 'Completed on',
       atText: 'at',
       downloadCertificateText: 'Download certificate',
       rateTheCourseText: 'Give feedback please',
+    },
+    certificateGenerator: {
+      certificatePrefix: 'certificate',
+      certificateTitle: 'Certificate of Completion',
+      certifyThat: 'This is to certify that',
+      hasCompleted: 'has successfully completed the course',
+      completedOn: 'Completed on',
+      courseStructure: 'Course Structure',
+      module: 'Module',
     },
     coachesSkeleton: {
       title: 'Many other coaches are waiting for you...',

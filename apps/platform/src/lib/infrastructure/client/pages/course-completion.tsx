@@ -125,9 +125,16 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                 // Map the certificate data to the expected format
                 await generateCertificatePDF({
                     studentName: `${certificateData.studentName} ${certificateData.studentSurname}`,
+                    studentUsername: certificateData.studentUsername,
                     courseTitle: certificateData.courseName,
+                    courseSlug: slug,
+                    courseDescription: certificateData.courseDescription,
                     completionDate: certificateData.awardedOn,
                     platformName: certificateData.platformName,
+                    platformLogoUrl: certificateData.platformLogoUrl,
+                    platformFooterContent: certificateData.platformFooterContent,
+                    courseSummary: certificateData.courseSummary,
+                    locale: locale,
                 });
             } catch (error) {
                 setCertificateError(typeof error === 'string' ? error : 'Failed to generate certificate');
