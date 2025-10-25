@@ -11,7 +11,9 @@
 import { viewModels } from '@maany_shr/e-class-models';
 import { trpc } from '../trpc/cms-client';
 import { useListCoachingSessionsPresenter } from '../hooks/use-list-coaching-sessions-presenter';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { Outline, Button, IconCloudDownload } from '@maany_shr/e-class-ui-kit';
 import {
   DefaultLoading,
   DefaultError,
@@ -19,6 +21,7 @@ import {
 } from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
+import { CoachingSessionGrid } from '@maany_shr/e-class-ui-kit';
 
 interface CoachingSessionsProps {
   locale: TLocale;
@@ -26,6 +29,10 @@ interface CoachingSessionsProps {
   platformLocale: TLocale;
 }
 
+/**
+ * @todo: Consider extracting presenter wiring and TRPC calls to a custom hook for testability.
+ *        This component currently mixes data presentation and navigation handlers.
+ */
 export default function CoachingSessions({
   locale,
   platformSlug,
@@ -33,10 +40,10 @@ export default function CoachingSessions({
 }: CoachingSessionsProps) {
   const currentLocale = useLocale() as TLocale;
   const t = useTranslations('pages.coachingSessions');
+  const router = useRouter();
 
   // TRPC query for coaching sessions data
-  const [coachingSessionsResponse] = trpc.listCoachingSessions.useSuspenseQuery({
-    // TODO: Add query parameters if needed for the usecase
+  const [coachingSessionsResponse, { refetch: refetchCoachingSessions }] = trpc.listCoachingSessions.useSuspenseQuery({
   });
 
   const [coachingSessionsViewModel, setCoachingSessionsViewModel] = useState<
@@ -51,6 +58,32 @@ export default function CoachingSessions({
   // Present the data
   presenter.present(coachingSessionsResponse, coachingSessionsViewModel);
 
+
+  const gridRef = useRef<any>(null);
+
+
+  const handleCoachClick = (coach: any) => {
+    
+    if (!coach || !coach.username) return;
+    // TODO: we need to add actual domain for the platform
+    router.push(`/${platformLocale}/coaches/${coach.username}`);
+  };
+
+  // TODO: we need to add actual domain for the platform
+  const handleStudentClick = (student: any) => {
+    if (!student || !student.username) return;
+
+    // TODO: we need to add actual domain for the platform
+    router.push(`/${platformLocale}/students/${student.username}`);
+  };
+
+  // @todo: Validate course.slug presence and fallback gracefully if missing.
+  const handleCourseClick = (course: any) => {
+    if (!course || !course.slug) return;
+    // TODO: we need to add actual domain for the platform
+    router.push(`/${platformLocale}/courses/${course.slug}`);
+  };
+
   // Loading state
   if (!coachingSessionsViewModel) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
@@ -58,22 +91,21 @@ export default function CoachingSessions({
 
   // Error handling - kaboom error
   if (coachingSessionsViewModel.mode === 'kaboom') {
-    const errorData = coachingSessionsViewModel.data;
-    console.error(errorData);
 
     return (
       <DefaultError
         locale={currentLocale}
         title={t('error.title')}
         description={t('error.description')}
+        onRetry={() => {
+          refetchCoachingSessions();
+        }}
       />
     );
   }
 
   // Error handling - not found error
   if (coachingSessionsViewModel.mode === 'not-found') {
-    const errorData = coachingSessionsViewModel.data;
-    console.error(errorData);
 
     return (
       <DefaultNotFound
@@ -87,28 +119,107 @@ export default function CoachingSessions({
   // Success state - extract data
   const coachingSessionsData = coachingSessionsViewModel.data;
 
+  const handleExportCurrentView = () => {
+    if (gridRef.current?.api) {
+      gridRef.current.api.exportDataAsCsv({
+        fileName: `coaching_sessions_export_${new Date().toISOString().split('T')[0]}.csv`,
+        onlySelected: false,
+        skipPinnedTop: true,
+        skipPinnedBottom: true,
+        processCellCallback: (params: any) => {
+          const colId = params.column.getColId();
+          const data = params.node?.data;
+          if (!data) return params.value;
+
+          // Format date & time column
+          if (colId === 'startTime' && params.column.getColDef().headerName === 'Date & Time') {
+            if (!data.startTime) return '-';
+            const date = new Date(data.startTime);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            const timeStr = date.toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            });
+            return `${dateStr} at ${timeStr}`;
+          }
+
+          // Format coach name
+          if (colId === 'coach') {
+            const coach = data.coach;
+            if (!coach) return '-';
+            return coach.name && coach.surname
+              ? `${coach.name} ${coach.surname}`
+              : coach.username;
+          }
+
+          // Format student name
+          if (colId === 'student') {
+            const student = data.student;
+            if (!student) return '-';
+            return student.name && student.surname
+              ? `${student.name} ${student.surname}`
+              : student.username;
+          }
+
+          // Format rating
+          if (colId === 'rating') {
+            const rating = data.rating;
+            return rating !== undefined && rating !== null ? rating.toString() : '-';
+          }
+
+          // Format course
+          if (colId === 'course') {
+            const course = data.course;
+            return course ? course.title : '-';
+          }
+
+          // Format coupon
+          if (colId === 'coupon') {
+            const coupon = data.coupon;
+            return coupon ? coupon.code : '-';
+          }
+
+          return params.value;
+        },
+      });
+    }
+  }
+
+
   return (
-    <div className="flex flex-col space-y-5 px-30">
-      {/* Page header with translations */}
+    <div className="flex flex-col space-y-5 bg-card-fill p-6 rounded-md">
+      {/* Page header with Outline and export control */}
+      <div className="flex items-start justify-between w-full gap-4">
+        <Outline title={t('title')} description={t('description')} className="flex-1" />
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="secondary"
+            size="medium"
+            text={t('exportButton') || 'Export view'}
+            hasIconLeft
+            iconLeft={<IconCloudDownload />}
+            onClick={handleExportCurrentView}
+            disabled={coachingSessionsData?.sessions.length === 0}
+          />
+        </div>
+      </div>
+
+      {/* Coaching sessions grid */}
       <div>
-        <h1 className="text-2xl font-bold">{t('title')}</h1>
-        <p className="text-gray-600">{t('description')}</p>
+        <CoachingSessionGrid
+          gridRef={gridRef}
+          locale={currentLocale}
+          sessions={coachingSessionsData?.sessions ?? []}
+          onCoachClick={handleCoachClick}
+          onStudentClick={handleStudentClick}
+          onCourseClick={handleCourseClick}
+        />
       </div>
 
-      {/* TODO: Implement AG Grid (BaseGrid) for coaching sessions */}
-      {/* Features to implement: List and manage coaching sessions */}
-      {/* UI Components needed: AG Grid */}
-      {/* Usecase: listCoachingSessions */}
-
-      {/* TODO: Add search functionality using searchPlaceholder translation */}
-      {/* TODO: Add export button using exportButton translation */}
-      {/* TODO: Configure AG Grid columns based on coaching sessions data structure */}
-      {/* TODO: Add filtering and sorting capabilities */}
-      {/* TODO: Add pagination if needed */}
-
-      <div className="text-sm text-gray-500">
-        Platform: {platformSlug} | Locale: {platformLocale}
-      </div>
     </div>
   );
 }
