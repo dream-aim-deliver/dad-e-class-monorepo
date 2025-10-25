@@ -661,6 +661,15 @@ export const DE: TDictionary = {
       downloadCertificateText: 'Zertifikat herunterladen',
       rateTheCourseText: 'Bewerte den Kurs',
     },
+    certificateGenerator: {
+      certificatePrefix: 'zertifikat',
+      certificateTitle: 'Abschlusszertifikat',
+      certifyThat: 'Hiermit wird bescheinigt, dass',
+      hasCompleted: 'den Kurs erfolgreich abgeschlossen hat',
+      completedOn: 'Abgeschlossen am',
+      courseStructure: 'Kursstruktur',
+      module: 'Modul',
+    },
     coachesSkeleton: {
       title: 'Viele andere Coaches warten auf dich...',
       registerButton: 'Registriere dich, um alles zu sehen',
