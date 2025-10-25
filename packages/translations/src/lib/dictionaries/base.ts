@@ -451,6 +451,10 @@ export const DictionarySchema = z.object({
       loadMoreText: z.string(),
       toBeDefined: z.string(),
       toBeDefinedMessage: z.string(),
+      reviewsSentText: z.string(),
+      averageRatingText: z.string(),
+      readReviewsText: z.string(),
+      scheduleSessionText: z.string(),
     }),
     coachingSessionCancelModal: z.object({
       noText: z.string(),

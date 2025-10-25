@@ -422,7 +422,7 @@ export const EN: TDictionary = {
     coachingSessionCard: {
       durationText: 'min.',
       createdByText: 'Created by',
-      courseText: 'Offer',
+      courseText: 'Course',
       groupText: 'Group',
       joinMeetingText: 'Join Meeting',
       studentText: 'Student',
@@ -447,6 +447,10 @@ export const EN: TDictionary = {
       loadMoreText: 'Load more...',
       toBeDefined: 'To be defined',
       toBeDefinedMessage: 'Contact the coach with your availability. Use scheduling tools like Doodle to find a time that works for everyone.',
+      reviewsSentText: 'Reviews sent:',
+      averageRatingText: 'Average rating:',
+      readReviewsText: 'Read reviews',
+      scheduleSessionText: 'Schedule Session',
     },
     coachingSessionCancelModal: {
       noText: 'No',
