@@ -403,6 +403,9 @@ importers:
       fuse.js:
         specifier: ^7.1.0
         version: 7.1.0
+      jspdf:
+        specifier: ^3.0.2
+        version: 3.0.3
       lucide-react:
         specifier: ^0.473.0
         version: 0.473.0(react@19.0.0)
@@ -18694,7 +18697,7 @@ snapshots:
 
   regenerator-transform@0.15.2:
     dependencies:
-      '@babel/runtime': 7.26.0
+      '@babel/runtime': 7.28.4
 
   regexp.prototype.flags@1.5.3:
     dependencies:

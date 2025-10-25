@@ -9,7 +9,6 @@ import { listCoaches } from './procedures/coach';
 import { getCoachingPage } from './procedures/coachings-page';
 import { listCoachingOfferings } from './procedures/coaching-offering';
 import { listAvailableCoachings } from './procedures/available-coachings';
-import { getCourseAccess } from './procedures/course-access';
 import { listAssessmentComponents } from './procedures/assessment-components';
 import { submitAssessmentProgress } from './procedures/assessment-progress';
 import { getStudentProgress } from './procedures/student-progress';
@@ -54,7 +53,6 @@ export const mockRouter = t.router({
     getCoachingPage,
     listCoachingOfferings,
     listAvailableCoachings,
-    getCourseAccess,
     listPreCourseAssessmentComponents: listAssessmentComponents,
     submitAssessmentProgress,
     getStudentProgress,

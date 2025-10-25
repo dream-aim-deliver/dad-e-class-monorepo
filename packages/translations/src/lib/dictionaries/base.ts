@@ -662,6 +662,15 @@ export const DictionarySchema = z.object({
       downloadCertificateText: z.string(),
       rateTheCourseText: z.string(),
     }),
+    certificateGenerator: z.object({
+      certificatePrefix: z.string(),
+      certificateTitle: z.string(),
+      certifyThat: z.string(),
+      hasCompleted: z.string(),
+      completedOn: z.string(),
+      courseStructure: z.string(),
+      module: z.string(),
+    }),
     coachesSkeleton: z.object({
       title: z.string(),
       registerButton: z.string(),

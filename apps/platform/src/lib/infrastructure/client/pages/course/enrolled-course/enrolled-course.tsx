@@ -22,7 +22,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import EnrolledCourseHeading from './enrolled-course-heading';
 import EnrolledCourseIntroduction from './enrolled-course-introduction';
-import { useGetStudentProgressPresenter } from '../../../hooks/use-student-progress-presenter';
 import { useRouter } from 'next/navigation';
 import { CoachCourseTab, StudentCourseTab } from '../../../utils/course-tabs';
 import EnrolledCourseCompletedAssessment from './enrolled-course-completed-assessment';
@@ -34,6 +33,9 @@ import EnrolledCourseStudents from './enrolled-course-students';
 import EnrolledCourseNotes from './enrolled-course-notes';
 import CoachCourseGroups from './coach-course-groups';
 // import { trpc as trpcMock } from '../../../trpc/client';
+import { useGetCourseStatusPresenter } from '../../../hooks/use-get-course-status-presenter';
+import CourseCompletion from '../../course-completion';
+
 
 interface EnrolledCourseProps {
     roles: string[];
@@ -173,6 +175,28 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
     // @ts-ignore
     coursePresenter.present(courseResponse, courseViewModel);
 
+    const [courseStatusResponse] = trpc.getCourseStatus.useSuspenseQuery({
+        courseSlug: props.courseSlug,
+    });
+    const [courseStatusViewModel, setCourseStatusViewModel] = useState<
+        viewModels.TGetCourseStatusViewModel | undefined
+    >(undefined);
+    const { presenter: courseStatusPresenter } = useGetCourseStatusPresenter(
+        setCourseStatusViewModel,
+    );
+    // @ts-ignore
+    courseStatusPresenter.present(courseStatusResponse, courseStatusViewModel);
+
+    const [showCompletionModal, setShowCompletionModal] = useState(false);
+
+    useEffect(() => {
+        if (courseStatusViewModel?.mode === 'default' && props.currentRole === 'student') {
+            const isCompleted = courseStatusViewModel.data?.courseStatus.status === 'completed';
+            if (isCompleted) {
+                setShowCompletionModal(true);
+            }
+        }
+    }, [courseStatusViewModel, props.currentRole]);
     const locale = useLocale() as TLocale;
     const router = useRouter();
 
@@ -193,7 +217,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
             }
         }
         return StudentCourseTab.INTRODUCTION;
-    }, [props.tab]);
+    }, [props.tab, props.currentRole]);
 
     if (!courseViewModel) {
         return <DefaultLoading locale={locale} variant="minimal" />;
@@ -222,7 +246,7 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
         <div className="flex flex-col space-y-4">
             <EnrolledCourseHeading
                 courseViewModel={courseViewModel}
-                studentProgressViewModel={props.studentProgressViewModel}
+                courseStatusViewModel={courseStatusViewModel}
                 roles={props.roles}
                 currentRole={props.currentRole}
                 courseSlug={props.courseSlug}
@@ -312,6 +336,13 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                     </Suspense>
                 </Tabs.Content>
             </Tabs.Root>
+            {showCompletionModal && courseViewModel?.mode === 'default' && (
+                <CourseCompletion
+                    slug={props.courseSlug}
+                    courseImage={courseViewModel.data.imageFile?.downloadUrl || ''}
+                    courseTitle={courseViewModel.data.title}
+                />
+            )}
         </div>
     );
 }
