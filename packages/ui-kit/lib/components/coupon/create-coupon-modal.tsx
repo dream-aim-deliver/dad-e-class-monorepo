@@ -695,7 +695,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
         <div className="flex flex-col gap-4">
           {isSuccess ? (
             renderSuccessContent()
-          ) : errorMessage?.includes('already exists') || errorMessage?.includes('name already exists') ? (
+          ) : errorMessage?.includes('name_already_exists') ? (
             renderNameConflictContent()
           ) : (
             renderFormContent()
@@ -703,7 +703,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
         </div>
 
         {/* Buttons */}
-        {!isSuccess && !errorMessage?.includes('already exists') && !errorMessage?.includes('name already exists') && (
+        {!isSuccess && !errorMessage?.includes('name_already_exists') && (
           <>
             <div className="h-px w-full bg-divider"></div>
             <div className="flex gap-2">
@@ -727,7 +727,7 @@ export const CreateCouponModal: React.FC<CreateCouponModalProps> = ({
           </>
         )}
 
-        {(errorMessage?.includes('already exists') || errorMessage?.includes('name already exists')) && (
+        {errorMessage?.includes('name_already_exists') && (
           <>
             <div className="h-px w-full bg-divider"></div>
             <div className="flex gap-2">
