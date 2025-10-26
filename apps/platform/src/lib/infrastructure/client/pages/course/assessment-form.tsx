@@ -2,7 +2,7 @@
 
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useLocale, useTranslations } from 'next-intl';
-import { trpc } from '../../trpc/client';
+import { trpc } from '../../trpc/cms-client';
 import { useEffect, useMemo, useState } from 'react';
 import { useListAssessmentComponentsPresenter } from '../../hooks/use-assessment-components-presenter';
 import { useCaseModels, viewModels } from '@maany_shr/e-class-models';
@@ -34,6 +34,8 @@ export default function AssessmentForm(props: AssessmentFormProps) {
     >(undefined);
     const { presenter: assessmentsPresenter } =
         useListAssessmentComponentsPresenter(setComponentsViewModel);
+
+    // @ts-ignore
     assessmentsPresenter.present(componentsResponse, componentsViewModel);
 
     const [submitAssessmentViewModel, setSubmitAssessmentViewModel] = useState<
@@ -72,10 +74,8 @@ export default function AssessmentForm(props: AssessmentFormProps) {
 
     useEffect(() => {
         if (submitMutation.isSuccess) {
-            submitPresenter.present(
-                submitMutation.data,
-                submitAssessmentViewModel,
-            );
+            // @ts-ignore
+            submitPresenter.present(submitMutation.data, submitAssessmentViewModel);
         }
     }, [submitMutation.isSuccess]);
 

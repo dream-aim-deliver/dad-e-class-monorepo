@@ -17,7 +17,7 @@ import { useGetCourseStructurePresenter } from '../../../hooks/use-course-struct
 import { useListLessonComponentsPresenter } from '../../../hooks/use-lesson-components-presenter';
 import LessonForm from './lesson-form';
 import LessonNotesPanel from './lesson-notes-panel';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import { CourseSlugProvider } from '../utils/course-slug-context';
 
 interface EnrolledCoursePreviewProps {
@@ -48,6 +48,7 @@ function CoursePreviewLesson(props: {
     const { presenter } = useListLessonComponentsPresenter(
         setLessonComponentsViewModel,
     );
+
     // @ts-ignore
     presenter.present(componentsResponse, componentsViewModel);
 

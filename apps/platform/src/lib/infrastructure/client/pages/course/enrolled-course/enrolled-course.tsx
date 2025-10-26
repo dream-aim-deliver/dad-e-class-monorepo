@@ -32,7 +32,6 @@ import { trpc } from '../../../trpc/cms-client';
 import EnrolledCourseStudents from './enrolled-course-students';
 import EnrolledCourseNotes from './enrolled-course-notes';
 import CoachCourseGroups from './coach-course-groups';
-// import { trpc as trpcMock } from '../../../trpc/client';
 import { useGetCourseStatusPresenter } from '../../../hooks/use-get-course-status-presenter';
 import CourseCompletion from '../../course-completion';
 
