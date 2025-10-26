@@ -56,6 +56,14 @@ const useCreateCourse = () => {
         const hasViewModelError =
             createCourseViewModel && createCourseViewModel.mode !== 'default';
 
+        // Check for specific error types in both invalid and kaboom modes
+        if (createCourseViewModel?.mode === 'invalid' || createCourseViewModel?.mode === 'kaboom') {
+            const errorType = createCourseViewModel.data.context?.errorType;
+            if (errorType === 'slug_already_exists') {
+                return createCourseTranslations('slugAlreadyExistsError');
+            }
+        }
+
         if (createCourseViewModel?.mode === 'invalid') {
             // TODO: Decide if we can pass the error message directly
             return createCourseViewModel.data.message;
@@ -78,7 +86,7 @@ const useCreateCourse = () => {
     return {
         createCourse,
         isCreating: createMutation.isPending,
-        isSuccess: createMutation.isSuccess,
+        isSuccess: createCourseViewModel?.mode === 'default',
         getSubmitErrorMessage,
     };
 };
