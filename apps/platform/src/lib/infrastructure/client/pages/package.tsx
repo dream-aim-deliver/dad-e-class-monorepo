@@ -10,11 +10,27 @@
 
 import { trpc } from '../trpc/cms-client';
 import { useState } from 'react';
-import { DefaultLoading, DefaultError, DefaultNotFound } from '@maany_shr/e-class-ui-kit';
+import { 
+  DefaultLoading, 
+  DefaultError, 
+  DefaultNotFound,
+  PackageGeneralInformation,
+  DefaultAccordion,
+  PackageCourseSelector,
+  BuyCompletePackageBanner,
+  CourseCard,
+  PackageCardList,
+  PackageCard,
+  Button,
+  Breadcrumbs
+} from '@maany_shr/e-class-ui-kit';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { viewModels } from '@maany_shr/e-class-models';
+import { useGetPackageWithCoursesPresenter } from '../hooks/use-get-package-with-courses-presenter';
+import { useListPackageRelatedPackagesPresenter } from '../hooks/use-list-package-related-packages-presenter';
 
 interface PackageProps {
   locale: TLocale;
@@ -24,39 +40,53 @@ interface PackageProps {
 export default function Package({ locale, packageId }: PackageProps) {
   const currentLocale = useLocale() as TLocale;
   const router = useRouter();
-  const t = useTranslations('pages.package');
+  const t = useTranslations('pages.packagePage');
+  const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
   const sessionDTO = useSession();
 
+  
+  const [coachingIncluded, setCoachingIncluded] = useState(false);
+  const [excludedCourseIds, setExcludedCourseIds] = useState<number[]>([]);
+
   // TRPC query for package data with courses
-  // TODO: Implement actual TRPC call using getPackageWithCourses usecase
-  // const [packageResponse] = trpc.getPackageWithCourses.useSuspenseQuery({
-  //   packageId: packageId,
-  // });
+  const [packageResponse] = trpc.getPackageWithCourses.useSuspenseQuery({
+    packageId: packageId,
+  });
 
   // TRPC query for related packages
-  // TODO: Implement actual TRPC call using listPackageRelatedPackages usecase
-  // const [relatedPackagesResponse] = trpc.listPackageRelatedPackages.useSuspenseQuery({
-  //   packageId: packageId,
-  // });
+  const [relatedPackagesResponse] = trpc.listPackageRelatedPackages.useSuspenseQuery({
+    packageId: packageId,
+  });
 
-  // TODO: Create presenter hook for PackageViewModel
-  // const [packageViewModel, setPackageViewModel] = useState<
-  //   viewModels.TPackageViewModel | undefined
-  // >(undefined);
-  // const { presenter } = usePackagePresenter(setPackageViewModel);
+  // Package view model state and presenter
+  const [packageViewModel, setPackageViewModel] = useState<
+    viewModels.TGetPackageWithCoursesViewModel | undefined
+  >(undefined);
+  const { presenter } = useGetPackageWithCoursesPresenter(setPackageViewModel);
+
+  // Related packages view model and presenter
+  const [relatedPackagesViewModel, setRelatedPackagesViewModel] = useState<
+    viewModels.TListPackageRelatedPackagesViewModel | undefined
+  >(undefined);
+  const { presenter: relatedPackagesPresenter } = useListPackageRelatedPackagesPresenter(
+    setRelatedPackagesViewModel
+  );
+
+  // Present data
   // @ts-ignore
-  // presenter.present(packageResponse, packageViewModel);
+  presenter.present(packageResponse, packageViewModel);
+  // @ts-ignore
+  relatedPackagesPresenter.present(relatedPackagesResponse, relatedPackagesViewModel);
 
-  // Loading state - TODO: Implement proper loading check based on view model
-  const isLoading = false; // Replace with: !packageViewModel
-  if (isLoading) {
+  // Loading state
+  if (!packageViewModel || !relatedPackagesViewModel) {
     return <DefaultLoading locale={currentLocale} variant="minimal" />;
   }
 
-  // Error handling - TODO: Implement error mode checks from view model
-  // Example error modes: 'kaboom', 'not-found'
-  const hasError = false; // Replace with: packageViewModel.mode === 'kaboom'
-  if (hasError) {
+  // Error handling for package
+  if (packageViewModel.mode === 'kaboom') {
+    const errorData = packageViewModel.data;
+    console.error(errorData);
     return (
       <DefaultError
         locale={currentLocale}
@@ -66,8 +96,9 @@ export default function Package({ locale, packageId }: PackageProps) {
     );
   }
 
-  const isNotFound = false; // Replace with: packageViewModel.mode === 'not-found'
-  if (isNotFound) {
+  if (packageViewModel.mode === 'not-found') {
+    const errorData = packageViewModel.data;
+    console.error(errorData);
     return (
       <DefaultNotFound
         locale={currentLocale}
@@ -78,20 +109,337 @@ export default function Package({ locale, packageId }: PackageProps) {
   }
 
   // Success state - extract data from view model
-  // TODO: const packageData = packageViewModel.data;
+  const packageData = packageViewModel.data.package;
+  const relatedPackagesData = relatedPackagesViewModel.mode === 'default' 
+    ? relatedPackagesViewModel.data.packages 
+    : [];
 
   // Session check for purchase action (non-blocking)
   const session = sessionDTO.data;
   const isLoggedIn = !!session;
 
+  // Filter courses based on exclusions
+  const displayedCourses = packageData.courses.filter(
+    course => !excludedCourseIds.includes(course.id)
+  );
+
+  // Calculate pricing with partial discounts
+  const calculatePricing = () => {
+    const roundToTwoDecimals = (value: number) => Math.round(value * 100) / 100;
+    
+    const courseCount = displayedCourses.length;
+    const totalCoursesInPackage = packageData.courses.length;
+    const allCoursesSelected = courseCount === totalCoursesInPackage;
+    
+    // Calculate sum of individual course prices for displayed courses
+    const sumOfCoursePrices = roundToTwoDecimals(
+      displayedCourses.reduce((sum, course) => 
+        sum + (coachingIncluded ? course.priceIncludingCoachings : course.basePrice), 
+        0
+      )
+    );
+    
+    // If all courses are selected, use the full package price
+    if (allCoursesSelected) {
+      const packagePrice = roundToTwoDecimals(
+        coachingIncluded ? packageData.priceWithCoachings : packageData.price
+      );
+      const savings = roundToTwoDecimals(sumOfCoursePrices - packagePrice);
+      
+      return {
+        fullPrice: packagePrice,
+        partialPrice: savings,
+      };
+    }
+    
+    // For partial selection, find the applicable discount based on number of courses
+    const applicableDiscount = packageData.partialDiscounts
+      .sort((a, b) => b.courseAmount - a.courseAmount) // Sort descending
+      .find(discount => courseCount >= discount.courseAmount);
+    
+    if (!applicableDiscount) {
+      // No discount available for this course count - pay full individual prices
+      const packagePrice = roundToTwoDecimals(
+        coachingIncluded ? packageData.priceWithCoachings : packageData.price
+      );
+      const savings = roundToTwoDecimals(sumOfCoursePrices - packagePrice);
+
+      return {
+        fullPrice: packagePrice,
+        partialPrice: savings,
+      };
+    }
+    
+    // Apply the partial discount to the sum of selected courses
+    const discountPercent = applicableDiscount.discountPercent;
+    const discountedPrice = roundToTwoDecimals(
+      sumOfCoursePrices * (1 - discountPercent / 100)
+    );
+    const savings = roundToTwoDecimals(sumOfCoursePrices - discountedPrice);
+    
+    return {
+      fullPrice: discountedPrice,
+      partialPrice: savings,
+    };
+  };
+
+  const pricing = calculatePricing();
+
+  // Calculate pricing for PackageGeneralInformation (all courses, no exclusions)
+  const calculateGeneralInformationPricing = () => {
+    const roundToTwoDecimals = (value: number) => Math.round(value * 100) / 100;
+    
+    // Sum of ALL courses in the package (no exclusions)
+    const sumOfAllCourses = roundToTwoDecimals(packageData.courses.reduce((sum, course) => 
+      sum + (coachingIncluded ? course.priceIncludingCoachings : course.basePrice), 0
+    ));
+    
+    // Package price (with or without coaching)
+    const packagePrice = roundToTwoDecimals(coachingIncluded ? packageData.priceWithCoachings : packageData.price);
+    
+    // Savings = difference between sum of all courses and package price
+    const savings = roundToTwoDecimals(sumOfAllCourses - packagePrice);
+    
+    return {
+      fullPrice: packagePrice,
+      partialPrice: savings
+    };
+  };
+
+  const generalInformationPricing = calculateGeneralInformationPricing();
+
+  // Handlers
+  const handleToggleCoaching = () => setCoachingIncluded(!coachingIncluded);
+  const handleExcludeCourse = (courseId: string) => {
+    setExcludedCourseIds([...excludedCourseIds, parseInt(courseId)]);
+  };
+  const handleCourseDetails = (courseId: string) => {
+    // TODO: Navigate to Course profile page
+    console.log('Navigate to course profile:', courseId);
+  };
+  const handleCourseAuthorClick = (courseId: string) => {
+    // TODO: Navigate to Coach profile page
+    console.log('Navigate to coach profile:', courseId);
+  };
+  const handlePurchase = () => {
+    if (!isLoggedIn) {
+      // Redirect to login page with return URL
+      router.push(`/${currentLocale}/login?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+    // TODO: Redirect to payment/checkout page
+    console.log('Redirect to payment page');
+  };
+  const handleRelatedPackageDetails = (packageId: string | number) => {
+    router.push(`/${currentLocale}/packages/${packageId}`);
+  };
+  const handleRelatedPackagePurchase = (packageId: string | number) => {
+    if (!isLoggedIn) {
+      router.push(`/${currentLocale}/login?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+    // TODO: Redirect to payment/checkout page
+    console.log('Redirect to payment page for package:', packageId);
+  };
+
+  // Breadcrumbs configuration
+  const breadcrumbItems = [
+    {
+      label: breadcrumbsTranslations('home'),
+      onClick: () => router.push(`/${currentLocale}`),
+    },
+    {
+      label: breadcrumbsTranslations('platforms'),
+      onClick: () => router.push(`/${currentLocale}/packages`),
+    },
+    {
+      label: packageData.title,
+      onClick: () => {}, // Current page, no action
+    },
+  ];
+
   return (
     <div className="flex flex-col space-y-5 px-30">
-      {/* Page header */}
-      <div>
-        <h1>{t('title')}</h1>
-        <p>{t('description')}</p>
-      </div>
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={breadcrumbItems} />
 
+      <div className="flex flex-col gap-8 bg-card-fill p-5 border border-card-stroke rounded-medium">
+        {/* Top hero section - PackageGeneralInformation */}
+        <PackageGeneralInformation
+          title={packageData.title}
+          subTitle={''}
+          imageUrl={packageData.image?.downloadUrl || ''}
+          description={packageData.description}
+          duration={packageData.courses.reduce((sum, c) => sum + c.duration, 0)}
+          pricing={{
+            currency: 'CHF', // TODO: Get the right platform currency
+            fullPrice: generalInformationPricing.fullPrice,
+            partialPrice: generalInformationPricing.partialPrice
+          }}
+          locale={currentLocale}
+          onClickPurchase={handlePurchase}
+          coachingIncluded={coachingIncluded}
+          onToggleCoaching={handleToggleCoaching}
+        />
+
+        <div className="border-t border-card-stroke" />
+
+        {/* Accordion Section */}
+        {packageData.accordionItems.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <h3 className="text-bg font-semibold text-text-primary">
+              {t('packageDetails')}
+            </h3>
+            <DefaultAccordion
+              showNumbers={packageData.showAccordionNumbers}
+              items={packageData.accordionItems.map((item, index) => ({
+                title: item.title,
+                iconImageUrl: item.icon?.downloadUrl,
+                content: item.description,
+                position: item.position,
+              }))}
+            />
+          </div>
+        )}
+
+        <div className="border-t border-card-stroke" />
+
+        {/* Flexible Section - PackageCourseSelector */}
+        <PackageCourseSelector
+          title={packageData.title}
+          description={packageData.description}
+          coachingIncluded={coachingIncluded}
+          pricing={{
+            currency: 'CHF', // TODO: Get the right platform currency
+            fullPrice: pricing.fullPrice,
+            partialPrice: pricing.partialPrice
+          }}
+          onClickCheckbox={handleToggleCoaching}
+          onClickPurchase={handlePurchase}
+          locale={currentLocale}
+        >
+          {displayedCourses.map((course) => (
+            <div key={course.id} className="w-full">
+              <CourseCard
+                userType={isLoggedIn ? "student" : "visitor"}
+                reviewCount={course.ratingCount}
+                locale={currentLocale}
+                language={course.language}
+                course={{
+                  title: course.title,
+                  description: course.description,
+                  author: {
+                    name: course.creator.name,
+                    image: course.creator.avatarUrl || ''
+                  },
+                  imageUrl: '', // TODO: Get course image
+                  rating: course.averageRating,
+                  duration: {
+                    video: course.duration,
+                    coaching: course.coachingSessionCount * 30, // Estimate
+                    selfStudy: 0
+                  },
+                  pricing: {
+                    fullPrice: course.basePrice,
+                    partialPrice: course.priceIncludingCoachings,
+                    currency: 'CHF'// TODO: Get the right platform currency
+                  },
+                  language: course.language,
+                }}
+                sessions={course.coachingSessionCount}
+                sales={course.salesCount}
+                onDetails={() => handleCourseDetails(course.id.toString())}
+                onClickUser={() => handleCourseAuthorClick(course.id.toString())}
+                className="mb-3"
+              />
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-text-primary">
+                  CHF {coachingIncluded ? course.priceIncludingCoachings : course.basePrice}
+                </span>
+                <div className="flex gap-2">
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    text={t('excludeButton')}
+                    onClick={() => handleExcludeCourse(course.id.toString())}
+                  />
+                  <Button
+                    variant="text"
+                    size="small"
+                    text={t('detailsButton')}
+                    onClick={() => handleCourseDetails(course.id.toString())}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </PackageCourseSelector>
+
+        <div className="border-t border-card-stroke" />
+
+        {/* Bottom banner - BuyCompletePackageBanner */}
+        <BuyCompletePackageBanner
+          titleBanner={t('buyCompletePackageTitle')}
+          descriptionBanner={t('buyCompletePackageDescription')}
+          imageUrl={packageData.image?.downloadUrl || ''}
+          title={packageData.title}
+          description={packageData.description}
+          duration={packageData.courses.reduce((sum, c) => sum + c.duration, 0)}
+          pricing={{
+            currency: 'CHF', // TODO: Get the right platform currency
+            fullPrice: generalInformationPricing.fullPrice,
+            partialPrice: generalInformationPricing.partialPrice
+          }}
+          locale={currentLocale}
+          onClickPurchase={handlePurchase}
+          coachingIncluded={coachingIncluded}
+          onToggleCoaching={handleToggleCoaching}
+        />
+
+
+        {/* Related Packages Section */}
+        <div className="border-t border-card-stroke" />
+        {relatedPackagesData.length > 0 && (
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <h2 className="text-2xl font-bold text-text-primary">
+                {t('relatedPackages.title')}
+              </h2>
+              <p className="text-text-secondary">
+                {t('relatedPackages.subtitle').split(t('relatedPackages.findAllOffers'))[0]}
+                <button 
+                  className="text-primary hover:underline"
+                  onClick={() => router.push(`/${currentLocale}/packages`)}
+                >
+                  {t('relatedPackages.findAllOffers')}
+                </button>
+                {t('relatedPackages.subtitle').split(t('relatedPackages.findAllOffers'))[1]}
+              </p>
+            </div>
+            
+            <PackageCardList locale={currentLocale}>
+              {relatedPackagesData.map((relatedPackage) => (
+                <PackageCard
+                  key={relatedPackage.id}
+                  imageUrl={relatedPackage.image?.downloadUrl || ''}
+                  title={relatedPackage.title}
+                  description={relatedPackage.description}
+                  duration={relatedPackage.duration}
+                  courseCount={relatedPackage.courseCount}
+                  pricing={{
+                    currency: 'CHF', // TODO: Get the right platform currency
+                    fullPrice: relatedPackage.price,
+                    partialPrice: relatedPackage.priceWithCoachings
+                  }}
+                  locale={currentLocale}
+                  onClickPurchase={() => handleRelatedPackagePurchase(relatedPackage.id)}
+                  onClickDetails={() => handleRelatedPackageDetails(relatedPackage.id)}
+                />
+              ))}
+            </PackageCardList>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

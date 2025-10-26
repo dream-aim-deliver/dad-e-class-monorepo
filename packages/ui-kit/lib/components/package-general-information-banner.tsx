@@ -13,6 +13,8 @@ export interface PackageGeneralInformationView
     isLocalAware {
     onClickPurchase: () => void;
     subTitle: string;
+    coachingIncluded?: boolean;
+    onToggleCoaching?: () => void;
 }
 
 /**
@@ -45,6 +47,8 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
     duration,
     pricing,
     locale,
+    coachingIncluded = true,
+    onToggleCoaching,
 }) => {
     const dictionary =
         getDictionary(locale).components.packageGeneralInformation;
@@ -113,7 +117,9 @@ export const PackageGeneralInformation: FC<PackageGeneralInformationView> = ({
                     <CheckBox
                         name="coachingIncluded"
                         value="coachingIncluded"
-                        checked={true}
+                        checked={coachingIncluded}
+                        onChange={onToggleCoaching}
+                        disabled={!onToggleCoaching}
                         size="medium"
                         withText={true}
                         label={dictionary.coachingIncluded}

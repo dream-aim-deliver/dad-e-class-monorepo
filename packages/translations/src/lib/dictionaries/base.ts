@@ -2272,12 +2272,33 @@ export const DictionarySchema = z.object({
         }),
       }),
     }),
-    coupons: z.object({
+    packagePage: z.object({
       title: z.string(),
       description: z.string(),
-      createCouponButton: z.string(),
-      searchPlaceholder: z.string(),
-      exportButton: z.string(),
+      error: z.object({
+        kaboom: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+        notFound: z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      }),
+      relatedPackages: z.object({
+        title: z.string(),
+        subtitle: z.string(),
+        findAllOffers: z.string(),
+      }),
+      packageDetails: z.string(),
+      excludeButton: z.string(),
+      detailsButton: z.string(),
+      completePackage: z.string(),
+      getAllCoursesTogether: z.string(),
+      buyCompletePackageTitle: z.string(),
+      buyCompletePackageDescription: z.string(),
+    }),
+    coupons: z.object({
       filterButton: z.string(),
       clearFilters: z.string(),
       loading: z.string(),

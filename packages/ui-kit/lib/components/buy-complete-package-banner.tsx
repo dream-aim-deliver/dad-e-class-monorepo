@@ -15,6 +15,8 @@ export interface BuyCompletePackageBannerProps
     onClickPurchase?: () => void;
     titleBanner: string;
     descriptionBanner: string;
+    coachingIncluded?: boolean;
+    onToggleCoaching?: () => void;
 }
 
 /**
@@ -66,6 +68,8 @@ export const BuyCompletePackageBanner = ({
     pricing,
     locale,
     onClickPurchase,
+    coachingIncluded = true,
+    onToggleCoaching,
 }: BuyCompletePackageBannerProps) => {
     const dictionary =
         getDictionary(locale).components.buyCompletePackageBanner;
@@ -118,7 +122,9 @@ export const BuyCompletePackageBanner = ({
                     <CheckBox
                         name="coachingIncluded"
                         value="coachingIncluded"
-                        checked={true}
+                        checked={coachingIncluded}
+                        onChange={onToggleCoaching}
+                        disabled={!onToggleCoaching}
                         size="medium"
                         withText={true}
                         label={dictionary.coachingIncluded}
