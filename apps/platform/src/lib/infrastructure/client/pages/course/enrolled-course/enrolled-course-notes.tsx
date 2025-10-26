@@ -6,7 +6,6 @@ import { Suspense, useRef, useState } from "react";
 import { Button, CourseNotesAccordion, DefaultLoading, IconCloudDownload } from "@maany_shr/e-class-ui-kit";
 import { viewModels } from "@maany_shr/e-class-models";
 import { useListStudentNotesPresenter } from "../../../hooks/use-list-student-notes-presenter";
-import html2pdf from "html2pdf.js";
 
 interface EnrolledCourseNotesProps {
     courseSlug: string;
@@ -44,6 +43,9 @@ function EnrolledCourseNotesContent(
         setIsDownloading(true);
 
         try {
+            // Dynamically import html2pdf only when needed (client-side only)
+            const html2pdf = (await import("html2pdf.js")).default;
+
             await new Promise(resolve => setTimeout(resolve, 100)); // wait for rendering
 
             // We'll build the content directly from the view model data
