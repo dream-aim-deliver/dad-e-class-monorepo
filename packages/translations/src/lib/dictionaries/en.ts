@@ -659,13 +659,13 @@ export const EN: TDictionary = {
       readLess: 'Read less',
     },
     moduleCompletionModal: {
-      moduleCompletedText: 'Module complete â€“ awesome job!',
+      moduleCompletedText: 'Module complete — awesome job!',
       moduleText: 'Module',
-      descriptionText: 'Keep going â€“ youâ€™re doing great!',
-      goToNextModuleText: 'Go to next module',
+      descriptionText: "Keep going — you're doing great!",
+      goToNextModuleText: "Go to next module",
     },
     courseCompletionModal: {
-      courseCompletedText: 'Well done â€" youâ€™ve completed it!',
+      courseCompletedText: "Well done — you've completed it!",
       completedOnText: 'Completed on',
       atText: 'at',
       downloadCertificateText: 'Download certificate',
