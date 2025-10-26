@@ -56,7 +56,7 @@ export { CoachingOnDemandBanner } from './components/coaching-on-demand-banner/c
 export { HomeAccordion } from './components/home-accordion';
 export { default as RichTextRenderer } from './components/rich-text-element/renderer';
 export { default as RichTextEditor } from './components/rich-text-element/editor';
-export { slateifySerialize } from './components/rich-text-element/serializer';
+export { slateifySerialize, serialize, deserialize, slateToPlainText } from './components/rich-text-element/serializer';
 export { Uploader } from './components/drag-and-drop-uploader/uploader';
 
 // Create Package Components
