@@ -1,5 +1,7 @@
 import jsPDF from 'jspdf';
 import { TLocale, getDictionary } from '@maany_shr/e-class-translations';
+import { slateToPlainText } from '../components/rich-text-element/serializer';
+import { formatCertificateDate } from './format-utils';
 
 /**
  * Interface for module in course summary
@@ -18,10 +20,13 @@ export interface CertificateData {
     studentUsername: string;
     courseTitle: string;
     courseSlug: string;
+    /** Course description - can be plain text or SlateJS JSON string. Will be converted to plain text for PDF. */
     courseDescription?: string;
-    completionDate: string;
+    /** Completion date - can be ISO timestamp string or Date object. Will be formatted based on locale. */
+    completionDate: string | Date;
     platformName: string;
     platformLogoUrl?: string;
+    /** Platform footer - can be plain text or SlateJS JSON string. Will be converted to plain text for PDF. */
     platformFooterContent?: string;
     courseSummary: ModuleSummary[];
     locale?: TLocale;
@@ -159,7 +164,9 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
             currentY += 5;
             pdf.setFontSize(10);
             pdf.setFont('Nunito', 'italic');
-            const descriptionLines = pdf.splitTextToSize(data.courseDescription, pageWidth - 2 * margin);
+            // Convert SlateJS to plain text if needed
+            const descriptionText = slateToPlainText(data.courseDescription);
+            const descriptionLines = pdf.splitTextToSize(descriptionText, pageWidth - 2 * margin);
             pdf.text(descriptionLines, centerX, currentY, { align: 'center' });
             currentY += descriptionLines.length * 5;
         }
@@ -169,7 +176,9 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
         // Completion date
         pdf.setFontSize(11);
         pdf.setFont('Nunito', 'normal');
-        pdf.text(`${t.completedOn}: ${data.completionDate}`, centerX, currentY, { align: 'center' });
+        // Format the date for display
+        const formattedDate = formatCertificateDate(data.completionDate, locale);
+        pdf.text(`${t.completedOn}: ${formattedDate}`, centerX, currentY, { align: 'center' });
 
         // Add page 2 for course structure if there are modules
         if (data.courseSummary && data.courseSummary.length > 0) {
@@ -258,7 +267,9 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
             if (i === 1) {
                 // Page 1: Only platform footer content
                 if (data.platformFooterContent) {
-                    const footerLines = pdf.splitTextToSize(data.platformFooterContent, pageWidth - 2 * margin);
+                    // Convert SlateJS to plain text if needed
+                    const footerText = slateToPlainText(data.platformFooterContent);
+                    const footerLines = pdf.splitTextToSize(footerText, pageWidth - 2 * margin);
                     pdf.text(footerLines, centerX, footerY, { align: 'center' });
                 } else {
                     pdf.text(data.platformName, centerX, footerY, { align: 'center' });
@@ -266,7 +277,9 @@ export async function generateCertificatePDF(data: CertificateData): Promise<voi
             } else {
                 // Page 2+: Platform footer + page numbers
                 if (data.platformFooterContent) {
-                    const footerLines = pdf.splitTextToSize(data.platformFooterContent, pageWidth - 2 * margin);
+                    // Convert SlateJS to plain text if needed
+                    const footerText = slateToPlainText(data.platformFooterContent);
+                    const footerLines = pdf.splitTextToSize(footerText, pageWidth - 2 * margin);
                     pdf.text(footerLines, centerX, footerY, { align: 'center' });
                     footerY += footerLines.length * 4 + 3;
                 } else {

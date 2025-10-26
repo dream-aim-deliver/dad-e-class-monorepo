@@ -1,4 +1,4 @@
-import { Descendant } from 'slate';
+import { Descendant, Node } from 'slate';
 
 /**
  * Converts Slate editor data to a JSON string.
@@ -112,4 +112,55 @@ const deserialize = ({ serializedData, onError }: SlateDeserializerInput): Desce
 
 };
 
-export { serialize, slateify, slateifySerialize, deserialize };
+/**
+ * Converts Slate editor data (JSON string or Descendant array) to plain text.
+ * Extracts all text content from the nodes, joining with newlines.
+ * Useful for displaying Slate content in contexts that don't support rich text (e.g., PDFs, plain text exports).
+ *
+ * @param {string | Descendant[]} slateData - The Slate content as JSON string or Descendant array
+ * @returns {string} - Plain text content with nodes separated by newlines
+ *
+ * @example
+ * const slateJson = '[{"type":"paragraph","children":[{"text":"Hello"}]}]';
+ * slateToPlainText(slateJson); // Returns: "Hello"
+ *
+ * const slateArray = [{ type: "paragraph", children: [{ text: "Hello" }] }];
+ * slateToPlainText(slateArray); // Returns: "Hello"
+ */
+const slateToPlainText = (slateData: string | Descendant[]): string => {
+  if (!slateData) {
+    return '';
+  }
+
+  try {
+    let nodes: Descendant[];
+
+    // Handle string input (JSON)
+    if (typeof slateData === 'string') {
+      // Try to parse if it's a JSON string
+      try {
+        nodes = JSON.parse(slateData);
+      } catch {
+        // If parsing fails, return the string as-is (might already be plain text)
+        return slateData;
+      }
+    } else if (Array.isArray(slateData)) {
+      nodes = slateData;
+    } else {
+      return '';
+    }
+
+    // Extract text from all nodes
+    const text = nodes
+      .map((n) => Node.string(n))
+      .join('\n')
+      .trim();
+
+    return text;
+  } catch (error) {
+    console.error('Error converting Slate to plain text:', error);
+    return '';
+  }
+};
+
+export { serialize, slateify, slateifySerialize, deserialize, slateToPlainText };
