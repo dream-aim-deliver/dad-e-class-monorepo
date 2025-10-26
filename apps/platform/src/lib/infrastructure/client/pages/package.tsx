@@ -254,7 +254,7 @@ export default function Package({ locale, packageId }: PackageProps) {
     },
     {
       label: packageData.title,
-      onClick: () => {}, // Current page, no action
+      onClick: () => { return; }, // Current page, no action
     },
   ];
 
