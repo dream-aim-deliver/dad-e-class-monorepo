@@ -19,7 +19,7 @@ import {
     ReviewDialog,
     generateCertificatePDF,
 } from '@maany_shr/e-class-ui-kit';
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -115,9 +115,9 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
     }, [isLoggedIn, router]);
 
     // Handle download certificate
-    const handleDownloadCertificate =async () => {
+    const handleDownloadCertificate = async () => {
         if (certificateDataViewModel?.mode === 'default') {
-            
+
             try {
                 setCertificateError(null); // Clear any previous errors
                 const certificateData = certificateDataViewModel.data.certificateData;
@@ -190,7 +190,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
 
     return (
         <>
-        
+
             {modalState === 'completion' && courseStatusData && certificateData && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                     <CourseCompletionModal
@@ -202,7 +202,7 @@ export default function CourseCompletion({ slug, courseImage, courseTitle }: Cou
                         onClose={handleCloseCompletionModal}
                         locale={locale}
                     />
-                    {certificateError && <DefaultError locale={locale} title={certificateError}  />}
+                    {certificateError && <DefaultError locale={locale} title={certificateError} />}
                 </div>
             )}
             {(modalState === 'review-form' || modalState === 'review-thank-you') && (
