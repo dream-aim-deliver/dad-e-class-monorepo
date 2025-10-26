@@ -1016,6 +1016,7 @@ export const DictionarySchema = z.object({
       yourStudents: z.string(),
       yourProfile: z.string(),
       yourReviews: z.string(),
+      legalTexts: z.string(),
     }),
     courseIntroInformation: z.object({
       generalInformation: z.string(),
@@ -1561,7 +1562,7 @@ export const DictionarySchema = z.object({
       categories: z.string(),
       topics: z.string(),
       preCourseAssessmentForm: z.string(),
-      termsConditionsForm: z.string(),
+      legalTexts: z.string(),
       coachingOffering: z.string(),
       coachingSessions: z.string(),
       coachSkillsForm: z.string(),
@@ -2088,6 +2089,23 @@ export const DictionarySchema = z.object({
       studentTab: z.string(),
       weeklyView: z.string(),
       monthlyView: z.string(),
+    }),
+    manageLegalTexts: z.object({
+      title: z.string(),
+      description: z.string(),
+      tabs: z.object({
+        impressum: z.string(),
+        privacyPolicy: z.string(),
+        termsOfUse: z.string(),
+      }),
+      saveButton: z.string(),
+      saving: z.string(),
+      saveSuccess: z.string(),
+      saveError: z.string(),
+      error: z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
     }),
   }),
 });
