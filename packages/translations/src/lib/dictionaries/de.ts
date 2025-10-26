@@ -2239,12 +2239,33 @@ manageHomePage: {
         },
       },
     },
+    packagePage: {
+      title: 'Paket',
+      description: 'Paketdetails und Kurse anzeigen',
+      error: {
+        kaboom: {
+          title: 'Fehler',
+          description: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.',
+        },
+        notFound: {
+          title: 'Paket nicht gefunden',
+          description: 'Das angeforderte Paket konnte nicht gefunden werden.',
+        },
+      },
+      relatedPackages: {
+        title: 'Andere Pakete, die Ihnen gefallen könnten',
+        subtitle: 'Vielleicht ist hier etwas für Sie dabei? Wenn nicht, können Sie hier alle Angebote finden.',
+        findAllOffers: 'alle Angebote hier finden',
+      },
+      packageDetails: 'Paket-Details',
+      excludeButton: 'Ausschließen',
+      detailsButton: 'Details',
+      completePackage: 'Komplettes Paket',
+      getAllCoursesTogether: 'Alle Kurse zusammen erhalten',
+      buyCompletePackageTitle: 'Komplettes Paket kaufen',
+      buyCompletePackageDescription: 'Hier erhalten Sie alles im Paket enthalten. Sie können dadurch schrittweise Ihr gesamtes Erscheinungsbild mit einem Key Visual, neuem Branding, einer Website und entsprechenden Videoinhalten umsetzen.',
+    },
     coupons: {
-      title: 'Coupons',
-      description: 'Verwalte Plattform-Coupons und Rabattcodes',
-      createCouponButton: 'Coupon erstellen',
-      searchPlaceholder: 'Coupons durchsuchen...',
-      exportButton: 'Exportieren',
       filterButton: 'Filtern',
       clearFilters: 'Filter löschen',
       loading: 'Lade Coupons...',

@@ -2236,12 +2236,33 @@ export const EN: TDictionary = {
         },
       },
     },
+    packagePage: {
+      title: 'Package',
+      description: 'View package details and courses',
+      error: {
+        kaboom: {
+          title: 'Error',
+          description: 'An unexpected error occurred. Please try again later.',
+        },
+        notFound: {
+          title: 'Package Not Found',
+          description: 'The requested package could not be found.',
+        },
+      },
+      relatedPackages: {
+        title: 'Other packages you might like',
+        subtitle: 'Maybe there\'s something here for you? If not, you can find all offers here.',
+        findAllOffers: 'find all offers here',
+      },
+      packageDetails: 'Package Details',
+      excludeButton: 'Exclude',
+      detailsButton: 'Details',
+      completePackage: 'Complete Package',
+      getAllCoursesTogether: 'Get all courses together',
+      buyCompletePackageTitle: 'Buy complete package',
+      buyCompletePackageDescription: 'Here you get everything included. You can therefore gradually implement your overall appearance with a key visual, new branding, a website and corresponding video content.',
+    },
     coupons: {
-      title: 'Coupons',
-      description: 'Manage platform coupons and discount codes',
-      createCouponButton: 'Create Coupon',
-      searchPlaceholder: 'Search coupons...',
-      exportButton: 'Export',
       filterButton: 'Filter',
       clearFilters: 'Clear Filters',
       loading: 'Loading coupons...',
