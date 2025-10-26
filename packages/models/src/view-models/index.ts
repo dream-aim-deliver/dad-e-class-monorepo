@@ -117,3 +117,4 @@ export * from './list-user-incoming-transactions-view-model';
 export * from './list-user-outgoing-transactions-view-model';
 export * from './list-transactions-view-model';
 export * from './publish-package-view-model';
+export * from './save-platform-language-legal-texts-view-model';
