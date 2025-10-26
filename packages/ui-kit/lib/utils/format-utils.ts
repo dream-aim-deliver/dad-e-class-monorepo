@@ -23,7 +23,7 @@ export function formatDate(date: Date = new Date()): string {
  * formatCertificateDate('2024-10-26T17:05:53.655296', 'de'); // "26. Oktober 2024"
  * formatCertificateDate(new Date(), 'en'); // "January 15, 2025"
  */
-export function formatCertificateDate(dateInput: string | Date, locale: string = 'en'): string {
+export function formatCertificateDate(dateInput: string | Date, locale = 'en'): string {
     try {
         let date: Date;
 
