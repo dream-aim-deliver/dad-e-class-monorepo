@@ -18,8 +18,9 @@ import { useListCoachesPresenter } from '../../../hooks/use-coaches-presenter';
 import { useLocale, useTranslations } from 'next-intl';
 import { TLocale } from '@maany_shr/e-class-translations';
 import { trpc as trpcMock } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import useClientSidePagination from '../../../utils/use-client-side-pagination';
-import MockTRPCClientProviders from '../../../trpc/mock-client-providers';
+import CMSTRPCClientProviders from '../../../trpc/cms-client-provider';
 import { useCoachMutations } from './hooks/use-coach-mutations';
 
 interface EnrolledCoachesProps {
@@ -36,12 +37,13 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
 
     // Fetch course-specific coaches data using TRPC Mock Client
     const [courseCoachesResponse, { refetch: refetchCoaches }] =
+
+        // TODO: MISSING USECASE - REPLACE WITH REAL TRPC CLIENT
         trpcMock.listCourseCoaches.useSuspenseQuery({
             courseSlug: props.courseSlug,
         });
 
-    // Fetch available coaches data using TRPC Mock Client
-    const [availableCoachesResponse] = trpcMock.listCoaches.useSuspenseQuery(
+    const [availableCoachesResponse] = trpc.listCoaches.useSuspenseQuery(
         {},
     );
 
@@ -61,14 +63,10 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
         setAvailableCoachesViewModel,
     );
 
-    courseCoachesPresenter.present(
-        courseCoachesResponse,
-        courseCoachesViewModel,
-    );
-    availableCoachesPresenter.present(
-        availableCoachesResponse,
-        availableCoachesViewModel,
-    );
+    courseCoachesPresenter.present(courseCoachesResponse, courseCoachesViewModel);
+
+    // @ts-ignore
+    availableCoachesPresenter.present(availableCoachesResponse, availableCoachesViewModel);
 
     // Get available coaches from the presenter (this has the full coach data structure)
     const availableCoaches = useMemo(() => {
@@ -331,16 +329,16 @@ function EnrolledCoachesContent(props: EnrolledCoachesProps) {
                                     key={coach.username}
                                     {...(isCoach
                                         ? {
-                                              ...baseProps,
-                                              variant: 'coach' as const,
-                                          }
+                                            ...baseProps,
+                                            variant: 'coach' as const,
+                                        }
                                         : {
-                                              ...baseProps,
-                                              variant: 'courseCreator' as const,
-                                              onClickRemoveFromCourse: () => {
-                                                  handleRemoveCoach(coach.username);
-                                              },
-                                          })}
+                                            ...baseProps,
+                                            variant: 'courseCreator' as const,
+                                            onClickRemoveFromCourse: () => {
+                                                handleRemoveCoach(coach.username);
+                                            },
+                                        })}
                                 />
                             );
                         })
@@ -463,12 +461,12 @@ export default function EnrolledCoaches(props: EnrolledCoachesProps) {
 
     return (
         //we  need remove if we have real trpc client
-        <MockTRPCClientProviders>
+        <CMSTRPCClientProviders>
             <Suspense
                 fallback={<DefaultLoading locale={locale} variant="minimal" />}
             >
                 <EnrolledCoachesContent {...props} />
             </Suspense>
-        </MockTRPCClientProviders>
+        </CMSTRPCClientProviders>
     );
 }

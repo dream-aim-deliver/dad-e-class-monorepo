@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useGetAssignmentPresenter } from '../../../hooks/use-assignment-presenter';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import {
     fileMetadata,
     shared,
@@ -42,6 +42,8 @@ export default function AssignmentContent({
         viewModels.TAssignmentViewModel | undefined
     >(undefined);
     const { presenter } = useGetAssignmentPresenter(setAssignmentViewModel);
+
+    // @ts-ignore
     presenter.present(assignmentResponse, assignmentViewModel);
 
     if (!assignmentViewModel) {
@@ -319,11 +321,11 @@ function transformLinks(links: viewModels.TAssignmentSuccess['links']) {
         url: link.url,
         customIcon: link.iconFile
             ? {
-                  ...link.iconFile,
-                  status: 'available' as const,
-                  url: link.iconFile.downloadUrl,
-                  thumbnailUrl: link.iconFile.downloadUrl,
-              }
+                ...link.iconFile,
+                status: 'available' as const,
+                url: link.iconFile.downloadUrl,
+                thumbnailUrl: link.iconFile.downloadUrl,
+            }
             : undefined,
     }));
 }
@@ -406,11 +408,11 @@ function transformReplyData(
             url: link.url,
             customIcon: link.iconFile
                 ? {
-                      ...link.iconFile,
-                      status: 'available' as const,
-                      url: link.iconFile.downloadUrl,
-                      thumbnailUrl: link.iconFile.downloadUrl,
-                  }
+                    ...link.iconFile,
+                    status: 'available' as const,
+                    url: link.iconFile.downloadUrl,
+                    thumbnailUrl: link.iconFile.downloadUrl,
+                }
                 : undefined,
         })),
     };

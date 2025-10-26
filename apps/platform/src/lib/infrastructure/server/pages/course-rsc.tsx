@@ -6,11 +6,10 @@ import AssessmentForm from '../../client/pages/course/assessment-form';
 import EnrolledCourse from '../../client/pages/course/enrolled-course/enrolled-course';
 import { Suspense } from 'react';
 import DefaultLoadingWrapper from '../../client/wrappers/default-loading';
-import { getQueryClient, trpc, prefetch } from '../config/trpc/cms-server';
-import { trpc as trpcMock, HydrateClient, prefetch as prefetchMock } from '../config/trpc/server';
+import { getQueryClient, trpc, prefetch, HydrateClient } from '../config/trpc/cms-server';
 import VisitorPage from '../../client/pages/course/visitor-page';
 import { createGetCourseAccessPresenter } from '../presenter/get-course-access-presenter';
-import MockTRPCClientProviders from '../../client/trpc/mock-client-providers';
+import CMSTRPCClientProviders from '../../client/trpc/cms-client-provider';
 import { createListCourseReviewsPresenter } from '../presenter/list-course-reviews-presenter';
 import { createGetCourseIntroductionPresenter } from '../presenter/get-course-introduction-presenter';
 import { createGetCourseOutlinePresenter } from '../presenter/get-course-outline-presenter';
@@ -64,7 +63,7 @@ export default async function CourseServerComponent({
 async function fetchCourseAccess(
     slug: string,
 ): Promise<viewModels.TGetCourseAccessViewModel> {
-    const queryOptions = trpcMock.getCourseAccess.queryOptions({
+    const queryOptions = trpc.getCourseAccess.queryOptions({
         courseSlug: slug,
     });
     const queryClient = getQueryClient();
@@ -127,8 +126,8 @@ function shouldShowAssessment(
 }
 
 async function renderAssessmentForm(slug: string) {
-    await prefetchMock(
-        trpcMock.listPreCourseAssessmentComponents.queryOptions({}),
+    await prefetch(
+        trpc.listPreCourseAssessmentComponents.queryOptions({}),
     );
 
     return (
@@ -154,13 +153,13 @@ async function prefetchIntroductionData(
 
     if (currentRole === 'student') {
         promises.push(
-            prefetchMock(
-                trpcMock.getStudentProgress.queryOptions({
+            prefetch(
+                trpc.getStudentProgress.queryOptions({
                     courseSlug: slug,
                 }),
             ),
-            prefetchMock(
-                trpcMock.listIncludedCoachingSessions.queryOptions({
+            prefetch(
+                trpc.listIncludedCoachingSessions.queryOptions({
                     courseSlug: slug,
                 }),
             ),
@@ -169,7 +168,7 @@ async function prefetchIntroductionData(
                     courseSlug: slug,
                 }),
             ),
-             prefetch(
+            prefetch(
                 trpc.getCourseCertificateData.queryOptions({
                     courseSlug: slug,
                 }),
@@ -220,7 +219,7 @@ async function renderVisitorView(slug: string, locale: TLocale) {
     }
 
     return (
-        <MockTRPCClientProviders>
+        <CMSTRPCClientProviders>
             <Suspense fallback={<DefaultLoadingWrapper />}>
                 <VisitorPage
                     courseData={visitorData}
@@ -232,7 +231,7 @@ async function renderVisitorView(slug: string, locale: TLocale) {
                     locale={locale}
                 />
             </Suspense>
-        </MockTRPCClientProviders>
+        </CMSTRPCClientProviders>
     );
 }
 async function fetchVisitorCourseData(slug: string) {
@@ -240,7 +239,7 @@ async function fetchVisitorCourseData(slug: string) {
 
     //   TODO: 1. GetPublicCourseDetails - MOCK endpoint (no real backend available)
     const courseDetailsPromise = (async () => {
-        const courseDetailsQuery = trpcMock.getPublicCourseDetails.queryOptions({
+        const courseDetailsQuery = trpc.getPublicCourseDetails.queryOptions({
             courseSlug: slug,
         });
         const courseDetailsResponse = await queryClient.fetchQuery(courseDetailsQuery);
@@ -250,6 +249,8 @@ async function fetchVisitorCourseData(slug: string) {
         const presenter = createGetPublicCourseDetailsPresenter((viewModel) => {
             courseDetailViewModel = viewModel;
         });
+
+        // @ts-ignore
         await presenter.present(courseDetailsResponse, courseDetailViewModel);
 
 
@@ -258,7 +259,7 @@ async function fetchVisitorCourseData(slug: string) {
 
 
     const courseIntroductionPromise = (async () => {
-        const courseIntroductionQuery = trpcMock.getCourseIntroduction.queryOptions({
+        const courseIntroductionQuery = trpc.getCourseIntroduction.queryOptions({
             courseSlug: slug,
         });
         const courseIntroductionResponse = await queryClient.fetchQuery(courseIntroductionQuery);
@@ -267,6 +268,8 @@ async function fetchVisitorCourseData(slug: string) {
         const presenter = createGetCourseIntroductionPresenter((viewModel) => {
             courseIntroductionViewModel = viewModel;
         });
+
+        // @ts-ignore
         await presenter.present(courseIntroductionResponse, courseIntroductionViewModel);
 
 
@@ -275,7 +278,7 @@ async function fetchVisitorCourseData(slug: string) {
 
     // 3. GetCourseOutline - MOCK endpoint (using mock for visitor access)
     const courseOutlinePromise = (async () => {
-        const courseOutlineQuery = trpcMock.getCourseOutline.queryOptions({
+        const courseOutlineQuery = trpc.getCourseOutline.queryOptions({
             courseSlug: slug,
         });
         const courseOutlineResponse = await queryClient.fetchQuery(courseOutlineQuery);
@@ -284,6 +287,8 @@ async function fetchVisitorCourseData(slug: string) {
         const presenter = createGetCourseOutlinePresenter((viewModel) => {
             courseOutlineViewModel = viewModel;
         });
+
+        // @ts-ignore
         await presenter.present(courseOutlineResponse, courseOutlineViewModel);
 
 
@@ -292,7 +297,7 @@ async function fetchVisitorCourseData(slug: string) {
 
     // 4. ListCourseReviews - MOCK endpoint
     const courseReviewsPromise = (async () => {
-        const courseReviewsQuery = trpcMock.listCourseReviews.queryOptions({
+        const courseReviewsQuery = trpc.listCourseReviews.queryOptions({
             courseSlug: slug,
         });
         const courseReviewsResponse = await queryClient.fetchQuery(courseReviewsQuery);
@@ -301,6 +306,8 @@ async function fetchVisitorCourseData(slug: string) {
         const presenter = createListCourseReviewsPresenter((viewModel) => {
             courseReviewsViewModel = viewModel;
         });
+
+        // @ts-ignore
         await presenter.present(courseReviewsResponse, courseReviewsViewModel);
 
 
@@ -309,7 +316,7 @@ async function fetchVisitorCourseData(slug: string) {
 
     // 5. GetCoursePackages - MOCK endpoint
     const coursePackagesPromise = (async () => {
-        const coursePackagesQuery = trpcMock.getCoursePackages.queryOptions({
+        const coursePackagesQuery = trpc.getCoursePackages.queryOptions({
             courseSlug: slug,
         });
         const coursePackagesResponse = await queryClient.fetchQuery(coursePackagesQuery);
@@ -318,6 +325,8 @@ async function fetchVisitorCourseData(slug: string) {
         const presenter = createGetCoursePackagesPresenter((viewModel) => {
             coursePackagesViewModel = viewModel;
         });
+
+        // @ts-ignore
         await presenter.present(coursePackagesResponse, coursePackagesViewModel);
 
 
@@ -326,13 +335,14 @@ async function fetchVisitorCourseData(slug: string) {
 
     // 6. GetOffersPageOutline - MOCK endpoint (consistent with other course data)
     const offersCarouselPromise = (async () => {
-        const offersCarouselQuery = trpcMock.getOffersPageOutline.queryOptions({});
+        const offersCarouselQuery = trpc.getOffersPageOutline.queryOptions({});
         const offersCarouselResponse = await queryClient.fetchQuery(offersCarouselQuery);
 
         let offersCarouselViewModel: viewModels.TGetOffersPageOutlineViewModel | undefined;
         const presenter = createGetOffersPageOutlinePresenter((viewModel) => {
             offersCarouselViewModel = viewModel;
         });
+
         // @ts-ignore
         await presenter.present(offersCarouselResponse, offersCarouselViewModel);
 

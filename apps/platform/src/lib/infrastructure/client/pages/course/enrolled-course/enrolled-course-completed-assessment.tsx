@@ -1,5 +1,5 @@
 import { viewModels } from '@maany_shr/e-class-models';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import { useMemo, useState } from 'react';
 import {
     DefaultError,
@@ -30,6 +30,8 @@ export default function EnrolledCourseCompletedAssessment(
     >(undefined);
     const { presenter: progressPresenter } =
         useListAssessmentProgressesPresenter(setProgressViewModel);
+
+    // @ts-ignore
     progressPresenter.present(progressResponse, progressViewModel);
 
     const formElements: FormElement[] = useMemo(() => {

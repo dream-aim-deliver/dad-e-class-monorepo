@@ -2,10 +2,10 @@ import { TLocale } from "@maany_shr/e-class-translations";
 import { Button, DefaultError, DefaultLoading, SearchInput, StudentCard, StudentCardList, StudentCardListSkeleton, Tabs } from "@maany_shr/e-class-ui-kit";
 import { useLocale, useTranslations } from "next-intl";
 import { Suspense, useState, useMemo, useEffect } from "react";
-import { trpc } from "../../../trpc/client";
+import { trpc } from "../../../trpc/cms-client";
 import { viewModels } from "@maany_shr/e-class-models";
 import { useListCourseStudentsPresenter } from "../../../hooks/use-list-course-students-presenter";
-import MockTRPCClientProviders from "../../../trpc/mock-client-providers";
+import CMSTRPCClientProviders from "../../../trpc/cms-client-provider";
 import { StudentCardProps } from "packages/ui-kit/lib/components/student-card/student-card";
 import useClientSidePagination from "../../../utils/use-client-side-pagination";
 
@@ -47,6 +47,7 @@ export function CourseStudents(
         setCourseStudentsListViewModel,
     );
 
+    // @ts-ignore
     presenter.present(courseStudentsResponse, courseStudentsListViewModel);
 
     // Get all students from the view model
@@ -253,12 +254,12 @@ export default function EnrolledCourseStudents(
     if (props.currentRole === 'student' || props.currentRole === 'visitor')
         throw new Error(courseTranslations('completedPanel.accessDeniedError'));
     return (
-        <MockTRPCClientProviders>
+        <CMSTRPCClientProviders>
             <Suspense
                 fallback={<DefaultLoading locale={locale} variant="minimal" />}
             >
                 <CourseStudents {...props} />
             </Suspense>
-        </MockTRPCClientProviders>
+        </CMSTRPCClientProviders>
     )
 }
