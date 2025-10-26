@@ -185,7 +185,16 @@ export default function LessonForm({
     }, [components]);
 
     const elementProgress = useRef(new Map([...formElements]));
-    const submitProgressMutation = trpc.submitLessonProgresses.useMutation();
+    const trpcUtils = trpc.useUtils();
+    const submitProgressMutation = trpc.submitLessonProgresses.useMutation({
+        onSuccess: () => {
+            // Invalidate the lesson components query to refetch with updated progress
+            trpcUtils.listLessonComponents.invalidate({
+                lessonId: lessonId,
+                withProgress: true,
+            });
+        },
+    });
     // When implementing student submission, this will be used to track progress
 
     const renderComponent = (component: useCaseModels.TLessonComponent) => {
