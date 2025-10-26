@@ -65,7 +65,10 @@ export default class CreateCoursePresenter extends BasePresenter<
 
                     message: response.data.message,
                     operation: response.data.operation,
-                    context: response.data.context
+                    context: {
+                        ...response.data.context,
+                        errorType: response.data.errorType
+                    }
 
                 }
             };
@@ -76,7 +79,10 @@ export default class CreateCoursePresenter extends BasePresenter<
 
                 message: response.data.message,
                 operation: response.data.operation,
-                context: response.data.context
+                context: {
+                    ...response.data.context,
+                    errorType: response.data.errorType
+                }
 
             }
         };

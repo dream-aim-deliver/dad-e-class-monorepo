@@ -1535,6 +1535,7 @@ export const DictionarySchema = z.object({
       saveDraftButton: z.string(),
       duplicationDefaultError: z.string(),
       courseCreationError: z.string(),
+      slugAlreadyExistsError: z.string(),
       uploadError: z.string(),
       titleSlugError: z.string(),
       descriptionError: z.string(),

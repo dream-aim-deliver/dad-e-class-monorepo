@@ -1482,6 +1482,7 @@ export const DE: TDictionary = {
       saveDraftButton: "Entwurf speichern",
       duplicationDefaultError: "Der zu duplizierende Kurs konnte nicht gefunden werden",
       courseCreationError: 'Kurserstellung fehlgeschlagen. Bitte versuche es erneut.',
+      slugAlreadyExistsError: 'Ein Kurs mit diesem Slug existiert bereits. Bitte wähle einen anderen Slug.',
       uploadError: "Bild-Upload fehlgeschlagen. Bitte versuche es erneut.",
       titleSlugError: "Bitte Titel und Slug ausfüllen",
       descriptionError: "Bitte gebe eine Kursbeschreibung an",

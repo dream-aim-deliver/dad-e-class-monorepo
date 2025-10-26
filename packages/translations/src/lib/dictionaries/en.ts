@@ -1479,6 +1479,7 @@ export const EN: TDictionary = {
       saveDraftButton: "Save draft",
       duplicationDefaultError: "Could not find the course to duplicate",
       courseCreationError: 'Course creation failed. Please try again.',
+      slugAlreadyExistsError: 'A course with this slug already exists. Please choose a different slug.',
       uploadError: "Failed to upload image. Please try again.",
       titleSlugError: "Please fill in title and slug",
       descriptionError: "Please provide a course description",
