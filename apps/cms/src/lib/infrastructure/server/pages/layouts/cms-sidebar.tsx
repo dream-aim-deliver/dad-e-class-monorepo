@@ -72,7 +72,7 @@ const CMSSidebar = ({
         categories: `${basePath}/manage-categories`,
         topics: `${basePath}/manage-topics`,
         preCourseAssessment: `${basePath}/pre-course-assessment-form`,
-        termsConditions: `${basePath}/terms-conditions-form`,
+        legalTexts: `${basePath}/manage-legal-texts`,
         coachingOffering: `${basePath}/coaching-offering`,
         coachingSessions: `${basePath}/coaching-sessions`,
         coachSkills: `${basePath}/coach-skills-form`,
@@ -95,7 +95,7 @@ const CMSSidebar = ({
         [routeMap.categories]: t('categories'),
         [routeMap.topics]: t('topics'),
         [routeMap.preCourseAssessment]: t('preCourseAssessmentForm'),
-        [routeMap.termsConditions]: t('termsConditionsForm'),
+        [routeMap.legalTexts]: t('legalTexts'),
         [routeMap.coachingOffering]: t('coachingOffering'),
         [routeMap.coachingSessions]: t('coachingSessions'),
         [routeMap.coachSkills]: t('coachSkillsForm'),
@@ -142,8 +142,8 @@ const CMSSidebar = ({
                 },
                 {
                     icon: <IconNotes />,
-                    label: t('termsConditionsForm'),
-                    onClick: () => router.push(routeMap.termsConditions),
+                    label: t('legalTexts'),
+                    onClick: () => router.push(routeMap.legalTexts),
                 },
             ],
             // Coaching section

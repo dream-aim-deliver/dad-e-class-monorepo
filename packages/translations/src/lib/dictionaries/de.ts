@@ -1028,6 +1028,7 @@ export const DE: TDictionary = {
       coachingOfferings: 'Coaching-Angebote',
       yourStudents: 'Deine Schüler',
       yourProfile: 'Ihr Profil',
+      legalTexts: 'Rechtliche Texte',
     },
     courseIntroInformation: {
       generalInformation: 'Allgemeine Informationen',
@@ -1507,7 +1508,7 @@ export const DE: TDictionary = {
       categories: "Kategorien",
       topics: "Themen",
       preCourseAssessmentForm: "Vorbereitungsfragebogen",
-      termsConditionsForm: "AGB-Formular",
+      legalTexts: "Rechtliche Texte",
       coachingOffering: "Coaching-Angebot",
       coachingSessions: "Coaching-Sitzungen",
       coachSkillsForm: "Coach-Kompetenzen",
@@ -2038,6 +2039,23 @@ export const DE: TDictionary = {
       studentTab: 'Student',
       weeklyView: 'Wochenansicht',
       monthlyView: 'Monatsansicht',
+    },
+    manageLegalTexts: {
+      title: 'Rechtliche Texte verwalten',
+      description: 'Aktualisiere rechtliche Texte für deine Plattform',
+      tabs: {
+        impressum: 'Impressum',
+        privacyPolicy: 'Datenschutzerklärung',
+        termsOfUse: 'Nutzungsbedingungen',
+      },
+      saveButton: 'Änderungen speichern',
+      saving: 'Änderungen werden gespeichert...',
+      saveSuccess: 'Rechtliche Texte erfolgreich gespeichert!',
+      saveError: 'Fehler beim Speichern der rechtlichen Texte',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der rechtlichen Texte ist ein Fehler aufgetreten.',
+      },
     },
   },
 };

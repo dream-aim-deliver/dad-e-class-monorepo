@@ -1024,6 +1024,7 @@ export const EN: TDictionary = {
       coachingOfferings: 'Coaching Offerings',
       yourStudents: 'Your students',
       yourProfile: 'Your Profile',
+      legalTexts: 'Legal Texts',
     },
     courseIntroInformation: {
       generalInformation: 'General Information',
@@ -1504,7 +1505,7 @@ export const EN: TDictionary = {
       categories: "Categories",
       topics: "Topics",
       preCourseAssessmentForm: "Pre-Course Assessment form",
-      termsConditionsForm: "Terms & Conditions form",
+      legalTexts: "Legal Texts",
       coachingOffering: "Coaching offering",
       coachingSessions: "Coaching sessions",
       coachSkillsForm: "Coach skills form",
@@ -2035,6 +2036,23 @@ export const EN: TDictionary = {
       studentTab: 'Student',
       weeklyView: 'Weekly',
       monthlyView: 'Monthly',
+    },
+    manageLegalTexts: {
+      title: 'Manage Legal Texts',
+      description: 'Update legal texts for your platform',
+      tabs: {
+        impressum: 'Impressum',
+        privacyPolicy: 'Privacy Policy',
+        termsOfUse: 'Terms of Use',
+      },
+      saveButton: 'Save Changes',
+      saving: 'Saving changes...',
+      saveSuccess: 'Legal texts saved successfully!',
+      saveError: 'Failed to save legal texts',
+      error: {
+        title: 'Error',
+        description: 'An error occurred while loading legal texts.',
+      },
     },
   },
 };
