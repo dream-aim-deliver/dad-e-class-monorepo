@@ -33,6 +33,9 @@ type StudentOngoingCard = BaseCardSharedProps & {
     status: 'ongoing';
     meetingLink: string;
     onClickJoinMeeting: () => void;
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
 };
 
 /**
@@ -45,6 +48,9 @@ type StudentUpcomingEditableCard = BaseCardSharedProps & {
     hoursLeftToEdit: number;
     onClickReschedule: () => void;
     onClickCancel: () => void;
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
 };
 
 /**
@@ -55,6 +61,9 @@ type StudentUpcomingLockedCard = BaseCardSharedProps & {
     userType: 'student';
     status: 'upcoming-locked';
     onClickJoinMeeting: () => void;
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
 };
 
 /**
@@ -68,6 +77,9 @@ type StudentEndedWithoutReviewCard = BaseCardSharedProps & {
     onClickReviewCoachingSession: () => void;
     onClickDownloadRecording: () => void;
     isRecordingDownloading: boolean;
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
 };
 
 /**
@@ -85,6 +97,9 @@ type StudentEndedWithReviewCard = BaseCardSharedProps & {
     onClickReadReviews?: () => void;
     onClickDownloadRecording: () => void;
     isRecordingDownloading: boolean;
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
 };
 
 /**
@@ -94,6 +109,9 @@ type StudentEndedWithReviewCard = BaseCardSharedProps & {
 type StudentCanceledCard = BaseCardSharedProps & {
     userType: 'student';
     status: 'canceled';
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
 };
 
 /**
@@ -107,6 +125,9 @@ type StudentUnscheduledCard = {
     title: string;
     duration: number;
     withinCourse: boolean;
+    creatorName: string;
+    creatorImageUrl: string;
+    onClickCreator: () => void;
 };
 
 /**

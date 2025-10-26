@@ -24,7 +24,7 @@ export interface CourseCreatorGroupOverviewProps extends isLocalAware {
  *
  * @param withinCourse When true, shows course and group sections. When false, hides course and group sections except for 'upcoming-locked' status which always shows them.
  * @param userRole Determines whether to show creator (for students) or hide creator info (for coaches).
- * @param status The current session status. Creator info is shown for 'ongoing' and 'ended' sessions when userRole is 'student'. Course and group info is shown for 'upcoming-locked' regardless of withinCourse.
+ * @param status The current session status. Creator info is shown for all student variants when creatorName is provided. Course and group info is shown for 'upcoming-locked' regardless of withinCourse.
  * @param courseName The name of the course.
  * @param courseImageUrl The image URL of the course.
  * @param groupName The name of the group.
@@ -70,8 +70,8 @@ export const CourseCreatorGroupOverview: React.FC<CourseCreatorGroupOverviewProp
   const courseText = dictionary.components.coachingSessionCard.courseText;
   const groupText = dictionary.components.coachingSessionCard.groupText;
 
-  // Only show "Created by" section for students with ongoing or ended status
-  const showCreatedBy = userRole === 'student' && (status === 'ongoing' || status === 'ended') && creatorName;
+  // Show "Created by" section for all student variants that have creator information
+  const showCreatedBy = userRole === 'student' && creatorName;
   // Show course and group sections when withinCourse is true OR for upcoming-locked status
   const showCourseAndGroup = withinCourse || status === 'upcoming-locked';
 
@@ -82,7 +82,7 @@ export const CourseCreatorGroupOverview: React.FC<CourseCreatorGroupOverviewProp
 
   return (
     <div className="flex flex-col items-start w-full gap-1">
-      {/* Show "Created by" section for students (regardless of withinCourse) */}
+      {/* Show "Created by" section for all student variants that have creator information */}
       {showCreatedBy && (
         <div className="flex flex-wrap items-center gap-1 w-full">
           <div className="flex items-center gap-1 text-sm text-text-secondary">

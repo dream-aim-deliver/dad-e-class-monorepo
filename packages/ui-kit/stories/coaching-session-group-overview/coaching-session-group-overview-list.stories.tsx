@@ -116,6 +116,9 @@ const sampleSessions: CoachingSessionGroupOverviewCardProps[] = [
         status: 'unscheduled',
         duration: 45,
         withinCourse: true,
+        creatorName: 'Jane Smith',
+        creatorImageUrl: 'https://res.cloudinary.com/dgk9gxgk4/image/upload/v1733464948/2151206389_1_c38sda.jpg',
+        onClickCreator: () => alert('Creator clicked'),
     },
     {
         ...baseSessionProps,

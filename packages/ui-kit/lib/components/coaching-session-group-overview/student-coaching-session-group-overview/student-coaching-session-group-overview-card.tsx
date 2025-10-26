@@ -88,7 +88,7 @@ export const StudentCoachingSessionGroupOverviewCard: React.FC<StudentCoachingSe
     const dictionary = getDictionary(props.locale);
 
     // Special case for sessions with undefined scheduling
-    // These sessions don't have finalized date/time or creator assignments
+    // These sessions don't have finalized date/time but still show creator information
     if (props.status === 'unscheduled') {
         return (
             <div className="flex flex-col justify-center md:p-4 p-2 gap-3 rounded-medium border border-card-stroke bg-card-fill w-auto">
@@ -115,6 +115,20 @@ export const StudentCoachingSessionGroupOverviewCard: React.FC<StudentCoachingSe
                         </p>
                     </div>
                 </div>
+                <CourseCreatorGroupOverview
+                    withinCourse={props.withinCourse}
+                    userRole="student"
+                    status={props.status}
+                    courseName={undefined}
+                    courseImageUrl={undefined}
+                    groupName={undefined}
+                    creatorName={props.creatorName}
+                    creatorImageUrl={props.creatorImageUrl}
+                    onClickCourse={undefined}
+                    onClickGroup={undefined}
+                    onClickCreator={props.onClickCreator}
+                    locale={props.locale}
+                />
                 <p className="text-md text-text-primary">
                     {dictionary.components.coachingSessionCard.toBeDefinedMessage}
                 </p>
