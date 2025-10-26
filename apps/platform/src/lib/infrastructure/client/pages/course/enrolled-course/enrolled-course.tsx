@@ -314,9 +314,6 @@ export function EnrolledCourseContent(props: EnrolledCourseContentProps) {
                         />
                     </Suspense>
                 </Tabs.Content>
-                <Tabs.Content value="notes" className={tabContentClass}>
-                    <DefaultError locale={locale} />
-                </Tabs.Content>
                 <Tabs.Content value="material" className={tabContentClass}>
                     <EnrolledCourseMaterial
                         currentRole={props.currentRole}
