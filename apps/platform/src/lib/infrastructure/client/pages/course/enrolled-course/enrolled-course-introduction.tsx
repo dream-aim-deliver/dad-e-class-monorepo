@@ -11,7 +11,7 @@ import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useTabContext } from 'packages/ui-kit/lib/components/tabs/tab-context';
 import { StudentCourseTab } from '../../../utils/course-tabs';
-import { trpc } from '../../../trpc/client';
+import { trpc } from '../../../trpc/cms-client';
 import { Suspense, useState } from 'react';
 import { useListIncludedCoachingSessionsPresenter } from '../../../hooks/use-included-coaching-sessions-presenter';
 import CourseIntroduction from '../../common/course-introduction';
