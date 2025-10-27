@@ -1629,6 +1629,9 @@ export const DE: TDictionary = {
     termsOfUse: {
       title: 'Nutzungsbedingungen',
     },
+    privacyPolicy: {
+      title: 'Datenschutzerklärung',
+    },
     student: {
       tabs: {
         assignments: 'Aufgaben',
