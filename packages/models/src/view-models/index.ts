@@ -119,3 +119,4 @@ export * from './publish-package-view-model';
 export * from './save-platform-language-legal-texts-view-model';
 export * from './save-platform-footer-view-model';
 export * from './list-notifications-view-model';
+export * from './mark-notifications-as-read-view-model';
