@@ -126,3 +126,4 @@ export * from './list-users-view-model';
 export * from './send-notification-view-model';
 export * from './create-outgoing-transaction-view-model';
 export * from './delete-outgoing-transaction-view-model';
+export * from './list-platform-coaches-view-model';
