@@ -2133,5 +2133,17 @@ export const DE: TDictionary = {
         },
       },
     },
+    cmsAllUsers: {
+      title: 'Alle Benutzer',
+      description: 'Zeige und verwalte Benutzer über alle Plattformen hinweg',
+      error: {
+        title: 'Fehler',
+        description: 'Beim Laden der Benutzer ist ein Fehler aufgetreten.',
+        notFound: {
+          title: 'Nicht gefunden',
+          description: 'Die angeforderten Benutzer konnten nicht gefunden werden.',
+        },
+      },
+    },
   },
 };
