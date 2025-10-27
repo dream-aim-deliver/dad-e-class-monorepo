@@ -6,14 +6,17 @@
 // UI Components: CourseReviewFilterModal, GroupCoachingSessionReviews Banner
 // User Type: Coach
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
-import { TLocale } from '@maany_shr/e-class-translations';
+import { getDictionary, TLocale } from '@maany_shr/e-class-translations';
 import { viewModels } from '@maany_shr/e-class-models';
-import { DefaultLoading, DefaultError } from '@maany_shr/e-class-ui-kit';
+import { DefaultLoading, DefaultError, CoachReviewCard, Breadcrumbs, Button, IconFilter, CoachReviewFilterModal, GroupCoachingSessionBanner, GroupCoachingSessionReviewsBanner } from '@maany_shr/e-class-ui-kit';
+import type { CoachReviewFilterModel } from '@maany_shr/e-class-ui-kit';
 import { trpc } from '../trpc/cms-client';
 import { useListGroupCoachingSessionReviewsPresenter } from '../hooks/use-list-group-coaching-session-reviews-presenter';
+import useClientSidePagination from '../utils/use-client-side-pagination';
+import { useRouter } from 'next/navigation';
 
 interface GroupCoachingSessionReviewsProps {
     locale: TLocale;
@@ -30,7 +33,12 @@ export default function GroupCoachingSessionReviews({
 }: GroupCoachingSessionReviewsProps) {
     const currentLocale = useLocale() as TLocale;
     const t = useTranslations('pages.groupCoachingSessionReviews');
+    const breadcrumbsTranslations = useTranslations('components.breadcrumbs');
+    const paginationTranslations = useTranslations('components.paginationButton');
+    const dictionary = getDictionary(localeProp);
     const { data: session, status } = useSession();
+
+    const route = useRouter();
 
     // Fetch data using TRPC
     const [reviewsResponse] = trpc.listGroupCoachingSessionReviews.useSuspenseQuery({
@@ -42,6 +50,15 @@ export default function GroupCoachingSessionReviews({
         viewModels.TListGroupCoachingSessionReviewsViewModel | undefined
     >(undefined);
 
+    // Filter states
+    const [showFilterModal, setShowFilterModal] = useState(false);
+    const [filters, setFilters] = useState<CoachReviewFilterModel>({
+        maxRating: 5,
+        minRating: 1,
+        dateBefore: '',
+        dateAfter: ''
+    });
+
     // Initialize presenter
     const { presenter } = useListGroupCoachingSessionReviewsPresenter(setReviewsViewModel);
 
@@ -50,6 +67,51 @@ export default function GroupCoachingSessionReviews({
         // @ts-ignore - Presenter type compatibility issue
         presenter.present(reviewsResponse, reviewsViewModel);
     }, [reviewsResponse, presenter, reviewsViewModel]);
+
+    // Get reviews data or use empty array for filtering
+    const allReviews = useMemo(() => {
+        if (!reviewsViewModel || reviewsViewModel.mode !== 'default') {
+            return [];
+        }
+        return reviewsViewModel.data.reviews;
+    }, [reviewsViewModel]);
+
+    // Apply filters to the reviews using useMemo for performance
+    const filteredReviews = useMemo(() => {
+        return allReviews.filter(review => {
+            const rating = review.rating;
+            const date = new Date(review.createdAt);
+
+            // Apply rating filters
+            if (rating < (filters.minRating || 1) || rating > (filters.maxRating || 5)) {
+                return false;
+            }
+
+            // Apply date filters
+            if (filters.dateBefore) {
+                const beforeDate = new Date(filters.dateBefore);
+                if (date > beforeDate) return false;
+            }
+
+            if (filters.dateAfter) {
+                const afterDate = new Date(filters.dateAfter);
+                if (date < afterDate) return false;
+            }
+
+            return true;
+        });
+    }, [allReviews, filters]);
+
+    // Pagination for reviews
+    const {
+        displayedItems: displayedReviews,
+        hasMoreItems: hasMoreReviews,
+        handleLoadMore: handleLoadMoreReviews,
+    } = useClientSidePagination({
+        items: filteredReviews,
+        itemsPerPage: 6,
+        itemsPerPage2xl: 9,
+    });
 
     // Loading state
     if (status === 'loading' || !reviewsViewModel) {
@@ -88,16 +150,139 @@ export default function GroupCoachingSessionReviews({
         );
     }
 
-    // TODO: Extract data from reviewsViewModel.data
-    // TODO: Implement CourseReviewFilterModal
-    // TODO: Implement GroupCoachingSessionReviews Banner
-    // TODO: Implement reviews list UI
+    const reviewsData = reviewsViewModel.data;
 
     return (
-        <div>
-            <h1>{t('title')}</h1>
-            <p>{t('description')}</p>
-            {/* TODO: Implement page content */}
+        <div className="flex flex-col space-y-5">
+            <Breadcrumbs
+                items={[
+                    {
+                        label: breadcrumbsTranslations('home'),
+                        onClick: () => {
+                            route.push(`/${localeProp}`);
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('workspace'),
+                        onClick: () => {
+                            route.push(`/${localeProp}/workspace`);
+                        },
+                    },
+                    {
+                        label: breadcrumbsTranslations('yourCourses'),
+                        onClick: () => {
+                            // TODO: Implement navigation to your courses
+                        },
+                    },
+                    {
+                        label: courseSlug,
+                        onClick: () => route.push(`/${localeProp}/workspace/courses/${courseSlug}`),
+                    },
+                    {
+                        label: breadcrumbsTranslations('groups'),
+                        onClick: () => route.push(`/${localeProp}/workspace/courses/${courseSlug}/groups`),
+                    },
+                    {
+                        // TODO: We should get group name directly from reviewsData instead of reviews array
+                        label: reviewsData.reviews[0]?.group.name || '',
+                        onClick: () => route.push(`/${localeProp}/workspace/courses/${courseSlug}/groups/${groupId}`),
+                    },
+                    {
+                        label: breadcrumbsTranslations('coachingSessionReviews'),
+                        onClick: () => route.push(`/${localeProp}/workspace/courses/${courseSlug}/groups/${groupId}/coaching-sessions`),
+                    },
+                ]}
+            />
+            <div className='flex flex-col gap-4'>
+                <div className='flex items-center justify-between'>
+                    <div className='flex flex-col gap-2'>
+                        {/* TODO: We should get group name directly from reviewsData instead of reviews array */}
+                        <h6 className='text-text-secondary text-sm md:text-md leading-[120%]'>
+                            {reviewsData.reviews[0]?.group.name || ''}
+                        </h6>
+                        <h2 className='text-text-primary md:text-3xl text-xl font-bold'>
+                            {t('title')}
+                        </h2>
+                        <p className='text-text-secondary text-sm md:text-md'>
+                            {t('description')}
+                        </p>
+                    </div>
+                    {/* Filter Button */}
+                    <Button
+                        variant="secondary"
+                        size="medium"
+                        text={dictionary.components.coachReviewFilterModal.filterButton}
+                        onClick={() => setShowFilterModal(true)}
+                        hasIconLeft
+                        iconLeft={<IconFilter />}
+                        className="w-auto"
+                    />
+                </div>
+                
+                <div className="w-full flex items-center justify-between gap-4">
+                    <GroupCoachingSessionBanner
+                        // TODO: We should get title, date, time and duration directly from reviewsData instead of reviews array
+                        title={reviewsData.reviews[0]?.coachingOfferingTitle || ''}
+                        date={new Date(reviewsData.reviews[0]?.createdAt)}
+                        time={new Date(reviewsData.reviews[0]?.createdAt).toLocaleTimeString(localeProp)}
+                        durationMinutes={60}
+                        locale={localeProp}
+                    />
+                    <GroupCoachingSessionReviewsBanner
+                        reviewCount={reviewsData.reviewCount}
+                        averageRating={reviewsData.averageRating || 0}
+                        studentCount={reviewsData.studentCount}
+                        locale={localeProp}
+                    />
+                </div>
+
+                {/* Reviews with pagination */}
+                {displayedReviews.length > 0 ? (
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+                            {displayedReviews.map((review) => (
+                                <CoachReviewCard
+                                    key={review.id}
+                                    locale={localeProp}
+                                    rating={review.rating}
+                                    reviewerName={`${review.student.name} ${review.student.surname}`}
+                                    reviewerAvatar={review.student.avatarUrl || undefined}
+                                    reviewText={review.notes || ""}
+                                    workshopTitle={review.coachingOfferingTitle}
+                                    date={review.createdAt}
+                                    time={new Date(review.createdAt).toLocaleTimeString(localeProp)}
+                                    courseTitle={review.course.title}
+                                    courseImage={review.course.imageUrl || ""}
+                                    groupName={review.group.name}
+                                />
+                            ))}
+                        </div>
+                        {hasMoreReviews && (
+                            <div className="flex justify-center items-center w-full mt-6">
+                                <Button
+                                    variant="text"
+                                    text={paginationTranslations('loadMore')}
+                                    onClick={handleLoadMoreReviews}
+                                />
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <div className="flex items-center justify-center py-16">
+                        <p className="text-text-secondary md:text-xl text-lg">{t('noReviewsFound')}</p>
+                    </div>
+                )}
+            </div>
+
+            {/* Coach Review Filter Modal */}
+            {showFilterModal && (
+                <CoachReviewFilterModal
+                    onApplyFilters={(f) => setFilters(f)}
+                    onClose={() => setShowFilterModal(false)}
+                    initialFilters={filters}
+                    locale={localeProp}
+                />
+            )}
         </div>
     );
 }

@@ -242,6 +242,9 @@ export { RevokeCouponModal, type RevokeCouponModalProps } from './components/cou
 export { CreateCouponModal, type CreateCouponModalProps } from './components/coupon/create-coupon-modal';
 export { CoachingSessionGroupOverviewList, CoachingSessionFilterModal, type CoachingSessionFilterModel } from './components/coaching-session-group-overview';
 export { CoachingSessionGroupOverviewCard } from './components/coaching-session-group-overview/coaching-session-group-overview-card';
+export { CoachReviewFilterModal, type CoachReviewFilterModel } from './components/review/coach-review-filter-modal';
+export { GroupCoachingSessionBanner } from './components/group-coaching-session-banner';
+export { GroupCoachingSessionReviewsBanner } from './components/group-coaching-session-reviews-banner';
 
 
 export * from "./components/cms"
