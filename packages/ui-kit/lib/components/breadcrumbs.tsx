@@ -39,7 +39,7 @@ export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
     return (
         <nav
             aria-label="Breadcrumb"
-            className="flex items-center text-sm text-base-brand-500"
+            className="flex items-center text-sm text-base-brand-500 flex-wrap gap-1"
         >
             {items.map((item, index) => {
                 const isLast = index === items.length - 1;

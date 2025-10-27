@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import ReviewCard from "../lib/components/review/coach-review-card";
+import { ReviewCard } from "../lib/components/review/coach-review-card";
 
 describe('ReviewCard Component', () => {
   test('renders review card with correct props', () => {
